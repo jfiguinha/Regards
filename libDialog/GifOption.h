@@ -1,0 +1,48 @@
+#ifndef GIFOPTION_H
+#define GIFOPTION_H
+
+#ifndef WX_PRECOMP
+	//(*HeadersPCH(GifOption)
+	#include <wx/radiobox.h>
+	#include <wx/button.h>
+	#include <wx/dialog.h>
+	//*)
+#endif
+//(*Headers(GifOption)
+//*)
+
+class GifOption: public wxDialog
+{
+	public:
+
+		GifOption(wxWindow* parent);
+		virtual ~GifOption();
+
+		//(*Declarations(GifOption)
+		wxButton* btnOk;
+		wxButton* btnCancel;
+		wxRadioBox* rbCompression;
+		//*)
+        bool IsOk();
+        int CompressionOption();
+    
+	protected:
+
+		//(*Identifiers(GifOption)
+		//*)
+
+	private:
+
+		//(*Handlers(GifOption)
+		void OnRadioBox1Select(wxCommandEvent& event);
+		void OnbtnOkClick(wxCommandEvent& event);
+		void OnInit(wxInitDialogEvent& event);
+		void OnbtnCancelClick(wxCommandEvent& event);
+		//*)
+
+        bool isOk = false;
+        int compressOption = 0;
+		DECLARE_EVENT_TABLE()
+};
+
+#endif

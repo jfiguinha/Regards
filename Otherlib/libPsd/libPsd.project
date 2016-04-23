@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libPsd" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <VirtualDirectory Name="src">
+    <File Name="adjustment.c"/>
+    <File Name="bevel_emboss.c"/>
+    <File Name="bitmap.c"/>
+    <File Name="blend.c"/>
+    <File Name="boundary.c"/>
+    <File Name="brightness_contrast.c"/>
+    <File Name="channel_image.c"/>
+    <File Name="channel_mixer.c"/>
+    <File Name="color.c"/>
+    <File Name="color_balance.c"/>
+    <File Name="color_mode.c"/>
+    <File Name="color_overlay.c"/>
+    <File Name="curves.c"/>
+    <File Name="descriptor.c"/>
+    <File Name="drop_shadow.c"/>
+    <File Name="effects.c"/>
+    <File Name="file_header.c"/>
+    <File Name="fixed.c"/>
+    <File Name="gaussian_blur.c"/>
+    <File Name="gradient_blend.c"/>
+    <File Name="gradient_fill.c"/>
+    <File Name="gradient_map.c"/>
+    <File Name="gradient_overlay.c"/>
+    <File Name="hue_saturation.c"/>
+    <File Name="image_data.c"/>
+    <File Name="image_resource.c"/>
+    <File Name="inner_glow.c"/>
+    <File Name="inner_shadow.c"/>
+    <File Name="invert.c"/>
+    <File Name="layer_mask.c"/>
+    <File Name="levels.c"/>
+    <File Name="outer_glow.c"/>
+    <File Name="path.c"/>
+    <File Name="pattern.c"/>
+    <File Name="pattern_fill.c"/>
+    <File Name="pattern_overlay.c"/>
+    <File Name="photo_filter.c"/>
+    <File Name="posterize.c"/>
+    <File Name="psd.c"/>
+    <File Name="psd_system.c"/>
+    <File Name="psd_zip.c"/>
+    <File Name="rect.c"/>
+    <File Name="satin.c"/>
+    <File Name="selective_color.c"/>
+    <File Name="solid_color.c"/>
+    <File Name="stream.c"/>
+    <File Name="stroke.c"/>
+    <File Name="test.c"/>
+    <File Name="threshold.c"/>
+    <File Name="thumbnail.c"/>
+    <File Name="type_tool.c"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="libpsd.h"/>
+    <File Name="psd_bitmap.h"/>
+    <File Name="psd_blend.h"/>
+    <File Name="psd_color.h"/>
+    <File Name="psd_config.h"/>
+    <File Name="psd_descriptor.h"/>
+    <File Name="psd_fixed.h"/>
+    <File Name="psd_gradient.h"/>
+    <File Name="psd_math.h"/>
+    <File Name="psd_rect.h"/>
+    <File Name="psd_stream.h"/>
+    <File Name="psd_system.h"/>
+    <File Name="psd_types.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>

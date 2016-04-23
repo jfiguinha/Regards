@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="wxSVG" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }, {
+  "name": "Release",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="src/css_colors.cpp"/>
+    <File Name="src/css_properties.cpp"/>
+    <File Name="src/CSSStyleDeclaration.cpp"/>
+    <File Name="src/CSSValue.cpp"/>
+    <File Name="src/css_values.cpp"/>
+    <File Name="src/Elements_CopyConstructors.cpp"/>
+    <File Name="src/Elements_GetAttribute.cpp"/>
+    <File Name="src/Elements_GetAttributes.cpp"/>
+    <File Name="src/Elements_HasAttribute.cpp"/>
+    <File Name="src/Elements_SetAttribute.cpp"/>
+    <File Name="src/GetSVGDocument.cpp"/>
+    <File Name="src/imagsvg.cpp"/>
+    <File Name="src/mediadec_ffmpeg.cpp"/>
+    <File Name="src/NodeList.cpp"/>
+    <File Name="src/SVGAngle.cpp"/>
+    <File Name="src/SVGAnimatedType.cpp"/>
+    <File Name="src/SVGAnimateTransformElement.cpp"/>
+    <File Name="src/SVGAnimationElement.cpp"/>
+    <File Name="src/SVGCanvas.cpp"/>
+    <File Name="src/SVGCanvasItem.cpp"/>
+    <File Name="src/SVGCircleElement.cpp"/>
+    <File Name="src/SVGColor.cpp"/>
+    <File Name="src/svgctrl.cpp"/>
+    <File Name="src/SVGDocument.cpp"/>
+    <File Name="src/SVGDocument_CreateElement.cpp"/>
+    <File Name="src/SVGElementInstanceList.cpp"/>
+    <File Name="src/SVGEllipseElement.cpp"/>
+    <File Name="src/SVGFEGaussianBlurElement.cpp"/>
+    <File Name="src/SVGFilterElement.cpp"/>
+    <File Name="src/SVGFitToViewBox.cpp"/>
+    <File Name="src/SVGImageElement.cpp"/>
+    <File Name="src/SVGLength.cpp"/>
+    <File Name="src/SVGLengthList.cpp"/>
+    <File Name="src/SVGLineElement.cpp"/>
+    <File Name="src/SVGLocatable.cpp"/>
+    <File Name="src/SVGMarkerElement.cpp"/>
+    <File Name="src/SVGMatrix.cpp"/>
+    <File Name="src/SVGNumberList.cpp"/>
+    <File Name="src/SVGPaint.cpp"/>
+    <File Name="src/SVGPathElement.cpp"/>
+    <File Name="src/SVGPathSegList.cpp"/>
+    <File Name="src/SVGPoint.cpp"/>
+    <File Name="src/SVGPointList.cpp"/>
+    <File Name="src/SVGPolygonElement.cpp"/>
+    <File Name="src/SVGPolylineElement.cpp"/>
+    <File Name="src/SVGPreserveAspectRatio.cpp"/>
+    <File Name="src/SVGRadialGradientElement.cpp"/>
+    <File Name="src/SVGRect.cpp"/>
+    <File Name="src/SVGRectElement.cpp"/>
+    <File Name="src/SVGStringList.cpp"/>
+    <File Name="src/SVGStylable.cpp"/>
+    <File Name="src/SVGSVGElement.cpp"/>
+    <File Name="src/SVGTests.cpp"/>
+    <File Name="src/SVGTextContentElement.cpp"/>
+    <File Name="src/SVGTextElement.cpp"/>
+    <File Name="src/SVGTransform.cpp"/>
+    <File Name="src/SVGTransformable.cpp"/>
+    <File Name="src/SVGTransformList.cpp"/>
+    <File Name="src/SVGUseElement.cpp"/>
+    <File Name="src/SVGVideoElement.cpp"/>
+    <VirtualDirectory Name="cairo">
+      <File Name="src/cairo/SVGCanvasCairo.cpp"/>
+      <File Name="src/cairo/SVGCanvasCairo.h"/>
+      <File Name="src/cairo/SVGCanvasImageCairo.cpp"/>
+      <File Name="src/cairo/SVGCanvasImageCairo.h"/>
+      <File Name="src/cairo/SVGCanvasPathCairo.cpp"/>
+      <File Name="src/cairo/SVGCanvasPathCairo.h"/>
+      <File Name="src/cairo/SVGCanvasTextCairo.cpp"/>
+      <File Name="src/cairo/SVGCanvasTextCairo.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="svgxml">
+      <File Name="src/svgxml/svgxml.cpp"/>
+      <File Name="src/svgxml/svgxmlhelpr.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="wxSVG">
+      <File Name="include/wxSVG/Animated.h"/>
+      <File Name="include/wxSVG/CSSStyleDeclaration.h"/>
+      <File Name="include/wxSVG/CSSValue.h"/>
+      <File Name="include/wxSVG/CSSValues.h"/>
+      <File Name="include/wxSVG/Document.h"/>
+      <File Name="include/wxSVG/DocumentCSS.h"/>
+      <File Name="include/wxSVG/DocumentEvent.h"/>
+      <File Name="include/wxSVG/Element.h"/>
+      <File Name="include/wxSVG/ElementTimeControl.h"/>
+      <File Name="include/wxSVG/EventTarget.h"/>
+      <File Name="include/wxSVG/GetSVGDocument.h"/>
+      <File Name="include/wxSVG/imagsvg.h"/>
+      <File Name="include/wxSVG/mediadec_ffmpeg.h"/>
+      <File Name="include/wxSVG/NodeList.h"/>
+      <File Name="include/wxSVG/NodeListCls.h"/>
+      <File Name="include/wxSVG/RGBColor.h"/>
+      <File Name="include/wxSVG/String_wxsvg.h"/>
+      <File Name="include/wxSVG/svg.h"/>
+      <File Name="include/wxSVG/SVGAElement.h"/>
+      <File Name="include/wxSVG/SVGAltGlyphDefElement.h"/>
+      <File Name="include/wxSVG/SVGAltGlyphElement.h"/>
+      <File Name="include/wxSVG/SVGAltGlyphItemElement.h"/>
+      <File Name="include/wxSVG/SVGAngle.h"/>
+      <File Name="include/wxSVG/SVGAnimateColorElement.h"/>
+      <File Name="include/wxSVG/SVGAnimatedAngle.h"/>
+      <File Name="include/wxSVG/SVGAnimatedBoolean.h"/>
+      <File Name="include/wxSVG/SVGAnimatedEnumeration.h"/>
+      <File Name="include/wxSVG/SVGAnimatedInteger.h"/>
+      <File Name="include/wxSVG/SVGAnimatedLength.h"/>
+      <File Name="include/wxSVG/SVGAnimatedLengthList.h"/>
+      <File Name="include/wxSVG/SVGAnimatedNumber.h"/>
+      <File Name="include/wxSVG/SVGAnimatedNumberList.h"/>
+      <File Name="include/wxSVG/SVGAnimatedPathData.h"/>
+      <File Name="include/wxSVG/SVGAnimatedPoints.h"/>
+      <File Name="include/wxSVG/SVGAnimatedPreserveAspectRatio.h"/>
+      <File Name="include/wxSVG/SVGAnimatedRect.h"/>
+      <File Name="include/wxSVG/SVGAnimatedString.h"/>
+      <File Name="include/wxSVG/SVGAnimatedTransformList.h"/>
+      <File Name="include/wxSVG/SVGAnimatedType.h"/>
+      <File Name="include/wxSVG/SVGAnimateElement.h"/>
+      <File Name="include/wxSVG/SVGAnimateMotionElement.h"/>
+      <File Name="include/wxSVG/SVGAnimateTransformElement.h"/>
+      <File Name="include/wxSVG/SVGAnimationElement.h"/>
+      <File Name="include/wxSVG/SVGCanvas.h"/>
+      <File Name="include/wxSVG/SVGCanvasItem.h"/>
+      <File Name="include/wxSVG/SVGCircleElement.h"/>
+      <File Name="include/wxSVG/SVGClipPathElement.h"/>
+      <File Name="include/wxSVG/SVGColor.h"/>
+      <File Name="include/wxSVG/SVGColorProfileElement.h"/>
+      <File Name="include/wxSVG/SVGColorProfileRule.h"/>
+      <File Name="include/wxSVG/SVGComponentTransferFunctionElement.h"/>
+      <File Name="include/wxSVG/SVGCoordinates.h"/>
+      <File Name="include/wxSVG/SVGCSSRule.h"/>
+      <File Name="include/wxSVG/svgctrl.h"/>
+      <File Name="include/wxSVG/SVGCursorElement.h"/>
+      <File Name="include/wxSVG/SVGDefinitionSrcElement.h"/>
+      <File Name="include/wxSVG/SVGDefsElement.h"/>
+      <File Name="include/wxSVG/SVGDescElement.h"/>
+      <File Name="include/wxSVG/SVGDocument.h"/>
+      <File Name="include/wxSVG/SVGDTD.h"/>
+      <File Name="include/wxSVG/SVGElement.h"/>
+      <File Name="include/wxSVG/SVGElementInstance.h"/>
+      <File Name="include/wxSVG/SVGElementInstanceList.h"/>
+      <File Name="include/wxSVG/SVGEllipseElement.h"/>
+      <File Name="include/wxSVG/SVGEvent.h"/>
+      <File Name="include/wxSVG/SVGExternalResourcesRequired.h"/>
+      <File Name="include/wxSVG/SVGFEBlendElement.h"/>
+      <File Name="include/wxSVG/SVGFEColorMatrixElement.h"/>
+      <File Name="include/wxSVG/SVGFEComponentTransferElement.h"/>
+      <File Name="include/wxSVG/SVGFECompositeElement.h"/>
+      <File Name="include/wxSVG/SVGFEConvolveMatrixElement.h"/>
+      <File Name="include/wxSVG/SVGFEDiffuseLightingElement.h"/>
+      <File Name="include/wxSVG/SVGFEDisplacementMapElement.h"/>
+      <File Name="include/wxSVG/SVGFEDistantLightElement.h"/>
+      <File Name="include/wxSVG/SVGFEFloodElement.h"/>
+      <File Name="include/wxSVG/SVGFEFuncAElement.h"/>
+      <File Name="include/wxSVG/SVGFEFuncBElement.h"/>
+      <File Name="include/wxSVG/SVGFEFuncGElement.h"/>
+      <File Name="include/wxSVG/SVGFEFuncRElement.h"/>
+      <File Name="include/wxSVG/SVGFEGaussianBlurElement.h"/>
+      <File Name="include/wxSVG/SVGFEImageElement.h"/>
+      <File Name="include/wxSVG/SVGFEMergeElement.h"/>
+      <File Name="include/wxSVG/SVGFEMergeNodeElement.h"/>
+      <File Name="include/wxSVG/SVGFEMorphologyElement.h"/>
+      <File Name="include/wxSVG/SVGFEOffsetElement.h"/>
+      <File Name="include/wxSVG/SVGFEPointLightElement.h"/>
+      <File Name="include/wxSVG/SVGFESpecularLightingElement.h"/>
+      <File Name="include/wxSVG/SVGFESpotLightElement.h"/>
+      <File Name="include/wxSVG/SVGFETileElement.h"/>
+      <File Name="include/wxSVG/SVGFETurbulenceElement.h"/>
+      <File Name="include/wxSVG/SVGFilterElement.h"/>
+      <File Name="include/wxSVG/SVGFilterPrimitiveStandardAttributes.h"/>
+      <File Name="include/wxSVG/SVGFitToViewBox.h"/>
+      <File Name="include/wxSVG/SVGFontElement.h"/>
+      <File Name="include/wxSVG/SVGFontFaceElement.h"/>
+      <File Name="include/wxSVG/SVGFontFaceFormatElement.h"/>
+      <File Name="include/wxSVG/SVGFontFaceNameElement.h"/>
+      <File Name="include/wxSVG/SVGFontFaceSrcElement.h"/>
+      <File Name="include/wxSVG/SVGFontFaceUriElement.h"/>
+      <File Name="include/wxSVG/SVGForeignObjectElement.h"/>
+      <File Name="include/wxSVG/SVGGElement.h"/>
+      <File Name="include/wxSVG/SVGGlyphElement.h"/>
+      <File Name="include/wxSVG/SVGGlyphRefElement.h"/>
+      <File Name="include/wxSVG/SVGGradientElement.h"/>
+      <File Name="include/wxSVG/SVGHKernElement.h"/>
+      <File Name="include/wxSVG/SVGICCColor.h"/>
+      <File Name="include/wxSVG/SVGImageElement.h"/>
+      <File Name="include/wxSVG/SVGLangSpace.h"/>
+      <File Name="include/wxSVG/SVGLength.h"/>
+      <File Name="include/wxSVG/SVGLengthCalculate.h"/>
+      <File Name="include/wxSVG/SVGLengthList.h"/>
+      <File Name="include/wxSVG/SVGLinearGradientElement.h"/>
+      <File Name="include/wxSVG/SVGLineElement.h"/>
+      <File Name="include/wxSVG/SVGLocatable.h"/>
+      <File Name="include/wxSVG/SVGMarkerElement.h"/>
+      <File Name="include/wxSVG/SVGMaskElement.h"/>
+      <File Name="include/wxSVG/SVGMatrix.h"/>
+      <File Name="include/wxSVG/SVGMetadataElement.h"/>
+      <File Name="include/wxSVG/SVGMissingGlyphElement.h"/>
+      <File Name="include/wxSVG/SVGMPathElement.h"/>
+      <File Name="include/wxSVG/SVGNumber.h"/>
+      <File Name="include/wxSVG/SVGNumberList.h"/>
+      <File Name="include/wxSVG/SVGPaint.h"/>
+      <File Name="include/wxSVG/SVGPathElement.h"/>
+      <File Name="include/wxSVG/SVGPathSeg.h"/>
+      <File Name="include/wxSVG/SVGPathSegArcAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegArcRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegClosePath.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoCubicAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoCubicRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoCubicSmoothAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoCubicSmoothRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoQuadraticAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoQuadraticRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoQuadraticSmoothAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegCurvetoQuadraticSmoothRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoHorizontalAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoHorizontalRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoVerticalAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegLinetoVerticalRel.h"/>
+      <File Name="include/wxSVG/SVGPathSegList.h"/>
+      <File Name="include/wxSVG/SVGPathSegMovetoAbs.h"/>
+      <File Name="include/wxSVG/SVGPathSegMovetoRel.h"/>
+      <File Name="include/wxSVG/SVGPatternElement.h"/>
+      <File Name="include/wxSVG/SVGPoint.h"/>
+      <File Name="include/wxSVG/SVGPointList.h"/>
+      <File Name="include/wxSVG/SVGPolygonElement.h"/>
+      <File Name="include/wxSVG/SVGPolylineElement.h"/>
+      <File Name="include/wxSVG/SVGPreserveAspectRatio.h"/>
+      <File Name="include/wxSVG/SVGRadialGradientElement.h"/>
+      <File Name="include/wxSVG/SVGRect.h"/>
+      <File Name="include/wxSVG/SVGRectElement.h"/>
+      <File Name="include/wxSVG/SVGRenderingIntent.h"/>
+      <File Name="include/wxSVG/SVGScriptElement.h"/>
+      <File Name="include/wxSVG/SVGSetElement.h"/>
+      <File Name="include/wxSVG/SVGStopElement.h"/>
+      <File Name="include/wxSVG/SVGStringList.h"/>
+      <File Name="include/wxSVG/SVGStylable.h"/>
+      <File Name="include/wxSVG/SVGStyleElement.h"/>
+      <File Name="include/wxSVG/SVGSVGElement.h"/>
+      <File Name="include/wxSVG/SVGSwitchElement.h"/>
+      <File Name="include/wxSVG/SVGSymbolElement.h"/>
+      <File Name="include/wxSVG/SVGTBreakElement.h"/>
+      <File Name="include/wxSVG/SVGTests.h"/>
+      <File Name="include/wxSVG/SVGTextContentElement.h"/>
+      <File Name="include/wxSVG/SVGTextElement.h"/>
+      <File Name="include/wxSVG/SVGTextPathElement.h"/>
+      <File Name="include/wxSVG/SVGTextPositioningElement.h"/>
+      <File Name="include/wxSVG/SVGTitleElement.h"/>
+      <File Name="include/wxSVG/SVGTransform.h"/>
+      <File Name="include/wxSVG/SVGTransformable.h"/>
+      <File Name="include/wxSVG/SVGTransformList.h"/>
+      <File Name="include/wxSVG/SVGTRefElement.h"/>
+      <File Name="include/wxSVG/SVGTSpanElement.h"/>
+      <File Name="include/wxSVG/SVGUnitTypes.h"/>
+      <File Name="include/wxSVG/SVGURIReference.h"/>
+      <File Name="include/wxSVG/SVGUseElement.h"/>
+      <File Name="include/wxSVG/SVGVideoElement.h"/>
+      <File Name="include/wxSVG/SVGViewElement.h"/>
+      <File Name="include/wxSVG/SVGViewSpec.h"/>
+      <File Name="include/wxSVG/SVGVKernElement.h"/>
+      <File Name="include/wxSVG/SVGZoomAndPan.h"/>
+      <File Name="include/wxSVG/SVGZoomEvent.h"/>
+      <File Name="include/wxSVG/ViewCSS.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="wxSVGXML">
+      <File Name="include/wxSVGXML/svgxml.h"/>
+      <File Name="include/wxSVGXML/svgxmlhelpr.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-std=c++11;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="../../../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../wxSVG/include"/>
+        <IncludePath Value="../wxSVG/include/wxSVG"/>
+        <IncludePath Value="../wxSVG/include/wxSVGXML"/>
+        <IncludePath Value="/usr/include/glib-2.0"/>
+        <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
+        <IncludePath Value="/usr/include/pango-1.0"/>
+        <IncludePath Value="/usr/include/cairo"/>
+        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <Preprocessor Value="__WXGTK__"/>
+        <Preprocessor Value="USE_RENDER_CAIRO"/>
+      </Compiler>
+      <Linker Options="$(shell wx-config --debug=yes --libs --unicode=yes)" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="../../../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../wxSVG/include"/>
+        <IncludePath Value="../wxSVG/include/wxSVG"/>
+        <IncludePath Value="../wxSVG/include/wxSVGXML"/>
+        <IncludePath Value="/usr/include/pango-1.0"/>
+        <IncludePath Value="/usr/include/cairo"/>
+        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="/usr/include/glib-2.0"/>
+        <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
+        <Preprocessor Value="NDEBUG"/>
+        <Preprocessor Value="__WXGTK__"/>
+        <Preprocessor Value="USE_RENDER_CAIRO"/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
