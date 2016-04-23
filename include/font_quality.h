@@ -1,0 +1,4 @@
+#define DEFAULT_QUALITY 0
+#ifndef WIN32
+#define ANTIALIASED_QUALITY 1
+#endif
