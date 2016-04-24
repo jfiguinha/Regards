@@ -1,1 +1,1 @@
-./Debug/RegardsRaw.cpp.o ./Debug/raw.cpp.o
+./Release/RegardsRaw.cpp.o ./Release/raw.cpp.o

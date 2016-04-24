@@ -1,1 +1,1 @@
-./Debug/WindowUtility.cpp.o
+./Release/WindowUtility.cpp.o

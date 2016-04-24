@@ -51,8 +51,8 @@
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O0;-fopenmp;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -92,8 +92,8 @@
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-fopenmp;-std=c++11;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

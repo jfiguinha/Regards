@@ -12,8 +12,8 @@ OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=root
-Date                   :=22/09/15
+User                   :=figuinha
+Date                   :=23/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -36,7 +36,7 @@ ObjectsFileList        :="libSqlEngine.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -99,7 +99,7 @@ $(IntermediateDirectory)/SqlEngine.cpp$(DependSuffix): SqlEngine.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlEngine.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlEngine.cpp$(DependSuffix) -MM "SqlEngine.cpp"
 
 $(IntermediateDirectory)/SqlEngine.cpp$(PreprocessSuffix): SqlEngine.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlEngine.cpp$(PreprocessSuffix) "SqlEngine.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlEngine.cpp$(PreprocessSuffix) "SqlEngine.cpp"
 
 $(IntermediateDirectory)/SqlExecuteRequest.cpp$(ObjectSuffix): SqlExecuteRequest.cpp $(IntermediateDirectory)/SqlExecuteRequest.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libSqlEngine/SqlExecuteRequest.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlExecuteRequest.cpp$(ObjectSuffix) $(IncludePath)
@@ -107,7 +107,7 @@ $(IntermediateDirectory)/SqlExecuteRequest.cpp$(DependSuffix): SqlExecuteRequest
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlExecuteRequest.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlExecuteRequest.cpp$(DependSuffix) -MM "SqlExecuteRequest.cpp"
 
 $(IntermediateDirectory)/SqlExecuteRequest.cpp$(PreprocessSuffix): SqlExecuteRequest.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlExecuteRequest.cpp$(PreprocessSuffix) "SqlExecuteRequest.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlExecuteRequest.cpp$(PreprocessSuffix) "SqlExecuteRequest.cpp"
 
 $(IntermediateDirectory)/SqlLib.cpp$(ObjectSuffix): SqlLib.cpp $(IntermediateDirectory)/SqlLib.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libSqlEngine/SqlLib.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlLib.cpp$(ObjectSuffix) $(IncludePath)
@@ -115,7 +115,7 @@ $(IntermediateDirectory)/SqlLib.cpp$(DependSuffix): SqlLib.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlLib.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlLib.cpp$(DependSuffix) -MM "SqlLib.cpp"
 
 $(IntermediateDirectory)/SqlLib.cpp$(PreprocessSuffix): SqlLib.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlLib.cpp$(PreprocessSuffix) "SqlLib.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlLib.cpp$(PreprocessSuffix) "SqlLib.cpp"
 
 $(IntermediateDirectory)/SqlResult.cpp$(ObjectSuffix): SqlResult.cpp $(IntermediateDirectory)/SqlResult.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libSqlEngine/SqlResult.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlResult.cpp$(ObjectSuffix) $(IncludePath)
@@ -123,7 +123,7 @@ $(IntermediateDirectory)/SqlResult.cpp$(DependSuffix): SqlResult.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlResult.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlResult.cpp$(DependSuffix) -MM "SqlResult.cpp"
 
 $(IntermediateDirectory)/SqlResult.cpp$(PreprocessSuffix): SqlResult.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlResult.cpp$(PreprocessSuffix) "SqlResult.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlResult.cpp$(PreprocessSuffix) "SqlResult.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

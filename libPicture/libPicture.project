@@ -69,8 +69,8 @@
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../Otherlib/RegardsBpg"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="_LINUX"/>
         <Preprocessor Value="LIBRAW"/>
@@ -130,8 +130,8 @@
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../Otherlib/RegardsBpg"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="_LINUX"/>

@@ -64,14 +64,14 @@
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libCompress"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -118,14 +118,14 @@
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libCompress"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

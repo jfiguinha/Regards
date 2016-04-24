@@ -60,12 +60,12 @@
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -109,12 +109,12 @@
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="GLEW_MX"/>

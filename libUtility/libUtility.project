@@ -56,11 +56,11 @@
       <Compiler Options="-g;-O0;-fopenmp;-std=c++11;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -101,11 +101,11 @@
       <Compiler Options="-fopenmp;-std=c++11;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

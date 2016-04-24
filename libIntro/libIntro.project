@@ -59,13 +59,13 @@
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../../libextern/SDL2-2.0.3/include"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
@@ -89,8 +89,8 @@
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../libIntro"/>
         <IncludePath Value="../libWindowMain"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -132,13 +132,13 @@
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../../libextern/SDL2-2.0.3/include"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
@@ -161,8 +161,8 @@
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../libIntro"/>
         <IncludePath Value="../libWindowMain"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

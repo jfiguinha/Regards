@@ -75,13 +75,13 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -128,13 +128,13 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

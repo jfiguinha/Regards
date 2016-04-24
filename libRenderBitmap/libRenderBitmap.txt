@@ -1,1 +1,1 @@
-./Debug/RenderBitmapInterface.cpp.o ./Debug/RenderBitmapInterfaceGDI.cpp.o ./Debug/RenderBitmapInterfaceOpenGL.cpp.o
+./Release/RenderBitmapInterface.cpp.o ./Release/RenderBitmapInterfaceGDI.cpp.o ./Release/RenderBitmapInterfaceOpenGL.cpp.o

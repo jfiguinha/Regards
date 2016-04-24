@@ -56,11 +56,11 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -103,11 +103,11 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

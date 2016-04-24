@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="Regards" Database="" SWTLW="No">
+<CodeLite_Workspace Name="Regards" Database="">
   <Project Name="libPrint" Path="libPrint/libPrint.project"/>
   <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
@@ -29,14 +29,15 @@
   </Environment>
   <Project Name="include" Path="include/include.project"/>
   <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
-  <Project Name="RegardsExplorer" Path="RegardsExplorer/RegardsExplorer.project" Active="No"/>
-  <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="Yes"/>
+  <Project Name="RegardsExplorer" Path="RegardsExplorer/RegardsExplorer.project" Active="Yes"/>
+  <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
   <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project"/>
   <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project"/>
   <Project Name="libEmail" Path="libEmail/libEmail.project"/>
   <Project Name="libExif" Path="libExif/libExif.project"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
@@ -72,6 +73,7 @@
       <Project Name="libExif" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="no">
+      <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>

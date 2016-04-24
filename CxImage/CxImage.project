@@ -103,15 +103,15 @@
     <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O0;-fopenmp;-std=c++11;-Wall;-msse4" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../libextern/libmng-2.0.3"/>
-        <IncludePath Value="../../libextern/jasper-1.900.1/src/libjasper/include"/>
+        <IncludePath Value="../libextern/libmng-2.0.3"/>
+        <IncludePath Value="../libextern/jasper-1.900.1/src/libjasper/include"/>
         <IncludePath Value="../Otherlib/libJbig"/>
         <IncludePath Value="../Otherlib/libPsd"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/jpeg"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/tiff/libtiff"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/png"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/jpeg"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/tiff/libtiff"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/png"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="_LINUX"/>
       </Compiler>
@@ -152,15 +152,15 @@
     <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-fopenmp;-std=c++11;-Wall;-msse4" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../libextern/libmng-2.0.3"/>
-        <IncludePath Value="../../libextern/jasper-1.900.1/src/libjasper/include"/>
+        <IncludePath Value="../libextern/libmng-2.0.3"/>
+        <IncludePath Value="../libextern/jasper-1.900.1/src/libjasper/include"/>
         <IncludePath Value="../Otherlib/libJbig"/>
         <IncludePath Value="../Otherlib/libPsd"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/jpeg"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/tiff/libtiff"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/src/png"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/jpeg"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/tiff/libtiff"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/src/png"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="_LINUX"/>
         <Preprocessor Value="NDEBUG"/>

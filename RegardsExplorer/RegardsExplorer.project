@@ -80,15 +80,15 @@
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../../libextern/SDL2-2.0.3/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
@@ -99,7 +99,7 @@
         <IncludePath Value="../libRenderBitmap"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
@@ -122,11 +122,11 @@
         <Preprocessor Value="GLEW_STATIC"/>
       </Compiler>
       <Linker Options="" Required="yes">
-        <LibraryPath Value="../../../developpement/Framework"/>
-        <LibraryPath Value="../../libextern/wxWidgets-3.0.2/lib"/>
-        <LibraryPath Value="../../libextern/glew-1.13.0/lib"/>
-        <LibraryPath Value="../../libextern/LibRaw-0.17.0/lib"/>
-        <LibraryPath Value="../../libextern/SDL2-2.0.3/build"/>
+        <LibraryPath Value="../libextern/lib"/>
+        <LibraryPath Value="../libextern/wxWidgets-3.0.2/lib"/>
+        <LibraryPath Value="../libextern/glew-1.13.0/lib"/>
+        <LibraryPath Value="../libextern/LibRaw-0.17.0/lib"/>
+        <LibraryPath Value="../libextern/SDL2-2.0.3/build"/>
         <LibraryPath Value="../libPrint/Debug"/>
         <LibraryPath Value="../CxImage/Debug"/>
         <LibraryPath Value="../libSqlite/Debug"/>
@@ -261,7 +261,7 @@
       </Debugger>
       <PreBuild/>
       <PostBuild>
-        <Command Enabled="yes">cp -R ../Regards/Resources ./Debug/Resources</Command>
+        <Command Enabled="yes">cp -R ../Regards/Resources ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -289,13 +289,13 @@
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../../libextern/libRapidXML"/>
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../../libextern/SDL2-2.0.3/include"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/src"/>
-        <IncludePath Value="../../libextern/exiv2-0.24/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
+        <IncludePath Value="../libextern/exiv2-0.24/xmpsdk/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
@@ -306,7 +306,7 @@
         <IncludePath Value="../libRenderBitmap"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../../libextern/glew-1.13.0/include"/>
+        <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
@@ -324,14 +324,14 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="GLEW_MX"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="-s;" Required="yes">
-        <LibraryPath Value="../../../developpement/Framework"/>
+        <LibraryPath Value="../libextern/lib"/>
         <LibraryPath Value="../libPrint/Release"/>
         <LibraryPath Value="../CxImage/Release"/>
         <LibraryPath Value="../libSqlite/Release"/>

@@ -1,1 +1,1 @@
-./Debug/CPCD.cpp.o ./Debug/libPicture.cpp.o ./Debug/ScaleThumbnail.cpp.o
+./Release/CPCD.cpp.o ./Release/libPicture.cpp.o ./Release/ScaleThumbnail.cpp.o

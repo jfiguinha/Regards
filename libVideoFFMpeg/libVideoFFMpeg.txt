@@ -1,1 +1,1 @@
-./Debug/cmdutils.cpp.o ./Debug/ffplaycore.cpp.o ./Debug/ShowVideo.cpp.o ./Debug/SliderVideo.cpp.o ./Debug/VideoControl.cpp.o ./Debug/VideoWindowContext.cpp.o
+./Release/cmdutils.cpp.o ./Release/ffplaycore.cpp.o ./Release/ShowVideo.cpp.o ./Release/SliderVideo.cpp.o ./Release/VideoControl.cpp.o ./Release/VideoWindowContext.cpp.o

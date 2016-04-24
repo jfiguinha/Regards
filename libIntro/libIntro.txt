@@ -1,1 +1,1 @@
-./Debug/IntroTheme.cpp.o ./Debug/MyCentralWindowIntro.cpp.o ./Debug/MyFrameIntro.cpp.o ./Debug/TitleIntro.cpp.o ./Debug/InfoAbout.cpp.o
+./Release/IntroTheme.cpp.o ./Release/MyCentralWindowIntro.cpp.o ./Release/MyFrameIntro.cpp.o ./Release/TitleIntro.cpp.o ./Release/InfoAbout.cpp.o
