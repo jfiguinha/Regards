@@ -1,0 +1,19 @@
+//Uniform input parameters
+#define M_PI 3.14159265358979323846
+
+//Texture
+uniform sampler2D texUnit;
+uniform float fAngle;
+
+void main()
+{
+	float radAngle = M_PI * fAngle / 180.0;
+	float x = gl_TexCoord[0].s;
+	float y = gl_TexCoord[0].t;
+	x = abs(gl_TexCoord[0].s * cos(radAngle) - gl_TexCoord[0].t * sin(radAngle));
+	y = abs(gl_TexCoord[0].s * sin(radAngle) + gl_TexCoord[0].t * cos(radAngle));
+	gl_FragColor = texture2D(texUnit, vec2(x,y));
+}
+
+
+

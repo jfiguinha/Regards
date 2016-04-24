@@ -1,0 +1,27 @@
+uniform uint vecKernel[4];
+uniform uint posx;
+uniform uint posy;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	uint startX = posx;
+	uint endX = startX + vecKernel[2];
+	
+	uint startY = posy;
+	uint endY = startY + vecKernel[3];
+	
+	if(x >= startX && x < endX && y >= startY && y < endY)
+	{
+		vec4 src_color = imageLoad(srcTex, ivec2(x - startX, y - startY));
+		imageStore(destTex, storePos, src_color);
+	}
+	else
+	{
+		imageStore(destTex, storePos, vec4(0.0,0.0,0.0,0.0));
+	}
+}

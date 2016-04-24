@@ -1,0 +1,125 @@
+uniform uint vecKernel[4];
+uniform int color1[4];
+uniform int color2[4];
+uniform float tabFrequence[8];
+uniform float tabAmplitude[8];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+float Noise2d(int x, int y)
+{
+	int n = ((x + (y << 6)) << 13) ^ (x + (y << 6));
+	return (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+double Interpolate(double a, double b, double x)
+{
+	return (a + (x * (b - a)));
+}
+
+float CalculPosValue(int Xint, int Yint)
+{
+	int m = Xint + ((Yint) << 6);
+	int n = (m << 13) ^ (m);
+	return (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0); 
+}
+
+float GetValue(float x, float y) 
+{
+	int Xint = int(x);
+	int Yint = int(y);
+	
+	float Xfrac = x - Xint;
+	float Yfrac = y - Yint;
+
+	float x0y0,x1y0,x0y1,x1y1;
+
+	if(Xint != 0 || Yint != 0)
+	{		
+		x0y0 = CalculPosValue(Xint,Yint);
+		x1y0 = CalculPosValue(Xint+1,Yint);
+		x0y1 = CalculPosValue(Xint,Yint+1);
+		x1y1 = CalculPosValue(Xint+1,Yint+1);
+	}
+	else
+	{	
+		x0y0 = Noise2d(0, 0);
+		x1y0 = Noise2d(1, 0);
+		x0y1 = Noise2d(0, 1);
+		x1y1 = Noise2d(1, 1);		
+	}
+
+	//interpolate between those values according to the x and y fractions
+	float v1 = (x0y0 + (Xfrac * (x1y0 - x0y0)));
+	float v2 = (x0y1 + (Xfrac * (x1y1 - x0y1)));
+	float fin = (v1 + (Yfrac * (v2 - v1)));
+
+	return fin;
+}
+
+
+float FinalNoise(float x, float y) 
+{
+	//properties of the perlin noise
+	float P = 0.5f;
+	int octaves = 4;
+
+	//properties of one octave (changing each loop)
+	float total = 0.0f;
+	int freq = 1;
+	float pers = 1;
+
+	for(int i=0; i<octaves; i++) 
+	{
+		total += GetValue(x*freq,y*freq) * pers;
+		freq *= 2;
+		pers *= P;
+	}
+	return total;
+}
+
+float Smooth_Noise(int x, int y) 
+{
+		float corners = ( Noise2d(x-1, y-1) + Noise2d(x+1, y-1) + Noise2d(x-1, y+1) + Noise2d(x+1, y+1) ) / 16.0;
+		float sides = ( Noise2d(x-1, y) + Noise2d(x+1, y) + Noise2d(x, y-1) + Noise2d(x, y+1) ) / 8.0;
+		float center = Noise2d(x, y) / 4.0;
+		return corners + sides + center;
+}
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	uint octaves = 8;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		float total = 0.0f;
+		float total1 = 0.0f;
+		float total2 = 0.0f;
+		float total3 = 0.0f;
+		float total4 = 0.0f;		
+		
+		for(uint k=0; k < octaves; k+=4) 
+		{
+			total1 = GetValue(x*tabFrequence[k], y*tabFrequence[k]) * tabAmplitude[k];					
+			total2 = GetValue(x*tabFrequence[k+1], y*tabFrequence[k+1]) * tabAmplitude[k+1];
+			total3 = GetValue(x*tabFrequence[k+2], y*tabFrequence[k+2]) * tabAmplitude[k+2];
+			total4 = GetValue(x*tabFrequence[k+3], y*tabFrequence[k+3]) * tabAmplitude[k+3];
+			total += total1 + total2 + total3 + total4;
+		}
+
+		total = total*0.5f + 0.5f;
+
+		if(total<0) 
+			total = 0.0f;
+		if(total>1) 
+			total = 1.0f;
+
+		float red = (float(color1[0]) / 255.0) * total + (float(color2[0]) / 255.0) * (1-total);
+		float green = (float(color1[1]) / 255.0) * total + (float(color2[1]) / 255.0) * (1-total);
+		float blue = (float(color1[2]) / 255.0) * total + (float(color2[2]) / 255.0) * (1-total);
+	
+		imageStore(destTex, storePos, vec4(red, green, blue, 0.0));
+	}
+}

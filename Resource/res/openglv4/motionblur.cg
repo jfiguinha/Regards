@@ -1,0 +1,50 @@
+uniform uint vecKernel[4];
+uniform float radius;
+uniform float sigma;
+uniform float angle;
+uniform uint kernelWidth;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+layout (binding=2, r32f) readonly uniform image1D kernelTex;
+
+float CalculOffsetX(int position, float x, float y)
+{
+	return float(position)*x/sqrt(x*x+y*y);
+}
+
+float CalculOffsetY(int position, float x, float y)
+{
+	return float(position)*y/sqrt(x*x+y*y);
+}
+
+void main(void)
+{																	  	
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	uint width = vecKernel[0];
+	uint height = vecKernel[1];
+	float radians = angle * 0.017453292519943;
+	float cosine = cos(radians);
+	float sine = sin(radians);
+	
+	//blur_image->storage_class=DirectClass;
+	float posX = float(kernelWidth)*sine;
+	float posY = float(kernelWidth)*cosine;	
+	
+	vec4 outputColor = vec4(0.0,0.0,0.0,0.0);
+	
+	for (int i=0; i < kernelWidth; i++)
+	{
+		uint u = x + uint(CalculOffsetX(i,posX, posY));
+		uint v = y + uint(CalculOffsetY(i,posX, posY));	
+		
+		if((u >= 0) || (u < width) || (v >= 0) || (v < height))
+		{
+			vec4 color = imageLoad(srcTex, ivec2(u,v));
+			float kernel = imageLoad(kernelTex, i);
+			outputColor += vec4(kernel,kernel,kernel,1.0) * color;
+		}
+	}
+	imageStore(destTex, storePos, outputColor);
+}

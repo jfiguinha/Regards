@@ -1,0 +1,18 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main()
+{
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		uint ydiff = vecKernel[1] - y - 1;
+		vec4 val = imageLoad(srcTex, ivec2(x,y));
+		imageStore(destTex, ivec2(x,ydiff), val);
+	}
+}
+
+
+

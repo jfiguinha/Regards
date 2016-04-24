@@ -1,0 +1,172 @@
+uniform sampler2D videoFrameY;
+uniform sampler2D videoFrameUV;
+
+uniform float fWidth;
+uniform float fHeight;
+uniform float fWidthOutput;
+uniform float fHeightOutput;
+uniform float fAngle;
+uniform int   flipV; 
+uniform int   flipH;
+uniform int	  BicubicEnable;
+
+//----------------------------------------------------
+// Conversion du NV12 vers du 32 bits
+//----------------------------------------------------
+vec4 GetColorFromNV12(vec2 TexCoord)
+{
+	if(TexCoord.x < fWidth && TexCoord.y < fHeight && TexCoord.y >= 0 && TexCoord.x >= 0)	
+	{
+		vec4 color;
+		float crv = 104597.0f;
+		float cbu = 132201.0f;
+		float cgu = 25675.0f;  
+		float cgv = 53279.0f;
+		
+		float y = texture2D(videoFrameY, TexCoord).r * 255.0f;
+		float u = texture2D(videoFrameUV, TexCoord).r * 255.0f;
+		float v = texture2D(videoFrameUV, TexCoord).a * 255.0f;
+
+		float c1 = (v-128.0f) * crv;
+		float c2 = (u-128.0f) * cgu;
+		float c3 = (v-128.0f) * cgv;
+		float c4 = (u-128.0f) * cbu;
+		
+		float y1 = 76309*(y-16);
+		float r = ((y1 + c1) / 65536.0f) / 255.0f;
+		float g = ((y1 - c2 - c3) / 65536.0f) / 255.0f;
+		float b = ((y1 + c4) / 65536.0f) / 255.0f;
+		
+		if(r < 0.0)
+			r = 0.0;
+		if(r > 1.0)
+			r = 1.0;
+
+		if(g < 0.0)
+			g = 0.0;
+		if(g > 1.0)
+			g = 1.0;
+			
+		if(b < 0.0)
+			b = 0.0;
+		if(b > 1.0)
+			b = 1.0;		
+		
+		return vec4(r,g,b,1.0f);
+	}
+	
+	return vec4(0.0f,0.0f,0.0f,0.0f);
+}
+
+
+float Cubic( float f )
+{
+	if (f < -2.0)
+		return(0.0);
+	if (f < -1.0)
+		return((2.0+f)*(2.0+f)*(2.0+f)/6.0);
+	if (f < 0.0)
+		return((4.0+f*f*(-6.0-3.0*f))/6.0);
+	if (f < 1.0)
+		return((4.0+f*f*(-6.0+3.0*f))/6.0);
+	if (f < 2.0)
+		return((2.0-f)*(2.0-f)*(2.0-f)/6.0);
+	return(0.0);
+}
+
+vec4 BiCubic(vec2 TexCoord)
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+    vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+    float a = fract( TexCoord.x * fWidth ); // get the decimal part
+    float b = fract( TexCoord.y * fHeight ); // get the decimal part
+
+	int nX = int(TexCoord.x * fWidth);
+	int nY = int(TexCoord.y * fHeight);
+	vec2 TexCoord1 = vec2( float(nX) / fWidth + 0.5 / fWidth,
+					       float(nY) / fHeight + 0.5 / fHeight );
+
+    for( int m = -1; m <=2; m++ )
+    {
+        for( int n =-1; n<= 2; n++)
+        {
+			vec4 vecData = GetColorFromNV12(TexCoord1 + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
+			float f  = Cubic( float( m ) - a );
+			vec4 vecCooef1 = vec4( f,f,f,f );
+			float f1 = Cubic( -( float( n ) - b ) );
+			vec4 vecCoeef2 = vec4( f1, f1, f1, f1 );
+            nSum = nSum + ( vecData * vecCoeef2 * vecCooef1  );
+            nDenom = nDenom + (( vecCoeef2 * vecCooef1 ));
+        }
+    }
+    return nSum / nDenom;
+}
+
+vec4 TextureBiCubicPosValue(float posX, float posY, float xDiff, float yDiff)
+{
+	float texelSizeX = 1.0 / fWidthOutput; //size of one texel 
+	float texelSizeY = 1.0 / fHeightOutput; //size of one texel 
+	vec2 resolution = vec2(texelSizeX, texelSizeY); 
+	if(BicubicEnable)
+		return BiCubic(vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+	else
+	{
+		vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+		vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+		vec2 TexCoord = vec2(posX,posY) + resolution * vec2(xDiff, yDiff);
+		float a = fract( TexCoord.x * fWidth ); // get the decimal part
+		float b = fract( TexCoord.y * fHeight ); // get the decimal part
+
+		int nX = int(TexCoord.x * fWidth);
+		int nY = int(TexCoord.y * fHeight);
+		vec2 TexCoord1 = vec2( float(nX) / fWidth + 0.5 / fWidth,
+							   float(nY) / fHeight + 0.5 / fHeight );
+		return GetColorFromNV12(TexCoord1 + vec2(texelSizeX, texelSizeY));
+	}
+}
+
+
+
+// Shader for interpolating Bi cubic in Triangular method.
+void main()
+{
+	vec4 temp;	
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t;
+
+	if(flipV == 1)
+	{
+		posY = 1.0 - posY;
+	}
+	
+	if(flipH == 1)
+	{
+		posX = 1.0 - posX;
+	}	
+	
+	if(fAngle == 90.0)
+	{
+		float x = gl_TexCoord[0].s;
+		float y = 1.0 - gl_TexCoord[0].t;	
+		posX = y;
+		posY = x;
+	}
+	else if(fAngle == 180.0)
+	{
+		posX = 1.0 - posX;
+		posY = 1.0 - posY;
+	}
+	else if(fAngle == 270.0)
+	{
+		float x = 1.0 - gl_TexCoord[0].s;
+		float y = gl_TexCoord[0].t;	
+		posX = y;
+		posY = x;
+
+	}
+	
+	vec4 data = TextureBiCubicPosValue(posX, posY, 0.0, 0.0);
+	gl_FragColor = data;
+}

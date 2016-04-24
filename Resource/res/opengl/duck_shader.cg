@@ -1,0 +1,172 @@
+/* DuckShader */
+
+
+/* Configuration */
+
+/* Unsharp Mask */
+#define SHARPEN_ENABLE
+#define SHARPNESS 1.5
+
+/* Filmic Tonemapping */
+#define TONEMAP_ENABLE
+#define CONTRAST 1.5
+#define EXPOSURE 1.5
+#define BRIGHTNESS 2.25
+
+/* Color Boost */
+#define COLOR_BOOST_ENABLE
+#define RED_BOOST 1.0
+#define GREEN_BOOST 1.0
+#define BLUE_BOOST 1.0
+
+/* Skylight bevel */
+#define BEVEL_SHADER_ENABLE
+#define SKY_COLOR    vec3(0.1, 0.1, 0.5)
+#define BASE_COLOR   vec3(0.0, 0.0, 0.1)
+#define GROUND_COLOR vec3(0.1, 0.4, 0.1)
+#define SKYLIGHT_AMOUT 0.5
+
+/* Color Compliment Bias */
+#define COMPLIMENT_ENABLE
+#define COMPLIMENT_GUIDE vec3(1.0, 0.79, 0.43)
+#define COMPLIMENT_AMOUNT 0.5
+#define COMPLIMENT_CORRELATION 0.5
+#define COMPLIMENT_CONCENTRATION 1.5
+
+/* Vignetting */
+#define VIGNETTE_ENABLE
+#define VIGNETTE_STRENGTH 2.0
+#define VIGNETTE_OFFSET 0.5
+#define VIGNETTE_CONSTRAST 2.0
+
+/* Code */
+
+uniform sampler2D samp9;
+
+out vec4 ocol0;
+in vec2 uv0;
+
+uniform vec4 resolution;
+
+vec3 filmic_map(vec3 c) {
+  return ((c*(0.15*c+0.10*0.50)+0.20*0.02)/(c*(0.15*c+0.50)+0.20*0.30))-0.02/0.30;
+}
+
+vec3 pow3(vec3 c, float a) {
+  c.x = pow(c.x, a);
+  c.y = pow(c.y, a);
+  c.z = pow(c.z, a);
+  return c;
+}
+
+float rgbcv_to_hue(vec3 rgb, float c, float v) {
+    vec3 delta = (v - rgb) / c;
+    delta.rgb -= delta.brg;
+    delta.rgb += vec3(2.0, 4.0, 6.0);
+    delta.brg = step(v, rgb) * delta.brg;
+    float h = max(delta.r, max(delta.g, delta.b));
+    return frac(h / 6);
+}
+ 
+vec3 rgb_to_hsv(vec3 rgb) {
+    vec3 hsv = vec3(0.0, 0.0, max(rgb.r, max(rgb.g, rgb.b)));
+    float c = hsv.z - min(rgb.r, min(rgb.g, rgb.b));
+    if (c != 0) {
+        hsv.x = rgbcv_to_hue(rgb, c, hsv.z);
+        hsv.y = c / hsv.z;
+    }
+    return hsv;
+}
+ 
+vec3 hue_to_rgb(float h) {
+    float r = abs(h * 6 - 3) - 1;
+    float g = 2 - abs(h * 6 - 2);
+    float b = 2 - abs(h * 6 - 4);
+    return clamp(vec3(r, g, b), 0.0, 1.0);
+}
+ 
+vec3 hsv_to_rgb(vec3 hsv) {
+    vec3 rgb = hue_to_rgb(hsv.x);
+    return ((rgb - 1) * hsv.y + 1) * hsv.z;
+}
+ 
+vec3 hsv_complement(vec3 hsv) {
+    vec3 complement = hsv;
+    complement.x -= 0.5;
+    if (complement.x < 0.0) { complement.x += 1.0; }
+    return complement;
+}
+ 
+float hue_mix(float h1, float h2, float v) {
+    float d = abs(h1 - h2);
+    if (d <= 0.5) {
+        return mix(h1, h2, v);
+    } else if (h1 < h2) {
+        return frac(mix((h1 + 1.0), h2, v));
+    } else {
+        return frac(mix(h1, (h2 + 1.0), v));
+    }
+}
+
+void main() {
+  vec3 curr = texture(samp9, uv0).xyz;
+  
+#ifdef SHARPEN_ENABLE
+  vec3 s0 = texture(samp9, uv0 + (resolution.zw * vec2(-1.0, -1.0))).xyz;
+  vec3 s1 = texture(samp9, uv0 + (resolution.zw * vec2( 1.0, -1.0))).xyz;
+  vec3 s2 = texture(samp9, uv0 + (resolution.zw * vec2(-1.0,  1.0))).xyz;
+  vec3 s3 = texture(samp9, uv0 + (resolution.zw * vec2( 1.0,  1.0))).xyz;
+  vec3 blur = (curr + s0 + s1 + s2 + s3) / 5;
+  curr = curr + (curr - blur) * SHARPNESS;
+#endif
+  
+#ifdef BEVEL_SHADER_ENABLE
+  float mid = dot(curr, vec3(0.33, 0.33, 0.33));
+  float top = dot(texture(samp9, uv0 + (resolution.zw * vec2(0.0,  1.0))).xyz, vec3(0.33, 0.33, 0.33));
+  float bot = dot(texture(samp9, uv0 + (resolution.zw * vec2(0.0, -1.0))).xyz, vec3(0.33, 0.33, 0.33));
+  float upw = ((top - mid) + (mid - bot)) / 4 + 0.5;
+  vec3  col = mix(SKY_COLOR, GROUND_COLOR, upw);
+  vec3 shde = mix(BASE_COLOR, col, clamp(abs(upw * 2.0 - 1.0) * 1, 0.0, 1.0));
+  curr = curr + shde * SKYLIGHT_AMOUT;
+#endif
+
+#ifdef TONEMAP_ENABLE
+  vec3 bloomed = filmic_map(pow3(curr, CONTRAST) * EXPOSURE);
+  curr = clamp(bloomed * (1.0 / filmic_map(vec3(11.2,11.2,11.2))) * BRIGHTNESS, 0.0, 1.0);
+#endif
+  
+#ifdef VIGNETTE_ENABLE
+  float vignet = pow(max(distance(vec2(0.5, 0.5), uv0) * VIGNETTE_STRENGTH - VIGNETTE_OFFSET, 0.0), VIGNETTE_CONSTRAST);
+  curr = curr * (1.0 / (vignet + 1.0));
+#endif
+  
+#ifdef COMPLIMENT_ENABLE
+  vec3 curr_hsv  = rgb_to_hsv(curr);
+  vec3 hue_pole1 = rgb_to_hsv(COMPLIMENT_GUIDE);
+  vec3 hue_pole2 = hsv_complement(hue_pole1);
+  
+  float dist1 = abs(curr_hsv.x - hue_pole1.x); if (dist1 > 0.5) dist1 = 1.0 - dist1;
+  float dist2 = abs(curr_hsv.x - hue_pole2.x); if (dist2 > 0.5) dist2 = 1.0 - dist2;
+  float descent = smoothstep(0, COMPLIMENT_CORRELATION, curr_hsv.y);
+  
+  vec3 output_hsv = curr_hsv;
+  if (dist1 < dist2) {
+    float c = descent * COMPLIMENT_AMOUNT * (1.0 - pow((dist1 * 2.0), 1.0 / COMPLIMENT_CONCENTRATION));
+    output_hsv.x = hue_mix(curr_hsv.x, hue_pole1.x, c);
+    output_hsv.y = mix(curr_hsv.y, hue_pole1.y, c);
+  } else {
+    float c = descent * COMPLIMENT_AMOUNT * (1.0 - pow((dist2 * 2.0), 1.0 / COMPLIMENT_CONCENTRATION));
+    output_hsv.x = hue_mix(curr_hsv.x, hue_pole2.x, c);
+    output_hsv.y = mix(curr_hsv.y, hue_pole2.y, c);
+  }
+  
+  curr = hsv_to_rgb(output_hsv);
+#endif
+  
+#ifdef COLOR_BOOST_ENABLE
+  curr = curr * vec3(RED_BOOST, GREEN_BOOST, BLUE_BOOST);
+#endif
+  
+  /* Done */
+  ocol0 = vec4(curr, 1.0);
+}

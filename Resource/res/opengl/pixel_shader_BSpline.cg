@@ -1,0 +1,64 @@
+uniform sampler2D ImageTexture;
+
+uniform float fWidth;
+uniform float fHeight;
+
+// Function returns a floating point value between 0 and 1.
+// This function returns higher value for nearest values of 0.
+// And returns lower values for far values( near to 1 ).
+float BSpline( float x )
+{
+	float f = x;
+	if( f < 0.0 )
+	{
+		f = -f;
+	}
+
+	if( f >= 0.0 && f <= 1.0 )
+	{
+		return ( 2.0 / 3.0 ) + ( 0.5 ) * ( f* f * f ) - (f*f);
+	}
+	else if( f > 1.0 && f <= 2.0 )
+	{
+		return 1.0 / 6.0 * pow( ( 2.0 - f  ), 3.0 );
+	}
+	return 1.0;
+}
+vec4 BiCubic( sampler2D textureSampler, vec2 TexCoord )
+{
+    float texelSizeX = 1.0 / fWidth; //size of one texel 
+    float texelSizeY = 1.0 / fHeight; //size of one texel 
+    vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+    float a = fract( TexCoord.x * fWidth ); // get the decimal part
+    float b = fract( TexCoord.y * fHeight ); // get the decimal part
+	int nX = int(TexCoord.x * fWidth);
+	int nY = int(TexCoord.y * fHeight);
+	vec2 TexCoord1 = vec2( float(nX) / fWidth + 0.5 / fWidth,
+					       float(nY) / fHeight + 0.5 / fHeight );
+
+    for( int m = -1; m <=2; m++ )
+    {
+        for( int n =-1; n<= 2; n++)
+        {
+			vec4 vecData = texture2D(textureSampler, TexCoord1 + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
+			float f  = BSpline( float( m ) - a );
+			vec4 vecCooef1 = vec4( f,f,f,f );
+			float f1 = BSpline( -( float( n ) - b ) );
+			vec4 vecCoeef2 = vec4( f1, f1, f1, f1 );
+            nSum = nSum + ( vecData * vecCoeef2 * vecCooef1  );
+            nDenom = nDenom + (( vecCoeef2 * vecCooef1 ));
+        }
+    }
+    return nSum / nDenom;
+}
+
+// Shader for creating Bi-Cubic interpolation with nearest 16 texel data.
+// This shader uses B Spline method for interpolation.
+void main()
+{
+	vec4 Data = BiCubic( ImageTexture, gl_TexCoord[0].st );
+	gl_FragColor = Data;
+;
+}
+

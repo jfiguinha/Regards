@@ -1,0 +1,35 @@
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+uniform float sharpness;
+
+vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	vec2 resolution = vec2(texelSizeX, texelSizeY); 
+	return texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+}
+
+void main(void)
+{			
+	vec4 sum;
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t;
+	vec4 data = TextureValue(posX, posY, 0.0, 0.0);
+	
+	sum = TextureValue(posX, posY, -1.0, -1.0);
+	sum += TextureValue(posX, posY, 0.0, -1.0);
+	sum += TextureValue(posX, posY, 1.0, -1.0);
+	sum += TextureValue(posX, posY, -1.0, 0.0);
+	sum += data;
+	sum += TextureValue(posX, posY, 1.0, 0.0);
+	sum += TextureValue(posX, posY, -1.0, 1.0);
+	sum += TextureValue(posX, posY, 0.0, 1.0);
+	sum += TextureValue(posX, posY, 1.0, 1.0);
+	
+	vec4 blur = sum / vec4(9.0,9.0,9.0,9.0);
+	data = data + (data - blur) * sharpness;	
+	gl_FragColor = data;
+
+}

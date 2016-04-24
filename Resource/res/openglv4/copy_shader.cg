@@ -1,0 +1,10 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	vec4 src_color = imageLoad(srcTex, storePos);
+	imageStore(destTex, storePos, src_color);
+}

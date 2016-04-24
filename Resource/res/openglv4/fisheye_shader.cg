@@ -1,0 +1,50 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+const float PI = 3.1415926535;
+
+vec4 FishEye(uint x, uint y)
+{
+  float aperture = 178.0;
+  float apertureHalf = 0.5 * aperture * (PI / 180.0);
+  float maxFactor = sin(apertureHalf);
+  
+  ivec2 uv;
+  vec2 xy = 2.0 * vec2(x,y) - 1.0;
+  float d = length(xy);
+  if (d < (2.0-maxFactor))
+  {
+	d = length(xy * maxFactor);
+	float z = sqrt(1.0 - d * d);
+	float r = atan(d, z) / PI;
+	float phi = atan(xy.y, xy.x);
+
+	uv.x = uint(r * cos(phi) + 0.5);
+	uv.y = uint(r * sin(phi) + 0.5);
+  }
+  else
+  {
+	uv.x = x;
+	uv.y = y;
+  }
+  
+  return imageLoad(srcTex, ivec2(uv.x, uv.y));
+}
+
+void main (void)
+{
+	//vec2 uv = gl_TexCoord[0].st;
+	//gl_FragColor = PostFX(tex0, uv, time);
+
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 color = FishEye(x,y);
+		imageStore(destTex, storePos, color);
+	}
+
+
+}

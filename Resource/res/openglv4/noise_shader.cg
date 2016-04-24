@@ -1,0 +1,30 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+float rand(vec2 n)
+{
+  return 0.2 * fract(sin(dot(n.xy, vec2(12.9898, 78.233)))* 43758.5453);
+}
+
+float Noise2d(int x, int y)
+{
+	int n = ((x + (y << 6)) << 13) ^ (x + (y << 6));
+	return 0.2 * (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+}
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 src_color = imageLoad(srcTex, storePos);
+		float n =  Noise2d(int(x),int(y));
+		float red = max(0.0,min(1.0,src_color.r + n));
+		float green = max(0.0,min(1.0,src_color.g + n));
+		float blue = max(0.0,min(1.0,src_color.b + n));
+		imageStore(destTex, storePos, vec4(red, green, blue, src_color.a));
+	}
+}

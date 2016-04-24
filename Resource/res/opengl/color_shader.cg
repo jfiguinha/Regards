@@ -1,0 +1,25 @@
+// Image texture.
+uniform sampler2D texUnit;
+
+// Width of Image.
+uniform float fWidth;
+// Height of Image.
+uniform float fHeight;
+
+uniform float vecColor[3];
+uniform float intensity;
+
+void main(void)
+{																   
+	 //------------------------------------------------------------
+	 //Variable													   
+	 //------------------------------------------------------------
+	 vec2 tex_coord = vec2(gl_TexCoord[0].s, gl_TexCoord[0].t);
+	 vec4 src_color = texture2D(texUnit, tex_coord).rgba;
+	 float red = (src_color.r * (1.0 - intensity)) + ((vecColor[0] / 255.0) * intensity);
+	 float green = (src_color.g * (1.0 - intensity))+ ((vecColor[1] / 255.0)* intensity);
+	 float blue = (src_color.b * (1.0 - intensity)) + ((vecColor[2] / 255.0)* intensity);
+	 gl_FragColor = vec4(red, green, blue, src_color.a);
+
+}
+

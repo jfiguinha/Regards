@@ -1,0 +1,27 @@
+//Uniform input parameters
+//The size of the tiles
+uniform float fTileSize;
+//Texture
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+
+void main()
+{
+  float texelSizeX = 1.0 / fWidth; //size of one texel 
+  float texelSizeY = 1.0 / fHeight; //size of one texel 
+
+  float w = fTileSize * texelSizeX;
+  float h = fTileSize * texelSizeY;
+
+  float s = floor(gl_TexCoord[0].s / w);
+  float t = floor(gl_TexCoord[0].t / h);
+
+  vec2 texCoord = vec2(s * w, t * h);
+  
+  gl_FragColor = texture2D(texUnit, texCoord);
+
+}
+
+
+

@@ -1,0 +1,50 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+// Swirl effect parameters
+uniform float radius;
+uniform float angleDegree;
+
+vec4 PostFX(uint x, uint y)
+{
+  //ivec2 texSize = ivec2(vecKernel[0], vecKernel[1]);
+  //ivec2 tc = storePos * texSize;
+  
+  //Calcul du centre
+  vec2 center = vec2(vecKernel[0] / 2, vecKernel[1] / 2);
+  vec2 tc = vec2(int(x), int(y));
+  
+  float angle = radians(angleDegree);
+  
+  tc -= center;
+  float dist = length(tc);
+  if (dist < radius) 
+  {
+    float percent = (radius - dist) / radius;
+    float theta = percent * percent * angle * 8.0;
+    float s = sin(theta);
+    float c = cos(theta);
+    tc = vec2(dot(tc, vec2(c, -s)), dot(tc, vec2(s, c)));
+  }
+  tc += center;
+  
+  return imageLoad(srcTex, ivec2(uint(tc.x), uint(tc.y)));
+}
+
+void main (void)
+{
+	//vec2 uv = gl_TexCoord[0].st;
+	//gl_FragColor = PostFX(tex0, uv, time);
+
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 color = PostFX(x,y);
+		imageStore(destTex, storePos, color);
+	}
+
+
+}

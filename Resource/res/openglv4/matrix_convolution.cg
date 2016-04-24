@@ -1,0 +1,48 @@
+uniform uint vecKernel[4];
+uniform float Koffset;
+uniform float Kfactor;
+uniform float vecMatrix[9];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+ 		float r = 0;
+		float g = 0;
+		float b = 0;
+		float a = 0;
+		uint i = 0;
+
+		for(int y = -1;y < 2; y++)
+		{
+			int posY = int(gl_GlobalInvocationID.y) + y;
+			if(posY >= 0 && posY < vecKernel[1])
+			{
+				for(int x = -1;x < 2; x++)
+				{
+					int posX = int(gl_GlobalInvocationID.x) + x;		
+					if(posX >= 0 && posX < vecKernel[0])
+					{
+						uint i = 3 * (y+1) + (x + 1);
+						vec4 src_color = imageLoad(srcTex, ivec2(uint(posX),uint(posY)));		
+						r += src_color.r * vecMatrix[i];
+						g += src_color.g * vecMatrix[i];
+						b += src_color.b * vecMatrix[i];
+						a += src_color.a * vecMatrix[i];
+					}
+				}
+			}
+		}
+
+		r = min((r / Kfactor),1.0) + Koffset;
+		g = min((g / Kfactor),1.0) + Koffset;
+		b = min((b / Kfactor),1.0) + Koffset;
+		a = min((a / Kfactor),1.0) + Koffset;
+		imageStore(destTex, storePos, vec4(r,g,b,a));
+	}
+}

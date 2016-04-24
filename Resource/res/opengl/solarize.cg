@@ -1,0 +1,47 @@
+uniform sampler2D textureScreen;
+uniform float threshold;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float left;
+uniform float top;
+
+void main(void)
+{	
+
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t; 
+	float texelSizeX = 1.0 / widthScreen; //size of one texel 
+	float texelSizeY = 1.0 / heightScreen; //size of one texel 
+	float leftPos = left * texelSizeX;
+	float topPos = top * texelSizeY;
+	float rightPos = (widthScreen - left) * texelSizeX;
+	float bottomPos = (heightScreen - top) * texelSizeY;
+	vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
+	
+	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
+	{															   
+		 //------------------------------------------------------------
+		 //Variable													   
+		 //------------------------------------------------------------
+		 
+		 
+		float color = threshold / 255.0; 
+		float red = src_color.r;
+		float green = src_color.g;
+		float blue = src_color.b;
+		
+		if (red > color)
+			red = 1.0 - red;
+			
+		if (green > color)
+			green = 1.0 - green;
+
+		if (blue > color)
+			blue = 1.0 - blue;
+
+		src_color = vec4(red, green, blue, src_color.a);
+	}
+	gl_FragColor = src_color;
+
+}
+

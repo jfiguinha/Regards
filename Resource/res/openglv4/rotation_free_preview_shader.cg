@@ -1,0 +1,151 @@
+uniform uint vecKernel[4];
+uniform float angle;
+uniform float widthTemp;
+uniform float heightTemp;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+int CalculXPos(int x, int y)
+{
+	float radians = angle * 0.017453292519943;
+	float cosine = cos(radians);
+	float sine = sin(radians);
+	return int(float(x) * cosine - float(y) * sine);
+}
+
+int CalculYPos(int x, int y)
+{
+	float radians = angle * 0.017453292519943;
+	float cosine = cos(radians);
+	float sine = sin(radians);
+	return int(float(x) * sine + float(y) * cosine);
+}
+
+vec4 GetColorPosition(uint x, uint y)
+{
+	uint width = uint(widthTemp);
+	uint height = uint(heightTemp);
+	uint widthsrc = vecKernel[2];
+	uint heightsrc = vecKernel[3];
+
+	int depx = (int(widthsrc) - int(width)) / 2;
+	int depy = (int(heightsrc) - int(height)) / 2;
+	
+	int origineX = int(widthsrc / 2);
+	int origineY = int(heightsrc / 2);
+	
+	int newX = int(x) - origineX + depx ;
+	int newY = int(y) - origineY + depy;
+	
+	int sourcex = CalculXPos(newX,newY) + origineX;
+	int sourcey = CalculYPos(newX,newY) + origineY;
+
+	if(sourcex >= 0 || sourcex < vecKernel[2] || sourcey >= 0 || sourcey < vecKernel[3])
+	{
+		return imageLoad(srcTex, ivec2(uint(sourcex), uint(sourcey)));
+	}	
+	return vec4(0.0,0.0,0.0,0.0);
+}
+
+float Cubic( float f )
+{
+	if (f < -2.0 || f > 2.0)
+		return(0.0);
+	else if (f < -1.0)
+		return((2.0+f)*(2.0+f)*(2.0+f)/6.0);
+	else if (f < 0.0)
+		return((4.0+f*f*(-6.0-3.0*f))/6.0);
+	else if (f < 1.0)
+		return((4.0+f*f*(-6.0+3.0*f))/6.0);
+	else if (f < 2.0)
+		return((2.0-f)*(2.0-f)*(2.0-f)/6.0);
+	return(0.0);
+}
+
+vec4 BiCubic(float x, float y)
+{
+	vec4 nDenom = vec4(0.0,0.0,0.0,0.0);
+	vec4 nSum = vec4(0.0,0.0,0.0,0.0);
+	uint valueA = uint(x);
+	uint valueB = uint(y);
+	float realA = x - valueA;
+	float realB = y - valueB;
+	
+	for (int n = -1; n <= 1; n++)
+	{
+		uint posY = valueB + n;	
+		float f1 = Cubic(-(float(n) - realB));
+		for (int m = -1; m <= 1; m++)
+		{
+			uint posX = valueA + m;			
+			float f = Cubic(float(m) - realA);
+			f *= f1;
+			nDenom += vec4(f,f,f,f);
+			nSum += GetColorPosition(posX, posY)*vec4(f,f,f,f);
+		}
+	}
+    return nSum / nDenom;
+}
+
+float CalculRatio()
+{
+	float xMax = float(vecKernel[2]);
+	float yMax = float(vecKernel[3]);
+	
+	//Interpolation
+	float newRatio = 1.0;
+	if (widthTemp > heightTemp)
+	{
+		newRatio = xMax / widthTemp;
+	}
+	else
+	{
+		newRatio = yMax / heightTemp;
+	}
+	
+	if ((heightTemp * newRatio) > yMax)
+	{
+		newRatio = yMax / heightTemp;
+	}
+	else if((widthTemp * newRatio) > xMax)
+	{
+		newRatio = xMax / widthTemp;
+	}
+
+	return newRatio;
+}
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	
+	float newRatio = CalculRatio();
+	uint width = uint(widthTemp * newRatio);
+	uint height = uint(heightTemp * newRatio);	
+
+	uint xStart = max(0,(vecKernel[0] - width) / 2);
+	uint yStart = max(0,(vecKernel[1] - height) / 2);	
+	uint xEnd = xStart + width;
+	uint yEnd = yStart + height;
+	
+	if(x >= xStart && x < xEnd && y >= yStart && y < yEnd)
+	{
+		uint widthIn = uint(widthTemp);
+		uint heightIn = uint(heightTemp);	
+		
+		float ratioX = float(widthIn) / float(width);
+		float ratioY = float(heightIn) / float(height);	
+		
+		float posX = float(x - xStart) * ratioX;
+		float posY = float(y - yStart) * ratioY;
+		
+		imageStore(destTex, storePos, BiCubic(posX, posY));
+	}
+	else
+	{
+		imageStore(destTex, storePos, vec4(0.0,0.0,0.0,0.0));
+	}
+}
+

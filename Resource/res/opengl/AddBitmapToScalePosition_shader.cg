@@ -1,0 +1,88 @@
+uniform sampler2D textureScreen;
+uniform sampler2D textureToAdd;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float textureWidth;
+uniform float textureHeight;
+uniform float bitmapWidth;
+uniform float bitmapHeight;
+uniform float left;
+uniform float top;
+uniform float pictureLeft;
+uniform float pictureTop;
+
+float Cubic( float f )
+{
+	if (f < -2.0)
+		return(0.0);
+	if (f < -1.0)
+		return((2.0+f)*(2.0+f)*(2.0+f)/6.0);
+	if (f < 0.0)
+		return((4.0+f*f*(-6.0-3.0*f))/6.0);
+	if (f < 1.0)
+		return((4.0+f*f*(-6.0+3.0*f))/6.0);
+	if (f < 2.0)
+		return((2.0-f)*(2.0-f)*(2.0-f)/6.0);
+	return(0.0);
+}
+
+vec4 BiCubic( sampler2D textureSampler, vec2 TexCoord)
+{
+	float texelSizeX = 1.0 / textureWidth; //size of one texel 
+	float texelSizeY = 1.0 / textureHeight; //size of one texel 
+    vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+    float a = fract( TexCoord.x * textureWidth ); // get the decimal part
+    float b = fract( TexCoord.y * textureHeight ); // get the decimal part
+
+	int nX = int(TexCoord.x * textureWidth);
+	int nY = int(TexCoord.y * textureHeight);
+	
+
+		
+	vec2 TexCoord1 = vec2( float(nX) / textureWidth + 0.5 / textureWidth,
+					       float(nY) / textureHeight + 0.5 / textureHeight );
+
+    for( int m = -1; m <=2; m++ )
+    {
+        for( int n =-1; n<= 2; n++)
+        {
+			vec4 vecData = texture2D(textureSampler, TexCoord1 + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
+			float f  = Cubic( float( m ) - a );
+			vec4 vecCooef1 = vec4( f,f,f,f );
+			float f1 = Cubic( -( float( n ) - b ) );
+			vec4 vecCoeef2 = vec4( f1, f1, f1, f1 );
+            nSum = nSum + ( vecData * vecCoeef2 * vecCooef1  );
+            nDenom = nDenom + (( vecCoeef2 * vecCooef1 ));
+        }
+    }
+    return nSum / nDenom;
+}
+
+void main(void)
+{			
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t; 
+
+
+	float texelSizeX = 1.0 / widthScreen; //size of one texel 
+	float texelSizeY = 1.0 / heightScreen; //size of one texel 
+	
+	float leftPos = left * texelSizeX;
+	float topPos = top * texelSizeY;
+	float rightPos = (widthScreen - left) * texelSizeX;
+	float bottomPos = (heightScreen - top) * texelSizeY;
+	
+	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
+	{
+		float x = (((posX - leftPos) * widthScreen) / bitmapWidth) + pictureLeft / bitmapWidth;
+		float y = (((posY - topPos) * heightScreen) / bitmapHeight) + pictureTop / bitmapHeight;
+		
+		gl_FragColor = BiCubic(textureToAdd, vec2(x, y));
+	}
+	else
+	{
+		gl_FragColor = texture2D(textureScreen, vec2(posX,posY));
+	}
+
+}

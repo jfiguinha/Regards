@@ -1,0 +1,27 @@
+// dilation
+//
+// maximum of 3x3 kernel
+
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+
+void main(void)
+{
+    vec4 sum = vec4(0.0);;
+    vec4 maxValue = vec4(0.0);
+	float step_w = 1.0/fWidth;
+	float step_h = 1.0/fHeight;  
+	
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, -step_h)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, -step_h)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, -step_h)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, 0.0)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, 0.0)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, 0.0)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, step_h)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, step_h)), maxValue);
+	maxValue = max(texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, step_h)), maxValue);
+	
+    gl_FragColor = maxValue;
+}

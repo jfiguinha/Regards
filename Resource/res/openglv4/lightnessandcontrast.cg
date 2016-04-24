@@ -1,0 +1,53 @@
+uniform uint vecKernel[4];
+uniform float contrast;
+uniform float light;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+vec4 ContrastFilter(vec4 color, float colorContrast)
+{
+	float offset = 128.0;
+	float csupp = colorContrast * ((offset - 250.0) / 255.0) + (125.0 / 255.0);		
+	float contrastValue = colorContrast;
+	return vec4(color.r * contrastValue + csupp, color.g * contrastValue + csupp, color.b * contrastValue + csupp, color.a);
+}
+
+vec4 LightnessFilter(vec4 color)
+{
+	float nChange = (2.55 * light) / 255.0;
+	return vec4(color.r + nChange, color.g + nChange, color.b + nChange, color.a);
+}
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 color;
+		vec4 src_color = imageLoad(srcTex, storePos);
+		if (contrast == 0.0)
+		{
+			color = src_color;
+		}
+		else if (contrast > 0.0)
+		{
+			float offset = contrast;
+			offset /= 100;
+			offset = 1 + offset;
+			color = ContrastFilter(src_color, offset);
+		}
+		else if (contrast < 0.0)
+		{
+			float offset = -contrast;
+			offset /= 100;
+			offset = 1 - offset;
+			color = ContrastFilter(src_color, offset);
+		}
+		
+		color = LightnessFilter(color);
+		
+		imageStore(destTex, storePos, color);
+	}
+}

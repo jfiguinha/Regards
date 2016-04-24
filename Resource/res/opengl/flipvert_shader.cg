@@ -1,0 +1,14 @@
+//Uniform input parameters
+
+//Texture
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+
+void main()
+{
+	gl_FragColor = texture2D(texUnit, vec2(gl_TexCoord[0].s,1.0 - gl_TexCoord[0].t));
+}
+
+
+

@@ -1,0 +1,21 @@
+uniform uint vecKernel[4];
+uniform float red;
+uniform float green;
+uniform float blue;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 src_color = imageLoad(srcTex, storePos);
+		float fred = src_color.r + (red / 255.0);
+		float fgreen = src_color.g + (green / 255.0);
+		float fblue = src_color.b + (blue / 255.0);
+		imageStore(destTex, storePos, vec4(fred, fgreen, fblue, src_color.a));
+	}
+}

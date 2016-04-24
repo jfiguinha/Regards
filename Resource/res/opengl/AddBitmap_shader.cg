@@ -1,0 +1,34 @@
+uniform sampler2D textureScreen;
+uniform sampler2D textureToAdd;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float textureWidth;
+uniform float textureHeight;
+uniform float left;
+uniform float top;
+
+void main(void)
+{			
+	vec4 temp;														  	
+	vec4 kernel[9];
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t;
+	float texelSizeX = 1.0 / widthScreen; //size of one texel 
+	float texelSizeY = 1.0 / heightScreen; //size of one texel 
+	
+	float leftPos = left * texelSizeX;
+	float topPos = top * texelSizeY;
+	float rightPos = (left+textureWidth) * texelSizeX;
+	float bottomPos = (top+textureHeight) * texelSizeY;
+	
+	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
+	{
+		float x = (((posX - leftPos) * widthScreen) / textureWidth);
+		float y = (((posY - topPos) * heightScreen) / textureHeight);
+		gl_FragColor = texture2D(textureToAdd, vec2(x, y));
+	}
+	else
+	{
+		gl_FragColor = texture2D(textureScreen, vec2(posX,posY));
+	}
+}

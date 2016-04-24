@@ -1,0 +1,62 @@
+uniform sampler2D ImageTexture;
+
+uniform float fWidth;
+uniform float fHeight;
+
+uniform float fWidthScreen;
+uniform float fHeightScreen;
+
+
+vec4 Interpolation( sampler2D textureSampler, vec2 TexCoord )
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+    vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+
+	float ratioX = fWidth / fWidthScreen;
+	float ratioY = fHeight / fHeightScreen;
+	
+	int sizeX = int(ratioX);
+	int sizeY = int(ratioY);	
+	
+	if (ratioX > 1.0 && sizeX == 1)
+		sizeX = 3;
+
+	if (ratioY > 1.0 && sizeY == 1)
+		sizeY = 3;	
+
+	int nX = int(TexCoord.x * fWidth);
+	int nY = int(TexCoord.y * fHeight);
+	//vec2 TexCoord1 = vec2( float(nX) / fWidth + 0.5 / fWidth, float(nY) / fHeight + 0.5 / fHeight );
+	vec2 TexCoord1 = vec2( float(nX) / fWidth, float(nY) / fHeight);
+
+	if (sizeX > 1 && sizeY > 1)
+	{		
+		int medianX = sizeX / 2;
+		int medianY = sizeY / 2;
+	
+		for( int m = -medianY; m <=medianY; m++ )
+		{
+			for( int n =-medianX; n <= medianX; n++)
+			{
+				nSum = nSum + texture2D(textureSampler, TexCoord1 + vec2(texelSizeX * float( m ), texelSizeY * float( n )));
+				nDenom = nDenom + vec4( 1.0, 1.0, 1.0, 1.0 );
+			}
+		}
+	}
+	else
+	{
+
+		return texture2D(textureSampler, TexCoord1);
+	}		
+    return nSum / nDenom;
+}
+
+// Shader for interpolating Bi cubic in Triangular method.
+void main()
+{
+	vec4 Data = Interpolation( ImageTexture, gl_TexCoord[0].st );
+	gl_FragColor = Data;
+
+}

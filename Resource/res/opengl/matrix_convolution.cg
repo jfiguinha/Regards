@@ -1,0 +1,33 @@
+// Gaussian kernel
+// 1 2 1
+// 2 4 2
+// 1 2 1	
+
+uniform float Koffset;
+uniform float Kfactor;
+uniform float vecKernel[9];
+
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+
+void main(void)
+{
+   int i = 0;
+   vec4 sum = vec4(0.0);
+   float step_w = 1.0/fWidth;
+   float step_h = 1.0/fHeight;   
+
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, -step_h)) * (vecKernel[0]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, -step_h)) * (vecKernel[1]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, -step_h)) * (vecKernel[2]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, 0.0)) * (vecKernel[3]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, 0.0)) * (vecKernel[4]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, 0.0)) * (vecKernel[5]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(-step_w, step_h)) * (vecKernel[6]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(0.0, step_h)) * (vecKernel[7]);
+   sum += texture2D(texUnit, gl_TexCoord[0].st + vec2(step_w, step_h)) * (vecKernel[8]);
+
+   gl_FragColor = min((sum / vec4(Kfactor)), 1.0) + vec4(Koffset);
+}
+

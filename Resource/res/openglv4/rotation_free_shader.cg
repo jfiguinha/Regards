@@ -1,0 +1,51 @@
+uniform uint vecKernel[4];
+uniform float angle;
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+int CalculXPos(int x, int y)
+{
+	float radians = angle * 0.017453292519943;
+	float cosine = cos(radians);
+	float sine = sin(radians);
+	return int(float(x) * cosine - float(y) * sine);
+}
+
+int CalculYPos(int x, int y)
+{
+	float radians = angle * 0.017453292519943;
+	float cosine = cos(radians);
+	float sine = sin(radians);
+	return int(float(x) * sine + float(y) * cosine);
+}
+
+void main()
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	vec4 color = vec4(0.0,0.0,0.0,0.0);	
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	uint width = vecKernel[0];
+	uint height = vecKernel[1];
+	uint widthsrc = vecKernel[2];
+	uint heightsrc = vecKernel[3];
+
+	int depx = (int(widthsrc) - int(width)) / 2;
+	int depy = (int(heightsrc) - int(height)) / 2;
+	
+	int origineX = int(widthsrc / 2);
+	int origineY = int(heightsrc / 2);
+	
+	int newX = int(x) - origineX + depx ;
+	int newY = int(y) - origineY + depy;
+	
+	int sourcex = CalculXPos(newX,newY) + origineX;
+	int sourcey = CalculYPos(newX,newY) + origineY;
+
+	if(sourcex >= 0 || sourcex < vecKernel[2] || sourcey >= 0 || sourcey < vecKernel[3])
+	{
+		color = imageLoad(srcTex, ivec2(uint(sourcex), uint(sourcey)));
+		imageStore(destTex, storePos, color);
+	}	
+}
+

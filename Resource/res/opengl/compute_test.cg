@@ -1,0 +1,9 @@
+﻿#version 430
+layout(location=0, rgba8) writeonly uniform image1D destTex;
+layout(local_size_x = 1) in;
+
+void main()
+{
+	ivec2 global_id = ivec2(gl_GlobalInvocationID.xy);
+	imageStore(destTex, global_id.x, vec4(1,2,3,4));
+}

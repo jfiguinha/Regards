@@ -1,0 +1,65 @@
+
+uniform sampler2D ImageTexture;
+
+uniform float fWidth;
+uniform float fHeight;
+
+// This function returns a float values betwwen 0 and 1, which
+// provides a bell shape when plotting from -2 to +2.
+float BellFunc( float x )
+{
+	// This interpolation is created through 3 sections.
+	// We need to convert ( -2 to +2 ) to ( -1.5 to +1.5 ).
+	float f = ( x / 2.0 ) * 1.5; // Converting -2 to +2 to -1.5 to +1.5
+	if( f > -1.5 && f < -0.5 )
+	{
+		return( 0.5 * pow(f + 1.5, 2.0));
+	}
+	else if( f > -0.5 && f < 0.5 )
+	{
+		return 3.0 / 4.0 - ( f * f );
+	}
+	else if( ( f > 0.5 && f < 1.5 ) )
+	{
+		return( 0.5 * pow(f - 1.5, 2.0));
+	}
+	return 0.0;
+}
+
+vec4 BiCubic( sampler2D textureSampler, vec2 TexCoord )
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+    vec4 nSum = vec4( 0.0, 0.0, 0.0, 0.0 );
+    vec4 nDenom = vec4( 0.0, 0.0, 0.0, 0.0 );
+    float a = fract( TexCoord.x * fWidth ); // get the decimal part
+    float b = fract( TexCoord.y * fHeight ); // get the decimal part
+
+	int nX = int(TexCoord.x * fWidth);
+	int nY = int(TexCoord.y * fHeight);
+	vec2 TexCoord1 = vec2( float(nX) / fWidth + 0.5 / fWidth,
+					       float(nY) / fHeight + 0.5 / fHeight );
+    for( int m = -1; m <=2; m++ )
+    {
+        for( int n =-1; n<= 2; n++)
+        {
+			vec4 vecData = texture2D(textureSampler, TexCoord1 + vec2( texelSizeX * float(m), texelSizeY * float(n)));
+			float f  = BellFunc( float( m ) - a );
+			vec4 vecCooef1 = vec4( f, f, f, f );
+			float f1 = BellFunc( -( float( n ) - b ) );
+			vec4 vecCoeef2 = vec4( f1, f1, f1, f1 );
+            nSum = nSum + ( vecData * vecCoeef2 * vecCooef1  );
+            nDenom = nDenom + (( vecCoeef2 * vecCooef1 ));
+        }
+    }
+    return nSum / nDenom;
+}
+
+// Shader for  BiCubic interpolation with Bell method.
+void main()
+{
+	vec4 Data = BiCubic( ImageTexture, gl_TexCoord[0].st );
+	gl_FragColor = Data;
+;
+}
+

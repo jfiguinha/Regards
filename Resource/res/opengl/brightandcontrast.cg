@@ -1,0 +1,92 @@
+uniform sampler2D textureScreen;
+uniform float contrast;
+uniform float brightness;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float left;
+uniform float top;
+
+vec4 ContrastFilter(vec4 color,float contrast, float offset)
+{
+	float csupp = contrast * (offset - 256.0) + 128.0;
+	
+	float red = contrast * (color.r * 255.0) + csupp;
+	if (red < 0.0)
+		red = 0.0;
+	else if (red > 255.0)
+		red = 255.0;	
+		
+	float blue = contrast * (color.b * 255.0) + csupp;
+	if (blue < 0.0)
+		blue = 0.0;
+	else if (blue > 255.0)
+		blue = 255.0;	
+
+	float green = contrast * (color.g * 255.0) + csupp;
+	if (green < 0.0)
+		green = 0.0;
+	else if (green > 255.0)
+		green = 255.0;
+
+	return vec4(red / 255.0, green / 255.0, blue / 255.0, color.a);		
+	
+	
+}
+
+vec4 LightnessFilter(vec4 color)
+{
+	float nChange = (2.55 * brightness) / 255.0;
+	return vec4(color.r + nChange, color.g + nChange, color.b + nChange, color.a);
+}
+
+
+void main(void)
+{	
+
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t; 
+	float texelSizeX = 1.0 / widthScreen; //size of one texel 
+	float texelSizeY = 1.0 / heightScreen; //size of one texel 
+	float leftPos = left * texelSizeX;
+	float topPos = top * texelSizeY;
+	float rightPos = (widthScreen - left) * texelSizeX;
+	float bottomPos = (heightScreen - top) * texelSizeY;
+	
+	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
+	{															   
+		 //------------------------------------------------------------
+		 //Variable													   
+		 //------------------------------------------------------------ 	 
+		vec4 color;
+		vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
+	
+		if (contrast == 0.0)
+		{
+			color = ContrastFilter(src_color, 1.0, 128.0);
+		}
+		else if (contrast > 0.0)
+		{
+			float offset = contrast;
+			offset /= 100.0;
+			offset = 1.0 + offset;
+			color = ContrastFilter(src_color, offset, 128.0);
+		}
+		else if (contrast < 0.0)
+		{
+			float offset = -contrast;
+			offset /= 100.0;
+			offset = 1.0 - offset;
+			//lValue = 128.0 + lContrast;
+			color = ContrastFilter(src_color, offset, 128.0);
+		}
+				
+		color = LightnessFilter(color);
+		
+		gl_FragColor = color;
+	}
+	else
+	{
+		gl_FragColor = texture2D(textureScreen, vec2(posX,posY));
+	}
+}
+

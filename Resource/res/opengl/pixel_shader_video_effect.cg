@@ -1,0 +1,61 @@
+uniform sampler2D videoFrame;
+
+uniform float fWidth;
+uniform float fHeight;
+uniform int	  ToneEnable;
+uniform int	  ColorEnable;
+
+#define TIERVALUE_COLOR vec4(0.33, 0.33, 0.33, 0.33)
+
+//Tone mapping
+uniform float contrast;
+uniform float exposure;
+uniform float brightness;
+
+//Color Boost
+uniform float color_boost[4];
+
+//----------------------------------------------------
+// Conversion du NV12 vers du 32 bits
+//----------------------------------------------------
+
+vec4 filmic_map(vec4 c) {
+  return ((c*(0.15*c+0.10*0.50)+0.20*0.02)/(c*(0.15*c+0.50)+0.20*0.30))-0.02/0.30;
+}
+
+vec4 pow4(vec4 c, float a) {
+  c.x = pow(c.x, a);
+  c.y = pow(c.y, a);
+  c.z = pow(c.z, a);
+  return c;
+}
+
+vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	vec2 resolution = vec2(texelSizeX, texelSizeY); 
+	return texture2D(videoFrame, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+}
+
+
+// Shader for interpolating Bi cubic in Triangular method.
+void main()
+{
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t;
+	vec4 data =  TextureValue(posX, posY, 0.0, 0.0);
+	
+	if(ToneEnable == 1)
+	{
+		vec4 bloomed = filmic_map(pow4(data, contrast) * exposure);
+		data = clamp(bloomed * (1.0 / filmic_map(vec4(11.2,11.2,11.2,11.2))) * brightness, 0.0, 1.0);
+	}
+
+	if(ColorEnable == 1)
+	{
+		data = data * vec4(color_boost[0], color_boost[1], color_boost[2], 1.0);
+	}
+
+	gl_FragColor = data;
+}

@@ -1,0 +1,61 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, r8) readonly uniform image2D srcYTex;
+layout (binding=2, rg8) readonly uniform image2D srcUVTex;
+
+//----------------------------------------------------
+// Conversion du NV12 vers du 32 bits
+//----------------------------------------------------
+vec4 GetColorFromNV12(ivec2 storePos)
+{
+	vec4 color;
+	float crv = 104597.0f;
+	float cbu = 132201.0f;
+	float cgu = 25675.0f;  
+	float cgv = 53279.0f;
+	
+	float y = imageLoad(srcYTex, storePos).r * 255.0f;
+	float u = imageLoad(srcUVTex, storePos).r * 255.0f;
+	float v = imageLoad(srcUVTex, storePos).g * 255.0f;
+
+	float c1 = (v-128.0f) * crv;
+	float c2 = (u-128.0f) * cgu;
+	float c3 = (v-128.0f) * cgv;
+	float c4 = (u-128.0f) * cbu;
+	
+	float y1 = 76309*(y-16);
+	float r = ((y1 + c1) / 65536.0f) / 255.0f;
+	float g = ((y1 - c2 - c3) / 65536.0f) / 255.0f;
+	float b = ((y1 + c4) / 65536.0f) / 255.0f;
+	
+	if(r < 0.0f)
+		r = 0.0f;
+	if(r > 1.0f)
+		r = 1.0f;
+
+	if(g < 0.0f)
+		g = 0.0f;
+	if(g > 1.0f)
+		g = 1.0f;
+		
+	if(b < 0.0f)
+		b = 0.0f;
+	if(b > 1.0f)
+		b = 1.0f;		
+	
+	return vec4(r,g,b,1.0f);
+}
+
+void main (void)
+{
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		vec4 color = GetColorFromNV12(storePos);
+		imageStore(destTex, storePos, color);
+	}
+
+
+}

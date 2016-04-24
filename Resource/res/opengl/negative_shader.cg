@@ -1,0 +1,13 @@
+uniform sampler2D texUnit;
+
+void main(void)
+{																   
+	 //------------------------------------------------------------
+	 //Variable													   
+	 //------------------------------------------------------------
+	 vec4 src_color = texture2D(texUnit, vec2(gl_TexCoord[0].s, gl_TexCoord[0].t)).rgba;
+	 float red = 1.0 - src_color.r;
+	 float green = 1.0 - src_color.g;
+	 float blue = 1.0 - src_color.b;
+	 gl_FragColor = vec4(red, green, blue, src_color.a);
+}

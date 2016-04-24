@@ -1,0 +1,16 @@
+//Uniform input parameters
+
+#define M_PI 3.14159265358979323846
+
+//Texture
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+
+void main()
+{
+	//gl_FragColor = texture2D(texUnit, vec2(gl_TexCoord[0].t,gl_TexCoord[0].s));
+	float x = 1.0 - gl_TexCoord[0].s;
+	float y = gl_TexCoord[0].t;
+	gl_FragColor = texture2D(texUnit, vec2(y,x));
+}

@@ -1,0 +1,44 @@
+uniform uint vecKernel[4];
+layout (binding=0, rgba8) writeonly uniform image2D destTex;
+layout (binding=1, rgba8) readonly uniform image2D srcTex;
+
+void main(void)
+{																	  	
+	vec4 kernel[9];
+	ivec2 storePos = ivec2(gl_GlobalInvocationID.xy);
+	uint x = gl_GlobalInvocationID.x;
+	uint y = gl_GlobalInvocationID.y;
+	if(x < vecKernel[0] && y < vecKernel[1])
+	{
+		for(int i = 0;i < 9; i++)
+			kernel[i] = vec4(0,0,0,0);
+
+		for(int y = -1;y < 2;y++)
+		{
+			int posY = int(gl_GlobalInvocationID.y) + y;
+			if(posY >= 0 && posY < vecKernel[1])
+			{
+				for(int x = -1;x < 2;x++)
+				{
+					int posX = int(gl_GlobalInvocationID.x) + x;	
+					if(posX >= 0 && posX < vecKernel[0])
+					{
+						uint i = 3 * (y+1) + (x + 1);
+						kernel[i] = imageLoad(srcTex, ivec2(posX, posY));			
+					}
+				}
+			}
+		}
+
+		for(uint n = 8; n >= 0; --n)
+		{
+			for(uint i = 0;i < n; ++i)
+			{
+				vec4 temp = kernel[i]; 
+				kernel[i] = min(kernel[i], kernel[i+1]); 
+				kernel[i+1] = max(temp, kernel[i+1]);
+			}
+		}
+		imageStore(destTex, storePos, kernel[4]);
+	}
+}
