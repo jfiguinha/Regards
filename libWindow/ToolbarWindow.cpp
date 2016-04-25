@@ -241,12 +241,14 @@ void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 	if (pushButton->IsRunning())
         pushButton->Stop();
 
-	if (navPush->GetRepeatable())
-	{ 
-		EventManager(navPush->GetCommandId());
-		navPush = nullptr;
-	}
-    
+	if(navPush != nullptr)
+	{	
+		if (navPush->GetRepeatable())
+		{ 
+			EventManager(navPush->GetCommandId());
+			navPush = nullptr;
+		}
+    }
     this->Refresh();
 }
 
