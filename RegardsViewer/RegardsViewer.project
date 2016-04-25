@@ -188,7 +188,7 @@
         <LibraryPath Value="../Otherlib/RegardsRaw/Debug"/>
         <LibraryPath Value="../libRenderBitmap/Debug"/>
         <LibraryPath Value="../libOpenCL/Debug"/>
-        <LibraryPath Value="/opt/intel/intel-opencl-1.2-5.0.0.43/opencl/lib64"/>
+        <LibraryPath Value="/opt/intel/intel-opencl-1.2-6.0.0.1049/opencl-1.2-6.0.0.1049/lib64"/>
         <LibraryPath Value="../libextern/LibRaw-0.17.0/Debug"/>
         <LibraryPath Value="../libVideoFFMpeg/Debug"/>
         <LibraryPath Value="../libEmail/Debug"/>
@@ -232,11 +232,6 @@
         <Library Value="Parameter"/>
         <Library Value="RegardsCL"/>
         <Library Value="OpenCL"/>
-        <Library Value="cl_logger"/>
-        <Library Value="task_executor"/>
-        <Library Value="intelocl"/>
-        <Library Value="cpu_device"/>
-        <Library Value="tbb"/>
         <Library Value="OpenGL"/>
         <Library Value="GLEWmx"/>
         <Library Value="CxImage"/>
@@ -397,7 +392,7 @@
         <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
         <LibraryPath Value="../libRenderBitmap/Release"/>
         <LibraryPath Value="../libOpenCL/Release"/>
-        <LibraryPath Value="/opt/intel/intel-opencl-1.2-5.0.0.43/opencl/lib64"/>
+        <LibraryPath Value="/opt/intel/intel-opencl-1.2-6.0.0.1049/opencl-1.2-6.0.0.1049/lib64"/>
         <LibraryPath Value="../libVideoFFMpeg/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
         <LibraryPath Value="../libExif/Release"/>
@@ -441,11 +436,6 @@
         <Library Value="Parameter"/>
         <Library Value="RegardsCL"/>
         <Library Value="OpenCL"/>
-        <Library Value="cl_logger"/>
-        <Library Value="task_executor"/>
-        <Library Value="intelocl"/>
-        <Library Value="cpu_device"/>
-        <Library Value="tbb"/>
         <Library Value="OpenGL"/>
         <Library Value="GLEWmx"/>
         <Library Value="CxImage"/>

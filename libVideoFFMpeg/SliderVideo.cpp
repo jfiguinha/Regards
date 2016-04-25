@@ -398,7 +398,7 @@ void CSliderVideo::Draw(wxDC * context)
 		wxMemoryDC sourceDCContext(memBitmap);
 		CWindowMain::FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 		
-		//Ecriture du temps passé
+		//Ecriture du temps passÃ©
 		int timePastSize = DrawTimePast(&sourceDCContext, timePast);
 		int volumeSize = DrawVolumeLibelle(&sourceDCContext, libelleVolume);
 		int totalTimeSize = DrawTotalTimeLibelle(&sourceDCContext, totalTime, volumeSize);

@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=RegardsViewer
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/RegardsViewer"
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=24/04/16
+Date                   :=25/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++-4.8
 SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
@@ -28,20 +28,20 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName)
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)VIEWER $(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)GLEW_MX $(PreprocessorSwitch)GLEW_STATIC 
+Preprocessors          :=$(PreprocessorSwitch)VIEWER $(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)GLEW_MX $(PreprocessorSwitch)GLEW_STATIC 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="RegardsViewer.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s 
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libWindow $(IncludeSwitch)../libPrint $(IncludeSwitch)../libPicture $(IncludeSwitch)../libTheme $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libControl $(IncludeSwitch)../libIntro $(IncludeSwitch)../libDialog $(IncludeSwitch)../libViewer $(IncludeSwitch)../libExplorer $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libVideoFFMpeg $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
+LinkOptions            :=  
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libWindow $(IncludeSwitch)../libPrint $(IncludeSwitch)../libPicture $(IncludeSwitch)../libTheme $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libControl $(IncludeSwitch)../libIntro $(IncludeSwitch)../libDialog $(IncludeSwitch)../libViewer $(IncludeSwitch)../libExplorer $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libVideoFFMpeg 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)Explorer $(LibrarySwitch)Viewer $(LibrarySwitch)Intro $(LibrarySwitch)VideoFFMpeg $(LibrarySwitch)Control $(LibrarySwitch)Exif $(LibrarySwitch)Email $(LibrarySwitch)Picture $(LibrarySwitch)Window $(LibrarySwitch)WindowMain $(LibrarySwitch)Geolocalisation $(LibrarySwitch)Utility $(LibrarySwitch)Dialog $(LibrarySwitch)Resource $(LibrarySwitch)SqlData $(LibrarySwitch)DataStructure $(LibrarySwitch)SqlEngine $(LibrarySwitch)Sqlite $(LibrarySwitch)dl $(LibrarySwitch)Compress $(LibrarySwitch)Utility $(LibrarySwitch)Picture $(LibrarySwitch)VideoThumbnail $(LibrarySwitch)Dialog $(LibrarySwitch)Geolocalisation $(LibrarySwitch)Exif $(LibrarySwitch)SqlData $(LibrarySwitch)Print $(LibrarySwitch)Filtre $(LibrarySwitch)FiltreInterface $(LibrarySwitch)RenderBitmap $(LibrarySwitch)Theme $(LibrarySwitch)DataStructure $(LibrarySwitch)Utility $(LibrarySwitch)Resource $(LibrarySwitch)Parameter $(LibrarySwitch)RegardsCL $(LibrarySwitch)OpenCL $(LibrarySwitch)cl_logger $(LibrarySwitch)task_executor $(LibrarySwitch)intelocl $(LibrarySwitch)cpu_device $(LibrarySwitch)tbb $(LibrarySwitch)OpenGL $(LibrarySwitch)GLEWmx $(LibrarySwitch)CxImage $(LibrarySwitch)wxSVG $(LibrarySwitch)GL $(LibrarySwitch)SDL2 $(LibrarySwitch)wx_gtk2u_gl-3.0 $(LibrarySwitch)wx_gtk2u-3.0 $(LibrarySwitch)X11 $(LibrarySwitch)gtk-x11-2.0 $(LibrarySwitch)gdk-x11-2.0 $(LibrarySwitch)GLU $(LibrarySwitch)pango-1.0 $(LibrarySwitch)pangocairo-1.0 $(LibrarySwitch)cairo $(LibrarySwitch)gobject-2.0 $(LibrarySwitch)exiv2 $(LibrarySwitch)expat $(LibrarySwitch)Jbig $(LibrarySwitch)Psd $(LibrarySwitch)jasper $(LibrarySwitch)mng $(LibrarySwitch)wxtiff-3.0 $(LibrarySwitch)RegardsRaw $(LibrarySwitch)raw_r $(LibrarySwitch)z $(LibrarySwitch)gomp $(LibrarySwitch)avcodec $(LibrarySwitch)avformat $(LibrarySwitch)avdevice $(LibrarySwitch)avfilter $(LibrarySwitch)avutil $(LibrarySwitch)swresample $(LibrarySwitch)swscale $(LibrarySwitch)xcb $(LibrarySwitch)xcb-shm $(LibrarySwitch)Xxf86vm $(LibrarySwitch)pthread $(LibrarySwitch)gdk_pixbuf-2.0 $(LibrarySwitch)glib-2.0 $(LibrarySwitch)SM $(LibrarySwitch)webkitgtk-1.0 $(LibrarySwitch)wxjpeg-3.0 $(LibrarySwitch)wxpng-3.0 $(LibrarySwitch)jpeg $(LibrarySwitch)png12 
-ArLibs                 :=  "Explorer" "Viewer" "Intro" "VideoFFMpeg" "Control" "Exif" "Email" "Picture" "Window" "WindowMain" "Geolocalisation" "Utility" "Dialog" "Resource" "SqlData" "DataStructure" "SqlEngine" "Sqlite" "dl" "Compress" "Utility" "Picture" "VideoThumbnail" "Dialog" "Geolocalisation" "Exif" "SqlData" "Print" "Filtre" "FiltreInterface" "RenderBitmap" "Theme" "DataStructure" "Utility" "Resource" "Parameter" "RegardsCL" "OpenCL" "cl_logger" "task_executor" "intelocl" "cpu_device" "tbb" "OpenGL" "GLEWmx" "CxImage" "wxSVG" "GL" "SDL2" "wx_gtk2u_gl-3.0" "wx_gtk2u-3.0" "X11" "gtk-x11-2.0" "gdk-x11-2.0" "GLU" "pango-1.0" "pangocairo-1.0" "cairo" "gobject-2.0" "exiv2" "expat" "Jbig" "Psd" "jasper" "mng" "wxtiff-3.0" "RegardsRaw" "raw_r" "z" "gomp" "avcodec" "avformat" "avdevice" "avfilter" "avutil" "swresample" "swscale" "xcb" "xcb-shm" "Xxf86vm" "pthread" "gdk_pixbuf-2.0" "glib-2.0" "SM" "webkitgtk-1.0" "wxjpeg-3.0" "wxpng-3.0" "jpeg" "png12" 
-LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)../libextern/lib $(LibraryPathSwitch)../libPrint/Release $(LibraryPathSwitch)../CxImage/Release $(LibraryPathSwitch)../libSqlite/Release $(LibraryPathSwitch)../libViewer/Release $(LibraryPathSwitch)../libExplorer/Release $(LibraryPathSwitch)../libIntro/Release $(LibraryPathSwitch)../libSqlEngine/Release $(LibraryPathSwitch)../libResource/Release $(LibraryPathSwitch)../libCompress/Release $(LibraryPathSwitch)../libDialog/Release $(LibraryPathSwitch)../libDataStructure/Release $(LibraryPathSwitch)../libPicture/Release $(LibraryPathSwitch)../libUtility/Release $(LibraryPathSwitch)../libGeolocalisation/Release $(LibraryPathSwitch)../libSqlData/Release $(LibraryPathSwitch)../libVideoThumbnail/Release $(LibraryPathSwitch)../libFiltre/Release $(LibraryPathSwitch)../libFiltreInterface/Release $(LibraryPathSwitch)../libWindow/Release $(LibraryPathSwitch)../libControl/Release $(LibraryPathSwitch)../libTheme/Release $(LibraryPathSwitch)../libParameter/Release $(LibraryPathSwitch)../libOpenGL/Release $(LibraryPathSwitch)../Otherlib/RegardsRaw/Release $(LibraryPathSwitch)../libRenderBitmap/Release $(LibraryPathSwitch)../libOpenCL/Release $(LibraryPathSwitch)/opt/intel/intel-opencl-1.2-5.0.0.43/opencl/lib64 $(LibraryPathSwitch)../libVideoFFMpeg/Release $(LibraryPathSwitch)../libEmail/Release $(LibraryPathSwitch)../libExif/Release $(LibraryPathSwitch)../libWindowMain/Release $(LibraryPathSwitch)../Otherlib/wxSVG/Release 
+Libs                   := $(LibrarySwitch)Explorer $(LibrarySwitch)Viewer $(LibrarySwitch)Intro $(LibrarySwitch)VideoFFMpeg $(LibrarySwitch)Control $(LibrarySwitch)Exif $(LibrarySwitch)Email $(LibrarySwitch)Picture $(LibrarySwitch)Window $(LibrarySwitch)WindowMain $(LibrarySwitch)Geolocalisation $(LibrarySwitch)Utility $(LibrarySwitch)Dialog $(LibrarySwitch)Resource $(LibrarySwitch)SqlData $(LibrarySwitch)DataStructure $(LibrarySwitch)SqlEngine $(LibrarySwitch)Sqlite $(LibrarySwitch)dl $(LibrarySwitch)Compress $(LibrarySwitch)Utility $(LibrarySwitch)Picture $(LibrarySwitch)VideoThumbnail $(LibrarySwitch)Dialog $(LibrarySwitch)Geolocalisation $(LibrarySwitch)Exif $(LibrarySwitch)SqlData $(LibrarySwitch)Print $(LibrarySwitch)Filtre $(LibrarySwitch)FiltreInterface $(LibrarySwitch)RenderBitmap $(LibrarySwitch)Theme $(LibrarySwitch)DataStructure $(LibrarySwitch)Utility $(LibrarySwitch)Resource $(LibrarySwitch)Parameter $(LibrarySwitch)RegardsCL $(LibrarySwitch)OpenCL $(LibrarySwitch)OpenGL $(LibrarySwitch)GLEWmx $(LibrarySwitch)CxImage $(LibrarySwitch)wxSVG $(LibrarySwitch)GL $(LibrarySwitch)SDL2 $(LibrarySwitch)wx_gtk2u_gl-3.0 $(LibrarySwitch)wx_gtk2u-3.0 $(LibrarySwitch)X11 $(LibrarySwitch)gtk-x11-2.0 $(LibrarySwitch)gdk-x11-2.0 $(LibrarySwitch)GLU $(LibrarySwitch)pango-1.0 $(LibrarySwitch)pangocairo-1.0 $(LibrarySwitch)cairo $(LibrarySwitch)gobject-2.0 $(LibrarySwitch)exiv2 $(LibrarySwitch)expat $(LibrarySwitch)Jbig $(LibrarySwitch)Psd $(LibrarySwitch)jasper $(LibrarySwitch)mng $(LibrarySwitch)wxtiff-3.0 $(LibrarySwitch)RegardsRaw $(LibrarySwitch)raw_r $(LibrarySwitch)z $(LibrarySwitch)gomp $(LibrarySwitch)avcodec $(LibrarySwitch)avformat $(LibrarySwitch)avdevice $(LibrarySwitch)avfilter $(LibrarySwitch)avutil $(LibrarySwitch)swresample $(LibrarySwitch)swscale $(LibrarySwitch)xcb $(LibrarySwitch)xcb-shm $(LibrarySwitch)Xxf86vm $(LibrarySwitch)pthread $(LibrarySwitch)gdk_pixbuf-2.0 $(LibrarySwitch)glib-2.0 $(LibrarySwitch)SM $(LibrarySwitch)webkitgtk-1.0 $(LibrarySwitch)wxjpeg-3.0 $(LibrarySwitch)wxpng-3.0 $(LibrarySwitch)jpeg $(LibrarySwitch)png12 
+ArLibs                 :=  "Explorer" "Viewer" "Intro" "VideoFFMpeg" "Control" "Exif" "Email" "Picture" "Window" "WindowMain" "Geolocalisation" "Utility" "Dialog" "Resource" "SqlData" "DataStructure" "SqlEngine" "Sqlite" "dl" "Compress" "Utility" "Picture" "VideoThumbnail" "Dialog" "Geolocalisation" "Exif" "SqlData" "Print" "Filtre" "FiltreInterface" "RenderBitmap" "Theme" "DataStructure" "Utility" "Resource" "Parameter" "RegardsCL" "OpenCL" "OpenGL" "GLEWmx" "CxImage" "wxSVG" "GL" "SDL2" "wx_gtk2u_gl-3.0" "wx_gtk2u-3.0" "X11" "gtk-x11-2.0" "gdk-x11-2.0" "GLU" "pango-1.0" "pangocairo-1.0" "cairo" "gobject-2.0" "exiv2" "expat" "Jbig" "Psd" "jasper" "mng" "wxtiff-3.0" "RegardsRaw" "raw_r" "z" "gomp" "avcodec" "avformat" "avdevice" "avfilter" "avutil" "swresample" "swscale" "xcb" "xcb-shm" "Xxf86vm" "pthread" "gdk_pixbuf-2.0" "glib-2.0" "SM" "webkitgtk-1.0" "wxjpeg-3.0" "wxpng-3.0" "jpeg" "png12" 
+LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)../libextern/lib $(LibraryPathSwitch)../libextern/wxWidgets-3.0.2/lib $(LibraryPathSwitch)../libextern/glew-1.13.0/lib $(LibraryPathSwitch)../libextern/LibRaw-0.17.0/lib $(LibraryPathSwitch)../libextern/SDL2-2.0.3/build $(LibraryPathSwitch)../libPrint/Debug $(LibraryPathSwitch)../CxImage/Debug $(LibraryPathSwitch)../libSqlite/Debug $(LibraryPathSwitch)../libViewer/Debug $(LibraryPathSwitch)../libExplorer/Debug $(LibraryPathSwitch)../libIntro/Debug $(LibraryPathSwitch)../libSqlEngine/Debug $(LibraryPathSwitch)../libResource/Debug $(LibraryPathSwitch)../libCompress/Debug $(LibraryPathSwitch)../libDialog/Debug $(LibraryPathSwitch)../libDataStructure/Debug $(LibraryPathSwitch)../libPicture/Debug $(LibraryPathSwitch)../libUtility/Debug $(LibraryPathSwitch)../libGeolocalisation/Debug $(LibraryPathSwitch)../libSqlData/Debug $(LibraryPathSwitch)../libextern/exiv2-0.24/lib $(LibraryPathSwitch)../Otherlib/wxSVG/Debug $(LibraryPathSwitch)../libVideoThumbnail/Debug $(LibraryPathSwitch)../libFiltre/Debug $(LibraryPathSwitch)../libFiltreInterface/Debug $(LibraryPathSwitch)../libWindow/Debug $(LibraryPathSwitch)../libControl/Debug $(LibraryPathSwitch)../libTheme/Debug $(LibraryPathSwitch)../libParameter/Debug $(LibraryPathSwitch)../libOpenGL/Debug $(LibraryPathSwitch)../Otherlib/RegardsRaw/Debug $(LibraryPathSwitch)../libRenderBitmap/Debug $(LibraryPathSwitch)../libOpenCL/Debug $(LibraryPathSwitch)/opt/intel/intel-opencl-1.2-6.0.0.1049/opencl-1.2-6.0.0.1049/lib64 $(LibraryPathSwitch)../libextern/LibRaw-0.17.0/Debug $(LibraryPathSwitch)../libVideoFFMpeg/Debug $(LibraryPathSwitch)../libEmail/Debug $(LibraryPathSwitch)../libExif/Debug $(LibraryPathSwitch)../libWindowMain/Debug 
 
 ##
 ## Common variables
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch). $(LibraryPathSwitch)../libextern
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++-4.8
 CC       := /usr/bin/gcc-4.8
-CXXFLAGS :=  -Os -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -O2 -Wall $(Preprocessors)
+CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall $(Preprocessors)
+CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -72,170 +72,23 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d "../.build-release/CxImage" "../.build-release/RegardsRaw" "../.build-release/libCompress" "../.build-release/libControl" "../.build-release/libWindowMain" "../.build-release/libWindow" "../.build-release/libViewer" "../.build-release/libVideoThumbnail" "../.build-release/libVideoFFMpeg" "../.build-release/libUtility" "../.build-release/libSqlEngine" "../.build-release/libSqlite" "../.build-release/libTheme" "../.build-release/libSqlData" "../.build-release/libResource" "../.build-release/libRenderBitmap" "../.build-release/libPrint" "../.build-release/libPicture" "../.build-release/libOpenCL" "../.build-release/libOpenGL" "../.build-release/libParameter" "../.build-release/libIntro" "../.build-release/libGeolocalisation" "../.build-release/libFiltre" "../.build-release/libExplorer" "../.build-release/libExif" "../.build-release/libEmail" "../.build-release/libDialog" "../.build-release/libDataStructure" $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 
-"../.build-release/CxImage":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/CxImage"
-
-
-"../.build-release/RegardsRaw":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/RegardsRaw"
-
-
-"../.build-release/libCompress":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libCompress"
-
-
-"../.build-release/libControl":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libControl"
-
-
-"../.build-release/libWindowMain":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libWindowMain"
-
-
-"../.build-release/libWindow":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libWindow"
-
-
-"../.build-release/libViewer":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libViewer"
-
-
-"../.build-release/libVideoThumbnail":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libVideoThumbnail"
-
-
-"../.build-release/libVideoFFMpeg":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libVideoFFMpeg"
-
-
-"../.build-release/libUtility":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libUtility"
-
-
-"../.build-release/libSqlEngine":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libSqlEngine"
-
-
-"../.build-release/libSqlite":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libSqlite"
-
-
-"../.build-release/libTheme":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libTheme"
-
-
-"../.build-release/libSqlData":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libSqlData"
-
-
-"../.build-release/libResource":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libResource"
-
-
-"../.build-release/libRenderBitmap":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libRenderBitmap"
-
-
-"../.build-release/libPrint":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libPrint"
-
-
-"../.build-release/libPicture":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libPicture"
-
-
-"../.build-release/libOpenCL":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libOpenCL"
-
-
-"../.build-release/libOpenGL":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libOpenGL"
-
-
-"../.build-release/libParameter":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libParameter"
-
-
-"../.build-release/libIntro":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libIntro"
-
-
-"../.build-release/libGeolocalisation":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libGeolocalisation"
-
-
-"../.build-release/libFiltre":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libFiltre"
-
-
-"../.build-release/libExplorer":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libExplorer"
-
-
-"../.build-release/libExif":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libExif"
-
-
-"../.build-release/libEmail":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libEmail"
-
-
-"../.build-release/libDialog":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libDialog"
-
-
-"../.build-release/libDataStructure":
-	@$(MakeDirCommand) "../.build-release"
-	@echo stam > "../.build-release/libDataStructure"
-
-
-
-
 PostBuild:
 	@echo Executing Post Build commands ...
-	cp -R ../Regards/Resources ./Release/Resources
+	cp -R ../Regards/Resources ./Debug
 	@echo Done
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
 $(IntermediateDirectory)/.d:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 	@echo Executing Pre Build commands ...
@@ -260,6 +113,6 @@ $(IntermediateDirectory)/Regards_Regards.cpp$(PreprocessSuffix): ../Regards/Rega
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

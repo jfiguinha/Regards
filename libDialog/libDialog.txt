@@ -1,1 +1,1 @@
-./Release/CompressionOption.cpp.o ./Release/ConfigRegards.cpp.o ./Release/CopyFileDlg.cpp.o ./Release/ExportFile.cpp.o ./Release/GifOption.cpp.o ./Release/JpegOption.cpp.o ./Release/OpenCLDialog.cpp.o ./Release/PngOption.cpp.o ./Release/SaveFileFormat.cpp.o ./Release/TiffOption.cpp.o
+./Debug/CompressionOption.cpp.o ./Debug/ConfigRegards.cpp.o ./Debug/CopyFileDlg.cpp.o ./Debug/ExportFile.cpp.o ./Debug/GifOption.cpp.o ./Debug/JpegOption.cpp.o ./Debug/OpenCLDialog.cpp.o ./Debug/PngOption.cpp.o ./Debug/SaveFileFormat.cpp.o ./Debug/TiffOption.cpp.o

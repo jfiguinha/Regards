@@ -41,7 +41,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 {
     
 #ifdef __APPLE__
-    //Test du nombre de répertoire
+    //Test du nombre de rÃ©pertoire
     CSqlFindFolderCatalog findFolder;
     FolderCatalogVector catalogfolderVector;
     int nbFolder = findFolder.GetNbFolderCatalog(NUMCATALOGID);
@@ -52,7 +52,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
         for(CFolderCatalog folderCatalog : catalogfolderVector)
         {
             CAccessAppleFolder accessFolder;
-            //Initialisation des accs sŽcurisŽs aux rŽpertoires
+            //Initialisation des accÂs sÂŽcurisÂŽs aux rÂŽpertoires
             accessFolder.selectFolder = new CAppleSelectFile(folderCatalog.GetFolderPath());
             CSqlFolderCatalog sqlfolderCatalog;
             accessFolder.appleSecurityScopeData = sqlfolderCatalog.GetDataSecurityScope(folderCatalog.GetFolderPath());
@@ -115,7 +115,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
     if (nbFolder == 0)
     {
-        //Choix d'un répertoire
+        //Choix d'un rÃ©pertoire
         AddFolder();
     }
     
@@ -133,7 +133,7 @@ void CMainWindow::OnVideoStart(wxCommandEvent& event)
 void CMainWindow::CriteriaChange(wxCommandEvent& event)
 {
     //Refresh Criteria
-    //Mise à jour de l'affichage de l'arborescence
+    //Mise Ã  jour de l'affichage de l'arborescence
     CCategoryFolderWindow * catalogWnd = (CCategoryFolderWindow *)this->FindWindowById(CATEGORYFOLDERWINDOWID);
     if (catalogWnd != nullptr)
         catalogWnd->UpdateCriteria();
@@ -160,7 +160,7 @@ CMainWindow::~CMainWindow()
 #ifdef __APPLE__
     for(CAccessAppleFolder accessFolder : appleFolderAccessVector)
     {
-        //Initialisation des accs sŽcurisŽs aux rŽpertoires
+        //Initialisation des accÂs sÂŽcurisÂŽs aux rÂŽpertoires
         if(accessFolder.appleSecurityScopeData != nullptr)
             accessFolder.selectFolder->StopSecurityAccess(accessFolder.appleSecurityScopeData);
         delete accessFolder.selectFolder;
@@ -400,7 +400,7 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 	}
     else if(!traitementEnd)
     {
-        //Nettoyage des critres non utilisŽs
+        //Nettoyage des critÂres non utilisÂŽs
         CSqlCriteria criteria;
         criteria.DeleteCriteriaAlone();
         
@@ -456,7 +456,7 @@ void CMainWindow::RefreshThreadFolder(CFolderCatalog * folder)
 	if (listFilePath.size() > 0 || listNumPhoto.size() > 0)
 	{
 		//Refresh Criteria 
-		//Mise à jour de l'affichage de l'arborescence
+		//Mise Ã  jour de l'affichage de l'arborescence
 		CCategoryFolderWindow * catalogWnd = (CCategoryFolderWindow *)this->FindWindowById(CATEGORYFOLDERWINDOWID);
 		if (catalogWnd != nullptr)
 			catalogWnd->UpdateCriteria();
@@ -501,7 +501,7 @@ void CMainWindow::ImageDebut()
 
 
 //--------------------------------------------------------------------
-//Ajout d'un répertoire
+//Ajout d'un rÃ©pertoire
 //--------------------------------------------------------------------
 int CMainWindow::AddFolder()
 {
@@ -511,14 +511,14 @@ int CMainWindow::AddFolder()
 
 	wxString folder = dlg.GetPath();
 
-	//Indication d'imporation des critères 
+	//Indication d'imporation des critÃ¨res 
 	CSqlFolderCatalog sqlFolderCatalog;
 
 	if (sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder) == -1)
 	{
 		int idFolder = (int)sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
 
-		//Insert la liste des photos dans la base de données.
+		//Insert la liste des photos dans la base de donnÃ©es.
 		CSqlInsertFile sqlInsertFile;
 		sqlInsertFile.ImportFileFromFolder(folder, idFolder);
         update = true;
@@ -538,7 +538,7 @@ int CMainWindow::AddFolder()
 
 
 //--------------------------------------------------------------------
-//Suppression d'un répertoire
+//Suppression d'un rÃ©pertoire
 //--------------------------------------------------------------------
 void CMainWindow::RemoveFolder(const int &idFolder)
 {
@@ -556,18 +556,18 @@ void CMainWindow::RemoveFolder(const int &idFolder)
 			sqlRemoveData.DeleteFolder(idFolder);
 		}
 
-		//Test du nombre de répertoire
+		//Test du nombre de rÃ©pertoire
 		CSqlFindFolderCatalog findFolder;
 		int nbFolder = findFolder.GetNbFolderCatalog(NUMCATALOGID);
 		if (nbFolder == 0)
 		{
-			//Choix d'un répertoire
+			//Choix d'un rÃ©pertoire
 			if (AddFolder() == 0)
                 return;
 		}
 		else
 		{
-			//Mise à jour de l'affichage de l'arborescence
+			//Mise Ã  jour de l'affichage de l'arborescence
 			CCategoryFolderWindow * catalogWnd = (CCategoryFolderWindow *)this->FindWindowById(CATEGORYFOLDERWINDOWID);
 			if (catalogWnd != nullptr)
 				catalogWnd->UpdateCriteria();

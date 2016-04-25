@@ -89,7 +89,15 @@ void CInfoAbout::Init()
 	treeCxImage->SetKey("CxImage ");
 	treeCxImage->SetValue("7.0");
 	tr.append_child(child, treeCxImage);
-	
+#if defined(__APPLE__) || defined(__WIN32__)
+	CTreeDataLink * treelibRaw = new CTreeDataLink();
+	treelibRaw->SetIsParent(false);
+	treelibRaw->SetKey("MediaInfoLib");
+    treelibRaw->SetLinkType(1);
+    treelibRaw->SetLinkPath("MediaInfoLicense.pdf");
+	treelibRaw->SetValue("0.7.76 - BSD Licence Like - Click to see licence");
+	tr.append_child(child, treelibRaw);
+#else
 	CTreeData * treelibRaw = new CTreeData();
 	treelibRaw->SetIsParent(false);
 	treelibRaw->SetKey("Libraw");
@@ -107,6 +115,12 @@ void CInfoAbout::Init()
 	treelibExiv->SetKey("Exiv 2");
 	treelibExiv->SetValue("0.24");
 	tr.append_child(child, treelibExiv);
+#endif
+	CTreeData * treelibBPG = new CTreeData();
+	treelibBPG->SetIsParent(false);
+	treelibBPG->SetKey("wxWidget");
+	treelibBPG->SetValue("3.0.2");
+	tr.append_child(child, treelibBPG);
 
 	CreateElement();
 }

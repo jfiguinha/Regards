@@ -1,4 +1,4 @@
-﻿#include "ListPicture.h"
+#include "ListPicture.h"
 #include <FileUtility.h>
 #include <SQLRemoveData.h>
 #include <SqlFindCriteria.h>

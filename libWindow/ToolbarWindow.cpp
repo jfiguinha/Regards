@@ -324,7 +324,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 					if (pushButton->IsRunning())
                         pushButton->Stop();
                         
-                    pushButton->Start(50);
+                    pushButton->Start(250);
                     
                     repeatable = true;
 				}

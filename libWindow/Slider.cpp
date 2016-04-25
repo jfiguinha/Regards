@@ -148,7 +148,7 @@ void CSlider::Draw(wxDC * context)
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 
-		//Ecriture du temps passé
+		//Ecriture du temps passÃ©
 		int sizeLibelleX = DrawTimePast(&sourceDCContext, timePast);
 		positionSlider.x = 10 + sizeLibelleX + 5;
 

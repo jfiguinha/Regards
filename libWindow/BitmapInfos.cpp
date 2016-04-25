@@ -35,7 +35,7 @@ void CBitmapInfos::OnIdle(wxIdleEvent& evt)
         
         CGps * gps = new CGps(urlServer);
 
-        //Execution de la requête de géolocalisation
+        //Execution de la requÃªte de gÃ©olocalisation
         if (gps->GeolocalisationGPS(fileGeolocalisation->GetLatitude(), fileGeolocalisation->GetLongitude()))
         {
             GeoPluginVector * geoPluginVector = gps->GetGpsList();
@@ -71,7 +71,7 @@ void CBitmapInfos::SetFilename(const wxString &libelle)
 void CBitmapInfos::UpdateData()
 {
     gpsInfos = "";
-    //Recherche dans la base de données des critères sur le fichier
+    //Recherche dans la base de donnÃ©es des critÃ¨res sur le fichier
     CSqlPhotos sqlPhotos;
     int insertValue = sqlPhotos.GetCriteriaInsert(filename);
     if (insertValue > 0)

@@ -1,1 +1,1 @@
-./Release/GLSLParameter.cpp.o ./Release/GLSLShader.cpp.o ./Release/GLTexture.cpp.o ./Release/GLTextureRgbWithAlpha.cpp.o
+./Debug/GLSLParameter.cpp.o ./Debug/GLSLShader.cpp.o ./Debug/GLTexture.cpp.o ./Debug/GLTextureRgbWithAlpha.cpp.o

@@ -187,7 +187,7 @@ void CCategoryFolderWindow::OnIdle(wxIdleEvent& evt)
 	}
 	else if (!traitementEnd)
 	{
-        //Nettoyage des critres non utilisŽs
+        //Nettoyage des critÂres non utilisÂŽs
         CSqlCriteria criteria;
         criteria.DeleteCriteriaAlone();
         
@@ -250,7 +250,7 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog * folder)
 	if (listFilePath.size() > 0 || listNumPhoto.size() > 0)
 	{
 		//Refresh Criteria 
-		//Mise à jour de l'affichage de l'arborescence
+		//Mise Ã  jour de l'affichage de l'arborescence
 		UpdateCriteria();
 	}
 }
