@@ -1516,27 +1516,31 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromRawPicture(const wxString & szFil
 CRegardsBitmap * CLibPicture::LoadThumbnail(const wxString & fileName, const bool &fromExifOnly)
 {
 
+	int widthThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_X) / 4, 200);
+	int heightThumbnail = max(wxSystemSettings::GetMetric(wxSYS_SCREEN_Y) / 4, 200);
+
 #ifdef WIN32
 
 	CImageDecoder imageDecoder;
 	CRegardsBitmap * pBitmap = nullptr;
 	pBitmap = imageDecoder.DecodeThumbnail(fileName);
-	if (pBitmap == nullptr && !fromExifOnly)
-		pBitmap = LoadThumbnailPicture(fileName, 200, 200);
+	if (pBitmap == nullptr || !fromExifOnly)
+	{
+		pBitmap = LoadThumbnailPicture(fileName, widthThumbnail, heightThumbnail);
+	}
 	else
 		pBitmap->VertFlipBuf();
 
 
 
 	if (pBitmap != nullptr)
-    {
-        CPictureMetadata pictureMetadata(fileName);
-        int orientation = pictureMetadata.GetOrientation();
-        pBitmap->RotateExif(orientation);
-        pBitmap->SetFilename(fileName);
-    }
-		
-    
+	{
+		CPictureMetadata pictureMetadata(fileName);
+		int orientation = pictureMetadata.GetOrientation();
+		pBitmap->RotateExif(orientation);
+		pBitmap->SetFilename(fileName);
+	}
+   
 
 	return pBitmap;
 
