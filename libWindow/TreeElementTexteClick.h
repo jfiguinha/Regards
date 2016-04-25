@@ -9,7 +9,8 @@ public:
 
     void SetTypeLink(const int &typeElement);
     void SetLinkElement(const wxString &linkElement);
-
+    int GetTypeLink();
+    wxString GetLinkElement();
     void ClickElement(wxWindow * window, const int &x, const int &y);
     
 private:

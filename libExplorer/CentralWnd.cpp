@@ -62,6 +62,16 @@ CCentralWnd::~CCentralWnd()
 }
 
 
+
+void CCentralWnd::UpdateCriteria()
+{
+    if (previewThumbnail != nullptr)
+        previewThumbnail->UpdateData();
+    
+    //if(categoryFolder != nullptr)
+    //    categoryFolder->UpdateCriteria();
+}
+
 void CCentralWnd::HideToolbar()
 {
 	if (previewThumbnail != nullptr)

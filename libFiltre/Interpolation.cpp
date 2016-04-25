@@ -34,8 +34,8 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const 
 		{
 			float posY = float(y) * ratioY + posTop;
 			float posX = float(x) * ratioX + posLeft;
-			CRgbaquad * color = In->GetPtColorValue(posX, posY);
-			Out->SetColorValue(x, y, *color);
+			//CRgbaquad * color = In->GetPtColorValue(posX, posY);
+			Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
 		}
 	}
 
@@ -61,8 +61,9 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 		{
 			float posY = float(y) * ratioY;
 			float posX = float(x) * ratioX;
-			CRgbaquad * color = In->GetPtColorValue(posX, posY);
-			Out->SetColorValue(x, y, *color);
+			//CRgbaquad * color = In->GetPtColorValue(posX, posY);
+			//Out->SetColorValue(x, y, *color);
+            Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
 		}
 	}
 

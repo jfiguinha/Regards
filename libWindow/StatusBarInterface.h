@@ -11,10 +11,10 @@ public:
 	virtual void SetRangeProgressBar(const int &range) = 0;
 	virtual void SetPosProgressBar(const int &position) = 0;
 	virtual void SetWindowTitle(const wxString &libelle) = 0;
-	virtual void SetFullscreen() = 0;
-	virtual void SetScreen() = 0;
-	virtual void PrintPreview(CRegardsBitmap * imageToPrint) = 0;
+    virtual void SetFullscreen(){};
+	virtual void SetScreen(){};
+	virtual void PrintPreview(CRegardsBitmap * imageToPrint){};
 	virtual void Exit() = 0;
-	virtual void ShowViewer() = 0;
+	virtual void ShowViewer(){};
 
 };

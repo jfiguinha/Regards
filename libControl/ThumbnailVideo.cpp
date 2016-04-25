@@ -85,7 +85,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	if (numFirstElement > (pIconeList.size() - 1))
 		numFirstElement = (int)pIconeList.size() - 1;
 
-	//Obtention du numÃ©ro du dernier Ã©lÃ©ment
+	//Obtention du numéro du dernier élément
 	//CIcone * pBitmapIconeLast = pIconeList.at(numLastElement);
 	//CIcone * pBitmapIconeFirst = pIconeList.at(numFirstElement);
 	//CThumbnailWindowData * pThumbnailData = pBitmapIconeLast->GetData();
@@ -116,17 +116,17 @@ void CThumbnailVideo::SetVideoFile(const wxString &videoFile)
 	InitScrollingPos();
 	EraseThumbnailList();
 	CreateOrLoadStorageFile();
-	thumbnailPos = 0;
+
 	int width = 0;
 	int height = 0;
 	numItemSelected = -1;
 	numSelect = nullptr;
 	numActif = nullptr;
-	//CrÃ©ation de la liste des icones
+	//Création de la liste des icones
 	int x = 0;
 	int y = 0;
 
-
+    thumbnailPos = 0;
 
 	CVideoThumbnail * videoThumbnail = libPicture.LoadAllVideoThumbnail(videoFile, width, height);
 

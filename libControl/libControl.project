@@ -41,7 +41,11 @@
     <File Name="ThumbnailHorizontal.cpp"/>
     <File Name="ThumbnailVertical.cpp"/>
     <File Name="ThumbnailVideo.cpp"/>
-    <File Name="BitmapInfos.cpp"/>
+    <File Name="CriteriaTree.cpp"/>
+    <File Name="CriteriaTreeWnd.cpp"/>
+    <File Name="ExifGpsTree.cpp"/>
+    <File Name="ExifGpsTreeWnd.cpp"/>
+    <File Name="InfosFileWnd.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="BitmapPrintout.h"/>
@@ -57,7 +61,11 @@
     <File Name="ThumbnailHorizontal.h"/>
     <File Name="ThumbnailVertical.h"/>
     <File Name="ThumbnailVideo.h"/>
-    <File Name="BitmapInfos.h"/>
+    <File Name="CriteriaTree.h"/>
+    <File Name="CriteriaTreeWnd.h"/>
+    <File Name="ExifGpsTree.h"/>
+    <File Name="ExifGpsTreeWnd.h"/>
+    <File Name="InfosFileWnd.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -78,6 +86,7 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
         <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
@@ -150,6 +159,7 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
         <IncludePath Value="../libextern/SDL2-2.0.3/include"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>

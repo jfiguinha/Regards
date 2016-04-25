@@ -478,8 +478,9 @@ void CThumbnailCriteria::Init(const int &typeAffichage)
             icone->SetActive(true);
         }
     }
+    
+    thumbnailPos = 0;
 
-	thumbnailPos = 0;
 	threadDataProcess = true;
 	this->Refresh();
 }
@@ -564,6 +565,8 @@ void CThumbnailCriteria::RenderIcone(wxDC * deviceContext)
 			{
 				RenderBitmap(deviceContext, pBitmapIcone);
 			}
+            else
+                pBitmapIcone->DestroyCache();
 
 			x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
 			if (nbElementX == nbElementByRow)
@@ -636,8 +639,8 @@ void CThumbnailCriteria::UpdateScroll()
     //bool refresh = false;
 	if (pIconeList.size() >= 0)
 	{
-        //int oldLargeur = posLargeur;
-        //int oldHauteur = posHauteur;
+        int oldLargeur = posLargeur;
+        int oldHauteur = posHauteur;
         
         float xRatio = 1.0;
         float yRatio = 1.0;

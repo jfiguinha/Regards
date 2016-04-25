@@ -85,6 +85,9 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowBitmap::OnSize));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
+    Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
+    Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
+    
 }
 
 void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
@@ -355,6 +358,17 @@ void CShowBitmap::DeplacementBas()
 		bitmapWindow->MoveBottom();
 }
 
+void CShowBitmap::OnViewerZoomIn(wxCommandEvent& event)
+{
+    if(pictureToolbar != nullptr)
+        pictureToolbar->ChangeZoomInPos();
+}
+
+void CShowBitmap::OnViewerZoomOut(wxCommandEvent& event)
+{
+    if(pictureToolbar != nullptr)
+        pictureToolbar->ChangeZoomOutPos();
+}
 
 void CShowBitmap::FlipVertical()
 {

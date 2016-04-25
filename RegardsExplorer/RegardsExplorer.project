@@ -101,6 +101,7 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libextern/glew-1.13.0/include"/>
         <IncludePath Value="../libFiltre"/>
+        <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
@@ -142,10 +143,11 @@
         <LibraryPath Value="../libUtility/Debug"/>
         <LibraryPath Value="../libGeolocalisation/Debug"/>
         <LibraryPath Value="../libSqlData/Debug"/>
-        <LibraryPath Value="../../libextern/exiv2-0.24/lib"/>
+        <LibraryPath Value="../libextern/exiv2-0.24/lib"/>
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../libVideoThumbnail/Debug"/>
         <LibraryPath Value="../libFiltre/Debug"/>
+        <LibraryPath Value="../libFiltreInterface/Debug"/>
         <LibraryPath Value="../libWindow/Debug"/>
         <LibraryPath Value="../libControl/Debug"/>
         <LibraryPath Value="../libTheme/Debug"/>
@@ -155,7 +157,7 @@
         <LibraryPath Value="../libRenderBitmap/Debug"/>
         <LibraryPath Value="../libOpenCL/Debug"/>
         <LibraryPath Value="/opt/intel/intel-opencl-1.2-5.0.0.43/opencl/lib64"/>
-        <LibraryPath Value="../../libextern/LibRaw-0.17.0/Debug"/>
+        <LibraryPath Value="../libextern/LibRaw-0.17.0/Debug"/>
         <LibraryPath Value="../libVideoFFMpeg/Debug"/>
         <LibraryPath Value="../libEmail/Debug"/>
         <LibraryPath Value="../libExif/Debug"/>
@@ -189,6 +191,7 @@
         <Library Value="SqlData"/>
         <Library Value="Print"/>
         <Library Value="Filtre"/>
+        <Library Value="FiltreInterface"/>
         <Library Value="RenderBitmap"/>
         <Library Value="Theme"/>
         <Library Value="DataStructure"/>
@@ -349,6 +352,7 @@
         <LibraryPath Value="../libSqlData/Release"/>
         <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../libFiltre/Release"/>
+        <LibraryPath Value="../libFiltreInterface/Release"/>
         <LibraryPath Value="../libWindow/Release"/>
         <LibraryPath Value="../libControl/Release"/>
         <LibraryPath Value="../libTheme/Release"/>
@@ -392,6 +396,7 @@
         <Library Value="SqlData"/>
         <Library Value="Print"/>
         <Library Value="Filtre"/>
+        <Library Value="FiltreInterface"/>
         <Library Value="RenderBitmap"/>
         <Library Value="Theme"/>
         <Library Value="DataStructure"/>

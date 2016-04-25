@@ -754,7 +754,7 @@ int COpenCLEffect::Posterize(const float &level, const float &gamma)
 	vecParam.push_back(input);
 
 	COpenCLParameterInt * paramLevel = new COpenCLParameterInt();
-	paramLevel->SetLibelle("leve");
+	paramLevel->SetLibelle("level");
 	paramLevel->SetValue(level);
 	vecParam.push_back(paramLevel);
 
@@ -1213,7 +1213,7 @@ int COpenCLEffect::Swirl(const float &radius, const float &angle)
 {
 	int widthOut = pBitmap->GetBitmapWidth();
 	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIR");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
 	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 	vector<COpenCLParameter *> vecParam;
 	COpenCLContext * context = GetContext();
@@ -1246,7 +1246,7 @@ int COpenCLEffect::Swirl(const float &radius, const float &angle)
 	vecParam.push_back(paramAngle);
 
 	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Swir");
+	program->ExecuteProgram(programCL->GetProgram(), "Swirl");
 
 	delete program;
 

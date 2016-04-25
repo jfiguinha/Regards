@@ -3,6 +3,9 @@
 #include <RegardsBitmap.h>
 #include <BitmapWndViewer.h>
 #include "EffectParameter.h"
+#include "FiltreEffectInterface.h"
+#include "FilterWindowParam.h"
+
 using namespace Regards::Window;
 using namespace Regards::Control;
 
@@ -11,7 +14,7 @@ namespace Regards
 	namespace Viewer
 	{
 
-		class CFiltreEffect : public CTreeControl
+		class CFiltreEffect : public CTreeControl, public IFiltreEffectInterface
 		{
 		public:
 
@@ -22,6 +25,8 @@ namespace Regards
 
             void UpdateScreenRatio();
 
+            void AddTreeInfos(const wxString &exifKey, const int &position, const vector<int> & value);
+            
 		protected:
 
 			void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
@@ -34,38 +39,6 @@ namespace Regards
 			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
 			void AddTreeInfos(const wxString &exifKey, const int &position, const vector<int> & value, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child);
 
-			void RotateFree();
-			void RotateFreeChangeParam(const int &valueData, const wxString &key);
-
-			void Solarisation();
-			void SolarisationChangeParam(const int &valueData, const wxString &key);
-
-			void BrightAndContrast();
-			void BrightAndContrastChangeParam(const int &valueData, const wxString &key);
-
-			void PhotoFiltre();
-			void PhotoFiltreChangeParam(const int &valueData, const wxString &key);
-
-			void Posterisation();
-			void PosterisationChangeParam(const int &valueData, const wxString &key);
-
-			void RGBFiltre();
-			void RGBFiltreChangeParam(const int &valueData, const wxString &key);
-
-			void Swirl();
-			void SwirlChangeParam(const int &valueData, const wxString &key);
-
-			void Clouds();
-			void CloudsChangeParam(const int &valueData, const wxString &key);
-
-			void MotionBlur();
-			void MotionBlurChangeParam(const int &valueData, const wxString &key);
-
-			void LensFlare();
-			void LensFlareChangeParam(const int &valueData, const wxString &key);
-
-			void Crop();
-
 			int filtre = 0;
 
 			int yPos;
@@ -77,31 +50,14 @@ namespace Regards
 			int widthPosition = 0;
 
 			CEffectParameter * effectParameter;
+            CFilterWindowParam * filterEffect = nullptr;
 
-			wxString libelleEffectRadius = L"";
-			wxString libelleEffectSigma = L"";
-			wxString libelleEffectAngle = L"";
-			wxString libelleEffectColorRed = L"";
-			wxString libelleEffectColorGreen = L"";
-			wxString libelleEffectColorBlue = L"";
-			wxString libelleEffectLevel = L"";
-			wxString libelleEffectGamma = L"";
-			wxString libelleEffectIntensity = L"";
-			wxString libelleEffectContrast = L"";
-			wxString libelleEffectLightness = L"";
-			wxString libelleEffectThreshold = L"";
-			wxString libelleRotationAngle = L"";
-			wxString libelleCloudsFrequency = L"";
-			wxString libelleCloudsAmplitude = L"";
-			wxString libelleCloudsColorFrontRed = L"";
-			wxString libelleCloudsColorFrontGreen = L"";
-			wxString libelleCloudsColorFrontBlue = L"";
-			wxString libelleCloudsColorBackRed = L"";
-			wxString libelleCloudsColorBackGreen = L"";
-			wxString libelleCloudsColorBackBlue = L"";
-			wxString libelleColor = L"";
 			CRegardsBitmap * source = nullptr;
 			CBitmapWndViewer * bitmapViewer = nullptr;
+            
+            tree<CTreeData *>::iterator top;
+            tree<CTreeData *>::iterator child;
+            int index = 0;
 		};
 	}
 }

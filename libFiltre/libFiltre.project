@@ -46,6 +46,7 @@
     <File Name="Rotate.cpp"/>
     <File Name="Rotation.cpp"/>
     <File Name="Selection.cpp"/>
+    <File Name="GaussianBlur.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="Color.h"/>
@@ -67,6 +68,7 @@
     <File Name="RotateByShearRGB.h"/>
     <File Name="Rotation.h"/>
     <File Name="Selection.h"/>
+    <File Name="GaussianBlur.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -91,6 +93,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libControl"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -138,6 +141,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libControl"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
       </Compiler>

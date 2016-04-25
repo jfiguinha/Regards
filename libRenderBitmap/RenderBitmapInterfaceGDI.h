@@ -42,16 +42,10 @@ namespace Regards
 			void AddBitmapToScalePosition(const wxString &textureName, const int &widthScale, const int &heightScale, const wxRect &rc, const int &left, const int &top);
 			void RenderToScreen(wxDC * deviceContext);
 			void Transition(const wxString &textureName, const int &step);
-			void PhotoFiltre(const CRgbaquad &color, const int &intensity);
-			void RGBFiltre(const int &red, const int &green, const int &blue);
-			void RotateFree(const int &angle);
-			void Swirl(const float &radius, const float &angle, const float &bitmapWidth, const float &bitmapHeight);
-			void BrightnessAndContrast(const int &lightness, const int &contrast);
-			void Posterize(const float &level, const float &gamma);
-			void Solarize(const long &threshold);
-			void Clouds(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave);
+            void RenderEffect(const int &numEffect, CEffectParameter * effectParameter);
+            void RotateFree(const int &angle);
 			int GetType(){ return RENDERGDI; };
-			void RedEye(float &strength, const wxRect& rSelectionBox);
+			
 			int GetTextureID(const wxString &textureName);
 
 		private:

@@ -41,11 +41,14 @@ namespace Regards
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
             void OnIconSizeMore(wxCommandEvent& event);
+#ifndef VIEWER
 			void OnClose(wxCloseEvent& event);
+#endif
 			void OnKeyDown(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
 			void OnHello(wxCommandEvent& event);
 			void OnConfiguration(wxCommandEvent& event);
+			void OnEraseDatabase(wxCommandEvent& event);
 			void OnConfigurationOpenCL(wxCommandEvent& event);
 			void OnSelectFolder(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
@@ -63,6 +66,11 @@ namespace Regards
 			wxPreviewFrameModalityKind m_previewModality;
 			bool fullscreen = false;
             static bool viewerMode;
+            bool onExit = false;
+
+			void OnTimerLoadPicture(wxTimerEvent& event);
+			wxTimer * loadPictureTimer;
+			wxString filenameTimer;
 		};
 	}
 }

@@ -95,19 +95,22 @@ CExplorerFrame::CExplorerFrame(const wxString& title, const wxPoint& pos, const 
     menuSizeIcon->Append(ID_SIZEICONLESS, "&Smallest", "Smallest");
     menuSizeIcon->Append(ID_SIZEICONMORE, "&Biger", "Biger");
     
-	wxMenu *menuFile = new wxMenu;
-	menuFile->Append(ID_Configuration, "&Configuration", "Configuration");
-	menuFile->Append(ID_OpenCL, "&OpenCL Configuration", "Configuration OpenCL");
-	menuFile->Append(WXPRINT_PAGE_SETUP, wxT("Page Set&up..."), wxT("Page setup"));
+	//wxMenu *menuFile = new wxMenu;
+    wxMenu *menuParameter = new wxMenu;
+    
+	menuParameter->Append(ID_Configuration, "&Configuration", "Configuration");
+	menuParameter->Append(ID_OpenCL, "&OpenCL Configuration", "Configuration OpenCL");
+	menuParameter->Append(WXPRINT_PAGE_SETUP, wxT("Page Set&up..."), wxT("Page setup"));
 #ifdef __WXMAC__
-	menuFile->Append(WXPRINT_PAGE_MARGINS, wxT("Page Margins..."), wxT("Page margins"));
+	menuParameter->Append(WXPRINT_PAGE_MARGINS, wxT("Page Margins..."), wxT("Page margins"));
 #endif
-	menuFile->Append(wxID_EXIT);
+	//menuFile->Append(wxID_EXIT);
 	wxMenu *menuHelp = new wxMenu;
     menuHelp->Append(wxID_HELP);
 	menuHelp->Append(wxID_ABOUT);
 	wxMenuBar *menuBar = new wxMenuBar;
-	menuBar->Append(menuFile, "&File");
+	//menuBar->Append(menuFile, "&File");
+    menuBar->Append(menuParameter, "&Parameter");
     menuBar->Append(menuSizeIcon, "&Icon Size");
 	menuBar->Append(menuHelp, "&Help");
 	SetMenuBar(menuBar);
@@ -119,8 +122,35 @@ CExplorerFrame::CExplorerFrame(const wxString& title, const wxPoint& pos, const 
 
 void CExplorerFrame::OnKeyDown(wxKeyEvent& event)
 {
-	//wxMessageBox(wxString::Format("KeyDown: %i\n", (int)event.GetKeyCode()));
-	event.Skip();
+    switch (event.GetKeyCode())
+    {          
+        case WXK_PAGEUP:
+            mainWindow->ImageSuivante();
+            break;
+            
+        case WXK_PAGEDOWN:
+            mainWindow->ImagePrecedente();
+            break;
+            
+            
+        case WXK_SPACE:
+            mainWindow->ImageSuivante();
+            break;
+            
+        case WXK_END:
+            mainWindow->ImageFin();
+            break;
+            
+        case WXK_HOME:
+            mainWindow->ImageDebut();
+            break;
+            
+        default:
+            event.Skip();
+            break;
+            
+    }
+	
 }
 
 void CExplorerFrame::ShowViewer()

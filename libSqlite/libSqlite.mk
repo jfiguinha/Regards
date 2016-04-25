@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libSqlite
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libSqlite"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)SQLITE_THREADSAFE=1 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libSqlite.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
+LinkOptions            :=  -s 
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=  -std=c++11  $(Preprocessors)
+CFLAGS   :=  -O3 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -77,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libSqlite"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libSqlite"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -107,6 +107,6 @@ $(IntermediateDirectory)/sqlite3.c$(PreprocessSuffix): sqlite3.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

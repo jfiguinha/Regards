@@ -33,14 +33,14 @@
     <File Name="MyCentralWindowIntro.cpp"/>
     <File Name="MyFrameIntro.cpp"/>
     <File Name="TitleIntro.cpp"/>
-    <File Name="InfoAbout.cpp"/>
+    <File Name="infoAbout.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="IntroTheme.h"/>
     <File Name="MyCentralWindowIntro.h"/>
     <File Name="MyFrameIntro.h"/>
     <File Name="TitleIntro.h"/>
-    <File Name="InfoAbout.h"/>
+    <File Name="infoAbout.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

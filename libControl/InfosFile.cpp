@@ -68,10 +68,14 @@ void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue
     wchar_t * token1;
     
 	// Establish string and get the first token:
-#ifdef WIN32
+#ifdef WIN32 
+#if _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &token1); // C4996
+#endif
+#else
+    wchar_t * token = wcstok(informations, seps, &token1); // C4996
 #endif
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
@@ -79,9 +83,13 @@ void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue
 		CTreeData * treeData = new CTreeData();
 		treeData->SetKey(token);
 #ifdef WIN32
+#if _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &token1); // C4996
+#endif
+#else
+        token = wcstok(nullptr, seps, &token1); // C4996
 #endif
 		if (token != nullptr)
 		{
@@ -177,6 +185,8 @@ void CInfosFile::SetFile(const wxString & picture)
 #ifdef __APPLE__        
         listItem = appleReadExif.GetPictureMetadata(picture);
 #else
+
+		
 		listItem = metadata.GetMetadataFromPicture();
 #endif
     }
@@ -199,20 +209,17 @@ void CInfosFile::SetFile(const wxString & picture)
         for(CMetadata meta : listItem)
         {
             tree<CTreeData *>::iterator child = top;
-			/*
-			OutputDebugString(L"Meta Key : ");
-			OutputDebugString(meta.key.ToStdWstring().c_str());
-			OutputDebugString(L"Meta Value : ");
-			OutputDebugString(meta.value.ToStdWstring().c_str());
-			OutputDebugString(L"\n");
-			*/
             AddTreeInfos(meta.key, meta.value, index, top, child);
             index++;
         }
     }
 
+#ifdef WIN32
+	wxString createDatatime = metadata.GetCreationDate();
+	if (createDatatime == "")
+		showOtherInformation = true;
 
-
+#endif
 	if(showOtherInformation)
 	{
 		CLibPicture libPicture;
@@ -249,6 +256,18 @@ void CInfosFile::SetFile(const wxString & picture)
 		treeDataHeight->SetKey(L"Height");
 		treeDataHeight->SetValue(exifinfos);
 		tr.append_child(child, treeDataHeight);
+
+		wxStructStat strucStat;
+		wxStat(picture, &strucStat);
+		//wxFileOffset filelen=strucStat.st_size;
+		wxDateTime last_modified_time(strucStat.st_mtime);
+		wxString dateTimeInfos = last_modified_time.FormatISOCombined(' ');
+
+		CTreeData * treeDataDateTime = new CTreeData();
+		treeDataDateTime->SetIsParent(false);
+		treeDataDateTime->SetKey(L"Date Time");
+		treeDataDateTime->SetValue(dateTimeInfos);
+		tr.append_child(child, treeDataDateTime);
 
 	}
 

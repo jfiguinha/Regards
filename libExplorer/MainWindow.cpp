@@ -11,6 +11,7 @@
 #include "CategoryFolderWindow.h"
 #include <SqlInsertFile.h>
 #include <SqlPhotoCriteria.h>
+#include <SqlCriteria.h>
 #include <SqlFindFolderCatalog.h>
 #include <SQLRemoveData.h>
 #include <SqlFolderCatalog.h>
@@ -20,7 +21,7 @@
 #include "PreviewThumbnail.h"
 #include <FileGeolocation.h>
 #include <ConvertUtility.h>
-
+#include <SqlGps.h>
 using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Explorer;
@@ -33,7 +34,7 @@ enum
     TIMER_REFRESHLIST = 2
 };
 
-#define EVENT_CRITERIAUPDATE 1
+wxDEFINE_EVENT(EVENT_CRITERIAUPDATE, wxCommandEvent);
 
 CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer, IMainInterface * mainInterface)
 	: CWindowMain(parent, id)
@@ -108,6 +109,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(TIMER_REFRESHFOLDER, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefreshListFolder), nullptr, this);
     Connect(TIMER_REFRESHLIST, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefreshList), nullptr, this);
     Connect(EVENT_CRITERIAUPDATE, wxCommandEventHandler(CMainWindow::CriteriaUpdate));
+    Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
     Connect(VIDEO_START, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoStart));
     
 
@@ -124,6 +126,21 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 void CMainWindow::OnVideoStart(wxCommandEvent& event)
 {
     centralWnd->StopLoadingPicture();
+}
+
+
+
+void CMainWindow::CriteriaChange(wxCommandEvent& event)
+{
+    //Refresh Criteria
+    //Mise à jour de l'affichage de l'arborescence
+    CCategoryFolderWindow * catalogWnd = (CCategoryFolderWindow *)this->FindWindowById(CATEGORYFOLDERWINDOWID);
+    if (catalogWnd != nullptr)
+        catalogWnd->UpdateCriteria();
+    
+    //Update List Picture
+    if (centralWnd != nullptr)
+        centralWnd->UpdateCriteria();
 }
 
 void CMainWindow::UpdateScreenRatio()
@@ -218,16 +235,16 @@ void CMainWindow::FindPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria)
     CSqlPhotoCriteria photoCriteria;
     
     CListCriteriaPhoto listCriteriaPhoto;
-    wxString latitude = "";
-    wxString longitude = "";
-    wxString latitudeRef = "";
-    wxString longitudeRef = "";
+    //wxString latitude = "";
+    //wxString longitude = "";
+    //wxString latitudeRef = "";
+    //wxString longitudeRef = "";
     
     listCriteriaPhoto.numCatalog = NUMCATALOGID;
     listCriteriaPhoto.numPhotoId = findPhotoCriteria->photo.GetId();
     listCriteriaPhoto.photoPath = findPhotoCriteria->photo.GetPath();
     
-	geoloc.SetFile(listCriteriaPhoto.photoPath);
+	geoloc.SetFile(listCriteriaPhoto.photoPath, true);
 	
 
 	if (geoloc.HasGps())
@@ -272,14 +289,21 @@ void CMainWindow::FindPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria)
     }
 
 
-	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, geoloc.HasGps());
+	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, true);
     
+    if (geoloc.HasGps())
+    {
+        //Add Gps Info into the database
+        CSqlGps sqlGps;
+        sqlGps.DeleteGps(findPhotoCriteria->photo.GetPath());
+        sqlGps.InsertGps(findPhotoCriteria->photo.GetPath(), geoloc.GetLatitude(), geoloc.GetLongitude());
+    }
 
     if(findPhotoCriteria->mainWindow != nullptr)
     {
-        wxCommandEvent event(EVENT_CRITERIAUPDATE);
-        event.SetClientData(findPhotoCriteria);
-        wxPostEvent(findPhotoCriteria->mainWindow, event);
+		wxCommandEvent * event = new wxCommandEvent(EVENT_CRITERIAUPDATE);
+        event->SetClientData(findPhotoCriteria);
+		wxQueueEvent(findPhotoCriteria->mainWindow, event);
     }
 }
 
@@ -312,6 +336,25 @@ void CMainWindow::CriteriaUpdate(wxCommandEvent& event)
     delete findPhotoCriteria;
     
     numProcess--;
+}
+
+void CMainWindow::RefreshFilter()
+{
+    numImage = 0;
+    photosVector.clear();
+    CSqlInsertFile sqlInsertFile;
+    sqlInsertFile.GetAllPhotos(&photosVector);
+    
+    it = photosVector.begin();
+    
+    statusBarExplorer->SetRangeProgressBar((int)photosVector.size());
+    statusBarExplorer->SetPosProgressBar(0);
+    wxString message = "Image Processing 0 / " + to_string(photosVector.size());
+    statusBarExplorer->SetText(3, message);
+    update = false;
+    traitementEnd = false;
+    
+    timerRefreshList->Start(3000);
 }
 
 void CMainWindow::OnIdle(wxIdleEvent& evt)
@@ -357,9 +400,15 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
 	}
     else if(!traitementEnd)
     {
+        //Nettoyage des critres non utilisŽs
+        CSqlCriteria criteria;
+        criteria.DeleteCriteriaAlone();
+        
         timerRefreshList->Stop();
 		RefreshPhotoList();
         traitementEnd = true;
+        
+
     }
 	else if (refreshFolder)
 	{
@@ -426,6 +475,30 @@ void CMainWindow::ShowRegardsViewer()
 		statusBarExplorer->ShowViewer();
 }
 
+void CMainWindow::ImageSuivante()
+{
+    if(centralWnd != nullptr)
+        centralWnd->ImageSuivante();
+}
+
+void CMainWindow::ImagePrecedente()
+{
+    if(centralWnd != nullptr)
+        centralWnd->ImagePrecedente();
+}
+
+void CMainWindow::ImageFin()
+{
+    if(centralWnd != nullptr)
+        centralWnd->ImageFin();
+}
+
+void CMainWindow::ImageDebut()
+{
+    if(centralWnd != nullptr)
+        centralWnd->ImageDebut();
+}
+
 
 //--------------------------------------------------------------------
 //Ajout d'un répertoire
@@ -461,6 +534,7 @@ int CMainWindow::AddFolder()
 
 	return 1;
 }
+
 
 
 //--------------------------------------------------------------------

@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libDataStructure
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libDataStructure"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)__WXGTK__ 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libDataStructure.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
+LinkOptions            :=  -s 
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libUtility $(IncludeSwitch)../libResource $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=  -fopenmp -std=c++11 -Wall  $(Preprocessors)
+CFLAGS   :=  -O2 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -61,7 +61,7 @@ AS       := /usr/bin/as
 ##
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/Catalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/Country.cpp$(ObjectSuffix) $(IntermediateDirectory)/Criteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/FolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/GeoPluginValue.cpp$(ObjectSuffix) $(IntermediateDirectory)/PhotoCategorie.cpp$(ObjectSuffix) $(IntermediateDirectory)/PhotoCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/Photos.cpp$(ObjectSuffix) $(IntermediateDirectory)/RegardsBitmap.cpp$(ObjectSuffix) $(IntermediateDirectory)/RGBAQuad.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ThumbnailData.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailDataStorage.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeData.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeDataEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeDataLink.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/ThumbnailData.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailDataStorage.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeData.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeDataEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeDataLink.cpp$(ObjectSuffix) $(IntermediateDirectory)/PhotoGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeDataCategory.cpp$(ObjectSuffix) 
 
 
 
@@ -78,15 +78,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libDataStructure"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libDataStructure"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -222,12 +222,28 @@ $(IntermediateDirectory)/TreeDataLink.cpp$(DependSuffix): TreeDataLink.cpp
 $(IntermediateDirectory)/TreeDataLink.cpp$(PreprocessSuffix): TreeDataLink.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeDataLink.cpp$(PreprocessSuffix) "TreeDataLink.cpp"
 
+$(IntermediateDirectory)/PhotoGps.cpp$(ObjectSuffix): PhotoGps.cpp $(IntermediateDirectory)/PhotoGps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libDataStructure/PhotoGps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PhotoGps.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PhotoGps.cpp$(DependSuffix): PhotoGps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PhotoGps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PhotoGps.cpp$(DependSuffix) -MM "PhotoGps.cpp"
+
+$(IntermediateDirectory)/PhotoGps.cpp$(PreprocessSuffix): PhotoGps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PhotoGps.cpp$(PreprocessSuffix) "PhotoGps.cpp"
+
+$(IntermediateDirectory)/TreeDataCategory.cpp$(ObjectSuffix): TreeDataCategory.cpp $(IntermediateDirectory)/TreeDataCategory.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libDataStructure/TreeDataCategory.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeDataCategory.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/TreeDataCategory.cpp$(DependSuffix): TreeDataCategory.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeDataCategory.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeDataCategory.cpp$(DependSuffix) -MM "TreeDataCategory.cpp"
+
+$(IntermediateDirectory)/TreeDataCategory.cpp$(PreprocessSuffix): TreeDataCategory.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeDataCategory.cpp$(PreprocessSuffix) "TreeDataCategory.cpp"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

@@ -11,6 +11,7 @@ CInfosToolbar::CInfosToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
     saveLastPush = true;
 	wxString libelleinfos = CLibResource::LoadStringFromResource(L"LBLINFOS",1);
 	wxString libellemap = CLibResource::LoadStringFromResource(L"LBLMAPS",1);
+	wxString libelleCriteria = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);
 
 	infos = new CToolbarTexte(themeToolbar.texte);
 	infos->SetCommandId(WM_INFOS);
@@ -21,6 +22,12 @@ CInfosToolbar::CInfosToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 	map->SetCommandId(WM_MAPS);
 	map->SetLibelle(libellemap);
 	navElement.push_back(map);
+
+	criteria = new CToolbarTexte(themeToolbar.texte);
+	criteria->SetCommandId(WM_CRITERIA);
+	criteria->SetLibelle(libelleCriteria);
+	navElement.push_back(criteria);
+
 	this->toolbarInterface = toolbarInterface;
 }
 
@@ -31,6 +38,12 @@ CInfosToolbar::~CInfosToolbar()
 void CInfosToolbar::SetInfosPush()
 {
     infos->SetPush(true);
+}
+
+
+void CInfosToolbar::SetCriteriaPush()
+{
+    criteria->SetPush(true);
 }
 
 void CInfosToolbar::SetMapPush()

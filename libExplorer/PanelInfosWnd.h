@@ -1,8 +1,8 @@
 #pragma once
 #include "InfosToolbar.h"
 #include <ToolbarInterface.h>
-#include <InfosFile.h>
-#include <ScrollbarWnd.h>
+#include <InfosFileWnd.h>
+#include <CriteriaTreeWnd.h>
 #include <wx/webview.h>
 #include <string>
 #include <thread>   
@@ -19,17 +19,6 @@ namespace Regards
 {
 	namespace Explorer
 	{
-        class CPanelInfosWnd;
-        
-        class CThreadLoadInfos
-        {
-        public:
-            CPanelInfosWnd * panelInfos = nullptr;
-            CInfosFile * infosFileWnd = nullptr;
-            wxString filename;
-            std::thread * threadLoadInfos = nullptr;
-        };
-        
 		class CPanelInfosWnd : public CWindowMain, public CToolbarInterface
 		{
 		public:
@@ -37,16 +26,15 @@ namespace Regards
 			~CPanelInfosWnd();
 			void ShowInfos();
 			void ShowMap();
+            void ShowCriteria();
 			void SetFile(const wxString &filename);
             void UpdateScreenRatio();
-            
-            void StartLoadingPicture(wxWindow * window);
-            void StopLoadingPicture(wxWindow * window);
+            void UpdateData();
+            void StartLoadingPicture(wxCommandEvent &event);
+            void StopLoadingPicture(wxCommandEvent &event);
             
 		protected:
 
-            static void GenerateTreeInfos(CThreadLoadInfos * threadInfos);
-            void UpdateTreeInfosEvent(wxCommandEvent &event);
             void OnPaint(wxPaintEvent& event);
             
 			void LoadInfo();
@@ -62,14 +50,9 @@ namespace Regards
 			wxString MapsUpdate();
             
             wxAnimationCtrl * m_animationCtrl = nullptr;
-
-			CScrollbarWnd * InfosFileScroll = nullptr;
-			CTreeWindow * treeWindow = nullptr;
-			CInfosFile * infosFile = nullptr;
+            CCriteriaTreeWnd * criteriaTreeWnd = nullptr;
+			CInfosFileWnd * infosFileWnd = nullptr;
 			wxWebView * webBrowser = nullptr;
-
-            //wxWindow * emptyWindow = nullptr;
-			CInfosFile * oldInfosFileControl = nullptr;
 			CInfosToolbar * infosToolbar = nullptr;
 			CFileGeolocation * fileGeolocalisation = nullptr;
             wxString url = "http://www.google.fr";

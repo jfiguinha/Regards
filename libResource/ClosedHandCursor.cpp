@@ -1,6 +1,6 @@
 #include "ClosedHandCursor.h"
 
-#ifdef WIN32
+#ifndef __APPLE__
 
 	static char down_mask[] = {
 		0xFF, 0xFF, 0xFF, 0xFF,
@@ -73,7 +73,7 @@
 
 wxCursor CResourceCursor::GetClosedHand()
 	{
-#ifdef WIN32
+#ifndef __APPLE__
 		wxBitmap down_bitmap(down_bits, 32, 32);
 		wxBitmap down_mask_bitmap(down_mask, 32, 32);
 		down_bitmap.SetMask(new wxMask(down_mask_bitmap));

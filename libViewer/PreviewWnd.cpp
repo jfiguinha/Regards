@@ -20,7 +20,6 @@ using namespace Regards::Viewer;
 CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
 	: CWindowMain(parent, id)
 {
-	
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 	
 	if (viewerTheme != nullptr)
@@ -426,6 +425,12 @@ bool CPreviewWnd::SetAnimation(const wxString &filename)
         this->Resize();
     }
     return 1;
+}
+
+void CPreviewWnd::UpdateInfos()
+{
+    if(bitmapInfos != nullptr)
+        bitmapInfos->UpdateData();
 }
 
 bool CPreviewWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)

@@ -23,7 +23,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 {
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
     
-	
     wxString urlServer;
     CRegardsConfigParam * param = CParamInit::getInstance();
     if (param != nullptr)
@@ -66,7 +65,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 	previewWindow = new CPreviewWnd(panePreview, PREVIEWVIEWERID, videoEffectParameter, statusBarInterface, fileGeolocalisation);
 	panelInfosWindow = new CPanelInfosWnd(paneInfos, PANELINFOSWNDID, statusBarInterface, videoEffectParameter, fileGeolocalisation);
 
-	
 	bool showInfos = true;
 	int positionBar = 0;
 
@@ -79,7 +77,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 
 	paneInfos->SetOtherWindow(panelInfosWindow);
 	panePreview->SetOtherWindow(previewWindow);
-
 
 	if (showInfos)
 	{
@@ -94,7 +91,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		this->SetWindow(panePreview, clickInfoToolbar);
 		RedrawBarPos();
 	}
-	
 }
 
 
@@ -387,7 +383,16 @@ bool CPreviewInfosWnd::SetAnimation(const wxString &filename)
 
 	return returnValue;
 }
-
+#ifdef VIEWER
+void CPreviewInfosWnd::UpdateInfos()
+{
+    if(previewWindow != nullptr)
+        previewWindow->UpdateInfos();
+    
+    if(panelInfosWindow != nullptr)
+        panelInfosWindow->UpdateData();
+}
+#endif
 void CPreviewInfosWnd::StartLoadingPicture()
 {
     previewWindow->StartLoadingPicture();
@@ -395,6 +400,7 @@ void CPreviewInfosWnd::StartLoadingPicture()
 
 void CPreviewInfosWnd::SetPanelInfos(const bool &isThumbnail)
 {
+    
 	if (panelInfosWindow->GetFilename() != filename)
 	{
 		if (isVideo)
@@ -463,11 +469,11 @@ void CPreviewInfosWnd::FullscreenMode()
 void CPreviewInfosWnd::ScreenMode()
 {
 	fullscreen = false;
-    paneInfos->Show(true);
+	paneInfos->Show(paneInfosShow);
     panePreview->SetTitleBarVisibility(true);
     previewWindow->SetFullscreen(false);
     
-    if(!paneInfos)
+	if (!paneInfosShow)
         ClosePane(PANE_INFOS);
     else
     {

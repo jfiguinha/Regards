@@ -71,7 +71,7 @@ namespace Regards
 			void LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
 			int GetTextureID(const wxString &textureName);
 			GLTexture * GetTexture(const wxString &textureName);
-
+            void RenderEffect(const int &numEffect, CEffectParameter * effectParameter);
             CRegardsBitmap * GetRenderBitmap();
             void UpdateRenderTexture(CRegardsBitmap * image);
             

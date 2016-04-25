@@ -26,6 +26,7 @@ namespace Regards
 			void ClickShowButton(const int &id);
 			void ShowPreview();
             void UpdateScreenRatio();
+            void UpdateData();
             
 		private:
 

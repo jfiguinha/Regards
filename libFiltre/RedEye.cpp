@@ -163,10 +163,11 @@ bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap,const CRgbaquad & backcolor,
             if (a<0)
                 a=0;
             
-            CRgbaquad * color = pBitmap->GetPtColorValue(x,y);
-            color->SetRed((uint8_t)(a*min(color->GetGreen(),color->GetBlue())+(1.0f-a)*color->GetRed()));
-            
-        }
+            //CRgbaquad * color = pBitmap->GetPtColorValue(x,y);
+            //color->SetRed((uint8_t)(a*min(color->GetGreen(),color->GetBlue())+(1.0f-a)*color->GetRed()));
+            CRgbaquad color = pBitmap->GetColorValue(x,y);
+            color.SetRed((uint8_t)(a*min(color.GetGreen(),color.GetBlue())+(1.0f-a)*color.GetRed()));
+            pBitmap->SetColorValue(x,y,color);       }
     }
     
     return true;

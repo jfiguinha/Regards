@@ -59,6 +59,13 @@
     <File Name="TreeElementTriangle.cpp"/>
     <File Name="TreeWindow.cpp"/>
     <File Name="TreeElementTexteClick.cpp"/>
+    <File Name="BitmapInfos.cpp"/>
+    <File Name="BitmapInfosCheckBox.cpp"/>
+    <File Name="BitmapInfosGps.cpp"/>
+    <File Name="CalendarDialogBox.cpp"/>
+    <File Name="CalendarSelect.cpp"/>
+    <File Name="MapDialogBox.cpp"/>
+    <File Name="MapSelect.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="BitmapInterface.h"/>
@@ -99,6 +106,13 @@
     <File Name="TreeElementTriangle.h"/>
     <File Name="TreeWindow.h"/>
     <File Name="TreeElementTexteClick.h"/>
+    <File Name="BitmapInfos.h"/>
+    <File Name="BitmapInfosCheckBox.h"/>
+    <File Name="BitmapInfosGps.h"/>
+    <File Name="CalendarDialogBox.h"/>
+    <File Name="CalendarSelect.h"/>
+    <File Name="MapDialogBox.h"/>
+    <File Name="MapSelect.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

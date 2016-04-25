@@ -186,10 +186,10 @@ int CLibPicture::TestExtension(const wxString & ext)
 
 	if (ext == L"pgx")
 		return PGX;
-
+#ifdef LIBPDF
 	if (ext == L"pdf")
 		return PDF;
-
+#endif
 	if (ext == L"ppm")
 		return PPM;
 
@@ -330,6 +330,18 @@ int CLibPicture::TestExtension(const wxString & ext)
 
 #endif
 	return 0;
+}
+
+bool CLibPicture::TestIsPicture(const wxString & szFileName)
+{
+    int numExt = 0;
+    wxFileName fichier(szFileName.c_str());
+    wxString extension = fichier.GetExt();
+    
+    numExt = TestExtension(extension.Lower());
+    if (numExt < 100 && numExt != ANI && numExt != 0)
+        return true;
+    return false;
 }
 
 bool CLibPicture::TestIsVideo(const wxString & szFileName)
@@ -892,100 +904,10 @@ int CLibPicture::SavePicture(const wxString & fileName, CRegardsBitmap * bitmap)
 {
     wxString wxfileName;
     int iFormat = 0;
-    
-#ifdef __APPLE__
-    
-    SaveFileFormat saveFormat(nullptr);
-    saveFormat.ShowModal();
-    if(!saveFormat.IsOk())
-        return -1;
-    
-    wxString extension;
-    iFormat = saveFormat.GetSaveFormat();
-    switch(iFormat)
-    {
-        case 0:
-            iFormat = BMP;
-            extension = "bmp";
-            break;
-            
-        case 1:
-            iFormat = TGA;
-            extension = "tga";
-            break;
-            
-        case 2:
-            iFormat = PCX;
-            extension = "pcx";
-            break;
-            
-        case 3:
-            iFormat = MNG;
-            extension = "mng";
-            break;
-            
-        case 4:
-            iFormat = TIFF;
-            extension = "tif";
-            break;
-            
-        case 5:
-            iFormat = PNG;
-            extension = "png";
-            break;
-            
-        case 6:
-            iFormat = GIF;
-            extension = "gif";
-            break;
 
-        case 7:
-            iFormat = BPG;
-            extension = "bpg";
-            break;
-            
-        case 8:
-            iFormat = JPEG;
-            extension = "jpg";
-            break;
-            
-        case 9:
-            iFormat = PNM;
-            extension = "pnm";
-            break;
-            
-        case 10:
-            iFormat = JPC;
-            extension = "jpc";
-            break;
-            
-        case 11:
-            iFormat = JPEG2000;
-            extension = "jp2";
-            break;
-            
-        case 12:
-            iFormat = PPM;
-            extension = "ppm";
-            break;
-            
-        case 13:
-            iFormat = XPM;
-            extension = "xpm";
-            break;
-    }
-    int index = fileName.Find('.');
-    wxfileName = fileName.SubString(0,index);
-    wxfileName.Append(extension);
-    
-#else
-    
-    //int iReturn = 0;
     iFormat = TestImageFormat(fileName);
     wxfileName = fileName;
-    
-#endif
-
+ 
 	int option = 0;
 	int quality = 0;
 

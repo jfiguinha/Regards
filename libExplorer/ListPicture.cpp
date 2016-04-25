@@ -17,9 +17,9 @@
 #include <ConvertUtility.h>
 #include <wx/dir.h>
 #include <libPicture.h>
-//#include "MainWindow.h"
-#define EVENT_REFRESHVIEWER 10001
-#define EVENT_REFRESHTHUMBNAIL 10002
+#include <MapSelect.h>
+#include <CalendarSelect.h>
+wxDEFINE_EVENT(EVENT_REFRESHVIEWER, wxCommandEvent);
 
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -31,7 +31,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 	
 	CExplorerTheme * explorerTheme = CExplorerThemeInit::getInstance();
     Connect(EVENT_REFRESHVIEWER, wxCommandEventHandler(CListPicture::RefreshViewer));
-    Connect(EVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CListPicture::RefreshThumbnail));
 
 	if (explorerTheme != nullptr)
 	{
@@ -131,6 +130,61 @@ void CListPicture::ThumbnailZoomPosition(const int &position)
 	thumbnailWindow->ZoomPosition(position);
 }
 
+void CListPicture::GeolocalizeFile()
+{
+    vector<CThumbnailData *> listItem;
+    thumbnailWindow->GetSelectItem(listItem);
+    if (listItem.size() > 0)
+    {
+        CMapSelect mapSelect;
+        wxString url = "http://www.openstreetmap.org";
+        wxString infoGpsLocalisation = mapSelect.SelectNewMapLocalisation(this, url);
+        if(infoGpsLocalisation != "")
+        {
+            wxString caption = CLibResource::LoadStringFromResource(L"LBLGeoModifCaption", 1);
+            wxString text = CLibResource::LoadStringFromResource(L"LBLGeoModifText", 1);
+            wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLGeoModifMessage", 1);
+            wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLGeoModifFinalMessage", 1);
+            wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+            CopyFileDlg copyFile(this);
+            
+            copyFile.SetSelectItem(&listItem);
+            copyFile.SetMode(3);
+            copyFile.SetNewGeoInfos(mapSelect.GetLatitudeNumber(), mapSelect.GetLongitudeNumber(), mapSelect.GetLatitude(), mapSelect.GetLongitude(), infoGpsLocalisation);
+            copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
+            copyFile.Start();
+            copyFile.ShowModal();
+        }
+    }
+}
+
+void CListPicture::ChangeDateFile()
+{
+    vector<CThumbnailData *> listItem;
+    thumbnailWindow->GetSelectItem(listItem);
+    if (listItem.size() > 0)
+    {
+        wxDateTime dt = wxDateTime::Today();
+        CCalendarSelect calendarSelect;
+        if(calendarSelect.SelectNewDate(this, dt))
+        {
+            wxString caption = CLibResource::LoadStringFromResource(L"LBLDateModifCaption", 1);
+            wxString text = CLibResource::LoadStringFromResource(L"LBLDateModifText", 1);
+            wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLDateModifMessage", 1);
+            wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLDateModifFinalMessage", 1);
+            wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+            CopyFileDlg copyFile(this);
+            
+            copyFile.SetSelectItem(&listItem);
+            copyFile.SetMode(4);
+            copyFile.SetNewDate(calendarSelect.GetSelectDate(), calendarSelect.GetSelectStringDate());
+            copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
+            copyFile.Start();
+            copyFile.ShowModal();
+        }
+    }
+}
+
 void CListPicture::ExportFile()
 {
 	vector<CThumbnailData *> listItem;
@@ -166,38 +220,35 @@ void CListPicture::ExportFile()
 					case 4://JPEG
 						infoFile.outputFormat = JPEG;
 						break;
-					case 5://BPG
-						infoFile.outputFormat = BPG;
-						break;
-					case 6:
+					case 5:
 						//BMP
 						infoFile.outputFormat = BMP;
 						break;
-					case 7:
+					case 6:
 						infoFile.outputFormat = TGA;
 						//TGA
 						break;
-					case 8:
+					case 7:
 						//PCX
 						infoFile.outputFormat = PCX;
 						break;
-					case 9:
+					case 8:
 						//MNG
 						infoFile.outputFormat = MNG;
 						break;
-					case 10:
+					case 9:
 						//PNM
 						infoFile.outputFormat = PNM;
 						break;
-					case 11:
+					case 10:
 						//JPC
 						infoFile.outputFormat = JPC;
 						break;
-					case 12:
+					case 11:
 						//JPEG2000
 						infoFile.outputFormat = JPEG2000;
 						break;
-					case 13:
+					case 12:
 						//PPM
 						infoFile.outputFormat = PPM;
 						break;
@@ -336,30 +387,21 @@ void CListPicture::RefreshViewer(wxCommandEvent& event)
     CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINEXPLORERWINDOWID);
     if (mainWindow != nullptr)
         mainWindow->RefreshViewer();
-}
 
-void CListPicture::RefreshThumbnail(wxCommandEvent& event)
-{
-    if(thumbnailWindow != nullptr)
-        thumbnailWindow->Init(typeAffichage);
+	if (thumbnailWindow != nullptr)
+		thumbnailWindow->Init(typeAffichage);
 }
-
 
 void CListPicture::RefreshList()
 {
-    wxCommandEvent event(EVENT_REFRESHVIEWER);
-    wxPostEvent(this, event);
-    
-    wxCommandEvent event2(EVENT_REFRESHTHUMBNAIL);
-    wxPostEvent(this, event2);
+	wxCommandEvent * event = new wxCommandEvent(EVENT_REFRESHVIEWER);
+	wxQueueEvent(this, event);
 }
 
 void CListPicture::UpdateList()
 {
-    wxCommandEvent event(EVENT_REFRESHVIEWER);
-    wxPostEvent(this, event);
-    
-    wxCommandEvent event2(EVENT_REFRESHTHUMBNAIL);
-    wxPostEvent(this, event2);
+	wxCommandEvent * event = new wxCommandEvent(EVENT_REFRESHVIEWER);
+	wxQueueEvent(this, event);
+
 }
 

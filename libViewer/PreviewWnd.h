@@ -56,6 +56,8 @@ namespace Regards
             
             void StartLoadingPicture();
 
+            void UpdateInfos();
+            
 		protected:
 
             void OnPaint(wxPaintEvent& event);

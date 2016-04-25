@@ -34,6 +34,13 @@ bool CSqlFindCriteria::SearchCriteria(CriteriaVector * criteriaVector, const int
 	return (ExecuteRequest("SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = " + to_string(numCatalog) + " and NumCategorie = " + to_string(numCategorie) + " order by libelle") != -1) ? true : false;
 }
 
+bool CSqlFindCriteria::SearchCriteria(CriteriaVector * criteriaVector, const int64_t & numCategorie, const int64_t &numCatalog, const int64_t &numFolder)
+{
+
+	m_criteriaVector = criteriaVector;
+	return (ExecuteRequest("SELECT NumCriteria, NumCategorie, Libelle FROM CRITERIA WHERE numCatalog = " + to_string(numCatalog) + " and NumCategorie = " + to_string(numCategorie) + " and NumCriteria in (select distinct NumCriteria From PHOTOSCRITERIA inner join PHOTOS on PHOTOSCRITERIA.NumPhoto = PHOTOS.NumPhoto  where PHOTOS.NumFolderCatalog = " + to_string(numFolder) + ") order by libelle") != -1) ? true : false;
+}
+
 bool CSqlFindCriteria::SearchCriteria(CriteriaVector * criteriaVector, const wxString &key, const int64_t &numCategorie, const int64_t &numCatalog)
 {
 	m_criteriaVector = criteriaVector;

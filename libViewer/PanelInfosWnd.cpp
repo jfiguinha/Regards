@@ -1,19 +1,7 @@
-#include "PanelInfosWnd.h"
+ #include "PanelInfosWnd.h"
 #include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
-#include <FiltreEffet.h>
-#include "CloudsEffectParameter.h"
-#include "BrightAndContrastEffectParameter.h"
-#include "FreeRotateEffectParameter.h"
-#include "MotionBlurEffectParameter.h"
-#include "LensFlareEffectParameter.h"
-#include "SolarisationEffectParameter.h"
-#include "PosterisationEffectParameter.h"
-#include "PhotoFiltreEffectParameter.h"
-#include "RgbEffectParameter.h"
-#include "SwirlEffectParameter.h"
-#include <libResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #include "RedEyeParameter.h"
@@ -29,11 +17,16 @@
 #include "MainWindow.h"
 #include "PreviewWnd.h"
 #include <FileUtility.h>
+#include <libResource.h>
 #include "wx/stdpaths.h"
+#include "FiltreEffectWnd.h"
+#include "InfoEffectWnd.h"
+#include "ThumbnailViewerEffectWnd.h"
+
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-
+using namespace Regards::Control;
 #define WM_UPDATEINFOS 1
 wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
@@ -58,18 +51,16 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 
 	if (viewerTheme != nullptr)
 	{
-		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollInfosFileTheme(&themeScroll);
-		InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-
-		CThemeTree themeTree;
-		viewerTheme->GetTreeInfosFileTheme(&themeTree);
-		treeInfos = new CTreeWindow(InfosFileScroll, wxID_ANY, themeTree);
-
-		InfosFileScroll->SetCentralWindow(treeInfos, themeScroll);
+        CThemeScrollBar themeScroll;
+        viewerTheme->GetScrollInfosFileTheme(&themeScroll);
+        
+        CThemeTree theme;
+        viewerTheme->GetTreeInfosFileTheme(&theme);
+        
+        infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
 	}
 	
-   
+    
 #ifdef EFFECT_VIDEO
 	if (config->GetVideoLibrary() == LIBOPENGL)
 	{
@@ -99,32 +90,25 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	{
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetFiltreScrollTheme(&themeScroll);
-		filtreEffectScroll = new CScrollbarWnd(this, wxID_ANY);
 
 		CThemeTree themeTree;
 		viewerTheme->GetTreeFiltreEffectTheme(&themeTree);
-		treeFiltreEffect = new CTreeWindow(filtreEffectScroll, wxID_ANY, themeTree);
 
-		filtreEffectScroll->SetCentralWindow(treeFiltreEffect, themeScroll);
-
-		filtreEffectScroll->Show(false);
-		//treeFiltreEffect->Show(false);
+        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);
+        
+        filtreEffectWnd->Show(false);
 	}
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetScrollHistoryEffectTheme(&themeScroll);
-		historyEffectScroll = new CScrollbarWnd(this, wxID_ANY);
 
 		CThemeTree themeTree;
 		viewerTheme->GetTreeHistoryTheme(&themeTree);
-		treeHistoryEffect = new CTreeWindow(historyEffectScroll, wxID_ANY, themeTree);
+		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree);
 
-		historyEffectScroll->SetCentralWindow(treeHistoryEffect, themeScroll);
-
-		historyEffectScroll->Show(false);
-		//treeHistoryEffect->Show(false);
+		historyEffectWnd->Show(false);
 	}
 	
     if (viewerTheme != nullptr)
@@ -134,19 +118,16 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	{
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetScrollThumbnailEffectTheme(&themeScroll);
-		thumbnailEffectScroll = new CScrollbarWnd(this, wxID_ANY);
 
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetTreeThumbnailViewerEffectTheme(&themeThumbnail);
-		thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY, statusBarInterface, themeThumbnail);
+        
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, statusBarInterface, themeScroll, themeThumbnail);
 		
-		thumbnailEffectScroll->SetCentralWindow(thumbnailEffect, themeScroll);
-
-		thumbnailEffectScroll->Show(false);
-		//thumbnailEffect->Show(false);
+		thumbnailEffectWnd->Show(false);
 	}
-
-	webBrowser = wxWebView::New(this, wxID_ANY);
+    
+	webBrowser = wxWebView::New(this, wxID_ANY, url);
 	webBrowser->Show(false);
 	
 	if (viewerTheme != nullptr)
@@ -156,14 +137,24 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this);
 	}
 
- 
-	effectParameter = nullptr;
+    
+#ifdef VIEWER
+    
+    if (viewerTheme != nullptr)
+    {
+        CThemeScrollBar themeScroll;
+        viewerTheme->GetScrollThumbnailEffectTheme(&themeScroll);
+        
+        CThemeTree themeTree;
+        viewerTheme->GetTreeInfosFileTheme(&themeTree);
+        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
+    }
+    
+#endif
+
 	this->fileGeolocalisation = fileGeolocalisation;
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CPanelInfosWnd::OnSize));
     Connect(wxEVT_PAINT, wxPaintEventHandler(CPanelInfosWnd::OnPaint));
-    
-    //Connect(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEventHandler(CPanelInfosWnd::UpdateThumbnailEffectEvent));
-    Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CPanelInfosWnd::UpdateTreeInfosEvent));
     
     m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
     m_animationCtrl->Show(false);
@@ -176,38 +167,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 #endif
 
 	m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
-	 
-
-}
-
-void CPanelInfosWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
-{
-    CThreadLoadInfos * threadInfos = (CThreadLoadInfos *)event.GetClientData();
-    if(threadInfos->filename == filename)
-    {
-        threadInfos->infosFileWnd->CreateElement();
-        StopLoadingPicture(InfosFileScroll);
-        treeInfos->SetTreeControl(threadInfos->infosFileWnd);
-        delete(infosFileWndOld);
-        infosFileWndOld = threadInfos->infosFileWnd;
-    }
-    else
-        delete(threadInfos->infosFileWnd);
-    
-    threadInfos->threadLoadInfos->join();
-    delete threadInfos->threadLoadInfos;
-    delete threadInfos;
-
-}
-
-void CPanelInfosWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
-{
-    CInfosFile * infosFileWnd = threadInfos->infosFileWnd;
-    infosFileWnd->SetFile(threadInfos->filename);
-    
-    wxCommandEvent event(EVENT_UPDATEINFOSTHREAD);
-    event.SetClientData(threadInfos);
-    wxPostEvent(threadInfos->panelInfos, event);
 }
 
 void CPanelInfosWnd::OnPaint(wxPaintEvent& event)
@@ -227,63 +186,49 @@ CPanelInfosWnd::~CPanelInfosWnd()
 {
     delete(m_animationCtrl);
     delete bitmap;
-	delete(infosFileWndOld);
+	delete(infosFileWnd);
 #ifdef EFFECT_VIDEO
 	delete(effectVideoWndOld);
 #endif
-	delete(historyEffectOld);
-	delete(filtreEffectOld);
-	delete(treeFiltreEffect);
-	delete(treeHistoryEffect);
-	delete(treeInfos);
+    
+	delete(historyEffectWnd);
+	delete(filtreEffectWnd);
+    
 #ifdef EFFECT_VIDEO
 	delete(treeEffectVideo);
-#endif
-	delete(modificationManager);
-	delete(InfosFileScroll);
-#ifdef EFFECT_VIDEO
 	delete(effectVideoWndScroll);
 #endif
-	delete(historyEffectScroll);
-	delete(thumbnailEffect);
-	delete(thumbnailEffectScroll);
+    
+#ifdef VIEWER
+    delete(criteriaTreeWnd);
+#endif
+
+	delete(thumbnailEffectWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
-	delete(filtreEffectScroll);
-	delete(effectParameter);
+    delete(modificationManager);
 }
 
 void CPanelInfosWnd::UpdateScreenRatio()
 {
-    InfosFileScroll->UpdateScreenRatio();
-    if(infosFileWndOld != nullptr)
-    {
-        infosFileWndOld->UpdateScreenRatio();
-        treeInfos->UpdateScreenRatio();
-    }
+    if(infosFileWnd != nullptr)
+        infosFileWnd->UpdateScreenRatio();
     
+    if(historyEffectWnd != nullptr)
+        historyEffectWnd->UpdateScreenRatio();
     
-    historyEffectScroll->UpdateScreenRatio();
-    if(historyEffectOld != nullptr)
-    {
-        historyEffectOld->UpdateScreenRatio();
-        treeHistoryEffect->UpdateScreenRatio();
-    }
+    if(thumbnailEffectWnd != nullptr)
+        thumbnailEffectWnd->UpdateScreenRatio();
     
-    thumbnailEffectScroll->UpdateScreenRatio();
-    thumbnailEffect->UpdateScreenRatio();
+    if(filtreEffectWnd != nullptr)
+        filtreEffectWnd->UpdateScreenRatio();
     
-    filtreEffectScroll->UpdateScreenRatio();
-    if(filtreEffectOld != nullptr)
-    {
-        filtreEffectOld->UpdateScreenRatio();
-        treeFiltreEffect->UpdateScreenRatio();
-    }
+#ifdef VIEWER
+    if(criteriaTreeWnd != nullptr)
+        criteriaTreeWnd->UpdateScreenRatio();
+#endif
 
-    
-    
     infosToolbar->UpdateScreenRatio();
-    
 
     this->Resize();
 }
@@ -379,10 +324,9 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, CRegardsBitmap * bi
 			if (!fileGeolocalisation->HasGps())
 				infosToolbar->SetMapInactif();
 
-			if(webBrowser != nullptr)
-				if (webBrowser->IsShown())
-					if (!fileGeolocalisation->HasGps())
-						infosToolbar->SetInfosActif();
+			if (webBrowser->IsShown())
+				if (!fileGeolocalisation->HasGps())
+					infosToolbar->SetInfosActif();
 		}
 
 
@@ -397,330 +341,12 @@ void CPanelInfosWnd::ApplyEffect(const int &numItem)
 {
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-
-
-	wxString solarisationLibelle = CLibResource::LoadStringFromResource(L"LBLfilterSolarize",1);
-	wxString rotateFreeLibelle = CLibResource::LoadStringFromResource(L"LBLfilterRotate", 1);
-	wxString lightContrastLibelle = CLibResource::LoadStringFromResource(L"LBLfilterLight", 1);
-	wxString photoFiltreLibelle = CLibResource::LoadStringFromResource(L"LBLfilterPhoto", 1);
-	wxString posterisationLibelle = CLibResource::LoadStringFromResource(L"LBLfilterPosterisation", 1);
-	wxString colorBalanceLibelle = CLibResource::LoadStringFromResource(L"LBLfilterColor", 1);
-	wxString swirlLibelle = CLibResource::LoadStringFromResource(L"LBLfilterSwirl", 1);
-	wxString cloudsLibelle = CLibResource::LoadStringFromResource(L"LBLfilterClouds", 1);
-	wxString redEyeLibelle = CLibResource::LoadStringFromResource(L"LBLfilterRedEye", 1);
-    wxString cropLibelle = CLibResource::LoadStringFromResource("LBLCROP",1);
-	wxString lensFlareLibelle = CLibResource::LoadStringFromResource(L"LBLfilterLensFlare", 1);
-	wxString motionBlurLibelle = CLibResource::LoadStringFromResource(L"LBLfilterMotion", 1);
-
-	CPreviewWnd * previewWindow = (CPreviewWnd *)this->FindWindowById(PREVIEWVIEWERID);
-	CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-
-	if (showBitmap != nullptr)
-	{
-		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
-
-		CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeFiltreEffect->GetTheme(), treeFiltreEffect);
-
-		if (bitmapViewer != nullptr)
-		{
-			switch (numItem)
-			{
-			case IDM_FILTRE_SOFTEN:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSoften", 1));
-				break;
-			case IDM_FILTRE_FLOU:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterBlur", 1));
-				break;
-
-			case IDM_HISTOGRAMNORMALIZE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLHistogramNormalize", 1));
-				break;
-
-			case IDM_HISTOGRAMEQUALIZE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLHistogramEqualize", 1));
-				break;
-
-			case IDM_HISTOGRAMLOG:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLHistogramLog", 1));
-				break;
-                    
-            case IDM_CROP:
-                {
-                    if (previewWindow != nullptr)
-                        previewWindow->ShowValidationToolbar(true, IDM_CROP);
-                    
-                    bitmapViewer->SetTool(IDM_CROP);
-                    bitmapViewer->SetBitmapPreviewEffect(IDM_CROP);
-                }
-                break;
-                    
-			case IDM_REDEYE:
-			{
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_REDEYE);
-
-				bitmapViewer->SetTool(IDM_REDEYE);
-				bitmapViewer->SetBitmapPreviewEffect(IDM_REDEYE);
-
-				//bitmapViewer->SetBitmapEffect(numItem);
-				//historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(LBLfilterRedEye));
-			}
-			break;
-
-			case IDM_AJUSTEMENT_SOLARISATION:
-				delete(effectParameter);
-				effectParameter = new CSolarisationEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_AJUSTEMENT_SOLARISATION, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_AJUSTEMENT_SOLARISATION);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_AJUSTEMENT_SOLARISATION);
-				ShowFiltre(solarisationLibelle);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_FILTRE_FLOUGAUSSIEN:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterGaussian", 1));
-				break;
-			case IDM_FILTREANTIBRUIT:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterMedian", 1));
-				break;
-			case IDM_FILTRE_MOTIONBLUR:
-				//bitmapViewer->SetBitmapEffect(numItem);
-				//historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(LBLfilterMotion));
-				delete(effectParameter);
-				effectParameter = new CMotionBlurEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_FILTRE_MOTIONBLUR, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_FILTRE_MOTIONBLUR);
-				ShowFiltre(motionBlurLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_FILTRE_MOTIONBLUR);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_ROTATE_FREE:
-				delete(effectParameter);
-				effectParameter = new CFreeRotateEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_ROTATE_FREE, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_ROTATE_FREE);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_ROTATE_FREE);
-				ShowFiltre(rotateFreeLibelle);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_IMAGE_LIGHTCONTRAST:
-				delete(effectParameter);
-				effectParameter = new CBrightAndContrastEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_IMAGE_LIGHTCONTRAST, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_IMAGE_LIGHTCONTRAST);
-				ShowFiltre(lightContrastLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_IMAGE_LIGHTCONTRAST);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case ID_AJUSTEMENT_PHOTOFILTRE:
-				delete(effectParameter);
-				effectParameter = new CPhotoFiltreEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(ID_AJUSTEMENT_PHOTOFILTRE, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), ID_AJUSTEMENT_PHOTOFILTRE);
-				ShowFiltre(photoFiltreLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, ID_AJUSTEMENT_PHOTOFILTRE);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case ID_AJUSTEMENT_POSTERISATION:
-				delete(effectParameter);
-				effectParameter = new CPosterisationEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(ID_AJUSTEMENT_POSTERISATION, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), ID_AJUSTEMENT_POSTERISATION);
-				ShowFiltre(posterisationLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, ID_AJUSTEMENT_POSTERISATION);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_FILTRELENSFLARE:
-			{
-				//bitmapViewer->SetBitmapEffect(numItem);
-				//historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(LBLfilterLensFlare));
-				delete(effectParameter);
-				effectParameter = new CLensFlareEffectParameter();
-				bitmapViewer->SetTool(IDM_FILTRELENSFLARE);
-				bitmapViewer->SetBitmapPreviewEffect(IDM_FILTRELENSFLARE, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_FILTRELENSFLARE);
-				ShowFiltre(lensFlareLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_FILTRELENSFLARE);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-			}
-			break;
-			case IDM_COLOR_BALANCE:
-				delete(effectParameter);
-				effectParameter = new CRgbEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_COLOR_BALANCE, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_COLOR_BALANCE);
-				ShowFiltre(colorBalanceLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_COLOR_BALANCE);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_FILTRE_SWIRL:
-				delete(effectParameter);
-				effectParameter = new CSwirlEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_FILTRE_SWIRL, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_FILTRE_SWIRL);
-				ShowFiltre(swirlLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_FILTRE_SWIRL);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_FILTRE_CLOUDS:
-				delete(effectParameter);
-				effectParameter = new CCloudsEffectParameter();
-				bitmapViewer->SetBitmapPreviewEffect(IDM_FILTRE_CLOUDS, effectParameter);
-				filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), IDM_FILTRE_CLOUDS);
-				ShowFiltre(cloudsLibelle);
-				if (previewWindow != nullptr)
-					previewWindow->ShowValidationToolbar(true, IDM_FILTRE_CLOUDS);
-				treeFiltreEffect->SetTreeControl(filtreEffect);
-				delete(filtreEffectOld);
-				filtreEffectOld = filtreEffect;
-				break;
-			case IDM_FILTRE_ERODE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterErode", 1));
-				break;
-			case IDM_FILTRE_DILATE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterDilate", 1));
-				break;
-			case IDM_FILTRE_SHARPEN:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSharpen", 1));
-				break;
-			case IDM_FILTRE_SHARPENSTRONG:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSharpenStrong", 1));
-				break;
-			case IDM_FILTRENOISE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterNoise", 1));
-				break;
-			case IDM_FILTRE_MOSAIQUE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterMosaic", 1));
-				break;
-			case IDM_FILTRE_EMBOSS:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterEmboss", 1));
-				break;
-			case IDM_GREY_LEVEL:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterGrey", 1));
-				break;
-			case IDM_IMAGE_SEPIA:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSepia", 1));
-				break;
-			case IDM_BLACKANDWHITE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterBlack", 1));
-				break;
-			case IDM_FILTRE_EDGE:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterEdge", 1));
-				break;
-			case IDM_NEGATIF:
-				bitmapViewer->SetBitmapEffect(numItem, nullptr);
-				historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterNegatif", 1));
-				break;
-			}
-		}
-	}
+    filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
 {
-	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-	if (bitmapViewer != nullptr)
-	{
-		switch (numFiltre)
-		{
-		case IDM_AJUSTEMENT_SOLARISATION:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSolarize",1));
-			break;
-		case IDM_ROTATE_FREE:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterRotate",1));
-			break;
-		case IDM_IMAGE_LIGHTCONTRAST:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterLight", 1));
-			break;
-		case ID_AJUSTEMENT_PHOTOFILTRE:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterPhoto", 1));
-			break;
-		case ID_AJUSTEMENT_POSTERISATION:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterPosterisation", 1));
-			break;
-		case IDM_COLOR_BALANCE:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterColor", 1));
-			break;
-		case IDM_FILTRE_SWIRL:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterSwirl", 1));
-			break;
-		case IDM_FILTRE_CLOUDS:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterClouds", 1));
-			break;
-
-		case IDM_REDEYE:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterRedEye",1));
-			break;
-                
-        case IDM_CROP:
-            bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-            historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLCROP",1));
-            break;
-
-		case IDM_FILTRE_MOTIONBLUR:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterMotion", 1));
-			break;
-
-		case IDM_FILTRELENSFLARE:
-			bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-			historyEffectOld->AddModification(bitmapViewer->GetBitmap(), CLibResource::LoadStringFromResource(L"LBLfilterLensFlare", 1));
-			break;
-		}
-	}
+    filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ShowEffect();
 }
 
@@ -748,8 +374,15 @@ void CPanelInfosWnd::ClickShowButton(const int &id)
 	case WM_MAPS:
 		ShowMap();
 		break;
+#ifdef VIEWER
+    case WM_CRITERIA:
+        ShowCriteria();
+        break;
+#endif
 	}
 }
+
+
 
 //----------------------------------------------------------------------
 //
@@ -773,23 +406,16 @@ void CPanelInfosWnd::EffectUpdate()
 	}
 	else
 	{
-		if (thumbnailEffect->GetFilename() != filename)
-			thumbnailEffect->SetFile(filename, bitmap);
+		if (thumbnailEffectWnd->GetFilename() != filename)
+			thumbnailEffectWnd->SetFile(filename, bitmap);
 	}
 }
 
 void CPanelInfosWnd::HistoryUpdate()
 {
-	if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)
-	{
-		wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
-		CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-		CInfoEffect * historyEffect = new CInfoEffect(bitmapViewer->GetBitmapViewer(), treeHistoryEffect->GetTheme(), treeHistoryEffect, modificationManager);
-		historyEffect->Init(bitmap, filename, historyLibelle);
-		treeHistoryEffect->SetTreeControl(historyEffect);
-		delete(historyEffectOld);
-		historyEffectOld = historyEffect;
-	}
+	wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
+	CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+    historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, bitmapViewer->GetBitmapViewer(), modificationManager);
 }
 
 void CPanelInfosWnd::LoadInfo()
@@ -802,6 +428,12 @@ void CPanelInfosWnd::LoadInfo()
 			InfosUpdate();
             infosToolbar->SetInfosPush();
 			break;
+#ifdef VIEWER
+        case WM_CRITERIA:
+            criteriaTreeWnd->SetFile(filename);
+            infosToolbar->SetCriteriaPush();
+            break;
+#endif
 		case HISTORY_WINDOW:
 			HistoryUpdate();
             infosToolbar->SetHistoryPush();
@@ -837,12 +469,39 @@ wxString CPanelInfosWnd::MapsUpdate()
     return url;
 }
 
+#ifdef VIEWER
+void CPanelInfosWnd::ShowCriteria()
+{
+    HideAllWindow();
+    windowVisible = WM_CRITERIA;
+    criteriaTreeWnd->SetFile(filename);
+    criteriaTreeWnd->Show(true);
+    Resize();
+}
+
+void CPanelInfosWnd::UpdateData()
+{
+    if (!fileGeolocalisation->HasGps())
+    {
+        if (webBrowser->IsShown())
+            if (!fileGeolocalisation->HasGps())
+                infosToolbar->SetInfosActif();
+        
+        infosToolbar->SetMapInactif();
+    }
+    else
+        infosToolbar->SetMapActif();
+    
+    LoadInfo();
+}
+
+#endif
+
 void CPanelInfosWnd::ShowFiltre(const wxString &title)
 {
 	HideAllWindow();
     infosToolbar->SetEffectParameterPush();
-	filtreEffectScroll->Show(true);
-	treeFiltreEffect->Show(true);
+	filtreEffectWnd->Show(true);
 	infosToolbar->SetEffectParameterActif(title);
 	Resize();
 }
@@ -852,7 +511,7 @@ void CPanelInfosWnd::ShowHistory()
 	HideAllWindow();
 	windowVisible = HISTORY_WINDOW;
 	LoadInfo();
-	historyEffectScroll->Show(true);
+	historyEffectWnd->Show(true);
 	Resize();
 }
 
@@ -877,9 +536,8 @@ void CPanelInfosWnd::ShowEffect()
     
     if(!isVideo)
     {
-        thumbnailEffectScroll->Show(true);
-        if (!thumbnailEffect->IsShown())
-            thumbnailEffect->Show(true);
+        if (!thumbnailEffectWnd->IsShown())
+            thumbnailEffectWnd->Show(true);
     }
     
 #endif
@@ -897,7 +555,7 @@ void CPanelInfosWnd::ShowEffect()
 #else
     
     if(!isVideo)
-        thumbnailEffectScroll->Refresh();
+        thumbnailEffectWnd->Refresh();
     
 #endif
 }
@@ -907,8 +565,7 @@ void CPanelInfosWnd::ShowInfos()
 	HideAllWindow();
 	windowVisible = INFOS_WINDOW;
 	LoadInfo();
-	InfosFileScroll->Show(true);
-	treeInfos->Show(true);
+	infosFileWnd->Show(true);
 	Resize();
 }
 
@@ -957,28 +614,25 @@ void CPanelInfosWnd::StopLoadingPicture(wxWindow * window)
 
 void CPanelInfosWnd::InfosUpdate()
 {
-	CInfosFile * infosFileWnd = new CInfosFile(treeInfos->GetTheme(), treeInfos);
-    StartLoadingPicture(InfosFileScroll);
-    CThreadLoadInfos * threadInfos = new CThreadLoadInfos();
-    threadInfos->infosFileWnd = infosFileWnd;
-    threadInfos->panelInfos = this;
-    threadInfos->filename = filename;
-    threadInfos->threadLoadInfos = new thread(GenerateTreeInfos, threadInfos);
+    if(infosFileWnd != nullptr)
+        infosFileWnd->InfosUpdate(filename);
 }
 
 void CPanelInfosWnd::HideAllWindow()
 {
 	infosToolbar->SetEffectParameterInactif();
-	InfosFileScroll->Show(false);
+	infosFileWnd->Show(false);
 #ifdef EFFECT_VIDEO
 	if (openGLVideoMode)
 		effectVideoWndScroll->Show(false);
 #endif
-	historyEffectScroll->Show(false);
-	thumbnailEffectScroll->Show(false);
-	if(webBrowser != nullptr)
-		webBrowser->Show(false);
-	filtreEffectScroll->Show(false);
+	historyEffectWnd->Show(false);
+	thumbnailEffectWnd->Show(false);
+	webBrowser->Show(false);
+	filtreEffectWnd->Show(false);
+#ifdef VIEWER
+    criteriaTreeWnd->Show(false);
+#endif
 }
 
 
@@ -1003,18 +657,22 @@ void CPanelInfosWnd::Resize()
         
         m_animationCtrl->SetSize(xPos, yPos, animationSize.GetWidth(), animationSize.GetHeight());
     }
-	else if (InfosFileScroll->IsShown())
-		InfosFileScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+	else if (infosFileWnd->IsShown())
+		infosFileWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 #ifdef EFFECT_VIDEO
 	else if (effectVideoWndScroll->IsShown() && openGLVideoMode)
 		effectVideoWndScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 #endif
-	else if (thumbnailEffectScroll->IsShown())
-		thumbnailEffectScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-	else if (historyEffectScroll->IsShown())
-		historyEffectScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+	else if (thumbnailEffectWnd->IsShown())
+		thumbnailEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+	else if (historyEffectWnd->IsShown())
+		historyEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 	else if (webBrowser->IsShown())
 		webBrowser->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-	else if (filtreEffectScroll->IsShown())
-		filtreEffectScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+	else if (filtreEffectWnd->IsShown())
+		filtreEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+#ifdef VIEWER
+    else if (criteriaTreeWnd->IsShown())
+        criteriaTreeWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+#endif
 }

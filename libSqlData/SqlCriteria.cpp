@@ -19,8 +19,28 @@ bool CSqlCriteria::InsertCriteria(const int64_t &numCatalog, const int64_t &numC
 	return (ExecuteRequestWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (" + to_string(numCatalog) + "," + to_string(numCategorie) + ",'" + libelle + "')") != -1) ? true : false;;
 }
 
+void CSqlCriteria::RemoveUnusedCriteria()
+{
+    ExecuteRequestWithNoResult("DELETE FROM CRITERIA WHERE NumCriteria not in (select distinct NumCriteria from PHOTOSCRITERIA)");
+}
+
+int64_t CSqlCriteria::GetCriteriaId(const int &numCriteria, const int &numFolder)
+{
+    criteriaId = 0;
+	ExecuteRequest("select distinct NumCriteria From PHOTOSCRITERIA inner join PHOTOS on PHOTOSCRITERIA.NumPhoto = PHOTOS.NumPhoto  where PHOTOS.NumFolderCatalog = " + to_string(numFolder) + " and NumCriteria = " + to_string(numCriteria));
+	return criteriaId;
+}
+
+int64_t CSqlCriteria::GetCriteriaIdByCategorie(const int &numPhoto, const int &numCategorie)
+{
+    criteriaId = 0;
+    ExecuteRequest("select PHOTOSCRITERIA.NumCriteria From PHOTOSCRITERIA inner join CRITERIA on PHOTOSCRITERIA.NumCriteria = CRITERIA.NumCriteria  where NumPhoto = " + to_string(numPhoto) + " and NumCategorie = " + to_string(numCategorie));
+    return criteriaId;
+}
+
 int64_t CSqlCriteria::GetCriteriaId(const int64_t &numCatalog, const int64_t &numCategorie, const wxString & libelle)
 {
+    criteriaId = 0;
 	ExecuteRequest("SELECT NumCriteria FROM CRITERIA WHERE NumCatalog = " + to_string(numCatalog) + " and NumCategorie = " + to_string(numCategorie) + " and Libelle = '" + libelle + "'");
 	return criteriaId;
 }
@@ -51,6 +71,7 @@ bool CSqlCriteria::DeletePhotoCriteria(const int64_t &numCatalog, const int64_t 
 
 int64_t CSqlCriteria::GetNumCategorieId(const int64_t &numCatalog, const wxString & libelle)
 {
+    criteriaId = 0;
 	ExecuteRequest("SELECT NumCategorie FROM CRITERIA WHERE NumCatalog = " + to_string(numCatalog) + "  and Libelle = '" + libelle + "'");
 	return criteriaId;
 }

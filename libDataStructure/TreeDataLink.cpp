@@ -29,3 +29,13 @@ wxString CTreeDataLink::GetLinkPath()
 {
     return linkPath;
 }
+
+void CTreeDataLink::SetId(const int & id)
+{
+    this->id = id;
+}
+
+int CTreeDataLink::GetId()
+{
+    return id;
+}

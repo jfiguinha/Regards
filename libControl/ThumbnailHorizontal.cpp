@@ -18,52 +18,64 @@ CThumbnailHorizontal::~CThumbnailHorizontal(void)
 {
 }
 
+void CThumbnailHorizontal::InitPosition()
+{
+    if(scrollbar != nullptr)
+    {
+        scrollbar->SetPosition(0, 0);
+        posHauteur = scrollbar->GetPosHauteur();
+        posLargeur = scrollbar->GetPosLargeur();
+    }
+}
+
 void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 {
-#ifdef LOCALTHREAD	
-	DoPauseThread();
-#endif	
-	threadDataProcess = false;
+    threadDataProcess = false;
 
-	InitScrollingPos();
-	EraseThumbnailList();
+    InitScrollingPos();
+    EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
-	int i = 0;
-	int x = 0;
-	int y = 0;
-	thumbnailPos = 0;
+    numSelect = nullptr;
+    numActif = nullptr;
+    int i = 0;
+    int x = 0;
+    int y = 0;
+    thumbnailPos = 0;
 
-	for (wxString fileEntry : files)
-	{
-		wxString filename = fileEntry;
-		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename.ToStdString());
-		thumbnailData->SetNumPhotoId(i);
-		thumbnailData->SetNumElement(i);
+    for (wxString fileEntry : files)
+    {
+        wxString filename = fileEntry;
+        CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename.ToStdString());
+        thumbnailData->SetNumPhotoId(i);
+        thumbnailData->SetNumElement(i);
 
 
-		CIcone * pBitmapIcone = new CIcone();
-		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
-		pBitmapIcone->SetData(thumbnailData);
-		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-		pBitmapIcone->SetWindowPos(x, y);
+        CIcone * pBitmapIcone = new CIcone();
+        pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
+        pBitmapIcone->SetData(thumbnailData);
+        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+        pBitmapIcone->SetWindowPos(x, y);
 
-		if (i == 0)
-			pBitmapIcone->SetSelected(true);
+        if (i == 0)
+            pBitmapIcone->SetSelected(true);
 
-		pIconeList.push_back(pBitmapIcone);
+        pIconeList.push_back(pBitmapIcone);
 
-		x += themeThumbnail.themeIcone.GetWidth();
-		i++;
+        x += themeThumbnail.themeIcone.GetWidth();
+        i++;
 
-	}
+    }
 
 	threadDataProcess = true;
-
-#ifdef LOCALTHREAD
-	DoResumeThread();
-#endif	
+   
+    /*
+    if(scrollbar != nullptr)
+    {
+        scrollbar->SetPosition(0, 0);
+        posHauteur = scrollbar->GetPosHauteur();
+        posLargeur = scrollbar->GetPosLargeur();
+    }
+     */
 	this->Refresh();
 }
 
@@ -93,7 +105,10 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 			{
 				RenderBitmap(deviceContext, pBitmapIcone);
 			}
-
+            else
+            {
+                pBitmapIcone->DestroyCache();
+            }
 			x += themeThumbnail.themeIcone.GetWidth();
 		}
 	}

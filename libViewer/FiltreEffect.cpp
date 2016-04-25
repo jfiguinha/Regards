@@ -2,19 +2,20 @@
 #include <effect.h>
 #include <ConvertUtility.h>
 #include <TreeDataEffect.h>
-#include "CloudsEffectParameter.h"
-#include "BrightAndContrastEffectParameter.h"
-#include "FreeRotateEffectParameter.h"
-#include "MotionBlurEffectParameter.h"
-#include "SolarisationEffectParameter.h"
-#include "PosterisationEffectParameter.h"
-#include "PhotoFiltreEffectParameter.h"
-#include "RgbEffectParameter.h"
-#include "SwirlEffectParameter.h"
-#include "LensFlareEffectParameter.h"
+#include "LensFlareFilter.h"
+#include "SwirlFilter.h"
+#include "ColorBalanceFilter.h"
+#include "CloudsFilter.h"
+#include "RotateFreeFilter.h"
+#include "SolarisationFilter.h"
+#include "PosterisationFilter.h"
+#include "PhotoFiltreFilter.h"
+#include "BrightAndContrastFilter.h"
+#include "MotionBlurFilter.h"
 #include <BitmapWndViewer.h>
 #include <libResource.h>
 #include <RegardsBitmap.h>
+#include <FilterData.h>
 #define TAILLEMAX 1024
 using namespace Regards::Viewer;
 
@@ -30,32 +31,17 @@ CFiltreEffect::CFiltreEffect(CBitmapWndViewer * bitmapViewer, CThemeTree * theme
 	eventControl = interfaceControl;
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
-	libelleEffectRadius = CLibResource::LoadStringFromResource(L"LBLEFFECTRADIUS",1);
-	libelleEffectSigma = CLibResource::LoadStringFromResource(L"LBLEFFECTSIGMA",1);
-	libelleEffectAngle = CLibResource::LoadStringFromResource(L"LBLEFFECTANGLE",1);
-	libelleCloudsFrequency = CLibResource::LoadStringFromResource(L"LBLCLOUDSFREQUENCY",1);
-	libelleCloudsAmplitude = CLibResource::LoadStringFromResource(L"LBLCLOUDSAMPLITUDE",1);
-	libelleCloudsColorFrontRed = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORFRONTRED",1);
-	libelleCloudsColorFrontGreen = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORFRONTGREEN",1);
-	libelleCloudsColorFrontBlue = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORFRONTBLUE",1);
-	libelleCloudsColorBackRed = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORBACKRED",1);
-	libelleCloudsColorBackGreen = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORBACKGREEN",1);
-	libelleCloudsColorBackBlue = CLibResource::LoadStringFromResource(L"LBLCLOUDSCOLORBACKBLUE",1);
-	libelleEffectColorRed = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORRED",1);
-	libelleEffectColorGreen = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORGREEN",1);
-	libelleEffectColorBlue = CLibResource::LoadStringFromResource(L"LBLEFFECTCOLORBLUE",1);
-	libelleEffectLevel = CLibResource::LoadStringFromResource(L"LBLEFFECTLEVEL",1);
-	libelleEffectGamma = CLibResource::LoadStringFromResource(L"LBLEFFECTGAMMA",1);
-	libelleEffectIntensity = CLibResource::LoadStringFromResource(L"LBLEFFECTINTENSITY",1);
-	libelleEffectContrast = CLibResource::LoadStringFromResource(L"LBLEFFECTCONTRAST",1);
-	libelleEffectLightness = CLibResource::LoadStringFromResource(L"LBLEFFECTBRIGHTNESS",1);
-	libelleEffectThreshold = CLibResource::LoadStringFromResource(L"LBLEFFECTTHRESHOLD",1);
-	libelleRotationAngle = CLibResource::LoadStringFromResource(L"LBLROTATIONANGLE",1);
-	libelleColor = CLibResource::LoadStringFromResource(L"LBLCOLOREFFECT",1);
 }
 
 CFiltreEffect::~CFiltreEffect(void)
 {
+    if(filterEffect != nullptr)
+        delete filterEffect;
+}
+
+void CFiltreEffect::AddTreeInfos(const wxString &exifKey, const int &position, const vector<int> & value)
+{
+    AddTreeInfos(exifKey, position, value, index++, top, child);
 }
 
 void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const int &filtre)
@@ -63,559 +49,83 @@ void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * so
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
 	this->source = source;
+    
+    index = 0;    
+    top = tr.begin();
+    child = top;
+    
+    if(filterEffect != nullptr)
+        delete filterEffect;
 
 	switch (filtre)
 	{
 	case IDM_FILTRE_MOTIONBLUR:
-		MotionBlur();
+        filterEffect = new CMotionBlurFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_FILTRE_CLOUDS:
-		Clouds();
+        filterEffect = new CCloudsFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_FILTRE_SWIRL:
-		Swirl();
+        filterEffect = new CSwirlFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_COLOR_BALANCE:
-		RGBFiltre();
+        filterEffect = new CColorBalanceFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case ID_AJUSTEMENT_POSTERISATION:
-		Posterisation();
+        filterEffect = new CPosterisationFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case ID_AJUSTEMENT_PHOTOFILTRE:
-		PhotoFiltre();
+        filterEffect = new CPhotoFiltreFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_IMAGE_LIGHTCONTRAST:
-		BrightAndContrast();
+        filterEffect = new CBrightAndContrastFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_AJUSTEMENT_SOLARISATION:
-		Solarisation();
+        filterEffect = new CSolarisationFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_FILTRELENSFLARE:
-		LensFlare();
+        filterEffect = new CLensFlareFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
 	case IDM_ROTATE_FREE:
-		RotateFree();
+        filterEffect = new CRotateFreeFilter();
+        filterEffect->Filter(effectParameter, source, this);
 		break;
 
-	case IDM_CROP:
-		Crop();
-		break;
 	}
 
 	CreateElement();
 }
 
-void CFiltreEffect::LensFlare()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-
-	vector<int> elementIntensity;
-	for (int i = 0; i < 101; i++)
-		elementIntensity.push_back(i);
-
-	vector<int> elementColor;
-	for (int i = 0; i < 361; i++)
-		elementColor.push_back(i);
-
-	vector<int> elementBitmapHeight;
-	for (int i = 0; i < 101; i++)
-		elementBitmapHeight.push_back(i);
-
-	AddTreeInfos(libelleEffectLightness, lensFlareParameter->brightness, elementIntensity, index++, top, child);
-	AddTreeInfos(libelleEffectIntensity, lensFlareParameter->colorIntensity, elementIntensity, index++, top, child);
-	AddTreeInfos(libelleEffectRadius, lensFlareParameter->size, elementBitmapHeight, index++, top, child);
-	AddTreeInfos(libelleColor, lensFlareParameter->color, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::LensFlareChangeParam(const int &valueData, const wxString &key)
-{
-	CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectLightness)
-	{
-		lensFlareParameter->brightness = value;
-	}
-	else if (key == libelleEffectIntensity)
-	{
-		lensFlareParameter->colorIntensity = value;
-	}
-	else if (key == libelleEffectRadius)
-	{
-		lensFlareParameter->size = value;
-	}
-	else if (key == libelleColor)
-	{
-		lensFlareParameter->color = value;
-	}
-}
-
-void CFiltreEffect::MotionBlur()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-
-	vector<int> elementAngle;
-	for (int i = 0; i < 361; i++)
-		elementAngle.push_back(i);
-
-
-	vector<int> elementSample;
-	for (int i = 0; i < 11; i++)
-		elementSample.push_back(i);
-
-	vector<int> velocity;
-	for (int i = 0; i < 101; i++)
-		velocity.push_back(i);
-
-	AddTreeInfos(libelleEffectRadius, motionBlurParameter->radius, elementSample, index++, top, child);
-	AddTreeInfos(libelleEffectSigma, motionBlurParameter->sigma, velocity, index++, top, child);
-	AddTreeInfos(libelleEffectAngle, motionBlurParameter->angle, elementAngle, index++, top, child);
-}
-
-void CFiltreEffect::MotionBlurChangeParam(const int &valueData, const wxString &key)
-{
-
-	CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectRadius)
-	{
-		motionBlurParameter->radius = value;
-	}
-	else if (key == libelleEffectSigma)
-	{
-		motionBlurParameter->sigma = value;
-	}
-	else if (key == libelleEffectAngle)
-	{
-		motionBlurParameter->angle = value;
-	}
-}
-
-void CFiltreEffect::Clouds()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CCloudsEffectParameter * cloudsEffectParameter = (CCloudsEffectParameter *)effectParameter;
-
-	vector<int> elementFreq;
-	for (int i = 0; i < 101; i++)
-		elementFreq.push_back(i);
-
-	vector<int> elementColor;
-	for (int i = 0; i < 256; i++)
-		elementColor.push_back(i);
-
-	AddTreeInfos(libelleCloudsFrequency, cloudsEffectParameter->frequence * 100, elementFreq, index++, top, child);
-	AddTreeInfos(libelleCloudsAmplitude, cloudsEffectParameter->amplitude * 100, elementFreq, index++, top, child);
-	AddTreeInfos(libelleCloudsColorFrontRed, cloudsEffectParameter->colorFront.GetRed(), elementColor, index++, top, child);
-	AddTreeInfos(libelleCloudsColorFrontGreen, cloudsEffectParameter->colorFront.GetGreen(), elementColor, index++, top, child);
-	AddTreeInfos(libelleCloudsColorFrontBlue, cloudsEffectParameter->colorFront.GetBlue(), elementColor, index++, top, child);
-	AddTreeInfos(libelleCloudsColorBackRed, cloudsEffectParameter->colorBack.GetRed(), elementColor, index++, top, child);
-	AddTreeInfos(libelleCloudsColorBackGreen, cloudsEffectParameter->colorBack.GetGreen(), elementColor, index++, top, child);
-	AddTreeInfos(libelleCloudsColorBackBlue, cloudsEffectParameter->colorBack.GetBlue(), elementColor, index++, top, child);
-}
-
-void CFiltreEffect::CloudsChangeParam(const int &valueData, const wxString &key)
-{
-	CCloudsEffectParameter * cloudsEffectParameter = (CCloudsEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleCloudsFrequency)
-	{
-		cloudsEffectParameter->frequence = value / 100.0;
-	}
-	if (key == libelleCloudsAmplitude)
-	{
-		cloudsEffectParameter->amplitude = value / 100.0;
-	}
-	if (key == L"Clouds.Octaves")
-	{
-		cloudsEffectParameter->octave = value;
-	}
-	if (key == libelleCloudsColorFrontRed)
-	{
-		cloudsEffectParameter->colorFront = CRgbaquad(value, cloudsEffectParameter->colorFront.GetGreen(), cloudsEffectParameter->colorFront.GetBlue());
-	}
-	if (key == libelleCloudsColorFrontGreen)
-	{
-		cloudsEffectParameter->colorFront = CRgbaquad(cloudsEffectParameter->colorFront.GetRed(), value, cloudsEffectParameter->colorFront.GetBlue());
-	}
-	if (key == libelleCloudsColorFrontBlue)
-	{
-		cloudsEffectParameter->colorFront = CRgbaquad(cloudsEffectParameter->colorFront.GetRed(), cloudsEffectParameter->colorFront.GetGreen(), value);
-	}
-	if (key == libelleCloudsColorBackRed)
-	{
-		cloudsEffectParameter->colorBack = CRgbaquad(value, cloudsEffectParameter->colorBack.GetGreen(), cloudsEffectParameter->colorBack.GetBlue());
-	}
-	if (key == libelleCloudsColorBackGreen)
-	{
-		cloudsEffectParameter->colorBack = CRgbaquad(cloudsEffectParameter->colorBack.GetRed(), value, cloudsEffectParameter->colorBack.GetBlue());
-	}
-	if (key == libelleCloudsColorBackBlue)
-	{
-		cloudsEffectParameter->colorBack = CRgbaquad(cloudsEffectParameter->colorBack.GetRed(), cloudsEffectParameter->colorBack.GetGreen(), value);
-	}
-}
-
-void CFiltreEffect::Swirl()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
-
-	swirlEffectParameter->bitmapWidth = source->GetBitmapWidth();
-	swirlEffectParameter->bitmapHeight = source->GetBitmapHeight();
-
-	vector<int> elementAngle;
-	for (int i = 0; i < 360; i++)
-		elementAngle.push_back(i);
-
-	vector<int> elementRadius;
-	for (int i = 0; i < swirlEffectParameter->bitmapWidth; i++)
-		elementRadius.push_back(i);
-
-	AddTreeInfos(libelleEffectRadius, swirlEffectParameter->radius, elementRadius, index++, top, child);
-	AddTreeInfos(libelleEffectAngle, swirlEffectParameter->angle, elementAngle, index++, top, child);
-}
-
-void CFiltreEffect::SwirlChangeParam(const int &valueData, const wxString &key)
-{
-	CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectRadius)
-	{
-		swirlEffectParameter->radius = value;
-	}
-	if (key == libelleEffectAngle)
-	{
-		swirlEffectParameter->angle = value;
-	}
-}
-
-void CFiltreEffect::RGBFiltre()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = -255; i < 256; i++)
-		elementColor.push_back(i);
-
-	AddTreeInfos(libelleEffectColorRed, rgbEffectParameter->red + 255, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectColorGreen, rgbEffectParameter->green + 255, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectColorBlue, rgbEffectParameter->blue + 255, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::RGBFiltreChangeParam(const int &valueData, const wxString &key)
-{
-	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectColorRed)
-	{
-		rgbEffectParameter->red = value;
-	}
-	else if (key == libelleEffectColorGreen)
-	{
-		rgbEffectParameter->green = value;
-	}
-	else if (key == libelleEffectColorBlue)
-	{
-		rgbEffectParameter->blue = value;
-	}
-}
-
-void CFiltreEffect::Posterisation()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = 0; i < 256; i++)
-		elementColor.push_back(i);
-
-	vector<int> elementGamma;
-	for (int i = 0; i < 11; i++)
-		elementGamma.push_back(i);
-
-	AddTreeInfos(libelleEffectLevel, (int)posterisationEffectParameter->level, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectGamma, (int)posterisationEffectParameter->gamma * 10, elementGamma, index++, top, child);
-}
-
-void CFiltreEffect::PosterisationChangeParam(const int &valueData, const wxString &key)
-{
-	CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectLevel)
-	{
-		posterisationEffectParameter->level = value;
-	}
-	if (key == libelleEffectGamma)
-	{
-		posterisationEffectParameter->gamma = value / 10.0;
-	}
-}
-
-void CFiltreEffect::Crop()
-{
-	//int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-}
-
-void CFiltreEffect::PhotoFiltre()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = 0; i < 256; i++)
-		elementColor.push_back(i);
-
-	vector<int> intensity;
-	for (int i = 0; i < 101; i++)
-		intensity.push_back(i);
-
-	AddTreeInfos(libelleEffectIntensity, photoEffectParameter->intensity, intensity, index++, top, child);
-	AddTreeInfos(libelleEffectColorRed, photoEffectParameter->red, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectColorGreen, photoEffectParameter->green, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectColorBlue, photoEffectParameter->blue, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::PhotoFiltreChangeParam(const int &valueData, const wxString &key)
-{
-	CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectColorRed)
-	{
-		photoEffectParameter->red = value;
-	}
-	else if (key == libelleEffectColorGreen)
-	{
-		photoEffectParameter->green = value;
-	}
-	else if (key == libelleEffectColorBlue)
-	{
-		photoEffectParameter->blue = value;
-	}
-	else if (key == libelleEffectIntensity)
-	{
-		photoEffectParameter->intensity = value;
-	}
-
-}
-
-void CFiltreEffect::BrightAndContrast()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = -100; i < 101; i++)
-		elementColor.push_back(i);
-
-	AddTreeInfos(libelleEffectContrast, (int)BrightAndContrastEffectParameter->contrast + 100, elementColor, index++, top, child);
-	AddTreeInfos(libelleEffectLightness, (int)BrightAndContrastEffectParameter->brightness + 100, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::BrightAndContrastChangeParam(const int &valueData, const wxString &key)
-{
-	CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectContrast)
-	{
-		BrightAndContrastEffectParameter->contrast = value;
-	}
-	if (key == libelleEffectLightness)
-	{
-		BrightAndContrastEffectParameter->brightness = value;
-	}
-}
-
-void CFiltreEffect::Solarisation()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = 0; i < 256; i++)
-		elementColor.push_back(i);
-
-	AddTreeInfos(libelleEffectThreshold, (int)solarisationEffectParameter->threshold, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::SolarisationChangeParam(const int &valueData, const wxString &key)
-{
-	CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleEffectThreshold)
-	{
-		solarisationEffectParameter->threshold = value;
-	}
-}
 
 void CFiltreEffect::UpdateScreenRatio()
 {
     UpdateElement();
 }
 
-void CFiltreEffect::RotateFree()
-{
-	int index = 0;
-	tree<CTreeData *>::iterator top;
-	tree<CTreeData *>::iterator child;
-
-	top = tr.begin();
-	child = top;
-
-	CFreeRotateEffectParameter * freeRotateEffectParameter = (CFreeRotateEffectParameter *)effectParameter;
-
-	vector<int> elementColor;
-	for (int i = 0; i < 361; i++)
-		elementColor.push_back(i);
-
-	AddTreeInfos(libelleRotationAngle, freeRotateEffectParameter->angle, elementColor, index++, top, child);
-}
-
-void CFiltreEffect::RotateFreeChangeParam(const int &valueData, const wxString &key)
-{
-	CFreeRotateEffectParameter * freeRotateEffectParameter = (CFreeRotateEffectParameter *)effectParameter;
-
-	float value = valueData;
-	//Video Parameter
-	if (key == libelleRotationAngle)
-	{
-		freeRotateEffectParameter->angle = value;
-	}
-}
 
 void CFiltreEffect::SlidePosChange(CTreeElement * treeElement, const int &position, const int &valueData, const wxString &key)
 {
-	switch (filtre)
-	{
-	case IDM_FILTRE_MOTIONBLUR:
-		MotionBlurChangeParam(valueData, key);
-		break;
-
-	case IDM_FILTRE_CLOUDS:
-		CloudsChangeParam(valueData, key);
-		break;
-
-	case IDM_FILTRE_SWIRL:
-		SwirlChangeParam(valueData, key);
-		break;
-
-	case IDM_COLOR_BALANCE:
-		RGBFiltreChangeParam(valueData, key);
-		break;
-
-	case ID_AJUSTEMENT_POSTERISATION:
-		PosterisationChangeParam(valueData, key);
-		break;
-
-	case ID_AJUSTEMENT_PHOTOFILTRE:
-		PhotoFiltreChangeParam(valueData, key);
-		break;
-
-	case IDM_IMAGE_LIGHTCONTRAST:
-		BrightAndContrastChangeParam(valueData, key);
-		break;
-
-	case IDM_AJUSTEMENT_SOLARISATION:
-		SolarisationChangeParam(valueData, key);
-		break;
-
-	case IDM_ROTATE_FREE:
-		RotateFreeChangeParam(valueData, key);
-		break;
-
-	case IDM_FILTRELENSFLARE:
-		LensFlareChangeParam(valueData, key);
-		break;
-	}
-
+    if(filterEffect != nullptr)
+        filterEffect->FilterChangeParam(effectParameter, valueData, key);
+    
 	if (bitmapViewer != nullptr)
 		bitmapViewer->Refresh();
 
@@ -634,9 +144,13 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, const int &position,co
 
 	// Establish string and get the first token:
 #ifdef WIN32
-	wchar_t * token = wcstok(informations, seps); // C4996
+#if _MSC_VER < 1900
+	wchar_t * token = wcstok(informations, seps ); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
+#endif
+#else
+    wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
 #endif
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
@@ -644,9 +158,13 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, const int &position,co
 		CTreeDataEffect * treeData = new CTreeDataEffect();
 		treeData->SetKey(token);
 #ifdef WIN32
+#if _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
+#endif
+#else
+        token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 		if (token != nullptr)
 		{
@@ -657,7 +175,7 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, const int &position,co
 				if (item == 0)
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey());
 					if (it != nullptr)
 					{
@@ -670,7 +188,7 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, const int &position,co
 				else
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey(), child);
 					if (it != nullptr)
 					{

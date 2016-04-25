@@ -49,9 +49,9 @@
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" C_Options="-g;-ansi;-std=c99;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="/home/figuinha/developpement/libbpg-0.9.5"/>
-        <IncludePath Value="/home/figuinha/developpement/x265_1.7/source"/>
-        <IncludePath Value="/home/figuinha/developpement/x265_1.7/include"/>
+        <IncludePath Value="../../libextern/libbpg-0.9.5"/>
+        <IncludePath Value="../../libextern/x265_1.7/source"/>
+        <IncludePath Value="../../libextern/x265_1.7/include"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -91,9 +91,9 @@
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g" C_Options="-g;-O2;-ansi;-std=c99;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../../libextern/libbpg-0.9.5"/>
-        <IncludePath Value="../../../libextern/x265_1.7/source"/>
-        <IncludePath Value="../../../libextern/x265_1.7/include"/>
+        <IncludePath Value="../../libextern/libbpg-0.9.5"/>
+        <IncludePath Value="../../libextern/x265_1.7/source"/>
+        <IncludePath Value="../../libextern/x265_1.7/include"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
       </Compiler>

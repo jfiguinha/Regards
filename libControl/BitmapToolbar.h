@@ -37,7 +37,9 @@ namespace Regards
 			void MoveSlider(const int64_t &position){};
 			void ZoomPos(const int &position);
 			void ClickButton(const int &id);
-
+            void ChangeZoomInPos();
+            void ChangeZoomOutPos();
+            
 		private:
 		
 			void EventManager(const int &id);

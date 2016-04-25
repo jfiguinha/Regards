@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libVideoFFMpeg
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libVideoFFMpeg"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++-4.8
 SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
@@ -28,15 +28,15 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)SDL2 $(PreprocessorSwitch)GLEW_MX 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)SDL2 $(PreprocessorSwitch)GLEW_MX 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libVideoFFMpeg.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libParameter $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libUtility $(IncludeSwitch)../include $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
+LinkOptions            :=  -s 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libParameter $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libUtility $(IncludeSwitch)../include $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++-4.8
 CC       := /usr/bin/gcc-4.8
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=   -fopenmp -std=c++11 -Wall  $(Preprocessors)
+CFLAGS   :=  -O2 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -77,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libVideoFFMpeg"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libVideoFFMpeg"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -147,6 +147,6 @@ $(IntermediateDirectory)/VideoWindowContext.cpp$(PreprocessSuffix): VideoWindowC
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

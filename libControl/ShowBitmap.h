@@ -59,7 +59,6 @@ namespace Regards
             void StartLoadingPicture();
             void StopLoadingPicture();
             void UpdateScreenRatio();
-            
 			void SetDiaporamaMode();
 			void SetNormalMode();
 
@@ -67,6 +66,8 @@ namespace Regards
 
 			void OnSize(wxSizeEvent& event);
             void OnViewerDblClick(wxCommandEvent& event);
+            void OnViewerZoomIn(wxCommandEvent& event);
+            void OnViewerZoomOut(wxCommandEvent& event);
 			void Resize();
 
 			CScrollbarWnd * scrollbar = nullptr;

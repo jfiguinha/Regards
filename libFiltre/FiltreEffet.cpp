@@ -6,6 +6,19 @@
 #include <algorithm>
 #include "Rotate.h"
 #include "RedEye.h"
+#include "effect.h"
+#include <RgbEffectParameter.h>
+#include <BrightAndContrastEffectParameter.h>
+#include <CloudsEffectParameter.h>
+#include <FreeRotateEffectParameter.h>
+#include <MotionBlurEffectParameter.h>
+#include <PhotoFiltreEffectParameter.h>
+#include <PosterisationEffectParameter.h>
+#include <RgbEffectParameter.h>
+#include <SolarisationEffectParameter.h>
+#include <LensFlareEffectParameter.h>
+#include <SwirlEffectParameter.h>
+#include <FilterData.h>
 #include "Histogramme.h"
 #if defined(__WXMSW__)
 #include "../include/config_id.h"
@@ -20,11 +33,181 @@ void CFiltreEffet::SetLib(const int &lib)
 	numLib = lib;
 }
 
+
+int CFiltreEffet::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
+{
+    switch (numEffect)
+    {
+        case IDM_FILTRE_SOFTEN:
+            Soften();
+            break;
+            
+        case IDM_HISTOGRAMNORMALIZE:
+            HistogramNormalize();
+            break;
+            
+        case IDM_HISTOGRAMEQUALIZE:
+            HistogramEqualize();
+            break;
+            
+        case IDM_HISTOGRAMLOG:
+            HistogramLog();
+            break;
+            
+        case IDM_FILTRE_FLOU:
+            Blur();
+            break;
+            
+        case IDM_AJUSTEMENT_SOLARISATION:
+        {
+            if (effectParameter != nullptr)
+            {
+                CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
+                Solarize(solarisationEffectParameter->threshold);
+            }
+        }
+            break;
+            
+        case IDM_FILTRE_FLOUGAUSSIEN:
+            GaussianBlur();
+            break;
+            
+        case IDM_FILTREANTIBRUIT:
+            Median();
+            break;
+            
+        case IDM_FILTRE_MOTIONBLUR:
+        {
+            if (effectParameter != nullptr)
+            {
+                CMotionBlurEffectParameter * motionblurEffectParameter = (CMotionBlurEffectParameter *)effectParameter;
+                MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
+            }
+            break;
+        }
+            break;
+        case IDM_ROTATE_FREE:
+        {
+            if (effectParameter != nullptr)
+            {
+                CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
+                RotateFree(freeRotate->angle);
+            }
+        }
+            break;
+            
+        case IDM_IMAGE_LIGHTCONTRAST:
+        {
+            if (effectParameter != nullptr)
+            {
+                CBrightAndContrastEffectParameter  * brightAndContrast = (CBrightAndContrastEffectParameter *)effectParameter;
+                BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
+            }
+        }
+            break;
+            
+        case ID_AJUSTEMENT_PHOTOFILTRE:
+        {
+            if (effectParameter != nullptr)
+            {
+                CPhotoFiltreEffectParameter * photoFiltreParameter = (CPhotoFiltreEffectParameter *)effectParameter;
+                PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
+            }
+        }
+            break;
+        case ID_AJUSTEMENT_POSTERISATION:
+        {
+            if (effectParameter != nullptr)
+            {
+                CPosterisationEffectParameter * posterisationFiltreParameter = (CPosterisationEffectParameter *)effectParameter;
+                Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
+            }
+        }
+            break;
+        case IDM_COLOR_BALANCE:
+        {
+            if (effectParameter != nullptr)
+            {
+                CRgbEffectParameter * rgbParameter = (CRgbEffectParameter *)effectParameter;
+                RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
+            }
+        }
+            break;
+        case IDM_FILTRE_SWIRL:
+        {
+            if (effectParameter != nullptr)
+            {
+                CSwirlEffectParameter * swirlParameter = (CSwirlEffectParameter *)effectParameter;
+                Swirl(swirlParameter->radius, swirlParameter->angle);
+            }
+        }
+            break;
+            
+        case IDM_FILTRE_CLOUDS:
+        {
+            if (effectParameter != nullptr)
+            {
+                CCloudsEffectParameter * cloudsParameter = (CCloudsEffectParameter *)effectParameter;
+                CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave);
+            }
+        }
+            break;
+        case IDM_FILTRE_ERODE:
+            Erode();
+            break;
+            
+        case IDM_FILTRE_DILATE:
+            Dilate();
+            break;
+            
+        case IDM_FILTRE_SHARPEN:
+            Sharpen();
+            break;
+            
+        case IDM_FILTRE_SHARPENSTRONG:
+            SharpenStrong();
+            break;
+            
+        case IDM_FILTRENOISE:
+            Noise();
+            break;
+            
+        case IDM_FILTRE_MOSAIQUE:
+            FiltreMosaic();
+            break;
+            
+        case IDM_FILTRE_EMBOSS:
+            Emboss();
+            break;
+            
+        case IDM_GREY_LEVEL:
+            NiveauDeGris();
+            break;
+            
+        case IDM_IMAGE_SEPIA:
+            Sepia();
+            break;
+            
+        case IDM_BLACKANDWHITE:
+            NoirEtBlanc();
+            break;
+            
+        case IDM_FILTRE_EDGE:
+            FiltreEdge();
+            break;
+            
+        case IDM_NEGATIF:
+            Negatif();
+            break;
+    }
+    return 0;
+}
+
 CFiltreEffet::CFiltreEffet(CRegardsBitmap * pBitmap, const CRgbaquad &backColor, const int &numLib)
 {
-	this->backColor = backColor;
-	this->numLib = numLib;
-	this->pBitmap = pBitmap;
+    this->backColor = backColor;
+    this->numLib = numLib;
+    this->pBitmap = pBitmap;
 	filtreEffetCPU = new CFiltreEffetCPU(pBitmap, backColor);
 
 	switch (numLib)

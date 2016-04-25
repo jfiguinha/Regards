@@ -1,6 +1,6 @@
 #include "LoadingResource.h"
 #include <RegardsBitmap.h>
-#include <libResource.h>
+#include <LibResource.h>
 wxBitmap CLoadingResource::LoadBmpResource(const wxString & resourceName, const bool &loadAlpha)
 {
 	CRegardsBitmap * data = LoadRegardsBmpResource(resourceName);

@@ -89,10 +89,14 @@ void CEffectVideoWnd::AddTreeInfos(const wxString &exifKey, const int &position,
 	wcscpy(informations, exifKey.c_str());
 
 #ifdef WIN32
+#if _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	// Establish string and get the first token:
 	wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
+#endif
+#else
+    wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
 #endif
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
@@ -100,9 +104,13 @@ void CEffectVideoWnd::AddTreeInfos(const wxString &exifKey, const int &position,
 		CTreeDataEffect * treeData = new CTreeDataEffect();
 		treeData->SetKey(token);
 #ifdef WIN32
+#if _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
+#endif
+#else
+        token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 		if (token != nullptr)
 		{
@@ -113,7 +121,7 @@ void CEffectVideoWnd::AddTreeInfos(const wxString &exifKey, const int &position,
 				if (item == 0)
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey());
 					if (it != nullptr)
 					{
@@ -126,7 +134,7 @@ void CEffectVideoWnd::AddTreeInfos(const wxString &exifKey, const int &position,
 				else
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey(), child);
 					if (it != nullptr)
 					{

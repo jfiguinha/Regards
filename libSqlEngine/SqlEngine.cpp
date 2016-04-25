@@ -45,6 +45,8 @@ void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName,
 	{
 		_listOfBase.push_back(db);
 	}
+    
+    db._singleton->CheckVersion(filename);
 
 }
 

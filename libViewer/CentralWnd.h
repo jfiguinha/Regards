@@ -9,7 +9,11 @@
 #include "ThumbnailBitmap.h"
 #include "ThumbnailViewerVideo.h"
 #include "EffectVideoParameter.h"
+#ifdef VIEWER
+#include "FilterPreviewSplitter.h"
+#else
 #include "PreviewInfosWnd.h"
+#endif
 #include "ViewerParam.h"
 #ifdef __APPLE__
 #include <AppleSelectFile.h>
@@ -68,7 +72,14 @@ namespace Regards
 
 			void Resize();
             void RefreshThumbnail();
-
+#ifdef VIEWER
+			void ShowFilter();
+			void UpdateCriteria(const int64_t & idFolder);
+            wxString GetSqlRequest();
+            void InitSaveParameter();
+            void UpdateCriteria();
+            void RefreshFilter();
+#endif
 		protected:
 			void ClickShowButton(const int &id);
 
@@ -87,8 +98,11 @@ namespace Regards
 			CScrollbarWnd * scrollThumbnailVideo = nullptr;
 			CThumbnailViewerVideo * thumbnailVideo = nullptr;
 			CClickToolbar * clickThumbnailVideo = nullptr;
-
+#ifdef VIEWER
+			CFilterPreviewSplitter * filterPreviewSplitter = nullptr;
+#else
 			CPreviewInfosWnd * previewInfosWnd = nullptr;
+#endif		
 			CViewerParam * viewerParam = nullptr;
 
 			bool isVideo = false;

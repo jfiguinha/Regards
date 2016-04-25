@@ -18,11 +18,13 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <FileUtility.h>
+#include <SQLRemoveData.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 
+#define TIMER_LOADPICTURE 2
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
 #endif
@@ -37,6 +39,7 @@ enum
 	ID_OpenCL = 4,
     ID_SIZEICONLESS = 5,
     ID_SIZEICONMORE = 6,
+	ID_ERASEDATABASE = 7,
 	WXPRINT_PAGE_SETUP,
 	WXPRINT_PAGE_SETUP_PS,
 #ifdef __WXMAC__
@@ -103,8 +106,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//SetIcon(wxIcon(wxT("regards.xpm")));
 	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this);
 	m_previewModality = wxPreviewFrame_AppModal;
-
+	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	wxMenu *menuFile = new wxMenu;
+	wxMenu *menuParameter = new wxMenu;
 
 	//menuFile->Append(ID_Hello, "&Hello...\tCtrl-H", "Help string shown in status bar for this menu item");
     if(CViewerFrame::GetViewerMode())
@@ -114,8 +118,12 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     menuSizeIcon->Append(ID_SIZEICONLESS, "&Decrease Icon Size", "Decrease Icon Size");
     menuSizeIcon->Append(ID_SIZEICONMORE, "&Enlarge Icon Size", "Enlarge Icon Size");
     
-	menuFile->Append(ID_Configuration, "&Configuration", "Configuration");
-	menuFile->Append(ID_OpenCL, "&OpenCL Configuration", "Configuration OpenCL");
+	menuParameter->Append(ID_Configuration, "&Configuration", "Configuration");
+	menuParameter->Append(ID_OpenCL, "&OpenCL Configuration", "Configuration OpenCL");
+    
+#ifdef VIEWER
+	menuParameter->Append(ID_ERASEDATABASE, "&Erase Database", "Erase Database");
+#endif
 	//menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
 	menuFile->Append(WXPRINT_PAGE_SETUP, wxT("Page Set&up..."), wxT("Page setup"));
 #ifdef __WXMAC__
@@ -129,13 +137,16 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     menuHelp->Append(wxID_HELP);
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, "&File");
+	menuBar->Append(menuParameter, "&Parameter");
     menuBar->Append(menuSizeIcon, "&Icon Size");
 	menuBar->Append(menuHelp, "&Help");
 	SetMenuBar(menuBar);
 
 	SetLabel(wxT("Regards Viewer"));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
+#ifndef VIEWER
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
+#endif
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 
 #ifdef __APPLE__
@@ -146,7 +157,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 		if (viewerParam != nullptr)
 		{
 			wxString folderPath = viewerParam->GetLastFolder();
-			mainWindow->SetFolder(folderPath);
+            wxString sqlRequest = viewerParam->GetLastSqlRequest();
+            mainWindow->SetDatabase(folderPath, sqlRequest);
+			//mainWindow->SetFolder(folderPath);
 		}
 		else
 		{
@@ -163,7 +176,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			if (viewerParam != nullptr)
 			{
 				wxString folderPath = viewerParam->GetLastFolder();
-				mainWindow->SetFolder(folderPath);
+                wxString sqlRequest = viewerParam->GetLastSqlRequest();
+				mainWindow->SetDatabase(folderPath, sqlRequest);
 			}
 			else
 			{
@@ -178,6 +192,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 #endif
     
     mainInterface->HideAbout();
+	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
+}
+
+void CViewerFrame::OnTimerLoadPicture(wxTimerEvent& event)
+{
+	mainWindow->ImageSuivante();
+	loadPictureTimer->Stop();
 }
 
 void CViewerFrame::OnHelp(wxCommandEvent& event)
@@ -189,15 +210,27 @@ void CViewerFrame::OnHelp(wxCommandEvent& event)
 
 void CViewerFrame::Exit()
 {
-	this->Close(true);
+    if(!onExit)
+    {
+#ifdef VIEWER
+        mainInterface->Close();
+#else
+        Close(true);
+#endif
+        onExit = true;
+    }
+    
+
 }
 
+#ifndef VIEWER
 void CViewerFrame::OnClose(wxCloseEvent& event)
 {
+
 	mainInterface->HideViewer();
 	return;
 }
-
+#endif
 
 
 void CViewerFrame::OnKeyDown(wxKeyEvent& event)
@@ -206,6 +239,72 @@ void CViewerFrame::OnKeyDown(wxKeyEvent& event)
 	{
 		mainWindow->SetScreen();
 	}
+	else
+	{
+		switch (event.GetKeyCode())
+		{
+			case WXK_ESCAPE:
+			{
+				mainWindow->SetScreen();
+			}
+			break;
+
+			case WXK_PAGEUP:
+			{
+				mainWindow->ImageSuivante();
+			}
+			break;
+
+			case WXK_PAGEDOWN:
+			{
+				mainWindow->ImagePrecedente();
+			}
+			break;
+
+
+			case WXK_SPACE:
+			{
+				//mainWindow->ImageSuivante();
+				if (!loadPictureTimer->IsRunning())
+					loadPictureTimer->Start(10);
+			}
+			break;
+
+			case WXK_END:
+			{
+				mainWindow->ImageFin();
+			}
+			break;
+
+			case WXK_HOME:
+			{
+				mainWindow->ImageDebut();
+			}
+			break;
+
+			case WXK_F5:
+			{
+				if (!fullscreen)
+				{
+					mainWindow->SetFullscreen();
+					fullscreen = true;
+				}
+			}
+			break;
+
+		}
+	}
+
+	/*
+	if (event.m_keyCode == WXK_ESCAPE && fullscreen)
+	{
+		mainWindow->SetScreen();
+	}
+	else if (event.m_keyCode == WXK_SPACE)
+	{
+		//mainWindow->ImageSuivante(); 
+	}
+	*/
 	event.Skip();
 }
 
@@ -239,6 +338,14 @@ CViewerFrame::~CViewerFrame()
 
 	if (viewerTheme != nullptr)
 		delete(viewerTheme);
+
+	if (loadPictureTimer->IsRunning())
+		loadPictureTimer->Stop();
+
+	delete(loadPictureTimer);
+    
+    if(!onExit)
+        Exit();
 }
 
 void CViewerFrame::SetText(const int &numPos, const wxString &libelle)
@@ -344,7 +451,12 @@ void CViewerFrame::OnIconSizeMore(wxCommandEvent& event)
 
 void CViewerFrame::OnExit(wxCommandEvent& event)
 {
+    onExit = true;
+#ifdef VIEWER
+    mainInterface->Close();
+#else
 	Close(true);
+#endif
 }
 void CViewerFrame::OnAbout(wxCommandEvent& event)
 {
@@ -374,6 +486,16 @@ void CViewerFrame::PrintPreview(CRegardsBitmap * imageToPrint)
 	frame->Centre(wxBOTH);
 	frame->InitializeWithModality(m_previewModality);
 	frame->Show();
+}
+
+void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
+{
+	if (wxMessageBox(L"Do you want to erase all data in Database ?", "Informations", wxYES_NO | wxICON_WARNING) == wxYES)
+	{
+		CSQLRemoveData::DeleteCatalog(1);
+        mainWindow->InitSaveParameter();
+		mainWindow->RefreshFolder();
+	}
 }
 
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
@@ -412,6 +534,7 @@ EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
 EVT_MENU(ID_OpenCL, CViewerFrame::OnConfigurationOpenCL)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
+EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)

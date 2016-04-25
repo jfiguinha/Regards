@@ -378,7 +378,7 @@ void CExplorerTheme::InitThumbnailToolbar()
 	themeThumbnailToolbar.button.showButtonOnly = 1;
 
 	themeThumbnailToolbar.slider.isColorBackground = true;
-	themeThumbnailToolbar.slider.SetWidth(100);
+	themeThumbnailToolbar.slider.SetWidth(200);
 	themeThumbnailToolbar.slider.SetHeight(30);
 }
 

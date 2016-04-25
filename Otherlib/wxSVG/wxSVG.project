@@ -312,7 +312,7 @@
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O0;-std=c++11;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
-        <IncludePath Value="../../../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
         <IncludePath Value="../wxSVG/include"/>
         <IncludePath Value="../wxSVG/include/wxSVG"/>
         <IncludePath Value="../wxSVG/include/wxSVGXML"/>
@@ -320,8 +320,8 @@
         <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
         <IncludePath Value="/usr/include/pango-1.0"/>
         <IncludePath Value="/usr/include/cairo"/>
-        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="USE_RENDER_CAIRO"/>
       </Compiler>
@@ -361,14 +361,14 @@
     </Configuration>
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
-        <IncludePath Value="../../../libextern/ffmpeg-2.6.2"/>
+        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
         <IncludePath Value="../wxSVG/include"/>
         <IncludePath Value="../wxSVG/include/wxSVG"/>
         <IncludePath Value="../wxSVG/include/wxSVGXML"/>
         <IncludePath Value="/usr/include/pango-1.0"/>
         <IncludePath Value="/usr/include/cairo"/>
-        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
+        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <IncludePath Value="/usr/include/glib-2.0"/>
         <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
         <Preprocessor Value="NDEBUG"/>

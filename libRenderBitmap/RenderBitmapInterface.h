@@ -5,6 +5,7 @@
 
 #pragma once
 #include <RegardsBitmap.h>
+#include <EffectParameter.h>
 #include <ParamInit.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
@@ -73,17 +74,11 @@ namespace Regards
 			virtual void AddBitmapToScalePosition(const wxString &textureName, const int &widthScale, const int &heightScale, const wxRect &rc, const int &left, const int &top) = 0;
 			virtual void RenderToScreen(wxDC * deviceContext)= 0;
 			virtual void Transition(const wxString &textureName, const int &step)= 0;
-			virtual void PhotoFiltre(const CRgbaquad &color, const int &intensity)= 0;
-			virtual void RGBFiltre(const int &red, const int &green, const int &blue)= 0;
-			virtual void RotateFree(const int &angle)= 0;
-			virtual void Swirl(const float &radius, const float &angle, const float &bitmapWidth, const float &bitmapHeight)= 0;
-			virtual void BrightnessAndContrast(const int &lightness, const int &contrast)= 0;
-			virtual void Posterize(const float &level, const float &gamma)= 0;
-			virtual void RedEye(float &strength, const wxRect& rSelectionBox) = 0;
-			virtual void Solarize(const long &threshold)= 0;
-			virtual void MotionBlur(const double &radius, const double &sigma, const double &angle);
-			virtual void LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-			virtual void Clouds(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave)= 0;
+            
+            virtual void RenderEffect(const int &numEffect, CEffectParameter * effectParameter)= 0;
+            void MotionBlur(const double &radius, const double &sigma, const double &angle);
+            void LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
+            virtual void RotateFree(const int &angle) = 0;
 			virtual int GetType(){
 				return 0;
 			};

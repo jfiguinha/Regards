@@ -12,6 +12,16 @@ CTreeElementTexteClick::~CTreeElementTexteClick()
 
 }
 
+int CTreeElementTexteClick::GetTypeLink()
+{
+    return typeElement;
+}
+
+wxString CTreeElementTexteClick::GetLinkElement()
+{
+    return linkElement;
+}
+
 void CTreeElementTexteClick::SetTypeLink(const int &typeElement)
 {
     this->typeElement = typeElement;

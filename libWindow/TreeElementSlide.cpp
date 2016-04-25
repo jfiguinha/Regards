@@ -19,13 +19,23 @@ CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface * eventInterface
     if(isVector)
     {
         button.Create(0,0);
+		buttonPlus.Create(0, 0);
+		buttonMoins.Create(0, 0);
         buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
+		buttonPlusVector = CLibResource::GetVector("IDB_PLUS");
+		buttonMoinsVector = CLibResource::GetVector("IDB_MINUS");
     }
     else
     {
         button = loadingResource.LoadImageResource("IDB_BOULESLIDER");
+		buttonPlus = loadingResource.LoadImageResource("IDB_PLUS");
+		buttonMoins = loadingResource.LoadImageResource("IDB_MINUS");
     }
 
+
+	plusPos = { 0, 0, 0, 0 };
+	moinsPos = { 0, 0, 0, 0 };
+	slidePos = { 0, 0, 0, 0 };
 }
 
 wxImage CTreeElementSlide::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
@@ -110,7 +120,7 @@ void CTreeElementSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 void CTreeElementSlide::CalculZoomPosition(const int &x)
 {
-	float posX = x - positionSlider.x;
+	float posX = x - (positionSlider.x + slidePos.x);
 	float total = positionSlider.width;
 	position = (posX / total) * tabValue.size();
 }
@@ -119,12 +129,10 @@ void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int 
 {
 	if (mouseBlock)
 	{
-		wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlide.font);
-		int xSlide = x - renderLast.x;
-		if ((xSlide >= positionSlider.x && xSlide <= (positionSlider.x + positionSlider.width)))
+		if (x >= (positionSlider.x + slidePos.x) && x < (positionSlider.width + positionSlider.x + slidePos.x))
 		{
 			::wxSetCursor(hCursorHand);
-			CalculZoomPosition(xSlide);
+			CalculZoomPosition(x);
 
 			if (position >= tabValue.size())
 				position = int(tabValue.size()) - 1;
@@ -137,39 +145,41 @@ void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int 
 	}
 }
 
-void CTreeElementSlide::ClickLeftPage(const int &x)
+void CTreeElementSlide::TestMaxMinValue()
 {
-	//Click Top Triangle
-	CalculZoomPosition(x);
 	if (position >= tabValue.size())
 		position = int(tabValue.size()) - 1;
 
 	if (position < 0)
 		position = 0;
+}
+
+void CTreeElementSlide::ClickLeftPage(const int &x)
+{
+	//Click Top Triangle
+	CalculZoomPosition(x);
+
+	TestMaxMinValue();
 
 	eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
 }
 
 void CTreeElementSlide::ClickRightPage(const int &x)
 {
-	if (position >= tabValue.size())
-		position = int(tabValue.size()) - 1;
-
-	if (position < 0)
-		position = 0;
-
-	eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
-
 	//Click Top Triangle
 	CalculZoomPosition(x);
+
+	TestMaxMinValue();
+
+	eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
 }
 
 bool CTreeElementSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 {
 	wxWindowDC dc(window);
-	wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlide.font);
+	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlide.font);
 
-	if ((x >= (positionButton.x + renderLast.x) && x <= ((positionButton.x + positionButton.width) + renderLast.x)) && (y >= positionButton.y && y <= (positionButton.y + positionButton.height)))
+	if ((x >= (positionButton.x + slidePos.x) && x <= ((positionButton.x + positionButton.width) + slidePos.x)) && (y >= positionButton.y && y <= (positionButton.y + positionButton.height)))
 	{
 		return true;
 	}
@@ -178,22 +188,39 @@ bool CTreeElementSlide::FindCirclePos(wxWindow * window, const int &y, const int
 
 void CTreeElementSlide::ClickElement(wxWindow * window, const int &x, const int &y)
 {
-	int xSlide = x;
+	if (x >= (positionSlider.x + slidePos.x) && x < (positionSlider.width + positionSlider.x + slidePos.x))
+	{
+		int xSlide = x;
 
-	if (FindCirclePos(window, y, xSlide))
-	{
-		mouseBlock = true;
-		window->CaptureMouse();
-		wxSetCursor(hCursorHand);
-		captureBall = true;
+		if (FindCirclePos(window, y, xSlide))
+		{
+			mouseBlock = true;
+			window->CaptureMouse();
+			wxSetCursor(hCursorHand);
+			captureBall = true;
+		}
+		else if (xSlide > positionButton.width)
+		{
+			ClickRightPage(xSlide);
+		}
+		else if (xSlide < positionButton.x)
+		{
+			ClickLeftPage(xSlide);
+		}
 	}
-	else if (xSlide > positionButton.width)
+	else if (x >= moinsPos.x && x < (moinsPos.width + moinsPos.x))
 	{
-		ClickRightPage(xSlide);
+		//Click button moins
+		position--;
+		TestMaxMinValue();
+		eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
 	}
-	else if (xSlide < positionButton.x)
+	else if (x >= plusPos.x && x < (plusPos.width + plusPos.x))
 	{
-		ClickLeftPage(xSlide);
+		//Click button plus
+		position++;
+		TestMaxMinValue();
+		eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
 	}
 }
 
@@ -348,14 +375,51 @@ void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const in
 
 	wxSize renderFirst = CWindowMain::GetSizeTexte(deviceContext, to_string(GetPositionValue()), themeSlide.font);
 	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlide.font);
+	
+	slidePos.x = renderLast.x + themeSlide.GetButtonWidth();
+	slidePos.y = 0;
+	slidePos.width = themeSlide.GetWidth() - (renderLast.x + renderLast.x) - (themeSlide.GetButtonWidth() * 2);
+	slidePos.height = themeSlide.GetHeight();
 
-	RenderSlide(&memDC, themeSlide.GetWidth() - (renderLast.x + renderLast.x), themeSlide.GetHeight(), renderLast.x, 0);
+	RenderSlide(&memDC, slidePos.width, themeSlide.GetHeight(), slidePos.x, 0);
 
 	int yMedium = (themeSlide.GetHeight() - renderFirst.y) / 2;
 	CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlide.font);
 		
 	yMedium = (themeSlide.GetHeight() - renderLast.y) / 2;
 	CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlide.GetWidth() - renderLast.x, yMedium, themeSlide.font);
+
+	moinsPos.x = renderLast.x + themeSlide.GetMarge();
+	moinsPos.y = positionButton.y;
+	moinsPos.width = themeSlide.GetButtonWidth();
+	moinsPos.height = themeSlide.GetButtonHeight();
+
+	if (isVector)
+	{
+		if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeSlide.GetButtonWidth() || buttonMoins.GetHeight() != themeSlide.GetButtonHeight()))
+			buttonMoins = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonMoinsVector);
+		memDC.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
+	}
+	else
+	{
+		memDC.DrawBitmap(buttonMoins.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight()), moinsPos.x, moinsPos.y);
+	}
+
+	plusPos.x = themeSlide.GetWidth() - renderLast.x - themeSlide.GetButtonWidth() - themeSlide.GetMarge();
+	plusPos.y = positionButton.y;
+	plusPos.width = themeSlide.GetButtonWidth();
+	plusPos.height = themeSlide.GetButtonHeight();
+
+	if (isVector)
+	{
+		if (!buttonPlus.IsOk() || (buttonPlus.GetWidth() != themeSlide.GetButtonWidth() || buttonPlus.GetHeight() != themeSlide.GetButtonHeight()))
+			buttonPlus = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonPlusVector);
+		memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
+	}
+	else
+	{
+		memDC.DrawBitmap(buttonPlus.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight()), plusPos.x, plusPos.y);
+	}
 
 	memDC.SelectObject(wxNullBitmap);
 

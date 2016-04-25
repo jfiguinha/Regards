@@ -937,7 +937,31 @@ public:
     
 	CThemeFont themeFont;
     
+    
+    void SetCheckboxWidth(const int &width)
+    {
+        this->checkboxWidth = width;
+    }
+    
+    void SetCheckboxHeight(const int &height)
+    {
+        this->checkboxHeight = height;
+    }
+    
+    int GetCheckboxWidth()
+    {
+        return CalculElementSizeForScreen(checkboxWidth);
+    }
+    
+    int GetCheckboxHeight()
+    {
+        return CalculElementSizeForScreen(checkboxHeight,false);
+    }
+
+    
 private:
+    int checkboxWidth;
+    int checkboxHeight;
 	int height;
 };
 

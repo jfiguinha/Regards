@@ -60,8 +60,10 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libResource"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="EXIV2"/>
       </Compiler>
@@ -110,8 +112,10 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libextern/exiv2-0.24/src"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+        <IncludePath Value="../libResource"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
         <Preprocessor Value="EXIV2"/>

@@ -97,6 +97,21 @@ CPreviewWnd::~CPreviewWnd()
     delete(fileGeolocalisation);
 }
 
+void CPreviewWnd::UpdateCriteria()
+{
+    if(fileGeolocalisation != nullptr)
+        fileGeolocalisation->RefreshData();
+    
+    if(panelInfos != nullptr)
+        panelInfos->UpdateData();
+    
+    if(panelPreview != nullptr)
+        panelPreview->UpdateData();
+    
+    
+    panelPreview->Refresh();
+}
+
 void CPreviewWnd::UpdateScreenRatio()
 {
     paneInfos->UpdateScreenRatio();

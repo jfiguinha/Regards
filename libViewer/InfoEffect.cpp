@@ -43,13 +43,15 @@ void CInfoEffect::AddModification(CRegardsBitmap * bitmap, const wxString &libel
 
         for(int i = 1;i < (numModification+1);i++)
         {
-            AddEvent("Effect." + modificationManager->GetModificationLibelle(i), to_string(i));
+            AddEvent("Effect." + modificationManager->GetModificationLibelle(i).Replace(".","@99"), to_string(i));
             index++;
         }
     }
     
+	wxString localLibelle = libelle;
+	localLibelle.Replace(".", "@99");
 	modificationManager->AddModification(bitmap, libelle);
-	AddEvent("Effect." + libelle, GetNumModification());index++;
+	AddEvent("Effect." + localLibelle, GetNumModification()); index++;
 	SetActifElement(GetNumModification());
 }
 
@@ -58,7 +60,7 @@ void CInfoEffect::InitTree(const wxString &libelle, const wxString &key)
     filename = libelle;
     numEvent = 1;
     index = 0;
-    //Récupération des catégories principales
+    //RÃ©cupÃ©ration des catÃ©gories principales
     /*
     top = tr.begin();
     CTreeData * treeData = new CTreeData();
@@ -67,8 +69,9 @@ void CInfoEffect::InitTree(const wxString &libelle, const wxString &key)
     treeData->SetExifKey(key);
     child = tr.insert(top, treeData);
     */
-    
-    AddEvent("Source." + libelle, key);
+	wxString localLibelle = libelle;
+	localLibelle.Replace(".", "@99");
+	AddEvent("Source." + localLibelle, key);
     index++;
     CreateElement();
 }
@@ -145,12 +148,15 @@ void CInfoEffect::SetActifElement(const wxString &key)
 
 void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 {
-	//Récupération des catégories principales
+	//RÃ©cupÃ©ration des catÃ©gories principales
 	numEvent+=2;
 
+
+	wxString localLibelle = libelle;
+	localLibelle.Replace("@99", ".");
 	CTreeData * treeData = new CTreeData();
 	treeData->SetIsParent(true);
-	treeData->SetKey(libelle);
+	treeData->SetKey(localLibelle);
 	treeData->SetExifKey(key);
 
 	//FindKey(const wxString & key)
@@ -164,20 +170,30 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 
 	// Establish string and get the first token:
 #ifdef WIN32
+#if _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
+#endif
+#else
+wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
 #endif
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
 		CTreeData * treeData = new CTreeData();
-		treeData->SetKey(token);
+		wxString value = token;
+		value.Replace("@99", ".");
+		treeData->SetKey(value);
 #ifdef WIN32
+#if _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
+#else
+token = wcstok(nullptr, seps, &next_token1); // C4996
+#endif 
 		if (token != nullptr)
 		{
 			treeData->SetIsParent(true);
@@ -187,7 +203,7 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 				if (item == 0)
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey());
 					if (it != nullptr)
 					{
@@ -200,7 +216,7 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 				else
 				{
 					tree<CTreeData *>::iterator it;
-					//Recherche de la clé
+					//Recherche de la clÃ©
 					it = FindKey(treeData->GetKey(), child);
 					if (it != nullptr)
 					{
@@ -226,7 +242,7 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 		else
 		{
 			treeData->SetIsParent(false);
-			treeData->SetValue(libelle);
+			treeData->SetValue(localLibelle);
             treeData->SetExifKey(key);
 			tr.append_child(child, treeData);
 		}

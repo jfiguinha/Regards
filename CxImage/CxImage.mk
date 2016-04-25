@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=CxImage
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/CxImage"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)_LINUX 
+Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)_LINUX $(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="CxImage.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
+LinkOptions            :=  -s
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libextern/libmng-2.0.3 $(IncludeSwitch)../libextern/jasper-1.900.1/src/libjasper/include $(IncludeSwitch)../Otherlib/libJbig $(IncludeSwitch)../Otherlib/libPsd $(IncludeSwitch)../libextern/wxWidgets-3.0.2/src/jpeg $(IncludeSwitch)../libextern/wxWidgets-3.0.2/src/tiff/libtiff $(IncludeSwitch)../libextern/wxWidgets-3.0.2/src/png $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall -msse4 $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
+CXXFLAGS :=  -fopenmp -std=c++11 -Wall -msse4 $(Preprocessors)
+CFLAGS   :=  -O2 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -80,15 +80,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/CxImage"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/CxImage"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -358,6 +358,6 @@ $(IntermediateDirectory)/xmemfile.cpp$(PreprocessSuffix): xmemfile.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

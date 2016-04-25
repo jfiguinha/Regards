@@ -21,6 +21,8 @@ using namespace Regards::Viewer;
 #define IDM_QUITTER 147
 #define IDM_REFRESHFOLDER 148
 #define IDM_REFRESHTHUMBNAIL 149
+#define IDM_REFRESHFILTER 150
+#define IDM_CRITERIA 151
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent,id,theme)
@@ -29,8 +31,12 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	wxString lblAssociate = CLibResource::LoadStringFromResource(L"LBLASSOCIATE",1);//L"Shrink Picture";
     wxString libelleRefreshFolder = CLibResource::LoadStringFromResource(L"LBLREFRESH",1);
     wxString libelleRefreshThumbnail = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL",1);
+    wxString libelleRefreshFilter = CLibResource::LoadStringFromResource(L"LBLREFRESHFILTER",1);
 	wxString lblDonate = CLibResource::LoadStringFromResource(L"LBLDONATE", 1);// L"Zoom On";
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);// L"Zoom Off
+#ifdef VIEWER
+	wxString lblCriteria = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);// L"Zoom Off";
+#endif
 	wxString lblThumbnail = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);// L"Zoom Off";
 	wxString lblPictureDetails = CLibResource::LoadStringFromResource(L"LBLPICTUREDETAILS", 1);// L"Zoom Off";
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);// L"Zoom Off";
@@ -57,6 +63,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
     refresh->SetLibelle(libelleRefreshThumbnail);
     refresh->SetCommandId(IDM_REFRESHTHUMBNAIL);
     navElement.push_back(refresh);
+    
 
 #ifdef WIN32
 	CToolbarButton * associate = new CToolbarButton(themeToolbar.button);
@@ -66,13 +73,20 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	navElement.push_back(associate);
 #endif
 
-	//CToolbarButton * donate = new CToolbarButton(themeToolbar.button);
-	//donate->SetButtonResourceId(L"IDB_DONATE");
-	//donate->SetLibelle(lblDonate);
-	//donate->SetCommandId(IDM_DONATE);
-	//navElement.push_back(donate);
+#ifdef VIEWER
     
-
+    CToolbarButton * refreshFilter = new CToolbarButton(themeToolbar.button);
+    refreshFilter->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
+    refreshFilter->SetLibelle(libelleRefreshFilter);
+    refreshFilter->SetCommandId(IDM_REFRESHFILTER);
+    navElement.push_back(refreshFilter);
+    
+	CToolbarButton * criteria = new CToolbarButton(themeToolbar.button);
+	criteria->SetButtonResourceId(L"IDB_SEARCH");
+	criteria->SetLibelle(lblCriteria);
+	criteria->SetCommandId(IDM_CRITERIA);
+	navElement.push_back(criteria);
+#endif
 
 	CToolbarButton * thumbnail = new CToolbarButton(themeToolbar.button);
 	thumbnail->SetButtonResourceId(L"IDB_THUMBNAILPNG");
@@ -135,9 +149,21 @@ void CToolbar::EventManager(const int &id)
              mainWindow->RefreshFolder();
             break;
 
+
         case IDM_REFRESHTHUMBNAIL:
             centralWnd->RefreshThumbnail();
             break;
+                
+#ifdef VIEWER
+                
+        case IDM_REFRESHFILTER:
+            centralWnd->RefreshFilter();
+            break;
+                
+		case IDM_CRITERIA:
+			centralWnd->ShowFilter();
+			break;
+#endif
 
 		case IDM_THUMBNAIL:
 			centralWnd->ShowPanelThumbnail();

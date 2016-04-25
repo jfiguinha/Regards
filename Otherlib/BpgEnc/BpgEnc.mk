@@ -13,14 +13,14 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=09/09/15
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
-LinkerName             :=g++
-SharedObjectLinkerName :=g++ -shared -fPIC
+LinkerName             :=/usr/bin/g++-4.8
+SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
-PreprocessSuffix       :=.o.i
-DebugSwitch            :=-gstab
+PreprocessSuffix       :=.i
+DebugSwitch            :=-g 
 IncludeSwitch          :=-I
 LibrarySwitch          :=-l
 OutputSwitch           :=-o 
@@ -31,12 +31,12 @@ OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
 Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)USE_VAR_BIT_DEPTH 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
-PreprocessOnlySwitch   :=-E 
+PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="BpgEnc.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../../libextern/libbpg-0.9.5 $(IncludeSwitch)../../../libextern/x265_1.7/source $(IncludeSwitch)../../../libextern/x265_1.7/include 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../libextern/libbpg-0.9.5 $(IncludeSwitch)../../libextern/x265_1.7/source $(IncludeSwitch)../../libextern/x265_1.7/include 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -47,13 +47,13 @@ LibPath                := $(LibraryPathSwitch).
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := ar rcus
-CXX      := g++
-CC       := gcc
+AR       := /usr/bin/ar rcu
+CXX      := /usr/bin/g++-4.8
+CC       := /usr/bin/gcc-4.8
 CXXFLAGS :=  -g $(Preprocessors)
 CFLAGS   :=  -g -O2 -ansi -std=c99 -Wall $(Preprocessors)
 ASFLAGS  := 
-AS       := as
+AS       := /usr/bin/as
 
 
 ##
@@ -99,7 +99,7 @@ $(IntermediateDirectory)/bpgenc.c$(DependSuffix): bpgenc.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bpgenc.c$(ObjectSuffix) -MF$(IntermediateDirectory)/bpgenc.c$(DependSuffix) -MM "bpgenc.c"
 
 $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix): bpgenc.c
-	@$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix) "bpgenc.c"
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix) "bpgenc.c"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

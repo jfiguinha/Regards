@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libWindow
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libWindow"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,15 +28,15 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)GLEW_MX 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)GLEW_MX 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libWindow.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libPicture $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
+LinkOptions            :=  -s
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libPicture $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=  -Os -fopenmp -std=c++11 -Wall  $(Preprocessors)
+CFLAGS   :=  -O2 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -63,7 +63,7 @@ CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/BitmapWindowContext.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/EmptyWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/Icone.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/Pane.cpp$(ObjectSuffix) $(IntermediateDirectory)/PositionElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarVerticalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarWnd.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) $(IntermediateDirectory)/SeparationBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Splitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/TitleBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarTexte.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/ToolbarWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeControl.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementDelete.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTriangle.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexteClick.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/CalendarDialogBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/MapSelect.cpp$(ObjectSuffix) 
 
 
 
@@ -80,15 +80,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libWindow"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libWindow"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -336,12 +336,68 @@ $(IntermediateDirectory)/TreeElementTexteClick.cpp$(DependSuffix): TreeElementTe
 $(IntermediateDirectory)/TreeElementTexteClick.cpp$(PreprocessSuffix): TreeElementTexteClick.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementTexteClick.cpp$(PreprocessSuffix) "TreeElementTexteClick.cpp"
 
+$(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix): BitmapInfos.cpp $(IntermediateDirectory)/BitmapInfos.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/BitmapInfos.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BitmapInfos.cpp$(DependSuffix): BitmapInfos.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BitmapInfos.cpp$(DependSuffix) -MM "BitmapInfos.cpp"
+
+$(IntermediateDirectory)/BitmapInfos.cpp$(PreprocessSuffix): BitmapInfos.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BitmapInfos.cpp$(PreprocessSuffix) "BitmapInfos.cpp"
+
+$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix): BitmapInfosCheckBox.cpp $(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/BitmapInfosCheckBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(DependSuffix): BitmapInfosCheckBox.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(DependSuffix) -MM "BitmapInfosCheckBox.cpp"
+
+$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(PreprocessSuffix): BitmapInfosCheckBox.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(PreprocessSuffix) "BitmapInfosCheckBox.cpp"
+
+$(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix): BitmapInfosGps.cpp $(IntermediateDirectory)/BitmapInfosGps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/BitmapInfosGps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BitmapInfosGps.cpp$(DependSuffix): BitmapInfosGps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BitmapInfosGps.cpp$(DependSuffix) -MM "BitmapInfosGps.cpp"
+
+$(IntermediateDirectory)/BitmapInfosGps.cpp$(PreprocessSuffix): BitmapInfosGps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BitmapInfosGps.cpp$(PreprocessSuffix) "BitmapInfosGps.cpp"
+
+$(IntermediateDirectory)/CalendarDialogBox.cpp$(ObjectSuffix): CalendarDialogBox.cpp $(IntermediateDirectory)/CalendarDialogBox.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/CalendarDialogBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CalendarDialogBox.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CalendarDialogBox.cpp$(DependSuffix): CalendarDialogBox.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CalendarDialogBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CalendarDialogBox.cpp$(DependSuffix) -MM "CalendarDialogBox.cpp"
+
+$(IntermediateDirectory)/CalendarDialogBox.cpp$(PreprocessSuffix): CalendarDialogBox.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CalendarDialogBox.cpp$(PreprocessSuffix) "CalendarDialogBox.cpp"
+
+$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix): CalendarSelect.cpp $(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/CalendarSelect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix): CalendarSelect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix) -MM "CalendarSelect.cpp"
+
+$(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix): CalendarSelect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix) "CalendarSelect.cpp"
+
+$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix): MapDialogBox.cpp $(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/MapDialogBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix): MapDialogBox.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix) -MM "MapDialogBox.cpp"
+
+$(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix): MapDialogBox.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix) "MapDialogBox.cpp"
+
+$(IntermediateDirectory)/MapSelect.cpp$(ObjectSuffix): MapSelect.cpp $(IntermediateDirectory)/MapSelect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libWindow/MapSelect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MapSelect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MapSelect.cpp$(DependSuffix): MapSelect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MapSelect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MapSelect.cpp$(DependSuffix) -MM "MapSelect.cpp"
+
+$(IntermediateDirectory)/MapSelect.cpp$(PreprocessSuffix): MapSelect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MapSelect.cpp$(PreprocessSuffix) "MapSelect.cpp"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

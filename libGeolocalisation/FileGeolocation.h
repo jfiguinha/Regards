@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 #include <Country.h>
+#ifdef EXIV2
+#include <exif.hpp>
+#include <xmp.hpp>
+#endif
 using namespace std;
 
 class CListCriteriaPhoto;
@@ -28,9 +32,11 @@ namespace Regards
             {
                 this->isThumbnail = isThumbnail;
             }
-			void SetFile(const wxString & filename);
+			void SetFile(const wxString & filename, const bool &onlyFromFile = false);
 			wxString GetLatitude();
 			wxString GetLongitude();
+            float GetFLatitude();
+            float GetFLongitude();
 			bool HasGps();
 			bool HasDateTime();
 			wxString GetGpsInformation();
@@ -43,10 +49,18 @@ namespace Regards
             
             void Geolocalize();
 			bool Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto);
-
+            void RefreshData();
+            wxString GenerateGeolocalisationString(const wxString &countryCode, const wxString & region, const wxString &place);
+            
 		private:
            
 			void ImportCountry();
+
+#ifdef EXIV2
+			void ReadXmp(Exiv2::XmpData &xmpData);
+			void ReadExif(Exiv2::ExifData &exifData);
+			wxString GetQuickTimeDate(int64_t dateQuicktime);
+#endif
 			wxString dateTimeInfos = "";
 			bool hasGps = false;
 			bool hasDataTime = false;
@@ -59,7 +73,7 @@ namespace Regards
             bool isThumbnail = false;
             wxString gpsInfos;
             wxString urlServer;
-			static CountryVector countryVector;
+			CountryVector countryVector;
 		};
 
 	}

@@ -26,7 +26,7 @@ END_EVENT_TABLE()
 ConfigRegards::ConfigRegards(wxWindow* parent)
 {
 	//(*Initialize(ConfigRegards)
-	//SetTitle("Regards Configuration");
+	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
 	//rdPreviewRender = (wxRadioBox*)FindWindow(XRCID("ID_RDPREVIEWRENDER"));
 	//rbRenderVideo = (wxRadioBox*)FindWindow(XRCID("ID_RBRENDERVIDEO"));

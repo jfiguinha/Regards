@@ -70,8 +70,9 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 		for (int x = 0; x < width; x++)
 		{
 			float posX = float(x) * ratioX + posLeft;
-			CRgbaquad * color = Out->GetPtColorValue(x, y);
+            CRgbaquad color;// = Out->GetPtColorValue(x, y);
 			Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+            Out->SetColorValue(x,y,color);
 		}
 	}
 
@@ -140,8 +141,9 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out,
 				posY = height - posY - 1;
 			}
 
-			CRgbaquad * color = Out->GetPtColorValue(x, y);
+            CRgbaquad color;// = Out->GetPtColorValue(x, y);
 			Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+            Out->SetColorValue(x,y,color);
 		}
 	}
 	delete[] wX;
@@ -169,15 +171,16 @@ void CInterpolationBicubic::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 		for (int x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
-			CRgbaquad * color = Out->GetPtColorValue(x, y);
+			CRgbaquad color;
 			Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
+            Out->SetColorValue(x, y, color);
 		}
 	}
 
 }
 
 
-void CInterpolationBicubic::Bicubic(CRgbaquad * & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationBicubic::Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
 {
 
 	float nDenom = 0.0;
@@ -234,18 +237,18 @@ void CInterpolationBicubic::Bicubic(CRgbaquad * & data, CRegardsBitmap * In, con
 	{
 		for (int m = debutM; m <= finM; m++)
 		{
-			CRgbaquad * color = In->GetPtColorValue(posX + m, posY + n);
+			CRgbaquad color = In->GetColorValue(posX + m, posY + n);
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
-			r += color->GetFRed() * f;
-			g += color->GetFGreen() * f;
-			b += color->GetFBlue() * f;
-			a += color->GetFAlpha() * f;
+			r += color.GetFRed() * f;
+			g += color.GetFGreen() * f;
+			b += color.GetFBlue() * f;
+			a += color.GetFAlpha() * f;
 		}
 	}
 
 
-	data->SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
+	data.SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
 }
 
 float CInterpolationBicubic::Filter(const float &f)

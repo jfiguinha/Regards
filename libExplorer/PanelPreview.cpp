@@ -64,6 +64,12 @@ CPanelPreview::CPanelPreview(wxWindow* parent, wxWindowID id, CVideoEffectParame
 	bitmapInfos->Show(false);
 }
 
+void CPanelPreview::UpdateData()
+{
+    if(bitmapInfos != nullptr)
+        bitmapInfos->UpdateData();
+}
+
 void CPanelPreview::OnPaint(wxPaintEvent& event)
 {
     wxPaintDC dc(this);
@@ -107,9 +113,9 @@ void CPanelPreview::LoadPicture(CThreadPictureData * pictureData)
         pictureData->bitmap->SetFilename(pictureData->picture);
     }
     
-    wxCommandEvent event(EVENT_POSTPICTURE);
-    event.SetClientData(pictureData);
-    wxPostEvent(pictureData->panelPreview, event);
+	wxCommandEvent * event = new wxCommandEvent(EVENT_POSTPICTURE);
+    event->SetClientData(pictureData);
+	wxQueueEvent(pictureData->panelPreview, event);
     
 }
 
@@ -374,6 +380,12 @@ bool CPanelPreview::SetPhoto(const wxString &filename)
         
 		Resize();
 	}
+    else
+    {
+        CCentralWnd * mainWnd = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+        if (mainWnd != nullptr)
+            mainWnd->StopLoadingPicture();
+    }
 	return true;
 }
 

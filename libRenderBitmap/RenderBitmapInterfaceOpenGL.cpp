@@ -26,6 +26,10 @@ CRenderBitmapInterfaceOpenGL::~CRenderBitmapInterfaceOpenGL()
 	delete(textureSource);
 }
 
+void CRenderBitmapInterfaceOpenGL::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
+{
+    
+}
 
 float CRenderBitmapInterfaceOpenGL::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight)
 {

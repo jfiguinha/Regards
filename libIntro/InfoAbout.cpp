@@ -1,5 +1,8 @@
-#include "InfoAbout.h"
+#include "infoAbout.h"
 #include "TreeElementTexte.h"
+#include "TreeElementTexteClick.h"
+#include "TreeDataLink.h"
+
 using namespace Regards::Introduction;
 
 CInfoAbout::CInfoAbout(CThemeTree * theme)
@@ -42,38 +45,32 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.0.0");
+	treeDataWidth->SetValue("2.4.0");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
 	treeDataAnnee->SetIsParent(false);
 	treeDataAnnee->SetKey("Copyright");
-	treeDataAnnee->SetValue("2015");
+	treeDataAnnee->SetValue("2015 - 2016");
 	tr.append_child(child, treeDataAnnee);
 
-	
 	CTreeData * treeDataLib = new CTreeData();
 	treeDataLib->SetKey("External Library");
 	child = tr.insert(top, treeDataLib);
 
-/*
-	CTreeData * treeFFMPEG = new CTreeData();
+	CTreeDataLink * treeFFMPEG = new CTreeDataLink();
 	treeFFMPEG->SetIsParent(false);
-	treeFFMPEG->SetKey("FFMPEG");
-	treeFFMPEG->SetValue("2.6.2");
+	treeFFMPEG->SetKey("LibCairo");
+    treeFFMPEG->SetLinkType(1);
+    treeFFMPEG->SetLinkPath("mpl11.pdf");
+	treeFFMPEG->SetValue("1.14.2 - Mozilla Public License (MPL) - Click to see licence");
 	tr.append_child(child, treeFFMPEG);
-*/
+
 	CTreeData * treeSQLite = new CTreeData();
 	treeSQLite->SetIsParent(false);
 	treeSQLite->SetKey("SQLite");
 	treeSQLite->SetValue("3.8.5");
 	tr.append_child(child, treeSQLite);
-
-	CTreeData * treeExiv = new CTreeData();
-	treeExiv->SetIsParent(false);
-	treeExiv->SetKey("Exiv");
-	treeExiv->SetValue("0.24");
-	tr.append_child(child, treeExiv);
 
 	CTreeData * treeRapipXML = new CTreeData();
 	treeRapipXML->SetIsParent(false);
@@ -92,19 +89,25 @@ void CInfoAbout::Init()
 	treeCxImage->SetKey("CxImage ");
 	treeCxImage->SetValue("7.0");
 	tr.append_child(child, treeCxImage);
-
+	
 	CTreeData * treelibRaw = new CTreeData();
 	treelibRaw->SetIsParent(false);
-	treelibRaw->SetKey("libRaw");
-	treelibRaw->SetValue("0.17");
+	treelibRaw->SetKey("Libraw");
+	treelibRaw->SetValue("0.17.0");
 	tr.append_child(child, treelibRaw);
-/*
-	CTreeData * treelibBPG = new CTreeData();
-	treelibBPG->SetIsParent(false);
-	treelibBPG->SetKey("libBPG");
-	treelibBPG->SetValue("0.9.5");
-	tr.append_child(child, treelibBPG);
-*/
+
+	CTreeData * treelibFFmpeg = new CTreeData();
+	treelibFFmpeg->SetIsParent(false);
+	treelibFFmpeg->SetKey("FFMpeg");
+	treelibFFmpeg->SetValue("2.6.2");
+	tr.append_child(child, treelibFFmpeg);
+
+	CTreeData * treelibExiv = new CTreeData();
+	treelibExiv->SetIsParent(false);
+	treelibExiv->SetKey("Exiv 2");
+	treelibExiv->SetValue("0.24");
+	tr.append_child(child, treelibExiv);
+
 	CreateElement();
 }
 
@@ -139,7 +142,14 @@ void CInfoAbout::CreateElement()
 			widthPosition = posElement->GetWidth() + themeTree.GetMargeX();
 
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+            if(data->GetType() == 2)
+            {
+                CTreeDataLink * dataLink = (CTreeDataLink *)data;
+                treeElementTexte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), dataLink->GetLinkPath(), dataLink->GetLinkType());
+            }
+            else
+                treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+            
 			treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
@@ -156,6 +166,17 @@ void CInfoAbout::CreateElement()
 		it++;
 
 	}
+}
+
+void CInfoAbout::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
+{
+    CTreeElement * treeElement = element->GetTreeElement();
+    if (element->GetType() == ELEMENT_TEXTEVALUE)
+    {
+        CTreeElementTexteClick * treeElementTexte= (CTreeElementTexteClick *)treeElement;
+        treeElementTexte->ClickElement(window, x, y);
+    }
+    
 }
 
 void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
@@ -178,8 +199,15 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			int widthElementColumn2 = 0;
 			CTreeElementTexte * treeElementTexte = nullptr;
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			treeElementTexte->SetVisible(isVisible);
+            if(data->GetType() == 2)
+            {
+                CTreeDataLink * dataLink = (CTreeDataLink *)data;
+                treeElementTexte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), dataLink->GetLinkPath(), dataLink->GetLinkType());
+            }
+            else
+                treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+			
+            treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
 			widthElementColumn1 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
@@ -187,9 +215,17 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			if (data->GetValue() != "")
 			{
 				xPos = themeTree.GetMargeX();
-				treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());
-				treeElementTexte->SetVisible(isVisible);
-				posElement = CreatePositionElement(xPos, yPos, nbRow, 1, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTEVALUE, treeElementTexte, data, false);
+                
+                if(data->GetType() == 2)
+                {
+                    CTreeDataLink * dataLink = (CTreeDataLink *)data;
+                    treeElementTexte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue(), dataLink->GetLinkPath(), dataLink->GetLinkType());
+                }
+                else
+                    treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());
+				
+                treeElementTexte->SetVisible(isVisible);
+				posElement = CreatePositionElement(xPos, yPos, nbRow, 1, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTEVALUE, treeElementTexte, data, (data->GetType() == 2));
 				widthElementColumn2 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
 			}
 
@@ -214,7 +250,14 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 			xPos += posElement->GetWidth() + themeTree.GetMargeX();
 
-			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+            if(data->GetType() == 2)
+            {
+                CTreeDataLink * dataLink = (CTreeDataLink *)data;
+                treeElementTexte = CreateTexteLinkElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), dataLink->GetLinkPath(), dataLink->GetLinkType());
+            }
+            else
+                treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
+            
 			treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 

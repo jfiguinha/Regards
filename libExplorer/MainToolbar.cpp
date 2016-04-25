@@ -9,7 +9,7 @@
 using namespace Regards::Explorer;
 
 #define IDM_QUITTER 1
-#define IDM_REFRESH 2
+#define IDM_REFRESHFOLDER 2
 #define IDM_INFOS 3
 #define IDM_FOLDER 4
 #define IDM_PICTURE 5
@@ -17,12 +17,14 @@ using namespace Regards::Explorer;
 #define IDM_AFFICHAGE_IMAGE 7
 #define IDM_DONATE 8
 #define IDM_ADDFOLDER 9
+#define IDM_REFRESHFILTER 10
 
 CMainToolbar::CMainToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent, id, theme)
 {
 	wxString libelleAddFolder = CLibResource::LoadStringFromResource(L"LBLADDFOLDER", 1);
 	wxString libelleRefresh = CLibResource::LoadStringFromResource(L"LBLREFRESH",1);
+    wxString libelleRefreshFilter = CLibResource::LoadStringFromResource(L"LBLREFRESHFILTER",1);
 	wxString libellePhotoViewer = CLibResource::LoadStringFromResource(L"LBLPHOTOVIEWER", 1);
 	wxString libelleDonate = CLibResource::LoadStringFromResource(L"LBLDONATE", 1);
 	wxString libelleQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
@@ -40,8 +42,14 @@ CMainToolbar::CMainToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar 
 	CToolbarButton * refresh = new CToolbarButton(themeToolbar.button);
 	refresh->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
 	refresh->SetLibelle(libelleRefresh);
-	refresh->SetCommandId(IDM_REFRESH);
+	refresh->SetCommandId(IDM_REFRESHFOLDER);
 	navElement.push_back(refresh);
+    
+    CToolbarButton * refreshFilter = new CToolbarButton(themeToolbar.button);
+    refreshFilter->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
+    refreshFilter->SetLibelle(libelleRefreshFilter);
+    refreshFilter->SetCommandId(IDM_REFRESHFILTER);
+    navElement.push_back(refreshFilter);
 
 	CToolbarButton * photoViewer = new CToolbarButton(themeToolbar.button);
 	photoViewer->SetButtonResourceId(L"IDB_PHOTOVIEWERPNG");
@@ -135,10 +143,15 @@ void CMainToolbar::EventManager(const int &id)
 				mainWnd->ShowRegardsViewer();
 			break;
 
-		case IDM_REFRESH:
+		case IDM_REFRESHFOLDER:
 			if (mainWnd != nullptr)
 				mainWnd->RefreshFolder();
 			break;
+                
+        case IDM_REFRESHFILTER:
+            if (mainWnd != nullptr)
+                mainWnd->RefreshFilter();
+            break;
 
 		}
 	}

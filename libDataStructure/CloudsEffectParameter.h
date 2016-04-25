@@ -1,5 +1,6 @@
 #pragma once
 #include "EffectParameter.h"
+#include <RGBAQuad.h>
 
 class CCloudsEffectParameter : public CEffectParameter
 {

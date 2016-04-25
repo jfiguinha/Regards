@@ -11,7 +11,9 @@
 #endif
 //(*Headers(CopyFileDlg)
 //*)
-
+#ifdef __APPLE__
+#include <AppleReadExif.h>
+#endif
 #include <vector>
 #include <ThumbnailData.h>
 #include <libPicture.h>
@@ -31,6 +33,8 @@ class CopyFileDlg: public wxDialog
 		void Start();
 		void SetDestinationFolder(const wxString &folder);
 		void SetInfosFile(const InfoExportFile & infoFile);
+        void SetNewGeoInfos(const float &latitude, const float &longitude,const wxString &lat, const wxString &lng, const wxString &geoInfos);
+        void SetNewDate(const wxDateTime &newDate, const wxString &selectDate);
 		//(*Declarations(CopyFileDlg)
 		wxStaticText* StaticText2;
 		wxButton* btOK;
@@ -55,7 +59,9 @@ class CopyFileDlg: public wxDialog
 		void CopyFile(const wxString & filename, CThumbnailData * data);
 		void DeleteFile(const wxString & filename, CThumbnailData * data);
 		void ExportFile(const wxString & filename, CThumbnailData * data);
-
+        void GeolocalizeFile(const wxString & filename);
+        void ChangeDateFile(const wxString & filename);
+    
 		void CreateFolder(const wxString &newFolder);
 		wxString CreateExportFolder(const InfoExportFile & infoFile, const wxString &folderDestination, const wxString &dateFile, const wxString &gpsFile);
 		wxString GenerateFileName(const InfoExportFile & infoFile, const wxString &dateFile, const wxString &gpsFile);
@@ -66,6 +72,10 @@ class CopyFileDlg: public wxDialog
 		bool start = false;
 		int mode = 0;
 
+        wxString selectDate = "";
+        wxString lat = "";
+        wxString lng = "";
+        wxString geoInfos = "";
 		wxString caption;
 		wxString text;
 		wxString message;
@@ -73,12 +83,17 @@ class CopyFileDlg: public wxDialog
 		wxString informations;
 		wxString destinationFolder;
 
+#ifdef __APPLE__
+        CAppleReadExif appleReadExif;
+#endif
 		vector<CThumbnailData *> * listItem = nullptr;
 		CLibPicture libPicture;
 		InfoExportFile infoFile;
 		int optionPicture = 0;
 		int qualityPicture = 0;
-
+        float latitude = 0.0;
+        float longitude = 0.0;
+        wxDateTime newDate;
 		DECLARE_EVENT_TABLE()
 };
 

@@ -7,7 +7,7 @@ public:
 	CPictureData(){};
 	~CPictureData();
 		
-	uint8_t * data = nullptr;
+	uint8_t * data;
 	int	size;
 	int width;
 	int height;

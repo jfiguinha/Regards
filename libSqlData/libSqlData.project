@@ -49,6 +49,8 @@
     <File Name="SQLRemoveData.cpp"/>
     <File Name="SqlThumbnail.cpp"/>
     <File Name="ThumbnailDataSQL.cpp"/>
+    <File Name="SqlGps.cpp"/>
+    <File Name="SqlVersion.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="SqlCatalog.h"/>
@@ -71,6 +73,8 @@
     <File Name="SQLRemoveData.h"/>
     <File Name="SqlThumbnail.h"/>
     <File Name="ThumbnailDataSQL.h"/>
+    <File Name="SqlGps.h"/>
+    <File Name="SqlVersion.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

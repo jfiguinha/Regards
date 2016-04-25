@@ -27,6 +27,7 @@ namespace Regards
             void StartLoadingPicture();
             void StopLoadingPicture();
             void SetPictureLoading(const wxImage &imageLoading);
+            void DeleteCache();
 
 			void ShowSelectButton(const bool &show)
 			{
@@ -129,17 +130,18 @@ namespace Regards
 			CThumbnailData * pThumbnailData = nullptr;
 			
             static wxImage imagePhoto;
-            static wxImage bitmapCheckOn;
-			static wxImage bitmapCheckOff;
+            wxImage bitmapCheckOn;
+			wxImage bitmapCheckOff;
             
             wxString photoVector;
             wxString checkOnVector;
             wxString checkOffVector;
             bool isVector = true;
             
-			
-			wxImage scale;
-
+           // wxImage image;
+			//wxImage scale;
+            wxBitmap * memBitmap = nullptr;
+            wxString tempImageVector;
 			bool pictureLoad;
 			bool showSelected = false;
 			bool isChecked = false;

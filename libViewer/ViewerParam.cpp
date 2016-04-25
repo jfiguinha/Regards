@@ -15,17 +15,81 @@ CViewerParam::CViewerParam()
 	showThumbnail = true;
 	showVideoThumbnail = true;
 	position = 400;
+	positionCriteriaPreview = 200;
 	showInfos = true;
+	showFilter = true;
 	delai = 3;
 	fullscreen = 1;
 	enAvant = 1;
 	folder = "";
 }
 
+wxString CViewerParam::GetLastSqlRequest()
+{
+    return sqlRequest;
+}
+
+void CViewerParam::SetLastSqlRequest(const wxString &sqlRequest)
+{
+    this->sqlRequest = sqlRequest;
+}
+
+void CViewerParam::SetShowFilter(const bool &infos)
+{
+	showFilter = infos;
+}
+
+void CViewerParam::GetShowFilter(bool &infos)
+{
+	infos = showFilter;
+}
+
+int CViewerParam::GetPositionCriteriaPreview()
+{
+	return positionCriteriaPreview;
+}
+
+void CViewerParam::SetPositionCriteriaPreview(const int &pos)
+{
+	positionCriteriaPreview = pos;
+}
+
+
+void CViewerParam::SetCatalogOpenTriangle(const wxString &state)
+{
+	criteriaTriangleList = state;
+}
+
+wxString CViewerParam::GetCatalogOpenTriangle()
+{
+	wxString value;
+	value.append(criteriaTriangleList.begin(), criteriaTriangleList.end());
+	return value;
+}
+
+void CViewerParam::SetCatalogCriteria(const wxString &state)
+{
+	criteriaList = state;
+}
+
+wxString CViewerParam::GetCatalogCriteria()
+{
+	wxString value;
+	value.append(criteriaList.begin(), criteriaList.end());
+	return value;
+}
+
 CViewerParam::~CViewerParam()
 {
 	doc.clear();
 }
+
+void CViewerParam::SetCriteriaParameter(xml_node<>* section)
+{
+	section->append_node(node("Value", criteriaList));
+	section->append_node(node("TriangleValue", criteriaTriangleList));
+}
+
 
 wxString CViewerParam::GetLastFolder()
 {
@@ -64,11 +128,10 @@ void CViewerParam::SaveParameter()
 	xml_node<>* sectionPosition = node("Position");
 	SetPositionParameter(sectionPosition);
 	root->append_node(sectionPosition);
-	/*
-	xml_node<>* sectionThemeInfosToolbar = node("ThemeInfosToolbar");
-	SetToolbarTheme(sectionThemeInfosToolbar, infosToolbar);
-	root->append_node(sectionThemeInfosToolbar);
-	*/
+	xml_node<>* sectionCriteria = node("Criteria");
+	SetCriteriaParameter(sectionCriteria);
+	root->append_node(sectionCriteria);
+
 	// save the xml data to a file (could equally well use any other ostream)
 	std::ofstream file(filename.ToStdString());
 	if (file.is_open())
@@ -99,6 +162,9 @@ void CViewerParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("Infos", to_string(showInfos)));
 	sectionWindow->append_node(node("Position", to_string(position)));
 	sectionWindow->append_node(node("LastFolder", folder));
+	sectionWindow->append_node(node("PositionCriteriaPreview", to_string(positionCriteriaPreview)));
+	sectionWindow->append_node(node("Filter", to_string(showFilter)));
+    sectionWindow->append_node(node("LastRequest", sqlRequest));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +209,22 @@ void CViewerParam::LoadParameter()
 	if (child_node != 0)
 		GetPositionParameter(child_node);
 
+	child_node = root_node->first_node("Criteria");
+	if (child_node != 0)
+		GetCriteriaParameter(child_node);
 }
+
+
+void CViewerParam::GetCriteriaParameter(xml_node<> * position_node)
+{
+	xml_node<> * child_node = position_node->first_node("Value");
+	if (child_node != 0)
+		criteriaList = child_node->value();
+	child_node = position_node->first_node("TriangleValue");
+	if (child_node != 0)
+		criteriaTriangleList = child_node->value();
+}
+
 
 void CViewerParam::GetPositionParameter(xml_node<> * position_node)
 {
@@ -234,6 +315,30 @@ void CViewerParam::GetWindowParameter(xml_node<> * window_node)
 		nodeName = child_node->name();
 		folder = child_node->value();
 	}
+
+	child_node = window_node->first_node("PositionCriteriaPreview");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		positionCriteriaPreview = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("Filter");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		showFilter = atoi(child_node->value());
+	}
+    
+    child_node = window_node->first_node("LastRequest");
+    if (child_node != 0)
+    {
+        value = child_node->value();
+        nodeName = child_node->name();
+        sqlRequest = child_node->value();
+    }
 }
 
 void CViewerParam::GetDiaporamaParameter(xml_node<> * diaporama_node)

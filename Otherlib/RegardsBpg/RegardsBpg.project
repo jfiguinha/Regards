@@ -97,10 +97,10 @@
     <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-g;-O2;-W;-std=c++11;-Wall;-fPIC" C_Options="-g;-O0;-W;-std=c99;-fPIC" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
-        <IncludePath Value="../../../libextern/lpng1250"/>
-        <IncludePath Value="../../../libextern/libbpg-0.9.5"/>
-        <IncludePath Value="../../../libextern/x265_1.7/source"/>
-        <IncludePath Value="../../../libextern/x265_1.7/include"/>
+        <IncludePath Value="../../libextern/lpng1250"/>
+        <IncludePath Value="../../libextern/libbpg-0.9.5"/>
+        <IncludePath Value="../../libextern/x265_1.7/source"/>
+        <IncludePath Value="../../libextern/x265_1.7/include"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
       </Compiler>

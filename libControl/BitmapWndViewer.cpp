@@ -26,7 +26,7 @@
 #include <chrono>
 #include <thread>
 #include <FileUtility.h>
-
+#include <FilterData.h>
 
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
@@ -151,8 +151,8 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	transitionTimer = new wxTimer(this, TIMER_TRANSITION);
 	Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, this);
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWndViewer::onIdle));
-	
 }
+
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
@@ -265,36 +265,31 @@ void CBitmapWndViewer::SavePicture()
                     break;
                     
                 case 7:
-                    iFormat = BPG;
-                    extension = "bpg";
-                    break;
-                    
-                case 8:
                     iFormat = JPEG;
                     extension = "jpg";
                     break;
                     
-                case 9:
+                case 8:
                     iFormat = PNM;
                     extension = "pnm";
                     break;
                     
-                case 10:
+                case 9:
                     iFormat = JPC;
                     extension = "jpc";
                     break;
                     
-                case 11:
+                case 10:
                     iFormat = JPEG2000;
                     extension = "jp2";
                     break;
                     
-                case 12:
+                case 11:
                     iFormat = PPM;
                     extension = "ppm";
                     break;
                     
-                case 13:
+                case 12:
                     iFormat = XPM;
                     extension = "xpm";
                     break;
@@ -434,6 +429,11 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect, CEffectParamete
 	this->Refresh();
 }
 
+void CBitmapWndViewer::ApplyEffectWithParameter(const int &effect, CEffectParameter * effectParameter)
+{
+    
+}
+
 bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * effectParameter)
 {
 	CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
@@ -449,175 +449,8 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 		{
 			switch (effect)
 			{
-			case IDM_FILTRE_SOFTEN:
-				filtre->Soften();
-				break;
-
-			case IDM_CROP:
-			{
-				wxRect rcZoom;
-				m_cDessin->GetPos(rcZoom);
-				CRegardsBitmap * bitmapOut = new CRegardsBitmap();
-				bitmap->VertFlipBuf();
-				bitmapOut = bitmap->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
-				bitmapOut->VertFlipBuf();
-				SetBitmap(bitmapOut);
-				break;
-			}
-
-			case IDM_REDEYE:
-			{
-				wxRect rc;
-				wxRect rect;
-				m_cDessin->GetPos(rc);
-                bitmap->VertFlipBuf();
-				filtre->RedEye(rc);
-                bitmap->VertFlipBuf();
-				break;
-			}
-
-			case IDM_HISTOGRAMNORMALIZE:
-				filtre->HistogramNormalize();
-				break;
-
-			case IDM_HISTOGRAMEQUALIZE:
-				filtre->HistogramEqualize();
-				break;
-
-			case IDM_HISTOGRAMLOG:
-				filtre->HistogramLog();
-				break;
-
-			case IDM_FILTRE_FLOU:
-				filtre->Blur();
-				break;
-			case IDM_AJUSTEMENT_SOLARISATION:
-				{
-					if (effectParameter != nullptr)
-					{
-						CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-						filtre->Solarize(solarisationEffectParameter->threshold);
-					}
-				}
-				break;
-			case IDM_FILTRE_FLOUGAUSSIEN:
-				filtre->GaussianBlur();
-				break;
-			case IDM_FILTREANTIBRUIT:
-				filtre->Median();
-				break;
-			case IDM_FILTRE_MOTIONBLUR:
-				{
-					if (effectParameter != nullptr)
-					{
-						CMotionBlurEffectParameter * motionblurEffectParameter = (CMotionBlurEffectParameter *)effectParameter;
-						filtre->MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
-					}
-					break;
-				}
-				break;
-			case IDM_ROTATE_FREE:
-				{
-					if (effectParameter != nullptr)
-					{
-						CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
-						filtre->RotateFree(freeRotate->angle);
-					}
-				}
-				break;
-			case IDM_IMAGE_LIGHTCONTRAST:
-				{
-					if (effectParameter != nullptr)
-					{
-						CBrightAndContrastEffectParameter  * brightAndContrast = (CBrightAndContrastEffectParameter *)effectParameter;
-						filtre->BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
-					}
-				}
-				break;
-
-			case ID_AJUSTEMENT_PHOTOFILTRE:
-				{
-					if (effectParameter != nullptr)
-					{
-						CPhotoFiltreEffectParameter * photoFiltreParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-						filtre->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-					}
-				}
-				break;
-			case ID_AJUSTEMENT_POSTERISATION:
-				{
-					if (effectParameter != nullptr)
-					{
-						CPosterisationEffectParameter * posterisationFiltreParameter = (CPosterisationEffectParameter *)effectParameter;
-						filtre->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
-					}
-				}
-				break;
-			case IDM_COLOR_BALANCE:
-				{
-					if (effectParameter != nullptr)
-					{
-						CRgbEffectParameter * rgbParameter = (CRgbEffectParameter *)effectParameter;
-						filtre->RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
-					}
-				}
-				break;
-			case IDM_FILTRE_SWIRL:
-				{
-					if (effectParameter != nullptr)
-					{
-						CSwirlEffectParameter * swirlParameter = (CSwirlEffectParameter *)effectParameter;
-						filtre->Swirl(swirlParameter->radius, swirlParameter->angle);
-					}
-				}
-				break;
-			case IDM_FILTRE_CLOUDS:
-				{
-					if (effectParameter != nullptr)
-					{
-						CCloudsEffectParameter * cloudsParameter = (CCloudsEffectParameter *)effectParameter;
-						filtre->CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave);
-					}
-				}
-				break;
-			case IDM_FILTRE_ERODE:
-				filtre->Erode();
-				break;
-			case IDM_FILTRE_DILATE:
-				filtre->Dilate();
-				break;
-			case IDM_FILTRE_SHARPEN:
-				filtre->Sharpen();
-				break;
-			case IDM_FILTRE_SHARPENSTRONG:
-				filtre->SharpenStrong();
-				break;
-			case IDM_FILTRENOISE:
-				filtre->Noise();
-				break;
-			case IDM_FILTRE_MOSAIQUE:
-				filtre->FiltreMosaic();
-				break;
-			case IDM_FILTRE_EMBOSS:
-				filtre->Emboss();
-				break;
-			case IDM_GREY_LEVEL:
-				filtre->NiveauDeGris();
-				break;
-			case IDM_IMAGE_SEPIA:
-				filtre->Sepia();
-				break;
-			case IDM_BLACKANDWHITE:
-				filtre->NoirEtBlanc();
-				break;
-			case IDM_FILTRE_EDGE:
-				filtre->FiltreEdge();
-				break;
-			case IDM_NEGATIF:
-				filtre->Negatif();
-				break;
-
-			case IDM_FILTRELENSFLARE:
+                    
+            case IDM_FILTRELENSFLARE:
 				{
 					if (effectParameter != nullptr)
 					{
@@ -628,11 +461,38 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 					}
 				}
 				break;
-			}
-		}
-
-
-		delete(filtre);
+            
+            case IDM_CROP:
+            {
+                wxRect rcZoom;
+                m_cDessin->GetPos(rcZoom);
+                CRegardsBitmap * bitmapOut = new CRegardsBitmap();
+                bitmap->VertFlipBuf();
+                bitmapOut = bitmap->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
+                bitmapOut->VertFlipBuf();
+                SetBitmap(bitmapOut);
+                break;
+            }
+            
+            case IDM_REDEYE:
+            {
+                wxRect rc;
+                wxRect rect;
+                m_cDessin->GetPos(rc);
+                bitmap->VertFlipBuf();
+                filtre->RedEye(rc);
+                bitmap->VertFlipBuf();
+                break;
+            }
+            
+            default:
+                filtre->RenderEffect(effect, effectParameter);
+                break;
+            
+            }
+        }
+        
+        delete(filtre);
         
         SetBitmapPreviewEffect(MOVEPICTURE);
 		
@@ -817,85 +677,46 @@ void CBitmapWndViewer::AfterRenderBitmap(CRenderBitmapInterface * renderInterfac
         {
             ShowLoadingBitmap(stepLoading);
         }
-
-		switch (preview)
-		{
-		case IDM_AJUSTEMENT_SOLARISATION:
-		{
-			CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-			renderInterface->Solarize(solarisationEffectParameter->threshold);
-		}
-		break;
-
-		case IDM_ROTATE_FREE:
-		{
-			CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
-			renderInterface->RotateFree(freeRotate->angle);
-		}
-		break;
-
-		case IDM_IMAGE_LIGHTCONTRAST:
-		{
-			CBrightAndContrastEffectParameter  * brightAndContrast = (CBrightAndContrastEffectParameter *)effectParameter;
-			renderInterface->BrightnessAndContrast((int)brightAndContrast->brightness, (int)brightAndContrast->contrast);
-		}
-		break;
-
-		case ID_AJUSTEMENT_PHOTOFILTRE:
-		{
-			CPhotoFiltreEffectParameter * photoFiltreParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-			renderInterface->PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-		}
-		break;
-
-		case ID_AJUSTEMENT_POSTERISATION:
-		{
-			CPosterisationEffectParameter * posterisationFiltreParameter = (CPosterisationEffectParameter *)effectParameter;
-			renderInterface->Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
-		}
-		break;
-
-		case IDM_COLOR_BALANCE:
-		{
-			CRgbEffectParameter * rgbParameter = (CRgbEffectParameter *)effectParameter;
-			renderInterface->RGBFiltre(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
-		}
-		break;
-
-		case IDM_FILTRE_SWIRL:
-		{
-			CSwirlEffectParameter * swirlParameter = (CSwirlEffectParameter *)effectParameter;
-			renderInterface->Swirl(swirlParameter->radius, swirlParameter->angle, swirlParameter->bitmapHeight, swirlParameter->bitmapHeight);
-		}
-		break;
-
-		case IDM_FILTRE_CLOUDS:
-		{
-			CCloudsEffectParameter * cloudsParameter = (CCloudsEffectParameter *)effectParameter;
-			renderInterface->Clouds(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave);
-		}
-		break;
-
-		case IDM_FILTRE_MOTIONBLUR:
-		{
-			CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-			renderInterface->MotionBlur(motionBlurParameter->radius, motionBlurParameter->sigma, motionBlurParameter->angle);
-		}
-		break;
-
-		case IDM_FILTRELENSFLARE:
-		{
-			wxPoint pt;
-			m_cDessin->GetScreenPoint(pt);
-			CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-			if (pt.x != 0 && pt.y != 0)
-				renderInterface->LensFlare(pt.x, pt.y, lensFlareParameter->size, 0, lensFlareParameter->brightness, lensFlareParameter->color, lensFlareParameter->colorIntensity);
-
-		}
-		break;
-		}
-	}
-	//preview = PREVIEW_NONE;
+        
+        if(CFiltreData::NeedPreview(preview))
+        {
+            switch (preview)
+            {
+                case IDM_ROTATE_FREE:
+                {
+                    CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
+                    renderInterface->RotateFree(freeRotate->angle);
+                }
+                    break;
+                    
+                case IDM_FILTRE_MOTIONBLUR:
+                {
+                    CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
+                    renderInterface->MotionBlur(motionBlurParameter->radius, motionBlurParameter->sigma, motionBlurParameter->angle);
+                }
+                    break;
+                    
+                case IDM_FILTRELENSFLARE:
+                {
+                    wxPoint pt;
+                    m_cDessin->GetScreenPoint(pt);
+                    CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+                    if (pt.x != 0 && pt.y != 0)
+                        renderInterface->LensFlare(pt.x, pt.y, lensFlareParameter->size, 0, lensFlareParameter->brightness, lensFlareParameter->color, lensFlareParameter->colorIntensity);
+                    
+                }
+                    break;
+                    
+                default:
+                    renderInterface->RenderEffect(preview, effectParameter);
+                    break;
+                    
+            }
+        }
+        
+        
+    }
+    //preview = PREVIEW_NONE;
 }
 
 void CBitmapWndViewer::ShowLoadingBitmap(const int &stepLoading)
@@ -909,7 +730,12 @@ void CBitmapWndViewer::ShowLoadingBitmap(const int &stepLoading)
         if (!renderInterface->TestIsTextureExist(loadingBitmapTextureName))
             renderInterface->AddTextureBitmap(vecLoadingBitmap.at(stepLoading), loadingBitmapTextureName);
         
-        renderInterface->PhotoFiltre(CRgbaquad(255,255,255), 50);
+        CPhotoFiltreEffectParameter photoFiltreParameter;
+        photoFiltreParameter.blue = 255;
+        photoFiltreParameter.red = 255;
+        photoFiltreParameter.green = 255;
+        photoFiltreParameter.intensity = 50;
+        renderInterface->RenderEffect(ID_AJUSTEMENT_PHOTOFILTRE, &photoFiltreParameter);
         renderInterface->AddAlphaBlendingBitmap(loadingBitmapTextureName, xPos, yPos);
     }
 }
@@ -972,17 +798,6 @@ void CBitmapWndViewer::AfterDrawBitmap(wxDC * deviceContext)
 				if (m_cDessin != nullptr)
 				{
                     m_cDessin->Dessiner(deviceContext, posLargeur, posHauteur, ratio, wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
-                    /*
-					if (invertColor)
-					{
-						m_cDessin->Dessiner(deviceContext, posLargeur, posHauteur, ratio, wxColour(30, 30, 30), wxColour(30, 30, 30), wxColour(255, 255, 255), 2);
-						invertColor = false;
-					}
-					else
-					{
-						m_cDessin->Dessiner(deviceContext, posLargeur, posHauteur, ratio, wxColour(30, 30, 30), wxColour(255, 255, 255), wxColour(30, 30, 30), 2);
-						invertColor = true;
-					}*/
 				}
 			}
 		}

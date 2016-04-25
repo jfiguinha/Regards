@@ -114,11 +114,11 @@ namespace Regards
 #ifdef KeyPress
 #undef KeyPress
 #endif			
-			virtual void KeyPress(const int &key) = 0;
+            virtual void KeyPress(const int &key){};
 			virtual void MouseClick(const int &xPos, const int &yPos);
 			virtual void MouseRelease(const int &xPos, const int &yPos);
-			virtual void MouseMove(const int &xPos, const int &yPos) = 0;
-			virtual void Resize(const int &width, const int &height) = 0;
+			virtual void MouseMove(const int &xPos, const int &yPos) {};
+			virtual void Resize(const int &width, const int &height){};
 
 			virtual void BeforeDrawBitmap(CRenderBitmapInterface * renderInterface){};
 			virtual void DrawBitmap(wxDC * deviceContext);

@@ -1,5 +1,5 @@
 #pragma once
-#include "InfoAbout.h"
+#include "infoAbout.h"
 #include "TitleIntro.h"
 #include <TreeWindow.h>
 #include <ScrollbarWnd.h>

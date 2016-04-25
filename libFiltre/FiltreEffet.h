@@ -1,10 +1,13 @@
 #pragma once
 #include <RegardsBitmap.h>
+#include <EffectParameter.h>
 #include <IFiltreEffet.h>
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+
+
 
 class CFiltreEffet
 {
@@ -67,7 +70,7 @@ public:
 	int InterpolationFast(CRegardsBitmap * & bitmapOut);
 	int InterpolationFast(CRegardsBitmap * & bitmapOut, const wxRect &rc);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-
+    int RenderEffect(const int &numEffect, CEffectParameter * effectParameter);
 	void SetLib(const int &numLib);
 
 	IFiltreEffet * GetInstance()

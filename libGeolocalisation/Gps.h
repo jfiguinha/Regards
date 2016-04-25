@@ -19,8 +19,11 @@ namespace Regards
 			~CGps();
 			bool GeolocalisationGPS(const wxString &latitude, const wxString &longitude);
 			GeoPluginVector * GetGpsList();
-			//wxString GetGpsValue(const float& gpsValue);
-			//float GetGpsfValue(const wxString & gpsValue);
+			wxString GetGpsValue(const float& gpsValue);
+			float GetGpsfValue(const wxString & gpsValue);
+            float GetFLatitude();
+            float GetFLongitude();
+            
 		private:
             static size_t write_data(void *ptr, size_t size, size_t nmemb, struct url_data *data);
 			bool ImportationGeoPlugin(const wxString &xml);
@@ -28,6 +31,8 @@ namespace Regards
 			GeoPluginVector geoPluginVector;
 			int error;
 			wxString serverHttp;
+            wxString latitude;
+            wxString longitude;
 
 		};
 	}

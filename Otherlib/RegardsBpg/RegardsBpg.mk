@@ -13,14 +13,14 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=09/09/15
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
-LinkerName             :=g++
-SharedObjectLinkerName :=g++ -shared -fPIC
+LinkerName             :=/usr/bin/g++-4.8
+SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
-PreprocessSuffix       :=.o.i
-DebugSwitch            :=-gstab
+PreprocessSuffix       :=.i
+DebugSwitch            :=-g 
 IncludeSwitch          :=-I
 LibrarySwitch          :=-l
 OutputSwitch           :=-o 
@@ -31,12 +31,12 @@ OutputFile             :=$(IntermediateDirectory)/$(ProjectName).so
 Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)USE_VAR_BIT_DEPTH 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
-PreprocessOnlySwitch   :=-E 
+PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="RegardsBpg.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  -O2
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../../libextern/lpng1250 $(IncludeSwitch)../../../libextern/libbpg-0.9.5 $(IncludeSwitch)../../../libextern/x265_1.7/source $(IncludeSwitch)../../../libextern/x265_1.7/include 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../../libextern/lpng1250 $(IncludeSwitch)../../libextern/libbpg-0.9.5 $(IncludeSwitch)../../libextern/x265_1.7/source $(IncludeSwitch)../../libextern/x265_1.7/include 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -47,13 +47,13 @@ LibPath                := $(LibraryPathSwitch).
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := ar rcus
-CXX      := g++
-CC       := gcc
+AR       := /usr/bin/ar rcu
+CXX      := /usr/bin/g++-4.8
+CC       := /usr/bin/gcc-4.8
 CXXFLAGS :=  -g -O2 -W -std=c++11 -Wall -fPIC $(Preprocessors)
 CFLAGS   :=  -g -O0 -W -std=c99 -fPIC $(Preprocessors)
 ASFLAGS  := 
-AS       := as
+AS       := /usr/bin/as
 
 
 ##
@@ -99,7 +99,7 @@ $(IntermediateDirectory)/bpg.cpp$(DependSuffix): bpg.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bpg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/bpg.cpp$(DependSuffix) -MM "bpg.cpp"
 
 $(IntermediateDirectory)/bpg.cpp$(PreprocessSuffix): bpg.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpg.cpp$(PreprocessSuffix) "bpg.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpg.cpp$(PreprocessSuffix) "bpg.cpp"
 
 $(IntermediateDirectory)/bpgenc.c$(ObjectSuffix): bpgenc.c $(IntermediateDirectory)/bpgenc.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/RegardsBpg/bpgenc.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bpgenc.c$(ObjectSuffix) $(IncludePath)
@@ -107,7 +107,7 @@ $(IntermediateDirectory)/bpgenc.c$(DependSuffix): bpgenc.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bpgenc.c$(ObjectSuffix) -MF$(IntermediateDirectory)/bpgenc.c$(DependSuffix) -MM "bpgenc.c"
 
 $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix): bpgenc.c
-	@$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix) "bpgenc.c"
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bpgenc.c$(PreprocessSuffix) "bpgenc.c"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

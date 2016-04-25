@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="Otherlib" Database="Otherlib.tags" SWTLW="No">
+<CodeLite_Workspace Name="Otherlib" Database="Otherlib.tags">
   <Project Name="libJbig" Path="libJbig/libJbig.project" Active="No"/>
   <Project Name="libPsd" Path="libPsd/libPsd.project"/>
   <Project Name="wxSVG" Path="wxSVG/wxSVG.project" Active="Yes"/>
@@ -9,6 +9,7 @@
   <Project Name="RegardsBpg" Path="RegardsBpg/RegardsBpg.project"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Environment/>
       <Project Name="libJbig" ConfigName="Debug"/>
       <Project Name="libPsd" ConfigName="Debug"/>
       <Project Name="wxSVG" ConfigName="Debug"/>
@@ -18,6 +19,7 @@
       <Project Name="RegardsBpg" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="no">
+      <Environment/>
       <Project Name="libJbig" ConfigName="Release"/>
       <Project Name="libPsd" ConfigName="Release"/>
       <Project Name="wxSVG" ConfigName="Release"/>

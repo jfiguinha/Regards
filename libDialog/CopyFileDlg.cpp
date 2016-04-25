@@ -11,7 +11,10 @@
 #include <libResource.h>
 #include <ConvertUtility.h>
 #include <SqlFindCriteria.h>
-
+#include <SqlCriteria.h>
+#include <SqlGps.h>
+#include <SqlPhotoCriteria.h>
+#include <SqlPhotos.h>
 using namespace Regards::Sqlite;
 //*)
 
@@ -57,6 +60,21 @@ void CopyFileDlg::SetMode(const int &mode)
 void CopyFileDlg::Start()
 {
 	start = true;
+}
+
+void CopyFileDlg::SetNewGeoInfos(const float &latitude, const float &longitude,const wxString &lat, const wxString &lng, const wxString &geoInfos)
+{
+    this->latitude = latitude;
+    this->longitude = longitude;
+    this->lat = lat;
+    this->lng = lng;
+    this->geoInfos = geoInfos;
+}
+
+void CopyFileDlg::SetNewDate(const wxDateTime &newDate, const wxString &selectDate)
+{
+    this->newDate = newDate;
+    this->selectDate = selectDate;
 }
 
 void CopyFileDlg::SetSelectItem(vector<CThumbnailData *> * listItem)
@@ -355,6 +373,50 @@ void CopyFileDlg::DeleteFile(const wxString & filename, CThumbnailData * data)
 	wxRemoveFile(filename);
 }
 
+void CopyFileDlg::GeolocalizeFile(const wxString & filename)
+{
+#ifdef __APPLE__
+    appleReadExif.WriteGps(filename, latitude, longitude);
+#endif
+    CSqlPhotos sqlPhotos;
+    int numPhotoId = sqlPhotos.GetPhotoId(filename);
+    
+    bool isNew = false;
+    CSqlCriteria sqlCriteria;
+    CSqlGps sqlGps;
+    CSqlPhotoCriteria sqlPhotoCriteria;
+    
+    int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(numPhotoId, 1);
+    
+    int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 1, geoInfos, isNew);
+    sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
+    if(oldCriteriaId != -1 && numCriteriaId != oldCriteriaId)
+        sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteriaId);
+    
+    sqlGps.DeleteGps(filename);
+    sqlGps.InsertGps(filename, lat, lng);
+}
+
+void CopyFileDlg::ChangeDateFile(const wxString & filename)
+{
+#ifdef __APPLE__
+    appleReadExif.WriteDateTime(filename, newDate);
+#endif
+    bool isNew = false;
+    CSqlCriteria sqlCriteria;
+    CSqlPhotoCriteria sqlPhotoCriteria;
+    CSqlPhotos sqlPhotos;
+    
+    int numPhotoId = sqlPhotos.GetPhotoId(filename);
+    int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(numPhotoId, 3);
+    
+    int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 3, selectDate, isNew);
+    sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
+    if(oldCriteriaId != -1 && numCriteriaId != oldCriteriaId)
+        sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteriaId);
+}
+
+
 void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 {
 	wxString file;
@@ -434,9 +496,6 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 			case JPEG:
 				file.append(".jpg");
 				break;
-			case BPG:
-				file.append(".jpg");
-				break;
 			case BMP:
 				//BMP
 				file.append(".bmp");
@@ -507,6 +566,14 @@ void CopyFileDlg::OnIdle(wxIdleEvent& evt)
 				case 2:
 					ExportFile(filename, data);
 					break;
+                    
+                case 3:
+                    GeolocalizeFile(filename);
+                    break;
+                    
+                case 4:
+                    ChangeDateFile(filename);
+                    break;
 			}
 
 			StaticText2->SetLabel(filename);

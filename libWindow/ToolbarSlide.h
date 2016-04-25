@@ -59,6 +59,7 @@ namespace Regards
 			vector<int> tabValue;
             bool isVector = true;
             wxString buttonVector;
+			wxRect posRectangle;
 		};
 
 	}

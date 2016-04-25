@@ -2,21 +2,23 @@
 #include <ToolbarInterface.h>
 #include <FileGeolocation.h>
 #include <RegardsBitmap.h>
-#include "FiltreEffect.h"
-#include "InfoEffect.h"
 #include "ToolbarInfos.h"
-#include "ThumbnailViewerEffect.h"
 #include "ModificationManager.h"
-#include <InfosFile.h>
 #include <wx/webview.h>
 #include <ScrollbarWnd.h>
 #include <EffectVideoWnd.h>
 #include <string>
 #include <thread>   
 #include <mutex>
+#include <StatusBarInterface.h>
 #include <wx/animate.h>
+#ifdef VIEWER
+#include <CriteriaTreeWnd.h>
+#endif
+#include <InfosFileWnd.h>
 using namespace std;
 using namespace Regards::Window;
+using namespace Regards::Control;
 using namespace Regards::Internet;
 #define INFOS_WINDOW  1
 #define HISTORY_WINDOW 2
@@ -26,29 +28,15 @@ using namespace Regards::Internet;
 #define WM_UPDATE_GPSINFOS 10
 #define WM_UPDATE_DATETIMEINFOS 11
 
+
 namespace Regards
 {
 	namespace Viewer
 	{
-        class CPanelInfosWnd;
         
-        class CThreadLoadInfos
-        {
-        public:
-            CPanelInfosWnd * panelInfos = nullptr;
-            CInfosFile * infosFileWnd = nullptr;
-            wxString filename;
-            std::thread * threadLoadInfos = nullptr;
-        };
-        
-        class CThreadLoadThumbnailEffect
-        {
-        public:
-            CPanelInfosWnd * panelInfos = nullptr;
-            CInfosFile * infosFileWnd = nullptr;
-            wxString filename;
-            std::thread * threadLoadInfos = nullptr;
-        };
+        class CInfoEffectWnd;
+        class CFiltreEffectScrollWnd;
+        class CThumbnailViewerEffectWnd;
         
 		class CPanelInfosWnd : public CWindowMain, public CToolbarInterface
 		{
@@ -68,17 +56,16 @@ namespace Regards
 			void ApplyEffect(const int &numItem);
 			wxString GetFilename();
             void UpdateScreenRatio();
-            
-            
+            void ShowFiltre(const wxString &title);
+#ifdef VIEWER
+            void ShowCriteria();
+            void UpdateData();
+#endif
             void StartLoadingPicture(wxWindow * window);
             void StopLoadingPicture(wxWindow * window);
             
 		protected:
             
-            static void GenerateTreeInfos(CThreadLoadInfos * threadInfos);            
-            void UpdateTreeInfosEvent(wxCommandEvent &event);
-
-
 			wxString MapsUpdate();
 			void EffectUpdate();
 			void HistoryUpdate();
@@ -94,14 +81,12 @@ namespace Regards
 
 			void Resize();
 
-			void ShowFiltre(const wxString &title);
+			
 			void HideAllWindow();
             
             wxAnimationCtrl * m_animationCtrl = nullptr;
 
-			CScrollbarWnd * InfosFileScroll = nullptr;
-			CTreeWindow * treeInfos = nullptr;
-			CInfosFile * infosFileWndOld = nullptr;
+			CInfosFileWnd * infosFileWnd = nullptr;
 
 #ifdef EFFECT_VIDEO
 			CScrollbarWnd * effectVideoWndScroll = nullptr;
@@ -110,22 +95,22 @@ namespace Regards
             
             bool openGLVideoMode = false;
 #endif
-			CScrollbarWnd * historyEffectScroll = nullptr;
-			CTreeWindow * treeHistoryEffect = nullptr;
-			CInfoEffect * historyEffectOld = nullptr;
+          
+            CInfoEffectWnd * historyEffectWnd = nullptr;
 
-			CScrollbarWnd * thumbnailEffectScroll = nullptr;
-			CThumbnailViewerEffect * thumbnailEffect = nullptr;
+			CThumbnailViewerEffectWnd * thumbnailEffectWnd = nullptr;
 
-			CScrollbarWnd * filtreEffectScroll = nullptr;
-			CTreeWindow * treeFiltreEffect = nullptr;
-			CFiltreEffect * filtreEffectOld = nullptr;
+			CFiltreEffectScrollWnd * filtreEffectWnd = nullptr;
+            
+#ifdef VIEWER
+            CCriteriaTreeWnd * criteriaTreeWnd = nullptr;
+#endif
 
 			wxWebView * webBrowser = nullptr;
 			CToolbarInfos * infosToolbar = nullptr;
 
 			//Effect Parameter
-			CEffectParameter * effectParameter = nullptr;
+			
 			CVideoEffectParameter * videoEffectParameter = nullptr;
 			CModificationManager * modificationManager = nullptr;
 

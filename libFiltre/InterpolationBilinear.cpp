@@ -73,8 +73,9 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 		for (int x = 0; x < width; x++)
 		{
 			float posX = float(x) * ratioX + posLeft;
-			CRgbaquad * color = Out->GetPtColorValue(x, y);
+            CRgbaquad color;
 			Bilinear(color, Out, posX, posY, wY[y].tabF, wX[x].tabF);
+            Out->SetColorValue(x,y,color);
 		}
 	}
 }
@@ -102,16 +103,16 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 		for (int x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
-			CRgbaquad * color = Out->GetPtColorValue(x, y);
+            CRgbaquad color;
 			Bilinear(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
-
+            Out->SetColorValue(x,y,color);
 		}
 	}
 }
 
 
 
-void CInterpolationBilinear::Bilinear(CRgbaquad * & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
 {
 	float nDenom = 0.0;
 	int valueA = (int)x;
@@ -147,17 +148,17 @@ void CInterpolationBilinear::Bilinear(CRgbaquad * & data, CRegardsBitmap * In, c
 	{
 		for (int m = debutM; m <= finM; m++)
 		{
-			CRgbaquad * colorIn = In->GetPtColorValue(posX + m, posY + n);
+			CRgbaquad colorIn = In->GetColorValue(posX + m, posY + n);
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
-			r += colorIn->GetFRed() * f;
-			g += colorIn->GetFGreen() * f;
-			b += colorIn->GetFBlue() * f;
-			a += colorIn->GetFAlpha() * f;
+			r += colorIn.GetFRed() * f;
+			g += colorIn.GetFGreen() * f;
+			b += colorIn.GetFBlue() * f;
+			a += colorIn.GetFAlpha() * f;
 		}
 	}
 
-	data->SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
+	data.SetColor(uint8_t(r / nDenom), uint8_t(g / nDenom), uint8_t(b / nDenom), uint8_t(a / nDenom));
 }
 
 

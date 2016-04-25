@@ -8,6 +8,9 @@ public:
     CTreeDataLink(void);
     ~CTreeDataLink(void);
     
+    void SetId(const int & id);
+    int GetId();
+    
     void SetLinkType(const int & type);
     int GetLinkType();
     
@@ -17,4 +20,5 @@ public:
 protected:
     wxString linkPath;
     int linktype = 0;
+    int id = 0;
 };

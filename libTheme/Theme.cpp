@@ -1453,6 +1453,8 @@ CThemeBitmapInfos::CThemeBitmapInfos()
 	themeFont.SetColorFont(wxColour(255, 255, 255));
 	colorBack.Set(74, 74, 74);
 	height = 40;
+    checkboxHeight = 20;
+    checkboxWidth = 20;
 }
 
 void CThemeBitmapInfos::LoadXML(xml_node<> * root_node)
@@ -1479,6 +1481,22 @@ void CThemeBitmapInfos::LoadXML(xml_node<> * root_node)
 			nodeName = child_node->name();
 			height = atoi(value.c_str());
 		}
+        
+        child_node = node->first_node("checkboxWidth");
+        if (child_node != 0)
+        {
+            value = child_node->value();
+            nodeName = child_node->name();
+            checkboxWidth = atoi(value.c_str());
+        }
+        
+        child_node = node->first_node("checkboxHeight");
+        if (child_node != 0)
+        {
+            value = child_node->value();
+            nodeName = child_node->name();
+            checkboxHeight = atoi(value.c_str());
+        }
 	}
 }
 
@@ -1488,6 +1506,8 @@ void CThemeBitmapInfos::SaveXML(xml_document<> & doc, xml_node<>* sectionPositio
 	themeFont.SaveXML(doc, section);
 	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
 	section->append_node(node(doc, "height", to_string(height)));
+    section->append_node(node(doc, "checkboxHeight", to_string(checkboxHeight)));
+    section->append_node(node(doc, "checkboxWidth", to_string(checkboxWidth)));
 	sectionPosition->append_node(section);
 }
 
@@ -1495,6 +1515,9 @@ CThemeBitmapInfos& CThemeBitmapInfos::operator=(const CThemeBitmapInfos& other)
 {
 	this->themeFont = other.themeFont;
 	this->colorBack = other.colorBack;
+    this->height = other.height;
+    this->checkboxHeight = other.checkboxHeight;
+    this->checkboxWidth = other.checkboxWidth;
 	return *this;
 }
 

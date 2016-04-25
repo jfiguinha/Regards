@@ -52,7 +52,7 @@ wxString CSqlResource::GetLibelle(const wxString &idName, const int &idLang)
 wxString CSqlResource::GetExifLibelle(const wxString &idName)
 {
 	typeResult = 5;
-	ExecuteRequest("SELECT Name FROM exif WHERE id = " + idName);
+	ExecuteRequest("SELECT Name FROM exif WHERE id = '" + idName + "'");
 	return libelle;
 }
 

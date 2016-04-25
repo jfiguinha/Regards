@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libSqlData
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libSqlData"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)__WXGTK__ 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libSqlData.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
+LinkOptions            :=  -s 
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libPicture $(IncludeSwitch)../libCompress $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=  -fopenmp -std=c++11 -Wall  $(Preprocessors)
+CFLAGS   :=  -O2 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -62,7 +62,7 @@ AS       := /usr/bin/as
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/SqlCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCountry.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindDay.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindLocalisation.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindMonth.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindPhotos.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlLibExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCategorie.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotos.cpp$(ObjectSuffix) $(IntermediateDirectory)/SQLRemoveData.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix) 
 
 
 
@@ -79,15 +79,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libSqlData"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libSqlData"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -255,12 +255,28 @@ $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(DependSuffix): ThumbnailDataSQL.c
 $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(PreprocessSuffix): ThumbnailDataSQL.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(PreprocessSuffix) "ThumbnailDataSQL.cpp"
 
+$(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix): SqlGps.cpp $(IntermediateDirectory)/SqlGps.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libSqlData/SqlGps.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlGps.cpp$(DependSuffix): SqlGps.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlGps.cpp$(DependSuffix) -MM "SqlGps.cpp"
+
+$(IntermediateDirectory)/SqlGps.cpp$(PreprocessSuffix): SqlGps.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlGps.cpp$(PreprocessSuffix) "SqlGps.cpp"
+
+$(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix): SqlVersion.cpp $(IntermediateDirectory)/SqlVersion.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libSqlData/SqlVersion.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlVersion.cpp$(DependSuffix): SqlVersion.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlVersion.cpp$(DependSuffix) -MM "SqlVersion.cpp"
+
+$(IntermediateDirectory)/SqlVersion.cpp$(PreprocessSuffix): SqlVersion.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlVersion.cpp$(PreprocessSuffix) "SqlVersion.cpp"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

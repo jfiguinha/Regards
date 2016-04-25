@@ -56,6 +56,11 @@ namespace Regards
 
 			void GetBitmapInfosTheme(CThemeBitmapInfos * theme);
 
+			void GetCategoryFolderSplitterTheme(CThemeSplitter &theme);
+			void GetPaneCategory(CThemePane &theme);
+			void GetCategoryTreeTheme(CThemeTree &theme);
+			void GetCategoryScrollTheme(CThemeScrollBar &theme);
+
 		private:
 
 			void LoadTheme();
@@ -97,6 +102,15 @@ namespace Regards
 
 			void InitBitmapInfos();
 
+			//
+			void InitScrollCategory();
+			void InitCategoryTree();
+			void InitPaneCategory();
+			void InitCategoryFolderSplitter();
+			void InitPaneFolder();
+			void InitFolderTheme();
+			void InitClickFolderToolbar();
+
 			CThemeToolbar themeInfosToolbar;
 			CThemeToolbar themeMainToolbar;
 			CThemeToolbar themePreviewToolbar;
@@ -134,6 +148,16 @@ namespace Regards
 			CThemeThumbnail themeThumbnailVideo;
 
 			CThemeBitmapInfos themeBitmapInfos;
+
+
+			CThemeTree themeCategoryTree;
+			CThemeScrollBar themeScrollCategory;
+			CThemePane themePaneCategory;
+			CThemeSplitter themeCategoryFolderSplitter;
+			CThemePane themePaneFolder;
+			CThemeFolder themeFolder;
+			CThemeToolbar themeClickFolderToolbar;
+
 		};
 	}
 }

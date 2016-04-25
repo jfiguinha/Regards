@@ -110,6 +110,10 @@ void CToolbarSlide::ClickLeftPage(const int &x)
 
 void CToolbarSlide::ClickRightPage(const int &x)
 {
+
+	//Click Top Triangle
+	CalculZoomPosition(x);
+
 	if (position >= tabValue.size())
 		position = int(tabValue.size()) - 1;
 
@@ -118,17 +122,15 @@ void CToolbarSlide::ClickRightPage(const int &x)
 
 	eventInterface->SlidePosChange(position, L"");
 
-	//Click Top Triangle
-	CalculZoomPosition(x);
 }
 
 bool CToolbarSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 {
-	wxWindowDC dc(window);
-	wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
+	//wxWindowDC dc(window);
+	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
 
-	int posXButtonBegin = this->x + renderLast.x + positionButton.x;
-	int posXButtonEnd = this->x + renderLast.x + positionButton.x + positionButton.width;
+	int posXButtonBegin = this->x + posRectangle.x + positionButton.x;
+	int posXButtonEnd = this->x + posRectangle.x + positionButton.x + positionButton.width;
 	
 	if ((x >= posXButtonBegin && x <= posXButtonEnd) && (y >= positionButton.y && y <= (positionButton.y + positionButton.height)))
 	{
@@ -140,27 +142,29 @@ bool CToolbarSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 void CToolbarSlide::ClickElement(wxWindow * window, const int &x, const int &y)
 {
 	int xSlide = x;
-	wxWindowDC dc(window);
-	wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
+	//wxWindowDC dc(window);
+	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
 
-	int posXButtonBegin = this->x + renderLast.x + positionButton.x;
-	int posXButtonEnd = this->x + renderLast.x + positionButton.x + positionButton.width;
+	int posXButtonBegin = this->x + posRectangle.x + positionButton.x;
+	int posXButtonEnd = this->x + posRectangle.x + positionButton.x + positionButton.width;
 
-
-	if (FindCirclePos(window, y, xSlide))
+	if (x > (this->x + posRectangle.x) && x < (posRectangle.width + posRectangle.x + this->x))
 	{
-		mouseBlock = true;
-		window->CaptureMouse();
-		wxSetCursor(hCursorHand);
-		captureBall = true;
-	}
-	else if (xSlide > posXButtonEnd)
-	{
-		ClickRightPage(xSlide - (this->x + renderLast.x ));
-	}
-	else if (xSlide < posXButtonBegin)
-	{
-		ClickLeftPage(xSlide - (this->x + renderLast.x ));
+		if (FindCirclePos(window, y, xSlide))
+		{
+			mouseBlock = true;
+			window->CaptureMouse();
+			wxSetCursor(hCursorHand);
+			captureBall = true;
+		}
+		else if (xSlide > posXButtonEnd)
+		{
+			ClickRightPage(xSlide - (this->x + posRectangle.x));
+		}
+		else if (xSlide < posXButtonBegin)
+		{
+			ClickLeftPage(xSlide - (this->x + posRectangle.x));
+		}
 	}
 }
 
@@ -304,8 +308,8 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 		memDC.DrawBitmap(background, 0, 0);
 	}
 
-	positionSlider.x = 10;
-	positionSlider.width = width - (positionSlider.x * 2);
+	positionSlider.x = themeSlider.GetButtonWidth();
+	positionSlider.width = width - (themeSlider.GetButtonWidth() * 2);
 	positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
 	positionSlider.height = themeSlider.GetRectangleHeight();
 
@@ -339,7 +343,12 @@ void CToolbarSlide::DrawButton(wxDC * deviceContext)
 	wxSize renderFirst = CWindowMain::GetSizeTexte(deviceContext, to_string(GetPositionValue()), themeSlider.font);
 	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlider.font);
 
-	RenderSlide(&memDC, themeSlider.GetWidth() - (renderLast.x + renderLast.x), themeSlider.GetHeight(), renderLast.x, 0);
+	posRectangle.x = renderLast.x;
+	posRectangle.width = themeSlider.GetWidth() - (posRectangle.x*2);
+	posRectangle.y = 0;
+	posRectangle.height = themeSlider.GetHeight();
+
+	RenderSlide(&memDC, posRectangle.width, posRectangle.height, posRectangle.x, posRectangle.y);
 
 	int yMedium = (themeSlider.GetHeight() - renderFirst.y) / 2;
 	CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);

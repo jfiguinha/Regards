@@ -46,6 +46,7 @@ namespace Regards
 			CPanelPreview(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
 			~CPanelPreview();
 
+            void UpdateData();
             void UpdateScreenRatio();
 			bool SetPhoto(const wxString &filename);
 			bool SetVideo(const wxString &filename);

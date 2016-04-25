@@ -32,7 +32,8 @@ namespace Regards
 			void HideToolbar();
             
             void UpdateScreenRatio();
-
+            void UpdateCriteria();
+            
 		private:
 
 			void OnHidePane(wxCommandEvent& event);

@@ -252,7 +252,7 @@ void CRegardsConfigParam::SaveParameter()
     SetIconParameter(sectionIcon);
     root->append_node(sectionIcon);
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(filename.c_str());
+	std::ofstream file(filename.ToStdString());
 	if (file.is_open())
 	{
 		file << doc;

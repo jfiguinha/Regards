@@ -32,6 +32,7 @@ public:
 
 	//Gestion Exif
 	bool RotateExif(const int & orientation = 0);
+    bool RotateAppleExif(const int & orientation = 0);
 
 	//Rotation
 	bool Rotation90();
@@ -46,7 +47,7 @@ public:
 	void SetFilename(const wxString & szFilename);
 
     CRgbaquad GetColorValue(const int &x, const int &y) const;
-    CRgbaquad * & GetPtColorValue(const int &x, const int &y);
+    //CRgbaquad * & GetPtColorValue(const int &x, const int &y);
 	void SetColorValue(const int &x, const int &y, const CRgbaquad &color);
 
 	void SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth, const unsigned int &bmHeight, const bool &m_bFlip = false, const bool &copy = true);

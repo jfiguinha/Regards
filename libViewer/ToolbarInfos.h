@@ -31,8 +31,9 @@ namespace Regards
 
 			void SetEffectActif();
 			void SetEffectInactif();
-            
-            
+#ifdef VIEWER
+            void SetCriteriaPush();
+#endif
             void SetInfosPush();
             void SetMapPush();
             void SetEffectPush();
@@ -53,6 +54,9 @@ namespace Regards
 			CToolbarTexte * effect = nullptr;
 			CToolbarTexte * map = nullptr;
 			CToolbarTexte * effectParameter = nullptr;
+#ifdef VIEWER
+            CToolbarTexte * criteria = nullptr;
+#endif
 		};
 
 

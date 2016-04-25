@@ -13,7 +13,7 @@ using namespace Regards::Explorer;
 #define FOLDER_PANE 1
 #define CATALOG_PANE 2
 #define CLICK_FOLDER 3
-#define EVENT_CRITERIAUPDATE 10001
+wxDEFINE_EVENT(EVENT_CRITERIAUPDATE, wxCommandEvent);
 
 CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id)
 	: CWindowMain(parent, id)
@@ -80,8 +80,8 @@ void CCategoryFolderWindow::UpdateCriteria()
 		treeWindow->SetTreeControl(catalogWnd);
 		delete(catalogWndOld);
 		catalogWndOld = catalogWnd;
-        wxCommandEvent event(EVENT_CRITERIAUPDATE);
-        wxPostEvent(this, event);
+		wxCommandEvent * event = new wxCommandEvent(EVENT_CRITERIAUPDATE);
+		wxQueueEvent(this, event);
 	}
 }
 

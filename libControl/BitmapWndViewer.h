@@ -34,6 +34,7 @@ namespace Regards
 
 		private:
 
+            void ApplyEffectWithParameter(const int &effect, CEffectParameter * effectParameter);
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
 			void AfterDrawBitmap(wxDC * deviceContext);

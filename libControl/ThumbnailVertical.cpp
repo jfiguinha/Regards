@@ -63,112 +63,130 @@ CIcone * CThumbnailVertical::FindElement(const int &xPos, const int &yPos)
 
 }
 
-void CThumbnailVertical::SetListeFile(const wxArrayString & listFile)
+void CThumbnailVertical::SetListeFile(const wxArrayString & listFile, const bool &showSelectButton)
 {
+    threadDataProcess = false;
+    
+    while (nbProcess > 0)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+    
+    if(threadMain != nullptr)
+        threadMain->join();
 
-		InitScrollingPos();
-		EraseThumbnailList();
-		CreateOrLoadStorageFile();
-		numActif = nullptr;
+    InitScrollingPos();
+    EraseThumbnailList();
+    CreateOrLoadStorageFile();
+    numActif = nullptr;
+    numSelect = nullptr;
 
-		thumbnailPos = 0;
-		int i = (int)listFile.size();
-		int x = 0;
-		int y = 0;
+    int i = 0;
+    int x = 0;
+    int y = 0;
 
-		int nbElementX = 0;
-		int nbElementY = 0;
+    int nbElementX = 0;
+    int nbElementY = 0;
 
-		int nbElementByRow = (width + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (width + positionXOld))
-			nbElementByRow++;
+    int nbElementByRow = (width + positionXOld) / themeThumbnail.themeIcone.GetWidth();
+    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (width + positionXOld))
+        nbElementByRow++;
 
-		int nbElementEnY = (int)listFile.size() / nbElementByRow;
-		if (nbElementEnY * nbElementByRow < listFile.size())
-			nbElementEnY++;
+    int nbElementEnY = (int)listFile.size() / nbElementByRow;
+    if (nbElementEnY * nbElementByRow < listFile.size())
+        nbElementEnY++;
 
-		for (wxString fileEntry : listFile)
-		{
-			CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(fileEntry);
-			//thumbnailData->SetStorage(pStorage->GetStoragePt());
-			thumbnailData->SetNumElement(i);
-			thumbnailData->SetNumPhotoId(i);
+    for (wxString fileEntry : listFile)
+    {
+        CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(fileEntry);
+        //thumbnailData->SetStorage(pStorage->GetStoragePt());
+        thumbnailData->SetNumElement(i);
+        thumbnailData->SetNumPhotoId(i);
 
-			CIcone * pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(i);
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
+        CIcone * pBitmapIcone = new CIcone();
+        pBitmapIcone->SetNumElement(i);
+        pBitmapIcone->ShowSelectButton(showSelectButton);
+        pBitmapIcone->SetData(thumbnailData);
+        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+        pBitmapIcone->SetWindowPos(x, y);
 
-			pIconeList.push_back(pBitmapIcone);
+        pIconeList.push_back(pBitmapIcone);
 
-			x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
-			if (nbElementX == nbElementByRow)
-			{
-				nbElementX = 0;
-				x = -posLargeur;
-				nbElementY++;
-				y += themeThumbnail.themeIcone.GetHeight();
-			}
+        x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
+        if (nbElementX == nbElementByRow)
+        {
+            nbElementX = 0;
+            x = -posLargeur;
+            nbElementY++;
+            y += themeThumbnail.themeIcone.GetHeight();
+        }
+        
+        i++;
 
-		}
-		SetNbFiles(i);
+    }
+    SetNbFiles(i);
 
+    thumbnailPos = 0;
+    
+    threadDataProcess = true;
 
-	this->Refresh();
 }
 
 void CThumbnailVertical::SetListeFile(const PhotosVector & photoVector, const bool &erase)
 {
 
-		if (erase)
-		{
-			InitScrollingPos();
-			EraseThumbnailList();
-		}
+    if (erase)
+    {
+        InitScrollingPos();
+        EraseThumbnailList();
+    }
 
 
-		numActif = nullptr;
+    numActif = nullptr;
 
-		int i = (int)photoVector.size();
-		int x = 0;
-		int y = 0;
+    int i = 0;
+    int x = 0;
+    int y = 0;
 
-		int nbElementX = 0;
-		int nbElementY = 0;
+    int nbElementX = 0;
+    int nbElementY = 0;
+    
+    thumbnailPos = 0;
 
-		int nbElementByRow = (width + positionXOld) / themeThumbnail.themeIcone.GetWidth();
-		if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (width + positionXOld))
-			nbElementByRow++;
+    int nbElementByRow = (width + positionXOld) / themeThumbnail.themeIcone.GetWidth();
+    if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) <  (width + positionXOld))
+        nbElementByRow++;
 
-		int nbElementEnY = (int)photoVector.size() / nbElementByRow;
-		if (nbElementEnY * nbElementByRow < photoVector.size())
-			nbElementEnY++;
+    int nbElementEnY = (int)photoVector.size() / nbElementByRow;
+    if (nbElementEnY * nbElementByRow < photoVector.size())
+        nbElementEnY++;
 
-		for (CPhotos photo : photoVector)
-		{
-			CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(photo.GetPath());
-			thumbnailData->SetNumPhotoId(photo.GetId());
-			thumbnailData->SetNumElement(i);
+    for (CPhotos photo : photoVector)
+    {
+        CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(photo.GetPath());
+        thumbnailData->SetNumPhotoId(photo.GetId());
+        thumbnailData->SetNumElement(i);
 
-			CIcone * pBitmapIcone = new CIcone();
-			pBitmapIcone->SetNumElement(i);
-			pBitmapIcone->SetData(thumbnailData);
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
+        CIcone * pBitmapIcone = new CIcone();
+        pBitmapIcone->SetNumElement(i);
+        pBitmapIcone->SetData(thumbnailData);
+        pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+        pBitmapIcone->SetWindowPos(x, y);
 
-			pIconeList.push_back(pBitmapIcone);
+        pIconeList.push_back(pBitmapIcone);
 
-			x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
-			if (nbElementX == nbElementByRow)
-			{
-				nbElementX = 0;
-				x = -posLargeur;
-				nbElementY++;
-				y += themeThumbnail.themeIcone.GetHeight();
-			}
-		}
-		SetNbFiles(i);
+        x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
+        if (nbElementX == nbElementByRow)
+        {
+            nbElementX = 0;
+            x = -posLargeur;
+            nbElementY++;
+            y += themeThumbnail.themeIcone.GetHeight();
+        }
+        
+        i++;
+    }
+    SetNbFiles(i);
 
 
 
@@ -207,8 +225,18 @@ void CThumbnailVertical::RenderIcone(wxDC * deviceContext)
 
 		if ((right > 0 && left < width) && (top < height && bottom > 0))
 		{
+            if(numActif == nullptr && pBitmapIcone->GetNumElement() == 0)
+            {
+                numActif = pBitmapIcone;
+                pBitmapIcone->SetActive(true);
+            }
 			RenderBitmap(deviceContext, pBitmapIcone);
 		}
+        else
+        {
+            pBitmapIcone->DestroyCache();
+        }
+        
 
 		x += themeThumbnail.themeIcone.GetWidth(); nbElementX++;
 		if (nbElementX == nbElementByRow)
@@ -226,6 +254,13 @@ void CThumbnailVertical::RenderIcone(wxDC * deviceContext)
 
 void CThumbnailVertical::UpdateScroll()
 {
+    //bool update = false;
+    int oldthumbnailSizeX = thumbnailSizeX;
+    int oldthumbnailSizeY = thumbnailSizeY;
+    
+    thumbnailSizeX = 0;
+    thumbnailSizeY = 0;
+    
 	//bool update = false;
 	int nbElement = (int)pIconeList.size();
 
@@ -245,9 +280,87 @@ void CThumbnailVertical::UpdateScroll()
 		thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
 		thumbnailSizeY = nbElementEnY * themeThumbnail.themeIcone.GetHeight();
 
-		scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-		scrollbar->SetPosition(posLargeur, posHauteur);
+		//scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
+		//scrollbar->SetPosition(posLargeur, posHauteur);
 	}
+    
+    
+    /*
+    for (CInfosSeparationBar * infosSeparationBar : listSeparator)
+    {
+        int nbElement = (int)infosSeparationBar->listElement.size();
+        
+        int nbElementByRow = (width + positionXOld) / themeThumbnail.themeIcone.GetWidth();
+        
+        if (nbElement > 0 && nbElementByRow == 0)
+        {
+            float value = (float)(width + positionXOld) / (float)themeThumbnail.themeIcone.GetWidth();
+            if (value > 0)
+                nbElementByRow = 1;
+        }
+        
+        if (nbElementByRow > 0)
+        {
+            if (nbElementByRow < 1)
+                nbElementByRow = 1;
+            
+            if ((nbElementByRow * themeThumbnail.themeIcone.GetWidth()) < (width + positionXOld))
+                nbElementByRow++;
+            
+            int nbElementEnY = (int)infosSeparationBar->listElement.size() / nbElementByRow;
+            if (nbElementEnY * nbElementByRow < infosSeparationBar->listElement.size())
+                nbElementEnY++;
+            
+            if (nbElement < nbElementByRow)
+                nbElementByRow = nbElement;
+            
+            int sizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
+            if (sizeX > thumbnailSizeX)
+                thumbnailSizeX = nbElementByRow * themeThumbnail.themeIcone.GetWidth();
+            thumbnailSizeY += nbElementEnY * themeThumbnail.themeIcone.GetHeight() + infosSeparationBar->GetHeight();
+            
+        }
+        else
+            break;
+    }
+    */
+    
+    //bool refresh = false;
+    if (pIconeList.size() >= 0)
+    {
+        int oldLargeur = posLargeur;
+        int oldHauteur = posHauteur;
+        
+        float xRatio = 1.0;
+        float yRatio = 1.0;
+        
+        if(oldthumbnailSizeX != 0)
+            xRatio = (float)thumbnailSizeX / (float)oldthumbnailSizeX;
+        
+        if (oldthumbnailSizeY != 0)
+            yRatio = (float)thumbnailSizeY / (float)oldthumbnailSizeY;
+        
+        float posX = (float)posLargeur * xRatio;
+        float posY = (float)posHauteur * yRatio;
+        
+        scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
+        scrollbar->SetPosition(posX, posY);
+        
+        posLargeur = scrollbar->GetPosLargeur();
+        posHauteur = scrollbar->GetPosHauteur();
+        
+        /*
+         if(posLargeur != oldLargeur)
+         refresh = true;
+         if(posHauteur != oldHauteur)
+         refresh = true;
+         */
+    }
+    
+    /*
+     if(refresh)
+     this->Refresh();
+     */
 }
 
 
@@ -274,7 +387,7 @@ void CThumbnailVertical::CalculPosHorizontal(const int &numItem)
 	if (numFirstElement < 0)
 		numFirstElement = 0;
 
-	//Obtention du numÃ©ro du dernier Ã©lÃ©ment
+	//Obtention du numéro du dernier élément
 	CIcone * pBitmapIconeLast = pIconeList.at(numLastElement);
 	CIcone * pBitmapIconeFirst = pIconeList.at(numFirstElement);
 	//CThumbnailWindowData * pThumbnailData = pBitmapIconeLast->GetData();
@@ -289,7 +402,7 @@ void CThumbnailVertical::CalculPosHorizontal(const int &numItem)
 	{
 		if (numItem >= numElementMax)
 		{
-			//DÃ©placement 
+			//Déplacement 
 			int positionItem = posLargeur + ((numItem - numElementMax) + 1) * themeThumbnail.themeIcone.GetWidth();
 			scrollH->SetPosition(positionItem);
 			posLargeur = positionItem;
@@ -336,7 +449,7 @@ void CThumbnailVertical::CalculPosVertical(const int &numItem)
 	if (numFirstElement < 0)
 		numFirstElement = 0;
 
-	//Obtention du numÃ©ro du dernier Ã©lÃ©ment
+	//Obtention du numéro du dernier élément
 	CIcone * pBitmapIconeLast = pIconeList.at(numLastElement);
 	CIcone * pBitmapIconeFirst = pIconeList.at(numFirstElement);
 	//CThumbnailWindowData * pThumbnailData = pBitmapIconeLast->GetData();
@@ -351,7 +464,7 @@ void CThumbnailVertical::CalculPosVertical(const int &numItem)
 	{
 		if (numItem >= numElementMax)
 		{
-			//DÃ©placement 
+			//Déplacement 
 			int positionItem = posLargeur + ((numItem - numElementMax) + 1) * themeThumbnail.themeIcone.GetWidth();
 			scrollH->SetPosition(positionItem);
 			posLargeur = positionItem;

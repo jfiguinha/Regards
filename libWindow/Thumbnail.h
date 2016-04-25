@@ -18,14 +18,6 @@ using namespace Regards::Window;
 
 typedef std::vector<CThumbnailData *> ThumbnailDataVector;
 
-#ifdef LOCALTHREAD
-class MyThread;
-// declare a new type of event, to be used by our MyThread class:
-wxDECLARE_EVENT(wxEVT_COMMAND_MYTHREAD_COMPLETED, wxThreadEvent);
-wxDECLARE_EVENT(wxEVT_COMMAND_MYTHREAD_UPDATE, wxThreadEvent);
-wxDECLARE_EVENT(wxEVT_COMMAND_PAUSETHREAD, wxCommandEvent);
-#endif
-
 namespace Regards
 {
 	namespace Window
@@ -63,27 +55,8 @@ namespace Regards
 			void SetTheme(CThemeThumbnail * theme);
             
             void UpdateScreenRatio();
-#ifdef LOCALTHREAD			
-			MyThread *m_pThread;
-			wxCriticalSection m_pThreadCS;    // protects the m_pThread pointer
-#endif			
-			void BackgroundManager();
-			
+
 		protected:
-		
-#ifdef LOCALTHREAD		
-			//----------------------------------------------------------------			
-			//Thread Event
-			//----------------------------------------------------------------
-		    void DoStartThread();
-			void DoPauseThread();
-			// a resume routine would be nearly identic to DoPauseThread()
-			void DoResumeThread();
-			void OnThreadUpdate(wxThreadEvent&);
-			void OnThreadCompletion(wxThreadEvent&);
-			void OnThreadPause(wxCommandEvent& event);
-#endif
-			//----------------------------------------------------------------
 			
             void OnLoading(wxTimerEvent& event);
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};

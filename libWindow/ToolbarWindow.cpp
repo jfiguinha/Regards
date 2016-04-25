@@ -42,6 +42,10 @@ int CToolbarWindow::GetWidth()
 
 CToolbarWindow::~CToolbarWindow()
 {
+	if (pushButton->IsRunning())
+	{
+		pushButton->Stop();
+	}
 	EmptyNavigator();
 	delete(pushButton);
 }
@@ -53,6 +57,7 @@ void CToolbarWindow::OnTimerPushButton(wxTimerEvent& event)
 	{
 		EventManager(navPush->GetCommandId());
 	}
+	//pushButton->Stop();
 }
 
 void CToolbarWindow::EmptyNavigator()
@@ -232,10 +237,13 @@ void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 			}
 		}
 	}
-
+	
 	if (pushButton->IsRunning())
-	{
-		pushButton->Stop();
+        pushButton->Stop();
+
+	if (navPush->GetRepeatable())
+	{ 
+		EventManager(navPush->GetCommandId());
 		navPush = nullptr;
 	}
     
@@ -300,6 +308,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
+    bool repeatable = false;
 	for (CToolbarElement * nav : navElement)
 	{
 		if (nav->IsVisible())
@@ -313,7 +322,11 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 				if (navPush->GetRepeatable())
 				{
 					if (pushButton->IsRunning())
-						pushButton->Start(200);
+                        pushButton->Stop();
+                        
+                    pushButton->Start(50);
+                    
+                    repeatable = true;
 				}
 			}
             else
@@ -324,8 +337,9 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 		}
 	}
 
-	if (navPush != nullptr)
-		EventManager(navPush->GetCommandId());
+    if(!repeatable)
+        if (navPush != nullptr)
+            EventManager(navPush->GetCommandId());
     
     //this->Refresh();
 }
@@ -334,8 +348,8 @@ void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 {
 	wxWindowDC dc(this);
 
-	if (pushButton->IsRunning())
-		pushButton->Stop();
+	//if (pushButton->IsRunning())
+	//	pushButton->Stop();
 
 	m_bMouseOver = false;
 

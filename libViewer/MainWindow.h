@@ -15,6 +15,8 @@ class CRegardsBitmap;
 class CAppleSelectFile;
 #endif
 
+
+
 namespace Regards
 {
 	namespace Viewer
@@ -72,7 +74,7 @@ namespace Regards
 		public:
 			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer);
 			~CMainWindow();
-			void SetDatabase();
+			void SetDatabase(const wxString & folderPath = "", const wxString & requestSql = "");
 			void SetFolder(const wxString & folderPath, const wxString &filename = L"");
 			void SetPictureFile(const wxString & filePath);
 
@@ -100,10 +102,14 @@ namespace Regards
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
 			void SetVideoPos(wxCommandEvent& event);
-            void RefreshFolder();
-            
+            bool RefreshFolder(const wxString &sqlRequest = "");
+            void InitSaveParameter();
 		private:
-
+            
+#ifdef VIEWER
+            void CriteriaChange(wxCommandEvent& event);
+#endif
+			void RefreshPictureList(wxCommandEvent& event);
             void ThumbnailPosPicture(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void ShowPicture(wxCommandEvent& event);
@@ -157,8 +163,11 @@ namespace Regards
             void CleanPictureFiles();
             void AddPicturesFiles(const wxString &filepath);
             void FindFileIndex(const wxString & filename);
+            void GetFolderCredential(const wxString & folderPath);
+            void OnTimerLoadPicture(wxTimerEvent& event);
             
 #ifdef __APPLE__
+            
             CAppleSelectFile * selectFolder = nullptr;
             CAppleSecurityScopeData * appleSecurityScopeData = nullptr;
 #endif
@@ -172,6 +181,8 @@ namespace Regards
             wxString folderPath;
             bool multithread = true;
             bool needToReload = false;
+            wxTimer * loadPictureTimer;
+            wxString filenameTimer;
 		};
 	}
 

@@ -1,1 +1,1 @@
-./Debug/Regards_Regards.cpp.o
+./Release/Regards_Regards.cpp.o

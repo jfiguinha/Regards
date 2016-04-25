@@ -57,32 +57,41 @@ wxString CSqlFindPhotos::GetSearchSQL(vector<int> list)
 	return req;
 }
 
-bool CSqlFindPhotos::SearchPhotos(const int &numCatalog, vector<int> listFolder, vector<int> listCriteriaNotIn)
+wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> listFolder, vector<int> listCriteriaNotIn)
 {
-	DeleteAllInSearchPhotos();
-	//Request In
-	wxString reqSQIn = "INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT distinct PH.NumPhoto, PH.FullPath FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog WHERE FC.NumCatalog = ";
-	reqSQIn.append(std::to_string(numCatalog));
+    //Request In
+    wxString reqSQIn = "INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT distinct PH.NumPhoto, PH.FullPath FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog WHERE FC.NumCatalog = ";
+    reqSQIn.append(std::to_string(numCatalog));
+    
+    //Construction du In
+    if (listFolder.size() > 0)
+    {
+        reqSQIn.append(" and PH.NumFolderCatalog in (");
+        reqSQIn.append(GetSearchSQL(listFolder));
+        //Construction du NotIn
+        if (listCriteriaNotIn.size() > 0)
+        {
+            reqSQIn.append(" and PH.NumPhoto not in (");
+            reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE FC.NumCatalog = ");
+            reqSQIn.append(std::to_string(numCatalog));
+            reqSQIn.append(" and PH.NumFolderCatalog in (");
+            reqSQIn.append(GetSearchSQL(listFolder));
+            reqSQIn.append(" and CR.NumCriteria in (");
+            reqSQIn.append(GetSearchSQL(listCriteriaNotIn));
+            reqSQIn.append(")");
+        }
+        return reqSQIn;
+    }
+    return "";
+}
 
-	//Construction du In
-	if (listFolder.size() > 0)
-	{
-		reqSQIn.append(" and PH.NumFolderCatalog in (");
-		reqSQIn.append(GetSearchSQL(listFolder));
-		//Construction du NotIn
-		if (listCriteriaNotIn.size() > 0)
-		{
-			reqSQIn.append(" and PH.NumPhoto not in (");
-			reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN FOLDERCATALOG as FC ON PH.NumFolderCatalog = FC.NumFolderCatalog INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE FC.NumCatalog = ");
-			reqSQIn.append(std::to_string(numCatalog));
-			reqSQIn.append(" and PH.NumFolderCatalog in (");
-			reqSQIn.append(GetSearchSQL(listFolder));
-			reqSQIn.append(" and CR.NumCriteria in (");
-			reqSQIn.append(GetSearchSQL(listCriteriaNotIn));
-			reqSQIn.append(")");
-		}
-		return (ExecuteRequestWithNoResult(reqSQIn) != -1) ? true : false;
-	}
+bool CSqlFindPhotos::SearchPhotos(const wxString & sqlRequest)
+{
+    if(sqlRequest != "")
+    {
+        DeleteAllInSearchPhotos();
+        return (ExecuteRequestWithNoResult(sqlRequest) != -1) ? true : false;
+    }
 	return false;
 }
 

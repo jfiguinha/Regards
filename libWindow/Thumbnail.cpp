@@ -14,59 +14,13 @@
 #include <wx/dcbuffer.h>
 #include "LoadingResource.h"
 #include <wx/filename.h>
-#include <chrono>
-class EVENT_ICONEUPDATE;
 using namespace Regards::Window;
-
 
 #define TIMER_LOADING 4
 const int CThumbnail::TabSize[] = { 50,100,150,200,250,300,350,400,450,500,550,600,650,700};
 const int CThumbnail::Max = 14;
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_KILLICONETHREAD, wxCommandEvent);
-
-#ifdef LOCALTHREAD
-wxDEFINE_EVENT(wxEVT_COMMAND_MYTHREAD_COMPLETED, wxThreadEvent);
-wxDEFINE_EVENT(wxEVT_COMMAND_MYTHREAD_UPDATE, wxThreadEvent);
-wxDEFINE_EVENT(wxEVT_COMMAND_PAUSETHREAD, wxCommandEvent);
-
-
-class MyThread : public wxThread
-{
-public:
-    MyThread(CThumbnail *handler)
-        : wxThread(wxTHREAD_DETACHED)
-        { 
-			m_pHandler = handler;
-		};
-    ~MyThread();
-protected:
-    virtual ExitCode Entry();
-    CThumbnail *m_pHandler;
-};
-
-wxThread::ExitCode MyThread::Entry()
-{
-    while (!TestDestroy())
-    {
-        // ... do a bit of work...
-        //wxQueueEvent(m_pHandler, new wxThreadEvent(wxEVT_COMMAND_MYTHREAD_UPDATE));
-		m_pHandler->BackgroundManager();
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-    // signal the event handler that this thread is going to be destroyed
-    // NOTE: here we assume that using the m_pHandler pointer is safe,
-    //       (in this case this is assured by the MyFrame destructor)
-    wxQueueEvent(m_pHandler, new wxThreadEvent(wxEVT_COMMAND_MYTHREAD_COMPLETED));
-    return (wxThread::ExitCode)0;     // success
-}
-MyThread::~MyThread()
-{
-    wxCriticalSectionLocker enter(m_pHandler->m_pThreadCS);
-    // the thread is being destroyed; make sure not to leave dangling pointers around
-    m_pHandler->m_pThread = NULL;
-}
-#endif
 
 class CThreadLoadingBitmap
 {
@@ -114,9 +68,6 @@ CIcone * CThumbnail::FindElement(const int &xPos, const int &yPos)
 
 void CThumbnail::EraseThumbnail()
 {
-#ifdef LOCALTHREAD	
-	DoPauseThread();
-#endif	
     CSqlThumbnail sqlThumbnail;
 	for (CIcone * pIcone : pIconeList)
 	{
@@ -129,10 +80,7 @@ void CThumbnail::EraseThumbnail()
         }
 	}
 	thumbnailPos = 0;
-    
-#ifdef LOCALTHREAD
-	DoResumeThread();
-#endif	
+    this->Refresh();
 }
 
 void CThumbnail::GetSelectItem(vector<CThumbnailData *> &vectorData)
@@ -167,24 +115,34 @@ wxString CThumbnail::SetActifItem(const int &numItem)
 	}
 
 	numActif = pIconeList.at(numItem);
-
-	CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
-	CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-	if (!scrollV->IsMoving())
-	{
-		wxRect rect = numActif->GetPos();
-		rect.x = posLargeur + rect.x;
-		rect.y = posHauteur + rect.y;
-		scrollV->SetPosition(rect.y); scrollV->Refresh();
-		scrollH->SetPosition(rect.x); scrollH->Refresh();
-        
-        if(width < GetWidth())
-            posLargeur = scrollH->GetPosition();
-        
-        if(height < GetHeight())
-		posHauteur = scrollV->GetPosition();
-		
-	}
+    CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
+    CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
+    
+    if(numItem == 0)
+    {
+        scrollV->SetPosition(0); scrollV->Refresh();
+        scrollH->SetPosition(0); scrollH->Refresh();
+    }
+    else{
+        if (!scrollV->IsMoving())
+        {
+            wxRect rect = numActif->GetPos();
+            rect.x = posLargeur + rect.x;
+            rect.y = posHauteur + rect.y;
+            scrollV->SetPosition(rect.y); scrollV->Refresh();
+            scrollH->SetPosition(rect.x); scrollH->Refresh();
+            
+            if(width < GetWidth())
+                posLargeur = scrollH->GetPosition();
+            
+            if(height < GetHeight())
+                posHauteur = scrollV->GetPosition();
+            
+        }
+    }
+    
+    
+    
 
 	numActif = pIconeList.at(numItem);
 
@@ -267,7 +225,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * st
 	nbElementToShow = 0;
 	isStoragePt = false;
 
-	CreateBitmapFolder();
+
 	defaultPageSize = 200;
 	defaultLineSize = 200;
 
@@ -282,141 +240,24 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * st
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
 	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::UpdateRenderIcone));
 	Connect(EVENT_KILLICONETHREAD, wxCommandEventHandler(CThumbnail::KillThreadIcone));
-	//Connect(wxEVT_CLOSE, wxCloseEventHandler(CThumbnail::OnClose));
-	
-#ifdef LOCALTHREAD	
-	Connect(wxEVT_COMMAND_PAUSETHREAD, wxCommandEventHandler(CThumbnail::OnThreadPause));
-    Connect(wxEVT_COMMAND_MYTHREAD_UPDATE, wxThreadEventHandler(CThumbnail::OnThreadUpdate));
-    Connect(wxEVT_COMMAND_MYTHREAD_COMPLETED, wxThreadEventHandler(CThumbnail::OnThreadCompletion));
-#endif
+    
     loadingTimer = new wxTimer(this, TIMER_LOADING);
     Connect(TIMER_LOADING, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnLoading), nullptr, this);
     
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
-	
-	//DoStartThread();
-	//DoPauseThread();
 
 }
-#ifdef LOCALTHREAD
-void CThumbnail::OnThreadPause(wxCommandEvent& event)
-{
-	DoPauseThread();;
-}
 
-void CThumbnail::DoStartThread()
-{
-    m_pThread = new MyThread(this);
-	m_pThread->Sleep(100);
-	m_pThread->SetPriority(WXTHREAD_MIN_PRIORITY);
-    if ( m_pThread->Run() != wxTHREAD_NO_ERROR )
-    {
-        wxLogError("Can't create the thread!");
-        delete m_pThread;
-        m_pThread = NULL;
-    }
-    // after the call to wxThread::Run(), the m_pThread pointer is "unsafe":
-    // at any moment the thread may cease to exist (because it completes its work).
-    // To avoid dangling pointers OnThreadExit() will set m_pThread
-    // to NULL when the thread dies.
-}
-
-void CThumbnail::OnThreadCompletion(wxThreadEvent&)
-{
-    wxMessageOutputDebug().Printf("MYFRAME: MyThread exited!\n");
-}
-void CThumbnail::OnThreadUpdate(wxThreadEvent&)
-{
-    wxMessageOutputDebug().Printf("MYFRAME: MyThread update...\n");
-	BackgroundManager();
-	
-}
-
-void CThumbnail::DoResumeThread()
-{
-    // anytime we access the m_pThread pointer we must ensure that it won't
-    // be modified in the meanwhile; since only a single thread may be
-    // inside a given critical section at a given time, the following code
-    // is safe:
-    wxCriticalSectionLocker enter(m_pThreadCS);
-    if (m_pThread)         // does the thread still exist?
-    {
-        // without a critical section, once reached this point it may happen
-        // that the OS scheduler gives control to the MyThread::Entry() function,
-        // which in turn may return (because it completes its work) making
-        // invalid the m_pThread pointer
-        if (m_pThread->IsPaused() )
-		{
-			if (m_pThread->Resume() != wxTHREAD_NO_ERROR )
-				wxLogError("Can't Resume the thread!");
-		}
-    }	
-}
-
-void CThumbnail::DoPauseThread()
-{
-    // anytime we access the m_pThread pointer we must ensure that it won't
-    // be modified in the meanwhile; since only a single thread may be
-    // inside a given critical section at a given time, the following code
-    // is safe:
-    wxCriticalSectionLocker enter(m_pThreadCS);
-    if (m_pThread)         // does the thread still exist?
-    {
-        // without a critical section, once reached this point it may happen
-        // that the OS scheduler gives control to the MyThread::Entry() function,
-        // which in turn may return (because it completes its work) making
-        // invalid the m_pThread pointer
-        if (m_pThread->Pause() != wxTHREAD_NO_ERROR )
-            wxLogError("Can't pause the thread!");
-    }
-}
-#endif
-
-void CThumbnail::CreateBitmapFolder()
-{
-	CLoadingResource loadingResource;
-	bitmapPhoto = loadingResource.LoadBmpResource("IDB_PHOTO");
-	if (bitmapPhoto.IsOk())
-	{
-#if _DEBUG
-		OutputDebugString(L"Erreur CreateBitmapFolder IDB_PHOTO  not valid \n");
-#endif
-	}
-}
 
 CThumbnail::~CThumbnail()
 {
-#ifdef LOCALTHREAD
-	wxCriticalSectionLocker enter(m_pThreadCS);
-	if (m_pThread)         // does the thread still exist?
-	{
-		wxMessageOutputDebug().Printf("MYFRAME: deleting thread");
-		if (m_pThread->Delete() != wxTHREAD_NO_ERROR )
-			wxLogError("Can't delete the thread!");
-	}
+	threadDataProcess = false;
     
-	// exit from the critical section to give the thread
-	// the possibility to enter its destructor
-	// (which is guarded with m_pThreadCS critical section!)
-    while (1)
-    {
-        { // was the ~MyThread() function executed?
-            wxCriticalSectionLocker enter(m_pThreadCS);
-            if (!m_pThread) break;
-        }
-        // wait for thread completion
-        wxThread::This()->Sleep(1);
-    }
-#endif
-    
-    delete m_animation;
+	//wxSleep(2);
 
-	while (nbProcess > 0)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
-		
+	if (m_animation != nullptr)
+		delete m_animation;
 
 	EraseThumbnailList();
 
@@ -478,9 +319,9 @@ void CThumbnail::UpdateBitmapIcone(const int &thumbnailPos, CRegardsBitmap * bit
 				{
 					pThumbnailData->SetBitmap(bitmap);
 					//UpdateRenderIcone(icone);
-					wxCommandEvent event(EVENT_ICONEUPDATE);
-					event.SetClientData(icone);
-					wxPostEvent(this, event);
+					wxCommandEvent * event = new wxCommandEvent(EVENT_ICONEUPDATE);
+					event->SetClientData(icone);
+					wxQueueEvent(this, event);
 				}
 			}
 		}
@@ -502,26 +343,23 @@ void CThumbnail::UpdateVideoIcone(const int &thumbnailPos, CRegardsBitmap * bitm
 					pThumbnailData->SetBitmap(bitmap);
 					pThumbnailData->SetTimePosition(timePosition);
 					//UpdateRenderIcone(icone);
-					wxCommandEvent event(EVENT_ICONEUPDATE);
-					event.SetClientData(icone);
-					wxPostEvent(this, event);
+					wxCommandEvent * event = new wxCommandEvent(EVENT_ICONEUPDATE);
+					event->SetClientData(icone);
+					wxQueueEvent(this, event);
 				}      
 			}
 		}
 	}
 }
 
-void CThumbnail::BackgroundManager()
+void CThumbnail::onIdle(wxIdleEvent& evt)
 {
     bool thumbnailLoad = false;
 
+
 	if (pIconeList.size() == 0 || threadDataProcess == false)
-	{
-		//DoPauseThread();
-		//wxCommandEvent event(wxEVT_COMMAND_PAUSETHREAD);
-		//wxPostEvent(this, event);
 		return;
-	}
+
 	if (thumbnailPos < pIconeList.size())
 	{
 		CLibPicture libPicture;
@@ -599,16 +437,7 @@ void CThumbnail::BackgroundManager()
 
             thumbnailPos++;
         }
-	}	
-}
-
-void CThumbnail::onIdle(wxIdleEvent& evt)
-{
-#ifdef LOCALTHREAD	
-	return;
-#else
-	BackgroundManager();
-#endif
+	}
 }
 
 void CThumbnail::LoadPicture(void * param)
@@ -627,37 +456,10 @@ void CThumbnail::LoadPicture(void * param)
 	}
 	else
 		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-
-    /*
-	if (bitmapIcone != nullptr && thumbnail != nullptr)
-	{
-		CIcone * icone = thumbnail->pIconeList.at(threadLoadingBitmap->numIcone);
-		if (icone != nullptr)
-		{
-			CThumbnailData * pThumbnailData = icone->GetData();
-			if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
-				pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
-
-			pThumbnailData->SetBitmap(bitmapIcone);
-			//thumbnail->UpdateRenderIcone(icone);
-			wxCommandEvent event(EVENT_ICONEUPDATE);
-			event.SetClientData(icone);
-			wxPostEvent(threadLoadingBitmap->thumbnail, event);
-		}
-	}
-
-
-	if (bitmapIcone != nullptr)
-	{
-		delete(bitmapIcone);
-		bitmapIcone = nullptr;
-	}
-    */
     
-    
-	wxCommandEvent event(EVENT_ICONEUPDATE);
-	event.SetClientData(threadLoadingBitmap);
-	wxPostEvent(threadLoadingBitmap->thumbnail, event);
+	wxCommandEvent * event = new wxCommandEvent(EVENT_ICONEUPDATE);
+	event->SetClientData(threadLoadingBitmap);
+	wxQueueEvent(threadLoadingBitmap->thumbnail, event);
 
 }
 
@@ -850,6 +652,7 @@ void CThumbnail::StopLoadingPicture()
     if(loadingIcone != nullptr)
     {
         loadingIcone->StopLoadingPicture();
+        loadingIcone->DestroyCache();
     }
     
     showLoadingBitmap = false;
@@ -857,6 +660,7 @@ void CThumbnail::StopLoadingPicture()
         loadingTimer->Stop();
     
     this->Refresh();
+
 }
 
 void CThumbnail::OnPaint(wxPaintEvent& event)
@@ -973,11 +777,24 @@ void CThumbnail::InitScrollingPos()
     
     if(posLargeur < 0)
         posLargeur = 0;
+    
+    if(scrollbar != nullptr)
+    {
+        scrollbar->SetPosition(0, 0);
+        posHauteur = scrollbar->GetPosHauteur();
+        posLargeur = scrollbar->GetPosLargeur();
+    }
 }
 
 void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 {
     CThreadLoadingBitmap * threadLoadingBitmap = (CThreadLoadingBitmap *)event.GetClientData();
+    if(threadLoadingBitmap == nullptr)
+    {
+        this->Refresh();
+        return;
+    }
+    
     
     if(threadDataProcess != false && threadLoadingBitmap != nullptr)
     {

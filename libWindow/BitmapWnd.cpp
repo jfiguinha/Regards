@@ -13,7 +13,6 @@
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
 #include "WindowMain.h"
-#include <SDL.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #include "../include/config_id.h"
@@ -38,7 +37,12 @@ int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16 };
 //-----------------------------------------------------------------------------
 
 CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, CWindowMain * windowMain, const CThemeBitmapWindow & theme)
-: wxGLCanvas(parent, id, args,  wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
+#ifdef WIN32
+: wxGLCanvas(parent, id)
+#else
+: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
+#endif
+
 //: CWindowOpenGLMain(parent, id)
 {
 	config = CParamInit::getInstance();
@@ -68,7 +72,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd::OnLButtonDown));
-	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CBitmapWnd::OnRButtonDown));
+    Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CBitmapWnd::OnRButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CBitmapWnd::OnLButtonUp));
 	Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(CBitmapWnd::OnLDoubleClick));
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CBitmapWnd::OnMouseWheel));
@@ -128,10 +132,6 @@ void CBitmapWnd::InitRenderInterface()
 		delete renderInterface;
 
 	renderInterface = nullptr;
-	
-	renderInterface = new CRenderBitmapInterfaceOpenGL();
-	
-	return;
 
 	if (config != nullptr)
 	{
@@ -699,7 +699,8 @@ void CBitmapWnd::MouseRelease(const int &xPos, const int &yPos)
 {
 	mouseBlock = false;
 	wxSetCursor(wxCursor(wxCURSOR_ARROW));
-	ReleaseMouse();
+    if(HasCapture())
+        ReleaseMouse();
 }
 
 void CBitmapWnd::OnRButtonDown(wxMouseEvent& event)
@@ -751,6 +752,10 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnLButtonUp(wxMouseEvent& event)
 {
+    
+    if(event.LeftDClick())
+        return;
+    
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -761,7 +766,8 @@ void CBitmapWnd::OnLButtonUp(wxMouseEvent& event)
 				mouseBlock = false;
 				mouseScrollX = xPos;
 				mouseScrollY = yPos;
-				ReleaseMouse();
+                if(HasCapture())
+                    ReleaseMouse();
 			}
 			break;
 	}
@@ -793,12 +799,22 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 		this->MoveRight();
 		break;
 
+	case WXK_NUMPAD_ADD:
 	case WXK_ADD:
-		this->ZoomOn();
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
+            this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+            this->ZoomOn();
+        }
 		break;
 
+	case WXK_NUMPAD_SUBTRACT:
 	case WXK_SUBTRACT:
-		this->ZoomOut();
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
+            this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+            this->ZoomOut();
+        }
 		break;
 
 	default:
@@ -905,6 +921,12 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 
 					bool update;
 					UpdateScrollBar(update);
+
+#ifdef WIN32
+					TCHAR message[200];
+					wsprintf(message, L"posLargeur : %d et posHauteur : %d \n",posLargeur,posHauteur);
+					OutputDebugString(message);
+#endif
 
 					if (update)
 						this->Refresh();
@@ -1142,7 +1164,7 @@ void CBitmapWnd::DrawBitmap(wxDC * dc)
 	if (renderInterface->GetType() == RENDEROPENGL)
 	{
 		CBitmapWindowContext&  context = GetContext(this);
-		CRenderBitmapInterfaceOpenGL* openGL = (CRenderBitmapInterfaceOpenGL *)renderInterface;
+		//CRenderBitmapInterfaceOpenGL* openGLRender = (CRenderBitmapInterfaceOpenGL *)renderInterface;
 		renderInterface->CreateScreenTexture(width, height);
 		renderInterface->CreateScreenRender(dc, backColor);
         if (bitmap != nullptr)
@@ -1204,6 +1226,9 @@ void CBitmapWnd::UpdateScreenRatio()
 //-----------------------------------------------------------------
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
+    bool update = false;
+    UpdateScrollBar(update);
+    
 	if (renderInterface->GetType() == RENDEROPENGL)	
 		DrawBitmap(nullptr);
 	else
@@ -1224,5 +1249,9 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnLDoubleClick(wxMouseEvent& event)
 {
+#ifdef __APPLE__
+    OnRButtonDown(event);
+#else
     ShrinkImage(true);
+#endif
 }

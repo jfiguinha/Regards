@@ -56,6 +56,8 @@ namespace Regards
 			void OnMouseCaptureLost(wxMouseEvent& event);
 			void OnEraseBackground(wxEraseEvent& event){};
 
+			void DrawElement();
+
 			void Resize();
 			void CalculBarSize();
 

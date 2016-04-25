@@ -35,10 +35,12 @@ namespace Regards
 			void ClickShowButton(const int &id);
 			void ShowInfos();
             void UpdateScreenRatio();
+            void UpdateCriteria();
+            
             
 		protected:
 
-            //void OnIdle(wxIdleEvent& evt);
+            void OnIdle(wxIdleEvent& evt);
             
 			CPane * paneInfos = nullptr;
 			CPane * panePreview = nullptr;

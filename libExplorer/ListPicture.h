@@ -39,10 +39,12 @@ namespace Regards
 			void CopyFile();
             
             void StopLoadingPicture();
-
+            void GeolocalizeFile();
+            void ChangeDateFile();
+            
 		private:
 
-            void RefreshThumbnail(wxCommandEvent& event);
+            //void RefreshThumbnail(wxCommandEvent& event);
 			void RefreshViewer(wxCommandEvent& event);
 			void Resize();
 
@@ -52,6 +54,7 @@ namespace Regards
 			CThumbnailCriteria * thumbnailWindow = nullptr;
 
 			int typeAffichage = SHOW_ALL;
+			bool update = true;
 		};
 	}
 }

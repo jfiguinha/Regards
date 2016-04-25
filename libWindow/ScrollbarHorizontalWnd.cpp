@@ -105,7 +105,8 @@ void CScrollbarHorizontalWnd::UpdateScreenRatio()
 
 bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 {
-	if (left != currentXPos)
+	bool value = true;
+    if (left != currentXPos)
 	{
 		currentXPos = left;
 		TestMaxX();
@@ -123,8 +124,6 @@ bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 			rcPosBar.y = themeScroll.GetMarge();
 			rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 		}
-
-		return true;
 	}
 	else
 	{
@@ -144,8 +143,11 @@ bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 			rcPosBar.y = themeScroll.GetMarge();
 			rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 		}
+		value = false;
 	}
-	return false;
+
+	DrawElement();
+	return value;
 }
 
 bool CScrollbarHorizontalWnd::UpdateScrollBar(const int &posLargeur, const int &screenWidth, const int &pictureWidth)
@@ -367,8 +369,14 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 	{
 		int diffX = xPos - xPositionStart;
 		MoveBar(diffX, themeScroll.colorBarActif);
-		xPositionStart = xPos;
-	}
+		xPositionStartMove = xPositionStart = xPos;
+        
+        currentXPos += diffX * lineSize;
+        TestMinX();
+        TestMaxX();
+        scrollInterface->SetLeftPosition(currentXPos);
+        this->Refresh();
+    }
 	else
 	{
 		if (yPos > rcPosTriangleLeft.y && yPos < rcPosTriangleLeft.height && xPos > rcPosTriangleLeft.x && xPos < rcPosTriangleLeft.width)
@@ -598,7 +606,7 @@ void CScrollbarHorizontalWnd::ClickRightPage()
 	scrollInterface->SetLeftPosition(currentXPos);
 }
 
-void CScrollbarHorizontalWnd::OnPaint(wxPaintEvent& event)
+void CScrollbarHorizontalWnd::DrawElement()
 {
 	wxPaintDC dc(this);
 	wxRect rc;
@@ -610,6 +618,14 @@ void CScrollbarHorizontalWnd::OnPaint(wxPaintEvent& event)
 	DrawLeftTriangleElement(&dc, rcPosTriangleLeft, themeScroll.colorTriangle);
 	DrawRightTriangleElement(&dc, rcPosTriangleRight, themeScroll.colorTriangle);
 	DrawRectangleElement(&dc, themeScroll.colorBar);
+#ifdef WIN32
+	OutputDebugString(L"CScrollbarHorizontalWnd::OnPaint \n");
+#endif
+}
+
+void CScrollbarHorizontalWnd::OnPaint(wxPaintEvent& event)
+{
+	DrawElement();
 }
 
 void CScrollbarHorizontalWnd::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)

@@ -22,6 +22,10 @@ namespace Regards
 			void CloseConnection();
 
 			virtual bool InitDatabase(const wxString &lpFilename) = 0;
+            virtual bool CheckVersion(const wxString &lpFilename)
+            {
+                return false;
+            }
             int ExecuteSQLWithNoResult(const wxString &query);
 			bool ExecuteSQLSelect(const wxString &query, CSqlResult * sqlResult);
 			bool ExecuteSQLBlobInsert(const wxString &query, const int &numCol, const void * zBlob, const int &nBlob, CSqlResult * sqlResult);

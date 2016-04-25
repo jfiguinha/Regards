@@ -18,7 +18,8 @@ namespace Regards
 			bool SearchPhotos(PhotosVector * photosVector, const wxString &localisation, const wxString &libelleCriteria);
 			bool SearchPhotos(PhotosVector * photosVector, const int &numCategorie, const int &numCatalog);
 			bool SearchPhotos(PhotosVector * photosVector, const int &numCatalog);
-			bool SearchPhotos(const int &numCatalog, vector<int> listFolder, vector<int> listCriteriaNotIn);
+            wxString GenerateSqlRequest(const int &numCatalog, vector<int> listFolder, vector<int> listCriteriaNotIn);
+			bool SearchPhotos(const wxString &sqlRequest);
 		private:
 
 			int TraitementResultPhoto(CSqlResult * sqlResult);

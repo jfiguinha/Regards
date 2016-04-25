@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libJbig
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          := "/home/figuinha/dev/Regards/Otherlib"
 ProjectPath            := "/home/figuinha/dev/Regards/Otherlib/libJbig"
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=root
-Date                   :=21/09/15
+User                   :=figuinha
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++-4.8
 SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++-4.8
 CC       := /usr/bin/gcc-4.8
-CXXFLAGS :=   $(Preprocessors)
-CFLAGS   :=   $(Preprocessors)
+CXXFLAGS :=  -g $(Preprocessors)
+CFLAGS   :=  -g $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -77,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/Otherlib/.build-release"
-	@echo rebuilt > "/home/figuinha/dev/Regards/Otherlib/.build-release/libJbig"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/Otherlib/.build-debug"
+	@echo rebuilt > "/home/figuinha/dev/Regards/Otherlib/.build-debug/libJbig"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
@@ -99,7 +99,7 @@ $(IntermediateDirectory)/jbig.c$(DependSuffix): jbig.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/jbig.c$(ObjectSuffix) -MF$(IntermediateDirectory)/jbig.c$(DependSuffix) -MM "jbig.c"
 
 $(IntermediateDirectory)/jbig.c$(PreprocessSuffix): jbig.c
-	@$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/jbig.c$(PreprocessSuffix) "jbig.c"
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/jbig.c$(PreprocessSuffix) "jbig.c"
 
 $(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix): jbig_tab.c $(IntermediateDirectory)/jbig_tab.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libJbig/jbig_tab.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix) $(IncludePath)
@@ -107,7 +107,7 @@ $(IntermediateDirectory)/jbig_tab.c$(DependSuffix): jbig_tab.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix) -MF$(IntermediateDirectory)/jbig_tab.c$(DependSuffix) -MM "jbig_tab.c"
 
 $(IntermediateDirectory)/jbig_tab.c$(PreprocessSuffix): jbig_tab.c
-	@$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/jbig_tab.c$(PreprocessSuffix) "jbig_tab.c"
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/jbig_tab.c$(PreprocessSuffix) "jbig_tab.c"
 
 $(IntermediateDirectory)/tstcodec.c$(ObjectSuffix): tstcodec.c $(IntermediateDirectory)/tstcodec.c$(DependSuffix)
 	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libJbig/tstcodec.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/tstcodec.c$(ObjectSuffix) $(IncludePath)
@@ -115,7 +115,7 @@ $(IntermediateDirectory)/tstcodec.c$(DependSuffix): tstcodec.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/tstcodec.c$(ObjectSuffix) -MF$(IntermediateDirectory)/tstcodec.c$(DependSuffix) -MM "tstcodec.c"
 
 $(IntermediateDirectory)/tstcodec.c$(PreprocessSuffix): tstcodec.c
-	@$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/tstcodec.c$(PreprocessSuffix) "tstcodec.c"
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/tstcodec.c$(PreprocessSuffix) "tstcodec.c"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -123,6 +123,6 @@ $(IntermediateDirectory)/tstcodec.c$(PreprocessSuffix): tstcodec.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

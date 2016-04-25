@@ -52,6 +52,7 @@
     <File Name="SaveFileFormat.h"/>
     <File Name="TiffOption.h"/>
     <File Name="wx_pch.h"/>
+    <File Name="SaveFromCFunction.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

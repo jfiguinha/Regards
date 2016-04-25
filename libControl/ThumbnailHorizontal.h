@@ -18,7 +18,8 @@ namespace Regards
 			virtual ~CThumbnailHorizontal(void);
             void SetListeFile(const vector<wxString> & files);
 			void SetIconeSize(const int &width, const int &height);
-
+            void InitPosition();
+            
 		protected:
 
 			

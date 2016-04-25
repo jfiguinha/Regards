@@ -193,6 +193,15 @@ void CPreviewThumbnail::ClickShowButton(const int &id)
 	}
 }
 
+void CPreviewThumbnail::UpdateData()
+{
+    if(listPicture != nullptr)
+        listPicture->UpdateList();
+    
+    if(previewImage != nullptr)
+        previewImage->UpdateCriteria();
+}
+
 void CPreviewThumbnail::PhotoSelect(const wxString &photoPath)
 {
 	CLibPicture libPicture;

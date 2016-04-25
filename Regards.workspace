@@ -29,14 +29,15 @@
   </Environment>
   <Project Name="include" Path="include/include.project"/>
   <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
-  <Project Name="RegardsExplorer" Path="RegardsExplorer/RegardsExplorer.project" Active="Yes"/>
-  <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
+  <Project Name="RegardsExplorer" Path="RegardsExplorer/RegardsExplorer.project" Active="No"/>
+  <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="Yes"/>
   <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project"/>
   <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project"/>
   <Project Name="libEmail" Path="libEmail/libEmail.project"/>
   <Project Name="libExif" Path="libExif/libExif.project"/>
+  <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
@@ -71,8 +72,9 @@
       <Project Name="libVideoFFMpeg" ConfigName="Debug"/>
       <Project Name="libEmail" ConfigName="Debug"/>
       <Project Name="libExif" ConfigName="Debug"/>
+      <Project Name="libFiltreInterface" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="no">
+    <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>
@@ -107,6 +109,7 @@
       <Project Name="libVideoFFMpeg" ConfigName="Release"/>
       <Project Name="libEmail" ConfigName="Release"/>
       <Project Name="libExif" ConfigName="Release"/>
+      <Project Name="libFiltreInterface" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

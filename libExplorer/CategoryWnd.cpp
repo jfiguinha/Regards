@@ -12,6 +12,7 @@
 #include <TreeElementCheckBox.h>
 #include <SqlFindFolderCatalog.h>
 #include <SqlFolderCatalog.h>
+#include <SqlCriteria.h>
 #include <TreeElementDelete.h>
 #include "ExplorerParam.h"
 #include "ExplorerParamInit.h"
@@ -103,6 +104,10 @@ void CCategoryWnd::Init()
 	top = tr.begin();
 
 	idElement = 0;
+    
+    //Nettoyage des crit¬ères non utilis¬és
+    CSqlCriteria sqlCriteria;
+    sqlCriteria.RemoveUnusedCriteria();
 
 	sqlCatalog.GetCatalog(&catalogVector);
 
@@ -146,7 +151,7 @@ wxString CCategoryWnd::GetCatalogLibelle(const int &numCatalog)
 void CCategoryWnd::InitCatalogCategorie(tree<CTreeData *>::iterator parent, int numParent)
 {
 
-	//RÈcupÈration des catÈgories principales
+	//R√©cup√©ration des cat√©gories principales
 	CSqlPhotoCategorie sqlCategorie;
 	PhotoCategorieVector categorieVector;
 	tree<CTreeData *>::iterator child;
@@ -251,12 +256,15 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 	tree<CTreeData *>::iterator child = parent;
 	wcscpy(libelle, catlibelle.c_str());
 	int numParentElement = numParent;
-
 #ifdef WIN32
+#if _MSC_VER < 1900
 	wchar_t * token = wcstok(libelle, seps); // C4996
 #else
 	// Establish string and get the first token:
 	wchar_t * token = wcstok(libelle, seps, &next_token1); // C4996
+#endif
+#else
+    wchar_t * token = wcstok(libelle, seps, &next_token1); // C4996
 #endif
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
@@ -289,7 +297,7 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 		else
 			treeData->SetIdElement(-1);
 
-		//Recherche de la clÈ
+		//Recherche de la cl√©
 		tree<CTreeData *>::iterator it = FindKey(treeData->GetKey(), child);
 		if (it != nullptr)
 		{
@@ -311,9 +319,13 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 			treeData->child = child;
 		}
 #ifdef WIN32
+#if _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
+#endif
+#else
+    token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 	}
 }
@@ -346,9 +358,13 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 			//int index = 0;
 			// Establish string and get the first token:
 #ifdef WIN32
+#if _MSC_VER < 1900
 			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps); // C4996
 #else
 			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps, &next_token1); // C4996
+#endif
+#else
+    wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps, &next_token1); // C4996
 #endif
 			// Note: strtok is deprecated; consider using strtok_s instead
 			do
@@ -382,7 +398,7 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 				else
 					treeData->SetIdElement(-1);
 
-				//Recherche de la clÈ
+				//Recherche de la cl√©
 				tree<CTreeData *>::iterator it = FindKey(treeData->GetKey(), child);
 				if (it != nullptr)
 				{
@@ -409,9 +425,13 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 
 
 #ifdef WIN32
+#if _MSC_VER < 1900
 				token = wcstok(nullptr, seps); // C4996
 #else
 				token = wcstok(nullptr, seps, &next_token1); // C4996
+#endif
+#else
+    token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 
 				//index++;
@@ -455,8 +475,9 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
 	}
 
 	CSqlFindPhotos sqlFindPhotos;
-	sqlFindPhotos.SearchPhotos(NUMCATALOGID, listFolder, listCriteriaNotIn);
-
+	wxString requestSql = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn);
+    sqlFindPhotos.SearchPhotos(requestSql);
+    
 	//Get list of photo
 	vector<int> diff;
 	vector<int> newListPhoto;

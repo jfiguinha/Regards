@@ -1,6 +1,6 @@
-// stdafx.hÂ : fichier Include pour les fichiers Include systÃ¨me standard,
-// ou les fichiers Include spÃ©cifiques aux projets qui sont utilisÃ©s frÃ©quemment,
-// et sont rarement modifiÃ©s
+// stdafx.h : fichier Include pour les fichiers Include système standard,
+// ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
+// et sont rarement modifiés
 //
 #include "RenderBitmapInterfaceGDI.h"
 #include <FiltreEffet.h>
@@ -238,8 +238,7 @@ void CRenderBitmapInterfaceGDI::AddBitmapToScalePosition(const wxString &texture
 void CRenderBitmapInterfaceGDI::RenderToScreen(wxDC * deviceContext)
 {
 	CLoadingResource loadingResource;
-	wxImage image = loadingResource.ConvertTowxImage(renderBitmap, false);
-	deviceContext->DrawBitmap(image, 0, 0);
+	deviceContext->DrawBitmap(loadingResource.ConvertTowxImage(renderBitmap, false), 0, 0);
 	//deviceContext->StretchDIBits(0, 0, renderBitmap);
 }
 
@@ -258,35 +257,16 @@ void CRenderBitmapInterfaceGDI::Transition(const wxString &textureName, const in
 	}
 }
 
-void CRenderBitmapInterfaceGDI::PhotoFiltre(const CRgbaquad &color, const int &intensity)
+void CRenderBitmapInterfaceGDI::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
 {
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->PhotoFiltre(color, intensity);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::RGBFiltre(const int &red, const int &green, const int &blue)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->RGBFilter(red, green, blue);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::RedEye(float &strength, const wxRect& rSelectionBox)
-{
-
+    if (config != nullptr)
+    {
+        CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
+        filtre->RenderEffect(numEffect, effectParameter);
+        delete filtre;
+        
+        renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
+    }
 }
 
 
@@ -307,69 +287,3 @@ void CRenderBitmapInterfaceGDI::RotateFree(const int &angle)
 		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
 	}
 }
-
-void CRenderBitmapInterfaceGDI::Swirl(const float &radius, const float &angle, const float &bitmapWidth, const float &bitmapHeight)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->Swirl(radius, angle);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::BrightnessAndContrast(const int &lightness, const int &contrast)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->BrightnessAndContrast(lightness, contrast);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::Posterize(const float &level, const float &gamma)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->Posterize(level, gamma);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::Solarize(const long &threshold)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->Solarize(threshold);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-
-void CRenderBitmapInterfaceGDI::Clouds(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave)
-{
-	
-	if (config != nullptr)
-	{
-		CFiltreEffet * filtre = new CFiltreEffet(bitmapScale, colorBackground, config->GetEffectLibrary());
-		filtre->CloudsFilter(color1, color2, amplitude, frequence, octave);
-		delete filtre;
-
-		renderBitmap->InsertBitmapWithoutAlpha(bitmapScale, bitmapZone.x, bitmapZone.y);
-	}
-}
-

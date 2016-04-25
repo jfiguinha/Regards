@@ -16,7 +16,7 @@ namespace Regards
 			CThumbnailVertical(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail);
 			virtual ~CThumbnailVertical(void);
 
-			void SetListeFile(const wxArrayString & listFile);
+			void SetListeFile(const wxArrayString & listFile, const bool &showSelectButton = false);
 			void SetIconeSize(const int &width, const int &height);
 			void SetListeFile(const PhotosVector & photoVector, const bool &erase = true);
 

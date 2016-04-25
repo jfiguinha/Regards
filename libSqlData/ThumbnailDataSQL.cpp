@@ -35,6 +35,7 @@ bool CThumbnailDataSQL::TestBitmap()
 wxImage CThumbnailDataSQL::GetwxImage()
 {
 	CSqlThumbnail sqlThumbnail;
+    printf("Filename : %s \n",filename.ToStdString().c_str());
 	return sqlThumbnail.GetThumbnail(filename);
 }
 

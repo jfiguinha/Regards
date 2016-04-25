@@ -1,5 +1,5 @@
 #include "SqlLibExplorer.h"
-
+#include "SqlVersion.h"
 #include <libResource.h>
 #include <wx/filefn.h> 
 using namespace Regards::Sqlite;
@@ -44,6 +44,9 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_PHOTOSTHUMBNAIL_TABLE "CREATE TABLE PHOTOSTHUMBNAIL (FullPath NVARCHAR(255), width INT, height INT, hash NVARCHAR(255), thumbnail BLOB)"
 #define SQL_DROP_PHOTOSTHUMBNAIL "DROP TABLE PHOTOSTHUMBNAIL"
 
+#define SQL_CREATE_PHOTOGPS_TABLE "CREATE TABLE PHOTOGPS (id INTEGER PRIMARY KEY AUTOINCREMENT, FullPath NVARCHAR(255), latitude NVARCHAR(255), longitude NVARCHAR(255))"
+#define SQL_DROP_PHOTOGPS "DROP TABLE PHOTOGPS"
+
 CSqlLibExplorer::CSqlLibExplorer()
  : CSqlLib()
 {
@@ -71,35 +74,49 @@ bool CSqlLibExplorer::InitDatabase(const wxString &lpFilename)
 {
 	int hr = -1;	// Error code reporting
 
-	if (wxFileExists(lpFilename))
-	{
-		if (OpenConnection(lpFilename, false))
-		{
-			hr = ExecuteSQLWithNoResult("select * from version");
-			if (hr == -1)
-			{
-				hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSTHUMBNAIL);
-                if(hr != -1)
-                {
-                    hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSTHUMBNAIL_TABLE);
-                    if(hr != -1)
-                    {
-                        hr = ExecuteSQLWithNoResult(SQL_CREATE_VERSION_TABLE);
-                        if(hr != -1)
-                        {
-                            hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.0.0.2');");
-                        }
-                    }
-                }
-			}
-		}
-	}
-	else
+	if (!wxFileExists(lpFilename))
 	{
 		hr = CreateDatabase(lpFilename);
 	}
+    else
+        hr = 0;
 
 	return (hr != -1);
+}
+
+bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
+{
+    int hr = -1;
+    if (OpenConnection(lpFilename, false))
+    {
+        hr = ExecuteSQLWithNoResult("select * from version");
+        if (hr == -1)
+        {
+            hr = ExecuteSQLWithNoResult(SQL_DROP_PHOTOSTHUMBNAIL);
+            if(hr != -1)
+            {
+                hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSTHUMBNAIL_TABLE);
+                if(hr != -1)
+                {
+                    hr = ExecuteSQLWithNoResult(SQL_CREATE_VERSION_TABLE);
+                    if(hr != -1)
+                    {
+                        hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.2.0.0');");
+                    }
+                }
+            }
+        }
+        else
+        {
+            CSqlVersion sqlVersion;
+            if(sqlVersion.GetVersion() == "2.0.0.2")
+            {
+                hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOGPS_TABLE);
+                sqlVersion.UpdateVersion("2.2.0.0","2.0.0.2");
+            }
+        }
+    }
+    return hr;
 }
 
 
@@ -135,11 +152,17 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath)
 	}
 
 	// Create RESULT SEARCH table
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSTHUMBNAIL_TABLE);
+	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOGPS_TABLE);
 	if (hr == -1)
 	{
 		goto Exit;
 	}
+    
+    hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSTHUMBNAIL_TABLE);
+    if (hr == -1)
+    {
+        goto Exit;
+    }
 
 	// Create RESULT SEARCH table
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTOSSEARCH_TABLE);
@@ -158,7 +181,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath)
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.0.0.2');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.2.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;

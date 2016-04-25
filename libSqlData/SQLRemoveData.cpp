@@ -4,6 +4,7 @@
 #include "SqlPhotos.h"
 #include "SqlCriteria.h"
 #include "SqlPhotoCriteria.h"
+#include "SqlThumbnail.h"
 #include "SqlFindCriteria.h"
 using namespace Regards::Sqlite;
 
@@ -29,19 +30,24 @@ bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
 
 	//Suppression des critères des photos
 	CSqlPhotoCriteria sqlPhotoCriteria;
-	sqlPhotoCriteria.DeleteCatalogCriteria(numCatalog);
+	sqlPhotoCriteria.DeletePhotoCriteria();
 
 	//Suppression des photos du catalog
 	CSqlPhotos sqlPhoto;
 	sqlPhoto.DeletePhotoCatalog(numCatalog);
+	sqlPhoto.DeletePhotoSearch();
 
 	//Suppression des répertoires du catalog
 	CSqlFolderCatalog sqlFolderCatalog;
 	sqlFolderCatalog.DeleteCatalog(numCatalog);
 
+	CSqlThumbnail sqlThumbnail;
+	sqlThumbnail.EraseThumbnail();
+
+
 	//Suppression du catalog
-	CSqlCatalog sqlCatalog;
-	sqlCatalog.DeleteCatalog(numCatalog);
+	//CSqlCatalog sqlCatalog;
+	//sqlCatalog.DeleteCatalog(numCatalog);
 
 	return 0;
 }

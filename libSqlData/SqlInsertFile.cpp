@@ -17,14 +17,62 @@ CSqlInsertFile::~CSqlInsertFile()
 
 }
 
+void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &idFolder)
+{
+    BeginTransaction();
+    
+    ExecuteRequestWithNoResult("DELETE FROM PHOTOFOLDER");
+    
+    for (wxString file : listFile)
+    {
+        file.Replace("'", "''");
+        ExecuteRequestWithNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES ('" + file + "')");
+    }
+    
+    CommitTransection();
+    
+    
+    //Photo To add
+    vector<wxString> listAddFile;
+    if(GetPhotoToAdd(&listAddFile))
+    {
+        BeginTransaction();
+        
+        for (wxString filename : listAddFile)
+        {
+            filename.Replace("'", "''");
+            ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0)");
+        }
+        
+        CommitTransection();
+    }
+    
+    vector<int> listRemoveFile;
+    if(GetPhotoToRemove(&listRemoveFile, idFolder))
+    {
+        BeginTransaction();
+        
+        for (int numPhoto : listRemoveFile)
+        {
+            ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto));
+        }
+        
+        CommitTransection();
+    }
+   
+}
+
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, const int &idFolder)
 {
 	BeginTransaction();
 
 	for (wxString filename : listFile)
 	{
-		filename.Replace("'", "''");
-		ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0)");
+		if (GetNumPhoto(filename) == 0)
+		{
+			filename.Replace("'", "''");
+			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0)");
+		}
 	}
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in(SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
@@ -60,6 +108,16 @@ bool CSqlInsertFile::GetPhotoToAdd(vector<wxString> * listFile)
 	listPathFile = listFile;
 	return (ExecuteRequest("SELECT FullPath FROM PHOTOFOLDER WHERE FullPath not in (Select FullPath From PHOTOS)") != -1) ? true : false;
 }
+
+int CSqlInsertFile::GetNumPhoto(const wxString &filepath)
+{
+	type = 3;
+	wxString filename = filepath;
+	filename.Replace("'", "''");
+	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + filename + "'");
+	return numPhoto;
+}
+
 
 bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolder)
 {
@@ -101,6 +159,18 @@ bool CSqlInsertFile::GetPhotos(PhotosVector * photosVector)
 {
     m_photosVector = photosVector;
 	return (ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0") != -1) ? true : false;
+}
+
+bool CSqlInsertFile::GetAllPhotos(PhotosVector * photosVector)
+{
+    m_photosVector = photosVector;
+    return (ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS") != -1) ? true : false;
+}
+
+bool CSqlInsertFile::GetPhotos(PhotosVector * photosVector, const int64_t &numFolder)
+{
+	m_photosVector = photosVector;
+	return (ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0 and NumFolderCatalog = " + to_string(numFolder) + "") != -1) ? true : false;
 }
 
 
@@ -155,19 +225,34 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 				break;
 
 			case 2:
+				{
+					int id;
+					for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+					{
+
+						switch (i)
+						{
+						case 0:
+							id = sqlResult->ColumnDataInt(i);
+							break;
+						}
+					}
+					listPhoto->push_back(id);
+				}
+				break;
+
+			case 3:
 			{
-				int id;
 				for (int i = 0; i < sqlResult->GetColumnCount(); i++)
 				{
 
 					switch (i)
 					{
 					case 0:
-						id = sqlResult->ColumnDataInt(i);
+						numPhoto = sqlResult->ColumnDataInt(i);
 						break;
 					}
 				}
-				listPhoto->push_back(id);
 			}
 			break;
 		}

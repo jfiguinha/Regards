@@ -175,6 +175,7 @@ int CScrollbarVerticalWnd::GetPictureHeight()
 
 bool CScrollbarVerticalWnd::SetPosition(const int &top)
 {
+	bool value = true;
 	if (top != currentYPos)
 	{
 		currentYPos = top;
@@ -195,7 +196,6 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 			rcPosBar.y = barPosY;
 			rcPosBar.height = barPosY + barSize;
 		}
-		return true;
 	}
 	else
 	{
@@ -215,8 +215,28 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 			rcPosBar.y = barPosY;
 			rcPosBar.height = barPosY + barSize;
 		}
+		value = false;
 	}
-	return false;
+
+	DrawElement();
+
+	return value;
+}
+
+void CScrollbarVerticalWnd::DrawElement()
+{
+	wxPaintDC dc(this);
+	wxRect rc;
+	rc.x = 0;
+	rc.y = 0;
+	rc.width = width;
+	rc.height = height;
+
+	FillRect(&dc, rc, themeScroll.colorBack);
+
+	DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangle);
+	DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
+	DrawRectangleElement(&dc, themeScroll.colorBar);
 }
 
 void CScrollbarVerticalWnd::ShowEmptyRectangle(const bool &show, const int &heightSize)
@@ -462,8 +482,13 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 		scrollMoving = true;
 		int diffY = yPos - yPositionStart;
 		MoveBar(diffY, themeScroll.colorBarActif);
-		yPositionStart = yPos;
-	}
+		yPositionStartMove = yPositionStart = yPos;
+        
+        currentYPos += diffY * lineSize;
+        TestMinY();
+        TestMaxY();
+        scrollInterface->SetTopPosition(currentYPos);
+    }
 	else
 	{
 
@@ -641,18 +666,7 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 
 void CScrollbarVerticalWnd::OnPaint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
-
-	FillRect(&dc, rc, themeScroll.colorBack);
-
-	DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangle);
-	DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
-	DrawRectangleElement(&dc, themeScroll.colorBar);
+	DrawElement();
 }
 
 void CScrollbarVerticalWnd::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)

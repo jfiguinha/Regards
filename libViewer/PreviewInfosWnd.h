@@ -53,6 +53,8 @@ namespace Regards
 
 			void SetDiaporamaMode();
 			void SetNormalMode();
+            
+            void UpdateInfos();
 
 		protected:
 

@@ -21,9 +21,7 @@ using namespace Regards::Window;
 #define WM_PICTURELOAD 1
 
 wxImage CIcone::imagePhoto;
-wxImage CIcone::bitmapCheckOn;
-wxImage CIcone::bitmapCheckOff;
-			
+
 int CIcone::GetXPos()
 {
 	return x;
@@ -111,15 +109,14 @@ void CIcone::SetTheme(CThemeIcone theme)
 
 void CIcone::DestroyCache()
 {
-	if (scale.IsOk())
-	{
-		scale.Destroy();
-		photoDefault = true;
-	}
+    if(memBitmap != nullptr)
+        delete memBitmap;
+    memBitmap = nullptr;
 }
 
 void CIcone::SetSelected(const bool &value)
 {
+    DestroyCache();
 	isSelected = value;
 	if (!value)
 		state = INACTIFICONE;
@@ -148,8 +145,12 @@ CIcone::CIcone(void)
 	if (config != nullptr)
 		numLib = config->GetEffectLibrary();
 	
+    //if(isVector)
+    //    tempImageVector = CLibResource::GetVector(L"IDB_PHOTO");
     if(!imagePhoto.IsOk())
-        imagePhoto = loadingResource.LoadImageResource(L"IDB_PHOTO", false);
+       imagePhoto = loadingResource.LoadImageResource(L"IDB_PHOTO", false);
+    
+    //printf("Photo Vector : %s \n",tempImageVector.ToStdString().c_str());
     
     if(isVector)
     {
@@ -176,6 +177,12 @@ void CIcone::StartLoadingPicture()
 void CIcone::StopLoadingPicture()
 {
     showLoading = false;
+    //DestroyCache();
+}
+
+void CIcone::DeleteCache()
+{
+    DestroyCache();
 }
 
 void CIcone::SetPictureLoading(const wxImage &imageLoading)
@@ -210,6 +217,7 @@ wxImage CIcone::GenerateVideoIcone()
 
 bool CIcone::OnClick(const int &x, const int &y)
 {
+    DestroyCache();
 	wxRect checkPos;
 	int xPos = x - this->x;
 	int yPos = y - this->y;
@@ -219,6 +227,7 @@ bool CIcone::OnClick(const int &x, const int &y)
 	checkPos.height = checkPos.y + themeIcone.GetCheckboxHeight();
 	if ((checkPos.x < xPos && xPos < checkPos.width) && (checkPos.y < yPos && yPos < checkPos.height))
 	{
+        
 		isChecked = !isChecked;
 		SetChecked(isChecked);
         return true;
@@ -274,10 +283,20 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
 
 			if (libelle != "")
 			{
-				wxSize sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeIcone.font);
+				//wxSize sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeIcone.font);
+
+				CThemeFont themeFont = themeIcone.font;
+				wxSize sizeTexte;
+				do
+				{
+					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
+					if (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)))
+						themeFont.SetFontSize(themeFont.GetFontSize() - 1);
+				} while (sizeTexte.x > (themeIcone.GetWidth() - (themeIcone.GetMarge() * 2)));
+
 				int xPos = (themeIcone.GetWidth() - sizeTexte.x) / 2;
 				int yPos = bitmapScale.GetHeight() + themeIcone.GetMarge() + ((themeIcone.GetHeight() - (bitmapScale.GetHeight() + themeIcone.GetMarge())) - sizeTexte.y) / 2;
-				CWindowMain::DrawTexte(memDC, libelle, xPos, yPos, themeIcone.font);
+				CWindowMain::DrawTexte(memDC, libelle, xPos, yPos, themeFont);
 			}
 		}
 
@@ -442,10 +461,18 @@ void CIcone::RenderVideoBitmap(wxDC * memDC, const wxImage &  bitmapScale, const
 
 			if (libelle != L"")
 			{
-				wxSize sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeIcone.font);
+				CThemeFont themeFont = themeIcone.font;
+				wxSize sizeTexte;
+				do
+				{
+					sizeTexte = CWindowMain::GetSizeTexte(memDC, libelle, themeFont);
+					if (sizeTexte.x > themeIcone.GetWidth())
+						themeFont.SetFontSize(themeFont.GetFontSize() - 1);
+				} while (sizeTexte.x > themeIcone.GetWidth());
+
 				int xPos = (themeIcone.GetWidth() - sizeTexte.x) / 2;
 				int y = (themeIcone.GetHeight() - (bitmapImageCadreVideo.GetHeight() * 2 + bitmapImageActif.GetHeight() + sizeTexte.y)) / 2;
-				CWindowMain::DrawTexte(memDC, libelle, xPos, yPos + y + bitmapImageActif.GetHeight(), themeIcone.font);
+				CWindowMain::DrawTexte(memDC, libelle, xPos, yPos + y + bitmapImageActif.GetHeight(), themeFont);
 			}
 		}
 
@@ -471,7 +498,8 @@ void CIcone::RenderBitmap(wxDC * memdc, const wxImage & bitmapScale, const int &
 
 CIcone::~CIcone(void)
 {
-
+    if(memBitmap != nullptr)
+        delete memBitmap;
 }
 
 //----------------------------------------------------------------------------------
@@ -537,32 +565,64 @@ void CIcone::CalculPosition(const wxImage & render)
 //----------------------------------------------------------------------------------
 void CIcone::RenderIcone(wxDC * dc)
 {
-	wxBitmap memBitmap = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
-	wxMemoryDC memDC(memBitmap);
-	wxImage image = imagePhoto;
-    wxImage scale;
-
-    photoDefault = true;
+    bool useCache = false;
+	//wxBitmap memBitmap = wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
+    if(memBitmap != nullptr)
+    {
+        if(memBitmap->IsOk())
+        {
+            if(memBitmap->GetWidth() != themeIcone.GetWidth() || memBitmap->GetHeight() != themeIcone.GetHeight())
+            {
+                delete memBitmap;
+                memBitmap = new wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
+            }
+            else
+                useCache = true;
+        }
+        else
+        {
+            delete memBitmap;
+            memBitmap = new wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
+        }
+    }
+    else
+        memBitmap = new wxBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());
     
-	int tailleAffichageBitmapWidth = 0;
-	int tailleAffichageBitmapHeight = 0;
-	float ratio = 0.0;
+    if(!useCache)
+    {
+        wxMemoryDC memDC(*memBitmap);
+        wxImage image = imagePhoto;
+        wxImage scale;
 
+        /*
+        if(isVector)
+        {
+            image = CreateFromSVG(themeIcone.GetWidth(), themeIcone.GetHeight(), tempImageVector);
+            image.ConvertToDisabled();
+        }
+        else
+        {
+            image = imagePhoto;
+        }*/
+        
+        photoDefault = true;
+        
+        int tailleAffichageBitmapWidth = 0;
+        int tailleAffichageBitmapHeight = 0;
+        float ratio = 0.0;
 
-	//if (!scale.IsOk())
-	//{
-		if (pThumbnailData != nullptr)
-		{
-			if (photoDefault)
-			{
-				wxImage photo = pThumbnailData->GetwxImage();
-				if (photo.IsOk())
-				{
-					photoDefault = false;
-					image = photo;
-				}
-			}
-		}
+        if (pThumbnailData != nullptr)
+        {
+            if (photoDefault)
+            {
+                wxImage photo = pThumbnailData->GetwxImage();
+                if (photo.IsOk())
+                {
+                    photoDefault = false;
+                    image = photo;
+                }
+            }
+        }
 
         if(image.IsOk())
         {
@@ -574,15 +634,18 @@ void CIcone::RenderIcone(wxDC * dc)
             else
                 scale = image.ResampleBicubic(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight);
         }
-	//}
 
-	RenderBitmap(&memDC, scale, state);
-		
-	memDC.SelectObject(wxNullBitmap);
-	dc->DrawBitmap(memBitmap, x, y);
+        RenderBitmap(&memDC, scale, state);
+            
+        memDC.SelectObject(wxNullBitmap);
+        
+        scale.Destroy();
+        image.Destroy();
+        
+    }
+	dc->DrawBitmap(*memBitmap, x, y);
     
-    scale.Destroy();
-    image.Destroy();
+
 
 	//if (!thumbnailIconeCache)
 	//	scale.Destroy();
@@ -591,6 +654,7 @@ void CIcone::RenderIcone(wxDC * dc)
 
 void CIcone::SetActive(const bool &value)
 {
+    DestroyCache();
 	if (state != SELECTEDICONE)
 	{
 		if (value)
@@ -609,6 +673,7 @@ bool CIcone::IsChecked()
 
 void CIcone::SetChecked(const bool &value)
 {
+    DestroyCache();
 	isChecked = value;
 }
 

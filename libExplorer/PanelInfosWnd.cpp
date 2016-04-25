@@ -21,25 +21,10 @@ wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation)
 	: CWindowMain(parent, id)
 {
-	CThemeScrollBar themeScroll;
 	CExplorerTheme * explorerTheme = CExplorerThemeInit::getInstance();
     windowVisible = WM_INFOS;
     this->fileGeolocalisation = fileGeolocalisation;
 
-	if (explorerTheme != nullptr)
-	{
-		
-		explorerTheme->GetScrollInfosFileTheme(themeScroll);
-		InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-	}
-
-	if (explorerTheme != nullptr)
-	{
-		CThemeTree theme;
-		explorerTheme->GetTreeInfosFileTheme(theme);
-		treeWindow = new CTreeWindow(InfosFileScroll, wxID_ANY, theme);
-		InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
-	}
     
     if (explorerTheme != nullptr)
         explorerTheme->GetBitmapWindowTheme(&themeBitmap);
@@ -54,8 +39,35 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         infosToolbar = new CInfosToolbar(this, wxID_ANY, theme, this);
     }
     
+    if (explorerTheme != nullptr)
+    {
+        CThemeScrollBar themeScroll;
+        explorerTheme->GetScrollInfosFileTheme(themeScroll);
+
+        CThemeTree theme;
+        explorerTheme->GetTreeInfosFileTheme(theme);
+        
+        infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
+    }
+
+    
+    if (explorerTheme != nullptr)
+    {
+        CThemeScrollBar themeScroll;
+        explorerTheme->GetScrollInfosFileTheme(themeScroll);
+        
+        CThemeTree themeTree;
+        explorerTheme->GetTreeInfosFileTheme(themeTree);
+        
+        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINEXPLORERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
+    }
+
+    
     Connect(wxEVT_PAINT, wxPaintEventHandler(CPanelInfosWnd::OnPaint));
-    Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CPanelInfosWnd::UpdateTreeInfosEvent));
+    Connect(wxEVT_STOPANIMATION, wxCommandEventHandler(CPanelInfosWnd::StopLoadingPicture));
+    Connect(wxEVT_STARTANIMATION, wxCommandEventHandler(CPanelInfosWnd::StartLoadingPicture));
+    
+    //Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CPanelInfosWnd::UpdateTreeInfosEvent));
     
     m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
     m_animationCtrl->Show(false);
@@ -68,42 +80,26 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 CPanelInfosWnd::~CPanelInfosWnd()
 {
     delete(m_animationCtrl);
-	delete(oldInfosFileControl);
-	delete(treeWindow);
-	delete(InfosFileScroll);
-	//delete(fileGeolocalisation);
+    delete(infosFileWnd);
+    delete(criteriaTreeWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
 }
 
-void CPanelInfosWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
+void CPanelInfosWnd::UpdateData()
 {
-    CThreadLoadInfos * threadInfos = (CThreadLoadInfos *)event.GetClientData();
-    if(threadInfos->filename == filename)
+    if (!fileGeolocalisation->HasGps())
     {
-        threadInfos->infosFileWnd->CreateElement();
-        StopLoadingPicture(InfosFileScroll);
-        treeWindow->SetTreeControl(threadInfos->infosFileWnd);
-        delete(oldInfosFileControl);
-        oldInfosFileControl = threadInfos->infosFileWnd;
+        if (webBrowser->IsShown())
+            if (!fileGeolocalisation->HasGps())
+                infosToolbar->SetInfosActif();
+        
+        infosToolbar->SetMapInactif();
     }
     else
-        delete(threadInfos->infosFileWnd);
+        infosToolbar->SetMapActif();
     
-    threadInfos->threadLoadInfos->join();
-    delete threadInfos->threadLoadInfos;
-    delete threadInfos;
-    
-}
-
-void CPanelInfosWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
-{
-    CInfosFile * infosFileWnd = threadInfos->infosFileWnd;
-    infosFileWnd->SetFile(threadInfos->filename);
-    
-    wxCommandEvent event(EVENT_UPDATEINFOSTHREAD);
-    event.SetClientData(threadInfos);
-    wxPostEvent(threadInfos->panelInfos, event);
+    LoadInfo();
 }
 
 void CPanelInfosWnd::SetFile(const wxString &filename)
@@ -132,20 +128,25 @@ void CPanelInfosWnd::DisplayURL(const wxString &url)
 	infosToolbar->SetMapActif();
 }
 
-void CPanelInfosWnd::StartLoadingPicture(wxWindow * window)
+void CPanelInfosWnd::StartLoadingPicture(wxCommandEvent &event)
 {
-    window->Show(false);
+    wxWindow * window = (wxWindow *)event.GetClientData();
+    if(window != nullptr)
+        window->Show(false);
     m_animationCtrl->Show(true);
     m_animationCtrl->Play();
+	m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
     this->Resize();
     
 }
 
-void CPanelInfosWnd::StopLoadingPicture(wxWindow * window)
+void CPanelInfosWnd::StopLoadingPicture(wxCommandEvent &event)
 {
+    wxWindow * window = (wxWindow *)event.GetClientData();
     m_animationCtrl->Stop();
     m_animationCtrl->Show(false);
-    window->Show(true);
+    if(window != nullptr)
+        window->Show(true);
     this->Resize();
     
 }
@@ -160,6 +161,10 @@ void CPanelInfosWnd::LoadInfo()
 			InfosUpdate();
             infosToolbar->SetInfosPush();
 			break;
+        case WM_CRITERIA:
+            criteriaTreeWnd->SetFile(filename);
+            infosToolbar->SetCriteriaPush();
+            break;
 		case WM_MAPS:
             {
                 infosToolbar->SetMapPush();
@@ -176,13 +181,7 @@ void CPanelInfosWnd::LoadInfo()
 
 void CPanelInfosWnd::InfosUpdate()
 {
-    CInfosFile * infosFileWnd = new CInfosFile(treeWindow->GetTheme(), treeWindow);
-    StartLoadingPicture(InfosFileScroll);
-    CThreadLoadInfos * threadInfos = new CThreadLoadInfos();
-    threadInfos->infosFileWnd = infosFileWnd;
-    threadInfos->panelInfos = this;
-    threadInfos->filename = filename;
-    threadInfos->threadLoadInfos = new thread(GenerateTreeInfos, threadInfos);
+    infosFileWnd->InfosUpdate(filename);
 }
 
 wxString CPanelInfosWnd::MapsUpdate()
@@ -200,16 +199,9 @@ wxString CPanelInfosWnd::MapsUpdate()
 
 void CPanelInfosWnd::UpdateScreenRatio()
 {
-    InfosFileScroll->UpdateScreenRatio();
+    infosFileWnd->UpdateScreenRatio();
     infosToolbar->UpdateScreenRatio();
-    
-    if(oldInfosFileControl != nullptr)
-    {
-        oldInfosFileControl->UpdateScreenRatio();
-        treeWindow->UpdateScreenRatio();
-    }
-
-
+    criteriaTreeWnd->UpdateScreenRatio();
     this->Resize();
 
 }
@@ -219,8 +211,8 @@ void CPanelInfosWnd::OnPaint(wxPaintEvent& event)
     wxPaintDC dc(this);
     wxRect rc = GetRect();
     this->FillRect(&dc, rc, themeBitmap.colorScreen);
-    if(m_animationCtrl->IsShown())
-        m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
+    //if(m_animationCtrl->IsShown())
+     //   m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
 }
 
 
@@ -233,11 +225,36 @@ void CPanelInfosWnd::ClickShowButton(const int &id)
 		ShowInfos();
         infosToolbar->SetInfosPush();
 		break;
+    case WM_CRITERIA:
+        ShowCriteria();
+        infosToolbar->SetCriteriaPush();
+        break;
 	case WM_MAPS:
 		ShowMap();
         infosToolbar->SetMapPush();
 		break;
 	}
+}
+
+void CPanelInfosWnd::ShowCriteria()
+{
+    if (!infosToolbar->IsShown())
+        infosToolbar->Show(true);
+    
+    if (webBrowser->IsShown())
+        webBrowser->Show(false);
+    
+    if (infosFileWnd->IsShown())
+        infosFileWnd->Show(false);
+    
+    if (!criteriaTreeWnd->IsShown())
+        criteriaTreeWnd->Show(true);
+    
+    criteriaTreeWnd->SetFile(filename);
+    
+    windowVisible = WM_CRITERIA;
+    
+    Resize();
 }
 
 void CPanelInfosWnd::ShowInfos()
@@ -248,8 +265,13 @@ void CPanelInfosWnd::ShowInfos()
 	if (webBrowser->IsShown())
 		webBrowser->Show(false);
 
-	if (!InfosFileScroll->IsShown())
-		InfosFileScroll->Show(true);
+	if (!infosFileWnd->IsShown())
+		infosFileWnd->Show(true);
+    
+    if (criteriaTreeWnd->IsShown())
+        criteriaTreeWnd->Show(false);
+    
+     windowVisible = WM_INFOS;
     
     InfosUpdate();
 	Resize();
@@ -263,14 +285,19 @@ void CPanelInfosWnd::ShowMap()
 	if (!webBrowser->IsShown())
 		webBrowser->Show(true);
 
-	if (InfosFileScroll->IsShown())
-		InfosFileScroll->Show(false);
+	if (infosFileWnd->IsShown())
+		infosFileWnd->Show(false);
+    
+    if (criteriaTreeWnd->IsShown())
+        criteriaTreeWnd->Show(false);
     
     wxString newUrl = MapsUpdate();
     if(newUrl != url)
         DisplayURL(newUrl);
     
     url = newUrl;
+    
+     windowVisible = WM_MAPS;
     
 	Resize();
 }
@@ -303,8 +330,10 @@ void CPanelInfosWnd::Resize()
         
         m_animationCtrl->SetSize(xPos, yPos, animationSize.GetWidth(), animationSize.GetHeight());
     }
-	else if (InfosFileScroll->IsShown())
-		InfosFileScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+	else if (infosFileWnd->IsShown())
+		infosFileWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 	else if (webBrowser->IsShown())
 		webBrowser->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+    else if (criteriaTreeWnd->IsShown())
+        criteriaTreeWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 }

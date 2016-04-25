@@ -12,8 +12,8 @@ OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=root
-Date                   :=22/09/15
+User                   :=figuinha
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++-4.8
 SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
@@ -36,7 +36,7 @@ ObjectsFileList        :="wxSVG.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  $(shell wx-config --debug=yes --libs --unicode=yes)
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch)../../../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../wxSVG/include $(IncludeSwitch)../wxSVG/include/wxSVG $(IncludeSwitch)../wxSVG/include/wxSVGXML $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)../../../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch)../../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../wxSVG/include $(IncludeSwitch)../wxSVG/include/wxSVG $(IncludeSwitch)../wxSVG/include/wxSVGXML $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)../../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
@@ -105,7 +105,7 @@ $(IntermediateDirectory)/src_css_colors.cpp$(DependSuffix): src/css_colors.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_css_colors.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_css_colors.cpp$(DependSuffix) -MM "src/css_colors.cpp"
 
 $(IntermediateDirectory)/src_css_colors.cpp$(PreprocessSuffix): src/css_colors.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_colors.cpp$(PreprocessSuffix) "src/css_colors.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_colors.cpp$(PreprocessSuffix) "src/css_colors.cpp"
 
 $(IntermediateDirectory)/src_css_properties.cpp$(ObjectSuffix): src/css_properties.cpp $(IntermediateDirectory)/src_css_properties.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/css_properties.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_css_properties.cpp$(ObjectSuffix) $(IncludePath)
@@ -113,7 +113,7 @@ $(IntermediateDirectory)/src_css_properties.cpp$(DependSuffix): src/css_properti
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_css_properties.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_css_properties.cpp$(DependSuffix) -MM "src/css_properties.cpp"
 
 $(IntermediateDirectory)/src_css_properties.cpp$(PreprocessSuffix): src/css_properties.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_properties.cpp$(PreprocessSuffix) "src/css_properties.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_properties.cpp$(PreprocessSuffix) "src/css_properties.cpp"
 
 $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(ObjectSuffix): src/CSSStyleDeclaration.cpp $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/CSSStyleDeclaration.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(ObjectSuffix) $(IncludePath)
@@ -121,7 +121,7 @@ $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(DependSuffix): src/CSSStyl
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(DependSuffix) -MM "src/CSSStyleDeclaration.cpp"
 
 $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(PreprocessSuffix): src/CSSStyleDeclaration.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(PreprocessSuffix) "src/CSSStyleDeclaration.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(PreprocessSuffix) "src/CSSStyleDeclaration.cpp"
 
 $(IntermediateDirectory)/src_CSSValue.cpp$(ObjectSuffix): src/CSSValue.cpp $(IntermediateDirectory)/src_CSSValue.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/CSSValue.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_CSSValue.cpp$(ObjectSuffix) $(IncludePath)
@@ -129,7 +129,7 @@ $(IntermediateDirectory)/src_CSSValue.cpp$(DependSuffix): src/CSSValue.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_CSSValue.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_CSSValue.cpp$(DependSuffix) -MM "src/CSSValue.cpp"
 
 $(IntermediateDirectory)/src_CSSValue.cpp$(PreprocessSuffix): src/CSSValue.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_CSSValue.cpp$(PreprocessSuffix) "src/CSSValue.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_CSSValue.cpp$(PreprocessSuffix) "src/CSSValue.cpp"
 
 $(IntermediateDirectory)/src_css_values.cpp$(ObjectSuffix): src/css_values.cpp $(IntermediateDirectory)/src_css_values.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/css_values.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_css_values.cpp$(ObjectSuffix) $(IncludePath)
@@ -137,7 +137,7 @@ $(IntermediateDirectory)/src_css_values.cpp$(DependSuffix): src/css_values.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_css_values.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_css_values.cpp$(DependSuffix) -MM "src/css_values.cpp"
 
 $(IntermediateDirectory)/src_css_values.cpp$(PreprocessSuffix): src/css_values.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_values.cpp$(PreprocessSuffix) "src/css_values.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_css_values.cpp$(PreprocessSuffix) "src/css_values.cpp"
 
 $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(ObjectSuffix): src/Elements_CopyConstructors.cpp $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/Elements_CopyConstructors.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(ObjectSuffix) $(IncludePath)
@@ -145,7 +145,7 @@ $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(DependSuffix): src/E
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(DependSuffix) -MM "src/Elements_CopyConstructors.cpp"
 
 $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(PreprocessSuffix): src/Elements_CopyConstructors.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(PreprocessSuffix) "src/Elements_CopyConstructors.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(PreprocessSuffix) "src/Elements_CopyConstructors.cpp"
 
 $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(ObjectSuffix): src/Elements_GetAttribute.cpp $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/Elements_GetAttribute.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(ObjectSuffix) $(IncludePath)
@@ -153,7 +153,7 @@ $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(DependSuffix): src/Eleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(DependSuffix) -MM "src/Elements_GetAttribute.cpp"
 
 $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(PreprocessSuffix): src/Elements_GetAttribute.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(PreprocessSuffix) "src/Elements_GetAttribute.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(PreprocessSuffix) "src/Elements_GetAttribute.cpp"
 
 $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(ObjectSuffix): src/Elements_GetAttributes.cpp $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/Elements_GetAttributes.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(ObjectSuffix) $(IncludePath)
@@ -161,7 +161,7 @@ $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(DependSuffix): src/Elem
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(DependSuffix) -MM "src/Elements_GetAttributes.cpp"
 
 $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(PreprocessSuffix): src/Elements_GetAttributes.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(PreprocessSuffix) "src/Elements_GetAttributes.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(PreprocessSuffix) "src/Elements_GetAttributes.cpp"
 
 $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(ObjectSuffix): src/Elements_HasAttribute.cpp $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/Elements_HasAttribute.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(ObjectSuffix) $(IncludePath)
@@ -169,7 +169,7 @@ $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(DependSuffix): src/Eleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(DependSuffix) -MM "src/Elements_HasAttribute.cpp"
 
 $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(PreprocessSuffix): src/Elements_HasAttribute.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(PreprocessSuffix) "src/Elements_HasAttribute.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(PreprocessSuffix) "src/Elements_HasAttribute.cpp"
 
 $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(ObjectSuffix): src/Elements_SetAttribute.cpp $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/Elements_SetAttribute.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(ObjectSuffix) $(IncludePath)
@@ -177,7 +177,7 @@ $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(DependSuffix): src/Eleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(DependSuffix) -MM "src/Elements_SetAttribute.cpp"
 
 $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(PreprocessSuffix): src/Elements_SetAttribute.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(PreprocessSuffix) "src/Elements_SetAttribute.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(PreprocessSuffix) "src/Elements_SetAttribute.cpp"
 
 $(IntermediateDirectory)/src_GetSVGDocument.cpp$(ObjectSuffix): src/GetSVGDocument.cpp $(IntermediateDirectory)/src_GetSVGDocument.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/GetSVGDocument.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_GetSVGDocument.cpp$(ObjectSuffix) $(IncludePath)
@@ -185,7 +185,7 @@ $(IntermediateDirectory)/src_GetSVGDocument.cpp$(DependSuffix): src/GetSVGDocume
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_GetSVGDocument.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_GetSVGDocument.cpp$(DependSuffix) -MM "src/GetSVGDocument.cpp"
 
 $(IntermediateDirectory)/src_GetSVGDocument.cpp$(PreprocessSuffix): src/GetSVGDocument.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_GetSVGDocument.cpp$(PreprocessSuffix) "src/GetSVGDocument.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_GetSVGDocument.cpp$(PreprocessSuffix) "src/GetSVGDocument.cpp"
 
 $(IntermediateDirectory)/src_imagsvg.cpp$(ObjectSuffix): src/imagsvg.cpp $(IntermediateDirectory)/src_imagsvg.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/imagsvg.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_imagsvg.cpp$(ObjectSuffix) $(IncludePath)
@@ -193,7 +193,7 @@ $(IntermediateDirectory)/src_imagsvg.cpp$(DependSuffix): src/imagsvg.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_imagsvg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_imagsvg.cpp$(DependSuffix) -MM "src/imagsvg.cpp"
 
 $(IntermediateDirectory)/src_imagsvg.cpp$(PreprocessSuffix): src/imagsvg.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_imagsvg.cpp$(PreprocessSuffix) "src/imagsvg.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_imagsvg.cpp$(PreprocessSuffix) "src/imagsvg.cpp"
 
 $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(ObjectSuffix): src/mediadec_ffmpeg.cpp $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/mediadec_ffmpeg.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(ObjectSuffix) $(IncludePath)
@@ -201,7 +201,7 @@ $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(DependSuffix): src/mediadec_ff
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(DependSuffix) -MM "src/mediadec_ffmpeg.cpp"
 
 $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(PreprocessSuffix): src/mediadec_ffmpeg.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(PreprocessSuffix) "src/mediadec_ffmpeg.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(PreprocessSuffix) "src/mediadec_ffmpeg.cpp"
 
 $(IntermediateDirectory)/src_NodeList.cpp$(ObjectSuffix): src/NodeList.cpp $(IntermediateDirectory)/src_NodeList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/NodeList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_NodeList.cpp$(ObjectSuffix) $(IncludePath)
@@ -209,7 +209,7 @@ $(IntermediateDirectory)/src_NodeList.cpp$(DependSuffix): src/NodeList.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_NodeList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_NodeList.cpp$(DependSuffix) -MM "src/NodeList.cpp"
 
 $(IntermediateDirectory)/src_NodeList.cpp$(PreprocessSuffix): src/NodeList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_NodeList.cpp$(PreprocessSuffix) "src/NodeList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_NodeList.cpp$(PreprocessSuffix) "src/NodeList.cpp"
 
 $(IntermediateDirectory)/src_SVGAngle.cpp$(ObjectSuffix): src/SVGAngle.cpp $(IntermediateDirectory)/src_SVGAngle.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGAngle.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGAngle.cpp$(ObjectSuffix) $(IncludePath)
@@ -217,7 +217,7 @@ $(IntermediateDirectory)/src_SVGAngle.cpp$(DependSuffix): src/SVGAngle.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGAngle.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGAngle.cpp$(DependSuffix) -MM "src/SVGAngle.cpp"
 
 $(IntermediateDirectory)/src_SVGAngle.cpp$(PreprocessSuffix): src/SVGAngle.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAngle.cpp$(PreprocessSuffix) "src/SVGAngle.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAngle.cpp$(PreprocessSuffix) "src/SVGAngle.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(ObjectSuffix): src/SVGAnimatedType.cpp $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGAnimatedType.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGAnimatedType.cpp$(ObjectSuffix) $(IncludePath)
@@ -225,7 +225,7 @@ $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(DependSuffix): src/SVGAnimated
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGAnimatedType.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGAnimatedType.cpp$(DependSuffix) -MM "src/SVGAnimatedType.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(PreprocessSuffix): src/SVGAnimatedType.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(PreprocessSuffix) "src/SVGAnimatedType.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(PreprocessSuffix) "src/SVGAnimatedType.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(ObjectSuffix): src/SVGAnimateTransformElement.cpp $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGAnimateTransformElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -233,7 +233,7 @@ $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(DependSuffix): src/
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(DependSuffix) -MM "src/SVGAnimateTransformElement.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(PreprocessSuffix): src/SVGAnimateTransformElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(PreprocessSuffix) "src/SVGAnimateTransformElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(PreprocessSuffix) "src/SVGAnimateTransformElement.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(ObjectSuffix): src/SVGAnimationElement.cpp $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGAnimationElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGAnimationElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -241,7 +241,7 @@ $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(DependSuffix): src/SVGAnim
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGAnimationElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGAnimationElement.cpp$(DependSuffix) -MM "src/SVGAnimationElement.cpp"
 
 $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(PreprocessSuffix): src/SVGAnimationElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(PreprocessSuffix) "src/SVGAnimationElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(PreprocessSuffix) "src/SVGAnimationElement.cpp"
 
 $(IntermediateDirectory)/src_SVGCanvas.cpp$(ObjectSuffix): src/SVGCanvas.cpp $(IntermediateDirectory)/src_SVGCanvas.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGCanvas.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGCanvas.cpp$(ObjectSuffix) $(IncludePath)
@@ -249,7 +249,7 @@ $(IntermediateDirectory)/src_SVGCanvas.cpp$(DependSuffix): src/SVGCanvas.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGCanvas.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGCanvas.cpp$(DependSuffix) -MM "src/SVGCanvas.cpp"
 
 $(IntermediateDirectory)/src_SVGCanvas.cpp$(PreprocessSuffix): src/SVGCanvas.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCanvas.cpp$(PreprocessSuffix) "src/SVGCanvas.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCanvas.cpp$(PreprocessSuffix) "src/SVGCanvas.cpp"
 
 $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(ObjectSuffix): src/SVGCanvasItem.cpp $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGCanvasItem.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGCanvasItem.cpp$(ObjectSuffix) $(IncludePath)
@@ -257,7 +257,7 @@ $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(DependSuffix): src/SVGCanvasItem
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGCanvasItem.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGCanvasItem.cpp$(DependSuffix) -MM "src/SVGCanvasItem.cpp"
 
 $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(PreprocessSuffix): src/SVGCanvasItem.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(PreprocessSuffix) "src/SVGCanvasItem.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(PreprocessSuffix) "src/SVGCanvasItem.cpp"
 
 $(IntermediateDirectory)/src_SVGCircleElement.cpp$(ObjectSuffix): src/SVGCircleElement.cpp $(IntermediateDirectory)/src_SVGCircleElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGCircleElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGCircleElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -265,7 +265,7 @@ $(IntermediateDirectory)/src_SVGCircleElement.cpp$(DependSuffix): src/SVGCircleE
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGCircleElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGCircleElement.cpp$(DependSuffix) -MM "src/SVGCircleElement.cpp"
 
 $(IntermediateDirectory)/src_SVGCircleElement.cpp$(PreprocessSuffix): src/SVGCircleElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCircleElement.cpp$(PreprocessSuffix) "src/SVGCircleElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGCircleElement.cpp$(PreprocessSuffix) "src/SVGCircleElement.cpp"
 
 $(IntermediateDirectory)/src_SVGColor.cpp$(ObjectSuffix): src/SVGColor.cpp $(IntermediateDirectory)/src_SVGColor.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGColor.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGColor.cpp$(ObjectSuffix) $(IncludePath)
@@ -273,7 +273,7 @@ $(IntermediateDirectory)/src_SVGColor.cpp$(DependSuffix): src/SVGColor.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGColor.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGColor.cpp$(DependSuffix) -MM "src/SVGColor.cpp"
 
 $(IntermediateDirectory)/src_SVGColor.cpp$(PreprocessSuffix): src/SVGColor.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGColor.cpp$(PreprocessSuffix) "src/SVGColor.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGColor.cpp$(PreprocessSuffix) "src/SVGColor.cpp"
 
 $(IntermediateDirectory)/src_svgctrl.cpp$(ObjectSuffix): src/svgctrl.cpp $(IntermediateDirectory)/src_svgctrl.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/svgctrl.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_svgctrl.cpp$(ObjectSuffix) $(IncludePath)
@@ -281,7 +281,7 @@ $(IntermediateDirectory)/src_svgctrl.cpp$(DependSuffix): src/svgctrl.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_svgctrl.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_svgctrl.cpp$(DependSuffix) -MM "src/svgctrl.cpp"
 
 $(IntermediateDirectory)/src_svgctrl.cpp$(PreprocessSuffix): src/svgctrl.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_svgctrl.cpp$(PreprocessSuffix) "src/svgctrl.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_svgctrl.cpp$(PreprocessSuffix) "src/svgctrl.cpp"
 
 $(IntermediateDirectory)/src_SVGDocument.cpp$(ObjectSuffix): src/SVGDocument.cpp $(IntermediateDirectory)/src_SVGDocument.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGDocument.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGDocument.cpp$(ObjectSuffix) $(IncludePath)
@@ -289,7 +289,7 @@ $(IntermediateDirectory)/src_SVGDocument.cpp$(DependSuffix): src/SVGDocument.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGDocument.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGDocument.cpp$(DependSuffix) -MM "src/SVGDocument.cpp"
 
 $(IntermediateDirectory)/src_SVGDocument.cpp$(PreprocessSuffix): src/SVGDocument.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGDocument.cpp$(PreprocessSuffix) "src/SVGDocument.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGDocument.cpp$(PreprocessSuffix) "src/SVGDocument.cpp"
 
 $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(ObjectSuffix): src/SVGDocument_CreateElement.cpp $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGDocument_CreateElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -297,7 +297,7 @@ $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(DependSuffix): src/S
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(DependSuffix) -MM "src/SVGDocument_CreateElement.cpp"
 
 $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(PreprocessSuffix): src/SVGDocument_CreateElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(PreprocessSuffix) "src/SVGDocument_CreateElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGDocument_CreateElement.cpp$(PreprocessSuffix) "src/SVGDocument_CreateElement.cpp"
 
 $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(ObjectSuffix): src/SVGElementInstanceList.cpp $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGElementInstanceList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(ObjectSuffix) $(IncludePath)
@@ -305,7 +305,7 @@ $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(DependSuffix): src/SVGE
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(DependSuffix) -MM "src/SVGElementInstanceList.cpp"
 
 $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(PreprocessSuffix): src/SVGElementInstanceList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(PreprocessSuffix) "src/SVGElementInstanceList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(PreprocessSuffix) "src/SVGElementInstanceList.cpp"
 
 $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(ObjectSuffix): src/SVGEllipseElement.cpp $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGEllipseElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGEllipseElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -313,7 +313,7 @@ $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(DependSuffix): src/SVGEllips
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGEllipseElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGEllipseElement.cpp$(DependSuffix) -MM "src/SVGEllipseElement.cpp"
 
 $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(PreprocessSuffix): src/SVGEllipseElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(PreprocessSuffix) "src/SVGEllipseElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(PreprocessSuffix) "src/SVGEllipseElement.cpp"
 
 $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(ObjectSuffix): src/SVGFEGaussianBlurElement.cpp $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGFEGaussianBlurElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -321,7 +321,7 @@ $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(DependSuffix): src/SV
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(DependSuffix) -MM "src/SVGFEGaussianBlurElement.cpp"
 
 $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(PreprocessSuffix): src/SVGFEGaussianBlurElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(PreprocessSuffix) "src/SVGFEGaussianBlurElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(PreprocessSuffix) "src/SVGFEGaussianBlurElement.cpp"
 
 $(IntermediateDirectory)/src_SVGFilterElement.cpp$(ObjectSuffix): src/SVGFilterElement.cpp $(IntermediateDirectory)/src_SVGFilterElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGFilterElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGFilterElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -329,7 +329,7 @@ $(IntermediateDirectory)/src_SVGFilterElement.cpp$(DependSuffix): src/SVGFilterE
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGFilterElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGFilterElement.cpp$(DependSuffix) -MM "src/SVGFilterElement.cpp"
 
 $(IntermediateDirectory)/src_SVGFilterElement.cpp$(PreprocessSuffix): src/SVGFilterElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFilterElement.cpp$(PreprocessSuffix) "src/SVGFilterElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFilterElement.cpp$(PreprocessSuffix) "src/SVGFilterElement.cpp"
 
 $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(ObjectSuffix): src/SVGFitToViewBox.cpp $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGFitToViewBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(ObjectSuffix) $(IncludePath)
@@ -337,7 +337,7 @@ $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(DependSuffix): src/SVGFitToVie
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(DependSuffix) -MM "src/SVGFitToViewBox.cpp"
 
 $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(PreprocessSuffix): src/SVGFitToViewBox.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(PreprocessSuffix) "src/SVGFitToViewBox.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(PreprocessSuffix) "src/SVGFitToViewBox.cpp"
 
 $(IntermediateDirectory)/src_SVGImageElement.cpp$(ObjectSuffix): src/SVGImageElement.cpp $(IntermediateDirectory)/src_SVGImageElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGImageElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGImageElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -345,7 +345,7 @@ $(IntermediateDirectory)/src_SVGImageElement.cpp$(DependSuffix): src/SVGImageEle
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGImageElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGImageElement.cpp$(DependSuffix) -MM "src/SVGImageElement.cpp"
 
 $(IntermediateDirectory)/src_SVGImageElement.cpp$(PreprocessSuffix): src/SVGImageElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGImageElement.cpp$(PreprocessSuffix) "src/SVGImageElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGImageElement.cpp$(PreprocessSuffix) "src/SVGImageElement.cpp"
 
 $(IntermediateDirectory)/src_SVGLength.cpp$(ObjectSuffix): src/SVGLength.cpp $(IntermediateDirectory)/src_SVGLength.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGLength.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGLength.cpp$(ObjectSuffix) $(IncludePath)
@@ -353,7 +353,7 @@ $(IntermediateDirectory)/src_SVGLength.cpp$(DependSuffix): src/SVGLength.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGLength.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGLength.cpp$(DependSuffix) -MM "src/SVGLength.cpp"
 
 $(IntermediateDirectory)/src_SVGLength.cpp$(PreprocessSuffix): src/SVGLength.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLength.cpp$(PreprocessSuffix) "src/SVGLength.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLength.cpp$(PreprocessSuffix) "src/SVGLength.cpp"
 
 $(IntermediateDirectory)/src_SVGLengthList.cpp$(ObjectSuffix): src/SVGLengthList.cpp $(IntermediateDirectory)/src_SVGLengthList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGLengthList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGLengthList.cpp$(ObjectSuffix) $(IncludePath)
@@ -361,7 +361,7 @@ $(IntermediateDirectory)/src_SVGLengthList.cpp$(DependSuffix): src/SVGLengthList
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGLengthList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGLengthList.cpp$(DependSuffix) -MM "src/SVGLengthList.cpp"
 
 $(IntermediateDirectory)/src_SVGLengthList.cpp$(PreprocessSuffix): src/SVGLengthList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLengthList.cpp$(PreprocessSuffix) "src/SVGLengthList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLengthList.cpp$(PreprocessSuffix) "src/SVGLengthList.cpp"
 
 $(IntermediateDirectory)/src_SVGLineElement.cpp$(ObjectSuffix): src/SVGLineElement.cpp $(IntermediateDirectory)/src_SVGLineElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGLineElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGLineElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -369,7 +369,7 @@ $(IntermediateDirectory)/src_SVGLineElement.cpp$(DependSuffix): src/SVGLineEleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGLineElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGLineElement.cpp$(DependSuffix) -MM "src/SVGLineElement.cpp"
 
 $(IntermediateDirectory)/src_SVGLineElement.cpp$(PreprocessSuffix): src/SVGLineElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLineElement.cpp$(PreprocessSuffix) "src/SVGLineElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLineElement.cpp$(PreprocessSuffix) "src/SVGLineElement.cpp"
 
 $(IntermediateDirectory)/src_SVGLocatable.cpp$(ObjectSuffix): src/SVGLocatable.cpp $(IntermediateDirectory)/src_SVGLocatable.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGLocatable.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGLocatable.cpp$(ObjectSuffix) $(IncludePath)
@@ -377,7 +377,7 @@ $(IntermediateDirectory)/src_SVGLocatable.cpp$(DependSuffix): src/SVGLocatable.c
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGLocatable.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGLocatable.cpp$(DependSuffix) -MM "src/SVGLocatable.cpp"
 
 $(IntermediateDirectory)/src_SVGLocatable.cpp$(PreprocessSuffix): src/SVGLocatable.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLocatable.cpp$(PreprocessSuffix) "src/SVGLocatable.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGLocatable.cpp$(PreprocessSuffix) "src/SVGLocatable.cpp"
 
 $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(ObjectSuffix): src/SVGMarkerElement.cpp $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGMarkerElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGMarkerElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -385,7 +385,7 @@ $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(DependSuffix): src/SVGMarkerE
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGMarkerElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGMarkerElement.cpp$(DependSuffix) -MM "src/SVGMarkerElement.cpp"
 
 $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(PreprocessSuffix): src/SVGMarkerElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(PreprocessSuffix) "src/SVGMarkerElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(PreprocessSuffix) "src/SVGMarkerElement.cpp"
 
 $(IntermediateDirectory)/src_SVGMatrix.cpp$(ObjectSuffix): src/SVGMatrix.cpp $(IntermediateDirectory)/src_SVGMatrix.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGMatrix.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGMatrix.cpp$(ObjectSuffix) $(IncludePath)
@@ -393,7 +393,7 @@ $(IntermediateDirectory)/src_SVGMatrix.cpp$(DependSuffix): src/SVGMatrix.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGMatrix.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGMatrix.cpp$(DependSuffix) -MM "src/SVGMatrix.cpp"
 
 $(IntermediateDirectory)/src_SVGMatrix.cpp$(PreprocessSuffix): src/SVGMatrix.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGMatrix.cpp$(PreprocessSuffix) "src/SVGMatrix.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGMatrix.cpp$(PreprocessSuffix) "src/SVGMatrix.cpp"
 
 $(IntermediateDirectory)/src_SVGNumberList.cpp$(ObjectSuffix): src/SVGNumberList.cpp $(IntermediateDirectory)/src_SVGNumberList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGNumberList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGNumberList.cpp$(ObjectSuffix) $(IncludePath)
@@ -401,7 +401,7 @@ $(IntermediateDirectory)/src_SVGNumberList.cpp$(DependSuffix): src/SVGNumberList
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGNumberList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGNumberList.cpp$(DependSuffix) -MM "src/SVGNumberList.cpp"
 
 $(IntermediateDirectory)/src_SVGNumberList.cpp$(PreprocessSuffix): src/SVGNumberList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGNumberList.cpp$(PreprocessSuffix) "src/SVGNumberList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGNumberList.cpp$(PreprocessSuffix) "src/SVGNumberList.cpp"
 
 $(IntermediateDirectory)/src_SVGPaint.cpp$(ObjectSuffix): src/SVGPaint.cpp $(IntermediateDirectory)/src_SVGPaint.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPaint.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPaint.cpp$(ObjectSuffix) $(IncludePath)
@@ -409,7 +409,7 @@ $(IntermediateDirectory)/src_SVGPaint.cpp$(DependSuffix): src/SVGPaint.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPaint.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPaint.cpp$(DependSuffix) -MM "src/SVGPaint.cpp"
 
 $(IntermediateDirectory)/src_SVGPaint.cpp$(PreprocessSuffix): src/SVGPaint.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPaint.cpp$(PreprocessSuffix) "src/SVGPaint.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPaint.cpp$(PreprocessSuffix) "src/SVGPaint.cpp"
 
 $(IntermediateDirectory)/src_SVGPathElement.cpp$(ObjectSuffix): src/SVGPathElement.cpp $(IntermediateDirectory)/src_SVGPathElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPathElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPathElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -417,7 +417,7 @@ $(IntermediateDirectory)/src_SVGPathElement.cpp$(DependSuffix): src/SVGPathEleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPathElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPathElement.cpp$(DependSuffix) -MM "src/SVGPathElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPathElement.cpp$(PreprocessSuffix): src/SVGPathElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPathElement.cpp$(PreprocessSuffix) "src/SVGPathElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPathElement.cpp$(PreprocessSuffix) "src/SVGPathElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPathSegList.cpp$(ObjectSuffix): src/SVGPathSegList.cpp $(IntermediateDirectory)/src_SVGPathSegList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPathSegList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPathSegList.cpp$(ObjectSuffix) $(IncludePath)
@@ -425,7 +425,7 @@ $(IntermediateDirectory)/src_SVGPathSegList.cpp$(DependSuffix): src/SVGPathSegLi
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPathSegList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPathSegList.cpp$(DependSuffix) -MM "src/SVGPathSegList.cpp"
 
 $(IntermediateDirectory)/src_SVGPathSegList.cpp$(PreprocessSuffix): src/SVGPathSegList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPathSegList.cpp$(PreprocessSuffix) "src/SVGPathSegList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPathSegList.cpp$(PreprocessSuffix) "src/SVGPathSegList.cpp"
 
 $(IntermediateDirectory)/src_SVGPoint.cpp$(ObjectSuffix): src/SVGPoint.cpp $(IntermediateDirectory)/src_SVGPoint.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPoint.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPoint.cpp$(ObjectSuffix) $(IncludePath)
@@ -433,7 +433,7 @@ $(IntermediateDirectory)/src_SVGPoint.cpp$(DependSuffix): src/SVGPoint.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPoint.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPoint.cpp$(DependSuffix) -MM "src/SVGPoint.cpp"
 
 $(IntermediateDirectory)/src_SVGPoint.cpp$(PreprocessSuffix): src/SVGPoint.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPoint.cpp$(PreprocessSuffix) "src/SVGPoint.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPoint.cpp$(PreprocessSuffix) "src/SVGPoint.cpp"
 
 $(IntermediateDirectory)/src_SVGPointList.cpp$(ObjectSuffix): src/SVGPointList.cpp $(IntermediateDirectory)/src_SVGPointList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPointList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPointList.cpp$(ObjectSuffix) $(IncludePath)
@@ -441,7 +441,7 @@ $(IntermediateDirectory)/src_SVGPointList.cpp$(DependSuffix): src/SVGPointList.c
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPointList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPointList.cpp$(DependSuffix) -MM "src/SVGPointList.cpp"
 
 $(IntermediateDirectory)/src_SVGPointList.cpp$(PreprocessSuffix): src/SVGPointList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPointList.cpp$(PreprocessSuffix) "src/SVGPointList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPointList.cpp$(PreprocessSuffix) "src/SVGPointList.cpp"
 
 $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(ObjectSuffix): src/SVGPolygonElement.cpp $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPolygonElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPolygonElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -449,7 +449,7 @@ $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(DependSuffix): src/SVGPolygo
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPolygonElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPolygonElement.cpp$(DependSuffix) -MM "src/SVGPolygonElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(PreprocessSuffix): src/SVGPolygonElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(PreprocessSuffix) "src/SVGPolygonElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(PreprocessSuffix) "src/SVGPolygonElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(ObjectSuffix): src/SVGPolylineElement.cpp $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPolylineElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPolylineElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -457,7 +457,7 @@ $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(DependSuffix): src/SVGPolyl
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPolylineElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPolylineElement.cpp$(DependSuffix) -MM "src/SVGPolylineElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(PreprocessSuffix): src/SVGPolylineElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(PreprocessSuffix) "src/SVGPolylineElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(PreprocessSuffix) "src/SVGPolylineElement.cpp"
 
 $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(ObjectSuffix): src/SVGPreserveAspectRatio.cpp $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGPreserveAspectRatio.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(ObjectSuffix) $(IncludePath)
@@ -465,7 +465,7 @@ $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(DependSuffix): src/SVGP
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(DependSuffix) -MM "src/SVGPreserveAspectRatio.cpp"
 
 $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(PreprocessSuffix): src/SVGPreserveAspectRatio.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(PreprocessSuffix) "src/SVGPreserveAspectRatio.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(PreprocessSuffix) "src/SVGPreserveAspectRatio.cpp"
 
 $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(ObjectSuffix): src/SVGRadialGradientElement.cpp $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGRadialGradientElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -473,7 +473,7 @@ $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(DependSuffix): src/SV
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(DependSuffix) -MM "src/SVGRadialGradientElement.cpp"
 
 $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(PreprocessSuffix): src/SVGRadialGradientElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(PreprocessSuffix) "src/SVGRadialGradientElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(PreprocessSuffix) "src/SVGRadialGradientElement.cpp"
 
 $(IntermediateDirectory)/src_SVGRect.cpp$(ObjectSuffix): src/SVGRect.cpp $(IntermediateDirectory)/src_SVGRect.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGRect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGRect.cpp$(ObjectSuffix) $(IncludePath)
@@ -481,7 +481,7 @@ $(IntermediateDirectory)/src_SVGRect.cpp$(DependSuffix): src/SVGRect.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGRect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGRect.cpp$(DependSuffix) -MM "src/SVGRect.cpp"
 
 $(IntermediateDirectory)/src_SVGRect.cpp$(PreprocessSuffix): src/SVGRect.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRect.cpp$(PreprocessSuffix) "src/SVGRect.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRect.cpp$(PreprocessSuffix) "src/SVGRect.cpp"
 
 $(IntermediateDirectory)/src_SVGRectElement.cpp$(ObjectSuffix): src/SVGRectElement.cpp $(IntermediateDirectory)/src_SVGRectElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGRectElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGRectElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -489,7 +489,7 @@ $(IntermediateDirectory)/src_SVGRectElement.cpp$(DependSuffix): src/SVGRectEleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGRectElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGRectElement.cpp$(DependSuffix) -MM "src/SVGRectElement.cpp"
 
 $(IntermediateDirectory)/src_SVGRectElement.cpp$(PreprocessSuffix): src/SVGRectElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRectElement.cpp$(PreprocessSuffix) "src/SVGRectElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGRectElement.cpp$(PreprocessSuffix) "src/SVGRectElement.cpp"
 
 $(IntermediateDirectory)/src_SVGStringList.cpp$(ObjectSuffix): src/SVGStringList.cpp $(IntermediateDirectory)/src_SVGStringList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGStringList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGStringList.cpp$(ObjectSuffix) $(IncludePath)
@@ -497,7 +497,7 @@ $(IntermediateDirectory)/src_SVGStringList.cpp$(DependSuffix): src/SVGStringList
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGStringList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGStringList.cpp$(DependSuffix) -MM "src/SVGStringList.cpp"
 
 $(IntermediateDirectory)/src_SVGStringList.cpp$(PreprocessSuffix): src/SVGStringList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGStringList.cpp$(PreprocessSuffix) "src/SVGStringList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGStringList.cpp$(PreprocessSuffix) "src/SVGStringList.cpp"
 
 $(IntermediateDirectory)/src_SVGStylable.cpp$(ObjectSuffix): src/SVGStylable.cpp $(IntermediateDirectory)/src_SVGStylable.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGStylable.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGStylable.cpp$(ObjectSuffix) $(IncludePath)
@@ -505,7 +505,7 @@ $(IntermediateDirectory)/src_SVGStylable.cpp$(DependSuffix): src/SVGStylable.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGStylable.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGStylable.cpp$(DependSuffix) -MM "src/SVGStylable.cpp"
 
 $(IntermediateDirectory)/src_SVGStylable.cpp$(PreprocessSuffix): src/SVGStylable.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGStylable.cpp$(PreprocessSuffix) "src/SVGStylable.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGStylable.cpp$(PreprocessSuffix) "src/SVGStylable.cpp"
 
 $(IntermediateDirectory)/src_SVGSVGElement.cpp$(ObjectSuffix): src/SVGSVGElement.cpp $(IntermediateDirectory)/src_SVGSVGElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGSVGElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGSVGElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -513,7 +513,7 @@ $(IntermediateDirectory)/src_SVGSVGElement.cpp$(DependSuffix): src/SVGSVGElement
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGSVGElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGSVGElement.cpp$(DependSuffix) -MM "src/SVGSVGElement.cpp"
 
 $(IntermediateDirectory)/src_SVGSVGElement.cpp$(PreprocessSuffix): src/SVGSVGElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGSVGElement.cpp$(PreprocessSuffix) "src/SVGSVGElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGSVGElement.cpp$(PreprocessSuffix) "src/SVGSVGElement.cpp"
 
 $(IntermediateDirectory)/src_SVGTests.cpp$(ObjectSuffix): src/SVGTests.cpp $(IntermediateDirectory)/src_SVGTests.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTests.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTests.cpp$(ObjectSuffix) $(IncludePath)
@@ -521,7 +521,7 @@ $(IntermediateDirectory)/src_SVGTests.cpp$(DependSuffix): src/SVGTests.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTests.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTests.cpp$(DependSuffix) -MM "src/SVGTests.cpp"
 
 $(IntermediateDirectory)/src_SVGTests.cpp$(PreprocessSuffix): src/SVGTests.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTests.cpp$(PreprocessSuffix) "src/SVGTests.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTests.cpp$(PreprocessSuffix) "src/SVGTests.cpp"
 
 $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(ObjectSuffix): src/SVGTextContentElement.cpp $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTextContentElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTextContentElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -529,7 +529,7 @@ $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(DependSuffix): src/SVGTe
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTextContentElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTextContentElement.cpp$(DependSuffix) -MM "src/SVGTextContentElement.cpp"
 
 $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(PreprocessSuffix): src/SVGTextContentElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(PreprocessSuffix) "src/SVGTextContentElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(PreprocessSuffix) "src/SVGTextContentElement.cpp"
 
 $(IntermediateDirectory)/src_SVGTextElement.cpp$(ObjectSuffix): src/SVGTextElement.cpp $(IntermediateDirectory)/src_SVGTextElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTextElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTextElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -537,7 +537,7 @@ $(IntermediateDirectory)/src_SVGTextElement.cpp$(DependSuffix): src/SVGTextEleme
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTextElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTextElement.cpp$(DependSuffix) -MM "src/SVGTextElement.cpp"
 
 $(IntermediateDirectory)/src_SVGTextElement.cpp$(PreprocessSuffix): src/SVGTextElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTextElement.cpp$(PreprocessSuffix) "src/SVGTextElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTextElement.cpp$(PreprocessSuffix) "src/SVGTextElement.cpp"
 
 $(IntermediateDirectory)/src_SVGTransform.cpp$(ObjectSuffix): src/SVGTransform.cpp $(IntermediateDirectory)/src_SVGTransform.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTransform.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTransform.cpp$(ObjectSuffix) $(IncludePath)
@@ -545,7 +545,7 @@ $(IntermediateDirectory)/src_SVGTransform.cpp$(DependSuffix): src/SVGTransform.c
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTransform.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTransform.cpp$(DependSuffix) -MM "src/SVGTransform.cpp"
 
 $(IntermediateDirectory)/src_SVGTransform.cpp$(PreprocessSuffix): src/SVGTransform.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransform.cpp$(PreprocessSuffix) "src/SVGTransform.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransform.cpp$(PreprocessSuffix) "src/SVGTransform.cpp"
 
 $(IntermediateDirectory)/src_SVGTransformable.cpp$(ObjectSuffix): src/SVGTransformable.cpp $(IntermediateDirectory)/src_SVGTransformable.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTransformable.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTransformable.cpp$(ObjectSuffix) $(IncludePath)
@@ -553,7 +553,7 @@ $(IntermediateDirectory)/src_SVGTransformable.cpp$(DependSuffix): src/SVGTransfo
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTransformable.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTransformable.cpp$(DependSuffix) -MM "src/SVGTransformable.cpp"
 
 $(IntermediateDirectory)/src_SVGTransformable.cpp$(PreprocessSuffix): src/SVGTransformable.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransformable.cpp$(PreprocessSuffix) "src/SVGTransformable.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransformable.cpp$(PreprocessSuffix) "src/SVGTransformable.cpp"
 
 $(IntermediateDirectory)/src_SVGTransformList.cpp$(ObjectSuffix): src/SVGTransformList.cpp $(IntermediateDirectory)/src_SVGTransformList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGTransformList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGTransformList.cpp$(ObjectSuffix) $(IncludePath)
@@ -561,7 +561,7 @@ $(IntermediateDirectory)/src_SVGTransformList.cpp$(DependSuffix): src/SVGTransfo
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGTransformList.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGTransformList.cpp$(DependSuffix) -MM "src/SVGTransformList.cpp"
 
 $(IntermediateDirectory)/src_SVGTransformList.cpp$(PreprocessSuffix): src/SVGTransformList.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransformList.cpp$(PreprocessSuffix) "src/SVGTransformList.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGTransformList.cpp$(PreprocessSuffix) "src/SVGTransformList.cpp"
 
 $(IntermediateDirectory)/src_SVGUseElement.cpp$(ObjectSuffix): src/SVGUseElement.cpp $(IntermediateDirectory)/src_SVGUseElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGUseElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGUseElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -569,7 +569,7 @@ $(IntermediateDirectory)/src_SVGUseElement.cpp$(DependSuffix): src/SVGUseElement
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGUseElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGUseElement.cpp$(DependSuffix) -MM "src/SVGUseElement.cpp"
 
 $(IntermediateDirectory)/src_SVGUseElement.cpp$(PreprocessSuffix): src/SVGUseElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGUseElement.cpp$(PreprocessSuffix) "src/SVGUseElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGUseElement.cpp$(PreprocessSuffix) "src/SVGUseElement.cpp"
 
 $(IntermediateDirectory)/src_SVGVideoElement.cpp$(ObjectSuffix): src/SVGVideoElement.cpp $(IntermediateDirectory)/src_SVGVideoElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/SVGVideoElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_SVGVideoElement.cpp$(ObjectSuffix) $(IncludePath)
@@ -577,7 +577,7 @@ $(IntermediateDirectory)/src_SVGVideoElement.cpp$(DependSuffix): src/SVGVideoEle
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_SVGVideoElement.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_SVGVideoElement.cpp$(DependSuffix) -MM "src/SVGVideoElement.cpp"
 
 $(IntermediateDirectory)/src_SVGVideoElement.cpp$(PreprocessSuffix): src/SVGVideoElement.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGVideoElement.cpp$(PreprocessSuffix) "src/SVGVideoElement.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_SVGVideoElement.cpp$(PreprocessSuffix) "src/SVGVideoElement.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(ObjectSuffix): src/cairo/SVGCanvasCairo.cpp $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/cairo/SVGCanvasCairo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(ObjectSuffix) $(IncludePath)
@@ -585,7 +585,7 @@ $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(DependSuffix): src/cairo/SVGC
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(DependSuffix) -MM "src/cairo/SVGCanvasCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(PreprocessSuffix): src/cairo/SVGCanvasCairo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasCairo.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(ObjectSuffix): src/cairo/SVGCanvasImageCairo.cpp $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/cairo/SVGCanvasImageCairo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(ObjectSuffix) $(IncludePath)
@@ -593,7 +593,7 @@ $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(DependSuffix): src/cairo
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(DependSuffix) -MM "src/cairo/SVGCanvasImageCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(PreprocessSuffix): src/cairo/SVGCanvasImageCairo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasImageCairo.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasImageCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasImageCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(ObjectSuffix): src/cairo/SVGCanvasPathCairo.cpp $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/cairo/SVGCanvasPathCairo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(ObjectSuffix) $(IncludePath)
@@ -601,7 +601,7 @@ $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(DependSuffix): src/cairo/
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(DependSuffix) -MM "src/cairo/SVGCanvasPathCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(PreprocessSuffix): src/cairo/SVGCanvasPathCairo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasPathCairo.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasPathCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasPathCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(ObjectSuffix): src/cairo/SVGCanvasTextCairo.cpp $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/cairo/SVGCanvasTextCairo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(ObjectSuffix) $(IncludePath)
@@ -609,7 +609,7 @@ $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(DependSuffix): src/cairo/
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(DependSuffix) -MM "src/cairo/SVGCanvasTextCairo.cpp"
 
 $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(PreprocessSuffix): src/cairo/SVGCanvasTextCairo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasTextCairo.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cairo_SVGCanvasTextCairo.cpp$(PreprocessSuffix) "src/cairo/SVGCanvasTextCairo.cpp"
 
 $(IntermediateDirectory)/svgxml_svgxml.cpp$(ObjectSuffix): src/svgxml/svgxml.cpp $(IntermediateDirectory)/svgxml_svgxml.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/svgxml/svgxml.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/svgxml_svgxml.cpp$(ObjectSuffix) $(IncludePath)
@@ -617,7 +617,7 @@ $(IntermediateDirectory)/svgxml_svgxml.cpp$(DependSuffix): src/svgxml/svgxml.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/svgxml_svgxml.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/svgxml_svgxml.cpp$(DependSuffix) -MM "src/svgxml/svgxml.cpp"
 
 $(IntermediateDirectory)/svgxml_svgxml.cpp$(PreprocessSuffix): src/svgxml/svgxml.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/svgxml_svgxml.cpp$(PreprocessSuffix) "src/svgxml/svgxml.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/svgxml_svgxml.cpp$(PreprocessSuffix) "src/svgxml/svgxml.cpp"
 
 $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(ObjectSuffix): src/svgxml/svgxmlhelpr.cpp $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/wxSVG/src/svgxml/svgxmlhelpr.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(ObjectSuffix) $(IncludePath)
@@ -625,7 +625,7 @@ $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(DependSuffix): src/svgxml/svgxm
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(DependSuffix) -MM "src/svgxml/svgxmlhelpr.cpp"
 
 $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(PreprocessSuffix): src/svgxml/svgxmlhelpr.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(PreprocessSuffix) "src/svgxml/svgxmlhelpr.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/svgxml_svgxmlhelpr.cpp$(PreprocessSuffix) "src/svgxml/svgxmlhelpr.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

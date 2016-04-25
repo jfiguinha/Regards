@@ -80,6 +80,7 @@ public:
     CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
 	int TestImageFormat(const wxString & szFileName);
 	bool TestIsVideo(const wxString & szFileName);
+	bool TestIsPicture(const wxString & szFileName);
     bool TestIsAnimation(const wxString & szFileName);
 	int GetDimensions(const  wxString & fileName, int & width, int & height, int & rotation);
 	CRegardsBitmap * LoadPicture(const  wxString & szFileName);

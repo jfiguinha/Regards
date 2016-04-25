@@ -100,15 +100,32 @@ void CBitmapToolbar::ZoomOn()
 	}
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
+    ChangeZoomInPos();
 
-	if (slide != nullptr && bitmapWindow != nullptr)
-	{
-		int dwPos = bitmapWindow->GetPosRatio();
-		dwPos++;
-		if (dwPos >= slide->GetNbValue())
-			dwPos = slide->GetNbValue() - 1;
-		SetTrackBarPosition(dwPos);
-	}
+}
+
+void CBitmapToolbar::ChangeZoomInPos()
+{
+    if (slide != nullptr && bitmapWindow != nullptr)
+    {
+        int dwPos = bitmapWindow->GetPosRatio();
+        dwPos++;
+        if (dwPos >= slide->GetNbValue())
+            dwPos = slide->GetNbValue() - 1;
+        SetTrackBarPosition(dwPos);
+    }
+}
+
+void CBitmapToolbar::ChangeZoomOutPos()
+{
+    if (slide != nullptr && bitmapWindow != nullptr)
+    {
+        int dwPos = bitmapWindow->GetPosRatio();
+        dwPos--;
+        if (dwPos < 0)
+            dwPos = 0;
+        SetTrackBarPosition(dwPos);
+    }
 }
 
 
@@ -117,15 +134,8 @@ void CBitmapToolbar::ZoomOut()
 	bitmapWindow->ZoomOut();
 
 	//SetTrackBarPosition(bitmapWindow->GetPosRatio());
+    ChangeZoomOutPos();
 
-	if (slide != nullptr)
-	{
-		int dwPos = bitmapWindow->GetPosRatio();
-		dwPos--;
-		if (dwPos < 0)
-			dwPos = 0;
-		SetTrackBarPosition(dwPos);
-	}
 }
 
 void CBitmapToolbar::SetTabValue(vector<int> value)

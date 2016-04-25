@@ -67,14 +67,20 @@ namespace Regards
 			void SetPosProgressBar(const int &position);
             
             void UpdateScreenRatio();
+            
+            void ImageSuivante();
+            void ImagePrecedente();
+            void ImageFin();
+            void ImageDebut();
+            void RefreshFilter();
 
 		private:
             static void FindPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria);
             
 			void RefreshPhotoList();
             void CriteriaUpdate(wxCommandEvent& event);
+            void CriteriaChange(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
-			void OnKeyDown(const int &key, const long &repeatCount);
             void OnVideoStart(wxCommandEvent& event);
 			void OnIdle(wxIdleEvent& evt);
 			void Resize();

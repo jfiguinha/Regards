@@ -138,7 +138,7 @@ bool CThemeParam::OpenFile(const wxString &configFile)
 	filename = configFile;
 	doc.clear();
 	// Read the xml file into a vector
-	ifstream theFile(filename.c_str());
+	ifstream theFile(filename.ToStdString());
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	if (buffer.size() > 0)
 	{

@@ -19,7 +19,7 @@ namespace Regards
 			void SetInfosActif();
 			void SetMapActif();
 			void SetMapInactif();
-
+            void SetCriteriaPush();
             void SetInfosPush();
             void SetMapPush();
 		private:
@@ -29,6 +29,7 @@ namespace Regards
 			CToolbarInterface * toolbarInterface;
 			CToolbarTexte * infos = nullptr;
 			CToolbarTexte * map = nullptr;
+			CToolbarTexte * criteria = nullptr;
 			int width = 0;
 			int height = 0;
 		};

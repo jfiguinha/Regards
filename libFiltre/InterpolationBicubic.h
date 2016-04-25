@@ -28,7 +28,7 @@ protected:
 
 	virtual float Filter(const float &f);
 			
-	virtual void Bicubic(CRgbaquad * & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
+	virtual void Bicubic(CRgbaquad & data, CRegardsBitmap * In, const float &x, const float &y, float * tabF1, float * tabF);
 
 	void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
 

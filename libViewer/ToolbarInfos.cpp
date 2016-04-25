@@ -34,7 +34,14 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	map->SetCommandId(WM_MAPS);
 	map->SetLibelle(maps_label);
 	navElement.push_back(map);
-
+    
+#ifdef VIEWER
+    wxString libelleCriteria = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);
+    criteria = new CToolbarTexte(themeToolbar.texte);
+    criteria->SetCommandId(WM_CRITERIA);
+    criteria->SetLibelle(libelleCriteria);
+    navElement.push_back(criteria);
+#endif
 	effectParameter = new CToolbarTexte(themeToolbar.texte);
 	effectParameter->SetCommandId(WM_EFFECTPARAMETER);
 	effectParameter->SetLibelle(effectParameter_label);
@@ -96,6 +103,12 @@ void CToolbarInfos::SetEffectActif()
 	effect->SetVisible(true);
 	this->Refresh();
 }
+#ifdef VIEWER
+void CToolbarInfos::SetCriteriaPush()
+{
+    criteria->SetPush(true);
+}
+#endif
 
 void CToolbarInfos::SetEffectInactif()
 {

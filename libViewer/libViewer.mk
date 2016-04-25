@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libViewer
-ConfigurationName      :=Debug
+ConfigurationName      :=Release
 WorkspacePath          := "/home/figuinha/dev/Regards"
 ProjectPath            := "/home/figuinha/dev/Regards/libViewer"
-IntermediateDirectory  :=./Debug
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=23/04/16
+Date                   :=24/04/16
 CodeLitePath           :="/home/figuinha/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)__WXGTK__ 
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)__WXGTK__ $(PreprocessorSwitch)VIEWER 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libViewer.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
+LinkOptions            :=  -s 
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libextern/glew-1.13.0/include $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libWindow $(IncludeSwitch)../libPrint $(IncludeSwitch)../libPicture $(IncludeSwitch)../libTheme $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libControl $(IncludeSwitch)../libIntro $(IncludeSwitch)../libDialog $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libVideoFFMpeg $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/g++
 CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXXFLAGS :=  -fopenmp -std=c++11 -Wall $(Preprocessors)
+CFLAGS   :=  -O2 -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -62,7 +62,8 @@ AS       := /usr/bin/as
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/CentralWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ModificationManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/ThumbnailBitmap.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParamInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerThemeInit.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) 
 
 
 
@@ -79,15 +80,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libViewer"
+	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/dev/Regards/.build-release/libViewer"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -255,12 +256,148 @@ $(IntermediateDirectory)/ViewerThemeInit.cpp$(DependSuffix): ViewerThemeInit.cpp
 $(IntermediateDirectory)/ViewerThemeInit.cpp$(PreprocessSuffix): ViewerThemeInit.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ViewerThemeInit.cpp$(PreprocessSuffix) "ViewerThemeInit.cpp"
 
+$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix): BrightAndContrastFilter.cpp $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/BrightAndContrastFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(DependSuffix): BrightAndContrastFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(DependSuffix) -MM "BrightAndContrastFilter.cpp"
+
+$(IntermediateDirectory)/BrightAndContrastFilter.cpp$(PreprocessSuffix): BrightAndContrastFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(PreprocessSuffix) "BrightAndContrastFilter.cpp"
+
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix): CategoryFolderWindow.cpp $(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/CategoryFolderWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix): CategoryFolderWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix) -MM "CategoryFolderWindow.cpp"
+
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix): CategoryFolderWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix) "CategoryFolderWindow.cpp"
+
+$(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix): CategoryWnd.cpp $(IntermediateDirectory)/CategoryWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/CategoryWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CategoryWnd.cpp$(DependSuffix): CategoryWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CategoryWnd.cpp$(DependSuffix) -MM "CategoryWnd.cpp"
+
+$(IntermediateDirectory)/CategoryWnd.cpp$(PreprocessSuffix): CategoryWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CategoryWnd.cpp$(PreprocessSuffix) "CategoryWnd.cpp"
+
+$(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix): CloudsFilter.cpp $(IntermediateDirectory)/CloudsFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/CloudsFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CloudsFilter.cpp$(DependSuffix): CloudsFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CloudsFilter.cpp$(DependSuffix) -MM "CloudsFilter.cpp"
+
+$(IntermediateDirectory)/CloudsFilter.cpp$(PreprocessSuffix): CloudsFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CloudsFilter.cpp$(PreprocessSuffix) "CloudsFilter.cpp"
+
+$(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix): ColorBalanceFilter.cpp $(IntermediateDirectory)/ColorBalanceFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/ColorBalanceFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ColorBalanceFilter.cpp$(DependSuffix): ColorBalanceFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ColorBalanceFilter.cpp$(DependSuffix) -MM "ColorBalanceFilter.cpp"
+
+$(IntermediateDirectory)/ColorBalanceFilter.cpp$(PreprocessSuffix): ColorBalanceFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ColorBalanceFilter.cpp$(PreprocessSuffix) "ColorBalanceFilter.cpp"
+
+$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix): FilterPreviewSplitter.cpp $(IntermediateDirectory)/FilterPreviewSplitter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/FilterPreviewSplitter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(DependSuffix): FilterPreviewSplitter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(DependSuffix) -MM "FilterPreviewSplitter.cpp"
+
+$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(PreprocessSuffix): FilterPreviewSplitter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FilterPreviewSplitter.cpp$(PreprocessSuffix) "FilterPreviewSplitter.cpp"
+
+$(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix): FilterWindowParam.cpp $(IntermediateDirectory)/FilterWindowParam.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/FilterWindowParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FilterWindowParam.cpp$(DependSuffix): FilterWindowParam.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FilterWindowParam.cpp$(DependSuffix) -MM "FilterWindowParam.cpp"
+
+$(IntermediateDirectory)/FilterWindowParam.cpp$(PreprocessSuffix): FilterWindowParam.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FilterWindowParam.cpp$(PreprocessSuffix) "FilterWindowParam.cpp"
+
+$(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix): FiltreEffectWnd.cpp $(IntermediateDirectory)/FiltreEffectWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/FiltreEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FiltreEffectWnd.cpp$(DependSuffix): FiltreEffectWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FiltreEffectWnd.cpp$(DependSuffix) -MM "FiltreEffectWnd.cpp"
+
+$(IntermediateDirectory)/FiltreEffectWnd.cpp$(PreprocessSuffix): FiltreEffectWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(PreprocessSuffix) "FiltreEffectWnd.cpp"
+
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix): InfoEffectWnd.cpp $(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/InfoEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix): InfoEffectWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix) -MM "InfoEffectWnd.cpp"
+
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix): InfoEffectWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix) "InfoEffectWnd.cpp"
+
+$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix): LensFlareFilter.cpp $(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/LensFlareFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix): LensFlareFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix) -MM "LensFlareFilter.cpp"
+
+$(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix): LensFlareFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix) "LensFlareFilter.cpp"
+
+$(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix): MotionBlurFilter.cpp $(IntermediateDirectory)/MotionBlurFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/MotionBlurFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MotionBlurFilter.cpp$(DependSuffix): MotionBlurFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MotionBlurFilter.cpp$(DependSuffix) -MM "MotionBlurFilter.cpp"
+
+$(IntermediateDirectory)/MotionBlurFilter.cpp$(PreprocessSuffix): MotionBlurFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MotionBlurFilter.cpp$(PreprocessSuffix) "MotionBlurFilter.cpp"
+
+$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix): PhotoFiltreFilter.cpp $(IntermediateDirectory)/PhotoFiltreFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/PhotoFiltreFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(DependSuffix): PhotoFiltreFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(DependSuffix) -MM "PhotoFiltreFilter.cpp"
+
+$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(PreprocessSuffix): PhotoFiltreFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PhotoFiltreFilter.cpp$(PreprocessSuffix) "PhotoFiltreFilter.cpp"
+
+$(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix): PosterisationFilter.cpp $(IntermediateDirectory)/PosterisationFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/PosterisationFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PosterisationFilter.cpp$(DependSuffix): PosterisationFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PosterisationFilter.cpp$(DependSuffix) -MM "PosterisationFilter.cpp"
+
+$(IntermediateDirectory)/PosterisationFilter.cpp$(PreprocessSuffix): PosterisationFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PosterisationFilter.cpp$(PreprocessSuffix) "PosterisationFilter.cpp"
+
+$(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix): RotateFreeFilter.cpp $(IntermediateDirectory)/RotateFreeFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/RotateFreeFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/RotateFreeFilter.cpp$(DependSuffix): RotateFreeFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RotateFreeFilter.cpp$(DependSuffix) -MM "RotateFreeFilter.cpp"
+
+$(IntermediateDirectory)/RotateFreeFilter.cpp$(PreprocessSuffix): RotateFreeFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RotateFreeFilter.cpp$(PreprocessSuffix) "RotateFreeFilter.cpp"
+
+$(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix): SolarisationFilter.cpp $(IntermediateDirectory)/SolarisationFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/SolarisationFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SolarisationFilter.cpp$(DependSuffix): SolarisationFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SolarisationFilter.cpp$(DependSuffix) -MM "SolarisationFilter.cpp"
+
+$(IntermediateDirectory)/SolarisationFilter.cpp$(PreprocessSuffix): SolarisationFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SolarisationFilter.cpp$(PreprocessSuffix) "SolarisationFilter.cpp"
+
+$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix): SwirlFilter.cpp $(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/SwirlFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix): SwirlFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix) -MM "SwirlFilter.cpp"
+
+$(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix): SwirlFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix) "SwirlFilter.cpp"
+
+$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix): ThumbnailViewerEffectWnd.cpp $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libViewer/ThumbnailViewerEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(DependSuffix): ThumbnailViewerEffectWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(DependSuffix) -MM "ThumbnailViewerEffectWnd.cpp"
+
+$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(PreprocessSuffix): ThumbnailViewerEffectWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(PreprocessSuffix) "ThumbnailViewerEffectWnd.cpp"
+
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

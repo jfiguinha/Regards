@@ -39,37 +39,7 @@ namespace Regards
 			wxString convolutionEffect; //L"Convolution Effect";
 			wxString specialEffect; //L"Special Effect";
 			wxString histogramEffect; //L"Special Effect";
-			wxString _filterSoften; //L"Soften";
-			wxString _filterBlur; //L"Blur";
-			wxString _filterSolarize; //L"Solarize";
-			wxString _filterGaussian; //L"Gaussian Blur";
-			wxString _filterMedian; //L"Median";
-			wxString _filterMotion; //L"Motion Blur";
-			wxString _filterRotate; //L"Rotate Free";
-			wxString _filterLight; //L"LIGHT and CONTRAST";
-			wxString _filterPhoto; //L"PHOTO FILTRE";
-			wxString _filterPosterisation; //L"POSTERISATION";
-			wxString _filterColor; //L"COLOR BALANCE";
-			wxString _filterSwirl; //L"SWIRL";
-			wxString _filterClouds; //L"CLOUDS";
-			wxString _filterErode; //L"ERODE";
-			wxString _filterDilate; //L"DILATE";
-			wxString _filterSharpen; //L"SHARPEN";
-			wxString _filterSharpenStrong; //L"SHARPEN STRONG";
-			wxString _filterNoise; //L"NOISE";
-			wxString _filterMosaic; //L"MOSAIC";
-			wxString _filterEmboss; //L"EMBOSS";
-			wxString _filterGrey; //L"GREY LEVEL";
-			wxString _filterSepia; //L"SEPIA";
-			wxString _filterBlack; //L"BLACK AND WHITE";
-			wxString _filterEdge; //L"EDGE";
-			wxString _filterNegatif; //L"NEGATIF";
-			wxString _filterLensFlare; //L"LENS FLARE";
-			wxString _filterRedEye; //L"LENS FLARE";
-            wxString _filterCrop;
-			wxString _filterHistogramNormalize; //L"LENS FLARE";
-			wxString _filterHistogramEqualize; //L"LENS FLARE";
-			wxString _filterHistogramLog; //L"LENS FLARE";
+
 		};
 	}
 }

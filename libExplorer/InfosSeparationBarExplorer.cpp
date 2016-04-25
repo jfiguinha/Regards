@@ -3,7 +3,7 @@
 #include <WindowMain.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::Window;
 using namespace Regards::Explorer;
 

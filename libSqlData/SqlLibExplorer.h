@@ -15,7 +15,7 @@ namespace Regards
 			~CSqlLibExplorer();
 
 			bool InitDatabase(const wxString &lpFilename);
-
+            bool CheckVersion(const wxString &lpFilename);
 		private:
 
 			bool CreateDatabase(const wxString &databasePath);

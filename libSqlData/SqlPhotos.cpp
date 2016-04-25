@@ -54,7 +54,16 @@ void CSqlPhotos::GetPhotoCriteria(CriteriaVector * criteriaVector, const wxStrin
 	this->criteriaVector = criteriaVector;
 	wxString fullpath = filepath;
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND Libelle != 'Not Geolocalized' and FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND Libelle != 'Not Geolocalized' and FullPath = '" + fullpath + "'");
+}
+
+void CSqlPhotos::GetPhotoCriteriaByCategorie(CriteriaVector * criteriaVector, const wxString & filepath, const int &numCategorie)
+{
+    typeResult = 1;
+    this->criteriaVector = criteriaVector;
+    wxString fullpath = filepath;
+    fullpath.Replace("'", "''");
+    ExecuteRequest("SELECT distinct C.NumCriteria, NumCategorie, Libelle FROM CRITERIA C INNER JOIN PHOTOSCRITERIA PC ON C.NUMCRITERIA = PC.NUMCRITERIA INNER JOIN PHOTOS P ON P.NUMPHOTO = PC.NUMPHOTO AND FullPath = '" + fullpath + "' WHERE NumCategorie = " + to_string(numCategorie));
 }
 
 int64_t CSqlPhotos::GetPhotoId(const wxString & filepath, const int64_t &idFolder)
@@ -65,6 +74,21 @@ int64_t CSqlPhotos::GetPhotoId(const wxString & filepath, const int64_t &idFolde
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and FullPath = '" + fullpath + "'");
 	return photoId;
+}
+
+int64_t CSqlPhotos::GetPhotoId(const wxString & filepath)
+{
+    typeResult = 0;
+    photoId = -1;
+    wxString fullpath = filepath;
+    fullpath.Replace("'", "''");
+    ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE FullPath = '" + fullpath + "'");
+    return photoId;
+}
+
+void CSqlPhotos::DeletePhotoSearch()
+{
+	ExecuteRequestWithNoResult("DELETE FROM PHOTOSSEARCHCRITERIA");
 }
 
 bool CSqlPhotos::DeletePhoto(const int64_t &numPhoto)
@@ -81,7 +105,7 @@ bool CSqlPhotos::DeletePhotoFolder(const int64_t &idFolder)
 
 bool CSqlPhotos::DeletePhotoCatalog(const int64_t &idCatalog)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS as PH inner join FOLDERCATALOG as FC on PH.NumFolderCatalog = FC.NumFolderCatalog WHERE FC.NumCatalog = " + to_string(idCatalog)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NUMFOLDERCATALOG in (SELECT NUMFOLDERCATALOG FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(idCatalog) + ")") != -1) ? true : false;
 }
 
 int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)

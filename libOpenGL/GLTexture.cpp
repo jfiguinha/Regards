@@ -128,8 +128,7 @@ void GLTexture::SetFilterType( const GLint FilterType_i, const GLint FilterValue
 void GLTexture::checkErrors(const char * desc) {
 	GLenum e = glGetError();
 	if (e != GL_NO_ERROR) {
-		char message[512];
-		//sprintf(message, "OpenGL error in \"%s\": %s (%d)\n", desc, gluErrorString(e), e);
+		//printf( "OpenGL error in \"%s\": %s (%d)\n", desc, gluErrorString(e), e);
 		//string data = message;
 	}
 }

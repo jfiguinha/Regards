@@ -72,9 +72,12 @@ namespace Regards
 			int GetFirstValue();
 			int GetLastValue();
 			int GetPositionValue();
-			
+			void TestMaxMinValue();
+
 			wxCursor hCursorHand;
 			wxImage button;
+			wxImage buttonPlus;
+			wxImage buttonMoins;
 			wxRect positionButton;
 			wxRect positionSlider;
 			int position = 0;
@@ -87,6 +90,13 @@ namespace Regards
             int height = 0;
             bool isVector = true;
             wxString buttonVector;
+			wxString buttonPlusVector;
+			wxString buttonMoinsVector;
+
+			wxRect plusPos;
+			wxRect moinsPos;
+			wxRect slidePos;
+
 		};
 	}
 }

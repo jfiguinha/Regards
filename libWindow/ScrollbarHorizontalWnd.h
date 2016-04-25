@@ -38,6 +38,7 @@ namespace Regards
             
 		protected:
 
+			void DrawElement();
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);

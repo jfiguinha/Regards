@@ -2,7 +2,7 @@
 #include "LoadingResource.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
-#include <libResource.h>
+#include <LibResource.h>
 CTreeElementCheckBox::CTreeElementCheckBox()
 {
 	CLoadingResource loadingResource;

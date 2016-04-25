@@ -12,6 +12,8 @@ using namespace Regards::Explorer;
 
 #define WM_REFRESHTHUMBNAIL 1023
 #define WM_EXPORT 1024
+#define WM_CALENDAR 1025
+#define WM_GEOLOCALISE 1026
 
 CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent, id, theme)
@@ -21,6 +23,8 @@ CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThe
 	wxString delete_label = CLibResource::LoadStringFromResource(L"LBLDELETE",1);//L"History";
 	wxString copy_label = CLibResource::LoadStringFromResource(L"LBLCOPY",1);//L"Effect";
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);//L"Effect";
+    wxString geo_label = CLibResource::LoadStringFromResource(L"LBLGEOLOCALISE", 1);
+    wxString date_label = CLibResource::LoadStringFromResource(L"LBLCALENDAR", 1);
     wxString zoomon = CLibResource::LoadStringFromResource(L"LBLZOOMON",1);
     wxString zoomoff = CLibResource::LoadStringFromResource(L"LBLZOOMOFF",1);
     
@@ -36,7 +40,18 @@ CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThe
 	exportButton->SetCommandId(WM_EXPORT);
 	exportButton->SetLibelleTooltip(export_label);
 	navElement.push_back(exportButton);
+    
+    CToolbarButton * dateButton = new CToolbarButton(themeToolbar.button);
+    dateButton->SetButtonResourceId(L"IDB_CALENDAR");
+    dateButton->SetCommandId(WM_CALENDAR);
+    dateButton->SetLibelleTooltip(date_label);
+    navElement.push_back(dateButton);
 
+    CToolbarButton * geoButton = new CToolbarButton(themeToolbar.button);
+    geoButton->SetButtonResourceId(L"IDB_MAPLOCATION");
+    geoButton->SetCommandId(WM_GEOLOCALISE);
+    geoButton->SetLibelleTooltip(geo_label);
+    navElement.push_back(geoButton);
 
 	CToolbarButton * deleteButton = new CToolbarButton(themeToolbar.button);
 	deleteButton->SetButtonResourceId(L"IDB_DELETE");
@@ -167,6 +182,16 @@ void CThumbnailToolBar::EventManager(const int &id)
 			if (listPicture != nullptr)
 				listPicture->CopyFile();
 			break;
+        
+        case WM_CALENDAR:
+            if (listPicture != nullptr)
+                listPicture->ChangeDateFile();
+            break;
+                
+        case WM_GEOLOCALISE:
+            if (listPicture != nullptr)
+                listPicture->GeolocalizeFile();
+            break;
 
 		}
 	}

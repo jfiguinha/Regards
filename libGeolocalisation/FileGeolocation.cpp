@@ -16,13 +16,12 @@
 #include <SqlCriteria.h>
 #include <SqlCountry.h>
 #include <SqlCatalog.h>
+#include <SqlGps.h>
 #include <SqlFolderCatalog.h>
 #include <SqlPhotoCriteria.h>
-#include <algorithm>
+#include <LibResource.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
-
-CountryVector CFileGeolocation::countryVector;
 
 CFileGeolocation::CFileGeolocation(const wxString &urlServer)
 {
@@ -38,6 +37,20 @@ wxString CFileGeolocation::GetLatitude()
 wxString CFileGeolocation::GetLongitude()
 {
 	return longitudeGps;
+}
+
+float CFileGeolocation::GetFLatitude()
+{
+    double val;
+    latitudeGps.ToDouble(&val);
+    return val;
+}
+
+float CFileGeolocation::GetFLongitude()
+{
+    double val;
+    longitudeGps.ToDouble(&val);
+    return val;
 }
 
 bool CFileGeolocation::HasGps()
@@ -63,6 +76,44 @@ wxString CFileGeolocation::GetDateTimeInfos()
 wxString CFileGeolocation::GetGpsInformation()
 {
 	return infoGpsLocalisation;
+}
+
+void CFileGeolocation::RefreshData()
+{
+    PhotoGpsVector photogpsVector;
+    CriteriaVector criteriaVector;
+    //Recherche des données dans la base
+    CSqlPhotos sqlPhotos;
+    sqlPhotos.GetPhotoCriteriaByCategorie(&criteriaVector, filename, 1);
+    if(criteriaVector.size() > 0)
+    {
+        //Gps Infos
+        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+        wxString libelle = criteriaVector.at(0).GetLibelle();
+        if(libelle != notGeo)
+        {
+            infoGpsLocalisation = libelle;
+            //Recherche des infos GPS dans la base de données
+            CSqlGps sqlGps;
+            sqlGps.GetGps(&photogpsVector, filename);
+            if(photogpsVector.size() > 0)
+            {
+                CPhotoGps photoGps = photogpsVector.at(0);
+                latitudeGps = photoGps.GetLatitude();
+                longitudeGps = photoGps.GetLongitude();
+                hasGps = true;
+            }
+        }
+        
+    }
+    //DateTime
+    criteriaVector.clear();
+    sqlPhotos.GetPhotoCriteriaByCategorie(&criteriaVector, filename, 3);
+    if(criteriaVector.size() > 0)
+    {
+        dateTimeInfos = criteriaVector.at(0).GetLibelle();
+        hasDataTime = true;
+    }
 }
 
 void CFileGeolocation::Geolocalize()
@@ -121,27 +172,10 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto)
 			GeoPluginVector * geoPluginVector = gps->GetGpsList();
 			for (GeoPluginVector::iterator it = geoPluginVector->begin(); it != geoPluginVector->end(); it++)
 			{
-
 				CGeoPluginValue geoValue = *it;
-				wxString value;
-				CCountry local;
-				CountryVector::iterator itCountry;
-				local.SetCode(geoValue.GetCountryCode());
-
-				//Recherche du nom du pays
-				itCountry = std::find(countryVector.begin(), countryVector.end(), local);
-
-				if (itCountry != countryVector.end())
+                wxString value = GenerateGeolocalisationString(geoValue.GetCountryCode(),geoValue.GetRegion(),geoValue.GetPlace());
+				if (value != "")
 				{
-					//bool createCriteria = false;
-					value.append(itCountry->GetContinent());
-					value.append(L".");
-					value.append(itCountry->GetLibelle());
-					value.append(L".");
-					value.append(geoValue.GetRegion());
-					value.append(L".");
-					value.append(geoValue.GetPlace());
-
 					CInsertCriteria * insertCriteria = new CInsertCriteria();
 					insertCriteria->type = CATEGORIE_GEO;
 					insertCriteria->value = value;
@@ -156,8 +190,37 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto)
 	return true;
 }
 
-void CFileGeolocation::SetFile(const wxString & picture)
+wxString CFileGeolocation::GenerateGeolocalisationString(const wxString &countryCode, const wxString & region, const wxString &place)
 {
+    ImportCountry();
+    wxString value;
+    CCountry local;
+    CountryVector::iterator itCountry;
+    local.SetCode(countryCode);
+
+    //Recherche du nom du pays
+    itCountry = std::find(countryVector.begin(), countryVector.end(), local);
+
+    if (itCountry != countryVector.end())
+    {
+        //bool createCriteria = false;
+        value.append(itCountry->GetContinent());
+        value.append(L".");
+        value.append(itCountry->GetLibelle());
+        value.append(L".");
+        value.append(region);
+        value.append(L".");
+        value.append(place);
+        
+        return value;
+    }
+    
+    return "";
+}
+
+void CFileGeolocation::SetFile(const wxString & picture, const bool &onlyFromFile)
+{
+    CLibPicture libPicture;
 	filename = picture;
 	dateTimeInfos = "";
     latitudeGps = "";
@@ -165,46 +228,31 @@ void CFileGeolocation::SetFile(const wxString & picture)
 	hasDataTime = false;
     hasGps = false;
     
+    if(!onlyFromFile)
+    {
+        RefreshData();
+    
+        if(hasGps && hasDataTime)
+            return;
+    }
     
 #ifdef EXIV2
-    CLibPicture libPicture;
+
 	CPictureMetadata pictureMetadata(filename);
-    wxString latitude;
-    wxString longitude;
-    
 	if(libPicture.TestIsVideo(filename))
 	{
-		pictureMetadata.ReadVideo(hasGps, hasDataTime, dateTimeInfos, latitude, longitude);
+		pictureMetadata.ReadVideo(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
 	}
 	else
 	{
-		pictureMetadata.ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitude, longitude);
-
-		printf("longitude %s \n",longitude.ToStdString().c_str());
-		printf("latitude %s \n",latitude.ToStdString().c_str());
-
-		if (!(hasGps && latitude.size() > 0 && longitude.size() > 0))
-			hasGps = false;
-
-
-	}
-	
-	if (hasGps)
-	{
-		latitudeGps = latitude;
-		longitudeGps = longitude;
-	}
-	else
-	{
-		latitudeGps = "";
-		longitudeGps = "";
+		pictureMetadata.ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
 	}
 
-#endif
+#else
     
 #if defined(__APPLE__) || defined(WIN32)
     
-    CLibPicture libPicture;
+    
     if(libPicture.TestIsVideo(filename))
     {
         //bool apple = false;
@@ -315,6 +363,7 @@ void CFileGeolocation::SetFile(const wxString & picture)
 			hasDataTime = true;
 
 #endif
+#endif
     }
     
 
@@ -322,8 +371,58 @@ void CFileGeolocation::SetFile(const wxString & picture)
     
 #endif
     
-    //if(hasGps)
-    //    Geolocalize();
+    if(hasGps)
+    {
+        PhotoGpsVector photogpsVector;
+        CSqlGps sqlGps;
+        sqlGps.GetGps(&photogpsVector, filename);
+        if(photogpsVector.size() == 0)
+        {
+            sqlGps.InsertGps(filename, latitudeGps, longitudeGps);
+        }
+    }
+    else if(onlyFromFile)
+    {
+        PhotoGpsVector photogpsVector;
+        CriteriaVector criteriaVector;
+        //Recherche des données dans la base
+        CSqlPhotos sqlPhotos;
+        sqlPhotos.GetPhotoCriteriaByCategorie(&criteriaVector, filename, 1);
+        if(criteriaVector.size() > 0)
+        {
+            //Gps Infos
+            wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+            wxString libelle = criteriaVector.at(0).GetLibelle();
+            if(libelle != notGeo)
+            {
+                infoGpsLocalisation = libelle;
+                //Recherche des infos GPS dans la base de données
+                CSqlGps sqlGps;
+                sqlGps.GetGps(&photogpsVector, filename);
+                if(photogpsVector.size() > 0)
+                {
+                    CPhotoGps photoGps = photogpsVector.at(0);
+                    latitudeGps = photoGps.GetLatitude();
+                    longitudeGps = photoGps.GetLongitude();
+                    if(latitudeGps != "" && longitudeGps != "")
+                        hasGps = true;
+                }
+            }
+        }
+    }
+    
+    if(!hasDataTime && onlyFromFile)
+    {
+        CriteriaVector criteriaVector;
+        CSqlPhotos sqlPhotos;
+
+        sqlPhotos.GetPhotoCriteriaByCategorie(&criteriaVector, filename, 3);
+        if(criteriaVector.size() > 0)
+        {
+            dateTimeInfos = criteriaVector.at(0).GetLibelle();
+            hasDataTime = true;
+        }
+    }
     
     if(!hasDataTime)
     {

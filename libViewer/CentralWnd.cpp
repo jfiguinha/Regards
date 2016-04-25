@@ -97,12 +97,21 @@ CCentralWnd::CCentralWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 		
 	}
 
+#ifdef VIEWER
+	if (viewerTheme != nullptr)
+	{
+		CThemeSplitter theme;
+		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
+		filterPreviewSplitter = new CFilterPreviewSplitter(this, wxID_ANY, statusBarInterface, theme, videoEffectParameter, false);
+	}
+#else
 	if (viewerTheme != nullptr)
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
 		previewInfosWnd = new CPreviewInfosWnd(this, wxID_ANY, statusBarInterface, theme, videoEffectParameter, false);
 	}
+#endif
 
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CCentralWnd::OnSize));
 
@@ -113,6 +122,13 @@ CCentralWnd::CCentralWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	paneThumbnailVideo->Show(false);
 }
 
+#ifdef VIEWER
+void CCentralWnd::ShowFilter()
+{
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->ClickShowButton(CATALOG_FILTER);
+}
+#endif
 
 CCentralWnd::~CCentralWnd()
 {
@@ -120,35 +136,82 @@ CCentralWnd::~CCentralWnd()
 	delete(thumbnail);
 	delete(scrollThumbnail);
 	delete(paneThumbnail);
-	
 	delete(clickThumbnail);
-	
-	
 	delete(scrollThumbnailVideo);
 	delete(paneThumbnailVideo);
-	
-	
+#ifdef VIEWER
+	delete(filterPreviewSplitter);
+#else
 	delete(previewInfosWnd);
+#endif
 }
 
 void CCentralWnd::SetDiaporamaMode()
 {
 	isDiaporama = true;
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetDiaporamaMode();
+#else
 	previewInfosWnd->SetDiaporamaMode();
+#endif
 	this->RedrawBarPos();
 }
 
 void CCentralWnd::SetNormalMode()
 {
 	isDiaporama = false;
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetNormalMode();
+#else
 	previewInfosWnd->SetNormalMode();
+#endif
 	this->RedrawBarPos();
 }
+
+#ifdef VIEWER
+void CCentralWnd::UpdateCriteria(const int64_t & idFolder)
+{
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->UpdateCriteria(idFolder);
+}
+
+wxString CCentralWnd::GetSqlRequest()
+{
+    if (filterPreviewSplitter != nullptr)
+        return filterPreviewSplitter->GetSqlRequest();
+    return "";
+}
+
+void CCentralWnd::InitSaveParameter()
+{
+    if (filterPreviewSplitter != nullptr)
+        filterPreviewSplitter->InitSaveParameter();
+}
+
+void CCentralWnd::UpdateCriteria()
+{
+    if (filterPreviewSplitter != nullptr)
+        filterPreviewSplitter->UpdateInfos();
+}
+
+void CCentralWnd::RefreshFilter()
+{
+    if (filterPreviewSplitter != nullptr)
+        filterPreviewSplitter->RefreshFilter();
+}
+
+#endif
 
 void CCentralWnd::HideToolbar()
 {
     showToolbar = false;
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+#else
 	if (previewInfosWnd != nullptr)
+#endif
 	{
 		if (isFullscreen)
 		{
@@ -157,7 +220,11 @@ void CCentralWnd::HideToolbar()
 			if (clickThumbnailVideo->IsShown())
 				clickThumbnailVideo->Show(false);
 		}
+#ifdef VIEWER
+		filterPreviewSplitter->HideToolbar();
+#else
 		previewInfosWnd->HideToolbar();
+#endif
 		this->RedrawBarPos();
 	}
 }
@@ -165,7 +232,11 @@ void CCentralWnd::HideToolbar()
 void CCentralWnd::ShowToolbar()
 {
     showToolbar = true;
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+#else
 	if (previewInfosWnd != nullptr)
+#endif
 	{
 		if (isFullscreen)
 		{
@@ -177,7 +248,11 @@ void CCentralWnd::ShowToolbar()
 					clickThumbnailVideo->Show(true);
 			}
 		}
+#ifdef VIEWER
+		filterPreviewSplitter->ShowToolbar();
+#else
 		previewInfosWnd->ShowToolbar();
+#endif
 		this->RedrawBarPos();
 	}
 }
@@ -208,14 +283,23 @@ void CCentralWnd::UpdateScreenRatio()
     thumbnailVideo->UpdateScreenRatio();
     clickThumbnailVideo->UpdateScreenRatio();
     
-    previewInfosWnd->UpdateScreenRatio();
+#ifdef VIEWER
+	filterPreviewSplitter->UpdateScreenRatio();
+#else
+	previewInfosWnd->UpdateScreenRatio();
+#endif
     
     this->Resize();
 }
 
 void CCentralWnd::SetEffect(const bool &effect)
 {
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetEffect(effect);
+#else
 	previewInfosWnd->SetEffect(effect);
+#endif
 }
 
 void CCentralWnd::ClickShowButton(const int &id)
@@ -254,6 +338,8 @@ void CCentralWnd::ClickShowButton(const int &id)
 	
 	RedrawBarPos();
 }
+
+
 
 void CCentralWnd::SetListeFile(const vector<wxString> listFichier)
 {
@@ -304,8 +390,13 @@ void CCentralWnd::RedrawBarPos()
 		paneThumbnail->SetSize(0, 0, 0, 0);
 		clickThumbnail->SetSize(0, 0, 0, 0);
 
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			filterPreviewSplitter->SetSize(0, 0, width, height);
+#else
 		if (previewInfosWnd != nullptr)
 			previewInfosWnd->SetSize(0, 0, width, height);
+#endif
 	}
 	else
 	{
@@ -380,8 +471,13 @@ void CCentralWnd::RedrawBarPos()
 				}
 			}
 		}
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			filterPreviewSplitter->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
+#else
 		if (previewInfosWnd != nullptr)
 			previewInfosWnd->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
+#endif
 	}
 }
 
@@ -448,21 +544,36 @@ bool CCentralWnd::IsPanelThumbnailVisible()
 
 bool CCentralWnd::IsPanelInfosVisible()
 {
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		return filterPreviewSplitter->IsPanelInfosVisible();
+#else
 	if (previewInfosWnd != nullptr)
 		return previewInfosWnd->IsPanelInfosVisible();
+#endif
 	return false;
 }
 
 void CCentralWnd::HidePanelInfos()
 {
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->HidePanelInfos();
+#else
 	if (previewInfosWnd != nullptr)
 		previewInfosWnd->HidePanelInfos();
+#endif
 }
 
 void CCentralWnd::ShowPanelInfos()
 {
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->ShowPanelInfos();
+#else
 	if (previewInfosWnd != nullptr)
 		previewInfosWnd->ShowPanelInfos();
+#endif
 }
 
 
@@ -515,17 +626,25 @@ void CCentralWnd::SetVideo(const wxString &path)
 		}
 	}
 
+#ifdef VIEWER
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetVideo(path);
+#else
 	if (previewInfosWnd != nullptr)
 		previewInfosWnd->SetVideo(path);
-
+#endif
 	ShowVideoThumbnail();
 	this->RedrawBarPos();
 }
 
 void CCentralWnd::StartLoadingPicture(const int &numElement)
 {
-    previewInfosWnd->StartLoadingPicture();
-    thumbnail->StartLoadingPicture(numElement);
+#ifdef VIEWER
+	filterPreviewSplitter->StartLoadingPicture();
+#else
+	previewInfosWnd->StartLoadingPicture();
+#endif
+	thumbnail->StartLoadingPicture(numElement);
 }
 
 void CCentralWnd::StopLoadingPicture()
@@ -539,8 +658,13 @@ bool CCentralWnd::SetAnimation(const wxString &filename)
     bool result = false;
     if (isDiaporama)
     {
-        if (previewInfosWnd != nullptr)
-            result = previewInfosWnd->SetAnimation(filename);
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			result = filterPreviewSplitter->SetAnimation(filename);
+#else
+		if (previewInfosWnd != nullptr)
+			result = previewInfosWnd->SetAnimation(filename);
+#endif
     }
     else
     {
@@ -551,8 +675,13 @@ bool CCentralWnd::SetAnimation(const wxString &filename)
             if (paneThumbnailVideo->IsShown())
                 paneThumbnailVideo->Show(false);
         }
-        if (previewInfosWnd != nullptr)
-            result = previewInfosWnd->SetAnimation(filename);
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			result = filterPreviewSplitter->SetAnimation(filename);
+#else
+		if (previewInfosWnd != nullptr)
+			result = previewInfosWnd->SetAnimation(filename);
+#endif
         RedrawBarPos();
     }
     return result;
@@ -563,8 +692,13 @@ bool CCentralWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
 	bool result = false;
 	if (isDiaporama)
 	{
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			result = filterPreviewSplitter->SetBitmap(bitmap, isThumbnail);
+#else
 		if (previewInfosWnd != nullptr)
 			result = previewInfosWnd->SetBitmap(bitmap, isThumbnail);
+#endif
 	}
 	else
 	{
@@ -575,8 +709,13 @@ bool CCentralWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
 			if (paneThumbnailVideo->IsShown())
 				paneThumbnailVideo->Show(false);
 		}
+#ifdef VIEWER
+		if (filterPreviewSplitter != nullptr)
+			result = filterPreviewSplitter->SetBitmap(bitmap, isThumbnail);
+#else
 		if (previewInfosWnd != nullptr)
 			result = previewInfosWnd->SetBitmap(bitmap, isThumbnail);
+#endif
 		RedrawBarPos();
 	}
 	return result;
@@ -585,13 +724,21 @@ bool CCentralWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
 void CCentralWnd::FullscreenMode()
 {
 	isFullscreen = true;
+#ifdef VIEWER
+	filterPreviewSplitter->FullscreenMode();
+#else
 	previewInfosWnd->FullscreenMode();
+#endif
 	RedrawBarPos();
 }
 
 void CCentralWnd::ScreenMode()
 {
 	isFullscreen = false;
+#ifdef VIEWER
+	filterPreviewSplitter->ScreenMode();
+#else
 	previewInfosWnd->ScreenMode();
+#endif
 	RedrawBarPos();
 }

@@ -45,6 +45,8 @@
     <File Name="TreeDataEffect.cpp"/>
     <File Name="videothumbnail.cpp"/>
     <File Name="TreeDataLink.cpp"/>
+    <File Name="PhotoGps.cpp"/>
+    <File Name="TreeDataCategory.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="BitmapEffectParameter.h"/>
@@ -85,6 +87,10 @@
     <File Name="ImageVideoThumbnail.h"/>
     <File Name="Metadata.h"/>
     <File Name="TreeDataLink.h"/>
+    <File Name="CxImageVideoThumbnail.h"/>
+    <File Name="PhotoGps.h"/>
+    <File Name="RegardsVideoThumbnail.h"/>
+    <File Name="TreeDataCategory.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

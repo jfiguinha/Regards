@@ -362,6 +362,43 @@ void CRegardsBitmap::SetBitmap(uint8_t * m_bBuffer, const unsigned int &bmWidth,
 	}
 }
 
+bool CRegardsBitmap::RotateAppleExif(const int & orientation)
+{
+    bool ret = true;
+    switch (orientation)
+    {
+        case 1:// top left side
+            break;
+        case 2:// top right side
+            this->HorzFlipBuf();
+            break;
+        case 3:// bottom right side
+            this->HorzFlipBuf();
+            this->VertFlipBuf();
+            break;
+        case 4:// bottom left side
+            this->VertFlipBuf();
+            break;
+        case 5://left side top
+            this->Rotation90();
+            this->VertFlipBuf();
+            this->HorzFlipBuf();
+            break;
+        case 6:// right side top
+            this->Rotation90();
+            this->VertFlipBuf();
+            break;
+        case 7:// right side bottom
+            this->Rotation90();
+            break;
+        case 8:// left side bottom
+            this->Rotation90();
+            this->HorzFlipBuf();
+            break;
+    }
+    return ret;
+}
+
 bool CRegardsBitmap::RotateExif(const int & orientation /* = 0 */)
 {
 	bool ret = true;
@@ -457,6 +494,7 @@ CRgbaquad CRegardsBitmap::GetColorValue(const int &x, const int &y) const
 	return color;
 }
 
+/*
 CRgbaquad * & CRegardsBitmap::GetPtColorValue(const int &x, const int &y)
 {
 	CRgbaquad * color = nullptr;
@@ -467,6 +505,7 @@ CRgbaquad * & CRegardsBitmap::GetPtColorValue(const int &x, const int &y)
 	}
 	return color;
 }
+  */
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -510,12 +549,18 @@ int CRegardsBitmap::SetValueToTranspColor(const CRgbaquad & backgroundValue)
 #pragma omp parallel for
 			for (int x = 0; x < m_iWidth; x++)
 			{
+                /*
 				CRgbaquad * colorSrc = GetPtColorValue(x, y);
 				if (colorSrc->GetAlpha() == 0)
 				{
 					*colorSrc = backgroundValue;
-					//SetColorValue(x, backgroundValuey, backgroundValue);
 				}
+                 */
+                CRgbaquad colorSrc = GetColorValue(x, y);
+                if (colorSrc.GetAlpha() == 0)
+                {
+                    SetColorValue(x, y, backgroundValue);
+                }
 			}
 		}
 	}
@@ -533,10 +578,17 @@ void CRegardsBitmap::ConvertToBgr()
 #pragma omp parallel for
 			for (int x = 0; x < m_iWidth; x++)
 			{
+                /*
 				CRgbaquad * colorSrc = GetPtColorValue(x, y);
 				uint8_t blue = colorSrc->GetBlue();
 				colorSrc->SetBlue(colorSrc->GetRed());
 				colorSrc->SetRed(blue);
+                */
+                CRgbaquad colorSrc = GetColorValue(x, y);
+                uint8_t blue = colorSrc.GetBlue();
+                colorSrc.SetBlue(colorSrc.GetRed());
+                colorSrc.SetRed(blue);
+                SetColorValue(x, y, colorSrc);
 			}
 		}
 	}
@@ -561,6 +613,7 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos)
 #pragma omp parallel for
 			for (int x = xPos; x < xEnd; x++)
 			{
+                /*
 				CRgbaquad * colorSrc = GetPtColorValue(x, y);
 				CRgbaquad color = bitmap->GetColorValue(x - xPos, y - yPos);
 				float alpha = color.GetFAlpha() / 255.0f;
@@ -571,6 +624,18 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos)
 					color.Mul(alpha);
 					colorSrc->Add(color);
 				}
+                */
+                CRgbaquad colorSrc = GetColorValue(x, y);
+                CRgbaquad color = bitmap->GetColorValue(x - xPos, y - yPos);
+                float alpha = color.GetFAlpha() / 255.0f;
+                float alphaDiff = 1.0f - alpha;
+                if (alphaDiff < 1.0f)
+                {
+                    colorSrc.Mul(alphaDiff);
+                    color.Mul(alpha);
+                    colorSrc.Add(color);
+                    SetColorValue(x, y, colorSrc);
+                }
 			}
 		}
 	}
@@ -607,8 +672,9 @@ CRegardsBitmap * CRegardsBitmap::CropBitmap(const int &xPos, const int &yPos, co
 #pragma omp parallel for
 			for (int x = xPos; x < xEnd; x++)
 			{
-				CRgbaquad * color = bitmap->GetPtColorValue(x - xPos, y - yPos);
-				*color = GetColorValue(x, y);
+				//CRgbaquad * color = bitmap->GetPtColorValue(x - xPos, y - yPos);
+				//*color = GetColorValue(x, y);
+                bitmap->SetColorValue(x - xPos, y - yPos, GetColorValue(x, y));
 			}
 		}
 	}
@@ -630,11 +696,20 @@ int CRegardsBitmap::SetColorTranspBitmap(const CRgbaquad &Transp)
 #pragma omp parallel for
 			for (int x = 0; x < m_iWidth; x++)
 			{
+                /*
 				CRgbaquad * color = GetPtColorValue(x, y);
 				if (*color == Transp)
 					color->SetAlpha(0);
 				else
 					color->SetAlpha(255);
+                */
+                CRgbaquad color = GetColorValue(x, y);
+                if (color == Transp)
+                    color.SetAlpha(0);
+                else
+                    color.SetAlpha(255);
+                
+                SetColorValue(x, y, color);
 			}
 		}
 	}
@@ -715,11 +790,20 @@ int CRegardsBitmap::FusionBitmap(CRegardsBitmap * nextPicture, const float &pour
 #pragma omp parallel for
 			for (int x = 0; x < m_iWidth; x++)
 			{
+                /*
 				CRgbaquad color1 = nextPicture->GetColorValue(x,y);
 				CRgbaquad * color2 = GetPtColorValue(x, y);
 				color1.Mul(pourcentage);
 				color2->Mul(diff);
 				color2->Add(color1);
+                */
+                
+                CRgbaquad color1 = nextPicture->GetColorValue(x,y);
+                CRgbaquad color2 = GetColorValue(x, y);
+                color1.Mul(pourcentage);
+                color2.Mul(diff);
+                color2.Add(color1);
+                SetColorValue(x, y, color2);
 			}
 		}
 	}
@@ -738,11 +822,17 @@ void CRegardsBitmap::SetBackgroundBitmap(CRegardsBitmap * background, const int 
 #pragma omp parallel for
 			for (int x = 0; x < m_iWidth; x++)
 			{
+                /*
 				CRgbaquad * color2 = GetPtColorValue(x, y);
 				if (color2->GetAlpha() == 0)
 				{
 					*color2 = background->GetColorValue(x + xStart, y + yStart);
 				}
+                */
+                
+                CRgbaquad color2 = GetColorValue(x, y);
+                if (color2.GetAlpha() == 0)
+                    SetColorValue(x, y, background->GetColorValue(x + xStart, y + yStart));
 			}
 		}
 

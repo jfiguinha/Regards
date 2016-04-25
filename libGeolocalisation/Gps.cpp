@@ -28,7 +28,7 @@ CGps::~CGps()
 {
 	//CloseHttpRequest();
 }
-/*
+
 float CGps::GetGpsfValue(const wxString& gpsValue)
 {
 	wxString returnValue = "";
@@ -68,7 +68,7 @@ wxString CGps::GetGpsValue(const float& gpsValue)
 {
 	return std::to_string(gpsValue);
 }
-*/
+
 #ifdef USECURL
 
 
@@ -103,11 +103,26 @@ size_t CGps::write_data(void *ptr, size_t size, size_t nmemb, struct url_data *d
 	return size * nmemb;
 }
 
+float CGps::GetFLatitude()
+{
+    double val;
+    latitude.ToDouble(&val);
+    return val;
+}
+
+float CGps::GetFLongitude()
+{
+    double val;
+    longitude.ToDouble(&val);
+    return val;
+}
+
 bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitude)
 {
 
 	CURL *curl;
-
+    this->latitude = latitude;
+    this->longitude = longitude;
 
 
 	//int error = 0;
@@ -139,6 +154,7 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 
 	xml.Append(data.data);
 
+    printf("URL  : %s \n", httpAdress.ToStdString().c_str());
 	printf("Data : %s \n", data.data);
 
 	geoPluginVector.clear();

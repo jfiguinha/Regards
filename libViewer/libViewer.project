@@ -49,6 +49,23 @@
     <File Name="ViewerParamInit.cpp"/>
     <File Name="ViewerTheme.cpp"/>
     <File Name="ViewerThemeInit.cpp"/>
+    <File Name="BrightAndContrastFilter.cpp"/>
+    <File Name="CategoryFolderWindow.cpp"/>
+    <File Name="CategoryWnd.cpp"/>
+    <File Name="CloudsFilter.cpp"/>
+    <File Name="ColorBalanceFilter.cpp"/>
+    <File Name="FilterPreviewSplitter.cpp"/>
+    <File Name="FilterWindowParam.cpp"/>
+    <File Name="FiltreEffectWnd.cpp"/>
+    <File Name="InfoEffectWnd.cpp"/>
+    <File Name="LensFlareFilter.cpp"/>
+    <File Name="MotionBlurFilter.cpp"/>
+    <File Name="PhotoFiltreFilter.cpp"/>
+    <File Name="PosterisationFilter.cpp"/>
+    <File Name="RotateFreeFilter.cpp"/>
+    <File Name="SolarisationFilter.cpp"/>
+    <File Name="SwirlFilter.cpp"/>
+    <File Name="ThumbnailViewerEffectWnd.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="CentralWnd.h"/>
@@ -71,6 +88,24 @@
     <File Name="ViewerParamInit.h"/>
     <File Name="ViewerTheme.h"/>
     <File Name="ViewerThemeInit.h"/>
+    <File Name="BrightAndContrastFilter.h"/>
+    <File Name="CategoryFolderWindow.h"/>
+    <File Name="CategoryWnd.h"/>
+    <File Name="CloudsFilter.h"/>
+    <File Name="ColorBalanceFilter.h"/>
+    <File Name="FilterPreviewSplitter.h"/>
+    <File Name="FilterWindowParam.h"/>
+    <File Name="FiltreEffectInterface.h"/>
+    <File Name="FiltreEffectWnd.h"/>
+    <File Name="InfoEffectWnd.h"/>
+    <File Name="LensFlareFilter.h"/>
+    <File Name="MotionBlurFilter.h"/>
+    <File Name="PhotoFiltreFilter.h"/>
+    <File Name="PosterisationFilter.h"/>
+    <File Name="RotateFreeFilter.h"/>
+    <File Name="SolarisationFilter.h"/>
+    <File Name="SwirlFilter.h"/>
+    <File Name="ThumbnailViewerEffectWnd.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
@@ -124,6 +159,7 @@
         <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="__WXGTK__"/>
+        <Preprocessor Value="VIEWER"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
@@ -200,6 +236,7 @@
         <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
         <Preprocessor Value="NDEBUG"/>
         <Preprocessor Value="__WXGTK__"/>
+        <Preprocessor Value="VIEWER"/>
       </Compiler>
       <Linker Options="-s;" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
