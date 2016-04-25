@@ -5,7 +5,7 @@
 #include <FileUtility.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <FiltreEffet.h>
 #include "effect.h"
 #include "wx/stdpaths.h"

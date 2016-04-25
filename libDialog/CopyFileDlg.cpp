@@ -8,7 +8,7 @@
 //(*InternalHeaders(CopyFileDlg)
 #include <wx/xrc/xmlres.h>
 #include <wx/dir.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <ConvertUtility.h>
 #include <SqlFindCriteria.h>
 #include <SqlCriteria.h>

@@ -1,7 +1,7 @@
 #include "FilterPreviewSplitter.h"
 #include <ConfigParam.h>
 #include "ViewerParamInit.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #if defined(__WXMSW__)

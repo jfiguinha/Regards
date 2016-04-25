@@ -8,7 +8,7 @@
 
 #include "FilterData.h"
 #include <EffectParameter.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <effect.h>
 #include <RgbEffectParameter.h>
 #include <BrightAndContrastEffectParameter.h>

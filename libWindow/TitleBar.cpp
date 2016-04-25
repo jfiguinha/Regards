@@ -2,7 +2,7 @@
 #include <wx/colour.h>
 #include <wx/dc.h>
 #include <wx/bitmap.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 

@@ -1,6 +1,6 @@
 #include "BitmapInfosGps.h"
 #include <FileUtility.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <ConvertUtility.h>
 #include <wx/dcbuffer.h>
 #include <RegardsConfigParam.h>

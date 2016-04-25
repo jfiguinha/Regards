@@ -1,7 +1,7 @@
 #include "InfosToolbar.h"
 #include "ExplorerParam.h"
 #include <ConfigParam.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <effect.h>
 using namespace Regards::Explorer;
 

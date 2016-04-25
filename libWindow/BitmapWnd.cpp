@@ -6,7 +6,7 @@
 #include "ScrollbarWnd.h"
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarVerticalWnd.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <algorithm> 

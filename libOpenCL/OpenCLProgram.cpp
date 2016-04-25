@@ -2,7 +2,7 @@
 #include "utility.h"
 #include "OpenCLEngine.h"
 #include "OpenCLContext.h"
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::OpenCL;
 
 COpenCLProgram::COpenCLProgram(COpenCLContext * context)

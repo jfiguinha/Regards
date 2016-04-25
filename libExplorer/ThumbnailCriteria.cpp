@@ -15,7 +15,7 @@
 #include "ScrollbarVerticalWnd.h"
 #include <ConvertUtility.h>
 #include "CentralWnd.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <ThumbnailDataSQL.h>
 #include <ScrollbarWnd.h>
 #include <algorithm>

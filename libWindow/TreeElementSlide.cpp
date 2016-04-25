@@ -2,7 +2,7 @@
 #include "TreeElementSlide.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"

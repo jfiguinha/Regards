@@ -19,7 +19,7 @@
 #include "PhotoFiltreEffectParameter.h"
 #include "RgbEffectParameter.h"
 #include "SwirlEffectParameter.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <BitmapWndViewer.h>
 #include <ShowBitmap.h>
 #include "PreviewWnd.h"

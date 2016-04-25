@@ -1,7 +1,7 @@
 #include "PreviewThumbnail.h"
 #include "ExplorerParam.h"
 #include "ExplorerParamInit.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <libPicture.h>
 #include "ExplorerTheme.h"
 #include "ExplorerThemeInit.h"

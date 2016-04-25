@@ -13,7 +13,7 @@
 #include "BrightAndContrastFilter.h"
 #include "MotionBlurFilter.h"
 #include <BitmapWndViewer.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <RegardsBitmap.h>
 #include <FilterData.h>
 #define TAILLEMAX 1024

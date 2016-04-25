@@ -4,7 +4,7 @@
 #include <queue>
 #include <deque>
 #include <algorithm>    // std::find
-#include <libResource.h>
+#include <LibResource.h>
 #include <FileUtility.h>
 #include <libPicture.h>
 #include <wxmd5.h>

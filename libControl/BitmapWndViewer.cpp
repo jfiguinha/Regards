@@ -18,7 +18,7 @@
 #include <Histogramme.h>
 #include "effect.h"
 #include <BitmapInterface.h>
-#include <libResource.h>
+#include <LibResource.h>
 //#include "MySmtpListener.h"
 #include <LoadingResource.h>
 #include <libPicture.h>

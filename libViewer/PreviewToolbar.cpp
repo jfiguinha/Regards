@@ -2,7 +2,7 @@
 #include "ToolbarSlide.h"
 #include "ViewerParamInit.h"
 #include <ConfigParam.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include "ViewerParam.h"
 #include <effect.h>
 #include "MainWindow.h"

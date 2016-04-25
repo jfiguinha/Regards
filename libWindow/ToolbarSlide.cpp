@@ -1,6 +1,6 @@
 #include "ToolbarSlide.h"
 
-#include <libResource.h>
+#include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"

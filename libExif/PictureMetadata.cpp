@@ -1,5 +1,5 @@
 #include "PictureMetadata.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <ConvertUtility.h>
 #include <image.hpp>
 #include <exif.hpp>

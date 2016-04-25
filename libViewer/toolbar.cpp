@@ -1,6 +1,6 @@
 #include "Toolbar.h"
 #include <ToolbarButton.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include "MainWindow.h"
 #include "ViewerFrame.h"
 #include "FileUtility.h"

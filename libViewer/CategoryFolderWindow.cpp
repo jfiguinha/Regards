@@ -1,5 +1,5 @@
 #include "CategoryFolderWindow.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #include "ViewerParamInit.h"

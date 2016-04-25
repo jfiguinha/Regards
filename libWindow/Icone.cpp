@@ -3,7 +3,7 @@
 #include <ThumbnailDataStorage.h>
 #include <ParamInit.h>
 //#include <InterpolationBicubicwxImage.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <FileUtility.h>
 #include <FiltreEffet.h>
 #include "LoadingResource.h"

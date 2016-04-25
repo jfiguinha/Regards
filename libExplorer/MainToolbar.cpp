@@ -5,7 +5,7 @@
 #else
 #include <window_id.h>
 #endif
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::Explorer;
 
 #define IDM_QUITTER 1

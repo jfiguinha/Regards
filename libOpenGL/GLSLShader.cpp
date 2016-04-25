@@ -1,5 +1,5 @@
 #include "GLSLShader.h"
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::OpenGL;
 
 GLSLShader::GLSLShader(void)

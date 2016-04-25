@@ -1,5 +1,5 @@
 #include "CategoryFolderWindow.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ExplorerTheme.h"
 #include "ExplorerParamInit.h"
 #include "ExplorerThemeInit.h"

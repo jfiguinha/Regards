@@ -1,7 +1,7 @@
 #include "FiltreToolbar.h"
 #include "PreviewWnd.h"
 #include "PanelInfosWnd.h"
-#include <libResource.h>
+#include <LibResource.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

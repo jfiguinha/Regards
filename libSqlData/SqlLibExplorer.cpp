@@ -1,6 +1,6 @@
 #include "SqlLibExplorer.h"
 #include "SqlVersion.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <wx/filefn.h> 
 using namespace Regards::Sqlite;
 

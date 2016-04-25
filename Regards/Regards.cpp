@@ -26,7 +26,7 @@
 #include <OpenCLEngine.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <MyFrameIntro.h>
 #include <ViewerFrame.h>
 #include <ExplorerFrame.h>

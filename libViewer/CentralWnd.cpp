@@ -5,7 +5,7 @@
 #include "ViewerParamInit.h"
 #include <FileUtility.h>
 #include <ShowVideo.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 using namespace Regards::Window;

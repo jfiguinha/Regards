@@ -1,6 +1,6 @@
 #include "ThumbnailToolBar.h"
 #include <ToolbarSlide.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <effect.h>
 #include "ListPicture.h"
 #if defined(__WXMSW__)

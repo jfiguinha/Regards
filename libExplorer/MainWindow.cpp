@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ListPicture.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"

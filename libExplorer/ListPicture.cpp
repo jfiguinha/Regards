@@ -5,7 +5,7 @@
 #include <ThumbnailData.h>
 #include "ExplorerTheme.h"
 #include "ExplorerThemeInit.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "PreviewThumbnail.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"

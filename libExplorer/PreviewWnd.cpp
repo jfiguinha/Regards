@@ -4,7 +4,7 @@
 #include "PanelPreview.h"
 #include <RegardsBitmap.h>
 #include "ExplorerParam.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ExplorerParamInit.h"
 #include "ExplorerThemeInit.h"
 #include "ExplorerTheme.h"

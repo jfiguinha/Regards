@@ -1,5 +1,5 @@
 #include "PreviewToolbar.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <effect.h>
 using namespace Regards::Window;
 using namespace Regards::Explorer;

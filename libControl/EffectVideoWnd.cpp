@@ -3,7 +3,7 @@
 #include <TreeDataEffect.h>
 #include <ParamInit.h>
 #include <ConfigParam.h>
-#include <libResource.h>
+#include <LibResource.h>
 
 using namespace Regards::Control;
 

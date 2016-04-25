@@ -1,6 +1,6 @@
 #include "ToolbarButton.h"
 #include <Theme.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"
 #include <RegardsBitmap.h>

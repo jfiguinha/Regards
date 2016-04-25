@@ -1,5 +1,5 @@
 #include "SliderVideo.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <SDL.h>
 #include <time.h>
 #include <ParamInit.h>

@@ -1,5 +1,5 @@
  #include "MainWindow.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "CentralWnd.h"
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"

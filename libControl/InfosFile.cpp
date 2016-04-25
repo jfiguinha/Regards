@@ -17,7 +17,7 @@
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
 #include <Gps.h>
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Internet;

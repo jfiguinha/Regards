@@ -1,5 +1,5 @@
 #include "ToolbarTexte.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "WindowMain.h"
 using namespace Regards::Window;
 

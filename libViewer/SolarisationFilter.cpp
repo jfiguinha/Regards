@@ -10,7 +10,7 @@
 #include <vector>
 #include "SolarisationEffectParameter.h"
 #include <RegardsBitmap.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <FilterData.h>
 
 using namespace Regards::Viewer;

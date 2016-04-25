@@ -2,7 +2,7 @@
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include "InterpolationBicubic.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <algorithm>
 #include "Rotate.h"
 #include "RedEye.h"

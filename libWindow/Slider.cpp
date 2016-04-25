@@ -1,6 +1,6 @@
 #include "Slider.h"
 #include <ConvertUtility.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <time.h>
 #include <wx/dcbuffer.h>
 #include <ClosedHandCursor.h>

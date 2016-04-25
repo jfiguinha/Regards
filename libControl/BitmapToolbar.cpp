@@ -1,6 +1,6 @@
 #include "BitmapToolbar.h"
 #include "effect.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include <ParamInit.h>
 #include <ConfigParam.h>
 using namespace Regards::Control;

@@ -1,6 +1,6 @@
 #include "MyCentralWindowIntro.h"
 #include <RegardsBitmap.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include <LoadingResource.h>
 #include <wx/dcbuffer.h>
 #include "IntroTheme.h"

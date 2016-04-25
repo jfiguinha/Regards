@@ -16,7 +16,7 @@
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <algorithm>
-#include <libResource.h>
+#include <LibResource.h>
 #include <ConvertUtility.h>
 #include <ThumbnailData.h>
 #if defined(__WXMSW__)

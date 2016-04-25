@@ -17,7 +17,7 @@
 #include "MainWindow.h"
 #include "PreviewWnd.h"
 #include <FileUtility.h>
-#include <libResource.h>
+#include <LibResource.h>
 #include "wx/stdpaths.h"
 #include "FiltreEffectWnd.h"
 #include "InfoEffectWnd.h"

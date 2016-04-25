@@ -1,7 +1,7 @@
 #include "RedEye.h"
 #include <algorithm>
 #include "InterpolationBicubic.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "Filtre.h"
 using namespace std;
 using namespace Regards::FiltreEffet;

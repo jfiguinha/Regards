@@ -3,7 +3,7 @@
 #include <ConfigParam.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <libResource.h>
+#include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #if defined(__WXMSW__)
