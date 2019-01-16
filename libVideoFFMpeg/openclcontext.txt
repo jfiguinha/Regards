@@ -1,0 +1,122 @@
+
+COpenCLContext * CVideoControl::InitOpenCLContext(IDirect3DDevice9Ex * pDirect3DDevice9Ex)
+{
+    cl_uint numPlatforms;
+    cl_int status = clGetPlatformIDs(0, NULL, &numPlatforms);
+    if (status != CL_SUCCESS)
+	{
+		OutputDebugString(L"OpenCL: Can't get number of platforms");
+		return nullptr;
+	}
+    if (numPlatforms == 0)
+	{
+		OutputDebugString(L"OpenCL: No available platforms");
+		return nullptr;
+	}
+
+    std::vector<cl_platform_id> platforms(numPlatforms);
+    status = clGetPlatformIDs(numPlatforms, &platforms[0], NULL);
+    if (status != CL_SUCCESS)
+	{
+		OutputDebugString(L"OpenCL: No available platforms");
+		return nullptr;
+	}
+
+    // TODO Filter platforms by name from OPENCV_OPENCL_DEVICE
+
+    int found = -1;
+    cl_device_id device = NULL;
+    cl_uint numDevices = 0;
+    cl_context context = NULL;
+
+    // try with CL_PREFERRED_DEVICES_FOR_DX9_MEDIA_ADAPTER_KHR
+    for (int i = 0; i < (int)numPlatforms; i++)
+    {
+        clGetDeviceIDsFromDX9MediaAdapterKHR_fn clGetDeviceIDsFromDX9MediaAdapterKHR = (clGetDeviceIDsFromDX9MediaAdapterKHR_fn)
+                clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetDeviceIDsFromDX9MediaAdapterKHR");
+        if (!clGetDeviceIDsFromDX9MediaAdapterKHR)
+            continue;
+
+        device = NULL;
+        numDevices = 0;
+        cl_dx9_media_adapter_type_khr type = CL_ADAPTER_D3D9EX_KHR;
+        status = clGetDeviceIDsFromDX9MediaAdapterKHR(platforms[i], 1, &type, (void **)&pDirect3DDevice9Ex,
+                CL_PREFERRED_DEVICES_FOR_DX9_MEDIA_ADAPTER_KHR, 1, &device, &numDevices);
+        if (status != CL_SUCCESS)
+            continue;
+        if (numDevices > 0)
+        {
+            cl_context_properties properties[] = {
+                    CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+                    CL_CONTEXT_ADAPTER_D3D9EX_KHR, (cl_context_properties)(pDirect3DDevice9Ex),
+                    CL_CONTEXT_INTEROP_USER_SYNC, CL_FALSE,
+                    NULL, NULL
+            };
+            context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+            if (status != CL_SUCCESS)
+            {
+                clReleaseDevice(device);
+            }
+            else
+            {
+                found = i;
+                break;
+            }
+        }
+    }
+    if (found < 0)
+    {
+        // try with CL_ALL_DEVICES_FOR_DX9_MEDIA_ADAPTER_KHR
+        for (int i = 0; i < (int)numPlatforms; i++)
+        {
+            clGetDeviceIDsFromDX9MediaAdapterKHR_fn clGetDeviceIDsFromDX9MediaAdapterKHR = (clGetDeviceIDsFromDX9MediaAdapterKHR_fn)
+                    clGetExtensionFunctionAddressForPlatform(platforms[i], "clGetDeviceIDsFromDX9MediaAdapterKHR");
+            if (!clGetDeviceIDsFromDX9MediaAdapterKHR)
+                continue;
+
+            device = NULL;
+            numDevices = 0;
+            cl_dx9_media_adapter_type_khr type = CL_ADAPTER_D3D9EX_KHR;
+            status = clGetDeviceIDsFromDX9MediaAdapterKHR(platforms[i], 1, &type, (void **)&pDirect3DDevice9Ex,
+                    CL_ALL_DEVICES_FOR_DX9_MEDIA_ADAPTER_KHR, 1, &device, &numDevices);
+            if (status != CL_SUCCESS)
+                continue;
+            if (numDevices > 0)
+            {
+                cl_context_properties properties[] = {
+                        CL_CONTEXT_PLATFORM, (cl_context_properties)platforms[i],
+                        CL_CONTEXT_ADAPTER_D3D9EX_KHR, (cl_context_properties)(pDirect3DDevice9Ex),
+                        CL_CONTEXT_INTEROP_USER_SYNC, CL_FALSE,
+                        NULL, NULL
+                };
+                context = clCreateContext(properties, 1, &device, NULL, NULL, &status);
+                if (status != CL_SUCCESS)
+                {
+                    clReleaseDevice(device);
+                }
+                else
+                {
+                    found = i;
+                    break;
+                }
+            }
+        }
+        if (found < 0)
+		{
+			OutputDebugString(L"OpenCL: Can't create context for DirectX interop");
+			return nullptr;
+		}
+    }
+
+	openclContext = new COpenCLContext(platforms[found], device, context);
+	openclContext->GenerateContext();
+	/*
+    Context& ctx = Context::getDefault(false);
+    initializeContextFromHandle(ctx, platforms[found], context, device);
+    g_isDirect3DDevice9Ex = true;
+	*/
+
+
+    return openclContext;
+}
+
