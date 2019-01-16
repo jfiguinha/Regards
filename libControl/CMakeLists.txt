@@ -1,0 +1,86 @@
+cmake_minimum_required(VERSION 2.8.11)
+
+project(libControl)
+
+
+
+include_directories(
+    /home/figuinha/dev/Regards/libControl/
+    /home/figuinha/dev/Regards/libControl/
+    /home/figuinha/dev/Regards/libSqlite
+    /home/figuinha/dev/Regards/libTheme
+    /home/figuinha/dev/Regards/libextern/libRapidXML
+    /home/figuinha/dev/Regards/libextern/ffmpeg-2.6.2
+    /home/figuinha/dev/Regards/libextern/exiv2-0.24/src
+    /home/figuinha/dev/Regards/libextern/SDL2-2.0.3/include
+    /home/figuinha/dev/Regards/libGeolocalisation
+    /home/figuinha/dev/Regards/libParameter
+    /home/figuinha/dev/Regards/libExif
+    /home/figuinha/dev/Regards/libUtility
+    /home/figuinha/dev/Regards/libFiltreInterface
+    /home/figuinha/dev/Regards/include
+    /home/figuinha/dev/Regards/libDataStructure
+    /home/figuinha/dev/Regards/libResource
+    /home/figuinha/dev/Regards/libSqlData
+    /home/figuinha/dev/Regards/libOpenGL
+    /home/figuinha/dev/Regards/libRenderBitmap
+    /home/figuinha/dev/Regards/libSqlEngine
+    /home/figuinha/dev/Regards/libSqlite
+    /home/figuinha/dev/Regards/libextern/glew-1.13.0/include
+    /home/figuinha/dev/Regards/libFiltre
+    /home/figuinha/dev/Regards/include
+    /home/figuinha/dev/Regards/libDataStructure
+    /home/figuinha/dev/Regards/Otherlib/wxSVG/include
+    /home/figuinha/dev/Regards/libWindow
+    /home/figuinha/dev/Regards/libPrint
+    /home/figuinha/dev/Regards/libPicture
+    /home/figuinha/dev/Regards/libTheme
+    /home/figuinha/dev/Regards/libGeolocalisation
+    /home/figuinha/dev/Regards/libWindowMain
+    /home/figuinha/dev/Regards/libEmail
+    /home/figuinha/dev/Regards/libextern/wxWidgets-3.0.2/include
+    /home/figuinha/dev/Regards/libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0
+    /home/figuinha/dev/Regards/libOpenCL
+
+)
+
+add_definitions(
+    -DNDEBUG
+    -D__WXGTK__
+    -DEXIV2
+)
+
+# Linker options
+set(CMAKE_LDFLAGS "${CMAKE_LDFLAGS}  -s ")
+
+# Library path
+set(CMAKE_LDFLAGS "${CMAKE_LDFLAGS} -L\".\" ")
+
+# Define the CXX sources
+set ( CXX_SRCS
+    BitmapPrintout.cpp
+    BitmapToolbar.cpp
+    BitmapWndViewer.cpp
+    ClickToolbar.cpp
+    EffectVideoWnd.cpp
+    InfosFile.cpp
+    InfosSeparationBarEffect.cpp
+    ShowBitmap.cpp
+    ThumbnailEffect.cpp
+    ThumbnailHorizontal.cpp
+    ThumbnailVertical.cpp
+    ThumbnailVideo.cpp
+    CriteriaTree.cpp
+    CriteriaTreeWnd.cpp
+    ExifGpsTree.cpp
+    ExifGpsTreeWnd.cpp
+    InfosFileWnd.cpp
+    SplitterWithPanel.cpp
+)
+
+set_source_files_properties(
+    ${CXX_SRCS} PROPERTIES COMPILE_FLAGS 
+    " -fopenmp -std=c++11 -Wall")
+
+add_library(libControl ${CXX_SRCS} ${C_SRCS})
+
