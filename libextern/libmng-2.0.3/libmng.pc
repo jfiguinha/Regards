@@ -1,0 +1,11 @@
+prefix=/mingw64
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libmng
+Description: Loads PNG/MNG/JNG files
+Version: 2.0.3
+Libs: -L${libdir} -lmng
+Libs.private: -lz 
+Cflags: -I${includedir}

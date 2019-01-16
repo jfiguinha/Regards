@@ -1,0 +1,13 @@
+prefix=C:/Program Files (x86)/MediaInfoLib
+exec_prefix=C:/Program Files (x86)/MediaInfoLib
+libdir=C:/Program Files (x86)/MediaInfoLib/lib
+sharedlibdir=C:/Program Files (x86)/MediaInfoLib/lib
+includedir=C:/Program Files (x86)/MediaInfoLib/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.11
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

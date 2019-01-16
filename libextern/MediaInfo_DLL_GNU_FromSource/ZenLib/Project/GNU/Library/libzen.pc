@@ -1,0 +1,13 @@
+prefix=/mingw64
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+Unicode=yes
+WstringMissing=no
+Libs_Static=${exec_prefix}/lib/libzen.a -lpthread
+
+Name: libzen
+Version: 0.4.36
+Description: ZenLib
+Libs: -L${libdir} -lzen -lpthread -lstdc++
+Cflags: -I${includedir}  -DUNICODE -DSIZE_T_IS_LONG

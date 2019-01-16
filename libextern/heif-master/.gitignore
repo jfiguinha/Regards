@@ -1,0 +1,26 @@
+Bins/
+build
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+
+# Linux
+*.a
+
+# Windows
+*.exe
+.project
+.vscode/
+
+*.bak
+
+*.heic
+*.xml
+
+# IDE files
+*.user
+
+# MacOS
+.DS_Store
+.idea/

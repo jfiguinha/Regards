@@ -1,0 +1,4 @@
+install_name_tool ${changes} ${2}/wxrc-3.1
+install_name_tool ${changes} ${2}/wxrc-3.1
+install_name_tool ${changes} ${2}/wxrc-3.1
+install_name_tool ${changes} ${2}/wxrc-3.1

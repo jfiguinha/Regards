@@ -1,0 +1,12 @@
+prefix=C:/Program Files (x86)/MediaInfoLib
+exec_prefix=${prefix}
+libdir=C:/Program Files (x86)/MediaInfoLib/lib
+includedir=C:/Program Files (x86)/MediaInfoLib/include
+Unicode=yes
+Libs_Static=C:/Program Files (x86)/MediaInfoLib/lib/libzen.a -lpthread -lstdc++
+
+Name: libzen
+Version: 
+Description: ZenLib
+Libs: -L${libdir} -lzen -lpthread -lstdc++
+Cflags: -I${includedir} -DUNICODE
