@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="GifOption">
+		<title>Dialog</title>
+		<centered>1</centered>
+		<size>309,193</size>
+		<object class="wxRadioBox" name="ID_GIFCOMPRESSION">
+			<label>Gif Compression Option</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>LZW</item>
+				<item>none</item>
+				<item>RLE</item>
+			</content>
+			<default>-1</default>
+			<pos>0,0</pos>
+			<size>304,112</size>
+		</object>
+		<object class="wxButton" name="ID_OK">
+			<label>OK</label>
+			<pos>24,144</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>200,144</pos>
+		</object>
+	</object>
+</resource>
