@@ -1,9 +1,6 @@
 #pragma once
 #include "WindowMain.h"
 #include <FileGeolocation.h>
-#include <mutex>
-#include <thread>
-using namespace std;
 using namespace Regards::Internet;
 namespace Regards
 {
@@ -37,13 +34,13 @@ namespace Regards
             wxString checkOffVector;
             
             bool isSelected;
-            bool isVector = true;
+            
             
 			wxString filename;
 			CThemeBitmapInfos bitmapInfosTheme;
-            bool checkboxVisibility = true;
-            int xPos = 0;
-            int yPos = 0;
+            bool checkboxVisibility;
+            int xPos;
+            int yPos;
 
 		};
 	}

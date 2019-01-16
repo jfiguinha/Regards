@@ -1,5 +1,5 @@
 #pragma once
-#include <Theme.h>
+#include <theme.h>
 #include <ToolbarInterface.h>
 #include <ToolbarWindow.h>
 using namespace Regards::Window;
@@ -21,7 +21,7 @@ namespace Regards
 		private:
 
 			void EventManager(const int &id);
-			
+			CToolbarButton * screen;
 			CToolbarInterface * interfaceToolbar;
 			int idObject;
 		};

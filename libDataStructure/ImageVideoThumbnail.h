@@ -7,8 +7,9 @@
 //
 
 #pragma once
+#include "ImageLoadingFormat.h"
 
-#if defined(__APPLE__) || defined(WIN32)
+#if (defined(__APPLE__) || defined(WIN32)) && !defined(FFMPEG)
 
 class CRegardsBitmap;
 
@@ -16,29 +17,47 @@ class CImageVideoThumbnail
 {
 public:
     
-	CImageVideoThumbnail(){};
+	CImageVideoThumbnail()
+	{
+		image = nullptr;
+		rotation = 0;
+		percent = 0;
+		timePosition = 0;
+	};
 	~CImageVideoThumbnail(){};
     
-    CRegardsBitmap * image = nullptr;
-    int rotation = 0;
-    int percent = 0;
-    int timePosition = 0;
+    CRegardsBitmap * image;
+    int rotation;
+    int percent;
+    int timePosition;
 };
 
-#else
+#elif defined(FFMPEG)
 
-class CxImage;
+class CImageLoadingFormat;
 
 class CImageVideoThumbnail
 {
 public:
     
-	CImageVideoThumbnail(){};
-	~CImageVideoThumbnail(){};
+	CImageVideoThumbnail()
+	{
+		image = nullptr;
+		rotation = 0;
+		percent = 0;
+		delay = 50;
+		timePosition = 0;
+	};
+	~CImageVideoThumbnail()
+	{
+		if(image != nullptr)
+			delete image;
+	};
     
-    CxImage * image = nullptr;
-    int rotation = 0;
-    int percent = 0;
-    int timePosition = 0;
+    CImageLoadingFormat * image;
+    int rotation;
+	uint32_t delay;
+    int percent;
+    int timePosition;
 };
 #endif

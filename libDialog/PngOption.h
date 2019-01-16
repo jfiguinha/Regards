@@ -40,8 +40,8 @@ class PngOption: public wxDialog
 		void OnButton1Click(wxCommandEvent& event);
 		void OnbtnCancelClick(wxCommandEvent& event);
 		//*)
-        bool isOk = false;
-        int compressOption = 0;
+        bool isOk;
+        int compressOption;
 		DECLARE_EVENT_TABLE()
 };
 

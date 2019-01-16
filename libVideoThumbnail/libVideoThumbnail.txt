@@ -1,1 +1,1 @@
-./Release/cximagewriter.cpp.o ./Release/filmstripfilter.cpp.o ./Release/Metadata.cpp.o ./Release/moviedecoder.cpp.o ./Release/stringoperations.cpp.o ./Release/videothumbnailer.cpp.o ./Release/videothumbnailerc.cpp.o ./Release/videothumb.cpp.o
+./Release/videothumb.cpp.o ./Release/moviestreaminfo.cpp.o ./Release/videothumbnailer.cpp.o ./Release/stringoperations.cpp.o ./Release/filmstripfilter.cpp.o ./Release/moviedecoder.cpp.o ./Release/videostream.cpp.o

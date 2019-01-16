@@ -7,8 +7,12 @@
 using namespace Regards::Introduction;
 
 CMyCentralWindowIntro::CMyCentralWindowIntro(wxWindow* parent, wxWindowID id) :
-CWindowMain(parent, id)
+CWindowMain("CMyCentralWindowIntro",parent, id)
 {
+	titleIntro = nullptr;
+	infoAbout = nullptr;
+	treeAbout = nullptr;
+	aboutWndScroll = nullptr;
 	CThemeTree theme;
 	CThemeIntroLogo themeIntro;
 	CIntroTheme * config = new CIntroTheme();
@@ -58,7 +62,7 @@ CMyCentralWindowIntro::~CMyCentralWindowIntro()
 
 void CMyCentralWindowIntro::Resize()
 {
-	titleIntro->SetSize(0, 0, width, titleIntro->GetHeight());
-	aboutWndScroll->SetSize(0, titleIntro->GetHeight(), width, height - titleIntro->GetHeight());
+	titleIntro->SetSize(0, 0, GetWindowWidth(), titleIntro->GetHeight());
+	aboutWndScroll->SetSize(0, titleIntro->GetHeight(), GetWindowWidth(), GetWindowHeight() - titleIntro->GetHeight());
 	
 }

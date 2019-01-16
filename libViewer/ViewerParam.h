@@ -12,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CViewerParam();
-			~CViewerParam();
+			virtual ~CViewerParam();
 
 			void SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant);
 			void SetPositionWindow(const wxRect &rc);
@@ -21,7 +21,9 @@ namespace Regards
 			void SetShowVideoThumbnail(const bool &show);
 			void SetShowInfos(const bool &infos);
 			void SetShowFilter(const bool &infos);
+			void SetPertinenceValue(const double &value);
 
+			double GetPertinenceValue();
 			void GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant);
 			void GetPositionWindow(wxRect &rc);
 			void GetPositionSplitter(int &position);
@@ -29,6 +31,7 @@ namespace Regards
 			void GetShowVideoThumbnail(bool &show);
 			void GetShowInfos(bool &infos);
 			void GetShowFilter(bool &infos);
+			void GetCheckIsUpdate(bool &infos);
 
 			bool GetFullscreenDiaporamaOption();
 			bool GetEnAvantDiaporamaOption();
@@ -36,6 +39,12 @@ namespace Regards
 
 			wxString GetLastFolder();
 			void SetLastFolder(const wxString &folder);
+
+			void SetShowFolder(const bool &infos);
+			void GetShowFolder(bool &infos);
+
+			void SetShowFace(const bool &infos);
+			void GetShowFace(bool &infos);
             
             wxString GetLastSqlRequest();
             void SetLastSqlRequest(const wxString &sqlRequest);
@@ -48,6 +57,21 @@ namespace Regards
 
 			int GetPositionCriteriaPreview();
 			void SetPositionCriteriaPreview(const int &pos);
+
+			bool IsThumbnailBottom();
+			void SetThumbnailBottom(const bool &isBottom);
+
+			void SetPositionPreviewThumbnail(const int &pos);
+			int GetPositionPreviewThumbnail();
+
+			void SetPositionCriteriaFolder(const int &pos);
+			int GetPositionCriteriaFolder();	
+			void SetCheckIsUpdate(const bool &infos);
+
+			bool GetCheckThumbnailValidity();
+
+			int GetPositionPreviewFace();
+			void SetPositionPreviewFace(const int &pos);
 
 		private:
 
@@ -68,13 +92,14 @@ namespace Regards
 			void SetPositionParameter(xml_node<>* sectionPosition);
 			void SetCriteriaParameter(xml_node<>* section);
 
-
+			double pertinence;
 			wxString folder;
 			wxRect positionRegardsViewer;
 			bool showThumbnail;
 			bool showVideoThumbnail;
 			int position;
 			bool showInfos;
+			bool showFace;
 			bool fullscreen;
 			int delai;
 			int numEffect;
@@ -83,7 +108,13 @@ namespace Regards
 			wxString criteriaTriangleList;
 			int positionCriteriaPreview;
 			bool showFilter;
-            wxString sqlRequest = "";
+            wxString sqlRequest;
+			bool showFolder;
+			bool isThumbnailBottom;
+			int positionPreviewThumbnail;
+			int positionFolderCriteria;
+			int positionPreviewFace;
+			bool check;
 		};
 	}
 }

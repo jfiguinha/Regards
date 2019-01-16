@@ -11,6 +11,7 @@
 #include <ConvertUtility.h>
 using namespace Regards::Window;
 
+
 CCalendarSelect::CCalendarSelect()
 {
     
@@ -27,8 +28,7 @@ bool CCalendarSelect::SelectNewDate(wxWindow * window,const wxString & dataInfos
     wxDateTime dt;
     if(dataInfos.Length() == 10)
     {
-        printf("Date infos : %s \n", dataInfos.ToStdString().c_str());
-        vector<wxString> vDateTime = CConvertUtility::split(dataInfos, dataInfos[4]);
+         vector<wxString> vDateTime = CConvertUtility::split(dataInfos, dataInfos[4]);
         int month = atoi(vDateTime[1].c_str()) - 1;
         dt.SetYear(atoi(vDateTime[0].c_str()));
         dt.SetMonth((wxDateTime::Month)month);

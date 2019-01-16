@@ -5,6 +5,8 @@ CPictureData::~CPictureData()
 	if (data != nullptr)
 		delete[] data;
 };
+
+
 		
 
 

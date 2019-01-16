@@ -14,6 +14,8 @@ CSqlGps::CSqlGps(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
 {
     this->_sqlLibTransaction = _sqlLibTransaction;
     this->useTransaction = useTransaction;
+	typeResult = 0;
+	photogpsVector = nullptr;
 }
 
 
@@ -61,7 +63,7 @@ int CSqlGps::TraitementResult(CSqlResult * sqlResult)
         {
             CPhotoGps photoGps;
             
-            for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+            for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
             {
                 switch (i)
                 {

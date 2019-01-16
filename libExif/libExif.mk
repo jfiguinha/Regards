@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libExif
-ConfigurationName      :=Debug
-WorkspacePath          := "/home/figuinha/dev/Regards"
-ProjectPath            := "/home/figuinha/dev/Regards/libExif"
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=/home/figuinha/Developpement/Regards
+ProjectPath            :=/home/figuinha/Developpement/Regards/libExif
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=25/04/16
-CodeLitePath           :="/home/figuinha/.codelite"
-LinkerName             :=/usr/bin/g++-4.8
-SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
+Date                   :=15/01/19
+CodeLitePath           :=/home/figuinha/.codelite
+LinkerName             :=/usr/bin/ccache /usr/bin/g++
+SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -27,31 +27,31 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)_LINUX $(PreprocessorSwitch)__WXGTK__ 
+OutputFile             :=$(IntermediateDirectory)/$(ProjectName)_regards.a
+Preprocessors          :=$(PreprocessorSwitch)LIBHEIC $(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libExif.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libextern/exiv2-0.24/src $(IncludeSwitch)../libextern/exiv2-0.24/xmpsdk/include $(IncludeSwitch)../CxImage $(IncludeSwitch)../libUtility $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
-IncludePCH             := 
+LinkOptions            :=  -s
+IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch). $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libextern/exiv2-0.26/include/exiv2 $(IncludeSwitch)../libextern/exiv2-0.26/xmpsdk/include $(IncludeSwitch)../CxImage $(IncludeSwitch)../libUtility $(IncludeSwitch)../libPicture $(IncludeSwitch)../libMediaInfo $(IncludeSwitch)../include 
+IncludePCH             :=  -include ../include/Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                := $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
 AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++-4.8
-CC       := /usr/bin/gcc-4.8
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXX      := /usr/bin/ccache /usr/bin/g++
+CC       := /usr/bin/ccache /usr/bin/gcc
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -fopenmp -std=gnu++11 -O2 -msse4.1 $(Preprocessors)
+CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/PictureMetadata.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/MetadataExiv2.cpp$(ObjectSuffix) $(IntermediateDirectory)/PictureMetadataExiv.cpp$(ObjectSuffix) 
 
 
 
@@ -77,29 +77,42 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libExif"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libExif"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
+
+# PreCompiled Header
+../include/Release/header.h.gch: ../include/Release/header.h
+	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+
 
 
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/PictureMetadata.cpp$(ObjectSuffix): PictureMetadata.cpp $(IntermediateDirectory)/PictureMetadata.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libExif/PictureMetadata.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PictureMetadata.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/PictureMetadata.cpp$(DependSuffix): PictureMetadata.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PictureMetadata.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PictureMetadata.cpp$(DependSuffix) -MM "PictureMetadata.cpp"
+$(IntermediateDirectory)/MetadataExiv2.cpp$(ObjectSuffix): MetadataExiv2.cpp $(IntermediateDirectory)/MetadataExiv2.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libExif/MetadataExiv2.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MetadataExiv2.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MetadataExiv2.cpp$(DependSuffix): MetadataExiv2.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MetadataExiv2.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MetadataExiv2.cpp$(DependSuffix) -MM MetadataExiv2.cpp
 
-$(IntermediateDirectory)/PictureMetadata.cpp$(PreprocessSuffix): PictureMetadata.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PictureMetadata.cpp$(PreprocessSuffix) "PictureMetadata.cpp"
+$(IntermediateDirectory)/MetadataExiv2.cpp$(PreprocessSuffix): MetadataExiv2.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MetadataExiv2.cpp$(PreprocessSuffix) MetadataExiv2.cpp
+
+$(IntermediateDirectory)/PictureMetadataExiv.cpp$(ObjectSuffix): PictureMetadataExiv.cpp $(IntermediateDirectory)/PictureMetadataExiv.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libExif/PictureMetadataExiv.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PictureMetadataExiv.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PictureMetadataExiv.cpp$(DependSuffix): PictureMetadataExiv.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PictureMetadataExiv.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PictureMetadataExiv.cpp$(DependSuffix) -MM PictureMetadataExiv.cpp
+
+$(IntermediateDirectory)/PictureMetadataExiv.cpp$(PreprocessSuffix): PictureMetadataExiv.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PictureMetadataExiv.cpp$(PreprocessSuffix) PictureMetadataExiv.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -107,6 +120,7 @@ $(IntermediateDirectory)/PictureMetadata.cpp$(PreprocessSuffix): PictureMetadata
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
+	$(RM) ../include/Release/header.h.gch
 
 

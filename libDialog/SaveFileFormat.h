@@ -38,7 +38,7 @@ class SaveFileFormat: public wxDialog
 		void OnbtnCancelClick(wxCommandEvent& event);
 		//*)
 
-        bool isOk = false;;
+        bool isOk;
         int fileFormat;
     
 		DECLARE_EVENT_TABLE()

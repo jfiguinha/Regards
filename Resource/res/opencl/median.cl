@@ -1,11 +1,11 @@
-float4 GetColorSrc(int x, int y, const __global uchar4 *input, int width, int height)
+float4 GetColorSrc(int x, int y, const __global float4 *input, int width, int height)
 {
 	if(x < width && y < height && y >= 0 && x >= 0)	
 	{
 		int position = x + y * width;
-		return convert_float4(input[position]);
+		return input[position];
 	}
-	return (float4)0.0f;
+	return 0.0f;
 }
 
 void s2(float4 * a,float4 * b)
@@ -42,7 +42,7 @@ void mnmx6(float4 * a,float4 * b,float4 * c, float4 * d, float4 * e, float4 * f)
 	s2(a, d); s2(b, e); s2(c, f); mn3(a, b, c); mx3(d, e, f);  
 }
 
-__kernel void Median(__global uchar4 *output, const __global uchar4 *input, int width, int height)
+__kernel void Median(__global float4 *output, const __global float4 *input, int width, int height)
 {																  	
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -64,6 +64,6 @@ __kernel void Median(__global uchar4 *output, const __global uchar4 *input, int 
 	mnmx3(&k3, &k4, &k8);
 	
 	int position = x + y * width;
-	output[position] = convert_uchar4(k4);
+	output[position] = k4;
 
 }

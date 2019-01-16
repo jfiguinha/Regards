@@ -45,7 +45,7 @@ int CSqlCatalog::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			switch (i)
 			{

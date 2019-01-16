@@ -1,13 +1,16 @@
 #pragma once
 #include <TreeControl.h>
-#include <RegardsBitmap.h>
-#include <BitmapWndViewer.h>
 #include "EffectParameter.h"
-#include "FiltreEffectInterface.h"
+#include <FiltreEffectInterface.h>
+#include <FiltreUpdate.h>
 #include "FilterWindowParam.h"
-
 using namespace Regards::Window;
-using namespace Regards::Control;
+
+class CRegardsBitmap;
+
+#define TYPE_SLIDE 1
+#define TYPE_CHECKBOX 2
+#define TYPE_LISTBOX 3
 
 namespace Regards
 {
@@ -18,14 +21,14 @@ namespace Regards
 		{
 		public:
 
-			CFiltreEffect(CBitmapWndViewer * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
+			CFiltreEffect(IFiltreUpdate * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
 			~CFiltreEffect(void);
-			virtual void Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const int &filtre);
-			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, const int &value, const wxString &key);
+			virtual void Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre);
+			virtual void SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key);
 
             void UpdateScreenRatio();
 
-            void AddTreeInfos(const wxString &exifKey, const int &position, const vector<int> & value);
+            void AddTreeInfos(const wxString &exifKey, CTreeElementValue * position, void * value, const int & typeValue = 1, const int &type = TYPE_SLIDE);
             
 		protected:
 
@@ -37,9 +40,9 @@ namespace Regards
 			void UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent);
 			void CreateElement();
 			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
-			void AddTreeInfos(const wxString &exifKey, const int &position, const vector<int> & value, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child);
+			void AddTreeInfos(const wxString &exifKey, CTreeElementValue * position, void * value, int typeValue, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child, const int &type);
 
-			int filtre = 0;
+			int filtre;
 
 			int yPos;
 			int cxMax;
@@ -47,17 +50,17 @@ namespace Regards
 			int xMaxPos;
 			int xMaxPosValue;
 			int xMinPos;
-			int widthPosition = 0;
+			int widthPosition;
 
 			CEffectParameter * effectParameter;
-            CFilterWindowParam * filterEffect = nullptr;
+            CFilterWindowParam * filterEffect;
 
-			CRegardsBitmap * source = nullptr;
-			CBitmapWndViewer * bitmapViewer = nullptr;
+			CRegardsBitmap * source;
+			IFiltreUpdate * bitmapViewer;
             
             tree<CTreeData *>::iterator top;
             tree<CTreeData *>::iterator child;
-            int index = 0;
+            int index;
 		};
 	}
 }

@@ -3,6 +3,7 @@
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif
+#include <ConvertUtility.h>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 using namespace rapidxml;
@@ -72,7 +73,7 @@ void CThemeParam::GetVideoControlTheme(CTheme * theme)
 void CThemeParam::InitVideoToolbar()
 {
 	themeVideoToolbar.colorBack.Set(30, 30, 30);
-	themeVideoToolbar.colorTop.Set(74, 74, 74);
+	themeVideoToolbar.colorTop.Set(29, 29, 29);
 	themeVideoToolbar.colorBottom.Set(29, 29, 29);
 	themeVideoToolbar.position = NAVIGATOR_CENTER;
 	themeVideoToolbar.SetHeight(70);
@@ -98,7 +99,7 @@ void CThemeParam::InitBitmapToolbar()
 {
 	themeBitmapToolbar.colorBack.Set(30, 30, 30);
 	themeBitmapToolbar.colorTop.Set(74, 74, 74);
-	themeBitmapToolbar.colorBottom.Set(29, 29, 29);
+	themeBitmapToolbar.colorBottom.Set(74, 74, 74);
 	themeBitmapToolbar.position = NAVIGATOR_CENTER;
 	themeBitmapToolbar.SetHeight(40);
 	themeBitmapToolbar.SetMargeX(5);
@@ -138,7 +139,8 @@ bool CThemeParam::OpenFile(const wxString &configFile)
 	filename = configFile;
 	doc.clear();
 	// Read the xml file into a vector
-	ifstream theFile(filename.ToStdString());
+    //const char * fichier = CConvertUtility::ConvertFromwxString(filename);
+	ifstream theFile(CConvertUtility::ConvertToStdString(filename));
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	if (buffer.size() > 0)
 	{

@@ -19,7 +19,6 @@ namespace Regards
 			int SetTooltipText(const wxString & tooltip);
 			void SetTitle(const wxString & title);
 			void SetClosable(const bool &value);
-			int GetHeight() const;
             void UpdateScreenRatio();
 			void SetTheme(CThemeTitleBar * themeTitle);
 			void Redraw();
@@ -40,7 +39,7 @@ namespace Regards
 			wxBitmap m_croixOff;
 			wxBitmap m_croixOn;
 			wxRect rcFermer;
-			bool mouseCapture = false;
+			bool mouseCapture;
 			wxString libelle;
 			wxString tooltip;
 			CTitleBarInterface * titleBarInterface;

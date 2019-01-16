@@ -9,13 +9,28 @@
 #include "Rotation.h"
 #include "Histogramme.h"
 #include "RedEye.h"
+#include "GaussianBlur.h"
+#include "InterpolationFilters.h"
+#include "Wave.h"
+#include "clahe.h"
+#include <FilterData.h>
+#include <ImageLoadingFormat.h>
+#include <RegardsBitmap.h>
 using namespace Regards::FiltreEffet;
 
-CFiltreEffetCPU::CFiltreEffetCPU(CRegardsBitmap * pBitmap, const CRgbaquad &backColor)
-	: IFiltreEffet(pBitmap, backColor)
+CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap)
+	: IFiltreEffet(backColor)
 {
-	this->pBitmap = pBitmap;
 	this->backColor = backColor;
+	bitmapOut = nullptr;
+	pBitmap = bitmap->GetRegardsBitmap();
+}
+
+void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
+{
+    if(pBitmap != nullptr)
+        delete pBitmap;
+    pBitmap = bitmap->GetRegardsBitmap();   
 }
 
 int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
@@ -24,13 +39,405 @@ int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
 	return redeye.RemoveRedEye(pBitmap, backColor, rSelectionBox);
 }
 
-CFiltreEffetCPU::~CFiltreEffetCPU()
+CRegardsFloatBitmap * CFiltreEffetCPU::GetFloatBitmap(const bool &source)
 {
+    CImageLoadingFormat imageLoading(false);
+    imageLoading.SetPicture(pBitmap);   
+    return imageLoading.GetFloatBitmap(true);
 }
 
-wxImage CFiltreEffetCPU::InterpolationBicubic(const wxImage & imageSrc, const int &widthOut, const int &heightOut)
+int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radius)
 {
-	return imageSrc.ResampleBicubic(widthOut, heightOut);
+	if (pBitmap != nullptr)
+	{
+		CWaveFilter * waveFilter = new  CWaveFilter();
+		waveFilter->ProcessEffect(pBitmap, x, y, height, scale, radius);
+		delete waveFilter;
+		return 0;
+	}
+	return -1;
+}
+
+int CFiltreEffetCPU::ClaheFilter(int nBins, float clipLevel, int windowSize)
+{
+	if (pBitmap != nullptr)
+	{
+		CClahe * clahe = new Regards::FiltreEffet::CClahe();
+		CRegardsBitmap * out = clahe->ClaheFilter(pBitmap, nBins, clipLevel, windowSize);
+		pBitmap->SetBitmap(out->GetPtBitmap(), out->GetBitmapWidth(), out->GetBitmapHeight());
+		delete clahe;
+		delete out;
+		return 0;
+	}
+	return -1;
+}
+
+int CFiltreEffetCPU::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
+{
+	if (pBitmap != nullptr)
+	{
+		CBilateral * bilateral = new Regards::FiltreEffet::CBilateral(fSize, sigmaX, sigmaP);
+		bilateral->SetParameter(pBitmap, backColor);
+		bilateral->Compute();
+		delete bilateral;
+		return 0;
+	}
+	return -1;
+}
+
+int CFiltreEffetCPU::NlmeansFilter(int fsize, int bsize, float sigma)
+{
+	if (pBitmap != nullptr)
+	{
+		CNlmeans * nlmeans = new Regards::FiltreEffet::CNlmeans(fsize, bsize, sigma);
+		nlmeans->SetParameter(pBitmap, backColor);
+		nlmeans->Compute();
+		delete nlmeans;
+		return 0;
+	}
+	return -1;
+}
+
+
+int CFiltreEffetCPU::SharpenMasking(const float &sharpness)
+{
+	if (pBitmap != nullptr)
+	{
+		CSharpenMasking * sharpenMasking = new Regards::FiltreEffet::CSharpenMasking(sharpness);
+		sharpenMasking->SetParameter(pBitmap, backColor);
+		sharpenMasking->Compute();
+		delete sharpenMasking;
+		return 0;
+	}
+	return -1;
+}
+
+CFiltreEffetCPU::~CFiltreEffetCPU()
+{
+	if(bitmapOut != nullptr)
+		delete bitmapOut;
+	bitmapOut = nullptr;
+    
+    if(pBitmap != nullptr)
+        delete pBitmap;
+    pBitmap = nullptr;
+}
+
+wxImage CFiltreEffetCPU::GetwxImage()
+{
+	int width = 0;
+	int height = 0;
+	unsigned char * data = nullptr;
+	if(bitmapOut != nullptr)
+	{
+		width = bitmapOut->GetBitmapWidth();
+		height = bitmapOut->GetBitmapHeight();
+		data = bitmapOut->GetPtBitmap();
+	}
+	else
+	{
+		width = pBitmap->GetBitmapWidth();
+		height = pBitmap->GetBitmapHeight();
+		data = pBitmap->GetPtBitmap();
+	}
+	wxImage anImage(width, height, false);
+	unsigned char * dataOut = anImage.GetData();
+	int size = width*height;
+	//pBitmap->VertFlipBuf();
+
+	if (data != nullptr)
+	{
+#pragma omp parallel for
+		for (int i = 0; i < size; ++i)
+		{
+			int y = i / width;
+			int x = i - (y * width);
+			int calcul = (height - y - 1) * width + x;
+			dataOut[i * 3] = data[(calcul << 2) + 2]; // R
+			dataOut[i * 3 + 1] = data[(calcul << 2) + 1]; // G
+			dataOut[i * 3 + 2] = data[(calcul << 2)]; // B
+		}
+
+	}
+
+	return anImage;
+}
+
+wxImage CFiltreEffetCPU::GetwxImage(CRegardsBitmap * bitmap)
+{
+	int width = bitmap->GetBitmapWidth();
+	int height = bitmap->GetBitmapHeight();
+	unsigned char * data = bitmap->GetPtBitmap();
+	wxImage anImage(width, height, false);
+	unsigned char * dataOut = anImage.GetData();
+	int size = width*height;
+	//pBitmap->VertFlipBuf();
+
+	if (data != nullptr)
+	{
+#pragma omp parallel for
+		for (int i = 0; i < size; ++i)
+		{
+			int y = i / width;
+			int x = i - (y * width);
+			int pos = i * 3;
+			int calcul = ((height - y - 1) * width + x) << 2;
+			//int calcul = y * width + x;
+			dataOut[pos] = data[calcul + 2]; // R
+			dataOut[pos + 1] = data[calcul + 1]; // G
+			dataOut[pos + 2] = data[calcul]; // B
+		}
+
+	}
+
+	return anImage;
+}
+
+
+void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle)
+{
+	if(bitmapOut != nullptr)
+		delete bitmapOut;
+
+	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	CInterpolationBicubic interpolation;
+	interpolation.Execute(pBitmap, bitmapOut, flipH, flipV, angle);
+	/*
+	switch(method)
+	{
+	case BOXFILTER:
+		{
+			CBoxFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case BILINEARFILTER :
+		{
+			CBilinearFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case GAUSSIANFILTER:
+		{
+			CGaussianFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case HAMMINGFILTER:
+		{
+			CHammingFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case CUBICFILTER:
+		{
+			CCubicFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case BLACKMANFILTER:
+		{
+			CBlackmanFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case QUADRATICFILTER:
+		{
+			CQuadraticFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case MITCHELLFILTER:
+		{
+			CMitchellFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case TRIANGLEFILTER:
+		{
+			CTriangleFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case SINCFILTER:
+		{
+			CSincFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case BESSELFILTER:
+		{
+			CBesselFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case BLACKMANBESSELFILTER:
+		{
+			CBlackmanBesselFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case BLACKMANSINCFILTER:
+		{
+			CBlackmanSincFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case LANCZOSFILTER:
+		{
+			CLanczosFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case HERMITEFILTER:
+		{
+			CHermiteFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case HANNINGFILTER:
+		{
+			CHanningFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	case CATROMFILTER:
+		{
+			CCatromFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	default:
+		{
+			CCubicFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut);
+		}
+		break;
+	}
+	*/
+}
+
+void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle)
+{
+	if(bitmapOut != nullptr)
+		delete bitmapOut;
+
+	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+	CInterpolationBicubic interpolation;
+	interpolation.Execute(pBitmap, bitmapOut, rc);//, flipH, flipV, angle);
+	/*
+	switch(method)
+	{
+	case BOXFILTER:
+		{
+			CBoxFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case BILINEARFILTER :
+		{
+			CBilinearFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case GAUSSIANFILTER:
+		{
+			CGaussianFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case HAMMINGFILTER:
+		{
+			CHammingFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case CUBICFILTER:
+		{
+			CCubicFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case BLACKMANFILTER:
+		{
+			CBlackmanFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case QUADRATICFILTER:
+		{
+			CQuadraticFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case MITCHELLFILTER:
+		{
+			CMitchellFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case TRIANGLEFILTER:
+		{
+			CTriangleFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case SINCFILTER:
+		{
+			CSincFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case BESSELFILTER:
+		{
+			CBesselFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case BLACKMANBESSELFILTER:
+		{
+			CBlackmanBesselFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case BLACKMANSINCFILTER:
+		{
+			CBlackmanSincFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case LANCZOSFILTER:
+		{
+			CLanczosFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case HERMITEFILTER:
+		{
+			CHermiteFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case HANNINGFILTER:
+		{
+			CHanningFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	case CATROMFILTER:
+		{
+			CCatromFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	default:
+		{
+			CCubicFilter interpolation;
+			interpolation.Execute(pBitmap, bitmapOut,rc);
+		}
+		break;
+	}
+	*/
 }
 
 int CFiltreEffetCPU::HistogramLog()
@@ -57,55 +464,6 @@ int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iP
 		delete filtre;
 
 	}
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
-{
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut, flipH, flipV, angle);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationBicubic(CRegardsBitmap * & bitmapOut)
-{
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut, rc);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationBilinear(CRegardsBitmap * & bitmapOut)
-{
-	CInterpolationBilinear interpolation;
-	interpolation.Execute(pBitmap, bitmapOut);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationBilinear(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut, rc);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationFast(CRegardsBitmap * & bitmapOut)
-{
-	CInterpolation interpolation;
-	interpolation.Execute(pBitmap, bitmapOut);
-	return 0;
-}
-
-int CFiltreEffetCPU::InterpolationFast(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut, rc);
 	return 0;
 }
 
@@ -153,13 +511,19 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 //---------------------------------------------------------------------
 //Effet Clouds 
 //---------------------------------------------------------------------
-int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave)
+int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity)
 {
 	if (pBitmap != nullptr)
 	{
 		CPerlinNoise * m_perlinNoise = new Regards::FiltreEffet::CPerlinNoise();
-		m_perlinNoise->Clouds(pBitmap, color1, color2, frequence, amplitude, octave);
+		CRegardsBitmap localBitmap(250,250);
+		CRegardsBitmap * bitmapOut = new CRegardsBitmap(pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
+		CInterpolationBicubic interpolation;
+		interpolation.Execute(&localBitmap, bitmapOut);
+		Fusion(bitmapOut, intensity / 100.0f);
+		delete bitmapOut;
 	}
 	return 0;
 }
@@ -180,7 +544,7 @@ int CFiltreEffetCPU::Swirl(const float &radius, const float &angle)
 }
 
 //---------------------------------------------------------------------
-//Lumière et Contraste 
+//LumiÃ¨re et Contraste 
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::BrightnessAndContrast(const double &brightness, const double &contrast)
 {
@@ -273,12 +637,16 @@ int CFiltreEffetCPU::Soften()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::Blur()
+int CFiltreEffetCPU::Blur(const int &radius)
 {
 	if (pBitmap != nullptr)
 	{
-		short kernel[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 3, 9, 0);
+		int sizeKernel = radius * 3;
+		short * kernel = new short[sizeKernel];
+		for(int i = 0;i < sizeKernel;i++)
+			kernel[i] = 1;
+		//{ 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, radius, sizeKernel, 0);
 		filtre->SetParameter(pBitmap, backColor);
 		filtre->Compute();
 		delete filtre;
@@ -290,15 +658,12 @@ int CFiltreEffetCPU::Blur()
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffetCPU::GaussianBlur()
+int CFiltreEffetCPU::GaussianBlur(const int &radius, const int &boxSize)
 {
 	if (pBitmap != nullptr)
 	{
-		short kernel[9] = { 5, 15, 31, 49, 56, 49, 31, 15, 5 };
-		CMatrixConvolution * filtre = new CMatrixConvolution(kernel, 9, 256, 0);
-		filtre->SetParameter(pBitmap, backColor);
-		filtre->Compute();
-		delete filtre;
+		CGaussianBlur gaussianBlur;
+		gaussianBlur.GaussianBlur(pBitmap, radius);
 	}
 
 	return 0;
@@ -573,7 +938,7 @@ int CFiltreEffetCPU::Rotate90()
 	if (pBitmap != nullptr)
 	{
 		CRotation * m_cEffet = new CRotation();
-		m_cEffet->Rotate(pBitmap, 90.0f, backColor);
+		m_cEffet->Rotate(pBitmap, 270.0f, backColor);
 		delete m_cEffet;
 	}
 	return 0;
@@ -587,7 +952,7 @@ int CFiltreEffetCPU::Rotate270()
 	if (pBitmap != nullptr)
 	{
 		CRotation * m_cEffet = new CRotation();
-		m_cEffet->Rotate(pBitmap, 270.0f, backColor);
+		m_cEffet->Rotate(pBitmap, 90.0f, backColor);
 		delete m_cEffet;
 	}
 	return 0;
@@ -619,4 +984,19 @@ int CFiltreEffetCPU::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcent
 		pBitmap->FusionBitmap(bitmapSecond, pourcentage);
 	}
 	return 0;
+}
+
+CRegardsBitmap * CFiltreEffetCPU::GetBitmap(const bool &source)
+{
+	CRegardsBitmap * copy = new CRegardsBitmap();
+
+	if(bitmapOut != nullptr && !source)
+	{
+		copy->SetBitmap(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight()); 
+		//bitmapOut->SaveToBmp("e:\\test2.bmp");
+		//copy->SaveToBmp("e:\\test.bmp");
+	}
+	else
+		copy->SetBitmap(pBitmap->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight()); 
+	return copy;
 }

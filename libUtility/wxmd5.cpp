@@ -32,17 +32,14 @@
  **********************************************************************
  */
 
-
-
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
-
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 // includes
 #include "wxmd5.h"
+
+#ifndef WIN32
 
 // C headers for MD5
 #include <sys/types.h>
@@ -341,3 +338,120 @@ wxString wxMD5::GetFileMD5(const wxString &filename)
 	wxFileInputStream stream(filename); 
 	return GetFileMD5(stream); 
 }
+
+#else
+
+#include <stdio.h>
+#include <windows.h>
+#include <Wincrypt.h>
+
+#define BUFSIZE 1024
+#define MD5LEN  16
+
+wxString wxMD5::GetFileMD5(const wxString &filename)
+{
+	DWORD dwStatus = 0;
+	BOOL bResult = FALSE;
+	HCRYPTPROV hProv = 0;
+	HCRYPTHASH hHash = 0;
+	HANDLE hFile = NULL;
+	BYTE rgbFile[BUFSIZE];
+	DWORD cbRead = 0;
+	BYTE rgbHash[MD5LEN];
+	DWORD cbHash = 0;
+	CHAR rgbDigits[] = "0123456789abcdef";
+	//LPCWSTR filename = L"filename.txt";
+	// Logic to check usage goes here.
+
+	hFile = CreateFile(filename.c_str(),
+		GENERIC_READ,
+		FILE_SHARE_READ,
+		NULL,
+		OPEN_EXISTING,
+		FILE_FLAG_SEQUENTIAL_SCAN,
+		NULL);
+
+	if (INVALID_HANDLE_VALUE == hFile)
+	{
+		dwStatus = GetLastError();
+		//printf("Error opening file %s\nError: %d\n", filename,
+		//	dwStatus);
+		return "";
+	}
+
+	// Get handle to the crypto provider
+	if (!CryptAcquireContext(&hProv,
+		NULL,
+		NULL,
+		PROV_RSA_FULL,
+		CRYPT_VERIFYCONTEXT))
+	{
+		dwStatus = GetLastError();
+		//printf("CryptAcquireContext failed: %d\n", dwStatus);
+		CloseHandle(hFile);
+		return "";
+	}
+
+	if (!CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+	{
+		dwStatus = GetLastError();
+		//printf("CryptAcquireContext failed: %d\n", dwStatus);
+		CloseHandle(hFile);
+		CryptReleaseContext(hProv, 0);
+		return "";
+	}
+
+	while (bResult = ReadFile(hFile, rgbFile, BUFSIZE,&cbRead, NULL))
+	{
+		if (0 == cbRead)
+		{
+			break;
+		}
+
+		if (!CryptHashData(hHash, rgbFile, cbRead, 0))
+		{
+			dwStatus = GetLastError();
+			//printf("CryptHashData failed: %d\n", dwStatus);
+			CryptReleaseContext(hProv, 0);
+			CryptDestroyHash(hHash);
+			CloseHandle(hFile);
+			return "";
+		}
+	}
+
+	if (!bResult)
+	{
+		dwStatus = GetLastError();
+		//printf("ReadFile failed: %d\n", dwStatus);
+		CryptReleaseContext(hProv, 0);
+		CryptDestroyHash(hHash);
+		CloseHandle(hFile);
+		return "";
+	}
+	wxString output = "";
+	cbHash = MD5LEN;
+	if (CryptGetHashParam(hHash, HP_HASHVAL, rgbHash, &cbHash, 0))
+	{
+		
+		//printf("MD5 hash of file %s is: ", filename);
+		for (DWORD i = 0; i < cbHash; i++)
+		{
+			char message[10];
+			sprintf(message, "%c%c", rgbDigits[rgbHash[i] >> 4],
+				rgbDigits[rgbHash[i] & 0xf]);
+			output.append(message);
+		}
+	}
+	else
+	{
+		dwStatus = GetLastError();
+		//printf("CryptGetHashParam failed: %d\n", dwStatus);
+	}
+
+	CryptDestroyHash(hHash);
+	CryptReleaseContext(hProv, 0);
+	CloseHandle(hFile);
+
+	return output;
+}
+#endif

@@ -4,6 +4,15 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <ConvertUtility.h>
+
+#if defined(LIBAPPLE)
+#include <AppleReadExif.h>
+#endif
+#if defined(EXIV2)
+#include <MetadataExiv2.h>
+using namespace Regards::exiv2;
+#endif
+
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -16,10 +25,6 @@
 #include <PhotoCriteria.h>
 #include <SqlPhotos.h>
 #include <TreeDataLink.h>
-//#include <MainWindow.h>
-#ifdef __APPLE__
-#include <AppleReadExif.h>
-#endif
 #include <MapSelect.h>
 #include <CalendarSelect.h>
 using namespace Regards::Sqlite;
@@ -30,28 +35,20 @@ using namespace Regards::Control;
 
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
-CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll)
-: CWindowMain(parent, id)
+CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, 
+	CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll)
+: CWindowMain("CCriteriaTreeWnd",parent, id)
 {
-    this->mainWindowID = mainWindowID;
-    //CThemeScrollBar themeScroll;
-    //CExplorerTheme * explorerTheme = CExplorerThemeInit::getInstance();
+	InfosFileScroll = nullptr;
+	treeWindow = nullptr;
+	criteriaTree = nullptr;
+	oldCriteriaTree = nullptr;
+	numPhotoId = 0;
+	this->mainWindowID = mainWindowID;
     this->fileGeolocalisation = fileGeolocalisation;
-    
-    //if (explorerTheme != nullptr)
-    //{
-    //    explorerTheme->GetScrollInfosFileTheme(themeScroll);
-        InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-    //}
-    
-    //if (explorerTheme != nullptr)
-    //{
-     //   CThemeTree theme;
-     //   explorerTheme->GetTreeInfosFileTheme(theme);
-        treeWindow = new CTreeWindow(InfosFileScroll, wxID_ANY, theme);
-        InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
-    //}
-
+    InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
+    treeWindow = new CTreeWindow(InfosFileScroll, wxID_ANY, theme);
+    InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
     Connect(wxEVT_SHOWCALENDAR, wxCommandEventHandler(CCriteriaTreeWnd::ShowCalendar));
     Connect(wxEVT_SHOWMAP, wxCommandEventHandler(CCriteriaTreeWnd::ShowMap));
 }
@@ -86,9 +83,13 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
         sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
         if(photoCriteria != nullptr && numCriteriaId != photoCriteria->GetCriteriaId())
             sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, photoCriteria->GetCriteriaId());
-#ifdef __APPLE__ 
+#if defined(LIBAPPLE)
         CAppleReadExif appleReadExif;
         appleReadExif.WriteDateTime(filename, calendarSelect.GetSelectDate());
+#else
+        CMetadataExiv2 metadata(filename);
+        metadata.SetDateTime(calendarSelect.GetSelectStringDate());
+        
 #endif
         fileGeolocalisation->RefreshData();
         
@@ -100,11 +101,13 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
     if(photoCriteria != nullptr)
         delete photoCriteria;
     
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
 {
+
+
     CMapSelect mapSelect;
     wxString url = GenerateUrl();
     CPhotoCriteria * photoCriteria = (CPhotoCriteria *)event.GetClientData();
@@ -134,9 +137,28 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
         latitude.ToDouble(&dlat);
         longitude.ToDouble(&dlong);
         
-#ifdef __APPLE__
+#if defined(LIBAPPLE)
         CAppleReadExif appleReadExif;
         appleReadExif.WriteGps(filename, dlat, dlong);
+#else
+        wxString wlatitudeRef = "";
+        wxString wlongitudeRef = "";
+        wxString wlongitude = to_string(abs(dlong));
+        wxString wlatitude = to_string(abs(dlat));
+        
+        if (dlat < 0)
+            wlatitudeRef = "S";
+        else
+            wlatitudeRef = "N";
+        
+        if (dlong < 0)
+            wlongitudeRef = "W";
+        else
+            wlongitudeRef = "E";
+        
+        CMetadataExiv2 metadataExiv2(filename);
+        metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+        
 #endif
         fileGeolocalisation->RefreshData();
         
@@ -149,7 +171,7 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
     if(photoCriteria != nullptr)
         delete photoCriteria;
     
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 
@@ -186,7 +208,7 @@ void CCriteriaTreeWnd::SetFile(const wxString &filename)
     
     UpdateTreeData();
     
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 
@@ -204,6 +226,10 @@ void CCriteriaTreeWnd::UpdateScreenRatio()
 void CCriteriaTreeWnd::Resize()
 {
     if(InfosFileScroll != nullptr)
-        if (InfosFileScroll->IsShown())
-            InfosFileScroll->SetSize(0, 0, width, height);
+	{
+		InfosFileScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		//InfosFileScroll->SendSizeEvent();
+		treeWindow->SetSize(GetWindowWidth(),GetWindowHeight());
+		//treeWindow->SendSizeEvent();
+	}
 }

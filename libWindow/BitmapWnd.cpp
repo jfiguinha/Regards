@@ -9,10 +9,10 @@
 #include <LibResource.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <algorithm> 
 #include <wx/dcbuffer.h>
 #include <RegardsBitmap.h>
-#include "WindowMain.h"
+#include <FilterData.h>
+#include <MetadataExiv2.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #include "../include/config_id.h"
@@ -20,8 +20,17 @@
 #include <window_id.h>
 #include <config_id.h>
 #endif
+#include <OpenCLEffect.h>
+#ifdef __APPLE__
+#include <OpenCL/OpenCL.h>
+#endif
+#include <utility.h>
+#include <ImageLoadingFormat.h>
+#include <RegardsFloatBitmap.h>
 
+using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
+using namespace Regards::exiv2;
 const float CBitmapWnd::TabRatio[] = { 0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f, 1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f};
 const long CBitmapWnd::Max = 27;
 
@@ -29,22 +38,34 @@ const long CBitmapWnd::Max = 27;
 #define TIMER_LOADING 4
 
 
-int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16 };
-
-
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
 
-CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, CWindowMain * windowMain, const CThemeBitmapWindow & theme)
-#ifdef WIN32
-: wxGLCanvas(parent, id)
-#else
-: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
-#endif
-
-//: CWindowOpenGLMain(parent, id)
+CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID idMain, const CThemeBitmapWindow & theme)
+//	: CWindowMain(parent, id)
+: CWindowOpenGLMain("CBitmapWnd", parent, id)
 {
+	isOpenGL = true;
+	glTexture = nullptr;
+	renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+#ifdef WIN32
+    renderOpenGL->Init(this);
+#endif 
+	idWindowMain = idMain;
+	//bitmap = nullptr;
+	sliderInterface = nullptr;
+	config = nullptr;
+    loadingTimer = nullptr;
+    showLoadingBitmap = false;
+    stepLoading = 0;
+    useLoadingPicture = false;
+    openCLEngine = nullptr;
+	filtreEffet = nullptr;
+	flipVertical = 0;
+	flipHorizontal = 0;
+	angle = 0;
+
 	config = CParamInit::getInstance();
 	sliderInterface = slider;
 	zoom = false;
@@ -63,10 +84,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	defaultLineSize = 5;
 	showScroll = true;
 	fastRender = false;
-	renderInterface = nullptr;
 	themeBitmap = theme;
-	//backColor = CRgbaquad(theme.colorBack.Red(), theme.colorBack.Green(), theme.colorBack.Blue());
-	this->windowMain = windowMain;
 
     Connect(wxEVT_SIZE, wxSizeEventHandler(CBitmapWnd::OnSize));
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::OnPaint));
@@ -79,27 +97,62 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CBitmapWnd::OnKeyDown));
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd::OnMouseCaptureLost));
-    
+    Connect(wxEVENT_OPENGLENABLEREFRESH, wxCommandEventHandler(CBitmapWnd::OnEnableOpenGLRefresh));
+	bitmapwidth = 0;
+	bitmapheight = 0;
+	bitmapUpdate = false;
+	source = nullptr;
+	bitmapLoad = false;
+
     loadingTimer = new wxTimer(this, TIMER_LOADING);
     Connect(TIMER_LOADING, wxEVT_TIMER, wxTimerEventHandler(CBitmapWnd::OnLoading), nullptr, this);
     
 	themeBitmap.colorBack = themeBitmap.colorScreen;
-	InitRenderInterface();
+	filterInterpolation = CUBICFILTER;
+}
+
+void CBitmapWnd::OnEnableOpenGLRefresh(wxCommandEvent& event)
+{
+    TRACE();
+#ifdef __APPLE__
+    timerUpdate = true;
+    loadingTimer->Start(50, true);
+#endif
+}
+
+void CBitmapWnd::SetFilterInterpolation(const int &filter)
+{
+    TRACE();
+	filterInterpolation = filter;
+    RefreshWindow();
 }
 
 void CBitmapWnd::OnLoading(wxTimerEvent& event)
 {
-    stepLoading += 1;
-    if (stepLoading == 8)
-        stepLoading = 0;
+    TRACE();
+    if(timerUpdate)
+    {
+       fastRenderOpenGL = false;
+        //this->Resize();
+        UpdateResized();
+        timerUpdate = false;
+    }
+    else
+    {
+        stepLoading += 1;
+        if (stepLoading == 8)
+            stepLoading = 0;
 
-    loadingTimer->Start(50, true);
-    this->Refresh();
+        loadingTimer->Start(50, true);        
+    }
+
+    RefreshWindow();
 }
 
 
 void CBitmapWnd::StopLoadingBitmap()
 {
+    TRACE();
     if(useLoadingPicture)
     {
         showLoadingBitmap = false;
@@ -110,6 +163,7 @@ void CBitmapWnd::StopLoadingBitmap()
 
 void CBitmapWnd::StartLoadingBitmap()
 {
+    TRACE();
     if(useLoadingPicture)
     {
         stepLoading = 0;
@@ -120,58 +174,42 @@ void CBitmapWnd::StartLoadingBitmap()
 
 void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 {
+    TRACE();
 	if (fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorFullscreen;
 	else
 		themeBitmap.colorBack = themeBitmap.colorScreen;
-}
-
-void CBitmapWnd::InitRenderInterface()
-{
-	if (renderInterface != nullptr)
-		delete renderInterface;
-
-	renderInterface = nullptr;
-
-	if (config != nullptr)
-	{
-		if (config->GetPreviewLibrary() == LIBOPENGL)
-		{
-			renderInterface = new CRenderBitmapInterfaceOpenGL();
-			return;
-		}
-	}
-	renderInterface = new CRenderBitmapInterfaceGDI();
-
-    
-}
-
-bool CBitmapWnd::IsGpGpuCompatible()
-{
-	return directComputeCompatible;
+       
+    fastRenderOpenGL = true;
+    //this->FastRefresh(this,true);
 }
 
 int CBitmapWnd::GetWidth()
 {
+    TRACE();
 	return GetSize().x;
 }
 int CBitmapWnd::GetHeight()
 {
+    TRACE();
     return GetSize().y;
 }
 
 float CBitmapWnd::GetRatio()
 {
+    TRACE();
 	return ratio;
 }
 
 int CBitmapWnd::GetPosRatio()
 {
+    TRACE();
 	return posRatio;
 }
 
 void CBitmapWnd::SetRatioPos(const int &pos)
 {
+    TRACE();
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -188,8 +226,7 @@ void CBitmapWnd::SetRatioPos(const int &pos)
 	ratio = TabRatio[posRatio];
 
 	CalculPositionPicture(centerX, centerY);
-
-	this->Refresh();
+    RefreshWindow();
 }
 
 //-----------------------------------------------------------------
@@ -197,10 +234,23 @@ void CBitmapWnd::SetRatioPos(const int &pos)
 //-----------------------------------------------------------------
 CBitmapWnd::~CBitmapWnd(void)
 {
+    TRACE();
+	if(filtreEffet != nullptr)
+		delete filtreEffet;
+	filtreEffet = nullptr;
+
+	if (openCLEngine != nullptr)
+		delete openCLEngine;
+	openCLEngine = nullptr;
+
+	if(renderOpenGL != nullptr)
+		delete renderOpenGL;
+
 }
 
 void CBitmapWnd::SetKey(const int &iKey)
 {
+    TRACE();
 	this->iKey = iKey;
 	switch(toolOption)
 	{
@@ -217,6 +267,7 @@ void CBitmapWnd::SetKey(const int &iKey)
 
 int CBitmapWnd::GetKey()
 {
+    TRACE();
 	return iKey;
 }
 
@@ -225,6 +276,7 @@ int CBitmapWnd::GetKey()
 //-----------------------------------------------------------------------------
 void CBitmapWnd::SetTool(const int &tool)
 {
+    TRACE();
 	toolOption = tool;
 
 	switch(tool)
@@ -252,6 +304,7 @@ void CBitmapWnd::SetTool(const int &tool)
 //-----------------------------------------------------------------------------
 int CBitmapWnd::GetTool()
 {
+    TRACE();
 	return toolOption;
 }
 
@@ -261,6 +314,7 @@ int CBitmapWnd::GetTool()
 //-----------------------------------------------------------------
 void CBitmapWnd::SetZoom(bool active)
 {
+    TRACE();
 	zoom = active;
 }
 
@@ -269,11 +323,13 @@ void CBitmapWnd::SetZoom(bool active)
 //-----------------------------------------------------------------------------
 bool CBitmapWnd::GetZoom()
 {
+    TRACE();
 	return zoom;
 }
 
 void CBitmapWnd::CalculCenterPicture()
 {
+    TRACE();
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
 	float screenWidth = float(width);
@@ -302,6 +358,7 @@ void CBitmapWnd::CalculCenterPicture()
 
 void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 {
+    TRACE();
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
 	float screenWidth = float(width);
@@ -340,6 +397,7 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 //-----------------------------------------------------------------
 void CBitmapWnd::ZoomOn()
 {
+    TRACE();
 	CalculCenterPicture();
 
 	if(posRatio == -1)
@@ -361,7 +419,7 @@ void CBitmapWnd::ZoomOn()
 
 	if (update)
 	{
-		this->Refresh();
+        RefreshWindow();
 	}
 }
 
@@ -370,6 +428,7 @@ void CBitmapWnd::ZoomOn()
 //-----------------------------------------------------------------
 void CBitmapWnd::SetZoomPosition(const int &position)
 {
+    TRACE();
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -391,7 +450,7 @@ void CBitmapWnd::SetZoomPosition(const int &position)
 
 	if (update)
 	{
-		this->Refresh();
+        RefreshWindow();
 	}
 }
 
@@ -400,7 +459,7 @@ void CBitmapWnd::SetZoomPosition(const int &position)
 //-----------------------------------------------------------------
 void CBitmapWnd::SetPosition(const int &left, const int &top)
 {
-
+    TRACE();
 }
 
 //-----------------------------------------------------------------
@@ -408,11 +467,15 @@ void CBitmapWnd::SetPosition(const int &left, const int &top)
 //-----------------------------------------------------------------
 void CBitmapWnd::UpdateScrollBar(bool &update)
 {
+    TRACE();
 	update = true;
 	if (showScroll)
 	{
-		scrollbar->SetControlSize(int(GetBitmapWidthWithRatio()), int(GetBitmapHeightWithRatio()));
+        
+		scrollbar->SetControlSize(int(GetBitmapWidthWithRatio()), int(GetBitmapHeightWithRatio()), true);
 		scrollbar->SetPosition(posLargeur, posHauteur);
+		posLargeur = scrollbar->GetPosLargeur();
+		posHauteur = scrollbar->GetPosHauteur();
 	}
 }
 
@@ -422,6 +485,7 @@ void CBitmapWnd::UpdateScrollBar(bool &update)
 //-----------------------------------------------------------------
 void CBitmapWnd::ZoomOut()
 {
+    TRACE();
 	CalculCenterPicture();
 
 	if (posRatio == -1)
@@ -442,7 +506,7 @@ void CBitmapWnd::ZoomOut()
 
 	if (update)
 	{
-		this->Refresh();
+        RefreshWindow();
 	}
 }
 
@@ -451,6 +515,7 @@ void CBitmapWnd::ZoomOut()
 //-----------------------------------------------------------------
 void CBitmapWnd::ShrinkImage(const bool &redraw)
 {
+    TRACE();
 	shrinkImage = true;
 	ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
 
@@ -463,8 +528,10 @@ void CBitmapWnd::ShrinkImage(const bool &redraw)
 	bool update;
 	UpdateScrollBar(update);
 
-	if (update)
-		this->Refresh();
+	if (update && redraw)
+    {
+        RefreshWindow();
+    }
 }
 
 
@@ -473,6 +540,7 @@ void CBitmapWnd::ShrinkImage(const bool &redraw)
 //-----------------------------------------------------------------
 void CBitmapWnd::SetShrinkImage(bool active)
 {
+    TRACE();
 	if (shrinkImage != active)
 	{
 		shrinkImage = active;
@@ -484,6 +552,7 @@ void CBitmapWnd::SetShrinkImage(bool active)
 //-----------------------------------------------------------------------------
 bool CBitmapWnd::GetShrinkImage()
 {
+    TRACE();
 	return shrinkImage;
 }
 
@@ -492,6 +561,7 @@ bool CBitmapWnd::GetShrinkImage()
 //-----------------------------------------------------------------
 void CBitmapWnd::SetShowScroll(bool visible)
 {
+    TRACE();
 	showScroll = visible;
 }
 
@@ -500,6 +570,7 @@ void CBitmapWnd::SetShowScroll(bool visible)
 //-----------------------------------------------------------------
 bool CBitmapWnd::GetShowScroll()
 {
+    TRACE();
 	return showScroll;
 }
 
@@ -508,7 +579,8 @@ bool CBitmapWnd::GetShowScroll()
 //-----------------------------------------------------------------
 void CBitmapWnd::SetInterpolation(int interpolation)
 {
-	interpolation = interpolation;
+    TRACE();
+	this->interpolation = interpolation;
 }
 
 //-----------------------------------------------------------------
@@ -516,6 +588,7 @@ void CBitmapWnd::SetInterpolation(int interpolation)
 //-----------------------------------------------------------------
 int CBitmapWnd::GetInterpolation()
 {
+    TRACE();
 	return interpolation;
 }
 
@@ -524,6 +597,7 @@ int CBitmapWnd::GetInterpolation()
 //-----------------------------------------------------------------
 float CBitmapWnd::GetBitmapWidthWithRatio()
 {
+    TRACE();
 	return float(GetBitmapWidth()) * ratio;
 }
 
@@ -532,53 +606,81 @@ float CBitmapWnd::GetBitmapWidthWithRatio()
 //-----------------------------------------------------------------
 float CBitmapWnd::GetBitmapHeightWithRatio()
 {
+    TRACE();
 	return  float(GetBitmapHeight()) * ratio;
 }
 
 
 void CBitmapWnd::SetBitmapParameter(const bool &externBitmap, const bool &addToTexture)
 {
+    TRACE();
 	this->externBitmap = externBitmap;
-	this->addToTexture = addToTexture;
+	//if (addToTexture)
+	//	render.Destroy();
+	//this->addToTexture = addToTexture;
 }
 
+void CBitmapWnd::SetIsBitmapThumbnail(const bool &isThumbnail)
+{
+    TRACE();
+    this->isThumbnail = isThumbnail;
+}
 
 //-----------------------------------------------------------------
 //Affectation de l'image
 //-----------------------------------------------------------------
-void CBitmapWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &copy)
+void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 {
-	this->addToTexture = true;
-	toolOption = MOVEPICTURE;
-	if (this->bitmap != nullptr)
+    TRACE();
+    printf("CBitmapWnd::SetBitmap \n");
+    this->SetFocus();
+	if(bitmapIn != nullptr)
 	{
-		delete(this->bitmap);
+		if(bitmapIn->IsOk())
+		{
+			bitmapLoad = true;
+			filename = bitmapIn->GetFilename();
+			bitmapUpdate = true;
+			flipVertical = 0;
+			flipHorizontal = 0;
+			angle = 0;
+			isOpenGL = true;
+            
+            printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
+            muBitmap.lock();
+            if(source != nullptr)
+            {
+                delete source;
+                printf("CBitmapWnd::SetBitmap   delete source\n");
+                source = nullptr;
+            }            
+
+			source = bitmapIn;
+            //source = nullptr;
+            muBitmap.unlock();
+            printf("CBitmapWnd::SetBitmap  muBitmap.unlock()\n");
+			toolOption = MOVEPICTURE;
+			bitmapwidth = bitmapIn->GetWidth();
+			bitmapheight = bitmapIn->GetHeight();
+			orientation = bitmapIn->GetOrientation();
+			ShrinkImage(false);
+			AfterSetBitmap();
+            RefreshWindow();
+          
+		}
 	}
-
-	if (copy)
-	{
-		if (this->bitmap == nullptr)
-			this->bitmap = new CRegardsBitmap();
-
-		this->bitmap->SetBitmap(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-		this->bitmap->SetFilename(bitmap->GetFilename());
-
-	}
-	else
-		this->bitmap = bitmap;
-
-	ShrinkImage(false);
-	AfterSetBitmap();
 }
 
 void CBitmapWnd::CalculScreenPosFromReal(const int &xReal, const int &yReal, int &xScreen, int &yScreen)
 {
+    TRACE();
 	xScreen = int(float(xReal) * ratio);
 	yScreen = int(float(yReal) * ratio);
 }
 
 void CBitmapWnd::CalculRealPosFromScreen(const int &xScreen, const int &yScreen, int &xReal, int &yReal)
 {
+    TRACE();
 	xReal = int(float(xScreen) / ratio);
 	yReal = int(float(yScreen) / ratio);
 }
@@ -587,9 +689,31 @@ void CBitmapWnd::CalculRealPosFromScreen(const int &xScreen, const int &yScreen,
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap
 //-----------------------------------------------------------------
-CRegardsBitmap * CBitmapWnd::GetBitmap()
+CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
 {
-	return bitmap;
+    TRACE();
+	if(filtreEffet != nullptr && bitmapLoad)
+	{
+		CRegardsBitmap * bitmap =  filtreEffet->GetBitmap(source);
+		if(bitmap != nullptr)
+			bitmap->SetFilename(this->filename);
+		return bitmap;
+	}
+	return nullptr;
+}
+
+//-----------------------------------------------------------------
+//Obtention des dimensions du bitmap
+//-----------------------------------------------------------------
+CRegardsFloatBitmap * CBitmapWnd::GetFloatBitmap(const bool &source)
+{
+    TRACE();
+	if(filtreEffet != nullptr && bitmapLoad)
+	{
+		CRegardsFloatBitmap * bitmap =  filtreEffet->GetFloatBitmap(source);
+		return bitmap;
+	}
+	return nullptr;
 }
 
 //-----------------------------------------------------------------
@@ -597,87 +721,105 @@ CRegardsBitmap * CBitmapWnd::GetBitmap()
 //-----------------------------------------------------------------
 void CBitmapWnd::GetInfosBitmap(wxString &filename, int &widthPicture, int &heightPicture)
 {
-	widthPicture = bitmap->GetBitmapWidth();
-	heightPicture = bitmap->GetBitmapHeight();
+    TRACE();
+	widthPicture =bitmapwidth;
+	heightPicture = bitmapheight;
 	filename = this->filename;
+}
+
+int CBitmapWnd::GetOrientation()
+{
+    TRACE();
+	return orientation;
+}
+
+int CBitmapWnd::GetRawBitmapWidth()
+{
+    TRACE();
+	return bitmapwidth;
+}
+
+int CBitmapWnd::GetRawBitmapHeight()
+{
+    TRACE();
+	return bitmapheight; 
 }
 
 int CBitmapWnd::GetBitmapWidth()
 {
-	if (bitmap != nullptr)
-		return bitmap->GetBitmapWidth();
+    TRACE();
+	int localAngle = angle;
+	int localflipHorizontal = flipHorizontal;
+	int localflipVertical = flipVertical;
+	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
+	if (bitmapLoad)
+	{
+		if(localAngle == 90 || localAngle == 270)
+			return GetRawBitmapHeight(); 
+		else
+			return GetRawBitmapWidth();
+	}
 	return 0;
 }
 
 int CBitmapWnd::GetBitmapHeight()
 {
-	if (bitmap != nullptr)
-		return bitmap->GetBitmapHeight();
+    TRACE();
+	int localAngle = angle;
+	int localflipHorizontal = flipHorizontal;
+	int localflipVertical = flipVertical;
+	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
+
+	if (bitmapLoad)
+	{
+		if(localAngle == 90 || localAngle == 270)
+			return GetRawBitmapWidth();
+		else
+			return GetRawBitmapHeight(); 
+			
+	}
 
 	return 0;
 }
 
 void CBitmapWnd::FlipVertical()
 {
-	if (bitmap != nullptr && config != nullptr)
-	{
-		CRgbaquad color; //theme.colorBack
-		CFiltreEffet * filtre = new CFiltreEffet(bitmap, color, config->GetEffectLibrary());
-		filtre->FlipVertical();
-		delete filtre;
-	}
-	addToTexture = true;
-	this->Refresh();
+    TRACE();
+	if(flipVertical)
+		flipVertical = 0;
+	else
+		flipVertical = 1;
+    RefreshWindow();
 }
 
 void CBitmapWnd::Rotate90()
 {
-	if (bitmap != nullptr && config != nullptr)
-	{
-		CRgbaquad color; //theme.colorBack
-		CFiltreEffet * filtre = new CFiltreEffet(bitmap, color, config->GetEffectLibrary());
-		filtre->Rotate90();
-		delete filtre;
-	}
-	addToTexture = true;
+    TRACE();
+	angle += 90;
+	angle = angle % 360;
     UpdateResized();
-	this->Refresh();
+    RefreshWindow();
 }
 
 void CBitmapWnd::Rotate270()
 {
-	if (bitmap != nullptr)
-	{
-		
-		if (config != nullptr)
-		{
-			CRgbaquad color; //theme.colorBack
-			CFiltreEffet * filtre = new CFiltreEffet(bitmap, color, config->GetEffectLibrary());
-			filtre->Rotate270();
-			delete filtre;
-		}
-	}
-	addToTexture = true;
+    TRACE();
+	angle += 270;
+	angle = angle % 360;
     UpdateResized();
-	this->Refresh();
+    RefreshWindow();
 }
 
 void CBitmapWnd::FlipHorizontal()
 {
-	if (bitmap != nullptr)
-	{
-		
-		if (config != nullptr)
-		{
-			CRgbaquad color; //theme.colorBack
-			CFiltreEffet * filtre = new CFiltreEffet(bitmap, color, config->GetEffectLibrary());
-			filtre->FlipHorizontal();
-			delete filtre;
-		}
-	}
-	addToTexture = true;
-	this->Refresh();
+    TRACE();
+	if(flipHorizontal)
+		flipHorizontal = 0;
+	else
+		flipHorizontal = 1;
+
+    RefreshWindow();
 }
 
 //-----------------------------------------------------------------
@@ -685,6 +827,7 @@ void CBitmapWnd::FlipHorizontal()
 //-----------------------------------------------------------------
 void CBitmapWnd::MouseClick(const int &xPos, const int &yPos)
 {
+    TRACE();
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
 	mouseBlock = true;
@@ -697,6 +840,7 @@ void CBitmapWnd::MouseClick(const int &xPos, const int &yPos)
 //-----------------------------------------------------------------
 void CBitmapWnd::MouseRelease(const int &xPos, const int &yPos)
 {
+    TRACE();
 	mouseBlock = false;
 	wxSetCursor(wxCursor(wxCURSOR_ARROW));
     if(HasCapture())
@@ -705,10 +849,13 @@ void CBitmapWnd::MouseRelease(const int &xPos, const int &yPos)
 
 void CBitmapWnd::OnRButtonDown(wxMouseEvent& event)
 {
-	if (windowMain != nullptr)
+    TRACE();
+    this->SetFocus();
+	wxWindow * window = this->FindWindowById(idWindowMain);
+	if (window != nullptr)
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, TOOLBAR_UPDATE_ID);
-		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -717,10 +864,15 @@ void CBitmapWnd::OnRButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 {
+    TRACE();
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-
+#ifdef __WXGTK__
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
 	switch(toolOption)
 	{
 		case MOVEPICTURE:
@@ -744,7 +896,7 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 			break;
 	}
 
-	MouseClick(xPos, yPos);
+	MouseClick(xPos * scale_factor, yPos * scale_factor);
 }
 
 //-----------------------------------------------------------------
@@ -752,7 +904,7 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnLButtonUp(wxMouseEvent& event)
 {
-    
+    TRACE();
     if(event.LeftDClick())
         return;
     
@@ -777,11 +929,13 @@ void CBitmapWnd::OnLButtonUp(wxMouseEvent& event)
 
 void CBitmapWnd::OnKeyUp(wxKeyEvent& event)
 {
+    TRACE();
 	SetKey(0);
 }
 
 void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 {
+    TRACE();
 	SetKey(event.GetKeyCode());
 
 	switch (event.GetKeyCode())
@@ -830,6 +984,7 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 {
+    TRACE();
 #ifdef __APPLE__
     
     if (event.m_wheelRotation == 1)
@@ -852,8 +1007,10 @@ void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 //------------------------------------------------------------------------------------
 void CBitmapWnd::OnSize(wxSizeEvent& event)
 {
-    int _width = event.GetSize().GetX();
-    int _height = event.GetSize().GetY();
+    TRACE();
+    updateContext = true;
+    int _width =  event.GetSize().GetX();
+    int _height =  event.GetSize().GetY();
 
 	if (_width == 20 && _height == 20)
 	{
@@ -861,21 +1018,29 @@ void CBitmapWnd::OnSize(wxSizeEvent& event)
 	}
 	else
 	{
-		width = _width;
-		height = _height;
+#ifdef __WXGTK__        
+        double scale_factor = GetContentScaleFactor();
+#else
+        double scale_factor = 1.0f;
+#endif
+		width = _width * scale_factor;
+		height = _height * scale_factor;        
+		//width = _width;
+		//height = _height;
         UpdateResized();
-        Resize(width, height);
+        Resize();
 	}
 }
 
 int CBitmapWnd::UpdateResized()
 {
-    if (bitmap != nullptr)
+    TRACE();
+    if (bitmapLoad)
     {
-        if (shrinkImage)
+	    if (shrinkImage)
         {
             ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
-            this->Refresh();
+            RefreshWindow();
         }
         else if (showScroll)
         {
@@ -883,7 +1048,10 @@ int CBitmapWnd::UpdateResized()
             bool update = false;
             UpdateScrollBar(update);
             if (update)
-                this->Refresh();
+            {
+                RefreshWindow();         
+            }
+
         }
     }
     
@@ -897,6 +1065,12 @@ int CBitmapWnd::UpdateResized()
 //------------------------------------------------------------------------------------
 void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 {
+    TRACE();
+#ifdef __WXGTK__
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -904,6 +1078,8 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 	{
 		case MOVEPICTURE:
 			{
+				
+
                 ::wxSetCursor(hCursorHand);
 
 				if(mouseBlock && !shrinkImage)
@@ -922,14 +1098,17 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 					bool update;
 					UpdateScrollBar(update);
 
-#ifdef WIN32
+#if defined(WIN32) && defined(_DEBUG)
 					TCHAR message[200];
 					wsprintf(message, L"posLargeur : %d et posHauteur : %d \n",posLargeur,posHauteur);
 					OutputDebugString(message);
 #endif
 
 					if (update)
-						this->Refresh();
+                    {
+                        RefreshWindow();
+                    }
+                    //this->FastRefresh(this,true);
 				}
 			}
 			break;
@@ -944,7 +1123,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 			}
 	}
 
-	MouseMove(xPos, yPos);
+	MouseMove(xPos * scale_factor, yPos * scale_factor);
 }
 
 
@@ -953,6 +1132,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 ////////////////////////////////////////////////////////////////////////////////
 void CBitmapWnd::TestMaxX()
 {
+    TRACE();
 	int xValue = int(GetBitmapWidthWithRatio()) - width;
 
 	if(posLargeur >= xValue)
@@ -967,6 +1147,7 @@ void CBitmapWnd::TestMaxX()
 ////////////////////////////////////////////////////////////////////////////////
 void CBitmapWnd::TestMaxY()
 {
+    TRACE();
 	int yValue = int(GetBitmapHeightWithRatio()) - height;
 
 	if(posHauteur >= yValue)
@@ -979,6 +1160,7 @@ void CBitmapWnd::TestMaxY()
 
 float CBitmapWnd::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight)
 {
+    TRACE();
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
@@ -1010,6 +1192,7 @@ float CBitmapWnd::CalculPictureRatio(const int &pictureWidth, const int &picture
 //-----------------------------------------------------------------
 float CBitmapWnd::CalculRatio(const int &pictureWidth, const int &pictureHeight)
 {
+    TRACE();
 	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
 
 	//Détermination du ration par rapport au tableau
@@ -1030,53 +1213,18 @@ float CBitmapWnd::CalculRatio(const int &pictureWidth, const int &pictureHeight)
 	return newRatio;
 }
 
-void CBitmapWnd::GetPositionPicture(int &left, int &top)
-{
-	int tailleAffichageWidth = int(GetBitmapWidthWithRatio());
-	int tailleAffichageHeight = int(GetBitmapHeightWithRatio());
-
-	if(width > tailleAffichageWidth)
-		left = ((width - tailleAffichageWidth) / 2);
-	else
-	{
-		left = 0;
-	}
-
-	if(height > tailleAffichageHeight)
-	{
-		top = ((height - tailleAffichageHeight) / 2);
-	}
-	else
-	{
-		top = 0;
-	}
-}
 
 void CBitmapWnd::TestMaxPosition()
 {
+    TRACE();
 	TestMaxX();
 	TestMaxY();
 }
 
-CBitmapWindowContext& CBitmapWnd::GetContext(wxGLCanvas *canvas)
-{
-    CBitmapWindowContext *glContext;
-    
-    if ( !m_glContext )
-    {
-        // Create the OpenGL context for the first mono window which needs it:
-        // subsequently created windows will all share the same context.
-        m_glContext = new CBitmapWindowContext(canvas);
-    }
-    glContext = m_glContext;
-    
-    glContext->SetCurrent(*canvas);
-    
-    return *glContext;
-}
 
-void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top)
+void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
 {
+    TRACE();
 	int widthOutput = int(GetBitmapWidthWithRatio());
 	int heightOutput = int(GetBitmapHeightWithRatio());
 	int xValue = 0;
@@ -1110,138 +1258,415 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 
 	heightInterpolationSize = height - (top * 2);
 
-	rc.x = xValue;
-	rc.y = (heightOutput - height) - yValue;
+	rc.x = max(xValue,0);
+	if (invert)
+		rc.y = max((heightOutput - height) - yValue, 0);
+	else
+		rc.y = max(yValue,0);
 	rc.width = widthOutput;
 	rc.height = heightOutput;
 }
 
 void CBitmapWnd::Update()
 { 
+    TRACE();
 	bool update;
 	UpdateScrollBar(update);
 
 	if (update)
-		this->Refresh();
-}
-
-void CBitmapWnd::RenderBitmap(CRenderBitmapInterface * renderInterface)
-{
-	if (bitmap != nullptr && width > 0 && height > 0)
-	{
-		int left, top;
-		left = top = 0;
-		GetPositionPicture(left, top);
-
-		int widthOutput = int(GetBitmapWidthWithRatio());
-		int heightOutput = int(GetBitmapHeightWithRatio());
-
-		if (width >= widthOutput && height >= heightOutput)
-		{
-			renderInterface->AddBitmapToScale(L"BitmapSource", widthOutput, heightOutput, left, top);
-		}
-		else
-		{
-			wxRect rc = { 0, 0, 0, 0 };
-			CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top);
-			renderInterface->AddBitmapToScalePosition(L"BitmapSource", widthOutput, heightOutput, rc, left, top);
-		}
-	}
-	
+    {
+        RefreshWindow();
+    }
 }
 
 bool CBitmapWnd::NeedAfterDrawBitmap()
 {
+    TRACE();
 	return false;
-}
-
-
-void CBitmapWnd::DrawBitmap(wxDC * dc)
-{
-	CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
-    
-    //CRgbaquad backColor = CRgbaquad(255,0,0);
-	if (renderInterface->GetType() == RENDEROPENGL)
-	{
-		CBitmapWindowContext&  context = GetContext(this);
-		//CRenderBitmapInterfaceOpenGL* openGLRender = (CRenderBitmapInterfaceOpenGL *)renderInterface;
-		renderInterface->CreateScreenTexture(width, height);
-		renderInterface->CreateScreenRender(dc, backColor);
-        if (bitmap != nullptr)
-        {
-            //Test si la texture existe
-            int textureId = renderInterface->GetTextureID(L"BitmapSource");
-            if (addToTexture || textureId == 0)
-            {
-                renderInterface->AddTextureBitmap(bitmap, L"BitmapSource");
-            }
-        }
-        
-        BeforeDrawBitmap(renderInterface);
-        RenderBitmap(renderInterface);
-        AfterRenderBitmap(renderInterface);
-		 if(NeedAfterDrawBitmap())
-        {
-			 wxBufferedPaintDC dcLocal(this); 
-			 renderInterface->RenderToScreen(&dcLocal);
-			 AfterDrawBitmap(&dcLocal);
-		 }
-		else
-		{
-			SwapBuffers();
-		}
-
-	}
-	else
-	{
-		renderInterface->CreateScreenRender(dc, backColor);
-		renderInterface->CreateScreenTexture(width, height);
-        if (bitmap != nullptr)
-        {
-            //Test si la texture existe
-            int textureId = renderInterface->GetTextureID(L"BitmapSource");
-            if (addToTexture || textureId == 0)
-            {
-                renderInterface->AddTextureBitmap(bitmap, L"BitmapSource");
-            }
-        }
-        
-        BeforeDrawBitmap(renderInterface);
-        RenderBitmap(renderInterface);
-        AfterRenderBitmap(renderInterface);
-        renderInterface->RenderToScreen(dc);
-        AfterDrawBitmap(dc);
-	}
-		
-	addToTexture = false;
 }
 
 void CBitmapWnd::UpdateScreenRatio()
 {
+    TRACE();
     Update();
 }
+
+void CBitmapWnd::GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical)
+{
+    TRACE();
+	/*
+	int localAngle = angle;
+	int localflipHorizontal = flipHorizontal;
+	int localflipVertical = flipVertical;
+	*/
+    //bool ret = true;
+    switch (GetOrientation())
+    {
+        case 1:// top left side
+            break;
+        case 2:// top right side
+            localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            break;
+        case 3:// bottom right side
+            localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            localflipVertical = (localflipVertical == 1) ? 0:1;
+            break;
+        case 4:// bottom left side
+            localflipVertical = (localflipVertical == 1) ? 0:1;
+            break;
+        case 5://left side top
+            localAngle += 90;
+            localflipVertical = (localflipVertical == 1) ? 0:1;
+            //localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            break;
+        case 6:// right side top
+            localAngle += 90;
+			localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            localflipVertical = (localflipVertical == 1) ? 0:1;
+            break;
+        case 7:// right side bottom
+            localAngle += 90;
+			localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            break;
+        case 8:// left side bottom
+            localAngle += 90;
+            //localflipHorizontal = (localflipHorizontal == 1) ? 0:1;
+            break;
+    }
+
+	localAngle = localAngle % 360;
+	//localAngle = 360 - localAngle;
+}
+
+
+
+void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutput, int &heightOutput)
+{
+    TRACE();
+	int localAngle = angle;
+	int localflipHorizontal = flipHorizontal;
+	int localflipVertical = flipVertical;
+	//if(raw)
+	//	GenerateExifRawPosition(localAngle, localflipHorizontal, localflipVertical);
+	//else
+	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
+
+	if (width >= widthOutput && height >= heightOutput)
+	{
+		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
+	}
+	else
+	{
+		int left = 0, top = 0;
+		int tailleAffichageWidth = widthOutput;
+		int tailleAffichageHeight = heightOutput;
+
+		if (width > tailleAffichageWidth)
+			left = ((width - tailleAffichageWidth) / 2);
+		else
+			left = 0;
+
+		if (height > tailleAffichageHeight)
+			top = ((height - tailleAffichageHeight) / 2);
+		else
+			top = 0;
+
+		wxRect rc(0, 0, 0, 0);
+		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
+	}
+}
+
 
 //-----------------------------------------------------------------
 //Dessin de l'image
 //-----------------------------------------------------------------
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
-    bool update = false;
-    UpdateScrollBar(update);
+    TRACE();
+    CRgbaquad color;
+
+        
+    #if defined(WIN32) && defined(_DEBUG)
+        DWORD tickCount = GetTickCount();
+        OutputDebugString(L"OnPaint\n");
+    #endif
+
+    printf("CBitmapWnd OnPaint \n");
+
+    #ifndef WIN32
+        if(!renderOpenGL->IsInit())
+        {
+            renderOpenGL->Init(this);
+            
+        }
+    #endif
+
+    #ifdef __WXGTK__
+        double scale_factor = GetContentScaleFactor();
+    #else
+        double scale_factor = 1.0f;
+    #endif 
+
+        if (width == 0 || height == 0)
+            return;
+            
+        int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+        int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+
+        if (widthOutput <0 || heightOutput < 0)
+            return;
+            
+    #ifdef WIN32
+        renderOpenGL->SetCurrent(*this);
+    #else
+        if(updateContext)
+        {
+            renderOpenGL->SetCurrent(*this);
+            updateContext = false;
+        }
+    #endif
+               
+        if (openCLEngine == nullptr)
+        {
+            openCLEngine = new COpenCLEngine();
+            if (openCLEngine != nullptr)
+                openclContext = openCLEngine->GetInstance();
+
+            CreateContext();
+                
+            renderOpenGL->LoadingResource(scale_factor);
+        }
+        
+        muBitmap.lock();
+       
+         if (openCLEngine != nullptr && source != nullptr)
+         {
+            if(filtreEffet != nullptr)
+                delete filtreEffet;               
+            
+            filtreEffet = new CFiltreEffet(color, openclContext, source);
+        }
+        
+
+        muBitmap.unlock();
+        
+        bool update = false;
+        UpdateScrollBar(update);  
+       
+        if(isOpenGL)
+        {
+            if (bitmapLoad && width > 0 && height > 0)
+            {
+                int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+                int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+
+                if (widthOutput <0 || heightOutput < 0)
+                    return;
+                
+                GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+                
+                if(openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
+                {
+                    printf("CBitmapWnd IsSharedContextCompatible \n");
+                    
+                    try
+                    {
+                        glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
+                    }
+                    catch(...)
+                    {
+                        return;
+                    }
+                    if (NeedAfterRenderBitmap())
+                        ApplyPreviewEffect();
+
+                    try
+                    {
+                        cl_int err;
+                        cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
+                        err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                        Error::CheckError(err);
+                        filtreEffet->GetRgbaBitmap(cl_image);
+                        err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                        Error::CheckError(err);
+                        err = clFlush(openclContext->GetCommandQueue());
+                        Error::CheckError(err);
+                    }
+                    catch(...)
+                    {
+
+                    }
+                }
+                else //not shared compatibility
+                {    
+                    printf("CBitmapWnd Is Not SharedContextCompatible \n");          
+                    
+                    if (NeedAfterRenderBitmap())
+                        ApplyPreviewEffect();
+                  
+                    
+                    CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
+                    if(!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
+                        bitmap->VertFlipBuf();
+                        
+                    glTexture = renderOpenGL->GetDisplayTexture();
+
+                    if(glTexture != nullptr)
+                        glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+                    else
+                        printf("CBitmapWnd GetDisplayTexture Error \n");
+                    delete bitmap;
+
+                }
+
+            }
+            
+            renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+
+            if(glTexture != nullptr)
+            {
+                int x = (width - glTexture->GetWidth()) / 2;
+                int y = (height  - glTexture->GetHeight()) / 2;
+                if(openclContext->IsSharedContextCompatible())
+                    renderOpenGL->RenderToScreen(x,y, true);
+                else
+                    renderOpenGL->RenderToScreen(x,y, false);
+            }
+            AfterRender();
+            
+        }
+        else if(bitmapLoad)
+        {
+            
+            //CFiltreEffet _filtreEffet(color, openclContext);
+            int widthOutput = int(GetBitmapWidthWithRatio());
+            int heightOutput = int(GetBitmapHeightWithRatio());
+
+            wxBitmap test_bitmap(width, height);
+            wxMemoryDC dc;
+            dc.SelectObject(test_bitmap);
+            wxRect rc(0, 0, width, height);
+            CWindowMain::FillRect(&dc, rc, themeBitmap.colorBack);
+           
+            
+            if(bitmapLoad && width > 0 && height > 0)
+            {
+                wxImage render;
+
+                int left = 0, top = 0;
+
+                
+                if (NeedAfterRenderBitmap())
+                {
+                    render = RenderBitmap(&dc);             
+                }
+                else
+                {
+                    GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+                    render = filtreEffet->GetwxImage();
+                }
+                
+                if (render.IsOk())
+                {
+                    left = (width - render.GetWidth()) / 2;
+                    top = (height - render.GetHeight()) / 2;
+                    dc.DrawBitmap(render, left, top);
+                    AfterRenderBitmap(&dc);
+                    AfterDrawBitmap(&dc);
+                }
+            }
+            
+            //Import render bitmap into texture and show it
+
+            dc.SelectObject(wxNullBitmap);
+            CImageLoadingFormat imageLoadingFormat(false);
+            wxImage renderImage = test_bitmap.ConvertToImage();
+            imageLoadingFormat.SetPicture(&renderImage);
+            CFiltreEffet _filtreEffet(color, openclContext, &imageLoadingFormat);
+
+            if(openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
+            {
+                printf("CBitmapWnd Is SharedContextCompatible \n");               
+                glTexture = renderOpenGL->GetDisplayTexture(width, height, openclContext->GetContext());
+                        
+                try
+                {
+                    cl_int err;
+                    cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
+                    err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    _filtreEffet.GetRgbaBitmap(cl_image);
+                    err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    err = clFlush(openclContext->GetCommandQueue());
+                    Error::CheckError(err);
+                }
+                catch(...)
+                {
+
+                }
+            }
+            else
+            {
+                printf("CBitmapWnd Is Not SharedContextCompatible \n");    
+                
+                CRegardsBitmap * bitmap = imageLoadingFormat.GetRegardsBitmap(true);
+                
+                if(!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
+                    bitmap->VertFlipBuf();            
+                
+                glTexture = renderOpenGL->GetDisplayTexture();
+                if(glTexture != nullptr)
+                    glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+                else
+                {
+                    //Error
+                    printf("CBitmapWnd GetDisplayTexture Error \n");
+                }
+                delete bitmap;
+            }
+            renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+
+            if(glTexture != nullptr)
+            {
+                if(openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
+                    renderOpenGL->RenderToScreen(0,0, true);
+                else
+                    renderOpenGL->RenderToScreen(0,0, false);            
+            }
+        }
     
-	if (renderInterface->GetType() == RENDEROPENGL)	
-		DrawBitmap(nullptr);
-	else
-	{
-		wxBufferedPaintDC dc(this);  
-		if (bitmap != nullptr && width > 0 && height > 0)
-			DrawBitmap(&dc);
-		else
-		{
-			wxRect rc = { 0, 0, width, height };
-			CWindowMain::FillRect(&dc, rc, themeBitmap.colorBack);
-		}
-	}
+	this->SwapBuffers();
+
+    printf("CBitmapWnd End OnPaint \n");
+	//scrollbar->SetPosition(posLargeur, posHauteur);
+
+#if defined(WIN32) && defined(_DEBUG)
+	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
+	DWORD Result = LasttickCount - tickCount;
+
+	wchar_t Temp[10];
+	swprintf_s(Temp, L"%d", Result);
+	OutputDebugString(L"Render Time : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+#endif
+
+   
+
+}
+
+void CBitmapWnd::RefreshWindow()
+{
+#ifdef __APPLE__
+    if(!fastRenderOpenGL)
+        this->FastRefresh(this,true);
+    else
+        this->FastRefresh(this);
+#else
+	this->FastRefresh(this);
+#endif
 }
 
 //-----------------------------------------------------------------
@@ -1249,6 +1674,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 //-----------------------------------------------------------------
 void CBitmapWnd::OnLDoubleClick(wxMouseEvent& event)
 {
+    TRACE();
 #ifdef __APPLE__
     OnRButtonDown(event);
 #else

@@ -2,8 +2,9 @@
 #include <ConvertUtility.h>
 #include <libPicture.h>
 #ifdef EXIV2
-#include <PictureMetadata.h>
-#endif
+#include <MetadataExiv2.h>
+using namespace Regards::exiv2;
+#else
 #ifdef __APPLE__
 #include <AppleReadExif.h>
 #include <libPicture.h>
@@ -11,8 +12,10 @@
 #endif
 #ifdef WIN32
 #include <PictureMetadata.h>
+#include <MetadataExiv2.h>
 #include <libPicture.h>
 #include <MediaInfo.h>
+#endif
 #endif
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
@@ -25,6 +28,9 @@ using namespace Regards::Internet;
 
 CInfosFile::CInfosFile(CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
 {
+	rotation = 0;
+	filename = L"";
+	widthPosition = 0;
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
 	themeTree = *theme;
@@ -40,11 +46,15 @@ CInfosFile::CInfosFile(CThemeTree * theme, CTreeElementControlInterface * interf
 
 wxString CInfosFile::GetFilename()
 {
+    TRACE();
+    
 	return filename;
 }
 
 void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
+    TRACE();
+    
 	if (element != nullptr)
 	{
 		CTreeElement * treeElement = element->GetTreeElement();
@@ -56,41 +66,37 @@ void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, con
 
 void CInfosFile::UpdateScreenRatio()
 {
+    TRACE();
     this->UpdateElement();
 }
 
 void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child)
 {
+    TRACE();
 	wchar_t seps[] = L".";
 	int item = 0;
 	wchar_t informations[TAILLEMAX];
 	wcscpy(informations, exifKey.c_str());
-    wchar_t * token1;
+    wchar_t * token1 = nullptr;
     
 	// Establish string and get the first token:
-#ifdef WIN32 
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &token1); // C4996
 #endif
-#else
-    wchar_t * token = wcstok(informations, seps, &token1); // C4996
-#endif
+
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
 		CTreeData * treeData = new CTreeData();
 		treeData->SetKey(token);
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &token1); // C4996
 #endif
-#else
-        token = wcstok(nullptr, seps, &token1); // C4996
-#endif
+
 		if (token != nullptr)
 		{
 			treeData->SetIsParent(true);
@@ -150,10 +156,13 @@ void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue
 
 void CInfosFile::SetFile(const wxString & picture)
 {
+    TRACE();
+    
 	if (filename == picture)
 		return;
 
-
+    vector<CMetadata> listItem;
+    CLibPicture libPicture;
 	filename = picture;
 	int width = 0;
 	int height = 0;
@@ -163,17 +172,16 @@ void CInfosFile::SetFile(const wxString & picture)
     xMaxPos = 0;
     xMaxPosValue = 0;
     
-   
+#ifdef EXIV2
+    CMetadataExiv2 metadata(picture);
+    listItem = metadata.GetMetadata();
+#else
+    
 #ifdef __APPLE__
     CAppleReadExif appleReadExif;
-#else
-	CPictureMetadata metadata(picture);
+#elif WIN32
+	WIC::CPictureMetadata metadata(picture);
 #endif
-    vector<CMetadata> listItem;
-    CLibPicture libPicture;
-    
-
-#if defined(__APPLE__) || defined(WIN32)
 
     if(libPicture.TestIsVideo(picture))
     {
@@ -184,17 +192,15 @@ void CInfosFile::SetFile(const wxString & picture)
     {
 #ifdef __APPLE__        
         listItem = appleReadExif.GetPictureMetadata(picture);
-#else
-
-		
+#elif WIN32	
 		listItem = metadata.GetMetadataFromPicture();
+		if(listItem.size() == 0)
+		{
+			EXIV2::CMetadataExiv2 meta(picture);
+			listItem = meta.GetMetadata();
+		}
 #endif
     }
-
-#else
-
-	listItem = metadata.GetMetadata();
-	   
 #endif
 
     if(listItem.size() > 0)
@@ -206,7 +212,8 @@ void CInfosFile::SetFile(const wxString & picture)
         
         top = tr.begin();
         
-        for(CMetadata meta : listItem)
+
+	for(CMetadata meta : listItem)
         {
             tree<CTreeData *>::iterator child = top;
             AddTreeInfos(meta.key, meta.value, index, top, child);
@@ -223,7 +230,7 @@ void CInfosFile::SetFile(const wxString & picture)
 	if(showOtherInformation)
 	{
 		CLibPicture libPicture;
-		libPicture.GetDimensions(picture, width, height, rotation);
+		libPicture.GetPictureDimensions(picture, width, height, rotation);
 		tree<CTreeData *>::iterator top;
 		wxString exifinfos;
 		//int item = 0;
@@ -279,13 +286,15 @@ void CInfosFile::SetFile(const wxString & picture)
 
 void CInfosFile::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 {
+    TRACE();
+    
 	CPositionElement * posElement = nullptr;
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int profondeur = tr.depth(it);
 		CTreeData * data = *it;
@@ -353,6 +362,8 @@ void CInfosFile::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CInfosFile::CreateElement()
 {
+    TRACE();
+    
 	bool isVisible = true;
 	widthPosition = 0;
 
@@ -400,12 +411,14 @@ void CInfosFile::CreateElement()
 
 void CInfosFile::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 {
+    TRACE();
+    
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int profondeur = tr.depth(it);
 		CTreeData * data = *it;
@@ -520,6 +533,8 @@ void CInfosFile::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CInfosFile::UpdateElement()
 {
+    TRACE();
+    
 	for (CPositionElement * value : vectorPosElement)
 	{
 		if (value != nullptr)
@@ -595,13 +610,15 @@ void CInfosFile::UpdateElement()
 
 void CInfosFile::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
+    TRACE();
+    
 	CTreeElement * treeElement = element->GetTreeElement();
 	if (element->GetType() == ELEMENT_TRIANGLE)
 	{
 		CTreeElementTriangle * treeElementTriangle = (CTreeElementTriangle *)treeElement;
 		treeElementTriangle->ClickElement(window, x, y);
 		UpdateElement();
-		eventControl->Update();
+		eventControl->UpdateTreeControl();
 	}
 
 }

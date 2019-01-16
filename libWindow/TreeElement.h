@@ -1,8 +1,5 @@
 #pragma once
-#include <Theme.h>
-#include <vector>
-using namespace std;
-
+#include <theme.h>
 
 class CTreeElement
 {
@@ -66,10 +63,10 @@ public:
 protected:
 
 	bool visible;
-	int xPos = 0;
-	int yPos = 0;
-	int numRow = 0;
-	int numColumn = 0;
+	int xPos;
+	int yPos;
+	int numRow;
+	int numColumn;
 	wxColour backcolor;
 };
 

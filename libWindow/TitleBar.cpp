@@ -7,14 +7,15 @@
 using namespace Regards::Window;
 
 CTitleBar::CTitleBar(wxWindow* parent, wxWindowID id, CTitleBarInterface * titleBarInterface) :
-CWindowMain(parent, id)
+CWindowMain("CTitleBar",parent, id)
 {
+	mouseCapture = false;
 	isClosable = true;
 	this->titleBarInterface = titleBarInterface;
 	tooltip = CLibResource::LoadStringFromResource("LBLClose",1);
 	CreateBitmapCrossOff();
 	CreateBitmapCrossOn();
-	this->height = this->themeTitle.GetHeight();
+	SetWindowHeight(this->themeTitle.GetHeight());
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleBar::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CTitleBar::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CTitleBar::OnLButtonDown));
@@ -23,11 +24,7 @@ CWindowMain(parent, id)
 
 void CTitleBar::Redraw()
 {
-	wxRect rect;
-	rect.x = 0;
-	rect.y = 0;
-	rect.width = width;
-	rect.height = height;
+	wxRect rect = GetWindowRect();
 
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
 
@@ -35,23 +32,15 @@ void CTitleBar::Redraw()
 	FillRect(&dc, rect, themeTitle.colorBack);
 	dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
 	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
-	int yPos = (this->GetHeight() - size.y) / 2;
+	int yPos = (this->GetWindowHeight() - size.y) / 2;
 	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
 }
 
 void CTitleBar::SetTheme(CThemeTitleBar * themeTitle)
 {
 	this->themeTitle = *themeTitle;
-	this->height = this->themeTitle.GetHeight();
+	SetWindowHeight(this->themeTitle.GetHeight());
 }
-
-
-int CTitleBar::GetHeight() const
-{
-    
-    return this->height;
-}
-
 
 CTitleBar::~CTitleBar()
 {
@@ -104,7 +93,7 @@ void CTitleBar::OnMouseMove(wxMouseEvent& event)
 
 void CTitleBar::UpdateScreenRatio()
 {
-    this->height = themeTitle.GetHeight();
+    SetWindowHeight(themeTitle.GetHeight());
     CreateBitmapCrossOff();
     CreateBitmapCrossOn();
     Resize();
@@ -117,21 +106,23 @@ void CTitleBar::SetClosable(const bool &value)
 
 void CTitleBar::Resize()
 {
-	int middleYPos = (height - themeTitle.GetCroixHeight()) / 2;
-	rcFermer.x = width - themeTitle.GetCroixWidth() - themeTitle.GetMarge();
+	int middleYPos = (GetWindowHeight() - themeTitle.GetCroixHeight()) / 2;
+	rcFermer.x = GetWindowWidth() - themeTitle.GetCroixWidth() - themeTitle.GetMarge();
 	rcFermer.y = middleYPos;
 	rcFermer.width = rcFermer.x + themeTitle.GetCroixWidth();
 	rcFermer.height = rcFermer.y + themeTitle.GetCroixHeight();
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CTitleBar::OnPaint(wxPaintEvent& event)
 {
-	wxRect rect;
-	rect.x = 0;
-	rect.y = 0;
-	rect.width = width;
-	rect.height = height;
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+
+    
+	wxRect rect = GetWindowRect();
 	
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
 
@@ -145,7 +136,7 @@ void CTitleBar::OnPaint(wxPaintEvent& event)
 	
 	
 	wxSize size = GetSizeTexte(&dc, libelle, themeTitle.font);
-	int yPos = (this->GetHeight() - size.y) / 2;
+	int yPos = (this->GetWindowHeight() - size.y) / 2;
 	DrawTexte(&dc, libelle, themeTitle.GetMarge(), yPos, themeTitle.font);
 
 }

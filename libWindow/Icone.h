@@ -1,13 +1,11 @@
 #pragma once
 #include <RegardsBitmap.h>
 #include <RGBAQuad.h>
-#include <Theme.h>
+#include <theme.h>
 #include <ConfigParam.h>
-#include <vector>
-#include <algorithm>
 #include <RegardsConfigParam.h>
-using namespace std;
-
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
 class CThumbnailData;
 
 namespace Regards
@@ -17,18 +15,19 @@ namespace Regards
 		#define INACTIFICONE 1
 		#define ACTIFICONE 2
 		#define SELECTEDICONE 3
+		#define USEBACKGROUNDCOLOR 4
 
 		class CIcone
 		{
 		public:
-			CIcone(void);
+			CIcone(COpenCLContext * openclContext);
 			~CIcone(void);
             
             void StartLoadingPicture();
             void StopLoadingPicture();
             void SetPictureLoading(const wxImage &imageLoading);
             void DeleteCache();
-
+			void SetBackgroundColor(const wxColour & backgroundColor);
 			void ShowSelectButton(const bool &show)
 			{
 				showSelected = show;
@@ -36,7 +35,7 @@ namespace Regards
 
 			inline bool operator== (const CIcone &n1);
 
-			void SetData(CThumbnailData * thumbnailData);
+			void SetData(CThumbnailData * thumbnailData, const bool &deleteData = true);
 			CThumbnailData * GetData();
 
 			void SetTheme(CThemeIcone theme);
@@ -51,7 +50,7 @@ namespace Regards
 			int GetNumElement(){ return numElement; };
 
 			void SetWindowPos(const int &x, const int &y);
-			bool OnClick(const int &x, const int &y);
+			bool OnClick(const int &x, const int &y, const int &posLargeur, const int &posHauteur);
 
 			int GetXPos();
 			int GetYPos();
@@ -75,7 +74,7 @@ namespace Regards
 				return state;
 			}
 
-			void RenderIcone(wxDC * dc);
+			void RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur);
 
 			bool IsChecked();
 
@@ -85,21 +84,6 @@ namespace Regards
 			}
 
 			void DestroyCache();
-            
-            void Lock()
-            {
-                isLock = true;
-            }
-            
-            void Unlock()
-            {
-                isLock = false;
-            }
-            
-            bool IsLock()
-            {
-                return isLock;
-            }
             
 
 		private:
@@ -112,7 +96,7 @@ namespace Regards
 			void CalculPosition(const wxImage &  render);
 			void GetBitmapDimension(const int &width, const int &height, int &tailleAffichageBitmapWidth, int &tailleAffichageBitmapHeight, float &newRatio);
 			float CalculRatio(const int &width, const int &height, const int &tailleBitmapWidth, const int &tailleBitmapHeight);
-
+			wxImage LoadImageResource(const wxString & resourceName);
 			wxImage GenerateVideoIcone();
 
 			int GetBitmapWidth();
@@ -126,44 +110,45 @@ namespace Regards
 			//---------------------------------------------------
 			//Variable
 			//---------------------------------------------------
-			int interpolationMethod;
-			CThumbnailData * pThumbnailData = nullptr;
+			//int interpolationMethod;
+			CThumbnailData * pThumbnailData;
 			
-            static wxImage imagePhoto;
             wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
-            
+			bool useBackgroundColor;
             wxString photoVector;
             wxString checkOnVector;
             wxString checkOffVector;
-            bool isVector = true;
+			wxColour backgroundColor;
             
-           // wxImage image;
-			//wxImage scale;
-            wxBitmap * memBitmap = nullptr;
+
             wxString tempImageVector;
 			bool pictureLoad;
-			bool showSelected = false;
-			bool isChecked = false;
-			bool isSelected = false;
-			bool photoDefault = true;
+			bool showSelected;
+			bool isChecked;
+			bool isSelected;
+			bool photoDefault;
 			int posXThumbnail;
 			int posYThumbnail;
 			int numElement;
 			int x;
 			int y;
+			bool deleteData;
 			int thumbnailIconeCache;
-			CRegardsConfigParam * config = nullptr;
+			CRegardsConfigParam * config;
 			wxString filename;
 			int state;
 			int numLib;
-            bool isLock = false;
-            int width = 0;
-            int height = 0;
-            bool showLoading = false;
+            int width;
+            int height;
+            bool showLoading;
             wxImage pictureLoading;
             wxImage transparent;
-            
+			COpenCLContext * openclContext;
+
+			bool eraseBitmap = true;
+			wxBitmap bitmapLocal;
+
 		};
 		typedef std::vector<CIcone *> IconeVector;
 

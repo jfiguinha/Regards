@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "CompressionOption.h"
 
 #ifndef WX_PRECOMP
@@ -19,6 +18,8 @@ END_EVENT_TABLE()
 
 CompressionOption::CompressionOption(wxWindow* parent)
 {
+	isOk = false;
+	compressLevel = 0;
 	//(*Initialize(CompressionOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CompressionOption"),_T("wxDialog"));
 	StaticBox1 = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX1"));

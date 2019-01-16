@@ -1,54 +1,34 @@
 #pragma once
 #include <IFiltreEffet.h>
-#include <RegardsBitmap.h>
+class CRegardsBitmap;
 
 class CFiltreEffetCPU : public IFiltreEffet
 {
 public:
-	CFiltreEffetCPU(CRegardsBitmap * pBitmap, const CRgbaquad &backColor);
+	CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
-
 	int HistogramLog();
 	int HistogramNormalize();
 	int HistogramEqualize();
 	int RedEye(const wxRect& rSelectionBox);
-
-	int InterpolationBicubicRGB32Video(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
-	{
-		return -1;
-	}
-
-	int RGB24ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-	{
-		return -1;
-	}
-
-	int YUV420ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-	{
-		return -1;
-	}
-
-	int NV12ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-	{
-		return -1;
-	}
-
-	int InterpolationBicubicNV12ToRGB32(uint8_t * buffer, const int &width, const int &height, const int &rectWidth, const int &rectHeight, CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle, const int &size)
-	{
-		return -1;
-	}
-
-	int SharpenMasking(const int &sharpness)
-	{
-		return -1;
-	}
-
+	int ClaheFilter(int nBins, float clipLevel, int windowSize);
+	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
+	int NlmeansFilter(int fsize, int bsize, float sigma);
+	int GetRgbaBitmap(void * cl_image){return -1;};
+    void SetBitmap(CImageLoadingFormat * bitmap);
+	void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
+	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
+    CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
+	CRegardsBitmap * GetBitmap(const bool &source);
+	wxImage GetwxImage();
+	int WaveFilter(int x, int y, short height, int scale, int radius);
+	int SharpenMasking(const float &sharpness);
 	int NiveauDeGris();
 	int NoirEtBlanc();
 	int Sepia();
 	int Soften();
-	int Blur();
-	int GaussianBlur();
+	int Blur(const int &radius);
+	int GaussianBlur(const int &radius, const int &boxSize);
 	int Emboss();
 	int SharpenStrong();
 	int Sharpen();
@@ -69,7 +49,7 @@ public:
 	int BrightnessAndContrast(const double &brightness, const double &contrast);
 	int RGBFilter(const int &red, const int &green, const int &blue);
 	int Resize(const int &imageWidth, const int &imageHeight, const int &interpolation);
-	int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave);
+	int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity);
 	int Swirl(const float &radius, const float &angle);
 	int Contrast(const double &contrast, const uint8_t &offset);
 	int Lightness(const double &factor);
@@ -77,13 +57,11 @@ public:
 	int Solarize(const long &threshold);
 	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-	wxImage InterpolationBicubic(const wxImage & imageSrc, const int &widthOut, const int &heightOut);
-	int InterpolationBicubic(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle);
-	int InterpolationBicubic(CRegardsBitmap * & bitmapOut);
-	int InterpolationBicubic(CRegardsBitmap * & bitmapOut, const wxRect &rc);
-	int InterpolationBilinear(CRegardsBitmap * & bitmapOut);
-	int InterpolationBilinear(CRegardsBitmap * & bitmapOut, const wxRect &rc);
-	int InterpolationFast(CRegardsBitmap * & bitmapOut);
-	int InterpolationFast(CRegardsBitmap * & bitmapOut, const wxRect &rc);
+
+	static wxImage GetwxImage(CRegardsBitmap * bitmap);
+
+private:
+	CRegardsBitmap * bitmapOut;
+	CRegardsBitmap * pBitmap;
 };
 

@@ -1,5 +1,4 @@
 #include "BitmapToolbar.h"
-#include "effect.h"
 #include <LibResource.h>
 #include <ParamInit.h>
 #include <ConfigParam.h>
@@ -155,36 +154,11 @@ void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		this->Refresh();
+		this->FastRefresh(this);
 		//this->Update();
 	}
 }
 
-/*
-void CBitmapToolbar::ShowCropButton()
-{
-	if (crop != nullptr)
-	{
-		if (!crop->IsVisible())
-		{
-			crop->SetVisible(true);
-			this->Refresh();
-		}
-	}
-}
-
-void CBitmapToolbar::HideCropButton()
-{
-	if (crop != nullptr)
-	{
-		if (crop->IsVisible())
-		{
-			crop->SetVisible(false);
-			this->Refresh();
-		}
-	}
-}
-*/
 
 void CBitmapToolbar::ShowSaveButton()
 {
@@ -193,7 +167,7 @@ void CBitmapToolbar::ShowSaveButton()
 		if (!save->IsVisible())
 		{
 			save->SetVisible(true);
-			this->Refresh();
+			this->FastRefresh(this);
 		}
 	}
 }
@@ -204,7 +178,7 @@ void CBitmapToolbar::HideSaveButton()
 		if (save->IsVisible())
 		{
 			save->SetVisible(false);
-			this->Refresh();
+			this->FastRefresh(this);
 		}
 	}
 }
@@ -236,21 +210,6 @@ void CBitmapToolbar::EventManager(const int &id)
 		if (bitmapWindow != nullptr)
 			bitmapWindow->SendEmail();
 		break;
-
-            /*
-	case WM_CROP:
-		{
-			//CLocalWindow * local = (CLocalWindow *)CWindowManagerEngine::getInstance()->GetWindow("MainWindow");
-			//if (local != nullptr)
-			//	local->OnCommand(WM_EFFECT, 0, IDM_CROP);
-
-			if (bitmapWindow != nullptr)
-			{
-				bitmapWindow->SetTool(IDM_CROP);
-				bitmapWindow->SetBitmapPreviewEffect(IDM_CROP);
-			}
-		}
-		break;*/
             
 	case WM_ZOOMOUT:
 		ZoomOut();

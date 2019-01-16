@@ -1,9 +1,6 @@
 #pragma once
 #include "WindowMain.h"
 #include <FileGeolocation.h>
-#include <mutex>
-#include <thread>
-using namespace std;
 using namespace Regards::Internet;
 namespace Regards
 {
@@ -21,24 +18,23 @@ namespace Regards
 			int GetHeight();
 			void Redraw();
             void UpdateScreenRatio();
-
             
 		private:
+            void OnTimerGPSUpdate(wxTimerEvent& event);
 			void SetDateInfos(const wxString &dataInfos, char seperator);
 			void Resize();
 			void OnPaint(wxPaintEvent& event);
-			void OnIdle(wxIdleEvent& evt);
 			int Dayofweek(int d, int m, int y);
             void DrawInformations(wxDC * dc);
-            
-            
+            wxTimer * gpsTimer;
 			wxString filename;
 			wxString gpsInfos;
 			wxString dateInfos;
-			bool gpsInfosUpdate = false;
+			bool gpsInfosUpdate;
 			CThemeBitmapInfos bitmapInfosTheme;
 			CFileGeolocation * fileGeolocalisation;
-
+			mutex mufileGeoloc;
+            wxString urlServer = L"";
 		};
 	}
 }

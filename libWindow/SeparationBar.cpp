@@ -1,13 +1,8 @@
 #include "SeparationBar.h"
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 using namespace Regards::Window;
 
 CSeparationBar::CSeparationBar(IMoveWindow * moveWindow, wxWindow* parent, wxWindowID id, const CThemeSeparationBar & theme)
-	: CWindowMain(parent, id)
+	: CWindowMain("CSeparationBar",parent, id)
 {
 	bSplitterMoving = false;
 	horizontal = false;
@@ -32,7 +27,7 @@ void CSeparationBar::SetHorizontal(const bool &horizontal)
 
 void CSeparationBar::Resize()
 {
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 CSeparationBar::~CSeparationBar()
@@ -104,27 +99,19 @@ void CSeparationBar::OnLButtonDown(wxMouseEvent& event)
 
 void CSeparationBar::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+
+    
 	wxPaintDC dc(this);
+	wxRect rc = GetWindowRect();
 
 	if (horizontal)
-	{
-		wxRect rc;
-		rc.x = 0;
-		rc.y = 0;
-		rc.width = width;
-		rc.height = height;
 		dc.GradientFillLinear(rc, theme.secondColor, theme.firstColor, wxSOUTH);
-	}
 	else
-	{
-		wxRect rc;
-		rc.x = 0;
-		rc.y = 0;
-		rc.width = width;
-		rc.height = height;
 		dc.GradientFillLinear(rc, theme.secondColor, theme.firstColor, wxEAST);
-	}
-
 }
 
 void CSeparationBar::OnLButtonUp(wxMouseEvent& event)

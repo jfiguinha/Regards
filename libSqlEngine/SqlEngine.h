@@ -1,11 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
-using namespace std;
 
 namespace Regards
 {
@@ -19,7 +12,7 @@ namespace Regards
 
 			struct DataBase
 			{
-				CSqlLib * _singleton = nullptr;
+				CSqlLib * _singleton;
 				wxString baseName;
 			};
 
@@ -31,7 +24,7 @@ namespace Regards
 			static void kill(const wxString &baseName);
 
 		private:
-
+			
 			static vector<DataBase> _listOfBase;
 		};
 	}

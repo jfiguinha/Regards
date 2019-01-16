@@ -1,5 +1,6 @@
 #include "GLSLShader.h"
 #include <LibResource.h>
+#include <ConvertUtility.h>
 using namespace Regards::OpenGL;
 
 GLSLShader::GLSLShader(void)
@@ -30,6 +31,7 @@ bool GLSLShader::check_shader_compile_status(GLuint obj)
         printf("Error %s \n", cBuffer);
 		return false;
 	}
+    printf("check_shader_compile_status is OK \n");
 	return true;
 }
 
@@ -52,7 +54,7 @@ bool GLSLShader::check_program_link_status(GLuint obj)
 		int nOutCount = 0;
 		WCHAR *pWideChar = new WCHAR[length + 1];
 		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, cBuffer, length, pWideChar, nOutCount);
-		for (int nStr = 0; nStr < length; nStr++)
+		for (auto nStr = 0; nStr < length; nStr++)
 		{
 			short s = cBuffer[nStr];
 			pWideChar[nStr] = s;
@@ -94,8 +96,10 @@ bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
 
 	int length = (int)dataProgram.size() + 1;
 	char * src = new char[length];
-	strcpy(src, dataProgram.ToStdString().c_str());
-    
+	strcpy(src, CConvertUtility::ConvertToUTF8(dataProgram));
+    printf("Opengl shader : \n");
+    printf(src);
+    printf("Opengl end shader : \n");
     //printf(src);
 	
 	glShaderSource(m_hShaderHandle, 1, (const GLcharARB **)&src, &length);
@@ -104,8 +108,9 @@ bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
     glCompileShader( m_hShaderHandle );
     
 	if (!check_shader_compile_status(m_hShaderHandle))
+    {
 		return false;
-
+    }
 	glAttachShader(m_hProgramObject, m_hShaderHandle);
 	delete[] src;
     return true;
@@ -124,13 +129,8 @@ bool GLSLShader::CreateVertexProgram(const wxString & nProgramID_i)
 
 	int length = (int)dataProgram.size() + 1;
 	char * data = new char[length];
-	strcpy(data, dataProgram.ToStdString().c_str());
-
-#ifdef __APPLE__
-    glShaderSource(m_hVertexHandle, 1, (const GLcharARB **)&data, &length);
-#else
-	glShaderSourceARB(m_hVertexHandle, 1, (const GLcharARB **)&data, &length);
-#endif
+	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
+    glShaderSourceARB(m_hVertexHandle, 1, (const GLcharARB **)&data, &length);
 
 	glCompileShader(m_hVertexHandle);
 
@@ -183,6 +183,7 @@ bool GLSLShader::DisableShader()
     return true;
 }
 
+
 bool GLSLShader::SetTexture( const char * pParamName_i, const int nTextureID_i )
 {
 	GLint nParamObj = glGetUniformLocation(m_hProgramObject, pParamName_i);
@@ -194,8 +195,9 @@ bool GLSLShader::SetTexture( const char * pParamName_i, const int nTextureID_i )
     glActiveTexture( GL_TEXTURE0 + nTextureID_i );
     glBindTexture(GL_TEXTURE_2D, nTextureID_i);
 	glUniform1i(nParamObj, nTextureID_i);
-
-    return ( GL_NO_ERROR == glGetError() );
+    GLenum glErr = glGetError();
+    printf("SetTexture glError %s \n", gluErrorString(glErr));
+    return ( GL_NO_ERROR == glErr );
 }
 
 bool GLSLShader::SetParam(const char * pParamName_i, const float fValue_i)
@@ -207,7 +209,9 @@ bool GLSLShader::SetParam(const char * pParamName_i, const float fValue_i)
     }
 
     glUniform1f( nParamObj, fValue_i );
-    return ( GL_NO_ERROR == glGetError() );
+    GLenum glErr = glGetError();
+    printf("SetParam glError %s\n", gluErrorString(glErr));
+    return ( GL_NO_ERROR == glErr );
 }
 
 bool GLSLShader::SetIntegerParam(const char * pParamName_i, const int iValue_i)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libDialog" InternalType="Library">
+<CodeLite_Project Name="libDialog" InternalType="Library" Version="10.0.0">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -35,10 +35,16 @@
     <File Name="ExportFile.cpp"/>
     <File Name="GifOption.cpp"/>
     <File Name="JpegOption.cpp"/>
-    <File Name="OpenCLDialog.cpp"/>
     <File Name="PngOption.cpp"/>
-    <File Name="SaveFileFormat.cpp"/>
     <File Name="TiffOption.cpp"/>
+    <File Name="OpenCLDialog.cpp"/>
+    <File Name="bpgoption.cpp"/>
+    <File Name="webpOption.cpp"/>
+    <File Name="ChangeLabel.cpp"/>
+    <File Name="MoveFaceDialog.cpp"/>
+    <File Name="PertinenceValue.cpp"/>
+    <File Name="IndexGenerator.cpp"/>
+    <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="CompressionOption.h"/>
@@ -47,27 +53,24 @@
     <File Name="ExportFile.h"/>
     <File Name="GifOption.h"/>
     <File Name="JpegOption.h"/>
-    <File Name="OpenCLDialog.h"/>
     <File Name="PngOption.h"/>
-    <File Name="SaveFileFormat.h"/>
     <File Name="TiffOption.h"/>
     <File Name="wx_pch.h"/>
-    <File Name="SaveFromCFunction.h"/>
+    <File Name="OpenCLDialog.h"/>
+    <File Name="bpgoption.h"/>
+    <File Name="webpOption.h"/>
+    <File Name="ChangeLabel.h"/>
+    <File Name="MoveFaceDialog.h"/>
+    <File Name="PertinenceValue.h"/>
+    <File Name="IndexGenerator.h"/>
+    <File Name="SavePicture.h"/>
   </VirtualDirectory>
+  <VirtualDirectory Name="Apple"/>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="" C_Options="" Assembler="">
-        <IncludePath Value="."/>
-      </Compiler>
-      <Linker Options="">
-        <LibraryPath Value="."/>
-      </Linker>
-      <ResourceCompiler Options=""/>
-    </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0;-fopenmp;-std=c++11;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libUtility"/>
@@ -81,13 +84,22 @@
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
-        <Preprocessor Value="__WXGTK__"/>
+        <IncludePath Value="../libExif"/>
+        <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../include"/>
+        <Preprocessor Value="EXIV2"/>
       </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
@@ -119,29 +131,14 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="GCC" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-fopenmp;-std=c++11;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
-        <IncludePath Value="."/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libResource"/>
-        <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../libOpenCL"/>
-        <IncludePath Value="../libPicture"/>
-        <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../include"/>
-        <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
-        <Preprocessor Value="__WXGTK__"/>
       </Compiler>
       <Linker Options="-s;" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>

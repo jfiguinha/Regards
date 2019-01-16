@@ -1,14 +1,13 @@
 #include "SqlInsertFile.h"
-#include "SqlLib.h"
-#include <wx/dir.h>
 #include <libPicture.h>
+#include <wx/dir.h>
 using namespace Regards::Sqlite;
-
 
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB")
 {
-
+	numPhoto = 0;
+	type = 0;
 }
 
 
@@ -17,13 +16,60 @@ CSqlInsertFile::~CSqlInsertFile()
 
 }
 
+void CSqlInsertFile::UpdatePhotoProcess(const int &numPhoto)
+{
+    ExecuteRequestWithNoResult("Update PHOTOS Set Process = 1 where NumPhoto = " + to_string(numPhoto));
+}
+
+CPhotos CSqlInsertFile::GetPhotoToProcess()
+{
+    type = 4;
+    this->numPhoto = 0;
+    photoLocal.SetId(-1);
+    ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0 and Process = 0");
+    return photoLocal;
+}
+
+CPhotos CSqlInsertFile::GetPhoto(const int &numPhoto)
+{
+    type = 4;
+    this->numPhoto = numPhoto;
+    photoLocal.SetId(-1);
+    ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS where CriteriaInsert = 0");
+    return photoLocal;
+}
+
+int CSqlInsertFile::GetNbPhotosToProcess()
+{
+    type = 3;
+    numPhoto = 0;
+    ExecuteRequest("SELECT count(*) as nbphoto FROM PHOTOS where CriteriaInsert = 0 and Process = 0");
+    return numPhoto;
+}
+
+int CSqlInsertFile::ReinitPhotosToProcess()
+{
+	numPhoto = 0;
+	ExecuteRequest("Update PHOTOS SET CriteriaInsert = 0, Process = 0;");
+	return 0;
+}
+
+
+int CSqlInsertFile::GetNbPhotos()
+{
+    type = 3;
+    numPhoto = 0;
+    ExecuteRequest("SELECT count(*) as nbphoto FROM PHOTOS where CriteriaInsert = 0");
+    return numPhoto;
+}
+
 void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &idFolder)
 {
     BeginTransaction();
     
     ExecuteRequestWithNoResult("DELETE FROM PHOTOFOLDER");
     
-    for (wxString file : listFile)
+	for (wxString file : listFile)
     {
         file.Replace("'", "''");
         ExecuteRequestWithNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES ('" + file + "')");
@@ -33,6 +79,7 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
     
     
     //Photo To add
+    CLibPicture libPicture;
     vector<wxString> listAddFile;
     if(GetPhotoToAdd(&listAddFile))
     {
@@ -40,8 +87,9 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
         
         for (wxString filename : listAddFile)
         {
+            int extensionId = libPicture.TestImageFormat(filename);
             filename.Replace("'", "''");
-            ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0)");
+            ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
         }
         
         CommitTransection();
@@ -52,7 +100,7 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
     {
         BeginTransaction();
         
-        for (int numPhoto : listRemoveFile)
+        for (auto numPhoto : listRemoveFile)
         {
             ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto));
         }
@@ -65,13 +113,14 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, const int &idFolder)
 {
 	BeginTransaction();
-
+    CLibPicture libPicture;
 	for (wxString filename : listFile)
 	{
 		if (GetNumPhoto(filename) == 0)
 		{
+            int extensionId = libPicture.TestImageFormat(filename);
 			filename.Replace("'", "''");
-			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0)");
+			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
 		}
 	}
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in(SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
@@ -90,6 +139,7 @@ void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString &folder)
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+
 	for (wxString file : files)
 	{
 		if (libPicture.TestImageFormat(file) != 0)
@@ -111,6 +161,7 @@ bool CSqlInsertFile::GetPhotoToAdd(vector<wxString> * listFile)
 
 int CSqlInsertFile::GetNumPhoto(const wxString &filepath)
 {
+	numPhoto = 0;
 	type = 3;
 	wxString filename = filepath;
 	filename.Replace("'", "''");
@@ -127,23 +178,28 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 }
 
 
-void CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFolder)
+int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 	CLibPicture libPicture;
 	//BeginTransaction();
-
+	int i = 0;
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+
 	for (wxString file : files)
 	{
-		if (libPicture.TestImageFormat(file) != 0)
+		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 		{
+            int extensionId = libPicture.TestImageFormat(file);
+			if (i == 0)
+				firstFile = file;
 			file.Replace("'", "''");
-			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert) VALUES (" + to_string(idFolder) + ",'" + file + "', 0)");
+			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+			i++;
 		}
 	}
-
+	return i;
 
 	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
 	
@@ -173,7 +229,6 @@ bool CSqlInsertFile::GetPhotos(PhotosVector * photosVector, const int64_t &numFo
 	return (ExecuteRequest("SELECT NumPhoto, FullPath, NumFolderCatalog, CriteriaInsert FROM PHOTOS WHERE CriteriaInsert = 0 and NumFolderCatalog = " + to_string(numFolder) + "") != -1) ? true : false;
 }
 
-
 int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
@@ -181,10 +236,41 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 	{
 		switch (type)
 		{
+            
+			case 4:
+			{
+				if(nbResult == numPhoto)
+                {
+                    for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+                    {
+
+                        switch (i)
+                        {
+                        case 0:
+                            photoLocal.SetId(sqlResult->ColumnDataInt(i));
+                            break;
+                        case 1:
+                            photoLocal.SetPath(sqlResult->ColumnDataText(i));
+                            break;
+                        case 2:
+                            photoLocal.SetFolderId(sqlResult->ColumnDataInt(i));
+                            break;
+                        case 3:
+                            photoLocal.SetIsCriteriaInsert(sqlResult->ColumnDataInt(i));
+                            break;
+                        }
+                    } 
+                    return nbResult;      
+                }
+
+
+			}
+			break;
+            
 			case 0:
 			{
 				CPhotos _cPhoto;
-				for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 				{
 
 					switch (i)
@@ -210,7 +296,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 			case 1:
 				{
 					wxString path;
-					for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+					for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 					{
 
 						switch (i)
@@ -227,7 +313,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 			case 2:
 				{
 					int id;
-					for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+					for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 					{
 
 						switch (i)
@@ -243,7 +329,7 @@ int CSqlInsertFile::TraitementResult(CSqlResult * sqlResult)
 
 			case 3:
 			{
-				for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+				for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 				{
 
 					switch (i)

@@ -1,4 +1,5 @@
 #include "CategoryWnd.h"
+#include <SqlFindFacePhoto.h>
 #include <Criteria.h>
 #include <SqlPhotoCategorie.h>
 #include <SqlFindCriteria.h>
@@ -15,7 +16,6 @@
 #include <TreeElementDelete.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
-#include <algorithm>
 #include <LibResource.h>
 #include <ConvertUtility.h>
 #include <ThumbnailData.h>
@@ -26,11 +26,17 @@
 #endif
 #include "MainWindow.h"
 #include <FileGeolocation.h>
+#include "ViewerParamInit.h"
+#include "ViewerParam.h"
 using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 
 CCategoryWnd::CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
 {
+    sqlRequest = "";
+	treeDataModify = nullptr;
+	widthPosition = 0;
+
 	themeTree = *theme;
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
@@ -91,15 +97,13 @@ tree<CTreeData *>::iterator CCategoryWnd::FindFolderKey(const wxString & path)
 	return itend;
 }
 
-void CCategoryWnd::Init(const int64_t &numFolder)
+void CCategoryWnd::Init()
 {
 
 	CSqlFindCatalog sqlCatalog;
 	CatalogVector catalogVector;
 	tree<CTreeData *>::iterator top;
 	tree<CTreeData *>::iterator child;
-
-	this->numFolder = numFolder;
 
 	LoadState();
 
@@ -157,8 +161,8 @@ void CCategoryWnd::InitCatalogCategorie(tree<CTreeData *>::iterator parent, int 
 
 	for (PhotoCategorieVector::iterator fit = categorieVector.begin(); fit != categorieVector.end(); fit++)
 	{
-		if (fit->GetId() != 2)
-		{
+		//if (fit->GetId() != 2)
+		//{
 			idElement++;
 			CTreeDataCategory * treeData = new CTreeDataCategory();
 			treeData->SetNumElement(idElement);
@@ -172,8 +176,40 @@ void CCategoryWnd::InitCatalogCategorie(tree<CTreeData *>::iterator parent, int 
 			treeData->SetTypeElement(TYPECATEGORIE);
 			child = tr.append_child(parent, treeData);
 			treeData->child = child;
-			LoadCategorie(treeData->GetNumCategorie(), child, idElement);
-		}
+			switch(fit->GetId())
+			{
+			case 2:
+				LoadFolder(numCatalog, child, idElement);
+				break;
+			case 4:
+				LoadFace(numCatalog, child, idElement);
+				break;
+			default:
+				LoadCategorie(treeData->GetNumCategorie(), child, idElement);
+			}
+	}
+}
+
+void CCategoryWnd::LoadFace(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent)
+{
+	CSqlFindFacePhoto sqlFindFace;
+	std::vector<CFaceName> listFace = sqlFindFace.GetListFaceNameSelectable();
+	tree<CTreeData *>::iterator child;
+	for (std::vector<CFaceName>::iterator fit = listFace.begin(); fit != listFace.end(); fit++)
+	{
+		idElement++;
+		CTreeDataCategory * treeData = new CTreeDataCategory();
+		treeData->SetNumElement(idElement);
+		treeData->SetIdElement(fit->numFace);
+		treeData->SetNumCatalog(numCatalog);
+		treeData->SetNumCategorie(4);
+		treeData->SetNumLevel(2);
+		treeData->SetNumParent(numParent);
+		treeData->SetIsParent(false);
+		treeData->SetKey(fit->faceName);
+		treeData->SetTypeElement(TYPEFACE);
+		child = tr.append_child(parent, treeData);
+		treeData->child = child;
 	}
 }
 
@@ -219,7 +255,7 @@ tree<CTreeData *>::iterator CCategoryWnd::FindChild(tree<CTreeData *>::iterator 
 
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		CTreeData * data = *it;
 		if (data->GetExifKey() > catlibelle)
@@ -250,16 +286,13 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 	tree<CTreeData *>::iterator child = parent;
 	wcscpy(libelle, catlibelle.c_str());
 	int numParentElement = numParent;
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 	wchar_t * token = wcstok(libelle, seps); // C4996
 #else
 	// Establish string and get the first token:
 	wchar_t * token = wcstok(libelle, seps, &next_token1); // C4996
 #endif
-#else
-    wchar_t * token = wcstok(libelle, seps, &next_token1); // C4996
-#endif
+
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
@@ -312,15 +345,12 @@ void CCategoryWnd::AddCategorie(const int &numCatalog, const int &numCategorie, 
 				child = tr.insert(it, treeData);
 			treeData->child = child;
 		}
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
-#else
-        token = wcstok(nullptr, seps, &next_token1); // C4996
-#endif
+
 	}
 }
 
@@ -331,11 +361,10 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 {
 	CSqlFindCriteria findCriteria;
 	CriteriaVector criteriaVector;
-	findCriteria.SearchCriteria(&criteriaVector, numCategorie, numCatalog, numFolder);
+	findCriteria.SearchCriteria(&criteriaVector, numCategorie, numCatalog);
 	//int item = 0;
 	//int index = 0;
 	wchar_t seps[] = L".";
-
 
 	for (CCriteria criteria : criteriaVector)
 	{
@@ -351,15 +380,12 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 			int numParentElement = numParent;
 			//int index = 0;
 			// Establish string and get the first token:
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps); // C4996
 #else
 			wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps, &next_token1); // C4996
 #endif
-#else
-            wchar_t * token = wcstok((wchar_t *)libelle.wc_str(), seps, &next_token1); // C4996
-#endif
+
 			// Note: strtok is deprecated; consider using strtok_s instead
 			do
 			{
@@ -417,14 +443,10 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 					treeData->child = child;
 				}
 
-#ifdef WIN32
-#if _MSC_VER < 1900
-				token = wcstok(nullptr, seps); // C4996
+#if defined(WIN32) &&  _MSC_VER < 1900
+	token = wcstok(nullptr, seps); // C4996
 #else
-				token = wcstok(nullptr, seps, &next_token1); // C4996
-#endif
-#else
-    token = wcstok(nullptr, seps, &next_token1); // C4996
+	token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
 				//index++;
 
@@ -436,39 +458,58 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 
 wxString CCategoryWnd::GetSqlRequest()
 {
+	CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
     vector<int> listFolder;
+	vector<int> listFace;
+	vector<int> listFolderNotSelected;
+	vector<int> listFaceNotSelected;
+	vector<int> listFaceSelected;
     vector<int> listCriteriaNotIn;
+	double pertinence = 0.0;
     
-    for (PositionElementVector::iterator fit = vectorPosElementDynamic.begin(); fit != vectorPosElementDynamic.end(); fit++)
-    {
-        CPositionElement * value = *fit;
+	for (CPositionElement * value : vectorPosElementDynamic)
+	{
         if (value->GetType() == ELEMENT_CHECKBOX)
         {
             CTreeElementCheckBox * checkBox = (CTreeElementCheckBox *)value->GetTreeElement();
             CTreeDataCategory * treeData = (CTreeDataCategory *)value->GetTreeData();
             
-            
-            if (checkBox->GetCheckState())
+            if (!checkBox->GetCheckState())
             {
-                if (treeData->GetNumCategorie() == 2 && treeData->GetIdElement() != -1)
-                {
-                    listFolder.push_back(treeData->GetIdElement());
-                }
-            }
-            else
-            {
-                if (treeData->GetNumCategorie() != 2 && treeData->GetIdElement() != -1)
+                if (treeData->GetNumCategorie() != 2 && treeData->GetNumCategorie() != 4 && treeData->GetIdElement() != -1)
                     listCriteriaNotIn.push_back(treeData->GetIdElement());
+				else if(treeData->GetNumCategorie() == 2)
+					listFolderNotSelected.push_back(treeData->GetIdElement());
+				else if(treeData->GetNumCategorie() == 4)
+					listFaceNotSelected.push_back(treeData->GetIdElement());
             }
+			else
+			{
+				if(treeData->GetNumCategorie() == 4)
+					listFaceSelected.push_back(treeData->GetIdElement());
+			}
+
         }
     }
     
-    listFolder.push_back(numFolder);
-    
+	FolderCatalogVector folderList;
+	CSqlFindFolderCatalog folderCatalog;
+	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+
+	for (CFolderCatalog folderCatalog : folderList)
+	{
+		std::vector<int>::iterator it;
+		it = find(listFolderNotSelected.begin(), listFolderNotSelected.end(), folderCatalog.GetNumFolder());
+		if (it == listFolderNotSelected.end())
+			listFolder.push_back(folderCatalog.GetNumFolder());
+	}
+  
+	if(viewerParam != nullptr)
+		pertinence = viewerParam->GetPertinenceValue();
+
     CSqlFindPhotos sqlFindPhotos;
-    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn);
-    
-    CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, pertinence);
+
     viewerParam->SetLastSqlRequest(sqlRequest);
     
     return sqlRequest;
@@ -488,7 +529,7 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
 
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, EVENT_REFRESHLIST);
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CRITERIASHOWUPDATE);
 		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 
@@ -597,6 +638,7 @@ CPositionElement * CCategoryWnd::VerifChildParentCheckBox(const int &numParent, 
 {
 	CPositionElement * parent = nullptr;
 	isAllUncheck = true;
+
 	for (CPositionElement * value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
@@ -652,7 +694,7 @@ void CCategoryWnd::VerifParentCheckBox(CTreeDataCategory * treeData, const bool 
 				}
 				else
 				{
-					for (CPositionElement * value : vectorPosElementDynamic)
+                    for (CPositionElement * value : vectorPosElementDynamic)
 					{
 						if (value != nullptr)
 						{
@@ -729,7 +771,7 @@ void CCategoryWnd::GestionCheckBox(CTreeDataCategory * treeDataSelect, CTreeElem
 
 	if (isParent)
 	{
-		for (CPositionElement * value : vectorPosElementDynamic)
+        for (CPositionElement * value : vectorPosElementDynamic)
 		{
 			if (value != nullptr)
 			{
@@ -773,7 +815,7 @@ void  CCategoryWnd::ClickOnElement(CPositionElement * element, wxWindow * window
 		UpdateSQLSearchCriteria();
 
 		//UpdateElement();
-		eventControl->Update();
+		eventControl->UpdateTreeControl();
 	}
 	else if (element->GetType() == ELEMENT_TRIANGLE)
 	{
@@ -783,7 +825,7 @@ void  CCategoryWnd::ClickOnElement(CPositionElement * element, wxWindow * window
 		SaveStateTriangle();
 
 		UpdateElement();
-		eventControl->Update();
+		eventControl->UpdateTreeControl();
 	}
 }
 
@@ -796,12 +838,14 @@ void CCategoryWnd::RefreshCriteriaSearch()
     UpdateSQLSearchCriteria();
     
     //UpdateElement();
-    eventControl->Update();
+    eventControl->UpdateTreeControl();
 }
 
 void CCategoryWnd::UpdateScreenRatio()
 {
+    printf("CCategoryWnd::UpdateScreenRatio() \n");
     UpdateElement();
+    eventControl->UpdateTreeControl();
 }
 
 //------------------------------------------------------------------------------
@@ -850,11 +894,11 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	CPositionElement *  posElement = nullptr;
 	CTreeElementTexte * treeElementTexte = nullptr;
-	CTreeElementDelete * treeElementDelete = nullptr;
+	//CTreeElementDelete * treeElementDelete = nullptr;
 	CTreeElementCheckBox * treeElementCheck = nullptr;
 	CTreeElementTriangle * treeElementTriangle = nullptr;
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
@@ -879,14 +923,14 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			treeElementCheck = CreateCheckBoxElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), check);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementCheck->GetWidth(), treeElementCheck->GetHeight(), ELEMENT_CHECKBOX, treeElementCheck, data);
 			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
-
+			/*
 			if (data->GetTypeElement() == TYPEFOLDER)
 			{
 				treeElementDelete = CreateDeleteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight());
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementDelete->GetWidth(), treeElementDelete->GetHeight(), ELEMENT_DELETE, treeElementDelete, data);
 				xPos += treeElementDelete->GetWidth() + themeTree.GetMargeX();
 			}
-
+			*/
 			treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
@@ -1020,6 +1064,7 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			{
 				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
 				treeElementTriangle->SetVisible(isVisible);
+               treeElementTriangle->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 
@@ -1041,6 +1086,7 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			{
 				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
+                treeElementCheck->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1059,6 +1105,7 @@ void CCategoryWnd::UpdateElement(const bool &init)
 			{
 				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
+                treeElementTexte->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1086,7 +1133,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int widthElement = 0;
 		int profondeur = tr.depth(it);
@@ -1107,6 +1154,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
+                treeElementTexte->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1118,7 +1166,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 		}
 		else if (data->GetValue().size() > 0 || it.number_of_children() == 0)
 		{
-			CTreeElementDelete * treeElementDelete = nullptr;
+			//CTreeElementDelete * treeElementDelete = nullptr;
 			CTreeElementCheckBox * treeElementCheck = nullptr;
 			int xPos = widthPosition * (profondeur + 1);
 			CTreeElementTexte * treeElementTexte = nullptr;
@@ -1135,12 +1183,14 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
+                treeElementCheck->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
 
 			xPos += treeElementCheck->GetWidth() + themeTree.GetMargeX();
 
+			/*
 			if (data->GetTypeElement() == TYPEFOLDER)
 			{
 				posElement = GetElement(data, ELEMENT_DELETE);
@@ -1160,7 +1210,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 
 				xPos += treeElementDelete->GetWidth() + themeTree.GetMargeX();
 			}
-
+			*/
 			posElement = GetElement(data, ELEMENT_TEXTE);
 			if (posElement == nullptr)
 			{
@@ -1172,6 +1222,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
+                treeElementTexte->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1202,6 +1253,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				treeElementTriangle = (CTreeElementTriangle *)posElement->GetTreeElement();
 				treeElementTriangle->SetVisible(isVisible);
+                treeElementTriangle->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1220,6 +1272,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				treeElementCheck = (CTreeElementCheckBox *)posElement->GetTreeElement();
 				treeElementCheck->SetVisible(isVisible);
+                treeElementCheck->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}
@@ -1237,6 +1290,7 @@ void CCategoryWnd::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent, 
 			{
 				CTreeElementTexte * treeElementTexte = (CTreeElementTexte *)posElement->GetTreeElement();
 				treeElementTexte->SetVisible(isVisible);
+                treeElementTexte->SetElementPos(xPos,yPos);
 				posElement->SetX(xPos);
 				posElement->SetY(yPos);
 			}

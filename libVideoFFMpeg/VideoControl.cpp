@@ -1,101 +1,197 @@
+#ifdef WIN32
+
 #include "VideoControl.h"
 #include <wx/dcbuffer.h>
+#include <RegardsFloatBitmap.h>
 #include "ffplaycore.h"
-#include <FiltreEffet.h>
-#include <GLTexture.h>
-#if defined(__WXMSW__)
+#include <Interpolation.h>
 #include "../include/config_id.h"
-#else
-#include <config_id.h>
-#endif
-#include "LoadingResource.h"
-
+#include <d3d9.h>
+#include <CL/cl_dx9_media_sharing.h>
+#include <CL/cl.h>
+#include <CL/cl_gl.h>
+#include <utility.h>
+#include <GL/glut.h>
+#include "ffmpegToBitmap.h"
+//#include "LoadingResource.h"
+wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(EVENT_ENDVIDEOTHREAD, wxCommandEvent);
 
 
-//#define DBLBUFFERPICTURE
-int videoargs[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16 };
 
-CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IVideoInterface * eventPlayer)
-: wxGLCanvas(parent, wxID_ANY, videoargs,  wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
+CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
+: CWindowOpenGLMain("CVideoControl",parent, id)
 {
+	renderBitmapOpenGL = new Regards::Video::CRenderBitmapInterfaceOpenGL(this);
+    renderBitmapOpenGL->Init(this);
+    
+    printf("CVideoControl initialisation \n");
+    int argc = 1;
+    char* argv[1] ={wxString((wxTheApp->argv)[0]).char_str()};
+    glutInit(&argc, argv);  
+
+	hDevice = nullptr;
+	hTexture = nullptr;
+	windowWidth = 0;
+	windowHeight = 0;
+	dxva2ToOpenGLWorking = true;
+
+	widthVideo = 0;
+	heightVideo = 0;
+	subtilteUpdate = false;
+	threadVideo = nullptr;
+	volumeStart = 64;
+	old_width = 0;
+	old_height = 0;
+	pause = false;
+	config = nullptr;
+	angle = 0;
+	flipV = false;
+    newVideo = true;
+	flipH = false;
+	videoEnd = false;
+	exit = false;
+	quitWindow = false;
+    videoStart = false;
+    videoRenderStart = false;
+	pictureSubtitle = nullptr;
+	video_aspect_ratio = 0.0;
 	config = CParamInit::getInstance();
     Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControl::OnPaint));
     Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControl::OnSize));
     Connect(EVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControl::EndVideoThread));
     Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControl::VideoStart));
-    Connect(EVENT_REFRESHSCREEN, wxCommandEventHandler(CVideoControl::RefreshScreen));
+	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControl::OnIdle));
+	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControl::VideoRotation));
+    Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CVideoControl::OnRefresh));
+    fpsTimer = new wxTimer(this, TIMER_FPS);
+	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControl::OnRButtonDown));
+    Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControl::OnShowFPS), nullptr, this);
 	pause = false;
 	videoEnd = true;
+	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
-	this->videoEffectParameter = videoEffectParameter;
-	//videoRenderOpenGL = new CRenderVideoInterfaceOpenGL();
 
-    if (config->GetVideoLibrary() == LIBOPENGL)
-    {
-        openGLMode = true;
-        openCLMode = false;
+	initDevice = true;
+	dxva2 = nullptr;
+    d3d9devmgr = nullptr;
+	d3d9device = nullptr;
+	m_pRenderTargetSurface = nullptr;
+	isDXVA2Compatible = true;
+	openclEffectNV12 = nullptr;
+
+    d3dlib = LoadLibrary(L"d3d9.dll");
+    if (!d3dlib) {
+        throw("Failed to load D3D9 library\n");
     }
-    else
-    {
-        openGLMode = false;
-        openCLMode = false;
+    
+	dxva2lib = LoadLibrary(L"dxva2.dll");
+    if (!dxva2lib) {
+        throw("Failed to load DXVA2 library\n");
     }
 
+	Direct3DCreate9Ex(D3D_SDK_VERSION, &d3d9);
+    // ctx->d3d9 = createD3D(D3D_SDK_VERSION);
+    if (!d3d9) {
+        throw("Failed to create IDirect3D object\n");
+    }
 
-
+	openCLEngine = nullptr;
+	openclContext = nullptr;
+	openclEffectYUV = nullptr;
 }
 
-SDL_Rect CVideoControl::calculate_display_rect(float aspect_ratio, int angle)
+void CVideoControl::VideoRotation(wxCommandEvent& event)
 {
-	//float aspect_ratio;
-	SDL_Rect rect;
-	int width, height, x, y;
-	int bitmapWidth = 0;
-	int bitmapHeight =0;
-	
-	if (openGLMode || openCLMode)
+	long rotation = event.GetExtraLong();
+	if(rotation < 0)
+		rotation = 360 + rotation;
+	angle = rotation % 360;
+}
+
+void CVideoControl::UpdateFiltre(CEffectParameter * effectParameter)
+{
+	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
+	if(videoParameter->streamAudioUpdate)
 	{
-		bitmapWidth = bitmap->GetBitmapWidth();
-		bitmapHeight = bitmap->GetBitmapHeight();
+		ChangeAudioStream(videoParameter->streamAudioIndex);
+		videoParameter->streamAudioUpdate = 0;
 	}
-	else
+	else if(videoParameter->streamVideoUpdate)
 	{
-		bitmapWidth = bmp.GetWidth();
-		bitmapHeight = bmp.GetHeight();
+		//ChangeAudioStream(videoParameter->streamAudioIndex);
+		videoParameter->streamVideoUpdate = 0;
 	}
-	
-	if(angle == 90 || angle == 270)
+	else if(videoParameter->streamSubtitleUpdate)
 	{
-		int temp = bitmapWidth;
-		bitmapWidth = bitmapHeight;
-		bitmapHeight = temp;
+		//ChangeAudioStream(videoParameter->streamAudioIndex);
+		videoParameter->streamSubtitleUpdate = 0;
 	}
 
-	if (aspect_ratio <= 0.0)
-		aspect_ratio = 1.0;
-	
-	aspect_ratio *= (float)bitmapWidth / (float)bitmapHeight;
+	muVideoEffect.lock();
+	videoEffectParameter = *videoParameter;
+	muVideoEffect.unlock();
 
-	/* XXX: we suppose the screen has a 1.0 pixel ratio */
-	height = getHeight();
-	width = ((int)rint(height * aspect_ratio)) & ~1;
-	if (width > getWidth()) {
-		width = getWidth();
-		height = ((int)rint(width / aspect_ratio)) & ~1;
+	//this->FastRefresh(this);
+}
+
+void CVideoControl::SetVideoPreviewEffect(CEffectParameter * effectParameter)
+{
+	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
+	muVideoEffect.lock();
+	videoEffectParameter = *videoParameter;
+	muVideoEffect.unlock();
+}
+
+CEffectParameter * CVideoControl::GetParameter()
+{
+	CVideoEffectParameter * videoParameter = new CVideoEffectParameter();
+	muVideoEffect.lock();
+	*videoParameter = videoEffectParameter;
+	muVideoEffect.unlock();
+	return videoParameter;
+}
+
+
+bool CVideoControl::GetProcessEnd()
+{
+	return videoEnd;
+}
+
+void CVideoControl::OnRefresh(wxCommandEvent& event)
+{
+    this->FastRefresh(this);
+}
+
+void CVideoControl::OnIdle(wxIdleEvent& evt)
+{
+    //TRACE();
+	if(endProgram && videoRenderStart && !quitWindow)
+	{
+		fpsTimer->Stop();
+		quitWindow = true;
+		exit = true;
+		if (!videoEnd)
+		{
+			if(ffmfc_quit())
+			{
+				wxCommandEvent localevent;
+				EndVideoThread(localevent);
+				//videoEnd = true;
+			}
+		}
 	}
-	x = (getWidth() - width) / 2;
-	y = (getHeight() - height) / 2;
-	rect.x = x;
-	rect.y = y;
-	rect.w = FFMAX(width,  1);
-	rect.h = FFMAX(height, 1);
-	return rect;
+}
+
+void CVideoControl::OnShowFPS(wxTimerEvent& event)
+{
+	msgFrame = wxString::Format("FPS : %d", nbFrame);
+	nbFrame = 0;
 }
 
 void CVideoControl::PlayVideo(CVideoControl * sdlWindow)
 {
-    ffmfc_play(sdlWindow, sdlWindow->filename.ToStdString());
+    ffmfc_play(sdlWindow, CConvertUtility::ConvertToStdString(sdlWindow->filename));
     wxCommandEvent event(EVENT_ENDVIDEOTHREAD);
     wxPostEvent(sdlWindow, event);
 }
@@ -103,92 +199,136 @@ void CVideoControl::PlayVideo(CVideoControl * sdlWindow)
 
 void CVideoControl::EndVideoThread(wxCommandEvent& event)
 {
-    muVideo.lock();
+    
     if(threadVideo != nullptr)
     {
         threadVideo->join();
         delete threadVideo;
         threadVideo = nullptr;
     }
-    muVideo.unlock();
+
     videoEnd = true;
     if (eventPlayer != nullptr)
     {
         eventPlayer->OnPositionVideo(0);
         eventPlayer->OnVideoEnd();
     }
+	fpsTimer->Stop();
+	videoRenderStart = false;
+	stopVideo = true;
+
+	if(standByMovie != "")
+	{
+		PlayMovie(standByMovie);
+	}
 }
 
 
 CVideoControl::~CVideoControl()
 {
-	quitWindow = true;
-	exit = true;
-	if (!videoEnd)
-	{
-        ffmfc_quit();
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	initDevice = true;
 
-        muVideo.lock();
-        if(threadVideo != nullptr)
-            if (threadVideo->joinable())
-                threadVideo->join();
-        muVideo.unlock();
-	}
-	//delete(videoRenderOpenGL);
-	delete(bitmap);
+	UnbindTexture();
+
+	if(m_pRenderTargetSurface)
+		IDirect3DSurface9_Release(m_pRenderTargetSurface);
+
+    if (d3d9devmgr && deviceHandle != INVALID_HANDLE_VALUE)
+        d3d9devmgr->CloseDeviceHandle(deviceHandle);
+
+    if (d3d9devmgr)
+        d3d9devmgr->Release();
+
+    if (d3d9device)
+        IDirect3DDevice9_Release(d3d9device);
+
+    if (d3d9)
+        IDirect3D9_Release(d3d9);
+
+    if (d3dlib)
+        FreeLibrary(d3dlib);
+
+    if (dxva2lib)
+        FreeLibrary(dxva2lib);
+        
+	delete renderBitmapOpenGL;
+
+	delete fpsTimer;
+
+	if(openclEffectYUV != nullptr)
+		delete openclEffectYUV;
+
+	if(openclEffectNV12 != nullptr)
+		delete openclEffectNV12;
+
+	if (openCLEngine != nullptr)
+		delete openCLEngine;
+	openCLEngine = nullptr;
+
+	if(pictureSubtitle != nullptr)
+		delete pictureSubtitle;
 }
 
-
-void CVideoControl::Rotate90()
+void CVideoControl::SetSubtitulePicture(CRegardsBitmap * picture)
 {
-	angle += 90;
-	angle = angle % 360;
+	muSubtitle.lock();
+
+	if(pictureSubtitle != nullptr)
+		delete pictureSubtitle;
+
+	pictureSubtitle = picture;
+
+	subtilteUpdate = true;
+
+	muSubtitle.unlock();
 }
 
-void CVideoControl::Rotate270()
+void CVideoControl::DeleteSubtitulePicture()
 {
-	angle += 270;
-	angle = angle % 360;
-}
-void CVideoControl::FlipVertical()
-{
-	flipV = !flipV;
+	muSubtitle.lock();
+
+	if(pictureSubtitle != nullptr)
+		delete pictureSubtitle;
+
+	pictureSubtitle = nullptr;
+
+	subtilteUpdate = true;
+
+	muSubtitle.unlock();
 }
 
-void CVideoControl::FlipHorizontal()
-{
-	flipH = !flipH;
-}
+
 
 int CVideoControl::PlayMovie(const wxString &movie)
 {
-	if (filename != movie || videoEnd)
+	if (videoEnd)
 	{
+		stopVideo = false;
+		angle = 0;
+		flipV = false;
+		flipH = false;
         videoStart = false;
         newVideo = true;
-        
-        if(!videoEnd)
-        {
-            ffmfc_quit();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        }
-        if (openGLMode)
-            ffmfc_SetOutputMode(32);
-        else
-            ffmfc_SetOutputMode(24);
+		initStart = true;
+		videoRenderStart = false;
         videoEnd = false;
         filename = movie;
-        startVideoThread = false;
-    //threadVideo = std::thread(PlayVideo, this);
+		standByMovie = "";
+		threadVideo = new thread(PlayVideo, this);
 	}
-    this->Refresh();
+	else if(movie != filename)
+	{
+		OnStop();
+		standByMovie = movie;
+	}
+
 	return 0;
 }
 
 void CVideoControl::VideoStart(wxCommandEvent& event)
 {
 	eventPlayer->OnVideoStart();
+    ffmfc_play();
 	pause = false;
     videoStart =true;
 }
@@ -207,336 +347,563 @@ void CVideoControl::UpdateScreenRatio()
     Refresh();
 }
 
-CVideoWindowContext& CVideoControl::GetContext(wxGLCanvas *canvas)
+IDirect3D9Ex * CVideoControl::GetDirectd3d9()
 {
-    CVideoWindowContext *glContext;
-    
-    if ( !m_glContext )
-    {
-        // Create the OpenGL context for the first mono window which needs it:
-        // subsequently created windows will all share the same context.
-        m_glContext = new CVideoWindowContext(canvas);
-    }
-    glContext = m_glContext;
-    
-    glContext->SetCurrent(*canvas);
-    
-    return *glContext;
+	return d3d9;
 }
 
-void CVideoControl::DrawBitmap()
+void * CVideoControl::GetDXVA2CreateDirect3DDeviceManager9()
 {
-	muVideo.lock();
-    if (!startVideoThread && threadVideo == nullptr)
-    {
-        threadVideo = new std::thread(PlayVideo, this);
-        startVideoThread = true;
-    }
-    muVideo.unlock();
-    
+	return GetProcAddress(dxva2lib, "DXVA2CreateDirect3DDeviceManager9");;
+}
 
-	muBitmap.lock();
+HMODULE CVideoControl::GetDXVA2Lib()
+{
+	return dxva2lib;
+}
+
+typedef HRESULT WINAPI pCreateDeviceManager9(UINT *, IDirect3DDeviceManager9 **);
+
+HRESULT CVideoControl::InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height)
+{
+	HRESULT hr = S_OK;
+	bool init = false;
+
+	HDC screen = GetDC(0);
+	RECT rcClip;
+	GetClipBox(screen, &rcClip);
+	ReleaseDC(0, screen);
+
+	int widthSize = (width % 128);
+	if (widthSize == 0)
+		widthSize = width;
+	else
+		widthSize = (128 - widthSize) + width;
+
+	int heightSize = height;
 
 
-	if (openGLMode)
+	//int heightSize = (((height)+31) & ~31);
+	//size_t u2 = 1; while (u2 < width) u2 *= 2;
+	//size_t v2 = 1; while (v2 < height) v2 *= 2;
+
+	if(rcClip.right != windowWidth && rcClip.bottom != windowHeight)
 	{
-		if (bitmap != nullptr)
-		{
-#ifdef DBLBUFFERPICTURE
-			wxBitmap bitmapLocal = wxBitmap(getWidth(), getHeight());
-			wxBufferedPaintDC dc(this, bitmapLocal);
-			CWindowMain::FillRect(&dc, this->GetClientRect(), wxColour(0, 0, 0));
-			CVideoWindowContext& videoContext = GetContext(this);
-			wxImage renderPicture = RenderOpenGL();
-			dc.DrawBitmap(renderPicture,0,0);
-#else
-			CVideoWindowContext& videoContext = GetContext(this);
-			wxImage renderPicture = RenderOpenGL();
-#endif			
+		windowHeight = rcClip.bottom;
+		windowWidth = rcClip.right;
 
-		}
-		else
+		if(d3d9device != nullptr)
 		{
-			wxPaintDC dc(this);
-			CWindowMain::FillRect(&dc, this->GetClientRect(), wxColour(0, 0, 0));
+			if(m_pRenderTargetSurface)
+				IDirect3DSurface9_Release(m_pRenderTargetSurface);
+
+			if (d3d9devmgr && deviceHandle != INVALID_HANDLE_VALUE)
+			{
+				d3d9devmgr->CloseDeviceHandle(deviceHandle);
+				deviceHandle = nullptr;
+			}
+
+			if (d3d9devmgr)
+			{
+				d3d9devmgr->Release();
+				d3d9devmgr = nullptr;
+			}
+
+			if (d3d9device)
+			{
+				IDirect3DDevice9_Release(d3d9device);
+				d3d9device = nullptr;
+			}
+		}
+
+		CreateDevice(hwaccel_device);
+
+		if(d3d9device != nullptr)
+		{
+			UINT adapter = D3DADAPTER_DEFAULT;
+			unsigned resetToken = 0;	
+			pCreateDeviceManager9 *createDeviceManager = NULL;
+
+			createDeviceManager = (pCreateDeviceManager9 *)GetProcAddress(dxva2lib, "DXVA2CreateDirect3DDeviceManager9");
+			if (!createDeviceManager) {
+				throw("Failed to locate DXVA2CreateDirect3DDeviceManager9\n");
+			}
+
+			if (hwaccel_device) {
+				adapter = atoi(hwaccel_device);
+				//av_log(NULL, AV_LOG_INFO, "Using HWAccel device %d\n", adapter);
+			}
+
+
+			D3DDISPLAYMODE        d3ddm;
+			IDirect3D9_GetAdapterDisplayMode(d3d9, adapter, &d3ddm);
+
+			D3DPRESENT_PARAMETERS d3dpp = { 0 };
+			d3dpp.Windowed = TRUE;
+			d3dpp.BackBufferWidth = windowWidth;
+			d3dpp.BackBufferHeight = windowHeight;
+			d3dpp.BackBufferCount = 0;
+			d3dpp.BackBufferFormat = d3ddm.Format;
+			d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+			d3dpp.Flags = D3DPRESENTFLAG_VIDEO;
+
+			hr = d3d9device->ResetEx(&d3dpp, NULL);
+			if (FAILED(hr)) return hr;    
+
+			hr = d3d9device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+			if (FAILED(hr)) return hr;    
+
+
+			hr = d3d9device->GetRenderTarget(0, & m_pRenderTargetSurface);
+    
+			
+			m_pRenderTargetSurface->GetDesc(&rtDesc);
+    
+			// g_pSharedSurface should be able to be opened in OGL via the WGL_NV_DX_interop extension
+			// Vendor support for various textures/surfaces may vary
+			hr = d3d9device->CreateOffscreenPlainSurface(widthSize,
+														heightSize,
+														rtDesc.Format, 
+														D3DPOOL_DEFAULT, 
+														&ctx->m_pSharedSurface, 
+														& ctx->m_hSharedSurface);	
+
+			// Since this demo only shows RGB->RGB conversion, verify that the hardware can do NV12->RGB conversion
+			hr = d3d9->CheckDeviceFormatConversion(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, (D3DFORMAT) MAKEFOURCC('N', 'V', '1', '2'), D3DFMT_X8R8G8B8);
+			hr = d3d9device->SetRenderState(D3DRS_LIGHTING, FALSE);
+			hr = d3d9device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+	
+			hr = createDeviceManager(&resetToken, &d3d9devmgr);
+			if (FAILED(hr)) {
+				throw("Failed to create Direct3D device manager\n");
+			}
+
+			//hr = IDirect3DDeviceManager9_ResetDevice(ctx->d3d9devmgr, ctx->d3d9device, resetToken);
+			hr = d3d9devmgr->ResetDevice(d3d9device, resetToken);
+			if (FAILED(hr)) {
+				throw("Failed to bind Direct3D device to device manager\n");
+			}
+
+			//hr = IDirect3DDeviceManager9_OpenDeviceHandle(ctx->d3d9devmgr, &ctx->deviceHandle);
+			hr = d3d9devmgr->OpenDeviceHandle(&deviceHandle);
+			if (FAILED(hr)) {
+				throw("Failed to open device handle\n");
+			}
+
+			//hr = IDirect3DDeviceManager9_GetVideoService(ctx->d3d9devmgr, ctx->deviceHandle, &IID_IDirectXVideoDecoderService, (void **)&ctx->decoder_service);
+			hr = d3d9devmgr->GetVideoService(deviceHandle, IID_IDirectXVideoDecoderService, (void **)&ctx->decoder_service);
+			if (FAILED(hr)) {
+				throw("Failed to create IDirectXVideoDecoderService\n");
+			}
 		}
 	}
 	else
 	{
-		wxImage imageToDisplay;
-		wxBitmap bitmapLocal = wxBitmap(getWidth(), getHeight());
-		wxBufferedPaintDC dc(this, bitmapLocal);
-		
-			
-		if (bmp.IsOk())
-		{
-			imageToDisplay = bmp.Copy();
-		}
-		//wxBufferedPaintDC dc(this, bitmapLocal);
-		if (bmp.IsOk())
-		{	
-           int localAngle = angle + videoEffectParameter->rotation;
-            
-			SDL_Rect outDisplay;
+  
+		// g_pSharedSurface should be able to be opened in OGL via the WGL_NV_DX_interop extension
+		// Vendor support for various textures/surfaces may vary
+		hr = d3d9device->CreateOffscreenPlainSurface(widthSize,
+													heightSize, 
+													rtDesc.Format, 
+													D3DPOOL_DEFAULT, 
+													&ctx->m_pSharedSurface, 
+													& ctx->m_hSharedSurface);
 
-			if (localAngle == 90)
-			{
-				imageToDisplay = imageToDisplay.Rotate90();
-				imageToDisplay = imageToDisplay.Rotate180();
-			}
-			else if (localAngle == 180)
-				imageToDisplay = imageToDisplay.Rotate180();
-			else if (localAngle == 270)
-			{
-				imageToDisplay = imageToDisplay.Rotate90();
-			}
-
-			if (flipV)
-				imageToDisplay = imageToDisplay.Mirror(false);
-
-			if (flipH)
-				imageToDisplay = imageToDisplay.Mirror();
-				
-			//Calcul du displayRect
-			outDisplay = calculate_display_rect(aspectRatio,localAngle);
-
-			CWindowMain::FillRect(&dc, this->GetClientRect(), wxColour(0, 0, 0));
-			imageToDisplay = imageToDisplay.Scale(outDisplay.w, outDisplay.h);
-			dc.DrawBitmap(imageToDisplay, outDisplay.x, outDisplay.y);
-		}
-		else
-		{
-			CWindowMain::FillRect(&dc, this->GetClientRect(), wxColour(0, 0, 0));
+		//hr = IDirect3DDeviceManager9_GetVideoService(ctx->d3d9devmgr, ctx->deviceHandle, &IID_IDirectXVideoDecoderService, (void **)&ctx->decoder_service);
+		hr = d3d9devmgr->GetVideoService(deviceHandle, IID_IDirectXVideoDecoderService, (void **)&ctx->decoder_service);
+		if (FAILED(hr)) {
+			throw("Failed to create IDirectXVideoDecoderService\n");
 		}
 	}
-	muBitmap.unlock();
+	return hr;
+}
+
+HRESULT CVideoControl::CreateDevice(char * hwaccel_device)
+{
+	HRESULT hr = S_OK;
+	if(d3d9device == nullptr)
+	{
+		deviceHandle = INVALID_HANDLE_VALUE;
+		UINT adapter = D3DADAPTER_DEFAULT;
+		D3DDISPLAYMODE        d3ddm;
+		D3DPRESENT_PARAMETERS d3dpp = { 0 };
+		pCreateDeviceManager9 *createDeviceManager = NULL;
+
+		createDeviceManager = (pCreateDeviceManager9 *)GetProcAddress(dxva2lib, "DXVA2CreateDirect3DDeviceManager9");
+		if (!createDeviceManager) {
+			throw("Failed to locate DXVA2CreateDirect3DDeviceManager9\n");
+		}
+
+		if (hwaccel_device) {
+			adapter = atoi(hwaccel_device);
+			//av_log(NULL, AV_LOG_INFO, "Using HWAccel device %d\n", adapter);
+		}
+
+		IDirect3D9_GetAdapterDisplayMode(d3d9, adapter, &d3ddm);
+		d3dpp.Windowed = TRUE;
+		d3dpp.BackBufferWidth = 640;
+		d3dpp.BackBufferHeight = 480;
+		d3dpp.BackBufferCount = 0;
+		d3dpp.BackBufferFormat = d3ddm.Format;
+		d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+		d3dpp.Flags = D3DPRESENTFLAG_VIDEO;
+		unsigned int          g_iAdapter;
+		D3DADAPTER_IDENTIFIER9 g_adapter_id;
+		// Find the first CL capable device
+		for(g_iAdapter = 0; g_iAdapter < d3d9->GetAdapterCount(); g_iAdapter++)
+		{
+			D3DCAPS9 caps;
+			if (FAILED(d3d9->GetDeviceCaps(g_iAdapter, D3DDEVTYPE_HAL, &caps)))
+				// Adapter doesn't support Direct3D
+				continue;
+
+			if(FAILED(d3d9->GetAdapterIdentifier(g_iAdapter, 0, &g_adapter_id)))
+				return E_FAIL;
+			break;
+		}
+		// we check to make sure we have found a OpenCL-compatible D3D device to work on
+		if(g_iAdapter == d3d9->GetAdapterCount() ) 
+		{
+			//shrLog("No OpenCL-compatible Direct3D9 device available\n");
+			// destroy the D3D device
+			d3d9->Release();
+			//Cleanup(EXIT_SUCCESS);
+		}
+
+	
+		// The interop definition states D3DCREATE_MULTITHREADED is required, but it may vary by vendor
+		hr = d3d9->CreateDeviceEx(g_iAdapter,
+							D3DDEVTYPE_HAL,
+							this->GetHWND(),
+							D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED,
+							&d3dpp,
+							NULL,
+							&d3d9device);
+
+		if (FAILED(hr)) {
+			throw("Failed to create Direct3D device\n");
+			//goto fail;
+
+		}
+
+		initDevice = true;
+	}
+	return hr;
+}
+
+IDirect3DDevice9Ex * CVideoControl::GetDirect3DDevice()
+{
+	return d3d9device;
+}
+
+bool CVideoControl::UnbindTexture()
+{
+	if (WGLEW_NV_DX_interop)
+	{
+		if (hTexture != nullptr)
+		{
+			wglDXUnregisterObjectNV(hDevice, hTexture);
+			hTexture = nullptr;
+		}
+		if(initDevice)
+		{
+			if (hDevice != nullptr)
+			{
+				wglDXCloseDeviceNV(hDevice);
+				hDevice = nullptr;
+			}
+			initDevice = false;
+		}
+
+		renderBitmapOpenGL->DeleteVideoTexture();
+	}
+
+	return true;
+}
+
+CVideoControlInterface * CVideoControl::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
+{
+   return new CVideoControl(parent, id, windowMain, eventPlayer); 
+}
+
+void CVideoControl::SetRotation(const int &rotation)
+{
+    wxCommandEvent event(EVENT_VIDEOROTATION);
+    event.SetExtraLong(rotation);
+    wxPostEvent(this, event);
+}
+
+void CVideoControl::SetVideoStart()
+{
+    wxCommandEvent event(EVENT_VIDEOSTART);
+    wxPostEvent(this, event);
+}
+
+//-------------------------------------------------------------------------------------------------
+//
+//-------------------------------------------------------------------------------------------------
+
+GLTexture * CVideoControl::RenderFromOpenGLTexture()
+{
+    GLTexture * glTexture = nullptr;
+    muVideoEffect.lock();
+    int bicubic = videoEffectParameter.BicubicEnable;
+    muVideoEffect.unlock();    
+    if(bicubic)
+        printf("Bicubic Enable \n");
+    //printf("RenderFromOpenGLTexture \n");
+    
+	if (WGLEW_NV_DX_interop)
+	{
+		if(dxva2 != nullptr && hDevice == nullptr)
+		{
+			hDevice = wglDXOpenDeviceNV(d3d9device);
+		}
+
+		if(hTexture == nullptr && hDevice != nullptr)
+		{
+			glTexture = renderBitmapOpenGL->GetVideoTexture(widthVideo, heightVideo);
+			if(wglDXSetResourceShareHandleNV(dxva2->m_pSharedSurface, dxva2->m_hSharedSurface))
+			{
+				hTexture = wglDXRegisterObjectNV(hDevice, dxva2->m_pSharedSurface,glTexture->GetTextureID(), GL_TEXTURE_2D, WGL_ACCESS_READ_ONLY_NV);
+			
+				if (hTexture == NULL)
+					return;
+			}
+		}
+
+		if(hDevice != nullptr)
+		{
+			muBitmap.lock();
+			cl_mem cl_textureVideoCopy = 0;
+			wglDXLockObjectsNV(hDevice, 1, &hTexture);
+			cl_textureVideoCopy = renderBitmapOpenGL->GetCopyVideoTexture(openclContext->GetContext());
+			wglDXUnlockObjectsNV(hDevice, 1, &hTexture);	
+			muBitmap.unlock();
+
+			
+			wxRect rect;
+			if(cl_textureVideoCopy != nullptr)
+			{
+				cl_int err ;
+				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
+				Error::CheckError(err);
+
+				if(angle == 90 || angle == 270)
+				{
+					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, angle, bicubic);
+				}
+				else
+				{
+					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, bicubic);
+				}
+
+				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
+				Error::CheckError(err);
+				err = clFlush(openclContext->GetCommandQueue());
+				Error::CheckError(err);
+			}
+
+			if(cl_textureVideoCopy != nullptr)
+			{
+				
+				if(angle == 90 || angle == 270)
+					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width, openclContext->GetContext());
+				else
+					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height, openclContext->GetContext());
+				
+				if(glTexture != nullptr)
+				{
+					try
+					{
+						cl_int err;
+						cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
+						err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+						Error::CheckError(err);
+                        if(!renderBitmapOpenGL->IsCopyDirect())
+                            openclEffectNV12->GetRgbaBitmap(cl_image,1);
+                        else
+                            openclEffectNV12->GetRgbaBitmap(cl_image,0);
+						err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+						Error::CheckError(err);
+						err = clFlush(openclContext->GetCommandQueue());
+						Error::CheckError(err);
+					}
+					catch(...)
+					{
+
+					}
+				}
+
+
+			}
+		}
+	}
+    return glTexture;
 }
 
 void CVideoControl::OnPaint(wxPaintEvent& event)
 {
+    GLTexture * glTexture = nullptr;
+    printf("OnPaint CVideoControl begin \n"); 
+       
+    std::clock_t start;
+    start = std::clock();    
+    
+
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+	
 	if (quitWindow)
         return;
-    
-	DrawBitmap();
 
+    renderBitmapOpenGL->SetCurrent(*this);
+
+    if (openCLEngine == nullptr)
+    {
+		openCLEngine = new COpenCLEngine();
+
+		if (openCLEngine != nullptr)
+			openclContext = openCLEngine->GetInstance();
+
+		openclEffectNV12 = new COpenCLEffectVideoNV12(openclContext);
+		hDevice = nullptr;
+		hTexture = nullptr;
+		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+    }
+
+
+    if (videoRenderStart && initStart)
+    {
+        if(!fpsTimer->IsRunning())
+            fpsTimer->Start(1000);
+
+		UnbindTexture();
+		dxva2ToOpenGLWorking = true;
+		initStart = false;
+	}
+
+	
+	if(videoRenderStart)
+	{
+        if (isDXVA2Compatible && dxva2ToOpenGLWorking)
+            glTexture = RenderFromOpenGLTexture();
+        else
+        {
+            if(isDXVA2Compatible)
+            {
+                if(openclEffectNV12->IsOk())
+                {
+                    muBitmap.lock();
+                    glTexture = RenderToTexture(openclEffectNV12);
+                    muBitmap.unlock();
+                }
+            }
+            else
+            {
+                glTexture = RenderToGLTexture();
+            }     
+        }
+    }
+    if(videoRenderStart && glTexture != nullptr)
+    {       
+        renderBitmapOpenGL->CreateScreenRender(GetWindowWidth(), GetWindowHeight(), CRgbaquad(0,0,0,0));
+
+        if(glTexture != nullptr)
+        {
+            muVideoEffect.lock();
+            int enableopenCL = videoEffectParameter.enableOpenCL;
+            muVideoEffect.unlock();
+            
+            int inverted = 1;
+            int x = (GetWindowWidth() - glTexture->GetWidth()) / 2;
+            int y = (GetWindowHeight()  - glTexture->GetHeight()) / 2;
+            if(openclContext->IsSharedContextCompatible())
+                inverted = 0;
+               
+            if(!enableopenCL)
+                inverted = 1;
+              
+            if(isDXVA2Compatible)
+                inverted = 0;
+
+            printf("glTexture info id : %d width %d height %d \n", glTexture->GetTextureID(), glTexture->GetWidth(), glTexture->GetHeight());
+            renderBitmapOpenGL->RenderWithEffect(x,y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
+
+        }
+        
+        printf("Nb Frame per Seconds : %s \n",CConvertUtility::ConvertToUTF8(msgFrame));
+
+        muVideoEffect.lock();
+        if(videoEffectParameter.showFPS)
+        {
+            renderBitmapOpenGL->Print(0, 1, CConvertUtility::ConvertToUTF8(msgFrame));
+        }
+        muVideoEffect.unlock();
+
+        muSubtitle.lock();
+
+        if(subtilteUpdate && pictureSubtitle != nullptr)
+        {
+            renderBitmapOpenGL->SetSubtitle(pictureSubtitle);
+
+            delete pictureSubtitle;
+            pictureSubtitle = nullptr;
+
+            subtilteUpdate = false;
+        }
+        else if(subtilteUpdate)
+        {
+            renderBitmapOpenGL->DeleteSubtitle();
+            subtilteUpdate = false;
+        }
+
+        muSubtitle.unlock();
+
+        if(videoEffectParameter.enableSubtitle)
+        {
+            renderBitmapOpenGL->ShowSubtitle();
+        }    
+    
+	}
+	else
+	{
+		renderBitmapOpenGL->CreateScreenRender(GetWindowWidth(), GetWindowHeight(), CRgbaquad(0,0,0,0));
+	}
+    
+    
+	this->SwapBuffers();	
+
+    if(deleteTexture)
+        if(glTexture != nullptr)
+            delete glTexture;
+		
+
+    double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    printf("Nb Frame per Seconds : %d \n",nbFrame);
+    std::cout<<"Video OnPaint Time : "<< duration <<'\n';
+    
+    nbFrame++;
 }
 
-wxImage CVideoControl::RenderOpenGL()
+int CVideoControl::ChangeSubtitleStream(int newStreamSubtitle)
 {
-	wxImage anImage = wxImage(getWidth(),getHeight());
-    if (bitmap != nullptr)
-    {
-        bool localFlipV = flipV;
-        bool localFlipH = flipH;
-        SDL_Rect outDisplay;
-		
-        
-        if(videoEffectParameter->rotation < 0)
-            videoEffectParameter->rotation = 0;
-        
-        int localAngle = angle + videoEffectParameter->rotation;
-        
-        if(textureWidth != bitmap->GetBitmapWidth() || textureHeight != bitmap->GetBitmapHeight())
-        {
-            if(m_nTextureVideoID != 0)
-            {
-                glDeleteTextures(1, &m_nTextureVideoID);
-                glFinish();
-            }
+	ffmfc_change_subtitle_stream(newStreamSubtitle);
+	SetVideoPosition(videoPosition / 1000);
+	return 0;
+}
 
-            m_nTextureVideoID = 0;
-            newVideo = false;
-            textureWidth = bitmap->GetBitmapWidth();
-            textureHeight = bitmap->GetBitmapHeight();
-        }
-        
-        if(m_nTextureVideoID == 0)
-        {
-            glGenTextures(1, &m_nTextureVideoID);
-            glBindTexture(GL_TEXTURE_2D, m_nTextureVideoID);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-            glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap->GetPtBitmap());
-            newVideo = false;
-            
-        }
-        else
-        {
-            glBindTexture(GL_TEXTURE_2D, m_nTextureVideoID);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, textureWidth, textureHeight, GL_RGBA, GL_UNSIGNED_BYTE, bitmap->GetPtBitmap());
-        }
-#ifdef DBLBUFFERPICTURE
-		GLTexture * textureSource = new GLTexture(getWidth(), getHeight());
-#endif
-        
-        
-        glViewport( 0, 0, getWidth(), getHeight() );
-        glMatrixMode( GL_PROJECTION );   // Select the projection matrix
-        glLoadIdentity();                // and reset it
-        // Calculate the aspect ratio of the view
-        gluPerspective( 45.0f, getWidth() / getHeight(), 0.1f, 100.0f );
-        glMatrixMode( GL_MODELVIEW );    // Select the modelview matrix
-        glLoadIdentity();
-        
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_TEXTURE_2D);
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluOrtho2D(0, getWidth(), 0, getHeight());
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-				
-	     //Calcul du displayRect
-		 outDisplay = calculate_display_rect(aspectRatio,localAngle);
-        
-        if(m_pShader == nullptr)
-        {
-            m_pShader = new GLSLShader();
-            m_pShader->CreateProgram("IDR_GLSL_SHADER_RENDER_BITMAP", GL_FRAGMENT_PROGRAM_ARB);
-        }
-        
-        m_pShader->EnableShader();
-        
-        if (!m_pShader->SetTexture("Picture", m_nTextureVideoID))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetParam("fWidth", (float)bitmap->GetBitmapWidth()))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetParam("fHeight", (float)bitmap->GetBitmapHeight()))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        if (!m_pShader->SetParam("fWidthOutput", getWidth()))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetParam("fHeightOutput", getHeight()))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        if (!m_pShader->SetParam("fAngle", (float)localAngle))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetIntegerParam("flipV", 0))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetIntegerParam("flipH", 0))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        if (!m_pShader->SetIntegerParam("BicubicEnable", 1))
-        {
-            //TRACE( L"SetTexture failed" );
-        }
-        
-        glPushMatrix();
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glEnableClientState(GL_VERTEX_ARRAY);
-        
-        int x = outDisplay.x;
-        int y = outDisplay.y;
-        int width = outDisplay.x + outDisplay.w;
-        int height = outDisplay.y + outDisplay.h;
-        
-        
-        if(!localFlipV)
-        {
-            int old = y;
-            y = height;
-            height = old;
-        }
-        
-            GLfloat vertices[] = {
-                static_cast<GLfloat>(x), static_cast<GLfloat>(y),
-                static_cast<GLfloat>(width), static_cast<GLfloat>(y),
-                static_cast<GLfloat>(width), static_cast<GLfloat>(height),
-                static_cast<GLfloat>(x), static_cast<GLfloat>(height) };
-        
-            glVertexPointer(2, GL_FLOAT, 0, vertices);
-        
-        if(localFlipH)
-        {
-            GLfloat texVertices[] = {
-                1, 0,
-                0, 0,
-                0, 1,
-                1, 1 };
-            
-        
-            glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-        }
-        else
-        {
-            GLfloat texVertices[] = {
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1 };
-            
-            
-            glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
-        }
-        
-        glDrawArrays(GL_QUADS, 0, 4);
-        
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        
-        glPopMatrix();
-        
-        m_pShader->DisableShader();
-        
-        glFlush();
-		
-#ifdef DBLBUFFERPICTURE
-		
-		glBindTexture(GL_TEXTURE_2D, textureSource->GetTextureID());					// Bind To The Blur Texture
-		glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, getWidth(), getHeight(), 0);
-		
-		uint8_t * m_bData = textureSource->GetRGBData();
-		int posData = 0;
-		int widthSrcSize = getWidth() * 3;
-		bool invertY = true;
-		if(m_bData != nullptr)
-		{
-			for (int y = 0; y < getHeight(); y++)
-			{
-				if(invertY)
-					posData = ((getHeight() - y) * widthSrcSize) - widthSrcSize;
-				else
-					posData = y * widthSrcSize;
 
-				for (int x = 0; x < getWidth(); x++)
-				{
-					anImage.SetRGB(x, y, m_bData[posData], m_bData[posData + 1], m_bData[posData+2]);
-					posData += 3;
-				}
-			}
-			delete[] m_bData;
-		}
-		
-		delete textureSource;
-		
-		SwapBuffers();
-#else
-		SwapBuffers();
-#endif		
-    }
-	return anImage;
+int CVideoControl::ChangeAudioStream(int newStreamAudio)
+{
+	ffmfc_change_audio_stream(newStreamAudio);
+	SetVideoPosition(videoPosition / 1000);
+	return 0;
 }
 
 void CVideoControl::OnPlay()
@@ -547,10 +914,7 @@ void CVideoControl::OnPlay()
 	}
 	else if(videoEnd)
     {
-        videoEnd = false;
-        startVideoThread = false;
-        this->Refresh();
-        //threadVideo = std::thread(PlayVideo, this);
+		PlayMovie(filename);
     }
 
 	pause = false;
@@ -559,13 +923,13 @@ void CVideoControl::OnPlay()
 void CVideoControl::OnStop()
 {
 	exit = true;
-	videoEnd = false;
-    ffmfc_quit();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-        
-    videoEnd = true;
-
-    exit = false;
+	stopVideo = true;
+    if(ffmfc_quit())
+	{
+		wxCommandEvent localevent;
+		EndVideoThread(localevent);
+		//videoEnd = true;
+	}
 }
 
 void CVideoControl::OnPause()
@@ -585,13 +949,20 @@ void CVideoControl::SetVideoDuration(int64_t duration)
 
 void CVideoControl::SetVideoPosition(int64_t pos)
 {
-	ffmfc_SetTimePosition(pos);
+	ffmfc_SetTimePosition(pos * 1000 * 1000);
+}
+
+void CVideoControl::SetCurrentclock(wxString message)
+{
+	this->message = message;
 }
 
 void CVideoControl::SetPos(int64_t pos)
 {
+	videoPosition = pos;
 	if (eventPlayer != nullptr)
 		eventPlayer->OnPositionVideo(pos);
+	//this->FastRefresh(this);
 }
 
 void CVideoControl::VolumeUp()
@@ -609,55 +980,151 @@ int CVideoControl::GetVolume()
 	return ffmfc_GetVolume();
 }
 
-void CVideoControl::RefreshScreen(wxCommandEvent& event)
+void CVideoControl::OnRButtonDown(wxMouseEvent& event)
 {
-	if (quitWindow)
+	//wxWindow * window = this->FindWindowById(idWindowMain);
+	if (windowMain != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, TOOLBAR_UPDATE_ID);
+		windowMain->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CVideoControl::SetDXVA2Compatible(const bool &compatible)
+{
+	isDXVA2Compatible = compatible;
+}
+
+bool CVideoControl::GetDXVA2Compatible()
+{
+	return isDXVA2Compatible;
+}
+
+void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void * dxva2Context)
+{
+    std::clock_t start = std::clock();
+     
+	videoRenderStart = true;  
+
+	AVFrame *src_frame = (AVFrame *)data;
+
+    video_aspect_ratio = sample_aspect_ratio;
+
+    if(isDXVA2Compatible)
     {
-        CBitmapToShow * bitmapToShow = (CBitmapToShow *)event.GetClientData();
-        delete[] bitmapToShow->data;
-        delete bitmapToShow;
-        return;
-    }
-    
-    
-    CBitmapToShow * bitmapToShow = (CBitmapToShow *)event.GetClientData();
-
-
-	muBitmap.lock();
-
-	aspectRatio = bitmapToShow->aspect_ratio;
-
-	if (openGLMode || openCLMode)
-	{
-		if (bitmap == nullptr)
-			bitmap = new CRegardsBitmap();
-
-		bitmap->SetBitmap(bitmapToShow->data, bitmapToShow->width, bitmapToShow->height, false, false);
-	}
-	else
-	{
-		// create a bitmap from our pixel data
-		bmp = wxImage(bitmapToShow->width, bitmapToShow->height,
-			bitmapToShow->data);
+        bool glewExist = WGLEW_NV_DX_interop ? true : false;
         
-        //delete[] bitmapToShow->data;
-	}
-	muBitmap.unlock();
+        if (glewExist)
+        {            
+            if(dxva2Context != nullptr)	
+                this->dxva2 = (DXVA2Context *)dxva2Context;
 
+            muBitmap.lock();
+            LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
+            widthVideo = src_frame->width;
+            heightVideo = src_frame->height;
+
+            int widthSize = (widthVideo % 128);
+            if (widthSize == 0)
+                widthSize = widthVideo;
+            else
+                widthSize = (128 - widthSize) + widthVideo;
+
+            int heightSize = heightVideo;
+
+            if (hTexture != nullptr && hDevice != nullptr)
+            {
+                // Copy the result to the shared surface
+                IDirect3DSurface9* pSharedSurface =dxva2->m_pSharedSurface;
+                RECT rc = { 0, 0, widthVideo, heightVideo };
+                //RECT rcWindow = { 0, 0, widthVideo, heightVideo };
+
+                HRESULT hr = d3d9device->BeginScene();	
+                if (FAILED(hr))
+                    return;
+                //hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
+                hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
+                if (FAILED(hr))
+                    dxva2ToOpenGLWorking = false;
+                else
+                    dxva2ToOpenGLWorking = true;
+
+                hr = d3d9device->EndScene();
+                if (FAILED(hr))
+                    return;
+
+
+            }
+
+            muBitmap.unlock();	
+
+
+        }
+        else
+        {
+            dxva2ToOpenGLWorking = false;
+            printf("dxva2ToOpenGLWorking false \n");
+        }	
+        if (!dxva2ToOpenGLWorking)
+        {
+             printf("copy surface LPDIRECT3DSURFACE9 \n");
+             
+            LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
+            D3DSURFACE_DESC    surfaceDesc;
+            D3DLOCKED_RECT     LockedRect;
+            HRESULT            hr;
+            int                ret;
+
+            IDirect3DSurface9_GetDesc(surface, &surfaceDesc);
+            muBitmap.lock();
+            hr = IDirect3DSurface9_LockRect(surface, &LockedRect, NULL, D3DLOCK_READONLY);
+            if (FAILED(hr)) {
+                av_log(NULL, AV_LOG_ERROR, "Unable to lock DXVA2 surface\n");
+                return;
+            }
+
+            int size = LockedRect.Pitch * surfaceDesc.Height + (LockedRect.Pitch * (surfaceDesc.Height / 2));
+
+            openclEffectNV12->SetMemoryData((uint8_t *)LockedRect.pBits, size, src_frame->width, src_frame->height, LockedRect.Pitch, surfaceDesc.Height, src_frame->format);
+
+            IDirect3DSurface9_UnlockRect(surface);
+            muBitmap.unlock();
+            widthVideo = src_frame->width;
+            heightVideo = src_frame->height;
+        }
+
+    }
+    else
+    {
+
+        SetFrameData(src_frame);
+        
+        if(isffmpegDecode)
+            CopyFrame(src_frame);        
+
+    }
+
+    widthVideo = src_frame->width;
+    heightVideo = src_frame->height;  
+    double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+
+    std::cout<<"Set Data time execution: "<< duration <<'\n';
     
-    delete bitmapToShow;
-
-	//this->Refresh();
-	//this->Update();
-	
-	DrawBitmap();
-
+    this->Refresh();
 }
 
-void CVideoControl::OnSize(wxSizeEvent& event)
+void CVideoControl::Resize()
 {
-	int width = event.GetSize().GetWidth();
-	int height = event.GetSize().GetHeight();
+     updateContext = true;
+     
     if(videoStart)
-        ffmfc_videoDisplaySize(width, height);
+        ffmfc_videoDisplaySize(GetWindowWidth(),GetWindowHeight() );
+        
+    if(pause && isffmpegDecode && copyFrameBuffer != nullptr)
+    {
+         SetFrameData(copyFrameBuffer);
+         this->FastRefresh(this);
+    } 
 }
+
+#endif

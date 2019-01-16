@@ -19,16 +19,16 @@ namespace Regards
         {
         public:
             CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail);
-            ~CThumbnailViewerEffectWnd(void);
+            virtual ~CThumbnailViewerEffectWnd(void);
             
             void UpdateScreenRatio();
             void Resize();
             wxString GetFilename();
-            void SetFile(const wxString & filename, CRegardsBitmap * bitmap);
+            void SetFile(const wxString & filename);
         private:
             
-            CScrollbarWnd * thumbnailEffectScroll = nullptr;
-            CThumbnailViewerEffect * thumbnailEffect = nullptr;
+            CScrollbarWnd * thumbnailEffectScroll;
+            CThumbnailViewerEffect * thumbnailEffect;
         };
     }
 }

@@ -5,6 +5,10 @@
 CTreeElement::CTreeElement()
 {
 	visible = true;
+	xPos = 0;
+	yPos = 0;
+	numRow = 0;
+	numColumn = 0;
 }
 
 

@@ -1,1405 +1,1655 @@
 #include "OpenCLEffect.h"
-#include "OpenCLParameter.h"
 #include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
+#include "RegardsFloatBitmap.h"
+#include <LoadingResource.h>
+#include <MotionBlur.h>
+#include "OpenCLFilter.h"
+#include "utility.h"
+#include <ImageLoadingFormat.h>
+#include <ximage.h>
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
-COpenCLEffect::COpenCLEffect(CRegardsBitmap * pBitmap, const CRgbaquad &backColor)
-	: IFiltreEffet(pBitmap, backColor)
+COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap)
+	: IFiltreEffet(backColor)
 {
-	bool useMemory = false;
-	this->pBitmap = pBitmap;
+	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	this->backColor = backColor;
 	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
-	openCLProgram = nullptr;
+	this->context = context;
+	dataIsOk = false;
+
+	input = nullptr;
+	paramWidth = nullptr;
+	paramHeight = nullptr;
+
+	paramOutput = nullptr;
+	widthOut = 0;
+	heightOut = 0;
+
+    SetBitmap(bitmap);
 }
 
+
+int COpenCLEffect::WaveFilter(int x, int y, short height, int scale, int radius)
+{
+	return -1;
+}
+
+cl_mem COpenCLEffect::LoadRegardsImage(uint8_t * data, const int &width, const int &height)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_REGARDBITMAP");
+	if(programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, width * height * 4, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "LoadRegardsBitmap");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return outputValue;
+}
+
+
+void COpenCLEffect::SetBitmap(CImageLoadingFormat * bitmap)
+{
+	cl_mem outputValue = nullptr;
+	if(bitmap != nullptr && bitmap->IsOk())
+	{
+		int format = bitmap->GetFormat();
+		if(format == TYPE_IMAGE_CXIMAGE)
+		{
+			CxImage * local = bitmap->GetCxImage(false);
+			if(local->GetBpp() == 24)
+			{
+				if(local->AlphaIsValid())
+					outputValue = LoadCxImageAlpha(local->GetBits(), local->AlphaGetPointer(), bitmap->GetWidth(), bitmap->GetHeight(), local->GetEffWidth(), !local->IsBGR());
+				else
+					outputValue = LoadCxImage(local->GetBits(), bitmap->GetWidth(), bitmap->GetHeight(), local->GetEffWidth(), !local->IsBGR());
+
+				RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
+				return;
+			}
+			else
+			{
+				CRegardsBitmap * local = bitmap->GetRegardsBitmap(false);
+				outputValue = LoadRegardsImage(local->GetPtBitmap(), bitmap->GetWidth(), bitmap->GetHeight());
+				RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
+				delete local;
+			}
+		}
+		else if(format == TYPE_IMAGE_WXIMAGE)
+		{
+			int effWidth = bitmap->GetWidth() * 3;
+			wxImage * local = bitmap->GetwxImage(false);
+			if(local->HasAlpha())
+				outputValue = LoadWxImageAlpha(local->GetData(), local->GetAlpha(), bitmap->GetWidth(), bitmap->GetHeight(), effWidth);
+			else
+				outputValue = LoadWxImage(local->GetData(), bitmap->GetWidth(), bitmap->GetHeight(), effWidth);
+
+			RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
+			return;
+		}
+		else if(format == TYPE_IMAGE_REGARDSIMAGE)
+		{
+			CRegardsBitmap * local = bitmap->GetRegardsBitmap(false);
+			outputValue = LoadRegardsImage(local->GetPtBitmap(), bitmap->GetWidth(), bitmap->GetHeight());
+			RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
+		}
+        else if(format == TYPE_IMAGE_REGARDSFLOATIMAGE)
+        {
+            CRegardsFloatBitmap * local = bitmap->GetFloatBitmap(false);
+            COpenCLParameterFloatArray floatValue(true);
+            floatValue.SetNoDelete(true);
+            floatValue.SetValue(context->GetContext(), local->GetData(), local->GetWidth() * 4 *  local->GetHeight(), flag);
+            outputValue = floatValue.GetValue();
+            RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
+        }
+	}
+
+}
+
+
+cl_mem COpenCLEffect::LoadCxImageAlpha(uint8_t * data, uint8_t * alpha, const int &width, const int &height, const int &effwidth, const bool & RGB)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	if(programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		//program->SetBuildOptions("-D ITER_NUM=1000");
+
+		//Create Memory Buffer for Bitmap
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, effwidth * height, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterByteArray *	alphaImage = new COpenCLParameterByteArray();
+		alphaImage->SetValue(context->GetContext(), alpha, width * height, flag);
+		vecParam.push_back(alphaImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt * parameffwidth = new COpenCLParameterInt();
+		parameffwidth->SetLibelle("effwidth");
+		parameffwidth->SetValue(effwidth);
+		vecParam.push_back(parameffwidth);
+
+		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetKeepOutput(true);
+		if(RGB)
+			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImageAlphaRGB");
+		else
+			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImageAlpha");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+
+		//SetOutputValue(outputValue,width,height);
+	}
+	return outputValue;
+}
+
+cl_mem COpenCLEffect::LoadCxImage(uint8_t * data, const int &width, const int &height, const int &effwidth, const bool & RGB)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	if(programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		//program->SetBuildOptions("-D ITER_NUM=1000");
+
+		//Create Memory Buffer for Bitmap
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, effwidth * height, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt * parameffwidth = new COpenCLParameterInt();
+		parameffwidth->SetLibelle("effwidth");
+		parameffwidth->SetValue(effwidth);
+		vecParam.push_back(parameffwidth);
+
+		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetKeepOutput(true);
+		if(RGB)
+			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImageRGB");
+		else
+			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImage");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+
+		//SetOutputValue(outputValue,width,height);
+	}
+	return outputValue;
+}
+
+cl_mem COpenCLEffect::LoadWxImageAlpha(uint8_t * data, uint8_t * alpha, const int &width, const int &height, const int &effwidth)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	if(programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		//program->SetBuildOptions("-D ITER_NUM=1000");
+
+		//Create Memory Buffer for Bitmap
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, effwidth * height, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterByteArray *	alphaImage = new COpenCLParameterByteArray();
+		alphaImage->SetValue(context->GetContext(), alpha, width * height, flag);
+		vecParam.push_back(alphaImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt * parameffwidth = new COpenCLParameterInt();
+		parameffwidth->SetLibelle("effwidth");
+		parameffwidth->SetValue(effwidth);
+		vecParam.push_back(parameffwidth);
+
+		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "LoadWxImageAlpha");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+
+		//SetOutputValue(outputValue,width,height);
+	}
+	return outputValue;
+}
+
+cl_mem COpenCLEffect::LoadWxImage(uint8_t * data, const int &width, const int &height, const int &effwidth)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	if(programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+		//program->SetBuildOptions("-D ITER_NUM=1000");
+
+		//Create Memory Buffer for Bitmap
+		COpenCLParameterByteArray *	dataImage = new COpenCLParameterByteArray();
+		dataImage->SetValue(context->GetContext(), data, effwidth * height, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt * parameffwidth = new COpenCLParameterInt();
+		parameffwidth->SetLibelle("effwidth");
+		parameffwidth->SetValue(effwidth);
+		vecParam.push_back(parameffwidth);
+
+		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "LoadWxImage");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+
+		//SetOutputValue(outputValue,width,height);
+	}
+	return outputValue;
+}
+/*
+void COpenCLEffect::SetBitmap(CRegardsBitmap * & pBitmap)
+{
+	RefreshMemoryBitmap(pBitmap);
+}
+*/
 COpenCLEffect::~COpenCLEffect()
 {
-	if (openCLProgram != nullptr)
-		delete openCLProgram;
+	if(paramOutput != nullptr)
+	{
+		paramOutput->Release();
+		delete paramOutput;
+	}
+		
+	if (paramWidth != nullptr)
+	{
+		paramWidth->Release();
+		delete paramWidth;
+	}
+		
+	if (paramHeight != nullptr)
+	{
+		paramHeight->Release();
+		delete paramHeight;
+	}
+		
+	if (input != nullptr)
+	{
+		input->Release();
+		delete input;
+	}
+}
 
-	openCLProgram = nullptr;
+
+void COpenCLEffect::RefreshMemoryBitmap(cl_mem bitmapOut, const int & widthOutput, const int &  heightOutput)
+{
+	width = widthOutput;
+	height = heightOutput;
+
+	if(paramOutput != nullptr)
+	{
+		paramOutput->Release();
+		delete paramOutput;
+		paramOutput = nullptr;
+	}
+
+	if (paramWidth != nullptr)
+	{
+		paramWidth->Release();
+		delete paramWidth;
+		paramWidth = nullptr;
+	}
+		
+	if (paramHeight != nullptr)
+	{
+		paramHeight->Release();
+		delete paramHeight;
+		paramHeight = nullptr;
+	}
+		
+	if (input != nullptr)
+	{
+		input->Release();
+		delete input;
+		input = nullptr;
+	}
+
+	//Create Memory Buffer for Bitmap
+	input = new COpenCLParameterClMem();
+	COpenCLParameterClMem * valueInput = (COpenCLParameterClMem *)input;
+	valueInput->SetValue(bitmapOut);
+	valueInput->SetNoDelete(true);
+
+	paramWidth = new COpenCLParameterInt();
+	paramWidth->SetValue(width);
+	paramWidth->SetNoDelete(true);
+
+	paramHeight = new COpenCLParameterInt();
+	paramHeight->SetValue(height);
+	paramHeight->SetNoDelete(true);
+
+
+}
+
+
+void COpenCLEffect::RefreshMemoryBitmap(CRegardsBitmap * bitmapOut)
+{
+	if(bitmapOut != nullptr)
+	{
+		cl_mem outputValue = LoadRegardsImage(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+		RefreshMemoryBitmap(outputValue, bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+	}
+}
+
+
+CRegardsBitmap * COpenCLEffect::GetBitmap(cl_mem input, const int &width, const int &height)
+{
+	CRegardsBitmap * bitmap = nullptr;
+
+	if(input != nullptr)
+	{
+		bitmap = new CRegardsBitmap(width, height);
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_REGARDBITMAP");
+		if(programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * valueInput = new COpenCLParameterClMem();
+			valueInput->SetValue(input);
+			valueInput->SetNoDelete(true);
+			vecParam.push_back(valueInput);
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(bitmap->GetBitmapWidth());
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(bitmap->GetBitmapHeight());
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, bitmap);
+			program->ExecuteProgram1D(programCL->GetProgram(), "GetRegardsBitmap");
+
+			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if(!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	return bitmap;
+}
+
+CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
+{
+	CRegardsFloatBitmap * bitmapOut = nullptr;
+	if(paramOutput != nullptr && !source)
+	{
+		bitmapOut = new CRegardsFloatBitmap(widthOut, heightOut);
+		if(context != nullptr)
+		{
+			context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+		}
+	}
+	else
+	{
+		bitmapOut = new CRegardsFloatBitmap(width, height);
+		if(context != nullptr)
+		{
+			context->GetOutputData(input->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+		}
+	}
+	return bitmapOut;
+}
+
+CRegardsBitmap * COpenCLEffect::GetBitmap(const bool &source)
+{
+	CRegardsBitmap * bitmapOut = nullptr;
+	if(paramOutput != nullptr && !source)
+	{
+		//bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+		if(context != nullptr)
+		{
+			bitmapOut = GetBitmap(paramOutput->GetValue(), widthOut, heightOut);
+			//context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
+		}
+	}
+	else
+	{
+		//bitmapOut = new CRegardsBitmap(width, height);
+		if(context != nullptr)
+		{
+			bitmapOut = GetBitmap(input->GetValue(), width, height);
+			//context->GetOutputData(input->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
+		}
+	}
+	return bitmapOut;
+
+}
+//-----------------------------------------------------------------------------------------------
+//Get Output
+//-----------------------------------------------------------------------------------------------
+
+wxImage COpenCLEffect::GetwxImage()
+{
+	wxImage anImage(widthOut, heightOut, false);
+
+	if(paramOutput != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_WXWIDGET");
+		if(programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+			//program->SetBuildOptions("-D ITER_NUM=1000");
+
+			paramOutput->SetLibelle("input");
+			vecParam.push_back(paramOutput);
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("widthIn");
+			paramWidth->SetValue(widthOut);
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("heightIn");
+			paramHeight->SetValue(heightOut);
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, &anImage);
+			program->ExecuteProgram1D(programCL->GetProgram(), "BitmapToWxImage");
+
+			delete program;
+
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if(!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+
+			paramOutput = nullptr;
+		}
+	}
+	return anImage;
+}
+
+
+int COpenCLEffect::GetRgbaBitmap(void * cl_image)
+{
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_WXWIDGET");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		/*
+
+		*/
+
+		if(paramOutput != nullptr)
+		{
+			paramOutput->SetLibelle("input");
+			paramOutput->SetNoDelete(false);
+			vecParam.push_back(paramOutput);	
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetValue(widthOut);
+			paramWidth->SetLibelle("width");
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetValue(heightOut);
+			paramHeight->SetLibelle("height");
+			vecParam.push_back(paramHeight);
+		}
+		else
+		{
+			input->SetLibelle("input");
+			input->SetNoDelete(false);
+			vecParam.push_back(input);	
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetValue(width);
+			paramWidth->SetLibelle("width");
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetValue(height);
+			paramHeight->SetLibelle("height");
+			vecParam.push_back(paramHeight);
+		}
+
+
+		COpenCLParameterInt * paramRGBA = new COpenCLParameterInt();
+		paramRGBA->SetValue(0);
+		paramRGBA->SetLibelle("rgba");
+		vecParam.push_back(paramRGBA);
+
+		program->SetKeepOutput(true);
+		if(paramOutput != nullptr)
+			program->SetParameter(&vecParam, widthOut, heightOut, (cl_mem)cl_image);
+		else
+			program->SetParameter(&vecParam, width, height, (cl_mem)cl_image);
+		program->ExecuteProgram(programCL->GetProgram(), "BitmapToOpenGLTexture");
+
+		delete program;
+
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+
+	if(paramOutput != nullptr)
+		paramOutput = nullptr;
+	else
+		input = nullptr;
+	return 0;
+}
+
+
+void COpenCLEffect::SetOutputValue(cl_mem output, int widthOutput, int heightOutput)
+{
+	if(output != nullptr)
+	{
+		if(preview)
+		{
+			if(paramOutput != nullptr)
+			{
+				paramOutput->Release();
+				delete paramOutput;
+			}
+
+			paramOutput = new COpenCLParameterClMem();
+			paramOutput->SetValue(output);
+			this->widthOut = widthOutput;
+			this->heightOut = heightOutput;
+		}
+		else
+		{
+			RefreshMemoryBitmap(output, widthOutput, heightOutput);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------
+
+int COpenCLEffect::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
+{
+	cl_mem output = nullptr;
+	int _width = 0;
+	int _height = 0;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, input->GetValue(), width, height);
+		}
+		
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::BrightnessAndContrast(const double &brightness, const double &contrast)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.BrightnessAndContrast(brightness, contrast, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.BrightnessAndContrast(brightness, contrast, input->GetValue(), width, height);
+		}
+
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::Swirl(const float &radius, const float &angle)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Swirl(radius,angle, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Swirl(radius,angle, input->GetValue(), width, height);
+		}
+
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::NlmeansFilter(int fsize, int bsize, float sigma)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.run2d(fsize,bsize,sigma, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.run2d(fsize,bsize,sigma, input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
+	return 0;
+}
+
+int COpenCLEffect::Posterize(const float &level, const float &gamma)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Posterize(level, gamma, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Posterize(level, gamma, input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::Median()
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Median(paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Median(input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
 }
 
 int COpenCLEffect::Negatif()
 {
-	return ColorEffect("Negatif");
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ColorEffect("Negatif", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ColorEffect("Negatif", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
+	return 0;
 }
 
 int COpenCLEffect::Sepia()
 {
-	return ColorEffect("Sepia");
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ColorEffect("Sepia", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ColorEffect("Sepia", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
+	return 0;
 }
 
 int COpenCLEffect::NoirEtBlanc()
 {
-	return ColorEffect("NoirEtBlanc");
-}
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ColorEffect("NoirEtBlanc", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ColorEffect("NoirEtBlanc", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
 
+	return 0;
+}
 
 int COpenCLEffect::NiveauDeGris()
 {
-	return ColorEffect("GrayLevel");
-}
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ColorEffect("GrayLevel", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ColorEffect("GrayLevel", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
 
-int COpenCLEffect::InterpolationBicubic(CRegardsBitmap * & bitmapOut)
-{
-	return Interpolation(bitmapOut, "BicubicInterpolation");
-}
-
-int COpenCLEffect::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return Interpolation(bitmapOut, rc, "BicubicInterpolationZone");
+	return 0;
 }
 
 int COpenCLEffect::FlipVertical()
 {
-	return Flip("FlipVertical");
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Flip("FlipVertical", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Flip("FlipVertical", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
+	return 0;
 }
 
 int COpenCLEffect::FlipHorizontal()
 {
-	return Flip("FlipHorizontal");
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Flip("FlipHorizontal", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Flip("FlipHorizontal", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
+	return 0;
 }
 
 int COpenCLEffect::Rotate90()
 {
-	int widthOut = pBitmap->GetBitmapHeight(); 
-	int heightOut = pBitmap->GetBitmapWidth();
-	return Rotate("Rotation90", widthOut, heightOut, 90.0f);
+	int _widthOut = 0; 
+	int _heightOut = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_widthOut = heightOut; 
+			_heightOut = widthOut;
+			output = openclFilter.Rotate("Rotation90", _widthOut, _heightOut, 90.0f, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_widthOut = height; 
+			_heightOut = width;
+			output = openclFilter.Rotate("Rotation90", _widthOut, _heightOut, 90.0f, input->GetValue(), width, height);
+		}
+		SetOutputValue(output, _widthOut, _heightOut);
+	}
+
+	return 0;
 }
 
 int COpenCLEffect::Rotate270()
 {
-	int widthOut = pBitmap->GetBitmapHeight();
-	int heightOut = pBitmap->GetBitmapWidth();
-	return Rotate("Rotation270", widthOut, heightOut, 270.0f);
+	int _widthOut = 0; 
+	int _heightOut = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_widthOut = heightOut; 
+			_heightOut = widthOut;
+			output = openclFilter.Rotate("Rotation270", _widthOut, _heightOut, 270.0f, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_widthOut = height; 
+			_heightOut = width;
+			output = openclFilter.Rotate("Rotation270", _widthOut, _heightOut, 270.0f, input->GetValue(), width, height);
+		}
+		SetOutputValue(output, _widthOut, _heightOut);
+	}
+	return 0;
 }
 
 
 int COpenCLEffect::RotateFree(const double &angle, const int &widthOut, const int &heightOut)
 {
-	return Rotate("RotateFree", widthOut, heightOut, angle);
+	int _widthOut = 0; 
+	int _heightOut = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_widthOut = widthOut; 
+			_heightOut = heightOut;
+			output = openclFilter.Rotate("RotateFree", widthOut, heightOut, angle, paramOutput->GetValue(), this->widthOut, this->heightOut);
+		}
+		else
+		{
+			_widthOut = widthOut; 
+			_heightOut = heightOut;
+			output = openclFilter.Rotate("RotateFree", widthOut, heightOut, angle, input->GetValue(), width, height);
+		}
+		SetOutputValue(output, _widthOut, _heightOut);
+	}
+	return 0;
 }
 
-int COpenCLEffect::SharpenMasking(const int &sharpness)
+int COpenCLEffect::SharpenMasking(const float &sharpness)
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SHARPENMASKING");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt * paramIntensity = new COpenCLParameterInt();
-	paramIntensity->SetLibelle("sharpness");
-	paramIntensity->SetValue(sharpness);
-	vecParam.push_back(paramIntensity);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "SharpenMasking");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.SharpenMasking(sharpness, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.SharpenMasking(sharpness, input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
 int COpenCLEffect::PhotoFiltre(const CRgbaquad &clValue, const int &intensity)
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramIntensity = new COpenCLParameterInt();
-	paramIntensity->SetLibelle("intensity");
-	paramIntensity->SetValue(intensity);
-	vecParam.push_back(paramIntensity);
-
-	COLORData color = { clValue.GetRed(), clValue.GetGreen(), clValue.GetBlue(), 0 };
-	
-	COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
-	paramColor->SetLibelle("color");
-	paramColor->SetValue(context->GetContext(), &color, flag);
-	vecParam.push_back(paramColor);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "PhotoFiltre");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.PhotoFiltre(clValue, intensity, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.PhotoFiltre(clValue, intensity,  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
+	return 0;
+}
+
+int COpenCLEffect::Solarize(const long &threshold)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Solarize(threshold, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Solarize(threshold,  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+
 	return 0;
 }
 
 int COpenCLEffect::RGBFilter(const int &red, const int &green, const int &blue)
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COLORData color = { red, green, blue, 0 };
-
-	COpenCLParameterColorData * paramColor = new COpenCLParameterColorData();
-	paramColor->SetLibelle("color");
-	paramColor->SetValue(context->GetContext(), &color, flag);
-	vecParam.push_back(paramColor);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "RGBFiltre");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.RGBFilter(red, green, blue, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.RGBFilter(red, green, blue,  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
 int COpenCLEffect::FiltreMosaic()
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOSAIC");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterFloat * paramAngle = new COpenCLParameterFloat();
-	paramAngle->SetLibelle("fTileSize");
-	paramAngle->SetValue(5.0f);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Mosaic");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreMosaic(paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreMosaic( input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
 
 	return 0;
 }
+
 
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
 int COpenCLEffect::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage)
 {
-	int widthOut = pBitmap->GetBitmapWidth(); 
-	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_FUSION");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterByteArray * inputSecond = new COpenCLParameterByteArray();
-	inputSecond->SetLibelle("inputSecond");
-	inputSecond->SetValue(context->GetContext(), bitmapSecond->GetPtBitmap(), (int)bitmapSecond->GetBitmapSize(), flag);
-	vecParam.push_back(inputSecond);
-
-	COpenCLParameterFloat * prcent = new COpenCLParameterFloat();
-	prcent->SetLibelle("pourcentage");
-	prcent->SetValue(pourcentage);
-	vecParam.push_back(prcent);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "Fusion");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	cl_mem inputSecond = LoadRegardsImage(bitmapSecond->GetPtBitmap(), bitmapSecond->GetBitmapWidth(), bitmapSecond->GetBitmapHeight());
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Fusion(paramOutput->GetValue(), inputSecond, pourcentage, widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Fusion( input->GetValue(), inputSecond,  pourcentage, width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
-
 	return 0;
 }
 
 int COpenCLEffect::Soften()
 {
-	return FiltreConvolution("Soften");
-}
-
-int COpenCLEffect::Blur()
-{
-	return FiltreConvolution("Blur");
-}
-
-int COpenCLEffect::GaussianBlur()
-{
-	return FiltreConvolution("GaussianBlur");
-}
-
-int COpenCLEffect::Emboss()
-{
-	return FiltreConvolution("Emboss");
-}
-
-int COpenCLEffect::SharpenStrong()
-{
-	return FiltreConvolution("SharpenStrong");
-}
-
-int COpenCLEffect::Sharpen()
-{
-	return FiltreConvolution("Sharpen");
-}
-
-int COpenCLEffect::InterpolationBicubicRGB32Video(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
-	paramflipH->SetLibelle("flipH");
-	paramflipH->SetValue(flipH);
-	vecParam.push_back(paramflipH);
-
-	COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
-	paramflipV->SetLibelle("flipV");
-	paramflipV->SetValue(flipV);
-	vecParam.push_back(paramflipV);
-
-	COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-	paramAngle->SetLibelle("angle");
-	paramAngle->SetValue(angle);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "BicubicRGB32Video");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreConvolution("Soften",paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreConvolution("Soften", input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
-	return 0;
-}
 
-int COpenCLEffect::InterpolationBicubicNV12ToRGB32(uint8_t * buffer, const int &width, const int &height, const int &rectWidth, const int &rectHeight, CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle, const int &size)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), buffer, size, flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(width);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(height);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt * paramRectWidth = new COpenCLParameterInt();
-	paramRectWidth->SetLibelle("rectWidth");
-	paramRectWidth->SetValue(rectWidth);
-	vecParam.push_back(paramRectWidth);
-
-	COpenCLParameterInt * paramRectHeight = new COpenCLParameterInt();
-	paramRectHeight->SetLibelle("rectHeight");
-	paramRectHeight->SetValue(rectHeight);
-	vecParam.push_back(paramRectHeight);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
-	paramflipH->SetLibelle("flipH");
-	paramflipH->SetValue(flipH);
-	vecParam.push_back(paramflipH);
-
-	COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
-	paramflipV->SetLibelle("flipV");
-	paramflipV->SetValue(flipV);
-	vecParam.push_back(paramflipV);
-
-	COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-	paramAngle->SetLibelle("angle");
-	paramAngle->SetValue(angle);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "BicubicNV12toRGB32");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::RGB24ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{ 
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), buffer, size, flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "rgb24_to_rgb32");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-
-
-int COpenCLEffect::NV12ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), buffer, size, flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(width);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(height);
-	vecParam.push_back(paramHeight);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "NV12_to_RGB32");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::YUV420ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{ 
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), buffer, size, flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "YUV420_to_RGB32");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-
-int COpenCLEffect::FiltreConvolution(const wxString &functionName)
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_CONVOLUTION");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::FiltreEdge()
-{
-	return FiltreConvolution("Edge");
-}
-
-int COpenCLEffect::Erode()
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_DILATEERODE");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Erode");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::Dilate()
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_DILATEERODE");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Dilate");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::Posterize(const float &level, const float &gamma)
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramLevel = new COpenCLParameterInt();
-	paramLevel->SetLibelle("level");
-	paramLevel->SetValue(level);
-	vecParam.push_back(paramLevel);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "Posterisation");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-
-int COpenCLEffect::Solarize(const long &threshold)
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramThreshold = new COpenCLParameterInt();
-	paramThreshold->SetLibelle("threshold");
-	paramThreshold->SetValue((int)threshold);
-	vecParam.push_back(paramThreshold);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "Solarization");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
-	return 0;
-}
-
-int COpenCLEffect::Median()
-{
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MEDIAN");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Median");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
 	return 0;
 }
 
 int COpenCLEffect::Noise()
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_NOISE");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
-	paramWidth->SetLibelle("width");
-	paramWidth->SetValue(widthOut);
-	vecParam.push_back(paramWidth);
-
-	COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
-	paramHeight->SetLibelle("height");
-	paramHeight->SetValue(heightOut);
-	vecParam.push_back(paramHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Noise");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Noise(paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Noise( input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
-	return 0;
 
-
-}
-
-
-int COpenCLEffect::InterpolationBilinear(CRegardsBitmap * & bitmapOut)
-{
-	return Interpolation(bitmapOut, "BilinearInterpolation");
-}
-
-int COpenCLEffect::InterpolationBilinear(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return Interpolation(bitmapOut, "BilinearInterpolationZone");
-}
-
-int COpenCLEffect::InterpolationFast(CRegardsBitmap * & bitmapOut)
-{
-	return Interpolation(bitmapOut, "FastInterpolation");
-}
-
-int COpenCLEffect::InterpolationFast(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return Interpolation(bitmapOut, rc, "FastInterpolationZone");
-}
-
-int COpenCLEffect::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLORCONVERSION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * widthIn = new COpenCLParameterInt();
-	widthIn->SetLibelle("width");
-	widthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(widthIn);
-
-	COpenCLParameterInt * heightIn = new COpenCLParameterInt();
-	heightIn->SetLibelle("height");
-	heightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(heightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	COpenCLParameterInt * paramflipH = new COpenCLParameterInt();
-	paramflipH->SetLibelle("flipH");
-	paramflipH->SetValue(flipH);
-	vecParam.push_back(paramflipH);
-
-	COpenCLParameterInt * paramflipV = new COpenCLParameterInt();
-	paramflipV->SetLibelle("flipV");
-	paramflipV->SetValue(flipV);
-	vecParam.push_back(paramflipV);
-
-	COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-	paramAngle->SetLibelle("angle");
-	paramAngle->SetValue(angle);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "BicubicRGB32");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
 	return 0;
 }
 
-int COpenCLEffect::Interpolation(CRegardsBitmap * & bitmapOut, const wxRect &rc, const wxString &functionName)
+int COpenCLEffect::Blur(const int &radius)
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * widthIn = new COpenCLParameterInt();
-	widthIn->SetLibelle("widthIn");
-	widthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(widthIn);
-
-	COpenCLParameterInt * heightIn = new COpenCLParameterInt();
-	heightIn->SetLibelle("heightIn");
-	heightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(heightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	COpenCLParameterFloat * left = new COpenCLParameterFloat();
-	left->SetLibelle("left");
-	left->SetValue(rc.x);
-	vecParam.push_back(left);
-
-	COpenCLParameterFloat * top = new COpenCLParameterFloat();
-	top->SetLibelle("top");
-	top->SetValue(rc.y);
-	vecParam.push_back(top);
-
-	COpenCLParameterFloat * bitmapWidth = new COpenCLParameterFloat();
-	bitmapWidth->SetLibelle("bitmapWidth");
-	bitmapWidth->SetValue(rc.width);
-	vecParam.push_back(bitmapWidth);
-
-	COpenCLParameterFloat * bitmapHeight = new COpenCLParameterFloat();
-	bitmapHeight->SetLibelle("bitmapHeight");
-	bitmapHeight->SetValue(rc.height);
-	vecParam.push_back(bitmapHeight);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Blur(radius,paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Blur(radius, input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
-wxImage COpenCLEffect::InterpolationBicubic(const wxImage & imageSrc, const int &widthOut, const int &heightOut)
+int COpenCLEffect::MotionBlur(const double &radius, const double &sigma, const double &angle)
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION_RGB");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-	wxImage imageOut = wxImage(widthOut, heightOut);
-
-	int bitmapSize = imageSrc.GetWidth() * imageSrc.GetHeight() * 3;
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), imageSrc.GetData(), bitmapSize, flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * widthIn = new COpenCLParameterInt();
-	widthIn->SetLibelle("widthIn");
-	widthIn->SetValue(imageSrc.GetWidth());
-	vecParam.push_back(widthIn);
-
-	COpenCLParameterInt * heightIn = new COpenCLParameterInt();
-	heightIn->SetLibelle("heightIn");
-	heightIn->SetValue(imageSrc.GetHeight());
-	vecParam.push_back(heightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(widthOut);
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(heightOut);
-	vecParam.push_back(paramHeightOut);
-
-	program->SetParameter(&vecParam, &imageOut);
-	program->ExecuteProgram(programCL->GetProgram(), "BicubicInterpolation");
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
+	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		vector<double> kernel;
+		vector<wxPoint> offsets;
+
+		if (sigma == 0.0)
+			return 0;
+
+		kernel = CMotionBlur::GetMotionBlurKernel(radius, sigma);
+
+		if (kernel.size() < 3)
+			return false;
+
+
+		int _width = 0;
+		int _height = 0;
+		cl_mem output = nullptr;
+		if(context != nullptr)
+		{
+			offsets = CMotionBlur::GetOffsetKernel(kernel.size(), angle);
+			COpenCLFilter openclFilter(context);
+			if(preview && paramOutput != nullptr)
+			{
+				_width = widthOut;
+				_height = heightOut;
+				output = openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(),paramOutput->GetValue(), widthOut, heightOut);
+			}
+			else
+			{
+				_width = width;
+				_height = height;
+				output = openclFilter.MotionBlurCompute(kernel, offsets, kernel.size(), input->GetValue(), width, height);
+			}
+			SetOutputValue(output,_width,_height);
+		}
 	}
-	vecParam.clear();
-	return imageOut;
-}
-
-int COpenCLEffect::Interpolation(CRegardsBitmap * & bitmapOut, const wxString &functionName)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * widthIn = new COpenCLParameterInt();
-	widthIn->SetLibelle("widthIn");
-	widthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(widthIn);
-
-	COpenCLParameterInt * heightIn = new COpenCLParameterInt();
-	heightIn->SetLibelle("heightIn");
-	heightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(heightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(bitmapOut->GetBitmapWidth());
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(bitmapOut->GetBitmapHeight());
-	vecParam.push_back(paramHeightOut);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	for (COpenCLParameter * parameter : vecParam)
-	{
-		delete parameter;
-		parameter = nullptr;
-	}
-	vecParam.clear();
+	//delete bitmapOut;
 	return 0;
 }
 
-int COpenCLEffect::Flip(const wxString &functionName)
+int COpenCLEffect::Emboss()
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_FLIP");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidthIn = new COpenCLParameterInt();
-	paramWidthIn->SetLibelle("widthIn");
-	paramWidthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(paramWidthIn);
-
-	COpenCLParameterInt * paramHeightIn = new COpenCLParameterInt();
-	paramHeightIn->SetLibelle("heightIn");
-	paramHeightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(paramHeightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(widthOut);
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(heightOut);
-	vecParam.push_back(paramHeightOut);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreConvolution("Emboss", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreConvolution("Emboss",  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
-
-int COpenCLEffect::Swirl(const float &radius, const float &angle)
+int COpenCLEffect::SharpenStrong()
 {
-	int widthOut = pBitmap->GetBitmapWidth();
-	int heightOut = pBitmap->GetBitmapHeight();
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_SWIRL");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidthIn = new COpenCLParameterInt();
-	paramWidthIn->SetLibelle("width");
-	paramWidthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(paramWidthIn);
-
-	COpenCLParameterInt * paramHeightIn = new COpenCLParameterInt();
-	paramHeightIn->SetLibelle("height");
-	paramHeightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(paramHeightIn);
-
-	COpenCLParameterFloat * paramRadius = new COpenCLParameterFloat();
-	paramRadius->SetLibelle("radius");
-	paramRadius->SetValue(radius);
-	vecParam.push_back(paramRadius);
-
-	COpenCLParameterFloat * paramAngle = new COpenCLParameterFloat();
-	paramAngle->SetLibelle("angle");
-	paramAngle->SetValue(angle);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), "Swirl");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreConvolution("SharpenStrong", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreConvolution("SharpenStrong", input->GetValue(),  width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
-int COpenCLEffect::BrightnessAndContrast(const double &brightness, const double &contrast)
+int COpenCLEffect::Sharpen()
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterFloat * paramConstrast = new COpenCLParameterFloat();
-	paramConstrast->SetLibelle("contrast");
-	paramConstrast->SetValue(contrast);
-	vecParam.push_back(paramConstrast);
-
-	COpenCLParameterFloat * paramLightness = new COpenCLParameterFloat();
-	paramLightness->SetLibelle("light");
-	paramLightness->SetValue(brightness);
-	vecParam.push_back(paramLightness);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), "LightAndContrast");
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreConvolution("Sharpen", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreConvolution("Sharpen",  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
-COpenCLProgram * COpenCLEffect::GetProgram(const wxString &numProgram)
+int COpenCLEffect::FiltreEdge()
 {
-	return COpenCLEngine::GetProgram(numProgram);
-}
-
-COpenCLContext * COpenCLEffect::GetContext()
-{
-	return COpenCLEngine::getInstance();
-}
-
-int COpenCLEffect::ColorEffect(const wxString &functionName)
-{
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_COLOR");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram1D(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.FiltreConvolution("Edge", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.FiltreConvolution("Edge",  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
+
 	return 0;
 }
 
-int  COpenCLEffect::Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle)
+int COpenCLEffect::Erode()
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_ROTATION");
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	vector<COpenCLParameter *> vecParam;
-	COpenCLContext * context = GetContext();
-	COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-	//program->SetBuildOptions("-D ITER_NUM=1000");
-
-	COpenCLParameterByteArray * input = new COpenCLParameterByteArray();
-	input->SetLibelle("input");
-	input->SetValue(context->GetContext(), pBitmap->GetPtBitmap(), (int)pBitmap->GetBitmapSize(), flag);
-	vecParam.push_back(input);
-
-	COpenCLParameterInt * paramWidthIn = new COpenCLParameterInt();
-	paramWidthIn->SetLibelle("widthIn");
-	paramWidthIn->SetValue(pBitmap->GetBitmapWidth());
-	vecParam.push_back(paramWidthIn);
-
-	COpenCLParameterInt * paramHeightIn = new COpenCLParameterInt();
-	paramHeightIn->SetLibelle("heightIn");
-	paramHeightIn->SetValue(pBitmap->GetBitmapHeight());
-	vecParam.push_back(paramHeightIn);
-
-	COpenCLParameterInt * paramWidthOut = new COpenCLParameterInt();
-	paramWidthOut->SetLibelle("widthOut");
-	paramWidthOut->SetValue(widthOut);
-	vecParam.push_back(paramWidthOut);
-
-	COpenCLParameterInt * paramHeightOut = new COpenCLParameterInt();
-	paramHeightOut->SetLibelle("heightOut");
-	paramHeightOut->SetValue(heightOut);
-	vecParam.push_back(paramHeightOut);
-
-	COpenCLParameterFloat * paramAngle = new COpenCLParameterFloat();
-	paramAngle->SetLibelle("angle");
-	paramAngle->SetValue(angle);
-	vecParam.push_back(paramAngle);
-
-	program->SetParameter(&vecParam, bitmapOut);
-	program->ExecuteProgram(programCL->GetProgram(), functionName);
-
-	delete program;
-
-	pBitmap->SetBitmap(bitmapOut->GetPtBitmap(), widthOut, heightOut);
-
-	delete bitmapOut;
-
-	for (COpenCLParameter * parameter : vecParam)
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
 	{
-		delete parameter;
-		parameter = nullptr;
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ErodeDilate("Erode", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ErodeDilate("Erode",  input->GetValue(), width, height);
+		}
+		SetOutputValue(output,_width,_height);
 	}
-	vecParam.clear();
 	return 0;
+}
+
+int COpenCLEffect::Dilate()
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if(context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if(preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ErodeDilate("Dilate", paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ErodeDilate("Dilate", input->GetValue(),  width, height);
+		}
+		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::GaussianBlur(const int &r, const int &boxSize)
+{
+	//CRegardsBitmap * bitmapOut = new CRegardsBitmap(width, height);
+	if(context != nullptr)
+	{
+		if (boxSize > 0)
+		{
+			double wIdeal = sqrt((double)((12 * r*r / boxSize) + 1));
+			int wl = (int)floor(wIdeal);
+			if (wl % 2 == 0)
+				wl--;
+			int wu = wl + 2;
+			double mIdeal = (12 * r*r - boxSize*wl*wl - 4 * boxSize*wl - 3 * boxSize) / (-4 * wl - 4);
+			int m = round(mIdeal);
+			vector<int> gaussCoeff;
+			for (auto i = 0; i < boxSize; i++)
+				gaussCoeff.push_back(i < m ? wl : wu);
+
+			bool noDeleteData = true;
+			int _width = 0;
+			int _height = 0;
+			cl_mem output = nullptr;
+
+			COpenCLFilter openclFilter(context);
+			_width = widthOut;
+			_height = heightOut;
+			if(preview && paramOutput != nullptr)
+				output = paramOutput->GetValue();
+			else
+				output = input->GetValue();
+
+			output = openclFilter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurH", output, widthOut, heightOut, noDeleteData);
+			noDeleteData = false;
+			output = openclFilter.BoxBlur((gaussCoeff[0] - 1) / 2, "BoxBlurV", output, widthOut, heightOut, noDeleteData);
+
+			for (auto i = 1; i < boxSize; i++)
+			{
+				output = openclFilter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurH", output, widthOut, heightOut, noDeleteData);
+				output = openclFilter.BoxBlur((gaussCoeff[i] - 1) / 2, "BoxBlurV", output, widthOut, heightOut, noDeleteData);
+			}
+
+			SetOutputValue(output,_width,_height);
+
+		}
+	}
+	return 0;
+}
+
+//-----------------------------------------------------------------------------------------------
+//Execute INTERPOLATION
+//-----------------------------------------------------------------------------------------------
+
+void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle)
+{
+	if(paramOutput != nullptr)
+	{
+		paramOutput->Release();
+		delete paramOutput;
+	}
+
+	cl_mem output = nullptr;
+
+	try
+	{
+		COpenCLFilter openclFilter(context);
+		output = openclFilter.Interpolation(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
+	}
+	catch(...)
+	{
+		output = nullptr;
+	}
+
+	if(output != nullptr)
+	{
+		paramOutput = new COpenCLParameterClMem();
+		paramOutput->SetValue(output);
+		this->widthOut = widthOut;
+		this->heightOut = heightOut;
+	}
+}
+
+void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle)
+{
+	if(paramOutput != nullptr)
+	{
+		paramOutput->Release();
+		delete paramOutput;
+	}
+
+	COpenCLFilter openclFilter(context);
+	cl_mem output = openclFilter.Interpolation(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
+
+	paramOutput = new COpenCLParameterClMem();
+	paramOutput->SetValue(output);
+	this->widthOut = widthOut;
+	this->heightOut = heightOut;
+
+
+}
+
+
+float COpenCLEffect::Filter(const float &f)
+{
+
+	return (f < -2.0 || f > 2.0) ? 0.0 : (
+		(f < -1.0) ? (2.0 + f)*(2.0 + f)*(2.0 + f) / 6.0 : (
+		(f < 0.0) ? (4.0 + f*f*(-6.0 - 3.0*f)) / 6.0 : (
+		(f < 1.0) ? (4.0 + f*f*(-6.0 + 3.0*f)) / 6.0 : (2.0 - f)*(2.0 - f)*(2.0 - f) / 6.0)));
+
 }

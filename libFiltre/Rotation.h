@@ -1,7 +1,8 @@
 #pragma once
-#include <RegardsBitmap.h>
 #include <RGBAQuad.h>
 #include <wx/gdicmn.h>
+
+class CRegardsBitmap;
 
 namespace Regards
 {

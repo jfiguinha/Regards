@@ -6,6 +6,7 @@
 
  #include "email.h"
 #include <wx/base64.h>
+#include <ConvertUtility.h>
 
 
  wxEmailMessage::wxEmailMessage(const wxString& subject, const wxString& text, const wxString& from) :
@@ -74,13 +75,13 @@
                 << "Content-Transfer-Encoding: 8bit" << cr
                 << cr
                 << m_text << cr;  // TODO: is it possible in MIME message to have a single '.' on a line?
-         out.Write((const char*) header, header.Length());
+         out.Write(CConvertUtility::ConvertToUTF8(header), header.Length());
          for (size_t i = 0; i < m_mimeParts.GetCount(); i++) {
-                 out.Write((const char*) boundarySep, boundarySep.Length());
+                 out.Write(CConvertUtility::ConvertToUTF8(boundarySep), boundarySep.Length());
                  m_mimeParts[i].Encode(out);
              }
          wxString footer = "--" + boundary + "--" + cr + "." + cr;  // TODO: perhaps moving the '.\r\n' sequence to another place
-         out.Write((const char*) footer, footer.Length());
+         out.Write(CConvertUtility::ConvertToUTF8(footer), footer.Length());
      }
     
      wxRecipientsIterator::wxRecipientsIterator(const wxEmailMessage& emailMessage) :

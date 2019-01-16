@@ -3,11 +3,6 @@
 #include <ScrollbarWnd.h>
 #include <WindowMain.h>
 #include <FileGeolocation.h>
-#include <thread>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 using namespace Regards::Window;
 using namespace Regards::Internet;
 using namespace std;
@@ -35,14 +30,14 @@ namespace Regards
             wxString GenerateUrl();
             void UpdateTreeData();
             
-            CScrollbarWnd * InfosFileScroll = nullptr;
-            CTreeWindow * treeWindow = nullptr;
-            CCriteriaTree * criteriaTree = nullptr;
-            CCriteriaTree * oldCriteriaTree = nullptr;
-            CFileGeolocation * fileGeolocalisation = nullptr;
+            CScrollbarWnd * InfosFileScroll;
+            CTreeWindow * treeWindow;
+            CCriteriaTree * criteriaTree;
+            CCriteriaTree * oldCriteriaTree;
+            CFileGeolocation * fileGeolocalisation;
             wxString filename;
-            int numPhotoId = 0;
-            int mainWindowID = 0;
+            int numPhotoId;
+            int mainWindowID;
 		};
 
 	}

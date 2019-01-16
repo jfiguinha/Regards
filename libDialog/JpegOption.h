@@ -45,9 +45,9 @@ class JpegOption: public wxDialog
 		void OnslCompressionCmdScroll(wxScrollEvent& event);
 		//*)
 
-        bool isOk = false;
-        int compressOption = 0;
-        int compressLevel = 0;
+        bool isOk;
+        int compressOption;
+        int compressLevel;
 		DECLARE_EVENT_TABLE()
 };
 

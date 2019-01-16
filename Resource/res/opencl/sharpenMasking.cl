@@ -18,36 +18,63 @@
 // Intel Corporation is the author of the Materials, and requests that all
 // problem reports or change requests be submitted to it directly
 
-float4 GetColorSrc(int x, int y, const __global uchar4 *input, int width, int height)
+//---------------------------------------------------------------------
+//Limite les valeurs entre 0 et 255
+//---------------------------------------------------------------------
+float4 NormalizeValue(float4 sum)
+{
+	float4 value;
+	value.x = max(min(sum.x, 1.0f), 0.0f);
+	value.y = max(min(sum.y, 1.0f), 0.0f);
+	value.z = max(min(sum.z, 1.0f), 0.0f);  
+	value.w = max(min(sum.w, 1.0f), 0.0f); 
+	return value;
+}
+
+float4 GetColorSrc(int x, int y, const __global float4 *input, int width, int height)
 {
 	if(x < width && y < height && y >= 0 && x >= 0)	
 	{
 		int position = x + y * width;
-		return convert_float4(input[position]);
+		return input[position];
 	}
-	return (float4)0.0f;
+	return 0.0f;
 }
 
-__kernel void SharpenMasking( __global uchar4 *output, const __global uchar4 *input, int width, int height, int sharpness)
+float4 GetColorSrcwxImage(int x, int y, const __global float4 *input, int width, int height)
+{
+	if(x < width && y < height && y >= 0 && x >= 0)	
+	{
+		int position = (height - y - 1) * width + x;
+		return input[position];
+	}
+	return 0.0f;
+}
+
+__kernel void SharpenMasking( __global float4 *output, const __global float4 *input, int width, int height, float sharpness)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float4 data = GetColorSrc(x, y, input, width, height);
+	float4 origin = GetColorSrc(x, y, input, width, height);
 
-	float4 sum = GetColorSrc(x - 1, y - 1, input, width, height);
-	sum += GetColorSrc(x, y - 1, input, width, height);
-	sum += GetColorSrc(x + 1, y - 1, input, width, height);
-	sum += GetColorSrc(x - 1, y, input, width, height);
-	sum += data;
-	sum += GetColorSrc(x + 1, y, input, width, height);
-	sum += GetColorSrc(x - 1, y + 1, input, width, height);
-	sum += GetColorSrc(x, y + 1, input, width, height);
-	sum += GetColorSrc(x + 1, y + 1, input, width, height);
+	float4 color = 0.0;
+
+	for (int i = -1; i <= 1; i++)
+	{
+		for (int j = -1; j <= 1; j++)
+		{
+			color = color + GetColorSrc(x + j, y + i, input, width, height);
+		}
+	}
+
+	color = color / (float4)9;
+	color = origin - color;
 	
-	float4 blur = sum / (float4)9.0;
-	data = data + (data - blur) * convert_float4(sharpness);	
+	float4 value = convert_float4(color) * sharpness;
+
+	origin = origin + value;
 
 	int position = x + y * width;
-	output[position] = convert_uchar4(data);	
+	output[position] = NormalizeValue(origin);
 }

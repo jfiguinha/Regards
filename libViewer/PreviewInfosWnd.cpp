@@ -4,8 +4,10 @@
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 #include <LibResource.h>
+#include "ParamInit.h"
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
+#include <ImageLoadingFormat.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -18,9 +20,21 @@ using namespace Regards::Viewer;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CVideoEffectParameter * videoEffectParameter, const bool &horizontal)
+CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, 
+	const CThemeSplitter & theme, const bool &horizontal)
 	: CSplitter(parent, id, theme)
 {
+	paneInfos = nullptr;
+	panelInfosWindow = nullptr;
+	previewWindow = nullptr;
+	clickInfoToolbar = nullptr;
+	isVideo = false;
+	posBarInfos = 0;
+	isDiapoarama = false;
+    clickToobarShow = false;
+    paneInfosShow = false;
+    isThumbnail = false;
+
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
     
     wxString urlServer;
@@ -40,17 +54,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		paneInfos = new CPane(this, wxID_ANY, this, PANE_INFOS, theme);
 		paneInfos->SetTitle(libelle);
 	}
-	
-	
-	if (viewerTheme != nullptr)
-	{
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLPREVIEW", 1);
-		CThemePane theme;
-		viewerTheme->GetInfosPaneTheme(&theme);
-		panePreview = new CPane(this, wxID_ANY, this, PANE_PREVIEW, theme);
-		panePreview->SetClosable(false);
-		panePreview->SetTitle(libelle);
-	}
 
 	SetHorizontal(horizontal);
 
@@ -62,8 +65,8 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		clickInfoToolbar->SetVertical(true);
 	}
 	
-	previewWindow = new CPreviewWnd(panePreview, PREVIEWVIEWERID, videoEffectParameter, statusBarInterface, fileGeolocalisation);
-	panelInfosWindow = new CPanelInfosWnd(paneInfos, PANELINFOSWNDID, statusBarInterface, videoEffectParameter, fileGeolocalisation);
+	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, statusBarInterface, fileGeolocalisation);
+	panelInfosWindow = new CPanelInfosWnd(paneInfos, PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
 
 	bool showInfos = true;
 	int positionBar = 0;
@@ -76,35 +79,27 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 	}
 
 	paneInfos->SetOtherWindow(panelInfosWindow);
-	panePreview->SetOtherWindow(previewWindow);
+	//panePreview->SetOtherWindow(previewWindow);
 
 	if (showInfos)
 	{
 		this->posBar = positionBar;
-		this->SetWindow(panePreview, paneInfos);
+		this->SetWindow(previewWindow, paneInfos);
 	}
 	else
 	{
 		posBarInfos = positionBar;
 		paneInfos->Show(false);
 		clickInfoToolbar->Show(true);
-		this->SetWindow(panePreview, clickInfoToolbar);
+		this->SetWindow(previewWindow, clickInfoToolbar);
 		RedrawBarPos();
 	}
+
+	Connect(wxEVENT_SHOWPANELINFO, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewInfosWnd::ShowPanelInfos));
+	Connect(wxEVENT_HIDEPANELINFO, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewInfosWnd::HidePanelInfos));
+
 }
 
-
-void CPreviewInfosWnd::ShowToolbar()
-{
-	if (previewWindow != nullptr)
-		previewWindow->ShowToolbar();
-}
-
-void CPreviewInfosWnd::HideToolbar()
-{
-	if (previewWindow != nullptr)
-		previewWindow->HideToolbar();
-}
 
 bool CPreviewInfosWnd::IsToolbarVisible()
 {
@@ -114,11 +109,10 @@ bool CPreviewInfosWnd::IsToolbarVisible()
 	return false;
 }
 
-
 void CPreviewInfosWnd::UpdateScreenRatio()
 {
     paneInfos->UpdateScreenRatio();
-    panePreview->UpdateScreenRatio();
+    //panePreview->UpdateScreenRatio();
     
     panelInfosWindow->UpdateScreenRatio();
     previewWindow->UpdateScreenRatio();
@@ -128,7 +122,7 @@ void CPreviewInfosWnd::UpdateScreenRatio()
     this->ResizeWindow();
 }
 
-void CPreviewInfosWnd::ShowPanelInfos()
+void CPreviewInfosWnd::ShowPanelInfos(wxCommandEvent& event)
 {
 	if (paneInfos != nullptr)
 	{
@@ -139,7 +133,7 @@ void CPreviewInfosWnd::ShowPanelInfos()
 	}
 }
 
-void CPreviewInfosWnd::HidePanelInfos()
+void CPreviewInfosWnd::HidePanelInfos(wxCommandEvent& event)
 {
 	if (paneInfos != nullptr)
 	{
@@ -178,8 +172,8 @@ CPreviewInfosWnd::~CPreviewInfosWnd()
 	if (paneInfos != nullptr)
 		delete(paneInfos);
 
-	if (panePreview != nullptr)
-		delete(panePreview);
+	//if (panePreview != nullptr)
+	//	delete(panePreview);
 
 	if (clickInfoToolbar != nullptr)
 		delete(clickInfoToolbar);
@@ -212,8 +206,8 @@ void CPreviewInfosWnd::ClosePane(const int &id)
 				viewerParam->SetShowInfos(false);
 			}
 
-			if (clickInfoToolbar != nullptr && panePreview != nullptr)
-				this->SetWindow(panePreview, clickInfoToolbar);
+			if (clickInfoToolbar != nullptr && previewWindow != nullptr)
+				this->SetWindow(previewWindow, clickInfoToolbar);
 			RedrawBarPos();
 		}
 		break;
@@ -228,15 +222,6 @@ void CPreviewInfosWnd::ResizeWindow()
 	this->Resize(this);
 }
 
-wxRect CPreviewInfosWnd::GetWindowRect()
-{
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
-	return rc;
-}
 
 void CPreviewInfosWnd::RedrawBarPos()
 {
@@ -293,7 +278,7 @@ void CPreviewInfosWnd::ClickShowButton(const int &id)
 				viewerParam->SetShowInfos(true);
 			}
 
-			this->SetWindow(panePreview, paneInfos);
+			this->SetWindow(previewWindow, paneInfos);
 
 			SetPanelInfos(false);
 
@@ -315,84 +300,56 @@ void CPreviewInfosWnd::SetNormalMode()
 	previewWindow->SetNormalMode();
 }
 
-bool CPreviewInfosWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
+void CPreviewInfosWnd::HidePanel()
 {
-	isAnimation = false;
-	isVideo = false;
-    bool loadInfo = true;
-    if (fileGeolocalisation->GetFilename() != bitmap->GetFilename())
-        fileGeolocalisation->SetFile(bitmap->GetFilename());
-    else
-        loadInfo = false;
+    ClosePane(PANE_INFOS);
+}
+
+bool CPreviewInfosWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation)
+{
+    TRACE();
+	if(bitmap != nullptr && bitmap->IsOk())
+	{
+		isVideo = false;
+		bool loadInfo = true;
+		if (fileGeolocalisation->GetFilename() != bitmap->GetFilename())
+			fileGeolocalisation->SetFile(bitmap->GetFilename());
+		else
+			loadInfo = false;
     
-	if (isDiapoarama)
-	{
-		if (previewWindow != nullptr)
+		if (isDiapoarama)
 		{
-			if (previewWindow->SetBitmap(bitmap, isThumbnail))
+			if (previewWindow != nullptr)
 			{
-				isVideo = false;
-				this->bitmap = bitmap;
-				filename = bitmap->GetFilename();
+				if (previewWindow->SetBitmap(bitmap, isThumbnail, isAnimation))
+				{
+					isVideo = false;
+					filename = bitmap->GetFilename();
+				}
+			}
+		}
+		else
+		{
+
+			if (previewWindow != nullptr)
+			{
+				previewWindow->HideValidationToolbar();
+				if (previewWindow->SetBitmap(bitmap, isThumbnail, isAnimation))
+				{
+					isVideo = false;
+					filename = bitmap->GetFilename();
+					//if (loadInfo && panelInfosWindow->IsShown())
+						SetPanelInfos(isThumbnail);
+				}
 			}
 		}
 	}
-	else
-	{
-
-		if (previewWindow != nullptr)
-		{
-			previewWindow->HideValidationToolbar();
-			if (previewWindow->SetBitmap(bitmap, isThumbnail))
-			{
-				isVideo = false;
-				this->bitmap = bitmap;
-				filename = bitmap->GetFilename();
-				//if (loadInfo && panelInfosWindow->IsShown())
-					SetPanelInfos(isThumbnail);
-			}
-		}
-	}
-
 	return 0;
 }
 
-bool CPreviewInfosWnd::SetAnimation(const wxString &filename)
-{
-	bool returnValue = true;
-	isVideo = false;
-	isAnimation = true;
 
-	if (fileGeolocalisation->GetFilename() != filename)
-		fileGeolocalisation->SetFile(filename);
 
-	if (isDiapoarama)
-	{
-		this->filename = filename;
-		previewWindow->SetAnimation(filename);
-	}
-	else
-	{
-		this->filename = filename;
-		previewWindow->HideValidationToolbar();
-		if (previewWindow->SetAnimation(filename))
-		{
-			SetPanelInfos(false);
-		}
-	}
 
-	return returnValue;
-}
-#ifdef VIEWER
-void CPreviewInfosWnd::UpdateInfos()
-{
-    if(previewWindow != nullptr)
-        previewWindow->UpdateInfos();
-    
-    if(panelInfosWindow != nullptr)
-        panelInfosWindow->UpdateData();
-}
-#endif
 void CPreviewInfosWnd::StartLoadingPicture()
 {
     previewWindow->StartLoadingPicture();
@@ -405,10 +362,8 @@ void CPreviewInfosWnd::SetPanelInfos(const bool &isThumbnail)
 	{
 		if (isVideo)
 			panelInfosWindow->SetVideoFile(filename);
-		else if (isAnimation)
-			panelInfosWindow->SetAnimationFile(filename);
 		else
-			panelInfosWindow->SetBitmapFile(filename, bitmap,isThumbnail);
+			panelInfosWindow->SetBitmapFile(filename, isThumbnail);
         
         this->Resize(this);
 	}
@@ -416,7 +371,7 @@ void CPreviewInfosWnd::SetPanelInfos(const bool &isThumbnail)
     {
         if(!isThumbnail && this->isThumbnail)
         {
-            panelInfosWindow->SetBitmapFile(filename, bitmap,isThumbnail);
+            panelInfosWindow->SetBitmapFile(filename, isThumbnail);
             this->Resize(this);
         }
     }
@@ -427,7 +382,6 @@ void CPreviewInfosWnd::SetPanelInfos(const bool &isThumbnail)
 
 void CPreviewInfosWnd::SetVideo(const wxString &filename)
 {
-	isAnimation = false;
 
     if (fileGeolocalisation->GetFilename() != filename)
         fileGeolocalisation->SetFile(filename); 
@@ -456,12 +410,12 @@ void CPreviewInfosWnd::FullscreenMode()
     this->posBarInfos = this->posBar;
     paneInfosShow = paneInfos->IsShown();
 	paneInfos->Show(false);
-	panePreview->SetTitleBarVisibility(false);
+	//panePreview->SetTitleBarVisibility(false);
     clickToobarShow = clickInfoToolbar->IsShown();
     
     clickInfoToolbar->Show(false);
 	previewWindow->SetFullscreen(true);
-	this->SetWindow(panePreview, nullptr);
+	this->SetWindow(previewWindow, nullptr);
 	this->Resize(this);
 
 }
@@ -470,15 +424,16 @@ void CPreviewInfosWnd::ScreenMode()
 {
 	fullscreen = false;
 	paneInfos->Show(paneInfosShow);
-    panePreview->SetTitleBarVisibility(true);
+	//panePreview->SetTitleBarVisibility(true);
     previewWindow->SetFullscreen(false);
     
 	if (!paneInfosShow)
         ClosePane(PANE_INFOS);
     else
     {
-        this->SetWindow(panePreview,paneInfos);
-        ShowPanelInfos();
+		this->SetWindow(previewWindow, paneInfos);
+		wxCommandEvent event;
+		ShowPanelInfos(event);
         this->SetSeparationBarVisible(true);
         this->Resize(this);
     }

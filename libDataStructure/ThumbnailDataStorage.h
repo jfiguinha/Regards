@@ -1,10 +1,6 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "ThumbnailData.h"
-#include <wx/fs_mem.h>
+class CImageLoadingFormat;
 
 class CThumbnailDataStorage : public CThumbnailData
 {
@@ -17,13 +13,15 @@ public:
 		return 1;
 	}
 
-	void SetBitmap(CRegardsBitmap * bitmap);
-	CRegardsBitmap * GetRegardsBitmap(const int &type = 3);
+	void SetBitmap(CImageLoadingFormat * bitmap);
 	wxImage GetwxImage();
 
 private:
 
 	bool TestBitmap();
-	CRegardsBitmap * bitmap = nullptr;
+	uint8_t * data;
+	unsigned long size;
+	int format;
+	int compressMethod;
 };
 

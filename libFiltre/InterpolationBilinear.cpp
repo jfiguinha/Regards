@@ -4,6 +4,8 @@
 
 CInterpolationBilinear::CInterpolationBilinear()
 {
+	wX = nullptr;
+	 wY = nullptr;
 }
 
 
@@ -24,7 +26,7 @@ void CInterpolationBilinear::CalculWeight(const int32_t &width, const int32_t &h
 	wY = new weightX[height];
 
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY + posTop;
 		int32_t valueB = (int32_t)posY;
@@ -33,7 +35,7 @@ void CInterpolationBilinear::CalculWeight(const int32_t &width, const int32_t &h
 		wY[y].tabF[1] = Filter(-(0.0f - realB));
 	}
 #pragma omp parallel for
-	for (int x = 0; x < width; x++)
+	for (auto x = 0; x < width; x++)
 	{
 		float posX = (float)x * ratioX + posLeft;
 		int32_t valueA = (int32_t)posX;
@@ -70,7 +72,7 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 		float posY = float(y) * ratioY + posTop;
 		//int64_t tailleYOut = y * width;
 
-		for (int x = 0; x < width; x++)
+		for (auto x = 0; x < width; x++)
 		{
 			float posX = float(x) * ratioX + posLeft;
             CRgbaquad color;
@@ -95,12 +97,12 @@ void CInterpolationBilinear::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out
 	CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
 		//int tailleYOut = y * width;
 
-		for (int x = 0; x < width; x++)
+		for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
             CRgbaquad color;
@@ -122,7 +124,7 @@ void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, con
 
 	int debutN = -1;
 	int finN = 0;
-	//Calcul démarrage du y;
+	//Calcul dÃ©marrage du y;
 	if (valueB == 0)
 	{
 		debutN = 0;
@@ -130,7 +132,7 @@ void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, con
 
 	int debutM = -1;
 	int finM = 0;
-	//Calcul démarrage du y;
+	//Calcul dÃ©marrage du y;
 	if (valueA == 0)
 	{
 		debutM = 0;
@@ -144,9 +146,9 @@ void CInterpolationBilinear::Bilinear(CRgbaquad & data, CRegardsBitmap * In, con
 	if (valueB == 1)
 		posY = valueB;
 
-	for (int n = debutN; n <= finN; n++)
+	for (auto n = debutN; n <= finN; n++)
 	{
-		for (int m = debutM; m <= finM; m++)
+		for (auto m = debutM; m <= finM; m++)
 		{
 			CRgbaquad colorIn = In->GetColorValue(posX + m, posY + n);
 			float f = tabF1[n + 1] * tabF[m + 1];

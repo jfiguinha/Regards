@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "JpegOption.h"
 
 #ifndef WX_PRECOMP
@@ -19,6 +18,9 @@ END_EVENT_TABLE()
 
 JpegOption::JpegOption(wxWindow* parent)
 {
+	isOk = false;
+    compressOption = 0;
+    compressLevel = 0;
 	//(*Initialize(JpegOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("JpegOption"),_T("wxDialog"));
 	rbCodec = (wxRadioBox*)FindWindow(XRCID("ID_RBCODEC"));

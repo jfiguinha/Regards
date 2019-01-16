@@ -1,131 +1,142 @@
 #pragma once
-#include <SDL.h>
-#include "WindowMain.h"
-#include <RegardsBitmap.h>
-#include <mutex>
-#include <thread>
-#include <vector>
-#include <string>
-#include <GLSLShader.h>
+#ifdef WIN32
+#include "VideoControlInterface.h"
+#include "WindowOpenGLMain.h"
+#include "RenderBitmapInterfaceOpenGL.h"
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
-#include <wx/glcanvas.h>
+#include <BitmapYUV.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include "VideoWindowContext.h"
+#include "ffmpeg_dxva2.h"
+#include <OpenCLEffectVideoNV12.h>
+#include <d3d9.h>
+
+class CRegardsBitmap;
+
+using namespace Regards::OpenCL;
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Video;
-using namespace Regards::OpenGL;
-#define PAUSE 1
-#define PLAY 2
-#define STOP 3
-#define EVENT_VIDEOSTART 1001
-#define EVENT_REFRESHSCREEN 1002
 
-class CVideoControl : public wxGLCanvas
+
+class CVideoControl : public CWindowOpenGLMain, public CVideoControlInterface
 {
 public:
-	CVideoControl(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IVideoInterface * eventPlayer);
+	CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControl();
-	void OnBnClickedStop(){};
-	void SetFormatProtocol(string message){};
-	void SetCodecResolution(wxString message){};
-	void SetDecoderName(string message){};
-	void SetFrameRate(string message){};
-	void SetPixelFormat(string message){};
-	void SetMetadata(vector<string> meta){};
-	void SetInputFormat(string message){};
-	void SetCodecName(string message){};
-	void SetCodecSampleRate(string message){};
-	void SetCodecChannel(string message){};
-	void SetFormatBitrate(string message){};
-	void SetFormatDuration(string message){};
-	void SetBitrate(string message){};
+    
+    static CVideoControlInterface * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
+
+    wxWindow * GetWindow()
+    {
+        return this;
+    }
+
+    void RedrawFrame()
+    {
+        this->FastRefresh(this);
+    }
+
 	void SetVideoDuration(int64_t duration);
-	void SystemClear(){};
+	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
 	void SetVideoPosition(int64_t pos);
 	static void PlayVideo(CVideoControl * sdlWindow);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
-	void Rotate90();
-	void Rotate270();
-	void FlipVertical();
-	void FlipHorizontal();
 	void VideoStart(wxCommandEvent& event);
-
+	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
+	void UpdateFiltre(CEffectParameter * effectParameter);
+	CEffectParameter * GetParameter();
 	void OnPlay();
 	void OnStop();
 	void OnPause();
 	int PlayMovie(const wxString &movie);
-	int ChangeAudio(const wxString &langue){ return 0; };
-
-	int GetVideoWidth(){ return 0; };
-	int GetVideoHeight(){ return 0; };
-	int64_t GetDuration(){ return 0; };
 	int GetState(){ return 0; };
-
+    void OnRefresh(wxCommandEvent& event);
+	int ChangeAudioStream(int newStreamAudio);
+	int ChangeSubtitleStream(int newStreamSubtitle);
     int getWidth();
     int getHeight();
-    
-
+	void SetSubtitulePicture(CRegardsBitmap * picture);
+	void DeleteSubtitulePicture();
 	bool GetPausedValue()
 	{
 		return pause;
 	};
-
-	void RefreshScreen(wxCommandEvent& event);
     
+    void SetRotation(const int &rotation);
+    void SetVideoStart();    
+
+	void SetDXVA2Compatible(const bool &compatible);
+	bool GetDXVA2Compatible();
+	GLTexture * RenderFromOpenGLTexture();
+	IDirect3D9Ex * GetDirectd3d9();
+	HMODULE GetDXVA2Lib();
+	void * GetDXVA2CreateDirect3DDeviceManager9();
+	HRESULT CreateDevice(char * hwaccel_device);
+	IDirect3DDevice9Ex * GetDirect3DDevice();
+	HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height);
+	
+	void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
     void UpdateScreenRatio();
-	//SDL_Surface *screen;
+
 private:
-
-	SDL_Rect calculate_display_rect(float aspect_ratio, int angle);
-
-	CRegardsBitmap * Convert(wxImage imageToDisplay);
-	wxImage RenderOpenGL();
+	bool GetProcessEnd();
 	void EndVideoThread(wxCommandEvent& event);
 	void OnPaint(wxPaintEvent &event);
-    void OnSize(wxSizeEvent& event);
-    CVideoWindowContext& GetContext(wxGLCanvas *canvas);
-    void CreateSourceTexture();
-	void DrawBitmap();
-	
-    std::mutex muVideo;
-	std::mutex muBitmap;
-	std::thread * threadVideo = nullptr;
-	
-	int volumeStart = 64;
-	wxImage bmp;
-	CRegardsBitmap * bitmap = nullptr;
-	int old_width = 0;
-	int old_height = 0;
-	bool pause = false;
+	void OnRButtonDown(wxMouseEvent& event);
+	void VideoRotation(wxCommandEvent& event);
+	void OnIdle(wxIdleEvent& evt);
+	void OnShowFPS(wxTimerEvent& event);
+    void Resize();
+    
+	bool subtilteUpdate;
+	thread * threadVideo;
+	int volumeStart;
+	int old_width;
+	int old_height;
+	bool pause;
 	wxString filename;
-	IVideoInterface * eventPlayer = nullptr;
-	CVideoEffectParameter * videoEffectParameter = nullptr;
-	//CRenderVideoInterfaceOpenGL * videoRenderOpenGL = nullptr;
-	CRegardsConfigParam * config = nullptr;
-	int angle = 0;
-	bool flipV = false;
-    bool newVideo = true;
-	bool flipH = false;
-	bool videoEnd = false;
-	bool exit = false;
-	bool openGLMode = false;
-	bool openCLMode = false;
-	bool quitWindow = false;
-    bool videoStart = false;
-    bool startVideoThread = false;
-	float aspectRatio = 0.0;
-    int textureWidth = 0;
-    int textureHeight = 0;
-    //OpenGL Texture
-    GLuint m_nTextureID = 0;
-    GLuint m_nTextureVideoID = 0;
-    GLuint pboIds[1];                   // IDs of PBO
-    GLSLShader * m_pShader = nullptr;
-    CVideoWindowContext * m_glContext = nullptr;
+    
+	IVideoInterface * eventPlayer;
+	CRegardsConfigParam * config;
+    bool newVideo ;
+	bool videoEnd ;
+	bool stopVideo;
+	bool exit ;
+	bool quitWindow;
+    bool videoStart;
+	wxString msgFrame;
+	CWindowMain * windowMain;
+	wxTimer * fpsTimer;
+	bool initStart;
+	bool videoRenderStart;
+	wxString standByMovie;
+
+
+	bool isDXVA2Compatible;
+	bool UnbindTexture();
+	COpenCLEffectVideoNV12 * openclEffectNV12;
+	LPDIRECT3DSURFACE9 surface;
+	DXVA2Context * dxva2;
+	HANDLE hTexture;
+	
+    HMODULE d3dlib;
+    HMODULE dxva2lib;
+	IDirect3D9Ex *d3d9;
+	IDirect3DDevice9Ex  *d3d9device;
+	IDirect3DDeviceManager9     *d3d9devmgr;
+	HANDLE  deviceHandle;
+	IDirect3DSurface9*			m_pRenderTargetSurface;
+	D3DSURFACE_DESC rtDesc;
+	bool initDevice;
+	int windowWidth;
+	int windowHeight;
+	bool dxva2ToOpenGLWorking;
+	HANDLE hDevice;
 };
+
+#endif

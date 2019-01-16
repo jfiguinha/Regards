@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 Code From Above, LLC. All rights reserved.
 //
 
-#ifndef __SavePanelAccessoryView__SaveFromCFunction__
-#define __SavePanelAccessoryView__SaveFromCFunction__
-
+#pragma once
+#ifdef __APPLE__
 #include <stdio.h>
 #include <string>
 

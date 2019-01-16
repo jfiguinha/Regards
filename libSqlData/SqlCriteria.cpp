@@ -5,6 +5,7 @@ CSqlCriteria::CSqlCriteria(CSqlLib * _sqlLibTransaction, const bool &useTransact
 	: CSqlExecuteRequest(L"RegardsDB")
 {
 	criteriaId = -1;
+
 	this->_sqlLibTransaction = _sqlLibTransaction;
 	this->useTransaction = useTransaction;
 }
@@ -54,7 +55,8 @@ int64_t CSqlCriteria::GetOrInsertCriteriaId(const int64_t &numCatalog, const int
 	{
 		isNew = true;
 		InsertCriteria(numCatalog, numCategorie, _value);
-		id = GetLastId();
+		//id = GetLastId();
+		id = GetCriteriaId(numCatalog, numCategorie, _value);
 	}
 	return id;
 }
@@ -97,7 +99,7 @@ int CSqlCriteria::TraitementResult(CSqlResult * sqlResult)
 
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			switch (i)
 			{

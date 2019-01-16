@@ -10,8 +10,11 @@
 using namespace Regards::Viewer;
 
 CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree)
-: CWindowMain(parent, id)
+: CWindowMain("CInfoEffectWnd",parent, id)
 {
+	historyEffectScroll = nullptr;
+	treeHistoryEffect = nullptr;
+	historyEffectOld = nullptr;
     historyEffectScroll = new CScrollbarWnd(this, wxID_ANY);
     treeHistoryEffect = new CTreeWindow(historyEffectScroll, wxID_ANY, themeTree);
     historyEffectScroll->SetCentralWindow(treeHistoryEffect, themeScroll);
@@ -65,5 +68,11 @@ void CInfoEffectWnd::UpdateScreenRatio()
 
 void CInfoEffectWnd::Resize()
 {
-    historyEffectScroll->SetSize(0,0,width,height);
+	if(historyEffectScroll != nullptr)
+	{
+		historyEffectScroll->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
+		//historyEffectScroll->SendSizeEvent();
+		treeHistoryEffect->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
+		//treeHistoryEffect->SendSizeEvent();
+	}
 }

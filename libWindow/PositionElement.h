@@ -1,13 +1,5 @@
 #pragma once
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <string>
-#include <vector>
-using namespace std;
 
 class CTreeData;
 class CTreeElement;
@@ -20,6 +12,7 @@ class CTreeElement;
 #define ELEMENT_TEXTEVALUE 6
 #define ELEMENT_SLIDE 7
 #define ELEMENT_THUMBNAIL 8
+#define ELEMENT_LISTBOX 9
 
 class CPositionElement
 {

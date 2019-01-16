@@ -11,7 +11,7 @@ namespace Regards
 		class CThumbnailBitmap : public CThumbnailHorizontal
 		{
 		public:
-			CThumbnailBitmap(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail);
+			CThumbnailBitmap(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			~CThumbnailBitmap(void);
 
 		private:

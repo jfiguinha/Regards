@@ -1,7 +1,9 @@
 #include "ShowVideo.h"
 #include "SliderVideo.h"
 #include "VideoControl.h"
+#include "VideoControl_soft.h"
 #include <ThemeInit.h>
+#include <OpenCLContext.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -9,23 +11,46 @@
 #endif
 using namespace Regards::Video;
 using namespace Regards::Window;
+using namespace Regards::OpenCL;
 
 #define WM_SETPOSITION SDL_USER+1
 
-CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CVideoEffectParameter * videoEffectParameter, CThemeParam * config)
+CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
+
+	toolbarOutside = false;
+	height = 0;
+	width = 0;
+	videoPosOld = 0;
+	isDiaporama = false;
+
 	CThemeSlider themeSlider;
-	this->videoEffectParameter = videoEffectParameter;
 	CTheme themeVideo;
+
 		
 	if (config != nullptr)
 	{
 		config->GetVideoControlTheme(&themeVideo);
 	}
+    
+#ifdef WIN32
+    OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
+    if(device != nullptr)
+    {
+        if(device->deviceType == CL_DEVICE_TYPE_CPU)
+            softRender = true;
+        else if(!device->openGlSharing)
+            softRender = true;
+    }
 
-	videoWindow = new CVideoControl(this, wxID_ANY, videoEffectParameter, this);
-	
+    if(softRender)
+        videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+    else
+        videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+#else
+     videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+#endif
 	if (config != nullptr)
 	{
 		CThemeSlider theme;
@@ -39,9 +64,33 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	this->windowMain = windowMain;
 }
 
-void CShowVideo::ChangeAudio(const wxString &langue)
+CVideoControlInterface * CShowVideo::GetVideoControl()
 {
-	videoWindow->ChangeAudio(langue);
+	return videoWindow;
+}
+
+void CShowVideo::SetVideoPreviewEffect(CEffectParameter * effectParameter)
+{
+	if(videoWindow != nullptr)
+		videoWindow->SetVideoPreviewEffect(effectParameter);
+}
+
+CEffectParameter *  CShowVideo::GetParameter()
+{
+	if(videoWindow != nullptr)
+		return videoWindow->GetParameter();
+	return nullptr;
+}
+
+void  CShowVideo::UpdateFiltre(CEffectParameter * effectParameter)
+{
+	if(videoWindow != nullptr)
+		videoWindow->UpdateFiltre(effectParameter);
+}
+
+void CShowVideo::ChangeAudio(const int &langue)
+{
+	videoWindow->ChangeAudioStream(langue);
 }
 
 void CShowVideo::ClickButton(const int &id)
@@ -83,6 +132,32 @@ void CShowVideo::SetNormalMode()
 	this->Resize();
 }
 
+void CShowVideo::SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle)
+{
+	listStream.clear();
+	for(int i = 0; i < listAudio.size();i++)
+	{
+		listStream.push_back(listAudio[i]);
+	}
+
+	for(int i = 0; i < listVideo.size();i++)
+	{
+		listStream.push_back(listVideo[i]);
+	}
+
+	for(int i = 0; i < listSubtitle.size();i++)
+	{
+		listStream.push_back(listSubtitle[i]);
+	}
+
+	if (windowMain != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ADDSTREAMINFO);
+		evt.SetClientData(&listStream);
+		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 //------------------------------------------------------------
 //Interface Video
 //------------------------------------------------------------
@@ -101,7 +176,7 @@ void CShowVideo::SetVideoDuration(const int64_t &position)
 {
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
-		videoSlider->SetTotalSecondTime(position);
+		videoSlider->SetTotalSecondTime(position / 1000);
 	}
 }
 
@@ -148,7 +223,7 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 	if (videoPos != videoPosOld)
 	{
 		wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_UPDATE_ID);
-		event.SetInt(videoPos);
+		event.SetExtraLong(videoPos);
 		windowMain->GetEventHandler()->AddPendingEvent(event);
 		videoPosOld = videoPos;
 	}
@@ -173,7 +248,7 @@ void CShowVideo::SetTimePosition(const int64_t &timePosition)
 {
 	if (videoSlider != nullptr)
 	{
-		videoSlider->SetPastSecondTime(timePosition);
+		videoSlider->SetPastSecondTime(timePosition / 1000);
 		videoSlider->UpdatePositionEvent();
 	}
 }
@@ -212,7 +287,7 @@ void CShowVideo::InitControl()
 	}
 }
 
-bool CShowVideo::SetVideo(const wxString &filename)
+bool CShowVideo::SetVideo(const wxString &filename, const int &rotation)
 {
 	videoPosOld = 0;
 	bool value = false;
@@ -336,7 +411,9 @@ void CShowVideo::Resize()
 	if (isDiaporama && videoSlider != nullptr && videoWindow != nullptr)
 	{
 		videoSlider->SetSize(0, 0, 0, 0);
-		videoWindow->SetSize(0, 0, width, height);
+		//videoSlider->SendSizeEvent();
+		videoWindow->GetWindow()->SetSize(0, 0, width, height);
+		//videoWindow->SendSizeEvent();
 	}
 	else if(videoSlider != nullptr)
 	{
@@ -347,14 +424,20 @@ void CShowVideo::Resize()
 
 		int positionHeight = height - posHeight;
 
-		videoWindow->SetSize(0, 0, width, positionHeight);
+		videoWindow->GetWindow()->SetSize(0, 0, width, positionHeight);
+		//videoWindow->SendSizeEvent();
 
 		if (videoSlider->IsShown())
 		{
 			videoSlider->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
-			//positionHeight += videoSlider->GetHeight();
+			//videoSlider->SendSizeEvent();
 		}
 	}
+    else
+    {
+		videoWindow->GetWindow()->SetSize(0, 0, width, height);
+		//videoWindow->SendSizeEvent();        
+    }
 }
 
 void CShowVideo::OnSize(wxSizeEvent& event)

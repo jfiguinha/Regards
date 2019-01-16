@@ -3,7 +3,7 @@ using namespace Regards::Introduction;
 
 
 CTitleIntro::CTitleIntro(wxWindow* parent, wxWindowID id, const CThemeIntroLogo & theme)
-	: CWindowMain(parent, id)
+	: CWindowMain("CTitleIntro",parent, id)
 {
 	this->themeFont = theme;
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CTitleIntro::OnPaint));
@@ -30,15 +30,21 @@ int CTitleIntro::GetHeight()
 
 void CTitleIntro::Resize()
 {
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CTitleIntro::OnPaint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
+
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;  
+	
+    wxPaintDC dc(this);
 	FillRect(&dc, GetWindowRect(), themeFont.colorBack);
 	wxSize size = GetSizeTexte(&dc, title, themeFont.font);
-	int posX = (width - size.x) / 2;
+	int posX = (GetWindowWidth() - size.x) / 2;
 	DrawTexte(&dc, title, posX, 0, themeFont.font);
 	
 }

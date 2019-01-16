@@ -7,7 +7,7 @@
 
 #include "ximajas.h"
 
-mutex CxImageJAS::muJasper;
+
 
 #if CXIMAGE_SUPPORT_JASPER
 
@@ -24,8 +24,6 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 	int32_t i,error=0;
 	int32_t fmt;
 	//jas_setdbglevel(0);
-    
-    muJasper.lock();
 
   cx_try
   {
@@ -50,7 +48,10 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
 	char szfmt[4];
 	*szfmt = '\0';
-	strncpy(szfmt,jas_image_fmttostr(fmt),3);
+    char * jasper_fmt = jas_image_fmttostr(fmt); 
+    printf("jasper_fmt : %s \n",jasper_fmt);
+    if(jasper_fmt != NULL && strlen(jasper_fmt) >= 3)
+        strncpy(szfmt,jasper_fmt,3);
 	szfmt[3] = '\0';
 
 	fmt = -1;
@@ -184,9 +185,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 	jas_cleanup();
 	if (image) jas_image_destroy(image);
 	if (in) jas_stream_close(in);
-    
-    muJasper.unlock();
-    
+
 	return (error==0);
 }
 ////////////////////////////////////////////////////////////////////////////////

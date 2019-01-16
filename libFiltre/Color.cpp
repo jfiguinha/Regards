@@ -3,8 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 #include "Color.h"
 #include "RegardsBitmap.h"
-#include <stdint.h>
-#include <algorithm>
 using namespace Regards::FiltreEffet;
 
 //////////////////////////////////////////////////////////////////////
@@ -324,9 +322,9 @@ int CColor::OneColorBitmap(CRegardsBitmap * m_CRegardsBitmap, CRgbaquad m_rgbVal
 		int bmWidth = m_CRegardsBitmap->GetBitmapWidth();
 		int bmHeight = m_CRegardsBitmap->GetBitmapHeight();
 
-		for (int k = 0; k < bmHeight; k++)
+		for (auto k = 0; k < bmHeight; k++)
 		{
-			for (int j = 0; j < bmWidth; j++)
+			for (auto j = 0; j < bmWidth; j++)
 			{
 				CRgbaquad color = m_CRegardsBitmap->GetColorValue(k, j);
 				if (color.GetAlpha() != 0)

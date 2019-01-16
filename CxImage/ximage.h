@@ -52,11 +52,27 @@
 #pragma once
 #endif 
 
-#ifdef _LINUX
+#ifdef __MINGW32__
+#ifndef WIN32
+#define WIN32
+#endif
+#endif
+
+#ifndef WIN32
+#define _LINUX
+#ifndef HAVE_BOOLEAN
+typedef int boolean;
+#endif
+#endif
+
+#if defined(_LINUX) || defined(__APPLE__)
   #define _XOPEN_SOURCE
   #include <unistd.h>
   #include <arpa/inet.h>
 #endif
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 #include "xfile.h"
@@ -279,14 +295,17 @@ public:
 	void	Clear(uint8_t bval=0);
 	void	Copy(const CxImage &src, bool copypixels = true, bool copyselection = true, bool copyalpha = true);
 	bool	Transfer(CxImage &from, bool bTransferFrames = true);
-	bool	CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage);
+	bool	CreateFromArray(uint8_t* pArray, int size,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage, bool rgb);
 	bool	CreateFromMatrix(uint8_t** ppMatrix,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage);
 	void	FreeMemory(void* memblock);
 
 	uint32_t Dump(uint8_t * dst);
 	uint32_t UnDump(const uint8_t * src);
 	uint32_t DumpSize();
-
+	bool IsBGR()
+	{
+		return isbgr;
+	}
 //@}
 
 /** \addtogroup Attributes */ //@{
@@ -537,9 +556,9 @@ public:
 #endif //CXIMAGE_SUPPORT_DECODE
 
 private:
-	void BicubicRGB(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
-	void BicubicBGR(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
-	float value[256];
+	inline void BicubicRGB(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
+	inline void BicubicBGR(uint8_t * data, const int &width, const int &height, const float &x, const float &y, float * tabF1, float * tabF);
+	
 
 #if CXIMAGE_SUPPORT_ENCODE
 protected:
@@ -568,7 +587,7 @@ public:
 	bool Encode2RGBA32F(float * buffer, bool bFlipY);
 	bool Encode2RGBA(uint8_t * &buffer, int32_t &size, bool bFlipY = false);
 	bool Encode2BGRA(uint8_t * buffer, long size, bool bFlipY);
-
+	bool Encode2BGRAFloat(float * buffer, long size, bool bFlipY);
 //@}
 #endif //CXIMAGE_SUPPORT_ENCODE
 
@@ -762,6 +781,7 @@ public:
 	uint8_t AlphaGetMax() const;
 	void AlphaSetMax(uint8_t nAlphaMax);
 	bool AlphaIsValid();
+	uint8_t * GetAlpha();
 	uint8_t* AlphaGetPointer(const int32_t x = 0,const int32_t y = 0);
 	bool AlphaFromTransparency();
 
@@ -812,6 +832,7 @@ public:
 	uint8_t*			pAlpha; //alpha channel
 	CxImage**			ppLayers; //generic layers
 	CxImage**			ppFrames;
+	bool				isbgr;					
 //@}
 };
 

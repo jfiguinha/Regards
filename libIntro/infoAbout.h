@@ -1,12 +1,6 @@
 #pragma once
-#include <Theme.h>
+#include <theme.h>
 #include <TreeWindow.h>
-
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 using namespace Regards::Window;
 
 namespace Regards
@@ -21,7 +15,10 @@ namespace Regards
 			~CInfoAbout();
 
 			void Init();
-
+			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
+            void UpdateScreenRatio();
+            
+            
 		private:
 
             void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
@@ -29,9 +26,9 @@ namespace Regards
 			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
 			void AddLibelle(const wxString &libelle, const wxString &key);
 
-			int index = 0;
-			int yPos = 0;
-			int widthPosition = 0;
+			int index;
+			int yPos;
+			int widthPosition;
 			tree<CTreeData *>::iterator top;
 			tree<CTreeData *>::iterator child;
 

@@ -23,10 +23,13 @@ class ConfigRegards: public wxDialog
 
 		//(*Declarations(ConfigRegards)
 		wxButton* btOk;
-		wxRadioBox* rbDiaporamaTransitionEffect;
-		wxRadioBox* rbFullscreen;
+		//wxRadioBox* rbDiaporamaTransitionEffect;
+		//wxRadioBox* rbFullscreen;
 		wxStaticBox* sbDiaporama;
 		wxSpinCtrl* scTime;
+        wxSpinCtrl* scProcessFace;
+        wxSpinCtrl* scProcessExif;
+        wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;
 		wxRadioBox* rbTransitionEffect;
 		wxRadioBox* rbRenderVideo;
@@ -36,7 +39,11 @@ class ConfigRegards: public wxDialog
 		wxStaticBox* sbThumbnail;
 		wxRadioBox* rbThumbnailQuality;
 		wxRadioBox* rbThumbnailCache;
+		wxRadioBox* rbDatabaseInMemory;
+		wxRadioBox* rbPictureFaceDetectionSize;
 		//*)
+
+		bool IsOk();
 
 	protected:
 
@@ -50,7 +57,7 @@ class ConfigRegards: public wxDialog
 		void OnbtnOkClick(wxCommandEvent& event);
 		void OnBtnCancelClick(wxCommandEvent& event);
 		//*)
-		bool isOk = false;
+		bool isOk;
 		DECLARE_EVENT_TABLE()
 };
 

@@ -15,7 +15,7 @@ CSelection::CSelection()
 	ptSelection[0].y = 0;
 	iSelect = 0;
 	marge = 4;
-	ptScreen = { 0, 0 };
+	ptScreen = wxPoint(0, 0);
 }
 
 CSelection::~CSelection()

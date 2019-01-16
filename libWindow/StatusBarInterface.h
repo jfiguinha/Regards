@@ -1,8 +1,6 @@
 #pragma once
-#include <RegardsBitmap.h>
-#include <string>
-#include <mutex>
-using namespace std;
+class CRegardsBitmap;
+
 
 class IStatusBarInterface
 {
@@ -16,5 +14,4 @@ public:
 	virtual void PrintPreview(CRegardsBitmap * imageToPrint){};
 	virtual void Exit() = 0;
 	virtual void ShowViewer(){};
-
 };

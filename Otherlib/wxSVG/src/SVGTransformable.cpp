@@ -71,6 +71,7 @@ wxSVGTransformable* wxSVGTransformable::GetSVGTransformable(wxSVGElement& elemen
     GET_TRANSFORMABLE(wxSVG_ELLIPSE_ELEMENT, wxSVGEllipseElement)
     GET_TRANSFORMABLE(wxSVG_PATH_ELEMENT, wxSVGPathElement)
     GET_TRANSFORMABLE(wxSVG_TEXT_ELEMENT, wxSVGTextElement)
+	GET_TRANSFORMABLE(wxSVG_A_ELEMENT, wxSVGAElement)
     GET_TRANSFORMABLE(wxSVG_G_ELEMENT, wxSVGGElement)
     GET_TRANSFORMABLE(wxSVG_USE_ELEMENT, wxSVGUseElement)
     default:

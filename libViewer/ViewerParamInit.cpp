@@ -24,18 +24,19 @@ void CViewerParamInit::Initialize(CViewerParam * param)
 {
 	if (nullptr == _singleton)
 	{
-		wxString filepath = wxStandardPaths::Get().GetExecutablePath();
-#ifdef WIN32
-        
-        filepath = filepath.SubString(0, filepath.size() - 4);
-        filepath.append("viewer.config");
-        _singleton = param;
-        _singleton->OpenFile(filepath);
-        
-#else
         wxStandardPathsBase& stdp = wxStandardPaths::Get();
-        wxString documentPath = stdp.GetDocumentsDir();
-        documentPath.append("/RegardsViewer.config");
+        wxString documentPath = stdp.GetDocumentsDir();       
+
+        
+#ifdef WIN32
+		
+        documentPath.append("\\Regards\\Regards.viewer.config");
+        _singleton = param;
+        _singleton->OpenFile(documentPath);
+#else
+
+
+        documentPath.append("/Regards/Regards.viewer.config");
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif

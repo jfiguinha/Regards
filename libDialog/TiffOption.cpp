@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "TiffOption.h"
 
 #ifndef WX_PRECOMP
@@ -19,6 +18,8 @@ END_EVENT_TABLE()
 
 TiffOption::TiffOption(wxWindow* parent)
 {
+	compressOption = 0;
+    isOk = false;
 	//(*Initialize(TiffOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("TiffOption"),_T("wxDialog"));
 	rbCompression = (wxRadioBox*)FindWindow(XRCID("ID_RBCOMPRESSION"));

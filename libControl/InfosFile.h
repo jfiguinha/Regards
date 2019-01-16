@@ -1,12 +1,8 @@
 #pragma once
-#include <Theme.h>
+#include <theme.h>
 #include <TreeWindow.h>
 #include <TreeElementControlInterface.h>
 #include <PositionElement.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 class CTreeElementTriangle;
 class CTreeElementTexte;
 
@@ -24,7 +20,7 @@ namespace Regards
 			wxString GetFilename();
             void UpdateScreenRatio();
             void CreateElement();
-            
+            void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
 		private:
 
 			void MouseOver(wxDC * dc, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
@@ -39,13 +35,13 @@ namespace Regards
 			int yPos;
 			//int xMargePos;
 			int cxMax;
-			int cyMax;
+			//int cyMax;
 			int xMaxPos;
 			int xMaxPosValue;
-			int xMinPos;
-			int rotation = 0;
-			wxString filename = L"";
-			int widthPosition = 0;
+			//int xMinPos;
+			int rotation;
+			wxString filename;
+			int widthPosition;
 			
 		};
 

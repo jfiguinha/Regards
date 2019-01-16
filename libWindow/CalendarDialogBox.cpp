@@ -63,7 +63,7 @@ wxCalendarCtrlBase * CCalendarDialogBox::DoCreateCalendar(const wxDateTime& dt, 
 void CCalendarDialogBox::OnCalRClick(wxMouseEvent& event)
 {
     wxDateTime dt;
-    wxDateTime::WeekDay wd;
+    //wxDateTime::WeekDay wd;
     
     const wxPoint pt = event.GetPosition();
     wxString msg = wxString::Format("Point (%d, %d) is ", pt.x, pt.y);

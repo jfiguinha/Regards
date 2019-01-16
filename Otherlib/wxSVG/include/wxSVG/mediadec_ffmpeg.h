@@ -3,7 +3,7 @@
 // Purpose:     FFMPEG Media Decoder
 // Author:      Alex Thuering
 // Created:     21.07.2007
-// RCS-ID:      $Id: mediadec_ffmpeg.h,v 1.7 2011/08/02 06:48:13 ntalex Exp $
+// RCS-ID:      $Id: mediadec_ffmpeg.h,v 1.9 2016/05/03 19:44:46 ntalex Exp $
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -13,6 +13,10 @@
 
 #include <wx/string.h>
 #include <wx/image.h>
+#include <vector>
+#include <map>
+using namespace std;
+
 struct AVFormatContext;
 struct AVCodecContext;
 struct AVFrame;
@@ -36,7 +40,10 @@ public:
 	
 	unsigned int GetStreamCount();
 	StreamType GetStreamType(unsigned int streamIndex);
+	/** Returns codec name (e.g. h264, MPEG4) */
 	wxString GetCodecName(unsigned int streamIndex);
+	/** Returns codec tag (fourcc, e.g. DIVX or XVID) */
+	wxString GetCodecTag(unsigned int streamIndex);
 	int GetChannelNumber(unsigned int streamIndex);
 	int GetSampleRate(unsigned int streamIndex);
 	int GetBitrate(unsigned int streamIndex);
@@ -53,6 +60,17 @@ public:
 	virtual wxImage GetNextFrame();
 	virtual void EndDecode();
 	
+	/** Returns a comma separated list of short names for the format. */
+	wxString GetFormatName();
+	/** Returns time base for video codec (tbc). */
+	float GetCodecTimeBase();
+	/** Returns list of chapters */
+	vector<double> GetChapters();
+	/** Returns file metadata */
+	map<wxString, wxString> GetMetadata();
+	/** Returns stream metadata */
+	map<wxString, wxString> GetMetadata(unsigned int streamIndex);
+	
 private:
 	AVFormatContext* m_formatCtx;
 	int m_videoStream;
@@ -62,6 +80,7 @@ private:
 	int m_height;
 	bool OpenVideoDecoder();
 	void CloseVideoDecoder();
+	AVStream* GetVideoStream();
 };
 
 #endif //FFMPEG_MEDIA_DECODER_H

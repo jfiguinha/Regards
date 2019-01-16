@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "CopyFileDlg.h"
 #include <FileUtility.h>
 #ifndef WX_PRECOMP
@@ -15,7 +14,20 @@
 #include <SqlGps.h>
 #include <SqlPhotoCriteria.h>
 #include <SqlPhotos.h>
+#include <libPicture.h>
+#ifdef EXIV2
+#include <MetadataExiv2.h>
+using namespace Regards::exiv2;
+#elif defined(WIN32)
+#include <SetMetadataGps.h>
+#include <SetMetadataDate.h>
+#endif
+#include <ImageLoadingFormat.h>
+#include <picture_id.h>
+
 using namespace Regards::Sqlite;
+
+
 //*)
 
 //(*IdInit(CopyFileDlg)
@@ -30,6 +42,21 @@ END_EVENT_TABLE()
 
 CopyFileDlg::CopyFileDlg(wxWindow* parent)
 {
+	progress = 0;
+	width = 0;
+	height = 0;
+	start = false;
+	mode = 0;
+
+    selectDate = "";
+    lat = "";
+    lng = "";
+    geoInfos = "";
+	listItem = nullptr;
+	optionPicture = 0;
+	qualityPicture = 0;
+    latitude = 0.0;
+    longitude = 0.0;
 	//(*Initialize(CopyFileDlg)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CopyFileDlg"),_T("wxDialog"));
 	Gauge1 = (wxGauge*)FindWindow(XRCID("ID_GAUGE1"));
@@ -360,10 +387,10 @@ void CopyFileDlg::CopyFile(const wxString & filename, CThumbnailData * data)
 	wxString file = CFileUtility::GetFileName(filename);
 	wxString newFile = destinationFolder;
 
-#if __APPLE__
-	newFile += "/" + file;
+#ifdef WIN32
+    newFile += "\\" + file;
 #else
-	newFile += "\\" + file;
+	newFile += "/" + file;
 #endif
 	wxCopyFile(filename, newFile, true);
 }
@@ -375,9 +402,57 @@ void CopyFileDlg::DeleteFile(const wxString & filename, CThumbnailData * data)
 
 void CopyFileDlg::GeolocalizeFile(const wxString & filename)
 {
-#ifdef __APPLE__
+ 	CLibPicture libPicture;
+	if(libPicture.TestIsExifCompatible(filename))
+	{   
+#if defined(EXIV2)
+    
+
+
+		wxString wlatitudeRef = "";
+		wxString wlongitudeRef = "";
+		wxString wlongitude = to_string(abs(longitude));
+		wxString wlatitude = to_string(abs(latitude));
+    
+		if (latitude < 0)
+			wlatitudeRef = "S";
+		else
+			wlatitudeRef = "N";
+    
+		if (longitude < 0)
+			wlongitudeRef = "W";
+		else
+			wlongitudeRef = "E";
+    
+		CMetadataExiv2 metadataExiv2(filename);
+		metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+
+#elif defined(__APPLE__)
+    CAppleReadExif appleReadExif;
     appleReadExif.WriteGps(filename, latitude, longitude);
+#elif defined(WIN32)
+	
+	wxString wlatitudeRef = "";
+	wxString wlongitudeRef = "";
+	wxString wlongitude = to_string(abs(longitude));
+	wxString wlatitude = to_string(abs(latitude));
+
+	if (latitude < 0)
+		wlatitudeRef = "S";
+	else
+		wlatitudeRef = "N";
+
+	if (longitude < 0)
+		wlongitudeRef = "W";
+	else
+		wlongitudeRef = "E";
+
+	CSetMetadataGps metadata(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+	metadata.SetMetadata(filename);
+
 #endif
+	}
+    
     CSqlPhotos sqlPhotos;
     int numPhotoId = sqlPhotos.GetPhotoId(filename);
     
@@ -399,9 +474,19 @@ void CopyFileDlg::GeolocalizeFile(const wxString & filename)
 
 void CopyFileDlg::ChangeDateFile(const wxString & filename)
 {
-#ifdef __APPLE__
-    appleReadExif.WriteDateTime(filename, newDate);
-#endif
+ 	CLibPicture libPicture;
+	if(libPicture.TestIsExifCompatible(filename))
+	{     
+	#if defined(EXIV2)
+		CMetadataExiv2 metadataExiv2(filename);
+		metadataExiv2.SetDateTime(selectDate);
+	#elif defined(__APPLE__)
+		appleReadExif.WriteDateTime(filename, newDate);
+	#elif defined(WIN32)
+		CSetMetadataDate metadata(newDate.FormatDate());
+		metadata.SetMetadata(filename);
+	#endif
+	}
     bool isNew = false;
     CSqlCriteria sqlCriteria;
     CSqlPhotoCriteria sqlPhotoCriteria;
@@ -425,6 +510,7 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 	wxString criteriaGps = "";
 	CriteriaVector m_criteriaVector;
 	sqlFindCriteria.SearchCriteria(&m_criteriaVector, data->GetNumPhotoId());
+
 	for (CCriteria criteria : m_criteriaVector)
 	{
 		if (criteria.GetCategorieId() == 1)
@@ -445,10 +531,11 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 	{
 		wxString newFile = outputFolder;
 
-#if __APPLE__
-		newFile += "/" + file;
+#if defined(WIN32)
+        newFile += "\\" + file;
+		
 #else
-		newFile += "\\" + file;
+		newFile += "/" + file;
 #endif
 
 		if (infoFile.changeFilename)
@@ -473,10 +560,10 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 			{
 				wxArrayString array;
 				wxDir::GetAllFiles(outputFolder, &array);
-#if __APPLE__
-				file = outputFolder + "/" + file;
+#if defined(WIN32)
+                file = outputFolder + "\\" + file;
 #else
-				file = outputFolder + "\\" + file;
+				file = outputFolder + "/" + file;
 #endif
 				file.append("_" + to_string(array.GetCount()));
 			}
@@ -528,9 +615,17 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 			}
 
 			//Sauvegarde de l'image
-			CRegardsBitmap * bitmap = libPicture.LoadPicture(filename);
-			libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
-			delete bitmap;
+			CImageLoadingFormat * bitmap = libPicture.LoadPicture(filename);
+			if(bitmap != nullptr && bitmap->IsOk())
+			{
+				if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)	
+				{
+					CRegardsBitmap * bitmapregards = bitmap->GetRegardsBitmap();
+					libPicture.SavePicture(file, bitmapregards, optionPicture, qualityPicture);
+					delete bitmapregards;
+				}
+				delete bitmap;
+			}
 		}
 		else
 		{

@@ -1,11 +1,4 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
-using namespace std;
 
 #define DEFAULT_SIZEX 60
 #define DEFAULT_SIZEY 60
@@ -35,7 +28,7 @@ namespace Regards
 			void SetVertical(const bool &isVertical);
 			bool GetVertical();
 
-			virtual void DrawButton(wxDC * dc) = 0;
+			virtual void DrawButton(wxDC * dc, const int &x, const int &y) = 0;
 			virtual void Resize(const int &tailleX, const int &tailleY) = 0;
 			int GetXPos();
 			int GetYPos();
@@ -60,6 +53,8 @@ namespace Regards
 			};
             
             void SetBackgroundBitmap(wxImage bmBackground);
+            
+            bool IsActif();
 
 			virtual void UnclickElement(wxWindow * window, const int &x, const int &y){};
 			virtual void ClickElement(wxWindow * window, const int &x, const int &y){};
@@ -71,12 +66,12 @@ namespace Regards
             wxImage bmBackground;
 			int x;
 			int y;
-			bool isActif = false;
-			bool isPush = false;
+			bool isActif;
+			bool isPush;
 			bool isVisible;
 			bool isRepeatable;
-			bool isVertical = false;
-			bool activePush = true;
+			bool isVertical;
+			bool activePush;
 		};
 
 		typedef vector<CToolbarElement *> VectorNavigatorElement;

@@ -46,7 +46,8 @@ wxString CSqlResult::ColumnDataText(const int & clmNum)
     if (clmNum > m_iColumnCount)
         return "";
     
-    wxString utf8 = wxString(reinterpret_cast<const char*>(sqlite3_column_text(pRes, clmNum)));
+    const unsigned char * textValue = sqlite3_column_text(pRes, clmNum);
+    wxString utf8 =  wxString::FromUTF8(reinterpret_cast<const char*>(textValue));
     return utf8;
     
     /*

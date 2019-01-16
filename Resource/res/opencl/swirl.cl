@@ -1,11 +1,11 @@
-uchar4 GetColorSrc(int x, int y, const __global uchar4 *input, int widthIn, int heightIn)
+float4 GetColorSrc(int x, int y, const __global float4 *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
 		int position = x + y * widthIn;
 		return input[position];
 	}
-	return (uchar4)0;
+	return 0.0f;
 }
 
 float EuclideanDist(float tcX, float tcY, float centerX, float centerY)
@@ -20,7 +20,7 @@ float DotProduct(float tcX, float tcY, float qX, float qY)
 	return tcX * qX + tcY * qY;
 }
 
-uchar4 PostFX(const __global uchar4 *input, int x, int y, float radius, float angleDegree, int widthIn, int heightIn)
+float4 PostFX(const __global float4 *input, int x, int y, float radius, float angleDegree, int widthIn, int heightIn)
 {
   float xOut = x;
   float yOut = y;
@@ -55,7 +55,7 @@ uchar4 PostFX(const __global uchar4 *input, int x, int y, float radius, float an
   return GetColorSrc((int)tcX, (int)tcY, input, widthIn, heightIn);
 }
 
-__kernel void Swirl(__global uchar4 *output,const __global uchar4 *input, int width, int height, float radius, float angleDegree)
+__kernel void Swirl(__global float4 *output,const __global float4 *input, int width, int height, float radius, float angleDegree)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);

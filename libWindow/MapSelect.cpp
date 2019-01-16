@@ -23,7 +23,8 @@ using namespace Regards::Internet;
 
 CMapSelect::CMapSelect()
 {
-    
+	latitude = "";
+	longitude = "";
 }
 
 CMapSelect::~CMapSelect()
@@ -83,9 +84,9 @@ wxString CMapSelect::SelectNewMapLocalisation(wxWindow * window, const wxString 
             if (gps->GeolocalisationGPS(latitude, longitude))
             {
                 GeoPluginVector * geoPluginVector = gps->GetGpsList();
-                for (CGeoPluginValue geoValue : *geoPluginVector)
+
+				for (CGeoPluginValue geoValue : *geoPluginVector)
                 {
-                    
                     infoGpsLocalisation = fileGeo.GenerateGeolocalisationString(geoValue.GetCountryCode(), geoValue.GetRegion(), geoValue.GetPlace());
                     break;
                 }

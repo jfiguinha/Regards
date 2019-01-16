@@ -1,9 +1,6 @@
 #pragma once
 #include "WindowMain.h"
 #include <FileGeolocation.h>
-#include <mutex>
-#include <thread>
-using namespace std;
 using namespace Regards::Internet;
 namespace Regards
 {

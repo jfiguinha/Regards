@@ -1,6 +1,5 @@
 
 #include "TreeControl.h"
-#include <algorithm>    // std::sort
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
@@ -52,7 +51,10 @@ int CTreeControl::GetWidthRow(const int &numRow)
 int CTreeControl::GetWidth()
 {
 	int controlWidth = 0;
-	for (int size : rowWidth)
+	if(rowWidth.size() == 0)
+		return controlWidth;
+
+	for (auto size : rowWidth)
 	{
 		controlWidth += size;
 	}
@@ -70,6 +72,7 @@ void CTreeControl::GenerateWindowBitmap(wxDC * deviceContext, const int &width, 
 
 	int diffHauteur = posHauteur % 20;
 	int startHauteur = (diffHauteur != 0) ? posHauteur - (20 - diffHauteur) : posHauteur;
+
 
 	for (CPositionElement * value : vectorPosElement)
 	{
@@ -117,6 +120,27 @@ CTreeElementCheckBox * CTreeControl::CreateCheckBoxElement(const int &width, con
 	return treeElementCheckBox;
 }
 
+CTreeElementSlide * CTreeControl::CreateSlideElement(const int &width, const int &height, CTreeElementValue * position, vector<CTreeElementValue *> * value, const wxString &exifKey)
+{
+	CTreeElementSlide * treeElementSlide = new CTreeElementSlide(this);
+	treeElementSlide->SetTheme(&themeTree.themeSlide);
+	treeElementSlide->SetZoneSize(themeTree.themeSlide.GetElementWidth(), height);
+	treeElementSlide->SetExifKey(exifKey);
+	treeElementSlide->SetTabValue(value);
+	treeElementSlide->SetInitValue(position);
+	return treeElementSlide;
+}
+
+CTreeElementListBox * CTreeControl::CreateListBoxElement(const int &width, const int &height, const vector<CMetadata> & value, const int &index, const wxString &exifKey)
+{
+	CTreeElementListBox * treeElementListBox = new CTreeElementListBox(this);
+	treeElementListBox->SetTheme(&themeTree.themeListbox);
+	treeElementListBox->SetZoneSize(themeTree.themeSlide.GetElementWidth(), height);
+	treeElementListBox->SetExifKey(exifKey);
+	treeElementListBox->SetTabValue(value, index);
+	return treeElementListBox;
+}
+
 CTreeElementTriangle * CTreeControl::CreateTriangleElement(const int &width, const int &height, const bool &open)
 {
 	CTreeElementTriangle * treeElementTriangle = new CTreeElementTriangle();
@@ -155,19 +179,11 @@ CTreeElementTexteClick * CTreeControl::CreateTexteLinkElement(const int &width, 
     return treeElementTexte;
 }
 
-CTreeElementSlide * CTreeControl::CreateSlideElement(const int &width, const int &height, const int &position, const vector<int> & value, const wxString &exifKey)
-{
-	CTreeElementSlide * treeElementSlide = new CTreeElementSlide(this);
-	treeElementSlide->SetTheme(&themeTree.themeSlide);
-	treeElementSlide->SetZoneSize(themeTree.themeSlide.GetElementWidth(), height);
-	treeElementSlide->SetExifKey(exifKey);
-	treeElementSlide->SetTabValue(value);
-	treeElementSlide->SetPosition(position);
-	return treeElementSlide;
-}
+
 
 void CTreeControl::ClearData()
 {
+
 	for (CPositionElement * posElement : vectorPosElement)
 	{
 		if (posElement != nullptr)
@@ -207,7 +223,7 @@ void CTreeControl::EraseChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		CTreeData * data = *it;
 
@@ -246,6 +262,9 @@ CPositionElement * CTreeControl::GetElement(CTreeData * data, const int &typeEle
 
 CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 {
+	if(vectorPosElementDynamic.size() == 0)
+		return nullptr;
+
 	for (CPositionElement * value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
@@ -304,7 +323,7 @@ tree<CTreeData *>::iterator CTreeControl::FindKey(const wxString & key, tree<CTr
 
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		CTreeData * data = *it;
 		if (data->GetKey() == key)

@@ -2,9 +2,6 @@
 #include "ToolbarWindow.h"
 #include "SliderInterface.h"
 #include <ToolbarInterface.h>
-#include <string>
-#include <vector>
-using namespace std;
 using namespace Regards::Window;
 
 namespace Regards
@@ -35,10 +32,10 @@ namespace Regards
 			void LastPicture();
 			void EventManager(const int &id);
             
-			CToolbarInterface * toolbarInterface = nullptr;
-			CToolbarButton * imagePlayDiaporama = nullptr;
-			CToolbarButton * imageStopDiaporama = nullptr;
-            CToolbarButton * fullscreen = nullptr;
+			CToolbarInterface * toolbarInterface;
+			CToolbarButton * imagePlayDiaporama;
+			CToolbarButton * imageStopDiaporama;
+            CToolbarButton * fullscreen;
 		};
 	}
 }

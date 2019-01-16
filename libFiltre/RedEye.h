@@ -1,9 +1,6 @@
 #pragma once
-#include "RegardsBitmap.h"
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include "RGBAQuad.h"
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -24,9 +21,15 @@ namespace Regards
 
             struct ligneColor
 			{
-				int ligne = 0;
-				int nbColor = 0;
-				float pourcentage = 0;
+				ligneColor()
+				{
+					ligne = 0;
+					nbColor = 0;
+					pourcentage = 0;
+				};
+				int ligne;
+				int nbColor;
+				float pourcentage;
 			};
 
 			CRedEye(void){};

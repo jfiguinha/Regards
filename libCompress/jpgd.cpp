@@ -253,7 +253,7 @@ void idct(const jpgd_block_t* pSrc_ptr, uint8* pDst_ptr, int block_max_zag)
     k = k | (k<<8);
     k = k | (k<<16);
 
-    for (int i = 8; i > 0; i--)
+    for (auto i = 8; i > 0; i--)
     {
       *(int*)&pDst_ptr[0] = k;
       *(int*)&pDst_ptr[4] = k;
@@ -316,7 +316,7 @@ void idct_4x4(const jpgd_block_t* pSrc_ptr, uint8* pDst_ptr)
   int* pTemp = temp;
   const jpgd_block_t* pSrc = pSrc_ptr;
 
-  for (int i = 4; i > 0; i--)
+  for (auto i = 4; i > 0; i--)
   {
     Row<4>::idct(pTemp, pSrc);
     pSrc += 8;
@@ -324,7 +324,7 @@ void idct_4x4(const jpgd_block_t* pSrc_ptr, uint8* pDst_ptr)
   }
 
   pTemp = temp;
-  for (int i = 8; i > 0; i--)
+  for (auto i = 8; i > 0; i--)
   {
     Col<4>::idct(pDst_ptr, pTemp);
     pTemp++;
@@ -596,7 +596,7 @@ namespace DCT_Upsample
 
     inline Matrix44& operator += (const Matrix44& a)
     {
-      for (int r = 0; r < NUM_ROWS; r++)
+      for (auto r = 0; r < NUM_ROWS; r++)
       {
         at(r, 0) += a.at(r, 0);
         at(r, 1) += a.at(r, 1);
@@ -608,7 +608,7 @@ namespace DCT_Upsample
 
     inline Matrix44& operator -= (const Matrix44& a)
     {
-      for (int r = 0; r < NUM_ROWS; r++)
+      for (auto r = 0; r < NUM_ROWS; r++)
       {
         at(r, 0) -= a.at(r, 0);
         at(r, 1) -= a.at(r, 1);
@@ -621,7 +621,7 @@ namespace DCT_Upsample
     friend inline Matrix44 operator + (const Matrix44& a, const Matrix44& b)
     {
       Matrix44 ret;
-      for (int r = 0; r < NUM_ROWS; r++)
+      for (auto r = 0; r < NUM_ROWS; r++)
       {
         ret.at(r, 0) = a.at(r, 0) + b.at(r, 0);
         ret.at(r, 1) = a.at(r, 1) + b.at(r, 1);
@@ -634,7 +634,7 @@ namespace DCT_Upsample
     friend inline Matrix44 operator - (const Matrix44& a, const Matrix44& b)
     {
       Matrix44 ret;
-      for (int r = 0; r < NUM_ROWS; r++)
+      for (auto r = 0; r < NUM_ROWS; r++)
       {
         ret.at(r, 0) = a.at(r, 0) - b.at(r, 0);
         ret.at(r, 1) = a.at(r, 1) - b.at(r, 1);
@@ -646,7 +646,7 @@ namespace DCT_Upsample
 
     static inline void add_and_store(jpgd_block_t* pDst, const Matrix44& a, const Matrix44& b)
     {
-      for (int r = 0; r < 4; r++)
+      for (auto r = 0; r < 4; r++)
       {
         pDst[0*8 + r] = static_cast<jpgd_block_t>(a.at(r, 0) + b.at(r, 0));
         pDst[1*8 + r] = static_cast<jpgd_block_t>(a.at(r, 1) + b.at(r, 1));
@@ -657,7 +657,7 @@ namespace DCT_Upsample
 
     static inline void sub_and_store(jpgd_block_t* pDst, const Matrix44& a, const Matrix44& b)
     {
-      for (int r = 0; r < 4; r++)
+      for (auto r = 0; r < 4; r++)
       {
         pDst[0*8 + r] = static_cast<jpgd_block_t>(a.at(r, 0) - b.at(r, 0));
         pDst[1*8 + r] = static_cast<jpgd_block_t>(a.at(r, 1) - b.at(r, 1));
@@ -1450,7 +1450,7 @@ void jpeg_decoder::init(jpeg_decoder_stream *pStream)
   get_bits(16);
   get_bits(16);
 
-  for (int i = 0; i < JPGD_MAX_BLOCKS_PER_MCU; i++)
+  for (auto i = 0; i < JPGD_MAX_BLOCKS_PER_MCU; i++)
     m_mcu_block_max_zag[i] = 64;
 }
 
@@ -1461,7 +1461,7 @@ void jpeg_decoder::init(jpeg_decoder_stream *pStream)
 // Create a few tables that allow us to quickly convert YCbCr to RGB.
 void jpeg_decoder::create_look_ups()
 {
-  for (int i = 0; i <= 255; i++)
+  for (auto i = 0; i <= 255; i++)
   {
     int k = i - 128;
     m_crr[i] = ( FIX(1.40200f)  * k + ONE_HALF) >> SCALEBITS;
@@ -1497,7 +1497,7 @@ void jpeg_decoder::transform_mcu(int mcu_row)
   jpgd_block_t* pSrc_ptr = m_pMCU_coefficients;
   uint8* pDst_ptr = m_pSample_buf + mcu_row * m_blocks_per_mcu * 64;
 
-  for (int mcu_block = 0; mcu_block < m_blocks_per_mcu; mcu_block++)
+  for (auto mcu_block = 0; mcu_block < m_blocks_per_mcu; mcu_block++)
   {
     idct(pSrc_ptr, pDst_ptr, m_mcu_block_max_zag[mcu_block]);
     pSrc_ptr += 64;
@@ -1530,7 +1530,7 @@ void jpeg_decoder::transform_mcu_expand(int mcu_row)
   // Chroma IDCT, with upsampling
 	jpgd_block_t temp_block[64];
 
-  for (int i = 0; i < 2; i++)
+  for (auto i = 0; i < 2; i++)
   {
     DCT_Upsample::Matrix44 P, Q, R, S;
 
@@ -1761,13 +1761,13 @@ void jpeg_decoder::decode_next_row()
 {
   int row_block = 0;
 
-  for (int mcu_row = 0; mcu_row < m_mcus_per_row; mcu_row++)
+  for (auto mcu_row = 0; mcu_row < m_mcus_per_row; mcu_row++)
   {
     if ((m_restart_interval) && (m_restarts_left == 0))
       process_restart();
 
     jpgd_block_t* p = m_pMCU_coefficients;
-    for (int mcu_block = 0; mcu_block < m_blocks_per_mcu; mcu_block++, p += 64)
+    for (auto mcu_block = 0; mcu_block < m_blocks_per_mcu; mcu_block++, p += 64)
     {
       int component_id = m_mcu_org[mcu_block];
       jpgd_quant_t* q = m_quant[m_comp_quant[component_id]];
@@ -1871,9 +1871,9 @@ void jpeg_decoder::H1V1Convert()
   uint8 *d = m_pScan_line_0;
   uint8 *s = m_pSample_buf + row * 8;
 
-  for (int i = m_max_mcus_per_row; i > 0; i--)
+  for (auto i = m_max_mcus_per_row; i > 0; i--)
   {
-    for (int j = 0; j < 8; j++)
+    for (auto j = 0; j < 8; j++)
     {
       int y = s[j];
       int cb = s[64+j];
@@ -1899,11 +1899,11 @@ void jpeg_decoder::H2V1Convert()
   uint8 *y = m_pSample_buf + row * 8;
   uint8 *c = m_pSample_buf + 2*64 + row * 8;
 
-  for (int i = m_max_mcus_per_row; i > 0; i--)
+  for (auto i = m_max_mcus_per_row; i > 0; i--)
   {
-    for (int l = 0; l < 2; l++)
+    for (auto l = 0; l < 2; l++)
     {
-      for (int j = 0; j < 4; j++)
+      for (auto j = 0; j < 4; j++)
       {
         int cb = c[0];
         int cr = c[64];
@@ -1952,9 +1952,9 @@ void jpeg_decoder::H1V2Convert()
 
   c = m_pSample_buf + 64*2 + (row >> 1) * 8;
 
-  for (int i = m_max_mcus_per_row; i > 0; i--)
+  for (auto i = m_max_mcus_per_row; i > 0; i--)
   {
-    for (int j = 0; j < 8; j++)
+    for (auto j = 0; j < 8; j++)
     {
       int cb = c[0+j];
       int cr = c[64+j];
@@ -2000,11 +2000,11 @@ void jpeg_decoder::H2V2Convert()
 
 	c = m_pSample_buf + 64*4 + (row >> 1) * 8;
 
-	for (int i = m_max_mcus_per_row; i > 0; i--)
+	for (auto i = m_max_mcus_per_row; i > 0; i--)
 	{
-		for (int l = 0; l < 2; l++)
+		for (auto l = 0; l < 2; l++)
 		{
-			for (int j = 0; j < 8; j += 2)
+			for (auto j = 0; j < 8; j += 2)
 			{
 				int cb = c[0];
 				int cr = c[64];
@@ -2057,7 +2057,7 @@ void jpeg_decoder::gray_convert()
   uint8 *d = m_pScan_line_0;
   uint8 *s = m_pSample_buf + row * 8;
 
-  for (int i = m_max_mcus_per_row; i > 0; i--)
+  for (auto i = m_max_mcus_per_row; i > 0; i--)
   {
     *(uint *)d = *(uint *)s;
     *(uint *)(&d[4]) = *(uint *)(&s[4]);
@@ -2075,14 +2075,14 @@ void jpeg_decoder::expanded_convert()
 
   uint8* d = m_pScan_line_0;
 
-  for (int i = m_max_mcus_per_row; i > 0; i--)
+  for (auto i = m_max_mcus_per_row; i > 0; i--)
   {
-    for (int k = 0; k < m_max_mcu_x_size; k += 8)
+    for (auto k = 0; k < m_max_mcu_x_size; k += 8)
     {
       const int Y_ofs = k * 8;
       const int Cb_ofs = Y_ofs + 64 * m_expanded_blocks_per_component;
       const int Cr_ofs = Y_ofs + 64 * m_expanded_blocks_per_component * 2;
-      for (int j = 0; j < 8; j++)
+      for (auto j = 0; j < 8; j++)
       {
         int y = Py[Y_ofs + j];
         int cb = Py[Cb_ofs + j];
@@ -2352,7 +2352,7 @@ void jpeg_decoder::make_huff_table(int index, huff_tables *pH)
 // Verifies the quantization tables needed for this scan are available.
 void jpeg_decoder::check_quant_tables()
 {
-  for (int i = 0; i < m_comps_in_scan; i++)
+  for (auto i = 0; i < m_comps_in_scan; i++)
     if (m_quant[m_comp_quant[m_comp_list[i]]] == NULL)
       stop_decoding(JPGD_UNDEFINED_QUANT_TABLE);
 }
@@ -2360,7 +2360,7 @@ void jpeg_decoder::check_quant_tables()
 // Verifies that all the Huffman tables needed for this scan are available.
 void jpeg_decoder::check_huff_tables()
 {
-  for (int i = 0; i < m_comps_in_scan; i++)
+  for (auto i = 0; i < m_comps_in_scan; i++)
   {
     if ((m_spectral_start == 0) && (m_huff_num[m_comp_dc_tab[m_comp_list[i]]] == NULL))
       stop_decoding(JPGD_UNDEFINED_HUFF_TABLE);
@@ -2369,7 +2369,7 @@ void jpeg_decoder::check_huff_tables()
       stop_decoding(JPGD_UNDEFINED_HUFF_TABLE);
   }
 
-  for (int i = 0; i < JPGD_MAX_HUFF_TABLES; i++)
+  for (auto i = 0; i < JPGD_MAX_HUFF_TABLES; i++)
     if (m_huff_num[i])
     {
       if (!m_pHuff_tabs[i])
@@ -3087,7 +3087,7 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
   if (!pImage_data)
     return NULL;
 
-  for (int y = 0; y < image_height; y++)
+  for (auto y = 0; y < image_height; y++)
   {
     const uint8* pScan_line = NULL;
     uint scan_line_len;
@@ -3108,7 +3108,7 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
     {
       if (req_comps == 3)
       {
-        for (int x = 0; x < image_width; x++)
+        for (auto x = 0; x < image_width; x++)
         {
           uint8 luma = pScan_line[x];
           pDst[0] = luma;
@@ -3119,7 +3119,7 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
       }
       else
       {
-        for (int x = 0; x < image_width; x++)
+        for (auto x = 0; x < image_width; x++)
         {
           uint8 luma = pScan_line[x];
           pDst[0] = luma;
@@ -3135,7 +3135,7 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
       if (req_comps == 1)
       {
         const int YR = 19595, YG = 38470, YB = 7471;
-        for (int x = 0; x < image_width; x++)
+        for (auto x = 0; x < image_width; x++)
         {
           int r = pScan_line[x*4+0];
           int g = pScan_line[x*4+1];
@@ -3145,7 +3145,7 @@ unsigned char *decompress_jpeg_image_from_stream(jpeg_decoder_stream *pStream, i
       }
       else
       {
-        for (int x = 0; x < image_width; x++)
+        for (auto x = 0; x < image_width; x++)
         {
           pDst[0] = pScan_line[x*4+0];
           pDst[1] = pScan_line[x*4+1];

@@ -32,12 +32,6 @@
  **********************************************************************
  */
 #pragma once
-#include <stdint.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include "wx/string.h"
 #include "wx/wfstream.h"
 
@@ -60,12 +54,16 @@ public:
 
 public:
 
+#ifdef WIN32
+	static wxString GetFileMD5(const wxString &filename);
+#else
 	//! Returns the MD5 checksum for the given file
 	static wxString GetFileMD5(wxInputStream &str);
 	static wxString GetFileMD5(const wxString &filename);
 
 	//! Returns the MD5 for the given string.
 	static wxString GetMD5(const wxString &str);
+#endif
 };
 
 

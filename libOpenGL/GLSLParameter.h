@@ -1,12 +1,6 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "GLcontext.h"
-#include <string>
-#include <vector>
-using namespace std;
+#include <cstring>
 
 namespace Regards
 {
@@ -16,9 +10,9 @@ namespace Regards
 		{
 		public:
 			CGLSLParameter(){ dataType = 0; };
-			~CGLSLParameter(){};
+			virtual ~CGLSLParameter(){};
 
-			void SetLibelle(const wxString &libelle);
+			void SetLibelle(const string &libelle);
 			virtual void Add(GLint progHandle){};
 
 			unsigned int GetType(){
@@ -28,7 +22,7 @@ namespace Regards
 		protected:
 
 			unsigned int dataType;
-			wxString libelle;
+			string libelle;
 		};
 
 		class CGLSLParameterInt : public CGLSLParameter
@@ -94,7 +88,7 @@ namespace Regards
 		public:
 			CGLSLParameterTabFloat(){
 				dataType = 4;
-				value = nullptr;
+				value = NULL;
 			};
 			~CGLSLParameterTabFloat()
 			{
@@ -105,7 +99,7 @@ namespace Regards
 			{
 				Safe_Delete();
 				this->value = new  GLfloat[size];
-				memcpy(this->value, value, size * sizeof(GLfloat));
+				std::memcpy(this->value, value, size * sizeof(GLfloat));
 
 				this->size = size;
 			};
@@ -115,10 +109,10 @@ namespace Regards
 
 			void Safe_Delete()
 			{
-				if (value != nullptr)
+				if (value != NULL)
 					delete[] value;
 
-				value = nullptr;
+				value = NULL;
 			}
 
 			GLfloat * value;
@@ -130,7 +124,7 @@ namespace Regards
 		public:
 			CGLSLParameterTabInt(){
 				dataType = 5;
-				value = nullptr;
+				value = NULL;
 			};
 			~CGLSLParameterTabInt()
 			{
@@ -150,10 +144,10 @@ namespace Regards
 
 			void Safe_Delete()
 			{
-				if (value != nullptr)
+				if (value != NULL)
 					delete[] value;
 
-				value = nullptr;
+				value = NULL;
 			}
 
 			GLint * value;

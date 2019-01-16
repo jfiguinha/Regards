@@ -1,11 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include "GLcontext.h"
 #include "GLSLParameter.h"
-#include <stdint.h>
 
 namespace Regards
 {
@@ -33,20 +27,10 @@ namespace Regards
 			bool SetIntegerParam(const char * pParamName_i, const int iValue_i);
 			bool SetMatrixParam(const char * pParamName_i, float * tabVecs);
 
-            
-#ifdef __APPLE__
-            
-            GLuint GetProgramId()
-            {
-                return m_hProgramObject;
-            }
-            
-#else
 			GLhandleARB GetProgramId()
 			{
 				return m_hProgramObject;
 			}
-#endif
 			~GLSLShader(void);
 
 		private:
@@ -58,18 +42,11 @@ namespace Regards
 			bool check_program_link_status(GLuint obj);
 
 			char pbyShaderData[4096];
-#ifdef __APPLE__
-            
-            GLuint m_hProgramObject;
-            GLuint m_hShaderHandle;
-            GLuint m_hVertexHandle;
-#else
         
 			GLhandleARB m_hProgramObject;
 			GLhandleARB m_hShaderHandle;
 			GLhandleARB m_hVertexHandle;
-            
-#endif
+
 		};
 	}
 }

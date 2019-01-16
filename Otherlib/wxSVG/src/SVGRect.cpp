@@ -12,10 +12,8 @@
 #include "SVGPoint.h"
 #include <wx/tokenzr.h>
 
-wxString wxSVGRect::GetValueAsString() const
-{
-  return wxString::Format(wxT("%g %g %g %g"),
-    GetX(), GetY(), GetWidth(), GetHeight());
+wxString wxSVGRect::GetValueAsString() const {
+  return wxString::Format(wxT("%g %g %g %g"), GetX(), GetY(), GetWidth(), GetHeight());
 }
 
 void wxSVGRect::SetValueAsString(const wxString& value)

@@ -1,22 +1,48 @@
 #include "ThumbnailDataStorage.h"
 #include <FileUtility.h>
 #include <LoadingResource.h>
+#include "ImageLoadingFormat.h"
+#include <wx/mstream.h>
+#ifdef TURBOJPEG
+#include <turbojpeg.h>
+#endif
 
 CThumbnailDataStorage::CThumbnailDataStorage(const wxString & filename)
 	: CThumbnailData(filename)
 {
+	data = nullptr;
+	compressMethod = 0;
 }
 
 
 CThumbnailDataStorage::~CThumbnailDataStorage(void)
 {
-	if (bitmap != nullptr)
-		delete(bitmap);
+	if (data != nullptr)
+	{
+		if (compressMethod == 1)
+		{
+#ifdef TURBOJPEG
+			tjFree(data);
+#else
+			delete[] data;
+#endif
+				
+		}
+		else if (compressMethod == 2)
+		{
+			free(data);
+		}
+		else
+		{
+			delete[] data;
+		}
+		data = nullptr;
+	}
 }
 
 bool CThumbnailDataStorage::TestBitmap()
 {
-	if (bitmap != nullptr)
+	if (data != nullptr)
 		return true;
 
 	return false;
@@ -24,25 +50,44 @@ bool CThumbnailDataStorage::TestBitmap()
 
 wxImage CThumbnailDataStorage::GetwxImage()
 {
-	CLoadingResource loadingResource;
-	return loadingResource.ConvertTowxImage(bitmap, false);
-}
+	wxImage bitmap;
+	if (data != nullptr)
+	{
+		wxMemoryInputStream jpegStream(data, size);
+		bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);
 
-CRegardsBitmap * CThumbnailDataStorage::GetRegardsBitmap(const int &type)
-{
+	}
 	return bitmap;
 }
 
-void CThumbnailDataStorage::SetBitmap(CRegardsBitmap * bitmap)
+void CThumbnailDataStorage::SetBitmap(CImageLoadingFormat * bitmap)
 {
-	if (bitmap != nullptr)
+	if(bitmap->IsOk())
 	{
-		if (this->bitmap != nullptr)
-			delete(this->bitmap);
+		if (data != nullptr)
+		{
+			if (compressMethod == 1)
+			{
+#ifdef TURBOJPEG
+					tjFree(data);
+#else
+				delete[] data;
+#endif
+					
+			}
+			else if (compressMethod == 2)
+			{
+				free(data);
+			}
+			else
+			{
+				delete[] data;
+			}
+		}
 
-		this->bitmap = new CRegardsBitmap();
-		*this->bitmap = *bitmap;
+		bitmap->ConvertToRGB24(true);
+		data = bitmap->GetJpegData(size, compressMethod);
+		format = bitmap->GetFormat();
 	}
-
 }
 

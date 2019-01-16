@@ -1,5 +1,5 @@
 #include "ToolbarButton.h"
-#include <Theme.h>
+#include <theme.h>
 #include <LibResource.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"
@@ -30,8 +30,8 @@ CToolbarButton::CToolbarButton(const CThemeToolbarButton & theme)
 	buttonHeight = 0;
 	themeButton = theme;
     colorToReplace = wxColor(0,0,0);
-    colorActifReplacement = wxColor(48, 128, 254);
-    colorInactifReplacement = wxColor(255,255,255);
+    colorActifReplacement = themeButton.colorActifReplacement;
+    colorInactifReplacement = themeButton.replaceColor;
 }
 
 void CToolbarButton::Resize(const int &tailleX, const int &tailleY)
@@ -96,30 +96,12 @@ int CToolbarButton::GetBitmapHeight()
 	return height;
 }
 
-void CToolbarButton::SetButtonResourceId(const wxString &resourceId, const bool &isVector)
+void CToolbarButton::SetButtonResourceId(const wxString &resourceId)
 {
-    this->isVector = isVector;
-    this->resourceId = resourceId;
-    if(isVector)
-    {
-        vector = CLibResource::GetVector(resourceId);
-    }
-    else
-    {
-        CLoadingResource loadingResource;
-        button = loadingResource.LoadImageResource(resourceId);
 
-        if (button.IsOk())
-        {
-            buttonWidth = button.GetWidth();
-            buttonHeight = button.GetHeight();
-        }
-        else
-        {
-            buttonWidth = 0;
-            buttonHeight = 0;
-        }
-    }
+    this->resourceId = resourceId;
+    vector = CLibResource::GetVector(resourceId);
+
 }
 
 int CToolbarButton::GetWidth()
@@ -143,13 +125,13 @@ void CToolbarButton::DrawShapeElement(wxDC * dc, const wxRect &rc)
 {
 	if (themeButton.GetRectangleSize() > 0)
 	{
-		wxPen penTop(themeButton.lineColorTop, themeButton.GetRectangleSize(), wxSOLID);
+		wxPen penTop(themeButton.lineColorTop, themeButton.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penTop);
 		dc->DrawLine(rc.x, rc.height, rc.width, rc.height);
 		dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
 		dc->SetPen(wxNullPen);
 
-		wxPen penBottom(themeButton.lineColorBottom, themeButton.GetRectangleSize(), wxSOLID);
+		wxPen penBottom(themeButton.lineColorBottom, themeButton.GetRectangleSize(),  wxPENSTYLE_SOLID);
 		dc->SetPen(penBottom);
 		dc->DrawLine(rc.x, rc.y, rc.width, rc.y);
 		dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
@@ -183,30 +165,13 @@ void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bo
         int buttonWidth = width - (2*themeButton.GetMarge());
         int buttonHeight = height - (2*themeButton.GetMarge());
         
-        float ratio = 1.0;
-        
-        if(isVector)
-        {
+        //float ratio = 1.0;
+
             if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
                 button = CreateFromSVG(buttonWidth, buttonHeight);
 
             imageScale = button;
-        }
-        else
-        {
-            
-             if(buttonWidth < buttonHeight)
-             {
-                 ratio = ((float)buttonWidth / (float)button.GetWidth());
-             }
-             else
-             {
-                 ratio = ((float)buttonHeight / (float)button.GetHeight());
-             }
-            
-             imageScale = button.ResampleBicubic(button.GetWidth() * ratio, button.GetHeight() * ratio);
-        }
-        
+
 
         int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
         int yPos = y + (height - imageScale.GetHeight()) / 2;
@@ -268,31 +233,12 @@ void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bo
         }
 
         
-        if(isVector)
-        {
+
             if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
                 button = CreateFromSVG(buttonWidth, buttonHeight);
             
             imageScale = button;
-        }
-        else
-        {
-            float ratio = 1.0;
-            
-            if(buttonWidth < buttonHeight)
-            {
-                ratio = ((float)buttonWidth / (float)button.GetWidth());
-            }
-            else
-            {
-                ratio = ((float)buttonHeight / (float)button.GetHeight());
-            }
-            
-            if(ratio == 0.0)
-                return;
-            
-            imageScale = button.ResampleBicubic(button.GetWidth() * ratio, button.GetHeight() * ratio);
-        }
+
         
         int xPos = x + (themeButton.GetTailleX() - imageScale.GetWidth()) / 2;
         int yPos = y + (themeButton.GetTailleY() - imageScale.GetHeight()) / 2;
@@ -315,23 +261,24 @@ void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bo
 
 }
 
-void CToolbarButton::DrawButton(wxDC * context)
+void CToolbarButton::DrawButton(wxDC * dc, const int &x, const int &y)
 {
     //wxSVGFileDC
+    
     
 	if (this->isVisible)
 	{
 		if (isPush)
 		{
-			CreatePushButton(context, x, y);
+			CreatePushButton(dc, x, y);
 		}
 		else if (isActif)
 		{
-			CreateActifButton(context, x, y);
+			CreateActifButton(dc, x, y);
 		}
 		else
 		{
-			CreateInactifButton(context, x, y);
+			CreateInactifButton(dc, x, y);
 		}
 	}
 }

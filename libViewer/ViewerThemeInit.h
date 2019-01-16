@@ -1,6 +1,4 @@
 #pragma once
-#include <string>
-using namespace std;
 
 namespace Regards
 {
@@ -12,11 +10,11 @@ namespace Regards
 		{
 		public:
 			CViewerThemeInit();
-			~CViewerThemeInit();
+			virtual ~CViewerThemeInit();
 
 			static CViewerTheme * getInstance();
 			static void Initialize(CViewerTheme * param);
-
+            static void SaveTheme();
 		private:
 
 			static CViewerTheme *_singleton;

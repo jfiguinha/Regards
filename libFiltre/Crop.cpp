@@ -11,7 +11,7 @@ using namespace Regards::FiltreEffet;
 CCrop::CCrop()
 {
 	ptSelection = new CPenDrawInfo[4];
-	for (int i = 0; i < 4; i++)
+	for (auto i = 0; i < 4; i++)
 	{
 		ptSelection[i].x = 0;
 		ptSelection[i].y = 0;
@@ -147,7 +147,7 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 {
 	//Changement de souris
 	//Test par rapport au x et y
-	//Différent cas
+	//DiffÃ©rent cas
 	//float x = 0, y = 0;
 
 	wxPoint pt;
@@ -164,7 +164,7 @@ void CCrop::Selection(const int32_t &xNewSize, const int32_t &yNewSize, const lo
 		y = YRealPosition(yNewSize - m_rcAffichage.y, m_lHScroll, ratio);
 
 
-#if _DEBUG
+#if defined(WIN32) && defined(_DEBUG)
 		wchar_t message[255];
 		wsprintf(message, L"Pos : x : %d et y : %d \n", x, y);
 		OutputDebugString(message);
@@ -377,7 +377,7 @@ void CCrop::InitPoint(const long &m_lx, const long &m_ly, const long &m_lHScroll
 			x = XRealPosition(m_lx - m_rcAffichage.x, m_lHScroll , ratio);
 			y = YRealPosition(m_ly - m_rcAffichage.y, m_lVScroll, ratio);
 
-			for (int i = 0; i < 4; i++)
+			for (auto i = 0; i < 4; i++)
 			{
 				ptSelection[i].x = x;
 				ptSelection[i].y = y;

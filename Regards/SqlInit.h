@@ -15,9 +15,12 @@ namespace Regards
 			CSqlInit(){};
 			~CSqlInit(){};
 
-			static void InitializeSQLServerDatabase(const wxString &folder)
+
+
+
+			static void InitializeSQLServerDatabase(const wxString &folder, const bool &load_inmemory)
 			{
-				CSqlLibExplorer * libExplorer = new CSqlLibExplorer();
+				CSqlLibExplorer * libExplorer = new CSqlLibExplorer(false,load_inmemory);
                 wxString filename = folder;
 
 #ifdef WIN32

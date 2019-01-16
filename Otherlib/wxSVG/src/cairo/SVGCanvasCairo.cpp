@@ -3,7 +3,7 @@
 // Purpose:     Cairo render
 // Author:      Alex Thuering
 // Created:     2005/05/12
-// RCS-ID:      $Id: SVGCanvasCairo.cpp,v 1.32 2014/12/20 20:04:20 ntalex Exp $
+// RCS-ID:      $Id: SVGCanvasCairo.cpp,v 1.34 2016/07/27 08:54:21 ntalex Exp $
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
@@ -451,7 +451,7 @@ void wxSVGCanvasCairo::DrawCanvasPath(wxSVGCanvasPathCairo& canvasPath, wxSVGMat
 			int dx = int(floor(stdX * 3 * sqrt(2 * M_PI) / 4 + 0.5));
 			int dy = int(floor(stdY * 3 * sqrt(2 * M_PI) / 4 + 0.5));
 			
-			wxSVGRect rect = canvasPath.GetResultBBox(style, matrix.Inverse());
+			wxSVGRect rect = canvasPath.GetResultBBox(style, &matrix);
 			rect.SetX(rect.GetX() - 2*dx);
 			rect.SetY(rect.GetY() - 2*dy);
 			rect.SetWidth(rect.GetWidth() + 4*dx);
@@ -765,9 +765,11 @@ void wxSVGCanvasCairo::DrawCanvasImage(wxSVGCanvasImage& canvasImage, cairo_surf
 			maskElem->SetOwnerSVGElement(&svgElem);
 			maskElem->SetViewportElement(&svgElem);
 			cairo_surface_t* surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32,
-					svgElem.GetWidth().GetAnimVal(), svgElem.GetHeight().GetAnimVal());
+					svgElem.GetWidth().GetAnimVal()/scaleX, svgElem.GetHeight().GetAnimVal()/scaleY);
 			cairo_t* cr = cairo_create(surface);
-			DrawMask(cr, maskElem, matrix, style, svgElem);
+			wxSVGMatrix maskMatrix;
+			maskMatrix = maskMatrix.Translate(x, y).ScaleNonUniform(scaleX, scaleY).Inverse();
+			DrawMask(cr, maskElem, maskMatrix, style, svgElem);
 			cairo_mask_surface(m_cr, surface, 0, 0);
 			cairo_destroy(cr);
 			cairo_surface_destroy(surface);

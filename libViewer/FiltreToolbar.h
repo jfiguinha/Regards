@@ -1,7 +1,5 @@
 #pragma once
 #include <ToolbarWindow.h>
-#include <string>
-using namespace std;
 using namespace Regards::Window;
 
 namespace Regards
@@ -18,7 +16,7 @@ namespace Regards
 		private:
 
 			void EventManager(const int &id);
-			int numFiltre = 0;
+			int numFiltre;
 
 		};
 	}

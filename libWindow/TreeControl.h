@@ -1,8 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include "TreeElement.h"
 #include <TreeData.h>
 #include "Tree.h"
@@ -13,6 +9,7 @@
 #include "TreeElementTexte.h"
 #include "TreeElementTexteClick.h"
 #include "TreeElementCheckBox.h"
+#include "TreeElementListBox.h"
 #include "TreeElementSlideInterface.h"
 #include "TreeElementControlInterface.h"
 
@@ -24,13 +21,13 @@ namespace Regards
 		{
 
 		public:
-			CTreeControl(){};
+			CTreeControl(){ nbRow = 0;};
 			CTreeControl(CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
 			virtual ~CTreeControl();
 
 			CTreeControl& operator=(const CTreeControl &other);
 
-			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, const int &value, const wxString &key){};
+			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key) = 0;
 			void GenerateWindowBitmap(wxDC * deviceContext, const int &width, const int &height, const int &posLargeur, const int &posHauteur);
 			CPositionElement * FindElement(const int &x, const int &y);
 
@@ -53,7 +50,7 @@ namespace Regards
 			virtual void UnclickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur){};
 			virtual void DoubleClickOnElement(CPositionElement * element){};
 			virtual void AfterDrawBitmap(){};
-
+            virtual void UpdateScreenRatio() = 0;
 		protected:
             
             wxColour GetBackgroundColour(const int &yPos);
@@ -67,11 +64,12 @@ namespace Regards
 			CPositionElement * CreatePositionElement(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData, const bool &dynamic = true);
 			CPositionElement * GetElement(CTreeData * data, const int &typeElement);
 			
+			CTreeElementListBox * CreateListBoxElement(const int &width, const int &height, const vector<CMetadata> & value, const int &index, const wxString &exifKey);
             CTreeElementTexteClick * CreateTexteLinkElement(const int &width, const int &height, const wxString &libelle, const wxString &link, const int &linkType);
 			CTreeElementDelete * CreateDeleteElement(const int &width, const int &height);
 			CTreeElementTriangle * CreateTriangleElement(const int &width, const int &height, const bool &open);
 			CTreeElementTexte * CreateTexteElement(const int &width, const int &height, const wxString &libelle);
-			CTreeElementSlide * CreateSlideElement(const int &width, const int &height, const int &position, const vector<int> & value, const wxString &exifKey);
+			CTreeElementSlide * CreateSlideElement(const int &width, const int &height, CTreeElementValue * position, vector<CTreeElementValue *> * value, const wxString &exifKey);
 			CTreeElementCheckBox * CreateCheckBoxElement(const int &width, const int &height, const bool &check);
 
 			//Element de rendu pour l'arbre
@@ -81,7 +79,7 @@ namespace Regards
 
 			CThemeTree themeTree;
 			vector<int> rowWidth;
-			int nbRow = 0;
+			int nbRow;
 			CTreeElementControlInterface * eventControl;
 		};
 	}

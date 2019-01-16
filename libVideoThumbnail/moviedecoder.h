@@ -18,60 +18,90 @@
 #define MOVIEDECODER_H
 
 #include <inttypes.h>
-#include <string>
-#include <vector>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
+#include <config.h>
 }
+#if CONFIG_AVFILTER
+struct AVFilterGraph;
+struct AVFilterContext;
+#endif
+struct AVFormatContext;
+struct AVCodecContext;
+struct AVCodec;
+struct AVStream;
+struct AVFrame;
+struct AVPacket;
+struct AVRational;
 
 namespace ffmpegthumbnailer
 {
 
-struct VideoFrame;
+	struct VideoFrame;
 
-class MovieDecoder
-{
-public:
-    MovieDecoder(const std::string& filename, AVFormatContext* pavContext = nullptr);
-    ~MovieDecoder();
+	class MovieDecoder
+	{
+	public:
+		MovieDecoder(const std::string& filename, AVFormatContext* pavContext = nullptr);
+		~MovieDecoder();
 
-    std::string getCodec();
-    void seek(int timeInSeconds);
-    void decodeVideoFrame();
-    void getScaledVideoFrame(int scaledSize, bool maintainAspectRatio, VideoFrame& videoFrame);
-
-    int getWidth();
-    int getHeight();
-	int getOrientation();
-    int getDuration();
+		std::string getCodec();
+		void seek(int timeInSeconds);
+		void decodeVideoFrame();
     
-    void initialize(const std::string& filename);
-    void destroy();
-    
-private:
-    void initializeVideo();
-    
-    bool decodeVideoPacket();
-    bool getVideoPacket();
-    void convertAndScaleFrame(PixelFormat format, int scaledSize, bool maintainAspectRatio, int& scaledWidth, int& scaledHeight);
-    void createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, int width, int height, PixelFormat format);
-    void calculateDimensions(int squareSize, bool maintainAspectRatio, int& destWidth, int& destHeight);
 
-private:
-    int                     m_VideoStream;
-    AVFormatContext*        m_pFormatContext;
-    AVCodecContext*         m_pVideoCodecContext;
-    AVCodec*                m_pVideoCodec;
-    AVStream*               m_pVideoStream;
-    AVFrame*                m_pFrame;
-    uint8_t*                m_pFrameBuffer;
-    AVPacket*               m_pPacket;
-    bool                    m_FormatContextWasGiven;
-    bool                    m_AllowSeek;
-	int						m_Orientation;
-};
+		int getWidth();
+		int getHeight();
+		int getOrientation();
+		int getDuration();
+		void getScaledVideoFrame(int scaledSize, bool maintainAspectRatio, VideoFrame& videoFrame);
+		void initialize(const std::string& filename);
+		void destroy();
+    
+	private:
+
+
+
+		void initializeVideo();
+		void checkRc(int ret, const std::string& message);
+		bool decodeVideoPacket();
+		bool getVideoPacket();
+	#if CONFIG_AVFILTER
+
+		int GetVideoHeight();
+		int GetVideoWidth();
+		void initializeFilterGraph(const AVRational& timeBase, int size, bool maintainAspectRatio);
+		std::string createScaleString(int size, bool maintainAspectRatio);
+	#else
+		void convertAndScaleFrame(PixelFormat format, int scaledSize, bool maintainAspectRatio, int& scaledWidth, int& scaledHeight);
+		 void calculateDimensions(int squareSize, bool maintainAspectRatio, int& destWidth, int& destHeight);
+		 void createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, int width, int height, PixelFormat format);
+	#endif
+    
+   
+
+		int32_t getStreamRotation();
+	private:
+		int                     m_VideoStream;
+		AVFormatContext*        m_pFormatContext;
+		AVCodecContext*         m_pVideoCodecContext;
+		AVCodec*                m_pVideoCodec;
+	#if CONFIG_AVFILTER
+		AVFilterGraph*          m_pFilterGraph;
+		AVFilterContext*        m_pFilterSource;
+		AVFilterContext*        m_pFilterSink;
+	#endif
+		AVStream*               m_pVideoStream;
+		AVFrame*                m_pFrame;
+		uint8_t*                m_pFrameBuffer;
+		AVPacket*               m_pPacket;
+		bool                    m_FormatContextWasGiven;
+		bool                    m_AllowSeek;
+		int						widthVideo;
+		int						heightVideo; 
+	};
 
 }
 

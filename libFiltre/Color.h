@@ -3,14 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <stdint.h>
-#include <string>
-#include <vector>
-using namespace std;
 
 class CRgbaquad;
 class CRegardsBitmap;

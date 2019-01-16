@@ -8,7 +8,7 @@ using namespace Regards::OpenCL;
 COpenCLProgram::COpenCLProgram(COpenCLContext * context)
 {
 	program = 0;
-	buildOption = "";
+	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
 	this->context = context;
 }
 
@@ -60,7 +60,11 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programData, const wxS
 			Error::CheckError(err);
 
 			wxString error = wxString(&log[0]);
-
+#if defined(WIN32) && defined(_DEBUG)
+			OutputDebugString(error);
+            #else
+            printf(CConvertUtility::ConvertToUTF8(error));
+            #endif
 			throw Error(
 				"Error happened during the build of OpenCL program.\n"
 				"Build log:\n" +

@@ -49,13 +49,10 @@ const float CPerlinNoise::GetValue(float x, float y)
 
 		if(Xint != 0 || Yint != 0)
 		{		
-			#pragma omp parallel
-			{
-				x0y0 = CalculPosValue(Xint,Yint);
-				x1y0 = CalculPosValue(Xint+1,Yint);
-				x0y1 = CalculPosValue(Xint,Yint+1);
-				x1y1 = CalculPosValue(Xint+1,Yint+1);
-			}
+			x0y0 = CalculPosValue(Xint,Yint);
+			x1y0 = CalculPosValue(Xint+1,Yint);
+			x0y1 = CalculPosValue(Xint,Yint+1);
+			x1y1 = CalculPosValue(Xint+1,Yint+1);
 		}
 		else
 		{
@@ -115,7 +112,7 @@ void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, con
 	
 		bmWidth = pBitmap->GetBitmapWidth();
 		bmHeight = pBitmap->GetBitmapHeight();
-		pBitsSrc = new uint8_t[bmWidth*bmHeight * 4];
+		pBitsSrc = pBitmap->GetPtBitmap();
 
 		//long k = 0;
 		//long m;
@@ -139,32 +136,25 @@ void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, con
 #pragma omp parallel for
 		for(int i=0; i< bmHeight; i++) 
 		{
-	#pragma omp parallel for
-			for (int  j = 0; j< bmWidth; j++)
+#pragma omp parallel for
+			for (auto  j = 0; j< bmWidth; j++)
 			{
-
 				int l = ((i * bmWidth) << 2) + (j << 2);
-
-				float total = 0.0f;
-				float total1 = 0.0f;
-				float total2 = 0.0f;
-				float total3 = 0.0f;
-				float total4 = 0.0f;		
 				
-				for(int k=0; k< octaves; k+=4) 
-				{
-					total1 = GetValue(j*(*(tabFrequence + k)), i*(*(tabFrequence + k))) * (*(tabAmplitude + k));					
-					total2 = GetValue(j*(*(tabFrequence + k + 1)), i*(*(tabFrequence + k + 1))) * (*(tabAmplitude + k + 1));
-					total3 = GetValue(j*(*(tabFrequence + k + 2)), i*(*(tabFrequence + k + 2))) * (*(tabAmplitude + k + 2));
-					total4 = GetValue(j*(*(tabFrequence + k + 3)), i*(*(tabFrequence + k + 3))) * (*(tabAmplitude + k + 3));
-					total += total1 + total2 + total3 + total4;
-				}
-
+				float total = 0.0f;
+				total += GetValue(j*(*(tabFrequence)), i*(*(tabFrequence))) * (*(tabAmplitude));					
+				total += GetValue(j*(*(tabFrequence + 1)), i*(*(tabFrequence + 1))) * (*(tabAmplitude + 1));
+				total += GetValue(j*(*(tabFrequence + 2)), i*(*(tabFrequence + 2))) * (*(tabAmplitude + 2));
+				total += GetValue(j*(*(tabFrequence + 3)), i*(*(tabFrequence + 3))) * (*(tabAmplitude + 3));
+				total += GetValue(j*(*(tabFrequence + 4)), i*(*(tabFrequence + 4))) * (*(tabAmplitude + 4));					
+				total += GetValue(j*(*(tabFrequence + 5)), i*(*(tabFrequence + 5))) * (*(tabAmplitude + 5));
+				total += GetValue(j*(*(tabFrequence + 6)), i*(*(tabFrequence + 6))) * (*(tabAmplitude + 6));
+				total += GetValue(j*(*(tabFrequence + 7)), i*(*(tabFrequence + 7))) * (*(tabAmplitude + 7));
 				total = total*0.5f + 0.5f;
 
-				if(total<0) 
+				if(total<0.0f) 
 					total = 0.0f;
-				if(total>1) 
+				if(total>1.0f) 
 					total = 1.0f;
 
 				*(pBitsSrc + l) = color1.GetFBlue() * total + color2.GetFBlue()*(1 - total);
@@ -175,9 +165,9 @@ void CPerlinNoise::Clouds(CRegardsBitmap * pBitmap,const CRgbaquad & color1, con
 			}
 		}
 
-		pBitmap->SetBitmap(pBitsSrc, bmWidth, bmHeight);
+		//pBitmap->SetBitmap(pBitsSrc, bmWidth, bmHeight);
 
-		delete[] pBitsSrc;
+		//delete[] pBitsSrc;
 		delete[] tabFrequence;
 		delete[] tabAmplitude;
 	}

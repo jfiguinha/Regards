@@ -8,6 +8,15 @@ using namespace Regards::Print;
 // MyPrintout
 // ----------------------------------------------------------------------------
 
+CBitmapPrintout::~CBitmapPrintout()
+{
+
+}
+CBitmapPrintout::CBitmapPrintout()
+{
+	m_picture = nullptr;
+}
+
 bool CBitmapPrintout::OnPrintPage(int page)
 {
 	wxDC *dc = GetDC();
@@ -121,9 +130,9 @@ void CBitmapPrintout::DrawPicture()
 
 	//wxGetApp().Draw(*GetDC());
 
-	CLoadingResource loadingResource;
+
 	wxDC * dc = GetDC();
-	dc->DrawBitmap(loadingResource.ConvertTowxImage(m_picture, false), 0, 0);
+	dc->DrawBitmap(CLoadingResource::ConvertTowxImageRGB(m_picture), 0, 0);
 }
 
 

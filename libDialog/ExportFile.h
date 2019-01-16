@@ -14,12 +14,20 @@
 //*)
 struct InfoExportFile
 {
-	int dateInfoSelection = 0;
-	int geoInfoSelection = 0;
-	int priority = 0;
-	int outputFormat = 0;
-	int changeFilename = 0;
-	bool isOk = false;
+	InfoExportFile(){
+		dateInfoSelection = 0;
+		geoInfoSelection = 0;
+		priority = 0;
+		outputFormat = 0;
+		changeFilename = 0;
+		isOk = false;
+	};
+	int dateInfoSelection;
+	int geoInfoSelection;
+	int priority;
+	int outputFormat;
+	int changeFilename;
+	bool isOk;
 };
 
 
@@ -59,7 +67,7 @@ class CExportFile: public wxDialog
 		//*)
 
 		InfoExportFile infoExportFile;
-		bool isOk = false;
+		bool isOk;
 
 
 		DECLARE_EVENT_TABLE()

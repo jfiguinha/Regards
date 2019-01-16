@@ -36,9 +36,9 @@ public:
 	bool Decode(CxFile * hFile);
 	bool Decode(FILE *hFile) { CxIOFile file(hFile); return Decode(&file); }
 
-//#if CXIMAGE_SUPPORT_EXIF
-//	bool GetExifThumbnail(const char *filename, const char *outname, int32_t type);
-//#endif //CXIMAGE_SUPPORT_EXIF
+#if CXIMAGE_SUPPORT_EXIF
+	//bool GetExifThumbnail(const char *filename, const char *outname, int32_t type);
+#endif //CXIMAGE_SUPPORT_EXIF
 
 #if CXIMAGE_SUPPORT_ENCODE
 	bool Encode(CxFile * hFile);

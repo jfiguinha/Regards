@@ -1,7 +1,5 @@
 #pragma once
 #include "WindowMain.h"
-#include <string>
-using namespace std;
 using namespace Regards::Window;
 
 class CEmptyWindow : public CWindowMain

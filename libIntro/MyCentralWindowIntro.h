@@ -19,10 +19,10 @@ namespace Regards
 		private:
 			void Resize();
 
-			CTitleIntro * titleIntro = nullptr;
-			CInfoAbout * infoAbout = nullptr;
-			CTreeWindow * treeAbout = nullptr;
-			CScrollbarWnd * aboutWndScroll = nullptr;
+			CTitleIntro * titleIntro;
+			CInfoAbout * infoAbout;
+			CTreeWindow * treeAbout;
+			CScrollbarWnd * aboutWndScroll;
 		};
 	}
 }

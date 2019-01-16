@@ -3,11 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include <stdint.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 namespace Regards
 {
@@ -22,7 +17,7 @@ namespace Regards
 			virtual ~CDraw();
 			static void DrawARectangle(wxDC * deviceContext, const wxRect &rc, const wxColour &rgb);
 			static void DessinerRectangleVide(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgb);
-			void DessinerCarre(wxDC * deviceContext, const int32_t &iLargeur, const int32_t &iHauteur, const int32_t & iMarge, const int32_t &iPosX = 0, const int32_t &iPosY = 0, const wxColour &rgb = { 0, 0, 0, 0 });
+			void DessinerCarre(wxDC * deviceContext, const int32_t &iLargeur, const int32_t &iHauteur, const int32_t & iMarge, const int32_t &iPosX = 0, const int32_t &iPosY = 0, const wxColour &rgb = wxColour(0, 0, 0, 0));
 			static void DessinerDashRectangle(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgbFirst, const wxColour &rgbSecond);
 			static void DessinerDotDashRectangle(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgbFirst, const wxColour &rgbSecond);
 			virtual void Dessiner(wxDC * deviceContext, const long &m_lHScroll, const long &m_lVScroll, const float &ratio){};

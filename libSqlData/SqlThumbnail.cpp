@@ -1,19 +1,32 @@
 #include "SqlThumbnail.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
-#include <wx/mstream.h>
+#include <RegardsBitmap.h>
 #include <jpgd.h>
+#include <wx/mstream.h>
 using namespace jpgd;
 using namespace Regards::Sqlite;
 
 CSqlThumbnail::CSqlThumbnail()
 	: CSqlExecuteRequest(L"RegardsDB")
 {
+	regardsBitmap = nullptr;
+	type = 0;
+	find = false;
 }
 
 
 CSqlThumbnail::~CSqlThumbnail()
 {
+}
+
+CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
+{
+	type = 5;
+	wxString fullpath = path;
+	fullpath.Replace("'", "''");
+	ExecuteRequest("SELECT thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
+	return picture;
 }
 
 bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
@@ -28,6 +41,20 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 	}
 	return find;
 }
+
+bool CSqlThumbnail::TestThumbnail(const wxString & path)
+{
+	type = 2;
+	wxString fullpath = path;
+	fullpath.Replace("'", "''");
+	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
+	if (!find)
+	{
+		DeleteThumbnail(path);
+	}
+	return find;
+}
+
 
 
 bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash)
@@ -62,9 +89,20 @@ bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 }
 
-bool  CSqlThumbnail::EraseThumbnail()
+bool CSqlThumbnail::DeleteThumbnail(const int & numPhoto)
+{
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumPhoto = " + to_string(numPhoto) + ")") != -1) ? true : false;
+}
+
+bool CSqlThumbnail::EraseThumbnail()
 {
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
+}
+
+bool CSqlThumbnail::EraseFolderThumbnail(const int &numFolder)
+{
+	//return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath in (SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(numFolder) + ")") != -1) ? true : false;
 }
 
 int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
@@ -82,7 +120,7 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 		case 4:
 		case 3:
 		case 1:
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 
 				switch (i)
@@ -122,6 +160,7 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 							regardsBitmap->VertFlipBuf();
 							regardsBitmap->ConvertToBgr();
 							delete[] dest;
+
 						}
 						else if (type == 4)
 						{
@@ -140,12 +179,31 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 			break;
 
 		case 2:
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{
 				case 0:
 					find = true;
+					break;
+				}
+			}
+			break;
+		case 5:
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					picture = new CPictureData();
+					find = true;
+					picture->size = sqlResult->ColumnDataBlobSize(i);
+					if (picture->size > 0)
+					{	
+						
+						picture->data = new uint8_t[picture->size+1];
+						sqlResult->ColumnDataBlob(i, (void * &)picture->data, picture->size);
+					}
 					break;
 				}
 			}

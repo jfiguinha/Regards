@@ -118,9 +118,14 @@ wxSVGRect wxSVGLocatable::GetChildrenResultBBox(const wxSVGElement* element, wxS
 }
 
 wxSVGMatrix wxSVGLocatable::GetCTM(const wxSVGElement* element) {
-	if (element == NULL || element->GetType() != wxSVGXML_ELEMENT_NODE
-			|| element->GetDtd() == wxSVG_SVG_ELEMENT)
+	if (element == NULL || element->GetType() != wxSVGXML_ELEMENT_NODE) {
 		return wxSVGMatrix();
+	}
+	if (element->GetDtd() == wxSVG_SVG_ELEMENT) {
+		wxSVGMatrix matrix;
+		((wxSVGSVGElement*) element)->UpdateMatrix(matrix);
+		return matrix;
+	}
 	wxSVGMatrix matrix = GetCTM((wxSVGElement*) (element->GetParent()));
 	const wxSVGTransformable* transformable =
 			wxSVGTransformable::GetSVGTransformable(*element);

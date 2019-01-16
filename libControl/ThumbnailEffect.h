@@ -13,13 +13,14 @@ namespace Regards
 		class CThumbnailEffect : public CThumbnail
 		{
 		public:
-			CThumbnailEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail);
+			CThumbnailEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailEffect(void);
 
-			void SetFile(const wxString &filename, CRegardsBitmap * bitmap);
+			void SetFile(const wxString &filename);
 			void SetIconeSize(const int &width, const int &height);
 			wxString GetFilename();
-
+            wxString GetWaitingMessage();
+            
 		private:
 			//virtual void SetTheme();
 			void GetBitmapDimension(const int &width, const int &height, int &tailleAffichageBitmapWidth, int &tailleAffichageBitmapHeight, float &newRatio);
@@ -29,16 +30,22 @@ namespace Regards
 			void RenderIcone(wxDC * deviceContext);
 			void UpdateScroll();
 			CIcone * FindElement(const int &xPos, const int &yPos);
-
-
+			virtual void ProcessIdle();
+			static void LoadPicture(void * param);
+			void UpdateRenderIcone(wxCommandEvent& event);
+			bool isAllProcess;
 			wxString filename;
-			int barseparationHeight = 40;
+			int barseparationHeight;
 			InfosSeparationBarVector listSeparator;
-			CRegardsConfigParam * config = nullptr;
+			CRegardsConfigParam * config;
 			wxString colorEffect; //L"Color Effect";
 			wxString convolutionEffect; //L"Convolution Effect";
 			wxString specialEffect; //L"Special Effect";
 			wxString histogramEffect; //L"Special Effect";
+			wxString blackRoomEffect;
+			wxString rotateEffect;
+            wxString hdrEffect;
+			wxString videoLabelEffect;
 
 		};
 	}

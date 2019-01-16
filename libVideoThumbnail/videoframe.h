@@ -17,16 +17,15 @@
 #ifndef VIDEOFRAME_H
 #define VIDEOFRAME_H
 
-#include <inttypes.h>
-#include <vector>
-
 namespace ffmpegthumbnailer
 {
 
 struct VideoFrame
 {
     VideoFrame()
-    : width(0), height(0), lineSize(0) {}
+    : width(0), height(0), lineSize(0) {
+		frameData = nullptr;
+	}
     
     VideoFrame(int width, int height, int lineSize)
     : width(width), height(height), lineSize(lineSize) {}
@@ -35,7 +34,7 @@ struct VideoFrame
     int height;
     int lineSize;
 
-    std::vector<uint8_t> frameData;
+	uint8_t * frameData;
 };
 
 }

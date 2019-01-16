@@ -21,10 +21,10 @@ int CSlider::GetHeight()
 }
 
 CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider)
-	: CWindowMain(parent, id)
+	: CWindowMain("CSlider",parent, id)
 {
-	CLoadingResource loadingResource;
-	positionButton = { 0, 0, 0, 0 };
+	//CLoadingResource loadingResource;
+	positionButton = wxRect(0, 0, 0, 0);
 	hCursorHand = CResourceCursor::GetClosedHand();
 	secondTimePast = 0;
 	secondTotalTime = 0;
@@ -33,15 +33,10 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent
 	mouseBlock = false;
 	this->sliderEvent = sliderEvent;
 	this->themeSlider = themeSlider;
-    if(isVector)
-    {
+
         button.Create(0,0);
         buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
-    }
-    else
-    {
-        button = loadingResource.LoadImageResource("IDB_BOULESLIDER");
-    }
+
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CSlider::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CSlider::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CSlider::OnLButtonDown));
@@ -118,8 +113,8 @@ void CSlider::SetPastSecondTime(const int64_t &secondTime)
 int CSlider::DrawTotalTime(wxDC * context, const wxString &libelle)
 {
 	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
-	int x = width - filenameSize.x - 5;
-	int y = (height - filenameSize.y) / 2;
+	int x = GetWindowWidth() - filenameSize.x - 5;
+	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, themeSlider.font);
 	return x;
 }
@@ -128,23 +123,19 @@ int CSlider::DrawTimePast(wxDC * context, const wxString &libelle)
 {
 	wxSize filenameSize = GetSizeTexte(context, libelle, themeSlider.font);
 	int x = 5;
-	int y = (height - filenameSize.y) / 2;
+	int y = (GetWindowHeight() - filenameSize.y) / 2;
 	DrawTexte(context, libelle, x, y, themeSlider.font);
 	return filenameSize.x;
 }
 
 void CSlider::Draw(wxDC * context)
 {
-	if (width > 0 && height > 0)
+	if (GetWindowWidth() > 0 && GetWindowHeight() > 0)
 	{
-		wxRect rc;
-		rc.x = 0;
-		rc.width = width;
-		rc.y = 0;
-		rc.height = height;
+		wxRect rc = GetWindowRect();
 			
 		wxSize filenameSize;
-		wxBitmap memBitmap = wxBitmap(width, height);
+		wxBitmap memBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 		wxMemoryDC sourceDCContext(memBitmap);
 		FillRect(&sourceDCContext, rc, themeSlider.colorBack);
 
@@ -155,29 +146,36 @@ void CSlider::Draw(wxDC * context)
 		//Ecriture du temps restant
 		int x = DrawTotalTime(&sourceDCContext, totalTime);
 		positionSlider.width = x - positionSlider.x - 5;
-		positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
+		positionSlider.y = (GetWindowHeight() - themeSlider.GetRectangleHeight()) / 2;
 		positionSlider.height = themeSlider.GetRectangleHeight();
 
 		DrawShapeElement(&sourceDCContext, positionSlider);
 		CalculPositionButton();
-        
-        if(isVector)
-        {
-            if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-                button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
-            sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
-        }
-        else
-        {
-            sourceDCContext.DrawBitmap(button.Rescale(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight()), positionButton.x, positionButton.y);
-        }
 
-
-
+        if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
+            button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
+        sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 		
 		sourceDCContext.SelectObject(wxNullBitmap);
 
-		context->DrawBitmap(memBitmap, 0, 0);
+#ifdef __WXGTK__
+    double scale_factor = context->GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif 
+
+        if(scale_factor != 1.0)
+        {
+            wxImage image = memBitmap.ConvertToImage();
+            wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
+            context->DrawBitmap(resized, 0, 0);
+        }
+        else
+        {
+            context->DrawBitmap(memBitmap, 0, 0);
+        }
+
+		
 	}
 
 }
@@ -204,7 +202,7 @@ void CSlider::CalculPositionButton(const int &x)
     int buttonWidth = themeSlider.GetButtonWidth();
     int buttonHeight = themeSlider.GetButtonHeight();
 	int xPos = positionXSlider - (buttonWidth / 2);
-	int yPos = (height - buttonHeight) / 2;
+	int yPos = (GetWindowHeight() - buttonHeight) / 2;
 
 	positionButton.x = xPos;
 	positionButton.width = buttonWidth;
@@ -239,7 +237,7 @@ void CSlider::ClickRightPage(const int &x)
 
 void CSlider::Resize()
 {
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CSlider::UpdatePositionEvent()
@@ -257,7 +255,7 @@ void CSlider::OnMouseMove(wxMouseEvent& event)
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
 			CalculTimePosition(xPos);
-			this->Refresh();
+			this->FastRefresh(this);
 		}
 	}
 }
@@ -276,12 +274,12 @@ void CSlider::OnLButtonDown(wxMouseEvent& event)
 	else if (xPos > positionButton.width)
 	{
 		ClickRightPage(xPos);
-		this->Refresh();
+		this->FastRefresh(this);
 	}
 	else if (xPos < positionButton.x)
 	{
 		ClickLeftPage(xPos);
-		this->Refresh();
+		this->FastRefresh(this);
 	}
 }
 
@@ -299,6 +297,12 @@ void CSlider::OnLButtonUp(wxMouseEvent& event)
 
 void CSlider::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+
+    
 	wxBufferedPaintDC dc(this);
 	Draw(&dc);
 }

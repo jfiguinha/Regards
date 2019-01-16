@@ -7,10 +7,7 @@
 //
 
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>
@@ -30,7 +27,7 @@ namespace Regards
             wxStaticLine* m_staticLine15;
             wxButton* m_buttonOK;
             wxButton* m_buttonCancel;
-            wxWebView * webBrowser = nullptr;
+            wxWebView * webBrowser;
         protected:
             void OnWebBrowserRClick(wxMouseEvent& event);
             

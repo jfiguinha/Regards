@@ -1,15 +1,20 @@
 #pragma once
 
 #include "WindowMain.h"
+#include "WindowOpenGLMain.h"
 #include <RegardsConfigParam.h>
-#include <Theme.h>
+#include <OpenCLEngine.h>
+#include <theme.h>
 #include "ScrollInterface.h"
+#include "RenderBitmapInterfaceOpenGL.h"
 #include "SliderInterface.h"
-#include <RenderBitmapInterface.h>
-#include <RenderBitmapInterfaceOpenGL.h>
-#include <RenderBitmapInterfaceGDI.h>
-#include "BitmapWindowContext.h"
-using namespace Regards::Render;
+using namespace std;
+using namespace Regards::OpenCL;
+
+class CRegardsBitmap;
+class CFiltreEffet;
+class CImageLoadingFormat;
+class CRegardsFloatBitmap;
 
 #define MOVEPICTURE 2
 #define ZOOMPICTURE 3
@@ -18,10 +23,10 @@ namespace Regards
 {
 	namespace Window
 	{
-		class CBitmapWnd : public wxGLCanvas, public CScrollInterface
+		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface
 		{
 		public:
-			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, CWindowMain * main, const CThemeBitmapWindow & theme);
+			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID idMain, const CThemeBitmapWindow & theme);
 			virtual ~CBitmapWnd(void);
 
 			//Attribut
@@ -37,10 +42,12 @@ namespace Regards
 			}
             
             void UpdateScreenRatio();
-
-			void SetBitmap(CRegardsBitmap * bitmap, const bool &copy = false);
+			void SetFilterInterpolation(const int &filter);
+            void SetIsBitmapThumbnail(const bool &isThumbnail);
+			void SetBitmap(CImageLoadingFormat * bitmap, const bool &copy = false);
 			void SetBitmapParameter(const bool &externBitmap, const bool &addToTexture);
-			CRegardsBitmap * GetBitmap();
+			CRegardsBitmap * GetBitmap(const bool &source);
+            CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
 			void GetInfosBitmap(wxString &filename, int &widthPicture, int &heightPicture);
 
 			int GetPosRatio();
@@ -79,25 +86,24 @@ namespace Regards
 
 			void SetPosition(const int &left, const int &top);
 
-			bool IsGpGpuCompatible();
 			void SetFullscreen(const bool &fullscreen);
-			void InitRenderInterface();
 
             void StopLoadingBitmap();
             void StartLoadingBitmap();
             
 		protected:
 
+			virtual void CreateContext(){};
+			virtual void ApplyPreviewEffect(){};
+			virtual void AfterRender(){};
             int UpdateResized();
 			void Update();
-
+			virtual bool NeedAfterRenderBitmap(){ return false; };
 			void CalculScreenPosFromReal(const int &xReal, const int &yReal, int &xScreen, int &yScreen);
 			void CalculRealPosFromScreen(const int &xScreen, const int &yScreen, int &xReal, int &yReal);
 			float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight);
             
             void OnLoading(wxTimerEvent& event);
-            CBitmapWindowContext& GetContext(wxGLCanvas *canvas);
-
 			void OnMouseCaptureLost(wxMouseEvent& event){};
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
@@ -110,44 +116,46 @@ namespace Regards
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
 		    void OnEraseBackground(wxEraseEvent& event){};
+            void OnEnableOpenGLRefresh(wxCommandEvent& event);
             
 #ifdef KeyPress
 #undef KeyPress
 #endif			
+            
+            void RefreshWindow();
             virtual void KeyPress(const int &key){};
 			virtual void MouseClick(const int &xPos, const int &yPos);
 			virtual void MouseRelease(const int &xPos, const int &yPos);
 			virtual void MouseMove(const int &xPos, const int &yPos) {};
-			virtual void Resize(const int &width, const int &height){};
 
-			virtual void BeforeDrawBitmap(CRenderBitmapInterface * renderInterface){};
-			virtual void DrawBitmap(wxDC * deviceContext);
 			virtual void AfterSetBitmap(){};
-			virtual void RenderBitmap(CRenderBitmapInterface * renderInterface);
-			virtual void AfterRenderBitmap(CRenderBitmapInterface * renderInterface){};
+			virtual wxImage RenderBitmap(wxDC * deviceContext){ return wxImage();};
 			virtual void AfterDrawBitmap(wxDC * deviceContext){};
-           virtual bool NeedAfterDrawBitmap();
-			virtual void Initialize(){};
-
+			virtual void AfterRenderBitmap(wxDC * deviceContext){};
+			virtual bool NeedAfterDrawBitmap();
+			void GenerateScreenBitmap(CFiltreEffet * filtre, int &widthOutput, int &heightOutput);
+			void GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical);
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
 
 			float GetBitmapWidthWithRatio();
 			float GetBitmapHeightWithRatio();
+
+			virtual int GetRawBitmapWidth();
+			virtual int GetRawBitmapHeight();
+			virtual int GetOrientation();
+
 			void TestMaxX();
 			void TestMaxY();	
-					
-			void GetPositionPicture(int &left, int &top);
+
 			void UpdateScrollBar(bool &update);
 			float CalculRatio(const int &pictureWidth, const int &pictureHeight);
 
 			void CalculCenterPicture();
 			void CalculPositionPicture(const float &x, const float &y);
-
-			void CalculRectPictureInterpolation(wxRect &picture, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top);
-
+			void CalculRectPictureInterpolation(wxRect &picture, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert = true);
 			int interpolation;
 			bool zoom;
-			bool zoomOn;
+			//bool zoomOn;
 			bool mouseBlock;
 			bool shrinkImage;
 				
@@ -155,8 +163,8 @@ namespace Regards
 			int posRatio;
 			bool postEffect;
 				
-			CRegardsBitmap * bitmap = nullptr;
-				
+			
+            bool isThumbnail;
 			bool isInUse;
 			int toolOption;
 
@@ -182,21 +190,39 @@ namespace Regards
 			int mouseScrollY;
 
 			bool fastRender;
-			bool addToTexture;
+			//bool addToTexture;
 			bool externBitmap;
-
-
-			bool directComputeCompatible = false;
-			CRenderBitmapInterface * renderInterface = nullptr;
-			CWindowMain * windowMain = nullptr;
-			CSliderInterface * sliderInterface = nullptr;
+			//wxImage render;
+			//CRegardsBitmap * bitmap;
+			wxWindowID idWindowMain;
+			CSliderInterface * sliderInterface;
 			CThemeBitmapWindow themeBitmap;
-			CRegardsConfigParam * config = nullptr;
-            CBitmapWindowContext * m_glContext = nullptr;
-            wxTimer * loadingTimer = nullptr;
-            bool showLoadingBitmap = false;
-            int stepLoading = 0;
-            bool useLoadingPicture = false;
+			CRegardsConfigParam * config;
+            wxTimer * loadingTimer;
+            bool showLoadingBitmap;
+            int stepLoading;
+            bool useLoadingPicture;
+			COpenCLEngine * openCLEngine;
+			COpenCLContext * openclContext;
+			CFiltreEffet * filtreEffet;
+			int filterInterpolation;
+			CRenderBitmapInterfaceOpenGL * renderOpenGL;
+			GLTexture * glTexture;
+			bool isOpenGL;
+
+			int orientation;
+			int flipVertical;
+			int flipHorizontal;
+			int angle;
+			int bitmapwidth;
+			int bitmapheight;
+			bool bitmapUpdate;
+			CImageLoadingFormat * source;
+			bool bitmapLoad;
+            mutex muBitmap;
+            bool updateContext = true;
+            bool timerUpdate = false;
+            bool fastRenderOpenGL = false;
 		};
 	}
 }

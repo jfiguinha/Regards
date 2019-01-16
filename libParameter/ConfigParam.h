@@ -1,25 +1,18 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string.h>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 
 #include <iostream>
 #include <fstream>
-#include <vector>
 
 using namespace rapidxml;
-using namespace std;
 
 
 class CConfigParam
 {
 public:
 	CConfigParam();
-	~CConfigParam();
+	virtual ~CConfigParam();
 
 	bool OpenFile(const wxString &configFile);
 	bool SaveFile();

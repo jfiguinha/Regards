@@ -10,8 +10,8 @@ namespace Regards
 		class CThumbnailViewerVideo : public CThumbnailVideo
 		{
 		public:
-			CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail);
-			~CThumbnailViewerVideo(void);
+			CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			virtual ~CThumbnailViewerVideo(void);
 			wxString GetFilename()
 			{
 				return filename;
@@ -24,7 +24,7 @@ namespace Regards
 		private:
 
 			void OnPictureClick(CThumbnailData * data);
-			wxString filename = L"";
+			wxString filename;
 		};
 	}
 }

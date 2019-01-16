@@ -1,7 +1,5 @@
 #pragma once
 #include <ToolbarWindow.h>
-#include <string>
-using namespace std;
 using namespace Regards::Window;
 
 class CRegardsBitmap;

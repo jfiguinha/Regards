@@ -1,14 +1,15 @@
 #pragma once
-#include <stdint.h>
-#include <string>
-#include <vector>
-using namespace std;
 
 class CInsertCriteria
 {
 public:
 
-	CInsertCriteria(){};
+	CInsertCriteria(){
+		value = "";
+		type = 0;
+		id = 0;
+		isNew = false;
+	};
 	~CInsertCriteria(){};
 
 	CInsertCriteria& operator=(const CInsertCriteria& other) {
@@ -19,10 +20,10 @@ public:
 		return *this;
 	}
 
-	wxString value = "";
-	int type = 0;
-	int64_t id = 0;
-	bool isNew = false;
+	wxString value;
+	int type;
+	int64_t id;
+	bool isNew;
 };
 
 class CListCriteriaPhoto

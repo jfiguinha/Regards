@@ -1,21 +1,25 @@
 #pragma once
-#include "RegardsBitmap.h"
+class CRegardsBitmap;
 
 namespace Regards
 {
 	namespace FiltreEffet
 	{
+
+
 		class CMotionBlur
 		{
 		public:
 			CMotionBlur(void);
 			~CMotionBlur(void);
-
-			bool MotionBlur(CRegardsBitmap * m_CRegardsBitmap, const double &radius,const double &sigma,const double &angle);
+			static vector<wxPoint> GetOffsetKernel(int width, const double &angle);
+			static vector<double> GetMotionBlurKernel(const double &radius, const double sigma);
+			bool MotionBlur(CRegardsBitmap * bitmap, const double &radius, const double &sigma, const double &angle);
 
 		private:
-			int GetMotionBlurKernel(int width,const double sigma,double **kernel);
-	
+			
+			static int GenerateMotionBlurKernel(int width, const double sigma, vector<double> & kernel);
+			void Execute(CRegardsBitmap * bitmap, const vector<double> & kernel, const vector<wxPoint> & offsets);
 		};
 	}
 }

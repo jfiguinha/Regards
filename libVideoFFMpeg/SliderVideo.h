@@ -1,19 +1,14 @@
 #pragma once
-#include <Theme.h>
-
+#include <theme.h>
 #include <EffectVideoParameter.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <SliderInterface.h>
 #include "WindowMain.h"
 using namespace Regards::Window;
 
-#define PLAYBUTTONID SDL_USEREVENT+1
-#define PAUSEBUTTONID SDL_USEREVENT+2
-#define VOLUMEUPBUTTONID SDL_USEREVENT+3
-#define VOLUMEDOWNBUTTONID SDL_USEREVENT+4
+#define PLAYBUTTONID 1
+#define PAUSEBUTTONID 2
+#define VOLUMEUPBUTTONID 3
+#define VOLUMEDOWNBUTTONID 4
 
 class CRegardsBitmap;
 
@@ -98,14 +93,14 @@ namespace Regards
             wxColor colorActifReplacement;
             wxColor colorInactifReplacement;
 
-			bool buttonPlayActif = false;
-			bool buttonPauseActif = false;
-			bool buttonVolumeUpActif = false;
-			bool buttonVolumeDownActif = false;
-			bool isPlay = false;
-			bool m_bMouseOver = false;
-			bool m_bTracking = false;
-            bool isVector = true;
+			bool buttonPlayActif;
+			bool buttonPauseActif;
+			bool buttonVolumeUpActif;
+			bool buttonVolumeDownActif;
+			bool isPlay;
+			bool m_bMouseOver;
+			bool m_bTracking;
+            wxString libelleVolume;
 
 			wxRect positionButton;
 			wxRect positionPlayOrPauseButton;
@@ -122,12 +117,10 @@ namespace Regards
 			wxString totalTime;
 			float secondTimePast;
 			float secondTotalTime;
-			int64_t totalTimeInMilliseconds;
-			int64_t totalPastTimeInMilliseconds;
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-			wxString libelleVolume = L"00%";
+
 			long volume;
 			
 			CThemeSliderVideo themeSlider;

@@ -9,7 +9,8 @@
 #include "FiltreEffect.h"
 #include <ScrollbarWnd.h>
 #include <TreeWindow.h>
-using namespace Regards::Control;
+using namespace Regards::Window;
+
 
 namespace Regards
 {
@@ -26,17 +27,18 @@ namespace Regards
             
             void UpdateScreenRatio();
             void Resize();
-            void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos);
+            void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos, const wxString &filename, const int & isVideo);
             void OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd);
-            
+            CFiltreEffect * GetFiltreEffect();
+			int GetNumFiltre();
         private:
             
-            CEffectParameter * GetEffectPointer(const int &numItem);
-            
-            CEffectParameter * effectParameter = nullptr;
-            CScrollbarWnd * filtreEffectScroll = nullptr;
-            CTreeWindow * treeFiltreEffect = nullptr;
-            CFiltreEffect * filtreEffectOld = nullptr;
+			CRegardsBitmap * bitmap;
+            CEffectParameter * effectParameter;
+            CScrollbarWnd * filtreEffectScroll;
+            CTreeWindow * treeFiltreEffect;
+            CFiltreEffect * filtreEffectOld;
+			int numFiltre;
         };
     }
 }

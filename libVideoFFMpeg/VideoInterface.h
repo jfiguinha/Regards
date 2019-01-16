@@ -1,4 +1,5 @@
 #pragma once
+#include <StreamInfo.h>
 
 namespace Regards
 {
@@ -14,6 +15,7 @@ namespace Regards
 			virtual void OnAfterOpenVideo() = 0;
 			virtual void OnPositionVideo(const int64_t &position) = 0;
 			virtual void SetVideoDuration(const int64_t &position) = 0;
+			virtual void SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle) = 0;
 		};
 	}
 }

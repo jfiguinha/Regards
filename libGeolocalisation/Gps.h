@@ -1,7 +1,5 @@
 #pragma once
-#include <string>
 #include <GeoPluginValue.h>
-using namespace std;
 
 namespace Regards
 {
@@ -29,7 +27,7 @@ namespace Regards
 			bool ImportationGeoPlugin(const wxString &xml);
 			wxString FindElement(const wxString &xml, const wxString &baliseBegin, const wxString &baliseEnd);
 			GeoPluginVector geoPluginVector;
-			int error;
+			//int error;
 			wxString serverHttp;
             wxString latitude;
             wxString longitude;

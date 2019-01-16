@@ -13,8 +13,7 @@
  * This software transplant ffplay to Microsoft VC++ environment. 
  * And use MFC to build a simple Graphical User Interface. 
  */
-
-#include "VideoControl.h"
+#include "VideoControlInterface.h"
 //#include "ffplaymfc.h"
 //#include "ffplaymfcDlg.h"
 //#include "afxdialogex.h"
@@ -43,20 +42,13 @@ extern "C"
 #include "libavutil/opt.h"
 #include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
+#include "libavutil/display.h"
 }
-
-#if CONFIG_AVFILTER
-# include "libavfilter/avcodec.h"
-# include "libavfilter/avfilter.h"
-# include "libavfilter/avfiltergraph.h"
-# include "libavfilter/buffersink.h"
-# include "libavfilter/buffersrc.h"
-#endif
 
 #include <SDL.h>
 #include <SDL_thread.h>
 
-#include "cmdutils.h"
+//#include "cmdutils.h"
 
 #include <assert.h>
 
@@ -74,7 +66,11 @@ extern "C"
 class CBitmapToShow
 {
 public:
-    uint8_t * data = nullptr;
+	CBitmapToShow()
+	{
+		data = nullptr;
+	}
+    uint8_t * data;
     int width;
     int height;
 	float aspect_ratio;
@@ -114,9 +110,11 @@ void ffmfc_size(int percentage);
 //Send Command "Audio Display Mode"
 void ffmfc_audio_display(int mode);
 
+void ffmfc_change_audio_stream(int newStreamIndex);
+void ffmfc_change_subtitle_stream(int newStreamIndex);
 //·¢ËÍ¡°ÍË³ö¡±ÃüÁî
 //Send Command "Quit"
-void ffmfc_quit();
+bool ffmfc_quit();
 
 void ffmfc_VolumeUp();
 void ffmfc_VolumeDown();
@@ -124,8 +122,8 @@ int ffmfc_GetVolume();
 void ffmfc_SetTimePosition(int64_t time);
 //½âÂëÖ÷º¯Êý
 //Main function
-int ffmfc_play(CVideoControl * control, string filename);
-
+int ffmfc_play(CVideoControlInterface * control, string filename);
+void ffmfc_play();
 //¸´Î»
 //Reset
 int ffmfc_reset_index();
@@ -139,3 +137,4 @@ void ffmfc_videoDisplaySize(int width, int height);
 
 void ffmfc_SetOutputMode(int outputMode);
 
+void ffmfc_SetVideoParameter(int angle, int flipV, int flipH);

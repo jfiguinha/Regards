@@ -1,14 +1,8 @@
 #pragma once
-
-
-#include <algorithm>
-#include "RegardsBitmap.h"
 #include "RGBAQuad.h"
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 using namespace std;
+
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -18,7 +12,7 @@ namespace Regards
 		{
 		public:
 			CFiltre();
-			~CFiltre();
+			virtual ~CFiltre();
 			void SetParameter(CRegardsBitmap * pBitmap, CRgbaquad color);
 			void Compute();
 
@@ -28,10 +22,10 @@ namespace Regards
 			int bmWidth;
 			int bmHeight;
 			CRgbaquad color;
-
+			CRegardsBitmap * pBitmap;
 		private:
 
-			CRegardsBitmap * pBitmap;
+			
 			int bitmapWidthSize;
 			int pictureSize;
 		};
@@ -47,6 +41,20 @@ namespace Regards
 
 		protected:
 			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+		};
+
+		///////////////////////////////////////////////////////////////////////////////////////////
+		//Filtre Niveau de Gris
+		///////////////////////////////////////////////////////////////////////////////////////////
+		class CSharpenMasking : public CFiltre
+		{
+		public:
+			CSharpenMasking(const float &sharpness){ this->sharpness = sharpness; };
+			~CSharpenMasking(void){};
+
+		protected:
+			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			float sharpness;
 		};
 
 		///////////////////////////////////////////////////////////////////////////////////////////
@@ -265,7 +273,7 @@ namespace Regards
 				long _levels = max(2, min(16, level));
 				_offset = 256 / _levels;
 
-				for (int i = 0; i < 256; i++)
+				for (auto i = 0; i < 256; i++)
 					posterize[i] = (uint8_t)(i * _offset);
 
 			};
@@ -292,7 +300,7 @@ namespace Regards
 			{
 				//long _threshold = max(0, min(255, threshold));
 
-				for (int i = 0; i < 256; i++)
+				for (auto i = 0; i < 256; i++)
 				{
 					if (i > threshold)
 						solarize[i] = 255 - i;
@@ -350,7 +358,7 @@ namespace Regards
 				//double m_contrast = contrast;
 				double csupp = contrast * ((double)offset - 256.0) + 128.0;
 
-				for (int i = 0; i< 256; i++)
+				for (auto i = 0; i< 256; i++)
 				{
 					int value = contrast * i + csupp;
 
@@ -386,7 +394,7 @@ namespace Regards
 				else if (nChange < -255)
 					nChange = -255;
 
-				for (int i = 0; i< 256; i++)
+				for (auto i = 0; i< 256; i++)
 				{
 					int value = i + nChange;
 
@@ -403,6 +411,42 @@ namespace Regards
 		protected:
 			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
 			uint8_t m_dTemp[256];
+		};
+
+		class CBilateral : public CFiltre
+		{
+		public:
+			CBilateral(const int & fSize, const float & sigmaX, const float & sigmaP)
+			{ 
+				this->fSize = fSize; 
+				this->sigmaX = sigmaX; 
+				this->sigmaP = sigmaP; 
+			};
+			~CBilateral(void){};
+
+		protected:
+			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			int fSize;
+			float sigmaX;
+			float sigmaP;
+		};
+
+		class CNlmeans : public CFiltre
+		{
+		public:
+			CNlmeans( const int & FSIZE, const int & BSIZE,const float & SIGMA)
+			{ 
+				this->fSize = FSIZE; 
+				this->bSize = BSIZE; 
+				this->sigma = SIGMA; 
+			};
+			~CNlmeans(void){};
+
+		protected:
+			void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest);
+			int fSize;
+			int bSize;
+			float sigma;
 		};
 	}
 }

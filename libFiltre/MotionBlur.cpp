@@ -1,6 +1,7 @@
 #include "MotionBlur.h"
 #include <math.h>
 #include <stdlib.h>
+#include <RegardsBitmap.h>
 const double pi = 3.14159265358979323846264338327950288419716939937510;
 #define MagickSQ2PI 2.50662827463100024161235523934010416269302368164062
 #define DegreesToRadians(x) (pi*(x)/180.0)
@@ -15,8 +16,26 @@ CMotionBlur::~CMotionBlur(void)
 {
 }
 
+vector<wxPoint> CMotionBlur::GetOffsetKernel(int width, const double &angle)
+{
+	vector<wxPoint> offsets;
+	int x = 0, y = 0;
+	//blur_image->storage_class=DirectClass;
+	x = (long)(width*sin(DegreesToRadians(angle)));
+	y = (long)(width*cos(DegreesToRadians(angle)));
 
-int CMotionBlur::GetMotionBlurKernel(int width,const double sigma,double **kernel)
+	for (auto i = 0; i < width; i++)
+	{
+		wxPoint pt;
+		pt.x = (int)((double)(i*x) / sqrt((double)x*x + y*y));
+		pt.y = (int)((double)(i*y) / sqrt((double)x*x + y*y));
+		offsets.push_back(pt);
+	}
+
+	return offsets;
+}
+
+int CMotionBlur::GenerateMotionBlurKernel(int width, const double sigma, vector<double> & kernel)
 {
 	const int KernelRank = 3;
 	double alpha, normalize;
@@ -31,13 +50,8 @@ int CMotionBlur::GetMotionBlurKernel(int width,const double sigma,double **kerne
 	if (width <= 0)
 		width=3;
 
-	*kernel=(double *)malloc(width*sizeof(double));
-
-	if (*kernel == (double *) nullptr)
-		return(0);
-
-	for (i=0; i < width; i++)
-		(*kernel)[i]=0.0;
+	for (i = 0; i < width; i++)
+		kernel.push_back(0);
 
 	bias=KernelRank*width;
 
@@ -47,168 +61,132 @@ int CMotionBlur::GetMotionBlurKernel(int width,const double sigma,double **kerne
 	for (i=0; i < bias; i++)
 	{
 		alpha=exp(-((double) i*i)/m_dValue);
-		(*kernel)[i/KernelRank]+=alpha/m_dValue2;
+		kernel[i/KernelRank]+=alpha/m_dValue2;
 	}
 
 	normalize=0;
 	for (i=0; i < width; i++)
-		normalize+=(*kernel)[i];
+		normalize+=kernel[i];
 
 	for (i=0; i < width; i++)
-		(*kernel)[i]/=normalize;
+		kernel[i]/=normalize;
 	return(width);
 }
 
 #define MaxCRgbaquad  255UL
 
-bool CMotionBlur::MotionBlur(CRegardsBitmap * m_CRegardsBitmap, const double &radius,const double &sigma,const double &angle)
+vector<double> CMotionBlur::GetMotionBlurKernel(const double &radius,const double sigma)
 {
-	double *kernel;
-
-	typedef struct _PointInfo
-	{
-	  double
-		x,
-		y;
-	} PointInfo;
-
-	int width;
-
-	long y;
-
-	PointInfo *offsets;
-
-	long x, u, v;
-
-	if (sigma == 0.0)
-		return 0;
-
-	kernel=(double *) nullptr;
+	int width = 0;
+	vector<double> kernel;
+	vector<double> last_kernel;
 	if (radius > 0)
-	{
-		width=GetMotionBlurKernel((int) (2.0*ceil(radius)+1.0),sigma,&kernel);
-	}
+		width = GenerateMotionBlurKernel((int)(2.0*ceil(radius) + 1.0), sigma, kernel);
 	else
 	{
-		double * last_kernel = nullptr;
+		width = GenerateMotionBlurKernel(3, sigma, kernel);
+		while ((MaxCRgbaquad*kernel[width - 1]) > 0.0)
+		{
+			if (last_kernel.size() != 0)
+				last_kernel.clear();
 
-		width=GetMotionBlurKernel(3,sigma,&kernel);
-		while ((MaxCRgbaquad*kernel[width-1]) > 0.0)
-		{
-			if (last_kernel != nullptr)
-				free(last_kernel);
-			last_kernel=kernel;
-			kernel = nullptr;
-			width = GetMotionBlurKernel(width+2,sigma,&kernel);
+			copy(kernel.begin(), kernel.end(), back_inserter(last_kernel));
+			kernel.clear();
+			width = GenerateMotionBlurKernel(width + 2, sigma, kernel);
 		}
-		if (last_kernel != nullptr)
+		if (last_kernel.size() != 0)
 		{
-			free(kernel);
-			width-=2;
-			kernel=last_kernel;
+			kernel.clear();
+			width -= 2;
+			copy(last_kernel.begin(), last_kernel.end(), back_inserter(kernel));
 		}
 	}
-	if (width < 3)
-		return false;
 
-	offsets=(PointInfo *)malloc(width*sizeof(PointInfo));
-	if (offsets == nullptr)
-		return false;
+	return kernel;
+}
 
-  
-	if (m_CRegardsBitmap->GetPtBitmap() != nullptr)
+bool CMotionBlur::MotionBlur(CRegardsBitmap * bitmap, const double &radius, const double &sigma, const double &angle)
+{
+	if (bitmap != nullptr)
 	{
-		uint8_t * pBitsSrc = m_CRegardsBitmap->GetPtBitmap();
-		long i = 0;
-		long bmHeight = m_CRegardsBitmap->GetBitmapHeight();
-		long bmWidth = m_CRegardsBitmap->GetBitmapWidth();
-		long m_lSize = bmHeight * bmWidth * 4;
-		long lWidthSize = m_CRegardsBitmap->GetWidthSize();
+		vector<double> kernel;
+		vector<wxPoint> offsets;
 
-		uint8_t * lData = new uint8_t[m_lSize * sizeof(uint8_t)];
+		if (sigma == 0.0)
+			return 0;
 
-		memset(lData,0,m_lSize * sizeof(uint8_t));
+		kernel = GetMotionBlurKernel(radius, sigma);
 
-		long r,g,b,opacity;
+		if (kernel.size() < 3)
+			return false;
 
-		long ptImage;
+		offsets = GetOffsetKernel(kernel.size(), angle);
 
-		//blur_image->storage_class=DirectClass;
-		x=(long) (width*sin(DegreesToRadians(angle)));
-		y=(long) (width*cos(DegreesToRadians(angle)));
+		Execute(bitmap, kernel, offsets);
+	}
+	return true;
+}
 
-		for (i=0; i < width; i++)
+void CMotionBlur::Execute(CRegardsBitmap * bitmap, const vector<double> & kernel, const vector<wxPoint> & offsets)
+{
+	uint8_t * pBitsSrc = bitmap->GetPtBitmap();
+	//long i = 0;
+	long bmHeight = bitmap->GetBitmapHeight();
+	long bmWidth = bitmap->GetBitmapWidth();
+	long m_lSize = bmHeight * bmWidth * 4;
+	long lWidthSize = bitmap->GetWidthSize();
+	uint8_t * lData = new uint8_t[m_lSize * sizeof(uint8_t)];
+
+#pragma omp parallel for
+	for (auto y = 0; y < (long)bmHeight; y++)
+	{
+#pragma omp parallel for
+		for (auto x = 0; x < (long)bmWidth; x++)
 		{
-			offsets[i].x=i*x/sqrt((double)x*x+y*y);
-			offsets[i].y=i*y/sqrt((double)x*x+y*y);
-		}
+			int position = y * bmWidth * 4 + x * 4;
+			int r = 0,g = 0,b = 0;//, opacity = 0;
 
-		ptImage = 0;
-
-		for (y=0; y < (long)bmHeight; y++)
-		{
-			for (x=0; x < (long)bmWidth; x++)
+			for (auto i = 0; i < kernel.size(); i++)
 			{
-				r=g=b=opacity=0;
-				
-				for (i=0; i < width; i++)
-				{
-					u=x+(long)offsets[i].x;
-					v=y+(long)offsets[i].y;
-					if ((u < 0) || (u >= (long)bmWidth) || (v < 0) || (v >= (long)bmHeight))
-						continue;
+				int u = x + (long)offsets[i].x;
+				int v = y + (long)offsets[i].y;
+				if ((u < 0) || (u >= (long)bmWidth) || (v < 0) || (v >= (long)bmHeight))
+					continue;
 
-					//pixel=AcquireOnePixel(image,u,v,exception);
-					
-					ptImage = (v * lWidthSize) + (u * 4);
+				long ptImage = (v * lWidthSize) + (u * 4);
 
-					r += kernel[i] * *(pBitsSrc + ptImage);
-					g += kernel[i] * *(pBitsSrc + ptImage + 1);
-					b += kernel[i] * *(pBitsSrc + ptImage + 2);
-					
-					//opacity+=kernel[i]*pixel.opacity;
-				}
-
-				//ptImage = (y * lWidthSize) + (x * 4);
-				
-				if(r < 0)
-					r = 0;
-				else if(r > 255)
-					r = 255;
-
-				*(lData + ptImage) = (uint8_t)r;
-			
-				if(g < 0)
-					g = 0;
-				else if(g > 255)
-					g = 255;
-
-				*(lData + ptImage + 1) = (uint8_t)g;
-
-			
-				if(b < 0)
-					b = 0;
-				else if(b > 255)
-					b = 255;
-
-				*(lData + ptImage + 2)  = (uint8_t)b;
-
-				*(lData + ptImage + 3)  = 0;
-
-				ptImage += 4;
+				r += kernel[i] * *(pBitsSrc + ptImage);
+				g += kernel[i] * *(pBitsSrc + ptImage + 1);
+				b += kernel[i] * *(pBitsSrc + ptImage + 2);
 			}
-
 			
-		}
-	
-		m_CRegardsBitmap->SetBitmap(lData, (int)bmWidth, bmHeight);
+			if (r < 0)
+				r = 0;
+			else if (r > 255)
+				r = 255;
 
-		delete[] lData;
-		
+			*(lData + position) = (uint8_t)r;
+
+			if (g < 0)
+				g = 0;
+			else if (g > 255)
+				g = 255;
+
+			*(lData + position + 1) = (uint8_t)g;
+
+
+			if (b < 0)
+				b = 0;
+			else if (b > 255)
+				b = 255;
+
+			*(lData + position + 2) = (uint8_t)b;
+
+			*(lData + position + 3) = 0;
+		}
 	}
 
-	free(kernel);
-	free(offsets);
+	bitmap->SetBitmap(lData, (int)bmWidth, bmHeight);
 
-	return true;
+	delete[] lData;
 }

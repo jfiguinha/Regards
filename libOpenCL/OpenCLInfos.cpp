@@ -60,6 +60,21 @@ void COpenCLInfos::deviceMaxWorkItemSizes(cl_device_id device, size_t* sizes)
     Error::CheckError(err);
 }
 
+cl_ulong COpenCLInfos::devideMaxMemAllocSize(cl_device_id device)
+{
+    cl_ulong max_mem_alloc_size;
+ 	cl_int err = clGetDeviceInfo(
+		device,
+		CL_DEVICE_MAX_MEM_ALLOC_SIZE ,
+		sizeof(cl_ulong),
+		&max_mem_alloc_size,
+		0
+		);
+    
+    Error::CheckError(err);   
+    return max_mem_alloc_size;
+}
+
 // Maximum work-group size that can be used to execute
 // a kernel on a specific device
 size_t COpenCLInfos::kernelMaxWorkGroupSize(cl_kernel kernel, cl_device_id device)

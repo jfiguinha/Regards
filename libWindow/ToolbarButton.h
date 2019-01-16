@@ -1,9 +1,6 @@
 #pragma once
-#include <Theme.h>
+#include <theme.h>
 #include "ToolbarElement.h"
-#include <string>
-#include <vector>
-using namespace std;
 using namespace Regards::Window;
 
 class CRegardsBitmap;
@@ -15,8 +12,8 @@ public:
 	virtual ~CToolbarButton();
 
 	void SetLibelle(const wxString &libelle);
-	void SetButtonResourceId(const wxString &resourceId, const bool &isVector = true);
-	void DrawButton(wxDC * dc);
+	void SetButtonResourceId(const wxString &resourceId);
+	void DrawButton(wxDC * dc, const int &x, const int &y);
 	void Resize(const int &tailleX, const int &tailleY);
     void ReplaceColor(const wxColor & colorToReplace, const wxColor & colorActifReplacement, const wxColor & colorInactifReplacement);
 	int GetWidth();
@@ -39,7 +36,7 @@ private:
 	void DrawShapeElement(wxDC * dc, const wxRect &rc);
 	bool LoadPictureFromResource();
 			
-    bool isVector = true;
+    
 	int width;
 	int height;
 	wxString resourceId;

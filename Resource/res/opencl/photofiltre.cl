@@ -8,7 +8,7 @@ __kernel void PhotoFiltre(__global uchar4 * output, const __global uchar4 *input
 	float coeff = (float)intensity / 100.0f;
 	float diff = 1.0f - coeff;
 
-	float4 colorOut = convert_flot4(input[positionSrc]) * (float4)diff + color * coeff;
+	float4 colorOut = convert_float4(input[positionSrc]) * (float4)diff + color * coeff;
 
 
 	output[positionDest] = convert_uchar4(colorOut);

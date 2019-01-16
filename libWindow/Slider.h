@@ -10,7 +10,7 @@ namespace Regards
 		{
 		public:
 			CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent, const CThemeSlider & themeSlider);
-			~CSlider();
+			virtual ~CSlider();
 
 			int GetWidth();
 			int GetHeight();
@@ -62,7 +62,7 @@ namespace Regards
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-            bool isVector = true;
+            
             wxString buttonVector;
 			CThemeSlider themeSlider;
 		};

@@ -32,7 +32,9 @@ wxString CFileUtility::GetFolder(const wxString &szFilePath)
 
 wxString CFileUtility::GetResourcesFolderPath()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__) && not defined(__LLVM__)
+
+     printf("toto 1 GetResourcesFolderPath \n");
 
     wxString exeFolderMacOs = ".app/Contents/";
     wxString path = wxStandardPaths::Get().GetExecutablePath();
@@ -60,7 +62,6 @@ wxString CFileUtility::GetDocumentFolderPath()
 {
 	wxStandardPathsBase& stdp = wxStandardPaths::Get();
 	wxString documentPath = stdp.GetDocumentsDir();
-#ifndef __APPLE__
 
 #ifdef WIN32
 	documentPath.append("\\Regards");
@@ -72,8 +73,6 @@ wxString CFileUtility::GetDocumentFolderPath()
 	{
 		wxDir::Make(documentPath);
 	}
-
-#endif
 	return documentPath;
 }
 
@@ -82,7 +81,7 @@ wxString CFileUtility::GetProgramFolderPath()
 #ifdef WIN32
     wxString path = wxStandardPaths::Get().GetExecutablePath();
     return GetFolder(path);
-#elif __APPLE
+#elif defined(__APPLE__) && not defined(__LLVM__)
     
     wxString exeFolderMacOs = ".app/Contents/";
     wxString path = wxStandardPaths::Get().GetExecutablePath();

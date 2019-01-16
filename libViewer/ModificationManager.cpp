@@ -2,6 +2,7 @@
 #include "ModificationManager.h"
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <RegardsBitmap.h>
 
 CModificationManager::CModificationManager(const wxString &folder)
 {
@@ -51,7 +52,7 @@ void CModificationManager::EraseData()
 		return;
 	}
 
-	//Suppression de tous les fichiers du répertoire Temp;
+	//Suppression de tous les fichiers du rÃ©pertoire Temp;
 	wxString filename;
 	bool cont = dir.GetFirst(&filename);
 	while (cont)

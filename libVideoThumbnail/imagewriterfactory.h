@@ -18,7 +18,6 @@
 
 #include "imagewriter.h"
 #include "imagetypes.h"
-#include <string>
 #include <inttypes.h>
 #include <stdexcept>
 #include "cximagewriter.h"
@@ -31,7 +30,7 @@ class ImageWriterFactory
 {
 public:
 
-	static ImageWriter* createImageWriter(CxImage * image)
+	static ImageWriter* createImageWriter(CRegardsBitmap * image)
 	{
 		return new CxImageWriter(image);
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include "TreeElement.h"
-#include <mutex>
 
 class CTreeElementTexte : public CTreeElement
 {
@@ -48,7 +47,7 @@ protected:
 	bool canUpdate;
 	bool isClick;
 	wxString libelle;
-	int position = 0;
+	int position;
 	CThemeTreeTexte themeTexte;
 };
 

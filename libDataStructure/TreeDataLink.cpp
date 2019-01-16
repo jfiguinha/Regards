@@ -3,6 +3,8 @@
 CTreeDataLink::CTreeDataLink(void)
 {
     type = 2;
+	linktype = 0;
+    id = 0;
 }
 
 

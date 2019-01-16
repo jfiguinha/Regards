@@ -1,6 +1,6 @@
-#include "wx_pch.h"
 #include "ConfigRegards.h"
 #include <RegardsConfigParam.h>
+#include <LibResource.h>
 #include <ParamInit.h>
 #if defined(__WXMSW__)
 #include "../include/config_id.h"
@@ -25,6 +25,7 @@ END_EVENT_TABLE()
 
 ConfigRegards::ConfigRegards(wxWindow* parent)
 {
+	isOk = false;
 	//(*Initialize(ConfigRegards)
 	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
@@ -36,10 +37,15 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
 	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
 	stTime = (wxStaticText*)FindWindow(XRCID("ID_STTIME"));
-	rbFullscreen = (wxRadioBox*)FindWindow(XRCID("ID_RBFULLSCREEN"));
-	rbDiaporamaTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
+    scProcessFace = (wxSpinCtrl*)FindWindow(XRCID("ID_SCFACE"));
+    scProcessExif = (wxSpinCtrl*)FindWindow(XRCID("ID_SCEXIF"));
+    scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
+	//rbFullscreen = (wxRadioBox*)FindWindow(XRCID("ID_RBFULLSCREEN"));
+	//rbDiaporamaTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
+	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
+	rbPictureFaceDetectionSize = (wxRadioBox*)FindWindow(XRCID("ID_PICTUREFACEDETECTION"));
 	//rbThumbnailQuality = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILQUALITY"));
 	//rbThumbnailCache = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILCACHE"));
 
@@ -62,50 +68,6 @@ void ConfigRegards::Init()
 	this->SetTitle("Configuration");
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 
-    /*
-	//Preview
-	int previewLib = regardsParam->GetPreviewLibrary();
-	switch (previewLib)
-	{
-	case LIBOPENGL:
-		rdPreviewRender->SetSelection(1);
-		break;
-    case LIBOPENCL:
-	case LIBCPU:
-		rdPreviewRender->SetSelection(0);
-		break;
-	}
-
-	//filtre
-	int filtre = regardsParam->GetEffectLibrary();
-	switch (filtre)
-	{
-	case LIBOPENCL:
-		rbEffectLibrary->SetSelection(1);
-		break;
-	case LIBCPU:
-		rbEffectLibrary->SetSelection(0);
-		break;
-	}
-	//Video
-    
-#if defined(__APPLE__) || defined(WIN32)
-    
-    rbRenderVideo->SetSelection(0);
-    
-#else
-	int video = regardsParam->GetVideoLibrary();
-	switch (video)
-	{
-	case LIBOPENGL:
-		rbRenderVideo->SetSelection(1);
-		break;
-	case LIBCPU:
-		rbRenderVideo->SetSelection(0);
-		break;
-	}
-#endif
-    */
 	int transition = regardsParam->GetEffect();
 	if (transition == 0)
 		rbTransitionEffect->SetSelection(1);
@@ -114,7 +76,16 @@ void ConfigRegards::Init()
 
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
-
+    
+    int thumbnailProcess = regardsParam->GetThumbnailProcess();
+    scProcessThumbnail->SetValue(thumbnailProcess);
+    
+    int faceProcess = regardsParam->GetFaceProcess();
+    scProcessFace->SetValue(faceProcess);
+    
+    int exifProcess = regardsParam->GetExifProcess();
+    scProcessExif->SetValue(exifProcess);
+/*
 	int effectDiaporama = regardsParam->GetDiaporamaTransitionEffect();
 	if (effectDiaporama == 0)
 		rbDiaporamaTransitionEffect->SetSelection(1);
@@ -126,69 +97,24 @@ void ConfigRegards::Init()
 		rbFullscreen->SetSelection(1);
 	else
 		rbFullscreen->SetSelection(0);
+*/
+	int dataInMemory = regardsParam->GetDatabaseInMemory();
+	if (dataInMemory == 0)
+		rbDatabaseInMemory->SetSelection(1);
+	else
+		rbDatabaseInMemory->SetSelection(0);
 
-    /*
-	int thumbnailQuality = regardsParam->GetThumbnailQuality();
-	if (thumbnailQuality == 0)
-		rbThumbnailQuality->SetSelection(1);
-	else
-		rbThumbnailQuality->SetSelection(0);
-	
-	int thumbnailCache = regardsParam->GetThumbnailIconeCache();
-	if (thumbnailCache == 0)
-		rbThumbnailCache->SetSelection(1);
-	else
-		rbThumbnailCache->SetSelection(0);
-     */
+	int pictureSize = regardsParam->GetFaceDetectionPictureSize();
+	rbPictureFaceDetectionSize->SetSelection(pictureSize);
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-	//Preview
-    /*
-	int previewLib = rdPreviewRender->GetSelection();
-	switch (previewLib)
-	{
-	case 1:
-		regardsParam->SetPreviewLibrary(LIBOPENGL);
-		break;
-	case 0:
-		regardsParam->SetPreviewLibrary(LIBCPU);
-		break;
-	}
+    
+    int nbProcesseur = thread::hardware_concurrency();
 
-	//filtre
-	int filtre = rbEffectLibrary->GetSelection();
-	switch (filtre)
-	{
-	case 1:
-		regardsParam->SetEffectLibrary(LIBOPENCL);
-		break;
-	case 0:
-		regardsParam->SetEffectLibrary(LIBCPU);
-		break;
-	}
-    
-#if defined(__APPLE__) || defined(WIN32)
-    
-    regardsParam->SetVideoLibrary(LIBCPU);
-    
-#else
-	//Video
-	int video = rbRenderVideo->GetSelection();
-	switch (video)
-	{
-	case 1:
-		regardsParam->SetVideoLibrary(LIBOPENGL);
-		break;
-	case 0:
-		regardsParam->SetVideoLibrary(LIBCPU);
-		break;
-	}
-#endif
-    */
 	int transition = rbTransitionEffect->GetSelection();
 	if (transition == 0)
 		regardsParam->SetEffect(1);
@@ -197,37 +123,50 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);
+ 
+    int thumbnailProcess = scProcessThumbnail->GetValue();
+    int faceProcess = scProcessFace->GetValue();
+    int exifProcess = scProcessExif->GetValue();
+    
+    if(thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
+    {
+        wxString errorProcessNumberMin = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMin",1);
+        wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);
+        wxMessageBox(errorProcessNumberMin, errorInfo);
+    }
+    else if((thumbnailProcess + faceProcess + exifProcess) > nbProcesseur && (thumbnailProcess > 1 || faceProcess > 1 || exifProcess > 1))
+    {
+        wxString errorProcessNumberMax = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMax",1);
+        wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);
+        wxMessageBox(errorProcessNumberMax, errorInfo);
+    }
+    else
+    {
+        regardsParam->SetFaceProcess(faceProcess);
+        regardsParam->SetExifProcess(exifProcess);
+        regardsParam->SetThumbnailProcess(thumbnailProcess);
 
-	int effectDiaporama = rbDiaporamaTransitionEffect->GetSelection();
-	if (effectDiaporama == 0)
-		regardsParam->SetDiaporamaTransitionEffect(1);
-	else
-		regardsParam->SetDiaporamaTransitionEffect(0);
+        int dataInMemory = rbDatabaseInMemory->GetSelection();
+        if (dataInMemory == 0)
+            regardsParam->SetDatabaseInMemory(1);
+        else
+            regardsParam->SetDatabaseInMemory(0);
 
-	int fullscreenDiaporama = rbFullscreen->GetSelection();
-	if (fullscreenDiaporama == 0)
-		regardsParam->SetDiaporamaFullscreen(1);
-	else
-		regardsParam->SetDiaporamaFullscreen(0);
+        int pictureSize = rbPictureFaceDetectionSize->GetSelection();
+        regardsParam->SetFaceDetectionPictureSize(pictureSize);
 
-    /*
-	int thumbnailQuality = rbThumbnailQuality->GetSelection();
-	if (thumbnailQuality == 0)
-		regardsParam->SetThumbnailQuality(1);
-	else
-		regardsParam->SetThumbnailQuality(0);
+        this->Close();        
+    }
 
-	int thumbnailCache = rbThumbnailCache->GetSelection();
-	if (thumbnailCache == 0)
-		regardsParam->SetThumbnailIconeCache(1);
-	else
-		regardsParam->SetThumbnailIconeCache(0);
-     */
-	this->Close();
 }
 
 void ConfigRegards::OnBtnCancelClick(wxCommandEvent& event)
 {
 	isOk = false;
 	this->Close();
+}
+
+bool ConfigRegards::IsOk()
+{
+	return isOk;
 }

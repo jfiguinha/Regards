@@ -29,13 +29,8 @@
 #define CXIMAGEJPG_SUPPORT_EXIF CXIMAGE_SUPPORT_EXIF
 
 extern "C" {
-#ifdef _LINUX
- #include <jpeglib.h>
- #include <jerror.h>
-#else
- #include "jpeglib.h"
- #include "jerror.h"
-#endif
+#include <jpeglib.h>
+#include <jerror.h>
 }
 
 class DLL_EXP CxImageJPG: public CxImage
@@ -175,7 +170,7 @@ public:
 		pDest->free_in_buffer = eBufSize;
 	}
 
-	static wxjpeg_boolean EmptyOutputBuffer(j_compress_ptr cinfo)
+	static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
 	{
 		CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
 		if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)!=(size_t)eBufSize)
@@ -206,7 +201,7 @@ public:
 		pSource->m_bStartOfFile = TRUE;
 	}
 
-	static wxjpeg_boolean FillInputBuffer(j_decompress_ptr cinfo)
+	static boolean FillInputBuffer(j_decompress_ptr cinfo)
 	{
 		size_t nbytes;
 		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;

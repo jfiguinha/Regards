@@ -1,16 +1,9 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <BitmapWnd.h>
 #include "BitmapWndViewer.h"
 #include <ToolbarWindow.h>
 #include <SliderInterface.h>
 #include <ToolbarSlide.h>
-#include <string>
-#include <vector>
-using namespace std;
 using namespace Regards::Window;
 
 namespace Regards

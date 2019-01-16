@@ -4,7 +4,7 @@
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif
-
+#include <ConvertUtility.h>
 using namespace rapidxml;
 using namespace Regards::Viewer;
 
@@ -21,15 +21,190 @@ void CViewerTheme::InitCategoryFolderSplitter()
 	themeCategoryFolderSplitter.themeSeparation.secondColor.Set(128, 128, 128);
 }
 
+void CViewerTheme::InitThumbnailFaceThemeToolbar()
+{
+	themeThumbnailFaceToolbar.colorBack.Set(30, 30, 30);
+	themeThumbnailFaceToolbar.colorTop.Set(29, 29, 29);
+	themeThumbnailFaceToolbar.colorBottom.Set(29, 29, 29);
+	themeThumbnailFaceToolbar.position = NAVIGATOR_CENTER;
+	themeThumbnailFaceToolbar.SetWidth(30);
+	themeThumbnailFaceToolbar.SetHeight(30);
+	themeThumbnailFaceToolbar.SetMargeX(5);
+	themeThumbnailFaceToolbar.SetMargeY(0);
+	themeThumbnailFaceToolbar.isVertical = false;
+
+	themeThumbnailFaceToolbar.button.SetTailleX(30);
+	themeThumbnailFaceToolbar.button.SetTailleY(30);
+	themeThumbnailFaceToolbar.button.lineColorTop.Set(222, 222, 222);
+	themeThumbnailFaceToolbar.button.lineColorBottom.Set(156, 156, 156);
+	themeThumbnailFaceToolbar.button.actifTop.Set(255, 255, 255);
+	themeThumbnailFaceToolbar.button.actifBottom.Set(223, 223, 223);
+	themeThumbnailFaceToolbar.button.font.SetFontName("Verdana");
+	themeThumbnailFaceToolbar.button.font.SetFontSize(10);
+	themeThumbnailFaceToolbar.button.font.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailFaceToolbar.button.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnailFaceToolbar.button.SetRectangleSize(4);
+	themeThumbnailFaceToolbar.button.showButtonOnly = 1;
+
+	themeThumbnailFaceToolbar.slider.isColorBackground = true;
+	themeThumbnailFaceToolbar.slider.SetWidth(200);
+	themeThumbnailFaceToolbar.slider.SetHeight(30);
+	themeThumbnailFaceToolbar.slider.SetWidth(200);
+	themeThumbnailFaceToolbar.slider.SetHeight(30);
+
+	themeThumbnailFaceToolbar.texte.SetTailleX(120);
+	themeThumbnailFaceToolbar.texte.SetTailleY(30);
+	themeThumbnailFaceToolbar.texte.actifTop.Set(48, 48, 48);
+	themeThumbnailFaceToolbar.texte.actifBottom.Set(128, 128, 128);
+	themeThumbnailFaceToolbar.texte.rectTop.Set(222, 222, 222);
+	themeThumbnailFaceToolbar.texte.rectBottom.Set(156, 156, 156);
+	themeThumbnailFaceToolbar.texte.SetRectangleSize(0);
+	themeThumbnailFaceToolbar.texte.font.SetFontName("Verdana");
+	themeThumbnailFaceToolbar.texte.font.SetFontSize(10);
+	themeThumbnailFaceToolbar.texte.font.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailFaceToolbar.texte.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnailFaceToolbar.texte.fontActif.SetFontName("Verdana");
+	themeThumbnailFaceToolbar.texte.fontActif.SetFontSize(10);
+	themeThumbnailFaceToolbar.texte.fontActif.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailFaceToolbar.texte.fontActif.SetColorFont(wxColour(255, 255, 255));
+}
+
+void CViewerTheme::InitThumbnailToolbar()
+{
+	themeThumbnailToolbar.colorBack.Set(30, 30, 30);
+	themeThumbnailToolbar.colorTop.Set(29, 29, 29);
+	themeThumbnailToolbar.colorBottom.Set(29, 29, 29);
+	themeThumbnailToolbar.position = NAVIGATOR_CENTER;
+	themeThumbnailToolbar.SetWidth(30);
+	themeThumbnailToolbar.SetHeight(30);
+	themeThumbnailToolbar.SetMargeX(5);
+	themeThumbnailToolbar.SetMargeY(0);
+	themeThumbnailToolbar.isVertical = false;
+
+	themeThumbnailToolbar.button.SetTailleX(30);
+	themeThumbnailToolbar.button.SetTailleY(30);
+	themeThumbnailToolbar.button.lineColorTop.Set(222, 222, 222);
+	themeThumbnailToolbar.button.lineColorBottom.Set(156, 156, 156);
+	themeThumbnailToolbar.button.actifTop.Set(255, 255, 255);
+	themeThumbnailToolbar.button.actifBottom.Set(223, 223, 223);
+	themeThumbnailToolbar.button.font.SetFontName("Verdana");
+	themeThumbnailToolbar.button.font.SetFontSize(10);
+	themeThumbnailToolbar.button.font.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailToolbar.button.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnailToolbar.button.SetRectangleSize(4);
+	themeThumbnailToolbar.button.showButtonOnly = 1;
+
+	themeThumbnailToolbar.slider.isColorBackground = true;
+	themeThumbnailToolbar.slider.SetWidth(200);
+	themeThumbnailToolbar.slider.SetHeight(30);
+	themeThumbnailToolbar.slider.SetWidth(200);
+	themeThumbnailToolbar.slider.SetHeight(30);
+
+	themeThumbnailToolbar.texte.SetTailleX(120);
+	themeThumbnailToolbar.texte.SetTailleY(30);
+	themeThumbnailToolbar.texte.actifTop.Set(48, 48, 48);
+	themeThumbnailToolbar.texte.actifBottom.Set(128, 128, 128);
+	themeThumbnailToolbar.texte.rectTop.Set(222, 222, 222);
+	themeThumbnailToolbar.texte.rectBottom.Set(156, 156, 156);
+	themeThumbnailToolbar.texte.SetRectangleSize(0);
+	themeThumbnailToolbar.texte.font.SetFontName("Verdana");
+	themeThumbnailToolbar.texte.font.SetFontSize(12);
+	themeThumbnailToolbar.texte.font.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailToolbar.texte.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnailToolbar.texte.fontActif.SetFontName("Verdana");
+	themeThumbnailToolbar.texte.fontActif.SetFontSize(12);
+	themeThumbnailToolbar.texte.fontActif.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnailToolbar.texte.fontActif.SetColorFont(wxColour(255, 255, 255));
+
+}
+
 void CViewerTheme::GetCategoryFolderSplitterTheme(CThemeSplitter &theme)
 {
 	theme = themeCategoryFolderSplitter;
 }
 
+
+void CViewerTheme::GetThumbnailTheme(CThemeThumbnail &theme)
+{
+	theme = themeThumbnail;
+}
+
+void CViewerTheme::GetThumbnailFaceToolbarTheme(CThemeToolbar &theme)
+{
+	theme = themeThumbnailFaceToolbar;
+}
+
+void CViewerTheme::GetThumbnailToolbarTheme(CThemeToolbar &theme)
+{
+	theme = themeThumbnailToolbar;
+}
+
+void CViewerTheme::GetThumbnailToolbarZoomTheme(CThemeToolBarZoom &theme)
+{
+	theme = themeThumbnailToolbarZoom;
+}
+
+void CViewerTheme::GetThumbnailScrollTheme(CThemeScrollBar &theme)
+{
+	theme = themeScrollThumbnail;
+}
+
+void CViewerTheme::InitScrollThumbnail()
+{
+	themeScrollThumbnail.SetRectangleSize(10);
+	themeScrollThumbnail.colorBack.Set(29, 29, 29);
+	themeScrollThumbnail.colorTriangle.Set(74, 74, 74);
+	themeScrollThumbnail.colorTriangleActif.Set(128, 128, 128);
+	themeScrollThumbnail.colorBar.Set(74, 74, 74);
+	themeScrollThumbnail.colorBarActif.Set(128, 128, 128);
+	themeScrollThumbnail.SetMarge(2);
+}
+
+
+/*
+void CViewerTheme::InitThumbnailTheme()
+{
+	themeThumbnail.themeIcone.SetWidth(200);
+	themeThumbnail.themeIcone.SetHeight(200);
+	themeThumbnail.themeIcone.showOnlyThumbnail = false;
+	themeThumbnail.themeIcone.colorBack.Set(0, 0, 0);
+	themeThumbnail.themeIcone.colorTop.Set(74, 74, 74);
+	themeThumbnail.themeIcone.colorBottom.Set(74, 74, 74);
+	themeThumbnail.themeIcone.colorSelectTop.Set(205, 205, 205);
+	themeThumbnail.themeIcone.colorSelectBottom.Set(171, 171, 171);
+	themeThumbnail.colorBack.Set(74, 74, 74);
+	themeThumbnail.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnail.themeSeparation.colorBack.Set(74, 74, 74);
+	themeThumbnail.themeSeparation.colorBack.Set(45, 45, 48);
+	themeThumbnail.themeSeparation.colorTop.Set(45, 45, 48);
+	themeThumbnail.themeSeparation.colorBottom.Set(45, 45, 48);
+	themeThumbnail.themeSeparation.themeFont.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnail.themeSeparation.themeFont.SetFontName("Verdana");
+	themeThumbnail.themeSeparation.themeFont.SetFontSize(14);
+	themeThumbnail.themeSeparation.themeFont.SetFontQuality(ANTIALIASED_QUALITY);
+	themeThumbnail.themeSeparation.SetHeight(40);
+}
+*/
+void CViewerTheme::InitThumbnailToolbarZoomTheme()
+{
+	themeThumbnailToolbarZoom.fontActif.SetFontName("Verdana");
+	themeThumbnailToolbarZoom.fontActif.SetFontSize(12);
+	themeThumbnailToolbarZoom.fontActif.SetFontQuality(DEFAULT_QUALITY);
+	themeThumbnailToolbarZoom.font.SetFontName("Verdana");
+	themeThumbnailToolbarZoom.font.SetFontSize(12);
+	themeThumbnailToolbarZoom.font.SetFontQuality(DEFAULT_QUALITY);
+	themeThumbnailToolbarZoom.font.SetColorFont(wxColour(255, 255, 255));
+	themeThumbnailToolbarZoom.colorBack.Set(29, 29, 29);
+	themeThumbnailToolbarZoom.fontActif.SetColorFont(wxColour(48, 128, 254));
+	themeThumbnailToolbarZoom.SetHeight(30);
+	themeThumbnailToolbarZoom.SetCheckboxHeight(20);
+	themeThumbnailToolbarZoom.SetCheckboxWidth(20);
+}
+
 void CViewerTheme::InitClickFolderToolbar()
 {
 	themeClickFolderToolbar.colorBack.Set(30, 30, 30);
-	themeClickFolderToolbar.colorTop.Set(74, 74, 74);
+	themeClickFolderToolbar.colorTop.Set(29, 29, 29);
 	themeClickFolderToolbar.colorBottom.Set(29, 29, 29);
 	themeClickFolderToolbar.position = NAVIGATOR_CENTER;
 	themeClickFolderToolbar.SetWidth(60);
@@ -407,16 +582,7 @@ void CViewerTheme::InitScrollEffectVideo()
 	themeScrollEffectVideo.SetMarge(2);
 }
 
-void CViewerTheme::InitScrollThumbnail()
-{
-	themeScrollThumbnail.SetRectangleSize(10);
-	themeScrollThumbnail.colorBack.Set(29, 29, 29);
-	themeScrollThumbnail.colorTriangle.Set(74, 74, 74);
-	themeScrollThumbnail.colorTriangleActif.Set(128, 128, 128);
-	themeScrollThumbnail.colorBar.Set(74, 74, 74);
-	themeScrollThumbnail.colorBarActif.Set(128, 128, 128);
-	themeScrollThumbnail.SetMarge(2);
-}
+
 
 void CViewerTheme::InitScrollThumbnailVideo()
 {
@@ -610,7 +776,7 @@ void CViewerTheme::GetPreviewToolbarTheme(CThemeToolbar * theme)
 void CViewerTheme::InitFiltreToolbar()
 {
 	themeFiltreToolbar.colorBack.Set(30, 30, 30);
-	themeFiltreToolbar.colorTop.Set(74, 74, 74);
+	themeFiltreToolbar.colorTop.Set(29, 29, 29);
 	themeFiltreToolbar.colorBottom.Set(29, 29, 29);
 	themeFiltreToolbar.position = NAVIGATOR_CENTER;
 	themeFiltreToolbar.SetWidth(60);
@@ -636,7 +802,7 @@ void CViewerTheme::InitFiltreToolbar()
 void CViewerTheme::InitClickThumbnailVideoToolbar()
 {
 	themeClickThumbnailVideoToolbar.colorBack.Set(30, 30, 30);
-	themeClickThumbnailVideoToolbar.colorTop.Set(74, 74, 74);
+	themeClickThumbnailVideoToolbar.colorTop.Set(29, 29, 29);
 	themeClickThumbnailVideoToolbar.colorBottom.Set(29, 29, 29);
 	themeClickThumbnailVideoToolbar.position = NAVIGATOR_CENTER;
 	themeClickThumbnailVideoToolbar.SetWidth(60);
@@ -662,7 +828,7 @@ void CViewerTheme::InitClickThumbnailVideoToolbar()
 void CViewerTheme::InitClickThumbnailToolbar()
 {
 	themeClickThumbnailToolbar.colorBack.Set(30, 30, 30);
-	themeClickThumbnailToolbar.colorTop.Set(74, 74, 74);
+	themeClickThumbnailToolbar.colorTop.Set(29, 29, 29);
 	themeClickThumbnailToolbar.colorBottom.Set(29, 29, 29);
 	themeClickThumbnailToolbar.position = NAVIGATOR_CENTER;
 	themeClickThumbnailToolbar.SetWidth(60);
@@ -688,7 +854,7 @@ void CViewerTheme::InitClickThumbnailToolbar()
 void CViewerTheme::InitViewerToolbar()
 {
 	themeMainToolbar.colorBack.Set(30, 30, 30);
-	themeMainToolbar.colorTop.Set(128, 128, 128);
+	themeMainToolbar.colorTop.Set(29, 29, 29);
 	themeMainToolbar.colorBottom.Set(29, 29, 29);
 	themeMainToolbar.position = NAVIGATOR_LEFT;
 	themeMainToolbar.SetWidth(60);
@@ -731,16 +897,19 @@ void CViewerTheme::InitInfosToolbar()
 	themeInfosToolbar.texte.rectBottom.Set(156, 156, 156);
 	themeInfosToolbar.texte.SetRectangleSize(2);
 	themeInfosToolbar.texte.font.SetFontName("Verdana");
-	themeInfosToolbar.texte.font.SetFontSize(18);
+	themeInfosToolbar.texte.font.SetFontSize(12);
 	themeInfosToolbar.texte.font.SetFontQuality(ANTIALIASED_QUALITY);
 	themeInfosToolbar.texte.font.SetColorFont(wxColour(255, 255, 255));
 	themeInfosToolbar.texte.fontActif.SetFontName("Verdana");
-	themeInfosToolbar.texte.fontActif.SetFontSize(20);
+	themeInfosToolbar.texte.fontActif.SetFontSize(12);
 	themeInfosToolbar.texte.fontActif.SetFontQuality(ANTIALIASED_QUALITY);
 	themeInfosToolbar.texte.fontActif.SetColorFont(wxColour(255, 255, 255));
+}
 
+void CViewerTheme::InitClickInfosToolbar()
+{
 	themeClickInfosToolbar.colorBack.Set(30, 30, 30);
-	themeClickInfosToolbar.colorTop.Set(74, 74, 74);
+	themeClickInfosToolbar.colorTop.Set(29, 29, 29);
 	themeClickInfosToolbar.colorBottom.Set(29, 29, 29);
 	themeClickInfosToolbar.position = NAVIGATOR_CENTER;
 	themeClickInfosToolbar.SetWidth(10);
@@ -766,7 +935,7 @@ void CViewerTheme::InitInfosToolbar()
 void CViewerTheme::InitPreviewToolbar()
 {
 	themePreviewToolbar.colorBack.Set(30, 30, 30);
-	themePreviewToolbar.colorTop.Set(74, 74, 74);
+	themePreviewToolbar.colorTop.Set(29, 29, 29);
 	themePreviewToolbar.colorBottom.Set(29, 29, 29);
 	themePreviewToolbar.position = NAVIGATOR_CENTER;
 	themePreviewToolbar.SetWidth(60);
@@ -819,18 +988,48 @@ void CViewerTheme::SaveTheme()
 	xml_node<>* section = node("Main");
 	if (section != 0)
 	{
-		themeMainToolbar.SaveXML(doc, section);
-		themeCentralWndSplitter.SaveXML(doc, section);
-		root->append_node(section);
+        xml_node<>* local_section = node("MainToolbar");
+        if (local_section != 0)
+        {
+            themeMainToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("CentralWndSplitter");
+        if (section != 0)
+        {
+            themeCentralWndSplitter.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+		
+        root->append_node(section);
 	}
 	
 
 	section = node("VideoPreview");
 	if (section != 0)
 	{
-		themeVideoControl.SaveXML(doc, section);
-		themeVideoToolbar.SaveXML(doc, section);
-		themeSliderVideo.SaveXML(doc, section);
+        xml_node<>* local_section = node("VideoControl");
+        if (local_section != 0)
+        {
+            themeVideoControl.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }   
+        
+            
+        local_section = node("VideoToolbar");
+        if (section != 0)   
+        {         
+            themeVideoToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }   
+        
+        local_section = node("SliderVideo");
+        if (section != 0)
+        {               
+            themeSliderVideo.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }  
 		root->append_node(section);
 	}
 	
@@ -838,9 +1037,26 @@ void CViewerTheme::SaveTheme()
 	section = node("BitmapPreview");
 	if (section != 0)
 	{
-		themeBitmapWindow.SaveXML(doc, section);
-		themeBitmapScrollbar.SaveXML(doc, section);
-		themeBitmapToolbar.SaveXML(doc, section);
+        xml_node<>* local_section = node("BitmapWindow");
+        if (local_section != 0)
+        {             
+            themeBitmapWindow.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("BitmapScrollbar");
+        if (local_section != 0)
+        {             
+            themeBitmapScrollbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+
+        local_section = node("BitmapToolbar");
+        if (local_section != 0)
+        {             
+            themeBitmapToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
 		root->append_node(section);
 	}
 	
@@ -848,10 +1064,34 @@ void CViewerTheme::SaveTheme()
 	section = node("PreviewWindow");
 	if (section != 0)
 	{
-		themePreviewInfos.SaveXML(doc, section);
-		themePreviewPane.SaveXML(doc, section);
-		themePreviewToolbar.SaveXML(doc, section);
-		themeBitmapInfos.SaveXML(doc, section);
+        xml_node<>* local_section = node("PreviewInfos");
+        if (local_section != 0)
+        {           
+            themePreviewInfos.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("PreviewPane");
+        if (local_section != 0)
+        {               
+            themePreviewPane.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("PreviewToolbar");
+        if (local_section != 0)
+        {               
+            themePreviewToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }        
+		
+        local_section = node("BitmapInfos");
+        if (local_section != 0)
+        {               
+            themeBitmapInfos.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }          
+		
 		root->append_node(section);
 	}
 	
@@ -859,10 +1099,47 @@ void CViewerTheme::SaveTheme()
 	section = node("Thumbnail");
 	if (section != 0)
 	{
-		themeThumbnailPane.SaveXML(doc, section);
-		themeThumbnail.SaveXML(doc, section);
-		themeClickThumbnailToolbar.SaveXML(doc, section);
-		themeScrollThumbnail.SaveXML(doc, section);
+        xml_node<>* local_section = node("ThumbnailPane");
+        if (local_section != 0)
+        {
+            themeThumbnailPane.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("Thumbnail");
+        if (local_section != 0)
+        {         
+            themeThumbnail.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("ClickThumbnailToolbar");
+        if (local_section != 0)
+        {         
+            themeClickThumbnailToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }        
+        
+        local_section = node("ScrollThumbnail");
+        if (local_section != 0)
+        {         
+            themeScrollThumbnail.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        } 
+
+        local_section = node("ThumbnailToolbarZoom");
+        if (local_section != 0)
+        {  
+            themeThumbnailToolbarZoom.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("ThumbnailToolbar");
+        if (local_section != 0)
+        {         
+            themeThumbnailToolbar.SaveXML(doc, local_section);  
+            section->append_node(local_section);   
+        }
 		root->append_node(section);
 	}
 	
@@ -870,10 +1147,33 @@ void CViewerTheme::SaveTheme()
 	section = node("ThumbnailVideo");
 	if (section != 0)
 	{
-		themeThumbnailVideoPane.SaveXML(doc, section);
-		themeThumbnailVideo.SaveXML(doc, section);
-		themeClickThumbnailVideoToolbar.SaveXML(doc, section);
-		themeScrollThumbnailVideo.SaveXML(doc, section);
+        xml_node<>* local_section = node("ThumbnailVideoPane");
+        if (local_section != 0)
+        {
+            themeThumbnailVideoPane.SaveXML(doc, local_section);
+            section->append_node(local_section);   
+        }
+        
+        local_section = node("ThumbnailVideo");
+        if (local_section != 0)
+        {        
+            themeThumbnailVideo.SaveXML(doc, local_section);
+            section->append_node(local_section);   
+        }
+        
+        local_section = node("ClickThumbnailVideoToolbar");
+        if (local_section != 0)
+        {              
+            themeClickThumbnailVideoToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);   
+        }
+        
+        local_section = node("ScrollThumbnailVideo");
+        if (local_section != 0)
+        {              
+            themeScrollThumbnailVideo.SaveXML(doc, local_section);
+            section->append_node(local_section);   
+        }
 		root->append_node(section);
 	}
 	
@@ -881,32 +1181,91 @@ void CViewerTheme::SaveTheme()
 	section = node("InfoVideoPicture");
 	if (section != 0)
 	{
-		
-		themeInfosToolbar.SaveXML(doc, section);
-		themeInfosPane.SaveXML(doc, section);
+        xml_node<>* local_section = node("InfosToolbar");
+        if (local_section != 0)
+        {		
+            themeInfosToolbar.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
+        local_section = node("InfosPane");
+        if (local_section != 0)
+        {        
+            themeInfosPane.SaveXML(doc, local_section);
+            section->append_node(local_section);
+        }
+        
 		xml_node<>* otherchild = node("Infos");
 		if (otherchild != 0)
 		{
-			themeClickInfosToolbar.SaveXML(doc, otherchild);
-			themeInfosFileTree.SaveXML(doc, otherchild);
-			themeScrollInfosFile.SaveXML(doc, otherchild);
+            xml_node<>* local_section = node("ClickInfosToolbar");
+            if (local_section != 0)
+            {                   
+                themeClickInfosToolbar.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }
+            
+            local_section = node("InfosFileTree");
+            if (local_section != 0)
+            {                   
+                themeInfosFileTree.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }            
+            
+            local_section = node("ScrollInfosFile");
+            if (local_section != 0)
+            {  			
+                themeScrollInfosFile.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }
+            
 			section->append_node(otherchild);
 		}
 		
 		otherchild = node("Filtre");
 		if (otherchild != 0)
 		{
-			themeFiltreToolbar.SaveXML(doc, otherchild);
-			themeFiltreEffectTree.SaveXML(doc, otherchild);
-			themeScrollFiltre.SaveXML(doc, otherchild);
+            xml_node<>* local_section = node("FiltreToolbar");
+            if (local_section != 0)
+            {            
+                themeFiltreToolbar.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }
+            
+            local_section = node("FiltreEffectTree");
+            if (local_section != 0)
+            {            
+                themeFiltreEffectTree.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }
+
+            local_section = node("ScrollFiltre");
+            if (local_section != 0)
+            {            
+                themeScrollFiltre.SaveXML(doc, local_section);
+                otherchild->append_node(local_section);
+            }
+            
 			section->append_node(otherchild);
 		}
 
 		otherchild = node("History");
 		if (otherchild != 0)
 		{
-			themeScrollHistoryEffect.SaveXML(doc, otherchild);
-			themeHistoryEffectTree.SaveXML(doc, otherchild);
+            xml_node<>* local_section = node("ScrollHistoryEffect");
+            if (local_section != 0)
+            {              
+                themeScrollHistoryEffect.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            }
+            
+            local_section = node("HistoryEffectTree");
+            if (local_section != 0)
+            {               
+                themeHistoryEffectTree.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            }
+            
 			section->append_node(otherchild);
 		}
 		
@@ -914,8 +1273,19 @@ void CViewerTheme::SaveTheme()
 		otherchild = node("ThumbnailFiltre");
 		if (otherchild != 0)
 		{
-			themeScrollThumbnailEffect.SaveXML(doc, otherchild);
-			themeThumbnailViewerEffectTree.SaveXML(doc, otherchild);
+            xml_node<>* local_section = node("ScrollThumbnailEffect");
+            if (local_section != 0)
+            {              
+                themeScrollThumbnailEffect.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            }            
+
+            local_section = node("ThumbnailViewerEffectTree");
+            if (local_section != 0)
+            {              
+                themeThumbnailViewerEffectTree.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            }      
 			section->append_node(otherchild);
 		}
 		
@@ -923,8 +1293,20 @@ void CViewerTheme::SaveTheme()
 		otherchild = node("EffectVideo");
 		if (otherchild != 0)
 		{
-			themeScrollEffectVideo.SaveXML(doc, otherchild);
-			themeEffectVideoWndTree.SaveXML(doc, otherchild);
+            xml_node<>* local_section = node("ScrollEffectVideo");
+            if (local_section != 0)
+            {              
+                themeScrollEffectVideo.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            }            
+
+            local_section = node("EffectVideoWndTree");
+            if (local_section != 0)
+            {              
+                themeEffectVideoWndTree.SaveXML(doc, otherchild);
+                otherchild->append_node(local_section);
+            } 
+
 			section->append_node(otherchild);
 		}
 		
@@ -945,18 +1327,53 @@ void CViewerTheme::SaveTheme()
 		sectionCategory = node("Folder");
 		if (sectionCategory != 0)
 		{
-			themePaneFolder.SaveXML(doc, sectionCategory);
-			themeFolder.SaveXML(doc, sectionCategory);
-			themeClickFolderToolbar.SaveXML(doc, sectionCategory);
+            xml_node<> * local_section = node("PaneFolder");
+            if (local_section != 0)
+            {              
+                themePaneFolder.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            }   
+
+            local_section = node("Folder");
+            if (local_section != 0)
+            {              
+                themeFolder.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            }             
+
+            local_section = node("ClickFolderToolbar");
+            if (local_section != 0)
+            {              
+                themeClickFolderToolbar.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            } 
+
 			section->append_node(sectionCategory);
 		}
 
 		sectionCategory = node("Category");
 		if (sectionCategory != 0)
 		{
-			themePaneCategory.SaveXML(doc, sectionCategory);
-			themeCategoryTree.SaveXML(doc, sectionCategory);
-			themeScrollCategory.SaveXML(doc, sectionCategory);
+            xml_node<> * local_section = node("PaneCategory");
+            if (local_section != 0)
+            {              
+                themePaneCategory.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            }             
+            
+            local_section = node("CategoryTree");
+            if (local_section != 0)
+            {              
+                themeCategoryTree.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            }             
+            
+            local_section = node("ScrollCategory");
+            if (local_section != 0)
+            {              
+                themeScrollCategory.SaveXML(doc, local_section);
+                sectionCategory->append_node(local_section);
+            }              
 			section->append_node(sectionCategory);
 		}
 		root->append_node(section);
@@ -965,7 +1382,7 @@ void CViewerTheme::SaveTheme()
 	
 
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(filename.ToStdString());
+	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
 	if (file.is_open())
 	{
 		file << doc;
@@ -986,8 +1403,17 @@ void CViewerTheme::LoadTheme()
 	xml_node<> * child_node = root_node->first_node("Main");
 	if (child_node != 0)
 	{
-		themeMainToolbar.LoadXML(child_node);
-		themeCentralWndSplitter.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("MainToolbar");
+        if (nodePreview != 0)        
+            themeMainToolbar.LoadXML(nodePreview);
+        else
+            InitViewerToolbar();
+            
+        nodePreview = child_node->first_node("CentralWndSplitter");
+        if (nodePreview != 0)            
+            themeCentralWndSplitter.LoadXML(nodePreview);
+        else
+            InitCentralWndSplitter();
 	}
 	else
 	{
@@ -998,9 +1424,23 @@ void CViewerTheme::LoadTheme()
 	child_node = root_node->first_node("VideoPreview");
 	if (child_node != 0)
 	{
-		themeVideoControl.LoadXML(child_node);
-		themeVideoToolbar.LoadXML(child_node);
-		themeSliderVideo.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("VideoControl");
+        if (nodePreview != 0)           
+            themeVideoControl.LoadXML(nodePreview);
+        else
+            InitVideoControl();
+        
+        nodePreview = child_node->first_node("VideoToolbar");
+        if (nodePreview != 0)      
+            themeVideoToolbar.LoadXML(nodePreview);
+        else
+            InitVideoToolbar();
+            
+        nodePreview = child_node->first_node("SliderVideo");
+        if (nodePreview != 0)             
+            themeSliderVideo.LoadXML(nodePreview);
+        else
+            InitVideoSlider();
 	}
 	else
 	{
@@ -1012,9 +1452,23 @@ void CViewerTheme::LoadTheme()
 	child_node = root_node->first_node("BitmapPreview");
 	if (child_node != 0)
 	{
-		themeBitmapWindow.LoadXML(child_node);
-		themeBitmapScrollbar.LoadXML(child_node);
-		themeBitmapToolbar.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("BitmapWindow");
+        if (nodePreview != 0)                  
+            themeBitmapWindow.LoadXML(nodePreview);
+        else
+            InitBitmapWindow();
+            
+        nodePreview = child_node->first_node("BitmapScrollbar");
+        if (nodePreview != 0)          
+            themeBitmapScrollbar.LoadXML(nodePreview);
+        else
+            InitBitmapScrollbar();
+            
+        nodePreview = child_node->first_node("BitmapToolbar");
+        if (nodePreview != 0)
+            themeBitmapToolbar.LoadXML(nodePreview);
+        else
+            InitBitmapToolbar();
 	}
 	else
 	{
@@ -1026,10 +1480,29 @@ void CViewerTheme::LoadTheme()
 	child_node = root_node->first_node("PreviewWindow");
 	if (child_node != 0)
 	{
-		themePreviewInfos.LoadXML(child_node);
-		themePreviewPane.LoadXML(child_node);
-		themePreviewToolbar.LoadXML(child_node);	
-		themeBitmapInfos.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("PreviewInfos");
+        if (nodePreview != 0)          
+            themePreviewInfos.LoadXML(nodePreview);
+        else
+            InitPreviewInfosSplitter();
+            
+        nodePreview = child_node->first_node("PreviewPane");
+        if (nodePreview != 0) 
+            themePreviewPane.LoadXML(nodePreview);
+        else
+            InitPreviewPane();
+           
+        nodePreview = child_node->first_node("PreviewToolbar");
+        if (nodePreview != 0)
+            themePreviewToolbar.LoadXML(nodePreview);	
+        else
+            InitPreviewToolbar();
+        
+        nodePreview = child_node->first_node("BitmapInfos");
+        if (nodePreview != 0)
+            themeBitmapInfos.LoadXML(nodePreview);
+        else
+            InitBitmapInfos();
 	}
 	else
 	{
@@ -1042,10 +1515,41 @@ void CViewerTheme::LoadTheme()
 	child_node = root_node->first_node("Thumbnail");
 	if (child_node != 0)
 	{
-		themeThumbnailPane.LoadXML(child_node);
-		themeThumbnail.LoadXML(child_node);
-		themeClickThumbnailToolbar.LoadXML(child_node);
-		themeScrollThumbnail.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("ThumbnailPane");
+        if (nodePreview != 0)        
+            themeThumbnailPane.LoadXML(nodePreview);
+        else
+            InitThumbnailPane();
+            
+        nodePreview = child_node->first_node("Thumbnail");
+        if (nodePreview != 0)
+            themeThumbnail.LoadXML(nodePreview);
+        else
+            InitThumbnail();
+            
+        nodePreview = child_node->first_node("ClickThumbnailToolbar");
+        if (nodePreview != 0)
+            themeClickThumbnailToolbar.LoadXML(nodePreview);
+        else
+            InitClickThumbnailToolbar();
+            
+        nodePreview = child_node->first_node("ScrollThumbnail");
+        if (nodePreview != 0)            
+            themeScrollThumbnail.LoadXML(nodePreview);
+        else
+            InitScrollThumbnail();
+                       
+        nodePreview = child_node->first_node("ThumbnailToolbarZoom");
+        if (nodePreview != 0)
+            themeThumbnailToolbarZoom.LoadXML(nodePreview);
+        else
+            InitThumbnailToolbarZoomTheme();
+            
+        nodePreview = child_node->first_node("ThumbnailToolbar");
+        if (nodePreview != 0)            
+            themeThumbnailToolbar.LoadXML(nodePreview);
+        else
+            InitThumbnailToolbar();
 	}
 	else
 	{
@@ -1053,15 +1557,36 @@ void CViewerTheme::LoadTheme()
 		InitThumbnail();
 		InitClickThumbnailToolbar();
 		InitScrollThumbnail();
+		InitThumbnailToolbarZoomTheme();
+		InitThumbnailToolbar();
 	}
 
 	child_node = root_node->first_node("ThumbnailVideo");
 	if (child_node != 0)
 	{
-		themeThumbnailVideoPane.LoadXML(child_node);
-		themeThumbnailVideo.LoadXML(child_node);
-		themeClickThumbnailVideoToolbar.LoadXML(child_node);
-		themeScrollThumbnailVideo.LoadXML(child_node);
+        xml_node<> * nodePreview = child_node->first_node("ThumbnailVideoPane");
+        if (nodePreview != 0)         
+            themeThumbnailVideoPane.LoadXML(nodePreview);
+        else
+            InitThumbnailVideoPane();
+            
+        nodePreview = child_node->first_node("ThumbnailVideo");
+        if (nodePreview != 0)             
+            themeThumbnailVideo.LoadXML(nodePreview);
+        else
+            InitThumbnailVideo();
+            
+        nodePreview = child_node->first_node("ClickThumbnailVideoToolbar");
+        if (nodePreview != 0)             
+            themeClickThumbnailVideoToolbar.LoadXML(nodePreview);
+        else
+            InitClickThumbnailVideoToolbar();
+            
+        nodePreview = child_node->first_node("ScrollThumbnailVideo");
+        if (nodePreview != 0)             
+            themeScrollThumbnailVideo.LoadXML(nodePreview);
+        else
+            InitScrollThumbnail();
 	}
 	else
 	{
@@ -1074,28 +1599,63 @@ void CViewerTheme::LoadTheme()
 	child_node = root_node->first_node("InfoVideoPicture");
 	if (child_node != 0)
 	{
+        xml_node<> * nodePreview = child_node->first_node("InfosToolbar");
+        if (nodePreview != 0)       		
+            themeInfosToolbar.LoadXML(nodePreview);           
+            
+        nodePreview = child_node->first_node("InfosPane");
+        if (nodePreview != 0)       		
+            themeInfosPane.LoadXML(nodePreview);
 		
-		themeInfosToolbar.LoadXML(child_node);
-		themeInfosPane.LoadXML(child_node);
 		xml_node<> * otherchild = child_node->first_node("Infos");
 		if (otherchild != 0)
 		{
-			themeClickInfosToolbar.LoadXML(otherchild);
-			themeInfosFileTree.LoadXML(otherchild);
-			themeScrollInfosFile.LoadXML(otherchild);
+            xml_node<> * nodePreview = child_node->first_node("ClickInfosToolbar");
+            if (nodePreview != 0)                   
+                themeClickInfosToolbar.LoadXML(nodePreview);
+            else
+                InitClickInfosToolbar();
+            
+            nodePreview = child_node->first_node("InfosFileTree");
+            if (nodePreview != 0)                   
+                themeInfosFileTree.LoadXML(nodePreview);
+            else
+                InitInfosFileTree(); 
+
+            nodePreview = child_node->first_node("ScrollInfosFile");
+            if (nodePreview != 0)                   
+                themeScrollInfosFile.LoadXML(nodePreview);
+            else
+                InitScrollInfosFile();
 		}
 		else
 		{
+            InitClickInfosToolbar();
+            InitInfosFileTree();
 			InitScrollInfosFile();
-			InitInfosFileTree();
+			
 		}
 
 		otherchild = child_node->first_node("Filtre");
 		if (otherchild != 0)
 		{
-			themeFiltreToolbar.LoadXML(otherchild);
-			themeFiltreEffectTree.LoadXML(otherchild);
-			themeScrollFiltre.LoadXML(otherchild);
+            xml_node<> * nodePreview = child_node->first_node("FiltreToolbar");
+            if (nodePreview != 0)             
+                themeFiltreToolbar.LoadXML(nodePreview);
+            else
+                InitFiltreToolbar();
+              
+            nodePreview = child_node->first_node("InfosFileTree");
+            if (nodePreview != 0)
+                themeFiltreEffectTree.LoadXML(nodePreview);
+            else
+                InitFiltreEffectTree();
+                
+            nodePreview = child_node->first_node("ScrollInfosFile");
+            if (nodePreview != 0)
+                themeScrollFiltre.LoadXML(nodePreview);
+            else
+                InitScrollFiltre();
 		}
 		else
 		{
@@ -1107,8 +1667,17 @@ void CViewerTheme::LoadTheme()
 		otherchild = child_node->first_node("History");
 		if (otherchild != 0)
 		{
-			themeScrollHistoryEffect.LoadXML(otherchild);
-			themeHistoryEffectTree.LoadXML(otherchild);
+            xml_node<> * nodePreview = child_node->first_node("ScrollHistoryEffect");
+            if (nodePreview != 0)             
+                themeScrollHistoryEffect.LoadXML(nodePreview);
+            else
+                InitScrollHistoryEffect();
+               
+            nodePreview = child_node->first_node("HistoryEffectTree");
+            if (nodePreview != 0)
+                themeHistoryEffectTree.LoadXML(nodePreview);
+            else
+                InitHistoryEffectTree();
 		}
 		else
 		{
@@ -1120,8 +1689,17 @@ void CViewerTheme::LoadTheme()
 		otherchild = child_node->first_node("ThumbnailFiltre");
 		if (otherchild != 0)
 		{
-			themeScrollThumbnailEffect.LoadXML(otherchild);
-			themeThumbnailViewerEffectTree.LoadXML(otherchild);
+            xml_node<> * nodePreview = child_node->first_node("ScrollThumbnailEffect");
+            if (nodePreview != 0)               
+                themeScrollThumbnailEffect.LoadXML(nodePreview);
+            else
+                InitScrollThumbnailEffect();
+              
+            nodePreview = child_node->first_node("ThumbnailViewerEffectTree");
+            if (nodePreview != 0) 
+                themeThumbnailViewerEffectTree.LoadXML(nodePreview);
+            else
+                InitThumbnailViewerEffectTree();
 		}
 		else
 		{
@@ -1132,8 +1710,17 @@ void CViewerTheme::LoadTheme()
 		otherchild = child_node->first_node("EffectVideo");
 		if (otherchild != 0)
 		{
-			themeScrollEffectVideo.LoadXML(otherchild);
-			themeEffectVideoWndTree.LoadXML(otherchild);
+            xml_node<> * nodePreview = child_node->first_node("ScrollEffectVideo");
+            if (nodePreview != 0)            
+                themeScrollEffectVideo.LoadXML(nodePreview);
+            else
+                InitScrollEffectVideo();
+                
+            nodePreview = child_node->first_node("EffectVideoWndTree");
+            if (nodePreview != 0)                
+                themeEffectVideoWndTree.LoadXML(nodePreview);
+            else
+                InitEffectVideoWndTree();
 		}
 		else
 		{
@@ -1153,9 +1740,23 @@ void CViewerTheme::LoadTheme()
 			nodePreview = child_node->first_node("Folder");
 			if (nodePreview != 0)
 			{
-				themePaneFolder.LoadXML(nodePreview);
-				themeFolder.LoadXML(nodePreview);
-				themeClickFolderToolbar.LoadXML(nodePreview);
+                xml_node<> * node_local = child_node->first_node("PaneFolder");
+                if (node_local != 0)                 
+                    themePaneFolder.LoadXML(node_local);
+                else
+                    InitPaneFolder();
+                  
+                node_local = child_node->first_node("Folder");
+                if (node_local != 0)
+                    themeFolder.LoadXML(node_local);
+                else
+                    InitFolderTheme();
+                
+                node_local = child_node->first_node("ClickFolderToolbar");
+                if (node_local != 0)
+                    themeClickFolderToolbar.LoadXML(node_local);
+                else
+                    InitClickFolderToolbar();
 			}
 			else
 			{
@@ -1167,9 +1768,23 @@ void CViewerTheme::LoadTheme()
 			nodePreview = child_node->first_node("Category");
 			if (nodePreview != 0)
 			{
-				themePaneCategory.LoadXML(nodePreview);
-				themeCategoryTree.LoadXML(nodePreview);
-				themeScrollCategory.LoadXML(nodePreview);
+                xml_node<> * node_local = nodePreview->first_node("PaneCategory");
+                if (node_local != 0)                 
+                    themePaneCategory.LoadXML(node_local);
+                else
+                    InitPaneCategory();
+                    
+                node_local = nodePreview->first_node("CategoryTree");
+                if (node_local != 0)                       
+                    themeCategoryTree.LoadXML(node_local);
+                else
+                    InitCategoryTree();
+                    
+                node_local = nodePreview->first_node("ScrollCategory");
+                if (node_local != 0)                    
+                    themeScrollCategory.LoadXML(node_local);
+                else
+                    InitScrollCategory();
 			}
 			else
 			{
@@ -1264,4 +1879,8 @@ void CViewerTheme::InitTheme()
 
 	InitThumbnail();
 	InitThumbnailVideo();
+
+
+	InitThumbnailToolbarZoomTheme();
+	InitThumbnailToolbar();
 }

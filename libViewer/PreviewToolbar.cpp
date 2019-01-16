@@ -4,7 +4,6 @@
 #include <ConfigParam.h>
 #include <LibResource.h>
 #include "ViewerParam.h"
-#include <effect.h>
 #include "MainWindow.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -18,6 +17,10 @@ using namespace Regards::Viewer;
 CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface)
 	: CToolbarWindow(parent, id, theme)
 {
+	imagePlayDiaporama = nullptr;
+	imageStopDiaporama = nullptr;
+	fullscreen = nullptr;
+
 	wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN",1);
 	wxString libelleFirst = CLibResource::LoadStringFromResource(L"LBLFIRST",1);
 	wxString libellePrevious = CLibResource::LoadStringFromResource(L"LBLPREVIOUS",1);
@@ -111,14 +114,14 @@ void CPreviewToolbar::SetFullscreen()
 {
     wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLSCREEN",1);
     fullscreen->SetLibelle(libelleFullscreen);
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 void CPreviewToolbar::SetScreen()
 {
     wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN",1);
     fullscreen->SetLibelle(libelleFullscreen);
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 void CPreviewToolbar::Rotate90()
@@ -187,7 +190,7 @@ void CPreviewToolbar::DiaporamaStart()
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
 		mainWindow->StartDiaporama();
-		this->Refresh();
+		this->FastRefresh(this);
 	}
 }
 
@@ -199,7 +202,7 @@ void CPreviewToolbar::DiaporamaStop()
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
 		mainWindow->StopDiaporama();
-		this->Refresh();
+		this->FastRefresh(this);
 	}
 }
 

@@ -10,16 +10,14 @@
 
 #include "SVGUseElement.h"
 
-wxSVGRect wxSVGUseElement::GetBBox(wxSVG_COORDINATES coordinates)
-{
-  wxSVGRect bbox = wxSVGRect(GetX().GetAnimVal(), GetY().GetAnimVal(),
-	GetWidth().GetAnimVal(), GetHeight().GetAnimVal());
-  if (coordinates != wxSVG_COORDINATES_USER)
-    bbox.MatrixTransform(GetMatrix(coordinates));
-  return bbox;
+wxSVGRect wxSVGUseElement::GetBBox(wxSVG_COORDINATES coordinates) {
+	wxSVGRect bbox = wxSVGRect(GetX().GetAnimVal(), GetY().GetAnimVal(), GetWidth().GetAnimVal(),
+			GetHeight().GetAnimVal());
+	if (coordinates != wxSVG_COORDINATES_USER)
+		bbox = bbox.MatrixTransform(GetMatrix(coordinates));
+	return bbox;
 }
 
-wxSVGRect wxSVGUseElement::GetResultBBox(wxSVG_COORDINATES coordinates)
-{
-  return GetBBox(coordinates);
+wxSVGRect wxSVGUseElement::GetResultBBox(wxSVG_COORDINATES coordinates) {
+	return GetBBox(coordinates);
 }

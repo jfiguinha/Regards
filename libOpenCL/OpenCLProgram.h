@@ -1,17 +1,9 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
-using namespace std;
-
 
 namespace Regards
 {
@@ -41,7 +33,7 @@ namespace Regards
 			wxString buildOption;
 			wxString numProgramId;
 			cl_program program;
-			COpenCLContext * context = nullptr;
+			COpenCLContext * context;
 		};
 
 	}

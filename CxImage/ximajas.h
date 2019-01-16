@@ -13,16 +13,17 @@
 #define __ximaJAS_h
 
 #include "ximage.h"
-#include <mutex>
-using namespace std;
+
+
 
 #if CXIMAGE_SUPPORT_JASPER
 
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__MINGW32__)
  #include <jasper/jasper.h>
 #else
  #include "../jasper/include/jasper/jasper.h"
 #endif
+
 
 class CxImageJAS: public CxImage
 {
@@ -39,8 +40,6 @@ public:
 	bool Encode(FILE *hFile, uint32_t imagetype = 0) { CxIOFile file(hFile); return Encode(&file,imagetype); }
 #endif // CXIMAGE_SUPPORT_ENCODE
 protected:
-    
-    static mutex muJasper;
 
 	class CxFileJas
 	{

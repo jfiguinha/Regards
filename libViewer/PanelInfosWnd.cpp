@@ -6,7 +6,6 @@
 #include "ViewerThemeInit.h"
 #include "RedEyeParameter.h"
 #include <Gps.h>
-#include <effect.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #include "../include/config_id.h"
@@ -22,7 +21,8 @@
 #include "FiltreEffectWnd.h"
 #include "InfoEffectWnd.h"
 #include "ThumbnailViewerEffectWnd.h"
-
+#include <ImageLoadingFormat.h>
+#include <FilterData.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -32,14 +32,38 @@ wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
-CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CVideoEffectParameter * videoEffectParameter, CFileGeolocation * fileGeolocalisation)
-	: CWindowMain(parent, id)
+CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation)
+	: CWindowMain("CPanelInfosWnd",parent, id)
 {
+    m_animationCtrl = nullptr;
+	infosFileWnd = nullptr;
+         
+    historyEffectWnd = nullptr;
+	thumbnailEffectWnd = nullptr;
+	filtreEffectWnd = nullptr;
+    criteriaTreeWnd = nullptr;
+
+	webBrowser = nullptr;
+	infosToolbar = nullptr;
+
+	//Effect Parameter
+	modificationManager = nullptr;
+
+    isThumbnail = false;
+	isVideo = false;
+	filename = L"";
+	//bitmap = new CRegardsBitmap();
+	width = 0;
+	height = 0;
+    url = "http://www.google.fr";
+	windowVisible = INFOS_WINDOW;
+ 
+
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 
     
-    wxString folder = CFileUtility::GetResourcesFolderPath();
+    wxString folder = CFileUtility::GetDocumentFolderPath();
 #ifdef __APPLE__
     
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
@@ -47,7 +71,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 #endif
     
 	modificationManager = new CModificationManager(folder);
-	this->videoEffectParameter = videoEffectParameter;
 
 	if (viewerTheme != nullptr)
 	{
@@ -58,35 +81,11 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
         viewerTheme->GetTreeInfosFileTheme(&theme);
         
         infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
+
+		infosFileWnd->Show(false);
 	}
 	
-    
-#ifdef EFFECT_VIDEO
-	if (config->GetVideoLibrary() == LIBOPENGL)
-	{
-		if (viewerTheme != nullptr)
-		{
-			openGLVideoMode = true;
-
-			CThemeScrollBar themeScroll;
-			viewerTheme->GetScrollEffectVideoTheme(&themeScroll);
-			effectVideoWndScroll = new CScrollbarWnd(this, wxID_ANY);
-
-			CThemeTree theme;
-			viewerTheme->GetTreeEffectVideoWndTheme(&theme);
-			treeEffectVideo = new CTreeWindow(effectVideoWndScroll, wxID_ANY, theme);
-
-			effectVideoWndScroll->SetCentralWindow(treeEffectVideo, themeScroll);
-
-			effectVideoWndScroll->Show(false);
-			//treeEffectVideo->Show(false);
-		}
-	}
-	else
-		openGLVideoMode = false;
-#endif
-
-	if (viewerTheme != nullptr)
+ 	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetFiltreScrollTheme(&themeScroll);
@@ -94,8 +93,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 		CThemeTree themeTree;
 		viewerTheme->GetTreeFiltreEffectTheme(&themeTree);
 
-        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);
-        
+        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);    
         filtreEffectWnd->Show(false);
 	}
 
@@ -127,7 +125,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 		thumbnailEffectWnd->Show(false);
 	}
     
-	webBrowser = wxWebView::New(this, wxID_ANY, url);
+	webBrowser = wxWebView::New(this, wxID_ANY);
 	webBrowser->Show(false);
 	
 	if (viewerTheme != nullptr)
@@ -136,9 +134,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 		viewerTheme->GetInfosToolbarTheme(&theme);
 		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this);
 	}
-
-    
-#ifdef VIEWER
     
     if (viewerTheme != nullptr)
     {
@@ -149,8 +144,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
         viewerTheme->GetTreeInfosFileTheme(&themeTree);
         criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
     }
-    
-#endif
+
 
 	this->fileGeolocalisation = fileGeolocalisation;
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CPanelInfosWnd::OnSize));
@@ -169,8 +163,23 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
 }
 
+CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
+{
+	if(filtreEffectWnd != nullptr)
+	{
+		numFiltre = filtreEffectWnd->GetNumFiltre();
+		return filtreEffectWnd->GetFiltreEffect();
+	}
+	return nullptr;
+}
+
 void CPanelInfosWnd::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+    
     wxPaintDC dc(this);
     wxRect rc = GetRect();
     this->FillRect(&dc, rc, themeBitmap.colorScreen);
@@ -185,24 +194,11 @@ wxString CPanelInfosWnd::GetFilename()
 CPanelInfosWnd::~CPanelInfosWnd()
 {
     delete(m_animationCtrl);
-    delete bitmap;
-	delete(infosFileWnd);
-#ifdef EFFECT_VIDEO
-	delete(effectVideoWndOld);
-#endif
-    
+    //delete bitmap;
+	delete(infosFileWnd);  
 	delete(historyEffectWnd);
 	delete(filtreEffectWnd);
-    
-#ifdef EFFECT_VIDEO
-	delete(treeEffectVideo);
-	delete(effectVideoWndScroll);
-#endif
-    
-#ifdef VIEWER
     delete(criteriaTreeWnd);
-#endif
-
 	delete(thumbnailEffectWnd);
 	delete(infosToolbar);
 	delete(webBrowser);
@@ -222,11 +218,9 @@ void CPanelInfosWnd::UpdateScreenRatio()
     
     if(filtreEffectWnd != nullptr)
         filtreEffectWnd->UpdateScreenRatio();
-    
-#ifdef VIEWER
+
     if(criteriaTreeWnd != nullptr)
         criteriaTreeWnd->UpdateScreenRatio();
-#endif
 
     infosToolbar->UpdateScreenRatio();
 
@@ -290,34 +284,27 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 	}
 }
 
-void CPanelInfosWnd::SetBitmapFile(const wxString &filename, CRegardsBitmap * bitmap, const bool &isThumbnail)
+void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumbnail)
 {
-    if(!isThumbnail)
-    {
-        *this->bitmap = *bitmap;
-        infosToolbar->SetPictureToolbar();
-        
-    }
-    else
-    {
-        infosToolbar->SetPictureThumbnailToolbar();
-        infosToolbar->SetInfosActif();
-    }
-    
+	if(!isThumbnail)
+		infosToolbar->SetPictureToolbar();
+	else
+		infosToolbar->SetPictureThumbnailToolbar();
+
+
 	if (this->filename != filename)
 	{
+
+
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
-
-		//fileGeolocalisation->SetFile(filename);
 
 		if (!fileGeolocalisation->HasGps())
 			infosToolbar->SetMapInactif();
 		else
 			infosToolbar->SetMapActif();
 
-		if (isVideo)
-			infosToolbar->SetInfosActif();
+		infosToolbar->SetInfosActif();
 
 		if (!fileGeolocalisation->HasGps())
 		{
@@ -341,7 +328,7 @@ void CPanelInfosWnd::ApplyEffect(const int &numItem)
 {
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-    filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this);
+    filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, isVideo);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
@@ -352,10 +339,23 @@ void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-    CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-    if (bitmapViewer != nullptr)
+	CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+   
+    if (showBitmap != nullptr)
+	{
+		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
+		bitmapViewer->OnFiltreCancel();
         bitmapViewer->SetBitmapPreviewEffect(0);
-	ShowEffect();
+	}
+    
+    
+    CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+    if (mainWindow != nullptr)
+    {
+        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
+        mainWindow->GetEventHandler()->AddPendingEvent(evt);
+    }
+    ShowEffect();
 }
 
 void CPanelInfosWnd::ClickShowButton(const int &id)
@@ -374,6 +374,13 @@ void CPanelInfosWnd::ClickShowButton(const int &id)
 	case WM_MAPS:
 		ShowMap();
 		break;
+	case WM_AUDIOVIDEO:
+		ShowAudioVideo();
+		break;
+	case WM_VIDEOEFFECT:
+		ShowVideoEffect();
+		break;
+
 #ifdef VIEWER
     case WM_CRITERIA:
         ShowCriteria();
@@ -394,28 +401,41 @@ void CPanelInfosWnd::ShowSettings()
 
 void CPanelInfosWnd::EffectUpdate()
 {
-	if (isVideo)
+	if (thumbnailEffectWnd->GetFilename() != filename)
 	{
-#ifdef EFFECT_VIDEO
-		CEffectVideoWnd * effectVideo = new CEffectVideoWnd(videoEffectParameter, treeEffectVideo->GetTheme(), treeEffectVideo);
-		effectVideo->Init();
-		treeEffectVideo->SetTreeControl(effectVideo);
-		delete(effectVideoWndOld);
-		effectVideoWndOld = effectVideo;
-#endif
+		thumbnailEffectWnd->SetFile(filename);
 	}
-	else
+}
+
+void CPanelInfosWnd::AudioVideoUpdate()
+{
+	if (thumbnailEffectWnd->GetFilename() != filename)
 	{
-		if (thumbnailEffectWnd->GetFilename() != filename)
-			thumbnailEffectWnd->SetFile(filename, bitmap);
+		thumbnailEffectWnd->SetFile(filename);
+	}
+}
+
+void CPanelInfosWnd::VideoEffectUpdate()
+{
+	if (thumbnailEffectWnd->GetFilename() != filename)
+	{
+		thumbnailEffectWnd->SetFile(filename);
 	}
 }
 
 void CPanelInfosWnd::HistoryUpdate()
 {
-	wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
-	CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-    historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, bitmapViewer->GetBitmapViewer(), modificationManager);
+	if(!isVideo)
+	{
+		wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
+		CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+		if(bitmapViewer != nullptr)
+		{
+			CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, bitmapViewer->GetBitmapViewer(), modificationManager);
+			delete bitmap;
+		}
+	}
 }
 
 void CPanelInfosWnd::LoadInfo()
@@ -428,12 +448,10 @@ void CPanelInfosWnd::LoadInfo()
 			InfosUpdate();
             infosToolbar->SetInfosPush();
 			break;
-#ifdef VIEWER
         case WM_CRITERIA:
             criteriaTreeWnd->SetFile(filename);
             infosToolbar->SetCriteriaPush();
             break;
-#endif
 		case HISTORY_WINDOW:
 			HistoryUpdate();
             infosToolbar->SetHistoryPush();
@@ -442,6 +460,15 @@ void CPanelInfosWnd::LoadInfo()
 			EffectUpdate();
             infosToolbar->SetEffectPush();
 			break;
+		case WM_AUDIOVIDEO:
+			AudioVideoUpdate();
+            infosToolbar->SetAudioVideoPush();
+			break;
+		case WM_VIDEOEFFECT:
+			VideoEffectUpdate();
+            infosToolbar->SetVideoEffectPush();
+			break;
+
 		case WEB_WINDOW:
             {
                 wxString newUrl = MapsUpdate();
@@ -469,7 +496,6 @@ wxString CPanelInfosWnd::MapsUpdate()
     return url;
 }
 
-#ifdef VIEWER
 void CPanelInfosWnd::ShowCriteria()
 {
     HideAllWindow();
@@ -479,8 +505,38 @@ void CPanelInfosWnd::ShowCriteria()
     Resize();
 }
 
+void CPanelInfosWnd::ShowVideoEffect()
+{
+	HideAllWindow();
+    if (!thumbnailEffectWnd->IsShown())
+		thumbnailEffectWnd->Show(true);
+    
+	filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, this, filename, isVideo);
+	windowVisible = WM_VIDEOEFFECT;
+	LoadInfo();
+
+	Resize();
+	thumbnailEffectWnd->Refresh();
+}
+
+void CPanelInfosWnd::ShowAudioVideo()
+{
+	HideAllWindow();
+    if (!thumbnailEffectWnd->IsShown())
+		thumbnailEffectWnd->Show(true);
+    
+	filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, this, filename, isVideo);
+	windowVisible = WM_AUDIOVIDEO;
+	LoadInfo();
+
+	Resize();
+	thumbnailEffectWnd->Refresh();
+}
+
 void CPanelInfosWnd::UpdateData()
 {
+	fileGeolocalisation->RefreshData();
+
     if (!fileGeolocalisation->HasGps())
     {
         if (webBrowser->IsShown())
@@ -492,17 +548,21 @@ void CPanelInfosWnd::UpdateData()
     else
         infosToolbar->SetMapActif();
     
+	
     LoadInfo();
 }
 
-#endif
+
 
 void CPanelInfosWnd::ShowFiltre(const wxString &title)
 {
 	HideAllWindow();
-    infosToolbar->SetEffectParameterPush();
-	filtreEffectWnd->Show(true);
-	infosToolbar->SetEffectParameterActif(title);
+	infosToolbar->SetEffectParameterPush();
+	filtreEffectWnd->Show(true);	
+	if(windowVisible == EFFECT_WINDOW)
+	{
+		infosToolbar->SetEffectParameterActif(title);	
+	}
 	Resize();
 }
 
@@ -518,46 +578,15 @@ void CPanelInfosWnd::ShowHistory()
 void CPanelInfosWnd::ShowEffect()
 {
 	HideAllWindow();
-
-#ifdef EFFECT_VIDEO
-	if (isVideo && openGLVideoMode)
-	{
-		effectVideoWndScroll->Show(true);
-		if (!treeEffectVideo->IsShown())
-			treeEffectVideo->Show(true);
-	}
-	else
-	{
-		thumbnailEffectScroll->Show(true);
-		if (!thumbnailEffect->IsShown())
-			thumbnailEffect->Show(true);
-	}
-#else
+    if (!thumbnailEffectWnd->IsShown())
+		thumbnailEffectWnd->Show(true);
     
-    if(!isVideo)
-    {
-        if (!thumbnailEffectWnd->IsShown())
-            thumbnailEffectWnd->Show(true);
-    }
-    
-#endif
 
 	windowVisible = EFFECT_WINDOW;
 	LoadInfo();
 
 	Resize();
-    
-#ifdef EFFECT_VIDEO
-	if (isVideo && openGLVideoMode)
-		effectVideoWndScroll->Refresh();
-	else
-		thumbnailEffectScroll->Refresh();
-#else
-    
-    if(!isVideo)
-        thumbnailEffectWnd->Refresh();
-    
-#endif
+	thumbnailEffectWnd->Refresh();
 }
 
 void CPanelInfosWnd::ShowInfos()
@@ -580,9 +609,35 @@ void CPanelInfosWnd::ShowMap()
 
 void CPanelInfosWnd::OnSize(wxSizeEvent& event)
 {
-	width = event.GetSize().GetWidth();
-	height = event.GetSize().GetHeight();
-	Resize();
+    
+	int pictureWidth = event.GetSize().GetWidth();
+	int pictureHeight = event.GetSize().GetHeight();
+	/*
+	int pictureWidth = width;
+	int pictureHeight = height;
+
+    if(scrollHorizontal != nullptr && scrollVertical != nullptr)
+    {
+        bool valueH = scrollHorizontal->IsShown();
+        bool valueV = scrollVertical->IsShown();
+        if (valueV)
+            pictureWidth -= scrollVertical->GetWidthSize();
+
+        if (valueH)
+            pictureHeight -= scrollHorizontal->GetHeightSize();
+    }
+	*/
+	if(pictureWidth > 0 && pictureHeight > 0)
+	{
+		width = pictureWidth;
+		height = pictureHeight;
+#if defined(WIN32) && defined(_DEBUG)
+		wxString toShow = "CPanelInfosWnd size x : " + to_string(width) + " y : " + to_string(height) + "\n";
+		OutputDebugString(toShow.ToStdWstring().c_str());
+		
+#endif
+		Resize();
+	}
 }
 
 
@@ -616,23 +671,22 @@ void CPanelInfosWnd::InfosUpdate()
 {
     if(infosFileWnd != nullptr)
         infosFileWnd->InfosUpdate(filename);
+	//infosFileWnd->Resize();
+
+	//int x = infosFileWnd->GetSize().x;
+	//int y = infosFileWnd->GetSize().y;
 }
 
 void CPanelInfosWnd::HideAllWindow()
 {
 	infosToolbar->SetEffectParameterInactif();
 	infosFileWnd->Show(false);
-#ifdef EFFECT_VIDEO
-	if (openGLVideoMode)
-		effectVideoWndScroll->Show(false);
-#endif
 	historyEffectWnd->Show(false);
 	thumbnailEffectWnd->Show(false);
 	webBrowser->Show(false);
 	filtreEffectWnd->Show(false);
-#ifdef VIEWER
     criteriaTreeWnd->Show(false);
-#endif
+
 }
 
 
@@ -645,7 +699,12 @@ void CPanelInfosWnd::Resize()
 	rcAffichageBitmap.width = width;
 	rcAffichageBitmap.height = height - infosToolbar->GetHeight();
 
-	infosToolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, infosToolbar->GetHeight());
+	if(infosToolbar != nullptr)
+	{
+		infosToolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, infosToolbar->GetHeight());
+		//infosToolbar->SendSizeEvent();
+	}
+
 
     if(m_animationCtrl->IsShown())
     {
@@ -656,23 +715,31 @@ void CPanelInfosWnd::Resize()
         int yPos = infosToolbar->GetHeight() + ((height - infosToolbar->GetHeight()) - animationSize.GetHeight()) / 2;
         
         m_animationCtrl->SetSize(xPos, yPos, animationSize.GetWidth(), animationSize.GetHeight());
+		//m_animationCtrl->SendSizeEvent();
     }
-	else if (infosFileWnd->IsShown())
-		infosFileWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-#ifdef EFFECT_VIDEO
-	else if (effectVideoWndScroll->IsShown() && openGLVideoMode)
-		effectVideoWndScroll->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-#endif
-	else if (thumbnailEffectWnd->IsShown())
-		thumbnailEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-	else if (historyEffectWnd->IsShown())
-		historyEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-	else if (webBrowser->IsShown())
-		webBrowser->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-	else if (filtreEffectWnd->IsShown())
-		filtreEffectWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-#ifdef VIEWER
-    else if (criteriaTreeWnd->IsShown())
-        criteriaTreeWnd->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
-#endif
+	else
+	{
+		wxWindow * windowToShow = nullptr;
+		if (infosFileWnd->IsShown())
+			windowToShow = infosFileWnd;
+		else if (thumbnailEffectWnd->IsShown())
+			windowToShow = thumbnailEffectWnd;
+		else if (historyEffectWnd->IsShown())
+			windowToShow = historyEffectWnd;
+		else if (webBrowser->IsShown())
+			windowToShow = webBrowser;
+		else if (filtreEffectWnd->IsShown())
+			windowToShow = filtreEffectWnd;
+		else if (criteriaTreeWnd->IsShown())
+			windowToShow = criteriaTreeWnd;
+
+		if(windowToShow != nullptr)
+		{
+			windowToShow->SetSize(rcAffichageBitmap.x, infosToolbar->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+			//windowToShow->SendSizeEvent();
+		}
+	}
+
+
+
 }

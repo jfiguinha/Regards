@@ -48,15 +48,16 @@ namespace Regards
 			VectorNavigatorElement navElement;
 			CToolbarElement * navPush;
 			CThemeToolbar themeToolbar;
-            bool saveLastPush = false;
+            bool saveLastPush;
             
 		private:
 
+            void DrawButton(wxDC * dc, CToolbarElement * nav);
 			void EmptyNavigator();
 			int numButtonActif;
 			bool m_bIconeOn;
 			bool m_bMouseMove;
-			bool m_bMouseOver = false;
+			bool m_bMouseOver;
             
             wxBitmap background;
             wxImage backPicture;

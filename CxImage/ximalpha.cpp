@@ -143,6 +143,15 @@ uint8_t CxImage::AlphaGet(const int32_t x,const int32_t y)
 	if (pAlpha && IsInside(x,y)) return pAlpha[x+y*head.biWidth];
 	return 0;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Gets the alpha level for a single pixel 
+ */
+uint8_t * CxImage::GetAlpha()
+{
+	return pAlpha;
+}
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * Returns pointer to alpha data for pixel (x,y).

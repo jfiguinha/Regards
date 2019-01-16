@@ -26,7 +26,7 @@ int CSqlCountry::TraitementResult(CSqlResult * sqlResult)
 	while (sqlResult->Next())
 	{
 		CCountry _cCountry;
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 
 			switch (i)

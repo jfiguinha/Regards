@@ -2,6 +2,7 @@
 #include <fstream>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
+#include <ConvertUtility.h>
 using namespace rapidxml;
 
 CConfigParam::CConfigParam()
@@ -19,7 +20,7 @@ bool CConfigParam::OpenFile(const wxString &configFile)
 	filename = configFile;
 	doc.clear();
 	// Read the xml file into a vector
-	ifstream theFile(filename.ToStdString());
+	ifstream theFile(CConvertUtility::ConvertToStdString(filename));
 	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
 	if (buffer.size() > 0)
 	{

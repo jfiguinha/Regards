@@ -4,6 +4,7 @@
 #include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
+#include <ImageLoadingFormat.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -16,32 +17,43 @@ using namespace Regards::Viewer;
 
 wxDEFINE_EVENT(EVENT_HIDDENPANE, wxCommandEvent);
 
-CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CVideoEffectParameter * videoEffectParameter, const bool &horizontal)
+CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, 
+	IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, const bool &horizontal)
 	: CSplitter(parent, id, theme)
 {
+	posBarInfos = 0;
+	paneFilter = nullptr;
+	clickInfoToolbar = nullptr;
+	criteriaFolderWnd = nullptr;
+	previewInfosWnd = nullptr;
+	viewerconfig = nullptr;
+
+	fullscreen = false;
+	paneFilterShow = true;
+	clickToobarShow = false;
+
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
-		previewInfosWnd = new CPreviewInfosWnd(this, wxID_ANY, statusBarInterface, theme, videoEffectParameter, false);
+
+		CThemeToolbar themeClickInfosToolbar;
+		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
+		//previewInfosWnd = new CPreviewThumbnailFolderSplitter(this, wxID_ANY, statusBarInterface, theme, themeClickInfosToolbar, videoEffectParameter, false);
+		previewInfosWnd = new CPreviewInfosWnd(this, PREVIEWINFOWND, statusBarInterface, theme, false);
 	}
 
 	if (viewerTheme != nullptr)
 	{
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);
-		CThemePane themePane;
-		CThemeScrollBar themeScroll;
-		CThemeTree themeTree;
+		CThemeSplitter theme;
+		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
 
-		viewerTheme->GetPaneCategory(themePane);
-		paneFilter = new CPane(this, wxID_ANY, this, CATALOG_FILTER, themePane);
-		paneFilter->SetTitle(libelle);
-		paneFilter->SetClosable(true);
+		CThemeToolbar themeClickInfosToolbar;
+		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
 
-		categoryFolderWnd = new CCategoryFolderWindow(paneFilter, CATEGORYFOLDERWINDOWID, statusBarInterface);
-		paneFilter->SetOtherWindow(categoryFolderWnd);
+		criteriaFolderWnd = new CCriteriaFolderSplitter(this, CRITERIAFOLDERWINDOWID, statusBarInterface, theme, themeClickInfosToolbar, false);
 	}
 
 
@@ -55,8 +67,9 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, 
 
 	SetHorizontal(horizontal);
 
-	this->SetWindow(paneFilter, previewInfosWnd);
+	this->SetWindow(criteriaFolderWnd, previewInfosWnd);
 
+	bool showFolder = true;
 	bool showFilter = true;
 	CConfigParam * configParam = CViewerParamInit::getInstance();
 	if (configParam != nullptr)
@@ -64,11 +77,21 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, 
 		viewerconfig = (CViewerParam *)configParam;
 		this->posBar = viewerconfig->GetPositionCriteriaPreview();
 		viewerconfig->GetShowFilter(showFilter);
+		viewerconfig->GetShowFolder(showFolder);
+
 	}
 
-	ShowWindow(showFilter);
+	if (showFolder || showFilter)
+		ShowWindow(showFilter);
+	else
+		ClosePane(CATALOG_FILTER);
 
+	//Connect(EVENT_HIDDENPANE, wxCommandEventHandler(CFilterPreviewSplitter::OnHidePane));
 	Connect(EVENT_HIDDENPANE, wxCommandEventHandler(CFilterPreviewSplitter::OnHidePane));
+	Connect(wxEVENT_ALLPANECLOSED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::CloseWindow));
+	Connect(wxEVENT_PANELCRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::ShowPanelCriteria));
+	Connect(wxEVENT_PANELFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::ShowPanelFolder));
+
 }
 
 CFilterPreviewSplitter::~CFilterPreviewSplitter()
@@ -79,21 +102,20 @@ CFilterPreviewSplitter::~CFilterPreviewSplitter()
 	if (previewInfosWnd != nullptr)
 		delete(previewInfosWnd);
 
-	if (categoryFolderWnd != nullptr)
-		delete(categoryFolderWnd);
+	if (criteriaFolderWnd != nullptr)
+		delete(criteriaFolderWnd);
 }
 
 wxString CFilterPreviewSplitter::GetSqlRequest()
 {
-    if (categoryFolderWnd != nullptr)
-        return categoryFolderWnd->GetSqlRequest();
-    return "";
+	if (criteriaFolderWnd != nullptr)
+		return criteriaFolderWnd->GetSqlRequest();
+	return "";
 }
 
-void CFilterPreviewSplitter::InitSaveParameter()
+void CFilterPreviewSplitter::CloseWindow(wxCommandEvent& event)
 {
-    if (categoryFolderWnd != nullptr)
-        categoryFolderWnd->InitSaveParameter();
+	ClosePane(CATALOG_FILTER);
 }
 
 void CFilterPreviewSplitter::OnHidePane(wxCommandEvent& event)
@@ -101,34 +123,38 @@ void CFilterPreviewSplitter::OnHidePane(wxCommandEvent& event)
 	this->Resize(this);
 }
 
-void CFilterPreviewSplitter::UpdateInfos()
+void CFilterPreviewSplitter::ShowPanelCriteria(wxCommandEvent& aEvent)
 {
-    if (previewInfosWnd != nullptr)
-        previewInfosWnd->UpdateInfos();
+	if (criteriaFolderWnd != nullptr)
+	{
+		if (!criteriaFolderWnd->IsShown())
+			ClickShowButton(CATALOG_FILTER);
+
+		wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+		if (window)
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELCRITERIA);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+	}
 }
 
-void CFilterPreviewSplitter::RefreshFilter()
+void CFilterPreviewSplitter::ShowPanelFolder(wxCommandEvent& aEvent)
 {
-    if (categoryFolderWnd != nullptr)
-        categoryFolderWnd->RefreshFilter();
-}
+	if (criteriaFolderWnd != nullptr)
+	{
+		if (!criteriaFolderWnd->IsShown())
+			ClickShowButton(CATALOG_FILTER);
 
-void CFilterPreviewSplitter::ShowToolbar()
-{
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->ShowToolbar();
-}
-
-void CFilterPreviewSplitter::UpdateCriteria(const int64_t & idFolder)
-{
-	if (categoryFolderWnd != nullptr)
-		categoryFolderWnd->Init(idFolder);
-}
-
-void CFilterPreviewSplitter::HideToolbar()
-{
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->HideToolbar();
+		//criteriaFolderWnd->ShowPanelFolder();
+		wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+		if (window)
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELFOLDER);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
 }
 
 void CFilterPreviewSplitter::SetDiaporamaMode()
@@ -149,8 +175,8 @@ void CFilterPreviewSplitter::UpdateScreenRatio()
 	if (previewInfosWnd != nullptr)
 		previewInfosWnd->UpdateScreenRatio();
 
-	if (categoryFolderWnd != nullptr)
-		categoryFolderWnd->UpdateScreenRatio();
+	if (criteriaFolderWnd != nullptr)
+		criteriaFolderWnd->UpdateScreenRatio();
 }
 
 void CFilterPreviewSplitter::SetEffect(const bool &effect)
@@ -166,18 +192,6 @@ bool CFilterPreviewSplitter::IsPanelInfosVisible()
 	return false;
 }
 
-void CFilterPreviewSplitter::HidePanelInfos()
-{
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->HidePanelInfos();
-}
-
-void CFilterPreviewSplitter::ShowPanelInfos()
-{
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->ShowPanelInfos();
-}
-
 void CFilterPreviewSplitter::SetVideo(const wxString &path)
 {
 	if (previewInfosWnd != nullptr)
@@ -190,17 +204,14 @@ void CFilterPreviewSplitter::StartLoadingPicture()
 		previewInfosWnd->StartLoadingPicture();
 }
 
-bool CFilterPreviewSplitter::SetAnimation(const wxString &filename)
+bool CFilterPreviewSplitter::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation)
 {
-	if (previewInfosWnd != nullptr)
-		return previewInfosWnd->SetAnimation(filename);
-	return false;
-}
-
-bool CFilterPreviewSplitter::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
-{
-	if (previewInfosWnd != nullptr)
-		return previewInfosWnd->SetBitmap(bitmap, isThumbnail);
+    TRACE();
+	if(bitmap != nullptr && bitmap->IsOk())
+	{
+		if (previewInfosWnd != nullptr)
+			return previewInfosWnd->SetBitmap(bitmap, isThumbnail, isAnimation);
+	}
 	return false;
 }
 
@@ -211,8 +222,8 @@ void CFilterPreviewSplitter::FullscreenMode()
 
 	fullscreen = true;
 	this->posBarInfos = this->posBar;
-	paneFilterShow = paneFilter->IsShown();
-	paneFilter->Show(false);
+	paneFilterShow = criteriaFolderWnd->IsShown();
+	criteriaFolderWnd->Show(false);
 	clickToobarShow = clickInfoToolbar->IsShown();
 
 	clickInfoToolbar->Show(false);
@@ -226,14 +237,25 @@ void CFilterPreviewSplitter::ScreenMode()
 		previewInfosWnd->ScreenMode();
 
 	fullscreen = false;
-	paneFilter->Show(paneFilterShow);
+	
+	if(criteriaFolderWnd != nullptr)
+	{
+		criteriaFolderWnd->Show(paneFilterShow);
+		criteriaFolderWnd->ScreenMode();
+	}
 
 	if (!paneFilterShow)
 		ClosePane(CATALOG_FILTER);
 	else
 	{
-		this->SetWindow(paneFilter, previewInfosWnd);
-		ShowPanelInfos();
+		this->SetWindow(criteriaFolderWnd, previewInfosWnd);
+		//ShowPanelInfos();
+		wxWindow * window = this->FindWindowById(PREVIEWINFOWND);
+		if (window)
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWPANELINFO);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 		this->SetSeparationBarVisible(true);
 		this->Resize(this);
 	}
@@ -244,20 +266,20 @@ void CFilterPreviewSplitter::ClickShowButton(const int &id)
 	switch (id)
 	{
 	case CATALOG_FILTER:
+	{
+		ShowWindow(true);
+
+
+		CViewerParam * config = CViewerParamInit::getInstance();
+		if (config != nullptr)
 		{
-			ShowWindow(true);
-
-
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetShowFilter(true);
-			}
-
-
+			CViewerParam * viewerParam = (CViewerParam *)config;
+			viewerParam->SetShowFilter(true);
 		}
-		break;
+
+
+	}
+	break;
 	}
 	this->Resize(this);
 }
@@ -267,35 +289,43 @@ void CFilterPreviewSplitter::ClosePane(const int &id)
 	switch (id)
 	{
 	case CATALOG_FILTER:
-		{
-			ShowWindow(false);
+	{
+		ShowWindow(false);
 
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetShowFilter(false);
-			}
+		CViewerParam * config = CViewerParamInit::getInstance();
+		if (config != nullptr)
+		{
+			CViewerParam * viewerParam = (CViewerParam *)config;
+			viewerParam->SetShowFilter(false);
 		}
-		break;
+	}
+	break;
 	}
 	this->Resize(this);
+}
+
+void CFilterPreviewSplitter::HidePanel()
+{
+    ClosePane(CATALOG_FILTER);
+    previewInfosWnd->HidePanel();
+    criteriaFolderWnd->HidePanel();
 }
 
 void CFilterPreviewSplitter::ShowWindow(const bool & showInfos)
 {
 	if (showInfos)
 	{
-		paneFilter->Show(true);
+		criteriaFolderWnd->Show(true);
+		criteriaFolderWnd->ShowWindow();
 		clickInfoToolbar->Show(false);
-		this->SetWindow(paneFilter, previewInfosWnd);
+		this->SetWindow(criteriaFolderWnd, previewInfosWnd);
 		SetWindow1FixPosition(false, posBarInfos);
 		this->SetSeparationBarVisible(true);
 		posBar = posBarInfos;
 	}
 	else
 	{
-		paneFilter->Show(false);
+		criteriaFolderWnd->Show(false);
 		clickInfoToolbar->Show(true);
 		this->SetWindow(clickInfoToolbar, previewInfosWnd);
 		posBarInfos = posBar;
@@ -306,5 +336,4 @@ void CFilterPreviewSplitter::ShowWindow(const bool & showInfos)
 	}
 	viewerconfig->SetShowFilter(showInfos);
 }
-
 

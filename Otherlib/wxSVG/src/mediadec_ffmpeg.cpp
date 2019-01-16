@@ -3,7 +3,7 @@
 // Purpose:     FFMPEG Media Decoder
 // Author:      Alex Thuering
 // Created:     21.07.2007
-// RCS-ID:      $Id: mediadec_ffmpeg.cpp,v 1.31 2014/12/30 12:17:08 ntalex Exp $
+// RCS-ID:      $Id: mediadec_ffmpeg.cpp,v 1.35 2016/05/03 19:44:45 ntalex Exp $
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
@@ -24,11 +24,16 @@ extern "C" {
 #include <libswscale/swscale.h>
 #include <libavutil/avutil.h>
 #include <libavutil/mathematics.h>
+#include <libavutil/dict.h>
+#include <libavutil/rational.h>
 }
 
 #if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(55, 28, 1)
 #define av_frame_alloc avcodec_alloc_frame
 #define av_frame_free avcodec_free_frame
+#endif
+#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(57, 0, 0)
+#define av_packet_unref av_free_packet
 #endif
 
 wxFfmpegMediaDecoder::wxFfmpegMediaDecoder(): m_formatCtx(NULL), m_videoStream(-1), m_codecCtx(NULL), m_frame(NULL),
@@ -94,40 +99,36 @@ wxSize wxFfmpegMediaDecoder::GetVideoSize() {
     return m_codecCtx ? wxSize(m_codecCtx->width, m_codecCtx->height) : wxSize();
 }
 
+AVStream* wxFfmpegMediaDecoder::GetVideoStream() {
+	if (m_formatCtx == NULL || m_videoStream == -1)
+		return NULL;
+	return m_formatCtx->streams[m_videoStream];
+}
+
 float wxFfmpegMediaDecoder::GetFrameAspectRatio() {
-	if (m_formatCtx == NULL)
+	AVStream *st = GetVideoStream();
+	if (st == NULL)
 		return -1;
-	float frame_aspect_ratio = -1;
-	for (unsigned int i = 0; i < m_formatCtx->nb_streams; i++) {
-		AVStream *st = m_formatCtx->streams[i];
-		AVCodecContext *enc = st->codec;
-		if (enc->codec_type == AVMEDIA_TYPE_VIDEO) {
-			if (st->sample_aspect_ratio.num)
-				frame_aspect_ratio = av_q2d(st->sample_aspect_ratio);
-			else if (enc->sample_aspect_ratio.num)
-				frame_aspect_ratio = av_q2d(enc->sample_aspect_ratio);
-			else
-				frame_aspect_ratio = 1;
-			frame_aspect_ratio *= (float) enc->width / enc->height;
-			break;
-		}
-	}
+	float frame_aspect_ratio = 1;
+	AVCodecContext *enc = st->codec;
+	if (st->sample_aspect_ratio.num)
+		frame_aspect_ratio = av_q2d(st->sample_aspect_ratio);
+	else if (enc->sample_aspect_ratio.num)
+		frame_aspect_ratio = av_q2d(enc->sample_aspect_ratio);
+	frame_aspect_ratio *= (float) enc->width / enc->height;
 	return frame_aspect_ratio;
 }
 
 float wxFfmpegMediaDecoder::GetFps() {
-	if (m_formatCtx == NULL)
+	AVStream *st = GetVideoStream();
+	if (st == NULL)
 		return -1;
 	float result = -1;
-	for (unsigned int i = 0; i < m_formatCtx->nb_streams; i++) {
-		AVStream* st = m_formatCtx->streams[i];
-		if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO && st->avg_frame_rate.num && st->avg_frame_rate.den) {
-			if (st->avg_frame_rate.num > st->avg_frame_rate.den)
-				result = ((float) st->avg_frame_rate.num) / st->avg_frame_rate.den;
-			else
-				result = ((float) st->avg_frame_rate.den) / st->avg_frame_rate.num;
-			break;
-		}
+	if (st->avg_frame_rate.num && st->avg_frame_rate.den) {
+		if (st->avg_frame_rate.num > st->avg_frame_rate.den)
+			result = ((float) st->avg_frame_rate.num) / st->avg_frame_rate.den;
+		else
+			result = ((float) st->avg_frame_rate.den) / st->avg_frame_rate.num;
 	}
 	return result;
 }
@@ -176,6 +177,7 @@ bool wxFfmpegMediaDecoder::OpenVideoDecoder() {
 	if (m_codecCtx)
 		return true;
 	// find the first video stream
+	
 	m_videoStream = -1;
 	for (int i=0; i<(int)m_formatCtx->nb_streams; i++) {
 		if (m_formatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
@@ -196,30 +198,25 @@ bool wxFfmpegMediaDecoder::OpenVideoDecoder() {
 	return true;
 }
 
-void wxFfmpegMediaDecoder::CloseVideoDecoder()
-{
+void wxFfmpegMediaDecoder::CloseVideoDecoder() {
     if (m_codecCtx)
         avcodec_close(m_codecCtx); // close the codec
     m_codecCtx = NULL;
 }
 
-bool wxFfmpegMediaDecoder::BeginDecode(int width, int height)
-{
+bool wxFfmpegMediaDecoder::BeginDecode(int width, int height) {
     if (!m_formatCtx || !OpenVideoDecoder())
         return false;
     // video size
-    if (width == -1 || height == -1)
-    {
-        m_width = m_codecCtx->width;
-        m_height = m_codecCtx->height;
-    }
-    else
-    {
-        int w = m_codecCtx->width * height / m_codecCtx->height;
-        int h = m_codecCtx->height * width / m_codecCtx->width;
-        m_width = w < width ? w : width;
-        m_height = w < width ? height : h;
-    }
+	if (width == -1 || height == -1) {
+		m_width = m_codecCtx->width;
+		m_height = m_codecCtx->height;
+	} else {
+		int w = m_codecCtx->width * height / m_codecCtx->height;
+		int h = m_codecCtx->height * width / m_codecCtx->width;
+		m_width = w < width ? w : width;
+		m_height = w < width ? height : h;
+	}
     // allocate video frame
     m_frame = av_frame_alloc();
     if (!m_frame) {
@@ -246,9 +243,9 @@ bool wxFfmpegMediaDecoder::SetPosition(double pos, bool keyFrame) {
 }
 
 double wxFfmpegMediaDecoder::GetPosition() {
-	if (m_formatCtx == NULL || m_formatCtx->iformat == NULL)
+	AVStream *st = GetVideoStream();
+	if (st == NULL)
 		return -1;
-	AVStream *st = m_formatCtx->streams[m_videoStream];
 	int64_t timestamp = st->cur_dts;
 	if (timestamp == (int64_t)AV_NOPTS_VALUE)
 		return -1;
@@ -271,9 +268,9 @@ wxImage wxFfmpegMediaDecoder::GetNextFrame() {
 			avcodec_decode_video2(m_codecCtx, m_frame, &frameFinished, &packet);
 			if (frameFinished) {
 				SwsContext* imgConvertCtx = sws_getContext(m_codecCtx->width, m_codecCtx->height, m_codecCtx->pix_fmt,
-						m_width, m_height, PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+						m_width, m_height, AV_PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
 				if (imgConvertCtx == NULL) {
-					av_free_packet(&packet);
+					av_packet_unref(&packet);
 					return wxImage();
 				}
 
@@ -281,13 +278,13 @@ wxImage wxFfmpegMediaDecoder::GetNextFrame() {
 				uint8_t *rgbSrc[3] = { img.GetData(), NULL, NULL };
 				int rgbStride[3] = { 3 * m_width, 0, 0 };
 				sws_scale(imgConvertCtx, m_frame->data, m_frame->linesize, 0, m_codecCtx->height, rgbSrc, rgbStride);
-				av_free_packet(&packet);
+				av_packet_unref(&packet);
 				sws_freeContext(imgConvertCtx);
 				return img;
 			}
 		}
 		// free the packet that was allocated by av_read_frame
-		av_free_packet(&packet);
+		av_packet_unref(&packet);
 	}
 	return wxImage();
 }
@@ -295,4 +292,66 @@ wxImage wxFfmpegMediaDecoder::GetNextFrame() {
 void wxFfmpegMediaDecoder::EndDecode() {
 	av_frame_free(&m_frame);
     CloseVideoDecoder();
+}
+
+/** Returns a comma separated list of short names for the format. */
+wxString wxFfmpegMediaDecoder::GetFormatName() {
+	if (m_formatCtx == NULL || m_formatCtx->iformat == NULL || m_formatCtx->iformat->name == NULL)
+		return wxT("");
+	wxString name = wxString(m_formatCtx->iformat->name, wxConvLocal);
+	if (name.Find(wxT("mp4")) >= 0)
+		return wxT("mp4");
+	return name;
+}
+
+/** Returns video codec tag (fourcc) */
+wxString wxFfmpegMediaDecoder::GetCodecTag(unsigned int streamIndex) {
+	if (m_formatCtx == NULL)
+		return wxT("");
+	AVStream *st = m_formatCtx->streams[streamIndex];
+	if (st->codec == NULL || st->codec->codec_tag == 0)
+		return wxT("");
+	char buf[32];
+	if (av_get_codec_tag_string(buf, sizeof(buf), st->codec->codec_tag) <= 0)
+		return wxT("");
+	return wxString(buf, wxConvLocal);
+}
+
+/** Returns time base for video codec (tbc). */
+float wxFfmpegMediaDecoder::GetCodecTimeBase() {
+	if (m_codecCtx == NULL || !m_codecCtx->time_base.den || !m_codecCtx->time_base.den)
+		return -1;
+	return 1 / av_q2d(m_codecCtx->time_base);
+}
+
+/** Returns list of chapters */
+vector<double> wxFfmpegMediaDecoder::GetChapters() {
+	vector<double> chapters;
+	for (unsigned int i = 0; i < m_formatCtx->nb_chapters; i++) {
+		AVChapter *chapter = m_formatCtx->chapters[i];
+		double d = chapter->start * av_q2d(chapter->time_base);
+		chapters.push_back(d);
+	}
+	return chapters;
+}
+
+/** Returns file metadata */
+map<wxString, wxString> wxFfmpegMediaDecoder::GetMetadata() {
+	map<wxString, wxString> metadata;
+	AVDictionaryEntry *tag = NULL;
+	while ((tag = av_dict_get(m_formatCtx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+		metadata[wxString(tag->key, wxConvUTF8)] = wxString(tag->value, wxConvUTF8);
+	}
+	return metadata;
+}
+
+
+/** Returns stream metadata */
+map<wxString, wxString> wxFfmpegMediaDecoder::GetMetadata(unsigned int streamIndex) {
+	map<wxString, wxString> metadata;
+	AVDictionaryEntry *tag = NULL;
+	while ((tag = av_dict_get(m_formatCtx->streams[streamIndex]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) {
+		metadata[wxString(tag->key, wxConvUTF8)] = wxString(tag->value, wxConvUTF8);
+	}
+	return metadata;
 }

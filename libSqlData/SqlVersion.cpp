@@ -7,6 +7,7 @@
 //
 
 #include "SqlVersion.h"
+#include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 
 CSqlVersion::CSqlVersion(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
@@ -14,6 +15,8 @@ CSqlVersion::CSqlVersion(CSqlLib * _sqlLibTransaction, const bool &useTransactio
 {
     this->_sqlLibTransaction = _sqlLibTransaction;
     this->useTransaction = useTransaction;
+	typeResult = 0;
+    result = "";
 }
 
 
@@ -40,7 +43,7 @@ wxString CSqlVersion::GetVersion()
 {
     typeResult = 0;
     ExecuteRequest("SELECT libelle FROM VERSION");
-    printf("Version : %s \n", result.ToStdString().c_str());
+    printf("Version : %s \n", CConvertUtility::ConvertToUTF8(result));
     return result;
 }
 
@@ -53,7 +56,7 @@ int CSqlVersion::TraitementResult(CSqlResult * sqlResult)
         if (typeResult == 0)
         {
            
-            for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+            for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
             {
                 switch (i)
                 {

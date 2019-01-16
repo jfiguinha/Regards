@@ -76,6 +76,8 @@ public:
 	float tabF[4];
 };
 
+extern float value[256];
+
 float Filter(const float &f)
 {
 
@@ -540,9 +542,7 @@ bool CxImage::Encode2RGBA(uint8_t * &buffer, int32_t &size, bool bFlipY)
 
 void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, const int &height)
 {
-#pragma omp parallel for
-	for (int i = 0; i < 256; i++)
-		value[i] = (float)i;
+
 
 	int widthIn = head.biWidth;
 	int heightIn = head.biHeight;
@@ -553,8 +553,9 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	weightX * wX = new weightX[width];
 	weightX * wY = new weightX[height];
 
+
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
 		int valueB = (int)posY;
@@ -566,7 +567,7 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	}
 
 #pragma omp parallel for
-	for (int x = 0; x < width; x++)
+	for (auto x = 0; x < width; x++)
 	{
 		float posX = (float)x * ratioX;
 		int valueA = (int)posX;
@@ -578,12 +579,13 @@ void CxImage::InterpolationBicubicRGB(uint8_t * & dataOut, const int &width, con
 	}
 
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
-		float posY = (float)y * ratioY;
+		float posY = (float)(height - y - 1) * ratioY;
 		int tailleYOut = y * width;
 
-		for (int x = 0; x < width; x++)
+#pragma omp parallel for
+	for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
 			int position = (x + tailleYOut) << 2;
@@ -606,7 +608,7 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 
 	int debutN = -1;
 	int finN = 2;
-	//Calcul démarrage du y;
+	//Calcul dÃ©marrage du y;
 	if (valueB == 0)
 	{
 		debutN = 0;
@@ -624,7 +626,7 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 
 	int debutM = -1;
 	int finM = 2;
-	//Calcul démarrage du y;
+	//Calcul dÃ©marrage du y;
 	if (valueA == 0)
 	{
 		debutM = 0;
@@ -648,9 +650,9 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 	if (valueB == 1)
 		posY = valueB;
 
-	for (int n = debutN; n <= finN; n++)
+	for (auto n = debutN; n <= finN; n++)
 	{
-		for (int m = debutM; m <= finM; m++)
+		for (auto m = debutM; m <= finM; m++)
 		{
 			RGBQUAD color = BlindGetPixelColor(posX + m, posY + n);
 			float f = tabF1[n + 1] * tabF[m + 1];
@@ -672,7 +674,7 @@ void CxImage::BicubicRGB(uint8_t * data, const int &width, const int &height, co
 void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, const int &height)
 {
 #pragma omp parallel for
-	for (int i = 0; i < 256; i++)
+	for (auto i = 0; i < 256; i++)
 		value[i] = (float)i;
 
 	int widthIn = head.biWidth;
@@ -685,7 +687,7 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 	weightX * wY = new weightX[height];
 
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
 		int valueB = (int)posY;
@@ -696,8 +698,9 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 		wY[y].tabF[3] = ::Filter(-(2.0f - realB));
 	}
 
+
 #pragma omp parallel for
-	for (int x = 0; x < width; x++)
+	for (auto x = 0; x < width; x++)
 	{
 		float posX = (float)x * ratioX;
 		int valueA = (int)posX;
@@ -708,13 +711,15 @@ void CxImage::InterpolationBicubicBGR(uint8_t * & dataOut, const int &width, con
 		wX[x].tabF[3] = ::Filter((2.0f - realA));
 	}
 
+
 #pragma omp parallel for
-	for (int y = 0; y < height; y++)
+	for (auto y = 0; y < height; y++)
 	{
 		float posY = (float)y * ratioY;
 		int tailleYOut = y * width;
 
-		for (int x = 0; x < width; x++)
+#pragma omp parallel for
+	for (auto x = 0; x < width; x++)
 		{
 			float posX = (float)x * ratioX;
 			int position = (x + tailleYOut) << 2;
@@ -737,7 +742,8 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 
 	int debutN = -1;
 	int finN = 2;
-	//Calcul démarrage du y;
+
+	//Calcul dÃ©marrage du y;
 	if (valueB == 0)
 	{
 		debutN = 0;
@@ -755,7 +761,7 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 
 	int debutM = -1;
 	int finM = 2;
-	//Calcul démarrage du y;
+	//Calcul dÃ©marrage du y;
 	if (valueA == 0)
 	{
 		debutM = 0;
@@ -779,17 +785,27 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 	if (valueB == 1)
 		posY = valueB;
 
-	for (int n = debutN; n <= finN; n++)
+	for (auto n = debutN; n <= finN; n++)
 	{
-		for (int m = debutM; m <= finM; m++)
+		//uint8_t * color = (uint8_t*)BlindGetPixelPointer(posX + debutM, posY + n);
+
+		for (auto m = debutM; m <= finM; m++)
 		{
 			RGBQUAD color = BlindGetPixelColor(posX + m, posY + n);
+			
 			float f = tabF1[n + 1] * tabF[m + 1];
 			nDenom += f;
+
+			/*
+			b += value[*color++] * f;
+			g += value[*color++] * f;
+			r += value[*color++] * f;
+			*/
 			r += value[color.rgbRed] * f;
 			g += value[color.rgbGreen] * f;
 			b += value[color.rgbBlue] * f;
 			a += value[color.rgbReserved] * f;
+			
 		}
 	}
 
@@ -802,12 +818,6 @@ void CxImage::BicubicBGR(uint8_t * data, const int &width, const int &height, co
 
 bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 {
-	float value[256];
-
-#pragma omp parallel for
-	for (int i = 0; i < 256; i++)
-		value[i] = (float)i;
-
 	//float * buffer = new float[head.biHeight * head.biWidth * 4];
 	long yPos = 0;
 	if (head.biClrUsed)
@@ -869,10 +879,10 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 		if (pAlpha)
 		{
 #pragma omp parallel for
-			for (long y = 0; y < head.biHeight; y++)
+			for (auto y = 0; y < head.biHeight; y++)
 			{
 #pragma omp parallel for
-				for (long x = 0; x < head.biWidth; x++)
+				for (auto x = 0; x < head.biWidth; x++)
 				{
 					int position = (y * head.biWidth << 2) + (x << 2);
 					RGBQUAD color = BlindGetPixelColor(x, y);
@@ -906,6 +916,22 @@ bool CxImage::Encode2RGBA32F(float * buffer, bool bFlipY)
 	return 0;
 }
 
+
+bool CxImage::Encode2BGRAFloat(float * buffer, long size, bool bFlipY)
+{
+	for (long y = 0; y < head.biHeight; y++)
+	{
+		for (long x = 0; x < head.biWidth; x++)
+		{
+			RGBQUAD color = BlindGetPixelColor(x, y);
+			*buffer++ = value[color.rgbRed] / 255.0f;
+			*buffer++ = value[color.rgbGreen] / 255.0f;
+			*buffer++ = value[color.rgbBlue] / 255.0f;
+			*buffer++ = value[color.rgbReserved] / 255.0f;
+		}
+	}
+	return true;
+}
 
 bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 {
@@ -965,23 +991,22 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 	{
 		if (pAlpha)
 		{
-	#pragma omp parallel for
+#pragma omp parallel for
 			for (long y = 0; y < head.biHeight; y++)
 			{
-	#pragma omp parallel for
+#pragma omp parallel for
 				for (long x = 0; x < head.biWidth; x++)
 				{
 					RGBQUAD color = BlindGetPixelColor(x, y);
-					memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t)* 4);
+					memcpy(buffer + (y * head.biWidth << 2) + (x << 2), &color, sizeof(uint8_t) << 2);
 				}
 			}
 		}
 		else
 		{
-
 			//uint32_t *src = (uint32_t *)info.pImage;
 			//uint32_t *dst = (uint32_t *)buffer;
-
+			
 			int restant = head.biWidth % 16;
 			int width = head.biWidth - restant;
 			int sizeofCopy = sizeof(uint8_t) * 3;
@@ -1019,28 +1044,8 @@ bool CxImage::Encode2BGRA(uint8_t * buffer, long size, bool bFlipY)
 					memcpy(buffer + yDstWidth + (x << 2), info.pImage + ySrcWidth + (x * 3), sizeofCopy);
 				}
 			}
-			/*
-
-
-			int sizeofCopy = sizeof(uint8_t) * 3;
-
-#pragma omp parallel for
-			for (long y1 = 0; y1 < head.biHeight; y1++)
-			{
-				int yWidth = y1 * head.biWidth << 2;
-				int ySrcWidth = y1 * info.dwEffWidth;
-				
-
-#pragma omp parallel for
-				for (long x = 0; x < head.biWidth; x++)
-				{
-					memcpy(buffer + yWidth + (x << 2), info.pImage + ySrcWidth + (x * 3), sizeofCopy);
-				}
-			}
-			*/
 		}
 	}
-
 	return true;
 }
 
@@ -1055,9 +1060,10 @@ bool CxImage::Encode2RGBA(CxFile *hFile, bool bFlipY)
 {
 	if (EncodeSafeCheck(hFile)) return false;
 
+
 #pragma omp parallel for
-	for (int32_t y1 = 0; y1 < head.biHeight; y1++) 
-	{
+	for (int32_t y1 = 0; y1 < head.biHeight; y1++)
+ 	{
 		int32_t y = bFlipY ? head.biHeight - 1 - y1 : y1;
 		for(int32_t x = 0; x < head.biWidth; x++) {
 			RGBQUAD color = BlindGetPixelColor(x,y);

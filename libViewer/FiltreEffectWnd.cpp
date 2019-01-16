@@ -19,9 +19,18 @@
 #include "PhotoFiltreEffectParameter.h"
 #include "RgbEffectParameter.h"
 #include "SwirlEffectParameter.h"
+#include "GaussianBlurEffectParameter.h"
+#include "BlurEffectParameter.h"
+#include "SharpenMaskingParameter.h"
+#include "BilateralEffectParameter.h"
+#include "NlmeansEffectParameter.h"
+#include "WaveEffectParameter.h"
+#include "ClaheEffectParameter.h"
 #include <LibResource.h>
 #include <BitmapWndViewer.h>
 #include <ShowBitmap.h>
+#include <ShowVideo.h>
+//#include <VideoControl.h>
 #include "PreviewWnd.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -30,14 +39,19 @@
 #include <window_id.h>
 #include <config_id.h>
 #endif
-#include <effect.h>
 #include "PanelInfosWnd.h"
 #include <FilterData.h>
 using namespace Regards::Viewer;
 
 CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree)
-: CWindowMain(parent, id)
+: CWindowMain("CFiltreEffectScrollWnd",parent, id)
 {
+	bitmap = nullptr;
+	numFiltre = 0;
+    effectParameter = nullptr;
+    filtreEffectScroll = nullptr;
+    treeFiltreEffect = nullptr;
+    filtreEffectOld = nullptr;
     filtreEffectScroll = new CScrollbarWnd(this, wxID_ANY);
     treeFiltreEffect = new CTreeWindow(filtreEffectScroll, wxID_ANY, themeTree);
     filtreEffectScroll->SetCentralWindow(treeFiltreEffect, themeScroll);
@@ -56,6 +70,9 @@ CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
     
     if(effectParameter != nullptr)
        delete(effectParameter);
+
+	if(bitmap != nullptr)
+		delete bitmap;
 }
 void CFiltreEffectScrollWnd::UpdateScreenRatio()
 {
@@ -72,134 +89,153 @@ void CFiltreEffectScrollWnd::UpdateScreenRatio()
 
 void CFiltreEffectScrollWnd::Resize()
 {
-    filtreEffectScroll->SetSize(0,0,width,height);
+    filtreEffectScroll->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
 }
 
 void CFiltreEffectScrollWnd::OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd)
 {
-    CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-    if (bitmapViewer != nullptr)
-    {
-        switch (numFiltre)
-        {
-            case IDM_AJUSTEMENT_SOLARISATION:
-            case IDM_ROTATE_FREE:
-            case IDM_IMAGE_LIGHTCONTRAST:
-            case ID_AJUSTEMENT_PHOTOFILTRE:
-            case ID_AJUSTEMENT_POSTERISATION:
-            case IDM_COLOR_BALANCE:
-            case IDM_FILTRE_SWIRL:
-            case IDM_FILTRE_CLOUDS:
-            case IDM_REDEYE:
-            case IDM_CROP:
-            case IDM_FILTRE_MOTIONBLUR:
-            case IDM_FILTRELENSFLARE:
-                bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
-                historyEffectWnd->AddModification(bitmapViewer->GetBitmap(), CFiltreData::GetFilterLabel(numFiltre));
-                break;
-        }
-    }
-}
-
-CEffectParameter * CFiltreEffectScrollWnd::GetEffectPointer(const int &numItem)
-{
-    switch (numItem)
-    {
-        case IDM_AJUSTEMENT_SOLARISATION:
-            return new CSolarisationEffectParameter();
-            break;
-        case IDM_FILTRE_MOTIONBLUR:
-            return new CMotionBlurEffectParameter();
-            break;
-        case IDM_ROTATE_FREE:
-            return new CFreeRotateEffectParameter();
-            break;
-        case IDM_IMAGE_LIGHTCONTRAST:
-            return new CBrightAndContrastEffectParameter();
-            break;
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-            return new CPhotoFiltreEffectParameter();
-            break;
-        case ID_AJUSTEMENT_POSTERISATION:
-            return new CPosterisationEffectParameter();
-            break;
-        case IDM_FILTRELENSFLARE:
-            return new CLensFlareEffectParameter();
-            break;
-        case IDM_COLOR_BALANCE:
-            return new CRgbEffectParameter();
-            break;
-        case IDM_FILTRE_SWIRL:
-            return new CSwirlEffectParameter();
-            break;
-        case IDM_FILTRE_CLOUDS:
-            return new CCloudsEffectParameter();
-            break;
-    }
-    return nullptr;
-}
-
-void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos)
-{
-
-    CPreviewWnd * previewWindow = (CPreviewWnd *)this->FindWindowById(PREVIEWVIEWERID);
-    CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-    
+	//wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+	CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+    //CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	
     if (showBitmap != nullptr)
     {
-        CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
-        
-        CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeFiltreEffect->GetTheme(), treeFiltreEffect);
-        
-        if (bitmapViewer != nullptr)
-        {
-            switch (numItem)
+		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
+		if(bitmapViewer != nullptr)
+		{
+			bitmapViewer->OnFiltreOk();
+           if(CFiltreData::OnFiltreOk(numFiltre))
             {
-                case IDM_CROP:
-                case IDM_REDEYE:
-                {
-                    if (previewWindow != nullptr)
-                        previewWindow->ShowValidationToolbar(true, numItem);
-                    
-                    bitmapViewer->SetTool(numItem);
-                    bitmapViewer->SetBitmapPreviewEffect(numItem);
-
-                }
-                break;
-                   
-                case IDM_FILTRE_MOTIONBLUR:
-                case IDM_ROTATE_FREE:
-                case IDM_IMAGE_LIGHTCONTRAST:
-                case ID_AJUSTEMENT_PHOTOFILTRE:
-                case ID_AJUSTEMENT_POSTERISATION:
-                case IDM_FILTRELENSFLARE:
-                case IDM_COLOR_BALANCE:
-                case IDM_FILTRE_SWIRL:
-                case IDM_FILTRE_CLOUDS:
-                case IDM_AJUSTEMENT_SOLARISATION:
-                {
-                    if(effectParameter != nullptr)
-                        delete(effectParameter);
-                    effectParameter = GetEffectPointer(numItem);
-                    bitmapViewer->SetBitmapPreviewEffect(numItem, effectParameter);
-                    filtreEffect->Init(effectParameter, bitmapViewer->GetBitmap(), numItem);
-                    if (previewWindow != nullptr)
-                        previewWindow->ShowValidationToolbar(true, numItem);
-                    panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
-                    treeFiltreEffect->SetTreeControl(filtreEffect);
-                    delete(filtreEffectOld);
-                    filtreEffectOld = filtreEffect;
-                    break;
-                }
-
-                default:
-                    bitmapViewer->SetBitmapEffect(numItem, nullptr);
-                    historyEffectWnd->AddModification(bitmapViewer->GetBitmap(), CFiltreData::GetFilterLabel(numItem));
-                    break;
-
-
-
+                CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+                bitmapViewer->SetBitmapEffect(numFiltre, effectParameter);
+                historyEffectWnd->AddModification(bitmap, CFiltreData::GetFilterLabel(numFiltre));
+                if(bitmap != nullptr)
+                    delete bitmap;
             }
-        }
+		}
     }
+}
+
+
+
+int CFiltreEffectScrollWnd::GetNumFiltre()
+{
+	return numFiltre;
+}
+
+void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos, const wxString &filename, const int & isVideo)
+{
+	numFiltre = numItem;
+	if(!isVideo)
+	{
+		CPreviewWnd * previewWindow = (CPreviewWnd *)this->FindWindowById(PREVIEWVIEWERID);
+		CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+
+
+    
+		if (showBitmap != nullptr)
+		{
+			CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
+			bitmapViewer->ApplyEffect(numItem);
+			CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeFiltreEffect->GetTheme(), treeFiltreEffect);
+        
+			if (bitmapViewer != nullptr)
+			{
+				int typeData = CFiltreData::TypeApplyFilter(numItem);
+
+				switch (typeData)
+				{
+					case 1:
+					{
+						if (previewWindow != nullptr)
+							previewWindow->ShowValidationToolbar(true, numItem);
+                    
+						bitmapViewer->SetTool(numItem);
+						bitmapViewer->SetBitmapPreviewEffect(numItem);
+
+					}
+					break;
+
+					case 2:
+					{
+						if(effectParameter != nullptr)
+							delete(effectParameter);
+
+						if(bitmap != nullptr)
+							delete bitmap;
+						bitmap = nullptr;
+
+						effectParameter = CFiltreData::GetEffectPointer(numItem);
+						bitmapViewer->SetBitmapPreviewEffect(numItem, effectParameter);
+
+						bitmap = bitmapViewer->GetBitmap(true);
+
+						filtreEffect->Init(effectParameter, bitmap, filename, numItem);
+						if (previewWindow != nullptr)
+							previewWindow->ShowValidationToolbar(true, numItem);
+						panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
+						treeFiltreEffect->SetTreeControl(filtreEffect);
+                       if(filtreEffectOld != nullptr)
+                            delete(filtreEffectOld);
+						filtreEffectOld = filtreEffect;
+						break;
+					}
+
+					default:
+						{
+							CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+							bitmapViewer->SetBitmapEffect(numItem, nullptr);
+							bitmapViewer->OnFiltreOk();
+							historyEffectWnd->AddModification(bitmap, CFiltreData::GetFilterLabel(numItem));
+							if(bitmap != nullptr)
+								delete bitmap;
+						}
+						break;
+				}
+			}
+		}
+	 }
+	else
+	{
+		CShowVideo * showVideo = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
+		//CVideoControl * videoControl = showVideo->GetVideoControl();
+		CFiltreEffect * filtreEffect = new CFiltreEffect(showVideo, treeFiltreEffect->GetTheme(), treeFiltreEffect);
+		switch (numItem)
+		{
+			case IDM_FILTRE_VIDEO:
+			{
+				if(effectParameter != nullptr)
+					delete(effectParameter);
+				effectParameter = showVideo->GetParameter();
+				showVideo->SetVideoPreviewEffect(effectParameter);
+				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
+				panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
+				treeFiltreEffect->SetTreeControl(filtreEffect);
+				delete(filtreEffectOld);
+				filtreEffectOld = filtreEffect;
+				break;
+			}
+
+			case IDM_FILTRE_AUDIOVIDEO:
+			{
+				if(effectParameter != nullptr)
+					delete(effectParameter);
+				effectParameter = showVideo->GetParameter();
+				showVideo->SetVideoPreviewEffect(effectParameter);
+				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
+				panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
+				treeFiltreEffect->SetTreeControl(filtreEffect);
+				delete(filtreEffectOld);
+				filtreEffectOld = filtreEffect;
+				break;
+			}
+		}
+	}
+   
+}
+
+
+CFiltreEffect * CFiltreEffectScrollWnd::GetFiltreEffect()
+{
+	return filtreEffectOld;
 }

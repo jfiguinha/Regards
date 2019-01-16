@@ -1,11 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
-using namespace std;
 
 class CPhotos
 {
@@ -22,6 +15,12 @@ public:
 	void SetPath(const wxString &path);
 	wxString GetPath();
 
+	void SetGpsInfos(const wxString &gpsInfos);
+	wxString GetGpsInfos();
+
+	void SetCreateDate(const wxString &createDate);
+	wxString GetCreateDate();
+
 	void SetIsCriteriaInsert(const int &criteriaInsert);
 	int GetIsCriteriaInsert();
 
@@ -29,6 +28,8 @@ private:
 	int numId;
 	int numFolderId;
 	wxString path;
+	wxString createDate;
+	wxString gpsInfos;
 	int criteriaInsert;
 };
 

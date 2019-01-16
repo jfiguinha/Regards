@@ -1,12 +1,12 @@
 #pragma once
 #include <Splitter.h>
-#include "CategoryFolderWindow.h"
+#include "CriteriaFolderSplitter.h"
 #include "PreviewInfosWnd.h"
 #include "ViewerParam.h"
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
-
+class CImageLoadingFormat;
 #define CATALOG_FILTER 2
 
 namespace Regards
@@ -16,46 +16,44 @@ namespace Regards
 		class CFilterPreviewSplitter :public CSplitter, public CPaneInterface, public CToolbarInterface
 		{
 		public:
-			CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CVideoEffectParameter * videoEffectParameter, const bool &horizontal = true);
+			CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CFilterPreviewSplitter();
-			void OnHidePane(wxCommandEvent& event);
-			void ShowToolbar();
-			void HideToolbar();
+
+
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void UpdateScreenRatio();
 			void SetEffect(const bool &effect);
 			bool IsPanelInfosVisible();
-			void HidePanelInfos();
-			void ShowPanelInfos();
+
 			void SetVideo(const wxString &path);
 			void StartLoadingPicture();
-			bool SetAnimation(const wxString &filename);
-			bool SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
 			void FullscreenMode();
 			void ScreenMode();
 			void ClickShowButton(const int &id);
 			void ClosePane(const int &id);
-			void UpdateCriteria(const int64_t & idFolder);
-            wxString GetSqlRequest();
-            void InitSaveParameter();
-            void UpdateInfos();
-            void RefreshFilter();
-            
-		private:
+			wxString GetSqlRequest();
+            void HidePanel();
 			
+		private:
+
+			void OnHidePane(wxCommandEvent& event);
+			void ShowPanelCriteria(wxCommandEvent& aEvent);
+			void ShowPanelFolder(wxCommandEvent& aEvent);
+			void CloseWindow(wxCommandEvent& event);
 			void ShowWindow(const bool & showInfos);
 
-			int posBarInfos = 0;
-			CPane * paneFilter = nullptr;
-			CClickToolbar * clickInfoToolbar = nullptr;
-			CCategoryFolderWindow * categoryFolderWnd = nullptr;
-			CPreviewInfosWnd * previewInfosWnd = nullptr;
-			CViewerParam * viewerconfig = nullptr;
+			int posBarInfos;
+			CPane * paneFilter;
+			CClickToolbar * clickInfoToolbar;
+			CCriteriaFolderSplitter * criteriaFolderWnd;
+			CPreviewInfosWnd * previewInfosWnd;
+			CViewerParam * viewerconfig ;
 
-			bool fullscreen = false;
-			bool paneFilterShow = true;
-			bool clickToobarShow = false;
+			bool fullscreen;
+			bool paneFilterShow;
+			bool clickToobarShow;
 		};
 	}
 }

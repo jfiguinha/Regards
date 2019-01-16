@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libPsd
-ConfigurationName      :=Debug
-WorkspacePath          := "/home/figuinha/dev/Regards/Otherlib"
-ProjectPath            := "/home/figuinha/dev/Regards/Otherlib/libPsd"
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=/home/figuinha/Developpement/Regards
+ProjectPath            :=/home/figuinha/Developpement/Regards/Otherlib/libPsd
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=24/04/16
-CodeLitePath           :="/home/figuinha/.codelite"
-LinkerName             :=/usr/bin/g++-4.8
-SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
+Date                   :=15/01/19
+CodeLitePath           :=/home/figuinha/.codelite
+LinkerName             :=/usr/bin/ccache /usr/bin/g++
+SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -27,8 +27,8 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=
+OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -36,22 +36,22 @@ ObjectsFileList        :="libPsd.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). 
+IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch). $(IncludeSwitch)../libPsd/include $(IncludeSwitch)../../libextern/wxWidgets-master/src/jpeg $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                := $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
 AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++-4.8
-CC       := /usr/bin/gcc-4.8
-CXXFLAGS :=  -g $(Preprocessors)
-CFLAGS   :=  -g $(Preprocessors)
+CXX      := /usr/bin/ccache /usr/bin/g++
+CC       := /usr/bin/ccache /usr/bin/gcc
+CXXFLAGS := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -O2 -msse4.1 $(Preprocessors)
+CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cflags)  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -60,12 +60,12 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/adjustment.c$(ObjectSuffix) $(IntermediateDirectory)/bevel_emboss.c$(ObjectSuffix) $(IntermediateDirectory)/bitmap.c$(ObjectSuffix) $(IntermediateDirectory)/blend.c$(ObjectSuffix) $(IntermediateDirectory)/boundary.c$(ObjectSuffix) $(IntermediateDirectory)/brightness_contrast.c$(ObjectSuffix) $(IntermediateDirectory)/channel_image.c$(ObjectSuffix) $(IntermediateDirectory)/channel_mixer.c$(ObjectSuffix) $(IntermediateDirectory)/color.c$(ObjectSuffix) $(IntermediateDirectory)/color_balance.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/color_mode.c$(ObjectSuffix) $(IntermediateDirectory)/color_overlay.c$(ObjectSuffix) $(IntermediateDirectory)/curves.c$(ObjectSuffix) $(IntermediateDirectory)/descriptor.c$(ObjectSuffix) $(IntermediateDirectory)/drop_shadow.c$(ObjectSuffix) $(IntermediateDirectory)/effects.c$(ObjectSuffix) $(IntermediateDirectory)/file_header.c$(ObjectSuffix) $(IntermediateDirectory)/fixed.c$(ObjectSuffix) $(IntermediateDirectory)/gaussian_blur.c$(ObjectSuffix) $(IntermediateDirectory)/gradient_blend.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/gradient_fill.c$(ObjectSuffix) $(IntermediateDirectory)/gradient_map.c$(ObjectSuffix) $(IntermediateDirectory)/gradient_overlay.c$(ObjectSuffix) $(IntermediateDirectory)/hue_saturation.c$(ObjectSuffix) $(IntermediateDirectory)/image_data.c$(ObjectSuffix) $(IntermediateDirectory)/image_resource.c$(ObjectSuffix) $(IntermediateDirectory)/inner_glow.c$(ObjectSuffix) $(IntermediateDirectory)/inner_shadow.c$(ObjectSuffix) $(IntermediateDirectory)/invert.c$(ObjectSuffix) $(IntermediateDirectory)/layer_mask.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/levels.c$(ObjectSuffix) $(IntermediateDirectory)/outer_glow.c$(ObjectSuffix) $(IntermediateDirectory)/path.c$(ObjectSuffix) $(IntermediateDirectory)/pattern.c$(ObjectSuffix) $(IntermediateDirectory)/pattern_fill.c$(ObjectSuffix) $(IntermediateDirectory)/pattern_overlay.c$(ObjectSuffix) $(IntermediateDirectory)/photo_filter.c$(ObjectSuffix) $(IntermediateDirectory)/posterize.c$(ObjectSuffix) $(IntermediateDirectory)/psd.c$(ObjectSuffix) $(IntermediateDirectory)/psd_system.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/psd_zip.c$(ObjectSuffix) $(IntermediateDirectory)/rect.c$(ObjectSuffix) $(IntermediateDirectory)/satin.c$(ObjectSuffix) $(IntermediateDirectory)/selective_color.c$(ObjectSuffix) $(IntermediateDirectory)/solid_color.c$(ObjectSuffix) $(IntermediateDirectory)/stream.c$(ObjectSuffix) $(IntermediateDirectory)/stroke.c$(ObjectSuffix) $(IntermediateDirectory)/test.c$(ObjectSuffix) $(IntermediateDirectory)/threshold.c$(ObjectSuffix) $(IntermediateDirectory)/thumbnail.c$(ObjectSuffix) \
-	$(IntermediateDirectory)/type_tool.c$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_threshold.c$(ObjectSuffix) $(IntermediateDirectory)/src_thumbnail.c$(ObjectSuffix) $(IntermediateDirectory)/src_stroke.c$(ObjectSuffix) $(IntermediateDirectory)/src_solid_color.c$(ObjectSuffix) $(IntermediateDirectory)/src_selective_color.c$(ObjectSuffix) $(IntermediateDirectory)/src_satin.c$(ObjectSuffix) $(IntermediateDirectory)/src_rect.c$(ObjectSuffix) $(IntermediateDirectory)/src_psd_zip.c$(ObjectSuffix) $(IntermediateDirectory)/src_psd_system.c$(ObjectSuffix) $(IntermediateDirectory)/src_psd.c$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_descriptor.c$(ObjectSuffix) $(IntermediateDirectory)/src_photo_filter.c$(ObjectSuffix) $(IntermediateDirectory)/src_color_overlay.c$(ObjectSuffix) $(IntermediateDirectory)/src_curves.c$(ObjectSuffix) $(IntermediateDirectory)/src_pattern_fill.c$(ObjectSuffix) $(IntermediateDirectory)/src_stream.c$(ObjectSuffix) $(IntermediateDirectory)/src_color.c$(ObjectSuffix) $(IntermediateDirectory)/src_levels.c$(ObjectSuffix) $(IntermediateDirectory)/src_outer_glow.c$(ObjectSuffix) $(IntermediateDirectory)/src_channel_image.c$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_pattern.c$(ObjectSuffix) $(IntermediateDirectory)/src_layer_mask.c$(ObjectSuffix) $(IntermediateDirectory)/src_effects.c$(ObjectSuffix) $(IntermediateDirectory)/src_color_mode.c$(ObjectSuffix) $(IntermediateDirectory)/src_posterize.c$(ObjectSuffix) $(IntermediateDirectory)/src_color_balance.c$(ObjectSuffix) $(IntermediateDirectory)/src_bevel_emboss.c$(ObjectSuffix) $(IntermediateDirectory)/src_bitmap.c$(ObjectSuffix) $(IntermediateDirectory)/src_path.c$(ObjectSuffix) $(IntermediateDirectory)/src_adjustment.c$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_blend.c$(ObjectSuffix) $(IntermediateDirectory)/src_image_data.c$(ObjectSuffix) $(IntermediateDirectory)/src_drop_shadow.c$(ObjectSuffix) $(IntermediateDirectory)/src_hue_saturation.c$(ObjectSuffix) $(IntermediateDirectory)/src_channel_mixer.c$(ObjectSuffix) $(IntermediateDirectory)/src_fixed.c$(ObjectSuffix) $(IntermediateDirectory)/src_inner_glow.c$(ObjectSuffix) $(IntermediateDirectory)/src_brightness_contrast.c$(ObjectSuffix) $(IntermediateDirectory)/src_file_header.c$(ObjectSuffix) $(IntermediateDirectory)/src_gaussian_blur.c$(ObjectSuffix) \
+	$(IntermediateDirectory)/src_gradient_overlay.c$(ObjectSuffix) $(IntermediateDirectory)/src_gradient_blend.c$(ObjectSuffix) $(IntermediateDirectory)/src_gradient_fill.c$(ObjectSuffix) $(IntermediateDirectory)/src_boundary.c$(ObjectSuffix) $(IntermediateDirectory)/src_gradient_map.c$(ObjectSuffix) $(IntermediateDirectory)/src_image_resource.c$(ObjectSuffix) $(IntermediateDirectory)/src_inner_shadow.c$(ObjectSuffix) $(IntermediateDirectory)/src_type_tool.c$(ObjectSuffix) $(IntermediateDirectory)/src_invert.c$(ObjectSuffix) $(IntermediateDirectory)/src_pattern_overlay.c$(ObjectSuffix) \
+	
 
 
 
@@ -82,15 +82,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/Otherlib/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/Otherlib/.build-debug/libPsd"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libPsd"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -98,413 +98,405 @@ PreBuild:
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/adjustment.c$(ObjectSuffix): adjustment.c $(IntermediateDirectory)/adjustment.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/adjustment.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/adjustment.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/adjustment.c$(DependSuffix): adjustment.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/adjustment.c$(ObjectSuffix) -MF$(IntermediateDirectory)/adjustment.c$(DependSuffix) -MM "adjustment.c"
+$(IntermediateDirectory)/src_threshold.c$(ObjectSuffix): src/threshold.c $(IntermediateDirectory)/src_threshold.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/threshold.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_threshold.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_threshold.c$(DependSuffix): src/threshold.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_threshold.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_threshold.c$(DependSuffix) -MM src/threshold.c
 
-$(IntermediateDirectory)/adjustment.c$(PreprocessSuffix): adjustment.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/adjustment.c$(PreprocessSuffix) "adjustment.c"
-
-$(IntermediateDirectory)/bevel_emboss.c$(ObjectSuffix): bevel_emboss.c $(IntermediateDirectory)/bevel_emboss.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/bevel_emboss.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bevel_emboss.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/bevel_emboss.c$(DependSuffix): bevel_emboss.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bevel_emboss.c$(ObjectSuffix) -MF$(IntermediateDirectory)/bevel_emboss.c$(DependSuffix) -MM "bevel_emboss.c"
+$(IntermediateDirectory)/src_threshold.c$(PreprocessSuffix): src/threshold.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_threshold.c$(PreprocessSuffix) src/threshold.c
+
+$(IntermediateDirectory)/src_thumbnail.c$(ObjectSuffix): src/thumbnail.c $(IntermediateDirectory)/src_thumbnail.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/thumbnail.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_thumbnail.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_thumbnail.c$(DependSuffix): src/thumbnail.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_thumbnail.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_thumbnail.c$(DependSuffix) -MM src/thumbnail.c
 
-$(IntermediateDirectory)/bevel_emboss.c$(PreprocessSuffix): bevel_emboss.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bevel_emboss.c$(PreprocessSuffix) "bevel_emboss.c"
-
-$(IntermediateDirectory)/bitmap.c$(ObjectSuffix): bitmap.c $(IntermediateDirectory)/bitmap.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/bitmap.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bitmap.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/bitmap.c$(DependSuffix): bitmap.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bitmap.c$(ObjectSuffix) -MF$(IntermediateDirectory)/bitmap.c$(DependSuffix) -MM "bitmap.c"
+$(IntermediateDirectory)/src_thumbnail.c$(PreprocessSuffix): src/thumbnail.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_thumbnail.c$(PreprocessSuffix) src/thumbnail.c
+
+$(IntermediateDirectory)/src_stroke.c$(ObjectSuffix): src/stroke.c $(IntermediateDirectory)/src_stroke.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/stroke.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_stroke.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_stroke.c$(DependSuffix): src/stroke.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_stroke.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_stroke.c$(DependSuffix) -MM src/stroke.c
 
-$(IntermediateDirectory)/bitmap.c$(PreprocessSuffix): bitmap.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bitmap.c$(PreprocessSuffix) "bitmap.c"
-
-$(IntermediateDirectory)/blend.c$(ObjectSuffix): blend.c $(IntermediateDirectory)/blend.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/blend.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/blend.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/blend.c$(DependSuffix): blend.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/blend.c$(ObjectSuffix) -MF$(IntermediateDirectory)/blend.c$(DependSuffix) -MM "blend.c"
+$(IntermediateDirectory)/src_stroke.c$(PreprocessSuffix): src/stroke.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_stroke.c$(PreprocessSuffix) src/stroke.c
+
+$(IntermediateDirectory)/src_solid_color.c$(ObjectSuffix): src/solid_color.c $(IntermediateDirectory)/src_solid_color.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/solid_color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_solid_color.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_solid_color.c$(DependSuffix): src/solid_color.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_solid_color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_solid_color.c$(DependSuffix) -MM src/solid_color.c
 
-$(IntermediateDirectory)/blend.c$(PreprocessSuffix): blend.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/blend.c$(PreprocessSuffix) "blend.c"
-
-$(IntermediateDirectory)/boundary.c$(ObjectSuffix): boundary.c $(IntermediateDirectory)/boundary.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/boundary.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/boundary.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/boundary.c$(DependSuffix): boundary.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/boundary.c$(ObjectSuffix) -MF$(IntermediateDirectory)/boundary.c$(DependSuffix) -MM "boundary.c"
+$(IntermediateDirectory)/src_solid_color.c$(PreprocessSuffix): src/solid_color.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_solid_color.c$(PreprocessSuffix) src/solid_color.c
+
+$(IntermediateDirectory)/src_selective_color.c$(ObjectSuffix): src/selective_color.c $(IntermediateDirectory)/src_selective_color.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/selective_color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_selective_color.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_selective_color.c$(DependSuffix): src/selective_color.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_selective_color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_selective_color.c$(DependSuffix) -MM src/selective_color.c
 
-$(IntermediateDirectory)/boundary.c$(PreprocessSuffix): boundary.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/boundary.c$(PreprocessSuffix) "boundary.c"
-
-$(IntermediateDirectory)/brightness_contrast.c$(ObjectSuffix): brightness_contrast.c $(IntermediateDirectory)/brightness_contrast.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/brightness_contrast.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/brightness_contrast.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/brightness_contrast.c$(DependSuffix): brightness_contrast.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/brightness_contrast.c$(ObjectSuffix) -MF$(IntermediateDirectory)/brightness_contrast.c$(DependSuffix) -MM "brightness_contrast.c"
+$(IntermediateDirectory)/src_selective_color.c$(PreprocessSuffix): src/selective_color.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_selective_color.c$(PreprocessSuffix) src/selective_color.c
+
+$(IntermediateDirectory)/src_satin.c$(ObjectSuffix): src/satin.c $(IntermediateDirectory)/src_satin.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/satin.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_satin.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_satin.c$(DependSuffix): src/satin.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_satin.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_satin.c$(DependSuffix) -MM src/satin.c
 
-$(IntermediateDirectory)/brightness_contrast.c$(PreprocessSuffix): brightness_contrast.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/brightness_contrast.c$(PreprocessSuffix) "brightness_contrast.c"
-
-$(IntermediateDirectory)/channel_image.c$(ObjectSuffix): channel_image.c $(IntermediateDirectory)/channel_image.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/channel_image.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/channel_image.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/channel_image.c$(DependSuffix): channel_image.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/channel_image.c$(ObjectSuffix) -MF$(IntermediateDirectory)/channel_image.c$(DependSuffix) -MM "channel_image.c"
+$(IntermediateDirectory)/src_satin.c$(PreprocessSuffix): src/satin.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_satin.c$(PreprocessSuffix) src/satin.c
+
+$(IntermediateDirectory)/src_rect.c$(ObjectSuffix): src/rect.c $(IntermediateDirectory)/src_rect.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/rect.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_rect.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_rect.c$(DependSuffix): src/rect.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_rect.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_rect.c$(DependSuffix) -MM src/rect.c
 
-$(IntermediateDirectory)/channel_image.c$(PreprocessSuffix): channel_image.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/channel_image.c$(PreprocessSuffix) "channel_image.c"
-
-$(IntermediateDirectory)/channel_mixer.c$(ObjectSuffix): channel_mixer.c $(IntermediateDirectory)/channel_mixer.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/channel_mixer.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/channel_mixer.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/channel_mixer.c$(DependSuffix): channel_mixer.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/channel_mixer.c$(ObjectSuffix) -MF$(IntermediateDirectory)/channel_mixer.c$(DependSuffix) -MM "channel_mixer.c"
+$(IntermediateDirectory)/src_rect.c$(PreprocessSuffix): src/rect.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_rect.c$(PreprocessSuffix) src/rect.c
+
+$(IntermediateDirectory)/src_psd_zip.c$(ObjectSuffix): src/psd_zip.c $(IntermediateDirectory)/src_psd_zip.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/psd_zip.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_psd_zip.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_psd_zip.c$(DependSuffix): src/psd_zip.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_psd_zip.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_psd_zip.c$(DependSuffix) -MM src/psd_zip.c
 
-$(IntermediateDirectory)/channel_mixer.c$(PreprocessSuffix): channel_mixer.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/channel_mixer.c$(PreprocessSuffix) "channel_mixer.c"
-
-$(IntermediateDirectory)/color.c$(ObjectSuffix): color.c $(IntermediateDirectory)/color.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/color.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/color.c$(DependSuffix): color.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/color.c$(DependSuffix) -MM "color.c"
+$(IntermediateDirectory)/src_psd_zip.c$(PreprocessSuffix): src/psd_zip.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_psd_zip.c$(PreprocessSuffix) src/psd_zip.c
+
+$(IntermediateDirectory)/src_psd_system.c$(ObjectSuffix): src/psd_system.c $(IntermediateDirectory)/src_psd_system.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/psd_system.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_psd_system.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_psd_system.c$(DependSuffix): src/psd_system.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_psd_system.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_psd_system.c$(DependSuffix) -MM src/psd_system.c
 
-$(IntermediateDirectory)/color.c$(PreprocessSuffix): color.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/color.c$(PreprocessSuffix) "color.c"
-
-$(IntermediateDirectory)/color_balance.c$(ObjectSuffix): color_balance.c $(IntermediateDirectory)/color_balance.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/color_balance.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/color_balance.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/color_balance.c$(DependSuffix): color_balance.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/color_balance.c$(ObjectSuffix) -MF$(IntermediateDirectory)/color_balance.c$(DependSuffix) -MM "color_balance.c"
+$(IntermediateDirectory)/src_psd_system.c$(PreprocessSuffix): src/psd_system.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_psd_system.c$(PreprocessSuffix) src/psd_system.c
+
+$(IntermediateDirectory)/src_psd.c$(ObjectSuffix): src/psd.c $(IntermediateDirectory)/src_psd.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/psd.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_psd.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_psd.c$(DependSuffix): src/psd.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_psd.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_psd.c$(DependSuffix) -MM src/psd.c
 
-$(IntermediateDirectory)/color_balance.c$(PreprocessSuffix): color_balance.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/color_balance.c$(PreprocessSuffix) "color_balance.c"
-
-$(IntermediateDirectory)/color_mode.c$(ObjectSuffix): color_mode.c $(IntermediateDirectory)/color_mode.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/color_mode.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/color_mode.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/color_mode.c$(DependSuffix): color_mode.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/color_mode.c$(ObjectSuffix) -MF$(IntermediateDirectory)/color_mode.c$(DependSuffix) -MM "color_mode.c"
+$(IntermediateDirectory)/src_psd.c$(PreprocessSuffix): src/psd.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_psd.c$(PreprocessSuffix) src/psd.c
+
+$(IntermediateDirectory)/src_descriptor.c$(ObjectSuffix): src/descriptor.c $(IntermediateDirectory)/src_descriptor.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/descriptor.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_descriptor.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_descriptor.c$(DependSuffix): src/descriptor.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_descriptor.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_descriptor.c$(DependSuffix) -MM src/descriptor.c
 
-$(IntermediateDirectory)/color_mode.c$(PreprocessSuffix): color_mode.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/color_mode.c$(PreprocessSuffix) "color_mode.c"
-
-$(IntermediateDirectory)/color_overlay.c$(ObjectSuffix): color_overlay.c $(IntermediateDirectory)/color_overlay.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/color_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/color_overlay.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/color_overlay.c$(DependSuffix): color_overlay.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/color_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/color_overlay.c$(DependSuffix) -MM "color_overlay.c"
+$(IntermediateDirectory)/src_descriptor.c$(PreprocessSuffix): src/descriptor.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_descriptor.c$(PreprocessSuffix) src/descriptor.c
+
+$(IntermediateDirectory)/src_photo_filter.c$(ObjectSuffix): src/photo_filter.c $(IntermediateDirectory)/src_photo_filter.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/photo_filter.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_photo_filter.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_photo_filter.c$(DependSuffix): src/photo_filter.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_photo_filter.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_photo_filter.c$(DependSuffix) -MM src/photo_filter.c
 
-$(IntermediateDirectory)/color_overlay.c$(PreprocessSuffix): color_overlay.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/color_overlay.c$(PreprocessSuffix) "color_overlay.c"
-
-$(IntermediateDirectory)/curves.c$(ObjectSuffix): curves.c $(IntermediateDirectory)/curves.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/curves.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/curves.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/curves.c$(DependSuffix): curves.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/curves.c$(ObjectSuffix) -MF$(IntermediateDirectory)/curves.c$(DependSuffix) -MM "curves.c"
+$(IntermediateDirectory)/src_photo_filter.c$(PreprocessSuffix): src/photo_filter.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_photo_filter.c$(PreprocessSuffix) src/photo_filter.c
+
+$(IntermediateDirectory)/src_color_overlay.c$(ObjectSuffix): src/color_overlay.c $(IntermediateDirectory)/src_color_overlay.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/color_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_color_overlay.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_color_overlay.c$(DependSuffix): src/color_overlay.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_color_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_color_overlay.c$(DependSuffix) -MM src/color_overlay.c
 
-$(IntermediateDirectory)/curves.c$(PreprocessSuffix): curves.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/curves.c$(PreprocessSuffix) "curves.c"
+$(IntermediateDirectory)/src_color_overlay.c$(PreprocessSuffix): src/color_overlay.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_color_overlay.c$(PreprocessSuffix) src/color_overlay.c
 
-$(IntermediateDirectory)/descriptor.c$(ObjectSuffix): descriptor.c $(IntermediateDirectory)/descriptor.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/descriptor.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/descriptor.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/descriptor.c$(DependSuffix): descriptor.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/descriptor.c$(ObjectSuffix) -MF$(IntermediateDirectory)/descriptor.c$(DependSuffix) -MM "descriptor.c"
+$(IntermediateDirectory)/src_curves.c$(ObjectSuffix): src/curves.c $(IntermediateDirectory)/src_curves.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/curves.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_curves.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_curves.c$(DependSuffix): src/curves.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_curves.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_curves.c$(DependSuffix) -MM src/curves.c
 
-$(IntermediateDirectory)/descriptor.c$(PreprocessSuffix): descriptor.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/descriptor.c$(PreprocessSuffix) "descriptor.c"
+$(IntermediateDirectory)/src_curves.c$(PreprocessSuffix): src/curves.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_curves.c$(PreprocessSuffix) src/curves.c
 
-$(IntermediateDirectory)/drop_shadow.c$(ObjectSuffix): drop_shadow.c $(IntermediateDirectory)/drop_shadow.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/drop_shadow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/drop_shadow.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/drop_shadow.c$(DependSuffix): drop_shadow.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/drop_shadow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/drop_shadow.c$(DependSuffix) -MM "drop_shadow.c"
+$(IntermediateDirectory)/src_pattern_fill.c$(ObjectSuffix): src/pattern_fill.c $(IntermediateDirectory)/src_pattern_fill.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/pattern_fill.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_pattern_fill.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_pattern_fill.c$(DependSuffix): src/pattern_fill.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_pattern_fill.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_pattern_fill.c$(DependSuffix) -MM src/pattern_fill.c
 
-$(IntermediateDirectory)/drop_shadow.c$(PreprocessSuffix): drop_shadow.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/drop_shadow.c$(PreprocessSuffix) "drop_shadow.c"
+$(IntermediateDirectory)/src_pattern_fill.c$(PreprocessSuffix): src/pattern_fill.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_pattern_fill.c$(PreprocessSuffix) src/pattern_fill.c
 
-$(IntermediateDirectory)/effects.c$(ObjectSuffix): effects.c $(IntermediateDirectory)/effects.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/effects.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/effects.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/effects.c$(DependSuffix): effects.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/effects.c$(ObjectSuffix) -MF$(IntermediateDirectory)/effects.c$(DependSuffix) -MM "effects.c"
+$(IntermediateDirectory)/src_stream.c$(ObjectSuffix): src/stream.c $(IntermediateDirectory)/src_stream.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/stream.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_stream.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_stream.c$(DependSuffix): src/stream.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_stream.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_stream.c$(DependSuffix) -MM src/stream.c
 
-$(IntermediateDirectory)/effects.c$(PreprocessSuffix): effects.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/effects.c$(PreprocessSuffix) "effects.c"
+$(IntermediateDirectory)/src_stream.c$(PreprocessSuffix): src/stream.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_stream.c$(PreprocessSuffix) src/stream.c
 
-$(IntermediateDirectory)/file_header.c$(ObjectSuffix): file_header.c $(IntermediateDirectory)/file_header.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/file_header.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/file_header.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/file_header.c$(DependSuffix): file_header.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/file_header.c$(ObjectSuffix) -MF$(IntermediateDirectory)/file_header.c$(DependSuffix) -MM "file_header.c"
+$(IntermediateDirectory)/src_color.c$(ObjectSuffix): src/color.c $(IntermediateDirectory)/src_color.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_color.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_color.c$(DependSuffix): src/color.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_color.c$(DependSuffix) -MM src/color.c
 
-$(IntermediateDirectory)/file_header.c$(PreprocessSuffix): file_header.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/file_header.c$(PreprocessSuffix) "file_header.c"
+$(IntermediateDirectory)/src_color.c$(PreprocessSuffix): src/color.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_color.c$(PreprocessSuffix) src/color.c
 
-$(IntermediateDirectory)/fixed.c$(ObjectSuffix): fixed.c $(IntermediateDirectory)/fixed.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/fixed.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/fixed.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/fixed.c$(DependSuffix): fixed.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/fixed.c$(ObjectSuffix) -MF$(IntermediateDirectory)/fixed.c$(DependSuffix) -MM "fixed.c"
+$(IntermediateDirectory)/src_levels.c$(ObjectSuffix): src/levels.c $(IntermediateDirectory)/src_levels.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/levels.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_levels.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_levels.c$(DependSuffix): src/levels.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_levels.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_levels.c$(DependSuffix) -MM src/levels.c
 
-$(IntermediateDirectory)/fixed.c$(PreprocessSuffix): fixed.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/fixed.c$(PreprocessSuffix) "fixed.c"
+$(IntermediateDirectory)/src_levels.c$(PreprocessSuffix): src/levels.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_levels.c$(PreprocessSuffix) src/levels.c
 
-$(IntermediateDirectory)/gaussian_blur.c$(ObjectSuffix): gaussian_blur.c $(IntermediateDirectory)/gaussian_blur.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/gaussian_blur.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/gaussian_blur.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/gaussian_blur.c$(DependSuffix): gaussian_blur.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/gaussian_blur.c$(ObjectSuffix) -MF$(IntermediateDirectory)/gaussian_blur.c$(DependSuffix) -MM "gaussian_blur.c"
+$(IntermediateDirectory)/src_outer_glow.c$(ObjectSuffix): src/outer_glow.c $(IntermediateDirectory)/src_outer_glow.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/outer_glow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_outer_glow.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_outer_glow.c$(DependSuffix): src/outer_glow.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_outer_glow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_outer_glow.c$(DependSuffix) -MM src/outer_glow.c
 
-$(IntermediateDirectory)/gaussian_blur.c$(PreprocessSuffix): gaussian_blur.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/gaussian_blur.c$(PreprocessSuffix) "gaussian_blur.c"
+$(IntermediateDirectory)/src_outer_glow.c$(PreprocessSuffix): src/outer_glow.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_outer_glow.c$(PreprocessSuffix) src/outer_glow.c
 
-$(IntermediateDirectory)/gradient_blend.c$(ObjectSuffix): gradient_blend.c $(IntermediateDirectory)/gradient_blend.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/gradient_blend.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/gradient_blend.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/gradient_blend.c$(DependSuffix): gradient_blend.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/gradient_blend.c$(ObjectSuffix) -MF$(IntermediateDirectory)/gradient_blend.c$(DependSuffix) -MM "gradient_blend.c"
+$(IntermediateDirectory)/src_channel_image.c$(ObjectSuffix): src/channel_image.c $(IntermediateDirectory)/src_channel_image.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/channel_image.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_channel_image.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_channel_image.c$(DependSuffix): src/channel_image.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_channel_image.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_channel_image.c$(DependSuffix) -MM src/channel_image.c
 
-$(IntermediateDirectory)/gradient_blend.c$(PreprocessSuffix): gradient_blend.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/gradient_blend.c$(PreprocessSuffix) "gradient_blend.c"
+$(IntermediateDirectory)/src_channel_image.c$(PreprocessSuffix): src/channel_image.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_channel_image.c$(PreprocessSuffix) src/channel_image.c
 
-$(IntermediateDirectory)/gradient_fill.c$(ObjectSuffix): gradient_fill.c $(IntermediateDirectory)/gradient_fill.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/gradient_fill.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/gradient_fill.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/gradient_fill.c$(DependSuffix): gradient_fill.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/gradient_fill.c$(ObjectSuffix) -MF$(IntermediateDirectory)/gradient_fill.c$(DependSuffix) -MM "gradient_fill.c"
+$(IntermediateDirectory)/src_pattern.c$(ObjectSuffix): src/pattern.c $(IntermediateDirectory)/src_pattern.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/pattern.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_pattern.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_pattern.c$(DependSuffix): src/pattern.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_pattern.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_pattern.c$(DependSuffix) -MM src/pattern.c
 
-$(IntermediateDirectory)/gradient_fill.c$(PreprocessSuffix): gradient_fill.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/gradient_fill.c$(PreprocessSuffix) "gradient_fill.c"
+$(IntermediateDirectory)/src_pattern.c$(PreprocessSuffix): src/pattern.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_pattern.c$(PreprocessSuffix) src/pattern.c
 
-$(IntermediateDirectory)/gradient_map.c$(ObjectSuffix): gradient_map.c $(IntermediateDirectory)/gradient_map.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/gradient_map.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/gradient_map.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/gradient_map.c$(DependSuffix): gradient_map.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/gradient_map.c$(ObjectSuffix) -MF$(IntermediateDirectory)/gradient_map.c$(DependSuffix) -MM "gradient_map.c"
+$(IntermediateDirectory)/src_layer_mask.c$(ObjectSuffix): src/layer_mask.c $(IntermediateDirectory)/src_layer_mask.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/layer_mask.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_layer_mask.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_layer_mask.c$(DependSuffix): src/layer_mask.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_layer_mask.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_layer_mask.c$(DependSuffix) -MM src/layer_mask.c
 
-$(IntermediateDirectory)/gradient_map.c$(PreprocessSuffix): gradient_map.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/gradient_map.c$(PreprocessSuffix) "gradient_map.c"
+$(IntermediateDirectory)/src_layer_mask.c$(PreprocessSuffix): src/layer_mask.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_layer_mask.c$(PreprocessSuffix) src/layer_mask.c
 
-$(IntermediateDirectory)/gradient_overlay.c$(ObjectSuffix): gradient_overlay.c $(IntermediateDirectory)/gradient_overlay.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/gradient_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/gradient_overlay.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/gradient_overlay.c$(DependSuffix): gradient_overlay.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/gradient_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/gradient_overlay.c$(DependSuffix) -MM "gradient_overlay.c"
+$(IntermediateDirectory)/src_effects.c$(ObjectSuffix): src/effects.c $(IntermediateDirectory)/src_effects.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/effects.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_effects.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_effects.c$(DependSuffix): src/effects.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_effects.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_effects.c$(DependSuffix) -MM src/effects.c
 
-$(IntermediateDirectory)/gradient_overlay.c$(PreprocessSuffix): gradient_overlay.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/gradient_overlay.c$(PreprocessSuffix) "gradient_overlay.c"
+$(IntermediateDirectory)/src_effects.c$(PreprocessSuffix): src/effects.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_effects.c$(PreprocessSuffix) src/effects.c
 
-$(IntermediateDirectory)/hue_saturation.c$(ObjectSuffix): hue_saturation.c $(IntermediateDirectory)/hue_saturation.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/hue_saturation.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/hue_saturation.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/hue_saturation.c$(DependSuffix): hue_saturation.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/hue_saturation.c$(ObjectSuffix) -MF$(IntermediateDirectory)/hue_saturation.c$(DependSuffix) -MM "hue_saturation.c"
+$(IntermediateDirectory)/src_color_mode.c$(ObjectSuffix): src/color_mode.c $(IntermediateDirectory)/src_color_mode.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/color_mode.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_color_mode.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_color_mode.c$(DependSuffix): src/color_mode.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_color_mode.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_color_mode.c$(DependSuffix) -MM src/color_mode.c
 
-$(IntermediateDirectory)/hue_saturation.c$(PreprocessSuffix): hue_saturation.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/hue_saturation.c$(PreprocessSuffix) "hue_saturation.c"
+$(IntermediateDirectory)/src_color_mode.c$(PreprocessSuffix): src/color_mode.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_color_mode.c$(PreprocessSuffix) src/color_mode.c
 
-$(IntermediateDirectory)/image_data.c$(ObjectSuffix): image_data.c $(IntermediateDirectory)/image_data.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/image_data.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/image_data.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/image_data.c$(DependSuffix): image_data.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/image_data.c$(ObjectSuffix) -MF$(IntermediateDirectory)/image_data.c$(DependSuffix) -MM "image_data.c"
+$(IntermediateDirectory)/src_posterize.c$(ObjectSuffix): src/posterize.c $(IntermediateDirectory)/src_posterize.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/posterize.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_posterize.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_posterize.c$(DependSuffix): src/posterize.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_posterize.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_posterize.c$(DependSuffix) -MM src/posterize.c
 
-$(IntermediateDirectory)/image_data.c$(PreprocessSuffix): image_data.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/image_data.c$(PreprocessSuffix) "image_data.c"
+$(IntermediateDirectory)/src_posterize.c$(PreprocessSuffix): src/posterize.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_posterize.c$(PreprocessSuffix) src/posterize.c
 
-$(IntermediateDirectory)/image_resource.c$(ObjectSuffix): image_resource.c $(IntermediateDirectory)/image_resource.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/image_resource.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/image_resource.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/image_resource.c$(DependSuffix): image_resource.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/image_resource.c$(ObjectSuffix) -MF$(IntermediateDirectory)/image_resource.c$(DependSuffix) -MM "image_resource.c"
+$(IntermediateDirectory)/src_color_balance.c$(ObjectSuffix): src/color_balance.c $(IntermediateDirectory)/src_color_balance.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/color_balance.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_color_balance.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_color_balance.c$(DependSuffix): src/color_balance.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_color_balance.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_color_balance.c$(DependSuffix) -MM src/color_balance.c
 
-$(IntermediateDirectory)/image_resource.c$(PreprocessSuffix): image_resource.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/image_resource.c$(PreprocessSuffix) "image_resource.c"
+$(IntermediateDirectory)/src_color_balance.c$(PreprocessSuffix): src/color_balance.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_color_balance.c$(PreprocessSuffix) src/color_balance.c
 
-$(IntermediateDirectory)/inner_glow.c$(ObjectSuffix): inner_glow.c $(IntermediateDirectory)/inner_glow.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/inner_glow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/inner_glow.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/inner_glow.c$(DependSuffix): inner_glow.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/inner_glow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/inner_glow.c$(DependSuffix) -MM "inner_glow.c"
+$(IntermediateDirectory)/src_bevel_emboss.c$(ObjectSuffix): src/bevel_emboss.c $(IntermediateDirectory)/src_bevel_emboss.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/bevel_emboss.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_bevel_emboss.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_bevel_emboss.c$(DependSuffix): src/bevel_emboss.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_bevel_emboss.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_bevel_emboss.c$(DependSuffix) -MM src/bevel_emboss.c
 
-$(IntermediateDirectory)/inner_glow.c$(PreprocessSuffix): inner_glow.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/inner_glow.c$(PreprocessSuffix) "inner_glow.c"
+$(IntermediateDirectory)/src_bevel_emboss.c$(PreprocessSuffix): src/bevel_emboss.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_bevel_emboss.c$(PreprocessSuffix) src/bevel_emboss.c
 
-$(IntermediateDirectory)/inner_shadow.c$(ObjectSuffix): inner_shadow.c $(IntermediateDirectory)/inner_shadow.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/inner_shadow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/inner_shadow.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/inner_shadow.c$(DependSuffix): inner_shadow.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/inner_shadow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/inner_shadow.c$(DependSuffix) -MM "inner_shadow.c"
+$(IntermediateDirectory)/src_bitmap.c$(ObjectSuffix): src/bitmap.c $(IntermediateDirectory)/src_bitmap.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/bitmap.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_bitmap.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_bitmap.c$(DependSuffix): src/bitmap.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_bitmap.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_bitmap.c$(DependSuffix) -MM src/bitmap.c
 
-$(IntermediateDirectory)/inner_shadow.c$(PreprocessSuffix): inner_shadow.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/inner_shadow.c$(PreprocessSuffix) "inner_shadow.c"
+$(IntermediateDirectory)/src_bitmap.c$(PreprocessSuffix): src/bitmap.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_bitmap.c$(PreprocessSuffix) src/bitmap.c
 
-$(IntermediateDirectory)/invert.c$(ObjectSuffix): invert.c $(IntermediateDirectory)/invert.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/invert.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/invert.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/invert.c$(DependSuffix): invert.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/invert.c$(ObjectSuffix) -MF$(IntermediateDirectory)/invert.c$(DependSuffix) -MM "invert.c"
+$(IntermediateDirectory)/src_path.c$(ObjectSuffix): src/path.c $(IntermediateDirectory)/src_path.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/path.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_path.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_path.c$(DependSuffix): src/path.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_path.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_path.c$(DependSuffix) -MM src/path.c
 
-$(IntermediateDirectory)/invert.c$(PreprocessSuffix): invert.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/invert.c$(PreprocessSuffix) "invert.c"
+$(IntermediateDirectory)/src_path.c$(PreprocessSuffix): src/path.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_path.c$(PreprocessSuffix) src/path.c
 
-$(IntermediateDirectory)/layer_mask.c$(ObjectSuffix): layer_mask.c $(IntermediateDirectory)/layer_mask.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/layer_mask.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/layer_mask.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/layer_mask.c$(DependSuffix): layer_mask.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/layer_mask.c$(ObjectSuffix) -MF$(IntermediateDirectory)/layer_mask.c$(DependSuffix) -MM "layer_mask.c"
+$(IntermediateDirectory)/src_adjustment.c$(ObjectSuffix): src/adjustment.c $(IntermediateDirectory)/src_adjustment.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/adjustment.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_adjustment.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_adjustment.c$(DependSuffix): src/adjustment.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_adjustment.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_adjustment.c$(DependSuffix) -MM src/adjustment.c
 
-$(IntermediateDirectory)/layer_mask.c$(PreprocessSuffix): layer_mask.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/layer_mask.c$(PreprocessSuffix) "layer_mask.c"
+$(IntermediateDirectory)/src_adjustment.c$(PreprocessSuffix): src/adjustment.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_adjustment.c$(PreprocessSuffix) src/adjustment.c
 
-$(IntermediateDirectory)/levels.c$(ObjectSuffix): levels.c $(IntermediateDirectory)/levels.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/levels.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/levels.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/levels.c$(DependSuffix): levels.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/levels.c$(ObjectSuffix) -MF$(IntermediateDirectory)/levels.c$(DependSuffix) -MM "levels.c"
+$(IntermediateDirectory)/src_blend.c$(ObjectSuffix): src/blend.c $(IntermediateDirectory)/src_blend.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/blend.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_blend.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_blend.c$(DependSuffix): src/blend.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_blend.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_blend.c$(DependSuffix) -MM src/blend.c
 
-$(IntermediateDirectory)/levels.c$(PreprocessSuffix): levels.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/levels.c$(PreprocessSuffix) "levels.c"
+$(IntermediateDirectory)/src_blend.c$(PreprocessSuffix): src/blend.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_blend.c$(PreprocessSuffix) src/blend.c
 
-$(IntermediateDirectory)/outer_glow.c$(ObjectSuffix): outer_glow.c $(IntermediateDirectory)/outer_glow.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/outer_glow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/outer_glow.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/outer_glow.c$(DependSuffix): outer_glow.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/outer_glow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/outer_glow.c$(DependSuffix) -MM "outer_glow.c"
+$(IntermediateDirectory)/src_image_data.c$(ObjectSuffix): src/image_data.c $(IntermediateDirectory)/src_image_data.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/image_data.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_image_data.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_image_data.c$(DependSuffix): src/image_data.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_image_data.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_image_data.c$(DependSuffix) -MM src/image_data.c
 
-$(IntermediateDirectory)/outer_glow.c$(PreprocessSuffix): outer_glow.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/outer_glow.c$(PreprocessSuffix) "outer_glow.c"
+$(IntermediateDirectory)/src_image_data.c$(PreprocessSuffix): src/image_data.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_image_data.c$(PreprocessSuffix) src/image_data.c
 
-$(IntermediateDirectory)/path.c$(ObjectSuffix): path.c $(IntermediateDirectory)/path.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/path.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/path.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/path.c$(DependSuffix): path.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/path.c$(ObjectSuffix) -MF$(IntermediateDirectory)/path.c$(DependSuffix) -MM "path.c"
+$(IntermediateDirectory)/src_drop_shadow.c$(ObjectSuffix): src/drop_shadow.c $(IntermediateDirectory)/src_drop_shadow.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/drop_shadow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_drop_shadow.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_drop_shadow.c$(DependSuffix): src/drop_shadow.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_drop_shadow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_drop_shadow.c$(DependSuffix) -MM src/drop_shadow.c
 
-$(IntermediateDirectory)/path.c$(PreprocessSuffix): path.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/path.c$(PreprocessSuffix) "path.c"
+$(IntermediateDirectory)/src_drop_shadow.c$(PreprocessSuffix): src/drop_shadow.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_drop_shadow.c$(PreprocessSuffix) src/drop_shadow.c
 
-$(IntermediateDirectory)/pattern.c$(ObjectSuffix): pattern.c $(IntermediateDirectory)/pattern.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/pattern.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/pattern.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/pattern.c$(DependSuffix): pattern.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/pattern.c$(ObjectSuffix) -MF$(IntermediateDirectory)/pattern.c$(DependSuffix) -MM "pattern.c"
+$(IntermediateDirectory)/src_hue_saturation.c$(ObjectSuffix): src/hue_saturation.c $(IntermediateDirectory)/src_hue_saturation.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/hue_saturation.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_hue_saturation.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_hue_saturation.c$(DependSuffix): src/hue_saturation.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_hue_saturation.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_hue_saturation.c$(DependSuffix) -MM src/hue_saturation.c
 
-$(IntermediateDirectory)/pattern.c$(PreprocessSuffix): pattern.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/pattern.c$(PreprocessSuffix) "pattern.c"
+$(IntermediateDirectory)/src_hue_saturation.c$(PreprocessSuffix): src/hue_saturation.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_hue_saturation.c$(PreprocessSuffix) src/hue_saturation.c
 
-$(IntermediateDirectory)/pattern_fill.c$(ObjectSuffix): pattern_fill.c $(IntermediateDirectory)/pattern_fill.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/pattern_fill.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/pattern_fill.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/pattern_fill.c$(DependSuffix): pattern_fill.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/pattern_fill.c$(ObjectSuffix) -MF$(IntermediateDirectory)/pattern_fill.c$(DependSuffix) -MM "pattern_fill.c"
+$(IntermediateDirectory)/src_channel_mixer.c$(ObjectSuffix): src/channel_mixer.c $(IntermediateDirectory)/src_channel_mixer.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/channel_mixer.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_channel_mixer.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_channel_mixer.c$(DependSuffix): src/channel_mixer.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_channel_mixer.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_channel_mixer.c$(DependSuffix) -MM src/channel_mixer.c
 
-$(IntermediateDirectory)/pattern_fill.c$(PreprocessSuffix): pattern_fill.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/pattern_fill.c$(PreprocessSuffix) "pattern_fill.c"
+$(IntermediateDirectory)/src_channel_mixer.c$(PreprocessSuffix): src/channel_mixer.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_channel_mixer.c$(PreprocessSuffix) src/channel_mixer.c
 
-$(IntermediateDirectory)/pattern_overlay.c$(ObjectSuffix): pattern_overlay.c $(IntermediateDirectory)/pattern_overlay.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/pattern_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/pattern_overlay.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/pattern_overlay.c$(DependSuffix): pattern_overlay.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/pattern_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/pattern_overlay.c$(DependSuffix) -MM "pattern_overlay.c"
+$(IntermediateDirectory)/src_fixed.c$(ObjectSuffix): src/fixed.c $(IntermediateDirectory)/src_fixed.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/fixed.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_fixed.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_fixed.c$(DependSuffix): src/fixed.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_fixed.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_fixed.c$(DependSuffix) -MM src/fixed.c
 
-$(IntermediateDirectory)/pattern_overlay.c$(PreprocessSuffix): pattern_overlay.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/pattern_overlay.c$(PreprocessSuffix) "pattern_overlay.c"
+$(IntermediateDirectory)/src_fixed.c$(PreprocessSuffix): src/fixed.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_fixed.c$(PreprocessSuffix) src/fixed.c
 
-$(IntermediateDirectory)/photo_filter.c$(ObjectSuffix): photo_filter.c $(IntermediateDirectory)/photo_filter.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/photo_filter.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/photo_filter.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/photo_filter.c$(DependSuffix): photo_filter.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/photo_filter.c$(ObjectSuffix) -MF$(IntermediateDirectory)/photo_filter.c$(DependSuffix) -MM "photo_filter.c"
+$(IntermediateDirectory)/src_inner_glow.c$(ObjectSuffix): src/inner_glow.c $(IntermediateDirectory)/src_inner_glow.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/inner_glow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_inner_glow.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_inner_glow.c$(DependSuffix): src/inner_glow.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_inner_glow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_inner_glow.c$(DependSuffix) -MM src/inner_glow.c
 
-$(IntermediateDirectory)/photo_filter.c$(PreprocessSuffix): photo_filter.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/photo_filter.c$(PreprocessSuffix) "photo_filter.c"
+$(IntermediateDirectory)/src_inner_glow.c$(PreprocessSuffix): src/inner_glow.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_inner_glow.c$(PreprocessSuffix) src/inner_glow.c
 
-$(IntermediateDirectory)/posterize.c$(ObjectSuffix): posterize.c $(IntermediateDirectory)/posterize.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/posterize.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/posterize.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/posterize.c$(DependSuffix): posterize.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/posterize.c$(ObjectSuffix) -MF$(IntermediateDirectory)/posterize.c$(DependSuffix) -MM "posterize.c"
+$(IntermediateDirectory)/src_brightness_contrast.c$(ObjectSuffix): src/brightness_contrast.c $(IntermediateDirectory)/src_brightness_contrast.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/brightness_contrast.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_brightness_contrast.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_brightness_contrast.c$(DependSuffix): src/brightness_contrast.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_brightness_contrast.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_brightness_contrast.c$(DependSuffix) -MM src/brightness_contrast.c
 
-$(IntermediateDirectory)/posterize.c$(PreprocessSuffix): posterize.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/posterize.c$(PreprocessSuffix) "posterize.c"
+$(IntermediateDirectory)/src_brightness_contrast.c$(PreprocessSuffix): src/brightness_contrast.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_brightness_contrast.c$(PreprocessSuffix) src/brightness_contrast.c
 
-$(IntermediateDirectory)/psd.c$(ObjectSuffix): psd.c $(IntermediateDirectory)/psd.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/psd.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/psd.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/psd.c$(DependSuffix): psd.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/psd.c$(ObjectSuffix) -MF$(IntermediateDirectory)/psd.c$(DependSuffix) -MM "psd.c"
+$(IntermediateDirectory)/src_file_header.c$(ObjectSuffix): src/file_header.c $(IntermediateDirectory)/src_file_header.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/file_header.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_file_header.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_file_header.c$(DependSuffix): src/file_header.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_file_header.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_file_header.c$(DependSuffix) -MM src/file_header.c
 
-$(IntermediateDirectory)/psd.c$(PreprocessSuffix): psd.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/psd.c$(PreprocessSuffix) "psd.c"
+$(IntermediateDirectory)/src_file_header.c$(PreprocessSuffix): src/file_header.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_file_header.c$(PreprocessSuffix) src/file_header.c
 
-$(IntermediateDirectory)/psd_system.c$(ObjectSuffix): psd_system.c $(IntermediateDirectory)/psd_system.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/psd_system.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/psd_system.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/psd_system.c$(DependSuffix): psd_system.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/psd_system.c$(ObjectSuffix) -MF$(IntermediateDirectory)/psd_system.c$(DependSuffix) -MM "psd_system.c"
+$(IntermediateDirectory)/src_gaussian_blur.c$(ObjectSuffix): src/gaussian_blur.c $(IntermediateDirectory)/src_gaussian_blur.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/gaussian_blur.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_gaussian_blur.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_gaussian_blur.c$(DependSuffix): src/gaussian_blur.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_gaussian_blur.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_gaussian_blur.c$(DependSuffix) -MM src/gaussian_blur.c
 
-$(IntermediateDirectory)/psd_system.c$(PreprocessSuffix): psd_system.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/psd_system.c$(PreprocessSuffix) "psd_system.c"
+$(IntermediateDirectory)/src_gaussian_blur.c$(PreprocessSuffix): src/gaussian_blur.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_gaussian_blur.c$(PreprocessSuffix) src/gaussian_blur.c
 
-$(IntermediateDirectory)/psd_zip.c$(ObjectSuffix): psd_zip.c $(IntermediateDirectory)/psd_zip.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/psd_zip.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/psd_zip.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/psd_zip.c$(DependSuffix): psd_zip.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/psd_zip.c$(ObjectSuffix) -MF$(IntermediateDirectory)/psd_zip.c$(DependSuffix) -MM "psd_zip.c"
+$(IntermediateDirectory)/src_gradient_overlay.c$(ObjectSuffix): src/gradient_overlay.c $(IntermediateDirectory)/src_gradient_overlay.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/gradient_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_gradient_overlay.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_gradient_overlay.c$(DependSuffix): src/gradient_overlay.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_gradient_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_gradient_overlay.c$(DependSuffix) -MM src/gradient_overlay.c
 
-$(IntermediateDirectory)/psd_zip.c$(PreprocessSuffix): psd_zip.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/psd_zip.c$(PreprocessSuffix) "psd_zip.c"
+$(IntermediateDirectory)/src_gradient_overlay.c$(PreprocessSuffix): src/gradient_overlay.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_gradient_overlay.c$(PreprocessSuffix) src/gradient_overlay.c
 
-$(IntermediateDirectory)/rect.c$(ObjectSuffix): rect.c $(IntermediateDirectory)/rect.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/rect.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/rect.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/rect.c$(DependSuffix): rect.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/rect.c$(ObjectSuffix) -MF$(IntermediateDirectory)/rect.c$(DependSuffix) -MM "rect.c"
+$(IntermediateDirectory)/src_gradient_blend.c$(ObjectSuffix): src/gradient_blend.c $(IntermediateDirectory)/src_gradient_blend.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/gradient_blend.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_gradient_blend.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_gradient_blend.c$(DependSuffix): src/gradient_blend.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_gradient_blend.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_gradient_blend.c$(DependSuffix) -MM src/gradient_blend.c
 
-$(IntermediateDirectory)/rect.c$(PreprocessSuffix): rect.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/rect.c$(PreprocessSuffix) "rect.c"
+$(IntermediateDirectory)/src_gradient_blend.c$(PreprocessSuffix): src/gradient_blend.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_gradient_blend.c$(PreprocessSuffix) src/gradient_blend.c
 
-$(IntermediateDirectory)/satin.c$(ObjectSuffix): satin.c $(IntermediateDirectory)/satin.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/satin.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/satin.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/satin.c$(DependSuffix): satin.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/satin.c$(ObjectSuffix) -MF$(IntermediateDirectory)/satin.c$(DependSuffix) -MM "satin.c"
+$(IntermediateDirectory)/src_gradient_fill.c$(ObjectSuffix): src/gradient_fill.c $(IntermediateDirectory)/src_gradient_fill.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/gradient_fill.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_gradient_fill.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_gradient_fill.c$(DependSuffix): src/gradient_fill.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_gradient_fill.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_gradient_fill.c$(DependSuffix) -MM src/gradient_fill.c
 
-$(IntermediateDirectory)/satin.c$(PreprocessSuffix): satin.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/satin.c$(PreprocessSuffix) "satin.c"
+$(IntermediateDirectory)/src_gradient_fill.c$(PreprocessSuffix): src/gradient_fill.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_gradient_fill.c$(PreprocessSuffix) src/gradient_fill.c
 
-$(IntermediateDirectory)/selective_color.c$(ObjectSuffix): selective_color.c $(IntermediateDirectory)/selective_color.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/selective_color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/selective_color.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/selective_color.c$(DependSuffix): selective_color.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/selective_color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/selective_color.c$(DependSuffix) -MM "selective_color.c"
+$(IntermediateDirectory)/src_boundary.c$(ObjectSuffix): src/boundary.c $(IntermediateDirectory)/src_boundary.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/boundary.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_boundary.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_boundary.c$(DependSuffix): src/boundary.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_boundary.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_boundary.c$(DependSuffix) -MM src/boundary.c
 
-$(IntermediateDirectory)/selective_color.c$(PreprocessSuffix): selective_color.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/selective_color.c$(PreprocessSuffix) "selective_color.c"
+$(IntermediateDirectory)/src_boundary.c$(PreprocessSuffix): src/boundary.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_boundary.c$(PreprocessSuffix) src/boundary.c
 
-$(IntermediateDirectory)/solid_color.c$(ObjectSuffix): solid_color.c $(IntermediateDirectory)/solid_color.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/solid_color.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/solid_color.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/solid_color.c$(DependSuffix): solid_color.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/solid_color.c$(ObjectSuffix) -MF$(IntermediateDirectory)/solid_color.c$(DependSuffix) -MM "solid_color.c"
+$(IntermediateDirectory)/src_gradient_map.c$(ObjectSuffix): src/gradient_map.c $(IntermediateDirectory)/src_gradient_map.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/gradient_map.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_gradient_map.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_gradient_map.c$(DependSuffix): src/gradient_map.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_gradient_map.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_gradient_map.c$(DependSuffix) -MM src/gradient_map.c
 
-$(IntermediateDirectory)/solid_color.c$(PreprocessSuffix): solid_color.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/solid_color.c$(PreprocessSuffix) "solid_color.c"
+$(IntermediateDirectory)/src_gradient_map.c$(PreprocessSuffix): src/gradient_map.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_gradient_map.c$(PreprocessSuffix) src/gradient_map.c
 
-$(IntermediateDirectory)/stream.c$(ObjectSuffix): stream.c $(IntermediateDirectory)/stream.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/stream.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/stream.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/stream.c$(DependSuffix): stream.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/stream.c$(ObjectSuffix) -MF$(IntermediateDirectory)/stream.c$(DependSuffix) -MM "stream.c"
+$(IntermediateDirectory)/src_image_resource.c$(ObjectSuffix): src/image_resource.c $(IntermediateDirectory)/src_image_resource.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/image_resource.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_image_resource.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_image_resource.c$(DependSuffix): src/image_resource.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_image_resource.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_image_resource.c$(DependSuffix) -MM src/image_resource.c
 
-$(IntermediateDirectory)/stream.c$(PreprocessSuffix): stream.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/stream.c$(PreprocessSuffix) "stream.c"
+$(IntermediateDirectory)/src_image_resource.c$(PreprocessSuffix): src/image_resource.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_image_resource.c$(PreprocessSuffix) src/image_resource.c
 
-$(IntermediateDirectory)/stroke.c$(ObjectSuffix): stroke.c $(IntermediateDirectory)/stroke.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/stroke.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/stroke.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/stroke.c$(DependSuffix): stroke.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/stroke.c$(ObjectSuffix) -MF$(IntermediateDirectory)/stroke.c$(DependSuffix) -MM "stroke.c"
+$(IntermediateDirectory)/src_inner_shadow.c$(ObjectSuffix): src/inner_shadow.c $(IntermediateDirectory)/src_inner_shadow.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/inner_shadow.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_inner_shadow.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_inner_shadow.c$(DependSuffix): src/inner_shadow.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_inner_shadow.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_inner_shadow.c$(DependSuffix) -MM src/inner_shadow.c
 
-$(IntermediateDirectory)/stroke.c$(PreprocessSuffix): stroke.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/stroke.c$(PreprocessSuffix) "stroke.c"
+$(IntermediateDirectory)/src_inner_shadow.c$(PreprocessSuffix): src/inner_shadow.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_inner_shadow.c$(PreprocessSuffix) src/inner_shadow.c
 
-$(IntermediateDirectory)/test.c$(ObjectSuffix): test.c $(IntermediateDirectory)/test.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/test.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/test.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/test.c$(DependSuffix): test.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/test.c$(ObjectSuffix) -MF$(IntermediateDirectory)/test.c$(DependSuffix) -MM "test.c"
+$(IntermediateDirectory)/src_type_tool.c$(ObjectSuffix): src/type_tool.c $(IntermediateDirectory)/src_type_tool.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/type_tool.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_type_tool.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_type_tool.c$(DependSuffix): src/type_tool.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_type_tool.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_type_tool.c$(DependSuffix) -MM src/type_tool.c
 
-$(IntermediateDirectory)/test.c$(PreprocessSuffix): test.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test.c$(PreprocessSuffix) "test.c"
+$(IntermediateDirectory)/src_type_tool.c$(PreprocessSuffix): src/type_tool.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_type_tool.c$(PreprocessSuffix) src/type_tool.c
 
-$(IntermediateDirectory)/threshold.c$(ObjectSuffix): threshold.c $(IntermediateDirectory)/threshold.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/threshold.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/threshold.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/threshold.c$(DependSuffix): threshold.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/threshold.c$(ObjectSuffix) -MF$(IntermediateDirectory)/threshold.c$(DependSuffix) -MM "threshold.c"
+$(IntermediateDirectory)/src_invert.c$(ObjectSuffix): src/invert.c $(IntermediateDirectory)/src_invert.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/invert.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_invert.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_invert.c$(DependSuffix): src/invert.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_invert.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_invert.c$(DependSuffix) -MM src/invert.c
 
-$(IntermediateDirectory)/threshold.c$(PreprocessSuffix): threshold.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/threshold.c$(PreprocessSuffix) "threshold.c"
+$(IntermediateDirectory)/src_invert.c$(PreprocessSuffix): src/invert.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_invert.c$(PreprocessSuffix) src/invert.c
 
-$(IntermediateDirectory)/thumbnail.c$(ObjectSuffix): thumbnail.c $(IntermediateDirectory)/thumbnail.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/thumbnail.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/thumbnail.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/thumbnail.c$(DependSuffix): thumbnail.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/thumbnail.c$(ObjectSuffix) -MF$(IntermediateDirectory)/thumbnail.c$(DependSuffix) -MM "thumbnail.c"
+$(IntermediateDirectory)/src_pattern_overlay.c$(ObjectSuffix): src/pattern_overlay.c $(IntermediateDirectory)/src_pattern_overlay.c$(DependSuffix)
+	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libPsd/src/pattern_overlay.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_pattern_overlay.c$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_pattern_overlay.c$(DependSuffix): src/pattern_overlay.c
+	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_pattern_overlay.c$(ObjectSuffix) -MF$(IntermediateDirectory)/src_pattern_overlay.c$(DependSuffix) -MM src/pattern_overlay.c
 
-$(IntermediateDirectory)/thumbnail.c$(PreprocessSuffix): thumbnail.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/thumbnail.c$(PreprocessSuffix) "thumbnail.c"
-
-$(IntermediateDirectory)/type_tool.c$(ObjectSuffix): type_tool.c $(IntermediateDirectory)/type_tool.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/dev/Regards/Otherlib/libPsd/type_tool.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/type_tool.c$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/type_tool.c$(DependSuffix): type_tool.c
-	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/type_tool.c$(ObjectSuffix) -MF$(IntermediateDirectory)/type_tool.c$(DependSuffix) -MM "type_tool.c"
-
-$(IntermediateDirectory)/type_tool.c$(PreprocessSuffix): type_tool.c
-	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/type_tool.c$(PreprocessSuffix) "type_tool.c"
+$(IntermediateDirectory)/src_pattern_overlay.c$(PreprocessSuffix): src/pattern_overlay.c
+	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_pattern_overlay.c$(PreprocessSuffix) src/pattern_overlay.c
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -512,6 +504,6 @@ $(IntermediateDirectory)/type_tool.c$(PreprocessSuffix): type_tool.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

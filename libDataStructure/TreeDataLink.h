@@ -19,6 +19,6 @@ public:
     
 protected:
     wxString linkPath;
-    int linktype = 0;
-    int id = 0;
+    int linktype;
+    int id;
 };

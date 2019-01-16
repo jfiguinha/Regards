@@ -1,10 +1,7 @@
 #pragma once
-#include <Theme.h>
+#include <theme.h>
 #include "ToolbarElement.h"
 #include "SliderInterface.h"
-#include <string>
-#include <vector>
-using namespace std;
 
 namespace Regards
 {
@@ -18,7 +15,7 @@ namespace Regards
 			void Resize(const int &tailleX, const int &tailleY);
 			void SetPosition(const int &iPos);
 			void SetTabValue(vector<int> value);
-			void DrawButton(wxDC * deviceContext);
+			void DrawButton(wxDC * dc, const int &x, const int &y);
 			int GetPosition();
 			int GetNbValue();
 			void ZoomPos(const int &position);
@@ -28,6 +25,7 @@ namespace Regards
 			bool MouseOver(wxDC * context, const int &x, const int &y);
 			void UnclickElement(wxWindow * window, const int &x, const int &y);
 			void ClickElement(wxWindow * window, const int &x, const int &y);
+			int GetPositionValue();
 
 		private:
             
@@ -35,7 +33,7 @@ namespace Regards
 			void CalculZoomPosition(const int &x);
 			void CalculPositionButton(const int &x);
 			void CalculPositionButton();
-			int GetPositionValue();
+			
 			bool FindCirclePos(wxWindow * window, const int &y, const int &x);
 			void ClickLeftPage(const int &x);
 			void ClickRightPage(const int &x);
@@ -45,7 +43,7 @@ namespace Regards
 			int GetFirstValue();
 			int GetLastValue();
 
-			bool colorBackground = true;
+			
 			wxBitmap background;
 			CSliderInterface * eventInterface;
 			CThemeSlider themeSlider;
@@ -55,9 +53,10 @@ namespace Regards
 			wxRect positionSlider;
 			bool mouseBlock;
 			bool captureBall;
-			int position = 0;
+			bool colorBackground;
+			int position;
 			vector<int> tabValue;
-            bool isVector = true;
+            
             wxString buttonVector;
 			wxRect posRectangle;
 		};

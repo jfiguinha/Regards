@@ -2,11 +2,14 @@
 #include "TreeElementTexte.h"
 #include "TreeElementTriangle.h"
 #include "ModificationManager.h"
+#include <ImageLoadingFormat.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
+
 CInfoEffect::CInfoEffect(CBitmapWndViewer * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
 {
+	widthPosition = 0;
 	themeTree = *theme;
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
@@ -43,7 +46,9 @@ void CInfoEffect::AddModification(CRegardsBitmap * bitmap, const wxString &libel
 
         for(int i = 1;i < (numModification+1);i++)
         {
-            AddEvent("Effect." + modificationManager->GetModificationLibelle(i).Replace(".","@99"), to_string(i));
+            wxString modificationString = modificationManager->GetModificationLibelle(i);
+            modificationString.Replace(".","@99");
+            AddEvent("Effect." + modificationString, to_string(i));
             index++;
         }
     }
@@ -69,9 +74,11 @@ void CInfoEffect::InitTree(const wxString &libelle, const wxString &key)
     treeData->SetExifKey(key);
     child = tr.insert(top, treeData);
     */
+	//child = childStart;
 	wxString localLibelle = libelle;
 	localLibelle.Replace(".", "@99");
 	AddEvent("Source." + localLibelle, key);
+	//childStart = child;
     index++;
     CreateElement();
 }
@@ -93,8 +100,11 @@ void CInfoEffect::ClickOnElement(CPositionElement * element, wxWindow * window, 
             if(key != "-1")
             {
                 int modif = atoi(key.c_str());
-                bitmapViewer->SetBitmap(modificationManager->GetModification(modif));
-                bitmapViewer->Refresh();
+
+				CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+				imageLoad->SetPicture(modificationManager->GetModification(modif));
+                bitmapViewer->SetBitmap(imageLoad);
+                //bitmapViewer->Refresh();
                 SetActifElement(key);
             }
 		}
@@ -104,7 +114,7 @@ void CInfoEffect::ClickOnElement(CPositionElement * element, wxWindow * window, 
 		CTreeElementTriangle * treeElementTriangle = (CTreeElementTriangle *)treeElement;
 		treeElementTriangle->ClickElement(window, (x + posLargeur) - element->GetX(), (y + posHauteur) - element->GetY());
 		UpdateElement();
-		eventControl->Update();
+		eventControl->UpdateTreeControl();
 	}
 }
 
@@ -143,15 +153,15 @@ void CInfoEffect::SetActifElement(const wxString &key)
 				data->SetActif(false);
 		}
 	}
-	eventControl->Update();
+	eventControl->UpdateTreeControl();
 }
 
 void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 {
 	//Récupération des catégories principales
 	numEvent+=2;
-
-
+	//tree<CTreeData *>::iterator child;
+	//tree<CTreeData *>::iterator top = tr.begin();
 	wxString localLibelle = libelle;
 	localLibelle.Replace("@99", ".");
 	CTreeData * treeData = new CTreeData();
@@ -169,15 +179,12 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 	wcscpy(informations, libelle.c_str());
 
 	// Establish string and get the first token:
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
 #endif
-#else
-wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
-#endif
+
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
@@ -185,15 +192,12 @@ wchar_t * token = wcstok(informations, seps, &next_token1); // C4996
 		wxString value = token;
 		value.Replace("@99", ".");
 		treeData->SetKey(value);
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 		token = wcstok(nullptr, seps); // C4996
 #else
 		token = wcstok(nullptr, seps, &next_token1); // C4996
 #endif
-#else
-token = wcstok(nullptr, seps, &next_token1); // C4996
-#endif 
+ 
 		if (token != nullptr)
 		{
 			treeData->SetIsParent(true);
@@ -250,7 +254,7 @@ token = wcstok(nullptr, seps, &next_token1); // C4996
 	}
 	
 	UpdateElement();
-	eventControl->Update();
+	eventControl->UpdateTreeControl();
 }
 
 void CInfoEffect::CreateElement()
@@ -295,6 +299,8 @@ void CInfoEffect::CreateElement()
 void CInfoEffect::UpdateElement()
 {
 	for (CPositionElement * value : vectorPosElement)
+
+
 	{
 		if (value != nullptr)
 		{
@@ -376,7 +382,7 @@ void CInfoEffect::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 	bool isVisible = true;
 	//int i = 
 
-	for (int i = 0; i < parent.number_of_children(); i++)
+	for (auto i = 0; i < parent.number_of_children(); i++)
 	{
 		int profondeur = tr.depth(it);
 		CTreeData * data = *it;

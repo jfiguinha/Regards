@@ -1,6 +1,7 @@
 #include "SqlExecuteRequest.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
+#include <LibResource.h>
 using namespace Regards::Sqlite;
 
 CSqlExecuteRequest::CSqlExecuteRequest(const wxString & databaseName)
@@ -50,7 +51,7 @@ bool CSqlExecuteRequest::ExecuteInsertBlobData(const wxString &requestSQL, const
 }
 
 //-------------------------------------------------------------------------------------------------
-// Execution d'une requete qui n'attend pas de résultat
+// Execution d'une requete qui n'attend pas de rÃ©sultat
 //-------------------------------------------------------------------------------------------------
 int CSqlExecuteRequest::ExecuteRequestWithNoResult(const wxString &requestSQL)
 {
@@ -108,7 +109,8 @@ int64_t CSqlExecuteRequest::GetLastId()
         }
 		else
 		{
-			wxMessageBox("Database corrupt !");
+            wxString database_error = CLibResource::LoadStringFromResource(L"DatabaseCorrupt",1);
+			wxMessageBox(database_error);
 			exit(1);
 		}
     

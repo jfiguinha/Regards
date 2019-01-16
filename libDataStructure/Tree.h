@@ -567,6 +567,7 @@ void tree<T, tree_node_allocator>::clear()
 	if(head)
 		while(head->next_sibling!=feet)
 			erase(pre_order_iterator(head->next_sibling));
+
 	}
 
 template<class T, class tree_node_allocator> 

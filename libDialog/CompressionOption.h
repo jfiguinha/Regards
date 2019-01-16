@@ -39,8 +39,8 @@ class CompressionOption: public wxDialog
 
 	private:
 
-		bool isOk = false;
-		int compressLevel = 0;
+		bool isOk;
+		int compressLevel;
 
 		//(*Handlers(CompressionOption)
 		void OnButton1Click(wxCommandEvent& event);

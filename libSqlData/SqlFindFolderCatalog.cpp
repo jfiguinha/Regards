@@ -1,6 +1,7 @@
 #include "SqlFindFolderCatalog.h"
 using namespace Regards::Sqlite;
 
+
 CSqlFindFolderCatalog::CSqlFindFolderCatalog()
 	: CSqlExecuteRequest(L"RegardsDB")
 {
@@ -33,7 +34,7 @@ int CSqlFindFolderCatalog::TraitementResult(CSqlResult * sqlResult)
 	{
 		if (typeRequest == 0)
 		{
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{
@@ -46,7 +47,7 @@ int CSqlFindFolderCatalog::TraitementResult(CSqlResult * sqlResult)
 		else
 		{
 			CFolderCatalog _foldercatalog;
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{

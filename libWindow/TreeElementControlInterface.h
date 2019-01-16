@@ -12,7 +12,7 @@ namespace Regards
 			~CTreeElementControlInterface(){};
 
 			virtual void UpdateElement(CTreeElement * treeElement) = 0;
-			virtual void Update() = 0;
+			virtual void UpdateTreeControl() = 0;
 		};
 	}
 }

@@ -1,1 +1,1 @@
-./Release/ConfigParam.cpp.o ./Release/ParamInit.cpp.o ./Release/RegardsConfigParam.cpp.o
+./Release/RegardsConfigParam.cpp.o ./Release/ConfigParam.cpp.o ./Release/ParamInit.cpp.o

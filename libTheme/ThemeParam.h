@@ -1,22 +1,20 @@
 #pragma once
 #include <iostream>
 #include <fstream>
-#include <vector>
-#include <string.h>
 #include <rapidxml.hpp>
-#include "Theme.h"
+#include <theme.h>
 using namespace rapidxml;
-using namespace std;
 
 #define NAVIGATOR_LEFT 1
 #define NAVIGATOR_CENTER 2
 #define NAVIGATOR_RIGHT 3
 
+
 class CThemeParam
 {
 public:
 	CThemeParam();
-	~CThemeParam();
+	virtual ~CThemeParam();
 
 	bool OpenFile(const wxString &themeFile);
 	bool SaveFile();

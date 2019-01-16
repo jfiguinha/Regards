@@ -1,8 +1,8 @@
 #include "RedEye.h"
-#include <algorithm>
 #include "InterpolationBicubic.h"
 #include <LibResource.h>
 #include "Filtre.h"
+#include <RegardsBitmap.h>
 using namespace std;
 using namespace Regards::FiltreEffet;
 
@@ -21,18 +21,18 @@ wxRect CRedEye::FindIris(wxPoint leftEye, int distanceMax, CRegardsBitmap * bitm
 	//Left Eye
 	//---------------------------------------------------------
 	vector<wxPoint> ptLeftEye;
-	CRgbaquad colorRed = { 31, 43, 61, 0 };
+	CRgbaquad colorRed = CRgbaquad(31, 43, 61, 0);
 
-	for (int x = leftEye.x; x < leftEye.x + distanceMax; x++)
+	for (auto x = leftEye.x; x < leftEye.x + distanceMax; x++)
 	{
 		int lasty = leftEye.y;
-		for (int y = leftEye.y; y < leftEye.y + distanceMax; y++)
+		for (auto y = leftEye.y; y < leftEye.y + distanceMax; y++)
 		{
 
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			if (color.GetBlue() != 0)
 			{
-				ptLeftEye.push_back({ x, y });
+				ptLeftEye.push_back(wxPoint(x,y));
 			}
 			else
 				break;
@@ -44,15 +44,15 @@ wxRect CRedEye::FindIris(wxPoint leftEye, int distanceMax, CRegardsBitmap * bitm
 			break;
 	}
 
-	for (int x = leftEye.x; x > (leftEye.x - distanceMax); x--)
+	for (auto x = leftEye.x; x > (leftEye.x - distanceMax); x--)
 	{
 		int lasty = leftEye.y;
-		for (int y = leftEye.y; y < leftEye.y + distanceMax; y++)
+		for (auto y = leftEye.y; y < leftEye.y + distanceMax; y++)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			if (color.GetBlue() != 0)
 			{
-				ptLeftEye.push_back({ x, y });
+				ptLeftEye.push_back(wxPoint(x, y));
 			}
 			else
 				break;
@@ -63,14 +63,14 @@ wxRect CRedEye::FindIris(wxPoint leftEye, int distanceMax, CRegardsBitmap * bitm
 			break;
 	}
 
-	for (int x = leftEye.x; x < leftEye.x + distanceMax; x++)
+	for (auto x = leftEye.x; x < leftEye.x + distanceMax; x++)
 	{
 		int lasty = leftEye.y;
-		for (int y = leftEye.y; y > (leftEye.y - distanceMax); y--)
+		for (auto y = leftEye.y; y > (leftEye.y - distanceMax); y--)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			if (color.GetBlue() != 0)
-				ptLeftEye.push_back({ x, y });
+				ptLeftEye.push_back(wxPoint(x, y));
 			else
 				break;
 
@@ -81,15 +81,15 @@ wxRect CRedEye::FindIris(wxPoint leftEye, int distanceMax, CRegardsBitmap * bitm
 			break;
 	}
 
-	for (int x = leftEye.x; x > (leftEye.x - distanceMax); x--)
+	for (auto x = leftEye.x; x > (leftEye.x - distanceMax); x--)
 	{
 		int lasty = leftEye.y;
-		for (int y = leftEye.y; y > (leftEye.y - distanceMax); y--)
+		for (auto y = leftEye.y; y > (leftEye.y - distanceMax); y--)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			if (color.GetBlue() != 0)
 			{
-				ptLeftEye.push_back({ x, y });
+				ptLeftEye.push_back(wxPoint(x, y));
 			}
 			else
 				break;
@@ -178,9 +178,9 @@ bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap,const CRgbaquad & backcolor,
 	//Recherche des points lumineux
 	CRegardsBitmap * bitmap = new CRegardsBitmap(rSelectionBox.width, rSelectionBox.height);
 	//uint8_t * data = bitmap->GetPtBitmap();
-	for (int y = ymin; y < ymax; y++)
+	for (auto y = ymin; y < ymax; y++)
 	{
-		for (int x = xmin; x < xmax; x++)
+		for (auto x = xmin; x < xmax; x++)
 		{
 			CRgbaquad color = pBitmap->GetColorValue(x, y);
             CRgbaquad * colorNew = bitmap->GetPtColorValue(x - xmin, y - ymin);
@@ -192,11 +192,11 @@ bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap,const CRgbaquad & backcolor,
 	vector<level> vectorListLevelColor;
 
 	//Recherche par ligne le niveau Max de lumière
-	for (int x = 0; x < bitmap->GetBitmapWidth(); x++)
+	for (auto x = 0; x < bitmap->GetBitmapWidth(); x++)
 	{
 		int maxLux = 0;
 		wxPoint pt;
-		for (int y = 0; y < bitmap->GetBitmapHeight(); y++)
+		for (auto y = 0; y < bitmap->GetBitmapHeight(); y++)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			if (color.GetBlue() > maxLux)

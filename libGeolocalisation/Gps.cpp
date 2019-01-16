@@ -1,9 +1,5 @@
 #include "Gps.h"
 #include <ConvertUtility.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 #ifdef USECURL
 #include <curl/curl.h>
@@ -66,7 +62,7 @@ float CGps::GetGpsfValue(const wxString& gpsValue)
 
 wxString CGps::GetGpsValue(const float& gpsValue)
 {
-	return std::to_string(gpsValue);
+	return to_string(gpsValue);
 }
 
 #ifdef USECURL
@@ -86,7 +82,7 @@ size_t CGps::write_data(void *ptr, size_t size, size_t nmemb, struct url_data *d
 #endif
 	tmp = (char *)realloc(data->data, data->size + 1); /* +1 for '\0' */
 
-	if (tmp) {
+	if (tmp != NULL) {
 		data->data = tmp;
 	}
 	else {
@@ -120,6 +116,9 @@ float CGps::GetFLongitude()
 bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitude)
 {
 
+    
+    printf("CGps GeolocalisationGPS \n");
+     
 	CURL *curl;
     this->latitude = latitude;
     this->longitude = longitude;
@@ -127,7 +126,7 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 
 	//int error = 0;
 	bool returnValue = true;
-	wxString xml = L"";
+	//wxString xml = L"";
 	wxString httpAdress = serverHttp;
 	httpAdress.append(L"/extras/location.gp?lat=");
 	httpAdress.append(latitude);
@@ -139,22 +138,24 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 	data.size = 0;
 	data.data = (char *)malloc(4096); /* reasonable size initial buffer */
 	if (NULL == data.data) {
+        printf("CGps GeolocalisationGPS Failed to allocate memory \n");
 		fprintf(stderr, "Failed to allocate memory.\n");
-		return NULL;
+		return false;
 	}
 
 	data.data[0] = '\0';
 
 	curl = curl_easy_init();
-	curl_easy_setopt(curl, CURLOPT_URL, httpAdress.ToStdString().c_str());
+	curl_easy_setopt(curl, CURLOPT_URL, CConvertUtility::ConvertToUTF8(httpAdress));
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
 	curl_easy_perform(curl); /* ignores error */
 	curl_easy_cleanup(curl);
 
-	xml.Append(data.data);
+    //wxString mystring2(chars, wxConvUTF8);
+	wxString xml(data.data, wxConvUTF8);
 
-    printf("URL  : %s \n", httpAdress.ToStdString().c_str());
+    printf("URL  : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
 	printf("Data : %s \n", data.data);
 
 	geoPluginVector.clear();
@@ -169,6 +170,8 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 
 bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitude)
 {
+    printf("CGps::GeolocalisationGPS \n");
+      
 	//int error = 0;
     bool returnValue = true;
 	wxString xml = L"";
@@ -179,34 +182,44 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 	httpAdress.append(longitude);
 	httpAdress.append(L"&format=xml");
    
-	wxURL url(httpAdress);
-	if (url.GetError() == wxURL_NOERR)
-	{
-		wxInputStream *in_stream;
-		in_stream = url.GetInputStream();
-        
-        if (in_stream && in_stream->IsOk()) {
-            wxStringOutputStream html_stream(&xml);
-            in_stream->Read(html_stream);
-        }
-        
-        if(in_stream == nullptr)
+    try
+    {
+        printf("http address : %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
+        wxURL url(httpAdress);
+        if (url.GetError() == wxURL_NOERR)
         {
+            wxInputStream *in_stream = url.GetInputStream();
+            if(in_stream != nullptr)
+            {
+                if (in_stream && in_stream->IsOk()) {
+                    wxStringOutputStream html_stream(&xml);
+                    in_stream->Read(html_stream);
+                }
+            }
+            
+            if(in_stream == nullptr)
+            {
+                geoPluginVector.clear();
+                returnValue = false;
+            }
+            else
+                delete in_stream;
+
+
+            geoPluginVector.clear();
+            ImportationGeoPlugin(xml);
+        }
+        else
+        {
+            printf("URL ERROR %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
             geoPluginVector.clear();
             returnValue = false;
         }
-        else
-        	delete in_stream;
-
-
-		geoPluginVector.clear();
-		ImportationGeoPlugin(xml);
-	}
-	else
-	{
-		geoPluginVector.clear();
-		returnValue = false;
-	}
+    }
+    catch(...)
+    {
+        printf("wxURL ERROR CRASH %s \n", CConvertUtility::ConvertToUTF8(httpAdress));
+    }
 
 	return returnValue;
 }

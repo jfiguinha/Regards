@@ -1,10 +1,9 @@
 #include "SqlEngine.h"
 #include "SqlLib.h"
-#include <chrono>
-#include <thread>
+
 using namespace Regards::Sqlite;
 
-// Initialisation du singleton à nullptr
+// Initialisation du singleton Ã  nullptr
 vector<CSqlEngine::DataBase> CSqlEngine::_listOfBase;
 
 CSqlEngine::CSqlEngine()
@@ -18,6 +17,7 @@ CSqlEngine::~CSqlEngine()
 
 CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 {
+
 	for (DataBase db : _listOfBase)
 		if (db.baseName == baseName)
 			return db._singleton;
@@ -28,6 +28,7 @@ CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 
 void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName, CSqlLib * sqlLib)
 {
+
 	for (DataBase db : _listOfBase)
 		if (db.baseName == baseName)
 			return;
@@ -52,7 +53,6 @@ void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName,
 
 void CSqlEngine::kill(const wxString &baseName)
 {
-
 	for (DataBase db : _listOfBase)
 	{
 		if (db.baseName == baseName)

@@ -1,12 +1,19 @@
 #pragma once
 #include <ThumbnailData.h>
-#include <RegardsBitmap.h>
-#include <stdint.h>
+#include <ImageVideoThumbnail.h>
+
+class CImageLoadingFormat;
+
+struct VideoParameter
+{
+	wxString filename;
+	vector<CImageVideoThumbnail *> * listVideo;
+};
 
 class CThumbnailDataSQL : public CThumbnailData
 {
 public:
-	CThumbnailDataSQL(const wxString & filename);
+	CThumbnailDataSQL(const wxString & filename, const bool &testValidity);
 	~CThumbnailDataSQL(void);
 
 	int GetType()
@@ -19,14 +26,16 @@ public:
 		return false;
 	}
 
-	void SetBitmap(CRegardsBitmap * bitmap);
+	void SetBitmap(CImageLoadingFormat * bitmap);
 	wxImage GetwxImage();
-	CRegardsBitmap * GetRegardsBitmap(const int &type = 3);
-
+    int GetNbFrame();
+    
 private:
-
-	
-	size_t readFileBytes(const wxString &name, uint8_t * data, size_t &size);
+    //int LoadAllThumbnailPictureFromDatabase();
 	bool TestBitmap();
-
+    //vector<CImageVideoThumbnail *> listAnimation;
+    int nbFrame = 0;
+    bool isVideo = false;
+   // bool isAnimation = false;
+	//VideoParameter param;
 };

@@ -1,14 +1,12 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <ThemeParam.h>
 #include "BitmapInterface.h"
 #include "BitmapToolbar.h"
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
 #include <StatusBarInterface.h>
+#include <OpenCLContext.h>
+using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
 class CRegardsBitmap;
@@ -21,10 +19,10 @@ namespace Regards
 		{
 		public:
 
-			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, CWindowMain * main, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config);
+			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config);
 			~CShowBitmap();
 			bool SetPhoto(const wxString &filename);
-			CRegardsBitmap * GetBitmap();
+			CRegardsBitmap * GetBitmap(const bool &source);
 			int GetBitmapWidth();
 			int GetBitmapHeight();
 			void DeplacementDroite();
@@ -38,7 +36,7 @@ namespace Regards
 			void ZoomOn();
 			void ZoomOut();
 			void StopTransition();
-			bool SetBitmap(CRegardsBitmap * bitmap);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail);
 			bool GetShrinkImage();
 			void SetShrinkImage(const bool &value);
 			void ShrinkImage();
@@ -48,40 +46,43 @@ namespace Regards
 			void HideToolbar();
 			void ShowToolbar();
 			bool IsToolbarMouseOver();
+			void TransitionEnd();
 			void SetBitmapPreviewEffect(const int &effect);
 			//void ShowCropButton();
 			//void HideCropButton();
 			void SetFullscreen(const bool &fullscreen);
-			bool IsOpenGLCompatible();
-			void ChangerRenderInterface();
+
 			void SetTheme(CThemeBitmapWindow * theme);
 			CBitmapWndViewer * GetBitmapViewer();
-            void StartLoadingPicture();
-            void StopLoadingPicture();
+
             void UpdateScreenRatio();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 
 		private:
 
+			void StartLoadingPicture(wxCommandEvent& event);
+			void StopLoadingPicture(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
+			void OnIdle(wxIdleEvent& evt);
             void OnViewerDblClick(wxCommandEvent& event);
             void OnViewerZoomIn(wxCommandEvent& event);
             void OnViewerZoomOut(wxCommandEvent& event);
 			void Resize();
 
-			CScrollbarWnd * scrollbar = nullptr;
-			CBitmapToolbar * pictureToolbar = nullptr;
-			CBitmapWndViewer * bitmapWindow = nullptr;
-			CBitmapInterface * bitmapInterface = nullptr;
-			CWindowMain * main = nullptr;
-			CRegardsConfigParam * configRegards = nullptr;
-			bool defaultToolbar = true;
-			bool defaultViewer = true;
+			CScrollbarWnd * scrollbar;
+			CBitmapToolbar * pictureToolbar;
+			CBitmapWndViewer * bitmapWindow;
+			CBitmapInterface * bitmapInterface;
+			CRegardsConfigParam * configRegards;
+			CImageLoadingFormat * tempImage;
+			bool defaultToolbar;
+			bool defaultViewer;
 			bool bitmapWndLocal;
-			bool isDiaporama = false;
-			int width = 0;
-			int height = 0;
+			bool isDiaporama;
+			int width;
+			bool transitionEnd;
+			int height;
 			
 		};
 	}

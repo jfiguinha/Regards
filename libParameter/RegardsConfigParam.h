@@ -4,11 +4,7 @@
 #include "ConfigParam.h"
 #include <iostream>
 #include <fstream>
-#include <vector>
-
-
 using namespace rapidxml;
-using namespace std;
 
 
 class CRegardsConfigParam : public CConfigParam
@@ -19,6 +15,9 @@ public:
 
 	int GetPreviewLibrary();
 	void SetPreviewLibrary(const int &numLib);
+
+	bool GetDatabaseInMemory();
+	void SetDatabaseInMemory(const int &value);
     
     float GetIconSizeRatio();
     void SetIconSizeRatio(const float &ratio);
@@ -32,6 +31,9 @@ public:
 	int GetOpenCLPlatformIndex();
 	void SetOpenCLPlatformIndex(const int &numIndex);
 
+	int GetFaceDetectionPictureSize();
+	void SetFaceDetectionPictureSize(const int &numIndex);
+
 	wxString GetOpenCLPlatformName();
 	void SetOpenCLPlatformName(const wxString &platformName);
 
@@ -39,11 +41,14 @@ public:
 	void SetEffect(const int &numEffect);
 
 	wxString GetUrlServer();
+    int GetNbGpsIterationByMinute();
 
 	int GetDiaporamaTime();
 	void SetDiaporamaTime(const int &diaporamaTime);
+
 	int GetDiaporamaTransitionEffect();
 	void SetDiaporamaTransitionEffect(const int &diaporamaEffect);
+
 	int GetDiaporamaFullscreen();
 	void SetDiaporamaFullscreen(const int &diaporamaFullscreen);
 
@@ -52,6 +57,18 @@ public:
 
 	int GetThumbnailIconeCache();
 	void SetThumbnailIconeCache(const int &iconeCache);
+    
+	int GetThumbnailProcess();
+	void SetThumbnailProcess(const int &nbProcess);
+    
+	int GetFaceProcess();
+	void SetFaceProcess(const int &nbProcess);
+
+	int GetExifProcess();
+	void SetExifProcess(const int &nbProcess);
+
+	int GetNumLanguage();
+	void SetNumLanguage(const int &numLanguage);
 
 protected:
 
@@ -69,6 +86,9 @@ protected:
 	void SetImageLibrary(xml_node<>* sectionPosition);
 	void GetImageLibrary(xml_node<> * position_node);
 
+	void SetDatabaseParameter(xml_node<>* sectionPosition);
+	void GetDatabaseParameter(xml_node<> * position_node);
+
 	void SetEffectLibrary(xml_node<>* sectionPosition);
 	void GetEffectLibrary(xml_node<> * position_node);
 
@@ -84,11 +104,13 @@ protected:
 	void SetThumbnail(xml_node<>* sectionPosition);
 	void GetThumbnail(xml_node<> * position_node);
 	
+	int pictureSize;
 	int numLibPreview;
 	int numLibEffect;
 	int numLibVideo;
 	int numEffect;
 	int openCLNumIndex;
+    int numLanguage;
 
 	//Diaporama
 	int diaporamaTime;
@@ -98,8 +120,16 @@ protected:
 	int thumbnailQuality;
 	int thumbnailIconeCache;
 
-    float iconSizeRatio = 1.0;
+    float iconSizeRatio;
 	wxString openCLPlatformName;
 	wxString geolocUrl;
+
+	int dataInMemory;
+    
+    int nbProcessThumbnail;
+    int nbProcessExif;
+    int nbProcessFace;
+    int nbGpsFileByMinute;
+
 };
 

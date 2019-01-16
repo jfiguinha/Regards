@@ -1,349 +1,364 @@
 #include "FiltreEffet.h"
+#include <math.h>
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include "InterpolationBicubic.h"
+#include <DecodeRawPicture.h>
 #include <LibResource.h>
-#include <algorithm>
+
 #include "Rotate.h"
 #include "RedEye.h"
-#include "effect.h"
-#include <RgbEffectParameter.h>
-#include <BrightAndContrastEffectParameter.h>
-#include <CloudsEffectParameter.h>
-#include <FreeRotateEffectParameter.h>
-#include <MotionBlurEffectParameter.h>
-#include <PhotoFiltreEffectParameter.h>
-#include <PosterisationEffectParameter.h>
-#include <RgbEffectParameter.h>
-#include <SolarisationEffectParameter.h>
-#include <LensFlareEffectParameter.h>
-#include <SwirlEffectParameter.h>
 #include <FilterData.h>
 #include "Histogramme.h"
+#include "InterpolationFilters.h"
+#include "WaveFilter.h"
+#include <ImageLoadingFormat.h>
+#include <RegardsFloatBitmap.h>
+#include <PiccanteFilter.h>
 #if defined(__WXMSW__)
 #include "../include/config_id.h"
 #else
 #include <config_id.h>
 #endif
+
+//BM3D
+#include "utilities.h"
+#include "bm3d.h"
+#include <time.h>
+
+#define YUV       0
+#define YCBCR     1
+#define OPP       2
+#define RGB       3
+#define DCT       4
+#define BIOR      5
+#define HADAMARD  6
+#define NONE      7
+
 using namespace Regards::FiltreEffet;
 using namespace std;
 
+/*
 void CFiltreEffet::SetLib(const int &lib)
 {
 	numLib = lib;
 }
+*/
+
+int CFiltreEffet::GetLib()
+{
+    return numLib;
+}
+
+///// LUT tables
+#define LUTMAX 30.0
+#define LUTMAXM1 29.0
+#define LUTPRECISION 1000.0
+
+#define MAX(i,j) ( (i)<(j) ? (j):(i) )
+#define MIN(i,j) ( (i)<(j) ? (i):(j) )
 
 
 int CFiltreEffet::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
 {
-    switch (numEffect)
-    {
-        case IDM_FILTRE_SOFTEN:
-            Soften();
-            break;
-            
-        case IDM_HISTOGRAMNORMALIZE:
-            HistogramNormalize();
-            break;
-            
-        case IDM_HISTOGRAMEQUALIZE:
-            HistogramEqualize();
-            break;
-            
-        case IDM_HISTOGRAMLOG:
-            HistogramLog();
-            break;
-            
-        case IDM_FILTRE_FLOU:
-            Blur();
-            break;
-            
-        case IDM_AJUSTEMENT_SOLARISATION:
-        {
-            if (effectParameter != nullptr)
-            {
-                CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
-                Solarize(solarisationEffectParameter->threshold);
-            }
-        }
-            break;
-            
-        case IDM_FILTRE_FLOUGAUSSIEN:
-            GaussianBlur();
-            break;
-            
-        case IDM_FILTREANTIBRUIT:
-            Median();
-            break;
-            
-        case IDM_FILTRE_MOTIONBLUR:
-        {
-            if (effectParameter != nullptr)
-            {
-                CMotionBlurEffectParameter * motionblurEffectParameter = (CMotionBlurEffectParameter *)effectParameter;
-                MotionBlur(motionblurEffectParameter->radius, motionblurEffectParameter->sigma, motionblurEffectParameter->angle);
-            }
-            break;
-        }
-            break;
-        case IDM_ROTATE_FREE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
-                RotateFree(freeRotate->angle);
-            }
-        }
-            break;
-            
-        case IDM_IMAGE_LIGHTCONTRAST:
-        {
-            if (effectParameter != nullptr)
-            {
-                CBrightAndContrastEffectParameter  * brightAndContrast = (CBrightAndContrastEffectParameter *)effectParameter;
-                BrightnessAndContrast(brightAndContrast->brightness, brightAndContrast->contrast);
-            }
-        }
-            break;
-            
-        case ID_AJUSTEMENT_PHOTOFILTRE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CPhotoFiltreEffectParameter * photoFiltreParameter = (CPhotoFiltreEffectParameter *)effectParameter;
-                PhotoFiltre(CRgbaquad(photoFiltreParameter->red, photoFiltreParameter->green, photoFiltreParameter->blue), photoFiltreParameter->intensity);
-            }
-        }
-            break;
-        case ID_AJUSTEMENT_POSTERISATION:
-        {
-            if (effectParameter != nullptr)
-            {
-                CPosterisationEffectParameter * posterisationFiltreParameter = (CPosterisationEffectParameter *)effectParameter;
-                Posterize(posterisationFiltreParameter->level, posterisationFiltreParameter->gamma);
-            }
-        }
-            break;
-        case IDM_COLOR_BALANCE:
-        {
-            if (effectParameter != nullptr)
-            {
-                CRgbEffectParameter * rgbParameter = (CRgbEffectParameter *)effectParameter;
-                RGBFilter(rgbParameter->red, rgbParameter->green, rgbParameter->blue);
-            }
-        }
-            break;
-        case IDM_FILTRE_SWIRL:
-        {
-            if (effectParameter != nullptr)
-            {
-                CSwirlEffectParameter * swirlParameter = (CSwirlEffectParameter *)effectParameter;
-                Swirl(swirlParameter->radius, swirlParameter->angle);
-            }
-        }
-            break;
-            
-        case IDM_FILTRE_CLOUDS:
-        {
-            if (effectParameter != nullptr)
-            {
-                CCloudsEffectParameter * cloudsParameter = (CCloudsEffectParameter *)effectParameter;
-                CloudsFilter(cloudsParameter->colorFront, cloudsParameter->colorBack, cloudsParameter->amplitude, cloudsParameter->frequence, cloudsParameter->octave);
-            }
-        }
-            break;
-        case IDM_FILTRE_ERODE:
-            Erode();
-            break;
-            
-        case IDM_FILTRE_DILATE:
-            Dilate();
-            break;
-            
-        case IDM_FILTRE_SHARPEN:
-            Sharpen();
-            break;
-            
-        case IDM_FILTRE_SHARPENSTRONG:
-            SharpenStrong();
-            break;
-            
-        case IDM_FILTRENOISE:
-            Noise();
-            break;
-            
-        case IDM_FILTRE_MOSAIQUE:
-            FiltreMosaic();
-            break;
-            
-        case IDM_FILTRE_EMBOSS:
-            Emboss();
-            break;
-            
-        case IDM_GREY_LEVEL:
-            NiveauDeGris();
-            break;
-            
-        case IDM_IMAGE_SEPIA:
-            Sepia();
-            break;
-            
-        case IDM_BLACKANDWHITE:
-            NoirEtBlanc();
-            break;
-            
-        case IDM_FILTRE_EDGE:
-            FiltreEdge();
-            break;
-            
-        case IDM_NEGATIF:
-            Negatif();
-            break;
-    }
+    return CFiltreData::RenderEffect(numEffect,this,effectParameter);
+}
+
+int CFiltreEffet::FilterBilateral2DS(const float & sigma_s, const float & sigma_r)
+{
+    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
+    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
+    CPiccanteFilter::FilterBilateral2DS(test,sigma_s,sigma_r);
+    CImageLoadingFormat imageLoadFormat(true);
+    imageLoadFormat.SetPicture(test);
+    filtreEffet->SetBitmap(&imageLoadFormat);  
     return 0;
 }
 
-CFiltreEffet::CFiltreEffet(CRegardsBitmap * pBitmap, const CRgbaquad &backColor, const int &numLib)
+int CFiltreEffet::GetWidth()
 {
-    this->backColor = backColor;
-    this->numLib = numLib;
-    this->pBitmap = pBitmap;
-	filtreEffetCPU = new CFiltreEffetCPU(pBitmap, backColor);
-
-	switch (numLib)
-	{
-		case LIBOPENCL:
-			filtreEffet = new COpenCLEffect(pBitmap, backColor);
-			break;
-
-		case LIBCPU:
-			filtreEffet = filtreEffetCPU;
-			break;
-	}	
+    return width;
 }
 
-
-CFiltreEffet::~CFiltreEffet()
+int CFiltreEffet::FilterKuwahara(const int &kernelSize)
 {
-	delete(filtreEffetCPU);
-	if (numLib != LIBCPU)
-		delete(filtreEffet);
+    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
+    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
+    CPiccanteFilter::FilterKuwahara(test,kernelSize);
+    CImageLoadingFormat imageLoadFormat(true);
+    imageLoadFormat.SetPicture(test);
+    filtreEffet->SetBitmap(&imageLoadFormat);  
+    return 0;     
 }
 
-
-int CFiltreEffet::RedEye(const wxRect& rSelectionBox)
+int CFiltreEffet::bm3d()
 {
-	if (filtreEffet->RedEye(rSelectionBox) == -1)
-		filtreEffetCPU->RedEye(rSelectionBox);
+        CRegardsFloatBitmap * pictureSource = filtreEffet->GetFloatBitmap(true);
+        vector<float> img_noisy, img_basic, img_denoised;
+        unsigned width, height, chnls;
 
+        const char *_tau_2D_hard = "bior";
+        const char *_tau_2D_wien = "dct";
+        const char *_color_space = "rgb";
+        const char *_patch_size = "0"; // >0: overrides default
+        const char *_nb_threads = "0";
+        const bool useSD_1 = 1;//pick_option(&argc, argv, "useSD_hard", NULL) != NULL;
+        const bool useSD_2 = 1;//pick_option(&argc, argv, "useSD_wien", NULL) != NULL;
+        const bool verbose = true;//pick_option(&argc, argv, "verbose", NULL) != NULL;
+
+        clock_t tStart = clock();
+        
+        //! Check parameters
+        const unsigned tau_2D_hard  = (strcmp(_tau_2D_hard, "dct" ) == 0 ? DCT :
+                                     (strcmp(_tau_2D_hard, "bior") == 0 ? BIOR : NONE));
+        if (tau_2D_hard == NONE)
+        {
+            cout << "tau_2d_hard is not known." << endl;
+            return 0;
+        }
+        
+        const unsigned tau_2D_wien  = (strcmp(_tau_2D_wien, "dct" ) == 0 ? DCT :
+                                     (strcmp(_tau_2D_wien, "bior") == 0 ? BIOR : NONE));
+        if (tau_2D_wien == NONE) {
+            cout << "tau_2d_wien is not known." << endl;
+             return 0;
+        }
+        
+        const unsigned color_space  = (strcmp(_color_space, "rgb"  ) == 0 ? RGB   :
+                                     (strcmp(_color_space, "yuv"  ) == 0 ? YUV   :
+                                     (strcmp(_color_space, "ycbcr") == 0 ? YCBCR :
+                                     (strcmp(_color_space, "opp"  ) == 0 ? OPP   : NONE))));
+        if (color_space == NONE) {
+            cout << "color_space is not known." << endl;
+            return 0;
+        }
+
+        const int patch_size = atoi(_patch_size);
+        if (patch_size < 0)
+        {
+          cout << "The patch_size parameter must not be negative." << endl;
+          return 0;
+        } 
+        else 
+        {
+            const unsigned patch_size = (unsigned) patch_size;
+        }
+        
+        const int nb_threads = atoi(_nb_threads);
+        if (nb_threads < 0)
+        {
+            cout << "The nb_threads parameter must not be negative." << endl;
+           return 0;
+        } 
+        else 
+        {
+            const unsigned nb_threads = (unsigned) nb_threads;
+        }
+        
+        //! Load image
+        bool returnValue = load_image(pictureSource, img_noisy, &width, &height, &chnls);           
+        
+        float fSigma = 10;//atof(argv[2]);
+
+       //! Denoising
+       if (run_bm3d(fSigma, img_noisy, img_basic, img_denoised, width, height, chnls,
+                     useSD_1, useSD_2, tau_2D_hard, tau_2D_wien, color_space, patch_size,
+                     nb_threads, verbose)
+            != EXIT_SUCCESS)
+            return 0;
+
+       //! save noisy, denoised and differences images
+       cout << endl << "Save images...";        
+       printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);   
+       
+
+}
+
+int CFiltreEffet::BestExposure(const float &tmoValue)
+{
+    CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
+    printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
+    CPiccanteFilter::BestExposure(test,tmoValue);
+    CImageLoadingFormat imageLoadFormat(true);
+    imageLoadFormat.SetPicture(test);
+    filtreEffet->SetBitmap(&imageLoadFormat);    
+    return 0;
+}
+
+int CFiltreEffet::WaveFilter(int x, int y, short height, int scale, int radius)
+{
+	filtreEffet->WaveFilter(x, y, height, scale,radius);
 	return 0;
 }
 
-uint8_t * CFiltreEffet::BGRA32ToRGB24()
+int CFiltreEffet::ClaheFilter(int nBins, float clipLevel, int windowSize)
 {
-	int width = pBitmap->GetBitmapWidth();
-	int height = pBitmap->GetBitmapHeight();
-	int widthSrcSize = width * 4;
-	unsigned char * data = pBitmap->GetPtBitmap();
-	uint8_t * dataOut = new uint8_t[width*height * 3];
-	int posData = 0;
-	int posDataOut = 0;
-
-	for (int y = 0; y < height; y++)
-	{
-		posData = ((height - y) * widthSrcSize) - widthSrcSize;
-		for (int x = 0; x < width; x++)
-		{
-			dataOut[posDataOut] = data[posData + 2];
-			dataOut[posDataOut + 1] = data[posData + 1];
-			dataOut[posDataOut + 2] = data[posData];
-			posData += 4;
-			posDataOut += 3;
-		}
-	}
-
-	return dataOut;
+	return filtreEffet->ClaheFilter(nBins, clipLevel, clipLevel);
 }
+
+int CFiltreEffet::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
+{
+	return filtreEffet->BilateralFilter(fSize, sigmaX, sigmaP);
+}
+	
+int CFiltreEffet::NlmeansFilter(int fsize, int bsize, float sigma)
+{
+	return filtreEffet->NlmeansFilter(fsize, bsize, sigma);
+}
+
+wxImage CFiltreEffet::RenderEffectPreviewwxImage(const int &numEffect, CEffectParameter * effectParameter)
+{
+	if(RenderEffectPreview(numEffect, effectParameter))
+		return this->GetwxImage();
+	return wxImage();
+}
+
+int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter)
+{
+	filtreEffet->SetPreviewMode(true);
+    int value = CFiltreData::RenderEffect(numEffect,this, effectParameter, true);
+	filtreEffet->SetPreviewMode(false);
+	return value;
+}
+
+CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)
+{
+	filtreEffet = nullptr;
+    this->backColor = backColor;
+    this->numLib = LIBCPU;
+	this->openCLContext = openCLContext;        
+	filename = bitmap->GetFilename();
+	width = bitmap->GetWidth();
+	height = bitmap->GetHeight();
+    if(openCLContext != nullptr)
+    {
+        if(OpenCLHasEnoughMemory())
+        {
+            filtreEffet = new COpenCLEffect(backColor, openCLContext, bitmap);
+            this->numLib = LIBOPENCL;
+        }
+    }
+    
+    if( this->numLib == LIBCPU)
+    {
+        filtreEffet = new CFiltreEffetCPU(backColor, bitmap);
+    }
+}
+
+bool CFiltreEffet::OpenCLHasEnoughMemory()
+{
+    if(openCLContext != nullptr)
+    {
+        uint64_t memsizeMax = openCLContext->GetMaxMemoryAllocable();
+        if(memsizeMax > width * height * 4 * sizeof(float))
+            return true;
+    }
+    return false;
+}
+
+void CFiltreEffet::SetBitmap(CImageLoadingFormat * bitmap)
+{
+    if (filtreEffet != nullptr)
+        filtreEffet->SetBitmap(bitmap);
+}
+
+CFiltreEffet::~CFiltreEffet()
+{
+       
+	if (filtreEffet != nullptr)
+		delete(filtreEffet);
+
+}
+
+void CFiltreEffet::GetRgbaBitmap(void * cl_image)
+{
+	filtreEffet->GetRgbaBitmap(cl_image);
+}
+
+int CFiltreEffet::RedEye(const wxRect& rSelectionBox)
+{
+	filtreEffet->RedEye(rSelectionBox);
+	return 0;
+}
+
+wxImage CFiltreEffet::GetwxImage()
+{
+	return filtreEffet->GetwxImage();
+}
+
+CRegardsBitmap * CFiltreEffet::GetBitmap(const bool &source)
+{
+	return filtreEffet->GetBitmap(source);
+}
+
+ CRegardsFloatBitmap * CFiltreEffet::GetFloatBitmap(const bool &source)
+ {
+     return filtreEffet->GetFloatBitmap(source);
+ }
 
 int CFiltreEffet::HistogramLog()
 {
-	if (filtreEffet->HistogramLog() == -1)
-		filtreEffetCPU->HistogramLog();
-
+	filtreEffet->HistogramLog();
 	return 0;
 }
 
 int CFiltreEffet::HistogramNormalize()
 {
-	if(filtreEffet->HistogramNormalize() == -1)
-		filtreEffetCPU->HistogramNormalize();
-
-	return 0;
+	filtreEffet->HistogramNormalize();
+    return 0;
 }
 
 int CFiltreEffet::HistogramEqualize()
 {
-	if (filtreEffet->HistogramEqualize() == -1)
-		filtreEffetCPU->HistogramEqualize();
+	filtreEffet->HistogramEqualize();
 	return 0;
 }
 
 int CFiltreEffet::LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)
 {
-	int puissance = (int)((float)(pBitmap->GetBitmapWidth() / 2) * ((float)iPuissance / 100.0f));
-	int intensity = (int)((float)(pBitmap->GetBitmapWidth() / 2) * ((float)iIntensity / 100.0f));
-
-	int value = filtreEffet->LensFlare(iPosX, iPosY, puissance, iType, intensity, iColor, iColorIntensity);
-	if (value == -1)
-	{
-		value = filtreEffetCPU->LensFlare(iPosX, iPosY, puissance, iType, intensity, iColor, iColorIntensity);
-	}
+	int value = filtreEffet->LensFlare(iPosX, height - iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 	return value;
 }
 
-int CFiltreEffet::SharpenMasking(const int &sharpness)
+int CFiltreEffet::SharpenMasking(const float &sharpness)
 {
 	return filtreEffet->SharpenMasking(sharpness);
 }
 
-int CFiltreEffet::InterpolationBicubic(CRegardsBitmap * & bitmapOut)
+void CFiltreEffet::Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle)
 {
-	return filtreEffet->InterpolationBicubic(bitmapOut);
+#ifdef _CALCU_DIFF_TIME
+	LARGE_INTEGER start_time;
+	LARGE_INTEGER end_time;
+#endif
+	filtreEffet->Interpolation(widthOut, heightOut, method, flipH, flipV, angle);
+
+#ifdef _CALCU_DIFF_TIME
+#if defined(WIN32) && defined(_DEBUG)
+	::QueryPerformanceCounter((LARGE_INTEGER*)&end_time);
+	float gm_diffTime = (float)(((double)end_time.QuadPart - (double)start_time.QuadPart) / 1000000);
+	wxString data = to_string(gm_diffTime);
+	OutputDebugString(L"cuda time : " + data + "\n");
+
+#endif
+#endif
 }
 
-int CFiltreEffet::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
+void CFiltreEffet::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle)
 {
-	return filtreEffet->InterpolationBicubic(bitmapOut, flipH, flipV, angle);
-}
+#ifdef _CALCU_DIFF_TIME
+	LARGE_INTEGER start_time;
+	LARGE_INTEGER end_time;
+#endif
+	filtreEffet->Interpolation(widthOut, heightOut, rc, method, flipH, flipV, angle);
 
-int CFiltreEffet::InterpolationBicubic(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return filtreEffet->InterpolationBicubic(bitmapOut, rc);
-}
+#ifdef _CALCU_DIFF_TIME
+	::QueryPerformanceCounter((LARGE_INTEGER*)&end_time);
+	float gm_diffTime = (float)(((double)end_time.QuadPart - (double)start_time.QuadPart) / 1000000);
+	wxString data = to_string(gm_diffTime);
+	OutputDebugString(L"cuda time : " + data + "\n");
 
-int CFiltreEffet::InterpolationBilinear(CRegardsBitmap * & bitmapOut)
-{
-	return filtreEffet->InterpolationBilinear(bitmapOut);
-}
-
-int CFiltreEffet::InterpolationBilinear(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return filtreEffet->InterpolationBilinear(bitmapOut, rc);
-}
-
-int CFiltreEffet::InterpolationFast(CRegardsBitmap * & bitmapOut)
-{
-	return filtreEffet->InterpolationFast(bitmapOut);
-}
-
-int CFiltreEffet::InterpolationFast(CRegardsBitmap * & bitmapOut, const wxRect &rc)
-{
-	return filtreEffet->InterpolationFast(bitmapOut, rc);
-}
-
-wxImage CFiltreEffet::InterpolationBicubic(const wxImage & imageSrc, const int &widthOut, const int &heightOut)
-{
-	return filtreEffet->InterpolationBicubic(imageSrc, widthOut, heightOut);
+#endif
 }
 
 //---------------------------------------------------------------------
@@ -352,32 +367,6 @@ wxImage CFiltreEffet::InterpolationBicubic(const wxImage & imageSrc, const int &
 int CFiltreEffet::RGBFilter(const int &red, const int &green, const int &blue)
 {
 	return filtreEffet->RGBFilter(red, green, blue);
-}
-
-//Color Conversion
-int CFiltreEffet::RGB24ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{
-	return filtreEffet->RGB24ToRGB32(buffer, width, height, bitmapOut, size);
-}
-
-int CFiltreEffet::NV12ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{
-	return filtreEffet->NV12ToRGB32(buffer, width, height, bitmapOut, size);
-}
-
-int CFiltreEffet::YUV420ToRGB32(uint8_t * buffer, const int &width, const int &height, CRegardsBitmap * & bitmapOut, const int &size)
-{
-	return filtreEffet->YUV420ToRGB32(buffer, width, height, bitmapOut, size);
-}
-
-int CFiltreEffet::InterpolationBicubicNV12ToRGB32(uint8_t * buffer, const int &width, const int &height, const int &rectWidth, const int &rectHeight, CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle, const int &size)
-{
-	return filtreEffet->InterpolationBicubicNV12ToRGB32(buffer, width, height, rectWidth, rectHeight, bitmapOut, flipH, flipV, angle, size);
-}
-
-int CFiltreEffet::InterpolationBicubicRGB32Video(CRegardsBitmap * & bitmapOut, const int &flipH, const int &flipV, const int &angle)
-{
-	return filtreEffet->InterpolationBicubicRGB32Video(bitmapOut, flipH, flipV, angle);
 }
 
 int CFiltreEffet::Posterize(const float &level, const float &gamma)
@@ -392,13 +381,9 @@ int CFiltreEffet::Solarize(const long &threshold)
 //---------------------------------------------------------------------
 //Effet Clouds 
 //---------------------------------------------------------------------
-int CFiltreEffet::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave)
+int CFiltreEffet::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity)
 {
-	int value = filtreEffet->CloudsFilter(color1, color2, amplitude, frequence, octave);
-	if (value == -1)
-	{
-		value = filtreEffetCPU->CloudsFilter(color1, color2, amplitude, frequence, octave);
-	}
+	int value = filtreEffet->CloudsFilter(color1, color2, amplitude, frequence, octave, intensity);
 	return value;
 }
 
@@ -422,14 +407,30 @@ int CFiltreEffet::BrightnessAndContrast(const double &brightness, const double &
 //////////////////////////////////////////////////////////////////
 int CFiltreEffet::NiveauDeGris()
 {
-	return filtreEffet->NiveauDeGris();
+	try
+	{
+		return filtreEffet->NiveauDeGris();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 int CFiltreEffet::NoirEtBlanc()
 {
-	return filtreEffet->NoirEtBlanc();
+	try
+	{
+		return filtreEffet->NoirEtBlanc();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -437,7 +438,15 @@ int CFiltreEffet::NoirEtBlanc()
 //----------------------------------------------------------------------------
 int CFiltreEffet::Sepia()
 {
-	return filtreEffet->Sepia();
+	try
+	{
+		return filtreEffet->Sepia();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -445,24 +454,48 @@ int CFiltreEffet::Sepia()
 //----------------------------------------------------------------------------
 int CFiltreEffet::Soften()
 {
-	return filtreEffet->Soften();
+	try
+	{
+		return filtreEffet->Soften();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffet::Blur()
+int CFiltreEffet::Blur(const int &radius)
 {
-	return filtreEffet->Blur();
+	try
+	{
+		return filtreEffet->Blur(radius);
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
-int CFiltreEffet::GaussianBlur()
+int CFiltreEffet::GaussianBlur(const int &radius, const int &boxsize)
 {
-	return filtreEffet->GaussianBlur();
+	try
+	{
+		return filtreEffet->GaussianBlur(radius, boxsize);
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -470,7 +503,15 @@ int CFiltreEffet::GaussianBlur()
 //----------------------------------------------------------------------------
 int CFiltreEffet::Emboss()
 {
-	return filtreEffet->Emboss();
+	try
+	{
+		return filtreEffet->Emboss();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -478,7 +519,15 @@ int CFiltreEffet::Emboss()
 //----------------------------------------------------------------------------
 int CFiltreEffet::SharpenStrong()
 {
-	return filtreEffet->SharpenStrong();
+	try
+	{
+		return filtreEffet->SharpenStrong();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -486,7 +535,15 @@ int CFiltreEffet::SharpenStrong()
 //----------------------------------------------------------------------------
 int CFiltreEffet::Sharpen()
 {
-	return filtreEffet->Sharpen();
+	try
+	{
+		return filtreEffet->Sharpen();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -494,7 +551,15 @@ int CFiltreEffet::Sharpen()
 //----------------------------------------------------------------------------
 int CFiltreEffet::Erode()
 {
-	return filtreEffet->Erode();
+	try
+	{
+		return filtreEffet->Erode();
+	}
+	catch(...)
+	{
+
+	}
+	return -1;
 }
 
 //----------------------------------------------------------------------------
@@ -573,18 +638,19 @@ int CFiltreEffet::FlipHorizontal()
 	return filtreEffet->FlipHorizontal();
 }
 
+void CFiltreEffet::SetPreview(const bool &value)
+{
+	filtreEffet->SetPreviewMode(value);
+}
+
 //----------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------
 int CFiltreEffet::MotionBlur(const double &radius, const double &sigma, const double &angle)
 {
 	//return filtreEffet->MotionBlur(radius, sigma, angle);
-	int puissance = (int)((float)(pBitmap->GetBitmapWidth() / 2) * ((float)sigma / 100.0f));
+	int puissance = (int)((float)(width / 2) * ((float)sigma / 100.0f));
 	int value = filtreEffet->MotionBlur(radius, puissance, angle);
-	if (value == -1)
-	{
-		value = filtreEffetCPU->MotionBlur(radius, puissance, angle);
-	}
 	return value;
 }
 
@@ -634,7 +700,7 @@ int CFiltreEffet::RotateFree(const double &angle)
 {
 	int widthOut;
 	int heightOut;
-	CalculNewSize(pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight(), angle, widthOut, heightOut);
+	CalculNewSize(width, height, angle, widthOut, heightOut);
 	return filtreEffet->RotateFree(angle, widthOut, heightOut);
 }
 
@@ -663,17 +729,55 @@ int CFiltreEffet::Rotate270()
 }
 
 //----------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------
-int CFiltreEffet::Resize(const int &imageWidth, const int &imageHeight, const int &interpolation)
-{
-	return filtreEffet->Resize(imageWidth, imageHeight, interpolation);
-}
-
-//----------------------------------------------------------------------------
 //Fusion de deux bitmaps
 //----------------------------------------------------------------------------
 int CFiltreEffet::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage)
 {
 	return filtreEffet->Fusion(bitmapSecond, pourcentage);
 }
+
+/*
+void CFiltreEffet::SetBitmap(CImageLoadingFormat * bitmap, int numLib)
+{
+	if(bitmap != nullptr && bitmap->IsOk())
+	{
+		filename = bitmap->GetFilename();
+		width = bitmap->GetWidth();
+		height = bitmap->GetHeight();
+
+		if(filtreEffet != filtreEffetCPU)
+		{
+			filtreEffet->SetBitmap(bitmap);
+		}
+	}
+}
+
+void CFiltreEffet::SetBitmap(CRegardsBitmap * & pBitmap, int numLib)
+{
+	filename = pBitmap->GetFilename();
+	width = pBitmap->GetBitmapWidth();
+	height = pBitmap->GetBitmapHeight();
+
+
+	if(numLib == 0)
+	{
+		if(filtreEffet != filtreEffetCPU)
+		{
+			filtreEffet->SetBitmap(pBitmap);
+			filtreEffetCPU->SetBitmap(pBitmap);
+		}
+		else
+		{
+			filtreEffetCPU->SetBitmap(pBitmap);
+		}
+	}
+	else if(numLib == LIBCPU)
+	{
+		filtreEffetCPU->SetBitmap(pBitmap);
+	}
+	else
+	{
+		filtreEffet->SetBitmap(pBitmap);
+	}
+}
+*/

@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////////////
 // Name:        SVGCanvasItem.cpp
-// Purpose:     
 // Author:      Alex Thuering
 // Created:     2005/05/09
-// RCS-ID:      $Id: SVGCanvasItem.cpp,v 1.50 2014/08/09 11:59:41 ntalex Exp $
-// Copyright:   (c) 2005 Alex Thuering
+// RCS-ID:      $Id: SVGCanvasItem.cpp,v 1.58 2016/12/28 17:59:30 ntalex Exp $
+// Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
 
@@ -12,10 +11,13 @@
 #include <wx/tokenzr.h>
 #include "SVGCanvasItem.h"
 #include "SVGCanvas.h"
+#include "ExifHandler.h"
 #include <math.h>
 #include <wx/log.h>
 #include <wx/progdlg.h>
 #include <wx/filename.h>
+#include <wx/base64.h>
+#include <wx/mstream.h>
 
 #ifdef USE_LIBAV
 #include <wxSVG/mediadec_ffmpeg.h>
@@ -538,12 +540,12 @@ bool IsQuadraticType(wxPATHSEG segType) {
 }
 
 double AngleBisect(float a1, float a2) {
-	double delta = fmod(a2 - a1, 2 * M_PI);
+	double delta = (double) fmod(a2 - a1, 2 * M_PI);
 	if (delta < 0) {
 		delta += 2 * M_PI;
 	}
 	/* delta is now the angle from a1 around to a2, in the range [0, 2*M_PI) */
-	float r = a1 + delta / 2;
+	double r = a1 + delta / 2;
 	if (delta >= M_PI) {
 		/* the arc from a2 to a1 is smaller, so use the ray on that side */
 		r += M_PI;
@@ -1164,12 +1166,12 @@ void wxSVGCanvasText::EndTextAnchor() {
 	}
 }
 
-wxSVGRect wxSVGCanvasTextChunk::GetBBox(const wxSVGMatrix& matrix) {
+wxSVGRect wxSVGCanvasTextChunk::GetBBox(const wxSVGMatrix* matrix) {
 	wxSVGRect bbox;
 	for (int i = 0; i < (int) chars.Count(); i++) {
 		wxSVGRect elemBBox = chars[i].path->GetBBox(matrix);
 		if (elemBBox.IsEmpty())
-			elemBBox = &matrix ? chars[i].bbox.MatrixTransform(matrix) : chars[i].bbox;
+			elemBBox = matrix ? chars[i].bbox.MatrixTransform(*matrix) : chars[i].bbox;
 		if (i == 0)
 			bbox = elemBBox;
 		else {
@@ -1190,15 +1192,15 @@ wxSVGRect wxSVGCanvasTextChunk::GetBBox(const wxSVGMatrix& matrix) {
 	return bbox;
 }
 
-wxSVGRect wxSVGCanvasText::GetBBox(const wxSVGMatrix& matrix)
+wxSVGRect wxSVGCanvasText::GetBBox(const wxSVGMatrix* matrix)
 {
   wxSVGRect bbox;
   for (int i=0; i<(int)m_chunks.Count(); i++)
   {
     wxSVGMatrix tmpMatrix = m_chunks[i].matrix;
-    if (&matrix)
-      tmpMatrix = ((wxSVGMatrix&) matrix).Multiply(m_chunks[i].matrix);
-    wxSVGRect elemBBox = m_chunks[i].GetBBox(tmpMatrix);
+    if (matrix)
+      tmpMatrix = (*matrix).Multiply(m_chunks[i].matrix);
+    wxSVGRect elemBBox = m_chunks[i].GetBBox(&tmpMatrix);
 	if (i == 0)
 	  bbox = elemBBox;
 	else
@@ -1350,11 +1352,42 @@ double wxSVGCanvasText::GetRotationOfChar(unsigned long charnum)
 
 
 //////////////////////////////////////////////////////////////////////////////
+////////////////////////// wxSVGCanvasSvgImageData ///////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+wxSVGCanvasSvgImageData::wxSVGCanvasSvgImageData(const wxString& filename, wxSVGDocument* doc) {
+	m_count = 1;
+	m_svgImage = NULL;
+	wxSVGDocument imgDoc;
+	if (imgDoc.Load(filename) && imgDoc.GetRootElement() != NULL) {
+		m_svgImage = imgDoc.GetRootElement();
+		imgDoc.RemoveChild(m_svgImage);
+		
+		m_svgImage->SetOwnerDocument(doc);
+		if (m_svgImage->GetViewBox().GetBaseVal().IsEmpty()
+				&& m_svgImage->GetWidth().GetBaseVal().GetValue() > 0
+				&& m_svgImage->GetWidth().GetBaseVal().GetUnitType() != wxSVG_LENGTHTYPE_PERCENTAGE)
+			m_svgImage->SetViewBox(
+					wxSVGRect(0, 0, m_svgImage->GetWidth().GetBaseVal(), m_svgImage->GetHeight().GetBaseVal()));
+	}
+}
+
+wxSVGCanvasSvgImageData::wxSVGCanvasSvgImageData(wxSVGSVGElement* svgImage, wxSVGDocument* doc) {
+	m_count = 1;
+	m_svgImage = new wxSVGSVGElement(*svgImage);
+	m_svgImage->SetOwnerDocument(doc);
+}
+
+wxSVGCanvasSvgImageData::~wxSVGCanvasSvgImageData() {
+	if (m_svgImage)
+		delete m_svgImage;
+}
+
+//////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// wxSVGCanvasImage //////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 wxSVGCanvasImage::~wxSVGCanvasImage() {
-	if (m_svgImage)
-		delete m_svgImage;
+	if (m_svgImageData != NULL && m_svgImageData->DecRef() == 0)
+		delete m_svgImageData;
 }
 
 void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclaration& style,
@@ -1370,11 +1403,25 @@ void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclarat
 	if (prevItem != NULL && prevItem->m_href == m_href) {
 		m_image = prevItem->m_image;
 		m_defHeightScale = prevItem->m_defHeightScale;
-		m_svgImage = prevItem->m_svgImage != NULL ? new wxSVGSVGElement(*prevItem->m_svgImage) : NULL;
+		if (prevItem->m_svgImageData) {
+			m_svgImageData = prevItem->m_svgImageData;
+			m_svgImageData->IncRef();
+		}
 	} else if (m_href.length()) {
-		long pos = 0;
+		long pos = -1;
 		wxString filename = m_href;
-		if (filename.StartsWith(wxT("concat:"))) {
+		if (filename.StartsWith(wxT("data:"))) {
+			wxString data = filename.substr(5).AfterFirst(wxT(';'));
+			if (data.StartsWith(wxT("base64,"))) {
+				wxMemoryBuffer buf = wxBase64Decode(data.substr(7), wxBase64DecodeMode_SkipWS);
+				wxMemoryInputStream inpStream(buf.GetData(), buf.GetDataLen());
+				if (!m_image.LoadFile(inpStream)) {
+					wxLogError(_("Can't load image data."));
+				}
+				return;
+			} else
+				wxLogError(wxT("Unknown image data: ") + data.substr(0, 6));
+		} if (filename.StartsWith(wxT("concat:"))) {
 			if (filename.Find(wxT('#')) != wxNOT_FOUND && filename.AfterLast(wxT('#')).ToLong(&pos))
 				filename = filename.BeforeLast(wxT('#'));
 		} else {
@@ -1394,16 +1441,11 @@ void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclarat
 				wxLogError(_("Can't load image from file '%s': file does not exist."), filename.c_str());
 				return;
 			}
-			if (element.GetHref().GetAnimVal().EndsWith(wxT(".svg"))) {
-				wxSVGDocument imgDoc;
-				if (imgDoc.Load(filename) && imgDoc.GetRootElement() != NULL) {
-					m_svgImage = imgDoc.GetRootElement();
-					imgDoc.RemoveChild(m_svgImage);
-					if (m_svgImage->GetViewBox().GetBaseVal().IsEmpty()
-							&& m_svgImage->GetWidth().GetBaseVal().GetValue() > 0
-							&& m_svgImage->GetWidth().GetBaseVal().GetUnitType() != wxSVG_LENGTHTYPE_PERCENTAGE)
-						m_svgImage->SetViewBox(
-								wxSVGRect(0, 0, m_svgImage->GetWidth().GetBaseVal(), m_svgImage->GetHeight().GetBaseVal()));
+			if (filename.EndsWith(wxT(".svg"))) {
+				m_svgImageData = new wxSVGCanvasSvgImageData(filename, (wxSVGDocument*) element.GetOwnerDocument());
+				if (m_svgImageData->GetSvgImage() == NULL) {
+					delete m_svgImageData;
+					m_svgImageData = NULL;
 				}
 				return;
 			}
@@ -1411,6 +1453,7 @@ void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclarat
 #ifdef USE_LIBAV
 		bool log = wxLog::EnableLogging(false);
 		m_image.LoadFile(filename);
+		ExifHandler::rotateImage(filename, m_image);
 		wxLog::EnableLogging(log);
 		if (!m_image.Ok()) {
 			wxFfmpegMediaDecoder decoder;
@@ -1422,7 +1465,7 @@ void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclarat
 				double duration = decoder.GetDuration();
 				if (duration > 0 || pos > 0) {
 					m_image = decoder.GetNextFrame();
-					double dpos = pos > 0 ? ((double)pos)/1000 : (duration < 6000 ? duration * 0.05 : 300);
+					double dpos = pos >= 0 ? ((double)pos)/1000 : (duration < 6000 ? duration * 0.05 : 300);
 					if (!decoder.SetPosition(dpos > 1.0 ? dpos - 1.0 : 0.0)) {
 						wxLog* oldLog = wxLog::SetActiveTarget(new wxLogStderr());
 						wxLogError(wxT("decoder.GetDuration(): %f"), duration);
@@ -1449,6 +1492,7 @@ void wxSVGCanvasImage::Init(wxSVGImageElement& element, const wxCSSStyleDeclarat
 			}
 		}
 #else
+		ExifHandler::rotateImage(filename, m_image);
 		m_image.LoadFile(filename);
 #endif
 	}
@@ -1466,6 +1510,21 @@ int wxSVGCanvasImage::GetDefaultHeight() {
 	return m_image.Ok() ? m_image.GetHeight() * m_defHeightScale : 0;
 }
 
+wxSVGSVGElement* wxSVGCanvasImage::GetSvgImage(wxSVGDocument* doc) {
+	if (m_svgImageData == NULL)
+		return NULL;
+	if (doc != NULL) {
+		if (m_svgImageData->GetSvgImage()->GetOwnerDocument() == NULL) {
+			m_svgImageData->GetSvgImage()->SetOwnerDocument(doc);
+		} else if (m_svgImageData->GetSvgImage()->GetOwnerDocument() != doc) {
+			wxSVGCanvasSvgImageData* svgImageDataOld = m_svgImageData;
+			m_svgImageData = new wxSVGCanvasSvgImageData(m_svgImageData->GetSvgImage(), doc);
+			if (svgImageDataOld->DecRef() == 0)
+				delete svgImageDataOld;
+		}
+	}
+	return m_svgImageData->GetSvgImage();
+}
 
 //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// wxSVGCanvasVideo //////////////////////////////
@@ -1480,6 +1539,26 @@ wxSVGCanvasVideoData::~wxSVGCanvasVideoData() {
 	if (m_mediaDecoder)
 		delete m_mediaDecoder;
 #endif
+}
+
+wxImage wxSVGCanvasVideoData::GetImage(double time) {
+#ifdef USE_LIBAV
+	double currTime = m_mediaDecoder->GetPosition();
+	double ftime = m_mediaDecoder->GetFps() >= 1 ? 1.0 / m_mediaDecoder->GetFps() : 0.04;
+	if (currTime >= time + ftime/2 || currTime < time - ftime/2 || !m_image.IsOk()) {
+		if (currTime > time || time - currTime > 50*ftime) {
+			m_mediaDecoder->SetPosition(time > 1.0 ? time - 1.0 : 0.0);
+		}
+		for (int i = 0; i < 60; i++) {
+			m_image = m_mediaDecoder->GetNextFrame();
+			currTime = m_mediaDecoder->GetPosition();
+			if (currTime >= time - ftime/2 || currTime < 0) {
+				break;
+			}
+		}
+	}
+#endif
+	return m_image;
 }
 
 wxSVGCanvasVideo::wxSVGCanvasVideo(): wxSVGCanvasImage(wxSVG_CANVAS_ITEM_VIDEO) {
@@ -1518,21 +1597,13 @@ void wxSVGCanvasVideo::Init(wxSVGVideoElement& element, const wxCSSStyleDeclarat
 		m_defHeightScale = prevItem->m_defHeightScale;
 		wxFfmpegMediaDecoder* decoder = m_videoData->GetMediaDecoder();
 		if (decoder != NULL) {
+			double prevTime = prevItem->m_time;
 			double ftime = decoder->GetFps() >= 1 ? 1.0 / decoder->GetFps() : 0.04;
-			double currTime = decoder->GetPosition();
-			if (currTime != m_time && (currTime >= m_time + ftime/2 || m_time - currTime > ftime/2)) {
-				if (currTime > m_time || m_time - currTime > 50*ftime) {
-					decoder->SetPosition(m_time > 1.0 ? m_time - 1.0 : 0.0);
-				}
-				for (int i = 0; i < 60; i++) {
-					m_image = decoder->GetNextFrame();
-					currTime = decoder->GetPosition();
-					if (currTime >= m_time - ftime/2 || currTime < 0) {
-						break;
-					}
-				}
-			} else
+			if (prevTime >= m_time + ftime/2 || prevTime < m_time - ftime/2) {
+				m_image = m_videoData->GetImage(m_time);
+			} else {
 				m_image = prevItem->m_image;
+			}
 		}
 	} else if (m_href.length()) {
 		wxFfmpegMediaDecoder* decoder = new wxFfmpegMediaDecoder();

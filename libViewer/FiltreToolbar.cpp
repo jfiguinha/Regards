@@ -15,6 +15,7 @@ using namespace Regards::Viewer;
 CFiltreToolbar::CFiltreToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent, id, theme)
 {
+	numFiltre = 0;
 	wxString libelleOk = CLibResource::LoadStringFromResource(L"IDS_LBLOK",1);
 	wxString libelleCancel = CLibResource::LoadStringFromResource(L"IDS_LBLCANCEL",1);
 

@@ -1,20 +1,29 @@
 #include "ThumbnailData.h"
+#include <ConvertUtility.h>
 
 CThumbnailData::CThumbnailData(const wxString & filename)
 {
-
+	timePosition = 0;
+	percent = 10;
 	pictureLoad = false;
 	pictureLoading = false;
+	isProcess = false;
 	typeElement = TYPEPHOTO;
 	folder = "";
 	key = "";
 	numCategorie = 0;
 	numParent = 0;
 	numCatalog = 0;
+
 	this->filename = filename;
 	numElement = 0;
 	libelleTimePosition = "";
 	numPhotoId = -1;
+}
+
+void CThumbnailData::SetFilename(const wxString &filename)
+{
+	this->filename = filename;
 }
 
 void CThumbnailData::SetNumPhotoId(const int &id)
@@ -43,9 +52,14 @@ void CThumbnailData::SetTimePosition(const int &timePosition)
 	int minute = (timePosition % 3600) / 60;
 	int seconds = timePosition % 60;
 
-	wxString shour = to_string(hour);
-	wxString sminute = to_string(minute);
-	wxString sseconds = to_string(seconds);
+	wxString shour;
+	shour << hour;
+	wxString sminute;
+	sminute << minute;
+	wxString sseconds;
+	sseconds << seconds;
+
+	libelleTimePosition = "";
 
 	if (shour.size() < 2)
 		libelleTimePosition.append("0");
@@ -97,6 +111,16 @@ bool CThumbnailData::IsLoad()
 		pictureLoad = TestBitmap();
 	return pictureLoad;
 };
+
+bool CThumbnailData::IsProcess()
+{
+	return isProcess;
+}
+
+void CThumbnailData::SetIsProcess(const bool &isProcess)
+{
+	this->isProcess = isProcess;
+}
 
 bool CThumbnailData::IsLoading()
 {

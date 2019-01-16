@@ -1,9 +1,6 @@
 #pragma once
 #include "ToolbarElement.h"
-#include <Theme.h>
-#include <string>
-#include <vector>
-using namespace std;
+#include <theme.h>
 
 namespace Regards
 {
@@ -18,7 +15,7 @@ namespace Regards
 			int GetWidth();
 			int GetHeight();
 			void SetLibelle(const wxString &libelle);
-			void DrawButton(wxDC * dc);
+			void DrawButton(wxDC * dc, const int &x, const int &y);
 			void Resize(const int &tailleX, const int &tailleY);
 
 		protected:
@@ -32,8 +29,7 @@ namespace Regards
 			void CreatePushButton(wxDC * dc, const int &x, const int &y);
 			void DrawShapeElement(wxDC * deviceContext, const wxRect &rc);	
 
-			bool drawShape = false;
-			
+			bool drawShape;
 			int width;
 			int height;
 			wxBitmap buttonLibelle;

@@ -1,2 +1,0 @@
-# Regards
-Photo Video Viewer

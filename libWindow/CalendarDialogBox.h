@@ -7,10 +7,6 @@
 //
 
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/statline.h>

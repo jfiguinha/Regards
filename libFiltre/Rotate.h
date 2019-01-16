@@ -1,9 +1,4 @@
 #pragma once
-#include <stdint.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 class CRotate
 {
 public:

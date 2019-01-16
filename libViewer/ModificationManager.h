@@ -1,11 +1,5 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <RegardsBitmap.h>
-#include <string>
-using namespace std;
+class CRegardsBitmap;
 
 class CModificationManager
 {
@@ -24,8 +18,8 @@ private:
 
     wxString GetFilenameWithModification(const unsigned int &numModification);
 	void EraseData();
-	int nbModification = 0;
-	int numModification = 0;
+	int nbModification;
+	int numModification;
 	wxString folder;
     vector<wxString> listLibelle;
 };

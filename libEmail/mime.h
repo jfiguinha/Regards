@@ -15,7 +15,6 @@
 #ifndef MIME_H
 #define MIME_H
 
-#include <wx/wx.h>
 #include <wx/filename.h>
 #include <wx/wfstream.h>
 

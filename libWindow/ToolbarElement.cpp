@@ -6,6 +6,10 @@ CToolbarElement::CToolbarElement()
 {
 	isVisible = true;
 	isRepeatable = false;
+	isActif = false;
+	isPush = false;
+	isVertical = false;
+	activePush = true;
 }
 
 
@@ -91,6 +95,10 @@ void CToolbarElement::IsPushActif(const bool &activePush)
 	this->activePush = activePush;
 }
 
+bool CToolbarElement::IsActif()
+{
+    return isActif;
+}
 
 bool CToolbarElement::SetInactif()
 {

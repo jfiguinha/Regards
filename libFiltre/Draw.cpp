@@ -64,7 +64,7 @@ float CDraw::YRealPosition(const float &m_ly, const long &m_lVScroll, const floa
 
 void CDraw::DessinerDashRectangle(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgbFirst, const wxColour &rgbSecond)
 {
-	wxPen dashDotPen(rgbFirst, 1, wxLONG_DASH);
+	wxPen dashDotPen(rgbFirst, 1,  wxPENSTYLE_LONG_DASH);
 	deviceContext->SetPen(dashDotPen);
 	deviceContext->SetBrush(*wxTRANSPARENT_BRUSH);
 	deviceContext->DrawRectangle(rc);
@@ -76,7 +76,7 @@ void CDraw::DessinerDashRectangle(wxDC * deviceContext, const int32_t &iTaille, 
 
 void CDraw::DessinerDotDashRectangle(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgbFirst, const wxColour &rgbSecond)
 {
-	wxPen dashDotPen(rgbFirst, iTaille, wxDOT_DASH);
+	wxPen dashDotPen(rgbFirst, iTaille,  wxPENSTYLE_DOT_DASH);
 	deviceContext->SetPen(dashDotPen);
 	deviceContext->SetBrush(*wxTRANSPARENT_BRUSH);
 	deviceContext->DrawRectangle(rc);
@@ -86,7 +86,7 @@ void CDraw::DessinerDotDashRectangle(wxDC * deviceContext, const int32_t &iTaill
 void CDraw::DessinerRectangleVide(wxDC * deviceContext, const int32_t &iTaille, const wxRect &rc, const wxColour &rgb)
 {
 	//wxBrush brush = wxBrush(*wxTRANSPARENT_BRUSH);
-	wxPen pen(rgb, iTaille, wxSOLID);
+	wxPen pen(rgb, iTaille,  wxPENSTYLE_SOLID);
 	deviceContext->SetPen(pen);
 	deviceContext->SetBrush(*wxTRANSPARENT_BRUSH);
 	deviceContext->DrawRectangle(rc);
@@ -96,7 +96,7 @@ void CDraw::DessinerRectangleVide(wxDC * deviceContext, const int32_t &iTaille, 
 
 void CDraw::DrawARectangle(wxDC * deviceContext, const wxRect &rc, const wxColour &rgb)
 {
-	wxPen pen(rgb, 2, wxSOLID);
+	wxPen pen(rgb, 2, wxPENSTYLE_SOLID);
 	deviceContext->SetPen(pen);
 	deviceContext->DrawRectangle(rc);
 	deviceContext->SetPen(wxNullPen);

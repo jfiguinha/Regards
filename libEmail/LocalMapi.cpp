@@ -1,7 +1,7 @@
 // Mapi.cpp: implementation of the CMapi class.
 //
 //////////////////////////////////////////////////////////////////////
-
+#if defined(WIN32) || defined(__MINGW32__)
 #include "LocalMapi.h"
 #include <MAPI.H>
 //#include <MAPIUTIL.H>
@@ -63,3 +63,4 @@ HRESULT CMapi::SendEmail(const string &m_szBody, const vector<string> & attachme
 
 	 return true;
 }
+#endif

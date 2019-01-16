@@ -28,9 +28,8 @@ namespace Regards
         private:
             
             int TraitementResult(CSqlResult * sqlResult);
-            int typeResult = 0;
-            
-            PhotoGpsVector * photogpsVector = nullptr;
+            int typeResult;
+            PhotoGpsVector * photogpsVector;
         };
     }
 }

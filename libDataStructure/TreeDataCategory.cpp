@@ -1,6 +1,5 @@
 #include "TreeDataCategory.h"
 
-
 CTreeDataCategory::CTreeDataCategory()
 {
 	iNumElement = 0;
@@ -58,7 +57,7 @@ int CTreeDataCategory::GetIdElement()
 
 wxString CTreeDataCategory::GetStringIdElement()
 {
-	return std::to_string(id);
+	return to_string(id);
 }
 
 void CTreeDataCategory::SetNumCatalog(const int & value)

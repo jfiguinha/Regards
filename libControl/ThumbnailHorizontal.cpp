@@ -9,13 +9,19 @@
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 
-CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail)
-	: CThumbnail(parent, id, statusBarInterface, themeThumbnail)
+
+CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnail(parent, id, statusBarInterface, themeThumbnail, testValidity)
 {
 }
 
 CThumbnailHorizontal::~CThumbnailHorizontal(void)
 {
+}
+
+wxString CThumbnailHorizontal::GetWaitingMessage()
+{
+	return "Window CThumbnailHorizontal waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
 }
 
 void CThumbnailHorizontal::InitPosition()
@@ -42,15 +48,16 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     int y = 0;
     thumbnailPos = 0;
 
-    for (wxString fileEntry : files)
+
+	 for (wxString fileEntry : files)
     {
         wxString filename = fileEntry;
-        CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename.ToStdString());
+		CThumbnailDataSQL * thumbnailData = new CThumbnailDataSQL(filename, testValidity);
         thumbnailData->SetNumPhotoId(i);
         thumbnailData->SetNumElement(i);
 
 
-        CIcone * pBitmapIcone = new CIcone();
+		CIcone * pBitmapIcone = new CIcone(nullptr);
         pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
         pBitmapIcone->SetData(thumbnailData);
         pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -59,7 +66,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
         if (i == 0)
             pBitmapIcone->SetSelected(true);
 
-        pIconeList.push_back(pBitmapIcone);
+        iconeList->AddElement(pBitmapIcone);
 
         x += themeThumbnail.themeIcone.GetWidth();
         i++;
@@ -67,16 +74,8 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     }
 
 	threadDataProcess = true;
-   
-    /*
-    if(scrollbar != nullptr)
-    {
-        scrollbar->SetPosition(0, 0);
-        posHauteur = scrollbar->GetPosHauteur();
-        posLargeur = scrollbar->GetPosLargeur();
-    }
-     */
-	this->Refresh();
+    bufferUpdate = true;
+	this->FastRefresh(this);
 }
 
 
@@ -87,12 +86,14 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 
 	//int nbPhoto = pIconeList.size();
 
-	for (CIcone * pBitmapIcone : pIconeList)
+    //int i = 0;
+    int numElement = iconeList->GetNbElement();
+	for (int i = 0;i < numElement;i++)
 	{
+        CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
+            printf("RenderIcone Num Icone : %d \n ", i);
 
 			//if visible
 			int left = x;
@@ -100,10 +101,13 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
 			int top = y;
 			int bottom = y + themeThumbnail.themeIcone.GetHeight();
 
-
-			if ((right > 0 && left < width) && (top < height && bottom > 0))
+            
+            pBitmapIcone->SetWindowPos(x, y);     
+            
+			if ((right > 0 && left < GetWindowWidth()) && (top < GetWindowHeight() && bottom > 0))
 			{
-				RenderBitmap(deviceContext, pBitmapIcone);
+               pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
+				RenderBitmap(deviceContext, pBitmapIcone, 0, 0);
 			}
             else
             {
@@ -119,7 +123,7 @@ void CThumbnailHorizontal::UpdateScroll()
 {
 	//bool update = false;
 
-	int nbElement = (int)pIconeList.size();
+	int nbElement = (int)iconeList->GetNbElement();
 	if (nbElement > 0)
 	{
 		nbLigneY = 1;
@@ -149,10 +153,10 @@ CIcone * CThumbnailHorizontal::FindElement(const int &xPos, const int &yPos)
 
 		int numElement = x / themeThumbnail.themeIcone.GetWidth();
 
-		if (numElement >= pIconeList.size())
+		if (numElement >= iconeList->GetNbElement())
 			return nullptr;
 
-		return pIconeList.at(numElement);
+		return iconeList->GetElement(numElement);
 	}
 	return nullptr;
 }

@@ -17,24 +17,14 @@
 
 
 #include "videothumbnailer.h"
-
+#include <RegardsBitmap.h>
 #include "histogram.h"
 #include "moviedecoder.h"
 #include "stringoperations.h"
 #include "filmstripfilter.h"
-#include "imagewriterfactory.h"
 
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <cfloat>
-#include <cmath>
-#include <stdexcept>
-#include <cassert>
-#include <cerrno>
-#include <algorithm>
-#include <sys/stat.h>
-#include "cximagewriter.h"
+
+
 using namespace std;
 
 namespace ffmpegthumbnailer
@@ -53,6 +43,20 @@ VideoThumbnailer::VideoThumbnailer()
 {
 }
 
+int64_t VideoThumbnailer::GetMovieDuration(const string& videoFile)
+{
+	int64_t duration = 0;
+	AVFormatContext* pFormatCtx = nullptr;
+	avformat_open_input(&pFormatCtx, videoFile.c_str(), NULL, NULL);
+	if(pFormatCtx != nullptr)
+	{
+		duration = pFormatCtx->duration;
+		avformat_close_input(&pFormatCtx);
+		avformat_free_context(pFormatCtx);
+	}
+	return duration;
+}
+
 VideoThumbnailer::VideoThumbnailer(int thumbnailSize, bool workaroundIssues, bool maintainAspectRatio, int imageQuality, bool smartFrameSelection)
 : m_ThumbnailSize(thumbnailSize)
 , m_SeekPercentage(10)
@@ -61,11 +65,26 @@ VideoThumbnailer::VideoThumbnailer(int thumbnailSize, bool workaroundIssues, boo
 , m_MaintainAspectRatio(maintainAspectRatio)
 , m_SmartFrameSelection(smartFrameSelection)
 {
+	m_width = 0;
+	m_height = 0;
+	m_orientation = 0;
+	m_seekTimeInSecond = 0;
 }
 
 VideoThumbnailer::~VideoThumbnailer()
 {
 }
+
+MovieDecoder * VideoThumbnailer::MovieDecoderThumbnail(const string& videoFile, AVFormatContext* pAvContext)
+{
+	MovieDecoder * movieDecoder = new MovieDecoder(videoFile, NULL);
+	movieDecoder->decodeVideoFrame(); //before seeking, a frame has to be decoded
+	m_width = movieDecoder->getWidth();
+	m_height = movieDecoder->getHeight();
+	m_orientation = movieDecoder->getOrientation();
+	return movieDecoder;
+}
+
 
 void VideoThumbnailer::DestroyMovieDecoder(MovieDecoder * movie)
 {
@@ -148,25 +167,13 @@ int VideoThumbnailer::GetOrientation()
 	return m_orientation;
 }
 
-MovieDecoder * VideoThumbnailer::MovieDecoderThumbnail(const string& videoFile, AVFormatContext* pAvContext)
+int VideoThumbnailer::GetThumbnail(const string& videoFile, CRegardsBitmap * image, MovieDecoder * movieDecoder, const int &percent, const int & thumbnailWidth, const int & thumbnailHeight, const int & rotation)
 {
-	MovieDecoder * movieDecoder = new MovieDecoder(videoFile, pAvContext);
-	movieDecoder->decodeVideoFrame(); //before seeking, a frame has to be decoded
-	m_width = movieDecoder->getWidth();
-	m_height = movieDecoder->getHeight();
-	m_orientation = movieDecoder->getOrientation();
-	return movieDecoder;
-}
-
-int VideoThumbnailer::GetThumbnail(const string& videoFile, CxImage * image, MovieDecoder * movieDecoder, const int &percent)
-{
-	ImageWriter* imageWriter = ImageWriterFactory<const string&>::createImageWriter(image);
-
 	if ((!m_WorkAroundIssues) || (movieDecoder->getCodec() != "h264")) //workaround for bug in older ffmpeg (100% cpu usage when seeking in h264 files)
 	{
 		try
 		{
-			int secondToSeekTo = movieDecoder->getDuration() * percent / 100;
+			int secondToSeekTo = (movieDecoder->getDuration() * percent) / 100;
 			m_seekTimeInSecond = secondToSeekTo;
 			movieDecoder->seek(secondToSeekTo);
 		}
@@ -188,72 +195,47 @@ int VideoThumbnailer::GetThumbnail(const string& videoFile, CxImage * image, Mov
 	}
 	else
 	{
+		if(thumbnailWidth > thumbnailHeight)
+			m_ThumbnailSize = thumbnailWidth;
+		else
+			m_ThumbnailSize = thumbnailHeight;
+
 		movieDecoder->getScaledVideoFrame(m_ThumbnailSize, m_MaintainAspectRatio, videoFrame);
 	}
 
 	applyFilters(videoFrame);
 
-	vector<uint8_t*> rowPointers;
-	for (int i = 0; i < videoFrame.height; ++i)
+	if(image != nullptr)
 	{
-		rowPointers.push_back(&(videoFrame.frameData[i * videoFrame.lineSize]));
+
+		image->SetBitmap(videoFrame.frameData,  videoFrame.width,  videoFrame.height, false, false);
+		/*
+		if (rotation == 90)
+		{
+			image->Rotation90();
+			image->VertFlipBuf();
+		}
+		else if (rotation == -90)
+		{
+			image->Rotation90();
+			image->HorzFlipBuf();
+		}
+		else if (rotation == 180)
+		{
+			image->VertFlipBuf();
+			image->HorzFlipBuf();
+		}
+		*/
 	}
 
-	writeImage(videoFile, *imageWriter, videoFrame, movieDecoder->getDuration(), rowPointers);
-
-	delete imageWriter;
-
-	return m_seekTimeInSecond;
+	return m_seekTimeInSecond / 100;
 }
 
-void VideoThumbnailer::generateThumbnail(const string& videoFile, ImageWriter& imageWriter, AVFormatContext* pAvContext)
+void VideoThumbnailer::generateThumbnail(const string& videoFile, CRegardsBitmap * image, const int & thumbnailWidth, const int & thumbnailHeight, int & rotation, AVFormatContext* pAvContext)
 {
     MovieDecoder movieDecoder(videoFile, pAvContext);
-    movieDecoder.decodeVideoFrame(); //before seeking, a frame has to be decoded
-	m_width = movieDecoder.getWidth();
-	m_height = movieDecoder.getHeight();
-	m_orientation = movieDecoder.getOrientation();
-
-    if ((!m_WorkAroundIssues) || (movieDecoder.getCodec() != "h264")) //workaround for bug in older ffmpeg (100% cpu usage when seeking in h264 files)
-    {
-        try
-        {
-            int secondToSeekTo = m_SeekTime.empty() ? movieDecoder.getDuration() * m_SeekPercentage / 100
-													: timeToSeconds(m_SeekTime);
-
-			m_seekTimeInSecond = secondToSeekTo;
-            movieDecoder.seek(secondToSeekTo);
-        }
-        catch (exception& e)
-        {
-            cerr << e.what() << ", will use first frame" << endl;
-            //seeking failed, try the first frame again
-            movieDecoder.destroy();
-            movieDecoder.initialize(videoFile);
-            movieDecoder.decodeVideoFrame();
-         }
-    }
-    
-    VideoFrame  videoFrame;
-    
-    if (m_SmartFrameSelection)
-    {
-        generateSmartThumbnail(movieDecoder, videoFrame);
-    }
-    else
-    {
-        movieDecoder.getScaledVideoFrame(m_ThumbnailSize, m_MaintainAspectRatio, videoFrame);
-    }
-
-    applyFilters(videoFrame);
-
-    vector<uint8_t*> rowPointers;
-    for (int i = 0; i < videoFrame.height; ++i)
-    {
-        rowPointers.push_back(&(videoFrame.frameData[i * videoFrame.lineSize]));
-    }
-
-    writeImage(videoFile, imageWriter, videoFrame, movieDecoder.getDuration(), rowPointers);
+	rotation = movieDecoder.getOrientation();
+	GetThumbnail(videoFile, image, &movieDecoder, m_SeekPercentage, thumbnailWidth, thumbnailHeight, rotation);
 }
 
 void VideoThumbnailer::generateSmartThumbnail(MovieDecoder& movieDecoder, VideoFrame& videoFrame)
@@ -261,7 +243,7 @@ void VideoThumbnailer::generateSmartThumbnail(MovieDecoder& movieDecoder, VideoF
     vector<VideoFrame> videoFrames(SMART_FRAME_ATTEMPTS);
     vector<Histogram<int> > histograms(SMART_FRAME_ATTEMPTS);
     
-    for (int i = 0; i < SMART_FRAME_ATTEMPTS; ++i)
+    for (auto i = 0; i < SMART_FRAME_ATTEMPTS; ++i)
     {
         movieDecoder.decodeVideoFrame();
         movieDecoder.getScaledVideoFrame(m_ThumbnailSize, m_MaintainAspectRatio, videoFrames[i]);
@@ -272,55 +254,6 @@ void VideoThumbnailer::generateSmartThumbnail(MovieDecoder& movieDecoder, VideoF
     
     assert(bestFrame != -1);
     videoFrame = videoFrames[bestFrame];
-}
-
-void VideoThumbnailer::generateThumbnail(const string& videoFile, CxImage * image, AVFormatContext* pAvContext)
-{
-	ImageWriter* imageWriter = ImageWriterFactory<const string&>::createImageWriter(image);
-	generateThumbnail(videoFile, *imageWriter, pAvContext);
-	delete imageWriter;
-}
-
-void VideoThumbnailer::generateThumbnail(const string& videoFile, ThumbnailerImageType type, const string& outputFile, AVFormatContext* pAvContext)
-{
-    ImageWriter* imageWriter = ImageWriterFactory<const string&>::createImageWriter(type, outputFile);
-    generateThumbnail(videoFile, *imageWriter, pAvContext);
-    delete imageWriter;
-}
-
-void VideoThumbnailer::generateThumbnail(const string& videoFile, ThumbnailerImageType type, vector<uint8_t>& buffer, AVFormatContext* pAvContext)
-{
-    buffer.clear();
-    ImageWriter* imageWriter = ImageWriterFactory<vector<uint8_t>&>::createImageWriter(type, buffer);
-    generateThumbnail(videoFile, *imageWriter, pAvContext);
-    delete imageWriter;
-}
-
-void VideoThumbnailer::writeImage(const string& videoFile, ImageWriter& imageWriter, const VideoFrame& videoFrame, int duration, vector<uint8_t*>& rowPointers)
-{
-    if((videoFile != "-") && (videoFile.find("rtsp://") != 0) && (videoFile.find("udp://") != 0) && (videoFile.find("http://") != 0))
-    {
-        struct stat statInfo;
-        if (stat(videoFile.c_str(), &statInfo) == 0)
-        {
-            imageWriter.setText("Thumb::MTime", StringOperations::toString(statInfo.st_mtime));
-            imageWriter.setText("Thumb::Size", StringOperations::toString(statInfo.st_size));
-        }
-        else
-        {
-            cout << "Warn: Failed to stat file " << videoFile << " (" << strerror(errno) << ")" << endl;
-        }
-        
-        string mimeType = getMimeType(videoFile);
-        if (!mimeType.empty())
-        {
-            imageWriter.setText("Thumb::Mimetype", mimeType);
-        }
-
-        imageWriter.setText("Thumb::URI", videoFile);
-        imageWriter.setText("Thumb::Movie::Length", StringOperations::toString(duration));
-    }
-    imageWriter.writeFrame(&(rowPointers.front()), videoFrame.width, videoFrame.height, m_ImageQuality);
 }
 
 string VideoThumbnailer::getMimeType(const string& videoFile)
@@ -410,10 +343,10 @@ void VideoThumbnailer::applyFilters(VideoFrame& frameData)
 
 void VideoThumbnailer::generateHistogram(const VideoFrame& videoFrame, Histogram<int>& histogram)
 {
-    for (int i = 0; i < videoFrame.height; ++i)
+    for (auto i = 0; i < videoFrame.height; ++i)
     {
         int pixelIndex = i * videoFrame.lineSize;
-        for (int j = 0; j < videoFrame.width * 3; j += 3)
+        for (auto j = 0; j < videoFrame.width * 3; j += 3)
         {
             ++histogram.r[videoFrame.frameData[pixelIndex + j]];
             ++histogram.g[videoFrame.frameData[pixelIndex + j + 1]];
@@ -427,7 +360,7 @@ int VideoThumbnailer::getBestThumbnailIndex(vector<VideoFrame>& videoFrames, con
     Histogram<float> avgHistogram;
     for (size_t i = 0; i < histograms.size(); ++i)
     {
-        for (int j = 0; j < 255; ++j)
+        for (auto j = 0; j < 255; ++j)
         {
             avgHistogram.r[j] += static_cast<float>(histograms[i].r[j]) / histograms.size();
             avgHistogram.g[j] += static_cast<float>(histograms[i].g[j]) / histograms.size();
@@ -441,7 +374,7 @@ int VideoThumbnailer::getBestThumbnailIndex(vector<VideoFrame>& videoFrames, con
     {
         //calculate root mean squared error
         float rmse = 0.0;
-        for (int j = 0; j < 255; ++j)
+        for (auto j = 0; j < 255; ++j)
         {
             float error = fabsf(avgHistogram.r[j] - histograms[i].r[j])
                         + fabsf(avgHistogram.g[j] - histograms[i].g[j])
@@ -461,7 +394,7 @@ int VideoThumbnailer::getBestThumbnailIndex(vector<VideoFrame>& videoFrames, con
         outputFile << "frames/Frame" << setfill('0') << setw(3) << i << "_" << rmse << endl;
         ImageWriter* imageWriter = ImageWriterFactory<const string&>::createImageWriter(Png, outputFile.str());
         vector<uint8_t*> rowPointers;
-        for (int x = 0; x < videoFrames[i].height; ++x)
+        for (auto x = 0; x < videoFrames[i].height; ++x)
             rowPointers.push_back(&(videoFrames[i].frameData[x * videoFrames[i].lineSize]));
         imageWriter->writeFrame(&(rowPointers.front()), videoFrames[i].width, videoFrames[i].height, m_ImageQuality);
         delete imageWriter;

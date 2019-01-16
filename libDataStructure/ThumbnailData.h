@@ -1,14 +1,10 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
-#include "RegardsBitmap.h"
 #include <queue>
 #include <deque>
-#include <vector>
 using namespace std;
+
+class CRegardsBitmap;
 
 #define TYPEPHOTO 1
 #define TYPECATALOG 2
@@ -16,8 +12,10 @@ using namespace std;
 #define TYPECRITERIA 4
 #define TYPEFOLDER 5
 #define TYPEVIDEO 6
+#define TYPEFACE 7
 #define SQLITE 1
 
+class CImageLoadingFormat;
 
 class CThumbnailData
 {
@@ -34,9 +32,9 @@ public:
 	int GetNumElement();
 
 	wxString GetFilename();
+	void SetFilename(const wxString &filename);
 
-	virtual void SetBitmap(CRegardsBitmap * bitmap) = 0;
-	virtual CRegardsBitmap * GetRegardsBitmap(const int &type) = 0;
+	virtual void SetBitmap(CImageLoadingFormat * bitmap) = 0;
 	virtual wxImage GetwxImage() = 0;
 
 	void SetTypeElement(const int &typeElement);
@@ -57,6 +55,9 @@ public:
 	bool IsLoading();
 	void SetIsLoading(const bool &isLoading);
 
+	bool IsProcess();
+	void SetIsProcess(const bool &isProcess);
+
 	bool IsLoad();
 	void InitLoadState()
 	{
@@ -70,6 +71,21 @@ public:
 	void SetTimePosition(const int &timePosition);
 	int GetTimePosition();
 	wxString GetTimePositionLibelle();
+    
+    virtual int GetNbFrame()
+    {
+        return 1;
+    }
+    
+    virtual int GetNumFrame()
+    {
+        return numFrame;
+    }
+    
+    virtual void SetNumFrame(const int &numFrame)
+    {
+        this->numFrame = numFrame;
+    }
 
 protected:
 
@@ -86,8 +102,10 @@ protected:
 	int numCategorie;
 	int numParent;
 	int typeElement;
-	int timePosition = 0;
-	int percent = 10;
+	int timePosition;
+	int percent;
+	bool isProcess;
+    int numFrame = 0;
 
 };
 

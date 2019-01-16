@@ -9,84 +9,105 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-// ============================================================================
-// declarations
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// headers
-// ----------------------------------------------------------------------------
-
-//#include <MyFrame.h>
 #include "wx/xrc/xmlres.h"
 #include "wx/url.h"
 #include "SqlInit.h"
 #include <PrintEngine.h>
 #include <MainInterface.h>
-#include <OpenCLEngine.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <LibResource.h>
 #include <MyFrameIntro.h>
 #include <ViewerFrame.h>
-#include <ExplorerFrame.h>
 #include "wx/stdpaths.h"
 #include "wx/sysopt.h"
-#include "wx/dcsvg.h"
 #include <wx/cmdline.h>
-#include <thread>
+#include <SqlResource.h>
+#include <libPicture.h>
+#include <ConvertUtility.h>
 
 
-#ifdef __WXGTK__
+#ifdef SDL2
 #include <SDL.h>
 #include <SDL_audio.h> 
+#endif
+
+#if not defined(WIN32) && defined(LIBBPG)
+#include <dlfcn.h>
+#endif
+
+#ifdef FFMPEG
 #include "config.h"
 
 extern "C"
 {
-#include "libavutil/avstring.h"
-#include "libavutil/colorspace.h"
-#include "libavutil/mathematics.h"
-#include "libavutil/pixdesc.h"
-#include "libavutil/imgutils.h"
-#include "libavutil/dict.h"
-#include "libavutil/parseutils.h"
-#include "libavutil/samplefmt.h"
-#include "libavutil/avassert.h"
-#include "libavutil/time.h"
 #include "libavformat/avformat.h"
 #include "libavdevice/avdevice.h"
 #include "libswscale/swscale.h"
 #include "libavutil/opt.h"
 #include "libavcodec/avfft.h"
 #include "libswresample/swresample.h"
-}
 
 #if CONFIG_AVFILTER
-# include "libavfilter/avcodec.h"
-# include "libavfilter/avfilter.h"
-# include "libavfilter/avfiltergraph.h"
-# include "libavfilter/buffersink.h"
-# include "libavfilter/buffersrc.h"
+#include "libavfilter/avfilter.h"
 #endif
+}
+
+#define YUV       0
+#define YCBCR     1
+#define OPP       2
+#define RGB       3
+#define DCT       4
+#define BIOR      5
+#define HADAMARD  6
+#define NONE      7
+
+
+static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
+{
+    if (NULL == _mutex)
+        return -1;
+
+    switch(op)
+    {
+    case AV_LOCK_CREATE:
+    {
+        *_mutex = NULL;
+        mutex * m = new mutex();
+        *_mutex = static_cast<void*>(m);
+        break;
+    }
+    case AV_LOCK_OBTAIN:
+    {
+        mutex * m =  static_cast<mutex*>(*_mutex);
+        m->lock();
+        break;
+    }
+    case AV_LOCK_RELEASE:
+    {
+        mutex * m = static_cast<mutex*>(*_mutex);
+        m->unlock();
+        break;
+    }
+    case AV_LOCK_DESTROY:
+    {
+        mutex * m = static_cast<mutex*>(*_mutex);
+        delete m;
+        break;
+    }
+    default:
+        break;
+    }
+    return 0;
+}
 
 #endif
 
 using namespace std;
-//#include <dlfcn.h>
-//#include <bpg.h>
-using namespace std;
-using namespace Regards::OpenCL;
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Viewer;
-using namespace Regards::Explorer;
 
-
-
-
-#ifdef __APPLE__
-#else
 #include <GL/glew.h>
 #if defined(_WIN32)
 #include <GL/wglew.h>
@@ -111,23 +132,32 @@ WGLEWContext _wglewctx;
 GLXEWContext _glxewctx;
 #    define glxewGetContext() (&_glxewctx)
 #  endif
-#endif /* GLEW_MX */
-#endif
+#endif //GLEW_MX
 
+#include <wx/glcanvas.h>
+int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0 };
 
-#ifdef __WXGTK__
-// ----------------------------------------------------------------------------
-// private classes
-// ----------------------------------------------------------------------------
-void mixaudio(void *unused, Uint8 *stream, int len) { }
-void ReportEnv(const char *var) {
-	const char *driver = getenv(var);
-	if (NULL == driver)
-		std::cerr << var << " is null" << std::endl;
-	else
-		std::cerr << var << ": " << driver << std::endl;
+// c: pointer to original argc
+// v: pointer to original argv
+// o: option name after hyphen
+// d: default value (if NULL, the option takes no argument)
+const char *pick_option(int *c, char **v, const char *o, const char *d) {
+  int id = d ? 1 : 0;
+  for (int i = 0; i < *c - id; i++) {
+    if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o)) {
+      char *r = v[i + id] + 1 - id;
+      for (int j = i; j < *c - id; j++)
+        v[j] = v[j + id + 1];
+      *c -= id + 1;
+      return r;
+    }
+  }
+  return d;
 }
-#endif
+
+bool CMasterWindow::endProgram = false;
+vector<CMasterWindow *> CMasterWindow::listMainWindow;
+float value[256];
 
 // Define a new application type, each program should derive a class from wxApp
 class MyApp : public wxApp, public IMainInterface
@@ -138,21 +168,32 @@ public:
 	MyApp(
 		)
 	{
-		//Init x11
 
+		//Init x11
+		regardsParam = nullptr;
+		frameStart = nullptr;
+		//frameViewer = nullptr;
 #ifdef __WXGTK__
 		int result = XInitThreads();
+                
+    
+        
+#endif
 
+#pragma omp parallel for
+	for (auto i = 0; i < 256; i++)
+		value[i] = (float)i;
 
-
-		//Init FFMPEG
-
+#ifdef FFMPEG
+            //Init FFMPEG
+        int res = -1;
+        res = av_lockmgr_register(&ff_lockmgr);
 		// register all codecs, demux and protocols 
 		avcodec_register_all();
 #if CONFIG_AVDEVICE
 		avdevice_register_all();
 #endif
-#if CONFIG_AVFILTER
+#if CONFIG_AVFILTER 
 		avfilter_register_all();
 #endif
 		av_register_all();
@@ -163,8 +204,13 @@ public:
 		//ÒòÎª´Ë°æ±¾ffmpeg¼¯³ÉÁËlibrtmp
 		//ºÍÎÄ¼þºÜÀàËÆ
 		avformat_network_init();
+#endif
 
-		int flags = SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER;
+
+
+#ifdef SDL2
+
+		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------
 		//³õÊ¼»¯
 		if (SDL_Init(flags)) {
@@ -173,37 +219,9 @@ public:
 			exit(1);
 		}
 
-
-		const char* driver_name = SDL_GetCurrentAudioDriver();
-
-		if (driver_name)
-		{
-			printf("Audio subsystem initialized; driver = %s.\n", driver_name);
-			if (SDL_AudioInit(driver_name))
-			{
-				printf("[SDL] Audio driver: %s\n", SDL_GetCurrentAudioDriver());
-			}
-
-			SDL_AudioSpec fmt;
-			fmt.freq = 44100;
-			fmt.format = AUDIO_S16;
-			fmt.channels = 2;
-			fmt.samples = 512;        // A good value for games 
-			fmt.callback = mixaudio;
-			fmt.userdata = NULL;
-
-			if (SDL_OpenAudio(&fmt, NULL) < 0)
-			{
-				fprintf(stderr, "Couldn't open audio device: %s\n", SDL_GetError());
-				SetDummyDriver();
-			}
-
-		}
-		else
-		{
-			SetDummyDriver();
-		}
 #endif
+
+
 	}
 
 	virtual void OnInitCmdLine(wxCmdLineParser& parser);
@@ -213,40 +231,11 @@ public:
 	// initialization (doing it here and not in the ctor allows to have an error
 	// return: if OnInit() returns false, the application terminates)
 	virtual bool OnInit();
-	virtual int OnRun();
 	virtual int Close();
 #ifdef __APPLE__	
 	virtual void MacOpenFile(const wxString &fileName);
 #endif    
-	virtual void ShowViewer()
-	{
 
-		if (frameViewer != nullptr)
-		{
-			if (!frameViewer->IsShown())
-			{
-				frameViewer->Show(true);
-				frameViewer->SetDatabase();
-			}
-		}
-		else
-		{
-			frameViewer = new CViewerFrame("Regards Viewer", wxPoint(50, 50), wxSize(1200, 800), this);
-			frameViewer->Show(true);
-		}
-
-	}
-
-	virtual void UpdateViewer()
-	{
-
-		if (frameViewer != nullptr)
-		{
-			if (frameViewer->IsShown())
-				frameViewer->SetDatabase();
-		}
-
-	}
 
 	virtual void ShowAbout()
 	{
@@ -268,45 +257,10 @@ public:
 
 	}
 
-	virtual void HideViewer()
-	{
-		if (CViewerFrame::GetViewerMode())
-			this->Close();
-		else
-		{
-			if (frameViewer != nullptr)
-				frameViewer->Show(false);
-			frameExplorer->Raise();
-		}
-
-
-	}
-
-	virtual void ShowExplorer()
-	{
-
-		if (frameExplorer != nullptr)
-			frameExplorer->Show(true);
-
-	}
-
-	virtual void HideExplorer()
-	{
-
-		if (frameExplorer != nullptr)
-			frameExplorer->Show(false);
-
-	}
-
-#ifdef __WXGTK__
-	virtual void SetDummyDriver();
-#endif
-
 private:
-	CRegardsConfigParam * regardsParam = nullptr;
-	MyFrameIntro * frameStart = nullptr;
-	CViewerFrame * frameViewer = nullptr;
-	CExplorerFrame * frameExplorer = nullptr;
+	CRegardsConfigParam * regardsParam;
+	MyFrameIntro * frameStart;
+	CViewerFrame * frameViewer;
 	wxString fileToOpen;
 
 };
@@ -318,32 +272,11 @@ private:
 // not wxApp)
 IMPLEMENT_APP(MyApp)
 
-#ifdef __WXGTK__
-
-void MyApp::SetDummyDriver()
-{
-	wxString audioDriver = "dummy";
-	if (SDL_AudioInit(audioDriver))
-		exit(1);
-
-	printf("[SDL] Audio driver: %s\n", SDL_GetCurrentAudioDriver());
-}
-
-#endif
-
-int MyApp::OnRun() {
-	// initialize SDL
-
-
-
-	// start the main loop
-	return wxApp::OnRun();
-}
-
 static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
 	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING,
 	wxCMD_LINE_PARAM_OPTIONAL },
+    
 	{ wxCMD_LINE_NONE }
 };
 
@@ -357,12 +290,20 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
+    /*
+    wxString nbArgument = to_string(wxGetApp().argc);
+    wxMessageBox(nbArgument);
 	//silent_mode = parser.Found(wxT("s"));
-
+    wxString  par2(wxGetApp().argv[0]);
+    wxMessageBox(par2);
+    wxString par(wxGetApp().argv[1]);
+    wxMessageBox(par);
+     * */
 	// to get at your unnamed parameters use
 	wxArrayString files;
-	for (int i = 0; i < parser.GetParamCount(); i++)
+	for (auto i = 0; i < parser.GetParamCount(); i++)
 	{
+        printf("Files to show : %s \n",CConvertUtility::ConvertToUTF8(parser.GetParam(i)));
 		files.Add(parser.GetParam(i));
 		break;
 	}
@@ -381,7 +322,8 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 #ifdef __APPLE__
 void MyApp::MacOpenFile(const wxString &fileName)
 {
-	//wxMessageBox("MacOpenFiles");
+    wxString message = "Mac Open Files : " + fileName;
+	//wxMessageBox(message);
 	//wxMessageBox(fileName);
 	frameViewer->OpenFile(fileName);
 }
@@ -390,7 +332,7 @@ void MyApp::MacOpenFile(const wxString &fileName)
 int MyApp::Close()
 {
 
-	COpenCLEngine::kill();
+	//COpenCLEngine::kill();
 
 	CSqlInit::KillSqlEngine();
 	CPrintEngine::Kill();
@@ -403,14 +345,24 @@ int MyApp::Close()
 	if (frameStart != nullptr)
 		frameStart->Destroy();
 
-	if (frameViewer != nullptr)
-		frameViewer->Destroy();
-
+	//if (frameViewer != nullptr)
+	//	frameViewer->Destroy();
+    
 
 	sqlite3_shutdown();
 
 	this->Exit();
 
+	CWindowMain::listMainWindow.clear();
+    
+    CLibPicture::Uninitx265Decoder();
+    
+#if not defined(WIN32) && defined(LIBBPG)
+    CLibPicture::UnloadBpgDll();
+#endif
+#ifdef FFMPEG
+    av_lockmgr_register(nullptr);
+#endif
 	return 0;
 }
 
@@ -418,48 +370,6 @@ int MyApp::Close()
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
-
-
-
-	/*
-	wxSVGFileDC svgDC (L"/Users/jacques/Pictures/test.svg", 40, 40) ;
-
-	svgDC.SetBrush(*wxTRANSPARENT_BRUSH);
-	svgDC.SetPen(*wxBLACK_PEN);
-	svgDC.DrawCircle(20,20,19);
-	svgDC.SetBrush(*wxBLACK_BRUSH);
-	svgDC.SetPen(*wxBLACK_PEN);
-	wxPoint point[3];
-	point[0] = wxPoint(14,10);
-	point[1] = wxPoint(14,30);
-	point[2] = wxPoint(30,20);
-	svgDC.DrawPolygon(3, point);
-
-	svgDC.DrawLine(30, 10, 30, 30);
-
-
-	wxSVGFileDC svgDC (L"/Users/jacques/Pictures/back.svg", 40, 40) ;
-
-	svgDC.SetBrush(*wxTRANSPARENT_BRUSH);
-	svgDC.SetPen(*wxBLACK_PEN);
-	svgDC.DrawCircle(20,20,19);
-	svgDC.SetBrush(*wxBLACK_BRUSH);
-	svgDC.SetPen(*wxBLACK_PEN);
-	wxPoint point[3];
-	point[0] = wxPoint(26,10);
-	point[1] = wxPoint(26,30);
-	point[2] = wxPoint(10,20);
-	svgDC.DrawPolygon(3, point);
-
-	svgDC.DrawLine(10, 10, 10, 30);
-
-	Exit();
-	*/
-
-	//Test SDL Audio
-
-
-
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())
@@ -475,80 +385,93 @@ bool MyApp::OnInit()
 
 	wxSocketBase::Initialize();
 
-
 	CPrintEngine::Initialize();
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
+    printf("Document Path %s \n",CConvertUtility::ConvertToUTF8(documentPath));
+    printf("Resource Path %s \n",CConvertUtility::ConvertToUTF8(resourcePath));
 
-	CLibResource::InitializeSQLServerDatabase(resourcePath);
-	CSqlInit::InitializeSQLServerDatabase(documentPath);
+    CLibPicture::Initx265Decoder();
+
+#if not defined(WIN32) && defined(LIBBPG)
+    printf("LoadBpgDll\n");
+    CLibPicture::LoadBpgDll();
+#endif
+
+#ifndef NDEBUG
+    ::wxMessageBox("toto");
+#endif
 
 	//Chargement des paramËtres de l'application
 	regardsParam = new CRegardsConfigParam();
 	CParamInit::Initialize(regardsParam);
 
-	COpenCLEngine::Init();
+	bool dataInMemory = regardsParam->GetDatabaseInMemory();
+
+	CLibResource::InitializeSQLServerDatabase(resourcePath);
+	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
+
 
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
 
+    
+
 #ifdef WIN32
 
-	wxXmlResource::Get()->Load(resourcePath + "\\ConfigRegards.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\CopyFileDlg.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\OpenCLDialog.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\GifOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\JpegOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\TiffOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\PngOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\CompressionOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "\\ExportFile.xrc");
+    wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage());
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ConfigRegards.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CopyFileDlg.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\OpenCLDialog.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\GifOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JpegOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\TiffOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PngOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CompressionOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ExportFile.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\WebpOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\bpgOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ChangeLabel.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\MoveFace.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PertinenceValue.xrc");
+    wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\IndexGenerator.xrc");
 #else
-	wxXmlResource::Get()->Load(resourcePath + "/ConfigRegards.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/CopyFileDlg.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/OpenCLDialog.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/GifOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/JpegOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/TiffOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/PngOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/SaveFileFormat.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/CompressionOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + "/ExportFile.xrc");
+    wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ConfigRegards.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CopyFileDlg.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/OpenCLDialog.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/GifOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/JpegOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/TiffOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PngOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/SaveFileFormat.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CompressionOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ExportFile.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/webpoption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/bpgoption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ChangeLabel.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/MoveFace.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PertinenceValue.xrc");
+    wxXmlResource::Get()->Load(resourcePath + numIdLang + "/IndexGenerator.xrc");
 #endif
-
-
-
-	//wxXmlResource::Get()->LoadAllFiles("rc");
+    
+     
+    //wxXmlResource::Get()->LoadAllFiles("rc");
 
 	frameStart = new MyFrameIntro("Welcome to Regards", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);
 	frameStart->Show(true);
 
-#ifdef VIEWER
+    
 	CViewerFrame::SetViewerMode(true);
 	frameViewer = new CViewerFrame("Regards Viewer", wxPoint(50, 50), wxSize(1200, 800), this, fileToOpen);
 	frameViewer->Centre(wxBOTH);
 	frameViewer->Show(true);
-
-#else
-	CViewerFrame::SetViewerMode(false);
-	frameExplorer = new CExplorerFrame("Regards Explorer", wxPoint(50, 50), wxSize(1200, 800), this);
-	frameExplorer->Centre(wxBOTH);
-	frameExplorer->Show(true);
-#endif
-	// create the main application window
-	//MyFrame *frame = new MyFrame("Minimal wxWidgets App");
-	//frame->SetClientSize(640, 480);
-	//frame->Centre();
-	//frame->Show();
-	// and show it (the frames, unlike simple controls, are not shown when
-	// created initially)
-	//frame->Show(true);
+    
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the
 	// application would exit immediately.
 	return true;
 }
-
-

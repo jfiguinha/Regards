@@ -1,12 +1,4 @@
 #pragma once
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <string>
-#include <vector>
-using namespace std;
 
 class CFolderCatalog
 {

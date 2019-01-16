@@ -16,10 +16,6 @@
 
 #include "stringoperations.h"
 
-#include <algorithm>
-
-using namespace std;
-
 namespace ffmpegthumbnailer
 {
 

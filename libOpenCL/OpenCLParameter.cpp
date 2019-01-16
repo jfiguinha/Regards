@@ -17,6 +17,14 @@ void COpenCLParameterInt::Add(cl_kernel kernelHandle, int numArg)
     Error::CheckError(err);;
 }
 
+void COpenCLParameterUShort::Add(cl_kernel kernelHandle, int numArg)
+{
+    
+	cl_int err;
+    err  = clSetKernelArg(kernelHandle, numArg, sizeof(cl_ushort), (void *) &value);
+    Error::CheckError(err);;
+}
+
 void COpenCLParameterUInt::Add(cl_kernel kernelHandle, int numArg)
 {
     
@@ -51,15 +59,6 @@ void COpenCLParameterByteArray::Add(cl_kernel kernelHandle, int numArg)
     Error::CheckError(err);;
 }
 
-void COpenCLParameterByteArray::Release()
-{
-    
-	cl_int err;
-	err = clReleaseMemObject(cl_buffer);
-	Error::CheckError(err);;
-};
-
-
 void COpenCLParameterIntArray::SetValue(cl_context context, int * value, int size, cl_mem_flags flag)
 {
     
@@ -78,13 +77,6 @@ void COpenCLParameterIntArray::Add(cl_kernel kernelHandle, int numArg)
 	Error::CheckError(err);;
 }
 
-void COpenCLParameterIntArray::Release()
-{
-    
-	cl_int err;
-	err = clReleaseMemObject(cl_buffer);
-	Error::CheckError(err);;
-};
 
 void COpenCLParameterFloatArray::SetValue(cl_context context, float * value, int size, cl_mem_flags flag)
 {
@@ -104,13 +96,21 @@ void COpenCLParameterFloatArray::Add(cl_kernel kernelHandle, int numArg)
 	Error::CheckError(err);;
 }
 
-void COpenCLParameterFloatArray::Release()
+void COpenCLParameterUShortArray::SetValue(cl_context context, unsigned short * value, int size, cl_mem_flags flag)
 {
-   
 	cl_int err;
-	err = clReleaseMemObject(cl_buffer);
+	cl_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | flag, size * sizeof(cl_ushort), value, &err);
 	Error::CheckError(err);;
-};
+	if (cl_buffer == (cl_mem)0)
+		throw Error("Failed to create Input Buffer!");
+}
+
+void COpenCLParameterUShortArray::Add(cl_kernel kernelHandle, int numArg)
+{
+	cl_int err;
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	Error::CheckError(err);;
+}
 
 
 void COpenCLParameterColorData::SetValue(cl_context context, COLORData * value, cl_mem_flags flag)
@@ -123,17 +123,33 @@ void COpenCLParameterColorData::SetValue(cl_context context, COLORData * value, 
 		throw Error("Failed to create Input Buffer!");
 }
 
-void COpenCLParameterColorData::Release()
+void COpenCLParameter::Release()
 {
-    
-	cl_int err;
-	err = clReleaseMemObject(cl_buffer);
-	Error::CheckError(err);;
+	if(cl_buffer != nullptr)
+	{
+		cl_int err;
+		err = clReleaseMemObject(cl_buffer);
+		Error::CheckError(err);
+		cl_buffer = nullptr;
+	}
 }
 
 void COpenCLParameterColorData::Add(cl_kernel kernelHandle, int numArg)
 {
     
+	cl_int err;
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
+	Error::CheckError(err);;
+}
+
+
+void COpenCLParameterClMem::SetValue(cl_mem memValue)
+{
+	cl_buffer = memValue;
+}
+
+void COpenCLParameterClMem::Add(cl_kernel kernelHandle, int numArg)
+{
 	cl_int err;
 	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
 	Error::CheckError(err);;

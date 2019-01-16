@@ -1,7 +1,6 @@
 #include "Histogramme.h"
 #include "Color.h"
 #include <RegardsBitmap.h>
-#include <stdint.h>
 #include <math.h>
 using namespace Regards::FiltreEffet;
 
@@ -141,10 +140,10 @@ bool CHistogramme::HistogramEqualize(CRegardsBitmap * bitmap)
 	// stretch the histogram
 
 #pragma omp parallel for
-	for (int y = 0; y < bitmap->GetBitmapHeight(); y++)
+	for (auto y = 0; y < bitmap->GetBitmapHeight(); y++)
 	{
 #pragma omp parallel for
-		for (int x = 0; x < bitmap->GetBitmapWidth(); x++)
+		for (auto x = 0; x < bitmap->GetBitmapWidth(); x++)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			CRgbaquad yuvClr = CColor::RGBtoYUV(color);
@@ -214,10 +213,10 @@ bool CHistogramme::HistogramLog(CRegardsBitmap * bitmap)
 	//double k = 255.0 / ::log(1.0 + (double)high);
 
 #pragma omp parallel for
-	for (int y = 0; y < bitmap->GetBitmapHeight(); y++)
+	for (auto y = 0; y < bitmap->GetBitmapHeight(); y++)
 	{
 #pragma omp parallel for
-		for (int x = 0; x < bitmap->GetBitmapWidth(); x++)
+		for (auto x = 0; x < bitmap->GetBitmapWidth(); x++)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			CRgbaquad yuvClr = CColor::RGBtoYUV(color);
@@ -305,10 +304,10 @@ bool CHistogramme::HistogramNormalize(CRegardsBitmap * bitmap)
 	// Normalize
 
 #pragma omp parallel for
-	for (int y = 0; y < bitmap->GetBitmapHeight(); y++)
+	for (auto y = 0; y < bitmap->GetBitmapHeight(); y++)
 	{
 #pragma omp parallel for
-		for (int x = 0; x < bitmap->GetBitmapWidth(); x++)
+		for (auto x = 0; x < bitmap->GetBitmapWidth(); x++)
 		{
 			CRgbaquad color = bitmap->GetColorValue(x, y);
 			CRgbaquad yuvClr = CColor::RGBtoYUV(color);

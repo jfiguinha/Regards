@@ -776,6 +776,43 @@ void CCPCD::pcd_get_LUT_init()
 	LUT_range[i] = 255;
 }
 
+void ReadFile(char *name)
+{
+	FILE *file;
+	char *buffer;
+	unsigned long fileLen;
+
+	//Open file
+	file = fopen(name, "rb");
+	if (!file)
+	{
+		fprintf(stderr, "Unable to open file %s", name);
+		return;
+	}
+	
+	//Get file length
+	fseek(file, 0, SEEK_END);
+	fileLen=ftell(file);
+	fseek(file, 0, SEEK_SET);
+
+	//Allocate memory
+	buffer=(char *)malloc(fileLen+1);
+	if (!buffer)
+	{
+		fprintf(stderr, "Memory error!");
+                                fclose(file);
+		return;
+	}
+
+	//Read file contents into buffer
+	fread(buffer, fileLen, 1, file);
+	fclose(file);
+
+	//Do what ever with buffer
+
+	free(buffer);
+}
+
 int CCPCD::pcd_open (struct PCD_IMAGE *img,const string & filename)
 {
   FILE * fd = nullptr;
@@ -789,8 +826,13 @@ int CCPCD::pcd_open (struct PCD_IMAGE *img,const string & filename)
     {
       return -1;
     }
-  img->size = fseek(fd, 0, SEEK_END);
-  fseek(fd, 0, SEEK_SET);
+   
+  fseek(fd, 0, SEEK_END);
+  img->size = ftell(fd);
+  //fclose(fd);
+  //fd = fopen(filename.c_str(), "r");
+  //fseek(fd, 0, SEEK_SET);
+  rewind (fd);
 
   img->mmap = (unsigned char *)malloc(img->size);
 
@@ -800,9 +842,18 @@ int CCPCD::pcd_open (struct PCD_IMAGE *img,const string & filename)
       return -1;
     }
 
+   int result =fread(img->mmap, 1, img->size, fd);
   //fread(fd,img->mmap,img->size);
-    fread(img->mmap, img->size, sizeof(unsigned char *), fd);
-
+	
+  //int result =  fread(img->mmap, 1, img->size, fd);
+   /*
+  if(result != img->size)
+  {
+	  fclose(fd);
+      pcd_close(img);
+      return -1;
+  }*/
+  
   fclose(fd);
 
   if (0 == strncmp("PCD_OPA", (const char *)img->mmap, 7)) 
@@ -1048,8 +1099,25 @@ void CCPCD::rgb_to_bgrx(const int & w, const int & h, const uint8_t * diskmem, u
 	}
 }
 
+/* in and out must be 16-uint8_t aligned */
+void CCPCD::rgb_to_rgbx(const int & w, const int & h, const uint8_t * diskmem, uint8_t * buff)
+{
+	int i, j;
+	int picptr = 0, srcptr = 0;
 
-CRegardsBitmap * CCPCD::readPCD(const string & szFileName)
+	for (j = 0; j<h; j++) {
+		for (i = 0; i<w; i++, picptr += 4, srcptr += 3) 
+		{
+			buff[picptr] = diskmem[srcptr+2];
+			buff[picptr+1] = diskmem[srcptr+1];
+			buff[picptr+2] = diskmem[srcptr];
+			buff[picptr+3] = 0;
+			//memcpy(buff + picptr, diskmem + srcptr, 3 * sizeof(uint8_t));
+		}
+	}
+}
+
+CRegardsBitmap * CCPCD::readPCD(const string & szFileName, const bool &isThumbnail)
 {
 	CRegardsBitmap *  bitmap = nullptr;
 	int left,top,w,h;
@@ -1065,8 +1133,13 @@ CRegardsBitmap * CCPCD::readPCD(const string & szFileName)
 			uint8_t * m_buf = new uint8_t[w * h * 3];
 			pcd_get_image(&m_pcdImage, m_buf, PCD_TYPE_RGB, 0);
 			bitmap = new CRegardsBitmap(w,h);
-			rgb_to_bgrx(w,h, m_buf, bitmap->GetPtBitmap());
-
+			if(isThumbnail)
+				rgb_to_bgrx(w,h, m_buf, bitmap->GetPtBitmap());
+			else
+			{
+				rgb_to_rgbx(w,h, m_buf, bitmap->GetPtBitmap());
+				bitmap->VertFlipBuf();
+			}
 			//m_image.BGRFromCRgbaquad(m_buf, w, h);
 			//m_image.VertFlipBuf(m_buf, w * 3, h);
 

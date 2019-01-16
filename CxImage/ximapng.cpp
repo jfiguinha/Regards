@@ -184,7 +184,8 @@ bool CxImagePNG::Decode(CxFile *hFile)
 	}
 
 	// <vho> - flip the RGB pixels to BGR (or RGBA to BGRA)
-	if (info_ptr->color_type & PNG_COLOR_MASK_COLOR){
+	if (info_ptr->color_type & PNG_COLOR_MASK_COLOR)
+	{
 		png_set_bgr(png_ptr);
 	}
 

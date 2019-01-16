@@ -1,9 +1,5 @@
 #pragma once
-#include <Theme.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include <theme.h>
 
 namespace Regards
 {
@@ -38,7 +34,9 @@ namespace Regards
             
 		protected:
 
-			void DrawElement();
+            void CallRefresh();
+			void DrawElement(wxDC * dc);
+            void OnRefresh(wxCommandEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
@@ -98,10 +96,7 @@ namespace Regards
 			int currentXPos;
 
 			bool m_bTracking;
-			bool scrollMoving = false;
 
-			int width = 0;
-			int height = 0;
 
 			wxTimer * triangleLeft;
 			wxTimer * triangleRight;
@@ -110,7 +105,11 @@ namespace Regards
 			wxTimer * stopMoving;
 
 			CThemeScrollBar themeScroll;
-			CScrollInterface * scrollInterface = nullptr;
+
+			bool scrollMoving;
+			int width;
+			int height;
+			CScrollInterface * scrollInterface;
 		};
 	}
 }

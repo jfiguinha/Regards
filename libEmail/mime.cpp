@@ -8,6 +8,7 @@
 
 #include "mime.h"
 #include <wx/base64.h>
+#include <ConvertUtility.h>
 /*
  * Purpose: wxWindows mime implementation
    * Author:  Frank Buß
@@ -52,7 +53,7 @@
     
          // try to determine encoding by filename extension
          wxString ext = fileName.GetExt().Lower();
-         for (int i = 0; i < sizeof(g_mimeTypeMappings) / sizeof(wxMimeTypeMapping); i++) {
+         for (auto i = 0; i < sizeof(g_mimeTypeMappings) / sizeof(wxMimeTypeMapping); i++) {
                  if (g_mimeTypeMappings[i].extension == ext) {
                          m_mainType = g_mimeTypeMappings[i].mainType;
                          m_subType = g_mimeTypeMappings[i].subType;
@@ -95,6 +96,6 @@
                 << "Content-Disposition: attachment; filename=\"" << m_fileName.GetName() << "\"" << cr
                 << cr
      << wxBase64Encode(pData, len) << cr;
-         out.Write((const char*) result, result.Length());
+         out.Write(CConvertUtility::ConvertToUTF8(result), result.Length());
      }
     

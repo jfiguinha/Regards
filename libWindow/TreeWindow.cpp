@@ -1,5 +1,4 @@
 #include "TreeWindow.h"
-#include <algorithm>    // std::sort
 #include "ScrollbarWnd.h"
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarVerticalWnd.h"
@@ -7,8 +6,14 @@
 using namespace Regards::Window;
 
 CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & theme)
-	: CWindowMain(parent, id)
+	: CWindowMain("CTreeWindow",parent, id)
 {
+	treeControl = nullptr;
+	renderBitmap = nullptr;
+	bitmapWidth = 0;
+	bitmapHeight = 0;
+	oldPosLargeur = 0;
+	oldPosHauteur = 0;
 	controlWidth = 0;
 	controlHeight = 0;
 	defaultPageSize = 50;
@@ -17,6 +22,16 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & the
 	posLargeur = 0;
 	themeTree = theme;
 	defaultPageSize = 50;
+    
+    //Buffer
+    /*
+    controlWidthBuffer = 0;
+    controlHeightBuffer = 0;
+    posLargeurBuffer = 0;
+    posHauteurBuffer = 0;         
+    widthBuffer = 0;
+    heightBuffer = 0;     
+    */
 	defaultLineSize = themeTree.GetRowHeight();
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
@@ -36,6 +51,7 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & the
 
 void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 {
+    TRACE();
 	wxWindowDC dc(this);
 	int xPos = 0;
 	if (treeElement->GetRow() > 0)
@@ -43,19 +59,24 @@ void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 	
 
 	treeElement->DrawElement(&dc, treeElement->GetPosX() + xPos, treeElement->GetPosY());
+    
+    bufferUpdate = true; 
 }
 
 CTreeWindow::~CTreeWindow()
 {
+    TRACE();
 }
 
 int CTreeWindow::GetWidth()
 {
+    TRACE();
 	return controlWidth;
 }
 
 int CTreeWindow::GetHeight()
 {
+    TRACE();
 	return controlHeight;
 }
 
@@ -64,7 +85,8 @@ int CTreeWindow::GetHeight()
 ////////////////////////////////////////////////////////////////////////////////
 void CTreeWindow::TestMaxX()
 {
-	long xValue = GetWidth() - width;
+    TRACE();
+	long xValue = GetWidth() - GetWindowWidth();
 
 	if (posLargeur >= xValue)
 		posLargeur = xValue;
@@ -78,7 +100,8 @@ void CTreeWindow::TestMaxX()
 ////////////////////////////////////////////////////////////////////////////////
 void CTreeWindow::TestMaxY()
 {
-	long yValue = GetHeight() - height;
+    TRACE();
+	long yValue = GetHeight() - GetWindowHeight();
 
 	if (posHauteur >= yValue)
 		posHauteur = yValue;
@@ -90,54 +113,90 @@ void CTreeWindow::TestMaxY()
 
 void CTreeWindow::OnKeyDown(wxKeyEvent& event)
 {
-	m_lock.lock();
-	{
-		switch (event.m_keyCode)
-		{
-		case WXK_UP:
-			this->MoveTop();
-			break;
-		case WXK_LEFT:
-			this->MoveLeft();
-			break;
-		case WXK_DOWN:
-			this->MoveBottom();
-			break;
-		case WXK_RIGHT:
-			this->MoveRight();
-			break;
+    TRACE();
+	bool update = false;
+    
+    
+    switch (event.m_keyCode)
+    {
+    case WXK_UP:
+        this->MoveTop(); 
+        update = true;
+        break;
+    case WXK_LEFT:
+        this->MoveLeft();
+        update = true;
+        break;
+    case WXK_DOWN:
+        this->MoveBottom();
+        update = true;
+        break;
+    case WXK_RIGHT:
+        this->MoveRight();
+        update = true;
+        break;
 
-		}
-	}
-	m_lock.unlock();
+    }
+
+    if(update)
+    {
+        bufferUpdate = true;
+        this->FastRefresh(this);
+    }
+
 }
 
 void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
 {	
-	m_lock.lock();
+    
+    TRACE();
+    
+    bool update = false;
+
 #ifdef __APPLE__
     
     if (event.m_wheelRotation == 1)
+    {
         this->MoveTop();
+         update = true;         
+    }
     else if (event.m_wheelRotation == -1)
-        this->MoveBottom();
+    {
+         update = true;
+         this->MoveBottom();
+    }
+        
     
 #else
     
     if (event.m_wheelRotation == 120)
+    {
         this->MoveTop();
+         update = true;         
+    }
     else
-        this->MoveBottom();
+    {
+         update = true;
+         this->MoveBottom();
+    }
     
 #endif
-	m_lock.unlock();
+
+    if(update)
+    {
+        bufferUpdate = true;
+        this->FastRefresh(this);
+    }
+
+
 }
 
 void CTreeWindow::DrawBackgroundRectangle(wxDC * deviceContext, const int &y, const int &rowHeight, const wxColour &color)
 {
+    TRACE();
 	wxRect rc;
 	rc.x = 0;
-	rc.width = width;
+	rc.width = GetWindowWidth();
 	rc.y = y;
     rc.height = y + rowHeight;//themeTree.GetRowHeight();
 	deviceContext->GradientFillLinear(rc, color, color);
@@ -146,17 +205,19 @@ void CTreeWindow::DrawBackgroundRectangle(wxDC * deviceContext, const int &y, co
 
 void CTreeWindow::CalculControlSize()
 {
+    TRACE();
 	if (treeControl != nullptr)
 	{
 		controlWidth = treeControl->GetWidth();
 		controlHeight = treeControl->GetNbRow() * themeTree.GetRowHeight();
-		scrollbar->SetControlSize(controlWidth, controlHeight);
+		//scrollbar->SetControlSize(controlWidth, controlHeight);
 	}
 
 }
 
 wxColour CTreeWindow::GetBackgroundColour(const int &yPos)
 {
+    TRACE();
     int moduloValue = yPos % (themeTree.GetRowHeight() * 2);
     if(moduloValue < themeTree.GetRowHeight())
         return themeTree.bgColorOne;
@@ -166,14 +227,15 @@ wxColour CTreeWindow::GetBackgroundColour(const int &yPos)
 
 void CTreeWindow::GenerateBackgroundBitmap(wxDC * deviceContext, const int &posLargeur, const int &posHauteur)
 {
+    TRACE();
     int yMaxPos = posHauteur;//-(posHauteur % themeTree.GetRowHeight());
 	//bool style = true;
     int diff = themeTree.GetRowHeight() - posHauteur % themeTree.GetRowHeight();
 
 
-	if (yMaxPos < (height + posHauteur))
+	if (yMaxPos < (GetWindowHeight() + posHauteur))
 	{
-		while (yMaxPos < (height + posHauteur))
+		while (yMaxPos < (GetWindowHeight() + posHauteur))
 		{
 			DrawBackgroundRectangle(deviceContext, yMaxPos - posHauteur, diff, GetBackgroundColour(yMaxPos));
 			yMaxPos += diff;
@@ -184,67 +246,69 @@ void CTreeWindow::GenerateBackgroundBitmap(wxDC * deviceContext, const int &posL
 
 void CTreeWindow::Resize()
 {
-	UpdateTreeControl();
+    TRACE();
+	//UpdateTreeControl();
+    bufferUpdate = true;
+    this->FastRefresh(this);
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 {
+    TRACE();
 	if (treeControl == nullptr)
 		return;
 
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	m_lock.lock();
-	{
-		wxWindowDC dc(this);
-		try
-		{
-			CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
-			if (element != nullptr)
-			{
-				treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur);
-			}
-			else
-			{
-				treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur);
-				::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
-			}
-		}
-		catch (...)
-		{
+    wxWindowDC dc(this);
+    try
+    {
+        CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
+        if (element != nullptr)
+        {
+            treeControl->MouseOver(&dc, element, xPos, yPos, posLargeur, posHauteur);
+        }
+        else
+        {
+            treeControl->MouseOut(&dc, element, xPos, yPos, posLargeur, posHauteur);
+            ::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
+        }
+    }
+    catch (...)
+    {
 
-		}
-	}
-	m_lock.unlock();
+    }
+
 }
 
 void CTreeWindow::OnLButtonUp(wxMouseEvent& event)
 {
+    TRACE();
+    
 	if (treeControl == nullptr)
 		return;
 
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	m_lock.lock();
-	{
-		CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
-		if (element != nullptr)
-		{
-			treeControl->UnclickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
-		}
-		else
-		{
-			//SetCursor(IDC_ARROW);
-			::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
-		}
-	}
-	m_lock.unlock();
+    CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
+    if (element != nullptr)
+    {
+        treeControl->UnclickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
+        bufferUpdate = true;
+    }
+    else
+    {
+        //SetCursor(IDC_ARROW);
+        ::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
+    }
 }
 
 void CTreeWindow::OnLButtonDown(wxMouseEvent& event)
 {
+    TRACE();
+    
 	if (treeControl == nullptr)
 		return;
 
@@ -253,111 +317,145 @@ void CTreeWindow::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	m_lock.lock();
-	{
-		CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
-		if (element != nullptr)
-		{
-			treeControl->ClickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
-		}
-		else
-		{
-			//SetCursor(IDC_ARROW);
-			::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
-		}
-	}
-	m_lock.unlock();
+    CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
+    if (element != nullptr)
+    {
+        treeControl->ClickOnElement(element, this, xPos, yPos, posLargeur, posHauteur);
+        bufferUpdate = true;
+    }
+    else
+    {
+        //SetCursor(IDC_ARROW);
+        ::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
+    }
+    
 }
 
 void CTreeWindow::OnLDoubleClick(wxMouseEvent& event)
 {
+    TRACE();
+    
 	if (treeControl == nullptr)
 		return;
 
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-	m_lock.lock();
-	{
-		CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
-		if (element != nullptr)
-		{
-			treeControl->DoubleClickOnElement(element);
-		}
-		else
-		{
-			::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
-		}
-	}
-	m_lock.unlock();
+    CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);
+    if (element != nullptr)
+    {
+        treeControl->DoubleClickOnElement(element);
+        bufferUpdate = true;
+    }
+    else
+    {
+        ::wxSetCursor(wxCursor(*wxSTANDARD_CURSOR));
+    }
+    
 }
 
 void CTreeWindow::UpdateTreeControl()
 {
+    TRACE();
+    printf("CTreeWindow::UpdateTreeControl \n");
+    bufferUpdate = true;
 	CalculControlSize();
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CTreeWindow::UpdateScreenRatio()
 {
-    UpdateTreeControl();
+    TRACE();
+    printf("CTreeWindow::UpdateScreenRatio \n");
+    //bufferUpdate = true;
+    if(this->treeControl != nullptr)
+        this->treeControl->UpdateScreenRatio();
+    //this->FastRefresh(this);
 }
 
 
 void CTreeWindow::SetTreeControl(CTreeControl * treeControl)
 {
+    TRACE();
+    printf("CTreeWindow::SetTreeControl \n");
 	this->treeControl = treeControl;
-	CalculControlSize();
-	this->Refresh();
+    bufferUpdate = true;          
+	this->FastRefresh(this);
 }
 
 void CTreeWindow::OnPaint(wxPaintEvent& event)
 {
-	m_lock.lock();
+    TRACE();
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
 
+    
+    printf("CTreeWindow::OnPaint \n");
+    
 	CalculControlSize();
 
 	wxPaintDC dc(this);
 	
-	if (controlWidth < width)
+	if (controlWidth < GetWindowWidth())
 	{
-		controlWidth = width;
+		controlWidth = GetWindowWidth();
 		posLargeur = 0;
 	}
 
-	if (controlHeight < height)
+	if (controlHeight < GetWindowHeight())
 	{
-		controlHeight = height;
+		controlHeight = GetWindowHeight();
 		posHauteur = 0;
 	}
 
-	if ((posLargeur + width) > controlWidth)
+	if ((posLargeur + GetWindowWidth()) > controlWidth)
 	{
-		posLargeur = controlWidth - width;
+		posLargeur = controlWidth - GetWindowWidth();
 	}
 
-	if ((posHauteur + height) > controlHeight)
+	if ((posHauteur + GetWindowHeight()) > controlHeight)
 	{
-		posHauteur = controlHeight - height;
+		posHauteur = controlHeight - GetWindowHeight();
 	}
 
-	scrollbar->SetControlSize(controlWidth, controlHeight);
-	scrollbar->SetPosition(posLargeur, posHauteur);
+    if(bufferUpdate || oldPosLargeur != posLargeur || oldPosHauteur != posHauteur)
+    {
+        printf("CTreeWindow::OnPaint bufferUpdate \n");
+         
+        wxBitmap background = wxBitmap(width, height);
 
-	wxBitmap background = wxBitmap(width, height);
+        wxMemoryDC memDC(background);
 
-	wxMemoryDC memDC(background);
+        GenerateBackgroundBitmap(&memDC, posLargeur, posHauteur);
+        if (treeControl != nullptr)
+            treeControl->GenerateWindowBitmap(&memDC, width, height, posLargeur, posHauteur);
 
-	GenerateBackgroundBitmap(&memDC, posLargeur, posHauteur);
-	if (treeControl != nullptr)
-		treeControl->GenerateWindowBitmap(&memDC, width, height, posLargeur, posHauteur);
+        if (treeControl != nullptr)
+            treeControl->AfterDrawBitmap();
 
-	if (treeControl != nullptr)
-		treeControl->AfterDrawBitmap();
+        memDC.SelectObject(wxNullBitmap);
 
-	memDC.SelectObject(wxNullBitmap);
+        dc.DrawBitmap(background, 0, 0);
 
-	dc.DrawBitmap(background, 0, 0);
+        backgroundBuffer = background;
 
-	m_lock.unlock();
+        bufferUpdate = false;  
+        
+        oldPosLargeur = posLargeur;
+        oldPosHauteur = posHauteur; 
+
+        scrollbar->SetControlSize(controlWidth, controlHeight);
+        scrollbar->SetPosition(posLargeur, posHauteur);
+       
+    }
+    else
+    {
+        printf("CTreeWindow::OnPaint not bufferUpdate \n");
+        dc.DrawBitmap(backgroundBuffer, 0, 0);     
+    }
+
+  
+
 }

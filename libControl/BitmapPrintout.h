@@ -1,9 +1,5 @@
 #pragma once
 #include <RegardsBitmap.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 #include "wx/print.h"
 #include "wx/printdlg.h"
@@ -36,6 +32,9 @@ namespace Regards
 				: wxPrintout(title) {
 				m_picture = image;
 			}
+
+			CBitmapPrintout();
+			~CBitmapPrintout();
 
 			virtual bool OnPrintPage(int page);
 			virtual bool HasPage(int page);

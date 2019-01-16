@@ -1,6 +1,4 @@
 #pragma once
-#include <stdint.h>
-
 namespace Regards
 {
 	namespace Window

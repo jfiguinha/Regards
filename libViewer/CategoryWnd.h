@@ -1,6 +1,5 @@
 #pragma once
-#include <Theme.h>
-#include <vector>
+#include <theme.h>
 #include <Criteria.h>
 #include <TreeWindow.h>
 #include "ViewerParam.h"
@@ -21,12 +20,12 @@ namespace Regards
 		public:
 			CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
 			~CCategoryWnd();
-			void Init(const int64_t &numFolder);
+			void Init();
             void RefreshCriteriaSearch();
             void UpdateScreenRatio();
 			void RefreshListPhoto();
             wxString GetSqlRequest();
-
+			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
 		protected:
 
             
@@ -48,7 +47,7 @@ namespace Regards
 			void LoadCategorie(const int &numCategorie, tree<CTreeData *>::iterator parent, int numParent);
 			void InitCatalogCategorie(tree<CTreeData *>::iterator parent, int numParent);
 			void LoadFolder(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent);
-
+			void LoadFace(const int &numCatalog, tree<CTreeData *>::iterator parent, int numParent);
 			//Draw Tree
 			void CreateElement();
 			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
@@ -67,16 +66,16 @@ namespace Regards
 			int numCatalog;
 			int idElement;
 			int yPos;
-            wxString sqlRequest = "";
-			CTreeDataCategory * treeDataModify = nullptr;
+            wxString sqlRequest;
+			CTreeDataCategory * treeDataModify;
 			wxString stateValue;
 			wxString stateTriangleValue;
 			vector<wxString> MonthName;
-			int widthPosition = 0;
+			int widthPosition;
 			vector<int> listPhoto;
 			CViewerParam * config;
-			CWindowMain * windowMain = nullptr;
-			int64_t numFolder = 0;
+			CWindowMain * windowMain;
+
 		};
 
 

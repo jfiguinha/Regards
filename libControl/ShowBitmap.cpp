@@ -9,13 +9,13 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <ThemeInit.h>
+#include <FileUtility.h>
+#include <array>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
 
-bool CShowBitmap::IsOpenGLCompatible()
-{
-	return bitmapWindow->IsGpGpuCompatible();
-}
+
 
 void CShowBitmap::SetDiaporamaMode()
 {
@@ -31,11 +31,6 @@ void CShowBitmap::SetNormalMode()
 	this->Resize();
 }
 
-void CShowBitmap::ChangerRenderInterface()
-{
-	bitmapWindow->InitRenderInterface();
-}
-
 void CShowBitmap::SetFullscreen(const bool &fullscreen)
 {
 	bitmapWindow->SetFullscreen(fullscreen);
@@ -49,16 +44,27 @@ void CShowBitmap::UpdateScreenRatio()
     this->Resize();
 }
 
-CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, CWindowMain * main, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config)
+CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
+	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config)
 	: wxWindow(parent, id, wxPoint(0,0), wxSize(0,0), 0)
 {
-	configRegards = CParamInit::getInstance();
+	transitionEnd = false;
+	tempImage = nullptr;
+	scrollbar = nullptr;
+	pictureToolbar = nullptr;
+	bitmapWindow = nullptr;
+	configRegards = nullptr;
+	defaultToolbar = true;
+	defaultViewer = true;
+	isDiaporama = false;
+	width = 0;
+	height = 0;
 	CThemeBitmapWindow themeBitmap;
+	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
 	CThemeToolbar themeToolbar;
-	vector<int> value = { 1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 5, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
+	std::vector<int> value = { 1, 2, 3, 4, 5, 6, 8, 12, 16, 25, 33, 50, 66, 75, 100, 133, 150, 166, 200, 300, 400, 500, 600, 700, 800, 1200, 1600 };
 
-	this->main = main;
 	this->bitmapInterface = bitmapInterface;
 
 	if (config != nullptr)
@@ -77,16 +83,19 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	if (config != nullptr)
 		config->GetBitmapWindowTheme(&themeBitmap);
 
-	bitmapWindow = new CBitmapWndViewer(scrollbar, bitmapViewerId, pictureToolbar, main, themeBitmap, bitmapInterface, statusBarInterface);
+	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface, statusBarInterface);
 	
 	pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
 
 	scrollbar->SetCentralWindow(bitmapWindow, themeScroll);
 
+	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowBitmap::OnSize));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
+	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StartLoadingPicture));
+	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StopLoadingPicture));
     
 }
 
@@ -202,6 +211,16 @@ void CShowBitmap::Resize()
 
 		}
 	}
+
+	if(pictureToolbar != nullptr)
+	{
+		if (pictureToolbar->IsShown())
+			pictureToolbar->PostSizeEvent();
+	}
+
+
+	if(scrollbar != nullptr)
+		scrollbar->PostSizeEvent();
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
@@ -253,13 +272,27 @@ bool CShowBitmap::SetPhoto(const wxString &filename)
 {
 	CLibPicture libPicture;
 	bool returnValue = false;
-	CRegardsBitmap * pBitmap = libPicture.LoadPicture(filename.c_str());
+	CImageLoadingFormat * pBitmap = libPicture.LoadPicture(filename.c_str());
 	if (pBitmap != nullptr)
-		returnValue = SetBitmap(pBitmap);
+    {
+		returnValue = SetBitmap(pBitmap, false);
+    }
+	if (!pBitmap->IsOk())
+	{
+		if (pBitmap != nullptr)
+			delete pBitmap;
+#ifdef WIN32
+		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+		pBitmap = libPicture.LoadPicture(photoCancel);
+	}
+
 	return returnValue;
 }
 
-void CShowBitmap::StartLoadingPicture()
+void CShowBitmap::StartLoadingPicture(wxCommandEvent& event)
 {
     if (bitmapWindow != nullptr)
     {
@@ -267,7 +300,7 @@ void CShowBitmap::StartLoadingPicture()
     }
 }
 
-void CShowBitmap::StopLoadingPicture()
+void CShowBitmap::StopLoadingPicture(wxCommandEvent& event)
 {
     if (bitmapWindow != nullptr)
     {
@@ -275,12 +308,49 @@ void CShowBitmap::StopLoadingPicture()
     }
 }
 
-bool CShowBitmap::SetBitmap(CRegardsBitmap * bitmap)
+void CShowBitmap::TransitionEnd()
 {
-	
+	transitionEnd = true;
+	if(tempImage != nullptr)
+	{
+		bitmapWindow->SetBitmap(tempImage);
+		tempImage = nullptr;
+		transitionEnd = false;
+		if (pictureToolbar != nullptr)
+			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
+		bitmapWindow->Refresh();
+	}
+}
+
+void CShowBitmap::OnIdle(wxIdleEvent& evt)
+{
+    //TRACE();
+	int numEffect = 0;
+		
+	if (configRegards != nullptr)
+		numEffect = configRegards->GetEffect();
+
+	if (numEffect != 0 && transitionEnd)
+	{
+		if(tempImage != nullptr)
+		{
+			bitmapWindow->SetBitmap(tempImage);
+			tempImage = nullptr;
+			transitionEnd = false;
+			if (pictureToolbar != nullptr)
+				pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
+			bitmapWindow->Refresh();
+		}
+	}
+}
+
+bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail)
+{
+	TRACE();
 	if (bitmapWindow != nullptr)
 	{
 		//bitmapWindow->FixArrowNavigation(true);
+        bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
 		
 		if (configRegards != nullptr)
@@ -288,25 +358,38 @@ bool CShowBitmap::SetBitmap(CRegardsBitmap * bitmap)
 
 		if (numEffect != 0)
 		{
-			bitmapWindow->ShrinkImage();
-			bitmapWindow->SetTransitionBitmap(bitmap);
+			if (isThumbnail)
+			{
+				transitionEnd = false;
+				bitmapWindow->ShrinkImage();
+				bitmapWindow->SetTransitionBitmap(bitmap);
+				tempImage = nullptr;
+			}
+			else
+			{
+				//if(transitionEnd)
+				bitmapWindow->StopTransition();
+				bitmapWindow->SetBitmap(bitmap, false);
+				//else
+				//	tempImage = bitmap;
+			}
 		}
 		else
-			bitmapWindow->SetBitmap(bitmap);
+			bitmapWindow->SetBitmap(bitmap, false);
 
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
-		bitmapWindow->Refresh();
+		//bitmapWindow->Refresh();
 		return true;
 	}
 	return false;
 }
 
 
-CRegardsBitmap * CShowBitmap::GetBitmap()
+CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
 {
 	if (bitmapWindow != nullptr)
-		return bitmapWindow->GetBitmap();
+		return bitmapWindow->GetBitmap(source);
 
 	return nullptr;
 }
@@ -329,6 +412,7 @@ int CShowBitmap::GetBitmapHeight()
 
 void CShowBitmap::OnSize(wxSizeEvent& event)
 {
+    
 	width = event.GetSize().GetWidth();
 	height = event.GetSize().GetHeight();
 	Resize();

@@ -1,18 +1,18 @@
-uchar4 GetColorSrc(int x, int y, const __global uchar4 *input, int widthIn, int heightIn)
+float4 GetColorSrc(int x, int y, const __global float4 *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
 		int position = x + y * widthIn;
 		return input[position];
 	}
-	return (uchar4)0;
+	return 0.0f;
 }
 
-__kernel void Erode(__global uchar4 *output, const __global uchar4 *input, int width, int height)
+__kernel void Erode(__global float4 *output, const __global float4 *input, int width, int height)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	uchar4 maxValue = (uchar4)0;
+	float4 maxValue = 0.0f;
 
 	for (int n = -1; n < 2; n++)
 	{
@@ -29,11 +29,11 @@ __kernel void Erode(__global uchar4 *output, const __global uchar4 *input, int w
 	output[position] = maxValue;
 }
 
-__kernel void Dilate(__global uchar4 *output, const __global uchar4 *input, int width, int height)
+__kernel void Dilate(__global float4 *output, const __global float4 *input, int width, int height)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	uchar4 minValue = (uchar4)255;
+	float4 minValue = 1.0f;
 
 	for (int n = -1; n < 2; n++)
 	{

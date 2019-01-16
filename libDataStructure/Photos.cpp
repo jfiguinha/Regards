@@ -13,6 +13,26 @@ CPhotos::~CPhotos()
 {
 }
 
+void CPhotos::SetGpsInfos(const wxString &gpsInfos)
+{
+	this->gpsInfos = gpsInfos;
+}
+
+wxString CPhotos::GetGpsInfos()
+{
+	return gpsInfos;
+}
+
+void CPhotos::SetCreateDate(const wxString &createDate)
+{
+	this->createDate = createDate;
+}
+
+wxString CPhotos::GetCreateDate()
+{
+	return createDate;
+}
+
 void CPhotos::SetId(const int &numId)
 {
 	this->numId = numId;

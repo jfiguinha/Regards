@@ -1,15 +1,7 @@
 #include "FileGeolocation.h"
 #include <libPicture.h>
 #ifdef EXIV2
-#include <PictureMetadata.h>
-#endif
-#ifdef __APPLE__
-#include "AppleReadExif.h"
-#include <MediaInfo.h>
-#endif
-#ifdef WIN32
-#include <PictureMetadata.h>
-#include <MediaInfo.h>
+#include <MetadataExiv2.h>
 #endif
 #include "Gps.h"
 #include <SqlPhotos.h>
@@ -20,12 +12,25 @@
 #include <SqlFolderCatalog.h>
 #include <SqlPhotoCriteria.h>
 #include <LibResource.h>
+#include <MediaInfo.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
+
+
 
 CFileGeolocation::CFileGeolocation(const wxString &urlServer)
 {
     this->urlServer = urlServer;
+	dateTimeInfos = "";
+	hasGps = false;
+	hasDataTime = false;
+	latitudeGps = L"";
+	longitudeGps = L"";
+	flatitude = 0.0;
+	flongitude = 0.0;
+	infoGpsLocalisation = L"";
+	filename = L"";
+    isThumbnail = false;
 };
 
 
@@ -133,6 +138,7 @@ void CFileGeolocation::Geolocalize()
         if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
         {
             GeoPluginVector * geoPluginVector = gps->GetGpsList();
+
             for (CGeoPluginValue geoValue : *geoPluginVector)
             {
                 infoGpsLocalisation.append(geoValue.GetCountryCode());
@@ -162,27 +168,41 @@ bool CFileGeolocation::Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto)
 	CSqlCriteria sqlCriteria;
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	
+    printf("CFileGeolocation Geolocalisation \n");
 	//Execution de la requête de géolocalisation
 	if (hasGps)
 	{
-		CGps * gps = new CGps(urlServer);
-		if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
-		{
-			ImportCountry();
-			GeoPluginVector * geoPluginVector = gps->GetGpsList();
-			for (GeoPluginVector::iterator it = geoPluginVector->begin(); it != geoPluginVector->end(); it++)
-			{
-				CGeoPluginValue geoValue = *it;
-                wxString value = GenerateGeolocalisationString(geoValue.GetCountryCode(),geoValue.GetRegion(),geoValue.GetPlace());
-				if (value != "")
-				{
-					CInsertCriteria * insertCriteria = new CInsertCriteria();
-					insertCriteria->type = CATEGORIE_GEO;
-					insertCriteria->value = value;
-					listCriteriaPhoto->listCriteria.push_back(insertCriteria);
-				}
-			}
-		}
+        CGps * gps = new CGps(urlServer);
+        try
+        { 
+            if (gps->GeolocalisationGPS(GetLatitude(), GetLongitude()))
+            {
+                printf("GeolocalisationGPS OK \n");
+                ImportCountry();
+                GeoPluginVector * geoPluginVector = gps->GetGpsList();
+                for (GeoPluginVector::iterator it = geoPluginVector->begin(); it != geoPluginVector->end(); it++)
+                {
+                    CGeoPluginValue geoValue = *it;
+                    wxString value = GenerateGeolocalisationString(geoValue.GetCountryCode(),geoValue.GetRegion(),geoValue.GetPlace());
+                    if (value != "")
+                    {
+                        CInsertCriteria * insertCriteria = new CInsertCriteria();
+                        insertCriteria->type = CATEGORIE_GEO;
+                        insertCriteria->value = value;
+                        listCriteriaPhoto->listCriteria.push_back(insertCriteria);
+                        
+                    }
+                }
+            }
+            else
+                printf("GeolocalisationGPS FALSE \n");
+        }
+        catch(...)
+        {
+            printf("GeolocalisationGPS CGps * Error \n");
+        }
+        
+         delete gps;
 	}
 	else
 		return false;
@@ -218,6 +238,7 @@ wxString CFileGeolocation::GenerateGeolocalisationString(const wxString &country
     return "";
 }
 
+
 void CFileGeolocation::SetFile(const wxString & picture, const bool &onlyFromFile)
 {
     CLibPicture libPicture;
@@ -235,50 +256,30 @@ void CFileGeolocation::SetFile(const wxString & picture, const bool &onlyFromFil
         if(hasGps && hasDataTime)
             return;
     }
-    
-#ifdef EXIV2
 
-	CPictureMetadata pictureMetadata(filename);
+	//exiv2::CMetadataExiv2 pictureMetadata(filename);
 	if(libPicture.TestIsVideo(filename))
 	{
-		pictureMetadata.ReadVideo(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
-	}
-	else
-	{
-		pictureMetadata.ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
-	}
-
-#else
-    
-#if defined(__APPLE__) || defined(WIN32)
-    
-    
-    if(libPicture.TestIsVideo(filename))
-    {
-        //bool apple = false;
-        //Extraction des données de mediainfolib et recherche de la date et des infos GPS
-        CMediaInfo mediaInfo;
-        vector<CMetadata> listItem = mediaInfo.ReadMetadata(picture);
-        for(CMetadata meta : listItem)
+        vector<CMetadata> listMeta = CMediaInfo::ReadMetadata(filename);
+        for(CMetadata metadata : listMeta)
         {
-            
-            wxString key = meta.key;
-            wxString value = meta.value;
-
-			if (key.Find("Recorded date") != std::string::npos)
-			{
-				dateTimeInfos = value; hasDataTime = true;
-			}
-			else if (key.Find("apple") != std::string::npos && key.Find("location") != std::string::npos)
+             if(metadata.key == "General.com.apple.quicktime.creationdate")
             {
+                //Create Date
+                hasDataTime = true;
+                dateTimeInfos = metadata.value;
+            }
+            if(metadata.key == "General.com.apple.quicktime.location.ISO6709")
+            {
+                wxString exifinfos = metadata.value;
                 hasGps = true;
                 wxString listValue[3];
                 wchar_t listRef[3];
                 int iStart = -1;
-                
-                for (int i = 0; i < value.size(); i++)
+
+                for (auto i = 0; i < exifinfos.size(); i++)
                 {
-                    char charValue = value.at(i);
+                    char charValue = exifinfos.at(i);
                     if (charValue == '+')
                     {
                         iStart++;
@@ -294,82 +295,27 @@ void CFileGeolocation::SetFile(const wxString & picture, const bool &onlyFromFil
                         listValue[iStart] += charValue;
                     }
                 }
-                
+
                 if (listRef[0] == '-')
                     flatitude = -atof(listValue[0].c_str());
                 else
                     flatitude = atof(listValue[0].c_str());
-                
+
                 if (listRef[1] == '-')
                     flongitude = -atof(listValue[1].c_str());
                 else
                     flongitude = atof(listValue[1].c_str());
-                
+
                 latitudeGps = to_string(flatitude);
-                longitudeGps = to_string(flongitude);
-                
-				hasGps = true;
+                longitudeGps = to_string(flongitude);                    
             }
-            else if (key.Find("apple") != std::string::npos && key.Find("creationdate") >= 0)
-            {
-				dateTimeInfos = value; hasDataTime = true;
-            }
-            
         }
-        
-    }
-    else if(libPicture.TestImageFormat(filename))
-    {
-        flatitude = 0.0;
-        flongitude = 0.0;
-        
-#ifdef __APPLE__
-        CAppleReadExif appleExif;
-        appleExif.ReadGps(filename, flatitude, flongitude);
-        
-        if (flatitude != 0.0 &&  flongitude != 0.0)
-        {
-            latitudeGps = to_wstring(flatitude);
-            longitudeGps = to_wstring(flongitude);
-            hasGps = true;
-        }
-        else
-        {
-            hasGps = false;
-            latitudeGps = "";
-            longitudeGps = "";
-        }
-        
-        if(!appleExif.ReadDateTime(filename, dateTimeInfos))
-            hasDataTime = false;
-        else
-            hasDataTime = true;
-
-#else
-
-		wxString latitudeRef;
-		wxString longitudeRef;
-
-		CPictureMetadata metadata(filename);
-		if (metadata.GetGpsInformation(latitudeRef, longitudeRef, latitudeGps, longitudeGps))
-			hasGps = true;
-		else
-			hasGps = false;
-
-		dateTimeInfos = metadata.GetCreationDate();
-		if (dateTimeInfos == "")
-			hasDataTime = false;
-		else
-			hasDataTime = true;
-
-#endif
-#endif
-    }
-    
-
-
-    
-#endif
+	}
+	else
+	{
+        exiv2::CMetadataExiv2 pictureMetadata(filename);
+		pictureMetadata.ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
+	}
     
     if(hasGps)
     {
@@ -432,7 +378,7 @@ void CFileGeolocation::SetFile(const wxString & picture, const bool &onlyFromFil
         //wxFileOffset filelen=strucStat.st_size;
         wxDateTime last_modified_time(strucStat.st_mtime);
         dateTimeInfos = last_modified_time.FormatISOCombined(' ');
-
+ 
     }
 
 }

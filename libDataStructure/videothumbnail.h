@@ -19,7 +19,7 @@ public:
 	CRegardsBitmap * bitmap[NBELEMENT];
 	int rotation;
 	int timePosition[NBELEMENT];
-	bool copy = false;
+	bool copy;
 };
 
 

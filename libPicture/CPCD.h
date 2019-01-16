@@ -3,9 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include <stdint.h>
-#include <string>
-using namespace std;
 
 class CRegardsBitmap;
 
@@ -45,7 +42,7 @@ public:
 	CCPCD();
 	virtual ~CCPCD();
 
-	CRegardsBitmap * readPCD(const string & szFileName);
+	CRegardsBitmap * readPCD(const string & szFileName, const bool &isThumbnail);
 
 
 
@@ -70,7 +67,7 @@ private:
 	int pcd_decode(struct PCD_IMAGE *img);
 	
 	void rgb_to_bgrx(const int & w, const int & h, const uint8_t * diskmem, uint8_t * buff);
-
+	void rgb_to_rgbx(const int & w, const int & h, const uint8_t * diskmem, uint8_t * buff);
 	void pcd_get_LUT_init();
 
 	unsigned int LUT_flag;

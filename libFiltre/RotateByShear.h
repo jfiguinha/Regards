@@ -134,7 +134,7 @@ CRotateByShear<CPxl>::HorizSkew (
 
 ------------------------------------------------------------------------------*/
 {
-    for (int i = 0; i < iOffset; i++)
+    for (auto i = 0; i < iOffset; i++)
     {
         // Fill gap left of skew with background
         SetRGB (pDst, sDst, i, uRow, clrBack);
@@ -206,7 +206,7 @@ CRotateByShear<CPxl>::VertSkew (
 
 ------------------------------------------------------------------------------*/
 {
-    for (int i = 0; i < iOffset; i++)
+    for (auto i = 0; i < iOffset; i++)
     {
         // Fill gap above skew with background
         SetRGB (pDst, sDst, uCol, i, clrBack);
@@ -215,7 +215,7 @@ CRotateByShear<CPxl>::VertSkew (
     CRgbaquad pxlOldLeft = clrBack;
 
     int iYPos;
-    for (int i = 0; i < sSrc.y; i++) 
+    for (auto i = 0; i < sSrc.y; i++) 
     {
         // Loop through column pixels
         CRgbaquad pxlSrc = GetRGB (pSrc, sSrc, uCol, i);
@@ -277,9 +277,9 @@ CRotateByShear<CPxl>::Rotate90  (CPxl *pSrc, wxSize sSrc, wxSize *psDst)
     {
         return nullptr;
     }
-    for (int uY = 0; uY < int(sSrc.y); uY++)
+    for (auto uY = 0; uY < int(sSrc.y); uY++)
     {
-        for (int uX = 0; uX < int(sSrc.x); uX++)
+        for (auto uX = 0; uX < int(sSrc.x); uX++)
         {
             SetRGB (pDst, *psDst, uY, (*psDst).y - uX - 1, GetRGB (pSrc, sSrc, uX, uY));
         }
@@ -323,9 +323,9 @@ CRotateByShear<CPxl>::Rotate180  (CPxl *pSrc, wxSize sSrc, wxSize *psDst)
         return nullptr;
     }
 
-    for (int uY = 0; uY < int(sSrc.y); uY++)
+    for (auto uY = 0; uY < int(sSrc.y); uY++)
     {
-        for (int uX = 0; uX < int(sSrc.x); uX++)
+        for (auto uX = 0; uX < int(sSrc.x); uX++)
         {
             SetRGB (pDst, *psDst, (*psDst).x - uX - 1, (*psDst).y - uY - 1, GetRGB (pSrc, sSrc, uX, uY));
         }
@@ -370,9 +370,9 @@ CRotateByShear<CPxl>::Rotate270  (CPxl *pSrc, wxSize sSrc, wxSize *psDst)
         return nullptr;
     }
 
-    for (int uY = 0; uY < int(sSrc.y); uY++)
+    for (auto uY = 0; uY < int(sSrc.y); uY++)
     {
-        for (int uX = 0; uX < int(sSrc.x); uX++)
+        for (auto uX = 0; uX < int(sSrc.x); uX++)
         {
             SetRGB (pDst, *psDst, (*psDst).x - uY - 1, uX, GetRGB (pSrc, sSrc, uX, uY));
         }
@@ -443,7 +443,7 @@ CRotateByShear<CPxl>::Rotate45  (
     {
         return nullptr;
     }
-    for (int u = 0; u < int(sDst1.y); u++) 
+    for (auto u = 0; u < int(sDst1.y); u++) 
     {  
         float dShear;
 
@@ -560,7 +560,7 @@ CRotateByShear<CPxl>::Rotate45  (
         // Negative angle
         dOffset = dTan * (float(sSrc.x - 1) * -dSinE + float(1 - (*psDst).y));
     }
-    for (int u = 0; u < int((*psDst).y); u++, dOffset += dTan)
+    for (auto u = 0; u < int((*psDst).y); u++, dOffset += dTan)
     {
         int iShear = int (floor(dOffset));
         HorizSkew ( pDst2,

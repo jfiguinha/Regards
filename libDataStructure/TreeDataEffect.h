@@ -1,7 +1,8 @@
 #pragma once
 #include "TreeData.h"
-#include <string>
-using namespace std;
+#include "Metadata.h"
+#include "TreeElementValue.h"
+
 
 class CTreeDataEffect : public CTreeData
 {
@@ -12,17 +13,24 @@ public:
 	void SetIndex(const int & value);
 	int GetIndex();
 
-	void SetPosition(const int &position);
-	int GetPosition();
-	
-	void SetValue(const vector<int> &value);
-	vector<int> GetValue();
+	void SetInitValue(CTreeElementValue * position);
+	CTreeElementValue * GetInitValue();
+
+	void SetValue(void * value,const int & typeValue);
+	vector<CTreeElementValue *> * GetVectorValue();
+	vector<CMetadata> GetMetadataValue();
+	bool GetBoolValue();
+
+	bool HasValue();
 
 protected:
 
 	int index;
-	vector<int> tabValue;
-	int position;
+	vector<CTreeElementValue *> tabValue;
+	vector<CMetadata> tabMetadata;
+	bool boolvalue;
+	CTreeElementValue * position;
+	bool hasValue;
 
 };
 

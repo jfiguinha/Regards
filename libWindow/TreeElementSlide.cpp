@@ -8,35 +8,27 @@
 #include "WindowMain.h"
 using namespace Regards::Window;
 
+
+
 CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface * eventInterface)
 {
-	CLoadingResource loadingResource;
+	//eventInterface = nullptr;
+	//CLoadingResource loadingResource;
 	this->eventInterface = eventInterface;
-	positionButton = { 0, 0, 0, 0 };
 	hCursorHand = CResourceCursor::GetClosedHand();
 	mouseBlock = false;
 	captureBall = false;
-    if(isVector)
-    {
-        button.Create(0,0);
-		buttonPlus.Create(0, 0);
-		buttonMoins.Create(0, 0);
-        buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
-		buttonPlusVector = CLibResource::GetVector("IDB_PLUS");
-		buttonMoinsVector = CLibResource::GetVector("IDB_MINUS");
-    }
-    else
-    {
-        button = loadingResource.LoadImageResource("IDB_BOULESLIDER");
-		buttonPlus = loadingResource.LoadImageResource("IDB_PLUS");
-		buttonMoins = loadingResource.LoadImageResource("IDB_MINUS");
-    }
-
-
-	plusPos = { 0, 0, 0, 0 };
-	moinsPos = { 0, 0, 0, 0 };
-	slidePos = { 0, 0, 0, 0 };
+	exifKey = L"";
+	height = 0;
+	position = 0;
+	button.Create(0,0);
+	buttonPlus.Create(0, 0);
+	buttonMoins.Create(0, 0);
+	buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
+	buttonPlusVector = CLibResource::GetVector("IDB_PLUS");
+	buttonMoinsVector = CLibResource::GetVector("IDB_MINUS");
 }
+
 
 wxImage CTreeElementSlide::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
 {
@@ -45,6 +37,7 @@ wxImage CTreeElementSlide::CreateFromSVG(const int & buttonWidth, const int & bu
     svgDoc.Load(memBuffer);
     return svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
 }
+
 
 CTreeElementSlide& CTreeElementSlide::operator=(const CTreeElementSlide &other)
 {
@@ -63,30 +56,80 @@ CTreeElementSlide& CTreeElementSlide::operator=(const CTreeElementSlide &other)
 	return *this;
 }
 
+
 CTreeElementSlide::~CTreeElementSlide()
 {
 
 }
+
 
 void CTreeElementSlide::SetPosition(const int &position)
 {
 	this->position = position;
 }
 
+bool CTreeElementSlide::TestEgality(CTreeElementValue * value1, CTreeElementValue * value2, int type)
+{
+	switch(type)
+	{
+	case TYPE_INT:
+		{
+			CTreeElementValueInt * valueInt1 = (CTreeElementValueInt *)value1;
+			CTreeElementValueInt * valueInt2 = (CTreeElementValueInt *)value2;
+			return (valueInt1->GetValue() == valueInt2->GetValue()) ? true : false;
+		}
+		break;
+
+	case TYPE_FLOAT:
+				{
+			CTreeElementValueFloat * valueInt1 = (CTreeElementValueFloat *)value1;
+			CTreeElementValueFloat * valueInt2 = (CTreeElementValueFloat *)value2;
+			return (valueInt1->GetValue() == valueInt2->GetValue()) ? true : false;
+		}
+		break;
+
+	case TYPE_BOOL:
+				{
+			CTreeElementValueBool * valueInt1 = (CTreeElementValueBool *)value1;
+			CTreeElementValueBool * valueInt2 = (CTreeElementValueBool *)value2;
+			return (valueInt1->GetValue() == valueInt2->GetValue()) ? true : false;
+		}
+		break;
+	}
+	return false;
+}
+
+
+void CTreeElementSlide::SetInitValue(CTreeElementValue * value)
+{
+	for(int i = 0;i < tabValue->size();i++)
+	{
+		if(TestEgality(tabValue->at(i),value, value->GetType()))
+		{
+			this->position = i;
+			break;
+		}
+	}
+}
+
+
 void CTreeElementSlide::SetTheme(CThemeTreeSlide * theme)
 {
 	themeSlide = *theme;
 }
+
 
 void CTreeElementSlide::SetExifKey(const wxString &exifKey)
 {
 	this->exifKey = exifKey;
 }
 
-void CTreeElementSlide::SetTabValue(vector<int> value)
+
+void CTreeElementSlide::SetTabValue(vector<CTreeElementValue *> * value)
 {
 	tabValue = value;
 }
+
 
 void CTreeElementSlide::SetVisible(const bool &visible)
 {
@@ -103,7 +146,7 @@ void CTreeElementSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 	if (position > 0)
 	{
-		pourcentage = (float)position / (float)tabValue.size();
+		pourcentage = (float)position / (float)tabValue->size();
 		rcPast.width = (rc.width * pourcentage);
 		rcPast.y = rc.y;
 		rcPast.height = rc.height;
@@ -118,12 +161,14 @@ void CTreeElementSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
 	CWindowMain::FillRect(dc, rcNext, themeSlide.rectangleNext);
 }
 
+
 void CTreeElementSlide::CalculZoomPosition(const int &x)
 {
 	float posX = x - (positionSlider.x + slidePos.x);
 	float total = positionSlider.width;
-	position = (posX / total) * tabValue.size();
+	position = (posX / total) * tabValue->size();
 }
+
 
 void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int &y)
 {
@@ -134,25 +179,27 @@ void CTreeElementSlide::MouseOver(wxDC * deviceContext, const int &x, const int 
 			::wxSetCursor(hCursorHand);
 			CalculZoomPosition(x);
 
-			if (position >= tabValue.size())
-				position = int(tabValue.size()) - 1;
+			if (position >= tabValue->size())
+				position = int(tabValue->size()) - 1;
 
 			if (position < 0)
 				position = 0;
 
-			eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
+			eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
 		}
 	}
 }
 
+
 void CTreeElementSlide::TestMaxMinValue()
 {
-	if (position >= tabValue.size())
-		position = int(tabValue.size()) - 1;
+	if (position >= tabValue->size())
+		position = int(tabValue->size()) - 1;
 
 	if (position < 0)
 		position = 0;
 }
+
 
 void CTreeElementSlide::ClickLeftPage(const int &x)
 {
@@ -161,8 +208,9 @@ void CTreeElementSlide::ClickLeftPage(const int &x)
 
 	TestMaxMinValue();
 
-	eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
+	eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
 }
+
 
 void CTreeElementSlide::ClickRightPage(const int &x)
 {
@@ -171,8 +219,9 @@ void CTreeElementSlide::ClickRightPage(const int &x)
 
 	TestMaxMinValue();
 
-	eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
+	eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
 }
+
 
 bool CTreeElementSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 {
@@ -185,6 +234,7 @@ bool CTreeElementSlide::FindCirclePos(wxWindow * window, const int &y, const int
 	}
 	return false;
 }
+
 
 void CTreeElementSlide::ClickElement(wxWindow * window, const int &x, const int &y)
 {
@@ -213,16 +263,17 @@ void CTreeElementSlide::ClickElement(wxWindow * window, const int &x, const int 
 		//Click button moins
 		position--;
 		TestMaxMinValue();
-		eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
+		eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
 	}
 	else if (x >= plusPos.x && x < (plusPos.width + plusPos.x))
 	{
 		//Click button plus
 		position++;
 		TestMaxMinValue();
-		eventInterface->SlidePosChange(this, position, tabValue[position], exifKey);
+		eventInterface->SlidePosChange(this, position, tabValue->at(position), exifKey);
 	}
 }
+
 
 void CTreeElementSlide::UnclickElement(wxWindow * window, const int &x, const int &y)
 {
@@ -233,6 +284,7 @@ void CTreeElementSlide::UnclickElement(wxWindow * window, const int &x, const in
 			window->ReleaseMouse();
 	}
 }
+
 
 bool CTreeElementSlide::MouseBlock()
 {
@@ -263,24 +315,12 @@ void CTreeElementSlide::RenderSlide(wxDC * dc, const int &width, const int &heig
 
 	CalculPositionButton();
     
-    if(isVector)
-    {
+
         if(!button.IsOk() || (button.GetWidth() != themeSlide.GetButtonWidth() || button.GetHeight() != themeSlide.GetButtonHeight()))
             button = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonVector);
         memDC.DrawBitmap(button, positionButton.x, positionButton.y);
-    }
-    else
-    {
-        memDC.DrawBitmap(button.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight()), positionButton.x, positionButton.y);
-    }
 
-    /*
-    wxImage imageScale = button.ConvertToImage();
-    imageScale = imageScale.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight());
-    
-    memDC.DrawBitmap(imageScale, positionButton.x, positionButton.y);
-    */
-	//memDC.DrawBitmap(button, positionButton.x, positionButton.y);
+
 
 	memDC.SelectObject(wxNullBitmap);
 
@@ -292,7 +332,7 @@ void CTreeElementSlide::CalculPositionButton()
 {
 	if (position > 0)
 	{
-		float pourcentage = (float)position / (float)tabValue.size();
+		float pourcentage = (float)position / (float)tabValue->size();
 		CalculPositionButton(positionSlider.x + int((float)(positionSlider.width) * pourcentage));
 	}
 	else
@@ -301,6 +341,7 @@ void CTreeElementSlide::CalculPositionButton()
 		CalculPositionButton(positionSlider.x);
 	}
 }
+
 
 void CTreeElementSlide::CalculPositionButton(const int &x)
 {
@@ -315,13 +356,15 @@ void CTreeElementSlide::CalculPositionButton(const int &x)
 	positionButton.height = buttonHeight;
 }
 
-int CTreeElementSlide::GetFirstValue()
-{
-	if (tabValue.size() > 0)
-		return tabValue.at(0);
 
-	return -1;
+CTreeElementValue * CTreeElementSlide::GetFirstValue()
+{
+	if (tabValue->size() > 0)
+		return tabValue->at(0);
+
+	return nullptr;
 }
+
 
 void  CTreeElementSlide::SetZoneSize(const int &width, const int &height)
 {
@@ -329,18 +372,21 @@ void  CTreeElementSlide::SetZoneSize(const int &width, const int &height)
 	themeSlide.SetHeight(height);
 }
 
+
 void CTreeElementSlide::SetBackgroundColor(const wxColour &color)
 {
 	themeSlide.color = color;
 }
 
-int CTreeElementSlide::GetLastValue()
-{
-	if (tabValue.size() > 0)
-		return tabValue.at(tabValue.size() - 1);
 
-	return -1;
+CTreeElementValue * CTreeElementSlide::GetLastValue()
+{
+	if (tabValue->size() > 0)
+		return tabValue->at(tabValue->size() - 1);
+
+	return nullptr;
 }
+
 
 void CTreeElementSlide::SetElementPos(const int &x, const int &y)
 {
@@ -348,13 +394,15 @@ void CTreeElementSlide::SetElementPos(const int &x, const int &y)
 	yPos = y;
 }
 
-int CTreeElementSlide::GetPositionValue()
-{
-	if (tabValue.size() > position)
-		return tabValue.at(position);
 
-	return -1;
+CTreeElementValue * CTreeElementSlide::GetPositionValue()
+{
+	if (tabValue->size() > position)
+		return tabValue->at(position);
+
+	return nullptr;
 }
+
 
 void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const int &y)
 {
@@ -373,8 +421,8 @@ void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const in
 	//int first = GetFirstValue();
 	//int last = GetLastValue();
 
-	wxSize renderFirst = CWindowMain::GetSizeTexte(deviceContext, to_string(GetPositionValue()), themeSlide.font);
-	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlide.font);
+	wxSize renderFirst = CWindowMain::GetSizeTexte(deviceContext, GetPositionValue()->GetStringValue(), themeSlide.font);
+	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, GetLastValue()->GetStringValue(), themeSlide.font);
 	
 	slidePos.x = renderLast.x + themeSlide.GetButtonWidth();
 	slidePos.y = 0;
@@ -384,42 +432,30 @@ void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const in
 	RenderSlide(&memDC, slidePos.width, themeSlide.GetHeight(), slidePos.x, 0);
 
 	int yMedium = (themeSlide.GetHeight() - renderFirst.y) / 2;
-	CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlide.font);
+	CWindowMain::DrawTexte(&memDC, GetPositionValue()->GetStringValue(), 0, yMedium, themeSlide.font);
 		
 	yMedium = (themeSlide.GetHeight() - renderLast.y) / 2;
-	CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlide.GetWidth() - renderLast.x, yMedium, themeSlide.font);
+	CWindowMain::DrawTexte(&memDC, GetLastValue()->GetStringValue(), themeSlide.GetWidth() - renderLast.x, yMedium, themeSlide.font);
 
 	moinsPos.x = renderLast.x + themeSlide.GetMarge();
 	moinsPos.y = positionButton.y;
 	moinsPos.width = themeSlide.GetButtonWidth();
 	moinsPos.height = themeSlide.GetButtonHeight();
 
-	if (isVector)
-	{
 		if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeSlide.GetButtonWidth() || buttonMoins.GetHeight() != themeSlide.GetButtonHeight()))
 			buttonMoins = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonMoinsVector);
 		memDC.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
-	}
-	else
-	{
-		memDC.DrawBitmap(buttonMoins.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight()), moinsPos.x, moinsPos.y);
-	}
+
 
 	plusPos.x = themeSlide.GetWidth() - renderLast.x - themeSlide.GetButtonWidth() - themeSlide.GetMarge();
 	plusPos.y = positionButton.y;
 	plusPos.width = themeSlide.GetButtonWidth();
 	plusPos.height = themeSlide.GetButtonHeight();
 
-	if (isVector)
-	{
+
 		if (!buttonPlus.IsOk() || (buttonPlus.GetWidth() != themeSlide.GetButtonWidth() || buttonPlus.GetHeight() != themeSlide.GetButtonHeight()))
 			buttonPlus = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonPlusVector);
 		memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
-	}
-	else
-	{
-		memDC.DrawBitmap(buttonPlus.Rescale(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight()), plusPos.x, plusPos.y);
-	}
 
 	memDC.SelectObject(wxNullBitmap);
 

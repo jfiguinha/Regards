@@ -1,7 +1,5 @@
 #pragma once
-#include <string>
 #include <SqlLib.h>
-using namespace std;
 
 namespace Regards
 {
@@ -10,10 +8,11 @@ namespace Regards
 		class CSqlLibResource : public CSqlLib
 		{
 		public:
-			CSqlLibResource();
+			CSqlLibResource(const bool &readOnly, const bool &load_inmemory);
 			~CSqlLibResource();
 
 			bool InitDatabase(const wxString &lpFilename);
+
 		};
 	}
 }

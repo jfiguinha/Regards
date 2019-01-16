@@ -1,230 +1,190 @@
 #include "CentralWnd.h"
-#include "ThumbnailBitmap.h"
 #include "ThumbnailViewerVideo.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
+#include <ImageLoadingFormat.h>
+#include <ImageVideoThumbnail.h>
 #include <FileUtility.h>
-#include <ShowVideo.h>
 #include <LibResource.h>
 #include "ViewerTheme.h"
+#include <libPicture.h>
+#include <ShowVideo.h>
 #include "ViewerThemeInit.h"
+#if defined(__WXMSW__)
+#include "../include/window_id.h"
+#else
+#include <window_id.h>
+#endif
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 #define PANE_PICTURETHUMBNAIL 1
 #define PANE_VIDEOTHUMBNAIL 2
+#define DELAY_ANIMATION 20
 
-CCentralWnd::CCentralWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CVideoEffectParameter * videoEffectParameter)
+CCentralWnd::CCentralWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CImageList * imageList)
 	: wxWindow(parent,id)
 {
+	previewThumbnailSplitter = nullptr;
+	viewerParam = nullptr;
+	isFullscreen = false;
+	filename = L"";
+	width = 0;
+	height = 0;
+	isDiaporama = false;
+    showToolbar = true;
+	checkValidity = false;
+	isAnimation = false;
+	isPicture = false;
+	isVideo = false;
+
 
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
-	
-	//----------------------------------------------------------------------------------------
-	//Panel Thumbnail Picture
-	//----------------------------------------------------------------------------------------
-	if (viewerTheme != nullptr)
-	{
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL",1);
-		CThemePane theme;
-		viewerTheme->GetThumbnailPaneTheme(&theme);
-		paneThumbnail = new CPane(this, wxID_ANY, this, PANE_PICTURETHUMBNAIL, theme);
-		paneThumbnail->SetTitle(libelle);
-	}
+	CViewerParam * config = CViewerParamInit::getInstance();
+	if (config != nullptr)
+		checkValidity = config->GetCheckThumbnailValidity();
 
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar theme;
-		viewerTheme->GetClickThumbnailToolbarTheme(&theme);
-		clickThumbnail = new CClickToolbar(this, wxID_ANY, theme, this, PANE_PICTURETHUMBNAIL);
-	}
-	
-	if (viewerTheme != nullptr)
-	{
-		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollThumbnailTheme(&themeScroll);
-		scrollThumbnail = new CScrollbarWnd(paneThumbnail, wxID_ANY);
-
-		CThemeThumbnail theme;
-		viewerTheme->GetThumbnailTheme(&theme);
-		thumbnail = new CThumbnailBitmap(scrollThumbnail, wxID_ANY, statusBarInterface, theme);
-
-		scrollThumbnail->SetCentralWindow(thumbnail, themeScroll);
-		scrollThumbnail->HideVerticalScroll();
-		scrollThumbnail->SetPageSize(1000);
-		scrollThumbnail->SetLineSize(200);
-
-		paneThumbnail->SetOtherWindow(scrollThumbnail);
-	}
-
-	//----------------------------------------------------------------------------------------
-	//Panel Thumbnail Video
-	//----------------------------------------------------------------------------------------
-
-	if (viewerTheme != nullptr)
-	{
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
-		CThemePane theme;
-		viewerTheme->GetThumbnailVideoPaneTheme(&theme);
-		paneThumbnailVideo = new CPane(this, wxID_ANY, this, PANE_VIDEOTHUMBNAIL, theme);
-		paneThumbnailVideo->SetTitle(libelle);
-	}
-		
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar theme;
-		viewerTheme->GetClickThumbnailVideoToolbarTheme(&theme);
-		clickThumbnailVideo = new CClickToolbar(this, wxID_ANY, theme, this, PANE_VIDEOTHUMBNAIL);
-	}
-	
-	
-	if (viewerTheme != nullptr)
-	{
-		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollThumbnailVideoTheme(&themeScroll);
-		scrollThumbnailVideo = new CScrollbarWnd(paneThumbnailVideo, wxID_ANY);
-
-		CThemeThumbnail theme;
-		viewerTheme->GetThumbnailVideoTheme(&theme);
-		thumbnailVideo = new CThumbnailViewerVideo(scrollThumbnailVideo, wxID_ANY, statusBarInterface, theme);
-
-		scrollThumbnailVideo->SetCentralWindow(thumbnailVideo, themeScroll);
-		scrollThumbnailVideo->HideVerticalScroll();
-		scrollThumbnailVideo->SetPageSize(1000);
-		scrollThumbnailVideo->SetLineSize(200);
-
-		paneThumbnailVideo->SetOtherWindow(scrollThumbnailVideo);
-
-		
-	}
-
-#ifdef VIEWER
 	if (viewerTheme != nullptr)
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
-		filterPreviewSplitter = new CFilterPreviewSplitter(this, wxID_ANY, statusBarInterface, theme, videoEffectParameter, false);
+		CThemeToolbar themeToolbar;
+		viewerTheme->GetClickThumbnailVideoToolbarTheme(&themeToolbar);
+		previewThumbnailSplitter = new CPreviewThumbnailSplitter(this, FILTERPREVIEWTHUMBNAILSPLITTER, statusBarInterface, theme, themeToolbar, imageList, false);
 	}
-#else
-	if (viewerTheme != nullptr)
-	{
-		CThemeSplitter theme;
-		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
-		previewInfosWnd = new CPreviewInfosWnd(this, wxID_ANY, statusBarInterface, theme, videoEffectParameter, false);
-	}
-#endif
 
+	thumbnailVideoPanel = new CThumbnailVideoPanel(this, THUMBNAILVIDEOPANEL, statusBarInterface);
+	Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CCentralWnd::OnTimerAnimation), nullptr, this);
+    Connect(wxEVT_ANIMATIONTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWnd::StartTimerAnimation));
+    Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWnd::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CCentralWnd::OnSize));
 
-	clickThumbnail->Show(false);
-	paneThumbnail->Show(true);
-
-	clickThumbnailVideo->Show(true);
-	paneThumbnailVideo->Show(false);
+	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 }
 
-#ifdef VIEWER
+void CCentralWnd::OnTimerAnimation(wxTimerEvent& event)
+{
+    printf("CCentralWnd::OnTimerAnimation %d \n", animationPosition);
+	SetVideoPosition(animationPosition);
+	LoadAnimationBitmap(animationPosition);
+	animationPosition++;
+	if (animationPosition < listThumbnail.size())
+	{
+		CImageVideoThumbnail * thumbnail = listThumbnail[animationPosition];
+		if (thumbnail != nullptr)
+		{
+			//if (thumbnail->delay <= 0)
+			thumbnail->delay = DELAY_ANIMATION;
+                
+            printf("CCentralWnd::OnTimerAnimation Start delay %d \n", thumbnail->delay);
+			animationTimer->Start(thumbnail->delay, wxTIMER_ONE_SHOT);
+		}
+	}
+	else
+	{
+		//Stop
+		CAnimationToolbar * animationToolbar = (CAnimationToolbar *)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
+		if (animationToolbar != nullptr)
+			animationToolbar->AnimationStop();
+            
+        CWindowMain * windowMain = (CWindowMain *)this->FindWindowById(MAINVIEWERWINDOWID);
+        if(windowMain != nullptr)
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_ANIMATIONTIMERSTOP);
+            windowMain->GetEventHandler()->AddPendingEvent(evt);       
+        }            
+	}
+}
+
+void CCentralWnd::AnimationPictureNext()
+{
+	animationPosition++;
+	if (animationPosition >= listThumbnail.size())
+		animationPosition = listThumbnail.size() - 1;
+	SetVideoPosition(animationPosition);
+	LoadAnimationBitmap(animationPosition);
+}
+
+void CCentralWnd::AnimationPicturePrevious()
+{
+	animationPosition--;
+	if (animationPosition < 0)
+		animationPosition = 0;
+	SetVideoPosition(animationPosition);
+	LoadAnimationBitmap(animationPosition);
+}
+
 void CCentralWnd::ShowFilter()
 {
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->ClickShowButton(CATALOG_FILTER);
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->ClickShowButton(CATALOG_FILTER);
 }
-#endif
+
 
 CCentralWnd::~CCentralWnd()
 {
-	delete(thumbnailVideo);
-	delete(thumbnail);
-	delete(scrollThumbnail);
-	delete(paneThumbnail);
-	delete(clickThumbnail);
-	delete(scrollThumbnailVideo);
-	delete(paneThumbnailVideo);
-#ifdef VIEWER
-	delete(filterPreviewSplitter);
-#else
-	delete(previewInfosWnd);
-#endif
+	if (listThumbnail.size() > 0)
+	{
+		for (int j = 0; j < listThumbnail.size(); j++)
+		{
+			CImageVideoThumbnail * thumbnail = listThumbnail[j];
+			if (thumbnail != nullptr)
+				delete thumbnail;
+		}
+	}
+
+	if (animationTimer->IsRunning())
+		animationTimer->Stop();
+
+	delete(animationTimer);
+
+	delete(thumbnailVideoPanel);
+	delete(previewThumbnailSplitter);
+}
+
+
+void CCentralWnd::ShowListFace()
+{
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->ShowListFace();
+
+	this->RedrawBarPos();
 }
 
 void CCentralWnd::SetDiaporamaMode()
 {
 	isDiaporama = true;
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->SetDiaporamaMode();
-#else
-	previewInfosWnd->SetDiaporamaMode();
-#endif
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->SetDiaporamaMode();
+
 	this->RedrawBarPos();
 }
 
 void CCentralWnd::SetNormalMode()
 {
 	isDiaporama = false;
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->SetNormalMode();
-#else
-	previewInfosWnd->SetNormalMode();
-#endif
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->SetNormalMode();
 	this->RedrawBarPos();
-}
-
-#ifdef VIEWER
-void CCentralWnd::UpdateCriteria(const int64_t & idFolder)
-{
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->UpdateCriteria(idFolder);
 }
 
 wxString CCentralWnd::GetSqlRequest()
 {
-    if (filterPreviewSplitter != nullptr)
-        return filterPreviewSplitter->GetSqlRequest();
+    if (previewThumbnailSplitter != nullptr)
+        return previewThumbnailSplitter->GetSqlRequest();
     return "";
 }
 
-void CCentralWnd::InitSaveParameter()
-{
-    if (filterPreviewSplitter != nullptr)
-        filterPreviewSplitter->InitSaveParameter();
-}
-
-void CCentralWnd::UpdateCriteria()
-{
-    if (filterPreviewSplitter != nullptr)
-        filterPreviewSplitter->UpdateInfos();
-}
-
-void CCentralWnd::RefreshFilter()
-{
-    if (filterPreviewSplitter != nullptr)
-        filterPreviewSplitter->RefreshFilter();
-}
-
-#endif
 
 void CCentralWnd::HideToolbar()
 {
     showToolbar = false;
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-#else
-	if (previewInfosWnd != nullptr)
-#endif
+	if (previewThumbnailSplitter != nullptr)
 	{
 		if (isFullscreen)
 		{
-			if (clickThumbnail->IsShown())
-				clickThumbnail->Show(false);
-			if (clickThumbnailVideo->IsShown())
-				clickThumbnailVideo->Show(false);
+			thumbnailVideoPanel->HideVideoThumbnail(false);
 		}
-#ifdef VIEWER
-		filterPreviewSplitter->HideToolbar();
-#else
-		previewInfosWnd->HideToolbar();
-#endif
+		previewThumbnailSplitter->HideToolbar();
 		this->RedrawBarPos();
 	}
 }
@@ -232,121 +192,97 @@ void CCentralWnd::HideToolbar()
 void CCentralWnd::ShowToolbar()
 {
     showToolbar = true;
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-#else
-	if (previewInfosWnd != nullptr)
-#endif
+	if (previewThumbnailSplitter != nullptr)
 	{
-		if (isFullscreen)
+		if (isFullscreen && !isPicture)
 		{
-			if (!paneThumbnail->IsShown())
-			{
-				if (!clickThumbnail->IsShown())
-					clickThumbnail->Show(true);
-				if (!clickThumbnailVideo->IsShown())
-					clickThumbnailVideo->Show(true);
-			}
+			thumbnailVideoPanel->ShowVideoThumbnail();
 		}
-#ifdef VIEWER
-		filterPreviewSplitter->ShowToolbar();
-#else
-		previewInfosWnd->ShowToolbar();
-#endif
+
+
+
+		previewThumbnailSplitter->ShowToolbar();
 		this->RedrawBarPos();
 	}
 }
 
-void CCentralWnd::RefreshThumbnail()
+ void CCentralWnd::HidePanel()
+ {
+    if (thumbnailVideoPanel != nullptr)
+        thumbnailVideoPanel->HideVideoThumbnail();
+
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->HidePanel();
+
+	this->RedrawBarPos();    
+ }
+
+void CCentralWnd::ShowPanelVideoThumbnail()
 {
-    if(thumbnail != nullptr)
-    {
-        thumbnail->EraseThumbnail();
-    }
+	if(isVideo)
+	{
+		if (thumbnailVideoPanel != nullptr)
+		{
+			thumbnailVideoPanel->ShowVideoThumbnail();
+		}
+	}
+
+
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->ShowThumbnail();
+
+	this->RedrawBarPos();
 }
 
 void CCentralWnd::SetVideoPosition(const int64_t &videoTime)
 {
-	if (thumbnailVideo != nullptr)
-		thumbnailVideo->SetVideoPosition(videoTime);
+    int64_t * data = new int64_t();
+    *data = videoTime;
+    wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_ANIMATIONPOSITION);
+    evt.SetClientData(data);
+    this->GetEventHandler()->AddPendingEvent(evt);       
+    /*
+	if (thumbnailVideoPanel != nullptr)
+		thumbnailVideoPanel->SetVideoPosition(videoTime);
+    */
+
+}
+
+void CCentralWnd::SetPosition(const long &timePosition)
+{
+	if (isVideo)
+	{
+		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
+#ifdef FFMPEG
+		if (showVideoWindow != nullptr)
+			showVideoWindow->SetPosition(timePosition);
+#else
+		if (showVideoWindow != nullptr)
+			showVideoWindow->SetPosition(timePosition * ONE_MSEC);
+#endif
+	}
+	else
+	{
+		animationPosition = timePosition;
+		LoadAnimationBitmap(timePosition);
+	}
 }
 
 void CCentralWnd::UpdateScreenRatio()
 {
-    paneThumbnail->UpdateScreenRatio();
-    scrollThumbnail->UpdateScreenRatio();
-    thumbnail->UpdateScreenRatio();
-    clickThumbnail->UpdateScreenRatio();
-    
-    paneThumbnailVideo->UpdateScreenRatio();
-    scrollThumbnailVideo->UpdateScreenRatio();
-    thumbnailVideo->UpdateScreenRatio();
-    clickThumbnailVideo->UpdateScreenRatio();
-    
-#ifdef VIEWER
-	filterPreviewSplitter->UpdateScreenRatio();
-#else
-	previewInfosWnd->UpdateScreenRatio();
-#endif
-    
+    printf("CCentralWnd::UpdateScreenRatio() \n");
+    thumbnailVideoPanel->UpdateScreenRatio();
+	previewThumbnailSplitter->UpdateScreenRatio();  
     this->Resize();
 }
 
 void CCentralWnd::SetEffect(const bool &effect)
 {
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->SetEffect(effect);
-#else
-	previewInfosWnd->SetEffect(effect);
-#endif
+
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->SetEffect(effect);
 }
 
-void CCentralWnd::ClickShowButton(const int &id)
-{
-	switch (id)
-	{
-	case PANE_PICTURETHUMBNAIL:
-		{
-			clickThumbnail->Show(false);
-			paneThumbnail->Show(true);
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetShowThumbnail(true);
-			}
-		}
-		break;
-
-	case PANE_VIDEOTHUMBNAIL:
-		{
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetShowVideoThumbnail(true);
-			}
-
-			clickThumbnailVideo->Show(false);
-			paneThumbnailVideo->Show(true);
-			ShowVideoThumbnail();
-		}
-		break;
-	}
-
-	
-	RedrawBarPos();
-}
-
-
-
-void CCentralWnd::SetListeFile(const vector<wxString> listFichier)
-{
-	if (thumbnail != nullptr)
-		thumbnail->SetListeFile(listFichier);
-	RedrawBarPos();
-}
 
 void CCentralWnd::Resize()
 {
@@ -363,360 +299,228 @@ wxRect CCentralWnd::GetWindowRect()
 	return rc;
 }
 
-void CCentralWnd::ShowVideoThumbnail()
-{
-	bool show = false;
-	CViewerParam * config = CViewerParamInit::getInstance();
-	if (config != nullptr)
-	{
-		//wxRect rc = GetWindowRect();
-		CViewerParam * viewerParam = (CViewerParam *)config;
-		viewerParam->GetShowThumbnail(show);
-	}
-
-	if (thumbnailVideo->GetFilename() != filename)
-	{
-		thumbnailVideo->SetFilename(filename);
-		thumbnailVideo->SetVideoFile(filename);
-	}
-}
 
 void CCentralWnd::RedrawBarPos()
 {
+    if(isPicture)
+    {
+        thumbnailVideoPanel->HideVideoThumbnail(false);
+    }
+    
+    /*
 	if (isDiaporama)
 	{
-		paneThumbnailVideo->SetSize(0, 0, 0, 0);
-		clickThumbnailVideo->SetSize(0, 0, 0, 0);
-		paneThumbnail->SetSize(0, 0, 0, 0);
-		clickThumbnail->SetSize(0, 0, 0, 0);
+		thumbnailVideoPanel->Show(false);
 
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			filterPreviewSplitter->SetSize(0, 0, width, height);
-#else
-		if (previewInfosWnd != nullptr)
-			previewInfosWnd->SetSize(0, 0, width, height);
-#endif
+		if (previewThumbnailSplitter != nullptr)
+			previewThumbnailSplitter->SetSize(0, 0, width, height);
 	}
 	else
 	{
+     */
 		//wxRect rc = GetWindowRect();
 		int bottomHeight = 0;
 		int topHeight = 0;
-
-		if (paneThumbnailVideo != nullptr)
+		if(!isPicture && !isFullscreen && !thumbnailVideoPanel->IsShown())
 		{
-			if (paneThumbnailVideo->IsShown())
-			{
-				int iconeHeight = thumbnailVideo->GetIconeHeight() + scrollThumbnailVideo->GetBarHeight() + paneThumbnailVideo->GetTitleHeight();
-				paneThumbnailVideo->SetSize(0, 0, width, iconeHeight);
-				topHeight += iconeHeight;
-			}
-			else if (isVideo)
-			{
-				if (isFullscreen && clickThumbnailVideo->IsShown())
-				{
-					//int iconeHeight = clickThumbnailVideo->GetHeight();
-					clickThumbnailVideo->SetSize(0, 0, width, clickThumbnailVideo->GetHeight());
-					topHeight += clickThumbnailVideo->GetHeight();
-				}
-				else if(showToolbar)
-				{
-					if (!clickThumbnailVideo->IsShown())
-						clickThumbnailVideo->Show(true);
-
-					//int iconeHeight = clickThumbnailVideo->GetHeight();
-					clickThumbnailVideo->SetSize(0, 0, width, clickThumbnailVideo->GetHeight());
-					topHeight += clickThumbnailVideo->GetHeight();
-				}
-                else if(clickThumbnailVideo->IsShown())
-                {
-                    //int iconeHeight = clickThumbnailVideo->GetHeight();
-                    clickThumbnailVideo->SetSize(0, 0, width, clickThumbnailVideo->GetHeight());
-                    topHeight += clickThumbnailVideo->GetHeight();
-                }
-                else
-                {
-                    paneThumbnailVideo->Show(true);
-                    int iconeHeight = thumbnailVideo->GetIconeHeight() + scrollThumbnailVideo->GetBarHeight() + paneThumbnailVideo->GetTitleHeight();
-                    paneThumbnailVideo->SetSize(0, 0, width, iconeHeight);
-                    topHeight += iconeHeight;
-                }
-			}
+			thumbnailVideoPanel->Show();
+			//if(!thumbnailVideoPanel->IsPanelVideoThumbnailVisible())
+			thumbnailVideoPanel->ShowVideoThumbnail();
 		}
 
-		if (paneThumbnail != nullptr)
+		if (!isPicture && thumbnailVideoPanel->IsShown())
 		{
-			if (paneThumbnail->IsShown())
-			{
-				int iconeHeight = thumbnail->GetIconeHeight() + scrollThumbnail->GetBarHeight() + paneThumbnail->GetTitleHeight();
-				paneThumbnail->SetSize(0, height - iconeHeight, width, iconeHeight);
-				bottomHeight += iconeHeight;
-			}
-			else
-			{
-				if (!isFullscreen)
-				{
-					if (!clickThumbnail->IsShown())
-						clickThumbnail->Show(true);
-					int iconeHeight = clickThumbnail->GetHeight();
-					clickThumbnail->SetSize(0, height - iconeHeight, width, iconeHeight);
-					bottomHeight += iconeHeight;
-				}
-				else if (showToolbar)
-				{
-					int iconeHeight = clickThumbnail->GetHeight();
-					clickThumbnail->SetSize(0, height - iconeHeight, width, iconeHeight);
-					bottomHeight += iconeHeight;
-				}
-			}
+			int iconeHeight = thumbnailVideoPanel->GetHeight();
+			thumbnailVideoPanel->SetSize(0, 0, width, iconeHeight);
+   			topHeight += iconeHeight;
 		}
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			filterPreviewSplitter->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
-#else
-		if (previewInfosWnd != nullptr)
-			previewInfosWnd->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
-#endif
-	}
-}
-
-void CCentralWnd::SetNumElement(const int &numElement)
-{
-	if (!isDiaporama)
-		thumbnail->SetActifItem(numElement);
-}
-
-
-void CCentralWnd::ShowPanelVideoThumbnail()
-{
-	if (isVideo)
-	{
-		if (!paneThumbnailVideo->IsShown())
+        
+        if(!showToolbar && isFullscreen)
+        {
+            thumbnailVideoPanel->HideVideoThumbnail(false);
+            bottomHeight = 0;
+            topHeight = 0;             
+        }
+             
+		if (previewThumbnailSplitter != nullptr)
 		{
-			paneThumbnailVideo->Show(true);
-			ShowVideoThumbnail();
-			RedrawBarPos();
+			previewThumbnailSplitter->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
+			previewThumbnailSplitter->SendSizeEvent();
 		}
-	}
+        
+        //if(thumbnailVideoPanel->IsShown())
+         //   thumbnailVideoPanel->Refresh();
+	//}
+    
+    printf("CCentralWnd::RedrawBarPos() \n");
 }
 
-void CCentralWnd::HidePanelVideoThumbnail()
+void CCentralWnd::SetNumElement(const int &numElement, const bool &move)
 {
-	if (isVideo)
-	{
-		if (paneThumbnailVideo->IsShown())
-		{
-			paneThumbnailVideo->Show(false);
-			RedrawBarPos();
-		}
-	}
+	if (previewThumbnailSplitter != nullptr)
+		previewThumbnailSplitter->SetActifItem(numElement, move);
 }
-
-bool CCentralWnd::IsPanelVideoThumbnailVisible()
-{
-	return paneThumbnailVideo->IsShown();
-}
-
-void CCentralWnd::ShowPanelThumbnail()
-{
-	if (!paneThumbnail->IsShown())
-	{
-		paneThumbnail->Show(true);
-		scrollThumbnail->Show(true);
-		RedrawBarPos();
-	}
-}
-
-void CCentralWnd::HidePanelThumbnail()
-{
-	if (paneThumbnail->IsShown())
-	{
-		paneThumbnail->Show(false);
-		RedrawBarPos();
-	}
-}
-
-bool CCentralWnd::IsPanelThumbnailVisible()
-{
-	return paneThumbnail->IsShown();
-}
-
-bool CCentralWnd::IsPanelInfosVisible()
-{
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		return filterPreviewSplitter->IsPanelInfosVisible();
-#else
-	if (previewInfosWnd != nullptr)
-		return previewInfosWnd->IsPanelInfosVisible();
-#endif
-	return false;
-}
-
-void CCentralWnd::HidePanelInfos()
-{
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->HidePanelInfos();
-#else
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->HidePanelInfos();
-#endif
-}
-
-void CCentralWnd::ShowPanelInfos()
-{
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->ShowPanelInfos();
-#else
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->ShowPanelInfos();
-#endif
-}
-
 
 void CCentralWnd::OnSize(wxSizeEvent& event)
 {
+    
 	width = event.GetSize().GetWidth();
 	height = event.GetSize().GetHeight();
 	RedrawBarPos();
 }
 
-void CCentralWnd::ClosePane(const int &id)
-{
-	switch (id)
-	{
-	case PANE_PICTURETHUMBNAIL:
-		{
-			if (viewerParam != nullptr)
-				viewerParam->SetShowThumbnail(false);
-
-			paneThumbnail->Show(false);
-			clickThumbnail->Show(true);
-		}
-		break;
-
-	case PANE_VIDEOTHUMBNAIL:
-		{
-			if (viewerParam != nullptr)
-				viewerParam->SetShowVideoThumbnail(false);
-
-			paneThumbnailVideo->Show(false);
-			clickThumbnailVideo->Show(true);
-		}
-		break;
-	}
-
-	RedrawBarPos();
-}
-
-
-
 void CCentralWnd::SetVideo(const wxString &path)
 {
+	StopAnimation();
+	bool refresh = isVideo ? false : true;
 	filename = path;
 	isVideo = true;
-	if (!clickThumbnailVideo->IsShown())
-	{
-		if (!paneThumbnailVideo->IsShown())
-		{
-			paneThumbnailVideo->Show(true);
-		}
-	}
+	isAnimation = false;
+	isPicture = false;
+    thumbnailVideoPanel->SetVideo(path);
+    //thumbnailVideoPanel->ShowVideoThumbnail();
+    
 
-#ifdef VIEWER
-	if (filterPreviewSplitter != nullptr)
-		filterPreviewSplitter->SetVideo(path);
-#else
-	if (previewInfosWnd != nullptr)
-		previewInfosWnd->SetVideo(path);
-#endif
-	ShowVideoThumbnail();
-	this->RedrawBarPos();
+    if (previewThumbnailSplitter != nullptr)
+        previewThumbnailSplitter->SetVideo(path);
+	if(refresh)
+		this->RedrawBarPos();
 }
 
 void CCentralWnd::StartLoadingPicture(const int &numElement)
 {
-#ifdef VIEWER
-	filterPreviewSplitter->StartLoadingPicture();
-#else
-	previewInfosWnd->StartLoadingPicture();
-#endif
-	thumbnail->StartLoadingPicture(numElement);
+	previewThumbnailSplitter->StartLoadingPicture(numElement);
+
+}
+
+void CCentralWnd::AnimationSetPosition(wxCommandEvent& event)
+{
+    int64_t * videoTime = (int64_t *)event.GetClientData();
+	if (thumbnailVideoPanel != nullptr && videoTime != nullptr)
+		thumbnailVideoPanel->SetVideoPosition(*videoTime);
+        
+    if(videoTime != nullptr)
+        delete videoTime;
+}
+
+
+void CCentralWnd::StartAnimation()
+{
+	animationPosition = 0;
+    LoadAnimationBitmap(0);
+	animationTimer->Start(DELAY_ANIMATION, wxTIMER_ONE_SHOT);
+}
+
+void CCentralWnd::StopAnimation()
+{
+	animationPosition = 0;
+	if (animationTimer->IsRunning())
+		animationTimer->Stop();
 }
 
 void CCentralWnd::StopLoadingPicture()
 {
-    thumbnail->StopLoadingPicture();
+	previewThumbnailSplitter->StopLoadingPicture();
+}
 
+void CCentralWnd::LoadAnimationBitmap(const int &numFrame)
+{
+	printf("CCentralWnd::LoadAnimationBitmap %d \n", numFrame);
+	if (numFrame < listThumbnail.size() && numFrame >= 0)
+	{
+		CImageVideoThumbnail * thumbnail = listThumbnail.at(numFrame);
+		if (thumbnail != nullptr)
+		{
+			CImageLoadingFormat * image = thumbnail->image;
+			if (image != nullptr)
+			{
+				CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+				switch (thumbnail->image->GetFormat())
+				{
+				case TYPE_IMAGE_CXIMAGE:
+					bitmap->SetPicture(image->GetCxImage());
+					break;
+				case TYPE_IMAGE_WXIMAGE:
+					bitmap->SetPicture(image->GetwxImage());
+					break;
+				case TYPE_IMAGE_REGARDSIMAGE:
+					bitmap->SetPicture(image->GetRegardsBitmap());
+					break;
+				case TYPE_IMAGE_REGARDSJPEGIMAGE:
+					bitmap->SetPicture(image->GetwxImage());
+					break;
+				}
+				bitmap->SetFilename(thumbnail->image->GetFilename());
+				previewThumbnailSplitter->SetBitmap(bitmap, false, true);
+			}
+
+		}
+	}
+   // RedrawBarPos();
 }
 
 bool CCentralWnd::SetAnimation(const wxString &filename)
 {
-    bool result = false;
-    if (isDiaporama)
-    {
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			result = filterPreviewSplitter->SetAnimation(filename);
-#else
-		if (previewInfosWnd != nullptr)
-			result = previewInfosWnd->SetAnimation(filename);
-#endif
-    }
-    else
-    {
+	StopAnimation();
+	bool refresh = isAnimation ? false : true;
+    bool result = false;      
+    isVideo = false;
+	isAnimation = true;
+	isPicture = false;
+
+	if (listThumbnail.size() > 0)
+	{
+		for (int j = 0; j < listThumbnail.size(); j++)
+		{
+			CImageVideoThumbnail * thumbnail = listThumbnail[j];
+			if (thumbnail != nullptr)
+				delete thumbnail;
+		}
+	}
+
+
+	CLibPicture libPicture;
+	listThumbnail = libPicture.LoadAllVideoThumbnail(filename);
+	thumbnailVideoPanel->SetAnimation(filename, &listThumbnail);
+    
+	if (previewThumbnailSplitter != nullptr)
+	{
+		animationPosition = 0;
         
-        isVideo = false;
-        if (paneThumbnailVideo != nullptr)
-        {
-            if (paneThumbnailVideo->IsShown())
-                paneThumbnailVideo->Show(false);
-        }
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			result = filterPreviewSplitter->SetAnimation(filename);
-#else
-		if (previewInfosWnd != nullptr)
-			result = previewInfosWnd->SetAnimation(filename);
-#endif
-        RedrawBarPos();
-    }
+	}  
+    LoadAnimationBitmap(0);
+	if(refresh)
+		RedrawBarPos();
+
+    //animationTimer->Start(2000, wxTIMER_ONE_SHOT);
     return result;
 }
 
-bool CCentralWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
+
+void CCentralWnd::StartTimerAnimation(wxCommandEvent& event)
 {
+     StartAnimation();
+}
+
+bool CCentralWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail)
+{
+    TRACE();
+	StopAnimation();
+	bool refresh = isPicture ? false : true;
 	bool result = false;
-	if (isDiaporama)
+	isAnimation = false;
+	isPicture = true;
+	isVideo = false;
+
+	if(bitmap != nullptr && bitmap->IsOk())
 	{
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			result = filterPreviewSplitter->SetBitmap(bitmap, isThumbnail);
-#else
-		if (previewInfosWnd != nullptr)
-			result = previewInfosWnd->SetBitmap(bitmap, isThumbnail);
-#endif
-	}
-	else
-	{
-		
-		isVideo = false;
-		if (paneThumbnailVideo != nullptr)
-		{
-			if (paneThumbnailVideo->IsShown())
-				paneThumbnailVideo->Show(false);
-		}
-#ifdef VIEWER
-		if (filterPreviewSplitter != nullptr)
-			result = filterPreviewSplitter->SetBitmap(bitmap, isThumbnail);
-#else
-		if (previewInfosWnd != nullptr)
-			result = previewInfosWnd->SetBitmap(bitmap, isThumbnail);
-#endif
-		RedrawBarPos();
+		thumbnailVideoPanel->HideVideoThumbnail(false);
+
+		if (previewThumbnailSplitter != nullptr)
+			result = previewThumbnailSplitter->SetBitmap(bitmap, isThumbnail, false);
+
+		if(refresh)
+			RedrawBarPos();
 	}
 	return result;
 }
@@ -724,21 +528,30 @@ bool CCentralWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
 void CCentralWnd::FullscreenMode()
 {
 	isFullscreen = true;
-#ifdef VIEWER
-	filterPreviewSplitter->FullscreenMode();
-#else
-	previewInfosWnd->FullscreenMode();
-#endif
+	previewThumbnailSplitter->FullscreenMode();
 	RedrawBarPos();
 }
 
 void CCentralWnd::ScreenMode()
 {
 	isFullscreen = false;
-#ifdef VIEWER
-	filterPreviewSplitter->ScreenMode();
-#else
-	previewInfosWnd->ScreenMode();
-#endif
+	previewThumbnailSplitter->ScreenMode();
 	RedrawBarPos();
+}
+
+
+bool CCentralWnd::IsPanelThumbnailVisible()
+{
+
+	return previewThumbnailSplitter->IsPanelThumbnailVisible();
+
+}
+
+bool CCentralWnd::IsPanelInfosVisible()
+{
+
+	if (previewThumbnailSplitter != nullptr)
+		return previewThumbnailSplitter->IsPanelInfosVisible();
+
+	return false;
 }

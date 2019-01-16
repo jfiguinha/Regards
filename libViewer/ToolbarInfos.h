@@ -3,9 +3,6 @@
 #include <ToolbarInterface.h>
 #include <ToolbarTexte.h>
 #include <ConfigParam.h>
-#include <string>
-#include <vector>
-using namespace std;
 using namespace Regards::Window;
 
 
@@ -31,32 +28,31 @@ namespace Regards
 
 			void SetEffectActif();
 			void SetEffectInactif();
-#ifdef VIEWER
             void SetCriteriaPush();
-#endif
+
             void SetInfosPush();
             void SetMapPush();
             void SetEffectPush();
             void SetHistoryPush();
             void SetEffectParameterPush();
-
+			void SetAudioVideoPush();
+			void SetVideoEffectPush();
 		private:
 
-			void OnSize(wxSizeEvent& event);
+			virtual void Resize();
 			void EventManager(const int &id);
 
 			CToolbarInterface * toolbarInterface;
-			bool isVideo = false;
-			int width = 0;
-			int height = 0;
-			CToolbarTexte * infos = nullptr;
-			CToolbarTexte * history = nullptr;
-			CToolbarTexte * effect = nullptr;
-			CToolbarTexte * map = nullptr;
-			CToolbarTexte * effectParameter = nullptr;
-#ifdef VIEWER
-            CToolbarTexte * criteria = nullptr;
-#endif
+			bool isVideo;
+			CToolbarTexte * infos;
+			CToolbarTexte * history;
+			CToolbarTexte * effect;
+			CToolbarTexte * audiovideo;
+			CToolbarTexte * videoeffect;
+			CToolbarTexte * map;
+			CToolbarTexte * effectParameter;
+            CToolbarTexte * criteria;
+
 		};
 
 

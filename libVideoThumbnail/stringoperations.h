@@ -17,8 +17,6 @@
 #ifndef STRING_OPERATIONS_H
 #define STRING_OPERATIONS_H
 
-#include <string>
-#include <vector>
 #include <sstream>
 
 namespace ffmpegthumbnailer

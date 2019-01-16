@@ -1,13 +1,20 @@
 #include "ViewerParam.h"
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
-
+#include <ConvertUtility.h>
 using namespace rapidxml;
 using namespace Regards::Viewer;
 
+
 CViewerParam::CViewerParam()
 {
-	//Définition des valeurs par défaut
+	sqlRequest = "";
+	showFolder = true;
+	isThumbnailBottom = true;
+	positionPreviewThumbnail = 0;
+	positionFolderCriteria = 0;
+	check = false;
+	//DÃ©finition des valeurs par dÃ©faut
 	positionRegardsViewer.x = 0;
 	positionRegardsViewer.width = 800;
 	positionRegardsViewer.y = 0;
@@ -16,12 +23,15 @@ CViewerParam::CViewerParam()
 	showVideoThumbnail = true;
 	position = 400;
 	positionCriteriaPreview = 200;
+	positionPreviewFace = 200;
 	showInfos = true;
 	showFilter = true;
 	delai = 3;
 	fullscreen = 1;
 	enAvant = 1;
 	folder = "";
+	showFolder = true;
+	pertinence = 0.0;
 }
 
 wxString CViewerParam::GetLastSqlRequest()
@@ -29,9 +39,45 @@ wxString CViewerParam::GetLastSqlRequest()
     return sqlRequest;
 }
 
+bool CViewerParam::GetCheckThumbnailValidity()
+{
+	return false;
+}
+
 void CViewerParam::SetLastSqlRequest(const wxString &sqlRequest)
 {
     this->sqlRequest = sqlRequest;
+}
+
+void CViewerParam::SetCheckIsUpdate(const bool &infos)
+{
+	check = infos;
+}
+
+void CViewerParam::GetCheckIsUpdate(bool &infos)
+{
+	infos = check;
+}
+
+
+void CViewerParam::SetShowFolder(const bool &infos)
+{
+	showFolder = infos;
+}
+
+void CViewerParam::GetShowFolder(bool &infos)
+{
+	infos = showFolder;
+}
+
+void CViewerParam::SetShowFace(const bool &infos)
+{
+	showFace = infos;
+}
+
+void CViewerParam::GetShowFace(bool &infos)
+{
+	infos = showFace;
 }
 
 void CViewerParam::SetShowFilter(const bool &infos)
@@ -54,6 +100,25 @@ void CViewerParam::SetPositionCriteriaPreview(const int &pos)
 	positionCriteriaPreview = pos;
 }
 
+bool CViewerParam::IsThumbnailBottom()
+{
+	return isThumbnailBottom;
+}
+
+void CViewerParam::SetThumbnailBottom(const bool &isBottom)
+{
+	isThumbnailBottom = isBottom;
+}
+
+void CViewerParam::SetPositionPreviewThumbnail(const int &pos)
+{
+	positionPreviewThumbnail = pos;
+}
+
+int CViewerParam::GetPositionPreviewThumbnail()
+{
+	return positionPreviewThumbnail;
+}
 
 void CViewerParam::SetCatalogOpenTriangle(const wxString &state)
 {
@@ -133,7 +198,7 @@ void CViewerParam::SaveParameter()
 	root->append_node(sectionCriteria);
 
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(filename.ToStdString());
+	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
 	if (file.is_open())
 	{
 		file << doc;
@@ -163,8 +228,15 @@ void CViewerParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("Position", to_string(position)));
 	sectionWindow->append_node(node("LastFolder", folder));
 	sectionWindow->append_node(node("PositionCriteriaPreview", to_string(positionCriteriaPreview)));
+	sectionWindow->append_node(node("PositionPreviewFace", to_string(positionPreviewFace)));
 	sectionWindow->append_node(node("Filter", to_string(showFilter)));
+	sectionWindow->append_node(node("Folder", to_string(showFolder)));
+	sectionWindow->append_node(node("Face", to_string(showFace)));
     sectionWindow->append_node(node("LastRequest", sqlRequest));
+	sectionWindow->append_node(node("PositionPreviewThumbnail", to_string(positionPreviewThumbnail)));
+	sectionWindow->append_node(node("ThumbnailBottom", to_string(isThumbnailBottom)));
+	sectionWindow->append_node(node("PositionCriteriaFolder", to_string(positionFolderCriteria)));
+	sectionWindow->append_node(node("FacePertinence", to_string(pertinence)));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -324,12 +396,61 @@ void CViewerParam::GetWindowParameter(xml_node<> * window_node)
 		positionCriteriaPreview = atoi(child_node->value());
 	}
 
+	child_node = window_node->first_node("PositionPreviewFace");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		positionPreviewFace = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("PositionPreviewThumbnail");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		positionPreviewThumbnail = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("PositionCriteriaFolder");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		positionFolderCriteria = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("ThumbnailBottom");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		isThumbnailBottom = atoi(child_node->value());
+	}
+
+
 	child_node = window_node->first_node("Filter");
 	if (child_node != 0)
 	{
 		value = child_node->value();
 		nodeName = child_node->name();
 		showFilter = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("Folder");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		showFolder = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("Face");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		showFace = atoi(child_node->value());
 	}
     
     child_node = window_node->first_node("LastRequest");
@@ -339,6 +460,15 @@ void CViewerParam::GetWindowParameter(xml_node<> * window_node)
         nodeName = child_node->name();
         sqlRequest = child_node->value();
     }
+
+    child_node = window_node->first_node("FacePertinence");
+    if (child_node != 0)
+    {
+        value = child_node->value();
+        nodeName = child_node->name();
+        pertinence = atoi(child_node->value());
+    }
+	
 }
 
 void CViewerParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
@@ -379,6 +509,16 @@ void CViewerParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 
 }
 
+void CViewerParam::SetPertinenceValue(const double &value)
+{
+	pertinence = value;
+}
+
+double CViewerParam::GetPertinenceValue()
+{
+	return pertinence;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -416,6 +556,26 @@ void CViewerParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai,
 	effect = this->numEffect;
 	delai = this->delai;
 	enAvant = this->enAvant;
+}
+
+int CViewerParam::GetPositionPreviewFace()
+{
+	return positionPreviewFace;
+}
+
+void CViewerParam::SetPositionPreviewFace(const int &pos)
+{
+	positionPreviewFace = pos;
+}
+
+void CViewerParam::SetPositionCriteriaFolder(const int &pos)
+{
+	positionFolderCriteria = pos;
+}
+
+int CViewerParam::GetPositionCriteriaFolder()
+{
+	return positionFolderCriteria;
 }
 
 bool CViewerParam::GetFullscreenDiaporamaOption()

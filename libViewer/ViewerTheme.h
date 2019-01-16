@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 			CViewerTheme();
-			~CViewerTheme();
+			virtual ~CViewerTheme();
 
 			void GetInfosToolbarTheme(CThemeToolbar * theme);
 			void GetFiltreToolbarTheme(CThemeToolbar * theme);
@@ -24,10 +24,13 @@ namespace Regards
 			void GetThumbnailTheme(CThemeThumbnail * theme);
 			void GetClickThumbnailToolbarTheme(CThemeToolbar * theme);
 
-			//Thumbnail Vidéo
+			//Thumbnail VidÃ©o
 			void GetThumbnailVideoPaneTheme(CThemePane * theme);
 			void GetThumbnailVideoTheme(CThemeThumbnail * theme);
 			void GetClickThumbnailVideoToolbarTheme(CThemeToolbar * theme);
+
+			//Thumbnail Face
+			void GetThumbnailFaceToolbarTheme(CThemeToolbar &theme);
 
 
 			void GetInfosPaneTheme(CThemePane * theme);
@@ -60,6 +63,11 @@ namespace Regards
 			void GetPaneCategory(CThemePane &theme);
 			void GetCategoryTreeTheme(CThemeTree &theme);
 			void GetCategoryScrollTheme(CThemeScrollBar &theme);
+
+			void GetThumbnailTheme(CThemeThumbnail &theme);
+			void GetThumbnailToolbarZoomTheme(CThemeToolBarZoom &theme);
+			void GetThumbnailScrollTheme(CThemeScrollBar &theme);
+			void GetThumbnailToolbarTheme(CThemeToolbar &theme);
 
 		private:
 
@@ -111,10 +119,19 @@ namespace Regards
 			void InitFolderTheme();
 			void InitClickFolderToolbar();
 
+			void InitThumbnailToolbarZoomTheme();
+			void InitThumbnailScrollTheme();
+			void InitThumbnailToolbar();
+
+			void InitThumbnailFaceThemeToolbar();
+            void InitClickInfosToolbar();
+
 			CThemeToolbar themeInfosToolbar;
 			CThemeToolbar themeMainToolbar;
 			CThemeToolbar themePreviewToolbar;
 			CThemeToolbar themeFiltreToolbar;
+			CThemeToolbar themeThumbnailFaceToolbar;
+
 
 			CThemeToolbar themeClickInfosToolbar;
 			CThemeToolbar themeClickThumbnailToolbar;
@@ -157,6 +174,11 @@ namespace Regards
 			CThemePane themePaneFolder;
 			CThemeFolder themeFolder;
 			CThemeToolbar themeClickFolderToolbar;
+
+
+			CThemeToolbar themeThumbnailToolbar;
+			CThemeToolBarZoom themeThumbnailToolbarZoom;
+
 
 		};
 	}

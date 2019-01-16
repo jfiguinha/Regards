@@ -1,4 +1,6 @@
 #include "BitmapWndViewer.h"
+#include <ConvertUtility.h>
+#include <OpenCLEffect.h>
 #include <FiltreEffet.h>
 #include <RgbEffectParameter.h>
 #include <BrightAndContrastEffectParameter.h>
@@ -8,36 +10,55 @@
 #include <PhotoFiltreEffectParameter.h>
 #include <PosterisationEffectParameter.h>
 #include <RgbEffectParameter.h>
+#include <DecodeRawPicture.h>
 #include <SolarisationEffectParameter.h>
 #include <LensFlareEffectParameter.h>
 #include <SwirlEffectParameter.h>
+#include <WaveEffectParameter.h>
+#include <GaussianBlurEffectParameter.h>
+#include <DecodeRawParameter.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <Crop.h>
+#include <SavePicture.h>
 #include <Selection.h>
 #include <Histogramme.h>
-#include "effect.h"
 #include <BitmapInterface.h>
-#include <LibResource.h>/#include "MySmtpListener.h"
+#include <ImageLoadingFormat.h>
+#include <LibResource.h>
+#include <MetadataExiv2.h>
+//#include "MySmtpListener.h"
 #include <LoadingResource.h>
 #include <libPicture.h>
+#include <InterpolationBicubic.h>
 #include "wx/stdpaths.h"
-#include <chrono>
-#include <thread>
 #include <FileUtility.h>
 #include <FilterData.h>
-
+#include <wxSVG/SVGDocument.h>
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
+#include <RegardsFloatBitmap.h>
+#include <PiccanteFilter.h>
+#include <RegardsBitmap.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
-    #include "SendEmail.h"
+    #include <SendEmail.h>
+    #include <OpenCL/opencl.h>
 #elif defined(WIN32)
 	#include <LocalMapi.h>
 #else
     #include "email.h"
 #endif
+#include <utility.h>
+#if defined(__WXMSW__)
+	#include "../include/config_id.h"
+#else
+	#include <config_id.h>
+#endif
 using namespace Regards::Control;
-
+using namespace Regards::OpenCL;
+using namespace Regards::exiv2;
 enum
 {
 	TIMER_TRANSITION = 1,
@@ -55,7 +76,7 @@ enum
 #define PREVIEW_POSTERIZE 6
 #define PREVIEW_SOLARIZE 7
 #define PREVIEW_CLOUDS 8
-
+#define TIMER_TRANSITION_TIME 30
 
 
 void CBitmapWndViewer::SendEmail()
@@ -63,20 +84,21 @@ void CBitmapWndViewer::SendEmail()
 #ifdef __APPLE__
     
     CSendEmail sendEmail;
-    sendEmail.SendEmail("", "My Photo", bitmap->GetFilename());
+    sendEmail.SendEmail("", "My Photo", CConvertUtility::ConvertToStdString(filename));
     
-#elif WIN32
+#elif defined(WIN32)
 
 	CMapi m_cMapi;
 	vector<string> attachment;
 
-	attachment.push_back(bitmap->GetFilename().ToStdString());
+    
+	attachment.push_back(CConvertUtility::ConvertToStdString(filename));
 	if (attachment.size() > 0)
 		m_cMapi.SendEmail("", attachment);
 
 #else
     wxEmailMessage email("My Photo","This is my Photo \n","");
-    email.AddFile(bitmap->GetFilename());
+    email.AddFile(filename);
     
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     wxString documentPath = stdp.GetDocumentsDir();
@@ -90,10 +112,20 @@ void CBitmapWndViewer::SendEmail()
 #endif
 }
 
+CEffectParameter * CBitmapWndViewer::GetParameter()
+{
+	return nullptr;
+}
+
+void CBitmapWndViewer::UpdateFiltre(CEffectParameter * effectParameter)
+{
+    RefreshWindow();
+}
 
 void CBitmapWndViewer::SetDiaporamaMode()
 {
 	isDiaporama = true;
+   // isDiaporama = false;
 }
 
 void CBitmapWndViewer::SetNormalMode()
@@ -103,41 +135,70 @@ void CBitmapWndViewer::SetNormalMode()
 
 void CBitmapWndViewer::PrintPicture()
 {
-	statusBarInterface->PrintPreview(this->bitmap);
+	CRegardsBitmap * bitmap = GetBitmap(true);
+	statusBarInterface->PrintPreview(bitmap);
+	//delete bitmap;
 }
 
 void CBitmapWndViewer::LoadingResource()
 {
-    CLoadingResource loadingResource;
-    arrowPrevious = loadingResource.LoadRegardsBmpResource("IDB_CIRCLE_PREVIOUS");
-    arrowNext = loadingResource.LoadRegardsBmpResource("IDB_CIRCLE_NEXT");
-    CRegardsBitmap * loadingStep = nullptr;
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP1");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP2");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP3");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP4");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP5");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP6");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP7");
-    vecLoadingBitmap.push_back(loadingStep);
-    loadingStep = loadingResource.LoadRegardsBmpResource("IDB_LOADING_STEP8");
-    vecLoadingBitmap.push_back(loadingStep);
+#ifdef __WXGTK__
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif    
+	wxColor colorToReplace = wxColor(0, 0, 0);
+	wxColor colorActifReplacement = wxColor(255, 255, 255);
+	arrowPrevious = CreateFromSVG(CLibResource::GetVector("IDB_ARROWLPNG") , 32 * scale_factor, 32 * scale_factor);
+	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	arrowNext = CreateFromSVG(CLibResource::GetVector("IDB_ARROWRPNG"), 32 * scale_factor, 32 * scale_factor);
+	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+
 }
 
 
-CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, CWindowMain * main, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface)
-	: CBitmapWnd(parent, id, slider, main, theme)
+wxImage CBitmapWndViewer::CreateFromSVG(const wxString & vector, const int & buttonWidth, const int & buttonHeight)
 {
-	
+	wxImage img;
+	if (vector.size() > 0)
+	{
+		wxStringInputStream memBuffer(vector);
+		wxSVGDocument svgDoc;
+		svgDoc.Load(memBuffer);
+		img = svgDoc.Render(buttonWidth, buttonHeight, NULL, true, true);
+	}
+	else
+	{
+		img.Create(buttonWidth, buttonHeight);
+	}
+	return img;
+}
+
+
+CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface)
+	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
+{
+	filtreraw = nullptr;
+	cl_nextPicture = nullptr;
+	pictureNext = nullptr;
+	openclEffectVideo = nullptr;
+	etape = 0;
+	//Preview Parameter
+	preview = 0;
+	renderPreviewBitmap = nullptr;
+	rawDecoder = nullptr;
+	//Thread Parameter
+	m_bTransition = false;
+	isDiaporama = false;
+	isInUse = false;
+	invertColor = false;
+	transitionTimer = nullptr;
+	selectEffectTimer = nullptr;
 	this->statusBarInterface = statusBarInterface;
     LoadingResource();
-	step = 0;
+	etape = 0;
 	fixArrow = true;
 	//numEffect = 1;
 	nextPicture = nullptr;
@@ -150,24 +211,30 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	transitionTimer = new wxTimer(this, TIMER_TRANSITION);
 	Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, this);
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWndViewer::onIdle));
+
 }
 
+void CBitmapWndViewer::CreateContext()
+{
+	renderPreviewBitmap = new CRenderPreviewBitmap();
+	openclEffectVideo = new COpenCLEffectVideo(this->openclContext);
+}
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
 	if (m_bTransition)
 	{
-		step += 10;
-		if (step == 100)
+		etape += 10;
+		if (etape == 110)
 		{
-			step = 0;
+			etape = 0;
 			EndTransition();
 			m_bTransition = false;
 		}
 		else
 		{
 			m_bTransition = true;
-			transitionTimer->Start(50, true);
+			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			Refresh();
 		}
 	}
@@ -175,11 +242,13 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 
 void CBitmapWndViewer::onIdle(wxIdleEvent& evt)
 {
+	/*
 	if (preview == IDM_CROP || preview == IDM_REDEYE || preview == IDM_FILTRELENSFLARE)
 	{
 		wxWindowDC windDC(this);
 		AfterDrawBitmap(&windDC);
 	}
+	*/
 }
 
 CBitmapWndViewer::~CBitmapWndViewer()
@@ -187,16 +256,23 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
 
+	delete(openclEffectVideo);
 	delete(transitionTimer);
-	delete(arrowPrevious);
-	delete(arrowNext);
 	delete(m_cDessin);
-    
-    for(CRegardsBitmap * bitmap : vecLoadingBitmap)
-    {
-        if(bitmap != nullptr)
-            delete bitmap;
-    }
+	delete(pictureNext);
+	if(filtreraw != nullptr)
+		delete filtreraw;
+	//if(rawBitmap != nullptr)
+	//	delete rawBitmap;
+
+	if (renderPreviewBitmap != nullptr)
+		delete renderPreviewBitmap;
+
+
+	if(rawDecoder != nullptr)
+	{
+		delete rawDecoder;
+	}
 }
 
 void CBitmapWndViewer::AfterSetBitmap()
@@ -204,119 +280,21 @@ void CBitmapWndViewer::AfterSetBitmap()
 	preview = PREVIEW_NONE;
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
+
+	if(rawDecoder != nullptr)
+	{
+		delete rawDecoder;
+		rawDecoder = nullptr;
+	}
+
 }
 
 void CBitmapWndViewer::SavePicture()
 {
-	CLibPicture libPicture;
+	CRegardsBitmap * bitmap = GetBitmap(true);
+	CSavePicture::SavePicture(this, bitmap, filename);
 	if (bitmap != nullptr)
-	{
-		wxString filename = bitmap->GetFilename();
-		if (filename != "")
-		{
-			 wxString szFilter = "";
-            
-#ifdef __APPLE__
- 
-            
-            SaveFileFormat saveFormat(nullptr);
-            saveFormat.ShowModal();
-            if(!saveFormat.IsOk())
-                return;
-            
-            wxString extension;
-            int iFormat = saveFormat.GetSaveFormat();
-            switch(iFormat)
-            {
-                case 0:
-                    iFormat = BMP;
-                    extension = "bmp";
-                    break;
-                    
-                case 1:
-                    iFormat = TGA;
-                    extension = "tga";
-                    break;
-                    
-                case 2:
-                    iFormat = PCX;
-                    extension = "pcx";
-                    break;
-                    
-                case 3:
-                    iFormat = MNG;
-                    extension = "mng";
-                    break;
-                    
-                case 4:
-                    iFormat = TIFF;
-                    extension = "tif";
-                    break;
-                    
-                case 5:
-                    iFormat = PNG;
-                    extension = "png";
-                    break;
-                    
-                case 6:
-                    iFormat = GIF;
-                    extension = "gif";
-                    break;
-                    
-                case 7:
-                    iFormat = JPEG;
-                    extension = "jpg";
-                    break;
-                    
-                case 8:
-                    iFormat = PNM;
-                    extension = "pnm";
-                    break;
-                    
-                case 9:
-                    iFormat = JPC;
-                    extension = "jpc";
-                    break;
-                    
-                case 10:
-                    iFormat = JPEG2000;
-                    extension = "jp2";
-                    break;
-                    
-                case 11:
-                    iFormat = PPM;
-                    extension = "ppm";
-                    break;
-                    
-                case 12:
-                    iFormat = XPM;
-                    extension = "xpm";
-                    break;
-            }
-           
-            wxString file = saveFileProgrammaticVersion(extension.ToStdString());
-            libPicture.SavePicture(file, bitmap);
-            
-#else
-            szFilter = "Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files BPG(*.BPG)|*.bpg|Files MNG(*.MNG)|*.mng|Files PDF (*.PDF)|*.pdf|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files ICO (*.ICO)|*.ico|Files CUR (*.CUR)|*.cur|Files ANI (*.ANI)|*.ani";
-            
-            
-            wxFileDialog saveFileDialog(this, filename, "", "",
-                                        szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-            
-            if (saveFileDialog.ShowModal() == wxID_CANCEL)
-                return;
-            
-            wxString file = saveFileDialog.GetPath();
-            libPicture.SavePicture(file, bitmap);
-
-#endif
-
-            
-            
-
-		}
-	}
+		delete bitmap;
 }
 
 void CBitmapWndViewer::DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top)
@@ -380,6 +358,7 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 			//m_cDessin->InitPoint(0, 0, posLargeur, posHauteur, ratio);
 		}
 		break;
+	case IDM_WAVE_EFFECT:
 	case IDM_FILTRELENSFLARE:
 	{
 		isInUse = true;
@@ -396,13 +375,14 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 		break;
 	}
 
-	//this->Refresh();
+	//this->FastRefresh(this);
 }
 
-void CBitmapWndViewer::Resize(const int &width, const int &height)
+void CBitmapWndViewer::Resize()
 {
 	switch (preview)
 	{
+	case IDM_WAVE_EFFECT:
 	case IDM_FILTRELENSFLARE:
 	case IDM_REDEYE:
 	case IDM_CROP:
@@ -419,91 +399,228 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect, CEffectParamete
 
 	switch (effect)
 	{
+	case IDM_WAVE_EFFECT:
 	case IDM_FILTRELENSFLARE:
 	case IDM_REDEYE:
 	case IDM_CROP:
 		SetBitmapPreviewEffect(effect);
 		break;
 	}
-	this->Refresh();
+    RefreshWindow();
 }
 
-void CBitmapWndViewer::ApplyEffectWithParameter(const int &effect, CEffectParameter * effectParameter)
+void CBitmapWndViewer::ApplyEffect(const int &effect)
 {
-    
+	if(CFiltreData::NeedPreview(effect))
+	{
+		if(!CFiltreData::IsOpenCLPreviewCompatible(effect))
+			this->isOpenGL = false;
+	}
+}
+
+void CBitmapWndViewer::OnFiltreOk()
+{
+	this->isOpenGL = true;
+    RefreshWindow();
+}
+
+void CBitmapWndViewer::OnFiltreCancel()
+{
+	this->isOpenGL = true;
+    RefreshWindow();
 }
 
 bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * effectParameter)
 {
 	CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
-	bool isOk = true;
+   
+	//bool isOk = true;
 	
 	if (config != nullptr)
 	{
-		//int numLib = config->GetEffectLibrary();
-		int numLib = config->GetEffectLibrary();
-		CFiltreEffet * filtre = new CFiltreEffet(bitmap, backColor, numLib);
-		
-		if (filtre != nullptr)
+		//int numLib = config->GetEffectLibrary();	
+		if (filtreEffet != nullptr)
 		{
 			switch (effect)
 			{
-                    
-            case IDM_FILTRELENSFLARE:
+				case IDM_WAVE_EFFECT:
 				{
-					if (effectParameter != nullptr)
+					CRegardsBitmap * bitmap = GetBitmap(true);
+					if (effectParameter != nullptr && bitmap != nullptr)
 					{
+                        CImageLoadingFormat image;
+                        image.SetPicture(bitmap);                        
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
 						wxPoint pt;
 						m_cDessin->GetPoint(pt);
-						CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-						filtre->LensFlare(pt.x, bitmap->GetBitmapHeight() - pt.y - 1, lensFlareParameter->size, 0, lensFlareParameter->brightness, lensFlareParameter->color, lensFlareParameter->colorIntensity);
+						CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
+						short height = waveEffectParameter->height;
+						int radius = waveEffectParameter->radius;
+						int scale = waveEffectParameter->scale;
+						filtre->WaveFilter(pt.x, pt.y, height, radius, scale);
+
+						CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+						imageLoad->SetPicture(filtre->GetBitmap(true));
+						SetBitmap(imageLoad, true);
+                        
+                        delete filtre;
 					}
 				}
 				break;
+                    
+				case IDM_FILTRELENSFLARE:
+					{
+						CRegardsBitmap * bitmap = GetBitmap(true);
+						if (effectParameter != nullptr && bitmap != nullptr)
+						{
+                            CImageLoadingFormat image;
+                            image.SetPicture(bitmap);                        
+                            CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+							
+                            wxPoint pt;
+							m_cDessin->GetPoint(pt);
+							CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+							float puissance = (float)lensFlareParameter->size;
+							float brightness = (float)lensFlareParameter->brightness ;
+							float colorIntensity = (float)lensFlareParameter->colorIntensity;
+							puissance = ((float)(bitmap->GetBitmapWidth() / 4) * ((float)puissance / 100.0f));
+							filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+
+                            CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+                            imageLoad->SetPicture(filtre->GetBitmap(true));
+                            SetBitmap(imageLoad, true);
+                            
+                            delete filtre;
+						}
+					}
+					break;
             
-            case IDM_CROP:
-            {
-                wxRect rcZoom;
-                m_cDessin->GetPos(rcZoom);
-                CRegardsBitmap * bitmapOut = new CRegardsBitmap();
-                bitmap->VertFlipBuf();
-                bitmapOut = bitmap->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
-                bitmapOut->VertFlipBuf();
-                SetBitmap(bitmapOut);
-                break;
-            }
+				case IDM_CROP:
+				{
+					wxRect rcZoom;
+					m_cDessin->GetPos(rcZoom);
+					CRegardsBitmap * bitmap = GetBitmap(true);
+					if(bitmap != nullptr)
+					{
+						CRegardsBitmap * bitmapOut = new CRegardsBitmap();
+						bitmap->VertFlipBuf();
+						bitmapOut = bitmap->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
+						bitmapOut->SetOrientation(bitmap->GetOrientation());
+						bitmapOut->VertFlipBuf();
+
+						CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+						imageLoad->SetPicture(bitmapOut);
+						SetBitmap(imageLoad);
+						delete bitmap;
+					}
+					break;
+				}
             
-            case IDM_REDEYE:
-            {
-                wxRect rc;
-                wxRect rect;
-                m_cDessin->GetPos(rc);
-                bitmap->VertFlipBuf();
-                filtre->RedEye(rc);
-                bitmap->VertFlipBuf();
-                break;
-            }
+				case IDM_REDEYE:
+				{
+					CRegardsBitmap * bitmap = GetBitmap(true);
+					if (bitmap != nullptr)
+					{
+                        CImageLoadingFormat image;
+                        image.SetPicture(bitmap);                        
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+						wxRect rc;
+						wxRect rect;
+						m_cDessin->GetPos(rc);
+						//bitmap->VertFlipBuf();
+						filtre->RedEye(rc);
+						//bitmap->VertFlipBuf();
+
+                        CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+                        imageLoad->SetPicture(filtre->GetBitmap(true));
+                        SetBitmap(imageLoad, true);
+                        
+                        delete filtre;
+					}
+					break;
+				}
+
+				case IDM_DECODE_RAW:
+					{
+						CImageLoadingFormat * bitmapLocal = rawDecoder->GetPicture();
+						if(bitmapLocal != nullptr)
+						{
+							bitmapLocal->Flip();
+							int iPos = filename.find(".");
+							wxString out = filename.substr(0,iPos) + ".bmp";
+							bitmapLocal->SetFilename(out);
+							SetBitmap(bitmapLocal, true);
+						}
+					}
+					break; 
             
-            default:
-                filtre->RenderEffect(effect, effectParameter);
-                break;
-            
-            }
+				default:
+					{
+						if(CFiltreData::IsOpenCLCompatible(effect))
+						{
+							filtreEffet->SetPreview(false);
+							filtreEffet->RenderEffect(effect, effectParameter);
+							CRegardsBitmap * bitmap = GetBitmap(true);
+							if (bitmap != nullptr)
+							{
+								CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+								imageLoad->SetPicture(bitmap);
+								imageLoad->SetOrientation(orientation);
+								SetBitmap(imageLoad);
+							}
+						}
+						else if(CFiltreData::IsPiccanteCompatible(effect))
+                        {
+                            CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
+                            printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());                            
+                            
+                            switch(effect)
+                            {
+                                case IDM_BEST_EXPOSURE:
+                                    CPiccanteFilter::BestExposure(test);
+                                    break;       
+                                case IDM_FILTER_KUWAHARA:
+                                    CPiccanteFilter::FilterKuwahara(test);
+                                    break;
+                                case IDM_FILTER_BILATERAL2DS: 
+                                    CPiccanteFilter::FilterBilateral2DS(test);
+                                    break;                                
+                            }
+                                    
+                            CImageLoadingFormat imageLoadFormat(true);
+                            imageLoadFormat.SetPicture(test);
+							imageLoadFormat.SetOrientation(orientation);
+                            filtreEffet->SetBitmap(&imageLoadFormat);                            
+                        }
+                        else
+						{
+							CRegardsBitmap * bitmap = GetBitmap(true);
+							if (bitmap != nullptr)
+							{
+                                CImageLoadingFormat image;
+                                image.SetPicture(bitmap);                        
+                                CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+								filtre->RenderEffect(effect, effectParameter);
+
+                                CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+                                imageLoad->SetPicture(filtre->GetBitmap(true));
+								imageLoad->SetOrientation(orientation);
+                                SetBitmap(imageLoad, true);
+                                
+                                delete filtre;
+							}
+							
+						}
+					}
+					break; 
+			}
         }
-        
-        delete(filtre);
-        
-        SetBitmapPreviewEffect(MOVEPICTURE);
-		
-		if (isOk)
-		{
-			addToTexture = true;
-			this->Refresh();
-		}
+              
+        SetBitmapPreviewEffect(effect);
+        RefreshWindow();
 	}
-    
-    
-	return isOk;
+      
+	return 0;
 }
 
 void CBitmapWndViewer::StopTransition()
@@ -512,13 +629,15 @@ void CBitmapWndViewer::StopTransition()
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
     
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
+   // this_thread::sleep_for(chrono::milliseconds(50));
+	startTransition = false;
+	m_bTransition = false;
+	etape = 0;
 }
 
 void CBitmapWndViewer::EndTransition()
 {
-	SetBitmap(nextPicture, false);
+	//SetBitmap(nextPicture, false);
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
 }
@@ -526,19 +645,23 @@ void CBitmapWndViewer::EndTransition()
 //---------------------------------------------------------
 //
 //---------------------------------------------------------
-void CBitmapWndViewer::SetTransitionBitmap(CRegardsBitmap * bmpSecond)
+void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 {
-	if (step != 0)
+
+	if (etape != 0)
 	{
 		StopTransition();
 	}
 
 	int numEffect = 0;
 	
-	if (isDiaporama)
-		numEffect = config->GetDiaporamaTransitionEffect();
-	else if (config != nullptr)
+	//if (isDiaporama)
+	//	numEffect = config->GetDiaporamaTransitionEffect();
+    if (config != nullptr)
 		numEffect = config->GetEffect();
+
+	if(!bitmapLoad)
+		numEffect = 0;
 	
 	switch (numEffect)
 	{
@@ -554,17 +677,18 @@ void CBitmapWndViewer::SetTransitionBitmap(CRegardsBitmap * bmpSecond)
 		{
 
 
-			if (bitmap != nullptr && !startTransition && bitmap->GetFilename() != bmpSecond->GetFilename())
+			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
 				startTransition = true;
 				m_bTransition = true;
 				nextPicture = bmpSecond;
-				step = 0;
-				transitionTimer->Start(50, true);
+				etape = 0;
+				renderNext.Destroy();
+				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			}
 			else
 			{
-				step = 0;
+				etape = 0;
 				m_bTransition = false;
 				SetBitmap(bmpSecond, false);
 				startTransition = false;
@@ -581,7 +705,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CRegardsBitmap * bmpSecond)
 
 void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
 {
-	if (toolOption == IDM_CROP || toolOption == IDM_FILTRELENSFLARE || toolOption == IDM_REDEYE)
+	if (toolOption == IDM_CROP || toolOption == IDM_WAVE_EFFECT || toolOption == IDM_FILTRELENSFLARE || toolOption == IDM_REDEYE)
 	{
 		mouseBlock = false;
 		mouseScrollX = xPos;
@@ -593,7 +717,13 @@ void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
 
 void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 {
-	if (toolOption == IDM_CROP || toolOption == IDM_REDEYE || toolOption == IDM_FILTRELENSFLARE)
+     printf("xPos : %d width : %d arrow : %d",xPos,width,arrowNext.GetWidth());
+#ifdef __WXGTK__
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif 
+	if (toolOption == IDM_CROP || toolOption == IDM_WAVE_EFFECT || toolOption == IDM_REDEYE || toolOption == IDM_FILTRELENSFLARE)
 	{
 		invertColor = true;
 		mouseBlock = true;
@@ -602,12 +732,14 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 	}
 	else if (fixArrow)
 	{
-		if (xPos < arrowPrevious->GetBitmapWidth())
+       
+		if (xPos < arrowPrevious.GetWidth() * scale_factor)
 		{
 			bitmapInterface->ImagePrecedente();
 		}
-		else if (xPos >(width - arrowNext->GetBitmapWidth()))
+		else if (xPos >(width - arrowNext.GetWidth() * scale_factor))
 		{
+            
 			bitmapInterface->ImageSuivante();
 		}
 	}
@@ -618,41 +750,348 @@ void CBitmapWndViewer::FixArrowNavigation(const bool &fix)
 	fixArrow = fix;
 }
 
-void CBitmapWndViewer::AfterRenderBitmap(CRenderBitmapInterface * renderInterface)
+bool CBitmapWndViewer::NeedAfterRenderBitmap()
 {
-	if (step == 10)
+	int numEffect = 0;
+
+	//if (isDiaporama)
+	//	numEffect = config->GetDiaporamaTransitionEffect();
+	if (config != nullptr)
+		numEffect = config->GetEffect();
+
+	if ((numEffect == 1 && (etape > 0 && etape < 100)) || CFiltreData::NeedPreview(preview))
+		return true;
+	return false;
+}
+
+void CBitmapWndViewer::ApplyPreviewEffect()
+{
+	//renderOpenGL->ApplyPreviewEffect(x,y, preview, effectParameter);
+	filtreEffet->RenderEffectPreview(preview, effectParameter);
+}
+
+int CBitmapWndViewer::GetRawBitmapWidth()
+{
+	if(preview == IDM_DECODE_RAW)
+		return rawWidth;
+	return bitmapwidth;
+}
+
+int CBitmapWndViewer::GetRawBitmapHeight()
+{
+	if(preview == IDM_DECODE_RAW)
+		return rawHeight;
+	return bitmapheight; 
+}
+int CBitmapWndViewer::GetOrientation()
+{
+	if(preview == IDM_DECODE_RAW)
+		return 4;
+	return orientation; 
+}
+
+wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
+{  
+	wxImage render;
+	if (!isDiaporama)
 	{
-		if (nextPicture != nullptr)
-			renderInterface->AddTextureBitmap(nextPicture, "bitmapDestination");
+		if(preview == IDM_DECODE_RAW)
+		{
+			CDecodeRawParameter * rawParameter = (CDecodeRawParameter *)effectParameter;
+			if(rawParameter->update || rawDecoder == nullptr)
+			{
+				if(rawDecoder == nullptr)
+				{
+					rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(filename));
+
+				}
+				
+				if(rawDecoder->DecodePicture(rawParameter) == 0)
+				{	
+
+                    printf("RenderBitmap ratio %f\n",  ratio);	
+                    
+                    CImageLoadingFormat * picture = rawDecoder->GetPicture();
+                    
+					CRgbaquad color;
+
+					if(filtreraw != nullptr)
+                        delete filtreraw;
+                    
+                    filtreraw = new CFiltreEffet(color, openclContext, picture);
+                    
+					rawWidth = picture->GetWidth();
+					rawHeight = picture->GetHeight();
+                    
+                    if (shrinkImage)
+                    {
+                        ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+                    }                
+                    
+                    printf("RenderBitmap ratio %f\n",  ratio);
+
+				}
+
+				rawParameter->update = false;
+
+			}
+			
+			if (filtreraw != nullptr)
+			{
+                
+				int widthOutput = int(GetBitmapWidthWithRatio());
+				int heightOutput = int(GetBitmapHeightWithRatio());
+                printf("widthOutput : %d and heightOutput %d ratio %f\n",  widthOutput, heightOutput, ratio);
+				this->GenerateScreenBitmap(filtreraw, widthOutput, heightOutput);
+				render = filtreraw->GetwxImage();
+			}
+		}
+		else if (CFiltreData::NeedPreview(preview))
+		{
+			int widthOutput = int(GetBitmapWidthWithRatio());
+			int heightOutput = int(GetBitmapHeightWithRatio());
+			this->GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+            
+            CImageLoadingFormat newbitmap;
+            newbitmap.SetPicture(filtreEffet->GetBitmap(false));
+			renderPreviewBitmap->SetNewBitmap(&newbitmap, nullptr);
+
+			switch (preview)
+			{
+				case IDM_ROTATE_FREE:
+				{
+					CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
+					renderPreviewBitmap->RotateFree(freeRotate->angle);
+				}
+				break;
+
+				case IDM_FILTRE_MOTIONBLUR:
+				{
+					CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
+					renderPreviewBitmap->MotionBlur(motionBlurParameter->radius, motionBlurParameter->sigma, motionBlurParameter->angle);
+				}
+				break;
+
+				case IDM_WAVE_EFFECT:
+				{
+					wxPoint pt;
+					m_cDessin->GetScreenPoint(pt);
+					if (pt.x == 0 && pt.y == 0)
+					{
+						pt.x = widthOutput / 4;
+						pt.y = heightOutput / 4;
+					}
+
+					CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
+					if (pt.x != 0 && pt.y != 0)
+					{
+						int left = 0, top = 0;
+						if (width > widthOutput)
+							left = ((width - widthOutput) / 2);
+						else
+							left = 0;
+
+						if (height > heightOutput)
+							top = ((height - heightOutput) / 2);
+						else
+							top = 0;
+						short height = waveEffectParameter->height;
+						int radius = waveEffectParameter->radius;
+						int scale = waveEffectParameter->scale;
+						renderPreviewBitmap->WaveFilter(pt.x, pt.y, height, radius, scale, left, top);
+					}
+				}
+					break;
+
+				case IDM_FILTRELENSFLARE:
+				{
+					wxPoint pt;
+					m_cDessin->GetScreenPoint(pt);
+					if (pt.x == 0 && pt.y == 0)
+					{
+						pt.x = widthOutput / 4;
+						pt.y = heightOutput / 4;
+					}
+
+					CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+					if (pt.x != 0 && pt.y != 0)
+					{
+						int left = 0, top = 0;
+						if (width > widthOutput)
+							left = ((width - widthOutput) / 2);
+						else
+							left = 0;
+
+						if (height > heightOutput)
+							top = ((height - heightOutput) / 2);
+						else
+							top = 0;
+						int puissance = (float)lensFlareParameter->size;
+						int brightness = (float)lensFlareParameter->brightness;
+						int radius = (float)lensFlareParameter->colorIntensity;
+						renderPreviewBitmap->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, left, top);
+					}
+
+				}
+				break;
+
+				default:
+					renderPreviewBitmap->RenderEffect(preview, effectParameter);
+					break;
+
+			}
+
+			render = renderPreviewBitmap->GetRender();
+		}
 	}
 
+	return render;
+}
+
+void CBitmapWndViewer::AfterRender()
+{
+	if(bitmapLoad)
+	{
+		//Affichage de la transition
+		int numEffect = 0;
+
+		//if (isDiaporama)
+		//	numEffect = config->GetDiaporamaTransitionEffect();
+		if (config != nullptr)
+			numEffect = config->GetEffect();
+
+		if (isDiaporama)
+		{
+			if (isDiaporama && numEffect == 0)
+			{
+				startTransition = false;
+				bitmapInterface->TransitionEnd();
+			}
+		}
+
+
+		switch (numEffect)
+		{
+		case 1:
+			if(renderOpenGL != nullptr)
+			{
+				cl_int err;
+                //int width = 0;
+               // int height = 0;
+
+				if(pictureNext == nullptr)
+					pictureNext = new GLTexture();
+
+				if (nextPicture != nullptr && etape == 0)
+				{
+                    if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
+                    {
+                        if(cl_nextPicture != nullptr)
+                        {
+                            err = clReleaseMemObject(cl_nextPicture);
+                            Error::CheckError(err);
+                        }
+
+                        CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
+
+                        //CMetadataExiv2 metadata(nextPicture->GetFilename());
+                        int orientation = nextPicture->GetOrientation();
+                        bitmapTemp->RotateExif(orientation);                        
+                        pictureNext->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
+                        glBindTexture( GL_TEXTURE_2D, pictureNext->GetTextureID() );  
+                        //cl_nextPicture = clCreateFromGLTexture2D(openclContext->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, pictureNext->GetTextureID(), &err);
+                        cl_nextPicture = clCreateFromGLTexture(openclContext->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, pictureNext->GetTextureID(), &err);
+                        delete bitmapTemp;
+                    } 
+                    else
+                    {
+                        //CRgbaquad color;
+                        //COpenCLEffect openclEffect(color, openclContext);
+                        CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
+                        int orientation = nextPicture->GetOrientation();
+                        bitmapTemp->RotateExif(orientation);
+                        bitmapTemp->SetAlphaValue(etape);
+                        pictureNext->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
+                        glBindTexture( GL_TEXTURE_2D, pictureNext->GetTextureID() ); 
+                        delete bitmapTemp;
+                    }
+				}
+				else if(nextPicture != nullptr && etape > 0)
+				{
+                     if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
+                    {
+                        cl_int err ;
+                        err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+                        Error::CheckError(err);
+                        openclEffectVideo->SetAlphaValue(cl_nextPicture, pictureNext->GetWidth(), pictureNext->GetHeight(), etape);
+                        err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+                        Error::CheckError(err);
+                        err = clFlush(openclContext->GetCommandQueue());
+                        Error::CheckError(err);
+                    }
+				}
+
+				if (nextPicture != nullptr && pictureNext != nullptr && etape > 0)
+				{
+
+                    if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
+                    {
+                        try
+                        {
+                            cl_int err;
+                            err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+                            Error::CheckError(err);
+                            openclEffectVideo->GetRgbaBitmap(cl_nextPicture);
+                            err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+                            Error::CheckError(err);
+                            err = clFlush(openclContext->GetCommandQueue());
+                            Error::CheckError(err);
+                        }
+                        catch(...)
+                        {
+
+                        }
+                    }
+
+
+					float newRatio = CalculPictureRatio(pictureNext->GetWidth(), pictureNext->GetHeight());
+
+					int widthOutput = pictureNext->GetWidth() * newRatio;
+					int heightOutput = pictureNext->GetHeight() * newRatio;
+					int left = (width - widthOutput) / 2;
+					int top = (height - heightOutput) / 2;		
+
+					renderOpenGL->ShowTransitionBitmap(pictureNext, widthOutput, heightOutput, left, top, etape);
+				}
+			}
+			break;
+
+		default:
+			break;
+
+		}
+	}
+
+	if (!isDiaporama)
+	{
+		//Insertion dans le HBITMAP
+		if (fixArrow && (etape == 0 || etape == 100))
+		{
+			renderOpenGL->ShowArrowPrevious();
+			renderOpenGL->ShowArrowNext();
+		}
+
+	}
+}
+
+void CBitmapWndViewer::AfterRenderBitmap(wxDC * deviceContext)
+{
 	int numEffect = 0;
-	
+
 	if (isDiaporama)
 		numEffect = config->GetDiaporamaTransitionEffect();
 	else if (config != nullptr)
 		numEffect = config->GetEffect();
-
-	switch (numEffect)
-	{
-	case 1:
-		//TransitionEffect(renderInterface);
-		if (nextPicture != nullptr)
-		{
-			if (!renderInterface->TestIsTextureExist("bitmapDestination"))
-				renderInterface->AddTextureBitmap(nextPicture, "bitmapDestination");
-
-			if (step == 90)
-				renderInterface->Transition("bitmapDestination", 100);
-			else if (step > 0)
-				renderInterface->Transition("bitmapDestination", step);
-		}
-		break;
-
-	default:
-		break;
-
-	}
 
 	if (isDiaporama)
 	{
@@ -662,109 +1101,88 @@ void CBitmapWndViewer::AfterRenderBitmap(CRenderBitmapInterface * renderInterfac
 			bitmapInterface->TransitionEnd();
 		}
 	}
-	else
+
+	switch (numEffect)
 	{
-
-		//Insertion dans le HBITMAP
-		if (fixArrow && (step == 0 || step == 90))
+	case 1:
+		//TransitionEffect(renderInterface);
+		if (nextPicture != nullptr && etape > 0 && etape < 100)
 		{
-			ShowArrowPrevious(renderInterface);
-			ShowArrowNext(renderInterface);
+			float newRatio = CalculPictureRatio(nextPicture->GetWidth(), nextPicture->GetHeight());
+
+			int widthOutput = nextPicture->GetWidth() * newRatio;
+			int heightOutput = nextPicture->GetHeight() * newRatio;
+
+			if (!(renderNext.GetWidth() == widthOutput && renderNext.GetHeight() == heightOutput))
+			{
+				CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
+				CFiltreEffet filtreEffet(backColor, openclContext, nextPicture);
+				filtreEffet.Interpolation(widthOutput, heightOutput, 0, 0, 0, 0);
+				renderNext = filtreEffet.GetwxImage();
+				int size = width*height;
+				unsigned char * alphaOut = new unsigned char[size];
+				renderNext.SetAlpha(alphaOut);
+				//delete bitmap;
+			}
+
+			int left = (width - renderNext.GetWidth()) / 2;
+			int  top = (height - renderNext.GetHeight()) / 2;
+			
+			if (etape > 0)
+			{
+				//render = renderPreviewBitmap->Transition(nextPicture, width, height, step);
+				unsigned char * alphaOut = renderNext.GetAlpha();
+				int size = width*height;
+				for (int i = 0; i < size; ++i)
+					alphaOut[i] = (((float)etape / 100.0f) * 255.0f);
+			}
+
+			deviceContext->DrawBitmap(renderNext, left, top);
+				
+	
 		}
-        
-        if(showLoadingBitmap)
-        {
-            ShowLoadingBitmap(stepLoading);
-        }
-        
-        if(CFiltreData::NeedPreview(preview))
-        {
-            switch (preview)
-            {
-                case IDM_ROTATE_FREE:
-                {
-                    CFreeRotateEffectParameter * freeRotate = (CFreeRotateEffectParameter *)effectParameter;
-                    renderInterface->RotateFree(freeRotate->angle);
-                }
-                    break;
-                    
-                case IDM_FILTRE_MOTIONBLUR:
-                {
-                    CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
-                    renderInterface->MotionBlur(motionBlurParameter->radius, motionBlurParameter->sigma, motionBlurParameter->angle);
-                }
-                    break;
-                    
-                case IDM_FILTRELENSFLARE:
-                {
-                    wxPoint pt;
-                    m_cDessin->GetScreenPoint(pt);
-                    CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-                    if (pt.x != 0 && pt.y != 0)
-                        renderInterface->LensFlare(pt.x, pt.y, lensFlareParameter->size, 0, lensFlareParameter->brightness, lensFlareParameter->color, lensFlareParameter->colorIntensity);
-                    
-                }
-                    break;
-                    
-                default:
-                    renderInterface->RenderEffect(preview, effectParameter);
-                    break;
-                    
-            }
-        }
-        
-        
-    }
-    //preview = PREVIEW_NONE;
+		else
+		{
+			renderNext.Destroy();
+		}
+		break;
+
+	default:
+		break;
+
+	}
+
+	if (!isDiaporama)
+	{
+		//Insertion dans le HBITMAP
+		if (fixArrow && (etape == 0 || etape == 90))
+		{
+			ShowArrowPrevious(deviceContext);
+			ShowArrowNext(deviceContext);
+		}
+	}
 }
 
-void CBitmapWndViewer::ShowLoadingBitmap(const int &stepLoading)
+
+void CBitmapWndViewer::ShowArrowNext(wxDC * deviceContext)
 {
-    CRegardsBitmap * bitmap = vecLoadingBitmap.at(0);
-    if(bitmap != nullptr)
-    {
-        int xPos = (width - bitmap->GetBitmapWidth()) / 2;
-        int yPos = (height - bitmap->GetBitmapHeight()) / 2;
-        wxString loadingBitmapTextureName = "loadingbitmap" + to_string(stepLoading);
-        if (!renderInterface->TestIsTextureExist(loadingBitmapTextureName))
-            renderInterface->AddTextureBitmap(vecLoadingBitmap.at(stepLoading), loadingBitmapTextureName);
-        
-        CPhotoFiltreEffectParameter photoFiltreParameter;
-        photoFiltreParameter.blue = 255;
-        photoFiltreParameter.red = 255;
-        photoFiltreParameter.green = 255;
-        photoFiltreParameter.intensity = 50;
-        renderInterface->RenderEffect(ID_AJUSTEMENT_PHOTOFILTRE, &photoFiltreParameter);
-        renderInterface->AddAlphaBlendingBitmap(loadingBitmapTextureName, xPos, yPos);
-    }
+	int xPos = width - arrowNext.GetWidth();
+	int yPos = (height - arrowNext.GetHeight()) / 2;
+	deviceContext->DrawBitmap(arrowNext, xPos, yPos);
 }
 
-void CBitmapWndViewer::ShowArrowNext(CRenderBitmapInterface * renderInterface)
-{
-	int xPos = width - arrowNext->GetBitmapWidth();
-	int yPos = (height - arrowNext->GetBitmapHeight()) / 2;
-
-	if (!renderInterface->TestIsTextureExist("arrowNext"))
-		renderInterface->AddTextureBitmap(arrowNext, "arrowNext");
-
-	renderInterface->AddAlphaBlendingBitmap("arrowNext", xPos, yPos);
-}
-
-void CBitmapWndViewer::ShowArrowPrevious(CRenderBitmapInterface * renderInterface)
+void CBitmapWndViewer::ShowArrowPrevious(wxDC * deviceContext)
 {
 	int xPos = 0;
-	int yPos = (height - arrowPrevious->GetBitmapHeight()) / 2;
-
-	if (!renderInterface->TestIsTextureExist("arrowPrevious"))
-		renderInterface->AddTextureBitmap(arrowPrevious, "arrowPrevious");
-
-	renderInterface->AddAlphaBlendingBitmap("arrowPrevious", xPos, yPos);
+	int yPos = (height - arrowPrevious.GetHeight()) / 2;
+	deviceContext->DrawBitmap(arrowPrevious, xPos, yPos);
 }
 
 bool CBitmapWndViewer::NeedAfterDrawBitmap()
 {
     switch (preview)
     {
+		case IDM_WAVE_EFFECT:
         case IDM_FILTRELENSFLARE:
         case IDM_REDEYE:
         case IDM_CROP:
@@ -780,7 +1198,8 @@ void CBitmapWndViewer::AfterDrawBitmap(wxDC * deviceContext)
 {
 	switch (preview)
 	{
-	case IDM_FILTRELENSFLARE:
+		case IDM_WAVE_EFFECT:
+		case IDM_FILTRELENSFLARE:
 		{
 			if (!isInUse)
 			{
@@ -811,7 +1230,7 @@ void CBitmapWndViewer::KeyPress(const int &key)
 		if (preview == IDM_CROP)
 		{
 			preview = PREVIEW_NONE;
-			this->Refresh();
+            RefreshWindow();
 		}
 	}
 }
@@ -826,33 +1245,33 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		else
 		{
 			m_cDessin->MouseMove(xPos, yPos, posLargeur, posHauteur, ratio);
-			this->Refresh();
+			RefreshWindow();
 		}
 
 		
 	}
-	else if (preview == IDM_FILTRELENSFLARE)
+	else if (preview == IDM_FILTRELENSFLARE || preview == IDM_WAVE_EFFECT)
 	{
 		if (mouseBlock)
 		{
 			m_cDessin->MouseMove(xPos, yPos, posLargeur, posHauteur, ratio);
-			this->Refresh();
+			RefreshWindow();
 		}
 	}
 	else
 	{
 		bool isOnArrow = false;
-		if (fixArrow && step == 0)
+		if (fixArrow && etape == 0)
 		{
-			int yPosTop = (height - arrowNext->GetBitmapHeight()) / 2;
-			int yPosBottom = (height - arrowNext->GetBitmapHeight()) / 2 + arrowNext->GetBitmapHeight();
+			int yPosTop = (height - arrowNext.GetHeight()) / 2;
+			int yPosBottom = (height - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
-			if (xPos < arrowPrevious->GetBitmapWidth() && (yPos > yPosTop && yPos < yPosBottom))
+			if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
-			else if ((xPos >(width - arrowNext->GetBitmapWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
+			else if ((xPos >(width - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));

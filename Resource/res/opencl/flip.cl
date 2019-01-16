@@ -1,5 +1,5 @@
 
-__kernel void FlipVertical(__global uchar4 * output, const __global uchar4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
+__kernel void FlipVertical(__global float4 * output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -9,7 +9,7 @@ __kernel void FlipVertical(__global uchar4 * output, const __global uchar4 *inpu
 	output[positionDest] = input[positionSrc];
 }
 
-__kernel void FlipHorizontal(__global uchar4 * output, const __global uchar4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
+__kernel void FlipHorizontal(__global float4 * output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);

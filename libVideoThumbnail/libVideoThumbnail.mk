@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libVideoThumbnail
-ConfigurationName      :=Debug
-WorkspacePath          := "/home/figuinha/dev/Regards"
-ProjectPath            := "/home/figuinha/dev/Regards/libVideoThumbnail"
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=/home/figuinha/Developpement/Regards
+ProjectPath            :=/home/figuinha/Developpement/Regards/libVideoThumbnail
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=25/04/16
-CodeLitePath           :="/home/figuinha/.codelite"
-LinkerName             :=/usr/bin/g++
-SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
+Date                   :=15/01/19
+CodeLitePath           :=/home/figuinha/.codelite
+LinkerName             :=/usr/bin/ccache /usr/bin/g++
+SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,30 +28,30 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)LATEST_GREATEST_FFMPEG $(PreprocessorSwitch)__WXGTK__ 
+Preprocessors          :=$(PreprocessorSwitch)LATEST_GREATEST_FFMPEG $(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libVideoThumbnail.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)../CxImage $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libextern/wxWidgets-3.0.2/include $(IncludeSwitch)../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0 
-IncludePCH             := 
+LinkOptions            :=  -s
+IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch). $(IncludeSwitch)../CxImage $(IncludeSwitch)../libextern/ffmpeg-4.1 $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libUtility 
+IncludePCH             :=  -include ../include/Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                := $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
 AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++
-CC       := /usr/bin/gcc
-CXXFLAGS :=  -g -O0 -fopenmp -std=c++11 -Wall  $(Preprocessors)
-CFLAGS   :=  -g -O0 -Wall  $(Preprocessors)
+CXX      := /usr/bin/ccache /usr/bin/g++
+CC       := /usr/bin/ccache /usr/bin/gcc
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
+CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/cximagewriter.cpp$(ObjectSuffix) $(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Metadata.cpp$(ObjectSuffix) $(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) $(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumbnailerc.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) $(IntermediateDirectory)/moviestreaminfo.cpp$(ObjectSuffix) $(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) $(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) $(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) $(IntermediateDirectory)/videostream.cpp$(ObjectSuffix) 
 
 
 
@@ -77,85 +77,82 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/dev/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/dev/Regards/.build-debug/libVideoThumbnail"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libVideoThumbnail"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
+
+# PreCompiled Header
+../include/Release/header.h.gch: ../include/Release/header.h
+	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+
 
 
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/cximagewriter.cpp$(ObjectSuffix): cximagewriter.cpp $(IntermediateDirectory)/cximagewriter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/cximagewriter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/cximagewriter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/cximagewriter.cpp$(DependSuffix): cximagewriter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/cximagewriter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/cximagewriter.cpp$(DependSuffix) -MM "cximagewriter.cpp"
-
-$(IntermediateDirectory)/cximagewriter.cpp$(PreprocessSuffix): cximagewriter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/cximagewriter.cpp$(PreprocessSuffix) "cximagewriter.cpp"
-
-$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix): filmstripfilter.cpp $(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/filmstripfilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix): filmstripfilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix) -MM "filmstripfilter.cpp"
-
-$(IntermediateDirectory)/filmstripfilter.cpp$(PreprocessSuffix): filmstripfilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/filmstripfilter.cpp$(PreprocessSuffix) "filmstripfilter.cpp"
-
-$(IntermediateDirectory)/Metadata.cpp$(ObjectSuffix): Metadata.cpp $(IntermediateDirectory)/Metadata.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/Metadata.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Metadata.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Metadata.cpp$(DependSuffix): Metadata.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Metadata.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Metadata.cpp$(DependSuffix) -MM "Metadata.cpp"
-
-$(IntermediateDirectory)/Metadata.cpp$(PreprocessSuffix): Metadata.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Metadata.cpp$(PreprocessSuffix) "Metadata.cpp"
-
-$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix): moviedecoder.cpp $(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/moviedecoder.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix): moviedecoder.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix) -MM "moviedecoder.cpp"
-
-$(IntermediateDirectory)/moviedecoder.cpp$(PreprocessSuffix): moviedecoder.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/moviedecoder.cpp$(PreprocessSuffix) "moviedecoder.cpp"
-
-$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix): stringoperations.cpp $(IntermediateDirectory)/stringoperations.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/stringoperations.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/stringoperations.cpp$(DependSuffix): stringoperations.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/stringoperations.cpp$(DependSuffix) -MM "stringoperations.cpp"
-
-$(IntermediateDirectory)/stringoperations.cpp$(PreprocessSuffix): stringoperations.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/stringoperations.cpp$(PreprocessSuffix) "stringoperations.cpp"
-
-$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix): videothumbnailer.cpp $(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/videothumbnailer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix): videothumbnailer.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix) -MM "videothumbnailer.cpp"
-
-$(IntermediateDirectory)/videothumbnailer.cpp$(PreprocessSuffix): videothumbnailer.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videothumbnailer.cpp$(PreprocessSuffix) "videothumbnailer.cpp"
-
-$(IntermediateDirectory)/videothumbnailerc.cpp$(ObjectSuffix): videothumbnailerc.cpp $(IntermediateDirectory)/videothumbnailerc.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/videothumbnailerc.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videothumbnailerc.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/videothumbnailerc.cpp$(DependSuffix): videothumbnailerc.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videothumbnailerc.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videothumbnailerc.cpp$(DependSuffix) -MM "videothumbnailerc.cpp"
-
-$(IntermediateDirectory)/videothumbnailerc.cpp$(PreprocessSuffix): videothumbnailerc.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videothumbnailerc.cpp$(PreprocessSuffix) "videothumbnailerc.cpp"
-
 $(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix): videothumb.cpp $(IntermediateDirectory)/videothumb.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/dev/Regards/libVideoThumbnail/videothumb.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/videothumb.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/videothumb.cpp$(DependSuffix): videothumb.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videothumb.cpp$(DependSuffix) -MM "videothumb.cpp"
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videothumb.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videothumb.cpp$(DependSuffix) -MM videothumb.cpp
 
 $(IntermediateDirectory)/videothumb.cpp$(PreprocessSuffix): videothumb.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videothumb.cpp$(PreprocessSuffix) "videothumb.cpp"
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videothumb.cpp$(PreprocessSuffix) videothumb.cpp
+
+$(IntermediateDirectory)/moviestreaminfo.cpp$(ObjectSuffix): moviestreaminfo.cpp $(IntermediateDirectory)/moviestreaminfo.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/moviestreaminfo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/moviestreaminfo.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/moviestreaminfo.cpp$(DependSuffix): moviestreaminfo.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/moviestreaminfo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/moviestreaminfo.cpp$(DependSuffix) -MM moviestreaminfo.cpp
+
+$(IntermediateDirectory)/moviestreaminfo.cpp$(PreprocessSuffix): moviestreaminfo.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/moviestreaminfo.cpp$(PreprocessSuffix) moviestreaminfo.cpp
+
+$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix): videothumbnailer.cpp $(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/videothumbnailer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix): videothumbnailer.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videothumbnailer.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videothumbnailer.cpp$(DependSuffix) -MM videothumbnailer.cpp
+
+$(IntermediateDirectory)/videothumbnailer.cpp$(PreprocessSuffix): videothumbnailer.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videothumbnailer.cpp$(PreprocessSuffix) videothumbnailer.cpp
+
+$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix): stringoperations.cpp $(IntermediateDirectory)/stringoperations.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/stringoperations.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/stringoperations.cpp$(DependSuffix): stringoperations.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/stringoperations.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/stringoperations.cpp$(DependSuffix) -MM stringoperations.cpp
+
+$(IntermediateDirectory)/stringoperations.cpp$(PreprocessSuffix): stringoperations.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/stringoperations.cpp$(PreprocessSuffix) stringoperations.cpp
+
+$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix): filmstripfilter.cpp $(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/filmstripfilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix): filmstripfilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/filmstripfilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/filmstripfilter.cpp$(DependSuffix) -MM filmstripfilter.cpp
+
+$(IntermediateDirectory)/filmstripfilter.cpp$(PreprocessSuffix): filmstripfilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/filmstripfilter.cpp$(PreprocessSuffix) filmstripfilter.cpp
+
+$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix): moviedecoder.cpp $(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/moviedecoder.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix): moviedecoder.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/moviedecoder.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/moviedecoder.cpp$(DependSuffix) -MM moviedecoder.cpp
+
+$(IntermediateDirectory)/moviedecoder.cpp$(PreprocessSuffix): moviedecoder.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/moviedecoder.cpp$(PreprocessSuffix) moviedecoder.cpp
+
+$(IntermediateDirectory)/videostream.cpp$(ObjectSuffix): videostream.cpp $(IntermediateDirectory)/videostream.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libVideoThumbnail/videostream.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/videostream.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/videostream.cpp$(DependSuffix): videostream.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/videostream.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/videostream.cpp$(DependSuffix) -MM videostream.cpp
+
+$(IntermediateDirectory)/videostream.cpp$(PreprocessSuffix): videostream.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/videostream.cpp$(PreprocessSuffix) videostream.cpp
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
@@ -163,6 +160,7 @@ $(IntermediateDirectory)/videothumb.cpp$(PreprocessSuffix): videothumb.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
+	$(RM) ../include/Release/header.h.gch
 
 

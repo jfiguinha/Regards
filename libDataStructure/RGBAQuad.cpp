@@ -1,5 +1,5 @@
 #include "RGBAQuad.h"
-#include <algorithm>
+
 float const_floatcolor[256];
 bool initfloatvalue = false;
 
@@ -12,7 +12,7 @@ CRgbaquad::CRgbaquad(const uint8_t &red, const uint8_t &green, const uint8_t &bl
 
 	if (!initfloatvalue)
 	{
-		for (int i = 0; i < 256; i++)
+		for (auto i = 0; i < 256; i++)
 			const_floatcolor[i] = (float)i;
 
 		initfloatvalue = true;
@@ -28,7 +28,7 @@ CRgbaquad::CRgbaquad()
 
 	if (!initfloatvalue)
 	{
-		for (int i = 0; i < 256; i++)
+		for (auto i = 0; i < 256; i++)
 			const_floatcolor[i] = (float)i;
 
 		initfloatvalue = true;

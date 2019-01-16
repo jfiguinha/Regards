@@ -1,6 +1,6 @@
 #pragma once
-#include "RegardsBitmap.h"
 #include "RGBAQuad.h"
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -23,11 +23,11 @@ namespace Regards
 
 			inline const double Interpolate(const double &a,const double &b,const double &x);
 
-			const float GetValue(float x, float y);
+			inline const float GetValue(float x, float y);
 
-			float FinalNoise(float x, float y);
+			inline float FinalNoise(float x, float y);
 
-			float Smooth_Noise(int x, int y);
+			inline float Smooth_Noise(int x, int y);
 
 			float m_fPrivx0y0,m_fPrivx1y0,m_fPrivx0y1,m_fPrivx1y1;
 

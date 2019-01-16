@@ -5,7 +5,7 @@
 
 #include "ximage.h"
 
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(_LINUX) || defined(__APPLE__)  || defined(__MINGW32__)
  #define _tcsnicmp(a,b,c) strcasecmp(a,b)
 #endif
 
@@ -561,7 +561,7 @@ void CxImage::SetOffset(int32_t x,int32_t y)
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetJpegQuality, GetJpegQualityF
- * \author [DP]; changes [Stefan Schürmans]
+ * \author [DP]; changes [Stefan SchÃ¼rmans]
  */
 uint8_t CxImage::GetJpegQuality() const
 {
@@ -570,7 +570,7 @@ uint8_t CxImage::GetJpegQuality() const
 ////////////////////////////////////////////////////////////////////////////////
 /**
  * \sa SetJpegQuality, GetJpegQuality
- * \author [Stefan Schürmans]
+ * \author [Stefan SchÃ¼rmans]
  */
 float CxImage::GetJpegQualityF() const
 {
@@ -580,7 +580,7 @@ float CxImage::GetJpegQualityF() const
 /**
  * quality level for JPEG and JPEG2000
  * \param q: can be from 0 to 100
- * \author [DP]; changes [Stefan Schürmans]
+ * \author [DP]; changes [Stefan SchÃ¼rmans]
  */
 void CxImage::SetJpegQuality(uint8_t q){
 	info.fQuality = (float)q;
@@ -590,7 +590,7 @@ void CxImage::SetJpegQuality(uint8_t q){
  * quality level for JPEG and JPEG2000
  * necessary for JPEG2000 when quality is between 0.0 and 1.0
  * \param q: can be from 0.0 to 100.0
- * \author [Stefan Schürmans]
+ * \author [Stefan SchÃ¼rmans]
  */
 void CxImage::SetJpegQualityF(float q){
 	if (q>0) info.fQuality = q;

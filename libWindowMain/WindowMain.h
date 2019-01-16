@@ -1,27 +1,38 @@
 #pragma once
-#include "WindowUtility.h"
-#include <string>
-#include <Theme.h>
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
+#if defined(__WXMSW__)
+#include "../include/window_id.h"
+#else
+#include <window_id.h>
 #endif
+#include "MasterWindow.h"
 using namespace std;
 
-wxDEFINE_EVENT(EVENT_VIDEOPOS, wxCommandEvent);
 
 namespace Regards
 {
 	namespace Window
 	{
-		class CWindowMain : public wxWindow
+		class CWindowMain : public wxWindow, public CMasterWindow
 		{
 		public:
-			CWindowMain(wxWindow* parent, wxWindowID id)
+			CWindowMain(wxString name, wxWindow* parent, wxWindowID id)
 				: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
+				//: wxGLCanvas(parent, wxID_ANY, args, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE)
 			{
+				this->name = name;
+            #ifdef __WXGTK__
+            #if wxCHECK_VERSION(3, 1, 2)
+                scaleFactor = 1.0f;
+            #else
+                scaleFactor = GetContentScaleFactor();
+            #endif
+            #else
+                scaleFactor = 1.0f;
+            #endif
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowMain::OnSize));
+                Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
 				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
+				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
 			}
 
 			virtual ~CWindowMain()
@@ -29,62 +40,44 @@ namespace Regards
 
 			}
             
-
-			static void FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)
+            virtual void OnRefresh(wxCommandEvent& event)
+             {
+                this->Refresh();
+             }            
+            
+            virtual void UpdateScreenRatio()
+            {
+                
+            }
+            
+			virtual void PushThreadIdleEvent()
 			{
-				CWindowUtility winUtility;
-				winUtility.FillRect(dc, rc, color);
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_IDLETHREADING);
+				GetEventHandler()->AddPendingEvent(evt);
 			}
 
-			static void DrawTexte(wxDC * dc, const wxString &libelle, const int &xPos, const int &yPos, const CThemeFont &font)
+			virtual void OnProcessIdleEnd(wxCommandEvent& event)
 			{
-				CWindowUtility winUtility;
-				winUtility.DrawTexte(dc, libelle, xPos, yPos, font);
+				this->ProcessOnIdleEndEvent(event);
 			}
 
-			static wxSize GetSizeTexte(wxDC * dc, const wxString &libelle, const CThemeFont &font)
+			virtual void Resize()
 			{
-				CWindowUtility winUtility;
-				return winUtility.GetSizeTexte(dc, libelle, font);
+				this->FastRefresh(this);
 			}
 
 			virtual void OnEraseBackground(wxEraseEvent& event){};
 
-			void OnSize(wxSizeEvent& event)
+			virtual void OnSize(wxSizeEvent& event)
 			{
-				int _width = event.GetSize().GetX();
-				int _height = event.GetSize().GetY();
-				if (_width <= 20 && _height <= 20)
-				{
-					//not corrected size
-					Resize();
-				}
-				else
-				{
-					width = _width;
-					height = _height;
-					Resize();
-				}
+				this->ProcessOnSizeEvent(event);
 			}
 
-			wxRect GetWindowRect()
-			{
-				wxRect rc;
-				rc.x = 0;
-				rc.y = 0;
-				rc.width = width;
-				rc.height = height;
-				return rc;
+			virtual wxString GetWaitingMessage()
+			{ 
+				return "Window waiting : " + to_string(this->GetId());
 			}
 
-
-		protected:
-
-			virtual void Resize() = 0;
-
-
-			int width = 0;
-			int height = 0;
 		};
 	}
 }

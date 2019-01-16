@@ -1,10 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <mutex>
+
 #include "SqlResult.h"
 using namespace std;
 
@@ -18,7 +13,7 @@ namespace Regards
 			CSqlLib();
 			virtual ~CSqlLib();
 
-			bool OpenConnection(const wxString &databasePath, const bool &readonly);
+			bool OpenConnection(const wxString &databasePath, const bool &readonly, const bool &load_inmemory);
 			void CloseConnection();
 
 			virtual bool InitDatabase(const wxString &lpFilename) = 0;
@@ -41,15 +36,18 @@ namespace Regards
 				return pCon;
 			}
 
-		private:
+		protected:
 
+			int LoadOrSaveDb(sqlite3 *pInMemory, const char *zFilename, int isSave);
 			bool isConnected();
 	
-			std::mutex sync;
+			mutex sync;
 			wxString		 sqLiteDBPath;		   //Databse File Dir
 			sqlite3		 *pCon;				   //SQLite Connection Object
 			sqlite3_stmt * pRes;
 			bool m_bConnected;
+			bool readonly;
+			bool load_inmemory;
 			wxString  m_strLastError;    /*Last Error String*/
 		};
 	}

@@ -1,6 +1,7 @@
 #include "SqlPhotoCategorie.h"
 using namespace Regards::Sqlite;
 
+
 CSqlPhotoCategorie::CSqlPhotoCategorie()
 	: CSqlExecuteRequest(L"RegardsDB")
 {
@@ -12,7 +13,7 @@ CSqlPhotoCategorie::~CSqlPhotoCategorie()
 }
 
 //--------------------------------------------------------
-//Chargement de toutes les données d'un album
+//Chargement de toutes les donnÃ©es d'un album
 //--------------------------------------------------------
 bool CSqlPhotoCategorie::LoadPhotoCategorie(PhotoCategorieVector * photoCategorieVector, const int &numLangue)
 {
@@ -26,7 +27,7 @@ int CSqlPhotoCategorie::TraitementResult(CSqlResult * sqlResult)
 	while (sqlResult->Next())
 	{
 		CPhotoCategorie _photoCategorie;
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 
 			switch (i)

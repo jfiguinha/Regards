@@ -22,7 +22,8 @@
 
 #include "imagewriter.h"
 
-class CxImage;
+class CRegardsBitmap;
+class CRgbaquad;
 
 namespace ffmpegthumbnailer
 {
@@ -31,20 +32,29 @@ namespace ffmpegthumbnailer
 	{
 	public:
 
+		struct weightX
+		{
+		public:
+			float tabF[4];
+		};
+
+
 		CxImageWriter(std::vector<uint8_t>& outputBuffer);
 		CxImageWriter(const std::string& outputFile);
-		CxImageWriter(CxImage * image);
+		CxImageWriter(CRegardsBitmap * image);
 		~CxImageWriter();
 		
 		void setText(const std::string& key, const std::string& value);
-		void writeFrame(uint8_t** rgbData, int width, int height, int quality);
+		void writeFrame(std::vector<uint8_t> & rgbData,int lineSize, int width, int height, int quality, int thumbnailWidth, int thumbnailHeight, int rotation);
 		
 	private:
+		virtual inline void Bicubic(CRgbaquad & data, std::vector<uint8_t> & rgbData, int width, int height, int effwidth, const float &x, const float &y, float * tabF1, float * tabF);
+		double Filter(const double &f);
 		void init();
-		
-	private:
-
-		CxImage * image;
+		void CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft);
+		CRegardsBitmap * image;
+		weightX * wX;
+		weightX * wY;
 	};
 
 }

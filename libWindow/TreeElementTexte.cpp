@@ -5,6 +5,7 @@ mutex CTreeElementTexte::muTexteSize;
 
 CTreeElementTexte::CTreeElementTexte()
 {
+	position = 0;
 	canUpdate = false;
 	isClick = false;
 	position = RENDERFONT_LEFT;
@@ -59,12 +60,12 @@ void CTreeElementTexte::SetLibelle(const wxString &libelle)
 wxSize CTreeElementTexte::GetSizeText()
 {
     wxSize size;
-    //muTexteSize.lock();
 	wxFont font(themeTexte.font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-	wxMemoryDC dc;
+    wxBitmap bitmap(250,250);
+	wxMemoryDC dc(bitmap);
 	dc.SetFont(font);
 	size = dc.GetTextExtent(libelle.c_str());
-    //muTexteSize.unlock();
+    dc.SelectObject(wxNullBitmap);
     return size;
 }
 

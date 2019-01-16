@@ -400,8 +400,13 @@ void CxImage::RGBtoBGR(uint8_t *buffer, int32_t length)
 		uint8_t temp;
 		length = min(length,(int32_t)info.dwEffWidth);
 		length = min(length,(int32_t)(3*head.biWidth));
-		for (int32_t i=0;i<length;i+=3){
-			temp = buffer[i]; buffer[i] = buffer[i+2]; buffer[i+2] = temp;
+
+#pragma omp parallel for
+	for (int32_t i=0;i<length;i+=3)
+		{
+			temp = buffer[i]; 
+			buffer[i] = buffer[i+2]; 
+			buffer[i+2] = temp;
 		}
 	}
 }
@@ -557,6 +562,7 @@ void CxImage::SwapRGB2BGR()
 			b=ppal[a].rgbBlue; ppal[a].rgbBlue=ppal[a].rgbRed; ppal[a].rgbRed=b;
 		}
 	} else {
+		
 		for(int32_t y=0;y<head.biHeight;y++){
 			RGBtoBGR(GetBits(y),3*head.biWidth);
 		}

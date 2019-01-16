@@ -23,10 +23,15 @@ using namespace Regards::Viewer;
 #define IDM_REFRESHTHUMBNAIL 149
 #define IDM_REFRESHFILTER 150
 #define IDM_CRITERIA 151
+#define IDM_EXPORT 152
+#define IDM_THUMBNAILFACE 153
+#define IDM_VIEWERMODE 154
+#define IDM_EXPLORERMODE 155
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent,id,theme)
 {
+	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);//L"Effect";
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLOPENFOLDER",1);//L"Crop";
 	wxString lblAssociate = CLibResource::LoadStringFromResource(L"LBLASSOCIATE",1);//L"Shrink Picture";
     wxString libelleRefreshFolder = CLibResource::LoadStringFromResource(L"LBLREFRESH",1);
@@ -34,12 +39,11 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
     wxString libelleRefreshFilter = CLibResource::LoadStringFromResource(L"LBLREFRESHFILTER",1);
 	wxString lblDonate = CLibResource::LoadStringFromResource(L"LBLDONATE", 1);// L"Zoom On";
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);// L"Zoom Off
-#ifdef VIEWER
 	wxString lblCriteria = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);// L"Zoom Off";
-#endif
 	wxString lblThumbnail = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);// L"Zoom Off";
 	wxString lblPictureDetails = CLibResource::LoadStringFromResource(L"LBLPICTUREDETAILS", 1);// L"Zoom Off";
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);// L"Zoom Off";
+	wxString lblListFace = "Face List";
 
     if(CViewerFrame::GetViewerMode())
     {
@@ -64,17 +68,6 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
     refresh->SetCommandId(IDM_REFRESHTHUMBNAIL);
     navElement.push_back(refresh);
     
-
-#ifdef WIN32
-	CToolbarButton * associate = new CToolbarButton(themeToolbar.button);
-	associate->SetButtonResourceId(L"IDB_LINK_ASSOC");
-	associate->SetLibelle(lblAssociate);
-	associate->SetCommandId(IDM_ASSOCIATE);
-	navElement.push_back(associate);
-#endif
-
-#ifdef VIEWER
-    
     CToolbarButton * refreshFilter = new CToolbarButton(themeToolbar.button);
     refreshFilter->SetButtonResourceId(L"IDB_FOLDER_REFRESH");
     refreshFilter->SetLibelle(libelleRefreshFilter);
@@ -86,7 +79,6 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	criteria->SetLibelle(lblCriteria);
 	criteria->SetCommandId(IDM_CRITERIA);
 	navElement.push_back(criteria);
-#endif
 
 	CToolbarButton * thumbnail = new CToolbarButton(themeToolbar.button);
 	thumbnail->SetButtonResourceId(L"IDB_THUMBNAILPNG");
@@ -106,6 +98,26 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	infos->SetCommandId(IDM_SHOWINFOS);
 	navElement.push_back(infos);
 
+	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
+	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
+	thumbnailFace->SetLibelle(lblListFace);
+	thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
+	navElement.push_back(thumbnailFace);
+
+	/*
+	CToolbarButton * exportButton = new CToolbarButton(themeToolbar.button);
+	exportButton->SetButtonResourceId(L"IDB_EXPORT");
+	exportButton->SetCommandId(IDM_EXPORT);
+	exportButton->SetLibelle(export_label);
+	navElement.push_back(exportButton);
+	*/
+    
+	CToolbarButton * viewer = new CToolbarButton(themeToolbar.button);
+	viewer->SetButtonResourceId(L"IDB_THUMBNAILPNG");
+	viewer->SetLibelle(L"Viewer Mode");
+	viewer->SetCommandId(IDM_VIEWERMODE);
+	navElement.push_back(viewer);
+    
 	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_EXIT");
 	imageFirst->SetLibelle(lblQuit);
@@ -120,7 +132,7 @@ CToolbar::~CToolbar()
 
 void CToolbar::EventManager(const int &id)
 {
-	CCentralWnd * centralWnd = (CCentralWnd *)this->FindWindowById(CENTRALEXPLORERWINDOWID);
+	CCentralWnd * centralWnd = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
 	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 
 	if (mainWindow != nullptr && nullptr != centralWnd)
@@ -146,41 +158,121 @@ void CToolbar::EventManager(const int &id)
                 break;
 #endif
         case IDM_REFRESHFOLDER:
-             mainWindow->RefreshFolder();
+			if (mainWindow != nullptr)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+				mainWindow->GetEventHandler()->AddPendingEvent(evt);
+			}
             break;
 
 
         case IDM_REFRESHTHUMBNAIL:
-            centralWnd->RefreshThumbnail();
+			{
+				wxWindow * window = this->FindWindowById(THUMBNAILFOLDER);
+				if (window)
+				{
+					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHTHUMBNAIL);
+					evt.SetExtraLong(1);
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
+
+				if (mainWindow != nullptr)
+				{
+					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CRITERIASHOWUPDATE);
+					mainWindow->GetEventHandler()->AddPendingEvent(evt);
+				}
+			}
             break;
-                
-#ifdef VIEWER
-                
-        case IDM_REFRESHFILTER:
-            centralWnd->RefreshFilter();
+            
+        case IDM_VIEWERMODE:
+        {
+            centralWnd->HidePanel();
+        }
+        break;
+                               
+		case IDM_REFRESHFILTER:
+		{
+			//centralWnd->UpdateCriteria(true);
+			wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+			if (window)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+				evt.SetExtraLong(3);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
             break;
                 
 		case IDM_CRITERIA:
-			centralWnd->ShowFilter();
+		{
+			wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
+			if (window)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELCRITERIA);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+			//centralWnd->ShowPanelCriteria();
 			break;
-#endif
+
+		case ID_FILE_OPENNEWFOLDER:
+		{
+			wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
+			if (window)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELFOLDER);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+			//mainWindow->OpenFolder();
+			//centralWnd->ShowPanelFolder();
+			break;
 
 		case IDM_THUMBNAIL:
-			centralWnd->ShowPanelThumbnail();
+		{
+			//centralWnd->ShowPanelThumbnail();
+			wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
+			if (window)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWPANELTHUMBNAIL);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+
 			centralWnd->ShowPanelVideoThumbnail();
+		}
+			break;
+
+		case IDM_THUMBNAILFACE:
+			{
+				//centralWnd->ShowPanelThumbnail();
+				wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
+				if (window)
+				{
+					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWPANELTHUMBNAIL);
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
+
+				centralWnd->ShowListFace();
+			}
 			break;
 
 		case IDM_SHOWINFOS:
-			centralWnd->ShowPanelInfos();
+			{
+				wxWindow * window = this->FindWindowById(PREVIEWINFOWND);
+				if (window)
+				{
+					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWPANELINFO);
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
+			}
+			//centralWnd->ShowPanelInfos();
 			break;
 
 		case IDM_PICTUREDETAILS:
 			mainWindow->ShowToolbar();
 			break;
 
-		case ID_FILE_OPENNEWFOLDER:
-			mainWindow->OpenFolder();
-			break;
+
 		case IDM_QUITTER:
 			mainWindow->Exit();
 			break;

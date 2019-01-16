@@ -17,9 +17,6 @@
 #ifndef IMAGE_WRITER_H
 #define IMAGE_WRITER_H
 
-#include <string>
-#include <inttypes.h>
-
 namespace ffmpegthumbnailer
 {
 
@@ -30,7 +27,7 @@ public:
     virtual ~ImageWriter() {}
 
 	virtual void setText(const std::string& key, const std::string& value) = 0;
-	virtual void writeFrame(uint8_t** rgbData, int width, int height, int quality) = 0;
+	virtual void writeFrame(std::vector<uint8_t> & rgbData, int lineSize, int width, int height, int quality, int thumbnailWidth, int thumbnailHeight, int rotation) = 0;
 };
 
 }

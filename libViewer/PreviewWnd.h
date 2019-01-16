@@ -2,25 +2,24 @@
 
 #include "FiltreToolbar.h"
 #include "PreviewToolbar.h"
+#include "AnimationToolbar.h"
 #include <ShowBitmap.h>
-#include <ShowVideo.h>
-#include <RegardsBitmap.h>
 #include <EffectVideoParameter.h>
 #include <BitmapInterface.h>
 #include <ToolbarInterface.h>
 #include <BitmapInfos.h>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
 #include <wx/animate.h>
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
+#ifndef FFMPEG
+#include <ShowVideo.h>
 using namespace Regards::Video;
+#else
+class CShowVideo;
+#endif
 
-
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -29,11 +28,10 @@ namespace Regards
 		class CPreviewWnd : public CWindowMain, public CBitmapInterface, public CToolbarInterface
 		{
 		public:
-			CPreviewWnd(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
+			CPreviewWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
 			~CPreviewWnd();
-			bool SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation = false);
 			bool SetVideo(const wxString &filename);
-            bool SetAnimation(const wxString &filename);
 			void SetEffect(const bool &effect);
 			void TransitionEnd();
 			void ImageSuivante();
@@ -41,8 +39,7 @@ namespace Regards
 			void Resize();
 			void SetVideoPosition(const int &videoTime);
             void UpdateScreenRatio();
-			void ShowToolbar();
-			void HideToolbar();
+
 			bool IsToolbarVisible();
 
 			void ShowValidationToolbar(const bool &visible, const int &filtre);
@@ -60,26 +57,28 @@ namespace Regards
             
 		protected:
 
+			void ShowToolbar(wxCommandEvent& event);
+			void HideToolbar(wxCommandEvent& event);
             void OnPaint(wxPaintEvent& event);
             
-            wxAnimationCtrl * m_animationCtrl = nullptr;
-			CShowBitmap * showBitmapWindow = nullptr;
-			CShowVideo * showVideoWindow = nullptr;
+			CShowBitmap * showBitmapWindow;
+			CShowVideo * showVideoWindow;
 
-			CPreviewToolbar * previewToolbar = nullptr;
-			CBitmapInfos * bitmapInfos = nullptr;
-			CVideoEffectParameter * videoEffectParameter = nullptr;
-			CFiltreToolbar * filtreToolbar = nullptr;
+			CAnimationToolbar * animationToolbar;
+			CPreviewToolbar * previewToolbar;
+			CBitmapInfos * bitmapInfos;
+			CFiltreToolbar * filtreToolbar;
 
-            bool isBitmap = false;
-            bool isAnimation = false;
-			bool isVideo = false;
-			bool isEffect = false;
-            bool showToolbar = true;
-			bool fullscreen = false;
-			bool isDiaporama = false;
+			bool isAnimation;
+            bool isBitmap;
+			bool isVideo;
+			bool isEffect;
+            bool showToolbar;
+			bool fullscreen;
+			bool isDiaporama;
             wxString oldfilename;
 			CThemeBitmapWindow themeBitmap;
+
 		};
 	}
 }

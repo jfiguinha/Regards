@@ -14,15 +14,22 @@ namespace Regards
 		public:
 
 			CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme);
-			~CPane();
+			virtual ~CPane();
 
 			int SetTooltipText(const wxString & tooltip);
 
 			void SetTitle(const wxString & title);
 
+			void SetOtherWindow(CWindowMain * window)
+			{
+				hMainWndOther = window;
+                hWndOther = window;
+			};
+
 			void SetOtherWindow(wxWindow * window)
 			{
 				hWndOther = window;
+                hMainWndOther = nullptr;
 			};
             
             void UpdateScreenRatio();
@@ -39,14 +46,15 @@ namespace Regards
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 
-
+			void OnIdle(wxIdleEvent& evt);
 		private:
 
-			CTitleBar * titleBar = nullptr;
-			wxWindow * hWndOther = nullptr;
-			CPaneInterface * paneInterface = nullptr;
+			CTitleBar * titleBar;
+            wxWindow * hWndOther;
+			CWindowMain * hMainWndOther;
+			CPaneInterface * paneInterface;
 			int idPane;
-			bool titleBarVisible = true;
+			bool titleBarVisible;
 			CThemePane themePane;
 		};
 	}

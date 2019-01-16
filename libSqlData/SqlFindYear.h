@@ -1,9 +1,6 @@
 #pragma once
 #include "SqlExecuteRequest.h"
 #include "SqlResult.h"
-#include <string>
-#include <vector>
-using namespace std;
 
 namespace Regards
 {

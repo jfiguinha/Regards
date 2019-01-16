@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "PngOption.h"
 
 #ifndef WX_PRECOMP
@@ -19,6 +18,8 @@ END_EVENT_TABLE()
 
 PngOption::PngOption(wxWindow* parent)
 {
+	isOk = false;
+    compressOption = 0;
 	//(*Initialize(PngOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("PngOption"),_T("wxDialog"));
 	rbInterlace = (wxRadioBox*)FindWindow(XRCID("ID_RBINTERLACE"));

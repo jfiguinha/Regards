@@ -1,6 +1,8 @@
 #include "PreviewWnd.h"
 #include "MainWindow.h"
-#include <effect.h>
+#ifdef FFMPEG
+#include <ShowVideo.h>
+#endif
 #include <libPicture.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -10,6 +12,7 @@
 #include "ViewerParam.h"
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
+#include <ImageLoadingFormat.h>
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 
@@ -17,9 +20,23 @@ using namespace Regards::Viewer;
 #define PANE_PREVIEW 3
 
 
-CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CVideoEffectParameter * videoEffectParameter, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
-	: CWindowMain(parent, id)
+CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id,
+	IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
+	: CWindowMain("CPreviewWnd",parent, id)
 {
+	showBitmapWindow = nullptr;
+	showVideoWindow = nullptr;
+	previewToolbar = nullptr;
+	bitmapInfos = nullptr;
+	filtreToolbar = nullptr;
+	isBitmap = false;
+	isVideo = false;
+	isEffect = false;
+	isAnimation = false;
+    showToolbar = true;
+	fullscreen = false;
+	isDiaporama = false;
+	animationToolbar = nullptr;
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 	
 	if (viewerTheme != nullptr)
@@ -34,6 +51,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CVideoEffectParameter 
 		CThemeToolbar theme;
 		viewerTheme->GetPreviewToolbarTheme(&theme);
 		previewToolbar = new CPreviewToolbar(this, wxID_ANY, theme, this);
+		animationToolbar = new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this);
 	}
 
 	if (viewerTheme != nullptr)
@@ -46,49 +64,55 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CVideoEffectParameter 
     if (viewerTheme != nullptr)
         viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
+
+
+
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, mainWnd, this, statusBarInterface, viewerTheme);
-	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, videoEffectParameter, viewerTheme);
-	m_animationCtrl = new wxAnimationCtrl(this, wxID_ANY);
+	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, statusBarInterface, viewerTheme);
+	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);
     Connect(wxEVT_PAINT, wxPaintEventHandler(CPreviewWnd::OnPaint));
     
     
 	isVideo = false;
-	this->videoEffectParameter = videoEffectParameter;
-
-    m_animationCtrl->Show(false);
+	animationToolbar->Show(false);
 	showVideoWindow->Show(false);
 	filtreToolbar->Show(false);
 	bitmapInfos->Show(false);
 	previewToolbar->Show(false);
+
+	Connect(wxEVENT_HIDETOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::HideToolbar));
+	Connect(wxEVENT_SHOWTOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
 }
 
 
 CPreviewWnd::~CPreviewWnd()
 {
-    delete(m_animationCtrl);
 	delete(showBitmapWindow);
 	delete(showVideoWindow);
 	delete(previewToolbar);
+	delete(animationToolbar);
 	delete(bitmapInfos);
 	delete(filtreToolbar);
+
 }
+
 
 void CPreviewWnd::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+    
     wxPaintDC dc(this);
     wxRect rc = GetRect();
     if(fullscreen)
     {
         this->FillRect(&dc, rc, themeBitmap.colorFullscreen);
-		if (m_animationCtrl->IsShown())
-			m_animationCtrl->SetBackgroundColour(themeBitmap.colorFullscreen);
     }
     else
     {
         this->FillRect(&dc, rc, themeBitmap.colorScreen);
-		if (m_animationCtrl->IsShown())
-			m_animationCtrl->SetBackgroundColour(themeBitmap.colorScreen);
     }
 }
 
@@ -137,14 +161,20 @@ void CPreviewWnd::ClickShowButton(const int &id)
 
 void CPreviewWnd::Resize()
 {
+	//int widthScreen = GetWindowWidth();
+	//int width = this->GetSize().x;
+	//int heightScreen = GetWindowHeight();
+	//int height = this->GetSize().y;
+
+
 	if (isDiaporama)
 	{ 
 		wxRect rcAffichageBitmap;
 		int bitmapInfosHeight = 0;
 		rcAffichageBitmap.x = 0;
 		rcAffichageBitmap.y = 0;
-		rcAffichageBitmap.width = width;
-		rcAffichageBitmap.height = height;
+		rcAffichageBitmap.width = GetWindowWidth();
+		rcAffichageBitmap.height = GetWindowHeight();
 
         if(bitmapInfos != nullptr)
             bitmapInfos->SetSize(0, 0, 0, 0);
@@ -152,15 +182,21 @@ void CPreviewWnd::Resize()
             filtreToolbar->SetSize(0, 0, 0, 0);
         if(previewToolbar != nullptr)
             previewToolbar->SetSize(0, 0, 0, 0);
+		if(animationToolbar != nullptr)
+			animationToolbar->SetSize(0, 0, 0, 0);
 
         if(showBitmapWindow != nullptr)
         {
             if (showBitmapWindow->IsShown())
+			{
                 showBitmapWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
+				//showBitmapWindow->SendSizeEvent();
+			}
             else if(showVideoWindow->IsShown())
+			{
                 showVideoWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
-            else if(m_animationCtrl->IsShown())
-                m_animationCtrl->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
+				//showVideoWindow->SendSizeEvent();
+			}
         }
         
         return;
@@ -173,40 +209,32 @@ void CPreviewWnd::Resize()
             wxRect rcAffichageBitmap;
             int bitmapInfosHeight = bitmapInfos->GetHeight();
             int toolbarHeightSize = previewToolbar->GetHeight();
+			int toolbarAnimationHeightSize = animationToolbar->GetHeight();
             //if (filtreToolbar->IsShown())
             //    toolbarHeightSize = filtreToolbar->GetHeight();
             
-            if (!showBitmapWindow->IsShown() && !showVideoWindow->IsShown() && !m_animationCtrl->IsShown())
+            if (!showBitmapWindow->IsShown() && !showVideoWindow->IsShown() && !animationToolbar->IsShown())
                 bitmapInfosHeight = 0;
 
             rcAffichageBitmap.x = 0;
             rcAffichageBitmap.y = 0;
-            rcAffichageBitmap.width = width;
-            rcAffichageBitmap.height = height - toolbarHeightSize;
+            rcAffichageBitmap.width = GetWindowWidth();
+            rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize;
 
             if (showBitmapWindow->IsShown())
             {
+				if (animationToolbar->IsShown())
+				{
+					rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize - toolbarAnimationHeightSize;
+				}
+
                 if (bitmapInfos->IsShown())
                     bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
                 else
                     bitmapInfosHeight = 0;
 
                 showBitmapWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
-            }
-            else if(m_animationCtrl->IsShown())
-            {
-                if (bitmapInfos->IsShown())
-                    bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
-                else
-                    bitmapInfosHeight = 0;
-                
-                wxAnimation animation = m_animationCtrl->GetAnimation();
-                wxSize animationSize = animation.GetSize();
-                
-                int xPos = rcAffichageBitmap.x + (width - animationSize.GetWidth()) / 2;
-                int yPos = bitmapInfosHeight + ((height - bitmapInfosHeight - toolbarHeightSize) - animationSize.GetHeight()) / 2;
-                
-                m_animationCtrl->SetSize(xPos, yPos, animationSize.GetWidth(), animationSize.GetHeight());
+				//showBitmapWindow->SendSizeEvent();
             }
             else
             {
@@ -216,12 +244,21 @@ void CPreviewWnd::Resize()
                     bitmapInfosHeight = 0;
 
                 showVideoWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
+				//showVideoWindow->SendSizeEvent();
             }
 
             if (filtreToolbar->IsShown())
                 filtreToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
-            else
-                previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+			else
+			{
+				if (animationToolbar->IsShown())
+				{
+					animationToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarAnimationHeightSize);
+					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height + toolbarAnimationHeightSize, rcAffichageBitmap.width, toolbarHeightSize);
+				}
+				else
+					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+			}
             
             return;
         }
@@ -229,11 +266,12 @@ void CPreviewWnd::Resize()
 
 		
     if (showBitmapWindow->IsShown())
-        showBitmapWindow->SetSize(0, 0, width, height);
-    else if(m_animationCtrl->IsShown())
-        m_animationCtrl->SetSize(0, 0, width, height);
+	{
+        showBitmapWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		//showBitmapWindow->SendSizeEvent();
+	}
     else
-        showVideoWindow->SetSize(0, 0, width, height);
+        showVideoWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 
 }
 
@@ -256,13 +294,19 @@ void CPreviewWnd::SetEffect(const bool &effect)
 	//showBitmapWindow->SetEffect(effect);
 	if (previewToolbar->IsShown())
 		previewToolbar->Show(false);
+	if (animationToolbar->IsShown())
+		animationToolbar->Show(false);
 	if (!filtreToolbar->IsShown())
 		filtreToolbar->Show(true);
 	Resize();
+
+	
 }
 
-void CPreviewWnd::HideToolbar()
+void CPreviewWnd::HideToolbar(wxCommandEvent& event)
 {
+	showToolbar = false;
+
 	if (!isEffect)
 	{
 		if (previewToolbar != nullptr)
@@ -277,6 +321,9 @@ void CPreviewWnd::HideToolbar()
 			{
 				if (previewToolbar->IsShown())
 					previewToolbar->Show(false);
+
+				if (animationToolbar->IsShown())
+					animationToolbar->Show(false);
 
 				if (isVideo)
                 {
@@ -308,6 +355,10 @@ void CPreviewWnd::ShowValidationToolbar(const bool &visible, const int &filtre)
 			previewToolbar->Show(false);
 	}
 
+	if(animationToolbar != nullptr)
+		if (animationToolbar->IsShown())
+			animationToolbar->Show(false);
+
 	if (filtreToolbar != nullptr)
 	{
 		if (!filtreToolbar->IsShown())
@@ -318,7 +369,6 @@ void CPreviewWnd::ShowValidationToolbar(const bool &visible, const int &filtre)
 
 void CPreviewWnd::HideValidationToolbar()
 {
-    showToolbar = false;
 	isEffect = false;
 	if (filtreToolbar != nullptr)
 	{
@@ -326,10 +376,14 @@ void CPreviewWnd::HideValidationToolbar()
 			filtreToolbar->Show(false);
 	}
 	showBitmapWindow->SetBitmapPreviewEffect(0);
-	ShowToolbar();
+	if (showToolbar)
+	{
+		wxCommandEvent event;
+		ShowToolbar(event);
+	}
 }
 
-void CPreviewWnd::ShowToolbar()
+void CPreviewWnd::ShowToolbar(wxCommandEvent& event)
 {
     showToolbar = true;
 	if (!isEffect)
@@ -343,8 +397,13 @@ void CPreviewWnd::ShowToolbar()
 
 			if (isVideo)
                 showVideoWindow->ShowToolbar();
-			else if(isBitmap)
+			else if (isBitmap)
+			{
+				if (isAnimation)
+					if (!animationToolbar->IsShown())
+						animationToolbar->Show(true);
 				showBitmapWindow->ShowToolbar();
+			}
 
 			Resize();
 		}
@@ -357,6 +416,7 @@ void CPreviewWnd::UpdateScreenRatio()
     showVideoWindow->UpdateScreenRatio();
     previewToolbar->UpdateScreenRatio();
     bitmapInfos->UpdateScreenRatio();
+	animationToolbar->UpdateScreenRatio();
     filtreToolbar->UpdateScreenRatio();
     this->Resize();
 }
@@ -383,106 +443,71 @@ void CPreviewWnd::SetFullscreen(const bool &fullscreen)
 	Resize();
 }
 
-bool CPreviewWnd::SetAnimation(const wxString &filename)
-{
-    if(oldfilename != filename)
-    {
-        filtreToolbar->Show(false);
-        if (isVideo)
-            showVideoWindow->StopVideo();
-        else if(isBitmap)
-            showBitmapWindow->StopTransition();
-        
-        if(!m_animationCtrl->IsShown())
-            m_animationCtrl->Show(true);
-        
-        if(showBitmapWindow->IsShown())
-            showBitmapWindow->Show(false);
-        
-        if(showVideoWindow->IsShown())
-            showVideoWindow->Show(false);
-        
-        if(showToolbar && !bitmapInfos->IsShown())
-            bitmapInfos->Show(true);
-        
-        bitmapInfos->SetFilename(filename);
-        
-        if(showToolbar)
-            bitmapInfos->Refresh();
-        
-        isVideo = false;
-        isBitmap = false;
-        
-        if(isAnimation)
-            m_animationCtrl->Stop();
-
-        m_animationCtrl->LoadFile(filename);
-        m_animationCtrl->Play();
-        
-        
-        isAnimation = true;
-        oldfilename = filename;
-        this->Resize();
-    }
-    return 1;
-}
-
 void CPreviewWnd::UpdateInfos()
 {
     if(bitmapInfos != nullptr)
         bitmapInfos->UpdateData();
 }
 
-bool CPreviewWnd::SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail)
+bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation )
 {
-    wxString filename = bitmap->GetFilename();
-    if(oldfilename != filename)
-    {
+    TRACE();
+	if(bitmap != nullptr && bitmap->IsOk())
+	{
+		wxString filename = bitmap->GetFilename();
+		if(oldfilename != filename)
+		{
         
-        filtreToolbar->Show(false);
-        if (isVideo)
-            showVideoWindow->StopVideo();
-        else if(isAnimation)
-            m_animationCtrl->Stop();
-        else
-            showBitmapWindow->StopTransition();
-        
-        if(m_animationCtrl->IsShown())
-            m_animationCtrl->Show(false);
-        
-        if(!showBitmapWindow->IsShown())
-            showBitmapWindow->Show(true);
-        
-        if(showVideoWindow->IsShown())
-            showVideoWindow->Show(false);
-
-        if(showToolbar && !bitmapInfos->IsShown())
-            bitmapInfos->Show(true);
-        
-        bitmapInfos->SetFilename(filename);
-        bitmapInfos->Refresh();
-
-        isVideo = false;
-        isAnimation = false;
-        isBitmap = true;
             
-        showBitmapWindow->SetBitmap(bitmap);
-        oldfilename = filename;
+            
+			this->isAnimation = isAnimation;
+			filtreToolbar->Show(false);
+
+			showBitmapWindow->StopTransition();
         
-        this->Resize();
-    }
-    else if(!isThumbnail)
-    {
-        showBitmapWindow->StopLoadingPicture();
-        showBitmapWindow->SetBitmap(bitmap);
-        this->Resize();
-    }
+			if (!isAnimation)
+				animationToolbar->Show(false);
+			else
+				animationToolbar->Show(true);
+        
+			if(!showBitmapWindow->IsShown())
+			   showBitmapWindow->Show(true);
+        
+			if(showVideoWindow->IsShown())
+				showVideoWindow->Show(false);
+
+			if(showToolbar && !bitmapInfos->IsShown())
+				bitmapInfos->Show(true);
+        
+			bitmapInfos->SetFilename(filename);
+			//bitmapInfos->Refresh();
+
+			isVideo = false;
+			isBitmap = true;
+            
+			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
+			oldfilename = filename;
+        
+			this->Resize();
+		}
+		else if(!isThumbnail)
+		{
+			//showBitmapWindow->StopLoadingPicture();
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
+			showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+
+			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
+			this->Resize();
+		}
+	}
 	return 1;
 }
 
 void CPreviewWnd::StartLoadingPicture()
 {
-    showBitmapWindow->StartLoadingPicture();
+    //showBitmapWindow->StartLoadingPicture();
+	wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
+	showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
 bool CPreviewWnd::SetVideo(const wxString &filename)
@@ -491,22 +516,14 @@ bool CPreviewWnd::SetVideo(const wxString &filename)
     {
         CLibPicture libPicture;
         filtreToolbar->Show(false);
-        if (isVideo)
-        {
-            if(oldfilename != filename)
-                showVideoWindow->StopVideo();
-        }
-        else if(isAnimation)
-        {
-            m_animationCtrl->Stop();
-        }
-        else
+
+        if(isBitmap)
         {
             showBitmapWindow->StopTransition();
         }
         
-        if(m_animationCtrl->IsShown())
-            m_animationCtrl->Show(false);
+        if(animationToolbar->IsShown())
+			animationToolbar->Show(false);
         
         if(showBitmapWindow->IsShown())
             showBitmapWindow->Show(false);
@@ -515,11 +532,9 @@ bool CPreviewWnd::SetVideo(const wxString &filename)
             showVideoWindow->Show(true);
         
         isVideo = true;
-        isAnimation = false;
         isBitmap = false;
-        
-        int width = 0, height = 0, rotation = 0;
-
+		isAnimation = false;
+		int width = 0, height = 0;
         //Initialisation du player Video
         if(showToolbar && !bitmapInfos->IsShown())
             bitmapInfos->Show(true);
@@ -527,10 +542,9 @@ bool CPreviewWnd::SetVideo(const wxString &filename)
         bitmapInfos->SetFilename(filename);
         bitmapInfos->Refresh();
         
-        libPicture.GetDimensions(filename, width, height, rotation);
-        videoEffectParameter->rotation = 360 - rotation;
-        showVideoWindow->SetVideo(filename);
-        
+		int rotation = 0;
+        libPicture.GetPictureDimensions(filename, width, height, rotation);
+        showVideoWindow->SetVideo(filename, rotation);
         oldfilename = filename;
         this->Resize();
     }

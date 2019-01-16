@@ -22,7 +22,8 @@ namespace Regards
 			void SetActifElement(const wxString &key);
 			void AddModification(CRegardsBitmap * bitmap, const wxString &libelle);
             void UpdateScreenRatio();
-            
+			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
+
 		private:
 
             void InitTree(const wxString &libelle, const wxString &key);
@@ -40,8 +41,9 @@ namespace Regards
 			int index;
 			tree<CTreeData *>::iterator top;
 			tree<CTreeData *>::iterator child;
+			//tree<CTreeData *>::iterator childStart;
 			CModificationManager * modificationManager;
-			int widthPosition = 0;
+			int widthPosition;
 			CBitmapWndViewer * bitmapViewer;
 			wxString filename;
 		};

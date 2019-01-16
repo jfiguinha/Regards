@@ -5,7 +5,8 @@
 
 CVideoThumbnail::CVideoThumbnail()
 {
-	for (int i = 0; i < NBELEMENT; i++)
+	copy = false;
+	for (auto i = 0; i < NBELEMENT; i++)
 	{
 		bitmap[i] = nullptr;
 
@@ -16,7 +17,7 @@ CVideoThumbnail::~CVideoThumbnail()
 {
 	if (!copy)
 	{
-		for (int i = 0; i < NBELEMENT; i++)
+		for (auto i = 0; i < NBELEMENT; i++)
 		{
 			if (bitmap[i] != nullptr)
 			{

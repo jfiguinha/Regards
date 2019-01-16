@@ -1,11 +1,5 @@
 #pragma once
-#include <string>
-#include <Theme.h>
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-using namespace std;
+#include <theme.h>
 
 namespace Regards
 {

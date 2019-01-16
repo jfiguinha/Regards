@@ -1,5 +1,4 @@
-#ifndef COPYFILEDLG_H
-#define COPYFILEDLG_H
+#pragma once
 
 #ifndef WX_PRECOMP
 	//(*HeadersPCH(CopyFileDlg)
@@ -11,10 +10,7 @@
 #endif
 //(*Headers(CopyFileDlg)
 //*)
-#ifdef __APPLE__
-#include <AppleReadExif.h>
-#endif
-#include <vector>
+
 #include <ThumbnailData.h>
 #include <libPicture.h>
 #include "ExportFile.h"
@@ -66,16 +62,16 @@ class CopyFileDlg: public wxDialog
 		wxString CreateExportFolder(const InfoExportFile & infoFile, const wxString &folderDestination, const wxString &dateFile, const wxString &gpsFile);
 		wxString GenerateFileName(const InfoExportFile & infoFile, const wxString &dateFile, const wxString &gpsFile);
 
-		int progress = 0;
-		int width = 0;
-		int height = 0;
-		bool start = false;
-		int mode = 0;
+		short progress;
+		int width;
+		int height;
+		bool start;
+		int mode;
 
-        wxString selectDate = "";
-        wxString lat = "";
-        wxString lng = "";
-        wxString geoInfos = "";
+        wxString selectDate;
+        wxString lat;
+        wxString lng;
+        wxString geoInfos;
 		wxString caption;
 		wxString text;
 		wxString message;
@@ -83,18 +79,14 @@ class CopyFileDlg: public wxDialog
 		wxString informations;
 		wxString destinationFolder;
 
-#ifdef __APPLE__
-        CAppleReadExif appleReadExif;
-#endif
-		vector<CThumbnailData *> * listItem = nullptr;
+
+		vector<CThumbnailData *> * listItem;
 		CLibPicture libPicture;
 		InfoExportFile infoFile;
-		int optionPicture = 0;
-		int qualityPicture = 0;
-        float latitude = 0.0;
-        float longitude = 0.0;
+		int optionPicture;
+		int qualityPicture;
+        float latitude;
+        float longitude;
         wxDateTime newDate;
 		DECLARE_EVENT_TABLE()
 };
-
-#endif

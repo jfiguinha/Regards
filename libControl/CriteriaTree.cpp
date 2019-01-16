@@ -7,6 +7,9 @@
 #include "TreeDataLink.h"
 #include <PhotoCriteria.h>
 #include <wx/filename.h>
+#include <libPicture.h>
+#include <SqlFindFacePhoto.h>
+#include <LibResource.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -21,6 +24,10 @@ PhotoCategorieVector CCriteriaTree::photoCategorieVector;
 
 CCriteriaTree::CCriteriaTree(CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
 {
+	rotation = 0;
+    numPhotoId = 0;
+	filename = L"";
+	widthPosition = 0;
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
 	themeTree = *theme;
@@ -65,29 +72,23 @@ void CCriteriaTree::AddTreeInfos(const wxString &exifKey, const wxString &exifVa
     wchar_t * token1;
     
 	// Establish string and get the first token:
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &token1); // C4996
 #endif
-#else
-    wchar_t * token = wcstok(informations, seps, &token1); // C4996
-#endif
+
 	// Note: strtok is deprecated; consider using strtok_s instead
 	while (token != nullptr)
 	{
 		CTreeData * treeData = new CTreeData();
 		treeData->SetKey(token);
-#ifdef WIN32
-#if _MSC_VER < 1900
+#if defined(WIN32) && _MSC_VER < 1900
 	wchar_t * token = wcstok(informations, seps); // C4996
 #else
 	wchar_t * token = wcstok(informations, seps, &token1); // C4996
 #endif
-#else
-    wchar_t * token = wcstok(informations, seps, &token1); // C4996
-#endif
+
 		if (token != nullptr)
 		{
 			treeData->SetIsParent(true);
@@ -169,9 +170,29 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
     treeDataPicture->SetKey("Criteria");
     child = tr.insert(top, treeDataPicture);
     
-    for(CPhotoCategorie photoCategorie : photoCategorieVector)
+	for(CPhotoCategorie photoCategorie : photoCategorieVector)
     {
-        if(photoCategorie.GetId() == 2)
+		if(photoCategorie.GetId() == 4)
+		{
+			CSqlFindFacePhoto sqlFindFacePhoto;
+			std::vector<CFaceName> listFaceName = sqlFindFacePhoto.GetListFaceName(picture);
+			wxString libelleCategorie = photoCategorie.GetLibelle();
+			for(int i = 0;i < listFaceName.size();i++)
+			{
+				wxString value = listFaceName[i].faceName;
+				CTreeDataLink * treeDataFileName = new CTreeDataLink();
+				treeDataFileName->SetIsParent(false);
+				treeDataFileName->SetKey(libelleCategorie);
+				treeDataFileName->SetValue(value);
+				treeDataFileName->SetType(2);
+				treeDataFileName->SetLinkType(0);
+				treeDataFileName->SetId(listFaceName[i].numFace);
+				treeDataFileName->SetLinkPath("");
+				tr.append_child(child, treeDataFileName);
+			}
+
+		}
+        else if(photoCategorie.GetId() == 2)
         {
             wxString libelleCategorie = photoCategorie.GetLibelle();
             wxFileName dirname = wxFileName::DirName(picture);
@@ -237,26 +258,28 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
                 }
                 else
                 {
-                    for(CCriteria criteria : criteriaVector)
-                    {
-                        wxString libelleCategorie = photoCategorie.GetLibelle();
-                        wxString value = criteria.GetLibelle();
+	 for(CCriteria criteria : criteriaVector)
+					{
+                   
+						wxString libelleCategorie = photoCategorie.GetLibelle();
+						wxString value = criteria.GetLibelle();
                     
-                        CTreeDataLink * treeDataFileName = new CTreeDataLink();
-                        treeDataFileName->SetIsParent(false);
-                        treeDataFileName->SetKey(libelleCategorie);
-                        treeDataFileName->SetValue(value);
-                        treeDataFileName->SetType(2);
-                        treeDataFileName->SetLinkType(0);
-                        treeDataFileName->SetId(criteria.GetId());
-                        treeDataFileName->SetLinkPath("");
-                        tr.append_child(child, treeDataFileName);
+						CTreeDataLink * treeDataFileName = new CTreeDataLink();
+						treeDataFileName->SetIsParent(false);
+						treeDataFileName->SetKey(libelleCategorie);
+						treeDataFileName->SetValue(value);
+						treeDataFileName->SetType(2);
+						treeDataFileName->SetLinkType(0);
+						treeDataFileName->SetId(criteria.GetId());
+						treeDataFileName->SetLinkPath("");
+						tr.append_child(child, treeDataFileName);
                     }
                 }
             }
         }
     }
     
+
     CreateElement();
 	
 }
@@ -329,23 +352,44 @@ void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window
         //treeElementTexte->ClickElement(window, x, y);
         if(treeElementTexte->GetTypeLink() == 3)
         {
-            CTreeDataLink * treedata = (CTreeDataLink *)element->GetTreeData();
-            CPhotoCriteria * photoCriteria = new CPhotoCriteria();
-            photoCriteria->SetCriteriaId(treedata->GetId());
-            photoCriteria->SetPhotoId(numPhotoId);
-            wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWCALENDAR);
-            event->SetClientData(photoCriteria);
-            wxQueueEvent(window->GetParent()->GetParent(), event);
+			CLibPicture libpicture;
+			if(libpicture.TestIsExifCompatible(filename))
+			{
+				CTreeDataLink * treedata = (CTreeDataLink *)element->GetTreeData();
+				CPhotoCriteria * photoCriteria = new CPhotoCriteria();
+				photoCriteria->SetCriteriaId(treedata->GetId());
+				photoCriteria->SetPhotoId(numPhotoId);
+				wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWCALENDAR);
+				event->SetClientData(photoCriteria);
+				wxQueueEvent(window->GetParent()->GetParent(), event);
+			}
+			else
+			{
+                wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations",1);
+                wxString notCompatibleFormat = CLibResource::LoadStringFromResource(L"NotCompatibleFormat",1);
+				wxMessageBox(notCompatibleFormat, labelInformations, wxICON_INFORMATION);
+			}
+
         }
         else if(treeElementTexte->GetTypeLink() == 1)
         {
-            CTreeDataLink * treedata = (CTreeDataLink *)element->GetTreeData();
-            CPhotoCriteria * photoCriteria = new CPhotoCriteria();
-            photoCriteria->SetCriteriaId(treedata->GetId());
-            photoCriteria->SetPhotoId(numPhotoId);
-            wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWMAP);
-            event->SetClientData(photoCriteria);
-            wxQueueEvent(window->GetParent()->GetParent(), event);
+			CLibPicture libpicture;
+			if(libpicture.TestIsExifCompatible(filename))
+			{
+				CTreeDataLink * treedata = (CTreeDataLink *)element->GetTreeData();
+				CPhotoCriteria * photoCriteria = new CPhotoCriteria();
+				photoCriteria->SetCriteriaId(treedata->GetId());
+				photoCriteria->SetPhotoId(numPhotoId);
+				wxCommandEvent * event = new wxCommandEvent(wxEVT_SHOWMAP);
+				event->SetClientData(photoCriteria);
+				wxQueueEvent(window->GetParent()->GetParent(), event);
+			}
+			else
+			{
+                wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations",1);
+                wxString notCompatibleFormat = CLibResource::LoadStringFromResource(L"NotCompatibleFormat",1);
+				wxMessageBox(notCompatibleFormat, labelInformations, wxICON_INFORMATION);
+			}
         }
     }
     
@@ -359,7 +403,7 @@ void CCriteriaTree::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
     bool isVisible = true;
     //int i =
     
-    for (int i = 0; i < parent.number_of_children(); i++)
+    for (auto i = 0; i < parent.number_of_children(); i++)
     {
         int profondeur = tr.depth(it);
         CTreeData * data = *it;

@@ -14,16 +14,22 @@ using namespace Regards::Window;
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CInfosFileWnd::CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & theme)
-: CWindowMain(parent, id)
+: CWindowMain("CInfosFileWnd",parent, id)
 {
+	InfosFileScroll = nullptr;
+	treeWindow = nullptr;
+	infosFile = nullptr;
+	oldInfosFileControl = nullptr;
     InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-    treeWindow = new CTreeWindow(InfosFileScroll, wxID_ANY, theme);
+    treeWindow = new CTreeWindow(InfosFileScroll, INFOSFILEWINDOWID, theme);
     InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
     Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CInfosFileWnd::UpdateTreeInfosEvent));
 }
 
 CInfosFileWnd::~CInfosFileWnd(void)
 {
+    TRACE();
+    
     if(oldInfosFileControl != nullptr)
         delete(oldInfosFileControl);
     
@@ -36,6 +42,8 @@ CInfosFileWnd::~CInfosFileWnd(void)
 
 void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
 {
+    TRACE();
+    
     CThreadLoadInfos * threadInfos = (CThreadLoadInfos *)event.GetClientData();
     if(threadInfos->filename == filename)
     {
@@ -46,7 +54,8 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
         wxQueueEvent(this->GetParent(), event);
         
         treeWindow->SetTreeControl(threadInfos->infosFileWnd);
-        delete(oldInfosFileControl);
+
+		delete(oldInfosFileControl);
         oldInfosFileControl = threadInfos->infosFileWnd;
     }
     else
@@ -56,25 +65,43 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
     delete threadInfos->threadLoadInfos;
     delete threadInfos;
     
+
+	treeWindow->Refresh();
 }
 
 void CInfosFileWnd::InfosUpdate(const wxString &filename)
 {
-    this->filename = filename;
-    CInfosFile * infosFileWnd = new CInfosFile(treeWindow->GetTheme(), treeWindow);
-    CThreadLoadInfos * threadInfos = new CThreadLoadInfos();
-    threadInfos->infosFileWnd = infosFileWnd;
-    threadInfos->panelInfos = this;
-    threadInfos->filename = filename;
-    threadInfos->threadLoadInfos = new std::thread(GenerateTreeInfos, threadInfos);
+    TRACE();
     
-    wxCommandEvent * event = new wxCommandEvent(wxEVT_STARTANIMATION);
-    event->SetClientData(this);
-    wxQueueEvent(this->GetParent(), event);
+	if(filename != this->filename)
+	{
+		this->filename = filename;
+		CInfosFile * infosFileWnd = new CInfosFile(treeWindow->GetTheme(), treeWindow);
+		CThreadLoadInfos * threadInfos = new CThreadLoadInfos();
+		threadInfos->infosFileWnd = infosFileWnd;
+		threadInfos->panelInfos = this;
+		threadInfos->filename = filename;
+		threadInfos->threadLoadInfos = new thread(GenerateTreeInfos, threadInfos);
+    
+		wxCommandEvent * event = new wxCommandEvent(wxEVT_STARTANIMATION);
+		event->SetClientData(this);
+		wxQueueEvent(this->GetParent(), event);
+	}
+	/*
+	int x = InfosFileScroll->GetSize().x;
+	int y = InfosFileScroll->GetSize().y;
+
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
+
+	Resize();
+	*/
 }
 
 void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
 {
+    TRACE();
+    
     CInfosFile * infosFileWnd = threadInfos->infosFileWnd;
     infosFileWnd->SetFile(threadInfos->filename);
     
@@ -85,6 +112,8 @@ void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
 
 void CInfosFileWnd::UpdateScreenRatio()
 {
+    TRACE();
+    
     InfosFileScroll->UpdateScreenRatio();
     
     if(oldInfosFileControl != nullptr)
@@ -96,7 +125,13 @@ void CInfosFileWnd::UpdateScreenRatio()
 
 void CInfosFileWnd::Resize()
 {
-    if(InfosFileScroll != nullptr)
-        if (InfosFileScroll->IsShown())
-            InfosFileScroll->SetSize(0, 0, width, height);
+    TRACE();
+    
+	if(InfosFileScroll != nullptr)
+	{
+		InfosFileScroll->SetSize(GetWindowWidth(), GetWindowHeight());
+		//InfosFileScroll->SendSizeEvent();
+		treeWindow->SetSize(GetWindowWidth(),GetWindowHeight());
+		//treeWindow->SendSizeEvent();
+	}
 }

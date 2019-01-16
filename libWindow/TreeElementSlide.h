@@ -1,10 +1,6 @@
 #pragma once
 #include "TreeElement.h"
 #include "TreeElementSlideInterface.h"
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 using namespace Regards::Window;
 
 
@@ -12,6 +8,8 @@ namespace Regards
 {
 	namespace Window
 	{
+
+
 		class CTreeElementSlide : public CTreeElement
 		{
 		public:
@@ -21,13 +19,13 @@ namespace Regards
 			CTreeElementSlide& operator=(const CTreeElementSlide &other);
 
 			void DrawElement(wxDC * deviceContext, const int &x, const int &y);
-			void SetTabValue(vector<int> value);
+			void SetTabValue(vector<CTreeElementValue *> * value);
 			void SetExifKey(const wxString &exifKey);
 			void SetVisible(const bool &visible);
 			void MouseOver(wxDC * deviceContext, const int &x, const int &y);
 			void ClickElement(wxWindow * window, const int &x, const int &y);
 			void UnclickElement(wxWindow * window, const int &x, const int &y);
-
+			void SetInitValue(CTreeElementValue * value);
 
 			bool MouseBlock();
 			void SetElementPos(const int &x, const int &y);
@@ -60,6 +58,7 @@ namespace Regards
 
 		private:
 
+			bool TestEgality(CTreeElementValue * value1, CTreeElementValue * value2, int type);
             wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode);
 			bool FindCirclePos(wxWindow * window, const int &y, const int &x);
 			void ClickLeftPage(const int &x);
@@ -69,9 +68,9 @@ namespace Regards
 			void CalculPositionButton();
 			void DrawShapeElement(wxDC * deviceContext, const wxRect &rc);
 			void RenderSlide(wxDC * deviceContext, const int &width, const int &height, const int &x, const int &y);
-			int GetFirstValue();
-			int GetLastValue();
-			int GetPositionValue();
+			CTreeElementValue * GetFirstValue();
+			CTreeElementValue * GetLastValue();
+			CTreeElementValue * GetPositionValue();
 			void TestMaxMinValue();
 
 			wxCursor hCursorHand;
@@ -80,15 +79,17 @@ namespace Regards
 			wxImage buttonMoins;
 			wxRect positionButton;
 			wxRect positionSlider;
-			int position = 0;
-			vector<int> tabValue;
-			wxString exifKey = L"";
-			CTreeElementSlideInterface * eventInterface = nullptr;
+			
+			vector<CTreeElementValue *> * tabValue;
+			wxString exifKey;
+			int height;
+			int position;
+			CTreeElementSlideInterface * eventInterface;
 			bool mouseBlock;
 			bool captureBall;
 			CThemeTreeSlide themeSlide;
-            int height = 0;
-            bool isVector = true;
+            
+            
             wxString buttonVector;
 			wxString buttonPlusVector;
 			wxString buttonMoinsVector;

@@ -1,6 +1,7 @@
 #include "ConvertUtility.h"
 #include <sstream>
-#include <string>
+#include <locale>
+#include <codecvt>
 using namespace std;
 
 CConvertUtility::CConvertUtility(void)
@@ -12,6 +13,37 @@ CConvertUtility::~CConvertUtility(void)
 {
 }
 
+const std::wstring CConvertUtility::ConvertToStdWstring(const wxString & s)
+{
+#ifdef __WXGTK__
+    std::string chaine = ConvertToStdString(s);
+    std::wstring ws;
+    ws.assign(chaine.begin(), chaine.end());
+    return ws;
+#else
+    return s.ToStdWstring();
+#endif
+}
+
+const std::string CConvertUtility::ConvertToStdString(const wxString & s)
+{
+#ifdef __WXGTK__
+    return std::string(ConvertToUTF8(s)); 
+#else
+    return s.ToStdString();
+#endif    
+}
+
+const char * CConvertUtility::ConvertToUTF8(const wxString & s)
+{
+#ifdef __WXGTK__    
+    const char* str = (const char*)s.mb_str(wxConvUTF8);
+    return str;
+#else
+    return s.mb_str(wxConvUTF8);
+#endif
+}
+
 wxString CConvertUtility::GetTimeLibelle(const int &timePosition)
 {
 	wxString libelle = L"";
@@ -20,9 +52,12 @@ wxString CConvertUtility::GetTimeLibelle(const int &timePosition)
 	int minute = (timePosition % 3600) / 60;
 	int seconds = timePosition % 60;
 
-	wxString shour = std::to_string(hour);
-	wxString sminute = std::to_string(minute);
-	wxString sseconds = std::to_string(seconds);
+	wxString shour;
+	shour << hour;
+	wxString sminute;
+	sminute << minute;
+	wxString sseconds;
+	sseconds << seconds;
 
 	if (shour.size() < 2)
 		libelle.append(L"0");

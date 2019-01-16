@@ -6,16 +6,12 @@
 #include "ModificationManager.h"
 #include <wx/webview.h>
 #include <ScrollbarWnd.h>
-#include <EffectVideoWnd.h>
-#include <string>
-#include <thread>   
-#include <mutex>
 #include <StatusBarInterface.h>
 #include <wx/animate.h>
-#ifdef VIEWER
 #include <CriteriaTreeWnd.h>
-#endif
+#include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
+#include "FiltreEffect.h"
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -25,15 +21,16 @@ using namespace Regards::Internet;
 #define WEB_WINDOW 3
 #define EFFECT_WINDOW 4
 #define SETTINGS_WINDOW 5
+#define AUDIOVIDEO_WINDOW 6
 #define WM_UPDATE_GPSINFOS 10
 #define WM_UPDATE_DATETIMEINFOS 11
 
 
+class CImageLoadingFormat;
 namespace Regards
 {
 	namespace Viewer
 	{
-        
         class CInfoEffectWnd;
         class CFiltreEffectScrollWnd;
         class CThumbnailViewerEffectWnd;
@@ -41,37 +38,39 @@ namespace Regards
 		class CPanelInfosWnd : public CWindowMain, public CToolbarInterface
 		{
 		public:
-			CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CVideoEffectParameter * videoEffectParameter, CFileGeolocation * fileGeolocalisation);
+			CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation);
 			~CPanelInfosWnd();
 			void ShowInfos();
 			void ShowHistory();
 			void ShowEffect();
 			void ShowMap();
+			void ShowAudioVideo();
+			void ShowVideoEffect();
 			void ShowSettings();
 			void OnFiltreOk(const int &numFiltre);
 			void OnFiltreCancel();
-			void SetBitmapFile(const wxString &filename, CRegardsBitmap * bitmap, const bool &isThumbnail);
+			void SetBitmapFile(const wxString &filename, const bool &isThumbnail);
 			void SetVideoFile(const wxString &filename);
 			void SetAnimationFile(const wxString &filename);
 			void ApplyEffect(const int &numItem);
 			wxString GetFilename();
             void UpdateScreenRatio();
             void ShowFiltre(const wxString &title);
-#ifdef VIEWER
             void ShowCriteria();
             void UpdateData();
-#endif
             void StartLoadingPicture(wxWindow * window);
             void StopLoadingPicture(wxWindow * window);
-            
+            CFiltreEffect * GetFilterWindow(int &numFiltre);
+
 		protected:
             
 			wxString MapsUpdate();
 			void EffectUpdate();
 			void HistoryUpdate();
+			void VideoEffectUpdate();
 			void InfosUpdate();
 			void LoadInfo();
-
+			void AudioVideoUpdate();
 			void DisplayURL(const wxString &url);
 
 			void ClickShowButton(const int &id);
@@ -84,47 +83,31 @@ namespace Regards
 			
 			void HideAllWindow();
             
-            wxAnimationCtrl * m_animationCtrl = nullptr;
+            wxAnimationCtrl * m_animationCtrl;
 
-			CInfosFileWnd * infosFileWnd = nullptr;
-
-#ifdef EFFECT_VIDEO
-			CScrollbarWnd * effectVideoWndScroll = nullptr;
-			CTreeWindow * treeEffectVideo = nullptr;
-			CEffectVideoWnd * effectVideoWndOld = nullptr;
-            
-            bool openGLVideoMode = false;
-#endif
+			CInfosFileWnd * infosFileWnd;
           
-            CInfoEffectWnd * historyEffectWnd = nullptr;
+            CInfoEffectWnd * historyEffectWnd;
+			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
+			CFiltreEffectScrollWnd * filtreEffectWnd;
+            CCriteriaTreeWnd * criteriaTreeWnd;
 
-			CThumbnailViewerEffectWnd * thumbnailEffectWnd = nullptr;
+			wxWebView * webBrowser;
+			CToolbarInfos * infosToolbar;
+			CModificationManager * modificationManager;
 
-			CFiltreEffectScrollWnd * filtreEffectWnd = nullptr;
-            
-#ifdef VIEWER
-            CCriteriaTreeWnd * criteriaTreeWnd = nullptr;
-#endif
-
-			wxWebView * webBrowser = nullptr;
-			CToolbarInfos * infosToolbar = nullptr;
-
-			//Effect Parameter
-			
-			CVideoEffectParameter * videoEffectParameter = nullptr;
-			CModificationManager * modificationManager = nullptr;
-
-            bool isThumbnail = false;
-			bool isVideo = false;
-			wxString filename = L"";
-			CRegardsBitmap * bitmap = new CRegardsBitmap();
-			int width = 0;
-			int height = 0;
-            wxString url = "http://www.google.fr";
+            bool isThumbnail;
+			bool isVideo;
+			wxString filename;
+			//CRegardsBitmap * bitmap;
+			int width;
+			int height;
+            wxString url;
 			
 			CFileGeolocation * fileGeolocalisation;
-			int windowVisible = INFOS_WINDOW;
+			int windowVisible;
             CThemeBitmapWindow themeBitmap;
+			
 		};
 
 	}

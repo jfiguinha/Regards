@@ -12,14 +12,17 @@ namespace Regards
 		public:
 			CSqlFindPhotos();
 			~CSqlFindPhotos();
+            void UpdatePhotosExtension();
 			bool SearchPhotos(PhotosVector * photosVector);
 			bool SearchPhotos(vector<int> * listPhoto);
 			bool SearchPhotos(PhotosVector * photosVector, const wxString &libelleCriteria);
 			bool SearchPhotos(PhotosVector * photosVector, const wxString &localisation, const wxString &libelleCriteria);
 			bool SearchPhotos(PhotosVector * photosVector, const int &numCategorie, const int &numCatalog);
-			bool SearchPhotos(PhotosVector * photosVector, const int &numCatalog);
-            wxString GenerateSqlRequest(const int &numCatalog, vector<int> listFolder, vector<int> listCriteriaNotIn);
+			bool SearchPhotosByTypeAffichage(PhotosVector * photosVector, const int &typeAffichage, const int &numCatalog);
+            wxString GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, const double & pertinence = 0.0);
 			bool SearchPhotos(const wxString &sqlRequest);
+			bool GetAllPhotos(PhotosVector * photosVector);
+            bool GetAllVideo(PhotosVector * photosVector);
 		private:
 
 			int TraitementResultPhoto(CSqlResult * sqlResult);
@@ -29,7 +32,7 @@ namespace Regards
 			int TraitementResult(CSqlResult * sqlResult);
 			PhotosVector * m_photosVector;
 			vector<int> * m_listPhoto;
-			int typeResult = 0;
+			int typeResult;
 		};
 	}
 }

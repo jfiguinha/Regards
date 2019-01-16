@@ -11,66 +11,97 @@ using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
 wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
+#include <thread>
+using namespace std;
+
+#define wxTIMER_GPSINFOS 2000
 
 CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme, CFileGeolocation * fileGeolocalisation)
-	: CWindowMain(parent, id)
+	: CWindowMain("CBitmapInfos", parent, id)
 {
+    TRACE();
+	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;
 	this->fileGeolocalisation = fileGeolocalisation;
+    gpsTimer = new wxTimer(this, wxTIMER_GPSINFOS);
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfos::OnPaint));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapInfos::OnIdle));
+    Connect(wxTIMER_GPSINFOS, wxEVT_TIMER, wxTimerEventHandler(CBitmapInfos::OnTimerGPSUpdate), nullptr, this);
 }
 
-
-void CBitmapInfos::OnIdle(wxIdleEvent& evt)
+void CBitmapInfos::OnTimerGPSUpdate(wxTimerEvent& event)
 {
-	if (fileGeolocalisation->HasGps() && gpsInfos == "" && gpsInfosUpdate)
-	{
-        wxString urlServer = L"";
-        CRegardsConfigParam * param = CParamInit::getInstance();
-        if (param != nullptr)
-        {
-            urlServer = param->GetUrlServer();
-        }
-        
-        CGps * gps = new CGps(urlServer);
+    
+    printf("CBitmapInfos OnTimerGPSUpdate \n");
+    mufileGeoloc.lock();
+    CSqlPhotos sqlPhotos;
+    int insertValue = sqlPhotos.GetCriteriaInsert(filename);
+    if (insertValue > 0 && fileGeolocalisation->HasGps() && fileGeolocalisation->GetFilename() == filename && gpsInfos == "")
+    {
+        CriteriaVector criteriaList;
+        sqlPhotos.GetPhotoCriteria(&criteriaList, filename);
 
-        //Execution de la requête de géolocalisation
-        if (gps->GeolocalisationGPS(fileGeolocalisation->GetLatitude(), fileGeolocalisation->GetLongitude()))
+        for (CCriteria criteria : criteriaList)
         {
-            GeoPluginVector * geoPluginVector = gps->GetGpsList();
-            for (CGeoPluginValue geoValue : *geoPluginVector)
+            if (criteria.GetCategorieId() == 1)
             {
-                gpsInfos.append(geoValue.GetCountryCode());
-                gpsInfos.append(L".");
-                gpsInfos.append(geoValue.GetRegion());
-                gpsInfos.append(L".");
-                gpsInfos.append(geoValue.GetPlace());
+                gpsInfos = criteria.GetLibelle();
                 break;
             }
-        }
-        
-        delete gps;
-        
-		gpsInfosUpdate = false;
-        
-        this->Refresh();
-	}
-}
+        }   
+    
+        if(gpsInfos == "")
+        {
+            gpsInfos = "";
+            wxString urlServer = "";
+            CRegardsConfigParam * param = CParamInit::getInstance();
+            if (param != nullptr)
+                urlServer = param->GetUrlServer();
 
+            CGps * gps = new CGps(urlServer);
+            //Execution de la requête de géolocalisation
+            if (gps->GeolocalisationGPS(fileGeolocalisation->GetLatitude(), fileGeolocalisation->GetLongitude()))
+            {
+                GeoPluginVector * geoPluginVector = gps->GetGpsList();
+                for (CGeoPluginValue geoValue : *geoPluginVector)
+                {
+                    gpsInfos.append(geoValue.GetCountryCode());
+                    gpsInfos.append(L".");
+                    gpsInfos.append(geoValue.GetRegion());
+                    gpsInfos.append(L".");
+                    gpsInfos.append(geoValue.GetPlace());
+                    break;
+                }
+            }
+            delete gps;
+        }
+    }
+    
+    mufileGeoloc.unlock();
+    
+    if(gpsInfos == "" && fileGeolocalisation->GetFilename() == filename)
+        gpsTimer->Start(500, wxTIMER_ONE_SHOT);
+    else
+        this->FastRefresh(this);
+}
 
 void CBitmapInfos::SetFilename(const wxString &libelle)
 {
+    printf("SetFilename \n");
 	if (filename != libelle)
 	{
+        gpsInfos = "";
         filename = libelle;
+		gpsInfosUpdate = false;            
+        processIdle = true;
         UpdateData();
 	}
 }
 
 void CBitmapInfos::UpdateData()
 {
+    printf("UpdateData \n");
     gpsInfos = "";
+	mufileGeoloc.lock();
     //Recherche dans la base de données des critères sur le fichier
     CSqlPhotos sqlPhotos;
     int insertValue = sqlPhotos.GetCriteriaInsert(filename);
@@ -78,6 +109,7 @@ void CBitmapInfos::UpdateData()
     {
         CriteriaVector criteriaList;
         sqlPhotos.GetPhotoCriteria(&criteriaList, filename);
+
         for (CCriteria criteria : criteriaList)
         {
             if (criteria.GetCategorieId() == 1)
@@ -91,21 +123,30 @@ void CBitmapInfos::UpdateData()
         }
         SetDateInfos(dateInfos,'.');
     }
-    else
+    else if(fileGeolocalisation->GetFilename() == filename)
     {
-        if(fileGeolocalisation->HasGps())
-        {
-            gpsInfosUpdate = true;
-        }
         
         dateInfos = L"";
         gpsInfos = fileGeolocalisation->GetGpsInformation();
-        filename = filename;
         wxString dataInfos = fileGeolocalisation->GetDateTimeInfos();
         if(dataInfos.Length() > 10)
             SetDateInfos(dataInfos, dataInfos[4]);
+            
+        if(fileGeolocalisation->HasGps() && gpsInfos == "")
+            gpsTimer->Start(500, wxTIMER_ONE_SHOT);
     }
-    this->Refresh();
+    else
+    {
+        dateInfos = L"";
+        gpsInfos = "";
+    }
+    
+    if(gpsInfos == "" && fileGeolocalisation->HasGps())
+        gpsTimer->Start(500, wxTIMER_ONE_SHOT);
+    
+    processIdle = true;
+	mufileGeoloc.unlock();
+    this->FastRefresh(this);
 }
 
 int CBitmapInfos::Dayofweek(int d, int m, int y)
@@ -128,14 +169,20 @@ void CBitmapInfos::SetDateInfos(const wxString &dataInfos, char seperator)
 		int month = atoi(vDateTime[1].c_str());
 		int day = atoi(vDateTime[2].c_str());
 		int ijour = Dayofweek(day, month, year);
-		dateInfos = DayName.at(ijour) + L" " + std::to_string(day) + L" " + MonthName.at(month - 1) + L", " + std::to_string(year) + L" ";
+		dateInfos = DayName.at(ijour) + L" " + to_string(day) + L" " + MonthName.at(month - 1) + L", " + to_string(year) + L" ";
 	}
 }
 
-
-
 CBitmapInfos::~CBitmapInfos()
 {
+    if(gpsTimer != nullptr)
+    {
+        if(gpsTimer->IsRunning())
+            gpsTimer->Stop();
+            
+        delete gpsTimer;        
+    }
+
 	//delete fileGeolocalisation;
 }
 
@@ -151,7 +198,7 @@ void CBitmapInfos::UpdateScreenRatio()
 
 void CBitmapInfos::Resize()
 {
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CBitmapInfos::Redraw()
@@ -162,19 +209,20 @@ void CBitmapInfos::Redraw()
 
 void CBitmapInfos::DrawInformations(wxDC * dc)
 {
-    
-    wxRect rc;
-    rc.x = 0;
-    rc.y = 0;
-    rc.width = width;
-    rc.height = height;
+#ifdef __WXGTK__
+    double scale_factor = dc->GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+    wxRect rc = GetWindowRect();
     FillRect(dc, rc, bitmapInfosTheme.colorBack);
     wxString message = L"";
     wxString libelle = CFileUtility::GetFileName(filename);
-    
-    wxSize size = GetSizeTexte(dc, libelle, bitmapInfosTheme.themeFont);
+    CThemeFont font = bitmapInfosTheme.themeFont;
+    font.SetFontSize(bitmapInfosTheme.themeFont.GetFontSize() / scale_factor);
+    wxSize size = GetSizeTexte(dc, libelle, font);
 
-    DrawTexte(dc, libelle, (width - size.x) / 2, 0, bitmapInfosTheme.themeFont);
+    DrawTexte(dc, libelle, (GetWindowWidth() / scale_factor - size.x) / 2, 0, font);
     
     if (gpsInfos != L"")
     {
@@ -187,12 +235,17 @@ void CBitmapInfos::DrawInformations(wxDC * dc)
         message = dateInfos;
     }
     
-    size = GetSizeTexte(dc, message, bitmapInfosTheme.themeFont);
-    DrawTexte(dc, message, (width - size.x) / 2, height / 2, bitmapInfosTheme.themeFont);
+    size = GetSizeTexte(dc, message, font);
+    DrawTexte(dc, message, (GetWindowWidth() / scale_factor - size.x) / 2, (GetWindowHeight() / scale_factor) / 2, font);
 }
 
 void CBitmapInfos::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+    
 	wxBufferedPaintDC dc(this);
     DrawInformations(&dc);
 }

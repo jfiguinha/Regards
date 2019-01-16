@@ -1,43 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="Regards" Database="">
-  <Project Name="libPrint" Path="libPrint/libPrint.project"/>
-  <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
+<CodeLite_Workspace Name="Regards" Database="" Version="10.0.0">
+  <Project Name="libPrint" Path="libPrint/libPrint.project" Active="No"/>
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
-  <Project Name="libControl" Path="libControl/libControl.project"/>
-  <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project"/>
-  <Project Name="libDialog" Path="libDialog/libDialog.project"/>
-  <Project Name="libExplorer" Path="libExplorer/libExplorer.project"/>
-  <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
-  <Project Name="libGeolocalisation" Path="libGeolocalisation/libGeolocalisation.project" Active="No"/>
-  <Project Name="libIntro" Path="libIntro/libIntro.project"/>
-  <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project"/>
-  <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project"/>
-  <Project Name="libParameter" Path="libParameter/libParameter.project"/>
-  <Project Name="libPicture" Path="libPicture/libPicture.project"/>
-  <Project Name="libRenderBitmap" Path="libRenderBitmap/libRenderBitmap.project"/>
-  <Project Name="libResource" Path="libResource/libResource.project"/>
-  <Project Name="libSqlData" Path="libSqlData/libSqlData.project"/>
-  <Project Name="libSqlEngine" Path="libSqlEngine/libSqlEngine.project"/>
-  <Project Name="libSqlite" Path="libSqlite/libSqlite.project"/>
-  <Project Name="libTheme" Path="libTheme/libTheme.project"/>
-  <Project Name="libUtility" Path="libUtility/libUtility.project"/>
-  <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project"/>
-  <Project Name="libViewer" Path="libViewer/libViewer.project" Active="No"/>
-  <Project Name="libWindow" Path="libWindow/libWindow.project" Active="No"/>
+  <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project" Active="No"/>
+  <Project Name="libIntro" Path="libIntro/libIntro.project" Active="No"/>
+  <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
+  <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
+  <Project Name="libResource" Path="libResource/libResource.project" Active="No"/>
+  <Project Name="libTheme" Path="libTheme/libTheme.project" Active="No"/>
+  <Project Name="libUtility" Path="libUtility/libUtility.project" Active="No"/>
   <Environment>
     <![CDATA[]]>
   </Environment>
-  <Project Name="include" Path="include/include.project"/>
-  <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
-  <Project Name="RegardsExplorer" Path="RegardsExplorer/RegardsExplorer.project" Active="No"/>
-  <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="Yes"/>
-  <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project"/>
-  <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project"/>
-  <Project Name="libEmail" Path="libEmail/libEmail.project"/>
-  <Project Name="libExif" Path="libExif/libExif.project"/>
-  <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project"/>
+  <Project Name="include" Path="include/include.project" Active="No"/>
+  <Project Name="libEmail" Path="libEmail/libEmail.project" Active="No"/>
+  <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
+  <VirtualDirectory Name="Picture">
+    <Project Name="libPicture" Path="libPicture/libPicture.project" Active="No"/>
+    <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
+    <Project Name="libJbig" Path="Otherlib/libJbig/libJbig.project" Active="No"/>
+    <Project Name="libPsd" Path="Otherlib/libPsd/libPsd.project" Active="No"/>
+    <VirtualDirectory Name="libbpg">
+      <Project Name="libavutil" Path="Otherlib/libbpg/libavutil/libavutil.project" Active="No"/>
+      <Project Name="libbpg" Path="Otherlib/libbpg/libbpg/libbpg.project" Active="No"/>
+      <Project Name="libRegardsBpg_unix" Path="Otherlib/libbpg/libRegardsBpg_unix/libRegardsBpg_unix.project" Active="No"/>
+      <Project Name="libRegardsBpg_windows" Path="Otherlib/libbpg/libRegardsBpg_windows/libRegardsBpg_windows.project" Active="No"/>
+      <Project Name="libRegardsBpg_mac" Path="Otherlib/libbpg/libRegardsBpg_mac/libRegardsBpg_mac.project" Active="No"/>
+      <Project Name="libavcodec" Path="Otherlib/libbpg/libavcodec/libavcodec.project" Active="No"/>
+    </VirtualDirectory>
+    <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
+    <Project Name="RawSpeed" Path="Otherlib/RawSpeed/RawSpeed.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Video">
+    <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project" Active="No"/>
+    <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Database">
+    <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
+    <Project Name="libSqlEngine" Path="libSqlEngine/libSqlEngine.project" Active="No"/>
+    <Project Name="libSqlite" Path="libSqlite/libSqlite.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Exif">
+    <Project Name="libMediaInfo" Path="libMediaInfo/libMediaInfo.project" Active="No"/>
+    <Project Name="libExif" Path="libExif/libExif.project" Active="No"/>
+    <Project Name="libGeolocalisation" Path="libGeolocalisation/libGeolocalisation.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="wxWidgetComponent">
+    <Project Name="wxCheckTree" Path="wxCheckTree/wxCheckTree.project" Active="No"/>
+    <Project Name="wxSVG" Path="Otherlib/wxSVG/wxSVG.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Window">
+    <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
+    <Project Name="libViewer" Path="libViewer/libViewer.project" Active="No"/>
+    <Project Name="libWindow" Path="libWindow/libWindow.project" Active="No"/>
+    <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project" Active="No"/>
+    <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="FaceRecognition">
+    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="No"/>
+    <Project Name="FaceRecognition" Path="FaceRecognition/FaceRecognition.project" Active="No"/>
+    <Project Name="FaceRecognition_mac" Path="FaceRecognition_mac/FaceRecognition_mac.project" Active="No"/>
+    <Project Name="FaceRecognition_windows" Path="FaceRecognition_windows/FaceRecognition_windows.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="RegardsViewer_exe">
+    <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Apple">
+    <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Filter">
+    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+  </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
@@ -46,15 +83,12 @@
       <Project Name="libControl" ConfigName="Debug"/>
       <Project Name="libDataStructure" ConfigName="Debug"/>
       <Project Name="libDialog" ConfigName="Debug"/>
-      <Project Name="libExplorer" ConfigName="Debug"/>
       <Project Name="libFiltre" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
       <Project Name="libIntro" ConfigName="Debug"/>
       <Project Name="libOpenCL" ConfigName="Debug"/>
-      <Project Name="libOpenGL" ConfigName="Debug"/>
       <Project Name="libParameter" ConfigName="Debug"/>
       <Project Name="libPicture" ConfigName="Debug"/>
-      <Project Name="libRenderBitmap" ConfigName="Debug"/>
       <Project Name="libResource" ConfigName="Debug"/>
       <Project Name="libSqlData" ConfigName="Debug"/>
       <Project Name="libSqlEngine" ConfigName="Debug"/>
@@ -66,15 +100,42 @@
       <Project Name="libWindow" ConfigName="Debug"/>
       <Project Name="include" ConfigName="Debug"/>
       <Project Name="RegardsRaw" ConfigName="Debug"/>
-      <Project Name="RegardsExplorer" ConfigName="Debug"/>
-      <Project Name="RegardsViewer" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_Windows" ConfigName="Debug"/>
       <Project Name="libWindowMain" ConfigName="Debug"/>
       <Project Name="libVideoFFMpeg" ConfigName="Debug"/>
       <Project Name="libEmail" ConfigName="Debug"/>
       <Project Name="libExif" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
+      <Project Name="libOpenGL" ConfigName="Debug"/>
+      <Project Name="wxCheckTree" ConfigName="Debug"/>
+      <Project Name="RegardsRaw" ConfigName="Debug"/>
+      <Project Name="wxSVG" ConfigName="Debug"/>
+      <Project Name="libOpenGL" ConfigName="Debug"/>
+      <Project Name="test" ConfigName="Debug"/>
+      <Project Name="libMediaInfo" ConfigName="Debug"/>
+      <Project Name="FaceRecognition" ConfigName="Debug"/>
+      <Project Name="libJbig" ConfigName="Debug"/>
+      <Project Name="libPsd" ConfigName="Debug"/>
+      <Project Name="libavcodec" ConfigName="Debug"/>
+      <Project Name="libavutil" ConfigName="Debug"/>
+      <Project Name="libbpg" ConfigName="Debug"/>
+      <Project Name="libRegardsBpg" ConfigName="Debug"/>
+      <Project Name="libPsd" ConfigName="Debug"/>
+      <Project Name="FaceRecognition_unix" ConfigName="Debug"/>
+      <Project Name="FaceRecognition_windows" ConfigName="Debug"/>
+      <Project Name="libRegardsBpg_unix" ConfigName="Debug"/>
+      <Project Name="libRegardsBpg_windows" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_linux" ConfigName="Debug"/>
+      <Project Name="libAppleFunction" ConfigName="Debug"/>
+      <Project Name="FaceRecognition_mac" ConfigName="Debug"/>
+      <Project Name="libRegardsBpg_mac" ConfigName="Debug"/>
+      <Project Name="FaceRecognition" ConfigName="Debug"/>
+      <Project Name="libavcodec" ConfigName="Debug"/>
+      <Project Name="libGeolocalisation" ConfigName="Debug"/>
+      <Project Name="RawSpeed" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="no">
+    <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>
@@ -83,15 +144,12 @@
       <Project Name="libControl" ConfigName="Release"/>
       <Project Name="libDataStructure" ConfigName="Release"/>
       <Project Name="libDialog" ConfigName="Release"/>
-      <Project Name="libExplorer" ConfigName="Release"/>
       <Project Name="libFiltre" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
       <Project Name="libIntro" ConfigName="Release"/>
       <Project Name="libOpenCL" ConfigName="Release"/>
-      <Project Name="libOpenGL" ConfigName="Release"/>
       <Project Name="libParameter" ConfigName="Release"/>
       <Project Name="libPicture" ConfigName="Release"/>
-      <Project Name="libRenderBitmap" ConfigName="Release"/>
       <Project Name="libResource" ConfigName="Release"/>
       <Project Name="libSqlData" ConfigName="Release"/>
       <Project Name="libSqlEngine" ConfigName="Release"/>
@@ -103,13 +161,40 @@
       <Project Name="libWindow" ConfigName="Release"/>
       <Project Name="include" ConfigName="Release"/>
       <Project Name="RegardsRaw" ConfigName="Release"/>
-      <Project Name="RegardsExplorer" ConfigName="Release"/>
-      <Project Name="RegardsViewer" ConfigName="Release"/>
+      <Project Name="RegardsViewer_Windows" ConfigName="Release"/>
       <Project Name="libWindowMain" ConfigName="Release"/>
       <Project Name="libVideoFFMpeg" ConfigName="Release"/>
       <Project Name="libEmail" ConfigName="Release"/>
       <Project Name="libExif" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
+      <Project Name="libOpenGL" ConfigName="Release"/>
+      <Project Name="wxCheckTree" ConfigName="Release"/>
+      <Project Name="RegardsRaw" ConfigName="Release"/>
+      <Project Name="wxSVG" ConfigName="Release"/>
+      <Project Name="libOpenGL" ConfigName="Release"/>
+      <Project Name="test" ConfigName="Release"/>
+      <Project Name="libMediaInfo" ConfigName="Release"/>
+      <Project Name="FaceRecognition" ConfigName="Release"/>
+      <Project Name="libJbig" ConfigName="Release"/>
+      <Project Name="libPsd" ConfigName="Release"/>
+      <Project Name="libavcodec" ConfigName="Release"/>
+      <Project Name="libavutil" ConfigName="Release"/>
+      <Project Name="libbpg" ConfigName="Release"/>
+      <Project Name="libRegardsBpg" ConfigName="Release"/>
+      <Project Name="libPsd" ConfigName="Release"/>
+      <Project Name="FaceRecognition_unix" ConfigName="Release"/>
+      <Project Name="FaceRecognition_windows" ConfigName="Release"/>
+      <Project Name="libRegardsBpg_unix" ConfigName="Release"/>
+      <Project Name="libRegardsBpg_windows" ConfigName="Release"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Release"/>
+      <Project Name="RegardsViewer_linux" ConfigName="Release"/>
+      <Project Name="libAppleFunction" ConfigName="Release"/>
+      <Project Name="FaceRecognition_mac" ConfigName="Release"/>
+      <Project Name="libRegardsBpg_mac" ConfigName="Release"/>
+      <Project Name="FaceRecognition" ConfigName="Release"/>
+      <Project Name="libavcodec" ConfigName="Release"/>
+      <Project Name="libGeolocalisation" ConfigName="Release"/>
+      <Project Name="RawSpeed" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

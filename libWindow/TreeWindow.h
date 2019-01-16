@@ -1,6 +1,6 @@
 #pragma once
-#include <mutex>
-#include <Theme.h>
+
+#include <theme.h>
 #include "ScrollInterface.h"
 #include "PositionElement.h"
 #include "TreeElement.h"
@@ -14,7 +14,7 @@
 #include "TreeElementSlideInterface.h"
 #include "TreeElementControlInterface.h"
 #include "WindowMain.h"
-using namespace std;
+
 
 namespace Regards
 {
@@ -38,7 +38,7 @@ namespace Regards
             void UpdateScreenRatio();
 
 			void SetTreeControl(CTreeControl * treeControl);
-			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, const int &value, const wxString &key){};
+			virtual void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
 			void UpdateElement(CTreeElement * treeElement);
 			CThemeTree * GetTheme()
 			{
@@ -65,25 +65,29 @@ namespace Regards
 			
 			void Update()
 			{
-				this->Refresh();
+				this->FastRefresh(this);
 			}
 
 			void TestMaxX();
 			void TestMaxY();
             wxColour GetBackgroundColour(const int &yPos);
             
-			wxBitmap * renderBitmap = nullptr;
-			int bitmapWidth = 0;
-			int bitmapHeight = 0;
-			int oldPosLargeur = 0;
-			int oldPosHauteur = 0;
+			wxBitmap * renderBitmap;
+			int bitmapWidth;
+			int bitmapHeight;
+			int oldPosLargeur;
+			int oldPosHauteur;
 
 			int controlWidth;
 			int controlHeight;
 
-			std::mutex m_lock;
 			CThemeTree themeTree;
-			CTreeControl * treeControl = nullptr;
+			CTreeControl * treeControl;
+            
+            //Buffer
+            wxBitmap backgroundBuffer; 
+            bool bufferUpdate;
+            
 		};
 	}
 }

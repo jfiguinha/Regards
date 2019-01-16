@@ -27,9 +27,9 @@ namespace Regards
             
         private:
             
-            CScrollbarWnd * historyEffectScroll = nullptr;
-            CTreeWindow * treeHistoryEffect = nullptr;
-            CInfoEffect * historyEffectOld = nullptr;
+            CScrollbarWnd * historyEffectScroll;
+            CTreeWindow * treeHistoryEffect;
+            CInfoEffect * historyEffectOld;
         };
     }
 }

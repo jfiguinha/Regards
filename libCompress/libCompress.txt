@@ -1,1 +1,1 @@
-./Release/jpgd.cpp.o ./Release/jpge.cpp.o ./Release/lz4.c.o
+./Release/jpgd.cpp.o ./Release/lz4.c.o ./Release/jpge.cpp.o

@@ -5,6 +5,8 @@ CSqlPhotos::CSqlPhotos(CSqlLib * _sqlLibTransaction, const bool &useTransaction)
 	: CSqlExecuteRequest(L"RegardsDB")
 {
 	photoId = -1;
+	criteriaVector = nullptr;
+	typeResult = 0;
 	this->_sqlLibTransaction = _sqlLibTransaction;
 	this->useTransaction = useTransaction;
 }
@@ -43,7 +45,8 @@ int64_t CSqlPhotos::GetOrInsertPhoto(const wxString & filepath, const int64_t &i
 	if (photoId == -1)
 	{
 		InsertPhoto(filepath, idFolder);
-		photoId = GetLastId();
+		photoId = GetPhotoId(filepath, idFolder);
+		//photoId = GetLastId();
 	}
 	return photoId;
 }
@@ -108,6 +111,15 @@ bool CSqlPhotos::DeletePhotoCatalog(const int64_t &idCatalog)
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOS WHERE NUMFOLDERCATALOG in (SELECT NUMFOLDERCATALOG FROM FOLDERCATALOG WHERE NumCatalog = " + to_string(idCatalog) + ")") != -1) ? true : false;
 }
 
+vector<wxString> CSqlPhotos::GetPhotoFromFolder(const int64_t &idFolder)
+{
+	typeResult = 2;
+	listPhoto.clear();
+	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
+	return listPhoto;
+}
+
+
 int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
@@ -115,7 +127,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 	{
 		if (typeResult == 0)
 		{
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{
@@ -129,7 +141,7 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 		{
 			CCriteria criteria;
 
-			for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{
@@ -145,6 +157,18 @@ int CSqlPhotos::TraitementResult(CSqlResult * sqlResult)
 				}
 			}
 			criteriaVector->push_back(criteria);
+		}
+		else if(typeResult == 2)
+		{
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					listPhoto.push_back(sqlResult->ColumnDataText(i));
+					break;
+				}
+			}
 		}
 		nbResult++;
 	}

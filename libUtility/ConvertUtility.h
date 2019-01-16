@@ -1,11 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
-using namespace std;
 
 class CConvertUtility
 {
@@ -15,6 +8,8 @@ public:
 
 	static wxString GetTimeLibelle(const int &timePosition);
 	static std::vector<wxString> split(const wxString & s, char seperator);
-
+    static const char * ConvertToUTF8(const wxString & s);
+    static const std::string ConvertToStdString(const wxString & s);
+    static const std::wstring ConvertToStdWstring(const wxString & s);
 };
 

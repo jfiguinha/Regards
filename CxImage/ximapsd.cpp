@@ -49,17 +49,17 @@ namespace MyPSD
 			//		1		Grayscale		The first value in the color data is the gray value, from 0...10000.
 			//		2		Indexed
 			//		3		RGB				The first three values in the color data are red, green, and blue.
-			//								They are full unsigned 16–bit values as in Apple’s RGBColor data
+			//								They are full unsigned 16Â–bit values as in AppleÂ’s RGBColor data
 			//								structure. Pure red=65535,0,0.
 			//		4		CMYK			The four values in the color data are cyan, magenta, yellow, and
-			//								black. They are full unsigned 16–bit values. 0=100% ink. Pure
+			//								black. They are full unsigned 16Â–bit values. 0=100% ink. Pure
 			//								cyan=0,65535,65535,65535.
 			//		7		Multichannel	// Have no idea
 			//		8		Duotone
 			//		9		Lab				The first three values in the color data are lightness, a chrominance,
 			//								and b chrominance.
-			//								Lightness is a 16–bit value from 0...100. The chromanance components
-			//								are each 16–bit values from –128...127. Gray values
+			//								Lightness is a 16Â–bit value from 0...100. The chromanance components
+			//								are each 16Â–bit values from Â–128...127. Gray values
 			//								are represented by chrominance components of 0. Pure
 			//								white=100,0,0.
 			short nChannels;
@@ -80,7 +80,7 @@ namespace MyPSD
 
 		struct IMAGE_RESOURCE
 		{
-			// Table 2–1: Image resource block
+			// Table 2Â–1: Image resource block
 			//	Type		Name	Description
 			//-------------------------------------------
 			//	OSType		Type	Photoshop always uses its signature, 8BIM
@@ -140,18 +140,18 @@ namespace MyPSD
 			//	Color-ID	Name	Description
 			//-------------------------------------------
 			//		0		RGB			The first three values in the color data are red, green, and blue.
-			//							They are full unsigned 16–bit values as in Apple’s RGBColor data
+			//							They are full unsigned 16Â–bit values as in AppleÂ’s RGBColor data
 			//							structure. Pure red=65535,0,0.
 			//		1		HSB			The first three values in the color data are hue, saturation, and
-			//							brightness. They are full unsigned 16–bit values as in Apple’s
+			//							brightness. They are full unsigned 16Â–bit values as in AppleÂ’s
 			//							HSVColor data structure. Pure red=0,65535, 65535.
 			//		2		CMYK		The four values in the color data are cyan, magenta, yellow, and
-			//							black. They are full unsigned 16–bit values. 0=100% ink. Pure
+			//							black. They are full unsigned 16Â–bit values. 0=100% ink. Pure
 			//							cyan=0,65535,65535,65535.
 			//		7		Lab			The first three values in the color data are lightness, a chrominance,
 			//							and b chrominance.
-			//							Lightness is a 16–bit value from 0...10000. The chromanance components
-			//							are each 16–bit values from –12800...12700. Gray values
+			//							Lightness is a 16Â–bit value from 0...10000. The chromanance components
+			//							are each 16Â–bit values from Â–12800...12700. Gray values
 			//							are represented by chrominance components of 0. Pure
 			//							white=10000,0,0.
 			//		8		grayscale	The first value in the color data is the gray value, from 0...10000.
@@ -171,7 +171,7 @@ namespace MyPSD
 			// thumbnail information in the same format except the data section is
 			// (blue, green, red). The Adobe Photoshop 4.0 format is at resource ID
 			// and the Adobe Photoshop 5.0 format is at resource ID 1036.
-			// Table 2–5: Thumnail resource header
+			// Table 2Â–5: Thumnail resource header
 			//	Type		Name		Description
 			//-------------------------------------------
 			//	4 bytes		format			= 1 (kJpegRGB). Also supports kRawRGB (0).
@@ -597,7 +597,7 @@ namespace MyPSD
 							if ( 1033 == image_resource.nID )
 							{
 								// In BGR format
-								for (int n = 0; n < nTotalData; n = n +3 )
+								for (auto n = 0; n < nTotalData; n = n +3 )
 								{
 									nItemsRead = (int)mypsd_fread(&c, sizeof(unsigned char), 1, pFile);
 									nBytesRead += nItemsRead * sizeof(unsigned char);
@@ -613,7 +613,7 @@ namespace MyPSD
 							else if ( 1036 == image_resource.nID )
 							{
 								// In RGB format										
-								for (int n = 0; n < nTotalData; ++n )
+								for (auto n = 0; n < nTotalData; ++n )
 								{
 									nItemsRead = (int)mypsd_fread(&c, sizeof(BYTE), 1, pFile);
 									nBytesRead += nItemsRead * sizeof(BYTE);
@@ -668,7 +668,7 @@ namespace MyPSD
 		// for all other modes this section is 4 bytes length, the length field is set to zero
 
 		// For indexed color images, the length will be equal to 768, and the color
-		// will contain the color table for the image, in non–interleaved order.
+		// will contain the color table for the image, in nonÂ–interleaved order.
 
 		// For duotone images, the color data will contain the duotone specification,
 		// the format of which is not documented. Other applications that read
@@ -766,7 +766,7 @@ namespace MyPSD
 				int nPixels = header_info.nWidth * header_info.nHeight;
 				byte *pRGBA = new byte[nPixels * (bAlpha ? 4 : 3)];
 				byte *pSrc = pData, *pDst = pRGBA;
-				for (int i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
+				for (auto i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
 				{
 					pDst[0] = pDst[1] = pDst[2] = pSrc[0];
 					if (bAlpha) pDst[3] = pSrc[1];
@@ -787,7 +787,7 @@ namespace MyPSD
 				byte *pRGB = new byte[nPixels * 3];
 				::memset(pRGB, 0, nPixels * 3);
 				byte *pSrc = pData, *pDst = pRGB;
-				for (int i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += 3)
+				for (auto i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += 3)
 				{
 					int nIndex = *pSrc;
 					pDst[2] = colour_mode_data.ColourData[nIndex + 0 * 256];
@@ -814,7 +814,7 @@ namespace MyPSD
 				byte *pSrc = pData, *pDst = pRGBA;
 				double C, M, Y, K;
 				int	nRed, nGreen, nBlue;
-				for (int i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
+				for (auto i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
 				{
 					C = (1.0 - (double)pSrc[0] / 256);
 					M = (1.0 - (double)pSrc[1] / 256);
@@ -845,7 +845,7 @@ namespace MyPSD
 				byte *pSrc = pData, *pDst = pRGB;
 				double C, M, Y, K;
 				int	nRed, nGreen, nBlue;
-				for (int i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += 3)
+				for (auto i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += 3)
 				{
 					C = M = Y = K = 0;
 					C = (1.0 - (double)pSrc[0] / 256);
@@ -878,7 +878,7 @@ namespace MyPSD
 				double L_coef = 256.f / 100.f, a_coef = 256.f / 256.f, b_coef = 256.f / 256.f;
 				int L, a, b;
 				int	nRed, nGreen, nBlue;
-				for (int i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
+				for (auto i = 0; i < nPixels; i++, pSrc += header_info.nChannels, pDst += bAlpha ? 4 : 3)
 				{
 					L = (int)((float)pSrc[0] / L_coef);
 					a = (int)((float)pSrc[1] / a_coef - 128.0);
@@ -955,10 +955,10 @@ namespace MyPSD
 				nTotalBytes = nPixels * header_info.nChannels;
 				pData = new byte[nTotalBytes];
 				byte *pSource = pFileData;
-				for (int nChannel = 0; nChannel < header_info.nChannels; nChannel++)
+				for (auto nChannel = 0; nChannel < header_info.nChannels; nChannel++)
 				{
 					byte *pDest = pData + nChannel;
-					for (int pos = 0; pos < nPixels; pos++, pDest += header_info.nChannels, pSource += bytesPerPixelPerChannel) *pDest = *pSource;
+					for (auto pos = 0; pos < nPixels; pos++, pDest += header_info.nChannels, pSource += bytesPerPixelPerChannel) *pDest = *pSource;
 				}
 				delete [] pFileData;
 			}
@@ -1005,7 +1005,7 @@ namespace MyPSD
 			return -1; // error while reading
 		}
 		int nRLEDataSize = 0;
-		for (int i = 0; i < nHeight * header_info.nChannels * 2; i += 2)
+		for (auto i = 0; i < nHeight * header_info.nChannels * 2; i += 2)
 			nRLEDataSize += Calculate(pLengthData + i, 2);
 		delete [] pLengthData;
 
@@ -1022,7 +1022,7 @@ namespace MyPSD
 		int nTotalBytes = nPixels * header_info.nChannels;
 		byte* pRawData = new byte[nTotalBytes];
 		byte *pRLESource = pRLEData, *pRLEDest = pRawData;
-		for (int channel = 0; channel < header_info.nChannels; channel++)
+		for (auto channel = 0; channel < header_info.nChannels; channel++)
 		{
 			int nCount = 0;
 			while (nCount < nPixels)
@@ -1057,7 +1057,7 @@ namespace MyPSD
 		for( int nColour = 0; nColour < header_info.nChannels; ++nColour )
 		{
 			nPixelCounter = nColour;
-			for (int nPos = 0; nPos < nPixels; nPos++, pRawSource++)
+			for (auto nPos = 0; nPos < nPixels; nPos++, pRawSource++)
 			{
 				pData[nPixelCounter] = *pRawSource;
 				nPixelCounter += header_info.nChannels;
@@ -1267,7 +1267,8 @@ bool CxImagePSD::Decode(CxFile *hFile)
 	}
 
 	psd_image_free(context);
-	free(context);
+	//if (context) 
+    //    free(context);
 
 #else //CXIMAGE_USE_LIBPSD == 0
 
@@ -1281,7 +1282,7 @@ bool CxImagePSD::Decode(CxFile *hFile)
 
 #if CXIMAGE_USE_LIBPSD
 	psd_image_free(context);
-	if (context) free(context);
+	//if (context) free(context);
 #endif //CXIMAGE_USE_LIBPSD
 
 	if (strcmp(message,"")) strncpy(info.szLastError,message,255);

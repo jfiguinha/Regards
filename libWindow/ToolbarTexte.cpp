@@ -5,6 +5,7 @@ using namespace Regards::Window;
 
 CToolbarTexte::CToolbarTexte(const CThemeToolbarTexte & theme)
 {
+	drawShape = false;
 	x = 0;
 	y = 0;
 	width = 0;
@@ -36,8 +37,10 @@ void CToolbarTexte::SetLibelle(const wxString &libelle)
 
 int CToolbarTexte::GetWidth()
 {
-	wxScreenDC dc;
+    wxBitmap bitmap(250,250);
+	wxMemoryDC dc(bitmap);
 	wxSize size = CWindowMain::GetSizeTexte(&dc, libelle, themeTexte.font);
+    dc.SelectObject(wxNullBitmap);
 	if (size.x > themeTexte.GetTailleX())
 		return (size.x + 10);
 
@@ -53,13 +56,13 @@ void CToolbarTexte::DrawShapeElement(wxDC * dc, const wxRect &rc)
 {
 	if (themeTexte.GetRectangleSize() > 0)
 	{
-		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxSOLID);
+		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penTop);
 		dc->DrawLine(rc.x, rc.height, rc.width, rc.height);
 		dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
 		dc->SetPen(wxNullPen);
 
-		wxPen penBottom(themeTexte.rectBottom, themeTexte.GetRectangleSize(), wxSOLID);
+		wxPen penBottom(themeTexte.rectBottom, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penBottom);
 		dc->DrawLine(rc.x, rc.y, rc.width, rc.y);
 		dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
@@ -75,27 +78,27 @@ void CToolbarTexte::DrawElement(wxDC * dc, const int &x, const int &y, const wxC
         font.SetColorFont(color);
 		wxSize size = CWindowMain::GetSizeTexte(dc, libelle, font);
 		int xPos = x + (GetWidth() - size.x) / 2;
-		int yPos = y + (GetHeight() - size.y);
+		int yPos = y + (GetHeight() - size.y) / 2;
 		CWindowMain::DrawTexte(dc, libelle, xPos, yPos, font);
 	}
 
 }
 
-void CToolbarTexte::DrawButton(wxDC * context)
+void CToolbarTexte::DrawButton(wxDC * dc, const int &x, const int &y)
 {
 	if (this->isVisible)
 	{
 		if (isPush && activePush)
 		{
-			CreatePushButton(context, x, y);
+			CreatePushButton(dc, x, y);
 		}
 		else if (isActif)
 		{
-			CreateActifButton(context, x, y);
+			CreateActifButton(dc, x, y);
 		}
 		else
 		{
-			CreateInactifButton(context, x, y);
+			CreateInactifButton(dc, x, y);
 		}
 	}
 }

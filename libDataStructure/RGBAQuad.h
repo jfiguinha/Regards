@@ -1,12 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <stdint.h>
-#include <string>
-#include <vector>
-using namespace std;
 
 class CRgbaquad
 {
@@ -16,10 +8,10 @@ public:
 
 	CRgbaquad(const wxString &hexacolor);
 
-	/****Définition du constructeur de copie***/
-	CRgbaquad(const CRgbaquad &source)  //l’objet source est protégé par const   
+	/****DÃ©finition du constructeur de copie***/
+	CRgbaquad(const CRgbaquad &source)  //lÂ’objet source est protÃ©gÃ© par const   
 	{
-		/*réservation de l’espace mémoire dans le tas puis copie des valeurs aux adresses correspondantes*/
+		/*rÃ©servation de lÂ’espace mÃ©moire dans le tas puis copie des valeurs aux adresses correspondantes*/
 		red = source.red;
 		green = source.green;
 		blue = source.blue;
@@ -104,10 +96,17 @@ private:
 
 	std::vector<wxString> Split(const wxString& s, char seperator);
 
+#if _MSC_VER >= 1800
 	uint8_t blue = 0;
 	uint8_t green = 0;
 	uint8_t red = 0;
 	uint8_t alpha = 0;
+#else
+	uint8_t blue;
+	uint8_t green;
+	uint8_t red;
+	uint8_t alpha;
+#endif
 };
 
 

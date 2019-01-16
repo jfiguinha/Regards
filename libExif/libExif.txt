@@ -1,1 +1,1 @@
-./Debug/PictureMetadata.cpp.o
+./Release/MetadataExiv2.cpp.o ./Release/PictureMetadataExiv.cpp.o

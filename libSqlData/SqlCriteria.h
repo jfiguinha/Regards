@@ -27,7 +27,7 @@ namespace Regards
 		private:
 
 			int TraitementResult(CSqlResult * sqlResult);
-			int64_t criteriaId = 0;
+			int64_t criteriaId;
 
 		};
 	}

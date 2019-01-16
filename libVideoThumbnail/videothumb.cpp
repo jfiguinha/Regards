@@ -1,10 +1,13 @@
 #include "videothumb.h"
-#include <videothumbnailer.h>
-#include <Metadata.h>
-#include <stringoperations.h>
-#include <filmstripfilter.h>
+#include "videothumbnailer.h"
+#include "Metadata.h"
+#include "stringoperations.h"
+#include "filmstripfilter.h"
 #include <ximage.h>
 #include <ImageVideoThumbnail.h>
+#include <ImageLoadingFormat.h>
+#include <RegardsBitmap.h>
+#include <ConvertUtility.h>
 using namespace Regards::Video;
 using namespace ffmpegthumbnailer;
 
@@ -28,13 +31,13 @@ void CThumbnailVideo::GetVideoDimensions(const wxString & fileName, int & width,
 	bool    maintainAspectRatio = true;
 	bool    smartFrameSelection = false;
 	wxString  seekTime;
-
+    std::string path = CConvertUtility::ConvertToUTF8(fileName);
 	//Metadata metadata;
 	//metadata.generateMetadata(file);
 	try
 	{
 		VideoThumbnailer videoThumbnailer(thumbnailSize, workaroundIssues, maintainAspectRatio, imageQuality, smartFrameSelection);
-		videoThumbnailer.DecodeFile(fileName.ToStdString());
+		videoThumbnailer.DecodeFile(path);
 		width = videoThumbnailer.GetWidth();
 		height = videoThumbnailer.GetHeight();
 		rotation = videoThumbnailer.GetOrientation();
@@ -45,9 +48,11 @@ void CThumbnailVideo::GetVideoDimensions(const wxString & fileName, int & width,
 	}
 }
 
-CxImage * CThumbnailVideo::GetVideoFrame(const wxString & fileName, int &rotation, const int &percent, int &timePosition)
+CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const wxString & fileName, int &rotation, const int &percent, int &timePosition, const int & thumbnailWidth, const int & thumbnailHeight)
 {
-	CxImage * image = new CxImage();
+    printf("GetVideoFrame \n");
+    std::string path = CConvertUtility::ConvertToUTF8(fileName);
+	CRegardsBitmap * image = new CRegardsBitmap();
 	int     seekPercentage = percent;
 	int     thumbnailSize = 0;
 	int     imageQuality = 10;
@@ -77,25 +82,36 @@ CxImage * CThumbnailVideo::GetVideoFrame(const wxString & fileName, int &rotatio
 			videoThumbnailer.setSeekPercentage(seekPercentage);
 		}
 
-		videoThumbnailer.generateThumbnail(fileName.ToStdString(), image);
-		rotation = videoThumbnailer.GetOrientation();
+		image->SetFilename(fileName);
+		videoThumbnailer.generateThumbnail(path, image, thumbnailWidth, thumbnailHeight, rotation);
+		
 		timePosition = videoThumbnailer.GetTimePosition();
 		delete filmStripFilter;
 	}
 	catch (...)
 	{
-
+		if(image != nullptr)
+			delete image;
+		image = nullptr;
 	}
 	return image;
 }
 
-CxImage * CThumbnailVideo::GetVideoFrame(const wxString & fileName, int &rotation)
+CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const wxString & fileName, const int & thumbnailWidth, const int & thumbnailHeight, int &rotation)
 {
 	int timePosition = 0;
-	return GetVideoFrame(fileName, rotation, 10, timePosition);
+	CRegardsBitmap * image = GetVideoFrame(fileName, rotation, 10, timePosition, thumbnailWidth, thumbnailHeight);
+
+	return image;
 }
 
-vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName, int &width, int &height)
+int64_t CThumbnailVideo::GetMovieDuration(const wxString & fileName)
+{
+    std::string path = CConvertUtility::ConvertToUTF8(fileName);
+	return VideoThumbnailer::GetMovieDuration(path);
+}
+
+vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail)
 {
 	
 	int     thumbnailSize = 0;
@@ -115,21 +131,50 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 		videoThumbnailer.addFilter(filmStripFilter);
 	}
 
-	MovieDecoder * movie = videoThumbnailer.MovieDecoderThumbnail(fileName.ToStdString());
+    std::string path = CConvertUtility::ConvertToUTF8(fileName);
+	MovieDecoder * movie = videoThumbnailer.MovieDecoderThumbnail(path);
 
 	int rotation = videoThumbnailer.GetOrientation();
-	width = videoThumbnailer.GetWidth();
-	height = videoThumbnailer.GetHeight();
+	//width = videoThumbnailer.GetWidth();
+	//height = videoThumbnailer.GetHeight();
 
 	vector<CImageVideoThumbnail *> listPicture;
-	for (int i = 0; i <= 100; i += 5)
+	for (auto i = 0; i < 100; i += 5)
 	{
-		CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
-		cxVideo->image = new CxImage();
-		cxVideo->rotation = rotation;
-		cxVideo->percent = i;
-		cxVideo->timePosition = videoThumbnailer.GetThumbnail(fileName.ToStdString(), cxVideo->image, movie, cxVideo->percent);
-		listPicture.push_back(cxVideo);
+		try
+		{
+			CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
+			CRegardsBitmap * picture = nullptr;
+			int timePosition = 0;
+
+		
+			cxVideo->rotation = rotation;
+			cxVideo->percent = i;
+			cxVideo->image = new CImageLoadingFormat();
+		
+
+			try
+			{
+				picture = new CRegardsBitmap();
+				timePosition = videoThumbnailer.GetThumbnail(path, picture, movie, cxVideo->percent, widthThumbnail, heightThumbnail, rotation);
+			}
+			catch(...)
+			{
+				if(picture != nullptr)
+					delete picture;
+				picture = nullptr;
+			}
+			cxVideo->timePosition = timePosition;
+			cxVideo->image->SetPicturToJpeg(picture);
+			delete picture;
+			cxVideo->image->SetFilename(fileName);
+			cxVideo->image->SetOrientation(rotation);
+			listPicture.push_back(cxVideo);
+		}
+		catch(...)
+		{
+			printf("error \n");
+		}
 	}
 
 	videoThumbnailer.DestroyMovieDecoder(movie);

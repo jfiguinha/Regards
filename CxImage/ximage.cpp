@@ -13,6 +13,7 @@
  */
 void CxImage::Startup(uint32_t imagetype)
 {
+	isbgr = true;
 	//init pointers
 	pDib = pSelection = pAlpha = NULL;
 	ppLayers = ppFrames = NULL;
@@ -320,6 +321,7 @@ bool CxImage::Transfer(CxImage &from, bool bTransferFrames /*=true*/)
 	pSelection = from.pSelection;
 	pAlpha = from.pAlpha;
 	ppLayers = from.ppLayers;
+	isbgr = from.isbgr;
 
 	memset(&from.head,0,sizeof(BITMAPINFOHEADER));
 	memset(&from.info,0,sizeof(CXIMAGEINFO));
@@ -430,7 +432,7 @@ void CxImage::Bitfield2RGB(uint8_t *src, uint32_t redmask, uint32_t greenmask, u
  * \param bFlipImage: tune this parameter if the image is upsidedown
  * \return true if everything is ok
  */
-bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage)
+bool CxImage::CreateFromArray(uint8_t* pArray, int size,uint32_t dwWidth,uint32_t dwHeight,uint32_t dwBitsperpixel, uint32_t dwBytesperline, bool bFlipImage, bool rgb)
 {
 	if (pArray==NULL) return false;
 	if (!((dwBitsperpixel==1)||(dwBitsperpixel==4)||(dwBitsperpixel==8)||
@@ -450,6 +452,8 @@ bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight
 	{
 		dst = info.pImage + (bFlipImage ? (dwHeight - 1 - y) : y) * info.dwEffWidth;
 		src = pArray + y * dwBytesperline;
+		if(size <  ((y + 1) * dwBytesperline))
+			break;
 		if (dwBitsperpixel == 32)
 		{
 			for (uint32_t x = 0; x < dwWidth; x++)
@@ -468,6 +472,9 @@ bool CxImage::CreateFromArray(uint8_t* pArray,uint32_t dwWidth,uint32_t dwHeight
 			memcpy(dst, src, min(info.dwEffWidth, dwBytesperline));
 		}
 	}
+
+	if(rgb)
+		SwapRGB2BGR();
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////

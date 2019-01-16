@@ -1,9 +1,7 @@
 #pragma once
 #include "Icone.h"
-#include <algorithm>
 #include <ThumbnailData.h>
 #include <Photos.h>
-using namespace std;
 class CRegardsBitmap;
 class CThumbnailData;
 
@@ -34,23 +32,23 @@ namespace Regards
 			const int & GetWidth();
 			const int & GetHeight();
 			wxRect GetPos();
-
-			virtual void RenderIcone(wxDC * dc);
+            void Render(wxDC * dc, const int &posLargeur, const int &posHauteur);
+			
 			
 			vector<int> listElement;
 
 		protected:
-
+            virtual void RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur);
 			void RenderTitle(wxDC * dc);
 
-			int x;
-			int y;
+			int _xPos;
+			int _yPos;
 			int width;
 
 			CThemeInfosSeparationBar theme;
 			
 			wxString title;
-
+			wxRect titleRectPos;
 			
 		};
 		typedef std::vector<CInfosSeparationBar *> InfosSeparationBarVector;

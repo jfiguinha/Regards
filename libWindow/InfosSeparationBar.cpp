@@ -14,11 +14,11 @@ void CInfosSeparationBar::OnClick(const int &x, const int &y)
 
 int CInfosSeparationBar::GetXPos()
 {
-	return x;
+	return _xPos;
 }
 int CInfosSeparationBar::GetYPos()
 {
-	return y;
+	return _yPos;
 }
 
 const int & CInfosSeparationBar::GetWidth()
@@ -43,12 +43,12 @@ void CInfosSeparationBar::SetTitle(const wxString &title)
 
 bool CInfosSeparationBar::operator == (const CInfosSeparationBar &n2)
 {
-	int left = x;
-	int right = x + width;
-	int top = y;
-	int bottom = y + theme.GetHeight();
+	int left = _xPos;
+	int right = _xPos + width;
+	int top = _yPos;
+	int bottom = _yPos + GetHeight();
 
-	if ((left < n2.x && n2.x < right) && (top < n2.y && n2.y < bottom))
+	if ((left < n2._xPos && n2._xPos < right) && (top < n2._yPos && n2._yPos < bottom))
 	{
 		return true;
 	}
@@ -57,16 +57,16 @@ bool CInfosSeparationBar::operator == (const CInfosSeparationBar &n2)
 
 void CInfosSeparationBar::SetWindowPos(const int &x, const int &y)
 {
-	this->x = x;
-	this->y = y;
+	this->_xPos = x;
+	this->_yPos = y;
 }
 
 wxRect CInfosSeparationBar::GetPos()
 {
 	wxRect rc;
-	rc.x = x;
+	rc.x = _xPos;
 	rc.width = width;
-	rc.y = y;
+	rc.y = _yPos;
 	rc.height = theme.GetHeight();
 	return rc;
 }
@@ -95,10 +95,12 @@ CInfosSeparationBar::~CInfosSeparationBar(void)
 void CInfosSeparationBar::RenderTitle(wxDC * dc)
 {
 	wxRect rc;
-	rc.x = x;
-	rc.y = y;
+    int x = 0;
+    int y = 0;
+	rc.x = 0;
+	rc.y = 0;
 	rc.width = width;
-	rc.height = theme.GetHeight();
+	rc.height = GetHeight();
 	CWindowMain::FillRect(dc, rc, theme.colorBack);
 
 	int posY = 0;
@@ -107,7 +109,7 @@ void CInfosSeparationBar::RenderTitle(wxDC * dc)
 	vector<wxString> listOfTexte = CConvertUtility::split(title, '@');
 	if (listOfTexte.size() > 0)
 	{
-		int sizeOfY = theme.GetHeight() / listOfTexte.size();
+		int sizeOfY = GetHeight() / listOfTexte.size();
 
 		for (wxString title : listOfTexte)
 		{
@@ -118,16 +120,53 @@ void CInfosSeparationBar::RenderTitle(wxDC * dc)
 				int localx = x + (width - size.x) / 2;
 				CWindowMain::DrawTexte(dc, title, localx, localy, theme.themeFont);
 				posY += sizeOfY;
+
+				titleRectPos.x = localx;
+				titleRectPos.y = localy;
+				titleRectPos.width = size.x;
+				titleRectPos.height = size.y;
 			}
 		}
 
 	}
 }
 
+void CInfosSeparationBar::Render(wxDC * dc, const int &posLargeur, const int &posHauteur)
+{
+#ifdef __WXGTK__
+    double scale_factor = dc->GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif 
+    
+    wxBitmap memBitmap(GetWidth(),GetHeight());
+    wxMemoryDC memDC(memBitmap);
+    RenderIcone(&memDC, posLargeur, posHauteur);
+    memDC.SelectObject(wxNullBitmap);
+    
+#ifdef __WXGTK__
+    if(scale_factor != 1.0)
+    {
+        wxImage image = memBitmap.ConvertToImage();
+        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
+        dc->DrawBitmap(resized, (_xPos + posLargeur) / scale_factor, (_yPos + posHauteur) / scale_factor);
+    }
+    else
+    {
+        dc->DrawBitmap(memBitmap,  _xPos + posLargeur, _yPos + posHauteur);
+    }
+#else
+    dc->DrawBitmap(memBitmap,  _xPos + posLargeur, _yPos + posHauteur);
+#endif    
+    
+    
+    
+}
+
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CInfosSeparationBar::RenderIcone(wxDC * dc)
+void CInfosSeparationBar::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
 {
 	RenderTitle(dc);
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="wxSVG" InternalType="Library">
+<CodeLite_Project Name="wxSVG" InternalType="Library" Version="10.0.0">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -26,10 +26,30 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <Reconciliation>
+    <Regexes/>
+    <Excludepaths/>
+    <Ignorefiles/>
+    <Extensions>
+      <![CDATA[cpp;c;h;hpp;xrc;wxcp;fbp]]>
+    </Extensions>
+    <Topleveldir>../wxSVG</Topleveldir>
+  </Reconciliation>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="src/css_colors.cpp"/>
+    <VirtualDirectory Name="skia">
+      <File Name="src/skia/Gradient.cpp" ExcludeProjConfig="Debug;Release;"/>
+      <File Name="src/skia/SVGCanvasSkia.h" ExcludeProjConfig="Debug;"/>
+      <File Name="src/skia/SVGCanvasSkia.cpp" ExcludeProjConfig="Debug;Release;"/>
+      <File Name="src/skia/SVGCanvasPathSkia.h" ExcludeProjConfig="Debug;"/>
+      <File Name="src/skia/SVGCanvasPathSkia.cpp" ExcludeProjConfig="Debug;Release;"/>
+      <File Name="src/skia/Gradient.h" ExcludeProjConfig="Debug;"/>
+    </VirtualDirectory>
+    <File Name="src/SVGAnimateMotionElement.cpp"/>
+    <File Name="src/ExifHandler.cpp"/>
+    <File Name="src/SVGDocument_CreateElement.cpp" ExcludeProjConfig="Debug;Release;"/>
+    <File Name="src/css_colors.cpp" ExcludeProjConfig="Debug;Release;"/>
     <File Name="src/css_properties.cpp"/>
     <File Name="src/CSSStyleDeclaration.cpp"/>
     <File Name="src/CSSValue.cpp"/>
@@ -53,7 +73,6 @@
     <File Name="src/SVGColor.cpp"/>
     <File Name="src/svgctrl.cpp"/>
     <File Name="src/SVGDocument.cpp"/>
-    <File Name="src/SVGDocument_CreateElement.cpp"/>
     <File Name="src/SVGElementInstanceList.cpp"/>
     <File Name="src/SVGEllipseElement.cpp"/>
     <File Name="src/SVGFEGaussianBlurElement.cpp"/>
@@ -104,8 +123,6 @@
       <File Name="src/svgxml/svgxmlhelpr.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="wxSVG">
       <File Name="include/wxSVG/Animated.h"/>
@@ -300,34 +317,29 @@
       <File Name="include/wxSVGXML/svgxmlhelpr.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="" C_Options="" Assembler="">
-        <IncludePath Value="."/>
+      <Compiler Options="-std=gnu++11;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-Wno-narrowing;-fopenmp" C_Options="-Wall;" Assembler="">
+        <IncludePath Value="../../libextern/ffmpeg-4.1"/>
+        <IncludePath Value="../../libextern/libexif-master"/>
+        <IncludePath Value="../wxSVG/include"/>
+        <IncludePath Value="../wxSVG/include/wxSVG"/>
+        <IncludePath Value="../wxSVG/include/wxSVGXML"/>
+        <Preprocessor Value="USE_CAIRO"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0;-std=c++11;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../wxSVG/include"/>
-        <IncludePath Value="../wxSVG/include/wxSVG"/>
-        <IncludePath Value="../wxSVG/include/wxSVGXML"/>
-        <IncludePath Value="/usr/include/glib-2.0"/>
-        <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
-        <IncludePath Value="/usr/include/pango-1.0"/>
-        <IncludePath Value="/usr/include/cairo"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
-        <Preprocessor Value="__WXGTK__"/>
-        <Preprocessor Value="USE_RENDER_CAIRO"/>
-      </Compiler>
-      <Linker Options="$(shell wx-config --debug=yes --libs --unicode=yes)" Required="yes"/>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
+      <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
@@ -359,25 +371,14 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-Wall;" C_Options="-O2;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
-        <IncludePath Value="../../libextern/ffmpeg-2.6.2"/>
-        <IncludePath Value="../wxSVG/include"/>
-        <IncludePath Value="../wxSVG/include/wxSVG"/>
-        <IncludePath Value="../wxSVG/include/wxSVGXML"/>
-        <IncludePath Value="/usr/include/pango-1.0"/>
-        <IncludePath Value="/usr/include/cairo"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/include"/>
-        <IncludePath Value="../../libextern/wxWidgets-3.0.2/lib/wx/include/gtk2-unicode-static-3.0"/>
-        <IncludePath Value="/usr/include/glib-2.0"/>
-        <IncludePath Value="/usr/lib/x86_64-linux-gnu/glib-2.0/include"/>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
-        <Preprocessor Value="__WXGTK__"/>
-        <Preprocessor Value="USE_RENDER_CAIRO"/>
       </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>

@@ -1,12 +1,5 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
 #include "Tree.h"
-#include <string>
-using namespace std;
 
 class CTreeData
 {
@@ -40,6 +33,6 @@ protected:
 	wxString key;
 	bool parent;
 	bool actif;
-	int type = 0;
+	int type;
 };
 

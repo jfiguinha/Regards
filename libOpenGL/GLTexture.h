@@ -1,8 +1,5 @@
 #pragma once
 #include "GLcontext.h"
-#include <stdint.h>
-#include <vector>
-using namespace std;
 
 namespace Regards
 {
@@ -13,16 +10,17 @@ namespace Regards
 		class GLTexture
 		{
 		public:
-			GLTexture(const int &nWidth, const int &nHeight);
+			GLTexture(const int &nWidth, const int &nHeight, GLenum format = GL_BGRA_EXT);
 			GLTexture(void);
 			~GLTexture(void);
 
-			static GLTexture * CreateTextureOutput(int width, int height);
-			bool Create(const int &nWidth, const int &nHeight, uint8_t * pbyData, const GLenum & format = GL_BGRA_EXT, int byteParPixel = 4);
+			static GLTexture * CreateTextureOutput(int width, int height, GLenum format = GL_BGRA_EXT);
+			bool Create(const int &nWidth, const int &nHeight, uint8_t * pbyData);
 			void SetFilterType( const GLint FilterType_i, const GLint FilterValue_i );
 			void Delete();
 			void Enable();
-			void SetData(uint8_t * data, const int &nWidth, const int &nHeight, const GLenum & format = GL_BGRA_EXT);
+			void SetData(uint8_t * data, const int &nWidth, const int &nHeight);
+            void SetData(float * data, const int &nWidth, const int &nHeight);
 			void Disable()
 			{
 				glDisable( GL_TEXTURE_2D );
@@ -35,15 +33,14 @@ namespace Regards
 			int GetWidth();
 			int GetHeight();
 			uint8_t * GetData();
-            uint8_t * GetRGBData();
 			void GetData(uint8_t * data);
 		protected:
 
-			void checkErrors(const char * desc);
+			void checkErrors(std::string desc);
 			GLuint m_nTextureID;
 			int width;
 			int height;
-
+			GLenum format;
 		};
 
 		

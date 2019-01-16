@@ -19,6 +19,7 @@ END_EVENT_TABLE()
 
 SaveFileFormat::SaveFileFormat(wxWindow* parent)
 {
+	isOk = false;
 	//(*Initialize(SaveFileFormat)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("SaveFileFormat"),_T("wxDialog"));
 	rbSelectFormat = (wxRadioBox*)FindWindow(XRCID("ID_RBSELECTFORMAT"));

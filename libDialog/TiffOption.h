@@ -1,6 +1,7 @@
 #ifndef TIFFOPTION_H
 #define TIFFOPTION_H
 
+
 #ifndef WX_PRECOMP
 	//(*HeadersPCH(TiffOption)
 	#include <wx/radiobox.h>
@@ -44,9 +45,8 @@ class TiffOption: public wxDialog
 		void OnbtnCancelClick(wxCommandEvent& event);
 		//*)
 
-        int compressOption = 0;
-        //int compressLevel = 0;
-        bool isOk = false;
+        int compressOption;
+        bool isOk;
 		DECLARE_EVENT_TABLE()
 };
 

@@ -6,13 +6,6 @@
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
-using namespace std;
 
 class CPhotoGps
 {

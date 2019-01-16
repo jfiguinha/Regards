@@ -7,6 +7,7 @@ CTreeData::CTreeData(void)
 	exifKey = L"";
 	key = L"";
 	actif = false;
+	type = 0;
 }
 
 

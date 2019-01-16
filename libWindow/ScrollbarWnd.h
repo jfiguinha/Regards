@@ -1,9 +1,5 @@
 #pragma once
-#include <Theme.h>
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+#include <theme.h>
 
 namespace Regards
 {
@@ -32,9 +28,10 @@ namespace Regards
 			void SetLineSize(const int &lineSize);
 			void HideVerticalScroll();
 			void HideHorizontalScroll();
+			void ShowVerticalScroll();
 			int GetBarWidth();
 			int GetBarHeight();
-			void SetControlSize(const int &width, const int &height);
+			void SetControlSize(const int &width, const int &height, const bool &useScaleFactor = false);
 			void SetPosition(const int &posX, const int &posY);
 			void Resize();
 
@@ -46,19 +43,19 @@ namespace Regards
 			void OnSize(wxSizeEvent& event);
 			void OnEraseBackground(wxEraseEvent& event){};
 
-			CScrollbarHorizontalWnd * scrollHorizontal = nullptr;
-			CScrollbarVerticalWnd * scrollVertical = nullptr;
-			CScrollInterface * scrollInterface = nullptr;
+			CScrollbarHorizontalWnd * scrollHorizontal;
+			CScrollbarVerticalWnd * scrollVertical;
+			CScrollInterface * scrollInterface;
 
-			bool showV = false;
-			bool showH = false;
-			int width = 0;
-			int height = 0;
-
-			int posHauteur = 0;
-			int posLargeur = 0;
-			int controlHeight = 0;
-			int controlWidth = 0;
+			bool showV;
+			bool showH;
+			int width;
+			int height;
+            bool useScaleFactor = false;
+			int posHauteur;
+			int posLargeur;
+			int controlHeight;
+			int controlWidth;
 		};
 	}
 }

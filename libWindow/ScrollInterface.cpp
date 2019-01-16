@@ -81,7 +81,7 @@ void CScrollInterface::SetScrollbar(CScrollbarWnd * scrollbar)
 void CScrollInterface::SetTopPosition(const int &top)
 {
 	posHauteur = top;
-	TestMaxY();
+	//TestMaxY();
 	this->Update();
 }
 

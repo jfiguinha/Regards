@@ -6,13 +6,10 @@
 #include <EffectVideoParameter.h>
 #include "PanelInfosWnd.h"
 #include "PreviewWnd.h"
-#include <string>
-#include <thread>
-using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 
-
+class CImageLoadingFormat;
 
 
 namespace Regards
@@ -22,12 +19,11 @@ namespace Regards
 		class CPreviewInfosWnd :public CSplitter, public CPaneInterface, public CToolbarInterface
 		{
 		public:
-			CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CVideoEffectParameter * videoEffectParameter, const bool &horizontal = true);
+			CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CPreviewInfosWnd();
 
 			void ClosePane(const int &id);
-            bool SetAnimation(const wxString &filename);
-			bool SetBitmap(CRegardsBitmap * bitmap, const bool &isThumbnail);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
 			void SetVideo(const wxString &filename);
 
 			void SetEffect(const bool &effect);
@@ -38,12 +34,7 @@ namespace Regards
 			void FullscreenMode();
 			void ScreenMode();
 
-			void ShowPanelInfos();
-			void HidePanelInfos();
 			bool IsPanelInfosVisible();
-
-			void ShowToolbar();
-			void HideToolbar();
 			bool IsToolbarVisible();
 
 			void ResizeWindow();
@@ -54,37 +45,33 @@ namespace Regards
 			void SetDiaporamaMode();
 			void SetNormalMode();
             
-            void UpdateInfos();
+           void HidePanel(); 
 
 		protected:
 
+			void ShowPanelInfos(wxCommandEvent& event);
+			void HidePanelInfos(wxCommandEvent& event);
 			void ClickShowButton(const int &id);
 			void SetPanelInfos(const bool &isThumbnail);
-			wxRect GetWindowRect();
 
 			void RedrawBarPos();
 
-			CPane * paneInfos = nullptr;
-			CPane * panePreview = nullptr;
-
-			CPanelInfosWnd * panelInfosWindow = nullptr;
-			CPreviewWnd * previewWindow = nullptr;
-
-			CClickToolbar * clickInfoToolbar = nullptr;
+			CPane * paneInfos;
+			CPanelInfosWnd * panelInfosWindow;
+			CPreviewWnd * previewWindow;
+			CClickToolbar * clickInfoToolbar;
             
             //Chargement des infos de géolocalisation
             CFileGeolocation * fileGeolocalisation;
 
-			bool isVideo = false;
-			bool isAnimation = false;
-			int posBarInfos = 0;
+			bool isVideo;
+			int posBarInfos;
 			bool fullscreen;
-			bool isDiapoarama = false;
-            bool clickToobarShow = false;
-            bool paneInfosShow = false;
+			bool isDiapoarama;
+            bool clickToobarShow;
+            bool paneInfosShow;
 			wxString filename;
-			CRegardsBitmap * bitmap;
-            bool isThumbnail = false;
+            bool isThumbnail;
 		};
 
 	}

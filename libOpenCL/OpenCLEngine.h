@@ -1,10 +1,4 @@
 #pragma once
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <string>
-#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
@@ -17,35 +11,103 @@ namespace Regards
 	namespace OpenCL
 	{
 		class COpenCLContext;
-		class COpenCLProgram;
+
+		struct OpenCLPlatform
+		{
+			int platformIndex;
+			wxString platformName;
+			cl_platform_id platformId;
+		};
+
+		struct OpenCLDevice
+		{
+			int deviceIndex;
+			wxString deviceName;
+			cl_platform_id platformId;
+			cl_device_id deviceId;
+			cl_device_type deviceType;
+            bool openGlSharing;
+		};
+
+
+		class COpenCLPlatformList
+		{
+		public:
+
+			static OpenCLPlatform * SelectPlatform(const wxString &name)
+			{
+				if (listOfPlatform.size() == 0)
+					GetListOfPlatform();
+
+				for (OpenCLPlatform * openCLPlatform : listOfPlatform)
+				{
+					if (name == openCLPlatform->platformName)
+						return openCLPlatform;
+				}
+				return nullptr;
+			}
+
+			static OpenCLPlatform * SelectPlatform(int index)
+			{
+                printf("SelectPlatform \n");
+				if (listOfPlatform.size() == 0)
+					GetListOfPlatform();
+
+				for (OpenCLPlatform * openCLPlatform : listOfPlatform)
+				{
+					if (openCLPlatform->platformIndex == index)
+						return openCLPlatform;
+				}
+				return nullptr;
+			}
+
+			static vector<OpenCLPlatform *> GetPlatform()
+			{
+				if (listOfPlatform.size() == 0)
+					GetListOfPlatform();
+
+				return listOfPlatform;
+			}
+
+		private:
+	
+			static void GetListOfPlatform();
+			static vector<OpenCLPlatform *> listOfPlatform;
+		};
+
+		
 
 		class COpenCLDeviceList
 		{
 		public:
-			COpenCLDeviceList(){};
-			~COpenCLDeviceList(){};
 
-			int platformIndex;
-			wxString platformName;
+			static OpenCLDevice * SelectDevice(const wxString &deviceName);
+            
+            static wxString GetDeviceInfo(cl_device_id device, cl_device_info param_name);
+            
+            static void GetAllDevice();
+            
+			static OpenCLDevice * SelectDevice(OpenCLPlatform * platform, const int &index);
+			
+			static vector<OpenCLDevice *> GetPlatformDevice(OpenCLPlatform * platform);
+            
+		private:
+			static int IsExtensionSupported(const char* support_str, const char* ext_string, size_t ext_buffer_size);
+			static cl_device_type ParseDeviceType(const wxString& device_type_name);
+			static cl_platform_id SelectPlatform(const wxString& platform_name_or_index);
+			static void GetListOfDevice(vector<OpenCLDevice *> & listOfDevice, cl_platform_id platform, cl_device_type device_type);
+            static vector<OpenCLDevice *> listOfDevice;
 		};
 
 		class  COpenCLEngine
 		{
 		public:
-			COpenCLEngine(){};
-			~COpenCLEngine(){};
-
-			static void Init();
-			static vector<COpenCLDeviceList> GetListOfContext();
-			static bool IsOpenCLCompatible();
-			static COpenCLContext * getInstance();
-			static int Initialize(const wxString &platform);
-			static void kill();
-			static COpenCLProgram * GetProgram(const wxString &numProgramId);
+			COpenCLEngine();
+			~COpenCLEngine();
+           static OpenCLDevice * GetDefaultDevice();
+			COpenCLContext * GetInstance();
 		private:
-			
-			static COpenCLContext * _singleton;
-			//static 
+			COpenCLContext * _singleton;
 		};
 
 	}

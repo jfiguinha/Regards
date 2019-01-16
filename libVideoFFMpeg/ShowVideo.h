@@ -1,27 +1,27 @@
 #pragma once
+#ifdef FFMPEG
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
+#include <StreamInfo.h>
 #include "SliderVideo.h"
 #include "SliderInterface.h"
 #include "VideoInterface.h"
 #include <ThemeParam.h>
+#include <OpenCLContext.h>
+#include <FiltreUpdate.h>
+using namespace Regards::OpenCL;
 using namespace Regards::Window;
 using namespace Regards::Video;
 
 class CVideoEffectParameter;
-class CVideoControl;
+class CVideoControlInterface;
 
 
-class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface
+class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
 {
 public:
-	CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CVideoEffectParameter * videoEffectParameter, CThemeParam * config);
+	CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
 	~CShowVideo();
-	bool SetVideo(const wxString &filename);
+	bool SetVideo(const wxString &filename, const int &rotation);
 	int GetVideoWidth();
 	int GetVideoHeight();
 
@@ -34,6 +34,10 @@ public:
 			
 	void Resize();
 
+	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
+	CEffectParameter * GetParameter();
+	void UpdateFiltre(CEffectParameter * effectParameter);
+
 	void PositionVideo(const int64_t &position);
 	void SlidePosChange(const int &position, const wxString &key){};
 	void ZoomPos(const int &position){};
@@ -44,18 +48,20 @@ public:
 	void Rotate270();
 	void FlipVertical();
 	void FlipHorizontal();
+	CVideoControlInterface * GetVideoControl();
 
 	void StopVideo();
 	void PlayVideo();
 	void PauseVideo();
 			
-	void ChangeAudio(const wxString &langue);
+	void ChangeAudio(const int &langue);
 	bool IsToolbarMouseOver();
 
 	void SetDiaporamaMode();
 	void SetNormalMode();
     
     void UpdateScreenRatio();
+	void SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle);
 
 protected:
 
@@ -76,14 +82,18 @@ private:
 	void ShowSlider(const bool &show);
 	void InitControl();
 
-	CSliderVideo * videoSlider = nullptr;
-	CVideoControl * videoWindow = nullptr;
-	CVideoEffectParameter * videoEffectParameter = nullptr;
-	CWindowMain * windowMain = nullptr;
+	CSliderVideo * videoSlider;
+	CVideoControlInterface * videoWindow;
+	CVideoEffectParameter * videoEffectParameter;
+	CWindowMain * windowMain;
 	bool play;
-	bool toolbarOutside = false;
-	int height = 0;
-	int width = 0;
-	int videoPosOld = 0;
-	bool isDiaporama = false;
+	bool toolbarOutside;
+	int height;
+	int width;
+	int videoPosOld;
+	bool isDiaporama;
+    bool softRender = false;
+	vector<CStreamInfo> listStream;
 };
+
+#endif

@@ -1,14 +1,8 @@
 #include "RegardsRaw.h"
-#include <libraw.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <vector>
-using namespace std;
+#include "libraw/libraw.h"
+#include <ximage.h>
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
 
-#define EXPORT __attribute__((visibility("default")))
 
 CRegardsRaw::CRegardsRaw()
 {
@@ -54,11 +48,11 @@ void write_ppm(libraw_processed_image_t *img, std::vector<uint8_t> *p)
 }
 
 
-std::vector<uint8_t> CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat)
+CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat)
 {
     //int i = 1;
 	//int tempimg, row, col;
-	std::vector<uint8_t> memPicture;
+	CxMemFile * memPicture;
 	// step one: Open file
 	LibRaw RawProcessor;
 	int  ret;//, output_thumbs = 0;
@@ -70,17 +64,26 @@ std::vector<uint8_t> CRegardsRaw::GetThumbnail(const string & fileName, int &out
 				libraw_processed_image_t *thumb = RawProcessor.dcraw_make_mem_thumb(&ret);
 				if (thumb)
 				{
+					uint8_t * dataPt = nullptr;
+					int size = 0;
 					if (thumb->type == LIBRAW_IMAGE_JPEG)
 					{
+						dataPt = new uint8_t[thumb->data_size];
+						memcpy(dataPt, thumb->data, thumb->data_size);
                         outputFormat = JPEGOUTPUT;
-                        memPicture.insert(memPicture.end(), (uint8_t *)thumb->data, thumb->data + thumb->data_size);
-
+						size = thumb->data_size;
+						//memPicture = new CxMemFile(thumb->data,thumb->data_size);
 					}
                     else if (thumb->type == LIBRAW_IMAGE_BITMAP)
                     {
+						std::vector<uint8_t> data;
                         outputFormat = BITMAPOUTPUT;
-                        write_ppm(thumb, &memPicture);
-                    }
+                        write_ppm(thumb, &data);
+						dataPt = new uint8_t[data.size()];
+						size = data.size();
+						memcpy(dataPt, &data[0], data.size());
+                    }				
+					memPicture = new CxMemFile(dataPt, size);
 				}
 			}
 			RawProcessor.recycle();
@@ -98,57 +101,10 @@ void CRegardsRaw::GetDimensions(const string & fileName, int & width, int & heig
 	LibRaw RawProcessor;
 	if (RawProcessor.open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
-		// step two: positioning libraw_internal_data.unpacker_data.data_offset
-		if (RawProcessor.unpack() != LIBRAW_SUCCESS)
-		{
-			#define S RawProcessor.imgdata.sizes
-			width = S.iwidth;
-			height = S.iheight;
-		}
+		#define S RawProcessor.imgdata.sizes
+		width = S.iwidth;
+		height = S.iheight;
+		RawProcessor.recycle();
 	}
-
 }
 
-std::vector<uint8_t> CRegardsRaw::GetPicture(const string & fileName, int & width, int & height)
-{
-    std::vector<uint8_t> data;
-	// step one: Open file
-	LibRaw RawProcessor;
-
-    //RawProcessor.imgdata.params.use_rawspeed = 1;
-	if (RawProcessor.open_file(fileName.c_str()) == LIBRAW_SUCCESS)
-	{
-		// step two: positioning libraw_internal_data.unpacker_data.data_offset
-		if (RawProcessor.unpack() == LIBRAW_SUCCESS)
-		{
-			RawProcessor.dcraw_process();
-			int raw_color, raw_bitsize;
-			RawProcessor.get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
-			unsigned char *buffer = new unsigned char[height * width * 3];
-			RawProcessor.copy_mem_image(buffer, width * 3, 0);
-
-
-
-	#pragma omp parallel for
-			for (int y = height - 1; y >= 0; y--)
-			{
-				for (int x = 0; x < width; x++)
-				{
-					int positionIn = width * y * 3 + x * 3;
-					data.push_back(buffer[positionIn + 2]);
-					data.push_back(buffer[positionIn + 1]);
-					data.push_back(buffer[positionIn]);
-					data.push_back(0);
-				}
-			}
-			// mode coding, not finished yet...
-			//image->VertFlipBuf();
-			RawProcessor.recycle();
-
-			delete[] buffer;
-		}
-	}
-	
-	return data;
-
-}

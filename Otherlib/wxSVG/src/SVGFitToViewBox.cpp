@@ -28,26 +28,30 @@ void wxSVGFitToViewBox::UpdateMatrix(wxSVGMatrix& matrix, const wxSVGLength& wid
 		scale = width / viewbox.GetWidth();
 		if (scale > height / viewbox.GetHeight())
 			scale = height / viewbox.GetHeight();
-
+		
 		double x = 0;
-		if (align == wxSVG_PRESERVEASPECTRATIO_XMIDYMIN
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMID
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMAX)
-			x = (width - viewbox.GetWidth() * scale) / 2;
-		else if (align == wxSVG_PRESERVEASPECTRATIO_XMAXYMIN
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMID
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMAX)
-			x = width - viewbox.GetWidth() * scale;
-
+		if (abs(width - viewbox.GetWidth() * scale) > width / 1000000) {
+			if (align == wxSVG_PRESERVEASPECTRATIO_XMIDYMIN
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMID
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMAX)
+				x = (width.GetValue() - viewbox.GetWidth() * scale) / 2;
+			else if (align == wxSVG_PRESERVEASPECTRATIO_XMAXYMIN
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMID
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMAX)
+				x = width.GetValue() - viewbox.GetWidth() * scale;
+		}
+		
 		double y = 0;
-		if (align == wxSVG_PRESERVEASPECTRATIO_XMINYMID
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMID
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMID)
-			y = (height - viewbox.GetHeight() * scale) / 2;
-		else if (align == wxSVG_PRESERVEASPECTRATIO_XMINYMAX
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMAX
-				|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMAX)
-			y = height - viewbox.GetHeight() * scale;
+		if (height.GetValue() - viewbox.GetHeight() * scale > height / 1000000) {
+			if (align == wxSVG_PRESERVEASPECTRATIO_XMINYMID
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMID
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMID)
+				y = (height.GetValue() - viewbox.GetHeight() * scale) / 2;
+			else if (align == wxSVG_PRESERVEASPECTRATIO_XMINYMAX
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMIDYMAX
+					|| align == wxSVG_PRESERVEASPECTRATIO_XMAXYMAX)
+				y = height.GetValue() - viewbox.GetHeight() * scale;
+		}
 
 		if (x != 0 || y != 0)
 			matrix = matrix.Translate(x, y);

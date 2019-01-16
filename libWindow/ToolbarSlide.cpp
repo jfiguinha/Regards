@@ -10,18 +10,16 @@ using namespace Regards::Window;
 
 CToolbarSlide::CToolbarSlide(const CThemeSlider & themeSlider, CSliderInterface * eventInterface)
 {
-	CLoadingResource loadingResource;
 	y = 0;
+	colorBackground = true;
+	position = 0;
 	this->eventInterface = eventInterface;
 	this->themeSlider = themeSlider;
-	positionButton = { 0, 0, 0, 0 };
+	positionButton = wxRect( 0, 0, 0, 0 );
 	hCursorHand = CResourceCursor::GetClosedHand();
 	mouseBlock = false;
 	captureBall = false;
-    if(isVector)
-        buttonVector = CLibResource::GetVector(L"IDB_BOULESLIDER");
-    else
-        button = loadingResource.LoadImageResource(L"IDB_BOULESLIDER");
+    buttonVector = CLibResource::GetVector(L"IDB_BOULESLIDER");
 }
 
 void CToolbarSlide::Resize(const int &tailleX, const int &tailleY)
@@ -322,7 +320,7 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 	dc->DrawBitmap(bitmapBuffer, x, y);
 }
 
-void CToolbarSlide::DrawButton(wxDC * deviceContext)
+void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 {
 	//bool oldRender = true;
 
@@ -340,8 +338,8 @@ void CToolbarSlide::DrawButton(wxDC * deviceContext)
 	//int first = GetFirstValue();
 	//int last = GetLastValue();
 
-	wxSize renderFirst = CWindowMain::GetSizeTexte(deviceContext, to_string(GetPositionValue()), themeSlider.font);
-	wxSize renderLast = CWindowMain::GetSizeTexte(deviceContext, to_string(GetLastValue()), themeSlider.font);
+	wxSize renderFirst = CWindowMain::GetSizeTexte(dc, to_string(GetPositionValue()), themeSlider.font);
+	wxSize renderLast = CWindowMain::GetSizeTexte(dc, to_string(GetLastValue()), themeSlider.font);
 
 	posRectangle.x = renderLast.x;
 	posRectangle.width = themeSlider.GetWidth() - (posRectangle.x*2);
@@ -359,19 +357,14 @@ void CToolbarSlide::DrawButton(wxDC * deviceContext)
 	memDC.SelectObject(wxNullBitmap);
 
 	bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
-	deviceContext->DrawBitmap(bitmapBuffer, x, y, true);
+	dc->DrawBitmap(bitmapBuffer, x, y, true);
 
 	CalculPositionButton();
     
-    if(isVector)
-    {
+
         if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
             button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
-        deviceContext->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
-    }
-    else
-    {
-        deviceContext->DrawBitmap(button.Rescale(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight()), x + renderLast.x + positionButton.x, y + positionButton.y);
-    }
+        dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
+
 }
 

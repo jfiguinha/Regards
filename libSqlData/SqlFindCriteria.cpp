@@ -60,7 +60,7 @@ int CSqlFindCriteria::TraitementResult(CSqlResult * sqlResult)
 	while (sqlResult->Next())
 	{
 		CCriteria _cCriteria;
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 
 			switch (i)

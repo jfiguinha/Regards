@@ -17,13 +17,11 @@
 #ifndef VIDEO_THUMBNAILER_H
 #define VIDEO_THUMBNAILER_H
 
-#include <string>
-#include <vector>
+
 #include <map>
 #include <inttypes.h>
-//#include <ximage.h>
-#include "imagetypes.h"
 #include "ifilter.h"
+class CRegardsBitmap;
 
 struct AVFormatContext;
 
@@ -45,13 +43,11 @@ public:
     VideoThumbnailer(int thumbnailSize, bool workaroundIssues, bool maintainAspectRatio, int imageQuality, bool smartFrameSelection);
     ~VideoThumbnailer();
 
-	int GetThumbnail(const std::string& videoFile, CxImage * image, MovieDecoder * movieDecoder, const int &percent);
+	static int64_t GetMovieDuration(const string& videoFile);
+	int GetThumbnail(const std::string& videoFile, CRegardsBitmap * image, MovieDecoder * movieDecoder, const int &percent, const int & thumbnailWidth, const int & thumbnailHeight, const int & rotation);
 	MovieDecoder * MovieDecoderThumbnail(const std::string& videoFile, AVFormatContext* pAvContext = NULL);
 	void DestroyMovieDecoder(MovieDecoder * movie);
-	void generateThumbnail(const std::string& videoFile, CxImage * image, AVFormatContext* pAvContext = NULL);
-    void generateThumbnail(const std::string& videoFile, ThumbnailerImageType type, const std::string& outputFile, AVFormatContext* pAvContext = NULL);
-    void generateThumbnail(const std::string& videoFile, ThumbnailerImageType type, std::vector<uint8_t>& buffer, AVFormatContext* pAvContext = NULL);
-
+	void generateThumbnail(const std::string& videoFile, CRegardsBitmap * image, const int & thumbnailWidth, const int & thumbnailHeight, int & rotation, AVFormatContext* pAvContext = NULL);
     void setThumbnailSize(int size);
     void setSeekPercentage(int percentage);
     void setSeekTime(const std::string& seekTime);
@@ -70,9 +66,8 @@ public:
 	const int &  GetTimePosition();
 
 private:
-    void generateThumbnail(const std::string& videoFile, ImageWriter& imageWriter, AVFormatContext* pAvContext = NULL);
+
     void generateSmartThumbnail(MovieDecoder& movieDecoder, VideoFrame& videoFrame);
-    void writeImage(const std::string& videoFile, ImageWriter& imageWriter, const VideoFrame& videoFrame, int duration, std::vector<uint8_t*>& rowPointers);
 
     std::string getMimeType(const std::string& videoFile);
     std::string getExtension(const std::string& videoFilename);
@@ -91,10 +86,10 @@ private:
     bool                        m_SmartFrameSelection;
     std::string                 m_SeekTime;
     std::vector<IFilter*>       m_Filters;
-	int							m_width = 0;
-	int							m_height = 0;
-	int							m_orientation = 0;
-	int							m_seekTimeInSecond = 0;
+	int							m_width;
+	int							m_height;
+	int							m_orientation;
+	int							m_seekTimeInSecond;
     friend class VideoThumbnailerTest;
 };
 

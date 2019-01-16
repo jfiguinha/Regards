@@ -2,10 +2,17 @@
 #include <fstream>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
+#if defined(__WXMSW__)
+#include "../include/config_id.h"
+#else
+#include <config_id.h>
+#endif
+#include <ConvertUtility.h>
 using namespace rapidxml;
 
 CRegardsConfigParam::CRegardsConfigParam()
 {
+	iconSizeRatio = 1.0;
 	numLibPreview = 2;
 	numEffect = 0;
 	openCLNumIndex = 0;
@@ -14,10 +21,77 @@ CRegardsConfigParam::CRegardsConfigParam()
 	diaporamaTime = 3;
 	diaporamaEffect = 0;
 	diaporamaFullscreen = 1;
-	openCLPlatformName = "INTEL";
+	openCLPlatformName = "";
+	dataInMemory = 1;
 	geolocUrl = "http://www.geoplugin.net";
 	thumbnailQuality = 1;
 	thumbnailIconeCache = 1;
+	pictureSize = 0;
+    nbProcessThumbnail = 1;
+    nbProcessExif = 1;
+    nbProcessFace = 1;
+    nbGpsFileByMinute = 60;
+    numLanguage = 1;
+}
+
+int CRegardsConfigParam::GetThumbnailProcess()
+{
+    return nbProcessThumbnail;
+}
+
+void CRegardsConfigParam::SetThumbnailProcess(const int &nbProcess)
+{
+    nbProcessThumbnail = nbProcess;
+}
+
+int CRegardsConfigParam::GetNumLanguage()
+{
+    return numLanguage;
+}
+
+void CRegardsConfigParam::SetNumLanguage(const int &numLanguage)
+{
+    this->numLanguage = numLanguage;
+}
+
+int CRegardsConfigParam::GetFaceProcess()
+{
+    return nbProcessFace;
+}
+
+void CRegardsConfigParam::SetFaceProcess(const int &nbProcess)
+{
+    nbProcessFace = nbProcess;
+}
+
+int CRegardsConfigParam::GetExifProcess()
+{
+    return nbProcessExif;
+}
+
+void CRegardsConfigParam::SetExifProcess(const int &nbProcess)
+{
+    nbProcessExif = nbProcess;
+}
+
+int CRegardsConfigParam::GetFaceDetectionPictureSize()
+{
+	return pictureSize;
+}
+
+void CRegardsConfigParam::SetFaceDetectionPictureSize(const int &numIndex)
+{
+	pictureSize = numIndex;
+}
+
+bool CRegardsConfigParam::GetDatabaseInMemory()
+{
+	return dataInMemory;
+}
+
+void CRegardsConfigParam::SetDatabaseInMemory(const int &value)
+{
+	dataInMemory = value;
 }
 
 float CRegardsConfigParam::GetIconSizeRatio()
@@ -56,6 +130,11 @@ wxString CRegardsConfigParam::GetUrlServer()
 	return value;
 }
 
+int CRegardsConfigParam::GetNbGpsIterationByMinute()
+{
+	return nbGpsFileByMinute;
+}
+
 CRegardsConfigParam::~CRegardsConfigParam()
 {
 	doc.clear();
@@ -83,7 +162,7 @@ void CRegardsConfigParam::SetEffectLibrary(const int &numLib)
 
 int CRegardsConfigParam::GetPreviewLibrary()
 {
-    return numLibPreview;
+    return LIBOPENCL;
 }
 void CRegardsConfigParam::SetPreviewLibrary(const int &numLib)
 {
@@ -124,6 +203,10 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibEffect)));
 	sectionPosition->append_node(node("NumEffect", to_string(numEffect)));
+    sectionPosition->append_node(node("NbProcessThumbnail", to_string(nbProcessThumbnail)));
+    sectionPosition->append_node(node("NbProcessExif", to_string(nbProcessExif)));
+    sectionPosition->append_node(node("NbProcessFace", to_string(nbProcessFace)));
+    sectionPosition->append_node(node("GpsFileByMinute", to_string(nbGpsFileByMinute)));
 }
 
 void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
@@ -181,6 +264,38 @@ void CRegardsConfigParam::GetEffectLibrary(xml_node<> * position_node)
 		nodeName = child_node->name();
 		numEffect = atoi(child_node->value());
 	}
+    
+	child_node = position_node->first_node("NbProcessThumbnail");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		nbProcessThumbnail = atoi(child_node->value());
+	}
+    
+	child_node = position_node->first_node("NbProcessExif");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		nbProcessExif = atoi(child_node->value());
+	}
+    
+	child_node = position_node->first_node("NbProcessFace");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		nbProcessFace = atoi(child_node->value());
+	}
+    
+	child_node = position_node->first_node("GpsFileByMinute");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		nbGpsFileByMinute = atoi(child_node->value());
+	}
 }
 
 void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
@@ -213,6 +328,7 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 }
 
 
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -239,6 +355,9 @@ void CRegardsConfigParam::SaveParameter()
 	xml_node<>* sectionEffectLib = node("EffectLibrary");
 	SetEffectLibrary(sectionEffectLib);
 	root->append_node(sectionEffectLib);
+	xml_node<>* sectionDatabase = node("Database");
+	SetDatabaseParameter(sectionDatabase);
+	root->append_node(sectionDatabase);
 	xml_node<>* sectionDiaporama = node("Diaporama");
 	SetDiaporamaParameter(sectionDiaporama);
 	root->append_node(sectionDiaporama);
@@ -252,7 +371,7 @@ void CRegardsConfigParam::SaveParameter()
     SetIconParameter(sectionIcon);
     root->append_node(sectionIcon);
 	// save the xml data to a file (could equally well use any other ostream)
-	std::ofstream file(filename.ToStdString());
+	std::ofstream file(CConvertUtility::ConvertToStdString(filename));
 	if (file.is_open())
 	{
 		file << doc;
@@ -281,6 +400,10 @@ void CRegardsConfigParam::LoadParameter()
 	child_node = root_node->first_node("EffectLibrary");
 	if (child_node != 0)
 		GetEffectLibrary(child_node);
+
+	child_node = root_node->first_node("Database");
+	if (child_node != 0)
+		GetDatabaseParameter(child_node);
 
 	child_node = root_node->first_node("Diaporama");
 	if (child_node != 0)
@@ -316,6 +439,34 @@ void CRegardsConfigParam::GetIconParameter(xml_node<>* position_node)
         nodeName = child_node->name();
         iconSizeRatio = atof(child_node->value());
     }
+}
+
+
+void CRegardsConfigParam::SetDatabaseParameter(xml_node<>* sectionPosition)
+{
+	sectionPosition->append_node(node("InMemory", to_string(dataInMemory)));
+    sectionPosition->append_node(node("Language", to_string(numLanguage)));
+}
+
+void CRegardsConfigParam::GetDatabaseParameter(xml_node<> * position_node)
+{
+	wxString value = "";
+	wxString nodeName = "";
+	xml_node<> * child_node = position_node->first_node("InMemory");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		dataInMemory = atoi(child_node->value());
+	}
+
+    child_node = position_node->first_node("Language");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		numLanguage = atoi(child_node->value());
+	}
 }
 
 void CRegardsConfigParam::SetDiaporamaParameter(xml_node<>* sectionPosition)
@@ -396,6 +547,7 @@ void CRegardsConfigParam::SetThumbnail(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("Quality", to_string(thumbnailQuality)));
 	sectionPosition->append_node(node("IconeCache", to_string(thumbnailIconeCache)));
+	sectionPosition->append_node(node("FacePictureSize", to_string(pictureSize)));
 }
 
 void CRegardsConfigParam::GetThumbnail(xml_node<> * position_node)
@@ -416,5 +568,13 @@ void CRegardsConfigParam::GetThumbnail(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		thumbnailIconeCache = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("FacePictureSize");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		pictureSize = atoi(child_node->value());
 	}
 }

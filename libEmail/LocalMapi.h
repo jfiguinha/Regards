@@ -3,13 +3,9 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
+#if defined(WIN32) || defined(__MINGW32__)
 
 #include <windows.h>
-//#include <mapix.h>
-#include <vector>
-#include <string>
-
-using namespace std;
 
 class CMapi  
 {
@@ -19,5 +15,7 @@ public:
 	static HRESULT SendEmail(const string &m_szBody,const vector<string> & attachment);
 	
 };
+
+#endif
 
 

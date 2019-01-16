@@ -22,7 +22,7 @@
 #if CXIMAGE_SUPPORT_PNG
 
 extern "C" {
-#ifdef _LINUX
+#if defined(_LINUX) || defined(__APPLE__) || defined(__MINGW32__)
  #undef _DLL
  #include <png.h>
  #include <pngstruct.h>

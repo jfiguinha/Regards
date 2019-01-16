@@ -24,12 +24,14 @@ namespace Regards
 			int GetCriteriaInsert(const wxString & filepath);
 			void GetPhotoCriteria(CriteriaVector * criteriaVector, const wxString & filepath);
             void GetPhotoCriteriaByCategorie(CriteriaVector * criteriaVector, const wxString & filepath, const int &numCategorie);
+			vector<wxString> GetPhotoFromFolder(const int64_t &idFolder);
 		private:
 
 			int TraitementResult(CSqlResult * sqlResult);
 			int64_t photoId;
-			int typeResult = 0;
-			CriteriaVector * criteriaVector = nullptr;
+			int typeResult;
+			CriteriaVector * criteriaVector;
+			vector<wxString> listPhoto;
 		};
 	}
 }

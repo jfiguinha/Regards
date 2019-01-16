@@ -2,11 +2,6 @@
 #include "InfosFile.h"
 #include <ScrollbarWnd.h>
 #include <WindowMain.h>
-#include <thread>
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 using namespace Regards::Control;
 using namespace std;
 class CTreeElementTriangle;
@@ -21,10 +16,17 @@ namespace Regards
         class CThreadLoadInfos
         {
         public:
-            CInfosFileWnd * panelInfos = nullptr;
-            CInfosFile * infosFileWnd = nullptr;
+			CThreadLoadInfos()
+			{
+				panelInfos = nullptr;
+				infosFileWnd = nullptr;
+				threadLoadInfos = nullptr;
+			}
+
+            CInfosFileWnd * panelInfos;
+            CInfosFile * infosFileWnd;
             wxString filename;
-            std::thread * threadLoadInfos = nullptr;
+            thread * threadLoadInfos;
         };
         
 		class CInfosFileWnd : public CWindowMain
@@ -42,10 +44,10 @@ namespace Regards
             void UpdateTreeInfosEvent(wxCommandEvent &event);
             static void GenerateTreeInfos(CThreadLoadInfos * threadInfos);
             
-            CScrollbarWnd * InfosFileScroll = nullptr;
-            CTreeWindow * treeWindow = nullptr;
-            CInfosFile * infosFile = nullptr;
-            CInfosFile * oldInfosFileControl = nullptr;
+            CScrollbarWnd * InfosFileScroll;
+            CTreeWindow * treeWindow;
+            CInfosFile * infosFile;
+            CInfosFile * oldInfosFileControl;
             wxString filename;
 		};
 

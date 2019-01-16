@@ -5,7 +5,7 @@ class CTreeElementCheckBox : public CTreeElement
 {
 public:
 	CTreeElementCheckBox();
-	~CTreeElementCheckBox();
+	virtual ~CTreeElementCheckBox();
 
 	void DrawElement(wxDC * deviceContext, const int &x, const int &y);
 	void ClickElement(wxWindow * window, const int &x, const int &y);
@@ -50,7 +50,7 @@ private:
     wxString checkOnVector;
     wxString checkOffVector;
     
-    bool isVector = true;
+    
 
 	CThemeTreeCheckBox themeTreeCheckBox;
 };

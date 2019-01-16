@@ -23,20 +23,19 @@ void CParamInit::Initialize(CRegardsConfigParam * param)
 {
 	if (nullptr == _singleton)
 	{
-        wxString filepath = wxStandardPaths::Get().GetExecutablePath();
-
+        
+        wxStandardPathsBase& stdp = wxStandardPaths::Get();
+        wxString documentPath = stdp.GetDocumentsDir();
         
 #ifdef WIN32
 		
-		filepath = filepath.SubString(0, filepath.size() - 4);
-        filepath.append("config");
+        documentPath.append("\\Regards\\Regards.config");
         _singleton = param;
-        _singleton->OpenFile(filepath);
+        _singleton->OpenFile(documentPath);
 #else
 
-        wxStandardPathsBase& stdp = wxStandardPaths::Get();
-        wxString documentPath = stdp.GetDocumentsDir();
-        documentPath.append("/Regards.config");
+
+        documentPath.append("/Regards/Regards.config");
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif

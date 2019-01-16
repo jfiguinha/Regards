@@ -7,8 +7,8 @@
 #endif
 using namespace Regards::Viewer;
 
-CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail)
-	: CThumbnailEffect(parent, id, statusBarInterface, themeThumbnail)
+CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnailEffect(parent, id, statusBarInterface, themeThumbnail, testValidity)
 {
 
 }

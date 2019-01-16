@@ -27,9 +27,9 @@ class GrayScaleFilter : public IFilter
 public:
     void process(VideoFrame& videoFrame)
     {
-        for (int i = 0; i < videoFrame.height; ++i)
+        for (auto i = 0; i < videoFrame.height; ++i)
         {
-            for (int j = 0; j < videoFrame.width; ++j)
+            for (auto j = 0; j < videoFrame.width; ++j)
             {
                 int pixelIndex = (i * videoFrame.lineSize) + (j * 3);
                 uint8_t grayValue = (  videoFrame.frameData[pixelIndex]

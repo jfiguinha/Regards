@@ -33,15 +33,15 @@ namespace Regards
 			int yPos;
 			int cxMax;
 			int cyMax;
-			int widthPosition = 0;
-			wxString effectMedianLevel = L"Effect.Median.Level";
-			wxString effectSharpenLevel = L"Effect.Sharpen.Level";
-			wxString toneConstrastLevel = L"Tone.Constrast.Level";
-			wxString toneExposureLevel = L"Tone.Exposure.Level";
-			wxString toneBrightnessLevel = L"Tone.Brightness.Level";
-			wxString colorBoostRed = L"Color Boost.Red";
-			wxString colorBoostGreen = L"Color Boost.Green";
-			wxString colorBoostBlue = L"Color Boost.Blue";
+			int widthPosition;
+			wxString effectMedianLevel;
+			wxString effectSharpenLevel;
+			wxString toneConstrastLevel;
+			wxString toneExposureLevel;
+			wxString toneBrightnessLevel;
+			wxString colorBoostRed;
+			wxString colorBoostGreen;
+			wxString colorBoostBlue;
 
 			CVideoEffectParameter * videoEffectParameter;
 		};

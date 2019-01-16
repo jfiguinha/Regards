@@ -12,7 +12,7 @@ using namespace Regards::Window;
 using namespace Regards::Internet;
 
 CBitmapInfosGps::CBitmapInfosGps(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme)
-	: CWindowMain(parent, id)
+	: CWindowMain("CBitmapInfosGps",parent, id)
 {
 	bitmapInfosTheme = theme;
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfosGps::OnPaint));
@@ -39,12 +39,12 @@ int CBitmapInfosGps::GetHeight()
 
 void CBitmapInfosGps::UpdateScreenRatio()
 {
-    this->Refresh();
+    this->FastRefresh(this);
 }
 
 void CBitmapInfosGps::Resize()
 {
-	this->Refresh();
+	this->FastRefresh(this);
 }
 
 void CBitmapInfosGps::Redraw()
@@ -56,11 +56,7 @@ void CBitmapInfosGps::Redraw()
 void CBitmapInfosGps::DrawInformations(wxDC * dc)
 {
     
-    wxRect rc;
-    rc.x = 0;
-    rc.y = 0;
-    rc.width = width;
-    rc.height = height;
+    wxRect rc = GetWindowRect();
     FillRect(dc, rc, bitmapInfosTheme.colorBack);
     
     wxString refLat = "N";
@@ -77,14 +73,19 @@ void CBitmapInfosGps::DrawInformations(wxDC * dc)
     wxSize size = GetSizeTexte(dc, localisation, bitmapInfosTheme.themeFont);
     wxSize sizeMessage = GetSizeTexte(dc, message, bitmapInfosTheme.themeFont);
 
-    DrawTexte(dc, localisation, (width - size.x) / 2, ((height / 2) - size.y) / 2, bitmapInfosTheme.themeFont);
+    DrawTexte(dc, localisation, (GetWindowWidth() - size.x) / 2, ((GetWindowHeight() / 2) - size.y) / 2, bitmapInfosTheme.themeFont);
 
-    DrawTexte(dc, message, (width - sizeMessage.x) / 2, (height / 2) + ((height / 2) - sizeMessage.y) / 2, bitmapInfosTheme.themeFont);
+    DrawTexte(dc, message, (GetWindowWidth() - sizeMessage.x) / 2, (GetWindowHeight() / 2) + ((GetWindowHeight() / 2) - sizeMessage.y) / 2, bitmapInfosTheme.themeFont);
 
 }
 
 void CBitmapInfosGps::OnPaint(wxPaintEvent& event)
 {
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+
 	wxBufferedPaintDC dc(this);
     DrawInformations(&dc);
 }

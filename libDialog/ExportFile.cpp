@@ -1,4 +1,3 @@
-#include "wx_pch.h"
 #include "ExportFile.h"
 
 #ifndef WX_PRECOMP
@@ -19,6 +18,7 @@ END_EVENT_TABLE()
 
 CExportFile::CExportFile(wxWindow* parent)
 {
+	isOk = false;
 	//(*Initialize(ExportFile)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ExportFile"),_T("wxDialog"));
 	rbDateInformation = (wxRadioBox*)FindWindow(XRCID("ID_RBDATEINFORMATION"));

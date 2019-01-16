@@ -2,7 +2,7 @@
 using namespace Regards::Window;
 void CWindowUtility::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)
 {
-	wxBrush brush(color, wxSOLID);
+	wxBrush brush(color, wxBRUSHSTYLE_SOLID);
 	dc->SetBrush(brush);
 	dc->SetPen(wxPen(color, 1)); // 10-pixels-thick pink outline
 	dc->DrawRectangle(rc);
@@ -20,7 +20,8 @@ void CWindowUtility::DrawTexte(wxDC * dc, const wxString &libelle, const int &xP
         dc->SetFont(_font);
         //dc->SetBackgroundMode(wxSOLID);
         dc->SetTextForeground(color);
-        dc->DrawText(libelle.c_str(), xPos, yPos);
+        
+        dc->DrawText(libelle, xPos, yPos);
         dc->SetFont(wxNullFont);
     }
     catch(...)
@@ -34,7 +35,7 @@ wxSize CWindowUtility::GetSizeTexte(wxDC * dc, const wxString &libelle, CThemeFo
 	wxSize size;
 	wxFont _font(font.GetFontSize(), wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	dc->SetFont(_font);
-	size = dc->GetTextExtent(libelle.c_str());
+	size = dc->GetTextExtent(libelle);
 	dc->SetFont(wxNullFont);
 	return size;
 };

@@ -1,43 +1,11 @@
-int GetPositionRGB32(int x, int y, int width)
-{
-	return x + y * width;
-}
-
-int GetWidthSize24(int width)
-{
-	return ((((width * 24) + 31) & ~31) >> 3);
-}
-
-int GetPositionRGB24(int x, int y, int width)
-{
-	return (x * 3) + (y * GetWidthSize24(width));
-}
-
-//----------------------------------------------------
-//Conversion du 24 bits vers du 32 bits
-//----------------------------------------------------
-__kernel void rgb24_to_rgb32(__global uchar4 *output, const __global uchar *input, int width)
-{
-    int x = get_global_id(0);
-	int y = get_global_id(1);
-	
-	int positionDest = GetPositionRGB32(x, y, width);
-	int positionSrc = GetPositionRGB24(x, y, width);
-	
-	output[positionDest].x = input[positionSrc];
-	output[positionDest].y = input[positionSrc+1];
-	output[positionDest].z = input[positionSrc+2];
-	output[positionDest].w = 255;
-}
-
 //----------------------------------------------------
 // Conversion du NV12 vers du 32 bits
 //----------------------------------------------------
-uchar4 GetColorFromNV12(const __global uchar *input, int x, int y, int width, int height, int rectWidth, int rectHeight)
+float4 GetColorFromNV12(const __global uchar * input, int x, int y, int width, int height, int rectWidth, int rectHeight)
 {
 	if(x < rectWidth && y < rectHeight && y >= 0 && x >= 0)	
 	{
-		uchar4 color;
+		float4 color;
 		int crv = 104597;
 		int	cbu = 132201;
 		int cgu = 25675;  
@@ -90,14 +58,14 @@ uchar4 GetColorFromNV12(const __global uchar *input, int x, int y, int width, in
 		if(b > 255)
 			b = 255;		
 		
-		color.x = r;
-		color.y = g;
-		color.z = b;
-		color.w = 255;
+		color.x = (float)r / 255.0f;
+		color.y = (float)g / 255.0f;
+		color.z = (float)b / 255.0f;
+		color.w = 1.0f;
 		
 		return color;
 	}
-	return (uchar4)0;
+	return (float)0.0f;
 }
 
 float Cubic( float f )
@@ -134,26 +102,23 @@ float4 BiCubicNV12(float x, float y, const __global uchar *input, int width, int
 	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
 
 	
-	float4 sum = convert_float4(GetColorFromNV12(input, x - 1, y - 1, width, height, rectWidth, rectHeight)) * (fy1 * fx1);
-	sum += convert_float4(GetColorFromNV12(input, x , y - 1, width, height, rectWidth, rectHeight)) * (fy1 * fx2);
-	sum += convert_float4(GetColorFromNV12(input, x + 1, y - 1, width, height, rectWidth, rectHeight)) * (fy1 * fx3);
+	float4 sum = GetColorFromNV12(input, x - 1, y - 1, width, height, rectWidth, rectHeight) * (fy1 * fx1);
+	sum += GetColorFromNV12(input, x , y - 1, width, height, rectWidth, rectHeight) * (fy1 * fx2);
+	sum += GetColorFromNV12(input, x + 1, y - 1, width, height, rectWidth, rectHeight) * (fy1 * fx3);
 	
-	sum += convert_float4(GetColorFromNV12(input, x - 1, y, width, height, rectWidth, rectHeight)) * (fy2 * fx1);
-	sum += convert_float4(GetColorFromNV12(input, x , y, width, height, rectWidth, rectHeight)) * (fy2 * fx2);
-	sum += convert_float4(GetColorFromNV12(input, x + 1, y, width, height, rectWidth, rectHeight)) * (fy2 * fx3);
+	sum += GetColorFromNV12(input, x - 1, y, width, height, rectWidth, rectHeight) * (fy2 * fx1);
+	sum += GetColorFromNV12(input, x , y, width, height, rectWidth, rectHeight) * (fy2 * fx2);
+	sum += GetColorFromNV12(input, x + 1, y, width, height, rectWidth, rectHeight) * (fy2 * fx3);
 
-	sum += convert_float4(GetColorFromNV12(input, x - 1, y + 1, width, height, rectWidth, rectHeight)) * (fy3 * fx1);
-	sum += convert_float4(GetColorFromNV12(input, x , y + 1, width, height, rectWidth, rectHeight)) * (fy3 * fx2);
-	sum += convert_float4(GetColorFromNV12(input, x + 1, y + 1, width, height, rectWidth, rectHeight)) * (fy3 * fx3);
+	sum += GetColorFromNV12(input, x - 1, y + 1, width, height, rectWidth, rectHeight) * (fy3 * fx1);
+	sum += GetColorFromNV12(input, x , y + 1, width, height, rectWidth, rectHeight) * (fy3 * fx2);
+	sum += GetColorFromNV12(input, x + 1, y + 1, width, height, rectWidth, rectHeight) * (fy3 * fx3);
 	
     return (sum / nDenom);
 }
 
 
-//----------------------------------------------------
-// Conversion Special Effect Video du NV12 vers le RGB32
-//----------------------------------------------------
-__kernel void BicubicNV12toRGB32(__global uchar4 *output, const __global uchar *input, int width, int height, int rectWidth, int rectHeight, int widthOut, int heightOut, int flipH, int flipV, int angle) 
+__kernel void BicubicNV12toRGB32(__global float4 *output, const __global uchar *input, int width, int height, int rectWidth, int rectHeight, int widthOut, int heightOut, int flipH, int flipV, int angle) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -204,20 +169,24 @@ __kernel void BicubicNV12toRGB32(__global uchar4 *output, const __global uchar *
 	
 	int position = x + y * widthOut;
 
-	output[position] = convert_uchar4(BiCubicNV12(posX, posY, input, width, height, rectWidth, rectHeight));
+	output[position] = BiCubicNV12(posX, posY, input, width, height, rectWidth, rectHeight);
 } 
 
-float4 GetColorSrc(int x, int y, const __global uchar4 *input, int widthIn, int heightIn)
+//----------------------------------------------------
+// Conversion Special Effect Video RGB32
+//----------------------------------------------------
+
+float4 GetColorSrc(int x, int y, const __global float4 *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
 		int position = x + y * widthIn;
-		return convert_float4(input[position]);
+		return input[position];
 	}
 	return 0.0f;
 }
 
-float4 BiCubic(float x, float y, const __global uchar4 *input, int widthIn, int heightIn)
+float4 BiCubic(float x, float y, const __global float4 *input, int widthIn, int heightIn)
 {
 	float4 nDenom = 0.0f;
 	int valueA = (int)x;
@@ -251,13 +220,11 @@ float4 BiCubic(float x, float y, const __global uchar4 *input, int widthIn, int 
     return (sum / nDenom);
 }
 
-//----------------------------------------------------
-// Conversion Special Effect Video du NV12 vers le RGB32
-//----------------------------------------------------
-__kernel void BicubicRGB32(__global uchar4 *output, const __global uchar *input, int width, int height, int widthOut, int heightOut, int flipH, int flipV, int angle) 
+__kernel void BicubicRGB32(__global float4 * output, const __global float4 * input, int width, int height, int widthOut, int heightOut, int flipH, int flipV, int angle) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
+	
 
 	float ratioX = (float)width / (float)widthOut;
 	float ratioY = (float)height / (float)heightOut;	
@@ -274,10 +241,12 @@ __kernel void BicubicRGB32(__global uchar4 *output, const __global uchar *input,
 	if(angle == 90)
 	{
 		int srcx = posY;
-		int srcy = height - posX - 1;
-		
+		int srcy = posX;
+
 		posX = srcx;
-		posY = srcy;		
+		posY = srcy;
+
+		posX = width - posX - 1;	
 	}
 	else if(angle == 180)
 	{
@@ -286,11 +255,13 @@ __kernel void BicubicRGB32(__global uchar4 *output, const __global uchar *input,
 	}
 	else if(angle == 270)
 	{
-		int srcx = width - posY - 1;
+		int srcx = posY;
 		int srcy = posX;
 
 		posX = srcx;
-		posY = srcy;		
+		posY = srcy;
+
+		posY = height - posY - 1;		
 	}	
 		
 	if(flipH == 1)
@@ -305,22 +276,6 @@ __kernel void BicubicRGB32(__global uchar4 *output, const __global uchar *input,
 	
 	int position = x + y * widthOut;
 
-	output[position] = convert_uchar4(BiCubic(posX, posY, input, width, height));
+	output[position] = BiCubic(posX, posY, input, width, height);
 } 
 
-//----------------------------------------------------
-// Conversion du NV12 vers le RGB32
-//----------------------------------------------------
-__kernel void NV12_to_RGB32(__global uchar4 *output, const __global uchar *input, int width, int height, int widthOut, int heightOut) 
-{ 
- 	int x = get_global_id(0); 
- 	int y = get_global_id(1); 
-	
-	uchar4 color = GetColorFromNV12(input, x, y, width, height, widthOut, heightOut);
-	
-	
-	int srcy = y;
-	int positionDest = x + srcy * widthOut;
-
-	output[positionDest] = color;
-} 

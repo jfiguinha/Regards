@@ -2,8 +2,23 @@
 using namespace Regards::Window;
 
 CSplitter::CSplitter(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, const bool &horizontal)
-	: CWindowMain(parent, id)
+	: CWindowMain("CSplitter",parent, id)
 {
+	posBar = 0;
+	oldWidth = 0;
+	oldHeight = 0;
+	window1 = nullptr;
+	window2 = nullptr;
+	separationBar = nullptr;
+	fixWindow1Size = false;
+	window1Size = 0;
+	fixWindow2Size = false;
+	window2Size = 0;
+	windowResize = false;
+	fastRender = true;
+	moving = false;
+	windowMinimalSize = 100;
+	showSeparationBar = true;
 	this->themeSplitter = theme;
 	posBar = 0;
 	separationBar = new CSeparationBar(this, this, wxID_ANY, themeSplitter.themeSeparation);
@@ -18,10 +33,9 @@ CSplitter::CSplitter(wxWindow* parent, wxWindowID id, const CThemeSplitter & the
 	fastRender = false;
 #endif
 	diff = 0;
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CSplitter::OnPaint));
+	//Connect(wxEVT_PAINT, wxPaintEventHandler(CSplitter::OnPaint));
 
 }
-
 
 void CSplitter::GenerateHorizontalRenderBitmap()
 {
@@ -30,44 +44,43 @@ void CSplitter::GenerateHorizontalRenderBitmap()
 
 	//int posX = 0;
 	int posY = 0;
-	renderBitmap = wxBitmap(width, height);
+	renderBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 	wxMemoryDC dcSplitter(renderBitmap);
 
 	if (window1->IsShown())
 	{
 		wxWindowDC dc(window1);
-		dcSplitter.Blit(0, 0, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posY += dc.GetSize().GetHeight();
 	}
 
 	if (separationBar->IsShown())
 	{
 		wxWindowDC dc(separationBar);
-		dcSplitter.Blit(0, posY, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posY += dc.GetSize().GetHeight();
 	}
-
 	if (window2->IsShown())
 	{
 		wxWindowDC dc(window2);
-		dcSplitter.Blit(0, posY, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(0, posY, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 	}
+    dcSplitter.SelectObject(wxNullBitmap);
 }
-
+/*
 void CSplitter::OnPaint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    if(width == 0 || height == 0)
+        return;
+
+    
+	//wxPaintDC dc(this);
+	wxRect rc = GetWindowRect();
 	FillRect(&dc, rc, themeSplitter.colorBack);
 }
-
+*/
 void CSplitter::GenerateVerticalRenderBitmap()
 {
 	if (window1 == nullptr && window2 == nullptr)
@@ -75,32 +88,29 @@ void CSplitter::GenerateVerticalRenderBitmap()
 
 	int posX = 0;
 	//int posY = 0;
-	renderBitmap = wxBitmap(width, height);
+	renderBitmap = wxBitmap(GetWindowWidth(), GetWindowHeight());
 	wxMemoryDC dcSplitter(renderBitmap);
 	
 	if (window1->IsShown())
 	{
 		wxWindowDC dc(window1);
-		dcSplitter.Blit(0, 0, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(0, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posX += dc.GetSize().GetWidth();
-
 	}
 
 	if (separationBar->IsShown())
 	{
 		wxWindowDC dc(separationBar);
-		dcSplitter.Blit(posX, 0, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 		posX += dc.GetSize().GetWidth();
 	}
 
 	if (window2->IsShown())
 	{
 		wxWindowDC dc(window2);
-		dcSplitter.Blit(posX, 0, width, height, &dc, 0, 0);
-		dcSplitter.SelectObject(wxNullBitmap);
+		dcSplitter.Blit(posX, 0, GetWindowWidth(), GetWindowHeight(), &dc, 0, 0);
 	}
+    dcSplitter.SelectObject(wxNullBitmap);
 }
 
 void CSplitter::SetWindow(wxWindow * window1, wxWindow * window2)
@@ -255,8 +265,8 @@ void CSplitter::Resize()
 	windowResize = true;
 	Resize(this);
 
-	oldWidth = width;
-	oldHeight = height;
+	oldWidth = GetWindowWidth();
+	oldHeight = GetWindowHeight();
 
 	windowResize = false;
 }
@@ -266,19 +276,19 @@ void CSplitter::ResizeVertical()
 	if (fastRender && moving)
 	{
 		int x = posBar;// +themeSplitter.themeSeparation.size / 2 + themeSplitter.themeFast.size;
-		DrawSeparationBar(x, 0, themeSplitter.themeFast.size, height);
+		DrawSeparationBar(x, 0, themeSplitter.themeFast.size, GetWindowHeight());
 	}
-	else if (width > 0)
+	else if (GetWindowWidth() > 0)
 	{
 		if (fixWindow1Size)
 		{
 			posBar = window1Size;
-			diff = width - posBar;
+			diff = GetWindowWidth() - posBar;
 			posWindow = taille = posBar;
 		}
 		else if (fixWindow2Size)
 		{
-			posBar = width - window2Size;
+			posBar = GetWindowWidth() - window2Size;
 			diff = window2Size;
 			posWindow = taille = posBar;
 		}
@@ -293,34 +303,34 @@ void CSplitter::ResizeVertical()
 
 				//Calcul new posBar
 				float percent = (float)posBar / (float)oldWidth;
-				posBar = percent * width;
+				posBar = percent * GetWindowWidth();
 			}
 
 
 			if (posBar == 0)
 			{
-				taille = width / 3 - (themeSplitter.themeSeparation.size / 2);
+				taille = GetWindowWidth() / 3 - (themeSplitter.themeSeparation.size / 2);
 				posWindow = taille + themeSplitter.themeSeparation.size;
-				diff = width - taille - (themeSplitter.themeSeparation.size / 2);
+				diff = GetWindowWidth() - taille - (themeSplitter.themeSeparation.size / 2);
 				posBar = taille + (themeSplitter.themeSeparation.size / 2);
 			}
 			else
 			{
-				if ((posBar + windowMinimalSize) > width)
-					posBar = width - windowMinimalSize;
+				if ((posBar + windowMinimalSize) > GetWindowWidth())
+					posBar = GetWindowWidth() - windowMinimalSize;
 				else if (posBar < windowMinimalSize)
 					posBar = windowMinimalSize;
 
 				taille = posBar - themeSplitter.themeSeparation.size;
 				posWindow = taille + themeSplitter.themeSeparation.size;
-				diff = width - posWindow;
+				diff = GetWindowWidth() - posWindow;
 			}
 		}
 
-		window2->SetSize(posWindow, 0, diff, height);
+		window2->SetSize(posWindow, 0, diff, GetWindowHeight());
 		if (!fixWindow1Size && !fixWindow2Size)
-			separationBar->SetSize(taille, 0, themeSplitter.themeSeparation.size, height);
-		window1->SetSize(0, 0, taille, height);
+			separationBar->SetSize(taille, 0, themeSplitter.themeSeparation.size, GetWindowHeight());
+		window1->SetSize(0, 0, taille, GetWindowHeight());
 
 	}
 }
@@ -330,18 +340,18 @@ void CSplitter::ResizeHorizontal()
 	if (fastRender && moving)
 	{
 		int y = posBar + themeSplitter.themeSeparation.size / 2 + themeSplitter.themeFast.size;
-		DrawSeparationBar(0, y, width, themeSplitter.themeFast.size);
+		DrawSeparationBar(0, y, GetWindowWidth(), themeSplitter.themeFast.size);
 	}
-	else if (height > 0)
+	else if (GetWindowHeight() > 0)
 	{
 		if (fixWindow1Size)
 		{
 			posWindow = taille = posBar = window1Size;
-			diff = height - posBar;
+			diff = GetWindowHeight() - posBar;
 		}
 		else if (fixWindow2Size)
 		{
-			posWindow = taille = posBar = height - window2Size;
+			posWindow = taille = posBar = GetWindowHeight() - window2Size;
 			diff = window2Size;
 		}
 		else
@@ -355,33 +365,35 @@ void CSplitter::ResizeHorizontal()
 
 				//Calcul new posBar
 				float percent = (float)posBar / (float)oldHeight;
-				posBar = percent * height;
+				posBar = percent * GetWindowHeight();
 			}
 
 			if (posBar == 0)
 			{
-				taille = height / 2 - (themeSplitter.themeSeparation.size / 2);
+				taille = GetWindowHeight() / 2 - (themeSplitter.themeSeparation.size / 2);
 				posWindow = taille + themeSplitter.themeSeparation.size;
-				diff = height - taille - (themeSplitter.themeSeparation.size / 2);
+				diff = GetWindowHeight() - taille - (themeSplitter.themeSeparation.size / 2);
 				posBar = taille + (themeSplitter.themeSeparation.size / 2);
 			}
 			else
 			{
-				if ((posBar + windowMinimalSize) > height)
-					posBar = height - windowMinimalSize;
+				if ((posBar + windowMinimalSize) > GetWindowHeight())
+					posBar = GetWindowHeight() - windowMinimalSize;
 				else if (posBar < windowMinimalSize)
 					posBar = windowMinimalSize;
 
 				taille = posBar - themeSplitter.themeSeparation.size;
 				posWindow = taille + themeSplitter.themeSeparation.size;
-				diff = height - posWindow;
+				diff = GetWindowHeight() - posWindow;
 			}
 		}
 
-		window1->SetSize(0, 0, width, taille);
+		window1->SetSize(0, 0, GetWindowWidth(), taille);
+		window1->PostSizeEvent();
 		if (!fixWindow1Size && !fixWindow2Size)
-			separationBar->SetSize(0, taille, width, themeSplitter.themeSeparation.size);
-		window2->SetSize(0, posWindow, width, diff);
+			separationBar->SetSize(0, taille, GetWindowWidth(), themeSplitter.themeSeparation.size);
+		window2->SetSize(0, posWindow, GetWindowWidth(), diff);
+		window2->PostSizeEvent();
 
 	}
 }
@@ -404,7 +416,17 @@ void CSplitter::Resize(wxWindow * window)
 				ResizeHorizontal();
 			else
 				ResizeVertical();
-
+                
+            if(window1 != nullptr)
+            {
+                this->FastRefresh(window1);
+            }
+        
+            if(window2 != nullptr)
+            {
+                this->FastRefresh(window2);      
+            }
+			separationBar->Refresh();
 			return;
 		}
 	}
@@ -415,11 +437,17 @@ void CSplitter::Resize(wxWindow * window)
 
 	if (window1 != nullptr)
 		if (window1->IsShown())
-			window1->SetSize(0, 0, width, height);
+		{
+			window1->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+			window1->PostSizeEvent();
+		}
 
 	if (window2 != nullptr)
 		if (window2->IsShown())
-			window2->SetSize(0, 0, width, height);
+		{
+			window2->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+			window2->PostSizeEvent();
+		}
 
 }
 

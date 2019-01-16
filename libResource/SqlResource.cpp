@@ -3,9 +3,11 @@
 #include <jpgd.h>
 #include <jpge.h>
 #include <lz4.h>
-#include <vector>
-#include <string>
+#include <RegardsBitmap.h>
+#include <libPicture.h>
 #include <fstream>
+#include <ImageLoadingFormat.h>
+#include "PictureData.h"
 using namespace std;
 using namespace Regards::Sqlite;
 
@@ -20,6 +22,78 @@ CSqlResource::CSqlResource(CSqlLib * _sqlLibTransaction, const bool &useTransact
 CSqlResource::~CSqlResource()
 {
 }
+
+
+void CSqlResource::InsertBitmap(const wstring &idName, const wstring &mimeType, const wstring &filename, const bool &flip)
+{
+	CLibPicture libPicture;
+	CImageLoadingFormat * loadPicture = libPicture.LoadPicture(filename);
+	if(loadPicture != nullptr && loadPicture->IsOk())
+	{
+		CRegardsBitmap * bitmap = loadPicture->GetRegardsBitmap();
+		wchar_t _pwszRequeteSQL[512];
+		swprintf(_pwszRequeteSQL, 512, L"INSERT INTO BitmapResource (idName, mimeType, width, height, depth, data) VALUES('%s', '%s', %d, %d, %d, ?)", idName.c_str(), mimeType.c_str(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetBitmapDepth());
+
+		int size = bitmap->GetBitmapSize();
+		if (flip)
+			bitmap->VertFlipBuf();
+		//uint8_t * dest = new uint8_t[size];
+		//int outputsize = size;
+		//bool result = jpge::compress_image_to_jpeg_file_in_memory(dest, outputsize, bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), 4, bitmap->GetPtBitmap());
+		ExecuteInsertBlobData(_pwszRequeteSQL, 5, bitmap->GetPtBitmap(), size);
+		//delete[] dest;
+		delete bitmap;
+		delete loadPicture;
+	}
+}
+
+string CSqlResource::readFileBytes(const string &name)
+{
+	std::ifstream t(name);
+	std::string str;
+	t.seekg(0, std::ios::end);
+	str.reserve(t.tellg());
+	t.seekg(0, std::ios::beg);
+	str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+	t.close();
+	return str;
+}
+
+void CSqlResource::InsertText(const wstring &idName, const wstring &mimeType, const wstring &filename)
+{
+	string file;
+	file.assign(filename.begin(), filename.end());
+	string data = readFileBytes(file);
+	char * out = new char[data.size()];
+	int taille = LZ4_compress(data.c_str(), out, data.size());
+	wchar_t _pwszRequeteSQL[512];
+	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO TextResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
+	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
+	
+	delete[] out;
+}
+
+void CSqlResource::InsertVector(const wstring &idName, const wstring &filename)
+{
+	string file;
+	file.assign(filename.begin(), filename.end());
+	string data = readFileBytes(file);
+	char * out = new char[data.size()];
+	int taille = LZ4_compress(data.c_str(), out, data.size());
+	wchar_t _pwszRequeteSQL[512];
+	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO VectorResource (idName, size, data) VALUES('%s', %d, ?)", idName.c_str(), data.size());
+	ExecuteInsertBlobData(_pwszRequeteSQL, 2, out, taille);
+
+	delete[] out;
+}
+
+void CSqlResource::InsertLibelle(const wstring &idName, const wstring &libelle, const int &lang)
+{
+	wchar_t _pwszRequeteSQL[512];
+	swprintf(_pwszRequeteSQL, 512, L"Insert into StringResource (idName, language, libelle) VALUES ('%s', %d,'%s')", idName.c_str(), lang, libelle.c_str());
+	ExecuteRequestWithNoResult(_pwszRequeteSQL);
+}
+
 
 CPictureData * CSqlResource::GetBitmap(const wxString &idName)
 {
@@ -42,6 +116,15 @@ wxString  CSqlResource::GetVector(const wxString &idName)
     return text;
 }
 
+int CSqlResource::GetExtensionId(const wxString &extension)
+{
+    id = 0;
+    typeResult = 6;
+    ExecuteRequest("SELECT pictureId FROM FileExtension WHERE extension = '" + extension + "'");
+    return id;
+}
+
+
 wxString CSqlResource::GetLibelle(const wxString &idName, const int &idLang)
 {
 	typeResult = 3;
@@ -59,6 +142,7 @@ wxString CSqlResource::GetExifLibelle(const wxString &idName)
 
 int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 {
+    id = 0;
 	int nbResult = 0;
 	wxString idName;
 	wxString mimeType;
@@ -67,13 +151,14 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+        
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			//id, mimeType, width, height, size, data
 			switch (i)
 			{
 			case 0:
-				idName = sqlResult->ColumnDataText(i);
+                idName = sqlResult->ColumnDataText(i);
 				break;
 
 			case 1:
@@ -123,7 +208,7 @@ int CSqlResource::TraitementResultText(CSqlResult * sqlResult)
 	wxString mimeType;
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			switch (i)
 			{
@@ -172,7 +257,7 @@ int CSqlResource::TraitementResultVector(CSqlResult * sqlResult)
     wxString mimeType;
     while (sqlResult->Next())
     {
-        for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+        for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
         {
             switch (i)
             {
@@ -215,7 +300,7 @@ int CSqlResource::TraitementResultLibelle(CSqlResult * sqlResult)
 	int langid;
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			switch (i)
 			{
@@ -240,12 +325,31 @@ int CSqlResource::TraitementResultExif(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		for (int i = 0; i < sqlResult->GetColumnCount(); i++)
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			switch (i)
 			{
 			case 0:
 				libelle = sqlResult->ColumnDataText(i);
+				break;
+			}
+		}
+		nbResult++;
+	}
+	return nbResult;
+}
+
+int CSqlResource::TraitementResultExtension(CSqlResult * sqlResult)
+{
+	int nbResult = 0;
+	while (sqlResult->Next())
+	{
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		{
+			switch (i)
+			{
+			case 0:
+				id = sqlResult->ColumnDataInt(i);
 				break;
 			}
 		}
@@ -278,7 +382,9 @@ int CSqlResource::TraitementResult(CSqlResult * sqlResult)
 	case 5:
 		nbResult = TraitementResultExif(sqlResult);
 		break;
-
+    case 6:
+  		nbResult = TraitementResultExtension(sqlResult);
+		break;  
 	}
 
 	return nbResult;

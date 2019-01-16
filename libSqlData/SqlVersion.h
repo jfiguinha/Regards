@@ -25,8 +25,8 @@ namespace Regards
         private:
             
             int TraitementResult(CSqlResult * sqlResult);
-            int typeResult = 0;
-            wxString result = "";
+            int typeResult;
+            wxString result;
         };
     }
 }
