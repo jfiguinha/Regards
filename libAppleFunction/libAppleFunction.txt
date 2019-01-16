@@ -1,0 +1,1 @@
+./Release/SendEmail.cpp.o ./Release/SaveFileFormat.cpp.o ./Release/SaveFromCFunction.mm.o ./Release/MyEmail.mm.o
