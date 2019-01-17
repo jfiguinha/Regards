@@ -1,6 +1,6 @@
-//********************************************************************************
+//******************************************************************************************************************************************************************
 //Installation Wiki Windows
-//********************************************************************************
+//******************************************************************************************************************************************************************
 
 Compilation under Windows :
 1 - Install MSYS 2
@@ -21,16 +21,21 @@ pacman -S fftw
 pacman -S openEXR
 pacman -S git
 pacman -S autotools
+
 5 - Install OpenGL Extension and Lib
 pacman -S freeglut
+
 6 - Download and Install CodeLite
 https://codelite.org/
+
 7 - Download OpenCL SDK from Amd :
 APP SDK :
-http://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
+https://www.softpedia.com/get/Programming/SDK-DDK/ATI-Stream-SDK.shtml
 Install it and remove all OpenGL lib and include
+
 8 - Download Regards source code from git :
 https://github.com/jfiguinha/Regards/tree/master
+
 9 - Compilation of all libextern
 Go to libextern folder
 
@@ -101,7 +106,10 @@ Tape ./configure
 On the root of the source code Folder, open Regards.wokspace under CodeLite
 Compile under RegardsViewer_exe RegardsViewer_Windows Project
 
-Installation Wiki Mac OS
+//******************************************************************************************************************************************************************
+//Installation Wiki Mac OS
+//******************************************************************************************************************************************************************
+
 1 - Install and open Xcode
 2 - Install Xcode extension
 3 - Install Homebrew
@@ -202,16 +210,20 @@ Change option for this compiler under Tools Panel
 Add -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/
 for c and c++ compiler tools at the end of the line
 In Advanced Panel :
-Include Path : 
-/usr/local/llvm/include/c++/v1;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include;/usr/local/opt/cairo/include;/usr/local/llvm/include;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/libxml2
-Librairies Path :
-/usr/local/llvm/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library
+include path:
+/usr/local/opt/cairo/include;/usr/local/opt/openexr/include/OpenEXR;/usr/local/opt/ilmbase/include/openexr;/usr/local/opt/libxml2/include/libxml2;/usr/local/opt/curl/include/curl;/usr/local/opt/libexif/include
+
+lib path :
+/usr/local/opt/llvm/lib;/usr/local/opt/openexr/lib;/usr/local/opt/ilmbase/lib;/usr/local/opt/glib/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library;/usr/lib/system
 
 9 - Compilation of Regards
+
 Compile under RegardsViewer_exe RegardsViewer_Mac Project
 
 
-Installation Wiki Linux Mint
+//******************************************************************************************************************************************************************
+//Installation Wiki Linux Mint
+//******************************************************************************************************************************************************************
 
 1 - Open a terminal
 Run this command to be up to date
@@ -242,7 +254,7 @@ https://codelite.org/
 
 4 - Download OpenCL SDK from Amd :
 APP SDK :
-http://developer.amd.com/amd-accelerated-parallel-processing-app-sdk/
+https://sourceforge.net/projects/nicehashsgminerv5viptools/files/APP%20SDK%20A%20Complete%20Development%20Platform/
 
 5 - Download Regards from github :
 Source Code :
@@ -317,7 +329,9 @@ On the root of the source code Folder, open Regards.wokspace under CodeLite
 Set gcc as default compiler for MinGW 64 bit Compilers
 Change option for this compiler under advanced Panel
 Include Path : 
-/usr/local/include;/usr/include/libxml2;/usr/include/pango-1.0;/usr/include/glib-2.0;/usr/include/cairo;/opt/AMDAPPSDK-3.0/opencl/include;/usr/lib/x86_64-linux-gnu/glib-2.0/include
+/opt/AMDAPPSDK-3.0/include;/usr/include/OpenEXR;/usr/include/pango-1.0;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/cairo;/usr/include/SDL2;/usr/include/libxml2
+Lib Path :
+/opt/AMDAPPSDK-3.0/lib
 
 8 - Compilation of Regards
 
