@@ -1,4 +1,7 @@
-Installation Wiki Windows
+//********************************************************************************
+//Installation Wiki Windows
+//********************************************************************************
+
 Compilation under Windows :
 1 - Install MSYS 2
 Download and MSYS :
