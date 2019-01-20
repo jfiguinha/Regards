@@ -75,6 +75,8 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libSqlEngine"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

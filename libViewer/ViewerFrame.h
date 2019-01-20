@@ -67,7 +67,7 @@ namespace Regards
 			void HermiteFilter(wxCommandEvent& event);
 			void HanningFilter(wxCommandEvent& event);
 			void CatromFilter(wxCommandEvent& event);
-			
+			void ShowOpenCLConfiguration(const bool &showRestart);
 
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);

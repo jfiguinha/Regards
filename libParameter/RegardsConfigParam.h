@@ -36,6 +36,9 @@ public:
 
 	wxString GetOpenCLPlatformName();
 	void SetOpenCLPlatformName(const wxString &platformName);
+    
+    int GetOpenCLLoadFromBinaries();
+    void SetOpenCLLoadFromBinaries(const int &loadFromBinaries);
 
 	int GetEffect();
 	void SetEffect(const int &numEffect);
@@ -131,5 +134,6 @@ protected:
     int nbProcessFace;
     int nbGpsFileByMinute;
 
+    int loadFromBinaries = 0;
 };
 

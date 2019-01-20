@@ -34,6 +34,15 @@ CRegardsConfigParam::CRegardsConfigParam()
     numLanguage = 1;
 }
 
+int CRegardsConfigParam::GetOpenCLLoadFromBinaries(){
+    return loadFromBinaries;
+    
+}
+void CRegardsConfigParam::SetOpenCLLoadFromBinaries(const int &loadFromBinaries)
+{
+    this->loadFromBinaries = loadFromBinaries;
+}
+
 int CRegardsConfigParam::GetThumbnailProcess()
 {
     return nbProcessThumbnail;
@@ -219,6 +228,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibPreview)));
 	sectionPosition->append_node(node("OpenCLNumIndex", to_string(openCLNumIndex)));
 	sectionPosition->append_node(node("OpenCLPlatformName", openCLPlatformName));
+    sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
 }
 
 
@@ -324,6 +334,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		openCLPlatformName = child_node->value();
+	}
+
+	child_node = position_node->first_node("LoadFromBinaries");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		loadFromBinaries = atoi(child_node->value());
 	}
 }
 

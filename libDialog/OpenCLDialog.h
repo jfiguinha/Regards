@@ -8,6 +8,7 @@
 	#include <wx/button.h>
 	#include <wx/dialog.h>
 	#include <wx/combobox.h>
+    #include <wx/radiobox.h>
 	//*)
 #endif
 //(*Headers(OpenCLDialog)
@@ -26,6 +27,7 @@ class OpenCLDialog: public wxDialog
 		wxStaticText* deviceLabel;
 		wxComboBox* cbOpenCLDevice;
 		wxComboBox* cbOpenCLPlatform;
+        wxRadioBox* rbKernelInMemory;
 		//*)
 
 		bool IsOk();

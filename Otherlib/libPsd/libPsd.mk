@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libPsd
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/Developpement/Regards
 ProjectPath            :=/home/figuinha/Developpement/Regards/Otherlib/libPsd
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=15/01/19
+Date                   :=20/01/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=/usr/bin/ccache /usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPa
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/ccache /usr/bin/g++
 CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cflags)  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -g $(Preprocessors)
+CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cflags)  -g $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -82,15 +82,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libPsd"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/libPsd"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
@@ -504,6 +504,6 @@ $(IntermediateDirectory)/src_pattern_overlay.c$(PreprocessSuffix): src/pattern_o
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

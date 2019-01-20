@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=wxSVG
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/Developpement/Regards
 ProjectPath            :=/home/figuinha/Developpement/Regards/Otherlib/wxSVG
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=15/01/19
+Date                   :=20/01/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=/usr/bin/ccache /usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)USE_CAIRO $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)USE_CAIRO 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -37,7 +37,7 @@ PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch)../../libextern/ffmpeg-4.1 $(IncludeSwitch)../../libextern/libexif-master $(IncludeSwitch)../wxSVG/include $(IncludeSwitch)../wxSVG/include/wxSVG $(IncludeSwitch)../wxSVG/include/wxSVGXML 
-IncludePCH             :=  -include ../../include/Release/header.h 
+IncludePCH             :=  -include ../../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPa
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/ccache /usr/bin/g++
 CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS := -std=gnu++11 $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -Wno-narrowing -fopenmp -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := -Wall  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := -std=gnu++11 $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -Wno-narrowing -fopenmp -ggdb -O0 $(Preprocessors)
+CFLAGS   := -Wall  -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -62,15 +62,15 @@ AS       := /usr/bin/as
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/src_svgxml_svgxmlhelpr.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGMatrix.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGEllipseElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGSVGElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_cairo_SVGCanvasImageCairo.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_SetAttribute.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGVideoElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTransformable.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_svgxml_svgxml.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGRectElement.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_cairo_SVGCanvasCairo.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGStylable.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGStringList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGRadialGradientElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPolygonElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPathSegList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPaint.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGMarkerElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTransformList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGLocatable.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/src_imagsvg.cpp$(ObjectSuffix) 
 
-Objects1=$(IntermediateDirectory)/src_imagsvg.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGNumberList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_css_properties.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGCanvas.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_cairo_SVGCanvasPathCairo.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGFilterElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGLength.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(ObjectSuffix) \
+Objects1=$(IntermediateDirectory)/src_SVGNumberList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_css_properties.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGElementInstanceList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGCanvas.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_cairo_SVGCanvasPathCairo.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGFilterElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_GetAttribute.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGLength.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_GetAttributes.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_SVGFitToViewBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_CSSValue.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPoint.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGUseElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTextElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_mediadec_ffmpeg.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGDocument.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_CSSStyleDeclaration.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_CopyConstructors.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGAnimatedType.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_SVGRect.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPreserveAspectRatio.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPathElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGAnimateMotionElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_NodeList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_svgctrl.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGLineElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGCircleElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGAnimationElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGAnimateTransformElement.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/src_SVGAngle.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGCanvasItem.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGPolylineElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGColor.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGFEGaussianBlurElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGLengthList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGImageElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_cairo_SVGCanvasTextCairo.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_css_values.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_Elements_HasAttribute.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/src_SVGPointList.cpp$(ObjectSuffix) 
 
-Objects2=$(IntermediateDirectory)/src_SVGPointList.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTextContentElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTests.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_ExifHandler.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTransform.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_GetSVGDocument.cpp$(ObjectSuffix) 
+Objects2=$(IntermediateDirectory)/src_SVGTextContentElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTests.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_ExifHandler.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_SVGTransform.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_GetSVGDocument.cpp$(ObjectSuffix) 
 
 
 
@@ -89,21 +89,21 @@ $(OutputFile): $(Objects)
 	@echo $(Objects1) >> $(ObjectsFileList)
 	@echo $(Objects2) >> $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/wxSVG"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/wxSVG"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
 # PreCompiled Header
-../../include/Release/header.h.gch: ../../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../../include/Debug/header.h.gch: ../../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -644,7 +644,7 @@ $(IntermediateDirectory)/src_GetSVGDocument.cpp$(PreprocessSuffix): src/GetSVGDo
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../../include/Debug/header.h.gch
 
 

@@ -497,9 +497,9 @@ void CThumbnail::ProcessIdle()
                         {
                             bool thumbnailLoad = false;
                             wxString filename = pThumbnailData->GetFilename();
-                           // bool isLoad = false;//pThumbnailData->IsLoad();
+                            bool isLoad = pThumbnailData->IsLoad();
                             bool isProcess = pThumbnailData->IsProcess();
-                            if (!isProcess)
+                            if (!isProcess && !isLoad)
                             {
                                 CThreadLoadingBitmap * pLoadBitmap = new CThreadLoadingBitmap();
                                 pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
@@ -581,18 +581,22 @@ void CThumbnail::LoadPicture(void * param)
 	CThreadLoadingBitmap * threadLoadingBitmap = (CThreadLoadingBitmap *)param;
     if(threadLoadingBitmap == nullptr)
         return;
+        
+
     
 	//CThumbnail * thumbnail = threadLoadingBitmap->thumbnail;
 	if(libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
 	{
         //threadLoadingBitmap->bitmapIcone = libPicture.LoadVideoThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->percent, threadLoadingBitmap->timePosition);
-        
+
         vector<CImageVideoThumbnail *> listVideo;
         libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo);
         
         if(listVideo.size() > 0)
         {
             CSqlThumbnailVideo sqlThumbnailVideo;
+            
+            int selectPicture = listVideo.size() / 2;
             for(int i = 0;i < listVideo.size();i++)
             {
                 CImageVideoThumbnail * bitmap = listVideo[i];
@@ -601,17 +605,17 @@ void CThumbnail::LoadPicture(void * param)
                 unsigned long outputsize = 0;
                 bitmap->image->ConvertToRGB24(true);
                 uint8_t * dest = bitmap->image->GetJpegData(outputsize, compressMethod);
-                if (dest != nullptr)
+                if (dest != nullptr && !sqlThumbnailVideo.TestThumbnail(filename, i))
                     sqlThumbnailVideo.InsertThumbnail(filename, dest, outputsize, bitmap->image->GetWidth(), bitmap->image->GetHeight(), i, bitmap->rotation, bitmap->percent, bitmap->timePosition);
 
                 bitmap->image->DestroyJpegData(dest, compressMethod);
 
-                if(threadLoadingBitmap->percent == bitmap->percent)
+                if(i == selectPicture)
                     threadLoadingBitmap->bitmapIcone = bitmap->image;
 
                 dest = nullptr;
                 
-                if(threadLoadingBitmap->percent != bitmap->percent)
+                if(i != selectPicture)
                     delete bitmap;
             }
         }

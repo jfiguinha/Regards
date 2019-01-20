@@ -214,7 +214,6 @@
         <Library Value="RegardsMediaInfo"/>
         <Library Value="Exif_regards"/>
         <Library Value="mediainfo"/>
-        <Library Value="SqlData"/>
         <Library Value="Print"/>
         <Library Value="Filtre"/>
         <Library Value="VideoThumbnail"/>
@@ -226,6 +225,7 @@
         <Library Value="RegardsRaw"/>
         <Library Value="RegardsCL"/>
         <Library Value="OpenCL"/>
+        <Library Value="SqlData"/>
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
         <Library Value="OpenGL"/>

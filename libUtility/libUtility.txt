@@ -1,1 +1,1 @@
-./Release/FileUtility.cpp.o ./Release/ConvertUtility.cpp.o ./Release/LoadingResource.cpp.o ./Release/wxmd5.cpp.o
+./Debug/FileUtility.cpp.o ./Debug/ConvertUtility.cpp.o ./Debug/LoadingResource.cpp.o ./Debug/wxmd5.cpp.o

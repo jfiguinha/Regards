@@ -816,10 +816,29 @@ CRegardsBitmap * CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage & imag
     CRegardsBitmap * bitmap = nullptr;
     if (image.IsOk())
     {
+        
 	    CxImage * _image = ConvertwxImageToCxImage(image);
         wxString error = _image->GetLastError();
         if (error == "")
             bitmap = ConvertCXImageToRegardsBitmap(_image);
+        
+        /*
+        bitmap = new CRegardsBitmap(image.GetWidth(), image.GetHeight());
+        unsigned char *rgb   = image.GetData();
+        unsigned char *alpha = image.GetAlpha();
+        uint8_t *result = bitmap->GetPtBitmap();//(unsigned char *) malloc(image.GetWidth() * image.GetHeight() * 4);
+
+        for (unsigned int h = 0; h < image.GetHeight(); h++) 
+          for (unsigned int w = 0; w < image.GetWidth(); w++) {
+             *result++ = *rgb++;   // copy red value
+             *result++ = *rgb++;   // copy green value
+             *result++ = *rgb++;   // copy blue value
+             if(alpha != nullptr)
+                *result++ = *alpha++; // copy alpha channel
+             else
+                *result++ = 0;
+        }
+         * */
     }
 
     return bitmap;
@@ -1024,7 +1043,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 					delete listPicture.at(i);
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = delay;
-					imageVideoThumbnail->percent = i / listPicture.size();
+					imageVideoThumbnail->percent = (int)(((float)i / (float)listPicture.size()) * 100.0f);
 					imageVideoThumbnail->timePosition = i;
 					listThumbnail->push_back(imageVideoThumbnail);
 				}
@@ -1062,7 +1081,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 							delete bitmap;
 							imageVideoThumbnail->rotation = 0;
 							imageVideoThumbnail->delay = 4;
-							imageVideoThumbnail->percent = i / m_ani_images;
+							imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
 							imageVideoThumbnail->timePosition = i;
 							listThumbnail->push_back(imageVideoThumbnail);
 						}
@@ -1092,7 +1111,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 						else
 						{
 							CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(image);
-							bitmap->SetFilename(szFileName);
+                            bitmap->SetFilename(szFileName);
 							CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
 							imageVideoThumbnail->image = new CImageLoadingFormat();
 							imageVideoThumbnail->image->SetFilename(szFileName);
@@ -1100,7 +1119,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 							delete bitmap;
 							imageVideoThumbnail->rotation = 0;
 							imageVideoThumbnail->delay = 4;
-							imageVideoThumbnail->percent = i / m_ani_images;
+							imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
 							imageVideoThumbnail->timePosition = i;
 							listThumbnail->push_back(imageVideoThumbnail);
 						}
@@ -1111,28 +1130,30 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 
 			case GIF:
 				{
-                    /*
+                    
 					CxImage * _cxImage = new CxImage();	 
 					_cxImage->SetRetreiveAllFrames(true);
-					_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName, CxImage::GetTypeIdFromName("gif"));
+					_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("gif"));
 					if (_cxImage->GetNumFrames() > 1)
 					{
 						for (auto i = 0; i < _cxImage->GetNumFrames(); i++)
 						{
 							CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
 							CxImage * frame = _cxImage->GetFrame(i);
+                            CRegardsBitmap * _local = ConvertCXImageToRegardsBitmap(frame,0);
+                            _local->SetFilename(szFileName);
 							imageVideoThumbnail->image = new CImageLoadingFormat();
 							imageVideoThumbnail->image->SetFilename(szFileName);
-							imageVideoThumbnail->image->SetPicture(frame);
+							imageVideoThumbnail->image->SetPicture(_local);
 							imageVideoThumbnail->rotation = 0;
 							imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
-							imageVideoThumbnail->percent = i / _cxImage->GetNumFrames();
+							imageVideoThumbnail->percent = ((float)i / (float)_cxImage->GetNumFrames()) * 100.0f;
 							imageVideoThumbnail->timePosition = i;
-							listThumbnail.push_back(imageVideoThumbnail);
+							listThumbnail->push_back(imageVideoThumbnail);
 						}
 					}
-					//delete _cxImage;
-                    */
+					delete _cxImage;
+                    /*
 					wxImage image;
 					//wxBitmap * my_horse_ani = nullptr;
 					int m_ani_images = wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_GIF);
@@ -1165,7 +1186,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 							imageVideoThumbnail->timePosition = i;
 							listThumbnail->push_back(imageVideoThumbnail);
 						}
-					}                    
+					}      */              
 					
 				}
 				break;

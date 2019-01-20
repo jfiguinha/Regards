@@ -311,7 +311,10 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	
-
+    if (folderList.size() == 0)
+    {
+        ShowOpenCLConfiguration(false);
+    }
 
 	if (fileToOpen != "")
 	{
@@ -319,11 +322,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	}
 	else
 	{
-		
 		if (folderList.size() == 0)
-		{
 			mainWindow->OpenFolder();
-		}
+            
 	}
     
     mainInterface->HideAbout();
@@ -572,7 +573,7 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 	}
 }
 
-void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
+void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
 {
 	OpenCLDialog configFile(this);
 	configFile.ShowModal();
@@ -586,11 +587,16 @@ void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
 			config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
 			config->SetOpenCLPlatformName(configFile.GetPlatformName());
 		}
-        wxMessageBox(labelRestart,labelInformations);
-	}
+        
+        if(showRestart)
+            wxMessageBox(labelRestart,labelInformations);
+	}    
 }
 
-
+void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
+{
+    ShowOpenCLConfiguration(true);
+}
 
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
 {

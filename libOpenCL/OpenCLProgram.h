@@ -27,13 +27,19 @@ namespace Regards
 
 			const wxString GetProgramId();
 
+
 		private:
 
-			int CreateAndBuildProgram(const wxString &programData, const wxString &buildOption);
+			int CreateAndBuildProgram(const wxString &programId, const wxString &programData, const wxString &buildOption);
+            
+            bool LoadProgramFromBinaries(const wxString &programId);
+            
 			wxString buildOption;
 			wxString numProgramId;
 			cl_program program;
 			COpenCLContext * context;
+            
+            bool loadFromDatabase = false;
 		};
 
 	}

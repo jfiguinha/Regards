@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=FaceRecognition_unix
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/Developpement/Regards
 ProjectPath            :=/home/figuinha/Developpement/Regards/FaceRecognition_unix
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=15/01/19
+Date                   :=20/01/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=/usr/bin/ccache /usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
@@ -35,7 +35,7 @@ PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="FaceRecognition_unix.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch)../libextern/dlib-19.7 $(IncludeSwitch)../FaceRecognition 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPa
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/ccache /usr/bin/g++
 CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS := -fopenmp -std=gnu++11 -Wall -fpermissive -fPIC -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := -fopenmp -std=gnu++11 -Wall -fpermissive -fPIC -g -O0 -Wall  $(Preprocessors)
+CFLAGS   :=  -Wall  -g -O0 -Wall  $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -77,15 +77,15 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(SharedObjectLinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/FaceRecognition_unix"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/FaceRecognition_unix"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
 $(IntermediateDirectory)/.d:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
@@ -107,6 +107,6 @@ $(IntermediateDirectory)/up_FaceRecognition_FaceRecognition.cpp$(PreprocessSuffi
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

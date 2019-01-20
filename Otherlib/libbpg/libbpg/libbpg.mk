@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libbpg
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/Developpement/Regards
 ProjectPath            :=/home/figuinha/Developpement/Regards/Otherlib/libbpg/libbpg
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=15/01/19
+Date                   :=20/01/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=/usr/bin/ccache /usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)USE_VAR_BIT_DEPTH $(PreprocessorSwitch)_ISOC99_SOURCE $(PreprocessorSwitch)HAVE_AV_CONFIG_H $(PreprocessorSwitch)_FILE_OFFSET_BITS=64 $(PreprocessorSwitch)_LARGEFILE_SOURCE $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)USE_VAR_BIT_DEPTH $(PreprocessorSwitch)_ISOC99_SOURCE $(PreprocessorSwitch)HAVE_AV_CONFIG_H $(PreprocessorSwitch)_FILE_OFFSET_BITS=64 $(PreprocessorSwitch)_LARGEFILE_SOURCE 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPa
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/ccache /usr/bin/g++
 CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS :=  -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := -std=c99 -Wall -fPIC -pthread -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS :=  -g $(Preprocessors)
+CFLAGS   := -std=c99 -Wall -fPIC -pthread -g $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -78,15 +78,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libbpg"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/libbpg"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
@@ -228,6 +228,6 @@ $(IntermediateDirectory)/up_up_up_libextern_dlib-19.7_dlib_external_libpng_pngre
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 
