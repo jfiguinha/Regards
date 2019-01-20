@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="SqlOpenCLKernel.cpp"/>
     <File Name="SqlThumbnailVideo.cpp"/>
     <File Name="SqlCatalog.cpp"/>
     <File Name="SqlCountry.cpp"/>
@@ -62,6 +63,7 @@
     <File Name="SqlPhotoGPS.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="SqlOpenCLKernel.h"/>
     <File Name="header.h"/>
     <File Name="SqlThumbnailVideo.h"/>
     <File Name="SqlCatalog.h"/>

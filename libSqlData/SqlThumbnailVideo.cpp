@@ -36,10 +36,12 @@ bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVide
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo " + to_string(numVideo));
-	if (!find)
+	/*
+    if (!find)
 	{
 		DeleteThumbnail(path);
 	}
+    */
 	return find;
 }
 
@@ -47,9 +49,13 @@ bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVide
 
 bool CSqlThumbnailVideo::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const int &numPicture, const int &rotation, const int &percent, const int &timePosition)
 {
-	wxString fullpath = path;
-	fullpath.Replace("'", "''");
-	return ExecuteInsertBlobData("INSERT INTO VIDEOTHUMBNAIL (FullPath, numVideo, rotation, percent, timePosition, width, height, thumbnail) VALUES('" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," + to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) + ", ? )", 7, zBlob, nBlob);
+    if(!TestThumbnail(path, numPicture))
+    {
+        wxString fullpath = path;
+        fullpath.Replace("'", "''");
+        return ExecuteInsertBlobData("INSERT INTO VIDEOTHUMBNAIL (FullPath, numVideo, rotation, percent, timePosition, width, height, thumbnail) VALUES('" + fullpath + "'," + to_string(numPicture) + "," + to_string(rotation) + "," + to_string(percent) + "," + to_string(timePosition) + "," + to_string(width) + "," + to_string(height) + ", ? )", 7, zBlob, nBlob);
+    }
+    return false;
 }
 
 CImageVideoThumbnail * CSqlThumbnailVideo::GetPictureThumbnail(const wxString & path, const int &numVideo)

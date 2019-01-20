@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libSqlData
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/Developpement/Regards
 ProjectPath            :=/home/figuinha/Developpement/Regards/libSqlData
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=15/01/19
+Date                   :=20/01/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=/usr/bin/ccache /usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
@@ -28,16 +28,16 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)TURBOJPEG $(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)WX_PRECOMP $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)TURBOJPEG $(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)WX_PRECOMP 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libSqlData.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s 
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libPicture $(IncludeSwitch)../libCompress $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libextern/libjpeg-turbo-1.5.1 $(IncludeSwitch)../libextern/libRapidXML 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPa
 AR       := /usr/bin/ar rcu
 CXX      := /usr/bin/ccache /usr/bin/g++
 CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
+CFLAGS   :=  -Wall  -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := /usr/bin/as
 
@@ -60,10 +60,10 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceDescriptor.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindMonth.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindLocalisation.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoGPS.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindPhotos.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindDay.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/SqlCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCountry.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceLabel.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotos.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlLibExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SQLRemoveData.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/SqlThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCategorie.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotosWithoutThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFacePhoto.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindFacePhoto.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/SqlFaceRecognition.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceDescriptor.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindMonth.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindLocalisation.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoGPS.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindFolderCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindPhotos.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCriteria.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/SqlFindDay.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlCountry.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceLabel.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotos.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlLibExplorer.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/SQLRemoveData.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailDataSQL.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlVersion.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindCatalog.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotoCategorie.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlPhotosWithoutThumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFacePhoto.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFindFacePhoto.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/SqlGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/SqlFaceRecognition.cpp$(ObjectSuffix) 
 
 
 
@@ -80,34 +80,34 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-release/libSqlData"
+	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/libSqlData"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix): SqlThumbnailVideo.cpp $(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlThumbnailVideo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix): SqlThumbnailVideo.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix) -MM SqlThumbnailVideo.cpp
+$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(ObjectSuffix): SqlOpenCLKernel.cpp $(IntermediateDirectory)/SqlOpenCLKernel.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlOpenCLKernel.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(DependSuffix): SqlOpenCLKernel.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(DependSuffix) -MM SqlOpenCLKernel.cpp
 
-$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(PreprocessSuffix): SqlThumbnailVideo.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlThumbnailVideo.cpp$(PreprocessSuffix) SqlThumbnailVideo.cpp
+$(IntermediateDirectory)/SqlOpenCLKernel.cpp$(PreprocessSuffix): SqlOpenCLKernel.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlOpenCLKernel.cpp$(PreprocessSuffix) SqlOpenCLKernel.cpp
 
 $(IntermediateDirectory)/SqlFaceDescriptor.cpp$(ObjectSuffix): SqlFaceDescriptor.cpp $(IntermediateDirectory)/SqlFaceDescriptor.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFaceDescriptor.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFaceDescriptor.cpp$(ObjectSuffix) $(IncludePath)
@@ -124,6 +124,14 @@ $(IntermediateDirectory)/SqlFolderCatalog.cpp$(DependSuffix): SqlFolderCatalog.c
 
 $(IntermediateDirectory)/SqlFolderCatalog.cpp$(PreprocessSuffix): SqlFolderCatalog.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFolderCatalog.cpp$(PreprocessSuffix) SqlFolderCatalog.cpp
+
+$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix): SqlThumbnailVideo.cpp $(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlThumbnailVideo.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix): SqlThumbnailVideo.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(DependSuffix) -MM SqlThumbnailVideo.cpp
+
+$(IntermediateDirectory)/SqlThumbnailVideo.cpp$(PreprocessSuffix): SqlThumbnailVideo.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlThumbnailVideo.cpp$(PreprocessSuffix) SqlThumbnailVideo.cpp
 
 $(IntermediateDirectory)/SqlFindMonth.cpp$(ObjectSuffix): SqlFindMonth.cpp $(IntermediateDirectory)/SqlFindMonth.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFindMonth.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFindMonth.cpp$(ObjectSuffix) $(IncludePath)
@@ -181,6 +189,38 @@ $(IntermediateDirectory)/SqlFindDay.cpp$(DependSuffix): SqlFindDay.cpp
 $(IntermediateDirectory)/SqlFindDay.cpp$(PreprocessSuffix): SqlFindDay.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFindDay.cpp$(PreprocessSuffix) SqlFindDay.cpp
 
+$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix): SqlFindYear.cpp $(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFindYear.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix): SqlFindYear.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix) -MM SqlFindYear.cpp
+
+$(IntermediateDirectory)/SqlFindYear.cpp$(PreprocessSuffix): SqlFindYear.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFindYear.cpp$(PreprocessSuffix) SqlFindYear.cpp
+
+$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix): SqlFindCriteria.cpp $(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFindCriteria.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix): SqlFindCriteria.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix) -MM SqlFindCriteria.cpp
+
+$(IntermediateDirectory)/SqlFindCriteria.cpp$(PreprocessSuffix): SqlFindCriteria.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFindCriteria.cpp$(PreprocessSuffix) SqlFindCriteria.cpp
+
+$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix): SqlCriteria.cpp $(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlCriteria.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix): SqlCriteria.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix) -MM SqlCriteria.cpp
+
+$(IntermediateDirectory)/SqlCriteria.cpp$(PreprocessSuffix): SqlCriteria.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlCriteria.cpp$(PreprocessSuffix) SqlCriteria.cpp
+
+$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix): SqlInsertFile.cpp $(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlInsertFile.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix): SqlInsertFile.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix) -MM SqlInsertFile.cpp
+
+$(IntermediateDirectory)/SqlInsertFile.cpp$(PreprocessSuffix): SqlInsertFile.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlInsertFile.cpp$(PreprocessSuffix) SqlInsertFile.cpp
+
 $(IntermediateDirectory)/SqlCatalog.cpp$(ObjectSuffix): SqlCatalog.cpp $(IntermediateDirectory)/SqlCatalog.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlCatalog.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlCatalog.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/SqlCatalog.cpp$(DependSuffix): SqlCatalog.cpp
@@ -205,30 +245,6 @@ $(IntermediateDirectory)/SqlFaceLabel.cpp$(DependSuffix): SqlFaceLabel.cpp
 $(IntermediateDirectory)/SqlFaceLabel.cpp$(PreprocessSuffix): SqlFaceLabel.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFaceLabel.cpp$(PreprocessSuffix) SqlFaceLabel.cpp
 
-$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix): SqlCriteria.cpp $(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlCriteria.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix): SqlCriteria.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlCriteria.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlCriteria.cpp$(DependSuffix) -MM SqlCriteria.cpp
-
-$(IntermediateDirectory)/SqlCriteria.cpp$(PreprocessSuffix): SqlCriteria.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlCriteria.cpp$(PreprocessSuffix) SqlCriteria.cpp
-
-$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix): SqlInsertFile.cpp $(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlInsertFile.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix): SqlInsertFile.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlInsertFile.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlInsertFile.cpp$(DependSuffix) -MM SqlInsertFile.cpp
-
-$(IntermediateDirectory)/SqlInsertFile.cpp$(PreprocessSuffix): SqlInsertFile.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlInsertFile.cpp$(PreprocessSuffix) SqlInsertFile.cpp
-
-$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix): SqlFindYear.cpp $(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFindYear.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix): SqlFindYear.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlFindYear.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlFindYear.cpp$(DependSuffix) -MM SqlFindYear.cpp
-
-$(IntermediateDirectory)/SqlFindYear.cpp$(PreprocessSuffix): SqlFindYear.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFindYear.cpp$(PreprocessSuffix) SqlFindYear.cpp
-
 $(IntermediateDirectory)/SqlPhotos.cpp$(ObjectSuffix): SqlPhotos.cpp $(IntermediateDirectory)/SqlPhotos.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlPhotos.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlPhotos.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/SqlPhotos.cpp$(DependSuffix): SqlPhotos.cpp
@@ -236,14 +252,6 @@ $(IntermediateDirectory)/SqlPhotos.cpp$(DependSuffix): SqlPhotos.cpp
 
 $(IntermediateDirectory)/SqlPhotos.cpp$(PreprocessSuffix): SqlPhotos.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlPhotos.cpp$(PreprocessSuffix) SqlPhotos.cpp
-
-$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix): SqlFindCriteria.cpp $(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlFindCriteria.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix): SqlFindCriteria.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SqlFindCriteria.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SqlFindCriteria.cpp$(DependSuffix) -MM SqlFindCriteria.cpp
-
-$(IntermediateDirectory)/SqlFindCriteria.cpp$(PreprocessSuffix): SqlFindCriteria.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SqlFindCriteria.cpp$(PreprocessSuffix) SqlFindCriteria.cpp
 
 $(IntermediateDirectory)/SqlLibExplorer.cpp$(ObjectSuffix): SqlLibExplorer.cpp $(IntermediateDirectory)/SqlLibExplorer.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/Developpement/Regards/libSqlData/SqlLibExplorer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SqlLibExplorer.cpp$(ObjectSuffix) $(IncludePath)
@@ -355,7 +363,7 @@ $(IntermediateDirectory)/SqlFaceRecognition.cpp$(PreprocessSuffix): SqlFaceRecog
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 
