@@ -1,339 +1,203 @@
-//******************************************************************************************************************************************************************
-//Installation Wiki Windows
-//******************************************************************************************************************************************************************
-
-Compilation under Windows :
-1 - Install MSYS 2
-Download and MSYS :
-http://www.msys2.org/
-2 - Install Compiler :
-Open MSYS2 Shell and Execute :
-pacman -Syuu
-3 Close the MSYS2 shell once you're asked to And Reopen MSYS2
-Execute :
-pacman -Syuu
-4 - Install Base Developpement Tools :
-pacman -S --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
-pacman -S yasm
-pacman -S nasm
-pacman -S pango-1.0
-pacman -S fftw
-pacman -S openEXR
-pacman -S git
-pacman -S autotools
-
-5 - Install OpenGL Extension and Lib
-pacman -S freeglut
-
-6 - Download and Install CodeLite
-https://codelite.org/
-
-7 - Download OpenCL SDK from Amd :
-APP SDK :
-https://www.softpedia.com/get/Programming/SDK-DDK/ATI-Stream-SDK.shtml
-Install it and remove all OpenGL lib and include
-
-8 - Download Regards source code from git :
-https://github.com/jfiguinha/Regards/tree/master
-
-9 - Compilation of all libextern
-Go to libextern folder
-
-Compile exiv2-0.26 : 
-Enter into exiv2-0.26 folder
-Tape ./configure
-And make
-
-Compile ffmpeg-4.1
-Enter into ffmpeg-4.1 folder
-Tape ./configure
-And make
-
-Compile heif-master
-Enter into heif-master folder
-Tape cmake -G "MSYS Makefiles" ../heif-master
-And make
-
-Compile jasper-1.900.1
-Enter into jasper-1.900.1 folder
-Tape ./configure
-And make
-
-Compile libde265-master
-Enter into libde265-master folder
-Tape cmake -G "MSYS Makefiles" ../libde265-master
-And make
-
-Compile libjpeg-turbo-1.5.1
-Enter into libjpeg-turbo-1.5.1 folder
-Tape ./configure
-And make
-
-Compile libmng-2.0.3
-Enter into libmng-2.0.3 folder
-Tape ./configure
-And make
-
-Compile libwebp-0.6.0
-Enter into libwebp-0.6.0 folder
-Tape cmake -G "MSYS Makefiles" ../libwebp-0.6.0
-And make
-
-Compile MediaInfo_DLL_GNU_FromSource
-Enter MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU Folder
-Tape ./configure
-And make
-
-Compile SDL2-2.0.5
-Enter into SDL2-2.0.5 folder
-Tape ./configure
-And make
-
-Compile wxWidgets-master
-Enter into wxWidgets-master folder
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug
-And make
-
-Compile x265_2.5
-Enter into x265_2.5/build/msys folder
-Tape ./multilib.sh
-
-Compile libexif
-Enter into libexif
-Tape ./configure
-
-10 - Compilation of Regards
-On the root of the source code Folder, open Regards.wokspace under CodeLite
-Compile under RegardsViewer_exe RegardsViewer_Windows Project
-
-//******************************************************************************************************************************************************************
-//Installation Wiki Mac OS
-//******************************************************************************************************************************************************************
-
-1 - Install and open Xcode
-2 - Install Xcode extension
-3 - Install Homebrew
-https://brew.sh/index_fr.html
-
-4 - Install and Update package
-Open a Terminal :
-brew update
-brew upgrade
-brew install llvm
-brew install pango
-brew install git
-brew install libexif
-brew install fftw --with-openmp --without-fortran
-
-5 - Download and Install CodeLite
-https://codelite.org/
-Open CodeLite
-Start Wizard to find C++ compiler
-
-6 - Download Regards and Libextern source code :
-git clone https://github.com/jfiguinha/Regards/tree/master
-
-7 - Compilation of all libextern
-Open a Terminal and Go to libextern folder
-
-Compile libaom-master
-Enter into libaom-master/libaom folder
-Tape cmake path/to/aom
-And make
-and make install
-
-Compile exiv2-0.26 : 
-Enter into exiv2-0.26 folder
-Tape ./configure
-And make
-
-Compile ffmpeg-4.1
-Enter into ffmpeg-4.1 folder
-Tape ./configure --enable-libaom
-And make
-
-Compile heif-master
-Enter into heif-master folder
-Tape cmake ../heif-master
-And make
-
-Compile jasper-1.900.1
-Enter into jasper-1.900.1 folder
-Tape ./configure
-And make
-
-Compile libde265-master
-Enter into libde265-master folder
-Tape cmake ../libde265-master
-And make
-
-Compile libjpeg-turbo-1.5.1
-Enter into libjpeg-turbo-1.5.1 folder
-Tape ./configure
-And make
-
-Compile libmng-2.0.3
-Enter into libmng-2.0.3 folder
-Tape ./configure
-And make
-
-Compile libwebp-0.6.0
-Enter into libwebp-0.6.0 folder
-Tape cmake ../libwebp-0.6.0
-And make
-
-Compile MediaInfo_DLL_GNU_FromSource
-Enter MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU Folder
-Tape ./configure
-And make
-
-Compile SDL2-2.0.5
-Enter into SDL2-2.0.5 folder
-Tape ./configure
-And make
-
-Compile wxWidgets-master
-Enter into wxWidgets-master folder
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
-And make
-
-Compile x265_2.5
-Enter into x265_2.5/source folder
-Tape cmake ../source
-And make
-
-8 - Open Regards Project
-
-On the root of the source code Folder, open Regards.wokspace under CodeLite
-Set llvm as default compiler for MinGW 64 bit Compilers
-Change option for this compiler under Tools Panel
-Add -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.12.sdk/
-for c and c++ compiler tools at the end of the line
-In Advanced Panel :
-include path:
-/usr/local/opt/cairo/include;/usr/local/opt/openexr/include/OpenEXR;/usr/local/opt/ilmbase/include/openexr;/usr/local/opt/libxml2/include/libxml2;/usr/local/opt/curl/include/curl;/usr/local/opt/libexif/include
-
-lib path :
-/usr/local/opt/llvm/lib;/usr/local/opt/openexr/lib;/usr/local/opt/ilmbase/lib;/usr/local/opt/glib/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib;/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library;/usr/lib/system
-
-9 - Compilation of Regards
-
-Compile under RegardsViewer_exe RegardsViewer_Mac Project
-
-
-//******************************************************************************************************************************************************************
-//Installation Wiki Linux Mint
-//******************************************************************************************************************************************************************
-
-1 - Open a terminal
-Run this command to be up to date
-sudo apt-get update
-sudo apt-get upgrade
-2 - Install Compiler and library tools :
-sudo apt-get install gcc
-sudo apt-get install g++
-sudo apt-get install build-essential
-sudo apt-get install cmake
-sudo apt-get install binutils-gold
-sudo apt-get install yasm
-sudo apt-get install nasm
-sudo apt-get install libpango-1.0
-sudo apt-get install libwebkit-dev
-sudo apt-get install freeglut3
-sudo apt-get install freeglut3-dev
-sudo apt-get install mesa-common-dev
-sudo apt-get install git
-sudo apt-get install libturbojpeg-dev
-sudo apt-get install libSDL2-dev
-sudo apt-get install libglew-dev
-sudo apt-get install libopenexr-dev
-sudo apt-get install libfftw3-dev
-
-3 - Download and Install CodeLite
-https://codelite.org/
-
-4 - Download OpenCL SDK from Amd :
-APP SDK :
-https://sourceforge.net/projects/nicehashsgminerv5viptools/files/APP%20SDK%20A%20Complete%20Development%20Platform/
-
-5 - Download Regards from github :
-Source Code :
-git clone https://github.com/jfiguinha/Regards/tree/master
-
-6 - Compilation of all libextern
-Go to libextern folder
-
-Compile libaom-master
-Enter into libaom-master/libaom folder
-Tape cmake path/to/aom
-And make
-and make install
-
-Compile exiv2-0.26 : 
-Enter into exiv2-0.26 folder
-Tape ./configure
-And make
-
-Compile fftw-3.3.8 : 
-Enter into fftw-3.3.8 folder
-Tape ./configure
-And make
-
-Compile ffmpeg-4.1
-Enter into ffmpeg-4.1 folder
-Tape ./configure --enable-libaom
-And make
-
-Compile heif-master
-Enter into heif-master folder
-Tape cmake ../heif-master
-And make
-
-Compile jasper-1.900.1
-Enter into jasper-1.900.1 folder
-Tape ./configure
-And make
-
-Compile libde265-master
-Enter into libde265-master folder
-Tape cmake ../libde265-master
-And make
-
-Compile libmng-2.0.3
-Enter into libmng-2.0.3 folder
-Tape ./configure
-And make
-
-Compile libwebp-0.6.0
-Enter into libwebp-0.6.0 folder
-Tape cmake ../libwebp-0.6.0
-And make
-
-Compile MediaInfo_DLL_GNU_FromSource
-Enter MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU Folder
-Tape ./configure
-And make
-
-Compile wxWidgets-master
-Enter into wxWidgets-master folder
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-gtk=3
-And make
-
-Compile x265_2.5
-Enter into x265_2.5/build/linux folder
-Tape ./multilib.sh
-
-7 - Open Regards Project
-
-On the root of the source code Folder, open Regards.wokspace under CodeLite
-Set gcc as default compiler for MinGW 64 bit Compilers
-Change option for this compiler under advanced Panel
-Include Path : 
-/opt/AMDAPPSDK-3.0/include;/usr/include/OpenEXR;/usr/include/pango-1.0;/usr/include/glib-2.0;/usr/lib/x86_64-linux-gnu/glib-2.0/include;/usr/include/cairo;/usr/include/SDL2;/usr/include/libxml2
-Lib Path :
-/opt/AMDAPPSDK-3.0/lib
-
-8 - Compilation of Regards
-
-On the root of the source code Folder, open Regards.wokspace under CodeLite
-Compile under RegardsViewer_exe RegardsViewer_linux Project
+//**************************************************************************	
+Description
+//**************************************************************************
+
+Regards is a modern photo viewer. 
+Support highDPI definition screen.
+Support reading Picture format : JPEG, GIF, PNG, PCX, TGA, TIFF, BMP, Kodak Photo-Cd, JPEG2000, Photoshop PSD, PPM, PGM, Camera Raw, SVG, WEBP, HEIC, EXR, HDR and BPG.
+Support reading Video format (DXVA2 acceleration support) : mpeg4, avi, mkv, webp, y4m, quicktime and AVCHD.
+Support Exif and xmp file information.
+Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
+Support GPS informations from Photo and Apple Iphone Video. 
+Hi Quality display interpolation. 
+OpenGL Picture display and OpenCL post Effect.
+
+Picture extension support :
+
+pgm, bmp, pcx, jpg, jpe, jpeg, jfif, jif, jfi, tif,	gif, png, tga, pcd, webp, bpg, jp2, jpc, j2c, pgx, ppm, psd, pdd, mng, jng, iff, xpm, ico, cur, ani, svg, nef, crw, cr2, dng, arw, erf, 3fr, dcr, raw, x3f, mef, raf, mrw, pef, sr2, orf, heic, hdr, exr;
+
+Video extension support :
+
+mp4, dat, m4s, vob, mod, mpv2, mp2, m1v, mpe, mpg, mpeg, wtv, dvr-ms, m2ts, m2t, avi, wmv, asf, vm, mov, qt, vp8, vp9, webm, mkv, y4m
+
+//**************************************************************************
+//Installation
+//**************************************************************************
+
+Linux Mint 18 or Ubuntu 16.04 x64 Installation
+- Decompress Zip file on a folder
+- Execute RegardsViewer.sh to install the application with all dependencies
+
+Installation on Windows
+- Run RegardsViewer2Setup.exe
+
+Installation on Mac os X 10.10 and Later
+- Open DMG file and Copy RegardsViewer to Application Folder.
+
+//**************************************************************************
+//Configuration
+//**************************************************************************
+
+Works on minimum windows 7 and above, Mac OS X 10.12 and above, Linux Mint 18 or Ubuntu 16.04 x64 and above. 
+An OpenCL 1.2 compatible device is necessary to use this software.
+
+//**************************************************************************
+//Software Review
+//**************************************************************************
+
+SOFTPEDIA 3,5 / 5
+FIND MY SOFT 3 / 5 
+
+//**************************************************************************
+//What's New
+//**************************************************************************
+
+News for version 2.18.1
+- Bug Correction 
+- Theme support -theme file save into Regards directory in documents folder
+- Multi language support - Only English now but is ready for all language
+- Compilation time improve by support of precompiled header
+- Remove error log and debug information from wxWidgets
+News for version 2.18
+- Bug Correction 
+- Performance Improvement 
+- Support MAC OS Mojave
+News for version 2.17
+- Bug Correction 
+- Add AV1 codec support
+News for version 2.16.1
+- Bug Correction 
+- Dynamic Video Icon
+News for version 2.16.0
+- Bug Correction 
+- Bug Correction on HEIC Format from Apple
+- Multithreading decoding for HEIC File 
+- Exif support for HEIC File 
+News for version 2.15.3
+- Bug Correction 
+News for version 2.15.2
+- Bug Correction for support of special character in linux folder 
+- Correct Refresh crash bug in linux.
+- Add Viewer mode - Hide all unnecessary window. 
+- Better support of application integration into window, mac and linux. You can define RegardsViewer as default viewer.
+News for version 2.15.1
+- Bug Correction for Increase and Decrease Size
+- Bug Correction for Folder and Criteria Menu Button
+News for version 2.15.0
+- On linux, move from gtk2 to gtk3
+- On linux, support HiDPI
+- Bug Correction
+News for version 2.14.0
+- Bug correction
+- Improve multi-thread stability
+- Add Process parameter into the menu Parameter / configuration
+News for version 2.13.11
+- Rewrite Video playback
+- Rewrite OpenCL Device Manager
+- Correct video performance on Mac OS on Fullscreen Mode
+- Full Render Effect is done on OpenGL Shader for video
+News for version 2.13.10
+- Optimize Video playback
+- Correct bug
+- Add Bicubic Video Interpolation option
+News for version 2.13.9
+- Correct Video playback bug
+News for version 2.13.8
+- Correct crash and bug
+News for version 2.13.7
+- Correct crash and bug
+- On MAC : compilation revert to llvm 4.0.1 because they are a compilation issue with llvm 5.0
+- Update wxWidget to the lastest developpement version with bug correction for high sierra.
+- Update source and libextern file 
+News for version 2.13.6
+- Correct crash with animation file
+- On MAC : compilation update with llvm 5.0.0 and change dynamic lib symbolic link
+- Support HDR file format in read only
+- Support OpenEXR file format in read only
+News for version 2.13.5
+- Correct crash with animation file
+News for version 2.13.4
+- Update ffmpeg lib to 3.3.4
+- Update dlib to 19.7
+- Change diaporama to sequence mode
+- Correct transition effect
+News for version 2.13.3
+- Correct PSD Crash
+- Correct JPEG2000 Crash
+- Picture Navigation Speed Enhance
+- Add limitation for GPS infos to support geoplugin.net legal usage (120 geotag by minute)
+News for version 2.13.2
+- Correct GPS Info for Quicktime Iphone Movie
+- Correct Thumbnail Refresh
+News for version 2.13.1
+- OpenCL Memory Available Test Correction
+- HEIC Format Multithread Crash Correction
+- Remove Rawspeed support
+- Bug Correction
+News for version 2.13.0
+- Move all system compilation on codelite (gcc 7 for windows, llvm 4.0.1 MacOS, gcc 5.3 for linux mint)
+- Bug Correction
+- Video Color Correction for GPU not support OpenGL 4.5
+- Crash Correction for OpenCL GPU that not support OpenGL Sharing
+- Less cpu usage to optimize batery life
+- Update Source Code
+News for version 2.12.2
+- Add Water Effect
+- Add Index Generator on Thumbnail Right
+- Correct Memory Bug
+- Update Exiv library to 0.26 
+- Support not avx processor
+News for version 2.12.1
+- Crash Correction for ANI animation and multipage TIFF file.
+- Support the new HEIF Format (Heic extension)
+- Multi Image GIF and TIFF support
+- Bug Correction
+News for version 2.11.1
+- Add Thumbnail Size to improve Face Detection
+- Bug Correction
+News for version 2.11.0
+- Add Face Recognition over thumbnail from photo and video with name label support
+- Add Face Name Search
+- Bug Correction
+News for version 2.10.5
+- Bug crash correction on corrupted video.
+- Bug correction on video volume.
+News for version 2.10.4
+- Installation Update for Ubuntu and Debian System
+- Bug correction on video player.
+News for version 2.10.3 only for windows
+- Bug correction on video presentation.
+News
+- Update Version for ubuntu and Code Source
+News for version 2.10.2
+- Add lib Media Info for video information.
+- Update SQLite to 3.17.0
+- Update LibRaw to 0.18.1
+- Correct bug on jpeg decompression.
+News for version 2.10.1
+- Add Multi-Audio support for movie.
+- Add Subtitle support for movie.
+- To choose audio and subtitle click on effect window.
+- Change default sort by file path.
+News for version 2.10.0
+- Add WEBP and BPG format support. 
+- Add WEBM, MKV, Y4M format support. 
+- Upgrade to FFMPEG 3.3 
+News for version 2.9.2
+- Video Memory Leak
+- Thumbnail Memory Leak
+- Video loading faster
+- Add Folder select in criteria
+For All version
+- Raw developpement bug correction
+- OpenGL render for Picture and Video
+- Use TurboJpeg for jpeg file
+- Use LibRaw for raw picture
+- Bug Correction
+- Add new filter : Raw Development Filter
+
+Copyright
+Figuinha Jacques - 2019 - Email Me For More information
+
+All - Version
+
