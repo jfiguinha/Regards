@@ -78,6 +78,9 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programId, const wxStr
     CSqlOpenCLKernel sqlOpenCLKernel;
    
 	const char * raw_text = programData.c_str();
+#if not defined(NDEBUG)
+    printf("OpenCL code : \n %s \n", raw_text);
+#endif
 	cl_int err;
 	// TODO Using prepared length and not terminating by 0 is better way?
 

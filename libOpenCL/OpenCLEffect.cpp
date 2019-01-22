@@ -616,7 +616,7 @@ wxImage COpenCLEffect::GetwxImage()
 int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 {
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_WXWIDGET");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_TEXTURE");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
