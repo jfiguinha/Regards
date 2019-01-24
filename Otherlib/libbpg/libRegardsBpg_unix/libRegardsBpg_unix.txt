@@ -1,1 +1,1 @@
-./Release/up_libRegardsBpg_bpgenc.c.o ./Release/up_libRegardsBpg_bpgdec.c.o ./Release/up_libRegardsBpg_x265_glue.c.o ./Release/up_libRegardsBpg_DllBpg.cpp.o
+./Release/up_libRegardsBpg_bpgdec.c.o ./Release/up_libRegardsBpg_bpgenc.c.o ./Release/up_libRegardsBpg_x265_glue.c.o ./Release/up_libRegardsBpg_DllBpg.cpp.o

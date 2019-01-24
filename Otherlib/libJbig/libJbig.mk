@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libJbig
-ConfigurationName      :=Debug
-WorkspacePath          :=/home/figuinha/Developpement/Regards
-ProjectPath            :=/home/figuinha/Developpement/Regards/Otherlib/libJbig
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=/home/figuinha/developpement/Regards
+ProjectPath            :=/home/figuinha/developpement/Regards/Otherlib/libJbig
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=20/01/19
+Date                   :=24/01/19
 CodeLitePath           :=/home/figuinha/.codelite
-LinkerName             :=/usr/bin/ccache /usr/bin/g++
-SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
+LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
+SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -41,19 +41,19 @@ IncludePCH             :=
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk/  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/ccache /usr/bin/g++
-CC       := /usr/bin/ccache /usr/bin/gcc
-CXXFLAGS := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -g $(Preprocessors)
-CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cflags) -pthread -g $(Preprocessors)
+AR       := /usr/bin/x86_64-linux-gnu-ar rcu
+CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
+CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
+CXXFLAGS := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -O2 -msse4.1 $(Preprocessors)
+CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cflags) -pthread  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := /usr/bin/as
+AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
 
 ##
@@ -77,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/Developpement/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/Developpement/Regards/.build-debug/libJbig"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libJbig"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -94,7 +94,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/jbig.c$(ObjectSuffix): jbig.c $(IntermediateDirectory)/jbig.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libJbig/jbig.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/jbig.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "/home/figuinha/developpement/Regards/Otherlib/libJbig/jbig.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/jbig.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/jbig.c$(DependSuffix): jbig.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/jbig.c$(ObjectSuffix) -MF$(IntermediateDirectory)/jbig.c$(DependSuffix) -MM jbig.c
 
@@ -102,7 +102,7 @@ $(IntermediateDirectory)/jbig.c$(PreprocessSuffix): jbig.c
 	$(CC) $(CFLAGS) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/jbig.c$(PreprocessSuffix) jbig.c
 
 $(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix): jbig_tab.c $(IntermediateDirectory)/jbig_tab.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/Developpement/Regards/Otherlib/libJbig/jbig_tab.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "/home/figuinha/developpement/Regards/Otherlib/libJbig/jbig_tab.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/jbig_tab.c$(DependSuffix): jbig_tab.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/jbig_tab.c$(ObjectSuffix) -MF$(IntermediateDirectory)/jbig_tab.c$(DependSuffix) -MM jbig_tab.c
 
@@ -115,6 +115,6 @@ $(IntermediateDirectory)/jbig_tab.c$(PreprocessSuffix): jbig_tab.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

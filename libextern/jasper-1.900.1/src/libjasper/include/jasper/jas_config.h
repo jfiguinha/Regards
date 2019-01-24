@@ -29,7 +29,7 @@
 /* #undef DEBUG_OVERFLOW */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-/* #undef HAVE_DLFCN_H */
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 /* #undef HAVE_DOPRNT */
@@ -38,7 +38,7 @@
 #define HAVE_FCNTL_H 1
 
 /* Define to 1 if you have the `getrusage' function. */
-/* #undef HAVE_GETRUSAGE */
+#define HAVE_GETRUSAGE 1
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #define HAVE_GETTIMEOFDAY 1
@@ -47,7 +47,7 @@
 #define HAVE_INTTYPES_H 1
 
 /* Define to 1 if you have the <io.h> header file. */
-#define HAVE_IO_H 1
+/* #undef HAVE_IO_H */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -95,7 +95,7 @@
 #define HAVE_VPRINTF 1
 
 /* Define to 1 if you have the <windows.h> header file. */
-#define HAVE_WINDOWS_H 1
+/* #undef HAVE_WINDOWS_H */
 
 /* JasPer configure */
 #define JAS_CONFIGURE 1
@@ -128,7 +128,7 @@
 #define VERSION "1.900.1"
 
 /* Define to 1 if the X Window System is missing or not being used. */
-#define X_DISPLAY_MISSING 1
+/* #undef X_DISPLAY_MISSING */
 
 /* Define to empty if `const' does not conform to ANSI C. */
 /* #undef const */
@@ -152,16 +152,16 @@
 #define uchar unsigned char
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
-#define uint unsigned int
+/* #undef uint */
 
 /* Define to `unsigned long' if <sys/types.h> does not define. */
-#define ulong unsigned long
+/* #undef ulong */
 
 /* Define to `unsigned long long' if <sys/types.h> does not define. */
 #define ulonglong unsigned long long
 
 /* Define to `unsigned short' if <sys/types.h> does not define. */
-#define ushort unsigned short
+/* #undef ushort */
 
 
 #else

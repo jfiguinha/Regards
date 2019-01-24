@@ -5,19 +5,19 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-/* #undef HAVE_DLFCN_H */
+#define HAVE_DLFCN_H 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
 /* define if you want JPEG support */
-/* #undef HAVE_LIBJPEG */
+#define HAVE_LIBJPEG 1
 
 /* define if you want lcms v1 support */
 /* #undef HAVE_LIBLCMS1 */
 
 /* define if you want lcms v2 support */
-/* #undef HAVE_LIBLCMS2 */
+#define HAVE_LIBLCMS2 1
 
 /* Define to 1 if you have the `z' library (-lz). */
 #define HAVE_LIBZ 1
@@ -60,7 +60,7 @@
 #define MNG_ERROR_TELLTALE 1
 
 /* define if you want full lcms support */
-/* #undef MNG_FULL_CMS */
+#define MNG_FULL_CMS 1
 
 /* enable support for accessing chunks */
 #define MNG_STORE_CHUNKS 1
@@ -146,7 +146,7 @@
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
-#define _FILE_OFFSET_BITS 64
+/* #undef _FILE_OFFSET_BITS */
 
 /* Define for large files, on AIX-style hosts. */
 /* #undef _LARGE_FILES */

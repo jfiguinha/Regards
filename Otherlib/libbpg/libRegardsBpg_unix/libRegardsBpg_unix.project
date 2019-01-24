@@ -35,7 +35,7 @@
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>
         <IncludePath Value="../../../libextern/x265_2.5/source"/>
-        <IncludePath Value="../../../libextern/x265_2.5//build/linux/"/>
+        <IncludePath Value="../../../libextern/x265_2.5//build/linux/8bit/"/>
         <IncludePath Value="../../../libextern/dlib-19.7/dlib/external/libpng"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
@@ -47,7 +47,7 @@
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;">
         <LibraryPath Value="."/>
-        <LibraryPath Value="../../../libextern/x265_2.5/build/linux/"/>
+        <LibraryPath Value="../../../libextern/x265_2.5/build/linux/8bit/"/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
         <Library Value="avcodec"/>
