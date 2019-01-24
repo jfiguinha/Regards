@@ -25,8 +25,11 @@ mp4, dat, m4s, vob, mod, mpv2, mp2, m1v, mpe, mpg, mpeg, wtv, dvr-ms, m2ts, m2t,
 //**************************************************************************
 
 Linux Mint 18 or Ubuntu 16.04 x64 Installation
-- Decompress Zip file on a folder
-- Execute RegardsViewer.sh to install the application with all dependencies
+- Please check if you have an opencl compatibility device :
+Tape clinfo 
+- if it is not working please consult this website to install a driver :
+https://wiki.tiker.net/OpenCLHowTo
+- Run deb package
 
 Installation on Windows
 - Run RegardsViewer2Setup.exe
