@@ -26,8 +26,8 @@
 			<label>OpenCL Kernel in memory</label>
 			<style>wxRA_SPECIFY_COLS</style>
 			<content>
-				<item>Yes</item>
 				<item>No</item>
+				<item>Yes</item>
 			</content>
 			<default>-1</default>
 			<pos>20,150</pos>
