@@ -36,12 +36,12 @@ ObjectsFileList        :="libRegardsBpg_unix.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
 LinkOptions            := -Wl,-rpath,'$$ORIGIN' -Wl,-z,origin  -Os
-IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2  $(IncludeSwitch). $(IncludeSwitch)../ $(IncludeSwitch)../libbpg $(IncludeSwitch)../../../libextern/x265_2.5/source $(IncludeSwitch)../../../libextern/x265_2.5//build/linux/8bit/ $(IncludeSwitch)../../../libextern/dlib-19.7/dlib/external/libpng $(IncludeSwitch). 
+IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch)../ $(IncludeSwitch)../libbpg $(IncludeSwitch)../../../libextern/x265_2.5/source $(IncludeSwitch)../../../libextern/x265_2.5//build/linux/8bit/ $(IncludeSwitch)../../../libextern/dlib-19.7/dlib/external/libpng $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := $(LibrarySwitch)x265 $(LibrarySwitch)bpg $(LibrarySwitch)avcodec $(LibrarySwitch)avutil $(LibrarySwitch)gomp 
 ArLibs                 :=  "x265" "bpg" "avcodec" "avutil" "gomp" 
-LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk/  $(LibraryPathSwitch). $(LibraryPathSwitch)../../../libextern/x265_2.5/build/linux/8bit/ $(LibraryPathSwitch)../libbpg/Release $(LibraryPathSwitch)../libavutil/Release $(LibraryPathSwitch)../libavcodec/Release 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  $(LibraryPathSwitch). $(LibraryPathSwitch)../../../libextern/x265_2.5/build/linux/8bit/ $(LibraryPathSwitch)../libbpg/Release $(LibraryPathSwitch)../libavutil/Release $(LibraryPathSwitch)../libavcodec/Release 
 
 ##
 ## Common variables

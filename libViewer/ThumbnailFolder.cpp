@@ -70,6 +70,7 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
         {
             scrollV->SetPosition(0);
             scrollH->SetPosition(0);
+            InitScrollingPos();
         }
         else{
             if (!scrollV->IsMoving())

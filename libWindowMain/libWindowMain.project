@@ -50,6 +50,7 @@
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libextern/lOpenCL-Headers"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -313,7 +313,18 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	
     if (folderList.size() == 0)
     {
-        ShowOpenCLConfiguration(false);
+        wxString platformName = "";
+        CRegardsConfigParam * config = CParamInit::getInstance();
+        if (config != nullptr)
+        { 
+            platformName = config->GetOpenCLPlatformName();
+        }
+        
+        if(platformName == "")
+        {
+            ShowOpenCLConfiguration(false);
+            //Exit();
+        }
     }
 
 	if (fileToOpen != "")

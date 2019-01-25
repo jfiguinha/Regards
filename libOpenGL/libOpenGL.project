@@ -32,6 +32,7 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libextern/OpenCL-Headers"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

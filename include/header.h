@@ -22,3 +22,5 @@
 #include <cerrno>
 #include <sys/stat.h>
 using namespace std;
+
+#define CL_TARGET_OPENCL_VERSION 120

@@ -1,1 +1,1 @@
-./Release/GLSLShader.cpp.o ./Release/GLSLParameter.cpp.o ./Release/GLTexture.cpp.o ./Release/RenderOpenGL.cpp.o
+./Debug/GLSLShader.cpp.o ./Debug/GLSLParameter.cpp.o ./Debug/GLTexture.cpp.o ./Debug/RenderOpenGL.cpp.o

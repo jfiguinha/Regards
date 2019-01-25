@@ -87,6 +87,7 @@
         <IncludePath Value="../libExif"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libextern/OpenCL-Headers"/>
         <Preprocessor Value="EXIV2"/>
       </Compiler>
       <Linker Options="">
