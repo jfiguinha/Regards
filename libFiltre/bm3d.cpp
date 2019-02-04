@@ -17,13 +17,13 @@
  *
  * @author Marc Lebrun <marc.lebrun@cmla.ens-cachan.fr>
  **/
-
 #include <iostream>
+#include <algorithm>
 #include <math.h>
-
 #include "bm3d.h"
 #include "utilities.h"
 #include "lib_transforms.h"
+#include "fftw3.h"
 
 #define SQRT2     1.414213562373095
 #define SQRT2_INV 0.7071067811865475
@@ -187,9 +187,9 @@ int run_bm3d(
     }
 
     //! Allocate plan for FFTW library
-    fftwf_plan plan_2d_for_1[_nb_threads];
-    fftwf_plan plan_2d_for_2[_nb_threads];
-    fftwf_plan plan_2d_inv[_nb_threads];
+    fftwf_plan * plan_2d_for_1 = new fftwf_plan[_nb_threads];
+    fftwf_plan * plan_2d_for_2 = new fftwf_plan[_nb_threads];
+    fftwf_plan * plan_2d_inv = new fftwf_plan[_nb_threads];
 
     //! In the simple case
     if (_nb_threads == 1)
@@ -201,22 +201,25 @@ int run_bm3d(
         symetrize(img_noisy, img_sym_noisy, width, height, chnls, nHard);
 
         //! Allocating Plan for FFTW process
+        
         if (tau_2D_hard == DCT)
         {
+
             const unsigned nb_cols = ind_size(w_b - kHard + 1, nHard, pHard);
-            allocate_plan_2d(&plan_2d_for_1[0], kHard, FFTW_REDFT10,
-                                                        w_b * (2 * nHard + 1) * chnls);
-            allocate_plan_2d(&plan_2d_for_2[0], kHard, FFTW_REDFT10,
-                                                        w_b * pHard * chnls);
-            allocate_plan_2d(&plan_2d_inv  [0], kHard, FFTW_REDFT01,
-                                                        NHard * nb_cols * chnls);
+            allocate_plan_2d(&plan_2d_for_1[0], kHard, FFTW_REDFT10, w_b * (2 * nHard + 1) * chnls);
+            allocate_plan_2d(&plan_2d_for_2[0], kHard, FFTW_REDFT10, w_b * pHard * chnls);
+            allocate_plan_2d(&plan_2d_inv  [0], kHard, FFTW_REDFT01, NHard * nb_cols * chnls);
         }
+
 
         //! Denoising, 1st Step
         if (verbose) cout << "BM3D 1st step...";
+
+
         bm3d_1st_step(sigma, img_sym_noisy, img_sym_basic, w_b, h_b, chnls, nHard,
-                      kHard, NHard, pHard, useSD_h, color_space, tau_2D_hard,
-                      &plan_2d_for_1[0], &plan_2d_for_2[0], &plan_2d_inv[0]);
+                      kHard, NHard, pHard, useSD_h, color_space, tau_2D_hard
+                      ,&plan_2d_for_1[0], &plan_2d_for_2[0], &plan_2d_inv[0]);
+                        
         if (verbose) cout << "is done." << endl;
 
         //! To avoid boundaries problem
@@ -230,16 +233,14 @@ int run_bm3d(
         }
         symetrize(img_basic, img_sym_basic, width, height, chnls, nHard);
 
+
         //! Allocating Plan for FFTW process
         if (tau_2D_wien == DCT)
         {
             const unsigned nb_cols = ind_size(w_b - kWien + 1, nWien, pWien);
-            allocate_plan_2d(&plan_2d_for_1[0], kWien, FFTW_REDFT10,
-                                                        w_b * (2 * nWien + 1) * chnls);
-            allocate_plan_2d(&plan_2d_for_2[0], kWien, FFTW_REDFT10,
-                                                        w_b * pWien * chnls);
-            allocate_plan_2d(&plan_2d_inv  [0], kWien, FFTW_REDFT01,
-                                                        NWien * nb_cols * chnls);
+            allocate_plan_2d(&plan_2d_for_1[0], kWien, FFTW_REDFT10, w_b * (2 * nWien + 1) * chnls);
+            allocate_plan_2d(&plan_2d_for_2[0], kWien, FFTW_REDFT10, w_b * pWien * chnls);
+            allocate_plan_2d(&plan_2d_inv  [0], kWien, FFTW_REDFT01, NWien * nb_cols * chnls);
         }
 
         //! Denoising, 2nd Step
@@ -276,16 +277,15 @@ int run_bm3d(
             for (unsigned n = 0; n < _nb_threads; n++)
             {
                 const unsigned nb_cols = ind_size(w_table[n] - kHard + 1, nHard, pHard);
-                allocate_plan_2d(&plan_2d_for_1[n], kHard, FFTW_REDFT10,
-                                                w_table[n] * (2 * nHard + 1) * chnls);
-                allocate_plan_2d(&plan_2d_for_2[n], kHard, FFTW_REDFT10,
-                                                w_table[n] * pHard * chnls);
-                allocate_plan_2d(&plan_2d_inv  [n], kHard, FFTW_REDFT01,
-                                                NHard * nb_cols * chnls);
+                allocate_plan_2d(&plan_2d_for_1[n], kHard, FFTW_REDFT10, w_table[n] * (2 * nHard + 1) * chnls);
+                allocate_plan_2d(&plan_2d_for_2[n], kHard, FFTW_REDFT10, w_table[n] * pHard * chnls);
+                allocate_plan_2d(&plan_2d_inv  [n], kHard, FFTW_REDFT01, NHard * nb_cols * chnls);
             }
 
         //! denoising : 1st Step
-        if (verbose) cout << "BM3D 1st step...";
+        if (verbose) 
+            cout << "BM3D 1st step...";
+        
         #pragma omp parallel shared(sub_noisy, sub_basic, w_table, h_table, \
                                     plan_2d_for_1, plan_2d_for_2, plan_2d_inv)
         {
@@ -305,20 +305,16 @@ int run_bm3d(
 
         sub_divide(img_basic, sub_basic, w_table, h_table, width, height, chnls,
                                                                         2 * nHard, true);
-
         //! Allocating Plan for FFTW process
         if (tau_2D_wien == DCT)
             for (unsigned n = 0; n < _nb_threads; n++)
             {
                 const unsigned nb_cols = ind_size(w_table[n] - kWien + 1, nWien, pWien);
-                allocate_plan_2d(&plan_2d_for_1[n], kWien, FFTW_REDFT10,
-                                                w_table[n] * (2 * nWien + 1) * chnls);
-                allocate_plan_2d(&plan_2d_for_2[n], kWien, FFTW_REDFT10,
-                                                w_table[n] * pWien * chnls);
-                allocate_plan_2d(&plan_2d_inv  [n], kWien, FFTW_REDFT01,
-                                                NWien * nb_cols * chnls);
+                allocate_plan_2d(&plan_2d_for_1[n], kWien, FFTW_REDFT10, w_table[n] * (2 * nWien + 1) * chnls);
+                allocate_plan_2d(&plan_2d_for_2[n], kWien, FFTW_REDFT10, w_table[n] * pWien * chnls);
+                allocate_plan_2d(&plan_2d_inv  [n], kWien, FFTW_REDFT01, NWien * nb_cols * chnls);
             }
-
+            
         //! Denoising: 2nd Step
         if (verbose) cout << "BM3D 2nd step...";
         #pragma omp parallel shared(sub_noisy, sub_basic, sub_denoised,  w_table, \
@@ -350,6 +346,7 @@ int run_bm3d(
         != EXIT_SUCCESS) return EXIT_FAILURE;
 
     //! Free Memory
+
     if (tau_2D_hard == DCT || tau_2D_wien == DCT)
         for (unsigned n = 0; n < _nb_threads; n++)
         {
@@ -357,6 +354,11 @@ int run_bm3d(
             fftwf_destroy_plan(plan_2d_for_2[n]);
             fftwf_destroy_plan(plan_2d_inv[n]);
         }
+
+	delete[] plan_2d_for_1;
+	delete[] plan_2d_for_2;
+	delete[] plan_2d_inv;
+
     fftwf_cleanup();
 
     return EXIT_SUCCESS;
@@ -452,9 +454,9 @@ void bm3d_1st_step(
 
         //! Update of table_2D
         if (tau_2D == DCT)
-            dct_2d_process(table_2D, img_noisy, plan_2d_for_1, plan_2d_for_2, nHard,
-                           width, height, chnls, kHard, i_r, pHard, coef_norm,
-                           row_ind[0], row_ind.back());
+            dct_2d_process(table_2D, img_noisy, 
+            plan_2d_for_1, plan_2d_for_2, 
+            nHard, width, height, chnls, kHard, i_r, pHard, coef_norm, row_ind[0], row_ind.back());
         else if (tau_2D == BIOR)
             bior_2d_process(table_2D, img_noisy, nHard, width, height, chnls,
                         kHard, i_r, pHard, row_ind[0], row_ind.back(), lpd, hpd);
@@ -508,7 +510,7 @@ void bm3d_1st_step(
         //!  Apply 2D inverse transform
         if (tau_2D == DCT)
             dct_2d_inverse(group_3D_table, kHard, NHard * chnls * column_ind.size(),
-                           coef_norm_inv, plan_2d_inv);
+                           coef_norm_inv ,plan_2d_inv);
         else if (tau_2D == BIOR)
             bior_2d_inverse(group_3D_table, kHard, lpr, hpr);
 
@@ -639,10 +641,12 @@ void bm3d_2nd_step(
         //! Update of DCT_table_2D
         if (tau_2D == DCT)
         {
-            dct_2d_process(table_2D_img, img_noisy, plan_2d_for_1, plan_2d_for_2,
+            dct_2d_process(table_2D_img, img_noisy, 
+                           plan_2d_for_1, plan_2d_for_2,
                            nWien, width, height, chnls, kWien, i_r, pWien, coef_norm,
                            row_ind[0], row_ind.back());
-            dct_2d_process(table_2D_est, img_basic, plan_2d_for_1, plan_2d_for_2,
+            dct_2d_process(table_2D_est, img_basic, 
+                           plan_2d_for_1, plan_2d_for_2,
                            nWien, width, height, chnls, kWien, i_r, pWien, coef_norm,
                            row_ind[0], row_ind.back());
         }
@@ -706,8 +710,7 @@ void bm3d_2nd_step(
 
         //!  Apply 2D dct inverse
         if (tau_2D == DCT)
-            dct_2d_inverse(group_3D_table, kWien, NWien * chnls * column_ind.size(),
-                           coef_norm_inv, plan_2d_inv);
+            dct_2d_inverse(group_3D_table, kWien, NWien * chnls * column_ind.size(), coef_norm_inv ,plan_2d_inv);
         else if (tau_2D == BIOR)
             bior_2d_inverse(group_3D_table, kWien, lpr, hpr);
 
@@ -1143,7 +1146,7 @@ void dct_2d_inverse(
 
     //! Free Memory
     fftwf_free(vec);
-}
+ }
 
 void bior_2d_inverse(
     vector<float> &group_3D_table

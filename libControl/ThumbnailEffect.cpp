@@ -261,6 +261,17 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 			thumbnailData->SetNumPhotoId(numEffect);
 			switch (numEffect)
 			{
+                case IDM_FILTER_BM3D:
+                {
+					CRegardsBitmap * pBitmap = loadingResource.LoadRegardsBmpResource("IDB_FILTRE_BM3D");
+					thumbnailData->SetFilename(CFiltreData::GetFilterLabel(numEffect));
+					infosSeparationConvolutionEffect->AddPhotoToList(numElement);
+                    CImageLoadingFormat image;
+                    image.SetPicture(pBitmap, true);
+                    thumbnailData->SetBitmap(&image); 
+                    break;
+                }
+                
 				case IDM_REDEYE:
 				{
 					CRegardsBitmap * pBitmap = loadingResource.LoadRegardsBmpResource("IDB_REDEYE");
@@ -379,7 +390,7 @@ void CThumbnailEffect::LoadPicture(void * param)
     {
         thumbnail.SetPicture(bitmap);  
         CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, &thumbnail);
+        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, nullptr, &thumbnail);
 
         switch (threadLoadingBitmap->thumbnailData->GetNumPhotoId())
         {

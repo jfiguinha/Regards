@@ -119,6 +119,8 @@ CEffectParameter * CBitmapWndViewer::GetParameter()
 
 void CBitmapWndViewer::UpdateFiltre(CEffectParameter * effectParameter)
 {
+    renderFilterUpdate = true;
+    updateFilter = true;
     RefreshWindow();
 }
 
@@ -277,6 +279,8 @@ CBitmapWndViewer::~CBitmapWndViewer()
 
 void CBitmapWndViewer::AfterSetBitmap()
 {
+    renderFilterUpdate = true;
+    updateFilter = true;
 	preview = PREVIEW_NONE;
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
@@ -450,7 +454,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 					{
                         CImageLoadingFormat image;
                         image.SetPicture(bitmap);                        
-                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
 						wxPoint pt;
 						m_cDessin->GetPoint(pt);
 						CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
@@ -475,7 +479,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 						{
                             CImageLoadingFormat image;
                             image.SetPicture(bitmap);                        
-                            CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+                            CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
 							
                             wxPoint pt;
 							m_cDessin->GetPoint(pt);
@@ -523,7 +527,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 					{
                         CImageLoadingFormat image;
                         image.SetPicture(bitmap);                        
-                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
 						wxRect rc;
 						wxRect rect;
 						m_cDessin->GetPos(rc);
@@ -599,7 +603,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 							{
                                 CImageLoadingFormat image;
                                 image.SetPicture(bitmap);                        
-                                CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+                                CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
 								filtre->RenderEffect(effect, effectParameter);
 
                                 CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
@@ -766,8 +770,7 @@ bool CBitmapWndViewer::NeedAfterRenderBitmap()
 
 void CBitmapWndViewer::ApplyPreviewEffect()
 {
-	//renderOpenGL->ApplyPreviewEffect(x,y, preview, effectParameter);
-	filtreEffet->RenderEffectPreview(preview, effectParameter);
+    filtreEffet->RenderEffectPreview(preview, effectParameter);
 }
 
 int CBitmapWndViewer::GetRawBitmapWidth()
@@ -818,7 +821,7 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 					if(filtreraw != nullptr)
                         delete filtreraw;
                     
-                    filtreraw = new CFiltreEffet(color, openclContext, picture);
+                    filtreraw = new CFiltreEffet(color, this, openclContext, picture);
                     
 					rawWidth = picture->GetWidth();
 					rawHeight = picture->GetHeight();
@@ -846,15 +849,31 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 				render = filtreraw->GetwxImage();
 			}
 		}
-		else if (CFiltreData::NeedPreview(preview))
+		else if (CFiltreData::NeedPreview(preview) && updateFilter)
 		{
-			int widthOutput = int(GetBitmapWidthWithRatio());
-			int heightOutput = int(GetBitmapHeightWithRatio());
-			this->GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+            updateFilter = false;
+            int widthOutput = int(GetBitmapWidthWithRatio());
+            int heightOutput = int(GetBitmapHeightWithRatio());
             
-            CImageLoadingFormat newbitmap;
-            newbitmap.SetPicture(filtreEffet->GetBitmap(false));
-			renderPreviewBitmap->SetNewBitmap(&newbitmap, nullptr);
+            if(CFiltreData::NeedOriginalPreview(preview))
+            {
+                if(renderFilterUpdate)
+                {
+                    CImageLoadingFormat newbitmap;
+                    newbitmap.SetPicture(source->GetRegardsBitmap(true));
+                    renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);  
+                }
+            }
+            else
+            {
+
+                this->GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+                
+                CImageLoadingFormat newbitmap;
+                newbitmap.SetPicture(filtreEffet->GetBitmap(false));
+                renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);                
+            }
+
 
 			switch (preview)
 			{
@@ -936,13 +955,26 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 				break;
 
 				default:
-					renderPreviewBitmap->RenderEffect(preview, effectParameter);
+                    if(CFiltreData::NeedOriginalPreview(preview) && renderFilterUpdate)
+					{
+                        renderPreviewBitmap->RenderEffect(preview, effectParameter);
+                        renderFilterUpdate = false;
+                    }
 					break;
 
 			}
-
+            
+             if(CFiltreData::NeedOriginalPreview(preview))
+             {
+                 this->GenerateScreenBitmap(renderPreviewBitmap->GetFiltre(), widthOutput, heightOutput);
+             }
+            
 			render = renderPreviewBitmap->GetRender();
 		}
+        else
+        {
+            render = renderPreviewBitmap->GetLastRender();
+        }
 	}
 
 	return render;
@@ -1116,7 +1148,7 @@ void CBitmapWndViewer::AfterRenderBitmap(wxDC * deviceContext)
 			if (!(renderNext.GetWidth() == widthOutput && renderNext.GetHeight() == heightOutput))
 			{
 				CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
-				CFiltreEffet filtreEffet(backColor, openclContext, nextPicture);
+				CFiltreEffet filtreEffet(backColor, this, openclContext, nextPicture);
 				filtreEffet.Interpolation(widthOutput, heightOutput, 0, 0, 0, 0);
 				renderNext = filtreEffet.GetwxImage();
 				int size = width*height;
@@ -1230,6 +1262,7 @@ void CBitmapWndViewer::KeyPress(const int &key)
 		if (preview == IDM_CROP)
 		{
 			preview = PREVIEW_NONE;
+            updateFilter = true;
             RefreshWindow();
 		}
 	}
@@ -1245,9 +1278,10 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		else
 		{
 			m_cDessin->MouseMove(xPos, yPos, posLargeur, posHauteur, ratio);
+            
 			RefreshWindow();
 		}
-
+        updateFilter = true;
 		
 	}
 	else if (preview == IDM_FILTRELENSFLARE || preview == IDM_WAVE_EFFECT)
@@ -1255,6 +1289,7 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		if (mouseBlock)
 		{
 			m_cDessin->MouseMove(xPos, yPos, posLargeur, posHauteur, ratio);
+            updateFilter = true;
 			RefreshWindow();
 		}
 	}
@@ -1277,7 +1312,7 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 		}
-
+        
 	}
 
 

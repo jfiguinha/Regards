@@ -2,6 +2,7 @@
 #define BM3D_H_INCLUDED
 
 #include <fftw3.h>
+#include <vector>
 
 #ifdef _OPENMP
     #include <omp.h>

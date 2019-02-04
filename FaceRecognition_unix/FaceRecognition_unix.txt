@@ -1,1 +1,1 @@
-./Release/up_FaceRecognition_FaceRecognition.cpp.o
+./Debug/up_FaceRecognition_FaceRecognition.cpp.o

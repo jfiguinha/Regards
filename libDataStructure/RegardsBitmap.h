@@ -8,6 +8,8 @@
 #define SIZE_PATH 1024
 
 
+
+
 class CRegardsBitmap
 {
 public:
@@ -46,7 +48,7 @@ public:
 	wxString GetFilename();
 	void SetFilename(const wxString & szFilename);
 
-    CRgbaquad GetColorValue(const int &x, const int &y) const;
+    CRgbaquad GetColorValue(const int &x, const int &y);
 	CRgbaquad * GetPtColorValue(const int &x, const int &y);
 	void SetColorValue(const int &x, const int &y, const CRgbaquad &color);
     void SetAlphaValue(const int &value);
@@ -62,7 +64,7 @@ public:
 	const int GetBitmapHeight();
 	const short GetBitmapDepth();
 	void ConvertToBgr();
-	inline int GetPosition(const int &x, const int &y) const;
+    int GetPosition(const int &x, const int &y);
 
 	//Crop
 	CRegardsBitmap * CropBitmap(const int &xPos, const int &yPos, const int &width, const int &height);

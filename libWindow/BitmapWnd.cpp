@@ -256,6 +256,7 @@ void CBitmapWnd::SetKey(const int &iKey)
 	{
 		case MOVEPICTURE:
 		{
+            
 			if(iKey == WXK_CONTROL)
 				wxSetCursor(hCursorZoomIn);
 			else
@@ -414,6 +415,8 @@ void CBitmapWnd::ZoomOn()
 
 	CalculPositionPicture(centerX, centerY);
 
+    updateFilter = true;
+
 	bool update;
 	UpdateScrollBar(update);
 
@@ -501,6 +504,8 @@ void CBitmapWnd::ZoomOut()
 
 	CalculPositionPicture(centerX, centerY);
 
+    updateFilter = true;
+    
 	bool update;
 	UpdateScrollBar(update);
 
@@ -524,6 +529,8 @@ void CBitmapWnd::ShrinkImage(const bool &redraw)
 	posHauteur = 0;
 	centerX = float(GetBitmapWidth()) / 2.0f;
 	centerY = float(GetBitmapHeight()) / 2.0f;
+
+    updateFilter = true;
 
 	bool update;
 	UpdateScrollBar(update);
@@ -790,6 +797,7 @@ void CBitmapWnd::FlipVertical()
 		flipVertical = 0;
 	else
 		flipVertical = 1;
+    updateFilter = true;
     RefreshWindow();
 }
 
@@ -798,6 +806,7 @@ void CBitmapWnd::Rotate90()
     TRACE();
 	angle += 90;
 	angle = angle % 360;
+    updateFilter = true;
     UpdateResized();
     RefreshWindow();
 }
@@ -807,6 +816,7 @@ void CBitmapWnd::Rotate270()
     TRACE();
 	angle += 270;
 	angle = angle % 360;
+    updateFilter = true;
     UpdateResized();
     RefreshWindow();
 }
@@ -818,7 +828,7 @@ void CBitmapWnd::FlipHorizontal()
 		flipHorizontal = 0;
 	else
 		flipHorizontal = 1;
-
+    updateFilter = true;
     RefreshWindow();
 }
 
@@ -931,6 +941,7 @@ void CBitmapWnd::OnKeyUp(wxKeyEvent& event)
 {
     TRACE();
 	SetKey(0);
+    
 }
 
 void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
@@ -941,15 +952,19 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 	switch (event.GetKeyCode())
 	{
 	case WXK_UP:
+        updateFilter = true;
 		this->MoveTop();
 		break;
 	case WXK_LEFT:
+        updateFilter = true;
 		this->MoveLeft();
 		break;
 	case WXK_DOWN:
+        updateFilter = true;
 		this->MoveBottom();
 		break;
 	case WXK_RIGHT:
+        updateFilter = true;
 		this->MoveRight();
 		break;
 
@@ -1027,6 +1042,7 @@ void CBitmapWnd::OnSize(wxSizeEvent& event)
 		height = _height * scale_factor;        
 		//width = _width;
 		//height = _height;
+        updateFilter = true;
         UpdateResized();
         Resize();
 	}
@@ -1073,7 +1089,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 #endif
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-
+    
 	switch(toolOption)
 	{
 		case MOVEPICTURE:
@@ -1104,6 +1120,8 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 					OutputDebugString(message);
 #endif
 
+                    updateFilter = true;
+                    
 					if (update)
                     {
                         RefreshWindow();
@@ -1445,7 +1463,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             if(filtreEffet != nullptr)
                 delete filtreEffet;               
             
-            filtreEffet = new CFiltreEffet(color, openclContext, source);
+            filtreEffet = new CFiltreEffet(color, this, openclContext, source);
         }
         
 
@@ -1583,7 +1601,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             CImageLoadingFormat imageLoadingFormat(false);
             wxImage renderImage = test_bitmap.ConvertToImage();
             imageLoadingFormat.SetPicture(&renderImage);
-            CFiltreEffet _filtreEffet(color, openclContext, &imageLoadingFormat);
+            CFiltreEffet _filtreEffet(color, this, openclContext, &imageLoadingFormat);
 
             if(openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
             {

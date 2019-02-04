@@ -1,20 +1,18 @@
 #ifndef UTILITIES_H_INCLUDED
 #define UTILITIES_H_INCLUDED
 
+#include <vector>
 #include <fftw3.h>
-
-class CRegardsFloatBitmap;
 
 //! Read image and check number of channels
 int load_image(
-    CRegardsFloatBitmap * pictureSource
+    char* name
 ,   std::vector<float> &img
 ,   unsigned * width
 ,   unsigned * height
 ,   unsigned * chnls
 );
 
-/*
 //! Write image
 int save_image(
     char* name
@@ -23,7 +21,7 @@ int save_image(
 ,   const unsigned height
 ,   const unsigned chnls
 );
-*/
+
 //! Check if a number is a power of 2
 bool power_of_2(
     const unsigned n
@@ -105,6 +103,7 @@ unsigned ind_size(
 ,   const unsigned N
 ,   const unsigned step
 );
+
 
 //! Initialize a 2D fftwf_plan with some parameters
 void allocate_plan_2d(

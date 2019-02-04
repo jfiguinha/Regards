@@ -65,8 +65,6 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id,
         viewerTheme->GetBitmapWindowTheme(&themeBitmap);
 
 
-
-
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, statusBarInterface, viewerTheme);
 	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);

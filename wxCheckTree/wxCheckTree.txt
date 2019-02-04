@@ -1,1 +1,1 @@
-./Release/checktree.cpp.o ./Release/directoryctrl.cpp.o
+./Debug/checktree.cpp.o ./Debug/directoryctrl.cpp.o

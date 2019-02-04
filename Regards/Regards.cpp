@@ -436,6 +436,7 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\MoveFace.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PertinenceValue.xrc");
     wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\IndexGenerator.xrc");
+    wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\bm3d.xrc");
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ConfigRegards.xrc");
@@ -454,6 +455,7 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/MoveFace.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PertinenceValue.xrc");
     wxXmlResource::Get()->Load(resourcePath + numIdLang + "/IndexGenerator.xrc");
+    wxXmlResource::Get()->Load(resourcePath + numIdLang + "/bm3d.xrc");
 #endif
     
      

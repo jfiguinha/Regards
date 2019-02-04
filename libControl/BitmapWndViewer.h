@@ -114,6 +114,7 @@ namespace Regards
 			CFiltreEffet * filtreraw;
 			int rawWidth;
 			int rawHeight;
+            int renderFilterUpdate = true;
 		};
 	}
 }

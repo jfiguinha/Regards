@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libFiltre" InternalType="Library" Version="10.0.0">
+  <VirtualDirectory Name="Dialog">
+    <File Name="Bm3dDlg.h"/>
+    <File Name="Bm3dDlg.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -27,6 +31,8 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="bm3d">
+    <File Name="bm3dfilter.h"/>
+    <File Name="bm3dfilter.cpp"/>
     <File Name="utilities.h"/>
     <File Name="utilities.cpp"/>
     <File Name="lib_transforms.h"/>
@@ -86,6 +92,7 @@
       <File Name="FilterWindowParam.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="data structure">
+      <File Name="bm3dEffectParameter.h"/>
       <File Name="BestExposureEffectParameter.h"/>
       <File Name="KuwaharaEffectParameter.h"/>
       <File Name="WaveEffectParameter.h"/>
@@ -122,6 +129,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="bm3dWindowFilter.h"/>
+      <File Name="bm3dWindowFilter.cpp"/>
       <File Name="KuwaharaFilter.h"/>
       <File Name="KuwaharaFilter.cpp"/>
       <File Name="BestExposureFilter.h"/>
@@ -170,6 +179,7 @@
       <File Name="FilterData.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="MultiThreadFiltre.h"/>
       <File Name="IFiltreEffet.h"/>
       <File Name="FiltreEffetCPU.h"/>
       <File Name="FiltreEffet.h"/>

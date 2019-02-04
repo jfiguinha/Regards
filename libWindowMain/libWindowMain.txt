@@ -1,1 +1,1 @@
-./Release/WindowUtility.cpp.o ./Release/Tracing.cpp.o ./Release/MasterWindow.cpp.o
+./Debug/WindowUtility.cpp.o ./Debug/Tracing.cpp.o ./Debug/MasterWindow.cpp.o

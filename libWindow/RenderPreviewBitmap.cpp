@@ -36,7 +36,7 @@ CRenderPreviewBitmap::~CRenderPreviewBitmap()
      * */
 }
 
-void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, COpenCLContext * openclContext)
+void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, wxWindow * parent, COpenCLContext * openclContext)
 {
 
 
@@ -54,7 +54,7 @@ void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, COpenCL
             delete filtre;
         pictureWidth = newbitmap->GetWidth();
         pictureHeight =newbitmap->GetHeight();
-        filtre = new CFiltreEffet(colorBackground, openclContext, newbitmap);       
+        filtre = new CFiltreEffet(colorBackground, parent, openclContext, newbitmap);       
     }
 
 	//filtre->SetBitmap(newbitmap, 0);
@@ -62,7 +62,13 @@ void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, COpenCL
 
 wxImage CRenderPreviewBitmap::GetRender()
 {
-	return filtre->GetwxImage();
+	lastRender = filtre->GetwxImage();
+    return lastRender;
+}
+
+wxImage CRenderPreviewBitmap::GetLastRender()
+{
+    return lastRender;
 }
 
 void CRenderPreviewBitmap::RenderEffect(const int &numEffect, CEffectParameter * effectParameter)
@@ -73,6 +79,11 @@ void CRenderPreviewBitmap::RenderEffect(const int &numEffect, CEffectParameter *
 void CRenderPreviewBitmap::RotateFree(const int &angle)
 {
 	filtre->RotateFree(angle);
+}
+
+CFiltreEffet * CRenderPreviewBitmap::GetFiltre()
+{
+    return filtre;
 }
 
 void CRenderPreviewBitmap::MotionBlur(const double &radius, const double &sigma, const double &angle)

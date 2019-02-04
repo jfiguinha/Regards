@@ -51,6 +51,7 @@
     <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="StatusText.h"/>
     <File Name="RegardsJpegPicture.h"/>
     <File Name="Catalog.h"/>
     <File Name="Country.h"/>

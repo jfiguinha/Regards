@@ -63,7 +63,8 @@ class CEffectParameter;
 #define IDM_FILTER_KUWAHARA 42
 #define IDM_FILTER_BILATERAL2DS 43
 #define IDM_HDR_DEBLURRING 44
-#define FILTER_END 43
+#define IDM_FILTER_BM3D 45
+#define FILTER_END 46
 
 #define IDM_DECODE_RAW 100
 #define IDM_FILTRE_VIDEO 200
@@ -101,6 +102,7 @@ public:
     static CEffectParameter * GetEffectPointer(const int &numItem);
     static int GetTypeEffect(const int &numFilter);
     static bool NeedPreview(const int &numFilter);
+    static bool NeedOriginalPreview(const int &numFilter);
     static bool IsOpenCLPreviewCompatible(const int &numFilter);
 	static bool IsOpenCLCompatible(const int &numFilter);
     static bool IsPiccanteCompatible(const int &numFilter);

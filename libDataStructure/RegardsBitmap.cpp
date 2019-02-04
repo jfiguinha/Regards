@@ -575,7 +575,7 @@ const short CRegardsBitmap::GetBitmapDepth()
 	return m_sDepth;
 }
 
-int CRegardsBitmap::GetPosition(const int &x, const int &y) const
+int CRegardsBitmap::GetPosition(const int &x, const int &y)
 {
 	return (x << 2) + (y * (m_iWidth << 2));
 }
@@ -596,7 +596,7 @@ wxString CRegardsBitmap::GetFilename()
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-CRgbaquad CRegardsBitmap::GetColorValue(const int &x, const int &y) const
+CRgbaquad CRegardsBitmap::GetColorValue(const int &x, const int &y)
 {
 	//CRgbaquad color = COLOR_RGBA_BLACK;
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)

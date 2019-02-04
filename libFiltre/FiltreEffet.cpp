@@ -5,7 +5,7 @@
 #include "InterpolationBicubic.h"
 #include <DecodeRawPicture.h>
 #include <LibResource.h>
-
+#include "Bm3dDlg.h"
 #include "Rotate.h"
 #include "RedEye.h"
 #include <FilterData.h>
@@ -22,18 +22,9 @@
 #endif
 
 //BM3D
-#include "utilities.h"
-#include "bm3d.h"
-#include <time.h>
+#include "bm3dfilter.h"
 
-#define YUV       0
-#define YCBCR     1
-#define OPP       2
-#define RGB       3
-#define DCT       4
-#define BIOR      5
-#define HADAMARD  6
-#define NONE      7
+extern float value[256];
 
 using namespace Regards::FiltreEffet;
 using namespace std;
@@ -91,87 +82,28 @@ int CFiltreEffet::FilterKuwahara(const int &kernelSize)
     return 0;     
 }
 
-int CFiltreEffet::bm3d()
+int CFiltreEffet::bm3d(const int & fSize)
 {
-        CRegardsFloatBitmap * pictureSource = filtreEffet->GetFloatBitmap(true);
-        vector<float> img_noisy, img_basic, img_denoised;
-        unsigned width, height, chnls;
+    CRegardsBitmap * pictureSource = filtreEffet->GetBitmap(true);
+    
+    CBm3DFilter * bm3dFilter = new CBm3DFilter(pictureSource, value[fSize]);
+    //bm3dFilter.ExecuteFilter(pictureSource, parent, value[fSize]);
 
-        const char *_tau_2D_hard = "bior";
-        const char *_tau_2D_wien = "dct";
-        const char *_color_space = "rgb";
-        const char *_patch_size = "0"; // >0: overrides default
-        const char *_nb_threads = "0";
-        const bool useSD_1 = 1;//pick_option(&argc, argv, "useSD_hard", NULL) != NULL;
-        const bool useSD_2 = 1;//pick_option(&argc, argv, "useSD_wien", NULL) != NULL;
-        const bool verbose = true;//pick_option(&argc, argv, "verbose", NULL) != NULL;
+    
+    CBm3dDlg bm3dDlg(parent, bm3dFilter);
+    bm3dDlg.ShowModal();
+    
+    delete bm3dFilter;
+    
+    if(!bm3dDlg.IsProcessCancel())
+    {
+        cout << "Process is OK" << endl;
+        CImageLoadingFormat imageLoadFormat(true);
+        imageLoadFormat.SetPicture(pictureSource);
+        filtreEffet->SetBitmap(&imageLoadFormat);          
+    }
 
-        clock_t tStart = clock();
-        
-        //! Check parameters
-        const unsigned tau_2D_hard  = (strcmp(_tau_2D_hard, "dct" ) == 0 ? DCT :
-                                     (strcmp(_tau_2D_hard, "bior") == 0 ? BIOR : NONE));
-        if (tau_2D_hard == NONE)
-        {
-            cout << "tau_2d_hard is not known." << endl;
-            return 0;
-        }
-        
-        const unsigned tau_2D_wien  = (strcmp(_tau_2D_wien, "dct" ) == 0 ? DCT :
-                                     (strcmp(_tau_2D_wien, "bior") == 0 ? BIOR : NONE));
-        if (tau_2D_wien == NONE) {
-            cout << "tau_2d_wien is not known." << endl;
-             return 0;
-        }
-        
-        const unsigned color_space  = (strcmp(_color_space, "rgb"  ) == 0 ? RGB   :
-                                     (strcmp(_color_space, "yuv"  ) == 0 ? YUV   :
-                                     (strcmp(_color_space, "ycbcr") == 0 ? YCBCR :
-                                     (strcmp(_color_space, "opp"  ) == 0 ? OPP   : NONE))));
-        if (color_space == NONE) {
-            cout << "color_space is not known." << endl;
-            return 0;
-        }
-
-        const int patch_size = atoi(_patch_size);
-        if (patch_size < 0)
-        {
-          cout << "The patch_size parameter must not be negative." << endl;
-          return 0;
-        } 
-        else 
-        {
-            const unsigned patch_size = (unsigned) patch_size;
-        }
-        
-        const int nb_threads = atoi(_nb_threads);
-        if (nb_threads < 0)
-        {
-            cout << "The nb_threads parameter must not be negative." << endl;
-           return 0;
-        } 
-        else 
-        {
-            const unsigned nb_threads = (unsigned) nb_threads;
-        }
-        
-        //! Load image
-        bool returnValue = load_image(pictureSource, img_noisy, &width, &height, &chnls);           
-        
-        float fSigma = 10;//atof(argv[2]);
-
-       //! Denoising
-       if (run_bm3d(fSigma, img_noisy, img_basic, img_denoised, width, height, chnls,
-                     useSD_1, useSD_2, tau_2D_hard, tau_2D_wien, color_space, patch_size,
-                     nb_threads, verbose)
-            != EXIT_SUCCESS)
-            return 0;
-
-       //! save noisy, denoised and differences images
-       cout << endl << "Save images...";        
-       printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);   
-       
-
+    return 0; 
 }
 
 int CFiltreEffet::BestExposure(const float &tmoValue)
@@ -221,8 +153,9 @@ int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * e
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, wxWindow * parent, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)
 {
+    this->parent = parent;
 	filtreEffet = nullptr;
     this->backColor = backColor;
     this->numLib = LIBCPU;

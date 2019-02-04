@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <RgbEffectParameter.h>
 #include <BrightAndContrastEffectParameter.h>
+#include <bm3dEffectParameter.h>
 #include <CloudsEffectParameter.h>
 #include <FreeRotateEffectParameter.h>
 #include <MotionBlurEffectParameter.h>
@@ -29,6 +30,7 @@
 #include "BilateralEffectParameter.h"
 #include "DecodeRawParameter.h"
 #include "NlmeansEffectParameter.h"
+#include "bm3dWindowFilter.h"
 #include "ClaheEffectParameter.h"
 #include "KuwaharaEffectParameter.h"
 #include "BestExposureEffectParameter.h"
@@ -59,6 +61,17 @@ vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
 CFiltreData::CFiltreData(){}
 CFiltreData::~CFiltreData(){}
+
+
+bool CFiltreData::NeedOriginalPreview(const int &numFilter)
+{
+    switch (numFilter)
+    {
+        case IDM_FILTER_BM3D:
+            return true;
+    }
+    return false;
+}
 
 int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview)
 {
@@ -264,6 +277,15 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
 			}
 		}
 		break;
+        
+        case IDM_FILTER_BM3D:
+			if (effectParameter != nullptr)
+			{
+				CBm3dEffectParameter * bm3dParameter = (CBm3dEffectParameter *)effectParameter;
+				filtreEffet->bm3d(bm3dParameter->fSize);
+                return 1;
+			}
+            break;
 
         case IDM_FILTRE_ERODE:
             filtreEffet->Erode();
@@ -363,6 +385,10 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
         
     case IDM_BEST_EXPOSURE:
         filterEffect = new CBestExposureFilter();
+        break;
+        
+    case IDM_FILTER_BM3D:
+        filterEffect = new CBm3dWindowFilter();
         break;
 
 	case IDM_SHARPENMASKING:
@@ -478,7 +504,8 @@ bool CFiltreData::IsPiccanteCompatible(const int &numFilter)
 bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {
 	switch(numFilter)
-	{       
+	{   
+        case IDM_FILTER_BM3D:
 		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
@@ -500,6 +527,7 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{
+        case IDM_FILTER_BM3D:
         case IDM_FILTER_KUWAHARA:
         case IDM_HDR_DEBLURRING:
         case IDM_FILTER_BILATERAL2DS:
@@ -525,6 +553,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
     {
 		case IDM_CROP:
 		case IDM_REDEYE:
+        case IDM_FILTER_BM3D:
 		case IDM_FILTRE_BILATERAL:
 		case IDM_FILTRE_NLMEAN:
 		case IDM_FILTRE_CLAHE:
@@ -562,6 +591,7 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
         case IDM_BEST_EXPOSURE:
             return HDR_EFFECT;
             //Convolution
+        case IDM_FILTER_BM3D:
 		case IDM_FILTRE_BILATERAL:
 		case IDM_FILTRE_NLMEAN:	
         case IDM_FILTRE_MOTIONBLUR:
@@ -665,6 +695,10 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 			return new CSharpenMaskingEffectParameter();
 			break;
             
+        case IDM_FILTER_BM3D:
+            return new CBm3dEffectParameter();
+            break;
+            
         case IDM_BEST_EXPOSURE:
             return new CBestExposureEffectParameter();
             break;
@@ -695,6 +729,7 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
 {
     switch (numFiltre)
     {
+        case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:
         case IDM_FILTRE_CLAHE:
@@ -826,6 +861,14 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 			break;
 		}
         
+        case IDM_FILTER_BM3D:
+        {
+            CBm3dEffectParameter * bm3dParameter = new CBm3dEffectParameter();
+            bm3dParameter->fSize = 25;
+            return bm3dParameter;
+            break;
+        }
+        
         case IDM_BEST_EXPOSURE:
         {
             CBestExposureEffectParameter * exposure = new CBestExposureEffectParameter();
@@ -878,6 +921,7 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
         case IDM_REDEYE:
             return 1;
 
+        case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:
         case IDM_FILTRE_CLAHE:
@@ -966,5 +1010,6 @@ void CFiltreData::InitFilterListLabel()
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HDR_DEBLURRING, "LBLHDRDEBLURRINGFILTER"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_KUWAHARA, "LBLFILTERKUWAHARA"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
+    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
     
 }

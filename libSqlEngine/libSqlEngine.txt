@@ -1,1 +1,1 @@
-./Release/SqlExecuteRequest.cpp.o ./Release/SqlLib.cpp.o ./Release/SqlResult.cpp.o ./Release/SqlEngine.cpp.o
+./Debug/SqlExecuteRequest.cpp.o ./Debug/SqlLib.cpp.o ./Debug/SqlResult.cpp.o ./Debug/SqlEngine.cpp.o

@@ -230,6 +230,7 @@ namespace Regards
 			void OnSetRangeProgressBar(wxCommandEvent& event);
 			void OnSetValueProgressBar(wxCommandEvent& event);
 
+            
 			void InitPictures(wxCommandEvent& event);
 			void PictureClick(wxCommandEvent& event);
 			void PictureClickMove(wxCommandEvent& event);

@@ -1,6 +1,8 @@
 #ifndef LIB_TRANSFORMS_INCLUDED
 #define LIB_TRANSFORMS_INCLUDED
 
+#include<vector>
+
 //! Compute a Bior1.5 2D
 void bior_2d_forward(
     std::vector<float> const& input

@@ -39,6 +39,7 @@
 #include <SqlFindFacePhoto.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>
+#include <StatusText.h>
 #include <jpge.h>
 using namespace jpge;
 using namespace Regards::Viewer;
@@ -66,23 +67,7 @@ public:
 	CMainWindow * mainWindow;
 };
 
-class CStatusText
-{
-public:
 
-	CStatusText()
-	{
-		position = 0;
-		text = "";
-	}
-
-	~CStatusText()
-	{
-	}
-
-	int position;
-	wxString text;
-};
 
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
@@ -419,10 +404,13 @@ void CMainWindow::OnStatusSetText(wxCommandEvent& event)
 	}
 }
 
+
 void CMainWindow::OnSetValueProgressBar(wxCommandEvent& event)
 {
     TRACE();
+    
 	int position = event.GetInt();
+    cout << "OnSetValueProgressBar Pos : " << position << endl;
 	if (progressBar != nullptr)
     {
         if(progressBar->GetRange() > 0)
@@ -432,6 +420,7 @@ void CMainWindow::OnSetValueProgressBar(wxCommandEvent& event)
             else
                 progressBar->SetValue(position);
         
+            progressBar->Refresh();
         }
         
     }
@@ -441,6 +430,7 @@ void CMainWindow::OnSetRangeProgressBar(wxCommandEvent& event)
 {
     TRACE();
 	int range = event.GetInt();
+    cout << "OnSetRangeProgressBar Pos : " << range << endl;
 	if (progressBar != nullptr)
 		progressBar->SetRange(range);
 }

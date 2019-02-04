@@ -18,9 +18,13 @@
  * @author Marc Lebrun <marc.lebrun@cmla.ens-cachan.fr>
  **/
 
-#include <ImageLoadingFormat.h>
-#include <RegardsFloatBitmap.h>
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+
 #include "utilities.h"
+
 
 #define YUV       0
 #define YCBCR     1
@@ -29,100 +33,6 @@
 
  using namespace std;
 
- /**
-  * @brief Load image, check the number of channels
-  *
-  * @param name : name of the image to read
-  * @param img : vector which will contain the image : R, G and B concatenated
-  * @param width, height, chnls : size of the image
-  *
-  * @return EXIT_SUCCESS if the image has been loaded, EXIT_FAILURE otherwise
-  **/
-int load_image(
-    CRegardsFloatBitmap * pictureSource
-,   vector<float> &img
-,   unsigned * width
-,   unsigned * height
-,   unsigned * chnls
-){
-    //! read input image
-	cout << endl << "Read input image...";
-	size_t h, w, c;
-   int ih, iw, ic;
-    float * tmp;
-   //tmp = iio_read_image_float_split(name, &iw, &ih, &ic);
-   tmp = pictureSource->GetData();
-   iw = pictureSource->GetWidth();
-   ih = pictureSource->GetHeight();
-   ic = 4;
-   
-   w=iw; h=ih; c=ic;
-	if (!tmp)
-	{
-		cout << "error :: not found or not a correct image" << endl;
-		return EXIT_FAILURE;
-	}
-	cout << "done." << endl;
-
-	//! test if image is really a color image and exclude the alpha channel
-	if (c > 2)
-	{
-	    unsigned k = 0;
-	    while (k < w * h && tmp[k] == tmp[w * h + k] && tmp[k] == tmp[2 * w * h + k])
-            k++;
-        c = (k == w * h ? 1 : 3);
-	}
-
-	//! Some image informations
-	cout << "image size :" << endl;
-	cout << " - width          = " << w << endl;
-	cout << " - height         = " << h << endl;
-	cout << " - nb of channels = " << c << endl;
-
-	//! Initializations
-	*width  = w;
-	*height = h;
-	*chnls  = c;
-	img.resize(w * h * c);
-	for (unsigned k = 0; k < w * h * c; k++)
-        img[k] = tmp[k] * 255.0f;
-
-    return EXIT_SUCCESS;
-}
-
-/**
- * @brief write image
- *
- * @param name : path+name+extension of the image
- * @param img : vector which contains the image
- * @param width, height, chnls : size of the image
- *
- * @return EXIT_SUCCESS if the image has been saved, EXIT_FAILURE otherwise
- **/
- /*
-int save_image(
-    char* name
-,   std::vector<float> &img
-,   const unsigned width
-,   const unsigned height
-,   const unsigned chnls
-){
-    //! Allocate Memory
-    float* tmp = new float[width * height * chnls];
-
-    //! Check for boundary problems
-    for (unsigned k = 0; k < width * height * chnls; k++)
-        tmp[k] = img[k]; //(img[k] > 255.0f ? 255.0f : (img[k] < 0.0f ? 0.0f : img[k]));
-
-    iio_save_image_float_split(name, tmp, width, height, chnls);
-
-
-    //! Free Memory
-    delete[] tmp;
-
-    return EXIT_SUCCESS;
-}
-*/
 /**
  * @brief Check if a number is a power of 2
  **/

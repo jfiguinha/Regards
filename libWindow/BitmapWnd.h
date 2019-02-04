@@ -223,6 +223,7 @@ namespace Regards
             bool updateContext = true;
             bool timerUpdate = false;
             bool fastRenderOpenGL = false;
+            bool updateFilter = false;
 		};
 	}
 }

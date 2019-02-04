@@ -1,1 +1,1 @@
-./Release/mem.c.o ./Release/md5.c.o ./Release/pixdesc.c.o ./Release/log2_tab.c.o ./Release/buffer.c.o ./Release/frame.c.o
+./Debug/mem.c.o ./Debug/md5.c.o ./Debug/pixdesc.c.o ./Debug/log2_tab.c.o ./Debug/buffer.c.o ./Debug/frame.c.o
