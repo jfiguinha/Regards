@@ -1,4 +1,10 @@
 #pragma once
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+#include <string>
+#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else

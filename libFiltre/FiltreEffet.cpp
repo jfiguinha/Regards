@@ -5,7 +5,6 @@
 #include "InterpolationBicubic.h"
 #include <DecodeRawPicture.h>
 #include <LibResource.h>
-#include "Bm3dDlg.h"
 #include "Rotate.h"
 #include "RedEye.h"
 #include <FilterData.h>
@@ -21,8 +20,7 @@
 #include <config_id.h>
 #endif
 
-//BM3D
-#include "bm3dfilter.h"
+
 
 extern float value[256];
 
@@ -82,28 +80,10 @@ int CFiltreEffet::FilterKuwahara(const int &kernelSize)
     return 0;     
 }
 
-int CFiltreEffet::bm3d(const int & fSize)
+int CFiltreEffet::Bm3d(const int & fSigma)
 {
-    CRegardsBitmap * pictureSource = filtreEffet->GetBitmap(true);
-    
-    CBm3DFilter * bm3dFilter = new CBm3DFilter(pictureSource, value[fSize]);
-    //bm3dFilter.ExecuteFilter(pictureSource, parent, value[fSize]);
-
-    
-    CBm3dDlg bm3dDlg(parent, bm3dFilter);
-    bm3dDlg.ShowModal();
-    
-    delete bm3dFilter;
-    
-    if(!bm3dDlg.IsProcessCancel())
-    {
-        cout << "Process is OK" << endl;
-        CImageLoadingFormat imageLoadFormat(true);
-        imageLoadFormat.SetPicture(pictureSource);
-        filtreEffet->SetBitmap(&imageLoadFormat);          
-    }
-
-    return 0; 
+    filtreEffet->Bm3d(fSigma);
+    return 0;
 }
 
 int CFiltreEffet::BestExposure(const float &tmoValue)
@@ -153,9 +133,8 @@ int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * e
 	return value;
 }
 
-CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, wxWindow * parent, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)
+CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap)
 {
-    this->parent = parent;
 	filtreEffet = nullptr;
     this->backColor = backColor;
     this->numLib = LIBCPU;

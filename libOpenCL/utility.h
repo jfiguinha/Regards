@@ -1,6 +1,11 @@
 #pragma once
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include <cstdlib>
 #include <cassert>
+#include <string>
 #include <stdexcept>
 #include <sstream>
 #include <typeinfo>
@@ -13,14 +18,16 @@
 #else
 #include <CL/cl.h>
 #endif
-#include <ConvertUtility.h>
+using namespace std;
+
+
 
 // Base class for all exception in samples
 class Error : public std::runtime_error
 {
 public:
     Error(const wxString& msg) :
-    std::runtime_error(CConvertUtility::ConvertToStdString(msg))
+    std::runtime_error(msg.ToStdString())
     {
     }
     

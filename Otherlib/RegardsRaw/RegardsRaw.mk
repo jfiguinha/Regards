@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=RegardsRaw
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/developpement/Regards
 ProjectPath            :=/home/figuinha/developpement/Regards/Otherlib/RegardsRaw
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=04/02/19
+Date                   :=10/02/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
 SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
@@ -28,16 +28,16 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)LIBRAW $(PreprocessorSwitch)LIBRAW_NODLL $(PreprocessorSwitch)_USE_MATH_DEFINES $(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)LIBRAW_DEMOSAIC_PACK_GPL2 $(PreprocessorSwitch)LIBRAW_DEMOSAIC_PACK_GPL3 $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)LIBRAW $(PreprocessorSwitch)LIBRAW_NODLL $(PreprocessorSwitch)_USE_MATH_DEFINES $(PreprocessorSwitch)NDEBUG $(PreprocessorSwitch)LIBRAW_DEMOSAIC_PACK_GPL2 $(PreprocessorSwitch)LIBRAW_DEMOSAIC_PACK_GPL3 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="RegardsRaw.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -Os
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch)../ $(IncludeSwitch)../RegardsRaw $(IncludeSwitch). $(IncludeSwitch)../../libOpenCL $(IncludeSwitch)../../libDataStructure $(IncludeSwitch)../../libUtility $(IncludeSwitch)../../CxImage $(IncludeSwitch)../../libextern/jasper-1.900.1/src/libjasper/include $(IncludeSwitch)demoisaic_pack/gpl2 $(IncludeSwitch)demoisaic_pack/gpl3 $(IncludeSwitch)../../libextern/wxWidgets-master/src/jpeg $(IncludeSwitch)../../libFiltre 
-IncludePCH             :=  -include ../../include/Release/header.h 
+IncludePCH             :=  -include ../../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  
 AR       := /usr/bin/x86_64-linux-gnu-ar rcu
 CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
 CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := -fopenmp -std=gnu++11 -Wall $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -fopenmp -Wno-narrowing -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -O2 -Os -msse4.1 $(Preprocessors)
+CXXFLAGS := -fopenmp -std=gnu++11 -Wall $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -fopenmp -Wno-narrowing -ggdb -O0 $(Preprocessors)
+CFLAGS   := $(shell ../../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
@@ -77,24 +77,21 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/RegardsRaw"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/RegardsRaw"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
-	@echo Executing Pre Build commands ...
-	
-	@echo Done
 
 # PreCompiled Header
-../../include/Release/header.h.gch: ../../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../../include/Debug/header.h.gch: ../../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -171,7 +168,7 @@ $(IntermediateDirectory)/internal_dcraw_common.cpp$(PreprocessSuffix): internal/
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../../include/Debug/header.h.gch
 
 

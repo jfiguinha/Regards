@@ -7,6 +7,7 @@ class CFiltreEffetCPU : public IFiltreEffet
 public:
 	CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap);
 	~CFiltreEffetCPU();
+    int Bm3d(const int & fSigma);
 	int HistogramLog();
 	int HistogramNormalize();
 	int HistogramEqualize();

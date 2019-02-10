@@ -1,9 +1,17 @@
 #pragma once
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+#include <stdint.h>
+#include <string>
+#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
+using namespace std;
 
 namespace Regards
 {
@@ -59,6 +67,7 @@ namespace Regards
 			bool noDelete;
 			bool noDeleteClMem;
 			wxString libelle;
+			cl_mem_flags memory_flags = CL_MEM_READ_ONLY;
 		};
 
 		class COpenCLParameterInt : public COpenCLParameter
@@ -127,9 +136,10 @@ namespace Regards
 		class COpenCLParameterByteArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterByteArray(const bool &noDeleteMem = false){
+			COpenCLParameterByteArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
 				dataType = 4;
                 noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
 			};
 			~COpenCLParameterByteArray(){};
 
@@ -140,9 +150,10 @@ namespace Regards
 		class COpenCLParameterIntArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterIntArray(const bool &noDeleteMem = false){
+			COpenCLParameterIntArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
 				dataType = 5;
                 noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
 			};
 			~COpenCLParameterIntArray(){};
 
@@ -155,9 +166,10 @@ namespace Regards
 		class COpenCLParameterFloatArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterFloatArray(const bool &noDeleteMem = false){
+			COpenCLParameterFloatArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
 				dataType = 6;
                 noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
 			};
 			~COpenCLParameterFloatArray(){};
 
@@ -183,9 +195,10 @@ namespace Regards
 		class COpenCLParameterUShortArray : public COpenCLParameter
 		{
 		public:
-			COpenCLParameterUShortArray(const bool &noDeleteMem = false){
+			COpenCLParameterUShortArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY){
 				dataType = 9;
                 noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
 			};
 			~COpenCLParameterUShortArray(){};
 
@@ -228,5 +241,34 @@ namespace Regards
 
 			cl_ushort value;
 		};
+
+		class COpenCLParameterUCharArray : public COpenCLParameter
+		{
+		public:
+			COpenCLParameterUCharArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+				dataType = 11;
+				noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
+			};
+			~COpenCLParameterUCharArray() {};
+
+			void SetValue(cl_context context, unsigned char * value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg);
+		};
+
+		class COpenCLParameterShortArray : public COpenCLParameter
+		{
+		public:
+			COpenCLParameterShortArray(const bool &noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+				dataType = 12;
+				noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
+			};
+			~COpenCLParameterShortArray() {};
+
+			void SetValue(cl_context context, short * value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg);
+		};
+
 	}
 }

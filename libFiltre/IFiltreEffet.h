@@ -19,6 +19,7 @@ public:
 	{
 		this->preview = preview;
 	}
+    virtual int Bm3d(const int & fSigma) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle) = 0;
 	virtual int WaveFilter(int x, int y, short height, int scale, int radius) = 0;

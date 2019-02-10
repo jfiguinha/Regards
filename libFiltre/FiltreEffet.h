@@ -14,7 +14,7 @@ class CRegardsBitmap;
 class CFiltreEffet
 {
 public:
-	CFiltreEffet(const CRgbaquad &backColor, wxWindow * parent, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
+	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
 	void GetRgbaBitmap(void * cl_image);
 	//void SetBitmap(CRegardsBitmap * & pBitmap, int numLib);
@@ -69,7 +69,7 @@ public:
 	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);
-    int bm3d(const int & fSize);
+    int Bm3d(const int & fSigma);
 	void Interpolation(const int &widthOut, const int &heightOut, const int &method, int flipH, int flipV, int angle);
 	void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 
@@ -97,7 +97,6 @@ private:
 	CRgbaquad backColor;
 	int numLib;
 	wxString filename;
-    wxWindow * parent = nullptr;
 	int width;
 	int height;
 	

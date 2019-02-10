@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libWindow
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/developpement/Regards
 ProjectPath            :=/home/figuinha/developpement/Regards/libWindow
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=04/02/19
+Date                   :=10/02/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
 SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
@@ -28,16 +28,16 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)FFMPEG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libWindow.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch)../Otherlib/RegardsRaw $(IncludeSwitch). $(IncludeSwitch)../libextern/glew-2.1.0/include $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libPicture $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libExif $(IncludeSwitch)../libPiccante $(IncludeSwitch)../libextern/OpenCL-Headers 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  
 AR       := /usr/bin/x86_64-linux-gnu-ar rcu
 CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
 CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
+CFLAGS   :=  -Wall -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
@@ -81,21 +81,21 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libWindow"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/libWindow"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -436,7 +436,7 @@ $(IntermediateDirectory)/SeparationBar.cpp$(PreprocessSuffix): SeparationBar.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 

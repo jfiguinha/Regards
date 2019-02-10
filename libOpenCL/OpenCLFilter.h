@@ -3,12 +3,18 @@
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "OpenCLParameter.h"
+#include <stdint.h>
+#include <string>
+#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
 
+
+
+using namespace std;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 
@@ -55,6 +61,8 @@ namespace Regards
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Fusion(cl_mem inputData, cl_mem secondPictureData, const float &pourcentage, int width, int height);
+			cl_mem ConvertToY(cl_mem inputData, int width, int height);
+			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height);
 
 		protected:
 

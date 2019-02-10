@@ -502,7 +502,7 @@ int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTextur
 
 void COpenCLEffectVideo::SetRgbaBitmap(cl_mem cl_openglTexture, const int &width, const int &height)
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_TEXTURE");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_WXWIDGET");
 	if (programCL != nullptr)
 	{
 		if (paramWidth != nullptr)
@@ -569,7 +569,7 @@ void COpenCLEffectVideo::SetRgbaBitmap(cl_mem cl_openglTexture, const int &width
 
 void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 {
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_TEXTURE");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_WXWIDGET");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;

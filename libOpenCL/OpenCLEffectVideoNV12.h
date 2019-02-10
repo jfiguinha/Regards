@@ -1,5 +1,6 @@
 #pragma once
 #include "OpenCLEffectVideo.h"
+using namespace std;
 using namespace Regards::OpenCL;
 
 namespace Regards

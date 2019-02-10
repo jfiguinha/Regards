@@ -1463,7 +1463,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             if(filtreEffet != nullptr)
                 delete filtreEffet;               
             
-            filtreEffet = new CFiltreEffet(color, this, openclContext, source);
+            filtreEffet = new CFiltreEffet(color, openclContext, source);
         }
         
 
@@ -1601,7 +1601,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             CImageLoadingFormat imageLoadingFormat(false);
             wxImage renderImage = test_bitmap.ConvertToImage();
             imageLoadingFormat.SetPicture(&renderImage);
-            CFiltreEffet _filtreEffet(color, this, openclContext, &imageLoadingFormat);
+            CFiltreEffet _filtreEffet(color, openclContext, &imageLoadingFormat);
 
             if(openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
             {

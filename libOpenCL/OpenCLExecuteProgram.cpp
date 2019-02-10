@@ -64,6 +64,16 @@ void COpenCLExecuteProgram::ExecuteProgram(const cl_program &program, const wxSt
 	ExecuteKernel2D(outputBufferSize);
 }
 
+
+void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, size_t * offset, size_t * gs_d, size_t * ls)
+{
+	this->vecParam = vecParam;
+	cl_int err = 0;
+	kernel = clCreateKernel(program, kernelName.c_str(), &err);
+	Error::CheckError(err);
+	ExecuteKernel2D(offset, gs_d, ls);
+}
+
 void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter *> * vecParam, CRegardsBitmap * bitmapOut)
 {
 	this->vecParam = vecParam;
@@ -190,6 +200,33 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t & outputBufferSize)
 	{
 		COpenCLParameter * parameter = *it;
 		if(!parameter->GetNoDelete())
+			parameter->Release();
+	}
+}
+
+
+void COpenCLExecuteProgram::ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls)
+{
+	cl_int          err;
+
+	int numArg = 0;
+	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
+	{
+		COpenCLParameter * parameter = *it;
+		parameter->Add(kernel, numArg++);
+	}
+
+	//clEnqueueNDRangeKernel(queue, dist_kernel, 2, offset, gs_d, ls, 0, NULL, &event)
+	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, nullptr);
+	Error::CheckError(err);
+
+	err = clFinish(context->GetCommandQueue());
+	Error::CheckError(err);
+
+	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
+	{
+		COpenCLParameter * parameter = *it;
+		if (!parameter->GetNoDelete())
 			parameter->Release();
 	}
 }

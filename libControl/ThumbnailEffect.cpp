@@ -390,7 +390,7 @@ void CThumbnailEffect::LoadPicture(void * param)
     {
         thumbnail.SetPicture(bitmap);  
         CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, nullptr, &thumbnail);
+        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, &thumbnail);
 
         switch (threadLoadingBitmap->thumbnailData->GetNumPhotoId())
         {

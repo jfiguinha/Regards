@@ -10,6 +10,7 @@
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #include <ximage.h>
+#include "OpenCLBm3D.h"
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
 
@@ -616,7 +617,7 @@ wxImage COpenCLEffect::GetwxImage()
 int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 {
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_TEXTURE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_WXWIDGET");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -743,6 +744,47 @@ int COpenCLEffect::BilateralFilter(int fSize,  float sigmaX, float sigmaP)
 		}
 		
 		SetOutputValue(output,_width,_height);
+	}
+	return 0;
+}
+
+int COpenCLEffect::Bm3d(const int & fSigma)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	cl_mem wiener = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLBm3D openclBm3D(context);
+		COpenCLFilter openclFilter(context);
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.ConvertToY(input->GetValue(), _width, _height);
+		}
+
+		openclBm3D.InitData(output, _width * _height, _width, _height);
+		openclBm3D.ExecuteFilter(fSigma);
+		wiener = openclBm3D.GetWienerImage();
+
+		if (preview && paramOutput != nullptr)
+		{
+			output = openclFilter.InsertYValue(wiener, paramOutput->GetValue(), _width, _height);
+		}
+		else
+		{
+			output = openclFilter.InsertYValue(wiener, input->GetValue(), _width, _height);
+		}
+
+		SetOutputValue(output, _width, _height);
 	}
 	return 0;
 }

@@ -54,7 +54,7 @@ void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, wxWindo
             delete filtre;
         pictureWidth = newbitmap->GetWidth();
         pictureHeight =newbitmap->GetHeight();
-        filtre = new CFiltreEffet(colorBackground, parent, openclContext, newbitmap);       
+        filtre = new CFiltreEffet(colorBackground, openclContext, newbitmap);       
     }
 
 	//filtre->SetBitmap(newbitmap, 0);

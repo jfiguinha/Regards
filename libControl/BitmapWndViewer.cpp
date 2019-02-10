@@ -454,7 +454,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 					{
                         CImageLoadingFormat image;
                         image.SetPicture(bitmap);                        
-                        CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
 						wxPoint pt;
 						m_cDessin->GetPoint(pt);
 						CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
@@ -479,7 +479,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 						{
                             CImageLoadingFormat image;
                             image.SetPicture(bitmap);                        
-                            CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
+                            CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
 							
                             wxPoint pt;
 							m_cDessin->GetPoint(pt);
@@ -527,7 +527,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 					{
                         CImageLoadingFormat image;
                         image.SetPicture(bitmap);                        
-                        CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
+                        CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
 						wxRect rc;
 						wxRect rect;
 						m_cDessin->GetPos(rc);
@@ -603,7 +603,7 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
 							{
                                 CImageLoadingFormat image;
                                 image.SetPicture(bitmap);                        
-                                CFiltreEffet * filtre = new CFiltreEffet(backColor, this, nullptr, &image);
+                                CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
 								filtre->RenderEffect(effect, effectParameter);
 
                                 CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
@@ -821,7 +821,7 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 					if(filtreraw != nullptr)
                         delete filtreraw;
                     
-                    filtreraw = new CFiltreEffet(color, this, openclContext, picture);
+                    filtreraw = new CFiltreEffet(color, openclContext, picture);
                     
 					rawWidth = picture->GetWidth();
 					rawHeight = picture->GetHeight();
@@ -1148,7 +1148,7 @@ void CBitmapWndViewer::AfterRenderBitmap(wxDC * deviceContext)
 			if (!(renderNext.GetWidth() == widthOutput && renderNext.GetHeight() == heightOutput))
 			{
 				CRgbaquad backColor = CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue());
-				CFiltreEffet filtreEffet(backColor, this, openclContext, nextPicture);
+				CFiltreEffet filtreEffet(backColor, openclContext, nextPicture);
 				filtreEffet.Interpolation(widthOutput, heightOutput, 0, 0, 0, 0);
 				renderNext = filtreEffet.GetwxImage();
 				int size = width*height;

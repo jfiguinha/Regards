@@ -65,11 +65,13 @@ CFiltreData::~CFiltreData(){}
 
 bool CFiltreData::NeedOriginalPreview(const int &numFilter)
 {
+    /*
     switch (numFilter)
     {
         case IDM_FILTER_BM3D:
             return true;
     }
+    */
     return false;
 }
 
@@ -282,7 +284,7 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
 			if (effectParameter != nullptr)
 			{
 				CBm3dEffectParameter * bm3dParameter = (CBm3dEffectParameter *)effectParameter;
-				filtreEffet->bm3d(bm3dParameter->fSize);
+				filtreEffet->Bm3d(bm3dParameter->fSize);
                 return 1;
 			}
             break;
@@ -505,7 +507,6 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{   
-        case IDM_FILTER_BM3D:
 		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
@@ -527,7 +528,6 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{
-        case IDM_FILTER_BM3D:
         case IDM_FILTER_KUWAHARA:
         case IDM_HDR_DEBLURRING:
         case IDM_FILTER_BILATERAL2DS:

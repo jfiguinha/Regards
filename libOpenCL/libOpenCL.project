@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="OpenCLBm3D.cpp"/>
     <File Name="OpenCLContext.cpp"/>
     <File Name="OpenCLEffect.cpp"/>
     <File Name="OpenCLEngine.cpp"/>
@@ -44,6 +45,7 @@
     <File Name="utility.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="OpenCLBm3D.h"/>
     <File Name="OpenCLContext.h"/>
     <File Name="OpenCLEffect.h"/>
     <File Name="OpenCLEngine.h"/>

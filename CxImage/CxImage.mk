@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=CxImage
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/developpement/Regards
 ProjectPath            :=/home/figuinha/developpement/Regards/CxImage
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=04/02/19
+Date                   :=10/02/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
 SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
@@ -28,14 +28,14 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="CxImage.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch)../libextern/wxWidgets-master/src/png $(IncludeSwitch)../libextern/wxWidgets-master/src/tiff/libtiff $(IncludeSwitch)../libextern/wxWidgets-master/src/jpeg $(IncludeSwitch)../libextern/libmng-2.0.3 $(IncludeSwitch)../libextern/jasper-1.900.1/src/libjasper/include $(IncludeSwitch)../Otherlib/libJbig $(IncludeSwitch)../Otherlib/libPsd $(IncludeSwitch)../Otherlib/libPsd/include 
 IncludePCH             := 
 RcIncludePath          := 
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  
 AR       := /usr/bin/x86_64-linux-gnu-ar rcu
 CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
 CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -fpermissive -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := -Wall -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -fpermissive -ggdb -O0 -msse4.1 $(Preprocessors)
+CFLAGS   := -Wall -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
@@ -80,15 +80,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/CxImage"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/CxImage"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
@@ -358,6 +358,6 @@ $(IntermediateDirectory)/ximawnd.cpp$(PreprocessSuffix): ximawnd.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

@@ -1,6 +1,12 @@
 #pragma once
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 #include "OpenCLParameter.h"
 #include <RegardsBitmap.h>
+#include <string>
+#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
@@ -30,10 +36,13 @@ namespace Regards
 			void ExecuteProgram(const cl_program &program, const wxString &kernelName, const size_t & outputBufferSize);
 			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName);
 			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName, const size_t & global_size, const size_t & outputBufferSize);
+			void ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, size_t * offset, size_t * gs_d, size_t * ls);
+			
 			cl_mem GetOutput();
 			void SetKeepOutput(const bool &keepMemory);
 		private:
 
+			void ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls);
 			void ExecuteKernel2D(const size_t & outputBufferSize);
 			void ExecuteKernel1D(const size_t & global_size, const size_t & outputBufferSize);
 			cl_kernel kernel;

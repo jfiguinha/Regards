@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libFiltre
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/developpement/Regards
 ProjectPath            :=/home/figuinha/developpement/Regards/libFiltre
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=04/02/19
+Date                   :=10/02/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
 SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
@@ -28,16 +28,16 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libFiltre.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch)../libVideoFFMpeg $(IncludeSwitch)../libVideoThumbnail $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/RegardsRaw $(IncludeSwitch)../libextern/piccante-master/include $(IncludeSwitch). $(IncludeSwitch)../libUtility $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libResource $(IncludeSwitch)../include $(IncludeSwitch)../libControl $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libPiccante $(IncludeSwitch)../libPicture $(IncludeSwitch)../libextern/fftw-3.3.8/api 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  
 AR       := /usr/bin/x86_64-linux-gnu-ar rcu
 CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
 CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wno-narrowing -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wno-narrowing -ggdb -O0 $(Preprocessors)
+CFLAGS   :=  -Wall  -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
@@ -60,14 +60,14 @@ AS       := ccache /usr/bin/x86_64-linux-gnu-as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) $(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(ObjectSuffix) $(IntermediateDirectory)/Interpolation.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffet.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/bilateralFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ClaheFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/InterpolationBicubic.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/NlmeansFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/SharpenMaskingFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/WaveFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/BestExposureFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/KuwaharaFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/AudioVideoFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/VideoFilter.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Wave.cpp$(ObjectSuffix) $(IntermediateDirectory)/MotionBlur.cpp$(ObjectSuffix) $(IntermediateDirectory)/utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Histogramme.cpp$(ObjectSuffix) $(IntermediateDirectory)/Selection.cpp$(ObjectSuffix) $(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/LensFlare.cpp$(ObjectSuffix) $(IntermediateDirectory)/Draw.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterData.cpp$(ObjectSuffix) $(IntermediateDirectory)/circle.cpp$(ObjectSuffix) $(IntermediateDirectory)/InterpolationBilinear.cpp$(ObjectSuffix) $(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Line.cpp$(ObjectSuffix) $(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3d.cpp$(ObjectSuffix) $(IntermediateDirectory)/lib_transforms.cpp$(ObjectSuffix) $(IntermediateDirectory)/Crop.cpp$(ObjectSuffix) $(IntermediateDirectory)/Rotate.cpp$(ObjectSuffix) $(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(ObjectSuffix) $(IntermediateDirectory)/Interpolation.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffet.cpp$(ObjectSuffix) $(IntermediateDirectory)/BlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/bilateralFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ClaheFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/CloudsFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/MotionBlurFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/InterpolationBicubic.cpp$(ObjectSuffix) $(IntermediateDirectory)/NlmeansFilter.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/PhotoFiltreFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/SharpenMaskingFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/WaveFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ColorBalanceFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/BestExposureFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/KuwaharaFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/AudioVideoFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/VideoFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) $(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Wave.cpp$(ObjectSuffix) $(IntermediateDirectory)/MotionBlur.cpp$(ObjectSuffix) $(IntermediateDirectory)/utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Histogramme.cpp$(ObjectSuffix) $(IntermediateDirectory)/Selection.cpp$(ObjectSuffix) $(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/LensFlare.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) $(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Line.cpp$(ObjectSuffix) $(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) $(IntermediateDirectory)/Draw.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterData.cpp$(ObjectSuffix) $(IntermediateDirectory)/circle.cpp$(ObjectSuffix) $(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/InterpolationBilinear.cpp$(ObjectSuffix) $(IntermediateDirectory)/SolarisationFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) $(IntermediateDirectory)/bm3d.cpp$(ObjectSuffix) $(IntermediateDirectory)/lib_transforms.cpp$(ObjectSuffix) $(IntermediateDirectory)/Crop.cpp$(ObjectSuffix) $(IntermediateDirectory)/Rotate.cpp$(ObjectSuffix) $(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) 
 
-Objects1=$(IntermediateDirectory)/Rotation.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/Filtre.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedEye.cpp$(ObjectSuffix) $(IntermediateDirectory)/clahe.cpp$(ObjectSuffix) $(IntermediateDirectory)/Color.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) 
+Objects1=$(IntermediateDirectory)/Rotation.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterWindowParam.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Filtre.cpp$(ObjectSuffix) $(IntermediateDirectory)/RotateFreeFilter.cpp$(ObjectSuffix) $(IntermediateDirectory)/RedEye.cpp$(ObjectSuffix) $(IntermediateDirectory)/clahe.cpp$(ObjectSuffix) $(IntermediateDirectory)/Color.cpp$(ObjectSuffix) 
 
 
 
@@ -85,35 +85,27 @@ $(OutputFile): $(Objects)
 	@echo $(Objects0)  > $(ObjectsFileList)
 	@echo $(Objects1) >> $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libFiltre"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/libFiltre"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix): Bm3dDlg.cpp $(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Bm3dDlg.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix): Bm3dDlg.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix) -MM Bm3dDlg.cpp
-
-$(IntermediateDirectory)/Bm3dDlg.cpp$(PreprocessSuffix): Bm3dDlg.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Bm3dDlg.cpp$(PreprocessSuffix) Bm3dDlg.cpp
-
 $(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(ObjectSuffix): InterpolationFloatBicubic.cpp $(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/InterpolationFloatBicubic.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/InterpolationFloatBicubic.cpp$(DependSuffix): InterpolationFloatBicubic.cpp
@@ -242,14 +234,6 @@ $(IntermediateDirectory)/KuwaharaFilter.cpp$(DependSuffix): KuwaharaFilter.cpp
 $(IntermediateDirectory)/KuwaharaFilter.cpp$(PreprocessSuffix): KuwaharaFilter.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/KuwaharaFilter.cpp$(PreprocessSuffix) KuwaharaFilter.cpp
 
-$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix): bm3dWindowFilter.cpp $(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/bm3dWindowFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix): bm3dWindowFilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix) -MM bm3dWindowFilter.cpp
-
-$(IntermediateDirectory)/bm3dWindowFilter.cpp$(PreprocessSuffix): bm3dWindowFilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bm3dWindowFilter.cpp$(PreprocessSuffix) bm3dWindowFilter.cpp
-
 $(IntermediateDirectory)/AudioVideoFilter.cpp$(ObjectSuffix): AudioVideoFilter.cpp $(IntermediateDirectory)/AudioVideoFilter.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/AudioVideoFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/AudioVideoFilter.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/AudioVideoFilter.cpp$(DependSuffix): AudioVideoFilter.cpp
@@ -266,29 +250,21 @@ $(IntermediateDirectory)/VideoFilter.cpp$(DependSuffix): VideoFilter.cpp
 $(IntermediateDirectory)/VideoFilter.cpp$(PreprocessSuffix): VideoFilter.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/VideoFilter.cpp$(PreprocessSuffix) VideoFilter.cpp
 
-$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix): GaussianBlurFilter.cpp $(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/GaussianBlurFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix): GaussianBlurFilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix) -MM GaussianBlurFilter.cpp
+$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix): FiltreEffetCPU.cpp $(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/FiltreEffetCPU.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix): FiltreEffetCPU.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix) -MM FiltreEffetCPU.cpp
 
-$(IntermediateDirectory)/GaussianBlurFilter.cpp$(PreprocessSuffix): GaussianBlurFilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GaussianBlurFilter.cpp$(PreprocessSuffix) GaussianBlurFilter.cpp
+$(IntermediateDirectory)/FiltreEffetCPU.cpp$(PreprocessSuffix): FiltreEffetCPU.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FiltreEffetCPU.cpp$(PreprocessSuffix) FiltreEffetCPU.cpp
 
-$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix): GaussianBlur.cpp $(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/GaussianBlur.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix): GaussianBlur.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix) -MM GaussianBlur.cpp
+$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix): DecodeRaw.cpp $(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/DecodeRaw.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix): DecodeRaw.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix) -MM DecodeRaw.cpp
 
-$(IntermediateDirectory)/GaussianBlur.cpp$(PreprocessSuffix): GaussianBlur.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GaussianBlur.cpp$(PreprocessSuffix) GaussianBlur.cpp
-
-$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix): bm3dfilter.cpp $(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/bm3dfilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix): bm3dfilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix) -MM bm3dfilter.cpp
-
-$(IntermediateDirectory)/bm3dfilter.cpp$(PreprocessSuffix): bm3dfilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bm3dfilter.cpp$(PreprocessSuffix) bm3dfilter.cpp
+$(IntermediateDirectory)/DecodeRaw.cpp$(PreprocessSuffix): DecodeRaw.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/DecodeRaw.cpp$(PreprocessSuffix) DecodeRaw.cpp
 
 $(IntermediateDirectory)/Wave.cpp$(ObjectSuffix): Wave.cpp $(IntermediateDirectory)/Wave.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Wave.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Wave.cpp$(ObjectSuffix) $(IncludePath)
@@ -322,6 +298,22 @@ $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(DependSuffix): BrightAndCo
 $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(PreprocessSuffix): BrightAndContrastFilter.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/BrightAndContrastFilter.cpp$(PreprocessSuffix) BrightAndContrastFilter.cpp
 
+$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix): GaussianBlur.cpp $(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/GaussianBlur.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix): GaussianBlur.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/GaussianBlur.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/GaussianBlur.cpp$(DependSuffix) -MM GaussianBlur.cpp
+
+$(IntermediateDirectory)/GaussianBlur.cpp$(PreprocessSuffix): GaussianBlur.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GaussianBlur.cpp$(PreprocessSuffix) GaussianBlur.cpp
+
+$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix): bm3dfilter.cpp $(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/bm3dfilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix): bm3dfilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bm3dfilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/bm3dfilter.cpp$(DependSuffix) -MM bm3dfilter.cpp
+
+$(IntermediateDirectory)/bm3dfilter.cpp$(PreprocessSuffix): bm3dfilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bm3dfilter.cpp$(PreprocessSuffix) bm3dfilter.cpp
+
 $(IntermediateDirectory)/Histogramme.cpp$(ObjectSuffix): Histogramme.cpp $(IntermediateDirectory)/Histogramme.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Histogramme.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Histogramme.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/Histogramme.cpp$(DependSuffix): Histogramme.cpp
@@ -338,14 +330,6 @@ $(IntermediateDirectory)/Selection.cpp$(DependSuffix): Selection.cpp
 $(IntermediateDirectory)/Selection.cpp$(PreprocessSuffix): Selection.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Selection.cpp$(PreprocessSuffix) Selection.cpp
 
-$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix): DecodeRaw.cpp $(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/DecodeRaw.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix): DecodeRaw.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/DecodeRaw.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/DecodeRaw.cpp$(DependSuffix) -MM DecodeRaw.cpp
-
-$(IntermediateDirectory)/DecodeRaw.cpp$(PreprocessSuffix): DecodeRaw.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/DecodeRaw.cpp$(PreprocessSuffix) DecodeRaw.cpp
-
 $(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix): PosterisationFilter.cpp $(IntermediateDirectory)/PosterisationFilter.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/PosterisationFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PosterisationFilter.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/PosterisationFilter.cpp$(DependSuffix): PosterisationFilter.cpp
@@ -361,6 +345,38 @@ $(IntermediateDirectory)/LensFlare.cpp$(DependSuffix): LensFlare.cpp
 
 $(IntermediateDirectory)/LensFlare.cpp$(PreprocessSuffix): LensFlare.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LensFlare.cpp$(PreprocessSuffix) LensFlare.cpp
+
+$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix): Painting.cpp $(IntermediateDirectory)/Painting.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Painting.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Painting.cpp$(DependSuffix): Painting.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Painting.cpp$(DependSuffix) -MM Painting.cpp
+
+$(IntermediateDirectory)/Painting.cpp$(PreprocessSuffix): Painting.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Painting.cpp$(PreprocessSuffix) Painting.cpp
+
+$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix): SwirlFilter.cpp $(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/SwirlFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix): SwirlFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix) -MM SwirlFilter.cpp
+
+$(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix): SwirlFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix) SwirlFilter.cpp
+
+$(IntermediateDirectory)/Line.cpp$(ObjectSuffix): Line.cpp $(IntermediateDirectory)/Line.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Line.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Line.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Line.cpp$(DependSuffix): Line.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Line.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Line.cpp$(DependSuffix) -MM Line.cpp
+
+$(IntermediateDirectory)/Line.cpp$(PreprocessSuffix): Line.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Line.cpp$(PreprocessSuffix) Line.cpp
+
+$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix): PerlinNoise.cpp $(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/PerlinNoise.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix): PerlinNoise.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix) -MM PerlinNoise.cpp
+
+$(IntermediateDirectory)/PerlinNoise.cpp$(PreprocessSuffix): PerlinNoise.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PerlinNoise.cpp$(PreprocessSuffix) PerlinNoise.cpp
 
 $(IntermediateDirectory)/Draw.cpp$(ObjectSuffix): Draw.cpp $(IntermediateDirectory)/Draw.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Draw.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Draw.cpp$(ObjectSuffix) $(IncludePath)
@@ -386,6 +402,30 @@ $(IntermediateDirectory)/circle.cpp$(DependSuffix): circle.cpp
 $(IntermediateDirectory)/circle.cpp$(PreprocessSuffix): circle.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/circle.cpp$(PreprocessSuffix) circle.cpp
 
+$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix): PiccanteFilter.cpp $(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/PiccanteFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix): PiccanteFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix) -MM PiccanteFilter.cpp
+
+$(IntermediateDirectory)/PiccanteFilter.cpp$(PreprocessSuffix): PiccanteFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PiccanteFilter.cpp$(PreprocessSuffix) PiccanteFilter.cpp
+
+$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix): bm3dWindowFilter.cpp $(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/bm3dWindowFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix): bm3dWindowFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/bm3dWindowFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/bm3dWindowFilter.cpp$(DependSuffix) -MM bm3dWindowFilter.cpp
+
+$(IntermediateDirectory)/bm3dWindowFilter.cpp$(PreprocessSuffix): bm3dWindowFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/bm3dWindowFilter.cpp$(PreprocessSuffix) bm3dWindowFilter.cpp
+
+$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix): LensFlareFilter.cpp $(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/LensFlareFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix): LensFlareFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix) -MM LensFlareFilter.cpp
+
+$(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix): LensFlareFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix) LensFlareFilter.cpp
+
 $(IntermediateDirectory)/InterpolationBilinear.cpp$(ObjectSuffix): InterpolationBilinear.cpp $(IntermediateDirectory)/InterpolationBilinear.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/InterpolationBilinear.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InterpolationBilinear.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/InterpolationBilinear.cpp$(DependSuffix): InterpolationBilinear.cpp
@@ -402,45 +442,13 @@ $(IntermediateDirectory)/SolarisationFilter.cpp$(DependSuffix): SolarisationFilt
 $(IntermediateDirectory)/SolarisationFilter.cpp$(PreprocessSuffix): SolarisationFilter.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SolarisationFilter.cpp$(PreprocessSuffix) SolarisationFilter.cpp
 
-$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix): PiccanteFilter.cpp $(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/PiccanteFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix): PiccanteFilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PiccanteFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PiccanteFilter.cpp$(DependSuffix) -MM PiccanteFilter.cpp
+$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix): Bm3dDlg.cpp $(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Bm3dDlg.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix): Bm3dDlg.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Bm3dDlg.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Bm3dDlg.cpp$(DependSuffix) -MM Bm3dDlg.cpp
 
-$(IntermediateDirectory)/PiccanteFilter.cpp$(PreprocessSuffix): PiccanteFilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PiccanteFilter.cpp$(PreprocessSuffix) PiccanteFilter.cpp
-
-$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix): LensFlareFilter.cpp $(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/LensFlareFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix): LensFlareFilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/LensFlareFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/LensFlareFilter.cpp$(DependSuffix) -MM LensFlareFilter.cpp
-
-$(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix): LensFlareFilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LensFlareFilter.cpp$(PreprocessSuffix) LensFlareFilter.cpp
-
-$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix): SwirlFilter.cpp $(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/SwirlFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix): SwirlFilter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SwirlFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SwirlFilter.cpp$(DependSuffix) -MM SwirlFilter.cpp
-
-$(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix): SwirlFilter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SwirlFilter.cpp$(PreprocessSuffix) SwirlFilter.cpp
-
-$(IntermediateDirectory)/Line.cpp$(ObjectSuffix): Line.cpp $(IntermediateDirectory)/Line.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Line.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Line.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Line.cpp$(DependSuffix): Line.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Line.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Line.cpp$(DependSuffix) -MM Line.cpp
-
-$(IntermediateDirectory)/Line.cpp$(PreprocessSuffix): Line.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Line.cpp$(PreprocessSuffix) Line.cpp
-
-$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix): Painting.cpp $(IntermediateDirectory)/Painting.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Painting.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Painting.cpp$(DependSuffix): Painting.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Painting.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Painting.cpp$(DependSuffix) -MM Painting.cpp
-
-$(IntermediateDirectory)/Painting.cpp$(PreprocessSuffix): Painting.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Painting.cpp$(PreprocessSuffix) Painting.cpp
+$(IntermediateDirectory)/Bm3dDlg.cpp$(PreprocessSuffix): Bm3dDlg.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Bm3dDlg.cpp$(PreprocessSuffix) Bm3dDlg.cpp
 
 $(IntermediateDirectory)/bm3d.cpp$(ObjectSuffix): bm3d.cpp $(IntermediateDirectory)/bm3d.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/bm3d.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/bm3d.cpp$(ObjectSuffix) $(IncludePath)
@@ -474,13 +482,13 @@ $(IntermediateDirectory)/Rotate.cpp$(DependSuffix): Rotate.cpp
 $(IntermediateDirectory)/Rotate.cpp$(PreprocessSuffix): Rotate.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Rotate.cpp$(PreprocessSuffix) Rotate.cpp
 
-$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix): PerlinNoise.cpp $(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/PerlinNoise.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix): PerlinNoise.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PerlinNoise.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PerlinNoise.cpp$(DependSuffix) -MM PerlinNoise.cpp
+$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix): GaussianBlurFilter.cpp $(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/GaussianBlurFilter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix): GaussianBlurFilter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/GaussianBlurFilter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/GaussianBlurFilter.cpp$(DependSuffix) -MM GaussianBlurFilter.cpp
 
-$(IntermediateDirectory)/PerlinNoise.cpp$(PreprocessSuffix): PerlinNoise.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PerlinNoise.cpp$(PreprocessSuffix) PerlinNoise.cpp
+$(IntermediateDirectory)/GaussianBlurFilter.cpp$(PreprocessSuffix): GaussianBlurFilter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/GaussianBlurFilter.cpp$(PreprocessSuffix) GaussianBlurFilter.cpp
 
 $(IntermediateDirectory)/Rotation.cpp$(ObjectSuffix): Rotation.cpp $(IntermediateDirectory)/Rotation.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/Rotation.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Rotation.cpp$(ObjectSuffix) $(IncludePath)
@@ -538,21 +546,13 @@ $(IntermediateDirectory)/Color.cpp$(DependSuffix): Color.cpp
 $(IntermediateDirectory)/Color.cpp$(PreprocessSuffix): Color.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Color.cpp$(PreprocessSuffix) Color.cpp
 
-$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix): FiltreEffetCPU.cpp $(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libFiltre/FiltreEffetCPU.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix): FiltreEffetCPU.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FiltreEffetCPU.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FiltreEffetCPU.cpp$(DependSuffix) -MM FiltreEffetCPU.cpp
-
-$(IntermediateDirectory)/FiltreEffetCPU.cpp$(PreprocessSuffix): FiltreEffetCPU.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FiltreEffetCPU.cpp$(PreprocessSuffix) FiltreEffetCPU.cpp
-
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
 ##
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 

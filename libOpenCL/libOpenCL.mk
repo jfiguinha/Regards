@@ -2,18 +2,18 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libOpenCL
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=/home/figuinha/developpement/Regards
 ProjectPath            :=/home/figuinha/developpement/Regards/libOpenCL
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=figuinha
-Date                   :=04/02/19
+Date                   :=10/02/19
 CodeLitePath           :=/home/figuinha/.codelite
 LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
 SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
@@ -28,16 +28,16 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/libRegardsCL.a
-Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libOpenCL.txt"
 PCHCompileFlags        :=
 MakeDirCommand         :=mkdir -p
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libUtility $(IncludeSwitch)../libResource $(IncludeSwitch)../libParameter $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../include $(IncludeSwitch)../CxImage $(IncludeSwitch)../libUtility $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libSqlEngine 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -50,8 +50,8 @@ LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  
 AR       := /usr/bin/x86_64-linux-gnu-ar rcu
 CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
 CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
-CFLAGS   := -Wall  -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
+CFLAGS   := -Wall  -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := ccache /usr/bin/x86_64-linux-gnu-as
 
@@ -60,8 +60,8 @@ AS       := ccache /usr/bin/x86_64-linux-gnu-as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/OpenCLInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLExecuteProgram.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEngine.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLContext.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLProgram.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideoYUV.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLRawDev.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/utility.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLFilter.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/OpenCLInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLExecuteProgram.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEngine.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLBm3D.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLContext.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLProgram.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideoYUV.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/OpenCLRawDev.cpp$(ObjectSuffix) $(IntermediateDirectory)/utility.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLEffectVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/OpenCLFilter.cpp$(ObjectSuffix) 
 
 
 
@@ -78,21 +78,21 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libOpenCL"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/libOpenCL"
 
 MakeIntermediateDirs:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 
-./Release:
-	@test -d ./Release || $(MakeDirCommand) ./Release
+./Debug:
+	@test -d ./Debug || $(MakeDirCommand) ./Debug
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -106,14 +106,6 @@ $(IntermediateDirectory)/OpenCLInfos.cpp$(DependSuffix): OpenCLInfos.cpp
 
 $(IntermediateDirectory)/OpenCLInfos.cpp$(PreprocessSuffix): OpenCLInfos.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLInfos.cpp$(PreprocessSuffix) OpenCLInfos.cpp
-
-$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix): OpenCLParameter.cpp $(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLParameter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix): OpenCLParameter.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix) -MM OpenCLParameter.cpp
-
-$(IntermediateDirectory)/OpenCLParameter.cpp$(PreprocessSuffix): OpenCLParameter.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLParameter.cpp$(PreprocessSuffix) OpenCLParameter.cpp
 
 $(IntermediateDirectory)/OpenCLExecuteProgram.cpp$(ObjectSuffix): OpenCLExecuteProgram.cpp $(IntermediateDirectory)/OpenCLExecuteProgram.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLExecuteProgram.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLExecuteProgram.cpp$(ObjectSuffix) $(IncludePath)
@@ -131,6 +123,14 @@ $(IntermediateDirectory)/OpenCLEngine.cpp$(DependSuffix): OpenCLEngine.cpp
 $(IntermediateDirectory)/OpenCLEngine.cpp$(PreprocessSuffix): OpenCLEngine.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLEngine.cpp$(PreprocessSuffix) OpenCLEngine.cpp
 
+$(IntermediateDirectory)/OpenCLBm3D.cpp$(ObjectSuffix): OpenCLBm3D.cpp $(IntermediateDirectory)/OpenCLBm3D.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLBm3D.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLBm3D.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/OpenCLBm3D.cpp$(DependSuffix): OpenCLBm3D.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/OpenCLBm3D.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/OpenCLBm3D.cpp$(DependSuffix) -MM OpenCLBm3D.cpp
+
+$(IntermediateDirectory)/OpenCLBm3D.cpp$(PreprocessSuffix): OpenCLBm3D.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLBm3D.cpp$(PreprocessSuffix) OpenCLBm3D.cpp
+
 $(IntermediateDirectory)/OpenCLContext.cpp$(ObjectSuffix): OpenCLContext.cpp $(IntermediateDirectory)/OpenCLContext.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLContext.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLContext.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/OpenCLContext.cpp$(DependSuffix): OpenCLContext.cpp
@@ -138,6 +138,14 @@ $(IntermediateDirectory)/OpenCLContext.cpp$(DependSuffix): OpenCLContext.cpp
 
 $(IntermediateDirectory)/OpenCLContext.cpp$(PreprocessSuffix): OpenCLContext.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLContext.cpp$(PreprocessSuffix) OpenCLContext.cpp
+
+$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix): OpenCLEffect.cpp $(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix): OpenCLEffect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix) -MM OpenCLEffect.cpp
+
+$(IntermediateDirectory)/OpenCLEffect.cpp$(PreprocessSuffix): OpenCLEffect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLEffect.cpp$(PreprocessSuffix) OpenCLEffect.cpp
 
 $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(ObjectSuffix): OpenCLEffectVideoNV12.cpp $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLEffectVideoNV12.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(ObjectSuffix) $(IncludePath)
@@ -147,13 +155,13 @@ $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(DependSuffix): OpenCLEffectV
 $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(PreprocessSuffix): OpenCLEffectVideoNV12.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLEffectVideoNV12.cpp$(PreprocessSuffix) OpenCLEffectVideoNV12.cpp
 
-$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix): OpenCLEffect.cpp $(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix): OpenCLEffect.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/OpenCLEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/OpenCLEffect.cpp$(DependSuffix) -MM OpenCLEffect.cpp
+$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix): OpenCLParameter.cpp $(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLParameter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix): OpenCLParameter.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/OpenCLParameter.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/OpenCLParameter.cpp$(DependSuffix) -MM OpenCLParameter.cpp
 
-$(IntermediateDirectory)/OpenCLEffect.cpp$(PreprocessSuffix): OpenCLEffect.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLEffect.cpp$(PreprocessSuffix) OpenCLEffect.cpp
+$(IntermediateDirectory)/OpenCLParameter.cpp$(PreprocessSuffix): OpenCLParameter.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/OpenCLParameter.cpp$(PreprocessSuffix) OpenCLParameter.cpp
 
 $(IntermediateDirectory)/OpenCLProgram.cpp$(ObjectSuffix): OpenCLProgram.cpp $(IntermediateDirectory)/OpenCLProgram.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libOpenCL/OpenCLProgram.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/OpenCLProgram.cpp$(ObjectSuffix) $(IncludePath)
@@ -209,7 +217,7 @@ $(IntermediateDirectory)/OpenCLFilter.cpp$(PreprocessSuffix): OpenCLFilter.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 

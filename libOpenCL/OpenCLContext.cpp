@@ -127,6 +127,8 @@ int COpenCLContext::GenerateContext()
 
 void COpenCLContext::CreateQueue(cl_command_queue_properties queue_properties)
 {
+    
+   
 	if (!device)
 	{
 		throw Error("Device is not selected");

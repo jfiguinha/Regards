@@ -16,6 +16,11 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
+#include "Bm3dDlg.h"
+//BM3D
+#include "bm3dfilter.h"
+
+extern float value[256];
 using namespace Regards::FiltreEffet;
 
 CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat * bitmap)
@@ -54,6 +59,33 @@ int CFiltreEffetCPU::WaveFilter(int x, int y, short height, int scale, int radiu
 		waveFilter->ProcessEffect(pBitmap, x, y, height, scale, radius);
 		delete waveFilter;
 		return 0;
+	}
+	return -1;
+}
+
+int CFiltreEffetCPU::Bm3d(const int & fSigma)
+{
+	if (pBitmap != nullptr)
+	{
+        //Copie
+        CImageLoadingFormat imageLoadFormat(true);
+        imageLoadFormat.SetPicture(pBitmap);
+        CRegardsBitmap * copyBitmap = imageLoadFormat.GetRegardsBitmap(true);
+        CBm3DFilter * bm3dFilter = new CBm3DFilter(copyBitmap, value[fSigma]);
+
+        CBm3dDlg bm3dDlg(nullptr, bm3dFilter);
+        bm3dDlg.ShowModal();
+        
+        delete bm3dFilter;
+        
+        if(!bm3dDlg.IsProcessCancel())
+        {
+            memcpy(pBitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
+        }
+        
+        delete copyBitmap;
+
+        return 0; 
 	}
 	return -1;
 }

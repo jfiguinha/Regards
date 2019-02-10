@@ -20,6 +20,105 @@ COpenCLFilter::~COpenCLFilter()
 {
 }
 
+cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height)
+{
+	cl_mem outputValue = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CONVERTTOY");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
+			input->SetValue(inputData);
+			input->SetLibelle("input");
+			input->SetNoDelete(true);
+			vecParam.push_back(input);
+
+			try
+			{
+				program->SetParameter(&vecParam, width, height, sizeof(float) * width * height);
+				program->SetKeepOutput(true);
+				program->ExecuteProgram1D(programCL->GetProgram(), "ConvertToY");
+				outputValue = program->GetOutput();
+
+			}
+			catch (...)
+			{
+				outputValue = nullptr;
+			}
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	return outputValue;
+}
+
+cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height)
+{
+	cl_mem outputValue = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CONVERTTOY");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
+			input->SetValue(inputData);
+			input->SetLibelle("Yinput");
+			input->SetNoDelete(true);
+			vecParam.push_back(input);
+
+			COpenCLParameterClMem * source = new COpenCLParameterClMem(true);
+			source->SetValue(sourceData);
+			source->SetLibelle("source");
+			source->SetNoDelete(true);
+			vecParam.push_back(source);
+
+			try
+			{
+				program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+				program->SetKeepOutput(true);
+				program->ExecuteProgram1D(programCL->GetProgram(), "InsertYValue");
+				outputValue = program->GetOutput();
+
+			}
+			catch (...)
+			{
+				outputValue = nullptr;
+			}
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	return outputValue;
+}
 
 //----------------------------------------------------------------------------
 //

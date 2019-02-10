@@ -3,11 +3,17 @@
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "OpenCLParameter.h"
+#include <stdint.h>
+#include <string>
+#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
+
+
+using namespace std;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
@@ -75,6 +81,7 @@ namespace Regards
 			int BrightnessAndContrast(const double &brightness, const double &contrast);
 			int RGBFilter(const int &red, const int &green, const int &blue);
 			int Swirl(const float &radius, const float &angle);
+			int Bm3d(const int & fSigma);
 			
 			int MotionBlur(const double &radius, const double &sigma, const double &angle);
 			int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity) { return -1; };
