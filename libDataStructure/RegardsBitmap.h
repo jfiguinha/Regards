@@ -8,8 +8,6 @@
 #define SIZE_PATH 1024
 
 
-
-
 class CRegardsBitmap
 {
 public:

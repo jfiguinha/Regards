@@ -1,5 +1,6 @@
 
 #include "utility.h"
+#include <ConvertUtility.h>
 using namespace std;
 
 #define CASE_CL_CONSTANT(NAME) case NAME: return #NAME;
@@ -110,15 +111,13 @@ using namespace std;
 
         if(err != CL_SUCCESS)
         {
-			printf("Error : %s happened in file %s at line %s /n",opencl_error_to_str(err).ToStdString().c_str(),to_str(__FILE__).ToStdString().c_str(),to_str(__LINE__).ToStdString().c_str());
+			printf("Error : %s happened in file %s at line %s /n",CConvertUtility::ConvertToUTF8(opencl_error_to_str(err)),CConvertUtility::ConvertToUTF8(to_str(__FILE__)),CConvertUtility::ConvertToUTF8(to_str(__LINE__)));
 			wxString message = "OpenCL error " +
                         opencl_error_to_str(err) +
                         " happened in file " + to_str(__FILE__) +
                         " at line " + to_str(__LINE__) + ".";
 			#ifdef WIN32
             OutputDebugString(message);
-            #else
-            printf(message.ToStdString().c_str());
             #endif
             throw Error(message);
         }
@@ -128,7 +127,7 @@ using namespace std;
     // T should have operator>> defined to be read from stream.
     int Error::str_to(const wxString& s)
     {
-        std::istringstream ss(s.ToStdString());
+        std::istringstream ss(CConvertUtility::ConvertToStdString(s));
         int res;
         ss >> res;
         

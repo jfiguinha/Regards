@@ -1,1 +1,1 @@
-./Debug/theme.cpp.o ./Debug/ThemeInit.cpp.o ./Debug/ThemeParam.cpp.o
+./Release/theme.cpp.o ./Release/ThemeInit.cpp.o ./Release/ThemeParam.cpp.o

@@ -119,7 +119,6 @@ CEffectParameter * CBitmapWndViewer::GetParameter()
 
 void CBitmapWndViewer::UpdateFiltre(CEffectParameter * effectParameter)
 {
-    renderFilterUpdate = true;
     updateFilter = true;
     RefreshWindow();
 }
@@ -279,7 +278,6 @@ CBitmapWndViewer::~CBitmapWndViewer()
 
 void CBitmapWndViewer::AfterSetBitmap()
 {
-    renderFilterUpdate = true;
     updateFilter = true;
 	preview = PREVIEW_NONE;
 	if (transitionTimer->IsRunning())
@@ -851,29 +849,13 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 		}
 		else if (CFiltreData::NeedPreview(preview) && updateFilter)
 		{
-            updateFilter = false;
-            int widthOutput = int(GetBitmapWidthWithRatio());
-            int heightOutput = int(GetBitmapHeightWithRatio());
+			int widthOutput = int(GetBitmapWidthWithRatio());
+			int heightOutput = int(GetBitmapHeightWithRatio());
+			this->GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
             
-            if(CFiltreData::NeedOriginalPreview(preview))
-            {
-                if(renderFilterUpdate)
-                {
-                    CImageLoadingFormat newbitmap;
-                    newbitmap.SetPicture(source->GetRegardsBitmap(true));
-                    renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);  
-                }
-            }
-            else
-            {
-
-                this->GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-                
-                CImageLoadingFormat newbitmap;
-                newbitmap.SetPicture(filtreEffet->GetBitmap(false));
-                renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);                
-            }
-
+            CImageLoadingFormat newbitmap;
+            newbitmap.SetPicture(filtreEffet->GetBitmap(false));
+			renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);
 
 			switch (preview)
 			{
@@ -955,20 +937,11 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 				break;
 
 				default:
-                    if(CFiltreData::NeedOriginalPreview(preview) && renderFilterUpdate)
-					{
-                        renderPreviewBitmap->RenderEffect(preview, effectParameter);
-                        renderFilterUpdate = false;
-                    }
+					renderPreviewBitmap->RenderEffect(preview, effectParameter);
 					break;
 
 			}
-            
-             if(CFiltreData::NeedOriginalPreview(preview))
-             {
-                 this->GenerateScreenBitmap(renderPreviewBitmap->GetFiltre(), widthOutput, heightOutput);
-             }
-            
+            updateFilter = false;
 			render = renderPreviewBitmap->GetRender();
 		}
         else
@@ -1295,7 +1268,7 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 	}
 	else
 	{
-		bool isOnArrow = false;
+		//bool isOnArrow = false;
 		if (fixArrow && etape == 0)
 		{
 			int yPosTop = (height - arrowNext.GetHeight()) / 2;
@@ -1303,12 +1276,12 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 
 			if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 			{
-				isOnArrow = true;
+				//isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 			else if ((xPos >(width - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 			{
-				isOnArrow = true;
+				//isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 		}

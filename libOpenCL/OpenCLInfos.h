@@ -1,11 +1,9 @@
 #pragma once
-#include <string>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
-using namespace std;
 
 namespace Regards
 {

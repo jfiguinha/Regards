@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=include
-ConfigurationName      :=Debug
-WorkspacePath          :=/home/figuinha/developpement/Regards
-ProjectPath            :=/home/figuinha/developpement/Regards/include
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=C:/Regards
+ProjectPath            :=C:/Regards/include
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=figuinha
-Date                   :=10/02/19
-CodeLitePath           :=/home/figuinha/.codelite
-LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
-SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
+User                   :=jfigu_000
+Date                   :=11/02/2019
+CodeLitePath           :="C:/Program Files/CodeLite"
+LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,38 +28,43 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/lib$(ProjectName).a
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="include.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=mkdir -p
+MakeDirCommand         :=makedir
+RcCmpOptions           := 
+RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
 LinkOptions            :=  
-IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch)../libCompress $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libUtility $(IncludeSwitch)../libResource $(IncludeSwitch)../libPicture $(IncludeSwitch)../CxImage $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libextern/libjpeg-turbo-1.5.1 $(IncludeSwitch)../libExif $(IncludeSwitch)../include $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch). 
-IncludePCH             :=  -include Debug/header.h 
+IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch). $(IncludeSwitch)../libCompress $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libUtility $(IncludeSwitch)../libResource $(IncludeSwitch)../libPicture $(IncludeSwitch)../CxImage $(IncludeSwitch)../libFiltre $(IncludeSwitch)../libextern/libjpeg-turbo-1.5.1 $(IncludeSwitch)../libExif $(IncludeSwitch)../include $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch). 
+IncludePCH             :=  -include Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\lib\x86_64"  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := /usr/bin/x86_64-linux-gnu-ar rcu
-CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
-CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -g $(Preprocessors)
-CFLAGS   :=  -g $(Preprocessors)
+AR       := C:/msys64/mingw64/bin/ar.exe rcu
+CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -O2 -msse4.1 $(Preprocessors)
+CFLAGS   :=  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := ccache /usr/bin/x86_64-linux-gnu-as
+AS       := C:/msys64/mingw64/bin/as.exe
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=/usr/share/codelite
+CodeLiteDir:=C:\Program Files\CodeLite
+PATH:=C:\msys64\usr\bin;$PATH
+WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
+WXCFG:=lib/mswud
 Objects0=$(IntermediateDirectory)/header.cpp$(ObjectSuffix) 
 
 
@@ -77,24 +82,24 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/include"
+	@$(MakeDirCommand) "C:\Regards/.build-release"
+	@echo rebuilt > "C:\Regards/.build-release/include"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@$(MakeDirCommand) "./Release"
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@$(MakeDirCommand) "./Release"
 
 PreBuild:
 	@echo Executing Pre Build commands ...
-	if [ -d Debug ]; then echo "Exists"; else mkdir Debug;cp ../include/header.h Debug/header.h;fi
+	if [ -d Release ]; then echo "Exists"; else mkdir Release;cp ../include/header.h Release/header.h;fi
 	@echo Done
 
 # PreCompiled Header
-Debug/header.h.gch: Debug/header.h
-	$(CXX) $(SourceSwitch) Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+Release/header.h.gch: Release/header.h
+	$(CXX) $(SourceSwitch) Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -102,7 +107,7 @@ Debug/header.h.gch: Debug/header.h
 ## Objects
 ##
 $(IntermediateDirectory)/header.cpp$(ObjectSuffix): header.cpp $(IntermediateDirectory)/header.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/include/header.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/header.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/include/header.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/header.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/header.cpp$(DependSuffix): header.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/header.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/header.cpp$(DependSuffix) -MM header.cpp
 
@@ -115,7 +120,7 @@ $(IntermediateDirectory)/header.cpp$(PreprocessSuffix): header.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
-	$(RM) Debug/header.h.gch
+	$(RM) -r ./Release/
+	$(RM) Release/header.h.gch
 
 

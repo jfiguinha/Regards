@@ -378,7 +378,7 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice *> & listOfDevice, c
         device->openGlSharing = supported;
         listOfDevice.push_back(device);
         
-        printf("Device found : %s \n", deviceName.ToStdString().c_str());
+        printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 	}
 }
 
@@ -413,9 +413,9 @@ OpenCLDevice * COpenCLEngine::GetDefaultDevice()
 	}
 
     if(device != nullptr)
-        printf("GetDefaultDevice Platform Name : %s Device Name : %s \n", platformName.ToStdString().c_str(), device->deviceName.ToStdString().c_str());
+        printf("GetDefaultDevice Platform Name : %s Device Name : %s \n", CConvertUtility::ConvertToUTF8(platformName), CConvertUtility::ConvertToUTF8(device->deviceName));
     else
-        printf("GetDefaultDevice Platform Name : %s Device Name : None \n", platformName.ToStdString().c_str());
+        printf("GetDefaultDevice Platform Name : %s Device Name : None \n", CConvertUtility::ConvertToUTF8(platformName));
     return device;
 }
 
@@ -485,7 +485,7 @@ void COpenCLDeviceList::GetAllDevice()
     {
         if (platform != nullptr)
         {
-             printf("Platform Name : %s \n",platform->platformName.ToStdString().c_str());
+             printf("Platform Name : %s \n",CConvertUtility::ConvertToUTF8(platform->platformName));
             cl_device_type deviceType = ParseDeviceType("ALL");
             try
             {
@@ -493,7 +493,7 @@ void COpenCLDeviceList::GetAllDevice()
             }
             catch(...)
             {
-                printf("Platform Error Name : %s \n",platform->platformName.ToStdString().c_str());
+                printf("Platform Error Name : %s \n",CConvertUtility::ConvertToUTF8(platform->platformName));
             }
            //deviceType = ParseDeviceType("CPU");
            //GetListOfDevice(listOfDevice, platform->platformId, deviceType);

@@ -1,1 +1,1 @@
-./Debug/MediaInfo.cpp.o
+./Release/MediaInfo.cpp.o

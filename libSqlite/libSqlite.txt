@@ -1,1 +1,1 @@
-./Debug/sqlite3.c.o
+./Release/sqlite3.c.o

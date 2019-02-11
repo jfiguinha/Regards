@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libUtility
-ConfigurationName      :=Debug
-WorkspacePath          :=/home/figuinha/developpement/Regards
-ProjectPath            :=/home/figuinha/developpement/Regards/libUtility
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=C:/Regards
+ProjectPath            :=C:/Regards/libUtility
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=figuinha
-Date                   :=10/02/19
-CodeLitePath           :=/home/figuinha/.codelite
-LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
-SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
+User                   :=jfigu_000
+Date                   :=11/02/2019
+CodeLitePath           :="C:/Program Files/CodeLite"
+LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,38 +28,43 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libUtility.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libResource $(IncludeSwitch)../libDataStructure 
-IncludePCH             :=  -include ../include/Debug/header.h 
+MakeDirCommand         :=makedir
+RcCmpOptions           := 
+RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
+LinkOptions            :=  -s 
+IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libResource $(IncludeSwitch)../libDataStructure 
+IncludePCH             :=  -include ../include/Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\lib\x86_64"  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := /usr/bin/x86_64-linux-gnu-ar rcu
-CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
-CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
-CFLAGS   := -Wall  -ggdb -O0  $(Preprocessors)
+AR       := C:/msys64/mingw64/bin/ar.exe rcu
+CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
+CFLAGS   := -Wall  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := ccache /usr/bin/x86_64-linux-gnu-as
+AS       := C:/msys64/mingw64/bin/as.exe
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=/usr/share/codelite
+CodeLiteDir:=C:\Program Files\CodeLite
+PATH:=C:\msys64\usr\bin;$PATH
+WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
+WXCFG:=lib/mswud
 Objects0=$(IntermediateDirectory)/FileUtility.cpp$(ObjectSuffix) $(IntermediateDirectory)/ConvertUtility.cpp$(ObjectSuffix) $(IntermediateDirectory)/LoadingResource.cpp$(ObjectSuffix) $(IntermediateDirectory)/wxmd5.cpp$(ObjectSuffix) 
 
 
@@ -77,21 +82,21 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/libUtility"
+	@$(MakeDirCommand) "C:\Regards/.build-release"
+	@echo rebuilt > "C:\Regards/.build-release/libUtility"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@$(MakeDirCommand) "./Release"
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@$(MakeDirCommand) "./Release"
 
 PreBuild:
 
 # PreCompiled Header
-../include/Debug/header.h.gch: ../include/Debug/header.h
-	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Release/header.h.gch: ../include/Release/header.h
+	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -99,7 +104,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/FileUtility.cpp$(ObjectSuffix): FileUtility.cpp $(IntermediateDirectory)/FileUtility.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libUtility/FileUtility.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FileUtility.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libUtility/FileUtility.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FileUtility.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/FileUtility.cpp$(DependSuffix): FileUtility.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FileUtility.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FileUtility.cpp$(DependSuffix) -MM FileUtility.cpp
 
@@ -107,7 +112,7 @@ $(IntermediateDirectory)/FileUtility.cpp$(PreprocessSuffix): FileUtility.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FileUtility.cpp$(PreprocessSuffix) FileUtility.cpp
 
 $(IntermediateDirectory)/ConvertUtility.cpp$(ObjectSuffix): ConvertUtility.cpp $(IntermediateDirectory)/ConvertUtility.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libUtility/ConvertUtility.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ConvertUtility.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libUtility/ConvertUtility.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ConvertUtility.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ConvertUtility.cpp$(DependSuffix): ConvertUtility.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ConvertUtility.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ConvertUtility.cpp$(DependSuffix) -MM ConvertUtility.cpp
 
@@ -115,7 +120,7 @@ $(IntermediateDirectory)/ConvertUtility.cpp$(PreprocessSuffix): ConvertUtility.c
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ConvertUtility.cpp$(PreprocessSuffix) ConvertUtility.cpp
 
 $(IntermediateDirectory)/LoadingResource.cpp$(ObjectSuffix): LoadingResource.cpp $(IntermediateDirectory)/LoadingResource.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libUtility/LoadingResource.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LoadingResource.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libUtility/LoadingResource.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LoadingResource.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/LoadingResource.cpp$(DependSuffix): LoadingResource.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/LoadingResource.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/LoadingResource.cpp$(DependSuffix) -MM LoadingResource.cpp
 
@@ -123,7 +128,7 @@ $(IntermediateDirectory)/LoadingResource.cpp$(PreprocessSuffix): LoadingResource
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LoadingResource.cpp$(PreprocessSuffix) LoadingResource.cpp
 
 $(IntermediateDirectory)/wxmd5.cpp$(ObjectSuffix): wxmd5.cpp $(IntermediateDirectory)/wxmd5.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libUtility/wxmd5.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/wxmd5.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libUtility/wxmd5.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/wxmd5.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/wxmd5.cpp$(DependSuffix): wxmd5.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/wxmd5.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/wxmd5.cpp$(DependSuffix) -MM wxmd5.cpp
 
@@ -136,7 +141,7 @@ $(IntermediateDirectory)/wxmd5.cpp$(PreprocessSuffix): wxmd5.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
-	$(RM) ../include/Debug/header.h.gch
+	$(RM) -r ./Release/
+	$(RM) ../include/Release/header.h.gch
 
 

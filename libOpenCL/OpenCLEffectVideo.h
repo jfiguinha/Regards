@@ -4,17 +4,12 @@
 #include "OpenCLParameter.h"
 #include <EffectVideoParameter.h>
 #include <RGBAQuad.h>
-#include <stdint.h>
-#include <string>
-#include <vector>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
 
-
-using namespace std;
 using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CRegardsFloatBitmap;

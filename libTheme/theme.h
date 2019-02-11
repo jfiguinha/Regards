@@ -1,18 +1,17 @@
 #pragma once
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+	#include <wx/wx.h>
+#endif
+#include <string.h>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
+using namespace std;
 using namespace rapidxml;
 
 class CThemeXml
 {
 public:
-
-    CThemeXml(){
-        
-    }; 
-    virtual ~CThemeXml(){
-        
-    };
 	virtual void LoadXML(xml_node<> * root_node) = 0;
 	virtual void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition) = 0;
 
@@ -35,7 +34,7 @@ class CTheme : public CThemeXml
 public:
 
 	CTheme();
-	virtual ~CTheme();
+	~CTheme();
 
 	virtual void LoadXML(xml_node<> * root_node);
 
@@ -140,11 +139,6 @@ public:
         this->fontName = fontName;
     }
     
-    int GetFontRealSize()
-    {
-        return fontSize;
-    }    
-    
     int GetFontSize()
     {
         return CalculElementSizeForScreen(fontSize);
@@ -191,7 +185,7 @@ class CThemeTreeElement : public CThemeXml
 public:
 	CThemeTreeElement();
 
-	virtual ~CThemeTreeElement()
+	~CThemeTreeElement()
 	{
 	};
 
@@ -383,9 +377,9 @@ public:
     
 private:
     
-    int buttonWidth;
-    int buttonHeight;
-    int marge;
+    int buttonWidth = 17;
+    int buttonHeight = 17;
+    int marge = 4;
     int elementWidth;
 };
 
@@ -416,8 +410,6 @@ public:
         margeY = 3;
 		elementWidth = width = 15;
 		elementHeight = height = 15;
-	    checkBoxWidth = 14;
-		checkBoxHeight = 14;
 	};
 	~CThemeTreeCheckBox(){};
 
@@ -480,75 +472,10 @@ public:
 private:
 	int elementHeight;
 	int elementWidth;
-    int margeX;
-    int margeY;
-    int checkBoxWidth;
-    int checkBoxHeight;
-};
-
-class CThemeTreeListBox : public CThemeTreeElement
-{
-public:
-	CThemeTreeListBox()
-	{
-		height = 20;
-		width = 250;
-		elementWidth = 250;
-		font.SetColorFont(wxColour(255, 255, 255));
-		font.SetFontName("Verdana");
-		font.SetFontSize(12);
-		buttonWidth = 17;
-		buttonHeight = 17;
-		marge = 4;
-	};
-	~CThemeTreeListBox(){};
-
-	CThemeFont font;
-
-    void SetMarge(const int &marge)
-    {
-        this->marge = marge;
-    }
-
-	int GetMarge()
-    {
-        return CalculElementSizeForScreen(marge, false);
-    }
-
-    int GetButtonWidth()
-    {
-        return CalculElementSizeForScreen(buttonWidth);
-    }
-    
-    int GetButtonHeight()
-    {
-        return CalculElementSizeForScreen(buttonHeight);
-    }
-
-	void LoadXML(xml_node<> * root_node);
-
-	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
-
-	CThemeTreeListBox& operator=(const CThemeTreeListBox& other);
-    
-   
-    int GetElementWidth()
-    {
-        return CalculElementSizeForScreen(elementWidth);
-    }
-    
-    void SetElementWidth(const int &width)
-    {
-        this->elementWidth = width;
-    }
-
-    
-private:
-
-    int buttonWidth;
-    int buttonHeight;
-    int marge;
-    int elementWidth;
+    int margeX = 3;
+    int margeY = 3;
+    int checkBoxWidth = 14;
+    int checkBoxHeight = 14;
 };
 
 class CThemeTree : public CTheme
@@ -559,11 +486,6 @@ public:
 		bgColorOne = wxColour(29, 29, 29);
 		bgColorActif = wxColour(255, 255, 255);
 		bgColorTwo = wxColour(74, 74, 74);
-#ifndef WIN32
-		bgColorBackground = wxColour(255, 255, 255, 255);
-#else
-		bgColorBackground = wxColour(255, 255, 255, 0);
-#endif
 		margeX = 17;
 		rowHeight = 20;
 		rowWidth = 20;
@@ -613,12 +535,10 @@ public:
 	CThemeTreeDelete themeDelete;
 	CThemeTreeSlide themeSlide;
 	CThemeTreeTexte themeTexte;
-	CThemeTreeListBox themeListbox;
 	CThemeTreeCheckBox themeCheckbox;
 	wxColour bgColorOne;
 	wxColour bgColorTwo;
 	wxColour bgColorActif;
-    wxColour bgColorBackground;
     
 private:
 	int rowHeight;
@@ -684,8 +604,6 @@ class CThemeFastDrawBar : public CTheme
 public:
 	CThemeFastDrawBar()
 	{
-		firstColor = wxColour(200, 200, 200);
-		secondColor = wxColour(255, 255, 255);
 		size = 4;
 	};
 	~CThemeFastDrawBar(){};
@@ -696,8 +614,8 @@ public:
 
 	void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
 
-	wxColour firstColor;
-	wxColour secondColor;
+	wxColour firstColor = wxColour(200, 200, 200);
+	wxColour secondColor = wxColour(255, 255, 255);
 	int size;
 };
 
@@ -706,8 +624,6 @@ class CThemeSeparationBar : public CTheme
 public:
 	CThemeSeparationBar()
 	{
-		firstColor = wxColour(200, 200, 200);
-		secondColor = wxColour(255, 255, 255);
 		size = 10;
 	};
 	~CThemeSeparationBar(){};
@@ -718,8 +634,8 @@ public:
 
 	CThemeSeparationBar& operator=(const CThemeSeparationBar& other);
 
-	wxColour firstColor;
-	wxColour secondColor;
+	wxColour firstColor = wxColour(200, 200, 200);
+	wxColour secondColor = wxColour(255, 255, 255);
 	int size;
 };
 
@@ -842,7 +758,7 @@ public:
 
 	CThemeSlider();
 
-	virtual ~CThemeSlider();
+	~CThemeSlider();
 
 	void LoadXML(xml_node<> * root_node);
 
@@ -853,8 +769,7 @@ public:
 	CThemeFont font;
 	wxColour rectanglePast;
 	wxColour rectangleNext;
-    wxColor colorActifReplacement;
-    wxColor colorInactifReplacement;
+
 	wxBitmap bitmapBackground;
 	bool isColorBackground;
     
@@ -906,8 +821,8 @@ public:
     }
     
 private:
-    int buttonWidth;
-    int buttonHeight;
+    int buttonWidth = 17;
+    int buttonHeight = 17;
     int rectangleHeight;
     int width;
     int height;
@@ -984,17 +899,17 @@ public:
     
 private:
     
-    int buttonPlayWidth;
-    int buttonPlayHeight;
-    int buttonPauseWidth;
-    int buttonPauseHeight;
-    int buttonVolumeUpWidth;
-    int buttonVolumeUpHeight;
-    int buttonVolumeDownWidth;
-    int buttonVolumeDownHeight;
-    int buttonSpeakerWidth;
-    int buttonSpeakerHeight;
-    int marge;
+    int buttonPlayWidth = 24;
+    int buttonPlayHeight = 24;
+    int buttonPauseWidth = 24;
+    int buttonPauseHeight = 24;
+    int buttonVolumeUpWidth = 24;
+    int buttonVolumeUpHeight = 24;
+    int buttonVolumeDownWidth = 24;
+    int buttonVolumeDownHeight = 24;
+    int buttonSpeakerWidth = 24;
+    int buttonSpeakerHeight = 24;
+    int marge = 10;
 };
 
 class CThemeBitmapInfos : public CTheme
@@ -1198,7 +1113,7 @@ private:
     int checkboxHeight;
     int checkboxWidth;
     int height;
-    int calculHeight;
+    int calculHeight = 0;
 };
 
 class CThemeThumbnail : public CTheme
@@ -1278,7 +1193,7 @@ class CThemeToolbarElement : public CThemeXml
 {
 public:
 	CThemeToolbarElement(){};
-	virtual ~CThemeToolbarElement(){};
+	~CThemeToolbarElement(){};
 
 	void LoadXML(xml_node<> * root_node);
 
@@ -1362,8 +1277,6 @@ public:
 	wxColour lineColorBottom;
 	wxColour actifTop;
 	wxColour actifBottom;
-    wxColour colorActifReplacement;
-    wxColour replaceColor;
     int showButtonOnly;
     
 private:
@@ -1422,7 +1335,6 @@ public:
 
 	wxColour colorTop;
 	wxColour colorBottom;
-    wxColour replaceColor;
 
 	int position;
 	int isVertical;

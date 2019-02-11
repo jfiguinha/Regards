@@ -220,15 +220,7 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t * offset, size_t * gs_d, size
 	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, nullptr);
 	Error::CheckError(err);
 
-	err = clFinish(context->GetCommandQueue());
-	Error::CheckError(err);
 
-	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
-	{
-		COpenCLParameter * parameter = *it;
-		if (!parameter->GetNoDelete())
-			parameter->Release();
-	}
 }
 
 cl_mem COpenCLExecuteProgram::GetOutput()

@@ -32,8 +32,6 @@ namespace Regards
 			void LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop);
 			wxImage GetRender();
             wxImage GetLastRender();
-            CFiltreEffet * GetFiltre();
-            
 		private:
 
 			int pictureWidth;

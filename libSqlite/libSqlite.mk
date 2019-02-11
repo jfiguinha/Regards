@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
+## Release
 ProjectName            :=libSqlite
-ConfigurationName      :=Debug
-WorkspacePath          :=/home/figuinha/developpement/Regards
-ProjectPath            :=/home/figuinha/developpement/Regards/libSqlite
-IntermediateDirectory  :=./Debug
+ConfigurationName      :=Release
+WorkspacePath          :=C:/Regards
+ProjectPath            :=C:/Regards/libSqlite
+IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=figuinha
-Date                   :=10/02/19
-CodeLitePath           :=/home/figuinha/.codelite
-LinkerName             :=ccache /usr/bin/x86_64-linux-gnu-g++
-SharedObjectLinkerName :=ccache /usr/bin/x86_64-linux-gnu-g++ -shared -fPIC
+User                   :=jfigu_000
+Date                   :=11/02/2019
+CodeLitePath           :="C:/Program Files/CodeLite"
+LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -28,38 +28,43 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libSqlite.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=mkdir -p
-LinkOptions            :=  
-IncludePath            := $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include  $(IncludeSwitch). $(IncludeSwitch). 
+MakeDirCommand         :=makedir
+RcCmpOptions           := 
+RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
+LinkOptions            :=  -s 
+IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch). $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib/x86_64/sdk  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\lib\x86_64"  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := /usr/bin/x86_64-linux-gnu-ar rcu
-CXX      := ccache /usr/bin/x86_64-linux-gnu-g++
-CC       := ccache /usr/bin/x86_64-linux-gnu-gcc
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -ggdb -O0 $(Preprocessors)
-CFLAGS   := $(shell ../libextern/wxWidgets-master/wx-config --cflags) -ggdb -O0 $(Preprocessors)
+AR       := C:/msys64/mingw64/bin/ar.exe rcu
+CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
+CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread -O2 -msse4.1 $(Preprocessors)
+CFLAGS   := $(shell ../libextern/wxWidgets-master/wx-config --cflags) -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := ccache /usr/bin/x86_64-linux-gnu-as
+AS       := C:/msys64/mingw64/bin/as.exe
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=/usr/share/codelite
+CodeLiteDir:=C:\Program Files\CodeLite
+PATH:=C:\msys64\usr\bin;$PATH
+WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
+WXCFG:=lib/mswud
 Objects0=$(IntermediateDirectory)/sqlite3.c$(ObjectSuffix) 
 
 
@@ -77,15 +82,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-debug"
-	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-debug/libSqlite"
+	@$(MakeDirCommand) "C:\Regards/.build-release"
+	@echo rebuilt > "C:\Regards/.build-release/libSqlite"
 
 MakeIntermediateDirs:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+	@$(MakeDirCommand) "./Release"
 
 
-./Debug:
-	@test -d ./Debug || $(MakeDirCommand) ./Debug
+./Release:
+	@$(MakeDirCommand) "./Release"
 
 PreBuild:
 
@@ -94,7 +99,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/sqlite3.c$(ObjectSuffix): sqlite3.c $(IntermediateDirectory)/sqlite3.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "/home/figuinha/developpement/Regards/libSqlite/sqlite3.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/sqlite3.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Regards/libSqlite/sqlite3.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/sqlite3.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/sqlite3.c$(DependSuffix): sqlite3.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/sqlite3.c$(ObjectSuffix) -MF$(IntermediateDirectory)/sqlite3.c$(DependSuffix) -MM sqlite3.c
 
@@ -107,6 +112,6 @@ $(IntermediateDirectory)/sqlite3.c$(PreprocessSuffix): sqlite3.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Debug/
+	$(RM) -r ./Release/
 
 

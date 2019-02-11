@@ -81,11 +81,6 @@ void CRenderPreviewBitmap::RotateFree(const int &angle)
 	filtre->RotateFree(angle);
 }
 
-CFiltreEffet * CRenderPreviewBitmap::GetFiltre()
-{
-    return filtre;
-}
-
 void CRenderPreviewBitmap::MotionBlur(const double &radius, const double &sigma, const double &angle)
 {
 	//Copie de l'image
