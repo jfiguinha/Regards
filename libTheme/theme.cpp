@@ -1,14 +1,15 @@
-#include "Theme.h"
+#include "theme.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
-#include <vector>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif
-using namespace std;
+#include <ConvertUtility.h>
 using namespace rapidxml;
+
+
 
 xml_node<>*  CThemeXml::node(xml_document<> & doc, const wxString & name, const wxString & content)
 {
@@ -92,7 +93,7 @@ void CTheme::LoadXML(xml_node<> * root_node)
 void CTheme::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
 	xml_node<>* section = node(doc, "Theme");
-	section->append_node(node(doc, "colorBack", colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack", CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -138,9 +139,9 @@ void CThemeBitmapWindow::LoadXML(xml_node<> * root_node)
 void CThemeBitmapWindow::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
 	xml_node<>* section = node(doc, "Theme");
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorFullscreen", colorFullscreen.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorScreen", colorScreen.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorFullscreen", CConvertUtility::ConvertToStdString(colorFullscreen.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorScreen", CConvertUtility::ConvertToStdString(colorScreen.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -197,8 +198,8 @@ void CThemeFolder::LoadXML(xml_node<> * root_node)
 void CThemeFolder::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
 	xml_node<>* section = node(doc, "ThemeFolder");
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorFont",colorFont.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorFont",CConvertUtility::ConvertToStdString(colorFont.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -309,10 +310,10 @@ void CThemeFont::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
     wxString fontname = fontName;
 	xml_node<>* section = node(doc, "ThemeFont");
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "bold", to_string(bold)));
 	section->append_node(node(doc, "positionFont", to_string(positionFont)));
-	section->append_node(node(doc, "colorFont",colorFont.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorFont",CConvertUtility::ConvertToStdString(colorFont.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "fontName", fontname));
 	section->append_node(node(doc, "fontSize", to_string(fontSize)));
 	section->append_node(node(doc, "marge", to_string(marge)));
@@ -365,7 +366,7 @@ void CThemeTreeElement::SaveXML(xml_document<> & doc, xml_node<>* sectionPositio
 	xml_node<>* section = node(doc, "ThemeTreeElement");
 	section->append_node(node(doc, "width", to_string(width)));
 	section->append_node(node(doc, "height", to_string(height)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -451,7 +452,7 @@ void CThemeTreeTriangle::SaveXML(xml_document<> & doc, xml_node<>* sectionPositi
 	section->append_node(node(doc, "elementWidth", to_string(elementWidth)));
 	section->append_node(node(doc, "elementHeight", to_string(elementHeight)));
 	section->append_node(node(doc, "marge", to_string(marge)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -554,10 +555,10 @@ void CThemeTreeDelete::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition
 	section->append_node(node(doc, "height", to_string(height)));
 	section->append_node(node(doc, "elementWidth", to_string(croixWidth)));
 	section->append_node(node(doc, "elementHeight", to_string(croixHeight)));
-	section->append_node(node(doc, "crossColor", crossColor.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBackActif", colorBackActif.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "crossColor", CConvertUtility::ConvertToStdString(crossColor.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBackActif", CConvertUtility::ConvertToStdString(colorBackActif.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "position", to_string(position)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -583,6 +584,9 @@ CThemeTreeSlide::CThemeTreeSlide()
 	//marge = 10;
 	rectanglePast.Set(0, 0, 128);
 	rectangleNext.Set(48, 128, 254);
+	buttonWidth = 17;
+    buttonHeight = 17;
+    marge = 4;
 }
 
 CThemeTreeSlide::~CThemeTreeSlide()
@@ -646,6 +650,22 @@ void CThemeTreeSlide::LoadXML(xml_node<> * root_node)
 			marge = atoi(value.c_str());
 		}
 
+		child_node = node->first_node("buttonWidth");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			buttonWidth = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("buttonHeight");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			buttonHeight = atoi(value.c_str());
+		}
+
 		child_node = node->first_node("color");
 		if (child_node != 0)
 		{
@@ -654,6 +674,9 @@ void CThemeTreeSlide::LoadXML(xml_node<> * root_node)
 			color.Set(value);
 		}
 	}
+
+
+
 }
 
 void CThemeTreeSlide::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
@@ -663,10 +686,10 @@ void CThemeTreeSlide::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	section->append_node(node(doc, "width", to_string(width)));
 	section->append_node(node(doc, "height", to_string(height))); 
 	section->append_node(node(doc, "elementWidth", to_string(elementWidth)));
-	section->append_node(node(doc, "rectanglePast", rectanglePast.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "rectangleNext", rectangleNext.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "rectanglePast", CConvertUtility::ConvertToStdString(rectanglePast.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "rectangleNext", CConvertUtility::ConvertToStdString(rectangleNext.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "marge", to_string(marge)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -742,7 +765,7 @@ void CThemeTreeTexte::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	font.SaveXML(doc, section);
 	section->append_node(node(doc, "width", to_string(width)));
 	section->append_node(node(doc, "height", to_string(height)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -802,7 +825,7 @@ void CThemeTreeCheckBox::SaveXML(xml_document<> & doc, xml_node<>* sectionPositi
 	section->append_node(node(doc, "height", to_string(height)));
 	section->append_node(node(doc, "elementWidth", to_string(elementWidth)));
 	section->append_node(node(doc, "elementHeight", to_string(elementHeight)));
-	section->append_node(node(doc, "color", color.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -811,6 +834,103 @@ CThemeTreeCheckBox& CThemeTreeCheckBox::operator=(const CThemeTreeCheckBox& othe
 	this->height = other.height;
 	this->width = other.width;
 	this->elementHeight = other.elementHeight;
+	this->elementWidth = other.elementWidth;
+	this->color = other.color;
+	return *this;
+}
+
+
+void CThemeTreeListBox::LoadXML(xml_node<> * root_node)
+{
+	wxString value = "";
+	wxString nodeName = "";
+	xml_node<> * node = root_node->first_node("ThemeTreeListBox");
+	if (node != 0)
+	{
+		font.LoadXML(node);
+
+		xml_node<> * child_node = node->first_node("width");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			width = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("height");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			height = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("elementWidth");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			elementWidth = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("marge");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			marge = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("buttonWidth");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			buttonWidth = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("buttonHeight");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			buttonHeight = atoi(value.c_str());
+		}
+
+		child_node = node->first_node("color");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			color.Set(value);
+		}
+
+
+	}
+}
+
+void CThemeTreeListBox::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
+{
+	xml_node<>* section = node(doc, "ThemeTreeListBox");
+	font.SaveXML(doc, section);
+	section->append_node(node(doc, "width", to_string(width)));
+	section->append_node(node(doc, "height", to_string(height)));
+	section->append_node(node(doc, "elementWidth", to_string(elementWidth)));
+	section->append_node(node(doc, "marge", to_string(marge)));
+	section->append_node(node(doc, "buttonWidth", to_string(buttonWidth)));
+	section->append_node(node(doc, "buttonHeight", to_string(buttonHeight)));
+	section->append_node(node(doc, "color", CConvertUtility::ConvertToStdString(color.GetAsString(wxC2S_CSS_SYNTAX))));
+	sectionPosition->append_node(section);
+}
+
+CThemeTreeListBox& CThemeTreeListBox::operator=(const CThemeTreeListBox& other)
+{
+	this->font = other.font;
+	this->height = other.height;
+	this->width = other.width;
+	this->marge = other.marge;
+	this->buttonWidth = other.buttonWidth;
+	this->buttonHeight = other.buttonHeight;
 	this->elementWidth = other.elementWidth;
 	this->color = other.color;
 	return *this;
@@ -828,6 +948,7 @@ void CThemeTree::LoadXML(xml_node<> * root_node)
 		themeSlide.LoadXML(node);
 		themeTexte.LoadXML(node);
 		themeCheckbox.LoadXML(node);
+		themeListbox.LoadXML(node);
 
 		xml_node<> * child_node = node->first_node("rowHeight");
 		if (child_node != 0)
@@ -877,6 +998,14 @@ void CThemeTree::LoadXML(xml_node<> * root_node)
 			nodeName = child_node->name();
 			bgColorActif.Set(value);
 		}
+        
+		child_node = node->first_node("bgColorBackground");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			bgColorBackground.Set(value);
+		}
 
 		child_node = node->first_node("colorBack");
 		if (child_node != 0)
@@ -896,13 +1025,15 @@ void CThemeTree::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	themeSlide.SaveXML(doc, section);
 	themeTexte.SaveXML(doc, section);
 	themeCheckbox.SaveXML(doc, section);
+	themeListbox.SaveXML(doc, section);
 	section->append_node(node(doc, "rowWidth", to_string(rowWidth)));
 	section->append_node(node(doc, "rowHeight", to_string(rowHeight)));
 	section->append_node(node(doc, "margeX", to_string(margeX)));
-	section->append_node(node(doc, "bgColorOne", bgColorOne.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "bgColorTwo", bgColorTwo.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "bgColorActif", bgColorActif.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "bgColorOne", CConvertUtility::ConvertToStdString(bgColorOne.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "bgColorTwo", CConvertUtility::ConvertToStdString(bgColorTwo.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "bgColorBackground", CConvertUtility::ConvertToStdString(bgColorBackground.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "bgColorActif", CConvertUtility::ConvertToStdString(bgColorActif.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 
 	sectionPosition->append_node(section);
 }
@@ -913,6 +1044,7 @@ CThemeTree& CThemeTree::operator=(const CThemeTree& other)
 	this->themeDelete = other.themeDelete;
 	this->themeSlide = other.themeSlide;
 	this->themeTexte = other.themeTexte;
+	this->themeListbox = other.themeListbox;
 	this->themeCheckbox = other.themeCheckbox;
 	this->rowHeight = other.rowHeight;
 	this->rowWidth = other.rowWidth;
@@ -995,11 +1127,11 @@ void CThemeScrollBar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	xml_node<>* section = node(doc, "ThemeScrollBar");
 	section->append_node(node(doc, "rectangleSize", to_string(rectangleSize)));
 	section->append_node(node(doc, "marge", to_string(marge)));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBar", colorBar.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorTriangle", colorTriangle.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBarActif", colorBarActif.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorTriangleActif", colorTriangleActif.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBar", CConvertUtility::ConvertToStdString(colorBar.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorTriangle", CConvertUtility::ConvertToStdString(colorTriangle.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBarActif", CConvertUtility::ConvertToStdString(colorBarActif.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorTriangleActif", CConvertUtility::ConvertToStdString(colorTriangleActif.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1069,9 +1201,9 @@ void CThemeFastDrawBar::LoadXML(xml_node<> * root_node)
 void CThemeFastDrawBar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
 	xml_node<>* section = node(doc, "ThemeFastDrawBar");
-	section->append_node(node(doc, "firstColor", firstColor.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "secondColor", secondColor.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "firstColor", CConvertUtility::ConvertToStdString(firstColor.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "secondColor", CConvertUtility::ConvertToStdString(secondColor.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "size", to_string(size)));
 	sectionPosition->append_node(section);
 }
@@ -1121,9 +1253,9 @@ void CThemeSeparationBar::LoadXML(xml_node<> * root_node)
 void CThemeSeparationBar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 {
 	xml_node<>* section = node(doc, "ThemeSeparationBar");
-	section->append_node(node(doc, "firstColor", firstColor.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "secondColor", secondColor.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "firstColor", CConvertUtility::ConvertToStdString(firstColor.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "secondColor", CConvertUtility::ConvertToStdString(secondColor.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "size", to_string(size)));
 	sectionPosition->append_node(section);
 }
@@ -1164,7 +1296,7 @@ void CThemeSplitter::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	xml_node<>* section = node(doc, "ThemeSplitter");
 	themeFast.SaveXML(doc, section);
 	themeSeparation.SaveXML(doc, section);
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1255,8 +1387,8 @@ void CThemeTitleBar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	section->append_node(node(doc, "marge", to_string(marge)));
 	section->append_node(node(doc, "croixWidth", to_string(croixWidth)));
 	section->append_node(node(doc, "croixHeight", to_string(croixHeight)));
-	section->append_node(node(doc, "colorCross", colorCross.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorCross", CConvertUtility::ConvertToStdString(colorCross.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1305,7 +1437,7 @@ void CThemePane::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	xml_node<>* section = node(doc, "ThemePane");
 	themeTitle.SaveXML(doc, section);
 	section->append_node(node(doc, "height", to_string(height)));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1319,6 +1451,8 @@ CThemePane& CThemePane::operator=(const CThemePane& other)
 
 CThemeSlider::CThemeSlider()
 {
+	buttonWidth = 17;
+    buttonHeight = 17;
 	isColorBackground = true;
 	rectangleHeight = 10;
 	width = 200;
@@ -1326,6 +1460,8 @@ CThemeSlider::CThemeSlider()
 	colorBack.Set(128, 128, 128);
 	rectanglePast.Set(0, 0, 128);
 	rectangleNext.Set(48, 128, 254);
+    colorActifReplacement.Set(48, 128, 254);
+    colorInactifReplacement.Set(255, 255, 255);
 	font.SetColorFont(wxColour(255, 255, 255));
 	font.SetFontName("Verdana");
 	font.SetFontSize(8);
@@ -1392,6 +1528,22 @@ void CThemeSlider::LoadXML(xml_node<> * root_node)
 			nodeName = child_node->name();
 			rectangleNext.Set(value);
 		}
+        
+		child_node = node->first_node("colorActifReplacement");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			colorActifReplacement.Set(value);
+		}
+        
+		child_node = node->first_node("colorInactifReplacement");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			colorInactifReplacement.Set(value);
+		}
 	}
 }
 
@@ -1402,9 +1554,11 @@ void CThemeSlider::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	section->append_node(node(doc, "width", to_string(width)));
 	section->append_node(node(doc, "height", to_string(height)));
 	section->append_node(node(doc, "rectangleHeight", to_string(rectangleHeight)));
-	section->append_node(node(doc, "rectanglePast", rectanglePast.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "rectangleNext", rectangleNext.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "rectanglePast", CConvertUtility::ConvertToStdString(rectanglePast.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "rectangleNext", CConvertUtility::ConvertToStdString(rectangleNext.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "colorActifReplacement",CConvertUtility::ConvertToStdString(colorActifReplacement.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "colorInactifReplacement",CConvertUtility::ConvertToStdString(colorInactifReplacement.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1417,12 +1571,24 @@ CThemeSlider& CThemeSlider::operator=(const CThemeSlider& other)
 	this->width = other.width;
 	this->height = other.height;
 	this->colorBack = other.colorBack;
+    this->colorInactifReplacement = other.colorInactifReplacement;
+    this->colorActifReplacement = other.colorActifReplacement;
 	return *this;
 }
 
 CThemeSliderVideo::CThemeSliderVideo()
 {
-    
+    buttonPlayWidth = 24;
+    buttonPlayHeight = 24;
+    buttonPauseWidth = 24;
+    buttonPauseHeight = 24;
+    buttonVolumeUpWidth = 24;
+    buttonVolumeUpHeight = 24;
+    buttonVolumeDownWidth = 24;
+    buttonVolumeDownHeight = 24;
+    buttonSpeakerWidth = 24;
+    buttonSpeakerHeight = 24;
+    marge = 10;
 }
 
 CThemeSliderVideo::~CThemeSliderVideo()
@@ -1504,7 +1670,7 @@ void CThemeBitmapInfos::SaveXML(xml_document<> & doc, xml_node<>* sectionPositio
 {
 	xml_node<>* section = node(doc, "ThemeBitmapInfos");
 	themeFont.SaveXML(doc, section);
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "height", to_string(height)));
     section->append_node(node(doc, "checkboxHeight", to_string(checkboxHeight)));
     section->append_node(node(doc, "checkboxWidth", to_string(checkboxWidth)));
@@ -1648,11 +1814,11 @@ void CThemeIcone::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
     section->append_node(node(doc, "checkboxHeight", to_string(checkboxHeight)));
 	section->append_node(node(doc, "showOnlyThumbnail", to_string(showOnlyThumbnail)));
 	section->append_node(node(doc, "marge", to_string(marge)));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorTop", colorTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBottom",colorBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorSelectTop", colorSelectTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorSelectBottom", colorSelectBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorTop", CConvertUtility::ConvertToStdString(colorTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBottom",CConvertUtility::ConvertToStdString(colorBottom.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorSelectTop", CConvertUtility::ConvertToStdString(colorSelectTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorSelectBottom", CConvertUtility::ConvertToStdString(colorSelectBottom.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1683,6 +1849,7 @@ CThemeInfosSeparationBar::CThemeInfosSeparationBar()
 	themeFont.SetFontSize(10);
 	themeFont.SetFontQuality(ANTIALIASED_QUALITY);
 	height = 40;
+	calculHeight = 0;
 }
 
 void CThemeInfosSeparationBar::LoadXML(xml_node<> * root_node)
@@ -1749,9 +1916,9 @@ void CThemeInfosSeparationBar::SaveXML(xml_document<> & doc, xml_node<>* section
 	xml_node<>* section = node(doc, "ThemeInfosSeparationBar");
 	themeFont.SaveXML(doc, section);
 	section->append_node(node(doc, "height", to_string(height)));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorTop", colorTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBottom", colorBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorTop", CConvertUtility::ConvertToStdString(colorTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBottom", CConvertUtility::ConvertToStdString(colorBottom.GetAsString(wxC2S_CSS_SYNTAX))));
     section->append_node(node(doc, "checkboxHeight", to_string(checkboxHeight)));
     section->append_node(node(doc, "checkboxWidth", to_string(checkboxWidth)));
 	sectionPosition->append_node(section);
@@ -1827,7 +1994,7 @@ void CThemeThumbnail::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	xml_node<>* section = node(doc, "ThemeThumbnail");
 	themeIcone.SaveXML(doc, section);
 	themeSeparation.SaveXML(doc, section);
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -1916,7 +2083,7 @@ void CThemeToolBarZoom::SaveXML(xml_document<> & doc, xml_node<>* sectionPositio
 	xml_node<>* sectionFontActif = node(doc, "FontActif");
 	fontActif.SaveXML(doc, sectionFontActif);
 	section->append_node(sectionFontActif);
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "height", to_string(height)));
     section->append_node(node(doc, "checkboxHeight", to_string(checkboxHeight)));
     section->append_node(node(doc, "checkboxWidth", to_string(checkboxWidth)));
@@ -1976,10 +2143,13 @@ CThemeToolbarButton::CThemeToolbarButton()
 {
 	tailleX = 60;
 	tailleY = 60;
+    replaceColor.Set(255,255,255);
 	lineColorTop.Set(222, 222, 222);
 	lineColorBottom.Set(156, 156, 156);
 	actifTop.Set(255, 255, 255);
 	actifBottom.Set(223, 223, 223);
+    colorActifReplacement.Set(48, 128, 254);
+    replaceColor.Set(255,255,255);
 	font.SetFontName("Verdana");
 	font.SetFontSize(8);
 	font.SetFontQuality(ANTIALIASED_QUALITY);
@@ -2061,6 +2231,22 @@ void CThemeToolbarButton::LoadXML(xml_node<> * root_node)
 			nodeName = child_node->name();
 			actifBottom.Set(value);
 		}
+
+		child_node = node->first_node("colorActifReplacement");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			colorActifReplacement.Set(value);
+		}        
+
+		child_node = node->first_node("replaceColor");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			replaceColor.Set(value);
+		}
 	}
 }
 
@@ -2072,10 +2258,12 @@ void CThemeToolbarButton::SaveXML(xml_document<> & doc, xml_node<>* sectionPosit
 	section->append_node(node(doc, "tailleY", to_string(tailleY)));
 	section->append_node(node(doc, "rectangleSize", to_string(rectangleSize)));
 	section->append_node(node(doc, "showButtonOnly", to_string(showButtonOnly)));
-	section->append_node(node(doc, "lineColorTop", lineColorTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "lineColorBottom", lineColorBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "actifTop", actifTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "actifBottom", actifBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "lineColorTop", CConvertUtility::ConvertToStdString(lineColorTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "lineColorBottom", CConvertUtility::ConvertToStdString(lineColorBottom.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "actifTop", CConvertUtility::ConvertToStdString(actifTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "actifBottom", CConvertUtility::ConvertToStdString(actifBottom.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "colorActifReplacement", CConvertUtility::ConvertToStdString(colorActifReplacement.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "replaceColor", CConvertUtility::ConvertToStdString(replaceColor.GetAsString(wxC2S_CSS_SYNTAX))));
 	sectionPosition->append_node(section);
 }
 
@@ -2090,6 +2278,7 @@ CThemeToolbarButton& CThemeToolbarButton::operator=(const CThemeToolbarButton& o
 	this->lineColorBottom = other.lineColorBottom;
 	this->actifTop = other.actifTop;
 	this->actifBottom = other.actifBottom;
+    this->replaceColor = other.replaceColor;
 	return *this;
 }
 
@@ -2214,11 +2403,11 @@ void CThemeToolbarTexte::SaveXML(xml_document<> & doc, xml_node<>* sectionPositi
 	section->append_node(node(doc, "tailleX", to_string(tailleX)));
 	section->append_node(node(doc, "tailleY", to_string(tailleY)));
 	section->append_node(node(doc, "rectangleSize", to_string(rectangleSize)));
-	section->append_node(node(doc, "colorBack",colorBack.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "actifTop", actifTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "actifBottom", actifBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "rectTop", rectTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "rectBottom", rectBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorBack",CConvertUtility::ConvertToStdString(colorBack.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "actifTop", CConvertUtility::ConvertToStdString(actifTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "actifBottom", CConvertUtility::ConvertToStdString(actifBottom.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "rectTop", CConvertUtility::ConvertToStdString(rectTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "rectBottom", CConvertUtility::ConvertToStdString(rectBottom.GetAsString(wxC2S_CSS_SYNTAX))));
 
 	sectionPosition->append_node(section);
 
@@ -2248,8 +2437,10 @@ CThemeToolbar::CThemeToolbar()
 	position = 0;
 	isVertical = 0;
 	colorBack.Set(30, 30, 30);
-	colorTop.Set(74, 74, 74);
+	//colorTop.Set(74, 74, 74);
+    colorTop.Set(29, 29, 29);
 	colorBottom.Set(29, 29, 29);
+    replaceColor.Set(255,255,255);
 };
 
 void CThemeToolbar::LoadXML(xml_node<> * root_node)
@@ -2293,6 +2484,14 @@ void CThemeToolbar::LoadXML(xml_node<> * root_node)
 			value = child_node->value();
 			nodeName = child_node->name();
 			colorBottom.Set(value);
+		}
+        
+		child_node = node->first_node("replaceColor");
+		if (child_node != 0)
+		{
+			value = child_node->value();
+			nodeName = child_node->name();
+			replaceColor.Set(value);
 		}
 
 		child_node = node->first_node("margeX");
@@ -2338,8 +2537,9 @@ void CThemeToolbar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 
 	section->append_node(node(doc, "height", to_string(height)));
 	section->append_node(node(doc, "width", to_string(width)));
-	section->append_node(node(doc, "colorTop", colorTop.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
-	section->append_node(node(doc, "colorBottom", colorBottom.GetAsString(wxC2S_CSS_SYNTAX).ToStdString()));
+	section->append_node(node(doc, "colorTop", CConvertUtility::ConvertToStdString(colorTop.GetAsString(wxC2S_CSS_SYNTAX))));
+	section->append_node(node(doc, "colorBottom", CConvertUtility::ConvertToStdString(colorBottom.GetAsString(wxC2S_CSS_SYNTAX))));
+    section->append_node(node(doc, "replaceColor", CConvertUtility::ConvertToStdString(replaceColor.GetAsString(wxC2S_CSS_SYNTAX))));
 	section->append_node(node(doc, "margeX", to_string(margeX)));
 	section->append_node(node(doc, "margeY", to_string(margeY)));
 	section->append_node(node(doc, "position", to_string(position)));
@@ -2361,6 +2561,7 @@ CThemeToolbar& CThemeToolbar::operator=(const CThemeToolbar& other)
 	this->button = other.button;
 	this->texte = other.texte;
 	this->slider = other.slider;
+    this->replaceColor = other.replaceColor;
 	return *this;
 }
 

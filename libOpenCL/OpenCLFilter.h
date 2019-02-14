@@ -63,7 +63,8 @@ namespace Regards
 			cl_mem Fusion(cl_mem inputData, cl_mem secondPictureData, const float &pourcentage, int width, int height);
 			cl_mem ConvertToY(cl_mem inputData, int width, int height);
 			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height);
-
+			cl_mem ExtractBlocSize(cl_mem sourceData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
+			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 		protected:
 
 			

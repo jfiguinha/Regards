@@ -1268,7 +1268,7 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 	}
 	else
 	{
-		//bool isOnArrow = false;
+		bool isOnArrow = false;
 		if (fixArrow && etape == 0)
 		{
 			int yPosTop = (height - arrowNext.GetHeight()) / 2;
@@ -1276,12 +1276,12 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 
 			if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 			{
-				//isOnArrow = true;
+				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 			else if ((xPos >(width - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 			{
-				//isOnArrow = true;
+				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
 		}

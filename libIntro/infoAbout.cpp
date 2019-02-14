@@ -12,9 +12,16 @@ CInfoAbout::CInfoAbout(CThemeTree * theme)
 	themeTree.SetMargeX(5);
 	rowWidth.push_back(0);
 	rowWidth.push_back(0);
+	index = 0;
+	yPos = 0;
+	widthPosition = 0;
 };
 
-
+void CInfoAbout::UpdateScreenRatio()
+{
+    printf("CCategoryWnd::UpdateScreenRatio() \n");
+    eventControl->UpdateTreeControl();
+}
 
 CInfoAbout::~CInfoAbout()
 {
@@ -45,13 +52,13 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.4.0");
+	treeDataWidth->SetValue("2.18.1.0");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
 	treeDataAnnee->SetIsParent(false);
 	treeDataAnnee->SetKey("Copyright");
-	treeDataAnnee->SetValue("2015 - 2016");
+	treeDataAnnee->SetValue("2014 - 2019");
 	tr.append_child(child, treeDataAnnee);
 
 	CTreeData * treeDataLib = new CTreeData();
@@ -69,7 +76,7 @@ void CInfoAbout::Init()
 	CTreeData * treeSQLite = new CTreeData();
 	treeSQLite->SetIsParent(false);
 	treeSQLite->SetKey("SQLite");
-	treeSQLite->SetValue("3.8.5");
+	treeSQLite->SetValue("3.26.0");
 	tr.append_child(child, treeSQLite);
 
 	CTreeData * treeRapipXML = new CTreeData();
@@ -77,6 +84,13 @@ void CInfoAbout::Init()
 	treeRapipXML->SetKey("Rapid XML");
 	treeRapipXML->SetValue("1.13");
 	tr.append_child(child, treeRapipXML);
+
+
+	CTreeData * libMediaInfo = new CTreeData();
+	libMediaInfo->SetIsParent(false);
+	libMediaInfo->SetKey("Lib Media Info");
+	libMediaInfo->SetValue("0.7.75");
+	tr.append_child(child, libMediaInfo);
 
 	CTreeData * treeHH = new CTreeData();
 	treeHH->SetIsParent(false);
@@ -89,38 +103,108 @@ void CInfoAbout::Init()
 	treeCxImage->SetKey("CxImage ");
 	treeCxImage->SetValue("7.0");
 	tr.append_child(child, treeCxImage);
-#if defined(__APPLE__) || defined(__WIN32__)
-	CTreeDataLink * treelibRaw = new CTreeDataLink();
-	treelibRaw->SetIsParent(false);
-	treelibRaw->SetKey("MediaInfoLib");
-    treelibRaw->SetLinkType(1);
-    treelibRaw->SetLinkPath("MediaInfoLicense.pdf");
-	treelibRaw->SetValue("0.7.76 - BSD Licence Like - Click to see licence");
-	tr.append_child(child, treelibRaw);
-#else
+
 	CTreeData * treelibRaw = new CTreeData();
 	treelibRaw->SetIsParent(false);
 	treelibRaw->SetKey("Libraw");
-	treelibRaw->SetValue("0.17.0");
+	treelibRaw->SetValue("0.18.7");
 	tr.append_child(child, treelibRaw);
-
-	CTreeData * treelibFFmpeg = new CTreeData();
-	treelibFFmpeg->SetIsParent(false);
-	treelibFFmpeg->SetKey("FFMpeg");
-	treelibFFmpeg->SetValue("2.6.2");
-	tr.append_child(child, treelibFFmpeg);
 
 	CTreeData * treelibExiv = new CTreeData();
 	treelibExiv->SetIsParent(false);
 	treelibExiv->SetKey("Exiv 2");
-	treelibExiv->SetValue("0.24");
+	treelibExiv->SetValue("0.26");
 	tr.append_child(child, treelibExiv);
-#endif
+
+	CTreeData * treelibFFmpeg = new CTreeData();
+	treelibFFmpeg->SetIsParent(false);
+	treelibFFmpeg->SetKey("FFMpeg");
+	treelibFFmpeg->SetValue("4.1");
+	tr.append_child(child, treelibFFmpeg);
+	
 	CTreeData * treelibBPG = new CTreeData();
 	treelibBPG->SetIsParent(false);
 	treelibBPG->SetKey("wxWidget");
-	treelibBPG->SetValue("3.0.2");
+	treelibBPG->SetValue("3.1.1");
 	tr.append_child(child, treelibBPG);
+
+	CTreeData * treelibTurboJpeg = new CTreeData();
+	treelibTurboJpeg->SetIsParent(false);
+	treelibTurboJpeg->SetKey("Turbo JPEG");
+	treelibTurboJpeg->SetValue("1.5.1");
+	tr.append_child(child, treelibTurboJpeg);
+    
+	CTreeData * treelibDlib = new CTreeData();
+	treelibDlib->SetIsParent(false);
+	treelibDlib->SetKey("dlib");
+	treelibDlib->SetValue("19.7");
+	tr.append_child(child, treelibDlib);    
+
+	CTreeData * treelibGlew = new CTreeData();
+	treelibGlew->SetIsParent(false);
+	treelibGlew->SetKey("glew");
+	treelibGlew->SetValue("2.1.0");
+	tr.append_child(child, treelibGlew);  
+    
+	CTreeData * treelibWebp = new CTreeData();
+	treelibWebp->SetIsParent(false);
+	treelibWebp->SetKey("webp");
+	treelibWebp->SetValue("0.6");
+	tr.append_child(child, treelibWebp);   
+
+	CTreeData * treelib265 = new CTreeData();
+	treelib265->SetIsParent(false);
+	treelib265->SetKey("x265");
+	treelib265->SetValue("2.5");
+	tr.append_child(child, treelib265);     
+    
+	CTreeData * treelibSDL = new CTreeData();
+	treelibSDL->SetIsParent(false);
+	treelibSDL->SetKey("SDL 2");
+	treelibSDL->SetValue("2.0.5");
+	tr.append_child(child, treelibSDL);     
+    
+	CTreeData * treelibJasper = new CTreeData();
+	treelibJasper->SetIsParent(false);
+	treelibJasper->SetKey("jasper");
+	treelibJasper->SetValue("1.900.1");
+	tr.append_child(child, treelibJasper);       
+
+	CTreeData * treelibMng = new CTreeData();
+	treelibMng->SetIsParent(false);
+	treelibMng->SetKey("libmng");
+	treelibMng->SetValue("2.0.3");
+	tr.append_child(child, treelibMng);  
+    
+	CTreeData * treelibde265 = new CTreeData();
+	treelibde265->SetIsParent(false);
+	treelibde265->SetKey("libde265");
+	treelibde265->SetValue("1.0");
+	tr.append_child(child, treelibde265); 
+
+	CTreeData * treelibheif = new CTreeData();
+	treelibheif->SetIsParent(false);
+	treelibheif->SetKey("heif");
+	treelibheif->SetValue("1.0");
+	tr.append_child(child, treelibheif); 
+
+    CTreeData * treePiccante = new CTreeData();
+	treePiccante->SetIsParent(false);
+	treePiccante->SetKey("Piccante");
+	treePiccante->SetValue("0.4");
+	tr.append_child(child, treePiccante);    
+    
+    CTreeData * treeOpenEXR = new CTreeData();
+	treeOpenEXR->SetIsParent(false);
+	treeOpenEXR->SetKey("OpenEXR");
+	treeOpenEXR->SetValue("2.3.0");
+	tr.append_child(child, treeOpenEXR);     
+
+    CTreeData * treewxSVG = new CTreeData();
+	treewxSVG->SetIsParent(false);
+	treewxSVG->SetKey("wxSVG");
+	treewxSVG->SetValue("1.5.15");
+	tr.append_child(child, treewxSVG);  
 
 	CreateElement();
 }

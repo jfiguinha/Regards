@@ -2,21 +2,21 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=FaceRecognition_windows
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=C:/Regards
 ProjectPath            :=C:/Regards/FaceRecognition_windows
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=jfigu_000
-Date                   :=11/02/2019
+User                   :=jfigu
+Date                   :=14/01/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
+SharedObjectLinkerName :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -37,7 +37,7 @@ PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch)../libextern/dlib-19.7 $(IncludeSwitch)../FaceRecognition 
 IncludePCH             := 
 RcIncludePath          := 
@@ -51,11 +51,11 @@ LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK
 ##
 AR       := C:/msys64/mingw64/bin/ar.exe rcu
 CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
-CXXFLAGS := -fopenmp -std=gnu++11 -Wall -fpermissive -fPIC -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
+CC       := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/gcc.exe
+CXXFLAGS := -fopenmp -std=gnu++11 -Wall -fpermissive -fPIC -g -O0 -Wall  $(Preprocessors)
+CFLAGS   :=  -Wall  -g -O0 -Wall  $(Preprocessors)
 ASFLAGS  := 
-AS       := C:/msys64/mingw64/bin/as.exe
+AS       := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/as.exe
 
 
 ##
@@ -82,15 +82,15 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(SharedObjectLinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
-	@$(MakeDirCommand) "C:\Regards/.build-release"
-	@echo rebuilt > "C:\Regards/.build-release/FaceRecognition_windows"
+	@$(MakeDirCommand) "C:\Regards/.build-debug"
+	@echo rebuilt > "C:\Regards/.build-debug/FaceRecognition_windows"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 
 $(IntermediateDirectory)/.d:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
 
@@ -120,6 +120,6 @@ $(IntermediateDirectory)/up_FaceRecognition_FaceRecognition.cpp$(PreprocessSuffi
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

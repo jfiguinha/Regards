@@ -67,6 +67,169 @@ cl_mem COpenCLFilter::ConvertToY(cl_mem inputData, int width, int height)
 	return outputValue;
 }
 
+cl_mem COpenCLFilter::ExtractBlocSize(cl_mem sourceData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y)
+{
+	cl_mem outputValue = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CONVERTTOY");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
+			input->SetValue(sourceData);
+			input->SetLibelle("input");
+			input->SetNoDelete(true);
+			vecParam.push_back(input);
+
+			COpenCLParameterInt * paramSize = new COpenCLParameterInt();
+			paramSize->SetLibelle("size");
+			paramSize->SetValue(size);
+			vecParam.push_back(paramSize);
+
+			COpenCLParameterInt * paramMarge = new COpenCLParameterInt();
+			paramMarge->SetLibelle("marge");
+			paramMarge->SetValue(marge);
+			vecParam.push_back(paramMarge);
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(width);
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(height);
+			vecParam.push_back(paramHeight);
+
+			COpenCLParameterInt * paramX = new COpenCLParameterInt();
+			paramX->SetLibelle("x");
+			paramX->SetValue(x);
+			vecParam.push_back(paramX);
+
+			COpenCLParameterInt * paramY = new COpenCLParameterInt();
+			paramY->SetLibelle("y");
+			paramY->SetValue(y);
+			vecParam.push_back(paramY);
+
+			int sizeTraitement = size + 2 * marge;
+
+			try
+			{
+				program->SetParameter(&vecParam, sizeTraitement, sizeTraitement, sizeof(float) * sizeTraitement * sizeTraitement);
+				program->SetKeepOutput(true);
+				program->ExecuteProgram(programCL->GetProgram(), "ExtractBlocSize");
+				//program->ExecuteProgram2D(programCL->GetProgram(), "ExtractBlocSize", &vecParam, size, size);
+				outputValue = program->GetOutput();
+
+			}
+			catch (...)
+			{
+				outputValue = nullptr;
+			}
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	return outputValue;
+}
+
+void COpenCLFilter::InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y)
+{
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CONVERTTOY");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem * paramSource = new COpenCLParameterClMem(true);
+			paramSource->SetValue(sourceData);
+			paramSource->SetLibelle("output");
+			paramSource->SetNoDelete(true);
+			vecParam.push_back(paramSource);
+
+			COpenCLParameterClMem * paramWiener = new COpenCLParameterClMem(true);
+			paramWiener->SetValue(wienerData);
+			paramWiener->SetLibelle("wiener");
+			paramWiener->SetNoDelete(true);
+			vecParam.push_back(paramWiener);
+
+			COpenCLParameterInt * paramSize = new COpenCLParameterInt();
+			paramSize->SetLibelle("size");
+			paramSize->SetValue(size);
+			vecParam.push_back(paramSize);
+
+			COpenCLParameterInt * paramMarge = new COpenCLParameterInt();
+			paramMarge->SetLibelle("marge");
+			paramMarge->SetValue(marge);
+			vecParam.push_back(paramMarge);
+
+			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(width);
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(height);
+			vecParam.push_back(paramHeight);
+
+			COpenCLParameterInt * paramX = new COpenCLParameterInt();
+			paramX->SetLibelle("x");
+			paramX->SetValue(x);
+			vecParam.push_back(paramX);
+
+			COpenCLParameterInt * paramY = new COpenCLParameterInt();
+			paramY->SetLibelle("y");
+			paramY->SetValue(y);
+			vecParam.push_back(paramY);
+
+			try
+			{
+				/*
+				program->SetParameter(&vecParam, width, height, sizeof(float) * width * height);
+				program->SetKeepOutput(true);
+				program->ExecuteProgram(programCL->GetProgram(), "InsertBlockSize");
+				outputValue = program->GetOutput();
+				*/
+				int sizeTraitement = size + 2 * marge;
+				program->ExecuteProgram2D(programCL->GetProgram(), "InsertBlockSize", &vecParam, sizeTraitement, sizeTraitement);
+			}
+			catch (...)
+			{
+			}
+
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+}
+
 cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height)
 {
 	cl_mem outputValue = nullptr;

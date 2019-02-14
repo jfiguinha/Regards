@@ -36,43 +36,96 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
 
 int COpenCLEffect::Bm3d(const int & fSigma)
 {
-	int _width = 0;
-	int _height = 0;
-	cl_mem output = nullptr;
-	cl_mem wiener = nullptr;
+	int _width = 256;
+	int _height = 256;
+	
+	cl_mem yPicture = nullptr;
+	
 	if (context != nullptr)
 	{
-		COpenCLBm3D openclBm3D(context);
 		COpenCLFilter openclFilter(context);
-		if (preview && paramOutput != nullptr)
+		int size = 512;
+/*
+		if(preview && paramOutput != nullptr)
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height);
+			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.ConvertToY(input->GetValue(), _width, _height);
-		}
-
-		openclBm3D.InitData(output, _width * _height, _width, _height);
-		openclBm3D.ExecuteFilter(fSigma);
-		wiener = openclBm3D.GetWienerImage();
-
+			output = openclFilter.bilat2(fSize,sigmaX,sigmaP, input->GetValue(), width, height);
+		}		
+        */
+        
 		if (preview && paramOutput != nullptr)
 		{
-			output = openclFilter.InsertYValue(wiener, paramOutput->GetValue(), _width, _height);
+			_width = widthOut;
+			_height = heightOut;
+            yPicture = openclFilter.ConvertToY(paramOutput->GetValue(), _width, _height);
 		}
 		else
 		{
-			output = openclFilter.InsertYValue(wiener, input->GetValue(), _width, _height);
+			_width = width;
+			_height = height;
+			yPicture = openclFilter.ConvertToY(input->GetValue(), _width, _height);
+		}
+
+
+		
+
+		
+		//int size = 512;
+		
+		COpenCLBm3D openclBm3D(context);
+		openclBm3D.InitData(yPicture, _width * _height, _width, _height);
+		openclBm3D.ExecuteFilter(fSigma);
+		yPicture = openclBm3D.GetWienerImage();
+		
+		
+		/*
+		int nbPictureX = _width / size;
+		int nbPictureY = _height / size;
+		if (nbPictureX * size < _width)
+			nbPictureX++;
+		if (nbPictureY * size < _height)
+			nbPictureY++;
+
+		for (int y = 0; y < nbPictureY; y++)
+		{
+			for (int x = 0; x < nbPictureX; x++)
+			{		
+
+				int marge = 16;			
+				int sizeTraitement = size + marge * 2;
+				cl_mem wiener = nullptr;
+				cl_mem block_size = nullptr;
+
+				COpenCLBm3D openclBm3D(context);
+				block_size = openclFilter.ExtractBlocSize(yPicture, size, marge, _width, _height, x, y);
+				openclBm3D.InitData(block_size, sizeTraitement * sizeTraitement, sizeTraitement, sizeTraitement);
+				openclBm3D.ExecuteFilter(fSigma);
+				wiener = openclBm3D.GetWienerImage();
+				openclFilter.InsertBlockSize(yPicture, wiener, size, marge, _width, _height, x, y);
+			}
+		}
+		*/
+
+		cl_mem output = nullptr;
+		if (preview && paramOutput != nullptr)
+		{
+			output = openclFilter.InsertYValue(yPicture, paramOutput->GetValue(), _width, _height);
+		}
+		else
+		{
+			output = openclFilter.InsertYValue(yPicture, input->GetValue(), _width, _height);
 		}
 
 		SetOutputValue(output, _width, _height);
 	}
-	return 0;    
+	return 0;  
 }
 
 int COpenCLEffect::WaveFilter(int x, int y, short height, int scale, int radius)

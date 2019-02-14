@@ -5,18 +5,18 @@
 ## Release
 ProjectName            :=libTheme
 ConfigurationName      :=Release
-WorkspacePath          :=C:/Regards
-ProjectPath            :=C:/Regards/libTheme
+WorkspacePath          :=/home/figuinha/developpement/Regards
+ProjectPath            :=/home/figuinha/developpement/Regards/libTheme
 IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=jfigu_000
-Date                   :=11/02/2019
-CodeLitePath           :="C:/Program Files/CodeLite"
-LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
+User                   :=figuinha
+Date                   :=14/02/19
+CodeLitePath           :=/home/figuinha/.codelite
+LinkerName             :=/usr/bin/ccache /usr/bin/g++
+SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -34,37 +34,32 @@ ArchiveOutputSwitch    :=
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libTheme.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=makedir
-RcCmpOptions           := 
-RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
+MakeDirCommand         :=mkdir -p
 LinkOptions            :=  -s 
-IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libParameter $(IncludeSwitch)../include $(IncludeSwitch)../libUtility 
+IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/usr/include/libexif  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libParameter $(IncludeSwitch)../include $(IncludeSwitch)../libUtility 
 IncludePCH             :=  -include ../include/Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\lib\x86_64"  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := C:/msys64/mingw64/bin/ar.exe rcu
-CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
+AR       := /usr/bin/ar rcu
+CXX      := /usr/bin/ccache /usr/bin/g++
+CC       := /usr/bin/ccache /usr/bin/gcc
 CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
 CFLAGS   :=  -Wall -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := C:/msys64/mingw64/bin/as.exe
+AS       := /usr/bin/yasm
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=C:\Program Files\CodeLite
-PATH:=C:\msys64\usr\bin;$PATH
-WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
-WXCFG:=lib/mswud
+CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/theme.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThemeInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThemeParam.cpp$(ObjectSuffix) 
 
 
@@ -82,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "C:\Regards/.build-release"
-	@echo rebuilt > "C:\Regards/.build-release/libTheme"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libTheme"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
 ./Release:
-	@$(MakeDirCommand) "./Release"
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -104,7 +99,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/theme.cpp$(ObjectSuffix): theme.cpp $(IntermediateDirectory)/theme.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libTheme/theme.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/theme.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libTheme/theme.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/theme.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/theme.cpp$(DependSuffix): theme.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/theme.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/theme.cpp$(DependSuffix) -MM theme.cpp
 
@@ -112,7 +107,7 @@ $(IntermediateDirectory)/theme.cpp$(PreprocessSuffix): theme.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/theme.cpp$(PreprocessSuffix) theme.cpp
 
 $(IntermediateDirectory)/ThemeInit.cpp$(ObjectSuffix): ThemeInit.cpp $(IntermediateDirectory)/ThemeInit.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libTheme/ThemeInit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThemeInit.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libTheme/ThemeInit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThemeInit.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ThemeInit.cpp$(DependSuffix): ThemeInit.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThemeInit.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThemeInit.cpp$(DependSuffix) -MM ThemeInit.cpp
 
@@ -120,7 +115,7 @@ $(IntermediateDirectory)/ThemeInit.cpp$(PreprocessSuffix): ThemeInit.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThemeInit.cpp$(PreprocessSuffix) ThemeInit.cpp
 
 $(IntermediateDirectory)/ThemeParam.cpp$(ObjectSuffix): ThemeParam.cpp $(IntermediateDirectory)/ThemeParam.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libTheme/ThemeParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThemeParam.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libTheme/ThemeParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThemeParam.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ThemeParam.cpp$(DependSuffix): ThemeParam.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThemeParam.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThemeParam.cpp$(DependSuffix) -MM ThemeParam.cpp
 

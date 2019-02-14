@@ -5,18 +5,18 @@
 ## Release
 ProjectName            :=libParameter
 ConfigurationName      :=Release
-WorkspacePath          :=C:/Regards
-ProjectPath            :=C:/Regards/libParameter
+WorkspacePath          :=/home/figuinha/developpement/Regards
+ProjectPath            :=/home/figuinha/developpement/Regards/libParameter
 IntermediateDirectory  :=./Release
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
-User                   :=jfigu_000
-Date                   :=11/02/2019
-CodeLitePath           :="C:/Program Files/CodeLite"
-LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-SharedObjectLinkerName :=C:/msys64/mingw64/bin/g++.exe -shared -fPIC
+User                   :=figuinha
+Date                   :=14/02/19
+CodeLitePath           :=/home/figuinha/.codelite
+LinkerName             :=/usr/bin/ccache /usr/bin/g++
+SharedObjectLinkerName :=/usr/bin/ccache /usr/bin/g++ -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -34,37 +34,32 @@ ArchiveOutputSwitch    :=
 PreprocessOnlySwitch   :=-E
 ObjectsFileList        :="libParameter.txt"
 PCHCompileFlags        :=
-MakeDirCommand         :=makedir
-RcCmpOptions           := 
-RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
+MakeDirCommand         :=mkdir -p
 LinkOptions            :=  -s
-IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../include $(IncludeSwitch)../libUtility 
+IncludePath            := $(IncludeSwitch)/opt/AMDAPPSDK-3.0/include $(IncludeSwitch)/usr/include/OpenEXR $(IncludeSwitch)/usr/include/pango-1.0 $(IncludeSwitch)/usr/include/glib-2.0 $(IncludeSwitch)/usr/lib/x86_64-linux-gnu/glib-2.0/include $(IncludeSwitch)/usr/include/cairo $(IncludeSwitch)/usr/include/SDL2 $(IncludeSwitch)/usr/include/libxml2 $(IncludeSwitch)/usr/include/libexif  $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../include $(IncludeSwitch)../libUtility 
 IncludePCH             :=  -include ../include/Release/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
-LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\lib\x86_64"  $(LibraryPathSwitch). 
+LibPath                :=$(LibraryPathSwitch)/opt/AMDAPPSDK-3.0/lib  $(LibraryPathSwitch). 
 
 ##
 ## Common variables
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
-AR       := C:/msys64/mingw64/bin/ar.exe rcu
-CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
-CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
+AR       := /usr/bin/ar rcu
+CXX      := /usr/bin/ccache /usr/bin/g++
+CC       := /usr/bin/ccache /usr/bin/gcc
 CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
 CFLAGS   :=  -Wall  -O2 -msse4.1 $(Preprocessors)
 ASFLAGS  := 
-AS       := C:/msys64/mingw64/bin/as.exe
+AS       := /usr/bin/yasm
 
 
 ##
 ## User defined environment variables
 ##
-CodeLiteDir:=C:\Program Files\CodeLite
-PATH:=C:\msys64\usr\bin;$PATH
-WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
-WXCFG:=lib/mswud
+CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/RegardsConfigParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/ConfigParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/ParamInit.cpp$(ObjectSuffix) 
 
 
@@ -82,15 +77,15 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "C:\Regards/.build-release"
-	@echo rebuilt > "C:\Regards/.build-release/libParameter"
+	@$(MakeDirCommand) "/home/figuinha/developpement/Regards/.build-release"
+	@echo rebuilt > "/home/figuinha/developpement/Regards/.build-release/libParameter"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 
 ./Release:
-	@$(MakeDirCommand) "./Release"
+	@test -d ./Release || $(MakeDirCommand) ./Release
 
 PreBuild:
 
@@ -104,7 +99,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/RegardsConfigParam.cpp$(ObjectSuffix): RegardsConfigParam.cpp $(IntermediateDirectory)/RegardsConfigParam.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libParameter/RegardsConfigParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RegardsConfigParam.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libParameter/RegardsConfigParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/RegardsConfigParam.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/RegardsConfigParam.cpp$(DependSuffix): RegardsConfigParam.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/RegardsConfigParam.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/RegardsConfigParam.cpp$(DependSuffix) -MM RegardsConfigParam.cpp
 
@@ -112,7 +107,7 @@ $(IntermediateDirectory)/RegardsConfigParam.cpp$(PreprocessSuffix): RegardsConfi
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RegardsConfigParam.cpp$(PreprocessSuffix) RegardsConfigParam.cpp
 
 $(IntermediateDirectory)/ConfigParam.cpp$(ObjectSuffix): ConfigParam.cpp $(IntermediateDirectory)/ConfigParam.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libParameter/ConfigParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ConfigParam.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libParameter/ConfigParam.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ConfigParam.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ConfigParam.cpp$(DependSuffix): ConfigParam.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ConfigParam.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ConfigParam.cpp$(DependSuffix) -MM ConfigParam.cpp
 
@@ -120,7 +115,7 @@ $(IntermediateDirectory)/ConfigParam.cpp$(PreprocessSuffix): ConfigParam.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ConfigParam.cpp$(PreprocessSuffix) ConfigParam.cpp
 
 $(IntermediateDirectory)/ParamInit.cpp$(ObjectSuffix): ParamInit.cpp $(IntermediateDirectory)/ParamInit.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/Regards/libParameter/ParamInit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ParamInit.cpp$(ObjectSuffix) $(IncludePath)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/figuinha/developpement/Regards/libParameter/ParamInit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ParamInit.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ParamInit.cpp$(DependSuffix): ParamInit.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ParamInit.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ParamInit.cpp$(DependSuffix) -MM ParamInit.cpp
 

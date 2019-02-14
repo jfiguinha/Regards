@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="PngOption">
+		<title>Dialog</title>
+		<centered>1</centered>
+		<size>304,200</size>
+		<object class="wxRadioBox" name="ID_RBINTERLACE">
+			<label>Interlace</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>no interlace</item>
+				<item>interlace</item>
+			</content>
+			<default>-1</default>
+			<pos>8,8</pos>
+			<size>120,112</size>
+		</object>
+		<object class="wxRadioBox" name="ID_RBCOMPRESSION">
+			<label>Compression</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>no compression</item>
+				<item>Best Speed</item>
+				<item>Best Compression</item>
+				<item>default Compression</item>
+			</content>
+			<default>-1</default>
+			<pos>144,8</pos>
+			<size>144,112</size>
+		</object>
+		<object class="wxButton" name="ID_OK">
+			<label>OK</label>
+			<pos>40,152</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>168,152</pos>
+		</object>
+	</object>
+</resource>

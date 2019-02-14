@@ -76,46 +76,6 @@
     <Project Name="libRegardsBpg_windows"/>
     <Project Name="FaceRecognition_windows"/>
   </Dependencies>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_windows"/>
-  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall;" Assembler="">
@@ -260,7 +220,6 @@
         <Library Value="RegardsRaw"/>
         <Library Value="OpenGL"/>
         <Library Value="RegardsCL"/>
-        <Library Value="SqlData"/>
         <Library Value="freeglut"/>
         <Library Value="glu32"/>
         <Library Value="glew32"/>
@@ -616,4 +575,44 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_windows"/>
+  </Dependencies>
 </CodeLite_Project>

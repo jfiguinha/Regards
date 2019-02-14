@@ -37,6 +37,7 @@ namespace Regards
 			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName);
 			void ExecuteProgram1D(const cl_program &program, const wxString &kernelName, const size_t & global_size, const size_t & outputBufferSize);
 			void ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, size_t * offset, size_t * gs_d, size_t * ls);
+			void ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, int width, int height);
 			
 			cl_mem GetOutput();
 			void SetKeepOutput(const bool &keepMemory);

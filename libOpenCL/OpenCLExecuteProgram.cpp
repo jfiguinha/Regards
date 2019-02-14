@@ -204,6 +204,35 @@ void COpenCLExecuteProgram::ExecuteKernel2D(const size_t & outputBufferSize)
 	}
 }
 
+void COpenCLExecuteProgram::ExecuteProgram2D(const cl_program &program, const wxString &kernelName, vector<COpenCLParameter *> * vecParam, int width, int height)
+{
+	cl_int err = 0;
+	kernel = clCreateKernel(program, kernelName.c_str(), &err);
+	Error::CheckError(err);
+
+	size_t global_work_size[2] = { static_cast<size_t>(width), static_cast<size_t>(height) };
+
+	int numArg = 0;
+	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
+	{
+		COpenCLParameter * parameter = *it;
+		parameter->Add(kernel, numArg++);
+	}
+	
+	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, sizeof(global_work_size) / sizeof(size_t), nullptr, global_work_size, nullptr, 0, nullptr, nullptr);
+	Error::CheckError(err);
+
+	err = clFinish(context->GetCommandQueue());
+	Error::CheckError(err);
+
+	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
+	{
+		COpenCLParameter * parameter = *it;
+		if (!parameter->GetNoDelete())
+			parameter->Release();
+	}
+}
+
 
 void COpenCLExecuteProgram::ExecuteKernel2D(size_t * offset, size_t * gs_d, size_t * ls)
 {
@@ -216,11 +245,26 @@ void COpenCLExecuteProgram::ExecuteKernel2D(size_t * offset, size_t * gs_d, size
 		parameter->Add(kernel, numArg++);
 	}
 
+	size_t local_size_max;
+	err = clGetKernelWorkGroupInfo(kernel, context->GetDeviceId(), CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), (void *)&local_size_max, nullptr);
+	Error::CheckError(err);
+
+	cl_event event;
+
 	//clEnqueueNDRangeKernel(queue, dist_kernel, 2, offset, gs_d, ls, 0, NULL, &event)
-	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, nullptr);
+	err = clEnqueueNDRangeKernel(context->GetCommandQueue(), kernel, 2, offset, gs_d, ls, 0, nullptr, &event);
 	Error::CheckError(err);
 
 
+	err = clFinish(context->GetCommandQueue());
+	Error::CheckError(err);
+
+	for (vector<COpenCLParameter *>::iterator it = vecParam->begin(); it != vecParam->end(); it++)
+	{
+		COpenCLParameter * parameter = *it;
+		if (!parameter->GetNoDelete())
+			parameter->Release();
+	}
 }
 
 cl_mem COpenCLExecuteProgram::GetOutput()
