@@ -1,3 +1,4 @@
+#include "header.h"
 #include "Icone.h"
 #include <ThumbnailData.h>
 #include <ThumbnailDataStorage.h>
@@ -9,11 +10,7 @@
 #include <FiltreEffet.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #ifdef WIN32
@@ -154,7 +151,6 @@ CIcone::CIcone(COpenCLContext * openclContext)
 	height = 0;
 	showLoading = false;
 	this->openclContext = openclContext;
-	pThumbnailData = nullptr;
 	pictureLoad = false;
 	posXThumbnail = 0;
 	posYThumbnail = 0;
@@ -507,12 +503,14 @@ void CIcone::RenderBitmap(wxDC * memdc, const wxImage & bitmapScale, const int &
 
 CIcone::~CIcone(void)
 {
+	
 	if (deleteData)
 	{
 		if (pThumbnailData != nullptr)
 			delete pThumbnailData;
 		pThumbnailData = nullptr;
 	}
+	
 }
 
 //----------------------------------------------------------------------------------
@@ -523,6 +521,7 @@ void CIcone::SetData(CThumbnailData * thumbnailData, const bool &deleteData)
 	pThumbnailData = thumbnailData;
 	this->deleteData = deleteData;
 }
+
 
 int CIcone::GetBitmapWidth()
 {
@@ -544,6 +543,11 @@ int CIcone::GetBitmapHeight()
 CThumbnailData * CIcone::GetData()
 {
 	return pThumbnailData;
+}
+
+bool CIcone::DataNeedToBeDelete()
+{
+	return deleteData;
 }
 
 void CIcone::CalculPosition(const wxImage & render)

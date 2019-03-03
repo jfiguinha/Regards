@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  SolarisationFilter.cpp
 //  Regards.libViewer

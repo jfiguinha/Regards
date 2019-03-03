@@ -8,7 +8,7 @@
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "wx/xrc/xmlres.h"
 #include "wx/url.h"
 #include "SqlInit.h"
@@ -37,7 +37,7 @@
 #endif
 
 #ifdef FFMPEG
-#include "config.h"
+#define CONFIG_AVFILTER 1
 
 extern "C"
 {

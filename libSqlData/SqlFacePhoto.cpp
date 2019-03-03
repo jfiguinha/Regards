@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Heic.h"
 #ifdef LIBHEIC
 #include <RegardsBitmap.h>
@@ -529,8 +530,8 @@ int CHeic::GetNbFrame(const string &filename)
 			nbId = 1;
 		}
     }    
-END:
-    Reader::Destroy(reader);    
+
+	Reader::Destroy(reader);    
     return nbId;
 
 }
@@ -855,8 +856,6 @@ CRegardsBitmap * CHeic::GetThumbnailPicture(const string &filename)
 			<< "Please download it from https://github.com/nokiatech/heif_conformance "
 			<< "and place it in same directory with the executable." << endl;
 	}
-    
-END:
     
     delete[] itemData;  
     Reader::Destroy(reader);

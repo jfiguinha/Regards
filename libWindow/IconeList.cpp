@@ -1,3 +1,4 @@
+#include "header.h"
 #include "IconeList.h"
 using namespace Regards::Window;
 
@@ -47,14 +48,14 @@ void CIconeList::Unlock()
      muList.lock();
 	for (CIcone * pIcone : pIconeList)
 	{
-		if(pIcone != nullptr)
-		{            
+		if (pIcone != nullptr)
+		{
 			delete(pIcone);
 			pIcone = nullptr;
 		}
 	}
 	pIconeList.clear();  
-muList.unlock();    
+	muList.unlock();    
  }
  
  void CIconeList::DestroyCacheThumbnailList()

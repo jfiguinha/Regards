@@ -61,6 +61,7 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libCompress"/>
+        <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

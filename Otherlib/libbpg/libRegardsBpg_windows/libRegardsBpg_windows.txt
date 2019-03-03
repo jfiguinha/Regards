@@ -1,1 +1,0 @@
-./Debug/up_libRegardsBpg_DllBpg.cpp.o ./Debug/up_libRegardsBpg_bpgenc.c.o ./Debug/up_libRegardsBpg_bpgdec.c.o ./Debug/up_libRegardsBpg_x265_glue.c.o ./Debug/up_libRegardsBpg_dllmain.cpp.o

@@ -1,4 +1,5 @@
-﻿#include "ListPicture.h"
+﻿#include <header.h>
+#include "ListPicture.h"
 #include <FileUtility.h>
 #include <SQLRemoveData.h>
 #include <SqlFindCriteria.h>
@@ -8,13 +9,8 @@
 #include <LibResource.h>
 #include "MainWindow.h"
 #include "ImageList.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#include "../include/picture_id.h"
-#else
 #include <window_id.h>
 #include <picture_id.h>
-#endif
 #include <CopyFileDlg.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>
@@ -265,7 +261,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				int y = (i / nbPictureLine) * height + heightLibelle;
 				CIcone * pBitmapIcone = new CIcone(nullptr);
 				pBitmapIcone->SetNumElement(data->GetNumElement());
-				pBitmapIcone->SetData(data, false);
+				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);
 				pBitmapIcone->SetTheme(themeIcone);
 				pBitmapIcone->SetSizeIcone(width, height);

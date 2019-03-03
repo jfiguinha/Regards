@@ -1,0 +1,521 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\webp">
+      <UniqueIdentifier>{a3dfff2a-0e57-4a4b-b9c6-2ea24886443f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\utils">
+      <UniqueIdentifier>{a2e2fb9a-030c-4911-89d8-8b2a17218962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dec">
+      <UniqueIdentifier>{23814243-1b63-41fb-9d01-4f6c31a18764}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\demux">
+      <UniqueIdentifier>{c4114ca6-8bd6-417f-b0bc-8e113a178b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dsp">
+      <UniqueIdentifier>{22cb46a7-a41c-4bda-833f-1d77574a4ad0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mux">
+      <UniqueIdentifier>{529cbfb9-eddd-4bf2-9ae2-fa78ff31a307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\enc">
+      <UniqueIdentifier>{d6b7ae30-3ca0-478e-b58d-15e18acbfe22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dsp\alpha_processing.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\alpha_processing_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\alpha_processing_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\alpha_processing_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\alpha_processing_sse41.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\argb.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\argb_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\argb_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\cost.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\cost_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\cost_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\cost_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\cpu.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_clip_tables.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\dec_sse41.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_avx2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\enc_sse41.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\filters.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\filters_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\filters_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\filters_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\filters_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_enc_sse41.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\lossless_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\rescaler_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\upsampling.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\upsampling_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\upsampling_msa.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\upsampling_neon.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\upsampling_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\yuv.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\yuv_mips_dsp_r2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\yuv_mips32.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="dsp\yuv_sse2.c">
+      <Filter>Source Files\dsp</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\bit_reader_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\bit_writer_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\color_cache_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\filters_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\huffman_encode_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\huffman_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\quant_levels_dec_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\quant_levels_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\random_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\rescaler_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\thread_utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="utils\utils.c">
+      <Filter>Source Files\utils</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\alpha_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\buffer_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\frame_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\idec_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\io_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\quant_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\tree_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\vp8_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\vp8l_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="dec\webp_dec.c">
+      <Filter>Source Files\dec</Filter>
+    </ClCompile>
+    <ClCompile Include="demux\anim_decode.c">
+      <Filter>Source Files\demux</Filter>
+    </ClCompile>
+    <ClCompile Include="demux\demux.c">
+      <Filter>Source Files\demux</Filter>
+    </ClCompile>
+    <ClCompile Include="mux\anim_encode.c">
+      <Filter>Source Files\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="mux\muxedit.c">
+      <Filter>Source Files\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="mux\muxinternal.c">
+      <Filter>Source Files\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="mux\muxread.c">
+      <Filter>Source Files\mux</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\alpha_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\analysis_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\backward_references_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\config_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\cost_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\delta_palettization_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\filter_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\frame_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\histogram_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\iterator_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\near_lossless_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\picture_csp_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\picture_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\picture_psnr_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\picture_rescale_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\picture_tools_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\predictor_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\quant_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\syntax_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\token_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\tree_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\vp8l_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+    <ClCompile Include="enc\webp_enc.c">
+      <Filter>Source Files\enc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="webp\decode.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\encode.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\format_constants.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\mux.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\types.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\demux.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="webp\mux_types.h">
+      <Filter>Source Files\webp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\common_sse2.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\dsp.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\lossless.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\lossless_common.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\mips_macro.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\msa_macro.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\neon.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="dsp\yuv.h">
+      <Filter>Source Files\dsp</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\bit_reader_inl_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\bit_reader_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\bit_writer_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\color_cache_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\endian_inl_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\filters_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\huffman_encode_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\huffman_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\quant_levels_dec_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\quant_levels_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\random_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\rescaler_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\thread_utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\utils.h">
+      <Filter>Source Files\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\alphai_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\common_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\vp8_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\vp8i_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\vp8li_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="dec\webpi_dec.h">
+      <Filter>Source Files\dec</Filter>
+    </ClInclude>
+    <ClInclude Include="mux\animi.h">
+      <Filter>Source Files\mux</Filter>
+    </ClInclude>
+    <ClInclude Include="mux\muxi.h">
+      <Filter>Source Files\mux</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\backward_references_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\cost_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\delta_palettization_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\histogram_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\vp8i_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+    <ClInclude Include="enc\vp8li_enc.h">
+      <Filter>Source Files\enc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dsp\Makefile.am">
+      <Filter>Source Files\dsp</Filter>
+    </None>
+    <None Include="dsp\Makefile.in">
+      <Filter>Source Files\dsp</Filter>
+    </None>
+    <None Include="utils\Makefile.am">
+      <Filter>Source Files\utils</Filter>
+    </None>
+    <None Include="utils\Makefile.in">
+      <Filter>Source Files\utils</Filter>
+    </None>
+  </ItemGroup>
+</Project>

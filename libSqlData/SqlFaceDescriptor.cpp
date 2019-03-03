@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFaceDescriptor.h"
 using namespace Regards::Sqlite;
 

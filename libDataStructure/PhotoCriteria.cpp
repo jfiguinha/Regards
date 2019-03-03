@@ -1,3 +1,4 @@
+#include <header.h>
 #include "PhotoCriteria.h"
 
 

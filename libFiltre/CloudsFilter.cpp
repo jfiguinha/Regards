@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CloudsFilter.h"
 #include "CloudsEffectParameter.h"
 #include <RegardsBitmap.h>

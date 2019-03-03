@@ -1,3 +1,4 @@
+#include "header.h"
 #include "Slider.h"
 #include <ConvertUtility.h>
 #include <LibResource.h>

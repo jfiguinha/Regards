@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ToolbarInfos.h"
 #include <LibResource.h>
 using namespace Regards::Window;

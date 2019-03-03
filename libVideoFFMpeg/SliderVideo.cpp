@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SliderVideo.h"
 #include <LibResource.h>
 #include <ParamInit.h>

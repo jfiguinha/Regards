@@ -26,10 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Datastructure">
-    <File Name="ThumbnailDataVideo.cpp"/>
-    <File Name="ThumbnailDataVideo.h"/>
-  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">

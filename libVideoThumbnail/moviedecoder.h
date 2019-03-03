@@ -19,10 +19,11 @@
 
 #include <inttypes.h>
 
+#define CONFIG_AVFILTER 1
+
 extern "C" {
 #include <libavcodec/avcodec.h>
 #include <libavformat/avformat.h>
-#include <config.h>
 }
 #if CONFIG_AVFILTER
 struct AVFilterGraph;

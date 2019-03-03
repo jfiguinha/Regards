@@ -1,3 +1,4 @@
+#include <header.h>
 #include "circle.h"
 #include <RegardsBitmap.h>
 #include <RGBAQuad.h>

@@ -39,3 +39,44 @@ __kernel void InsertYValue(__global float4 * output, const __global float * Yinp
 	
 	output[position].w = source[position].w;
 }
+
+//----------------------------------------------------
+//Extraction d'un bloc size de la valeur Y
+//----------------------------------------------------
+__kernel void ExtractBlocSize(__global float * output, const __global float * input, int size, int marge, int width, int height, int x, int y)
+{
+    int posX = get_global_id(0);
+	int posY = get_global_id(1);
+
+	int posLocal = (posY * (size + marge * 2) + posX);
+	
+	int inputX = posX + (x * size) - marge;
+	int inputY = posY + (y * size) - marge;
+	
+	if(inputX < width && inputX >= 0 && inputY >= 0 && inputY < height)
+		output[posLocal] = input[inputX + inputY * width];
+	else
+		output[posLocal] = 0.0f;
+}
+
+//----------------------------------------------------
+//Extraction d'un bloc size de la valeur Y
+//----------------------------------------------------
+__kernel void InsertBlockSize(__global float * yPicture, const __global float * wiener, int size, int marge, int width, int height, int x, int y)
+{
+    int posX = get_global_id(0);
+	int posY = get_global_id(1);
+
+	int position = (posY * (size + marge * 2) + posX);
+	
+	int inputX = posX + (x * size) - marge;
+	int inputY = posY + (y * size) - marge;
+	
+	int posMax = size + marge;
+	
+	if(inputX <  width && inputX >= 0 && inputY >= 0 && inputY < height && posX >= marge && posX < posMax && posY >= marge && posY < posMax)
+	{
+		int posLocal = inputX + inputY * width;
+		yPicture[posLocal] = wiener[position];
+	}
+}

@@ -1,3 +1,4 @@
+#include "header.h"
 #include "BitmapInfosGps.h"
 #include <FileUtility.h>
 #include <LibResource.h>

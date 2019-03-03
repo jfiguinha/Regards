@@ -1,3 +1,4 @@
+#include <header.h>
 #include "GLSLShader.h"
 #include <LibResource.h>
 #include <ConvertUtility.h>

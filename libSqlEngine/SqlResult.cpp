@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SqlResult.h"
 #include <iostream>
 #include <locale>

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "FiltreEffect.h"
 #include <ConvertUtility.h>
 #include <TreeDataEffect.h>

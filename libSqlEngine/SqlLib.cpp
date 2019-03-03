@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SqlLib.h"
 #include <wx/strconv.h>
 #include <ConvertUtility.h>

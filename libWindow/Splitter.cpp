@@ -1,3 +1,4 @@
+#include "header.h"
 #include "Splitter.h"
 using namespace Regards::Window;
 

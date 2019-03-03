@@ -1,3 +1,4 @@
+#include <header.h>
 #include "PreviewToolbar.h"
 #include "ToolbarSlide.h"
 #include "ViewerParamInit.h"
@@ -5,11 +6,7 @@
 #include <LibResource.h>
 #include "ViewerParam.h"
 #include "MainWindow.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 

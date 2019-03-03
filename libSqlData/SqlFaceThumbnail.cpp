@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFaceThumbnail.h"
 #include "SqlFacePhoto.h"
 #include <ConvertUtility.h>

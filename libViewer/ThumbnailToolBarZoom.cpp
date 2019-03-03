@@ -1,11 +1,8 @@
+#include <header.h>
 #include "ThumbnailToolBarZoom.h"
 #include <LibResource.h>
 #include "ListPicture.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include "MainWindow.h"
 using namespace Regards::Viewer;
 

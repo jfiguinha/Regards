@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FF974E33-5149-453A-95AE-0D584FE6B913}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libOpenCL</RootNamespace>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros">
+    <NuGetPackageImportStamp>4d36df75</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Program Files\AMD APP SDK\3.0\include;$(INTELOCLSDKROOT)\include;C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);</LibraryPath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>C:\Program Files\AMD APP SDK\3.0\include;$(INTELOCLSDKROOT)\include;C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WX_PRECOMP;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\otherlib\CxImage7\CxImage;..\libFiltre;..\libDatastructure;..\libTheme;..\otherlib\libRapidXML;..\libParameter;..\libResource;..\libFiltreInterface;..\libUtility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\libsqlite;..\libSqlEngine;..\libSqlData;..\CxImage;..\libFiltre;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libParameter;..\libResource;..\libFiltreInterface;..\libUtility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WX_PRECOMP;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\otherlib\CxImage7\CxImage;..\libFiltre;..\libDatastructure;..\libTheme;..\otherlib\libRapidXML;..\libParameter;..\libResource;..\libFiltreInterface;..\libUtility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\libsqlite;..\libSqlEngine;..\libSqlData;..\CxImage;..\libFiltre;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libParameter;..\libResource;..\libFiltreInterface;..\libUtility;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <SDLCheck>false</SDLCheck>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <MinimalRebuild>true</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OpenMPSupport>true</OpenMPSupport>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <GenerateAlternateCodePaths>AVX</GenerateAlternateCodePaths>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <StringPooling>true</StringPooling>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
+      <DisableFunctionSplitting>false</DisableFunctionSplitting>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="OpenCLBm3D.h" />
+    <ClInclude Include="OpenCLContext.h" />
+    <ClInclude Include="OpenCLEffect.h" />
+    <ClInclude Include="OpenCLEffectVideo.h" />
+    <ClInclude Include="OpenCLEffectVideoNV12.h" />
+    <ClInclude Include="OpenCLEffectVideoYUV.h" />
+    <ClInclude Include="OpenCLEngine.h" />
+    <ClInclude Include="OpenCLExecuteProgram.h" />
+    <ClInclude Include="OpenCLFilter.h" />
+    <ClInclude Include="OpenCLInfos.h" />
+    <ClInclude Include="OpenCLParameter.h" />
+    <ClInclude Include="OpenCLProgram.h" />
+    <ClInclude Include="OpenCLRawDev.h" />
+    <ClInclude Include="utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\header.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="OpenCLBm3D.cpp" />
+    <ClCompile Include="OpenCLContext.cpp" />
+    <ClCompile Include="OpenCLEffect.cpp" />
+    <ClCompile Include="OpenCLEffectVideo.cpp" />
+    <ClCompile Include="OpenCLEffectVideoNV12.cpp" />
+    <ClCompile Include="OpenCLEffectVideoYUV.cpp" />
+    <ClCompile Include="OpenCLEngine.cpp" />
+    <ClCompile Include="OpenCLExecuteProgram.cpp" />
+    <ClCompile Include="OpenCLFilter.cpp" />
+    <ClCompile Include="OpenCLInfos.cpp" />
+    <ClCompile Include="OpenCLParameter.cpp" />
+    <ClCompile Include="OpenCLProgram.cpp" />
+    <ClCompile Include="OpenCLRawDev.cpp" />
+    <ClCompile Include="utility.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

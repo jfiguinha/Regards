@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ViewerTheme.h"
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>

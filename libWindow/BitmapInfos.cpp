@@ -1,3 +1,4 @@
+#include "header.h"
 #include "BitmapInfos.h"
 #include <FileUtility.h>
 #include <LibResource.h>

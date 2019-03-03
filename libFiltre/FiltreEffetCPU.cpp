@@ -1,3 +1,4 @@
+#include <header.h>
 #include "FiltreEffetCPU.h"
 #include "InterpolationBicubic.h"
 #include "InterpolationBilinear.h"

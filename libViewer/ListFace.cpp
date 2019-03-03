@@ -1,4 +1,5 @@
-﻿#include "ListFace.h"
+﻿#include <header.h>
+#include "ListFace.h"
 #include <MoveFaceDialog.h>
 #include <FileUtility.h>
 #include <SQLRemoveData.h>
@@ -8,11 +9,7 @@
 #include "ViewerThemeInit.h"
 #include <LibResource.h>
 #include "MainWindow.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <CopyFileDlg.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>

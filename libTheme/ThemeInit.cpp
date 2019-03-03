@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ThemeInit.h"
 #include "ThemeParam.h"
 #include <wx/stdpaths.h>

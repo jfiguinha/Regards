@@ -1,10 +1,7 @@
+#include "header.h"
 #include "ScrollbarVerticalWnd.h"
 #include "ScrollInterface.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 using namespace Regards::Window;
 
 #define BARSIZEMIN 10

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SQLRemoveData.h"
 #include "SqlCatalog.h"
 #include "SqlFolderCatalog.h"

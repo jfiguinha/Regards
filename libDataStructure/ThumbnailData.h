@@ -20,10 +20,14 @@ class CImageLoadingFormat;
 class CThumbnailData
 {
 public:
+
 	CThumbnailData(const wxString & filename);
 	virtual ~CThumbnailData(void);
 
-	virtual int GetType() = 0;
+	virtual int GetType()
+	{
+		return 0;
+	};
 
 	void SetNumPhotoId(const int &id);
 	int GetNumPhotoId();
@@ -34,8 +38,12 @@ public:
 	wxString GetFilename();
 	void SetFilename(const wxString &filename);
 
-	virtual void SetBitmap(CImageLoadingFormat * bitmap) = 0;
-	virtual wxImage GetwxImage() = 0;
+	virtual void SetBitmap(CImageLoadingFormat * bitmap) {};
+	virtual wxImage GetwxImage()
+	{
+		wxImage image;
+		return image;
+	};
 
 	void SetTypeElement(const int &typeElement);
 	int GetTypeElement();
@@ -89,7 +97,10 @@ public:
 
 protected:
 
-	virtual bool TestBitmap() = 0;
+	virtual bool TestBitmap()
+	{
+		return false;
+	};
 	int numCatalog;
 	bool pictureLoad;
 	bool pictureLoading;
@@ -109,6 +120,8 @@ protected:
 
 };
 
+/*
 typedef std::vector<CThumbnailData *> ThumbnailDataVector;
 typedef deque<CThumbnailData *, allocator<CThumbnailData *> > DequeueThumbnailData;
 typedef queue<CThumbnailData *, DequeueThumbnailData> QueueThumbnailData;
+*/

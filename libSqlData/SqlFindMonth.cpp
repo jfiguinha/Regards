@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindMonth.h"
 using namespace Regards::Sqlite;
 

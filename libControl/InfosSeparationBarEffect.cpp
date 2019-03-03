@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InfosSeparationBarEffect.h"
 using namespace Regards::Control;
 

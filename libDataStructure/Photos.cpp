@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Photos.h"
 
 CPhotos::CPhotos()

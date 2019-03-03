@@ -1,0 +1,306 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="DataStructure">
+      <UniqueIdentifier>{e2cb9ba1-3193-4483-800d-92560dd6ee10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parameter">
+      <UniqueIdentifier>{a9f25924-bf88-49ec-b7ec-3cfbb31bc038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Theme">
+      <UniqueIdentifier>{9d022295-db73-4424-be51-8a331dcfc871}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail">
+      <UniqueIdentifier>{8316d9b0-597e-4992-a66a-4f1e28413885}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail\include">
+      <UniqueIdentifier>{a3d0ab15-5813-4226-b0ff-aedbf90bb0ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail\source">
+      <UniqueIdentifier>{b4e75a11-58c8-494f-bcec-f4d12427fbb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{56c425f1-aabc-4ae1-a0db-f164f723aa22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ViewerFrame.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageList.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerParam.h">
+      <Filter>Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerParamInit.h">
+      <Filter>Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerTheme.h">
+      <Filter>Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerThemeInit.h">
+      <Filter>Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailBitmap.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFace.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFacePertinenceToolBar.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFaceToolBar.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFolder.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailToolBar.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailToolBarZoom.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVideoPanel.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffect.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffectWnd.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerVideo.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationToolbar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryFolderWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CriteriaFolderSplitter.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterPreviewSplitter.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterWindowParam.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffect.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffectInterface.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffectWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreToolbar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoEffect.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoEffectWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="InfosSeparationBarExplorer.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="InfosSeparationBarFace.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ListFace.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ListPicture.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ModificationManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelInfosWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewFaceSplitter.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewInfosWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewThumbnailSplitter.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewToolbar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewWnd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Toolbar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarInfos.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ViewerFrame.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageList.cpp">
+      <Filter>DataStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerParam.cpp">
+      <Filter>Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerParamInit.cpp">
+      <Filter>Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerTheme.cpp">
+      <Filter>Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerThemeInit.cpp">
+      <Filter>Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailBitmap.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFace.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFacePertinenceToolBar.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFaceToolBar.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFolder.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailToolBar.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailToolBarZoom.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVideoPanel.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffect.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerVideo.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationToolbar.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryFolderWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CriteriaFolderSplitter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterPreviewSplitter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffect.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffectWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreToolbar.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoEffect.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoEffectWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="InfosSeparationBarExplorer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="InfosSeparationBarFace.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ListFace.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ListPicture.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModificationManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelInfosWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewFaceSplitter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewInfosWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewThumbnailSplitter.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewToolbar.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewWnd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="toolbar.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarInfos.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

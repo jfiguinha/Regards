@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CriteriaTreeWnd.h"
 #include "CalendarDialogBox.h"
 #include "MapDialogBox.h"

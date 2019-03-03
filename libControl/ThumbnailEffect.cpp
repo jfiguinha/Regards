@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ThumbnailEffect.h"
 #include "InfosSeparationBarEffect.h"
 #include <ThumbnailDataStorage.h>
@@ -14,13 +15,8 @@
 #include <libPicture.h>
 #include <FilterData.h>
 #include <LoadingResource.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#include "../include/picture_id.h"
-#else
 #include <config_id.h>
 #include <picture_id.h>
-#endif
 #include <ImageLoadingFormat.h>
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
@@ -554,7 +550,6 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
                         }
                             
                     }
-
                     if(needToRefresh)
                          this->FastRefresh(this);
                 }

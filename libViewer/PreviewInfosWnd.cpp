@@ -1,3 +1,4 @@
+#include <header.h>
 #include "PreviewInfosWnd.h"
 #include <RegardsBitmap.h>
 #include <ConfigParam.h>
@@ -8,11 +9,7 @@
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #include <ImageLoadingFormat.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <Gps.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;

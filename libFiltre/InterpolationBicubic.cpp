@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InterpolationBicubic.h"
 #include "RegardsBitmap.h"
 #include <omp.h>

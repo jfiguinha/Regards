@@ -1,3 +1,4 @@
+#include "header.h"
 #include "videostream.h"
 #include "moviestreaminfo.h"
 #include <ConvertUtility.h>

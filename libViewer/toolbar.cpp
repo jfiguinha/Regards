@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Toolbar.h"
 #include <ToolbarButton.h>
 #include <LibResource.h>
@@ -5,11 +6,8 @@
 #include "ViewerFrame.h"
 #include "FileUtility.h"
 #include "CentralWnd.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
+
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 #define ID_FILE_OPENNEWFOLDER 141

@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Ressources">
+      <UniqueIdentifier>{1bd80190-df2d-42eb-95e3-65045a6cad5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{4029c47f-f25c-4472-b05b-9f0c23ef49d4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="checked_d.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="checked_ld.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="checked_mo.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="checked2.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="unchecked_d.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="unchecked_ld.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="unchecked_mo.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+    <None Include="unchecked2.xpm">
+      <Filter>Ressources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="checktree.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="directoryctrl.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="checktree.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="directoryctrl.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

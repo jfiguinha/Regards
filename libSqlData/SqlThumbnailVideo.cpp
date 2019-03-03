@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlThumbnailVideo.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"

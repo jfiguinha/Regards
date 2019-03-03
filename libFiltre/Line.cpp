@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Line.h"
 #include <RegardsBitmap.h>
 #include <RGBAQuad.h>

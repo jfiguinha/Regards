@@ -1,0 +1,29 @@
+﻿La génération a démarré 08/02/2017 12:04:54.
+     1>Projet "C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\EncodeLib_vc11.vcxproj" sur le nœud 5 (build cible(s)).
+     1>InitializeBuildStatus:
+         Création de "Debug/JXREncodeLib\JXREncodeLib.unsuccessfulbuild", car "AlwaysCreate" a été spécifié.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\sys /I..\..\Network\client\debughlp\memtrace /I..\x86 /Zi /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D DISABLE_PERF_MEASUREMENT /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug/JXREncodeLib\\" /Fd"Debug/JXREncodeLib\JXREncodeLib.pdb" /Gd /TC /analyze- /errorReport:prompt ..\encode\encode.c ..\encode\segenc.c ..\encode\strenc.c ..\encode\strenc_x86.c ..\encode\strFwdTransform.c ..\encode\strPredQuantEnc.c
+         strPredQuantEnc.c
+         strFwdTransform.c
+         strenc_x86.c
+         strenc.c
+         segenc.c
+         encode.c
+         Génération de code en cours...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"Debug/JXREncodeLib\JXREncodeLib.lib" /NOLOGO Debug/JXREncodeLib\encode.obj
+         Debug/JXREncodeLib\segenc.obj
+         Debug/JXREncodeLib\strenc.obj
+         Debug/JXREncodeLib\strenc_x86.obj
+         Debug/JXREncodeLib\strFwdTransform.obj
+         Debug/JXREncodeLib\strPredQuantEnc.obj
+         EncodeLib_vc11.vcxproj -> C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\Debug/JXREncodeLib\JXREncodeLib.lib
+       FinalizeBuildStatus:
+         Suppression du fichier "Debug/JXREncodeLib\JXREncodeLib.unsuccessfulbuild".
+         Mise à jour de l'horodatage "Debug/JXREncodeLib\JXREncodeLib.lastbuildstate".
+     1>Génération du projet "C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\EncodeLib_vc11.vcxproj" terminée (build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:01.33

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InfoEffect.h"
 #include "TreeElementTexte.h"
 #include "TreeElementTriangle.h"

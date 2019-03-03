@@ -1,12 +1,9 @@
+#include <header.h>
 #include "ThumbnailFaceToolBar.h"
 #include <ToolbarSlide.h>
 #include <LibResource.h>
 #include "ListFace.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 using namespace Regards::Viewer;
 
 #define WM_REFRESHTHUMBNAIL 1023

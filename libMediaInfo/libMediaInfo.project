@@ -22,6 +22,7 @@
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
         <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

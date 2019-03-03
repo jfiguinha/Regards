@@ -1,3 +1,5 @@
+#include "header.h"
+
 #ifdef WIN32
 
 #include "VideoControl.h"
@@ -5,7 +7,7 @@
 #include <RegardsFloatBitmap.h>
 #include "ffplaycore.h"
 #include <Interpolation.h>
-#include "../include/config_id.h"
+#include "config_id.h"
 #include <d3d9.h>
 #include <CL/cl_dx9_media_sharing.h>
 #include <CL/cl.h>
@@ -668,7 +670,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				hTexture = wglDXRegisterObjectNV(hDevice, dxva2->m_pSharedSurface,glTexture->GetTextureID(), GL_TEXTURE_2D, WGL_ACCESS_READ_ONLY_NV);
 			
 				if (hTexture == NULL)
-					return;
+					return 0;
 			}
 		}
 

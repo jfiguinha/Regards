@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ScaleThumbnail.h"
 #include <RegardsBitmap.h>
 #include <InterpolationBicubic.h>

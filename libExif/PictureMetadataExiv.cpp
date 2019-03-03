@@ -1,3 +1,4 @@
+#include "header.h"
 #include "PictureMetadataExiv.h"
 #include <ximage.h>
 #include <xfile.h>

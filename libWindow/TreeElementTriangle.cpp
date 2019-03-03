@@ -1,3 +1,4 @@
+#include "header.h"
 #include "TreeElementTriangle.h"
 
 CTreeElementTriangle::CTreeElementTriangle()

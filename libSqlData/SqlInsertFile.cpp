@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlInsertFile.h"
 #include <libPicture.h>
 #include <wx/dir.h>

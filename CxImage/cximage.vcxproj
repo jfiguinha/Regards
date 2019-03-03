@@ -1,0 +1,468 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Publication|Win32">
+      <Configuration>Publication</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Publication|x64">
+      <Configuration>Publication</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C739151F-5384-41DF-A1A6-F089E2C1AD56}</ProjectGuid>
+    <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <NuGetPackageImportStamp>81cba43b</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'">
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libextern\libmng-2.0.3;$(SolutionDir)\otherlib\libpsd\include;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\libextern\jasper-1.900.1\src\libjasper\include;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libextern\libmng-2.0.3;$(SolutionDir)\otherlib\libpsd\include;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\libextern\jasper-1.900.1\src\libjasper\include;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libextern\libmng-2.0.3;$(SolutionDir)\otherlib\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\libextern\jasper-1.900.1\src\libjasper\include;$(SolutionDir)\otherlib\libjbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\psd;..\mng;...\jbig;..\jasper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MinimalRebuild>true</MinimalRebuild>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <DisableCilkKeywords>false</DisableCilkKeywords>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <GenerateAlternateCodePaths>None</GenerateAlternateCodePaths>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <OpenMPSupport>true</OpenMPSupport>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Publication|Win32'">
+    <ClCompile>
+      <Optimization>MinSpace</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\psd;..\mng;...\jbig;..\jasper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <MinimalRebuild>false</MinimalRebuild>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <DisableCilkKeywords>false</DisableCilkKeywords>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <GenerateAlternateCodePaths>None</GenerateAlternateCodePaths>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <OpenMPSupport>true</OpenMPSupport>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WX_PRECOMP;WIN32;NDEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <MinimalRebuild>true</MinimalRebuild>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OpenMPSupport>true</OpenMPSupport>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <GenerateAlternateCodePaths>AVX</GenerateAlternateCodePaths>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
+      <DisableFunctionSplitting>false</DisableFunctionSplitting>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <AdditionalIncludeDirectories>..\psd;..\mng;...\jbig;..\jasper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\psd;..\..\mng;..\..\jbig;..\..\jasper\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WX_PRECOMP;WIN32;WIN64;_DEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_LIB;JAS_WIN_MSVC_BUILD;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level3</WarningLevel>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <OpenMPSupport>true</OpenMPSupport>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <Cpp0xSupport>true</Cpp0xSupport>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0809</Culture>
+    </ResourceCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Lib>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="tif_xfile.cpp" />
+    <ClCompile Include="ximabmp.cpp" />
+    <ClCompile Include="ximadsp.cpp" />
+    <ClCompile Include="ximaenc.cpp" />
+    <ClCompile Include="ximaexif.cpp" />
+    <ClCompile Include="xImage.cpp" />
+    <ClCompile Include="ximagif.cpp" />
+    <ClCompile Include="ximahist.cpp" />
+    <ClCompile Include="ximaico.cpp" />
+    <ClCompile Include="ximainfo.cpp" />
+    <ClCompile Include="ximaint.cpp" />
+    <ClCompile Include="ximajas.cpp" />
+    <ClCompile Include="ximajbg.cpp" />
+    <ClCompile Include="ximajpg.cpp" />
+    <ClCompile Include="ximalpha.cpp" />
+    <ClCompile Include="ximalyr.cpp" />
+    <ClCompile Include="ximamng.cpp" />
+    <ClCompile Include="ximapal.cpp" />
+    <ClCompile Include="ximapcx.cpp" />
+    <ClCompile Include="ximapng.cpp" />
+    <ClCompile Include="ximapsd.cpp" />
+    <ClCompile Include="ximaraw.cpp" />
+    <ClCompile Include="ximasel.cpp" />
+    <ClCompile Include="ximaska.cpp" />
+    <ClCompile Include="ximatga.cpp" />
+    <ClCompile Include="ximath.cpp" />
+    <ClCompile Include="ximatif.cpp" />
+    <ClCompile Include="ximatran.cpp" />
+    <ClCompile Include="ximawbmp.cpp" />
+    <ClCompile Include="ximawmf.cpp" />
+    <ClCompile Include="ximawnd.cpp" />
+    <ClCompile Include="xmemfile.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdint.h" />
+    <ClInclude Include="xfile.h" />
+    <ClInclude Include="ximabmp.h" />
+    <ClInclude Include="ximacfg.h" />
+    <ClInclude Include="ximadef.h" />
+    <ClInclude Include="ximage.h" />
+    <ClInclude Include="ximagif.h" />
+    <ClInclude Include="ximaico.h" />
+    <ClInclude Include="ximaiter.h" />
+    <ClInclude Include="ximajas.h" />
+    <ClInclude Include="ximajbg.h" />
+    <ClInclude Include="ximajpg.h" />
+    <ClInclude Include="ximamng.h" />
+    <ClInclude Include="ximapcx.h" />
+    <ClInclude Include="ximapng.h" />
+    <ClInclude Include="ximapsd.h" />
+    <ClInclude Include="ximaraw.h" />
+    <ClInclude Include="ximaska.h" />
+    <ClInclude Include="ximatga.h" />
+    <ClInclude Include="ximath.h" />
+    <ClInclude Include="ximatif.h" />
+    <ClInclude Include="ximawbmp.h" />
+    <ClInclude Include="ximawmf.h" />
+    <ClInclude Include="xiofile.h" />
+    <ClInclude Include="xmemfile.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

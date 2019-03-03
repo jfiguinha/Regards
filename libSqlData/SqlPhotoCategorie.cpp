@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlPhotoCategorie.h"
 using namespace Regards::Sqlite;
 

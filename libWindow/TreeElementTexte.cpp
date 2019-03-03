@@ -1,4 +1,4 @@
-
+#include "header.h"
 #include "TreeElementTexte.h"
 
 mutex CTreeElementTexte::muTexteSize;

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SplitterWithPanel.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"

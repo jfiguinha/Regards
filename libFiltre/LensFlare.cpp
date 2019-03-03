@@ -1,3 +1,4 @@
+#include <header.h>
 #include "LensFlare.h"
 #include "RegardsBitmap.h"
 #include "Color.h"

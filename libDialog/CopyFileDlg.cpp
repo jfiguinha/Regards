@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CopyFileDlg.h"
 #include <FileUtility.h>
 #ifndef WX_PRECOMP
@@ -14,6 +15,7 @@
 #include <SqlGps.h>
 #include <SqlPhotoCriteria.h>
 #include <SqlPhotos.h>
+#include <RegardsBitmap.h>
 #include <libPicture.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>

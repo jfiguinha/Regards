@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ClickToolbar.h"
 using namespace Regards::Control;
 

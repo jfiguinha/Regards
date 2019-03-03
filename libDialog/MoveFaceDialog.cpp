@@ -1,3 +1,4 @@
+#include <header.h>
 #include "MoveFaceDialog.h"
 #include <SqlFindFacePhoto.h>
 using namespace Regards::Sqlite;

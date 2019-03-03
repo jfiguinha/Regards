@@ -1,3 +1,4 @@
+#include <header.h>
 #include "KuwaharaFilter.h"
 #include "KuwaharaEffectParameter.h"
 #include <RegardsBitmap.h>

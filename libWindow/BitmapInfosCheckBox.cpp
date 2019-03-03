@@ -1,3 +1,4 @@
+#include "header.h"
 #include "BitmapInfosCheckBox.h"
 #include <FileUtility.h>
 #include <LibResource.h>
@@ -8,11 +9,8 @@
 #include <wx/sstream.h>
 #include <LoadingResource.h>
 #include <wxSVG/SVGDocument.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
+
 using namespace Regards::Window;
 using namespace Regards::Internet;
 

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="ConfigRegards">
+		<title>Dialog</title>
+		<centered>1</centered>
+		<size>363,500</size>
+		<object class="wxRadioBox" name="ID_RBTRANSITIONEFFECT">
+			<label>Transition Effect</label>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>0,0</pos>
+			<size>360,70</size>
+		</object>
+		<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
+			<label>Database in memory</label>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>0,74</pos>
+			<size>360,70</size>
+		</object>		
+		<object class="wxStaticBox" name="sbDiaporama">
+			<label>Diaporama</label>
+			<pos>0,150</pos>
+			<size>360,136</size>
+		</object>
+		<object class="wxSpinCtrl" name="ID_SCTIME">
+			<value>0</value>
+			<pos>56,170</pos>
+			<size>88,21</size>
+		</object>
+		<object class="wxStaticText" name="ID_STTIME">
+			<label>Time :</label>
+			<pos>16,170</pos>
+			<size>40,24</size>
+		</object>
+		<object class="wxRadioBox" name="ID_RBFULLSCREEN">
+			<label>Fullscreen</label>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>16,200</pos>
+			<size>120,64</size>
+		</object>
+		<object class="wxRadioBox" name="ID_RBDIAPORAMATRANSITIONEFFECT">
+			<label>Transition Effect</label>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>176,200</pos>
+			<size>168,64</size>
+		</object>
+		<object class="wxStaticBox" name="sbDiaporama">
+			<label>Face Detection</label>
+			<pos>0,300</pos>
+			<size>360,160</size>
+		</object>	
+		<object class="wxRadioBox" name="ID_PICTUREFACEDETECTION">
+			<label>Picture Size</label>
+			<content>
+				<item>Thumbnail Size</item>
+				<item>Original Size</item>
+				<item>SD Size (480p)</item>
+				<item>HD Size (720p)</item>
+				<item>Full HD Size (1080p)</item>
+			</content>
+			<default>-1</default>
+			<pos>16,320</pos>
+			<size>320,140</size>
+		</object>
+		<object class="wxButton" name="ID_OK">
+			<label>Ok</label>
+			<pos>64,470</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>192,470</pos>
+		</object>		
+	</object>
+</resource>

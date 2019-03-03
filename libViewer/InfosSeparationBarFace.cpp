@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InfosSeparationBarFace.h"
 #include <LoadingResource.h>
 #include <WindowMain.h>

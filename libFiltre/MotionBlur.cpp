@@ -1,3 +1,4 @@
+#include <header.h>
 #include "MotionBlur.h"
 #include <math.h>
 #include <stdlib.h>

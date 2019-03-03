@@ -16,7 +16,7 @@
 * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-
+#include "header.h"
 #include "ffmpeg_dxva2.h"
 #ifdef WIN32
 #include "VideoControlInterface.h"

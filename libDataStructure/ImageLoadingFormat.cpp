@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ImageLoadingFormat.h"
 #include <libPicture.h>
 #include <ximage.h>

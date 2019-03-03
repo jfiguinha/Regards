@@ -1,0 +1,314 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dec\alpha_dec.c" />
+    <ClCompile Include="dec\buffer_dec.c" />
+    <ClCompile Include="dec\frame_dec.c" />
+    <ClCompile Include="dec\idec_dec.c" />
+    <ClCompile Include="dec\io_dec.c" />
+    <ClCompile Include="dec\quant_dec.c" />
+    <ClCompile Include="dec\tree_dec.c" />
+    <ClCompile Include="dec\vp8l_dec.c" />
+    <ClCompile Include="dec\vp8_dec.c" />
+    <ClCompile Include="dec\webp_dec.c" />
+    <ClCompile Include="demux\anim_decode.c" />
+    <ClCompile Include="demux\demux.c" />
+    <ClCompile Include="dsp\alpha_processing.c" />
+    <ClCompile Include="dsp\alpha_processing_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\alpha_processing_neon.c" />
+    <ClCompile Include="dsp\alpha_processing_sse2.c" />
+    <ClCompile Include="dsp\alpha_processing_sse41.c" />
+    <ClCompile Include="dsp\argb.c" />
+    <ClCompile Include="dsp\argb_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\argb_sse2.c" />
+    <ClCompile Include="dsp\cost.c" />
+    <ClCompile Include="dsp\cost_mips32.c" />
+    <ClCompile Include="dsp\cost_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\cost_sse2.c" />
+    <ClCompile Include="dsp\cpu.c" />
+    <ClCompile Include="dsp\dec.c" />
+    <ClCompile Include="dsp\dec_clip_tables.c" />
+    <ClCompile Include="dsp\dec_mips32.c" />
+    <ClCompile Include="dsp\dec_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\dec_msa.c" />
+    <ClCompile Include="dsp\dec_neon.c" />
+    <ClCompile Include="dsp\dec_sse2.c" />
+    <ClCompile Include="dsp\dec_sse41.c" />
+    <ClCompile Include="dsp\enc.c" />
+    <ClCompile Include="dsp\enc_avx2.c" />
+    <ClCompile Include="dsp\enc_mips32.c" />
+    <ClCompile Include="dsp\enc_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\enc_msa.c" />
+    <ClCompile Include="dsp\enc_neon.c" />
+    <ClCompile Include="dsp\enc_sse2.c" />
+    <ClCompile Include="dsp\enc_sse41.c" />
+    <ClCompile Include="dsp\filters.c" />
+    <ClCompile Include="dsp\filters_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\filters_msa.c" />
+    <ClCompile Include="dsp\filters_neon.c" />
+    <ClCompile Include="dsp\filters_sse2.c" />
+    <ClCompile Include="dsp\lossless.c" />
+    <ClCompile Include="dsp\lossless_enc.c" />
+    <ClCompile Include="dsp\lossless_enc_mips32.c" />
+    <ClCompile Include="dsp\lossless_enc_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\lossless_enc_msa.c" />
+    <ClCompile Include="dsp\lossless_enc_neon.c" />
+    <ClCompile Include="dsp\lossless_enc_sse2.c" />
+    <ClCompile Include="dsp\lossless_enc_sse41.c" />
+    <ClCompile Include="dsp\lossless_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\lossless_msa.c" />
+    <ClCompile Include="dsp\lossless_neon.c" />
+    <ClCompile Include="dsp\lossless_sse2.c" />
+    <ClCompile Include="dsp\rescaler.c" />
+    <ClCompile Include="dsp\rescaler_mips32.c" />
+    <ClCompile Include="dsp\rescaler_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\rescaler_msa.c" />
+    <ClCompile Include="dsp\rescaler_neon.c" />
+    <ClCompile Include="dsp\rescaler_sse2.c" />
+    <ClCompile Include="dsp\upsampling.c" />
+    <ClCompile Include="dsp\upsampling_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\upsampling_msa.c" />
+    <ClCompile Include="dsp\upsampling_neon.c" />
+    <ClCompile Include="dsp\upsampling_sse2.c" />
+    <ClCompile Include="dsp\yuv.c" />
+    <ClCompile Include="dsp\yuv_mips32.c" />
+    <ClCompile Include="dsp\yuv_mips_dsp_r2.c" />
+    <ClCompile Include="dsp\yuv_sse2.c" />
+    <ClCompile Include="enc\alpha_enc.c" />
+    <ClCompile Include="enc\analysis_enc.c" />
+    <ClCompile Include="enc\backward_references_enc.c" />
+    <ClCompile Include="enc\config_enc.c" />
+    <ClCompile Include="enc\cost_enc.c" />
+    <ClCompile Include="enc\delta_palettization_enc.c" />
+    <ClCompile Include="enc\filter_enc.c" />
+    <ClCompile Include="enc\frame_enc.c" />
+    <ClCompile Include="enc\histogram_enc.c" />
+    <ClCompile Include="enc\iterator_enc.c" />
+    <ClCompile Include="enc\near_lossless_enc.c" />
+    <ClCompile Include="enc\picture_csp_enc.c" />
+    <ClCompile Include="enc\picture_enc.c" />
+    <ClCompile Include="enc\picture_psnr_enc.c" />
+    <ClCompile Include="enc\picture_rescale_enc.c" />
+    <ClCompile Include="enc\picture_tools_enc.c" />
+    <ClCompile Include="enc\predictor_enc.c" />
+    <ClCompile Include="enc\quant_enc.c" />
+    <ClCompile Include="enc\syntax_enc.c" />
+    <ClCompile Include="enc\token_enc.c" />
+    <ClCompile Include="enc\tree_enc.c" />
+    <ClCompile Include="enc\vp8l_enc.c" />
+    <ClCompile Include="enc\webp_enc.c" />
+    <ClCompile Include="mux\anim_encode.c" />
+    <ClCompile Include="mux\muxedit.c" />
+    <ClCompile Include="mux\muxinternal.c" />
+    <ClCompile Include="mux\muxread.c" />
+    <ClCompile Include="utils\bit_reader_utils.c" />
+    <ClCompile Include="utils\bit_writer_utils.c" />
+    <ClCompile Include="utils\color_cache_utils.c" />
+    <ClCompile Include="utils\filters_utils.c" />
+    <ClCompile Include="utils\huffman_encode_utils.c" />
+    <ClCompile Include="utils\huffman_utils.c" />
+    <ClCompile Include="utils\quant_levels_dec_utils.c" />
+    <ClCompile Include="utils\quant_levels_utils.c" />
+    <ClCompile Include="utils\random_utils.c" />
+    <ClCompile Include="utils\rescaler_utils.c" />
+    <ClCompile Include="utils\thread_utils.c" />
+    <ClCompile Include="utils\utils.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dec\alphai_dec.h" />
+    <ClInclude Include="dec\common_dec.h" />
+    <ClInclude Include="dec\vp8i_dec.h" />
+    <ClInclude Include="dec\vp8li_dec.h" />
+    <ClInclude Include="dec\vp8_dec.h" />
+    <ClInclude Include="dec\webpi_dec.h" />
+    <ClInclude Include="dsp\common_sse2.h" />
+    <ClInclude Include="dsp\dsp.h" />
+    <ClInclude Include="dsp\lossless.h" />
+    <ClInclude Include="dsp\lossless_common.h" />
+    <ClInclude Include="dsp\mips_macro.h" />
+    <ClInclude Include="dsp\msa_macro.h" />
+    <ClInclude Include="dsp\neon.h" />
+    <ClInclude Include="dsp\yuv.h" />
+    <ClInclude Include="enc\backward_references_enc.h" />
+    <ClInclude Include="enc\cost_enc.h" />
+    <ClInclude Include="enc\delta_palettization_enc.h" />
+    <ClInclude Include="enc\histogram_enc.h" />
+    <ClInclude Include="enc\vp8i_enc.h" />
+    <ClInclude Include="enc\vp8li_enc.h" />
+    <ClInclude Include="mux\animi.h" />
+    <ClInclude Include="mux\muxi.h" />
+    <ClInclude Include="utils\bit_reader_inl_utils.h" />
+    <ClInclude Include="utils\bit_reader_utils.h" />
+    <ClInclude Include="utils\bit_writer_utils.h" />
+    <ClInclude Include="utils\color_cache_utils.h" />
+    <ClInclude Include="utils\endian_inl_utils.h" />
+    <ClInclude Include="utils\filters_utils.h" />
+    <ClInclude Include="utils\huffman_encode_utils.h" />
+    <ClInclude Include="utils\huffman_utils.h" />
+    <ClInclude Include="utils\quant_levels_dec_utils.h" />
+    <ClInclude Include="utils\quant_levels_utils.h" />
+    <ClInclude Include="utils\random_utils.h" />
+    <ClInclude Include="utils\rescaler_utils.h" />
+    <ClInclude Include="utils\thread_utils.h" />
+    <ClInclude Include="utils\utils.h" />
+    <ClInclude Include="webp\decode.h" />
+    <ClInclude Include="webp\demux.h" />
+    <ClInclude Include="webp\encode.h" />
+    <ClInclude Include="webp\format_constants.h" />
+    <ClInclude Include="webp\mux.h" />
+    <ClInclude Include="webp\mux_types.h" />
+    <ClInclude Include="webp\types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dsp\Makefile.am" />
+    <None Include="dsp\Makefile.in" />
+    <None Include="utils\Makefile.am" />
+    <None Include="utils\Makefile.in" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8228FEC1-478D-47A9-836D-85E7127055EA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libwebp</RootNamespace>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <InterproceduralOptimization>NoIPO</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

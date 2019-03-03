@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CategoryWnd.h"
 #include <SqlFindFacePhoto.h>
 #include <Criteria.h>
@@ -19,11 +20,7 @@
 #include <LibResource.h>
 #include <ConvertUtility.h>
 #include <ThumbnailData.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include "MainWindow.h"
 #include <FileGeolocation.h>
 #include "ViewerParamInit.h"

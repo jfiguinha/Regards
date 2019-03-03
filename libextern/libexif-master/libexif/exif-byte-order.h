@@ -1,7 +1,5 @@
-/*! \file exif-byte-order.h
- * \brief Defines the ExifByteOrder enum and the associated functions.
- */
-/* 
+/* exif-byte-order.h
+ *
  * Copyright (c) 2002 Lutz Mueller <lutz@users.sourceforge.net>
  *
  * This library is free software; you can redistribute it and/or

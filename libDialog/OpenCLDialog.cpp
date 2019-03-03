@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLDialog.h"
 #include <OpenCLEngine.h>
 #include <RegardsConfigParam.h>

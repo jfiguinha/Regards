@@ -1,0 +1,11 @@
+prefix=D:/GIT/openexr/build-nuget
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+OpenEXR_includedir=${prefix}/include/OpenEXR
+
+Name: IlmBase
+Description: Base math and exception libraries
+Version: 2.2.0
+Libs: -L${libdir} -lImath-2_2 -lIexMath-2_2 -lHalf -lIex-2_2 -lIlmThread-2_2 -pthread
+Cflags: -pthread -I${OpenEXR_includedir}

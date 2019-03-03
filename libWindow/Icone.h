@@ -5,8 +5,9 @@
 #include <ConfigParam.h>
 #include <RegardsConfigParam.h>
 #include <OpenCLEngine.h>
+#include <ThumbnailData.h>
 using namespace Regards::OpenCL;
-class CThumbnailData;
+
 
 namespace Regards
 {
@@ -37,6 +38,7 @@ namespace Regards
 
 			void SetData(CThumbnailData * thumbnailData, const bool &deleteData = true);
 			CThumbnailData * GetData();
+			bool DataNeedToBeDelete();
 
 			void SetTheme(CThemeIcone theme);
 
@@ -111,7 +113,7 @@ namespace Regards
 			//Variable
 			//---------------------------------------------------
 			//int interpolationMethod;
-			CThumbnailData * pThumbnailData;
+			CThumbnailData *pThumbnailData;
 			
             wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
@@ -148,7 +150,6 @@ namespace Regards
 
 			bool eraseBitmap = true;
 			wxBitmap bitmapLocal;
-
 		};
 		typedef std::vector<CIcone *> IconeVector;
 

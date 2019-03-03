@@ -1,14 +1,11 @@
+#include "header.h"
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
 #include <RegardsFloatBitmap.h>
 #include <RegardsBitmap.h>
 #include "ffplaycore.h"
 #include <Interpolation.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
 #include "ffmpegToBitmap.h"
 
 #ifdef __APPLE__

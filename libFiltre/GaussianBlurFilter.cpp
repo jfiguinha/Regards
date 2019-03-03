@@ -1,3 +1,4 @@
+#include <header.h>
 #include "GaussianBlurFilter.h"
 #include "GaussianBlurEffectParameter.h"
 #include <RegardsBitmap.h>

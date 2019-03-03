@@ -1,12 +1,9 @@
+#include "header.h"
 #include "RegardsConfigParam.h"
 #include <fstream>
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
 #include <ConvertUtility.h>
 using namespace rapidxml;
 

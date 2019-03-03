@@ -1,3 +1,4 @@
+#include <header.h>
 #include "BitmapWndViewer.h"
 #include <ConvertUtility.h>
 #include <OpenCLEffect.h>
@@ -51,11 +52,8 @@
     #include "email.h"
 #endif
 #include <utility.h>
-#if defined(__WXMSW__)
-	#include "../include/config_id.h"
-#else
-	#include <config_id.h>
-#endif
+#include <config_id.h>
+
 using namespace Regards::Control;
 using namespace Regards::OpenCL;
 using namespace Regards::exiv2;

@@ -21,6 +21,7 @@
     <GlobalSettings>
       <Compiler Options="-std=gnu++11;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

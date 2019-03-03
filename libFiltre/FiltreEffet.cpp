@@ -1,3 +1,4 @@
+#include <header.h>
 #include "FiltreEffet.h"
 #include <math.h>
 #include "FiltreEffetCPU.h"
@@ -14,13 +15,7 @@
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
 #include <PiccanteFilter.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
-
-
 
 extern float value[256];
 

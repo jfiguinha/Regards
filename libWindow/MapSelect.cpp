@@ -1,3 +1,4 @@
+#include "header.h"
 //
 //  MapSelect.cpp
 //  Regards.libExplorer
@@ -9,11 +10,7 @@
 #include "MapSelect.h"
 #include "MapDialogBox.h"
 #include <ConvertUtility.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <Gps.h>

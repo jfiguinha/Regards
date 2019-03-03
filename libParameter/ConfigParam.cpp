@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ConfigParam.h"
 #include <fstream>
 #include <rapidxml.hpp>

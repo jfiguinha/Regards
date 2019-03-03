@@ -5,7 +5,7 @@
 //  Created by figuinha jacques on 02/10/2015.
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
-
+#include <header.h>
 #include "InfoEffectWnd.h"
 using namespace Regards::Viewer;
 

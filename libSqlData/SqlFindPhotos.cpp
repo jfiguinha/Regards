@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindPhotos.h"
 //#include <ctime>
 #include <LibResource.h>

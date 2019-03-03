@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ffmpegToBitmap.h"
 #include <stdexcept>
 #include <algorithm>

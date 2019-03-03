@@ -1,3 +1,4 @@
+#include <header.h>
 #include "BestExposureFilter.h"
 #include "BestExposureEffectParameter.h"
 #include <RegardsBitmap.h>

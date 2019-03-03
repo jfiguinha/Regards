@@ -1,3 +1,4 @@
+#include "header.h"
 #include "FileGeolocation.h"
 #include <libPicture.h>
 #ifdef EXIV2

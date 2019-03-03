@@ -1,3 +1,4 @@
+#include "header.h"
 #include "BitmapWnd.h"
 #include <IFiltreEffet.h>
 #include <RGBAQuad.h>
@@ -13,13 +14,8 @@
 #include <RegardsBitmap.h>
 #include <FilterData.h>
 #include <MetadataExiv2.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#include "../include/config_id.h"
-#else
 #include <window_id.h>
 #include <config_id.h>
-#endif
 #include <OpenCLEffect.h>
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>

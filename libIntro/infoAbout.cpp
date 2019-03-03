@@ -1,3 +1,4 @@
+#include <header.h>
 #include "infoAbout.h"
 #include "TreeElementTexte.h"
 #include "TreeElementTexteClick.h"

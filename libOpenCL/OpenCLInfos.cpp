@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLInfos.h"
 #include "utility.h"
 using namespace Regards::OpenCL;

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "RotateFreeFilter.h"
 #include "FreeRotateEffectParameter.h"
 #include <RegardsBitmap.h>

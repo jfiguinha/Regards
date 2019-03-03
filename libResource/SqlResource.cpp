@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SqlResource.h"
 #include <lz4.h>
 #include <jpgd.h>

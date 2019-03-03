@@ -1,14 +1,11 @@
+#include <header.h>
 #include "CriteriaFolderSplitter.h"
 #include <ConfigParam.h>
 #include "ViewerParamInit.h"
 #include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <Gps.h>
 
 #include <SqlFindFolderCatalog.h>

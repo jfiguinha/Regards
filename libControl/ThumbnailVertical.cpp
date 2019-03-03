@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ThumbnailVertical.h"
 #include <ThumbnailDataSQL.h>
 #include <Photos.h>

@@ -5,7 +5,7 @@
 //  Created by figuinha jacques on 02/10/2015.
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
-
+#include <header.h>
 #include "FiltreEffectWnd.h"
 #include <FiltreEffet.h>
 #include "InfoEffectWnd.h"
@@ -32,13 +32,8 @@
 #include <ShowVideo.h>
 //#include <VideoControl.h>
 #include "PreviewWnd.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#include "../include/config_id.h"
-#else
 #include <window_id.h>
 #include <config_id.h>
-#endif
 #include "PanelInfosWnd.h"
 #include <FilterData.h>
 using namespace Regards::Viewer;

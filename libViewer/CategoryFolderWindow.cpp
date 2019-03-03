@@ -1,14 +1,11 @@
+#include <header.h>
 #include "CategoryFolderWindow.h"
 #include <LibResource.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
 #include "ViewerParamInit.h"
 #include <ListCriteriaPhoto.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <SqlInsertFile.h>
 #include <SqlCriteria.h>
 #include <SqlFindFolderCatalog.h>

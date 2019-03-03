@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B57CB2B2-529E-483A-BDE6-02708BF78B33}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>15.0.28127.55</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>Debug\</OutDir>
+    <IntDir>Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>Release\</OutDir>
+    <IntDir>Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\msvc;..\pixman\src;..\src;..\..\zlib;..\..\..\otherlib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PNG_SETJMP_SUPPORTED;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCAIRO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libcairo.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\zlib123-dll\lib;..\..\libpng-1.2.16-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libcairo.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>$(OutDir)libcairo.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\msvc;..\pixman\src;..\src;..\..\zlib;..\..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>PNG_SETJMP_SUPPORTED;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBCAIRO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libcairo.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\zlib123-dll\lib;..\..\libpng-1.2.16-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)libcairo.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <ImportLibrary>$(OutDir)libcairo.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\msvc;..\pixman\src;..\src;..\..\zlib;..\..\..\otherlib\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBCAIRO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader />
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libcairo-2.0.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\zlib123-dll\lib;..\..\libpng-1.2.16-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>$(OutDir)libcairo.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\msvc;..\pixman\src;..\src;..\..\zlib;..\..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;__x86_64__;NDEBUG;_WINDOWS;_USRDLL;LIBCAIRO_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)libcairo-2.0.dll</OutputFile>
+      <AdditionalLibraryDirectories>..\..\zlib123-dll\lib;..\..\libpng-1.2.16-dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>$(OutDir)libcairo.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\pixman\src\fbcompose.c" />
+    <ClCompile Include="..\pixman\src\fbedge.c" />
+    <ClCompile Include="..\pixman\src\fbmmx.c" />
+    <ClCompile Include="..\pixman\src\fbpict.c" />
+    <ClCompile Include="..\pixman\src\fbtrap.c" />
+    <ClCompile Include="..\pixman\src\icblt.c" />
+    <ClCompile Include="..\pixman\src\icbltone.c" />
+    <ClCompile Include="..\pixman\src\iccolor.c" />
+    <ClCompile Include="..\pixman\src\icformat.c" />
+    <ClCompile Include="..\pixman\src\icimage.c" />
+    <ClCompile Include="..\pixman\src\icpixels.c" />
+    <ClCompile Include="..\pixman\src\icrect.c" />
+    <ClCompile Include="..\pixman\src\icstipple.c" />
+    <ClCompile Include="..\pixman\src\ictransform.c" />
+    <ClCompile Include="..\pixman\src\ictrap.c" />
+    <ClCompile Include="..\pixman\src\ictri.c" />
+    <ClCompile Include="..\pixman\src\icutil.c" />
+    <ClCompile Include="..\pixman\src\pixregion.c" />
+    <ClCompile Include="..\pixman\src\renderedge.c" />
+    <ClCompile Include="..\src\cairo-analysis-surface.c" />
+    <ClCompile Include="..\src\cairo-arc.c" />
+    <ClCompile Include="..\src\cairo-array.c" />
+    <ClCompile Include="..\src\cairo-base85-stream.c" />
+    <ClCompile Include="..\src\cairo-bentley-ottmann.c" />
+    <ClCompile Include="..\src\cairo-cache.c" />
+    <ClCompile Include="..\src\cairo-cff-subset.c" />
+    <ClCompile Include="..\src\cairo-clip.c" />
+    <ClCompile Include="..\src\cairo-color.c" />
+    <ClCompile Include="..\src\cairo-debug.c" />
+    <ClCompile Include="..\src\cairo-deflate-stream.c" />
+    <ClCompile Include="..\src\cairo-fixed.c" />
+    <ClCompile Include="..\src\cairo-font-face.c" />
+    <ClCompile Include="..\src\cairo-font-options.c" />
+    <ClCompile Include="..\src\cairo-freelist.c" />
+    <ClCompile Include="..\src\cairo-gstate.c" />
+    <ClCompile Include="..\src\cairo-hash.c" />
+    <ClCompile Include="..\src\cairo-hull.c" />
+    <ClCompile Include="..\src\cairo-image-surface.c" />
+    <ClCompile Include="..\src\cairo-lzw.c" />
+    <ClCompile Include="..\src\cairo-matrix.c" />
+    <ClCompile Include="..\src\cairo-meta-surface.c" />
+    <ClCompile Include="..\src\cairo-mutex.c" />
+    <ClCompile Include="..\src\cairo-operator.c" />
+    <ClCompile Include="..\src\cairo-output-stream.c" />
+    <ClCompile Include="..\src\cairo-paginated-surface.c" />
+    <ClCompile Include="..\src\cairo-path-bounds.c" />
+    <ClCompile Include="..\src\cairo-path-fill.c" />
+    <ClCompile Include="..\src\cairo-path-fixed.c" />
+    <ClCompile Include="..\src\cairo-path-stroke.c" />
+    <ClCompile Include="..\src\cairo-path.c" />
+    <ClCompile Include="..\src\cairo-pattern.c" />
+    <ClCompile Include="..\src\cairo-pdf-surface.c" />
+    <ClCompile Include="..\src\cairo-pen.c" />
+    <ClCompile Include="..\src\cairo-png.c" />
+    <ClCompile Include="..\src\cairo-polygon.c" />
+    <ClCompile Include="..\src\cairo-ps-surface.c" />
+    <ClCompile Include="..\src\cairo-rectangle.c" />
+    <ClCompile Include="..\src\cairo-region.c" />
+    <ClCompile Include="..\src\cairo-scaled-font-subsets.c" />
+    <ClCompile Include="..\src\cairo-scaled-font.c" />
+    <ClCompile Include="..\src\cairo-skiplist.c" />
+    <ClCompile Include="..\src\cairo-slope.c" />
+    <ClCompile Include="..\src\cairo-spline.c" />
+    <ClCompile Include="..\src\cairo-stroke-style.c" />
+    <ClCompile Include="..\src\cairo-surface-fallback.c" />
+    <ClCompile Include="..\src\cairo-surface.c" />
+    <ClCompile Include="..\src\cairo-svg-surface.c" />
+    <ClCompile Include="..\src\cairo-traps.c" />
+    <ClCompile Include="..\src\cairo-truetype-subset.c" />
+    <ClCompile Include="..\src\cairo-type1-fallback.c" />
+    <ClCompile Include="..\src\cairo-unicode.c" />
+    <ClCompile Include="..\src\cairo-wideint.c" />
+    <ClCompile Include="..\src\cairo-win32-font.c" />
+    <ClCompile Include="..\src\cairo-win32-surface.c" />
+    <ClCompile Include="..\src\cairo.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\pixman\src\fbedgeimp.h" />
+    <ClInclude Include="..\pixman\src\fbmmx.h" />
+    <ClInclude Include="..\pixman\src\fbpict.h" />
+    <ClInclude Include="..\pixman\src\icimage.h" />
+    <ClInclude Include="..\pixman\src\icint.h" />
+    <ClInclude Include="..\pixman\src\icrop.h" />
+    <ClInclude Include="..\pixman\src\pixman-remap.h" />
+    <ClInclude Include="..\pixman\src\pixman-xserver-compat.h" />
+    <ClInclude Include="..\pixman\src\pixman.h" />
+    <ClInclude Include="..\pixman\src\pixregionint.h" />
+    <ClInclude Include="..\pixman\src\renderedge.h" />
+    <ClInclude Include="..\src\cairo-analysis-surface-private.h" />
+    <ClInclude Include="..\src\cairo-arc-private.h" />
+    <ClInclude Include="..\src\cairo-cache-private.h" />
+    <ClInclude Include="..\src\cairo-clip-private.h" />
+    <ClInclude Include="..\src\cairo-deprecated.h" />
+    <ClInclude Include="..\src\cairo-features.h" />
+    <ClInclude Include="..\src\cairo-freelist-private.h" />
+    <ClInclude Include="..\src\cairo-gstate-private.h" />
+    <ClInclude Include="..\src\cairo-hash-private.h" />
+    <ClInclude Include="..\src\cairo-meta-surface-private.h" />
+    <ClInclude Include="..\src\cairo-mutex-list-private.h" />
+    <ClInclude Include="..\src\cairo-mutex-private.h" />
+    <ClInclude Include="..\src\cairo-mutex-type-private.h" />
+    <ClInclude Include="..\src\cairo-output-stream-private.h" />
+    <ClInclude Include="..\src\cairo-paginated-private.h" />
+    <ClInclude Include="..\src\cairo-paginated-surface-private.h" />
+    <ClInclude Include="..\src\cairo-path-fixed-private.h" />
+    <ClInclude Include="..\src\cairo-path-private.h" />
+    <ClInclude Include="..\src\cairo-pdf-surface-private.h" />
+    <ClInclude Include="..\src\cairo-pdf.h" />
+    <ClInclude Include="..\src\cairo-private.h" />
+    <ClInclude Include="..\src\cairo-ps-surface-private.h" />
+    <ClInclude Include="..\src\cairo-ps.h" />
+    <ClInclude Include="..\src\cairo-scaled-font-private.h" />
+    <ClInclude Include="..\src\cairo-scaled-font-subsets-private.h" />
+    <ClInclude Include="..\src\cairo-skiplist-private.h" />
+    <ClInclude Include="..\src\cairo-surface-fallback-private.h" />
+    <ClInclude Include="..\src\cairo-surface-private.h" />
+    <ClInclude Include="..\src\cairo-svg-surface-private.h" />
+    <ClInclude Include="..\src\cairo-svg.h" />
+    <ClInclude Include="..\src\cairo-truetype-subset-private.h" />
+    <ClInclude Include="..\src\cairo-types-private.h" />
+    <ClInclude Include="..\src\cairo-wideint-private.h" />
+    <ClInclude Include="..\src\cairo-win32-private.h" />
+    <ClInclude Include="..\src\cairo-win32.h" />
+    <ClInclude Include="..\src\cairo.h" />
+    <ClInclude Include="..\src\cairoint.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cairo.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libpng\libpng.vcxproj">
+      <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\zlib\zlib.vcxproj">
+      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

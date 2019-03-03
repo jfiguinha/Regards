@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindFolderCatalog.h"
 using namespace Regards::Sqlite;
 

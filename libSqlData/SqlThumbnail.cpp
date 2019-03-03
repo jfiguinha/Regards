@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlThumbnail.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
@@ -32,7 +33,7 @@ CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
 bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 {
 	type = 2;
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
 	if (!find)
@@ -45,7 +46,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 bool CSqlThumbnail::TestThumbnail(const wxString & path)
 {
 	type = 2;
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	if (!find)

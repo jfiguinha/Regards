@@ -1,3 +1,4 @@
+#include <header.h>
 #include "WindowUtility.h"
 using namespace Regards::Window;
 void CWindowUtility::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)

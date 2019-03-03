@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ViewerThemeInit.h"
 #include "ViewerTheme.h"
 #include <wx/stdpaths.h>

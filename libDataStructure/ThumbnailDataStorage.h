@@ -6,7 +6,7 @@ class CThumbnailDataStorage : public CThumbnailData
 {
 public:
 	CThumbnailDataStorage(const wxString & filename);
-	~CThumbnailDataStorage(void);
+	virtual ~CThumbnailDataStorage(void);
 
 	int GetType()
 	{

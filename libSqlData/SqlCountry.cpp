@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlCountry.h"
 using namespace Regards::Sqlite;
 

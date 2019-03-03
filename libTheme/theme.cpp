@@ -1,3 +1,4 @@
+#include "header.h"
 #include "theme.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>

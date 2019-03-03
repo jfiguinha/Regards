@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ToolbarButton.h"
 #include <theme.h>
 #include <LibResource.h>
@@ -6,11 +7,7 @@
 #include <RegardsBitmap.h>
 #include <InterpolationBicubic.h>
 #include <FiltreEffet.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>

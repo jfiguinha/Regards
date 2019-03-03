@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  FilterData.cpp
 //  Regards.libFiltreInterface

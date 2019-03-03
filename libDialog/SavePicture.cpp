@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SavePicture.h"
 #include <RegardsBitmap.h>
 #include <libPicture.h>

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "TreeDataEffect.h"
 
 CTreeDataEffect::CTreeDataEffect(void)

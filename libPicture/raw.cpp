@@ -1,3 +1,4 @@
+#include <header.h>
 #include "raw.h"
 #include "RegardsRaw.h"
 #include <ximage.h>

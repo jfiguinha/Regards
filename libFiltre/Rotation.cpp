@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Rotation.h"
 #include "RotateByShearRGB.h"
 #include <RegardsBitmap.h>

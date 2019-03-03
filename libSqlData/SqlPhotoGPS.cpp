@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlPhotoGPS.h"
 using namespace Regards::Sqlite;
 

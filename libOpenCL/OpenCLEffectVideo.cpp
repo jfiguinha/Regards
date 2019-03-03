@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLEffectVideo.h"
 #include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"

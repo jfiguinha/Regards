@@ -1,3 +1,4 @@
+#include <header.h>
 #include "JpegOption.h"
 
 #ifndef WX_PRECOMP

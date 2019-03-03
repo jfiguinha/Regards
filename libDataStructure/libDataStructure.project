@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ThumbnailDataSQL.cpp"/>
     <File Name="RegardsJpegPicture.cpp"/>
     <File Name="Catalog.cpp"/>
     <File Name="Country.cpp"/>
@@ -51,6 +52,7 @@
     <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ThumbnailDataSQL.h"/>
     <File Name="StatusText.h"/>
     <File Name="RegardsJpegPicture.h"/>
     <File Name="Catalog.h"/>
@@ -103,6 +105,9 @@
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libExif"/>
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libSqlEngine"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="TURBOJPEG"/>
         <Preprocessor Value="EXIV2"/>

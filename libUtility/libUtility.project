@@ -49,6 +49,7 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDataStructure"/>
+        <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -49,6 +49,7 @@ namespace Regards
             void Init(wxGLCanvas *canvas);
             bool IsInit();
 		protected:
+			void RenderToTexture();
             GLSLShader * CreateShader(const wxString &shaderName);
             GLSLShader * FindShader(const wxString &shaderName);
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);

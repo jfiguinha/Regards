@@ -1,5 +1,7 @@
+#include <header.h>
 #include "ThumbnailData.h"
 #include <ConvertUtility.h>
+
 
 CThumbnailData::CThumbnailData(const wxString & filename)
 {

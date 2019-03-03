@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ClosedHandCursor.h"
 
 #ifndef __APPLE__

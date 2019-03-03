@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ToolbarElement.h"
 using namespace Regards::Window;
 

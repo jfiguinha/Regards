@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlCatalog.h"
 using namespace Regards::Sqlite;
 

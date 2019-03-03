@@ -1,14 +1,12 @@
+#include "header.h"
 #include "ShowVideo.h"
 #include "SliderVideo.h"
 #include "VideoControl.h"
 #include "VideoControl_soft.h"
 #include <ThemeInit.h>
 #include <OpenCLContext.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
+
 using namespace Regards::Video;
 using namespace Regards::Window;
 using namespace Regards::OpenCL;

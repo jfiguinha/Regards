@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SqlLibResource.h"
 //#include <wx/filefn.h> 
 using namespace Regards::Sqlite;

@@ -1,4 +1,5 @@
- #include "PanelInfosWnd.h"
+#include <header.h>
+#include "PanelInfosWnd.h"
 #include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
@@ -6,13 +7,8 @@
 #include "ViewerThemeInit.h"
 #include "RedEyeParameter.h"
 #include <Gps.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#include "../include/config_id.h"
-#else
 #include <window_id.h>
 #include <config_id.h>
-#endif
 #include "MainWindow.h"
 #include "PreviewWnd.h"
 #include <FileUtility.h>

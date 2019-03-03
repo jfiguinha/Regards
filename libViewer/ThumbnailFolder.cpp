@@ -1,10 +1,7 @@
-﻿#include "ThumbnailFolder.h"
+﻿#include <header.h>
+#include "ThumbnailFolder.h"
 #include "MainWindow.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <LibResource.h>
 #include <ThumbnailDataSQL.h>
 #include <SqlFindPhotos.h>

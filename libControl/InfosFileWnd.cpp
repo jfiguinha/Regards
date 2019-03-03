@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InfosFileWnd.h"
 
 #if defined(__WXMSW__)

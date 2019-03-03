@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SharpenMaskingFilter.h"
 #include "SharpenMaskingParameter.h"
 #include <FilterData.h>

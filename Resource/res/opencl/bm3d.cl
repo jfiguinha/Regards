@@ -648,8 +648,11 @@ __kernel void calc_distances(
                 for (int x = 0; x < BLOCK_SIZE; x++) {
                     const int2 ref_pos = {gid.x + x, gid.y + y};
                     int tid = ref_pos.y * width + ref_pos.x;
-                    //float4 value = input[tid];
-                    ref[y][x] = input[tid];//(uchar)read_imageui(input, sampler, ref_pos).s0;
+
+					if(ref_pos.y >= 0 && ref_pos.y < height && ref_pos.x >= 0 && ref_pos.x < width)
+						ref[y][x] = (uchar)input[tid];
+					else
+						ref[y][x] = 0;
                 }
             }
 
@@ -661,7 +664,9 @@ __kernel void calc_distances(
                     const int2 pos = {gid.x + i + x - WINDOW_SIZE_HALF,
                                       gid.y + j + y - WINDOW_SIZE_HALF};
                     int tid = pos.y * width + pos.x;
-                    const uchar b = (uchar)input[tid];//read_imageui(input, sampler, pos).s0;
+					uchar b = 0;
+					if(pos.y >= 0 && pos.y < height && pos.x >= 0 && pos.x < width)
+						b = (uchar)input[tid];
                     d += (ref[y][x]-b) * (ref[y][x]-b);
                 }
             }
@@ -775,7 +780,10 @@ __kernel void bm3d_basic_filter(
                                           rj - WINDOW_SIZE_HALF + similar_coords[2*(n*tot_globals_d + rgid) + 1] + j};
 
                         int tid = pos.y * width + pos.x;
-                        block[j][i] = input[tid];//(float)read_imageui(input, sampler, pos).s0;
+						if(pos.y >= 0 && pos.y < height && pos.x >= 0 && pos.x < width)
+							block[j][i] = input[tid];//(float)read_imageui(input, sampler, pos).s0;
+						else
+							block[j][i] = 0;
                     }
                 }
 
@@ -940,8 +948,16 @@ __kernel void bm3d_wiener_filter(
 
 
                         int tid = pos.y * width + pos.x;
-                        basic_block[j][i] = (float)input[tid];//read_imageui(basic, sampler, pos).s0;
-                        noise_block[j][i] = (float)basic[tid];//read_imageui(input, sampler, pos).s0;
+						if(pos.y >= 0 && pos.y < height && pos.x >= 0 && pos.x < width)
+						{
+							basic_block[j][i] = input[tid];//read_imageui(basic, sampler, pos).s0;
+							noise_block[j][i] = basic[tid];//read_imageui(input, sampler, pos).s0;
+						}
+						else
+						{
+							basic_block[j][i] = 0.0f;
+							noise_block[j][i] = 0.0f;
+						}
                     }
                 }
 

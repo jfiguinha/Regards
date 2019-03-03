@@ -1,3 +1,4 @@
+#include "header.h"
 #include "videothumb.h"
 #include "videothumbnailer.h"
 #include "Metadata.h"

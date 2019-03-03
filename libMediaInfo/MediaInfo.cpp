@@ -1,3 +1,4 @@
+#include "header.h"
 #include "MediaInfo.h"
 /*  Copyright (c) MediaArea.net SARL. All Rights Reserved.
  *
@@ -11,7 +12,7 @@
 // Command line version
 //
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#ifdef WIN32
+#if defined(WIN32)
 #define MEDIAINFO_LIBRARY
 #endif
 

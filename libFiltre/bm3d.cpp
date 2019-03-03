@@ -1,3 +1,4 @@
+#include <header.h>
 /*
  * Copyright (c) 2011, Marc Lebrun <marc.lebrun@cmla.ens-cachan.fr>
  * All rights reserved.
@@ -290,7 +291,7 @@ int run_bm3d(
                                     plan_2d_for_1, plan_2d_for_2, plan_2d_inv)
         {
             #pragma omp for schedule(dynamic) nowait
-            for (unsigned n = 0; n < _nb_threads; n++)
+            for (int n = 0; n < _nb_threads; n++)
             {
                 bm3d_1st_step(sigma, sub_noisy[n], sub_basic[n], w_table[n],
                               h_table[n], chnls, nHard, kHard, NHard, pHard, useSD_h,
@@ -307,7 +308,7 @@ int run_bm3d(
                                                                         2 * nHard, true);
         //! Allocating Plan for FFTW process
         if (tau_2D_wien == DCT)
-            for (unsigned n = 0; n < _nb_threads; n++)
+            for (int n = 0; n < _nb_threads; n++)
             {
                 const unsigned nb_cols = ind_size(w_table[n] - kWien + 1, nWien, pWien);
                 allocate_plan_2d(&plan_2d_for_1[n], kWien, FFTW_REDFT10, w_table[n] * (2 * nWien + 1) * chnls);
@@ -322,7 +323,7 @@ int run_bm3d(
                                     plan_2d_inv)
         {
             #pragma omp for schedule(dynamic) nowait
-            for (unsigned n = 0; n < _nb_threads; n++)
+            for (int n = 0; n < _nb_threads; n++)
             {
                 bm3d_2nd_step(sigma, sub_noisy[n], sub_basic[n], sub_denoised[n],
                               w_table[n], h_table[n], chnls, nWien, kWien, NWien, pWien,

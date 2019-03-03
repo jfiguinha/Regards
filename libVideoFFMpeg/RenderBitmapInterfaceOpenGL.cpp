@@ -1,4 +1,5 @@
-﻿// stdafx.h : fichier Include pour les fichiers Include système standard,
+﻿#include "header.h"
+// stdafx.h : fichier Include pour les fichiers Include système standard,
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
@@ -17,6 +18,8 @@
 
 #include <utility.h>
 using namespace Regards::Video;
+
+//#define RENDER_TO_TEXTURE
 
 CRenderBitmapInterfaceOpenGL::CRenderBitmapInterfaceOpenGL(wxGLCanvas * canvas)
 	: CRenderOpenGL(canvas)
@@ -39,6 +42,7 @@ CRenderBitmapInterfaceOpenGL::~CRenderBitmapInterfaceOpenGL()
 
 void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted)
 {
+
 	glTexture->Enable();
     if(effectParameter->effectEnable)
     {
@@ -78,6 +82,10 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
             {
                 printf( "SetParam colorboost failed \n " );
             }
+            if (!m_pShader->SetIntegerParam("denoise", effectParameter->denoiseEnable))
+            {
+                printf( "SetParam colorboost failed \n " );
+            } 
             if (!m_pShader->SetParam("sharpness", effectParameter->sharpness))
             {
                 printf( "SetParam sharpness failed \n " );
@@ -101,8 +109,11 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
             if (!m_pShader->SetParam("blue",  effectParameter->color_boost[2]))
             {
                 printf( "SetParam blue failed \n " );
-            }        
-            
+            } 
+            if (!m_pShader->SetIntegerParam("exponent", effectParameter->exponent))
+            {
+                printf( "SetParam colorboost failed \n " );
+            } 
         }
 
         RenderQuad(glTexture, flipH, flipV, left, top, inverted);
@@ -128,8 +139,14 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
         if(m_pShader != nullptr)
             m_pShader->DisableShader();
     }
-         
-    glTexture->Disable(); 
+
+	glTexture->Disable();
+	
+
+
+	
+
+	
 }
 
 void CRenderBitmapInterfaceOpenGL::SetSubtitle(CRegardsBitmap * subtitle)

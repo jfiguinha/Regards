@@ -1,3 +1,4 @@
+#include <header.h>
 #include "MyCentralWindowIntro.h"
 #include <RegardsBitmap.h>
 #include <LibResource.h>

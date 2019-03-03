@@ -1,3 +1,4 @@
+#include "header.h"
 #include "TitleBar.h"
 #include <wx/colour.h>
 #include <wx/dc.h>

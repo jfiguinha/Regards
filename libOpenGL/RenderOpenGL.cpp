@@ -1,4 +1,5 @@
-﻿// stdafx.h : fichier Include pour les fichiers Include système standard,
+﻿#include <header.h>
+// stdafx.h : fichier Include pour les fichiers Include système standard,
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
@@ -349,6 +350,17 @@ void CRenderOpenGL::RenderQuad(GLTexture * texture, const bool & flipH,const boo
     
 }
 
+void CRenderOpenGL::RenderToTexture()
+{
+	GLTexture * displayTexture = GetDisplayTexture();
+	textureDisplay->Enable();
+	//textureSource->Enable();
+	glBindTexture(GL_TEXTURE_2D, displayTexture->GetTextureID());					// Bind To The Blur Texture
+	//glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, width, height);
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, width, height, 0);
+	//textureSource->Disable();
+	textureDisplay->Disable();
+}
 
 
 void CRenderOpenGL::RenderToScreen(const int &left, const int &top, const bool &inverted)

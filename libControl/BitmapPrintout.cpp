@@ -1,3 +1,4 @@
+#include <header.h>
 #include "BitmapPrintout.h"
 #include <LoadingResource.h>
 #include <PrintEngine.h>

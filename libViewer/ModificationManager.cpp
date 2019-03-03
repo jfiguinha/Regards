@@ -1,4 +1,5 @@
 
+#include <header.h>
 #include "ModificationManager.h"
 #include <wx/dir.h>
 #include <wx/filename.h>

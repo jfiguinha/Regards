@@ -22,32 +22,33 @@
     <ProjectGuid>{B9F8DE9E-8E05-4455-955D-DC31F55D87BD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libEmail</RootNamespace>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>Intel C++ Compiler XE 12.1</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -69,16 +70,21 @@
     <NuGetPackageImportStamp>6eadfa80</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libextern\wxWidgets-3.1.0\include\msvc;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include;C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\Intel64;$(ICInstallDir)compiler\lib\Intel64;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\libExtern\wxsvg-1.5.4\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include\msvc;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\libExtern\wxsvg-1.5.4\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include\msvc;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libextern\wxWidgets-3.1.0\include\msvc;$(SolutionDir)\libExtern\wxWidgets-3.1.0\include;C:\developpement\boost\1.52\include\boost-1_52;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\Intel64;$(ICInstallDir)compiler\lib\Intel64;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-3.1.0\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -86,7 +92,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WX_PRECOMP;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -95,13 +101,16 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMP>GenerateParallelCode</OpenMP>
       <Cpp0xSupport>true</Cpp0xSupport>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../libUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -113,10 +122,22 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WX_PRECOMP;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <UseProcessorExtensions>SSE2</UseProcessorExtensions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,9 +149,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeedHighLevel</Optimization>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -138,7 +158,7 @@
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <MinimalRebuild>true</MinimalRebuild>
       <SmallerTypeCheck>false</SmallerTypeCheck>
@@ -157,7 +177,11 @@
       <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
       <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <UseProcessorExtensions>SSE3</UseProcessorExtensions>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
+      <DisableFunctionSplitting>false</DisableFunctionSplitting>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../libUtility</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,10 +194,19 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="email.h" />
     <ClInclude Include="LocalMapi.h" />
+    <ClInclude Include="SendEmail.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\include\header.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="email.cpp" />
     <ClCompile Include="LocalMapi.cpp" />
+    <ClCompile Include="SendEmail.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

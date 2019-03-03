@@ -1,3 +1,4 @@
+#include <header.h>
 #include "GaussianBlur.h"
 #include <LoadingResource.h>
 #include <RegardsBitmap.h>

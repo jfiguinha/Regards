@@ -1,3 +1,4 @@
+#include "header.h"
 #include "TreeWindow.h"
 #include "ScrollbarWnd.h"
 #include "ScrollbarHorizontalWnd.h"

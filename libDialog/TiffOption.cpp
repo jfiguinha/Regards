@@ -1,3 +1,4 @@
+#include <header.h>
 #include "TiffOption.h"
 
 #ifndef WX_PRECOMP

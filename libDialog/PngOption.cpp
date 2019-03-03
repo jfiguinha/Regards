@@ -1,3 +1,4 @@
+#include <header.h>
 #include "PngOption.h"
 
 #ifndef WX_PRECOMP

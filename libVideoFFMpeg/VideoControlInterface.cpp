@@ -1,3 +1,4 @@
+#include "header.h"
 #include "VideoControlInterface.h"
 #include "ffmpegToBitmap.h"
 #include <RegardsBitmap.h>

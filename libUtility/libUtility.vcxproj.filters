@@ -9,13 +9,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="OpenCL Files">
-      <UniqueIdentifier>{D011BB44-1BF7-4113-997B-A081035B40D8}</UniqueIdentifier>
-      <Extensions>cl</Extensions>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Fichiers de ressources">
+    <Filter Include="Fichiers de ressources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{e8bbb968-b276-407b-84ef-efbae7a0fc6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +33,9 @@
     <ClInclude Include="LoadingResource.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
@@ -47,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="LoadingResource.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

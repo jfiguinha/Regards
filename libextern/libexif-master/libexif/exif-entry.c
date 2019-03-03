@@ -433,8 +433,9 @@ exif_entry_fix (ExifEntry *e)
 }
 
 /*! Format the value of an ExifEntry for human display in a generic way.
- * The output is localized. The formatting is independent of the tag number
- * and is based entirely on the data type.
+ * The output is localized. The formatting is independent of the tag number.
+ * \pre The buffer at val is entirely cleared to 0. This guarantees that the
+ *      resulting string will be NUL terminated.
  * \pre The ExifEntry is already a member of an ExifData.
  * \param[in] e EXIF entry
  * \param[out] val buffer in which to store value
@@ -450,13 +451,12 @@ exif_entry_format_value(ExifEntry *e, char *val, size_t maxlen)
 	ExifRational v_rat;
 	ExifSRational v_srat;
 	ExifSLong v_slong;
+	char b[64];
 	unsigned int i;
-	size_t len;
 	const ExifByteOrder o = exif_data_get_byte_order (e->parent->parent);
 
-	if (!e->size || !maxlen)
+	if (!e->size)
 		return;
-	++maxlen; /* include the terminating NUL */
 	switch (e->format) {
 	case EXIF_FORMAT_UNDEFINED:
 		snprintf (val, maxlen, _("%i bytes undefined data"), e->size);
@@ -465,74 +465,77 @@ exif_entry_format_value(ExifEntry *e, char *val, size_t maxlen)
 	case EXIF_FORMAT_SBYTE:
 		v_byte = e->data[0];
 		snprintf (val, maxlen, "0x%02x", v_byte);
-		len = strlen (val);
+		maxlen -= strlen (val);
 		for (i = 1; i < e->components; i++) {
 			v_byte = e->data[i];
-			snprintf (val+len, maxlen-len, ", 0x%02x", v_byte);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			snprintf (b, sizeof (b), ", 0x%02x", v_byte);
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed)maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_SHORT:
 		v_short = exif_get_short (e->data, o);
 		snprintf (val, maxlen, "%u", v_short);
-		len = strlen (val);
+		maxlen -= strlen (val);
 		for (i = 1; i < e->components; i++) {
 			v_short = exif_get_short (e->data +
 				exif_format_get_size (e->format) * i, o);
-			snprintf (val+len, maxlen-len, ", %u", v_short);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			snprintf (b, sizeof (b), ", %u", v_short);
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed)maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_SSHORT:
 		v_sshort = exif_get_sshort (e->data, o);
 		snprintf (val, maxlen, "%i", v_sshort);
-		len = strlen (val);
+		maxlen -= strlen (val);
 		for (i = 1; i < e->components; i++) {
 			v_sshort = exif_get_short (e->data +
 				exif_format_get_size (e->format) *
 				i, o);
-			snprintf (val+len, maxlen-len, ", %i", v_sshort);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			snprintf (b, sizeof (b), ", %i", v_sshort);
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed)maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_LONG:
 		v_long = exif_get_long (e->data, o);
 		snprintf (val, maxlen, "%lu", (unsigned long) v_long);
-		len = strlen (val);
+		maxlen -= strlen (val);
 		for (i = 1; i < e->components; i++) {
 			v_long = exif_get_long (e->data +
 				exif_format_get_size (e->format) *
 				i, o);
-			snprintf (val+len, maxlen-len, ", %lu", (unsigned long) v_long);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			snprintf (b, sizeof (b), ", %lu", (unsigned long) v_long);
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed)maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_SLONG:
 		v_slong = exif_get_slong (e->data, o);
 		snprintf (val, maxlen, "%li", (long) v_slong);
-		len = strlen (val);
+		maxlen -= strlen (val);
 		for (i = 1; i < e->components; i++) {
 			v_slong = exif_get_slong (e->data +
 				exif_format_get_size (e->format) * i, o);
-			snprintf (val+len, maxlen-len, ", %li", (long) v_slong);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			snprintf (b, sizeof (b), ", %li", (long) v_slong);
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed)maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_ASCII:
-		strncpy (val, (char *) e->data, MIN (maxlen-1, e->size));
-		val[MIN (maxlen-1, e->size)] = 0;
+		strncpy (val, (char *) e->data, MIN (maxlen, e->size));
 		break;
 	case EXIF_FORMAT_RATIONAL:
-		len = 0;
 		for (i = 0; i < e->components; i++) {
 			if (i > 0) {
-				snprintf (val+len, maxlen-len, ", ");
-				len += strlen (val+len);
+				strncat (val, ", ", maxlen);
+				maxlen -= 2;
 			}
 			v_rat = exif_get_rational (
 				e->data + 8 * i, o);
@@ -544,39 +547,40 @@ exif_entry_format_value(ExifEntry *e, char *val, size_t maxlen)
 				 * range 13..120 will show 2 decimal points.
 				 */
 				int decimals = (int)(log10(v_rat.denominator)-0.08+1.0);
-				snprintf (val+len, maxlen-len, "%2.*f",
+				snprintf (b, sizeof (b), "%2.*f",
 					  decimals,
 					  (double) v_rat.numerator /
 					  (double) v_rat.denominator);
 			} else
-				snprintf (val+len, maxlen-len, "%lu/%lu",
+				snprintf (b, sizeof (b), "%lu/%lu",
 				  (unsigned long) v_rat.numerator,
 				  (unsigned long) v_rat.denominator);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed) maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_SRATIONAL:
-		len = 0;
 		for (i = 0; i < e->components; i++) {
 			if (i > 0) {
-				snprintf (val+len, maxlen-len, ", ");
-				len += strlen (val+len);
+				strncat (val, ", ", maxlen);
+				maxlen -= 2;
 			}
 			v_srat = exif_get_srational (
 				e->data + 8 * i, o);
 			if (v_srat.denominator) {
 				int decimals = (int)(log10(fabs(v_srat.denominator))-0.08+1.0);
-				snprintf (val+len, maxlen-len, "%2.*f",
+				snprintf (b, sizeof (b), "%2.*f",
 					  decimals,
 					  (double) v_srat.numerator /
 					  (double) v_srat.denominator);
 			} else
-				snprintf (val+len, maxlen-len, "%li/%li",
+				snprintf (b, sizeof (b), "%li/%li",
 				  (long) v_srat.numerator,
 				  (long) v_srat.denominator);
-			len += strlen (val+len);
-			if (len >= maxlen-1) break;
+			strncat (val, b, maxlen);
+			maxlen -= strlen (b);
+			if ((signed) maxlen <= 0) break;
 		}
 		break;
 	case EXIF_FORMAT_DOUBLE:
@@ -609,30 +613,6 @@ exif_entry_dump (ExifEntry *e, unsigned int indent)
 	printf ("%s  Components: %i\n", buf, (int) e->components);
 	printf ("%s  Size: %i\n", buf, e->size);
 	printf ("%s  Value: %s\n", buf, exif_entry_get_value (e, value, sizeof(value)));
-}
-
-/*! Check if a string consists entirely of a single, repeated character.
- * Up to first n bytes are checked.
- * 
- * \param[in] data pointer of string to check
- * \param[in] ch character to match
- * \param[in] n maximum number of characters to match
- *
- * \return 0 if the string matches or is of zero length, nonzero otherwise
- */
-static int
-match_repeated_char(const unsigned char *data, unsigned char ch, size_t n)
-{
-	int i;
-	for (i=n; i; --i, ++data) {
-		if (*data == 0) {
-			i = 0;	/* all bytes before NUL matched */
-			break;
-		}
-		if (*data != ch)
-			break;
-	}
-	return i;
 }
 
 #define CF(entry,target,v,maxlen)					\
@@ -830,6 +810,7 @@ const char *
 exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 {
 	unsigned int i, j, k;
+	const unsigned char *t;
 	ExifShort v_short, v_short2, v_short3, v_short4;
 	ExifByte v_byte;
 	ExifRational v_rat;
@@ -849,7 +830,6 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 		{"0210", 2,  1},
 		{"0220", 2,  2},
 		{"0221", 2, 21},
-		{"0230", 2,  3},
 		{""    , 0,  0}
 	};
 
@@ -862,15 +842,14 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 	 */
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 
-	if (!e || !e->parent || !e->parent->parent || !maxlen)
-		return val;
-
 	/* make sure the returned string is zero terminated */
 	memset (val, 0, maxlen);
 	maxlen--;
 	memset (b, 0, sizeof (b));
 
 	/* We need the byte order */
+	if (!e || !e->parent || !e->parent->parent)
+		return val;
 	o = exif_data_get_byte_order (e->parent->parent);
 
 	/* Sanity check */
@@ -928,16 +907,17 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 
 		/*
 		 * If we reach this point, the tag does not
- 		 * comply with the standard but seems to contain data.
+		 * comply with the standard and seems to contain data.
 		 * Print as much as possible.
 		 */
 		exif_entry_log (e, EXIF_LOG_CODE_DEBUG,
-			_("Tag UserComment contains data but is "
-			  "against specification."));
- 		for (j = 0; (i < e->size) && (j < maxlen); i++, j++) {
+			_("Tag UserComment does not comply "
+			"with standard but contains data."));
+		for (; (i < e->size)  && (strlen (val) < maxlen - 1); i++) {
 			exif_entry_log (e, EXIF_LOG_CODE_DEBUG,
 				_("Byte at position %i: 0x%02x"), i, e->data[i]);
- 			val[j] = isprint (e->data[i]) ? e->data[i] : '.';
+			val[strlen (val)] =
+				isprint (e->data[i]) ? e->data[i] : '.';
 		}
 		break;
 
@@ -971,9 +951,9 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 		/*
 		 * First part: Photographer.
 		 * Some cameras store a string like "   " here. Ignore it.
-		 * Remember that a corrupted tag might not be NUL-terminated
 		 */
-		if (e->size && e->data && match_repeated_char(e->data, ' ', e->size))
+		if (e->size && e->data &&
+		    (strspn ((char *)e->data, " ") != strlen ((char *) e->data)))
 			strncpy (val, (char *) e->data, MIN (maxlen, e->size));
 		else
 			strncpy (val, _("[None]"), maxlen);
@@ -982,20 +962,15 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 
 		/* Second part: Editor. */
 		strncat (val, " - ", maxlen - strlen (val));
-		k = 0;
 		if (e->size && e->data) {
-			const unsigned char *tagdata = memchr(e->data, 0, e->size);
-			if (tagdata++) {
-				int editor_ofs = tagdata - e->data;
-				int remaining = e->size - editor_ofs;
-				if (match_repeated_char(tagdata, ' ', remaining)) {
-					strncat (val, (const char*)tagdata, MIN (maxlen - strlen (val), remaining));
-					++k;
-				}
-			}
-		}
-		if (!k)
+			size_t ts;
+			t = e->data + strlen ((char *) e->data) + 1;
+			ts = e->data + e->size - t;
+			if ((ts > 0) && (strspn ((char *)t, " ") != ts))
+				strncat (val, (char *)t, MIN (maxlen - strlen (val), ts));
+		} else {
 			strncat (val, _("[None]"), maxlen - strlen (val));
+		}
 		strncat (val, " ", maxlen - strlen (val));
 		strncat (val, _("(Editor)"), maxlen - strlen (val));
 
@@ -1374,23 +1349,10 @@ exif_entry_get_value (ExifEntry *e, char *val, unsigned int maxlen)
 	case EXIF_TAG_XP_AUTHOR:
 	case EXIF_TAG_XP_KEYWORDS:
 	case EXIF_TAG_XP_SUBJECT:
-	{
-		/* Sanity check the size to prevent overflow */
-		if (e->size+sizeof(unsigned short) < e->size) break;
-
-		/* The tag may not be U+0000-terminated , so make a local
-		   U+0000-terminated copy before converting it */
-		unsigned short *utf16 = exif_mem_alloc (e->priv->mem, e->size+sizeof(unsigned short));
-		if (!utf16) break;
-		memcpy(utf16, e->data, e->size);
-		utf16[e->size/sizeof(unsigned short)] = 0;
-
 		/* Warning! The texts are converted from UTF16 to UTF8 */
 		/* FIXME: use iconv to convert into the locale encoding */
-		exif_convert_utf16_to_utf8(val, utf16, maxlen);
-		exif_mem_free(e->priv->mem, utf16);
+		exif_convert_utf16_to_utf8(val, (unsigned short*)e->data, MIN(maxlen, e->size));
 		break;
-	}
 
 	default:
 		/* Use a generic value formatting */

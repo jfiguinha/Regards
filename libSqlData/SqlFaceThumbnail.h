@@ -7,11 +7,11 @@ class CSqlFaceThumbnail : public CThumbnailData
 {
 public:
 	CSqlFaceThumbnail(const wxString & filename,const int & numFace);
-	~CSqlFaceThumbnail(void);
+	virtual ~CSqlFaceThumbnail(void);
 
 	int GetType()
 	{
-		return 2;
+		return 4;
 	}
 
 	bool IsBuffer()

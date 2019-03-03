@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlPhotosWithoutThumbnail.h"
 #include "SqlFindPhotos.h"
 #include "SqlThumbnailVideo.h"

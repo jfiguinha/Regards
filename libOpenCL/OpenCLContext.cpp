@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLContext.h"
 #include "utility.h"
 #include "OpenCLProgram.h"

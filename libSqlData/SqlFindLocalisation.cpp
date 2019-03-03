@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindLocalisation.h"
 using namespace Regards::Sqlite;
 

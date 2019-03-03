@@ -1,4 +1,5 @@
- #include "MainWindow.h"
+#include <header.h>
+#include "MainWindow.h"
 #include <LibResource.h>
 #include "CentralWnd.h"
 #include <RegardsConfigParam.h>
@@ -17,11 +18,7 @@
 #include <wx/filename.h>
 #include "ImageList.h"
 #include <ConvertUtility.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <FilterData.h>
 #include <SqlFindFolderCatalog.h>
 #include <wxSVG/SVGDocument.h>
@@ -187,11 +184,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	//Face Data Preload
 	
 	wxString model = CFileUtility::GetResourcesFolderPath() + "\\dlib_face_recognition_resnet_model_v1.dat";
-#ifdef _MSC_VER  
-	wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "\\shape_predictor_68_face_landmarks.dat";
-#else
     wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "\\shape_predictor_5_face_landmarks.dat";
-#endif
+
 #else
 	wxString model = CFileUtility::GetResourcesFolderPath() + "/dlib_face_recognition_resnet_model_v1.dat";
 	//wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "/shape_predictor_68_face_landmarks.dat";
@@ -200,6 +194,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	faceData->LoadData((const char*)model.mb_str(wxConvUTF8), (const char*)facelandmark.mb_str(wxConvUTF8));
 	//centralWnd->ScreenMode();
+	
 }
 
 void CMainWindow::StartAnimation(wxCommandEvent& event)
@@ -867,6 +862,7 @@ void CMainWindow::ProcessIdle()
     CSqlFacePhoto facePhoto;
     vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
 
+	
 	//Recherche Nb Fichier non traité pour le visage
 	if(nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
 	{
@@ -893,6 +889,7 @@ void CMainWindow::ProcessIdle()
         }
         hasDoneOneThings = true;
 	}
+	
     
 	if (updateCriteria)
 	{

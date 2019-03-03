@@ -1,3 +1,4 @@
+#include <header.h>
 // DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
 #include "libPicture.h"
@@ -67,7 +68,7 @@ using namespace Regards::exiv2;
 
 #include <wxSVG/SVGDocument.h>
 
-#ifdef WIN32
+#ifdef __MINGW32__
 using namespace Imf_2_3;
 using namespace Imath_2_3;
 #else

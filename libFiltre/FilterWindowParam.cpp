@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  FilterWindowParam.cpp
 //  Regards.libViewer

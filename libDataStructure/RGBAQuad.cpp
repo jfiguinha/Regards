@@ -1,3 +1,4 @@
+#include <header.h>
 #include "RGBAQuad.h"
 
 float const_floatcolor[256];

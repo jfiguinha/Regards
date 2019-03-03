@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  MotionBlurFilter.cpp
 //  Regards.libViewer

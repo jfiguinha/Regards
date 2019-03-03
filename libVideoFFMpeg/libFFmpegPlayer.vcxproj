@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9871112B-FA13-4003-A586-03914AB568B9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>libFFmpegPlayer</RootNamespace>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140_xp</PlatformToolset>
+    <UseIntelIPP>Parallel_Dynamic</UseIntelIPP>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Program Files\AMD APP SDK\3.0\include;C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libextern\SDL2-2.0.4\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxsvg\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\wxsvg\include;C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\wxsvg\include;C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Program Files\AMD APP SDK\3.0\include;C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libextern\SDL2-2.0.4\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxsvg\include;$(SolutionDir)\libExtern\cairo-1.10.2\include;$(INTELOCLSDKROOT)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;WX_PRECOMP;DXVA2;OPENCL;YUV;_INFOS;FFMPEG;SDL2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\libOpenCL;..\libFiltreEffet;..\otherlib\libRaw;..\include;..\otherlib\libMediaInfo;..\libVideoInterface;..\libMediaFoundation;..\libVideoPlayer;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libRenderBitmap;..\otherlib\libGlew;..\libOpenGL;..\libDirectShow;..\dllDatastructure;..\dllPicture;..\libPrint;..\libCursor;..\otherlib\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\otherlib\librapidxml;..\libTheme;..\libWindow;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;DXVA2;OPENCL;YUV;_INFOS;FFMPEG;SDL2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/ffmpeg-4.1;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;WX_PRECOMP;DXVA2;OPENCL;YUV;FFMPEG;SDL2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\libOpenCL;..\libFiltreEffet;..\otherlib\libRaw;..\include;..\otherlib\libMediaInfo;..\libVideoInterface;..\libMediaFoundation;..\libVideoPlayer;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libRenderBitmap;..\otherlib\libGlew;..\libOpenGL;..\libDirectShow;..\dllDatastructure;..\dllPicture;..\libPrint;..\libCursor;..\otherlib\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\otherlib\librapidxml;..\libTheme;..\libWindow;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <UseProcessorExtensions>SSE2</UseProcessorExtensions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;DXVA2;OPENCL;YUV;FFMPEG;SDL2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <InterproceduralOptimization>SingleFile</InterproceduralOptimization>
+      <OptimizeForWindowsApplication>true</OptimizeForWindowsApplication>
+      <FlushDenormalResultsToZero>true</FlushDenormalResultsToZero>
+      <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
+      <Parallelization>true</Parallelization>
+      <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
+      <GenerateAlternateCodePaths>AVX</GenerateAlternateCodePaths>
+      <UseProcessorExtensions>None</UseProcessorExtensions>
+      <OpenMP>GenerateParallelCode</OpenMP>
+      <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>16Bytes</StructMemberAlignment>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <DisableFunctionSplitting>false</DisableFunctionSplitting>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <MinimalRebuild>true</MinimalRebuild>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/ffmpeg-4.1;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="ffmpeg.h" />
+    <ClInclude Include="ffmpegToBitmap.h" />
+    <ClInclude Include="ffmpeg_dxva2.h" />
+    <ClInclude Include="ffplaycore.h" />
+    <ClInclude Include="RenderBitmapInterfaceOpenGL.h" />
+    <ClInclude Include="ShowVideo.h" />
+    <ClInclude Include="SliderVideo.h" />
+    <ClInclude Include="VideoControl.h" />
+    <ClInclude Include="VideoControlInterface.h" />
+    <ClInclude Include="VideoControl_soft.h" />
+    <ClInclude Include="VideoInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\header.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ffmpegToBitmap.cpp" />
+    <ClCompile Include="ffmpeg_dxva2.cpp" />
+    <ClCompile Include="ffplaycore.cpp" />
+    <ClCompile Include="RenderBitmapInterfaceOpenGL.cpp" />
+    <ClCompile Include="ShowVideo.cpp" />
+    <ClCompile Include="SliderVideo.cpp" />
+    <ClCompile Include="VideoControl.cpp" />
+    <ClCompile Include="VideoControlInterface.cpp" />
+    <ClCompile Include="VideoControl_soft.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

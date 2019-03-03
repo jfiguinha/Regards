@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InterpolationFloatBicubic.h"
 #include "RegardsFloatBitmap.h"
 #include <omp.h>

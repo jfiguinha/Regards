@@ -1,4 +1,4 @@
-
+#include "header.h"
 #include "TreeControl.h"
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;

@@ -1,6 +1,6 @@
 // DllResource.cpp : définit les fonctions exportées pour l'application DLL.
 //
-
+#include "header.h"
 #include "LibResource.h"
 #include "SqlResource.h"
 #include "SqlLibResource.h"

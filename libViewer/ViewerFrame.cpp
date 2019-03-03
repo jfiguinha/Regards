@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ViewerFrame.h"
 #include "MainWindow.h"
 #include "PertinenceValue.h"
@@ -6,11 +7,7 @@
 #include "SQLRemoveData.h"
 #include <PrintEngine.h>
 #include <LibResource.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <wx/filename.h>
 #include <wx/dirdlg.h>
 #include <ConfigRegards.h>

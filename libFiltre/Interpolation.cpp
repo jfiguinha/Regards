@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Interpolation.h"
 #include "RegardsBitmap.h"
 #include <BitmapYUV.h>

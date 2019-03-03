@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlPhotoCriteria.h"
 #include "SqlCriteria.h"
 #include "SqlPhotos.h"

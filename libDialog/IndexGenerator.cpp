@@ -1,3 +1,4 @@
+#include <header.h>
 #include "IndexGenerator.h"
 #include <wx/colordlg.h>
 //(*InternalHeaders(IndexGenerator)

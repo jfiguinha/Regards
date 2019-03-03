@@ -1,0 +1,27 @@
+﻿La génération a démarré 08/02/2017 12:04:54.
+     1>Projet "C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\CommonLib_vc11.vcxproj" sur le nœud 3 (build cible(s)).
+     1>InitializeBuildStatus:
+         Création de "Debug/JXRCommonLib\JXRCommonLib.unsuccessfulbuild", car "AlwaysCreate" a été spécifié.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I..\sys /I..\..\Network\client\debughlp\memtrace /I..\x86 /Zi /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D DISABLE_PERF_MEASUREMENT /D _VC80_UPGRADE=0x0710 /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug/JXRCommonLib\\" /Fd"Debug/JXRCommonLib\JXRCommonLib.pdb" /Gd /TC /analyze- /errorReport:prompt ..\sys\adaptHuff.c ..\sys\image.c ..\sys\strcodec.c ..\sys\strPredQuant.c ..\sys\strTransform.c
+         strTransform.c
+         strPredQuant.c
+         strcodec.c
+         image.c
+         adaptHuff.c
+         Génération de code en cours...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"Debug/JXRCommonLib\JXRCommonLib.lib" /NOLOGO Debug/JXRCommonLib\adaptHuff.obj
+         Debug/JXRCommonLib\image.obj
+         Debug/JXRCommonLib\strcodec.obj
+         Debug/JXRCommonLib\strPredQuant.obj
+         Debug/JXRCommonLib\strTransform.obj
+         CommonLib_vc11.vcxproj -> C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\Debug/JXRCommonLib\JXRCommonLib.lib
+       FinalizeBuildStatus:
+         Suppression du fichier "Debug/JXRCommonLib\JXRCommonLib.unsuccessfulbuild".
+         Mise à jour de l'horodatage "Debug/JXRCommonLib\JXRCommonLib.lastbuildstate".
+     1>Génération du projet "C:\developpement\vs2013wx3.1\Regards\libextern\jxrlib\image\VC11Projects\CommonLib_vc11.vcxproj" terminée (build cible(s)).
+
+La génération a réussi.
+
+Temps écoulé 00:00:00.92

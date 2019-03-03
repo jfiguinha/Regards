@@ -1,5 +1,5 @@
+#include "header.h"
 #include "ToolbarSlide.h"
-
 #include <LibResource.h>
 #include <ClosedHandCursor.h>
 #include "LoadingResource.h"

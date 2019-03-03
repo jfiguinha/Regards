@@ -1,3 +1,4 @@
+#include <header.h>
 #include "DecodeRaw.h"
 #include "DecodeRawParameter.h"
 #include <RegardsBitmap.h>

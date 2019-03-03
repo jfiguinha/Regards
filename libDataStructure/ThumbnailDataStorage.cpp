@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ThumbnailDataStorage.h"
 #include <FileUtility.h>
 #include <LoadingResource.h>

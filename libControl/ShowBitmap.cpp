@@ -1,4 +1,4 @@
-
+#include <header.h>
 #include "ShowBitmap.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"

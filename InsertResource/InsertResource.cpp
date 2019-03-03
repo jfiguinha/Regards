@@ -1,7 +1,8 @@
-// InsertResource.cppÂ : dÃ©finit le point d'entrÃ©e pour l'application console.
+// InsertResource.cpp : définit le point d'entrée pour l'application console.
 //
-#include <stdio.h>
-#include "SqlInit.h"
+
+#include"header.h"
+#include"SqlInit.h"
 #include <SqlResource.h>
 using namespace Regards::Sqlite;
 
@@ -16,16 +17,20 @@ wxString to_string(const float & value)
 
 float value[256];
 
-int main(int argc, char **argv)
+int _tmain(int argc, _TCHAR* argv[])
 {
 	CSqlInit::InitializeSQLServerDatabase();
 	CSqlResource sqlResource;
+
+	wxInitAllImageHandlers();
+
+	//sqlResource.InsertText(L"IDR_OPENCL_BM3D", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opencl\\bm3d.cl");
+	//sqlResource.InsertText(L"IDR_OPENCL_CONVERTTOY", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opencl\\yuv_conversion.cl");
+	sqlResource.InsertText(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opengl\\video_shader.cg");
+
+	//sqlResource.InsertBitmap(L"IDB_FILTRE_BM3D", L"PNG", L"c:\\Regards\\resource\\res\\bitmap\\cameraman.png");
 	//sqlResource.InsertText(L"IDR_OPENCL_NOISE", L"GLSL_SHADER", L"H:\\developpement\\Regards\\resource\\res\\opencl\\noise.cl");
-	sqlResource.InsertVector(L"IDB_PHOTOINDEX", L"H:\\developpement\\Regards\\resource\\res\\vector\\index.svg");
-	
-	CSqlInit::KillSqlEngine();
-	return 0;
-	
+	//sqlResource.InsertVector(L"IDB_PHOTOINDEX", L"H:\\developpement\\Regards\\resource\\res\\vector\\index.svg");
 	/*
 	sqlResource.InsertLibelle(L"LBLeffectDenoisingSigmaP",L"Effect.Denoising.Sigma P",1);
 	sqlResource.InsertLibelle(L"LBLeffectDenoisingFSize",L"Effect.Denoising.FSize",1);
@@ -159,7 +164,8 @@ int main(int argc, char **argv)
 	//sqlResource.InsertText(L"IDR_OPENCL_CONVOLUTION", L"GLSL_SHADER", L"C:\\developpement\\vs2013wx3.1\\Regards\\resource\\res\\openCL\\matrix_convolution.cl");
 	//sqlResource.InsertLibelle(L"LBLTEST", L"Test.Test", 1);
 
-
+	CSqlInit::KillSqlEngine();
+	return 0;
 
 	sqlResource.InsertVector(L"IDB_CALENDAR", L"d:\\resource\\res\\vector\\calendar.svg");
 	sqlResource.InsertVector(L"IDB_MAPLOCATION", L"d:\\resource\\res\\vector\\map_location.svg");

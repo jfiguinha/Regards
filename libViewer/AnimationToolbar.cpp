@@ -1,3 +1,4 @@
+#include <header.h>
 #include "AnimationToolbar.h"
 #include "ToolbarSlide.h"
 #include "ViewerParamInit.h"

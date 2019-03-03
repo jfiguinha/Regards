@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CompressionOption.h"
 
 #ifndef WX_PRECOMP

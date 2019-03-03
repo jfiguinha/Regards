@@ -18,7 +18,6 @@
 //#include "ffplaymfcDlg.h"
 //#include "afxdialogex.h"
 //--------------
-#include "config.h"
 #include <inttypes.h>
 #include <math.h>
 #include <limits.h>
@@ -27,7 +26,6 @@
 extern "C"
 {
 #include "libavutil/avstring.h"
-#include "libavutil/colorspace.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/pixdesc.h"
 #include "libavutil/imgutils.h"

@@ -1,4 +1,4 @@
-
+#include "header.h"
 #include "TreeElementSlide.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>

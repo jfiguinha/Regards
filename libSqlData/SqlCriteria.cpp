@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlCriteria.h"
 using namespace Regards::Sqlite;
 

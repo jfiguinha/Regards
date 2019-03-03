@@ -50,6 +50,7 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libResource"/>
+        <IncludePath Value="../include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

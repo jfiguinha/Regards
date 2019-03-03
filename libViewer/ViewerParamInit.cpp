@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 #include <wx/stdpaths.h>

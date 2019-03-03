@@ -16,6 +16,9 @@
     <Filter Include="Main Application">
       <UniqueIdentifier>{c6bbe307-0df3-4cdb-87f5-918cb85b9223}</UniqueIdentifier>
     </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{857bf104-fc30-4701-8d2c-87b12c811dac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,6 +33,9 @@
     <ClInclude Include="RegardsConfigParam.h">
       <Filter>Main Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ParamInit.cpp">
@@ -40,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="RegardsConfigParam.cpp">
       <Filter>Main Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

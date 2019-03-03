@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFaceRecognition.h"
 using namespace Regards::Sqlite;
 

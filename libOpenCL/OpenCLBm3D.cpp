@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLBm3D.h"
 #include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
@@ -427,8 +428,8 @@ void COpenCLBm3D::CalculDistanceStep2(const cl_mem & basicPicture, COpenCLParame
 	const int window_step_size_2 = WINDOW_STEP_SIZE_2;
 
 	size_t ls[2] = { 16, 8 };
-	const int gx_d = next_multiple((unsigned)ceil(width / (double)STEP_SIZE), ls[0]);
-	const int gy_d = next_multiple((unsigned)ceil(height / (double)STEP_SIZE), ls[1]);
+	const size_t gx_d = next_multiple((unsigned)ceil(width / (double)STEP_SIZE), ls[0]);
+	const size_t gy_d = next_multiple((unsigned)ceil(height / (double)STEP_SIZE), ls[1]);
 //	const int tot_items_d = gx_d * gy_d;
 
 	const size_t gx = next_multiple((unsigned)ceil(width / (double)SPLIT_SIZE_X), ls[0]);
@@ -524,8 +525,8 @@ void COpenCLBm3D::CalculDistanceStep1(COpenCLParameterShortArray * similar_coord
 //	const int window_step_size_2 = WINDOW_STEP_SIZE_2;
 
 	size_t ls[2] = { 16, 8 };
-	const int gx_d = next_multiple((unsigned)ceil(width / (double)STEP_SIZE), ls[0]);
-	const int gy_d = next_multiple((unsigned)ceil(height / (double)STEP_SIZE), ls[1]);
+	const size_t gx_d = next_multiple((unsigned)ceil(width / (double)STEP_SIZE), ls[0]);
+	const size_t gy_d = next_multiple((unsigned)ceil(height / (double)STEP_SIZE), ls[1]);
 //	const int tot_items_d = gx_d * gy_d;
 
 	const size_t gx = next_multiple((unsigned)ceil(width / (double)SPLIT_SIZE_X), ls[0]);

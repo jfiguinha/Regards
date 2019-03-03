@@ -1,3 +1,4 @@
+#include <header.h>
 #include "BitmapToolbar.h"
 #include <LibResource.h>
 #include <ParamInit.h>

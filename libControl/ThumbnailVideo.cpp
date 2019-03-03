@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ThumbnailVideo.h"
 #include <Thumbnail.h>
 #include <RegardsBitmap.h>

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "RedEye.h"
 #include "InterpolationBicubic.h"
 #include <LibResource.h>

@@ -1,12 +1,10 @@
+#include <header.h>
 #include "ConfigRegards.h"
 #include <RegardsConfigParam.h>
 #include <LibResource.h>
 #include <ParamInit.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
 #include <config_id.h>
-#endif
+
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(ConfigRegards)
 	//*)

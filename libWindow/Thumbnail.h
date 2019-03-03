@@ -13,7 +13,7 @@ using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
-typedef std::vector<CThumbnailData *> ThumbnailDataVector;
+//typedef std::vector<CThumbnailData *> ThumbnailDataVector;
 
 namespace Regards
 {
@@ -99,7 +99,6 @@ namespace Regards
 			static void LoadPicture(void * param);
 
 			void UpdateRenderIcone(wxCommandEvent& event);
-
 			CIcone *  FindIcone(const wxString &filename);
 			//------------------------------------------------------------
 			//Variable

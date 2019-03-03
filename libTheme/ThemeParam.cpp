@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ThemeParam.h"
 #include <fstream>
 #ifndef __WXMSW__

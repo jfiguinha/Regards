@@ -1,3 +1,4 @@
+#include <header.h>
 /*
    * Purpose: wxWindows email implementation
    * Author:  Frank Buß

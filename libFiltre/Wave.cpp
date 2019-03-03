@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Wave.h"
 #include "RegardsBitmap.h"
 using namespace Regards::FiltreEffet;

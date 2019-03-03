@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  CWaveFilter.cpp
 //  Regards.libViewer

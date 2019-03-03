@@ -1,3 +1,4 @@
+#include "header.h"
 #include "FileUtility.h"
 #include <wx/filename.h>
 #include <wx/stdpaths.h>

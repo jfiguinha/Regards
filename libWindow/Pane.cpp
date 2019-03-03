@@ -1,3 +1,4 @@
+#include "header.h"
 #include "Pane.h"
 using namespace Regards::Window;
 

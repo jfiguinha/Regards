@@ -1,3 +1,4 @@
+#include <header.h>
 #include "InterpolationBilinear.h"
 #include "RegardsBitmap.h"
 

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "PerlinNoise.h"
 #include "RegardsBitmap.h"
 

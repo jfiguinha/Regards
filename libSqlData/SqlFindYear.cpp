@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindYear.h"
 using namespace Regards::Sqlite;
 

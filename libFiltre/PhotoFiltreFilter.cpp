@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  PhotoFiltreFilter.cpp
 //  Regards.libViewer

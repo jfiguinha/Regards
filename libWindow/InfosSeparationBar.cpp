@@ -1,3 +1,4 @@
+#include "header.h"
 #include "InfosSeparationBar.h"
 #include <ConvertUtility.h>
 #include "WindowMain.h"

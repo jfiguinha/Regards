@@ -1,3 +1,4 @@
+#include "header.h"
 #include "LoadingResource.h"
 #include <RegardsBitmap.h>
 #include <LibResource.h>

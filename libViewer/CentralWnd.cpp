@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CentralWnd.h"
 #include "ThumbnailViewerVideo.h"
 #include "ViewerParam.h"
@@ -10,11 +11,8 @@
 #include <libPicture.h>
 #include <ShowVideo.h>
 #include "ViewerThemeInit.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
+
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 #define PANE_PICTURETHUMBNAIL 1

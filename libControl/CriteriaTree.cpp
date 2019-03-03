@@ -1,3 +1,4 @@
+#include <header.h>
 #include "CriteriaTree.h"
 #include <ConvertUtility.h>
 #include <TreeElementTexte.h>

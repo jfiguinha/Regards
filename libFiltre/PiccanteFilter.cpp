@@ -1,4 +1,5 @@
- #include "PiccanteFilter.h"
+#include <header.h>
+#include "PiccanteFilter.h"
  //#include <FileUtility.h>
  #include <climits>
  #include <RegardsBitmap.h>

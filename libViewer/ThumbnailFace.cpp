@@ -1,12 +1,9 @@
-﻿#include "ThumbnailFace.h"
+﻿#include <header.h>
+#include "ThumbnailFace.h"
 #include "MainWindow.h"
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include <LibResource.h>
 #include <SqlFaceThumbnail.h>
 #include <SqlFindFacePhoto.h>

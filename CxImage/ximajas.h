@@ -18,12 +18,7 @@
 
 #if CXIMAGE_SUPPORT_JASPER
 
-#if defined(_LINUX) || defined(__MINGW32__)
- #include <jasper/jasper.h>
-#else
- #include "../jasper/include/jasper/jasper.h"
-#endif
-
+#include <jasper/jasper.h>
 
 class CxImageJAS: public CxImage
 {

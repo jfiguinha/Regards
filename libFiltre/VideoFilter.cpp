@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  SwirlFilter.cpp
 //  Regards.libViewer
@@ -88,6 +89,14 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
     filtreInterface->AddTreeInfos(colorBoostRed, new CTreeElementValueInt(videoEffectParameter->color_boost[0]), &elementColor);
     filtreInterface->AddTreeInfos(colorBoostGreen, new CTreeElementValueInt(videoEffectParameter->color_boost[1]), &elementColor);
 	filtreInterface->AddTreeInfos(colorBoostBlue, new CTreeElementValueInt(videoEffectParameter->color_boost[2]), &elementColor);
+    
+    //Denoising
+
+	vector<int> elementExponent;
+	for (auto i = 0; i < 10; i++)
+		elementExponent.push_back(i);    
+    filtreInterface->AddTreeInfos(enableBlurEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
+    filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->exponent), &elementExponent);
 
 /*
 	vector<int> elementNbTimes;
@@ -160,10 +169,6 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->sigmaX = value;
 	}
-	else if (key == effectDenoisingFSize)
-	{
-		videoEffectParameter->fSize = value;
-	}
 	else if (key == effectSharpenLevel)
 	{
 		videoEffectParameter->sharpness = value / 10.0f;
@@ -199,10 +204,6 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->effectEnable = value;
 	}
-	else if (key == enableBlurEffect)
-	{
-		videoEffectParameter->MedianEnable = value;
-	}
 	else if (key == enableSharpenEffect)
 	{
 		videoEffectParameter->SharpenEnable = value;
@@ -237,5 +238,13 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	else if (key == enableSubtitle)
 	{
 		videoEffectParameter->enableSubtitle = value;
+	}
+	else if (key == enableBlurEffect)
+	{
+		videoEffectParameter->denoiseEnable = value;
+	}
+    else if (key == effectDenoisingFSize)
+	{
+		videoEffectParameter->exponent = value;
 	}
 }

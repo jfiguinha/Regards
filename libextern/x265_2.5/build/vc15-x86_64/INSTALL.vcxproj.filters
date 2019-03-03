@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\7c4d8ac8a12630b8ba38c720871200d3\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{794522CF-A993-34EA-B34C-3E359DED77BF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

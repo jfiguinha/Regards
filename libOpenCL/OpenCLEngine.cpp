@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLEngine.h"
 #include "utility.h"
 #include "OpenCLContext.h"
@@ -5,11 +6,7 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <IFiltreEffet.h>
-#if defined(__WXMSW__)
-#include "../include/config_id.h"
-#else
-#include <config_id.h>
-#endif
+#include "config_id.h"
 
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C

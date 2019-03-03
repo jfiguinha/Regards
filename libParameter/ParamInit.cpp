@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ParamInit.h"
 #include "RegardsConfigParam.h"
 #include <wx/stdpaths.h>

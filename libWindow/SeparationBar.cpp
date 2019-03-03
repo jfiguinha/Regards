@@ -1,3 +1,4 @@
+#include "header.h"
 #include "SeparationBar.h"
 using namespace Regards::Window;
 

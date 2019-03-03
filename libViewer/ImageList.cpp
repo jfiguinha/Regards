@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ImageList.h"
 using namespace Regards::Viewer;
 

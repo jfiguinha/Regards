@@ -1,10 +1,7 @@
+#include <header.h>
 #include "ThumbnailBitmap.h"
 #include "MainWindow.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 using namespace Regards::Viewer;
 
 CThumbnailBitmap::CThumbnailBitmap(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)

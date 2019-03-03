@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ChangeLabel.h"
 #include <wx/msgdlg.h>
 #include <SqlFaceLabel.h>

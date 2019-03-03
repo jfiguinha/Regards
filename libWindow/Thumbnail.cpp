@@ -1,3 +1,4 @@
+#include "header.h"
 #include "Thumbnail.h"
 #include <LibResource.h>
 #include <FileUtility.h>
@@ -15,6 +16,11 @@
 #include <SqlThumbnailVideo.h>
 #include <wx/dcbuffer.h>
 #include <wx/filename.h>
+#include <ThumbnailData.h>
+#include <ThumbnailDataSQL.h>
+#include <ThumbnailDataStorage.h>
+//#include <ThumbnailDataVideo.h>
+#include <SqlFaceThumbnail.h>
 using namespace Regards::Window;
 
 class CImageLoadingFormat;
@@ -121,7 +127,7 @@ void CThumbnail::SetCheck(const bool &check)
 	}
 }
 
-void CThumbnail::GetSelectItem(vector<CThumbnailData *> &vectorData)
+void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 {
     TRACE();
 	//bool find = false;
@@ -381,8 +387,10 @@ CThumbnail::~CThumbnail()
 	if (m_animation != nullptr)
 		delete m_animation;
         
-    if(iconeList != nullptr)
-        delete iconeList;
+	if (iconeList != nullptr)
+	{
+		delete iconeList;
+	}
 }
 
 void CThumbnail::StopThumbnail(wxCommandEvent& event)
@@ -488,9 +496,11 @@ void CThumbnail::ProcessIdle()
                 bool exitfor = false;
 				CIcone * icone = iconeList->GetElement(i);
 				iconeList->Lock();
+				
 				if (icone != nullptr)
 				{
 					CThumbnailData * pThumbnailData = icone->GetData();
+					
                     if(pThumbnailData != nullptr)
                     {
                         if (pThumbnailData->GetFilename() == filename)
@@ -1090,7 +1100,6 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 				if (!render)
                 {
                     bufferUpdate = true;
-					
                 }
             }
         }

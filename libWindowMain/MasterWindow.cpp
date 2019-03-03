@@ -1,3 +1,4 @@
+#include <header.h>
 #include "MasterWindow.h"
 #include "WindowUtility.h"
 #if defined(__WXMSW__)

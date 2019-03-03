@@ -1,3 +1,4 @@
+#include "header.h"
 #include "TreeElementCheckBox.h"
 #include "LoadingResource.h"
 #include <wxSVG/SVGDocument.h>

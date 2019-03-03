@@ -2,6 +2,7 @@
 #include "wx/print.h"
 #include "wx/printdlg.h"
 
+
 #if wxUSE_POSTSCRIPT
 #include "wx/generic/printps.h"
 #include "wx/generic/prntdlgg.h"

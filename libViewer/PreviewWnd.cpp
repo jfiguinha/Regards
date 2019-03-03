@@ -1,14 +1,11 @@
+#include <header.h>
 #include "PreviewWnd.h"
 #include "MainWindow.h"
 #ifdef FFMPEG
 #include <ShowVideo.h>
 #endif
 #include <libPicture.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include "ViewerParam.h"
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"

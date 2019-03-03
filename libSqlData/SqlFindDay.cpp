@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlFindDay.h"
 using namespace Regards::Sqlite;
 

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "webpOption.h"
 
 #ifndef WX_PRECOMP

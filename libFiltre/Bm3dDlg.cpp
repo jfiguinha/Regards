@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Bm3dDlg.h"
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(CBm3dDlg)

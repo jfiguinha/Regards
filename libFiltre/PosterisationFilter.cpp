@@ -1,3 +1,4 @@
+#include <header.h>
 //
 //  PosterisationFilter.cpp
 //  Regards.libViewer

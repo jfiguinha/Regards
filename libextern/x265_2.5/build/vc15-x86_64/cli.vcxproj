@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F2BA1506-5703-312A-8F4F-7AE459C977A2}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>cli</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cli.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">x265</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cli.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">x265</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">cli.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">x265</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">cli.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">x265</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Debug/</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Debug\x265-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/Debug/x265.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/Debug/x265.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>Release/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>Release\x265-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/Release/x265.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/Release/x265.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>MinSizeRel\x265-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/MinSizeRel/x265.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/MinSizeRel/x265.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>RelWithDebInfo\x265-static.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/RelWithDebInfo/x265.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/RelWithDebInfo/x265.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.13\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindHg.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\WindowsPaths.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCXXCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeRCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeSystem.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_GETOPT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_INT_TYPES_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_STDINT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.cxx;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindVLD.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindYasm.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\version.cmake;C:\developpement\Regards\libextern\x265_2.5\source\x265.def.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.pc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.rc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265_config.h.in;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.13\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindHg.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\WindowsPaths.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCXXCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeRCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeSystem.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_GETOPT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_INT_TYPES_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_STDINT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.cxx;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindVLD.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindYasm.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\version.cmake;C:\developpement\Regards\libextern\x265_2.5\source\x265.def.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.pc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.rc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265_config.h.in;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.13\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindHg.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\WindowsPaths.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCXXCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeRCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeSystem.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_GETOPT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_INT_TYPES_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_STDINT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.cxx;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindVLD.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindYasm.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\version.cmake;C:\developpement\Regards\libextern\x265_2.5\source\x265.def.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.pc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.rc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265_config.h.in;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/developpement/Regards/libextern/x265_2.5/source/CMakeLists.txt;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCheckCompilerFlagCommonPatterns.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXCompilerFlag.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MIPSpro-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX-FeatureTests.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.13\Modules\FindGit.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindHg.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.13\Modules\Platform\WindowsPaths.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeCXXCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeRCCompiler.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\3.13.4\CMakeSystem.cmake;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_GETOPT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_INT_TYPES_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\CheckIncludeFiles\HAVE_STDINT_H.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.c;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\feature_tests.cxx;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindVLD.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\FindYasm.cmake;C:\developpement\Regards\libextern\x265_2.5\source\cmake\version.cmake;C:\developpement\Regards\libextern\x265_2.5\source\x265.def.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.pc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265.rc.in;C:\developpement\Regards\libextern\x265_2.5\source\x265_config.h.in;C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\developpement\Regards\libextern\x265_2.5\COPYING" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\input.cpp" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\input.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\y4m.cpp">
+      <ObjectFileName>$(IntDir)/input/y4m.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\y4m.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\yuv.cpp">
+      <ObjectFileName>$(IntDir)/input/yuv.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\yuv.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\output.cpp" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\output.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\raw.cpp" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\raw.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\reconplay.cpp" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\reconplay.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\y4m.cpp">
+      <ObjectFileName>$(IntDir)/output/y4m.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\y4m.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\yuv.cpp">
+      <ObjectFileName>$(IntDir)/output/yuv.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\yuv.h" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt\getopt.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CompileAsC</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4100;4131;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">HAVE_STRING_H=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CompileAsC</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4100;4131;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">HAVE_STRING_H=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">CompileAsC</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">4100;4131;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">HAVE_STRING_H=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">CompileAsC</CompileAs>
+      <DisableSpecificWarnings Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">4100;4131;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">HAVE_STRING_H=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt\getopt.h" />
+    <ResourceCompile Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\x265.rc" />
+    <None Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\x265.def" />
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.cpp" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.h" />
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265cli.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\ZERO_CHECK.vcxproj">
+      <Project>{12B61E63-9255-3B11-B73A-60F6A9513F3C}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\x265-static.vcxproj">
+      <Project>{A120E6AD-7458-3722-AC34-F7271B3B005B}</Project>
+      <Name>x265-static</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

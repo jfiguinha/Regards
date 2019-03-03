@@ -1,3 +1,4 @@
+#include "header.h"
 #include "ToolbarWindow.h"
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;

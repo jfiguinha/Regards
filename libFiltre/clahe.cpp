@@ -1,3 +1,4 @@
+#include <header.h>
 #include "clahe.h"
 #include <RegardsBitmap.h>
 #include <math.h>

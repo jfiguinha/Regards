@@ -22,6 +22,7 @@
     <ProjectGuid>{20E0F8D6-213C-460B-B361-9C725CB375C7}</ProjectGuid>
     <RootNamespace>MediaInfoLib</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -37,12 +38,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -62,8 +63,8 @@
   <PropertyGroup>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">MediaInfo-Static</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">MediaInfo-Static</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MediaInfo-Static</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MediaInfo-Static</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -623,11 +624,11 @@
     <ClInclude Include="..\..\..\Source\ThirdParty\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\zlib\zlib.vcxproj">
+      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\ZenLib\Project\MSVC2015\Library\ZenLib.vcxproj">
       <Project>{0da1da7d-f393-4e7c-a7ce-cb5c6a67bc94}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\zlib\contrib\vstudio\vc14\zlibstat.vcxproj">
-      <Project>{745dec58-ebb3-47a9-a9b8-4c6627c01bf8}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,3 +1,4 @@
+#include <header.h>
 #include "SqlLibExplorer.h"
 #include "SqlVersion.h"
 #include <LibResource.h>

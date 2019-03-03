@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\input.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\y4m.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\input\yuv.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\output.cpp">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\raw.cpp">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\reconplay.cpp">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\y4m.cpp">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\output\yuv.cpp">
+      <Filter>output</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt\getopt.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\input.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\y4m.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\input\yuv.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\output.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\raw.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\reconplay.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\y4m.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\output\yuv.h">
+      <Filter>output</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt\getopt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265cli.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\source\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\developpement\Regards\libextern\x265_2.5\COPYING" />
+    <None Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\x265.def">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\x265.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1B545A7D-6105-33BF-B49F-3FFC2B63EEEF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{EB80269F-75D5-3AA8-8D73-3D7C7B7A1F1E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{2F7FCD41-04EF-32BD-9E9B-C92DC834E058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="output">
+      <UniqueIdentifier>{2E67B4BE-4DFF-3F31-BBBA-1A145A1DABA9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

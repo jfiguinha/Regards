@@ -1,3 +1,4 @@
+#include <header.h>
 #include "ThumbnailHorizontal.h"
 #include <ThumbnailDataSQL.h>
 //#include <omp.h>

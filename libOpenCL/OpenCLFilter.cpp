@@ -1,3 +1,4 @@
+#include <header.h>
 #include "OpenCLFilter.h"
 #include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"

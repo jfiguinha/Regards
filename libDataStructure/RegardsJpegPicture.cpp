@@ -1,3 +1,4 @@
+#include <header.h>
 #include "RegardsJpegPicture.h"
 #include <turbojpeg.h>
 

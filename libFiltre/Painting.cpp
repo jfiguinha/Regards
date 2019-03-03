@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Painting.h"
 #include <RegardsBitmap.h>
 #include <wxSVG/SVGDocument.h>

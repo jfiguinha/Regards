@@ -1,3 +1,4 @@
+#include <header.h>
 #include "bm3dfilter.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -301,6 +302,7 @@ int CBm3DFilter::EndThread(const int &numThread)
         delete listThread[numThread];
         listThread[numThread] = nullptr;
     }
+	return 0;
 }
 
 int CBm3DFilter::NextStep(wxDialog * dialog)
@@ -348,6 +350,8 @@ int CBm3DFilter::NextStep(wxDialog * dialog)
 				listThread[j] = new thread(DecodeFrame, block);
 			}
 		}
+
+		return 0;
 	//}
 }
 

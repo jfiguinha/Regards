@@ -1,3 +1,4 @@
+#include <header.h>
 #include "Histogramme.h"
 #include "Color.h"
 #include <RegardsBitmap.h>
