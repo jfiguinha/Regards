@@ -180,7 +180,7 @@ namespace dlib
 
 	static void my_init_source(j_decompress_ptr cinfo) {}
 
-	static boolean my_fill_input_buffer(j_decompress_ptr cinfo) {
+	static int my_fill_input_buffer(j_decompress_ptr cinfo) {
 		my_source_mgr* src = (my_source_mgr*)cinfo->src;
 		// No more data.  Probably an incomplete image;  just output EOI.
 		src->pub.next_input_byte = EOI_BUFFER;

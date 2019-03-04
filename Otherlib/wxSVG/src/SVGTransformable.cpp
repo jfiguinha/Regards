@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGTransformable.h"
 #include "svg.h"
 #include <wx/log.h>

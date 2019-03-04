@@ -29,7 +29,7 @@
 
 #include "bpgenc.h"
 
-#include <x265.h>
+#include "x265.h"
 
 struct HEVCEncoderContext {
     const x265_api *api;

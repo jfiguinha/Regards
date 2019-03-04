@@ -61,7 +61,7 @@ FileMap* FileMap::cloneRandomSize() {
 }
 
 void FileMap::corrupt(int errors) {
-  for (auto i = 0; i < errors; i++) {
+  for (int i = 0; i < errors; i++) {
     uint32 pos = (rand() | (rand() << 15)) % size;
     data[pos] = rand() & 0xff;
   }

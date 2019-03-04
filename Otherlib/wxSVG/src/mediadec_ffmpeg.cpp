@@ -7,7 +7,7 @@
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 

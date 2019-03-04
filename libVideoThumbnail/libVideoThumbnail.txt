@@ -1,1 +1,1 @@
-./Release/videothumb.cpp.o ./Release/stringoperations.cpp.o ./Release/filmstripfilter.cpp.o ./Release/moviestreaminfo.cpp.o ./Release/moviedecoder.cpp.o ./Release/videostream.cpp.o ./Release/videothumbnailer.cpp.o
+./Debug/moviestreaminfo.cpp.o ./Debug/videostream.cpp.o ./Debug/videothumbnailer.cpp.o ./Debug/filmstripfilter.cpp.o ./Debug/stringoperations.cpp.o ./Debug/moviedecoder.cpp.o ./Debug/videothumb.cpp.o

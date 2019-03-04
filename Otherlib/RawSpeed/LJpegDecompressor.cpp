@@ -84,7 +84,7 @@ LJpegDecompressor::LJpegDecompressor(FileMap* file, RawImage img):
     mFile(file), mRaw(img) {
   input = 0;
   skipX = skipY = 0;
-  for (auto i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     huff[i].initialized = false;
     huff[i].bigTable = 0;
   }
@@ -98,7 +98,7 @@ LJpegDecompressor::~LJpegDecompressor(void) {
   if (input)
     delete input;
   input = 0;
-  for (auto i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     if (huff[i].bigTable)
       _aligned_free(huff[i].bigTable);
   }

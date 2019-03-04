@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "CSSStyleDeclaration.h"
 #include <wx/tokenzr.h>
 #include <wx/log.h>

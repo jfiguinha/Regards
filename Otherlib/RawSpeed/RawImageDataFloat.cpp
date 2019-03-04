@@ -57,7 +57,7 @@ namespace RawSpeed {
           ThrowRDE("RawImageData::calculateBlackAreas: Offset + size is larger than height of image");
         for (uint32 y = area.offset; y < area.offset+area.size; y++) {
           float *pixel = (float*)getDataUncropped(mOffset.x, y);
-          for (auto x = mOffset.x; x < dim.x+mOffset.x; x++) {
+          for (int x = mOffset.x; x < dim.x+mOffset.x; x++) {
             accPixels[((y&1)<<1)|(x&1)] += *pixel++;
           }
         }
@@ -68,7 +68,7 @@ namespace RawSpeed {
       if (area.isVertical) {
         if ((int)area.offset+(int)area.size > uncropped_dim.x)
           ThrowRDE("RawImageData::calculateBlackAreas: Offset + size is larger than width of image");
-        for (auto y = mOffset.y; y < dim.y+mOffset.y; y++) {
+        for (int y = mOffset.y; y < dim.y+mOffset.y; y++) {
           float *pixel = (float*)getDataUncropped(area.offset, y);
           for (uint32 x = area.offset; x < area.size+area.offset; x++) {
             accPixels[((y&1)<<1)|(x&1)] += *pixel++;
@@ -79,7 +79,7 @@ namespace RawSpeed {
     }
 
     if (!totalpixels) {
-      for (auto i = 0 ; i < 4; i++)
+      for (int i = 0 ; i < 4; i++)
         blackLevelSeparate[i] = blackLevel;
       return;
     }
@@ -88,16 +88,16 @@ namespace RawSpeed {
     /* Adjust the number of total pixels so it is the same as the median of each histogram */
     totalpixels /= 4;
 
-    for (auto i = 0 ; i < 4; i++) {
+    for (int i = 0 ; i < 4; i++) {
       blackLevelSeparate[i] = (int)(65535.0f * accPixels[i]/totalpixels);
     }
 
     /* If this is not a CFA image, we do not use separate blacklevels, use average */
     if (!isCFA) {
       int total = 0;
-      for (auto i = 0 ; i < 4; i++)
+      for (int i = 0 ; i < 4; i++)
         total+=blackLevelSeparate[i];
-      for (auto i = 0 ; i < 4; i++)
+      for (int i = 0 ; i < 4; i++)
         blackLevelSeparate[i] = (total+2)>>2;
     }
   }
@@ -108,9 +108,9 @@ namespace RawSpeed {
     if ((blackAreas.empty() && blackLevelSeparate[0] < 0 && blackLevel < 0) || whitePoint == 65536) {  // Estimate
       float b = 100000000;
       float m = -10000000;
-      for (auto row = skipBorder*cpp;row < (dim.y - skipBorder);row++) {
+      for (int row = skipBorder*cpp;row < (dim.y - skipBorder);row++) {
         float *pixel = (float*)getData(skipBorder, row);
-        for (auto col = skipBorder ; col < gw ; col++) {
+        for (int col = skipBorder ; col < gw ; col++) {
           b = MIN(*pixel, b);
           m = MAX(*pixel, m);
           pixel++;
@@ -159,7 +159,7 @@ namespace RawSpeed {
       mul |= ((int)(1024.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[(mOffset.x+1)&1])))<<16;
       uint32 b = blackLevelSeparate[mOffset.x&1] | (blackLevelSeparate[(mOffset.x+1)&1]<<16);
 
-      for (auto i = 0; i< 4; i++) {
+      for (int i = 0; i< 4; i++) {
         sub_mul[i] = b;     // Subtract even lines
         sub_mul[4+i] = mul;   // Multiply even lines
       }
@@ -168,7 +168,7 @@ namespace RawSpeed {
       mul |= ((int)(1024.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[2+((mOffset.x+1)&1)])))<<16;
       b = blackLevelSeparate[2+(mOffset.x&1)] | (blackLevelSeparate[2+((mOffset.x+1)&1)]<<16);
 
-      for (auto i = 0; i< 4; i++) {
+      for (int i = 0; i< 4; i++) {
         sub_mul[8+i] = b;   // Subtract odd lines
         sub_mul[12+i] = mul;  // Multiply odd lines
       }
@@ -177,7 +177,7 @@ namespace RawSpeed {
       ssesub2 = _mm_set_epi32(32768, 32768, 32768, 32768);
       ssesign = _mm_set_epi32(0x80008000, 0x80008000, 0x80008000, 0x80008000);
 
-      for (auto y = start_y; y < end_y; y++) {
+      for (int y = start_y; y < end_y; y++) {
         __m128i* pixel = (__m128i*) & data[(mOffset.y+y)*pitch];
         __m128i ssescale, ssesub;
         if (((y+mOffset.y)&1) == 0) { 
@@ -223,7 +223,7 @@ namespace RawSpeed {
       int gw = dim.x * cpp;
       int mul[4];
       int sub[4];
-      for (auto i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++) {
         int v = i;
         if ((mOffset.x&1) != 0)
           v ^= 1;
@@ -232,11 +232,11 @@ namespace RawSpeed {
         mul[i] = (int)(16384.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[v]));
         sub[i] = blackLevelSeparate[v];
       }
-      for (auto y = start_y; y < end_y; y++) {
+      for (int y = start_y; y < end_y; y++) {
         ushort16 *pixel = (ushort16*)getData(0, y);
         int *mul_local = &mul[2*(y&1)];
         int *sub_local = &sub[2*(y&1)];
-        for (auto x = 0 ; x < gw; x++) {
+        for (int x = 0 ; x < gw; x++) {
           pixel[x] = clampbits(((pixel[x] - sub_local[x&1]) * mul_local[x&1] + 8192) >> 14, 16);
         }
       }
@@ -249,7 +249,7 @@ namespace RawSpeed {
     int gw = dim.x * cpp;
     float mul[4];
     float sub[4];
-    for (auto i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
       int v = i;
       if ((mOffset.x&1) != 0)
         v ^= 1;
@@ -258,11 +258,11 @@ namespace RawSpeed {
       mul[i] = 65535.0f / (float)(whitePoint - blackLevelSeparate[v]);
       sub[i] = (float)blackLevelSeparate[v];
     }
-    for (auto y = start_y; y < end_y; y++) {
+    for (int y = start_y; y < end_y; y++) {
       float *pixel = (float*)getData(0, y);
       float *mul_local = &mul[2*(y&1)];
       float *sub_local = &sub[2*(y&1)];
-      for (auto x = 0 ; x < gw; x++) {
+      for (int x = 0 ; x < gw; x++) {
         pixel[x] = (pixel[x] - sub_local[x&1]) * mul_local[x&1];
       }
     }
@@ -347,7 +347,7 @@ void RawImageDataFloat::fixBadPixel( uint32 x, uint32 y, int component )
 
 
   float total_pixel = 0;
-  for (auto i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
     if (values[i] >= 0)
       total_pixel += values[i] * dist[i];
 
@@ -357,7 +357,7 @@ void RawImageDataFloat::fixBadPixel( uint32 x, uint32 y, int component )
 
   /* Process other pixels - could be done inline, since we have the weights */
   if (cpp > 1 && component == 0)
-    for (auto i = 1; i < (int)cpp; i++)
+    for (int i = 1; i < (int)cpp; i++)
       fixBadPixel(x,y,i);
 
 }

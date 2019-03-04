@@ -54,7 +54,7 @@ void BitPumpJPEG::fill()
   int* b = (int*)current_buffer;
   if ((off + 12) >= size) {
     while(mLeft <= 64 && off < size) {
-      for (auto i = (mLeft>>3); i >= 0; i--)
+      for (int i = (mLeft>>3); i >= 0; i--)
         current_buffer[i+1] = current_buffer[i];
       uchar8 val = buffer[off++];
       if (val == 0xff) {
@@ -80,7 +80,7 @@ void BitPumpJPEG::fill()
     return;
   }
   b[3] = b[0];
-  for (auto i = 0; i < 12; i++) {
+  for (int i = 0; i < 12; i++) {
     uchar8 val = buffer[off++];
     if (val == 0xff) {
       if (buffer[off] == 0)

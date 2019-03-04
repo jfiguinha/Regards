@@ -100,7 +100,7 @@ float ByteStream::getFloat()
   uchar8 temp[4];
   if (off + 4 > size)
     ThrowIOE("getFloat: Out of buffer read");
-  for (auto i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
     temp[i] = buffer[off+i];
   return *(float*)temp;
 }

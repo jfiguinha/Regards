@@ -6,13 +6,17 @@
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
+#include <header.h>
 #include "ExifHandler.h"
+//#include <MetadataExiv2.h>
 #include <libexif/exif-loader.h>
 #include <wx/log.h>
+//using namespace Regards::exiv2;
 
 /** Returns the orientation tag that indicates the orientation of the captured scene */
-int ExifHandler::getOrient(const wxString& filename) {
+int ExifHandler::getOrient(const wxString& filename) 
+{
 	ExifData* exifData = exif_data_new_from_file(filename.mb_str());
 	if (!exifData)
 		return -1;
@@ -25,11 +29,16 @@ int ExifHandler::getOrient(const wxString& filename) {
 		orient = exif_get_short(entry->data, byteOrder);
 	}
 	exif_data_unref(exifData);
-	return (int) orient;
+	return orient;
+	/*
+	CMetadataExiv2 metadata(filename);
+	return (int)metadata.GetOrientation();
+	*/
 }
 
 /** Rotates the image according to orientation tag  */
-void ExifHandler::rotateImage(const wxString& filename, wxImage& image) {
+void ExifHandler::rotateImage(const wxString& filename, wxImage& image) 
+{
 	if (!image.Ok() || filename.length() < 5 || filename.Mid(filename.length() - 4).Lower() != wxT(".jpg"))
 		return;
 	int orient = getOrient(filename);

@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGAnimationElement.h"
 #include "SVGDocument.h"
 #include "SVGSVGElement.h"

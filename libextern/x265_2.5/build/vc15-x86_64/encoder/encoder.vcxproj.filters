@@ -1,132 +1,132 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\analysis.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\analysis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\search.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\bitcost.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\bitcost.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\motion.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\motion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\slicetype.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\slicetype.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\frameencoder.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\frameencoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\framefilter.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\framefilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\level.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\nal.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\nal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sei.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sei.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sao.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sao.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\entropy.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\entropy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\dpb.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\dpb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\ratecontrol.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\ratecontrol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\reference.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\reference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\encoder.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\encoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\api.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\weightPrediction.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\weightPrediction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\x265-extras.cpp">
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265-extras.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\analysis.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\analysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\search.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\search.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\bitcost.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\bitcost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\rdcost.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\rdcost.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\motion.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\motion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\slicetype.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\slicetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\frameencoder.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\frameencoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\framefilter.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\framefilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\level.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\nal.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\nal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sei.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sei.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sao.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sao.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\entropy.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\entropy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\dpb.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\dpb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\ratecontrol.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\ratecontrol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\reference.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\reference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\encoder.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\encoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265-extras.h">
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265-extras.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt" />
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{1B545A7D-6105-33BF-B49F-3FFC2B63EEEF}</UniqueIdentifier>
+      <UniqueIdentifier>{4D4D38CF-1FAC-3FA6-828D-AA0F26F486F6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{EB80269F-75D5-3AA8-8D73-3D7C7B7A1F1E}</UniqueIdentifier>
+      <UniqueIdentifier>{67F42798-525C-3D8D-8FA0-5E060964073C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

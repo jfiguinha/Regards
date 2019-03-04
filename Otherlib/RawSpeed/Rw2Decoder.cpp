@@ -269,7 +269,7 @@ PanaBitpump::~PanaBitpump() {
 void PanaBitpump::skipBytes(int bytes) {
   int blocks = (bytes / 0x4000) * 0x4000;
   input->skipBytes(blocks);
-  for (auto i = blocks; i < bytes; i++)
+  for (int i = blocks; i < bytes; i++)
     getBits(8);
 }
 

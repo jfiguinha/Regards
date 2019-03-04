@@ -22,7 +22,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#if _MSC_VER < 1800 && defined(WIN32)
+#include <boost/thread/thread.hpp>
+using namespace boost;
+#else
 #include <thread>
+#endif
 
 
 #if !defined(__unix__) && !defined(__APPLE__) && !defined(__MINGW32__) 
@@ -82,7 +87,7 @@ inline void BitBlt(uchar8* dstp, int dst_pitch, const uchar8* srcp, int src_pitc
     memcpy(dstp, srcp, row_size*height);
     return;
   }
-  for (auto y=height; y>0; --y) {
+  for (int y=height; y>0; --y) {
     memcpy(dstp, srcp, row_size);
     dstp += dst_pitch;
     srcp += src_pitch;
@@ -101,7 +106,12 @@ inline int lmax(int p0, int p1) {
 
 inline uint32 getThreadCount()
 {
-return thread::hardware_concurrency();
+#ifdef WIN32
+	return thread::hardware_concurrency();
+  //return pthread_num_processors_np();
+#else
+  return rawspeed_get_number_of_processor_cores();
+#endif
 }
 
 inline Endianness getHostEndianness() {

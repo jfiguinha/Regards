@@ -7,7 +7,7 @@
 // Copyright:   (c) 2011 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGCanvasImageCairo.h"
 #include <wx/log.h>
 

@@ -22,10 +22,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 http://www.klauspost.com
 */
 
-
+#if _MSC_VER < 1800 && defined(WIN32)
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+using namespace boost;
+#else
 #include <thread>
 #include <mutex>
-
+#endif
 
 namespace RawSpeed {
 
@@ -143,9 +147,9 @@ void OpcodeFixBadPixelsConstant::apply( RawImage &in, RawImage &out, int startY,
   iPoint2D crop = in->getCropOffset();
   uint32 offset = crop.x | (crop.y << 16);
   vector<uint32> bad_pos;
-  for (auto y = startY; y < endY; y ++) {
+  for (int y = startY; y < endY; y ++) {
     ushort16* src = (ushort16*)out->getData(0, y);
-    for (auto x = 0; x < in->dim.x; x++) {
+    for (int x = 0; x < in->dim.x; x++) {
       if (src[x]== mValue) {
         bad_pos.push_back(offset + ((uint32)x | (uint32)y<<16));
       }
@@ -175,7 +179,7 @@ OpcodeFixBadPixelsList::OpcodeFixBadPixelsList( const uchar8* parameters, int pa
     ThrowRDE("OpcodeFixBadPixelsList: Ran out parameter space, only %d bytes left.", param_max_bytes);
 
   // Read points
-  for (auto i = 0; i < BadPointCount; i++) {
+  for (int i = 0; i < BadPointCount; i++) {
     uint32 BadPointRow = (uint32)getLong(&parameters[bytes_used[0]]);
     uint32 BadPointCol = (uint32)getLong(&parameters[bytes_used[0]+4]);
     bytes_used[0] += 8;
@@ -183,7 +187,7 @@ OpcodeFixBadPixelsList::OpcodeFixBadPixelsList( const uchar8* parameters, int pa
   }
 
   // Read rects
-  for (auto i = 0; i < BadRectCount; i++) {
+  for (int i = 0; i < BadRectCount; i++) {
     uint32 BadRectTop = (uint32)getLong(&parameters[bytes_used[0]]);
     uint32 BadRectLeft = (uint32)getLong(&parameters[bytes_used[0]+4]);
     uint32 BadRectBottom = (uint32)getLong(&parameters[bytes_used[0]]);
@@ -255,7 +259,7 @@ OpcodeMapTable::OpcodeMapTable(const uchar8* parameters, int param_max_bytes, ui
   if (param_max_bytes < 36 + (tablesize*2))
     ThrowRDE("OpcodeMapPolynomial: Not enough data to read parameters, only %d bytes left.", param_max_bytes);
 
-  for (auto i = 0; i <= 65535; i++)
+  for (int i = 0; i <= 65535; i++)
   {
     int location = min(tablesize-1, i);
     mLookup[i] = getUshort(&parameters[36+2*location]);
@@ -283,12 +287,12 @@ RawImage& OpcodeMapTable::createOutput( RawImage &in )
 void OpcodeMapTable::apply( RawImage &in, RawImage &out, int startY, int endY )
 {
   int cpp = out->getCpp();
-  for (auto y = startY; y < endY; y += mRowPitch) {
+  for (int y = startY; y < endY; y += mRowPitch) {
     ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
     // Add offset, so this is always first plane
     src+=mFirstPlane;
-    for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-      for (auto p = 0; p < mPlanes; p++)
+    for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+      for (int p = 0; p < mPlanes; p++)
       {
         src[x*cpp+p] = mLookup[src[x*cpp+p]];
       }
@@ -322,7 +326,7 @@ OpcodeMapPolynomial::OpcodeMapPolynomial(const uchar8* parameters, int param_max
     ThrowRDE("OpcodeMapPolynomial: A polynomial with more than 8 degrees not allowed");
   if (param_max_bytes < 36 + (mDegree*8))
     ThrowRDE("OpcodeMapPolynomial: Not enough data to read parameters, only %d bytes left.", param_max_bytes);
-  for (auto i = 0; i <= mDegree; i++)
+  for (int i = 0; i <= mDegree; i++)
     mCoefficient[i] = getDouble(&parameters[36+8*i]);
   *bytes_used += 8*mDegree+8;
   mFlags = MultiThreaded | PureLookup;
@@ -341,11 +345,11 @@ RawImage& OpcodeMapPolynomial::createOutput( RawImage &in )
     ThrowRDE("OpcodeMapPolynomial: Not that many planes in actual image");
 
   // Create lookup
-  for (auto i = 0; i < 65536; i++)
+  for (int i = 0; i < 65536; i++)
   {
     double in_val = (double)i/65536.0;
     double val = mCoefficient[0];
-    for (auto j = 1; j <= mDegree; j++)
+    for (int j = 1; j <= mDegree; j++)
       val += mCoefficient[j] * pow(in_val, (double)(j));
     mLookup[i] = clampbits((int)(val*65535.5), 16);
   }
@@ -355,12 +359,12 @@ RawImage& OpcodeMapPolynomial::createOutput( RawImage &in )
 void OpcodeMapPolynomial::apply( RawImage &in, RawImage &out, int startY, int endY )
 {
   int cpp = out->getCpp();
-  for (auto y = startY; y < endY; y += mRowPitch) {
+  for (int y = startY; y < endY; y += mRowPitch) {
     ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
     // Add offset, so this is always first plane
     src+=mFirstPlane;
-    for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-      for (auto p = 0; p < mPlanes; p++)
+    for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+      for (int p = 0; p < mPlanes; p++)
       {
         src[x*cpp+p] = mLookup[src[x*cpp+p]];
       }
@@ -393,7 +397,7 @@ OpcodeDeltaPerRow::OpcodeDeltaPerRow(const uchar8* parameters, int param_max_byt
   if (mAoi.getHeight() != mCount)
     ThrowRDE("OpcodeDeltaPerRow: Element count (%d) does not match height of area (%d).", mCount, mAoi.getHeight());
 
-  for (auto i = 0; i <= mCount; i++)
+  for (int i = 0; i <= mCount; i++)
     mDelta[i] = getFloat(&parameters[36+4*i]);
   *bytes_used += 4*mCount;
   mFlags = MultiThreaded;
@@ -415,13 +419,13 @@ void OpcodeDeltaPerRow::apply( RawImage &in, RawImage &out, int startY, int endY
 {
   if (in->getDataType() == TYPE_USHORT16) {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
       int delta = (int)(65535.0f * mDelta[y]);
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = clampbits(16,delta + src[x*cpp+p]);
         }
@@ -429,13 +433,13 @@ void OpcodeDeltaPerRow::apply( RawImage &in, RawImage &out, int startY, int endY
     }
   } else {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       float *src = (float*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
       float delta = mDelta[y];
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = delta + src[x*cpp+p];
         }
@@ -469,7 +473,7 @@ OpcodeDeltaPerCol::OpcodeDeltaPerCol(const uchar8* parameters, int param_max_byt
   if (mAoi.getWidth() != mCount)
     ThrowRDE("OpcodeDeltaPerRow: Element count (%d) does not match width of area (%d).", mCount, mAoi.getWidth());
 
-  for (auto i = 0; i <= mCount; i++)
+  for (int i = 0; i <= mCount; i++)
     mDelta[i] = getFloat(&parameters[36+4*i]);
   *bytes_used += 4*mCount;
   mFlags = MultiThreaded;
@@ -497,7 +501,7 @@ RawImage& OpcodeDeltaPerCol::createOutput( RawImage &in )
       delete[] mDeltaX;
     int w = mAoi.getWidth();
     mDeltaX = new int[w];
-    for (auto i = 0; i < w; i++)
+    for (int i = 0; i < w; i++)
       mDeltaX[i] = (int)(65535.0f * mDelta[i] + 0.5f);
   }
   return in;
@@ -507,12 +511,12 @@ void OpcodeDeltaPerCol::apply( RawImage &in, RawImage &out, int startY, int endY
 {
   if (in->getDataType() == TYPE_USHORT16) {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = clampbits(16, mDeltaX[x] + src[x*cpp+p]);
         }
@@ -520,12 +524,12 @@ void OpcodeDeltaPerCol::apply( RawImage &in, RawImage &out, int startY, int endY
     }
   } else {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       float *src = (float*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = mDelta[x] + src[x*cpp+p];
         }
@@ -559,7 +563,7 @@ OpcodeScalePerRow::OpcodeScalePerRow(const uchar8* parameters, int param_max_byt
   if (mAoi.getHeight() != mCount)
     ThrowRDE("OpcodeScalePerRow: Element count (%d) does not match height of area (%d).", mCount, mAoi.getHeight());
 
-  for (auto i = 0; i <= mCount; i++)
+  for (int i = 0; i <= mCount; i++)
     mDelta[i] = getFloat(&parameters[36+4*i]);
   *bytes_used += 4*mCount;
   mFlags = MultiThreaded;
@@ -581,13 +585,13 @@ void OpcodeScalePerRow::apply( RawImage &in, RawImage &out, int startY, int endY
 {
   if (in->getDataType() == TYPE_USHORT16) {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
       int delta = (int)(1024.0f * mDelta[y]);
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = clampbits(16,(delta * src[x*cpp+p] + 512) >> 10);
         }
@@ -595,13 +599,13 @@ void OpcodeScalePerRow::apply( RawImage &in, RawImage &out, int startY, int endY
     }
   } else {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       float *src = (float*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
       float delta = mDelta[y];
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = delta * src[x*cpp+p];
         }
@@ -635,7 +639,7 @@ OpcodeScalePerCol::OpcodeScalePerCol(const uchar8* parameters, int param_max_byt
   if (mAoi.getWidth() != mCount)
     ThrowRDE("OpcodeScalePerCol: Element count (%d) does not match width of area (%d).", mCount, mAoi.getWidth());
 
-  for (auto i = 0; i <= mCount; i++)
+  for (int i = 0; i <= mCount; i++)
     mDelta[i] = getFloat(&parameters[36+4*i]);
   *bytes_used += 4*mCount;
   mFlags = MultiThreaded;
@@ -663,7 +667,7 @@ RawImage& OpcodeScalePerCol::createOutput( RawImage &in )
       delete[] mDeltaX;
     int w = mAoi.getWidth();
     mDeltaX = new int[w];
-    for (auto i = 0; i < w; i++)
+    for (int i = 0; i < w; i++)
       mDeltaX[i] = (int)(1024.0f * mDelta[i]);
   }
   return in;
@@ -673,12 +677,12 @@ void OpcodeScalePerCol::apply( RawImage &in, RawImage &out, int startY, int endY
 {
   if (in->getDataType() == TYPE_USHORT16) {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       ushort16 *src = (ushort16*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = clampbits(16, (mDeltaX[x] * src[x*cpp+p] + 512) >> 10);
         }
@@ -686,12 +690,12 @@ void OpcodeScalePerCol::apply( RawImage &in, RawImage &out, int startY, int endY
     }
   } else {
     int cpp = out->getCpp();
-    for (auto y = startY; y < endY; y += mRowPitch) {
+    for (int y = startY; y < endY; y += mRowPitch) {
       float *src = (float*)out->getData(mAoi.getLeft(), y);
       // Add offset, so this is always first plane
       src+=mFirstPlane;
-      for (auto x = 0; x < mAoi.getWidth(); x += mColPitch) {
-        for (auto p = 0; p < mPlanes; p++)
+      for (int x = 0; x < mAoi.getWidth(); x += mColPitch) {
+        for (int p = 0; p < mPlanes; p++)
         {
           src[x*cpp+p] = mDelta[x] * src[x*cpp+p];
         }

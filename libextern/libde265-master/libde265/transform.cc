@@ -477,7 +477,7 @@ void scale_coefficients_internal(thread_context* tctx,
     else {
       const int offset = (1<<(bdShift-1));
 
-      const uint8_t* sclist;
+      const uint8_t* sclist = nullptr;
       int matrixID = cIdx;
       if (!intra) {
         if (nT<32) { matrixID += 3; }

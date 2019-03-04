@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGAngle.h"
 
 void wxSVGAngle::SetValueInSpecifiedUnits(double n)

@@ -19,26 +19,14 @@
 
     http://www.klauspost.com
 */
-// STL
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <map>
-#include <list>
-using namespace std;
+
+
 
 #if defined(__MINGW32__)
 #define UNICODE
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
-#else
-#ifndef HAVE_BOOLEAN
-typedef int boolean;
 #endif
-#endif
-
-
 
 #define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
 
@@ -99,7 +87,14 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
+// STL
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <list>
+using namespace std;
 
 //My own
 #include "TiffTag.h"

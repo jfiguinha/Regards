@@ -7,7 +7,7 @@
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "imagsvg.h"
 #include "SVGDocument.h"
 

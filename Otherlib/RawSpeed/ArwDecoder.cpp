@@ -232,7 +232,7 @@ void ArwDecoder::decodeThreaded(RawDecoderThread * t) {
       int _imin = bits.getBits(4);
       int sh;
       for (sh = 0; sh < 4 && 0x80 << sh <= _max - _min; sh++);
-      for (auto i = 0; i < 16; i++) {
+      for (int i = 0; i < 16; i++) {
         int p;
         if (i == _imax) p = _max;
         else if (i == _imin) p = _min;

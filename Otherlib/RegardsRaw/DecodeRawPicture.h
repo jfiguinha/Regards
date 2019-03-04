@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+using namespace std;
 class LibRaw;
 class CImageLoadingFormat;
 class CDecodeRawParameter;

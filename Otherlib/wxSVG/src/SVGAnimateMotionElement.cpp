@@ -7,7 +7,7 @@
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGAnimateMotionElement.h"
 #include "SVGPointList.h"
 #include <wx/log.h>

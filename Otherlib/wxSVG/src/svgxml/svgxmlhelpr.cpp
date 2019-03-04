@@ -5,7 +5,7 @@
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #ifdef __GNUG__
     #pragma implementation "svgxmlhelpr.h"
 #endif

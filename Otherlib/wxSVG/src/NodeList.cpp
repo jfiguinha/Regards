@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Edouard TISSERANT
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "NodeList.h"
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxNodeList);

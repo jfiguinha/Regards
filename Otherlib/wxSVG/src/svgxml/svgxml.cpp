@@ -7,7 +7,7 @@
 // Copyright:   (c) 2000 Vaclav Slavik
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "svgxml.h"
 #endif

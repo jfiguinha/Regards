@@ -68,7 +68,7 @@ void DngDecoderSlices::startDecoding() {
 
   for (uint32 i = 0; i < nThreads; i++) {
     DngDecoderThread* t = new DngDecoderThread();
-    for (auto j = 0; j < slicesPerThread ; j++) {
+    for (int j = 0; j < slicesPerThread ; j++) {
       if (!slices.empty()) {
         t->slices.push(slices.front());
         slices.pop();
@@ -179,7 +179,7 @@ void DngDecoderSlices::decodeSlice(DngDecoderThread* t) {
         CHECKSIZE(e.byteOffset+e.byteCount);
         JPEG_MEMSRC(&dinfo, (unsigned char*)mFile->getData(e.byteOffset), e.byteCount);
 
-        if (JPEG_HEADER_OK != jpeg_read_header(&dinfo, (boolean)true))
+        if (JPEG_HEADER_OK != jpeg_read_header(&dinfo, TRUE))
           ThrowRDE("DngDecoderSlices: Unable to read JPEG header");
 
         jpeg_start_decompress(&dinfo);
@@ -198,11 +198,11 @@ void DngDecoderSlices::decodeSlice(DngDecoderThread* t) {
         // Now the image is decoded, and we copy the image data
         int copy_w = min(mRaw->dim.x-e.offX, dinfo.output_width);
         int copy_h = min(mRaw->dim.y-e.offY, dinfo.output_height);
-        for (auto y = 0; y < copy_h; y++) {
+        for (int y = 0; y < copy_h; y++) {
           uchar8* src = &complete_buffer[row_stride*y];
           ushort16* dst = (ushort16*)mRaw->getData(e.offX, y+e.offY);
-          for (auto x = 0; x < copy_w; x++) {
-            for (auto c=0; c < dinfo.output_components; c++)
+          for (int x = 0; x < copy_w; x++) {
+            for (int c=0; c < dinfo.output_components; c++)
               *dst++ = (*src++);
           }
         }

@@ -7,7 +7,7 @@
 // Copyright:   (c) 2014 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGAnimateTransformElement.h"
 #include "SVGDocument.h"
 #include "SVGTransformList.h"

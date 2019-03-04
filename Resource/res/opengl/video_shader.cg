@@ -1,18 +1,26 @@
 uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+uniform int effectenable;
 uniform int grayscale;
 uniform int sharpenMasking;
 uniform int tone;
 uniform int colorboost;
+uniform int denoise;
 uniform float sharpness;
 uniform float contrast;
 uniform float brightness;
 uniform float red;
 uniform float green;
 uniform float blue;
+uniform float exponent;
 
 vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 {
-	return texture2D(texUnit, vec2(posX,posY) + vec2(xDiff, yDiff));
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	vec2 resolution = vec2(texelSizeX, texelSizeY); 
+	return texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
 }
 
 vec4 ContrastFilter(vec4 color,float contrast, float offset)
@@ -56,6 +64,12 @@ void main(void)
 	//------------------------------------------------------------
 	vec2 tex_coord = gl_TexCoord[0].st;
 	vec4 src_color = texture2D(texUnit, tex_coord).rgba;
+	
+	if(effectenable == 0)
+	{
+		gl_FragColor = src_color;
+		return;
+	}
 
 	if(sharpenMasking == 1)
 	{
@@ -74,6 +88,25 @@ void main(void)
 		vec4 blur = sum / vec4(9.0,9.0,9.0,9.0);
 		src_color = src_color + (src_color - blur) * sharpness;		
 	}
+
+	if(denoise == 1)
+	{
+		vec4 center = src_color;
+		vec4 color = vec4(0.0);
+		float posX = gl_TexCoord[0].s;
+		float posY = gl_TexCoord[0].t;			
+		float total = 0.0;
+		for (float x = -4.0; x <= 4.0; x += 1.0) {
+			for (float y = -4.0; y <= 4.0; y += 1.0) {	
+				vec4 sample = TextureValue(posX, posY, x, y);
+				float weight = 1.0 - abs(dot(sample.rgb - center.rgb, vec3(0.25)));
+				weight = pow(weight, exponent);
+				color += sample * weight;
+				total += weight;
+			}
+		}
+		src_color = color / total;	
+	}		
 
 	if(tone == 1)
 	{
@@ -129,6 +162,7 @@ void main(void)
 
 		src_color = vec4(_localred, _localgreen, _localblue, src_color.a);
 	}
+
 
 
 	if(grayscale == 1)

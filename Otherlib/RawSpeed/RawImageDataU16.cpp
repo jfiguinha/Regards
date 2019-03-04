@@ -60,7 +60,7 @@ void RawImageDataU16::calculateBlackAreas() {
       for (uint32 y = area.offset; y < area.offset+area.size; y++) {
         ushort16 *pixel = (ushort16*)getDataUncropped(mOffset.x, y);
         int* localhist = &histogram[(y&1)*(65536*2)];
-        for (auto x = mOffset.x; x < dim.x+mOffset.x; x++) {
+        for (int x = mOffset.x; x < dim.x+mOffset.x; x++) {
           localhist[((x&1)<<16) + *pixel]++;
         }
       }
@@ -71,7 +71,7 @@ void RawImageDataU16::calculateBlackAreas() {
     if (area.isVertical) {
       if ((int)area.offset+(int)area.size > uncropped_dim.x)
         ThrowRDE("RawImageData::calculateBlackAreas: Offset + size is larger than width of image");
-      for (auto y = mOffset.y; y < dim.y+mOffset.y; y++) {
+      for (int y = mOffset.y; y < dim.y+mOffset.y; y++) {
         ushort16 *pixel = (ushort16*)getDataUncropped(area.offset, y);
         int* localhist = &histogram[(y&1)*(65536*2)];
         for (uint32 x = area.offset; x < area.size+area.offset; x++) {
@@ -83,7 +83,7 @@ void RawImageDataU16::calculateBlackAreas() {
   }
 
   if (!totalpixels) {
-    for (auto i = 0 ; i < 4; i++)
+    for (int i = 0 ; i < 4; i++)
       blackLevelSeparate[i] = blackLevel;
     free(histogram);
     return;
@@ -93,7 +93,7 @@ void RawImageDataU16::calculateBlackAreas() {
   /* Adjust the number of total pixels so it is the same as the median of each histogram */
   totalpixels /= 4*2;
 
-  for (auto i = 0 ; i < 4; i++) {
+  for (int i = 0 ; i < 4; i++) {
     int* localhist = &histogram[i*65536];
     int acc_pixels = localhist[0];
     int pixel_value = 0;
@@ -107,9 +107,9 @@ void RawImageDataU16::calculateBlackAreas() {
   /* If this is not a CFA image, we do not use separate blacklevels, use average */
   if (!isCFA) {
     int total = 0;
-    for (auto i = 0 ; i < 4; i++)
+    for (int i = 0 ; i < 4; i++)
       total+=blackLevelSeparate[i];
-    for (auto i = 0 ; i < 4; i++)
+    for (int i = 0 ; i < 4; i++)
       blackLevelSeparate[i] = (total+2)>>2;
   }
   free(histogram);
@@ -121,9 +121,9 @@ void RawImageDataU16::scaleBlackWhite() {
   if ((blackAreas.empty() && blackLevelSeparate[0] < 0 && blackLevel < 0) || whitePoint >= 65536) {  // Estimate
     int b = 65536;
     int m = 0;
-    for (auto row = skipBorder*cpp;row < (dim.y - skipBorder);row++) {
+    for (int row = skipBorder*cpp;row < (dim.y - skipBorder);row++) {
       ushort16 *pixel = (ushort16*)getData(skipBorder, row);
-      for (auto col = skipBorder ; col < gw ; col++) {
+      for (int col = skipBorder ; col < gw ; col++) {
         b = MIN(*pixel, b);
         m = MAX(*pixel, m);
         pixel++;
@@ -189,7 +189,7 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
     mul |= ((int)(1024.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[(mOffset.x+1)&1])))<<16;
     uint32 b = blackLevelSeparate[mOffset.x&1] | (blackLevelSeparate[(mOffset.x+1)&1]<<16);
 
-    for (auto i = 0; i< 4; i++) {
+    for (int i = 0; i< 4; i++) {
       sub_mul[i] = b;     // Subtract even lines
       sub_mul[4+i] = mul;   // Multiply even lines
     }
@@ -198,7 +198,7 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
     mul |= ((int)(1024.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[2+((mOffset.x+1)&1)])))<<16;
     b = blackLevelSeparate[2+(mOffset.x&1)] | (blackLevelSeparate[2+((mOffset.x+1)&1)]<<16);
 
-    for (auto i = 0; i< 4; i++) {
+    for (int i = 0; i< 4; i++) {
       sub_mul[8+i] = b;   // Subtract odd lines
       sub_mul[12+i] = mul;  // Multiply odd lines
     }
@@ -212,7 +212,7 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
     rand_mul = _mm_set1_epi32(0x4d9f1d32);
     rand_mask = _mm_set1_epi32(0x00ff00ff);  // 8 random bits
 
-    for (auto y = start_y; y < end_y; y++) {
+    for (int y = start_y; y < end_y; y++) {
       __m128i sserandom = _mm_set_epi32(dim.x*1676+y*18000, dim.x*2342+y*34311, dim.x*4272+y*12123, dim.x*1234+y*23464);
       __m128i* pixel = (__m128i*) & data[(mOffset.y+y)*pitch];
       __m128i ssescale, ssesub;
@@ -271,7 +271,7 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
     int gw = dim.x * cpp;
     int mul[4];
     int sub[4];
-    for (auto i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
       int v = i;
       if ((mOffset.x&1) != 0)
         v ^= 1;
@@ -280,12 +280,12 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
       mul[i] = (int)(16384.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[v]));
       sub[i] = blackLevelSeparate[v];
     }
-    for (auto y = start_y; y < end_y; y++) {
+    for (int y = start_y; y < end_y; y++) {
       int v = dim.x + y * 36969;
       ushort16 *pixel = (ushort16*)getData(0, y);
       int *mul_local = &mul[2*(y&1)];
       int *sub_local = &sub[2*(y&1)];
-      for (auto x = 0 ; x < gw; x++) {
+      for (int x = 0 ; x < gw; x++) {
         v = 18000 *(v & 65535) + (v >> 16);
         int rand = half_scale_fp - (full_scale_fp * (v&2047));
         pixel[x] = clampbits(((pixel[x] - sub_local[x&1]) * mul_local[x&1] + 8192 + rand) >> 14, 16);
@@ -308,7 +308,7 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
   // Half Scale in 18.14 fp
   int half_scale_fp = (int)(app_scale * 4095.0f);
 
-  for (auto i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; i++) {
     int v = i;
     if ((mOffset.x&1) != 0)
       v ^= 1;
@@ -317,12 +317,12 @@ void RawImageDataU16::scaleValues(int start_y, int end_y) {
     mul[i] = (int)(16384.0f * 65535.0f / (float)(whitePoint - blackLevelSeparate[v]));
     sub[i] = blackLevelSeparate[v];
   }
-  for (auto y = start_y; y < end_y; y++) {
+  for (int y = start_y; y < end_y; y++) {
     int v = dim.x + y * 36969;
     ushort16 *pixel = (ushort16*)getData(0, y);
     int *mul_local = &mul[2*(y&1)];
     int *sub_local = &sub[2*(y&1)];
-    for (auto x = 0 ; x < gw; x++) {
+    for (int x = 0 ; x < gw; x++) {
       v = 18000 *(v & 65535) + (v >> 16);
       int rand = half_scale_fp - (full_scale_fp * (v&2047));
       pixel[x] = clampbits(((pixel[x] - sub_local[x&1]) * mul_local[x&1] + 8192 + rand) >> 14, 16);
@@ -410,7 +410,7 @@ void RawImageDataU16::fixBadPixel( uint32 x, uint32 y, int component )
   }
 
   int total_pixel = 0;
-  for (auto i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
     if (values[i] >= 0)
       total_pixel += values[i] * weight[i];
 
@@ -420,7 +420,7 @@ void RawImageDataU16::fixBadPixel( uint32 x, uint32 y, int component )
 
   /* Process other pixels - could be done inline, since we have the weights */
   if (cpp > 1 && component == 0)
-    for (auto i = 1; i < (int)cpp; i++)
+    for (int i = 1; i < (int)cpp; i++)
       fixBadPixel(x,y,i);
 }
 

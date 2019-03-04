@@ -21,7 +21,10 @@
 #ifndef DE265_THREADS_H
 #define DE265_THREADS_H
 
+#if defined(_MSC_VER)
+#else
 #define MSYS 1
+#endif
 
 #include "libde265/de265.h"
 
@@ -36,7 +39,7 @@
 #include <deque>
 #include <string>
 
-#if defined(_WIN32) && not defined(MSYS)
+#if defined(_MSC_VER)
 
 #include <windows.h>
 #include "../extra/win32cond.h"

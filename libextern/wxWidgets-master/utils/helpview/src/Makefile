@@ -17,7 +17,7 @@ STRIP = strip
 NM = nm
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DIR = mkdir -p
-BK_DEPS = /c/Regards/libextern/wxWidgets-master/bk-deps
+BK_DEPS = /c/developpement/git/Regards/libextern/wxWidgets-master/bk-deps
 srcdir = .
 top_srcdir = ../../..
 bindir = ${exec_prefix}/bin
@@ -39,7 +39,7 @@ EXTRALIBS_GUI =
 CXXWARNINGS = -Wall -Wundef -Wunused-parameter -Wno-ctor-dtor-privacy -Woverloaded-virtual
 HOST_SUFFIX = 
 SAMPLES_RPATH_FLAG = 
-wx_top_builddir = /c/Regards/libextern/wxWidgets-master
+wx_top_builddir = /c/developpement/git/Regards/libextern/wxWidgets-master
 
 ### Variables: ###
 

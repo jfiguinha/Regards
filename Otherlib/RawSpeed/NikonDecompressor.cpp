@@ -78,7 +78,7 @@ void NikonDecompressor::DecompressNikon(ByteStream *metadata, uint32 w, uint32 h
   if (v0 == 68 && v1 == 32 && step > 0 && !uncorrectedRawValues) {
     for (uint32 i = 0; i < csize; i++)
       curve[i*step] = metadata->getShort();
-    for (auto i = 0; i < _max; i++)
+    for (int i = 0; i < _max; i++)
       curve[i] = (curve[i-i%step] * (step - i % step) +
                   curve[i-i%step+step] * (i % step)) / step;
     metadata->setAbsoluteOffset(562);
@@ -95,7 +95,7 @@ void NikonDecompressor::DecompressNikon(ByteStream *metadata, uint32 w, uint32 h
   mRaw->blackLevel = curve[0];
 
   ushort16 top = mRaw->whitePoint;
-  for (auto i = _max; i < 0x8000; i++)
+  for (int i = _max; i < 0x8000; i++)
     curve[i] = top;
 
   uint32 x, y;

@@ -89,7 +89,7 @@ configure:3451: found /mingw64/bin/gcc
 configure:3462: result: gcc
 configure:3691: checking for C compiler version
 configure:3700: gcc --version >&5
-gcc.exe (Rev1, Built by MSYS2 project) 8.2.1 20181214
+gcc.exe (Rev1, Built by MSYS2 project) 8.3.0
 Copyright (C) 2018 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -98,11 +98,11 @@ configure:3711: $? = 0
 configure:3700: gcc -v >&5
 Using built-in specs.
 COLLECT_GCC=C:\msys64\mingw64\bin\gcc.exe
-COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/lto-wrapper.exe
+COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/lto-wrapper.exe
 Target: x86_64-w64-mingw32
-Configured with: ../gcc-8-20181214/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/x86_64-w64-mingw32/include --libexecdir=/mingw64/lib --enable-bootstrap --with-arch=x86-64 --with-tune=generic --enable-languages=ada,c,lto,c++,objc,obj-c++,fortran --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts=yes --enable-libstdcxx-time=yes --disable-libstdcxx-pch --disable-libstdcxx-debug --disable-isl-version-check --enable-lto --enable-libgomp --disable-multilib --enable-checking=release --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev1, Built by MSYS2 project' --with-bugurl=https://sourceforge.net/projects/msys2 --with-gnu-as --with-gnu-ld
+Configured with: ../gcc-8.3.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/x86_64-w64-mingw32/include --libexecdir=/mingw64/lib --enable-bootstrap --with-arch=x86-64 --with-tune=generic --enable-languages=ada,c,lto,c++,objc,obj-c++,fortran --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts=yes --enable-libstdcxx-time=yes --disable-libstdcxx-pch --disable-libstdcxx-debug --disable-isl-version-check --enable-lto --enable-libgomp --disable-multilib --enable-checking=release --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev1, Built by MSYS2 project' --with-bugurl=https://sourceforge.net/projects/msys2 --with-gnu-as --with-gnu-ld
 Thread model: posix
-gcc version 8.2.1 20181214 (Rev1, Built by MSYS2 project) 
+gcc version 8.3.0 (Rev1, Built by MSYS2 project) 
 configure:3711: $? = 0
 configure:3700: gcc -V >&5
 gcc.exe: error: unrecognized command line option '-V'
@@ -448,7 +448,7 @@ configure:12538: found /mingw64/bin/g++
 configure:12549: result: g++
 configure:12576: checking for C++ compiler version
 configure:12585: g++ --version >&5
-g++.exe (Rev1, Built by MSYS2 project) 8.2.1 20181214
+g++.exe (Rev1, Built by MSYS2 project) 8.3.0
 Copyright (C) 2018 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -457,11 +457,11 @@ configure:12596: $? = 0
 configure:12585: g++ -v >&5
 Using built-in specs.
 COLLECT_GCC=C:\msys64\mingw64\bin\g++.exe
-COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/lto-wrapper.exe
+COLLECT_LTO_WRAPPER=C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/lto-wrapper.exe
 Target: x86_64-w64-mingw32
-Configured with: ../gcc-8-20181214/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/x86_64-w64-mingw32/include --libexecdir=/mingw64/lib --enable-bootstrap --with-arch=x86-64 --with-tune=generic --enable-languages=ada,c,lto,c++,objc,obj-c++,fortran --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts=yes --enable-libstdcxx-time=yes --disable-libstdcxx-pch --disable-libstdcxx-debug --disable-isl-version-check --enable-lto --enable-libgomp --disable-multilib --enable-checking=release --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev1, Built by MSYS2 project' --with-bugurl=https://sourceforge.net/projects/msys2 --with-gnu-as --with-gnu-ld
+Configured with: ../gcc-8.3.0/configure --prefix=/mingw64 --with-local-prefix=/mingw64/local --build=x86_64-w64-mingw32 --host=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 --with-native-system-header-dir=/mingw64/x86_64-w64-mingw32/include --libexecdir=/mingw64/lib --enable-bootstrap --with-arch=x86-64 --with-tune=generic --enable-languages=ada,c,lto,c++,objc,obj-c++,fortran --enable-shared --enable-static --enable-libatomic --enable-threads=posix --enable-graphite --enable-fully-dynamic-string --enable-libstdcxx-filesystem-ts=yes --enable-libstdcxx-time=yes --disable-libstdcxx-pch --disable-libstdcxx-debug --disable-isl-version-check --enable-lto --enable-libgomp --disable-multilib --enable-checking=release --disable-rpath --disable-win32-registry --disable-nls --disable-werror --disable-symvers --with-libiconv --with-system-zlib --with-gmp=/mingw64 --with-mpfr=/mingw64 --with-mpc=/mingw64 --with-isl=/mingw64 --with-pkgversion='Rev1, Built by MSYS2 project' --with-bugurl=https://sourceforge.net/projects/msys2 --with-gnu-as --with-gnu-ld
 Thread model: posix
-gcc version 8.2.1 20181214 (Rev1, Built by MSYS2 project) 
+gcc version 8.3.0 (Rev1, Built by MSYS2 project) 
 configure:12596: $? = 0
 configure:12585: g++ -V >&5
 g++.exe: error: unrecognized command line option '-V'
@@ -1377,8 +1377,8 @@ configure:17192: $? = 0
 configure:17192: result: yes
 configure:17192: checking for mmap
 configure:17192: gcc -o conftest.exe -g -O2 -Wall -W   conftest.c  >&5
-C:\msys64\tmp\ccOcj1Ns.o: In function `main':
-C:\Regards\libextern\wxWidgets-master\src\tiff/conftest.c:94: undefined reference to `mmap'
+C:\msys64\tmp\cc2jrXSE.o: In function `main':
+C:\developpement\git\Regards\libextern\wxWidgets-master\src\tiff/conftest.c:94: undefined reference to `mmap'
 collect2.exe: error: ld returned 1 exit status
 configure:17192: $? = 1
 configure: failed program was:
@@ -1693,7 +1693,7 @@ configure:17726: checking for zlib.h
 configure:17726: result: yes
 configure:17802: checking for jpeg_read_scanlines in -ljpeg
 configure:17827: gcc -o conftest.exe -g -O2 -Wall -W   conftest.c -ljpeg  -lz  >&5
-C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -ljpeg
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -ljpeg
 collect2.exe: error: ld returned 1 exit status
 configure:17827: $? = 1
 configure: failed program was:
@@ -2139,7 +2139,7 @@ conftest.c: In function 'routine':
 conftest.c:89:41: warning: parameter 'a' set but not used [-Wunused-but-set-parameter]
                static void routine(void* a) {a=0;}
                                    ~~~~~~^
-C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lpthreads
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lpthreads
 collect2.exe: error: ld returned 1 exit status
 configure:19042: $? = 1
 configure: failed program was:
@@ -2877,8 +2877,8 @@ configure:19434: checking for OpenGL/glu.h
 configure:19434: result: no
 configure:19448: checking for OpenGL Utility library
 configure:19494: g++ -o conftest.exe -g -O2    conftest.cpp -lopengl32  -lm -lz  >&5
-C:\msys64\tmp\ccs6T3DV.o: In function `main':
-C:\Regards\libextern\wxWidgets-master\src\tiff/conftest.cpp:106: undefined reference to `gluBeginCurve'
+C:\msys64\tmp\ccEpU8cu.o: In function `main':
+C:\developpement\git\Regards\libextern\wxWidgets-master\src\tiff/conftest.cpp:106: undefined reference to `gluBeginCurve'
 collect2.exe: error: ld returned 1 exit status
 configure:19494: $? = 1
 configure: failed program was:
@@ -3358,7 +3358,7 @@ configure:19616: checking for GLUT/glut.h
 configure:19616: result: no
 configure:19637: checking for GLUT library
 configure:19682: gcc -o conftest.exe -g -O2 -Wall -W    conftest.c -lglut32 -lglu32 -lopengl32  -lm -lz  >&5
-C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lglut32
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lglut32
 collect2.exe: error: ld returned 1 exit status
 configure:19682: $? = 1
 configure: failed program was:
@@ -3473,7 +3473,7 @@ configure: failed program was:
 |   return 0;
 | }
 configure:19682: gcc -o conftest.exe -g -O2 -Wall -W    conftest.c -lglut -lglu32 -lopengl32  -lm -lz  >&5
-C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.2.1/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lglut
+C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.3.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot find -lglut
 collect2.exe: error: ld returned 1 exit status
 configure:19682: $? = 1
 configure: failed program was:
@@ -3745,9 +3745,7 @@ config.status:1300: creating port/Makefile
 config.status:1300: creating test/Makefile
 config.status:1300: creating tools/Makefile
 config.status:1300: creating libtiff/tif_config.h
-config.status:1481: libtiff/tif_config.h is unchanged
 config.status:1300: creating libtiff/tiffconf.h
-config.status:1481: libtiff/tiffconf.h is unchanged
 config.status:1529: executing depfiles commands
 config.status:1529: executing libtool commands
 
@@ -3924,7 +3922,7 @@ vl_cv_prog_cc_warnings='-Wall -W'
 ## Output variables. ##
 ## ----------------- ##
 
-ACLOCAL='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run aclocal-1.12'
+ACLOCAL='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run aclocal-1.12'
 AMDEPBACKSLASH='\'
 AMDEP_FALSE='#'
 AMDEP_TRUE=''
@@ -3935,9 +3933,9 @@ AM_DEFAULT_VERBOSITY='1'
 AM_V='$(V)'
 AR='ar'
 AS='as'
-AUTOCONF='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run autoconf'
-AUTOHEADER='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run autoheader'
-AUTOMAKE='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run automake-1.12'
+AUTOCONF='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run autoconf'
+AUTOHEADER='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run autoheader'
+AUTOMAKE='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run automake-1.12'
 AWK='gawk'
 CC='gcc'
 CCDEPMODE='depmode=gcc3'
@@ -3989,7 +3987,7 @@ LIBTIFF_DOCDIR='${prefix}/share/doc/tiff-4.0.3'
 LIBTIFF_MAJOR_VERSION='4'
 LIBTIFF_MICRO_VERSION='3'
 LIBTIFF_MINOR_VERSION='0'
-LIBTIFF_RELEASE_DATE='20190115'
+LIBTIFF_RELEASE_DATE='20190304'
 LIBTIFF_VERSION='4.0.3'
 LIBTIFF_VERSION_INFO='7:0:2'
 LIBTOOL='$(SHELL) $(top_builddir)/libtool'
@@ -3999,7 +3997,7 @@ LTLIBOBJS=''
 MAINT='#'
 MAINTAINER_MODE_FALSE=''
 MAINTAINER_MODE_TRUE='#'
-MAKEINFO='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run makeinfo'
+MAKEINFO='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/missing --run makeinfo'
 MANIFEST_TOOL=':'
 MKDIR_P='/usr/bin/mkdir -p'
 NM='/mingw64/bin/nm -B'
@@ -4069,7 +4067,7 @@ host_vendor='w64'
 htmldir='${docdir}'
 includedir='${prefix}/include'
 infodir='${datarootdir}/info'
-install_sh='${SHELL} /c/Regards/libextern/wxWidgets-master/src/tiff/config/install-sh'
+install_sh='${SHELL} /c/developpement/git/Regards/libextern/wxWidgets-master/src/tiff/config/install-sh'
 libdir='${exec_prefix}/lib'
 libexecdir='${exec_prefix}/libexec'
 localedir='${datarootdir}/locale'

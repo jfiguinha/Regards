@@ -1,13 +1,10 @@
+#include <header.h>
 #include "ThumbnailFacePertinenceToolbar.h"
 #include <ToolbarSlide.h>
 #include <ToolbarTexte.h>
 #include <LibResource.h>
 #include "ListFace.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
 #include <window_id.h>
-#endif
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 using namespace Regards::Viewer;

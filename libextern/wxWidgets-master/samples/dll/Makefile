@@ -19,7 +19,7 @@ EXEEXT = .exe
 WINDRES = windres
 PIC_FLAG = 
 NM = nm
-BK_DEPS = /c/Regards/libextern/wxWidgets-master/bk-deps
+BK_DEPS = /c/developpement/git/Regards/libextern/wxWidgets-master/bk-deps
 srcdir = .
 top_srcdir = ../..
 DLLPREFIX = 
@@ -41,7 +41,7 @@ CXXWARNINGS = -Wall -Wundef -Wunused-parameter -Wno-ctor-dtor-privacy -Woverload
 HOST_SUFFIX = 
 SAMPLES_RPATH_FLAG = 
 SAMPLES_CXXFLAGS = 
-wx_top_builddir = /c/Regards/libextern/wxWidgets-master
+wx_top_builddir = /c/developpement/git/Regards/libextern/wxWidgets-master
 
 ### Variables: ###
 

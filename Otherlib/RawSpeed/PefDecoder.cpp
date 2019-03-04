@@ -115,7 +115,7 @@ void PefDecoder::decodeMetaDataInternal(CameraMetaData *meta) {
   if (mRootIFD->hasEntryRecursive((TiffTag)0x200)) {
     TiffEntry *black = mRootIFD->getEntryRecursive((TiffTag)0x200);
     const ushort16 *levels = black->getShortArray();
-    for (auto i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
       mRaw->blackLevelSeparate[i] = levels[i];
   }
 }

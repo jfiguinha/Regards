@@ -7,7 +7,7 @@
 // Copyright:   (c) 2006 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGFitToViewBox.h"
 
 void wxSVGFitToViewBox::UpdateMatrix(wxSVGMatrix& matrix, const wxSVGLength& width, const wxSVGLength& height) {

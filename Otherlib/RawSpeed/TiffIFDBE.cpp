@@ -38,7 +38,7 @@ TiffIFDBE::TiffIFDBE(FileMap* f, uint32 offset) {
   entries = (unsigned short)data[0] << 8 | (unsigned short)data[1];    // Directory entries in this IFD
 
   CHECKSIZE(offset + 2 + entries*4);
-  for (auto i = 0; i < entries; i++) {
+  for (int i = 0; i < entries; i++) {
     TiffEntryBE *t = new TiffEntryBE(f, offset + 2 + i*12);
 
     if (t->tag == SUBIFDS || t->tag == EXIFIFDPOINTER || t->tag == DNGPRIVATEDATA || t->tag == MAKERNOTE) {   // subIFD tag

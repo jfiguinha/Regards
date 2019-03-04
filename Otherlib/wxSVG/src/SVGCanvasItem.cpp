@@ -6,7 +6,7 @@
 // Copyright:   (c) Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include <wx/wx.h>
 #include <wx/tokenzr.h>
 #include "SVGCanvasItem.h"

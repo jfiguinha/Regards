@@ -326,7 +326,7 @@ void OrfDecoder::decodeMetaDataInternal(CameraMetaData *meta) {
       // Order is assumed to be RGGB
       if (blackEntry && blackEntry->count == 4) {
         const ushort16* black = blackEntry->getShortArray();
-        for (auto i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
           if (mRaw->cfa.getColorAt(i&1, i>>1) == CFA_RED)
             mRaw->blackLevelSeparate[i] = black[0];
           else if (mRaw->cfa.getColorAt(i&1, i>>1) == CFA_BLUE)

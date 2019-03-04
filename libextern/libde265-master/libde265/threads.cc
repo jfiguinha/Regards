@@ -30,7 +30,7 @@
 
 
 
-#if defined(_WIN32) && not defined(MSYS)
+#if defined(_MSC_VER)
 #define THREAD_RESULT       DWORD WINAPI
 #define THREAD_PARAM        LPVOID
 

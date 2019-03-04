@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4D2AD7C4-5ADF-3C1E-8EF0-F86F5DC10A20}</ProjectGuid>
+    <ProjectGuid>{78FFAAB2-27CF-3CF8-A62E-0EA9BC545EE5}</ProjectGuid>
     <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
@@ -40,12 +40,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -56,13 +56,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">encoder.dir\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">encoder.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">encoder</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">encoder.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">encoder.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">encoder</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">encoder.dir\MinSizeRel\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">encoder.dir\MinSizeRel\</IntDir>
@@ -75,7 +75,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\x265_2.5\source\.;$(SolutionDir)libextern\x265_2.5\source\common;$(SolutionDir)libextern\x265_2.5\source\encoder;$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -95,10 +95,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -111,7 +111,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\x265_2.5\source\.;$(SolutionDir)libextern\x265_2.5\source\common;$(SolutionDir)libextern\x265_2.5\source\encoder;$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4701</DisableSpecificWarnings>
@@ -131,10 +131,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -147,7 +147,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>MinSizeRel/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DisableSpecificWarnings>4701</DisableSpecificWarnings>
@@ -167,10 +167,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -183,7 +183,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>RelWithDebInfo/</AssemblerListingLocation>
       <CompileAs>CompileAsCpp</CompileAs>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -202,10 +202,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;X265_ARCH_X86=1;X86_64=1;_CRT_SECURE_NO_WARNINGS;HAVE_INT_TYPES_H=1;HIGH_BIT_DEPTH=0;X265_DEPTH=8;EXPORT_C_API=1;X265_NS=x265;_WIN32_WINNT=_WIN32_WINNT_WIN7;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -217,10 +217,10 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/x265_2.5/source -BC:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -228,12 +228,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/x265_2.5/source -BC:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -241,12 +241,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/x265_2.5/source -BC:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -254,12 +254,12 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/Regards/libextern/x265_2.5/source -BC:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/x265_2.5/source -BC:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64 --check-stamp-file C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/encoder/CMakeFiles/generate.stamp
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -267,54 +267,54 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/developpement/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/developpement/git/Regards/libextern/x265_2.5/source/encoder/CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\CMakeLists.txt;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\encoder\CMakeFiles\generate.stamp</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\analysis.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\analysis.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\search.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\search.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\bitcost.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\bitcost.h" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\rdcost.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\motion.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\motion.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\slicetype.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\slicetype.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\frameencoder.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\frameencoder.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\framefilter.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\framefilter.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\level.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\level.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\nal.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\nal.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sei.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sei.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sao.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\sao.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\entropy.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\entropy.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\dpb.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\dpb.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\ratecontrol.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\ratecontrol.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\reference.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\reference.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\encoder.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\encoder.h" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\api.cpp" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\encoder\weightPrediction.cpp" />
-    <ClCompile Include="C:\developpement\Regards\libextern\x265_2.5\source\x265-extras.cpp" />
-    <ClInclude Include="C:\developpement\Regards\libextern\x265_2.5\source\x265-extras.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\analysis.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\analysis.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\search.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\search.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\bitcost.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\bitcost.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\rdcost.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\motion.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\motion.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\slicetype.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\slicetype.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\frameencoder.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\frameencoder.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\framefilter.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\framefilter.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\level.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\level.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\nal.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\nal.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sei.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sei.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sao.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\sao.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\entropy.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\entropy.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\dpb.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\dpb.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\ratecontrol.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\ratecontrol.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\reference.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\reference.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\encoder.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\encoder.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\api.cpp" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\encoder\weightPrediction.cpp" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265-extras.cpp" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\x265_2.5\source\x265-extras.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\ZERO_CHECK.vcxproj">
-      <Project>{12B61E63-9255-3B11-B73A-60F6A9513F3C}</Project>
+    <ProjectReference Include="C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\ZERO_CHECK.vcxproj">
+      <Project>{43385433-032A-3966-802B-B15A04942C99}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

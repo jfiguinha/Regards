@@ -86,7 +86,6 @@ __kernel void bilat2(__global float4 *output, const __global float4 *input, int 
   uint i = get_global_id(0);
   uint j = get_global_id(1);
 
-/*
   float weight;
   float res_x = 0;
   float sum_x = 0;
@@ -96,10 +95,7 @@ __kernel void bilat2(__global float4 *output, const __global float4 *input, int 
 
   float res_z = 0;
   float sum_z = 0;  
- */
- 
-  float4 res;
-  float4 sum;
+  
   float4 pix0 = input[i + j * width];
   float SX = 1.f/sigmaX/sigmaX;
   float SP = 1.f/sigmaP/sigmaP;
@@ -112,14 +108,7 @@ __kernel void bilat2(__global float4 *output, const __global float4 *input, int 
 		if(position >= 0 && position < (width * height))
 		{
 			float4 pix1 = input[position];  
-			float4 valueSX = (float4)exp(-SX*(k*k+m*m));
-			float4 valueSP = (float4)-SP;
-			float4 value = (float4)((1.f*pix0.x-pix1.x)*(1.f*pix0.x-pix1.x),(1.f*pix0.y-pix1.y)*(1.f*pix0.y-pix1.y),(1.f*pix0.z-pix1.z)*(1.f*pix0.z-pix1.z),0.f);
-			float4 weight = valueSP * value;
-			res += pix * weight;
-			sum += weight;
 			
-			/*
 			weight = exp(-SX*(k*k+m*m))* exp(-SP*((1.f*pix0.x-pix1.x)*(1.f*pix0.x-pix1.x)));
 			res_x += pix1.x*weight;
 			sum_x += weight;
@@ -131,16 +120,13 @@ __kernel void bilat2(__global float4 *output, const __global float4 *input, int 
 			weight = exp(-SX*(k*k+m*m))* exp(-SP*((1.f*pix0.z-pix1.z)*(1.f*pix0.z-pix1.z)));
 			res_z += pix1.z*weight;
 			sum_z += weight;
-			*/
 		}
     }
   }
-/*
+
   output[i+width*j].x = (res_x/sum_x);
   output[i+width*j].y = (res_y/sum_y);
   output[i+width*j].z = (res_z/sum_z);
-*/
-	output[i+width*j] = res / sum;	
 }
 
 

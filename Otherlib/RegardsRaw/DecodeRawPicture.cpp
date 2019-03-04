@@ -1,8 +1,8 @@
 #include "DecodeRawPicture.h"
 #include "libraw/libraw.h"
 #include <DecodeRawParameter.h>
+#include <header.h>
 #include <ImageLoadingFormat.h>
-
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
 #include <ximage.h>
 

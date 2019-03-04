@@ -6,7 +6,7 @@
 // Copyright:   (c) 2012 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGRadialGradientElement.h"
 
 double wxSVGRadialGradientElement::GetQualifiedR() const {

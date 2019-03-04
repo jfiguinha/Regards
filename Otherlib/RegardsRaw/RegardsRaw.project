@@ -73,6 +73,7 @@
         <IncludePath Value="demoisaic_pack/gpl3"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../../libFiltre"/>
+        <IncludePath Value="../../include"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBRAW_NODLL"/>
         <Preprocessor Value="_USE_MATH_DEFINES"/>

@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+using namespace std;
 
 #define JPEGOUTPUT 1
 #define BITMAPOUTPUT 2

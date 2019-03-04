@@ -62,7 +62,7 @@ protected:
       return *(double*)ptr;
     double ret;
     uchar8 *tmp = (uchar8*)&ret;
-    for (auto i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++)
      tmp[i] = ptr[7-i];
     return ret;
   }
@@ -71,7 +71,7 @@ protected:
       return *(float*)ptr;
     float ret;
     uchar8 *tmp = (uchar8*)&ret;
-    for (auto i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
       tmp[i] = ptr[3-i];
     return ret;
   }

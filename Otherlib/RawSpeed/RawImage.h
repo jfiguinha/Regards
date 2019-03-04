@@ -26,8 +26,14 @@
     http://www.klauspost.com
 */
 
+#if _MSC_VER < 1800 && defined(WIN32)
+#include <boost/thread/thread.hpp>
+#include <boost/thread/mutex.hpp>
+using namespace boost;
+#else
 #include <thread>
 #include <mutex>
+#endif
 
 namespace RawSpeed {
 

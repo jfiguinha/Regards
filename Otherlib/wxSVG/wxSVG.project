@@ -327,6 +327,7 @@
         <IncludePath Value="../wxSVG/include"/>
         <IncludePath Value="../wxSVG/include/wxSVG"/>
         <IncludePath Value="../wxSVG/include/wxSVGXML"/>
+        <IncludePath Value="../../include"/>
         <Preprocessor Value="USE_CAIRO"/>
       </Compiler>
       <Linker Options="">

@@ -27,6 +27,13 @@ it under the terms of the one of two licenses as you choose:
 #include "libraw/libraw.h"
 #include "internal/defines.h"
 #include "internal/var_defines.h"
+
+#ifdef USE_JPEG
+#include <jpeglib.h>
+#include <jpegmemsrc.h>
+#endif
+
+
 int CLASS fcol (int row, int col)
 {
   static const char filter[16][16] =

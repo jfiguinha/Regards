@@ -255,8 +255,8 @@ void RawImageData::fixBadPixels()
 #if 0 // For testing purposes
   if (!mBadPixelMap)
     createBadPixelMap();
-  for (auto y = 400; y < 700; y++){
-    for (auto x = 1200; x < 1700; x++) {
+  for (int y = 400; y < 700; y++){
+    for (int x = 1200; x < 1700; x++) {
       mBadPixelMap[mBadPixelMapPitch * y + (x >> 3)] |= 1 << (x&7);
     }
   }
@@ -310,13 +310,13 @@ void RawImageData::startWorker(RawImageWorker::RawImageWorkerTask task, bool cro
   int y_offset = 0;
   int y_per_thread = (height + threads - 1) / threads;
 
-  for (auto i = 0; i < threads; i++) {
+  for (int i = 0; i < threads; i++) {
     int y_end = MIN(y_offset + y_per_thread, height);
     workers[i] = new RawImageWorker(this, task, y_offset, y_end);
     workers[i]->startThread();
     y_offset = y_end;
   }
-  for (auto i = 0; i < threads; i++) {
+  for (int i = 0; i < threads; i++) {
     workers[i]->waitForThread();
     delete workers[i];
   }
@@ -326,15 +326,15 @@ void RawImageData::startWorker(RawImageWorker::RawImageWorkerTask task, bool cro
 void RawImageData::fixBadPixelsThread( int start_y, int end_y )
 {
   int gw = (uncropped_dim.x + 15) / 32;
-  for (auto y = start_y; y < end_y; y++) {
+  for (int y = start_y; y < end_y; y++) {
     uint32* bad_map = (uint32*)&mBadPixelMap[y*mBadPixelMapPitch];
-    for (auto x = 0 ; x < gw; x++) {
+    for (int x = 0 ; x < gw; x++) {
       // Test if there is a bad pixel within these 32 pixels
       if (bad_map[x] != 0) {
         uchar8 *bad = (uchar8*)&bad_map[x];
         // Go through each pixel
-        for (auto i = 0; i < 4; i++) {
-          for (auto j = 0; j < 8; j++) {
+        for (int i = 0; i < 4; i++) {
+          for (int j = 0; j < 8; j++) {
             if (1 == ((bad[i]>>j) & 1))
               fixBadPixel(x*32+i*8+j, y, 0);
           }
@@ -364,10 +364,10 @@ void RawImageData::expandBorder(iRectangle2D validData)
 {
   validData = validData.getOverlap(iRectangle2D(0,0,dim.x, dim.y));
   if (validData.pos.x > 0) {
-    for (auto y = 0; y < dim.y; y++ ) {
+    for (int y = 0; y < dim.y; y++ ) {
       uchar8* src_pos = getData(validData.pos.x, y);
       uchar8* dst_pos = getData(validData.pos.x-1, y);
-      for (auto x = validData.pos.x; x >= 0; x--) {
+      for (int x = validData.pos.x; x >= 0; x--) {
         for (uint32 i = 0; i < bpp; i++) {
           dst_pos[i] = src_pos[i];
         }
@@ -378,10 +378,10 @@ void RawImageData::expandBorder(iRectangle2D validData)
 
   if (validData.getRight() < dim.x) {
     int pos = validData.getRight();
-    for (auto y = 0; y < dim.y; y++ ) {
+    for (int y = 0; y < dim.y; y++ ) {
       uchar8* src_pos = getData(pos-1, y);
       uchar8* dst_pos = getData(pos, y);
-      for (auto x = pos; x < dim.x; x++) {
+      for (int x = pos; x < dim.x; x++) {
         for (uint32 i = 0; i < bpp; i++) {
           dst_pos[i] = src_pos[i];
         }
@@ -392,14 +392,14 @@ void RawImageData::expandBorder(iRectangle2D validData)
 
   if (validData.pos.y > 0) {
     uchar8* src_pos = getData(0, validData.pos.y);
-    for (auto y = 0; y < validData.pos.y; y++ ) {
+    for (int y = 0; y < validData.pos.y; y++ ) {
       uchar8* dst_pos = getData(0, y);
       memcpy(dst_pos, src_pos, dim.x*bpp);
     }
   }
   if (validData.getBottom() < dim.y) {
     uchar8* src_pos = getData(0, validData.getBottom()-1);
-    for (auto y = validData.getBottom(); y < dim.y; y++ ) {
+    for (int y = validData.getBottom(); y < dim.y; y++ ) {
       uchar8* dst_pos = getData(0, y);
       memcpy(dst_pos, src_pos, dim.x*bpp);
     }

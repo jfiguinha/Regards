@@ -7,7 +7,7 @@
 // Copyright:   (c) 2005 Alex Thuering
 // Licence:     wxWindows licence
 //////////////////////////////////////////////////////////////////////////////
-
+#include <header.h>
 #include "SVGFilterElement.h"
 
 void wxSVGFilterElement::SetFilterRes(unsigned long filterResX, unsigned long filterResY)

@@ -34,6 +34,7 @@
 #endif
 #ifdef USE_JPEG
 #include <jpeglib.h>
+#include <jpegmemsrc.h>
 #else
 #define NO_JPEG
 #endif

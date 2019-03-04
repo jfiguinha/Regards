@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{742B1CE6-885F-37D7-B67C-B9C4FDA3F8D4}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{39C2290F-B4D6-38DE-A3CB-AFD29BACA70F}</ProjectGuid>
+    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
     <ProjectName>INSTALL</ProjectName>
@@ -30,12 +30,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
     <ConfigurationType>Utility</ConfigurationType>
@@ -63,7 +63,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\git\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -71,7 +71,8 @@
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -DBUILD_TYPE=$(Configuration) -P cmake_install.cmake
 if %errorlevel% neq 0 goto :cmEnd
@@ -85,7 +86,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\git\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -93,7 +94,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -DBUILD_TYPE=$(Configuration) -P cmake_install.cmake
 if %errorlevel% neq 0 goto :cmEnd
@@ -107,7 +109,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\git\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -115,7 +117,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -DBUILD_TYPE=$(Configuration) -P cmake_install.cmake
 if %errorlevel% neq 0 goto :cmEnd
@@ -129,7 +132,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <Midl>
-      <AdditionalIncludeDirectories>C:\developpement\Regards\libextern\x265_2.5\source\.;C:\developpement\Regards\libextern\x265_2.5\source\common;C:\developpement\Regards\libextern\x265_2.5\source\encoder;C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\x265_2.5\source\.;C:\developpement\git\Regards\libextern\x265_2.5\source\common;C:\developpement\git\Regards\libextern\x265_2.5\source\encoder;C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64;C:\developpement\git\Regards\libextern\x265_2.5\source\compat\getopt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -137,7 +140,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
     <PostBuildEvent>
-      <Message></Message>
+      <Message>
+      </Message>
       <Command>setlocal
 "C:\Program Files\CMake\bin\cmake.exe" -DBUILD_TYPE=$(Configuration) -P cmake_install.cmake
 if %errorlevel% neq 0 goto :cmEnd
@@ -150,8 +154,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\7c4d8ac8a12630b8ba38c720871200d3\INSTALL_force.rule">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"> </Message>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\fc5945c76bd1f170b893aad1ddac6e9b\INSTALL_force.rule">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
 cd .
 if %errorlevel% neq 0 goto :cmEnd
@@ -161,10 +166,11 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/7c4d8ac8a12630b8ba38c720871200d3/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/fc5945c76bd1f170b893aad1ddac6e9b/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'"> </Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
 cd .
 if %errorlevel% neq 0 goto :cmEnd
@@ -174,10 +180,11 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/7c4d8ac8a12630b8ba38c720871200d3/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/fc5945c76bd1f170b893aad1ddac6e9b/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'"> </Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
 cd .
 if %errorlevel% neq 0 goto :cmEnd
@@ -187,10 +194,11 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/7c4d8ac8a12630b8ba38c720871200d3/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/fc5945c76bd1f170b893aad1ddac6e9b/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
-      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'"> </Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+      </Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
 cd .
 if %errorlevel% neq 0 goto :cmEnd
@@ -200,20 +208,20 @@ endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
 exit /b %1
 :cmDone
 if %errorlevel% neq 0 goto :VCEnd</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/developpement/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/7c4d8ac8a12630b8ba38c720871200d3/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:/developpement/git/Regards/libextern/x265_2.5/build/vc15-x86_64/CMakeFiles/fc5945c76bd1f170b893aad1ddac6e9b/INSTALL_force.rule;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\CMakeFiles\INSTALL_force</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\ZERO_CHECK.vcxproj">
-      <Project>{12B61E63-9255-3B11-B73A-60F6A9513F3C}</Project>
+    <ProjectReference Include="C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\ZERO_CHECK.vcxproj">
+      <Project>{43385433-032A-3966-802B-B15A04942C99}</Project>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="C:\developpement\Regards\libextern\x265_2.5\build\vc15-x86_64\ALL_BUILD.vcxproj">
-      <Project>{AF9AFB05-09FA-3188-925F-AAE4CE191A04}</Project>
+    <ProjectReference Include="C:\developpement\git\Regards\libextern\x265_2.5\build\vc15-x86_64\ALL_BUILD.vcxproj">
+      <Project>{279F171A-0DA6-39F0-BD04-BF40B46253AC}</Project>
       <Name>ALL_BUILD</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

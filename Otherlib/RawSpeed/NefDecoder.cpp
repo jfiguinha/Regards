@@ -148,7 +148,7 @@ bool NefDecoder::D100IsCompressed(uint32 offset) {
 TiffIFD* NefDecoder::FindBestImage(vector<TiffIFD*>* data) {
   int largest_width = 0;
   TiffIFD* best_ifd = NULL;
-  for (auto i = 0; i < (int)data->size(); i++) {
+  for (int i = 0; i < (int)data->size(); i++) {
     TiffIFD* raw = (*data)[i];
     int width = raw->getEntry(IMAGEWIDTH)->getInt();
     if (width > largest_width)

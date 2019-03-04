@@ -224,10 +224,8 @@
     </ClInclude>
     <ClInclude Include="..\..\src\events\blank_cursor.h" />
     <ClInclude Include="..\..\src\events\default_cursor.h" />
-    <ClInclude Include="..\..\src\libm\math.h" />
     <ClInclude Include="..\..\src\libm\math_private.h" />
     <ClInclude Include="..\..\src\render\mmx.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\src\audio\SDL_audio_c.h" />
     <ClInclude Include="..\..\src\audio\SDL_audiodev_c.h" />
     <ClInclude Include="..\..\src\render\software\SDL_blendfillrect.h" />
@@ -253,12 +251,8 @@
     <ClInclude Include="..\..\src\dynapi\SDL_dynapi_overrides.h" />
     <ClInclude Include="..\..\src\dynapi\SDL_dynapi_procs.h" />
     <ClInclude Include="..\..\src\SDL_error_c.h" />
-    <ClInclude Include="..\..\src\SDL_dataqueue.h" />
     <ClInclude Include="..\..\src\events\SDL_events_c.h" />
     <ClInclude Include="..\..\src\events\SDL_gesture_c.h" />
-    <ClInclude Include="..\..\src\video\SDL_glesfuncs.h" />
-    <ClInclude Include="..\..\src\video\SDL_glfuncs.h" />
-    <ClInclude Include="..\..\src\SDL_hints_c.h" />
     <ClInclude Include="..\..\src\joystick\SDL_joystick_c.h" />
     <ClInclude Include="..\..\src\events\SDL_keyboard_c.h" />
     <ClInclude Include="..\..\src\events\SDL_mouse_c.h" />
@@ -306,6 +300,10 @@
     <ClInclude Include="..\..\src\joystick\windows\SDL_xinputjoystick_c.h" />
     <ClInclude Include="..\..\src\render\SDL_yuv_sw_c.h" />
     <ClInclude Include="..\..\src\video\windows\wmmsg.h" />
+    <ClInclude Include="..\..\src\libm\math_libm.h" />
+    <ClInclude Include="..\..\src\render\opengles\SDL_glesfuncs.h" />
+    <ClInclude Include="..\..\src\render\opengl\SDL_glfuncs.h" />
+    <ClInclude Include="..\..\src\audio\wasapi\SDL_wasapi.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\libm\e_atan2.c" />
@@ -437,6 +435,7 @@
     <ClCompile Include="..\..\src\joystick\windows\SDL_xinputjoystick.c" />
     <ClCompile Include="..\..\src\render\SDL_yuv_mmx.c" />
     <ClCompile Include="..\..\src\render\SDL_yuv_sw.c" />
+    <ClCompile Include="..\..\src\audio\wasapi\SDL_wasapi.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\src\main\windows\version.rc" />

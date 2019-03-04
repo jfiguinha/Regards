@@ -1,4 +1,4 @@
-# Install script for directory: C:/developpement/Regards/libextern/x265_2.5/source/common
+# Install script for directory: C:/developpement/git/Regards/libextern/x265_2.5/source/common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -1,1 +1,1 @@
-./Release/DecodeRawPicture.cpp.o ./Release/internal_demosaic_packs.cpp.o ./Release/RegardsRaw.cpp.o ./Release/internal_dcraw_fileio.cpp.o ./Release/src_libraw_datastream.cpp.o ./Release/src_libraw_c_api.cpp.o ./Release/src_libraw_cxx.cpp.o ./Release/internal_dcraw_common.cpp.o
+./Debug/internal_dcraw_fileio.cpp.o ./Debug/internal_dcraw_common.cpp.o ./Debug/RegardsRaw.cpp.o ./Debug/src_libraw_cxx.cpp.o ./Debug/DecodeRawPicture.cpp.o ./Debug/internal_demosaic_packs.cpp.o ./Debug/src_libraw_c_api.cpp.o ./Debug/src_libraw_datastream.cpp.o

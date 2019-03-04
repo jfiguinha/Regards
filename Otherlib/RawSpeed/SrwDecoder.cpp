@@ -110,7 +110,7 @@ void SrwDecoder::decodeCompressed( TiffIFD* raw )
     if (line_offset >= mFile->getSize())
       ThrowRDE("Srw decoder: Offset outside image file, file probably truncated.");
     int len[4];
-    for (auto i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++)
       len[i] = y < 2 ? 7 : 4;
     BitPumpMSB32 bits(mFile->getData(line_offset),mFile->getSize() - line_offset);
     int op[4];
@@ -120,9 +120,9 @@ void SrwDecoder::decodeCompressed( TiffIFD* raw )
     // Image is arranged in groups of 16 pixels horizontally
     for (uint32 x = 0; x < width; x += 16) {
       bool dir = !!bits.getBit();
-      for (auto i = 0; i < 4; i++)
+      for (int i = 0; i < 4; i++)
         op[i] = bits.getBits(2);
-      for (auto i = 0; i < 4; i++) {
+      for (int i = 0; i < 4; i++) {
         switch (op[i]) {
           case 3: len[i] = bits.getBits(4);
             break;
@@ -138,7 +138,7 @@ void SrwDecoder::decodeCompressed( TiffIFD* raw )
       if (dir) {
         // Upward prediction
         // First we decode even pixels
-        for (auto c = 0; c < 16; c += 2) {
+        for (int c = 0; c < 16; c += 2) {
           int b = len[(c >> 3)];
           int32 adj = ((int32) bits.getBits(b) << (32-b) >> (32-b));
           img[c] = adj + img_up[c];
@@ -146,7 +146,7 @@ void SrwDecoder::decodeCompressed( TiffIFD* raw )
         // Now we decode odd pixels
         // Why on earth upward prediction only looks up 1 line above
         // is beyond me, it will hurt compression a deal.
-        for (auto c = 1; c < 16; c += 2) {
+        for (int c = 1; c < 16; c += 2) {
           int b = len[2 | (c >> 3)];
           int32 adj = ((int32) bits.getBits(b) << (32-b) >> (32-b));
           img[c] = adj + img_up2[c];
@@ -155,14 +155,14 @@ void SrwDecoder::decodeCompressed( TiffIFD* raw )
         // Left to right prediction
         // First we decode even pixels
         int pred_left = x ? img[-2] : 128;
-        for (auto c = 0; c < 16; c += 2) {
+        for (int c = 0; c < 16; c += 2) {
           int b = len[(c >> 3)];
           int32 adj = ((int32) bits.getBits(b) << (32-b) >> (32-b));
           img[c] = adj + pred_left;
         }
         // Now we decode odd pixels
         pred_left = x ? img[-1] : 128;
-        for (auto c = 1; c < 16; c += 2) {
+        for (int c = 1; c < 16; c += 2) {
           int b = len[2 | (c >> 3)];
           int32 adj = ((int32) bits.getBits(b) << (32-b) >> (32-b));
           img[c] = adj + pred_left;
@@ -209,8 +209,8 @@ void SrwDecoder::decodeMetaDataInternal(CameraMetaData *meta) {
     if (cfaSize.area() != data[0]->getEntry(CFAPATTERN)->count)
       ThrowRDE("SRW Decoder: CFA pattern dimension and pattern count does not match: %d.");
 
-    for (auto y = 0; y < cfaSize.y; y++) {
-      for (auto x = 0; x < cfaSize.x; x++) {
+    for (int y = 0; y < cfaSize.y; y++) {
+      for (int x = 0; x < cfaSize.x; x++) {
         uint32 c1 = cPat[x+y*cfaSize.x];
         CFAColor c2;
         switch (c1) {

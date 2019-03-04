@@ -1,0 +1,825 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\wxSVG">
+      <UniqueIdentifier>{c89b4a8e-920a-4ddc-a289-f645d6e167f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\wxSVGXML">
+      <UniqueIdentifier>{cedbc12e-b739-4f68-ac23-9c380b0b87e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\cairo">
+      <UniqueIdentifier>{cac7bc80-0f8a-4fbf-bce7-f5482d5ce06c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\svgxml">
+      <UniqueIdentifier>{2eb37d62-8c2f-4051-9a18-01a743a65bfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{32112694-945d-41a4-aeaa-1de0de297b47}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cairo\SVGCanvasCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="cairo\SVGCanvasImageCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="cairo\SVGCanvasPathCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="cairo\SVGCanvasTextCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\Animated.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\CSSStyleDeclaration.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\CSSValue.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\CSSValues.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\Document.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\DocumentCSS.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\DocumentEvent.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\Element.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\ElementTimeControl.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\EventTarget.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\GetSVGDocument.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\imagsvg.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\mediadec_ffmpeg.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\NodeList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\NodeListCls.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\RGBColor.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\String_wxsvg.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\svg.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAltGlyphDefElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAltGlyphElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAltGlyphItemElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAngle.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimateColorElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedAngle.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedBoolean.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedEnumeration.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedInteger.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedLength.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedLengthList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedNumber.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedNumberList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedPathData.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedPoints.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedPreserveAspectRatio.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedRect.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedString.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedTransformList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimatedType.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimateElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimateMotionElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimateTransformElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGAnimationElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCanvas.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCanvasItem.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCircleElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGClipPathElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGColor.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGColorProfileElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGColorProfileRule.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGComponentTransferFunctionElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCoordinates.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCSSRule.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\svgctrl.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGCursorElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGDefinitionSrcElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGDefsElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGDescElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGDocument.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGDTD.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGElementInstance.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGElementInstanceList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGEllipseElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGEvent.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGExternalResourcesRequired.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEBlendElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEColorMatrixElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEComponentTransferElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFECompositeElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEConvolveMatrixElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEDiffuseLightingElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEDisplacementMapElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEDistantLightElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEFloodElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEFuncAElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEFuncBElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEFuncGElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEFuncRElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEGaussianBlurElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEImageElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEMergeElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEMergeNodeElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEMorphologyElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEOffsetElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFEPointLightElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFESpecularLightingElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFESpotLightElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFETileElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFETurbulenceElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFilterElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFilterPrimitiveStandardAttributes.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFitToViewBox.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontFaceElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontFaceFormatElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontFaceNameElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontFaceSrcElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGFontFaceUriElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGForeignObjectElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGGElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGGlyphElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGGlyphRefElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGGradientElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGHKernElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGICCColor.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGImageElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLangSpace.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLength.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLengthCalculate.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLengthList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLinearGradientElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLineElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGLocatable.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMarkerElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMaskElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMatrix.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMetadataElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMissingGlyphElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGMPathElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGNumber.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGNumberList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPaint.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSeg.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegArcAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegArcRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegClosePath.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoCubicAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoCubicRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoCubicSmoothAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoCubicSmoothRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoQuadraticAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoQuadraticRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoQuadraticSmoothAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegCurvetoQuadraticSmoothRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoHorizontalAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoHorizontalRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoVerticalAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegLinetoVerticalRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegMovetoAbs.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPathSegMovetoRel.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPatternElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPoint.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPointList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPolygonElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPolylineElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGPreserveAspectRatio.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGRadialGradientElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGRect.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGRectElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGRenderingIntent.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGScriptElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGSetElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGStopElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGStringList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGStylable.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGStyleElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGSVGElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGSwitchElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGSymbolElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTBreakElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTests.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTextContentElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTextElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTextPathElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTextPositioningElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTitleElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTransform.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTransformable.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTransformList.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTRefElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGTSpanElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGUnitTypes.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGURIReference.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGUseElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGVideoElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGViewElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGViewSpec.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGVKernElement.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGZoomAndPan.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\SVGZoomEvent.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVG\ViewCSS.h">
+      <Filter>Fichiers d%27en-tête\wxSVG</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVGXML\svgxml.h">
+      <Filter>Fichiers d%27en-tête\wxSVGXML</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wxSVGXML\svgxmlhelpr.h">
+      <Filter>Fichiers d%27en-tête\wxSVGXML</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cairo\SVGCanvasCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cairo\SVGCanvasImageCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cairo\SVGCanvasPathCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cairo\SVGCanvasTextCairo.h">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\CSSStyleDeclaration.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSSValue.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Elements_CopyConstructors.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Elements_GetAttribute.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Elements_GetAttributes.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Elements_HasAttribute.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Elements_SetAttribute.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GetSVGDocument.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imagsvg.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mediadec_ffmpeg.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\NodeList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGAngle.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGAnimatedType.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGAnimateTransformElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGAnimationElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGCanvas.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGCanvasItem.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGCircleElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGColor.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svgctrl.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGDocument.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGElementInstanceList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGEllipseElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGFEGaussianBlurElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGFilterElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGFitToViewBox.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGImageElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGLength.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGLengthList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGLineElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGLocatable.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGMarkerElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGMatrix.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGNumberList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPaint.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPathElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPathSegList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPoint.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPointList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPolygonElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPolylineElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGPreserveAspectRatio.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGRadialGradientElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGRect.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGRectElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGStringList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGStylable.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGSVGElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTests.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTextContentElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTextElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTransform.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTransformable.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGTransformList.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGUseElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGVideoElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svgxml\svgxml.cpp">
+      <Filter>Fichiers sources\svgxml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\svgxml\svgxmlhelpr.cpp">
+      <Filter>Fichiers sources\svgxml</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cairo\SVGCanvasCairo.cpp">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cairo\SVGCanvasImageCairo.cpp">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cairo\SVGCanvasPathCairo.cpp">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cairo\SVGCanvasTextCairo.cpp">
+      <Filter>Fichiers sources\cairo</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExifHandler.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SVGAnimateMotionElement.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

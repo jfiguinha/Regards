@@ -1,1 +1,1 @@
-./Release/LocalMapi.cpp.o ./Release/email.cpp.o ./Release/mime.cpp.o
+./Debug/LocalMapi.cpp.o ./Debug/email.cpp.o ./Debug/mime.cpp.o

@@ -6,7 +6,7 @@
 /* Read JPEG image from a memory segment */
 
 static void init_source (j_decompress_ptr cinfo) {}
-static wxjpeg_boolean fill_input_buffer (j_decompress_ptr cinfo)
+static int fill_input_buffer (j_decompress_ptr cinfo)
 {
   struct jpeg_source_mgr* src = (struct jpeg_source_mgr*) cinfo->src;
   return !!src->bytes_in_buffer;

@@ -106,7 +106,7 @@ RawImage Cr2Decoder::decodeRawInternal() {
   vector<int> s_width;
   if (raw->hasEntry(CANONCR2SLICE)) {
     const ushort16 *ss = raw->getEntry(CANONCR2SLICE)->getShortArray();
-    for (auto i = 0; i < ss[0]; i++) {
+    for (int i = 0; i < ss[0]; i++) {
       s_width.push_back(ss[1]);
     }
     s_width.push_back(ss[2]);
@@ -264,11 +264,11 @@ void Cr2Decoder::interpolate_422(int w, int h, int start_h , int end_h) {
   // Current line
   ushort16* c_line;
   const int hue = -getHue() + 16384;
-  for (auto y = start_h; y < end_h; y++) {
+  for (int y = start_h; y < end_h; y++) {
     c_line = (ushort16*)mRaw->getData(0, y);
     int r, g, b;
     int off = 0;
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -320,12 +320,12 @@ void Cr2Decoder::interpolate_420(int w, int h, int start_h , int end_h) {
   int r, g, b;
   const int hue = -getHue() + 16384;
 
-  for (auto y = start_h; y < end_h; y++) {
+  for (int y = start_h; y < end_h; y++) {
     c_line = (ushort16*)mRaw->getData(0, y * 2);
     n_line = (ushort16*)mRaw->getData(0, y * 2 + 1);
     nn_line = (ushort16*)mRaw->getData(0, y * 2 + 2);
     off = 0;
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -380,7 +380,7 @@ void Cr2Decoder::interpolate_420(int w, int h, int start_h , int end_h) {
     off = 0;
 
     // Last line
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -422,11 +422,11 @@ void Cr2Decoder::interpolate_422_old(int w, int h, int start_h , int end_h) {
   ushort16* c_line;
   const int hue = -getHue() + 16384;
 
-  for (auto y = start_h; y < end_h; y++) {
+  for (int y = start_h; y < end_h; y++) {
     c_line = (ushort16*)mRaw->getData(0, y);
     int r, g, b;
     int off = 0;
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -471,11 +471,11 @@ void Cr2Decoder::interpolate_422_new(int w, int h, int start_h , int end_h) {
   ushort16* c_line;
   const int hue = -getHue() + 16384;
 
-  for (auto y = start_h; y < end_h; y++) {
+  for (int y = start_h; y < end_h; y++) {
     c_line = (ushort16*)mRaw->getData(0, y);
     int r, g, b;
     int off = 0;
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -527,12 +527,12 @@ void Cr2Decoder::interpolate_420_new(int w, int h, int start_h , int end_h) {
   int off;
   int r, g, b;
 
-  for (auto y = start_h; y < end_h; y++) {
+  for (int y = start_h; y < end_h; y++) {
     c_line = (ushort16*)mRaw->getData(0, y * 2);
     n_line = (ushort16*)mRaw->getData(0, y * 2 + 1);
     nn_line = (ushort16*)mRaw->getData(0, y * 2 + 2);
     off = 0;
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;
@@ -587,7 +587,7 @@ void Cr2Decoder::interpolate_420_new(int w, int h, int start_h , int end_h) {
     off = 0;
 
     // Last line
-    for (auto x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
       int Y = c_line[off];
       int Cb = c_line[off+1] - hue;
       int Cr = c_line[off+2] - hue;

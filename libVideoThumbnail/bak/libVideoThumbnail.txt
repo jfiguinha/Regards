@@ -1,1 +1,0 @@
-./Debug/cximagewriter.cpp.o ./Debug/filmstripfilter.cpp.o ./Debug/Metadata.cpp.o ./Debug/moviedecoder.cpp.o ./Debug/stringoperations.cpp.o ./Debug/videothumbnailer.cpp.o ./Debug/videothumbnailerc.cpp.o ./Debug/videothumb.cpp.o

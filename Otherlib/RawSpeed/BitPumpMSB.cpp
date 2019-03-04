@@ -52,7 +52,7 @@ void BitPumpMSB::fill()
   int* b = (int*)current_buffer;
   if ((off + 12) > size) {
     while(mLeft <= 64 && off < size) {
-      for (auto i = (mLeft>>3); i >= 0; i--)
+      for (int i = (mLeft>>3); i >= 0; i--)
         current_buffer[i+1] = current_buffer[i];
       current_buffer[0] = buffer[off++];
       mLeft+=8;
