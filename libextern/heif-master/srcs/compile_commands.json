@@ -1,0 +1,807 @@
+[
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/audiosampleentrybox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/audiosampleentrybox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/audiosampleentrybox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/auxiliarytypeinfobox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/auxiliarytypeinfobox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/auxiliarytypeinfobox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/auxiliarytypeproperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/auxiliarytypeproperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/auxiliarytypeproperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/avcconfigurationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/avcconfigurationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/avcconfigurationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/avcdecoderconfigrecord.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/avcdecoderconfigrecord.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/avcdecoderconfigrecord.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/avcparser.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/avcparser.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/avcparser.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/avcsampleentry.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/avcsampleentry.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/avcsampleentry.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/bbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/bbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/bbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/bitstream.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/bitstream.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/bitstream.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/channellayoutbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/channellayoutbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/channellayoutbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/chunkoffsetbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/chunkoffsetbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/chunkoffsetbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/cleanaperturebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/cleanaperturebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/cleanaperturebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/codingconstraintsbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/codingconstraintsbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/codingconstraintsbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/colourinformationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/colourinformationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/colourinformationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/compositionoffsetbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/compositionoffsetbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/compositionoffsetbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/compositiontodecodebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/compositiontodecodebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/compositiontodecodebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/datainformationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/datainformationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/datainformationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/datareferencebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/datareferencebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/datareferencebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/decodepts.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/decodepts.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/decodepts.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/directreferencesampleslist.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/directreferencesampleslist.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/directreferencesampleslist.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/editbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/editbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/editbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/elementarystreamdescriptorbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/elementarystreamdescriptorbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/elementarystreamdescriptorbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/entitytogroupbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/entitytogroupbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/entitytogroupbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/filetypebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/filetypebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/filetypebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/fourccint.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/fourccint.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/fourccint.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/freespacebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/freespacebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/freespacebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/fullbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/fullbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/fullbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/groupslistbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/groupslistbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/groupslistbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/handlerbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/handlerbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/handlerbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/hevcconfigurationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/hevcconfigurationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/hevcconfigurationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/hevcdecoderconfigrecord.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/hevcdecoderconfigrecord.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/hevcdecoderconfigrecord.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/hevcsampleentry.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/hevcsampleentry.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/hevcsampleentry.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imagemirror.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imagemirror.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imagemirror.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imagespatialextentsproperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imagespatialextentsproperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imagespatialextentsproperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imagerotation.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imagerotation.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imagerotation.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imagerelativelocationproperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imagerelativelocationproperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imagerelativelocationproperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imagegrid.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imagegrid.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imagegrid.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/imageoverlay.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/imageoverlay.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/imageoverlay.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itemdatabox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itemdatabox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itemdatabox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/iteminfobox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/iteminfobox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/iteminfobox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itemlocationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itemlocationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itemlocationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itempropertiesbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertiesbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertiesbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itempropertyassociation.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertyassociation.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertyassociation.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itempropertycontainer.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertycontainer.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itempropertycontainer.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itemprotectionbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itemprotectionbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itemprotectionbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/itemreferencebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/itemreferencebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/itemreferencebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/jpegconfigurationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/jpegconfigurationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/jpegconfigurationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/jpegparser.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/jpegparser.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/jpegparser.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/log.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/log.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/log.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mediabox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mediabox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mediabox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mediadatabox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mediadatabox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mediadatabox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mediaheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mediaheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mediaheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mediainformationbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mediainformationbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mediainformationbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/metabox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/metabox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/metabox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/moviebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/moviebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/moviebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/movieheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/movieheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/movieheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mp4audiodecoderconfigrecord.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mp4audiodecoderconfigrecord.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mp4audiodecoderconfigrecord.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/mp4audiosampleentrybox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/mp4audiosampleentrybox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/mp4audiosampleentrybox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/nalutil.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/nalutil.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/nalutil.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/nullmediaheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/nullmediaheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/nullmediaheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/pixelaspectratiobox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/pixelaspectratiobox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/pixelaspectratiobox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/pixelinformationproperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/pixelinformationproperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/pixelinformationproperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/primaryitembox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/primaryitembox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/primaryitembox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/protectionschemeinfobox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/protectionschemeinfobox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/protectionschemeinfobox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/rawpropertybox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/rawpropertybox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/rawpropertybox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampledescriptionbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampledescriptionbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampledescriptionbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampleentrybox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampleentrybox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampleentrybox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/samplegroupdescriptionentry.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/samplegroupdescriptionentry.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/samplegroupdescriptionentry.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/samplesizebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/samplesizebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/samplesizebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampletablebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampletablebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampletablebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampletochunkbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampletochunkbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampletochunkbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampletogroupbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampletogroupbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampletogroupbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/sampletometadataitementry.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/sampletometadataitementry.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/sampletometadataitementry.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/samplegroupdescriptionbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/samplegroupdescriptionbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/samplegroupdescriptionbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/samplingratebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/samplingratebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/samplingratebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/soundmediaheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/soundmediaheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/soundmediaheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/syncsamplebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/syncsamplebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/syncsamplebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/timetosamplebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/timetosamplebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/timetosamplebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/trackbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/trackbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/trackbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/trackheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/trackheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/trackheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/trackreferencebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/trackreferencebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/trackreferencebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/trackreferencetypebox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/trackreferencetypebox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/trackreferencetypebox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/trackrunbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/trackrunbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/trackrunbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/videomediaheaderbox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/videomediaheaderbox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/videomediaheaderbox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/visualequivalenceentry.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/visualequivalenceentry.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/visualequivalenceentry.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/common",
+  "command": "/C/msys64/mingw64/bin/g++.exe   -I/C/developpement/git/Regards/libextern/heif-master/srcs   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/common.dir/visualsampleentrybox.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/visualsampleentrybox.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/visualsampleentrybox.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifreaderimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifreaderaccessors.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderaccessors.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderaccessors.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifstreamfile.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamfile.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamfile.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifstreamgeneric.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamgeneric.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamgeneric.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifstreaminterface.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminterface.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminterface.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/heifstreaminternal.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminternal.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminternal.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/__/common/arraydatatype.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_static.dir/__/common/customallocator.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifreaderimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifreaderaccessors.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderaccessors.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifreaderaccessors.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifstreamfile.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamfile.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamfile.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifstreamgeneric.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamgeneric.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreamgeneric.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifstreaminterface.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminterface.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminterface.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/heifstreaminternal.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminternal.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader/heifstreaminternal.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/__/common/arraydatatype.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/reader",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_READER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_shared.dir/__/common/customallocator.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/idgenerators.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/idgenerators.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/idgenerators.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/refsgroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/refsgroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/refsgroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/samplegroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/samplegroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/samplegroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/timeutility.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/timeutility.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/timeutility.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/writerimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writerimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writerimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/writermetaimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writermetaimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writermetaimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/writermoovimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writermoovimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writermoovimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/__/common/arraydatatype.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/__/common/customallocator.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_LIB -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_static.dir/FileOutputStream_std.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/FileOutputStream_std.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/FileOutputStream_std.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/idgenerators.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/idgenerators.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/idgenerators.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/refsgroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/refsgroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/refsgroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/samplegroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/samplegroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/samplegroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/timeutility.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/timeutility.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/timeutility.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/writerimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writerimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writerimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/writermetaimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writermetaimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writermetaimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/writermoovimpl.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/writermoovimpl.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/writermoovimpl.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/__/common/arraydatatype.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/arraydatatype.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/__/common/customallocator.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/common/customallocator.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_BUILDING_DLL -DHEIF_WRITER_LIB -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE -Dheif_writer_shared_EXPORTS -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heif_writer_shared.dir/FileOutputStream_std.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/writer/FileOutputStream_std.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/writer/FileOutputStream_std.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/examples",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/example.dir/example.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/examples/example.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/examples/example.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/examples",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_SHARED_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/example_shared.dir/example.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/examples/example.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/examples/example.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/Heif.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Heif.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Heif.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/EntityGroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/EntityGroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/EntityGroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/EqivGroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/EqivGroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/EqivGroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AlternativeTrackGroup.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AlternativeTrackGroup.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AlternativeTrackGroup.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/DecoderConfiguration.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DecoderConfiguration.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DecoderConfiguration.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AACDecoderConfiguration.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AACDecoderConfiguration.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AACDecoderConfiguration.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AVCDecoderConfiguration.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AVCDecoderConfiguration.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AVCDecoderConfiguration.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/HEVCDecoderConfiguration.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/HEVCDecoderConfiguration.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/HEVCDecoderConfiguration.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/Track.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Track.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Track.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AudioTrack.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AudioTrack.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AudioTrack.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/VideoTrack.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/VideoTrack.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/VideoTrack.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/ImageSequence.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ImageSequence.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ImageSequence.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/Sample.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Sample.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Sample.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AudioSample.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AudioSample.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AudioSample.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/VideoSample.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/VideoSample.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/VideoSample.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/ItemProperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ItemProperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ItemProperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/RawProperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/RawProperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/RawProperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/DescriptiveProperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DescriptiveProperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DescriptiveProperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/TransformativeProperty.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/TransformativeProperty.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/TransformativeProperty.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/Item.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Item.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/Item.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/MetaItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MetaItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MetaItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/ExifItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ExifItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ExifItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/MimeItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MimeItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MimeItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/XMPItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/XMPItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/XMPItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/MPEG7Item.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MPEG7Item.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/MPEG7Item.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/ImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/CodedImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/CodedImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/CodedImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/AVCCodedImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AVCCodedImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/AVCCodedImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/HEVCCodedImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/HEVCCodedImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/HEVCCodedImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/JPEGCodedImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/JPEGCodedImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/JPEGCodedImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/DerivedImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DerivedImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/DerivedImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/IdentityImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/IdentityImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/IdentityImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/GridImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/GridImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/GridImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/OverlayImageItem.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/OverlayImageItem.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/OverlayImageItem.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/ErrorCodes.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ErrorCodes.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/ErrorCodes.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/H26xTools.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/H26xTools.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/H26xTools.cpp"
+},
+{
+  "directory": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp",
+  "command": "/C/msys64/mingw64/bin/g++.exe  -DHEIF_USE_STATIC_LIB -I/C/developpement/git/Regards/libextern/heif-master/srcs -I/C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/reader/../api/reader -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/common -I/C/developpement/git/Regards/libextern/heif-master/srcs/writer/../api/writer   -g -W -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Winit-self -Wmissing-declarations -Wmissing-include-dirs -Woverloaded-virtual -Wredundant-decls -Wshadow -Wsign-conversion -Wsign-promo -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -fvisibility=hidden   -std=c++11 -o CMakeFiles/heifpp.dir/helpers.cpp.obj -c /C/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/helpers.cpp",
+  "file": "C:/developpement/git/Regards/libextern/heif-master/srcs/api-cpp/helpers.cpp"
+}
+]

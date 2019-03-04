@@ -177,7 +177,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
-        <LibraryPath Value="../libextern/heif-master/lib"/>
+        <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/libexif-master/libexif/.libs"/>
         <LibraryPath Value="../libextern/libwebp-0.6.0/src/.libs"/>
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
@@ -448,7 +448,7 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Debug/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
-        <Command Enabled="yes">cp ../libextern/heif-master/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
@@ -588,7 +588,7 @@
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
-        <Command Enabled="yes">cp ../libextern/heif-master/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
         <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">

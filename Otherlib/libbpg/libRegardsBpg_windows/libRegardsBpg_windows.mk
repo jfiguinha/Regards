@@ -77,30 +77,13 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d "..\..\..\.build-debug\libavcodec" "..\..\..\.build-debug\libavutil" "..\..\..\.build-debug\libbpg" $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(SharedObjectLinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 	@$(MakeDirCommand) "C:\developpement\git\Regards/.build-debug"
 	@echo rebuilt > "C:\developpement\git\Regards/.build-debug/libRegardsBpg_windows"
-
-"..\..\..\.build-debug\libavcodec":
-	@$(MakeDirCommand) "..\..\..\.build-debug"
-	@echo stam > "..\..\..\.build-debug\libavcodec"
-
-
-"..\..\..\.build-debug\libavutil":
-	@$(MakeDirCommand) "..\..\..\.build-debug"
-	@echo stam > "..\..\..\.build-debug\libavutil"
-
-
-"..\..\..\.build-debug\libbpg":
-	@$(MakeDirCommand) "..\..\..\.build-debug"
-	@echo stam > "..\..\..\.build-debug\libbpg"
-
-
-
 
 MakeIntermediateDirs:
 	@$(MakeDirCommand) "./Debug"
