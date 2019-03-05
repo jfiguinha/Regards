@@ -1812,13 +1812,14 @@ static int bpg_decode_header(BPGHeaderData *h,
     return idx;
 }
 
-int bpg_decoder_decodeheader(BPGDecoderContext *s, const uint8_t *buf, int buf_len)
+int bpg_decoder_decodeheader(BPGDecoderContext *s, const uint8_t *buf, int buf_len, int * width, int * height)
 {
 	int idx, has_alpha, bit_depth, color_space, ret;
-	uint32_t width, height;
+	//uint32_t width, height;
 	BPGHeaderData h_s, *h = &h_s;
-
-	idx = bpg_decode_header(h, buf, buf_len, 0, 0);
+    idx = bpg_decode_header(h, buf, buf_len, 0, 0);
+    *width = h->width;
+    *height = h->height;
 	return idx;
 }
 

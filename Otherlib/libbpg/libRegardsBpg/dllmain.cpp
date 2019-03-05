@@ -1,4 +1,5 @@
-// dllmain.cpp : Définit le point d'entrée pour l'application DLL.
+// dllmain.cpp : DÃ©finit le point d'entrÃ©e pour l'application DLL.
+#ifdef WIN32
 #include <Windows.h>
 
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -17,3 +18,4 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	return TRUE;
 }
 
+#endif

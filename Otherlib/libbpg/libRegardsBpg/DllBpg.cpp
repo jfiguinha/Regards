@@ -1,11 +1,10 @@
-// DllFormatBpg.cpp : définit les fonctions exportées pour l'application DLL.
+// DllFormatBpg.cppÂ : dÃ©finit les fonctions exportÃ©es pour l'application DLL.
 //
-#include <Windows.h>
 #include "DllBpg.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <tchar.h>
+#include <memory.h>
 
 extern "C"
 {
@@ -18,22 +17,34 @@ extern "C"
 
 DLLFORMATBPG_API int BPG_GetDimensions(uint8_t * buf, size_t buf_len, int & width, int & height)
 {
-
+    printf("BPG_GetDimensions \n");
+    int returnValue = 0;
 	BPGDecoderContext *img;
 	BPGImageInfo img_info_s;
 	if (buf_len > 0 && buf != nullptr)
 	{
+        int localWidth = 0;
+        int localHeight = 0;
+        printf("bpg_decoder_open \n");
 		img = bpg_decoder_open();
-		if (bpg_decoder_decodeheader(img, buf, buf_len) >= 0)
+        printf("bpg_decoder_decodeheader \n");
+		if (bpg_decoder_decodeheader(img, buf, buf_len, &localWidth, &localHeight) <= 0)
 		{
-			bpg_decoder_get_info(img, &img_info_s);
-			width = img_info_s.width;
-			height = img_info_s.height;
+             printf("bpg_decoder_decodeheader Error \n");
+			//bpg_decoder_get_info(img, &img_info_s);
+			width = 0;
+			height = 0;
+            returnValue = -1;
 		}
+        else
+        {
+            printf("bpg_decoder_decodeheader OK %d %d \n", localWidth, localHeight);
+            width = localWidth;
+            height = localHeight;
+        }
 		bpg_decoder_close(img);
-		return 1;
 	}
-	return 0;
+    return returnValue;
 }
 
 
@@ -77,7 +88,7 @@ DLLFORMATBPG_API int BPG_GetPictureRGBA(uint8_t * buf, size_t buf_len, uint8_t *
 				uint8_t * rgb_line = new uint8_t[strideLine];
 
 
-				for (int y = 0; y < height; y++)
+				for (auto y = 0; y < height; y++)
 				{
 					int returnValue = bpg_decoder_get_line(img, rgb_line);
 					if (!flip)
@@ -87,7 +98,7 @@ DLLFORMATBPG_API int BPG_GetPictureRGBA(uint8_t * buf, size_t buf_len, uint8_t *
 					else
 					{
 			#pragma omp parallel 
-						for (int x = 0; x < width; x++)
+						for (auto x = 0; x < width; x++)
 						{
 							int position = (((flip ? height - y - 1 : y)) * 4 * width) + x * 4;
 							memcpy(data + position, rgb_line + (x * 4), 4 * sizeof(uint8_t));
@@ -119,16 +130,22 @@ DLLFORMATBPG_API int BPG_GetPictureBGRA(uint8_t * buf, size_t buf_len, uint8_t *
 	BPGDecoderContext *img;
 	BPGImageInfo img_info_s;
 	int returnValue = 0;
+    printf("BPG_GetPictureBGRA \n");
 	if (buf_len > 0 && buf != nullptr)
 	{
+        printf("bpg_decoder_open \n");
 		img = bpg_decoder_open();
 
+        printf("bpg_decoder_decode \n");
 		if (bpg_decoder_decode(img, buf, buf_len) >= 0)
 		{
+            printf("bpg_decoder_get_info \n");
 			bpg_decoder_get_info(img, &img_info_s);
 
 			width = img_info_s.width;
 			height = img_info_s.height;
+            
+            printf("bpg_decoder_get_info %d %d \n", width, height);
 			int pictureSize = width * height * 4;
 			if (data != nullptr && pictureSize == data_len)
 			{
@@ -144,12 +161,12 @@ DLLFORMATBPG_API int BPG_GetPictureBGRA(uint8_t * buf, size_t buf_len, uint8_t *
 				uint8_t * rgb_line = new uint8_t[strideLine];
 
 
-				for (int y = 0; y < height; y++)
+				for (auto y = 0; y < height; y++)
 				{
 					int returnValue = bpg_decoder_get_line(img, rgb_line);
 
 #pragma omp parallel 
-					for (int x = 0; x < width; x++)
+					for (auto x = 0; x < width; x++)
 					{
 						int position = (((flip ? height - y - 1 : y)) * 4 * width) + x * 4;
 						data[position + 2] = rgb_line[x * 4];
@@ -174,9 +191,6 @@ DLLFORMATBPG_API int BPG_GetPictureBGRA(uint8_t * buf, size_t buf_len, uint8_t *
 		returnValue = -1;
 	return returnValue;
 }
-
-
-
 
 DLLFORMATBPG_API int BPG_SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossless_mode, int bit_depth, const char * filename)
 {

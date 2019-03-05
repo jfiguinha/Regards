@@ -100,7 +100,7 @@ void bpg_decoder_keep_extension_data(BPGDecoderContext *s, int enable);
 /* return 0 if 0K, < 0 if error */
 int bpg_decoder_decode(BPGDecoderContext *s, const uint8_t *buf, int buf_len);
 /* return 0 if 0K, < 0 if error */
-int bpg_decoder_decodeheader(BPGDecoderContext *s, const uint8_t *buf, int buf_len);
+int bpg_decoder_decodeheader(BPGDecoderContext *s, const uint8_t *buf, int buf_len, int * width, int * height);
 
 /* Return the first element of the extension data list */
 BPGExtensionData *bpg_decoder_get_extension_data(BPGDecoderContext *s);
