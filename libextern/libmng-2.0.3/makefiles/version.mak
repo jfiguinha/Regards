@@ -1,4 +1,0 @@
-MNGMAJ = 2
-MNGMIN = 0
-MNGREL = 2
-MNGVER = 2.0.2
