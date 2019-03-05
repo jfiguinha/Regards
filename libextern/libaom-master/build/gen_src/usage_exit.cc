@@ -1,1 +1,0 @@
-extern "C" void usage_exit(void) {}

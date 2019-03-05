@@ -1,1 +1,0 @@
-void usage_exit(void) {}
