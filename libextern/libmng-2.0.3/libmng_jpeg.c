@@ -71,9 +71,6 @@
 #pragma option -A                      /* force ANSI-C */
 #endif
 
-#define TRUE 1
-#define FALSE 0
-
 /* ************************************************************************** */
 
 #if defined(MNG_INCLUDE_JNG) && defined(MNG_INCLUDE_DISPLAY_PROCS)
