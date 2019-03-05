@@ -182,7 +182,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
-        <LibraryPath Value="../libextern/heif-master/lib"/>
+        <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/x265_2.5/build/linux/8bit"/>
         <Library Value="Viewer"/>
