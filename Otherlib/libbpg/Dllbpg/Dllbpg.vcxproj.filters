@@ -24,31 +24,31 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DllBpg.h">
+    <ClInclude Include="../libRegardsBpg/bpgdec.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="bpgenc.h">
-      <Filter>Encode</Filter>
+    <ClInclude Include="../libRegardsBpg/bpgenc.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="bpgdec.h">
-      <Filter>decode</Filter>
+    <ClInclude Include="../libRegardsBpg/DllBpg.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DllBpg.cpp">
+    <ClCompile Include="../libRegardsBpg/bpgdec.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="dllmain.cpp">
+    <ClCompile Include="../libRegardsBpg/bpgenc.c">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="bpgenc.c">
-      <Filter>Encode</Filter>
+    <ClCompile Include="../libRegardsBpg/DllBpg.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="x265_glue.c">
-      <Filter>Encode</Filter>
+    <ClCompile Include="../libRegardsBpg/dllmain.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="bpgdec.c">
-      <Filter>decode</Filter>
+    <ClCompile Include="../libRegardsBpg/x265_glue.c">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
