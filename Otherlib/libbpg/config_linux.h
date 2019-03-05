@@ -151,9 +151,9 @@
 #define HAVE_LOCAL_ALIGNED_16 1
 #define HAVE_LOCAL_ALIGNED_32 1
 #define HAVE_SIMD_ALIGN_16 0
-#define HAVE_ATOMICS_GCC 0
+#define HAVE_ATOMICS_GCC 1
 #define HAVE_ATOMICS_SUNCC 0
-#define HAVE_ATOMICS_WIN32 1
+#define HAVE_ATOMICS_WIN32 0
 #define HAVE_ATOMIC_CAS_PTR 0
 #define HAVE_ATOMIC_COMPARE_EXCHANGE 1
 #define HAVE_MACHINE_RW_BARRIER 0
@@ -1828,5 +1828,7 @@
 //#define USE_FULL           /* include HEVC code not relevant for BPG decoding */
 //#define USE_FUNC_PTR /* use function pointers for dsp */
 //#define USE_AV_LOG /* include av_log() */
+#define USE_FRAME_DURATION_SEI /* for animations */
+//#define USE_BIPRED /* allow bi-prediction */
 
 #endif /* FFMPEG_CONFIG_H */
