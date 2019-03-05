@@ -43,6 +43,7 @@ xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.cs MediaInfoDLL_Windows_x64\Developers
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.jsl MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.vb MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.JNA.java MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
+xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.JNI.java MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.JNative.java MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL.py MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
 xcopy ..\Source\MediaInfoDLL\MediaInfoDLL3.py MediaInfoDLL_Windows_x64\Developers\Source\MediaInfoDLL\
@@ -98,11 +99,16 @@ xcopy ..\Project\MSVC2013\Example\HowToUse_Dll.vcxproj.filters MediaInfoDLL_Wind
 xcopy ..\Project\MSVC2015\*.sln MediaInfoDLL_Windows_x64\Developers\Project\MSVC2015\
 xcopy ..\Project\MSVC2015\Example\HowToUse_Dll.vcxproj MediaInfoDLL_Windows_x64\Developers\Project\MSVC2015\Example\
 xcopy ..\Project\MSVC2015\Example\HowToUse_Dll.vcxproj.filters MediaInfoDLL_Windows_x64\Developers\Project\MSVC2015\Example\
+xcopy ..\Project\MSVC2017\*.sln MediaInfoDLL_Windows_x64\Developers\Project\MSVC2017\
+xcopy ..\Project\MSVC2017\Example\HowToUse_Dll.vcxproj MediaInfoDLL_Windows_x64\Developers\Project\MSVC2017\Example\
+xcopy ..\Project\MSVC2017\Example\HowToUse_Dll.vcxproj.filters MediaInfoDLL_Windows_x64\Developers\Project\MSVC2017\Example\
 xcopy ..\Project\GCC\Example\Make* MediaInfoDLL_Windows_x64\Developers\Project\GCC\Example\
 xcopy ..\Project\Java\Example.JNA\*.java MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNA\
 xcopy ..\Project\Java\Example.JNA\*.txt MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNA\
 xcopy ..\Project\Java\Example.JNA\*.bat MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNA\
 xcopy ..\Project\Java\Example.JNA\*.sh MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNA\
+xcopy ..\Project\Java\Example.JNI\*.bat MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNI\
+xcopy ..\Project\Java\Example.JNI\*.sh MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNI\
 xcopy ..\Project\Java\Example.JNative\*.java MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNative\
 xcopy ..\Project\Java\Example.JNative\*.txt MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNative\
 xcopy ..\Project\Java\Example.JNative\*.bat MediaInfoDLL_Windows_x64\Developers\Project\Java\Example.JNative\
@@ -119,8 +125,8 @@ xcopy ..\Project\NetBeans\Example.JNative\*.txt MediaInfoDLL_Windows_x64\Develop
 xcopy ..\Project\NetBeans\Example.JNative\src\*.java MediaInfoDLL_Windows_x64\Developers\Project\NetBeans\Example.JNative\src\
 
 rem --- Copying : Libs ---
-xcopy ..\Project\MSVC2015\x64\Release\MediaInfo.lib MediaInfoDLL_Windows_x64\Developers\Project\MSVC2015\x64\Release\
-xcopy ..\Project\MSVC2015\x64\Debug\MediaInfo.lib MediaInfoDLL_Windows_x64\Developers\Project\MSVC2015\x64\Debug\
+xcopy ..\Project\MSVC2017\x64\Release\MediaInfo.lib MediaInfoDLL_Windows_x64\Developers\Project\MSVC2017\x64\Release\
+xcopy ..\Project\MSVC2017\x64\Debug\MediaInfo.lib MediaInfoDLL_Windows_x64\Developers\Project\MSVC2017\x64\Debug\
 
 rem --- Copying : Examples ---
 xcopy ..\Source\Example\HowToUse_Dll*.* MediaInfoDLL_Windows_x64\Developers\Source\Example\
@@ -133,14 +139,15 @@ copy ..\Changes.txt MediaInfoDLL_Windows_x64\Developers\
 copy ReadMe_DLL_Windows.txt MediaInfoDLL_Windows_x64\ReadMe.txt
 
 rem --- Copying : DLL ---
-xcopy ..\Project\MSVC2015\x64\Release\MediaInfo.dll MediaInfoDLL_Windows_x64\
-xcopy ..\Project\MSVC2015\x64\Release\MediaInfo_InfoTip.dll MediaInfoDLL_Windows_x64\
-xcopy ..\Project\MSVC2015\ShellExtension\*.bat MediaInfoDLL_Windows_x64\
+xcopy ..\Project\MSVC2017\x64\Release\MediaInfo.dll MediaInfoDLL_Windows_x64\
+xcopy ..\Project\MSVC2017\x64\Release\MediaInfo_InfoTip.dll MediaInfoDLL_Windows_x64\
+xcopy ..\Project\MSVC2017\ShellExtension\*.bat MediaInfoDLL_Windows_x64\
 
 
 rem --- Compressing Archive ---
 cd MediaInfoDLL_Windows_x64\
 %BPATH%\Windows\7-Zip\7z a -r -t7z -mx9 ..\MediaInfo_DLL_Windows_x64_WithoutInstaller.7z *
+%BPATH%\Windows\7-Zip\7z a -r -tzip -mx9 ..\MediaInfo_DLL_Windows_x64_WithoutInstaller.zip *
 cd ..
 
 rem --- Installer ---

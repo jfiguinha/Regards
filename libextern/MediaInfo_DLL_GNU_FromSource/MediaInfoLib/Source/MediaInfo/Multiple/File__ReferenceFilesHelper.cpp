@@ -23,7 +23,6 @@
 //---------------------------------------------------------------------------
 #include "MediaInfo/Multiple/File__ReferenceFilesHelper.h"
 #include "MediaInfo/MediaInfo_Internal.h"
-#include "ZenLib/Dir.h"
 #include "ZenLib/File.h"
 #include "ZenLib/FileName.h"
 #include "ZenLib/Format/Http/Http_Utils.h"
@@ -306,6 +305,71 @@ void File__ReferenceFilesHelper::AddSequence(sequence* NewSequence)
 }
 
 //---------------------------------------------------------------------------
+void File__ReferenceFilesHelper::DetectSameReels(vector<size_t> &ReelCount)
+{
+    if (ReelCount.size()<=1)
+        return;
+
+    // Finding the max count of streams per stream kind
+    size_t StreamCounts_Max[Stream_Max+1];
+    size_t StreamCounts[Stream_Max+1];
+    vector<size_t> Sequence_Pos_PerKind[Stream_Max+1];
+    memset(StreamCounts_Max, 0x00, (Stream_Max+1)*sizeof(size_t));
+    size_t Sequence_Pos=0;
+    for (size_t r=0; r<ReelCount.size(); r++)
+    {
+        memset(StreamCounts, 0x00, (Stream_Max+1)*sizeof(size_t));
+        for (size_t i=0; i<ReelCount[r]; i++)
+        {
+            if (Sequence_Pos_PerKind[Sequences[Sequence_Pos]->StreamKind].size()<=StreamCounts[Sequences[Sequence_Pos]->StreamKind])
+                Sequence_Pos_PerKind[Sequences[Sequence_Pos]->StreamKind].push_back(Sequence_Pos);
+            StreamCounts[Sequences[Sequence_Pos]->StreamKind]++;
+            Sequence_Pos++;
+        }
+        for (size_t i=0; i<Stream_Max+1; i++)
+            if (StreamCounts[i] && StreamCounts[i]!=StreamCounts_Max[i])
+            {
+                if (StreamCounts_Max[i])
+                    return; // incoherent count of streams per stream kind, we do nothing
+                StreamCounts_Max[i]=StreamCounts[i];
+            }
+    }
+
+    //Merge resources from different reels
+    Sequence_Pos=ReelCount[0];
+    vector<size_t> Sequence_Pos_toDelete;
+    for (size_t r=1; r<ReelCount.size(); r++)
+    {
+        memset(StreamCounts, 0x00, (Stream_Max+1)*sizeof(size_t));
+        for (size_t i=0; i<ReelCount[r]; i++)
+        {
+            if (Sequences[Sequence_Pos]->StreamKind!=Stream_Max)
+            {
+                size_t Sequence_Pos_First=Sequence_Pos_PerKind[Sequences[Sequence_Pos]->StreamKind][StreamCounts[Sequences[Sequence_Pos]->StreamKind]];
+                if (Sequence_Pos!=Sequence_Pos_First)
+                {
+                    Sequences[Sequence_Pos_First]->Resources.insert(Sequences[Sequence_Pos_First]->Resources.end(), Sequences[Sequence_Pos]->Resources.begin(), Sequences[Sequence_Pos]->Resources.end());
+                    Sequence_Pos_toDelete.push_back(Sequence_Pos);
+                }
+            }
+            StreamCounts[Sequences[Sequence_Pos]->StreamKind]++;
+            Sequence_Pos++;
+        }
+    }
+
+    // Remove other reels
+    for (size_t i=Sequence_Pos_toDelete.size()-1; i!=(size_t)-1; i--)
+    {
+        delete Sequences[Sequence_Pos_toDelete[i]];
+        Sequences.erase(Sequences.begin()+Sequence_Pos_toDelete[i]);
+    }
+
+    // Fake StreamIDs
+    for (size_t i=0; i<Sequences.size(); i++)
+        Sequences[i]->StreamID=i+1;
+}
+
+//---------------------------------------------------------------------------
 void File__ReferenceFilesHelper::UpdateFileName(const Ztring& OldFileName, const Ztring& NewFileName)
 {
     size_t Sequences_Size=Sequences.size();
@@ -348,7 +412,6 @@ void File__ReferenceFilesHelper::ParseReferences()
                         Sequences.erase(Sequences.begin()+Pos);
                         Pos--;
                     }
-                CountOfReferencesToParse=Sequences.size();
             }
         #endif //MEDIAINFO_FILTER
 
@@ -655,13 +718,14 @@ void File__ReferenceFilesHelper::ParseReferences()
             Sequences_Current++;
         }
 
+        CountOfReferencesToParse=Sequences.size();
+
         #if MEDIAINFO_DEMUX && MEDIAINFO_NEXTPACKET
             if (Config->NextPacket_Get())
             {
                 Demux_Interleave=Config->File_Demux_Interleave_Get();
                 if (Demux_Interleave)
                 {
-                    CountOfReferencesToParse=Sequences.size();
                     for (sequences::iterator ReferenceSource=Sequences.begin(); ReferenceSource!=Sequences.end(); ++ReferenceSource)
                         if ((*ReferenceSource)->FileNames.empty())
                             CountOfReferencesToParse--;
@@ -742,15 +806,14 @@ void File__ReferenceFilesHelper::ParseReferences()
             {
                 if ((*ReferenceTemp)->State<10000)
                 {
-                    if ((*ReferenceTemp)->MI)
-                        (*ReferenceTemp)->State=(*ReferenceTemp)->MI->State_Get();
+                    (*ReferenceTemp)->State=(*ReferenceTemp)->MI->State_Get();
                     if ((*ReferenceTemp)->State && (*ReferenceTemp)->MI->Config.File_Size!=(int64u)-1)
                         FileSize_Parsed+=(int64u)((*ReferenceTemp)->MI->Config.File_Size*(((float)(*ReferenceTemp)->State)/10000));
                 }
                 else
                     FileSize_Parsed+=(*ReferenceTemp)->MI->Config.File_Size;
 
-                #if MEDIAINFO_NEXTPACKET
+                #if MEDIAINFO_DEMUX && MEDIAINFO_NEXTPACKET
                     //Minimal DTS
                     if (DTS_Interval!=(int64u)-1 && !Sequences[Sequences_Current]->Status[File__Analyze::IsFinished] && ((*ReferenceTemp)->Resources.empty() || (*ReferenceTemp)->Resources_Current<(*ReferenceTemp)->Resources.size()))
                     {
@@ -774,7 +837,7 @@ void File__ReferenceFilesHelper::ParseReferences()
                         if (DTS_Minimal>DTS_Temp)
                             DTS_Minimal=DTS_Temp;
                     }
-                #endif //MEDIAINFO_NEXTPACKET
+                #endif //MEDIAINFO_DEMUX &&  MEDIAINFO_NEXTPACKET
             }
             else
                 FileSize_Parsed+=(*ReferenceTemp)->FileSize;
@@ -809,6 +872,9 @@ void File__ReferenceFilesHelper::ParseReferences()
                     return;
 
                 Sequences_Current++;
+
+                if (Demux_Interleave && Sequences_Current == Sequences.size() && Config->NextPacket_Get() && CountOfReferencesToParse)
+                    Sequences_Current = 0;
             }
         #else //MEDIAINFO_DEMUX && MEDIAINFO_NEXTPACKET
             Sequences_Current++;
@@ -996,21 +1062,20 @@ void File__ReferenceFilesHelper::ParseReference()
         #if MEDIAINFO_EVENTS && MEDIAINFO_NEXTPACKET
             if (DTS_Interval!=(int64u)-1 && !Sequences[Sequences_Current]->Status[File__Analyze::IsFinished] && Sequences[Sequences_Current]->MI->Info->FrameInfo.DTS!=(int64u)-1 && DTS_Minimal!=(int64u)-1 && (Sequences[Sequences_Current]->Resources.empty() || Sequences[Sequences_Current]->Resources_Current<Sequences[Sequences_Current]->Resources.size()))
             {
-                int64u DTS_Temp;
-                if (!Sequences[Sequences_Current]->Resources.empty() && Sequences[Sequences_Current]->Resources_Current)
-                {
-                    if (Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->FrameInfo.DTS!=(int64u)-1)
-                        DTS_Temp=Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->FrameInfo.DTS-Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->Config->Demux_Offset_DTS_FromStream;
+                int64u DTS_Temp = 0;
+                #if MEDIAINFO_DEMUX
+                    if (!Sequences[Sequences_Current]->Resources.empty() && Sequences[Sequences_Current]->Resources_Current)
+                    {
+                        if (Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->FrameInfo.DTS!=(int64u)-1)
+                            DTS_Temp=Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->FrameInfo.DTS-Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->MI->Info->Config->Demux_Offset_DTS_FromStream;;
+                    }
                     else
-                        DTS_Temp=0;
-                }
-                else
-                {
-                    if (Sequences[Sequences_Current]->MI->Info->FrameInfo.DTS!=(int64u)-1)
-                        DTS_Temp=Sequences[Sequences_Current]->MI->Info->FrameInfo.DTS-Sequences[Sequences_Current]->MI->Info->Config->Demux_Offset_DTS_FromStream;
-                    else
-                        DTS_Temp=0;
-                }
+                    {
+                        if (Sequences[Sequences_Current]->MI->Info->FrameInfo.DTS!=(int64u)-1)
+                            DTS_Temp=Sequences[Sequences_Current]->MI->Info->FrameInfo.DTS-Sequences[Sequences_Current]->MI->Info->Config->Demux_Offset_DTS_FromStream;
+                    }
+                #endif MEDIAINFO_DEMUX
+
                 DTS_Temp+=Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->Demux_Offset_DTS;
                 if (!Sequences[Sequences_Current]->Resources.empty() && Sequences[Sequences_Current]->Resources_Current<Sequences[Sequences_Current]->Resources.size() && Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->EditRate && Sequences[Sequences_Current]->Resources[Sequences[Sequences_Current]->Resources_Current]->IgnoreEditsBefore)
                 {
@@ -1561,7 +1626,9 @@ MediaInfo_Internal* File__ReferenceFilesHelper::MI_Create()
     MI_Temp->Option(__T("File_FileNameFormat"), __T("CSV"));
     MI_Temp->Option(__T("File_KeepInfo"), __T("1"));
     MI_Temp->Option(__T("File_ID_OnlyRoot"), Config->File_ID_OnlyRoot_Get()?__T("1"):__T("0"));
+    #if defined(MEDIAINFO_DVDIF_YES)
     MI_Temp->Option(__T("File_DvDif_DisableAudioIfIsInContainer"), Config->File_DvDif_DisableAudioIfIsInContainer_Get()?__T("1"):__T("0"));
+    #endif
     if ((Sequences.size()>1 || Config->File_MpegTs_ForceMenu_Get()) && !Sequences[Sequences_Current]->IsMain && !HasMainFile)
         MI_Temp->Option(__T("File_MpegTs_ForceMenu"), __T("1"));
     #if MEDIAINFO_AES
@@ -1600,6 +1667,8 @@ MediaInfo_Internal* File__ReferenceFilesHelper::MI_Create()
         MI_Temp->Config.File_Names_RootDirectory=FileName(MI->File_Name).Path_Get();
         if (!Config->File_TestContinuousFileNames_Get() || Sequences[Sequences_Current]->FileNames.size()>1)
             MI_Temp->Option(__T("File_TestContinuousFileNames"), __T("0"));
+        if (!Config->File_TestDirectory_Get())
+            MI_Temp->Option(__T("File_TestDirectory"), __T("0"));
         ZtringListList SubFile_IDs;
         if (Sequences[Sequences_Current]->IsMain)
             HasMainFile=true;

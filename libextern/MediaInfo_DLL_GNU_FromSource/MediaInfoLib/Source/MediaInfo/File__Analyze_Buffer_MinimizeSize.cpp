@@ -660,7 +660,7 @@ void File__Analyze::Peek_D8(int64u &Info)
 void File__Analyze::Get_GUID(int128u &Info)
 {
     INTEGRITY_SIZE_ATLEAST_INT(16);
-    Info.hi=LittleEndian2int64u(Buffer+Buffer_Offset+(size_t)Element_Offset);
+    Info.hi=BigEndian2int64u   (Buffer+Buffer_Offset+(size_t)Element_Offset);
     Info.lo=BigEndian2int64u   (Buffer+Buffer_Offset+(size_t)Element_Offset+8);
     Element_Offset+=16;
 }
@@ -938,9 +938,9 @@ void File__Analyze::Get_SE(int32s &Info)
     int8u LeadingZeroBits=0;
     while(BS->Remain()>0 && !BS->GetB())
         LeadingZeroBits++;
-    INTEGRITY(LeadingZeroBits<=32)
+    INTEGRITY_INT(LeadingZeroBits<=32)
     double InfoD=pow((float)2, (float)LeadingZeroBits)-1+BS->Get4(LeadingZeroBits);
-    INTEGRITY(InfoD<int32u(-1))
+    INTEGRITY_INT(InfoD<int32u(-1))
     Info=(int32s)(pow((double)-1, InfoD+1)*(int32u)ceil(InfoD/2));
 }
 
@@ -951,7 +951,7 @@ void File__Analyze::Get_UE(int32u &Info)
     int8u LeadingZeroBits=0;
     while(BS->Remain()>0 && !BS->GetB())
         LeadingZeroBits++;
-    INTEGRITY(LeadingZeroBits<=32)
+    INTEGRITY_INT(LeadingZeroBits<=32)
     double InfoD=pow((float)2, (float)LeadingZeroBits);
     Info=(int32u)InfoD-1+BS->Get4(LeadingZeroBits);
 }
@@ -1238,7 +1238,11 @@ void File__Analyze::Get_C8(int64u &Info)
 void File__Analyze::Get_Local(int64u Bytes, Ztring &Info)
 {
     INTEGRITY_SIZE_ATLEAST_STRING(Bytes);
+    #ifdef WINDOWS
     Info.From_Local((const char*)(Buffer+Buffer_Offset+(size_t)Element_Offset), (size_t)Bytes);
+    #else //WINDOWS
+    Info.From_ISO_8859_1((const char*)(Buffer+Buffer_Offset+(size_t)Element_Offset), (size_t)Bytes); //Trying with the most commonly used charset before UTF8
+    #endif //WINDOWS
     Element_Offset+=Bytes;
 }
 
@@ -1405,7 +1409,11 @@ void File__Analyze::Get_String(int64u Bytes, std::string &Info)
 void File__Analyze::Peek_Local(int64u Bytes, Ztring &Info)
 {
     INTEGRITY_SIZE_ATLEAST_STRING(Bytes);
+    #ifdef WINDOWS
     Info.From_Local((const char*)(Buffer+Buffer_Offset+(size_t)Element_Offset), (size_t)Bytes);
+    #else //WINDOWS
+    Info.From_ISO_8859_1((const char*)(Buffer+Buffer_Offset+(size_t)Element_Offset), (size_t)Bytes); //Trying with the most commonly used charset before UTF8
+    #endif //WINDOWS
 }
 
 //---------------------------------------------------------------------------

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
+#include "MediaInfo/MediaInfo_Internal.h"
 #include "MediaInfo/File__Analyze.h"
 #include "MediaInfo/Reader/Reader_File.h"
 //---------------------------------------------------------------------------
@@ -89,8 +90,14 @@
 #if defined(MEDIAINFO_MK_YES)
     #include "MediaInfo/Multiple/File_Mk.h"
 #endif
+#if defined(MEDIAINFO_MIXML_YES)
+    #include "MediaInfo/Multiple/File_MiXml.h"
+#endif
 #if defined(MEDIAINFO_MPEG4_YES)
     #include "MediaInfo/Multiple/File_Mpeg4.h"
+#endif
+#if defined(MEDIAINFO_MPEG4_YES)
+    #include "MediaInfo/Multiple/File_Mpeg4_TimeCode.h"
 #endif
 #if defined(MEDIAINFO_MPEGPS_YES)
     #include "MediaInfo/Multiple/File_MpegPs.h"
@@ -146,6 +153,9 @@
 
 //---------------------------------------------------------------------------
 // Video
+#if defined(MEDIAINFO_AV1_YES)
+    #include "MediaInfo/Video/File_Av1.h"
+#endif
 #if defined(MEDIAINFO_AVC_YES)
     #include "MediaInfo/Video/File_Avc.h"
 #endif
@@ -205,6 +215,12 @@
 #endif
 #if defined(MEDIAINFO_CAF_YES)
     #include "MediaInfo/Audio/File_Caf.h"
+#endif
+#if defined(MEDIAINFO_DSF_YES)
+    #include "MediaInfo/Audio/File_Dsf.h"
+#endif
+#if defined(MEDIAINFO_DSDIFF_YES)
+    #include "MediaInfo/Audio/File_Dsdiff.h"
 #endif
 #if defined(MEDIAINFO_DTS_YES)
     #include "MediaInfo/Audio/File_Dts.h"
@@ -461,11 +477,17 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
     #if defined(MEDIAINFO_LXF_YES)
         else if (Parser==__T("Lxf"))         Info=new File_Lxf();
     #endif
+    #if defined(MEDIAINFO_MIXML_YES)
+        else if (Parser==__T("MiXml"))       Info=new File_MiXml();
+    #endif
     #if defined(MEDIAINFO_MK_YES)
         else if (Parser==__T("Mk"))          Info=new File_Mk();
     #endif
     #if defined(MEDIAINFO_MPEG4_YES)
         else if (Parser==__T("Mpeg4"))       Info=new File_Mpeg4();
+    #endif
+    #if defined(MEDIAINFO_MPEG4_YES)
+        else if (Parser==__T("QuickTimeTC")) Info=new File_Mpeg4_TimeCode();
     #endif
     #if defined(MEDIAINFO_MPEGPS_YES)
         else if (Parser==__T("MpegPs"))      Info=new File_MpegPs();
@@ -509,7 +531,7 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
     #if defined(MEDIAINFO_WM_YES)
         else if (Parser==__T("Wm"))          Info=new File_Wm();
     #endif
-    #if defined(MEDIAINFO_WM_YES)
+    #if defined(MEDIAINFO_WTV_YES)
         else if (Parser==__T("Wtv"))         Info=new File_Wtv();
     #endif
     #if defined(MEDIAINFO_XDCAM_YES)
@@ -517,6 +539,9 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
     #endif
 
     // Video
+    #if defined(MEDIAINFO_AV1_YES)
+        else if (Parser==__T("Av1"))         Info=new File_Av1();
+    #endif
     #if defined(MEDIAINFO_AVC_YES)
         else if (Parser==__T("Avc"))         Info=new File_Avc();
     #endif
@@ -579,6 +604,12 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
     #if defined(MEDIAINFO_CAF_YES)
         else if (Parser==__T("Caf"))          Info=new File_Caf();
     #endif
+    #if defined(MEDIAINFO_DSF_YES)
+        else if (Parser==__T("Dsf"))         Info=new File_Dsf();
+    #endif
+    #if defined(MEDIAINFO_DTS_YES)
+        else if (Parser==__T("Dsdiff"))      Info=new File_Dsdiff();
+    #endif
     #if defined(MEDIAINFO_DTS_YES)
         else if (Parser==__T("Dts"))         Info=new File_Dts();
     #endif
@@ -604,7 +635,7 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
         else if (Parser==__T("Mpc"))         Info=new File_Mpc();
     #endif
     #if defined(MEDIAINFO_MPCSV8_YES)
-        else if (Parser==__T("Mpc"))         Info=new File_MpcSv8();
+        else if (Parser==__T("MpcSv8"))      Info=new File_MpcSv8();
     #endif
     #if defined(MEDIAINFO_MPEGA_YES)
         else if (Parser==__T("Mpega"))       Info=new File_Mpega();
@@ -754,7 +785,7 @@ bool MediaInfo_Internal::SelectFromExtension (const String &Parser)
 }
 
 //---------------------------------------------------------------------------
-#if !defined(MEDIAINFO_READER_NO)
+#if defined(MEDIAINFO_FILE_YES)
 int MediaInfo_Internal::ListFormats(const String &File_Name)
 {
     // Multiple
@@ -818,6 +849,9 @@ int MediaInfo_Internal::ListFormats(const String &File_Name)
     #endif
     #if defined(MEDIAINFO_MK_YES)
         delete Info; Info=new File_Mk();                 if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
+    #endif
+    #if defined(MEDIAINFO_MIXML_YES)
+        delete Info; Info=new File_MiXml();              if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
     #endif
     #if defined(MEDIAINFO_MPEG4_YES)
         delete Info; Info=new File_Mpeg4();              if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
@@ -883,6 +917,9 @@ int MediaInfo_Internal::ListFormats(const String &File_Name)
     #endif
 
     // Video
+    #if defined(MEDIAINFO_AV1_YES)
+        delete Info; Info=new File_Av1();                if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
+    #endif
     #if defined(MEDIAINFO_AVC_YES)
         delete Info; Info=new File_Avc();                if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
     #endif
@@ -944,6 +981,12 @@ int MediaInfo_Internal::ListFormats(const String &File_Name)
     #endif
     #if defined(MEDIAINFO_CAF_YES)
         delete Info; Info=new File_Caf();                if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
+    #endif
+    #if defined(MEDIAINFO_DSF_YES)
+        delete Info; Info=new File_Dsf();                if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
+    #endif
+    #if defined(MEDIAINFO_DSDIFF_YES)
+        delete Info; Info=new File_Dsdiff();             if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
     #endif
     #if defined(MEDIAINFO_DTS_YES)
         delete Info; Info=new File_Dts();                if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
@@ -1117,14 +1160,14 @@ int MediaInfo_Internal::ListFormats(const String &File_Name)
         delete Info; Info=new File_Unknown();            if (((Reader_File*)Reader)->Format_Test_PerParser(this, File_Name)>0) return 1;
     return 0;
 }
-#endif //!defined(MEDIAINFO_READER_NO)
+#endif //!defined(MEDIAINFO_FILE_YES)
 
 //---------------------------------------------------------------------------
 bool MediaInfo_Internal::LibraryIsModified ()
 {
     #if defined(MEDIAINFO_MULTI_NO) || defined(MEDIAINFO_VIDEO_NO) || defined(MEDIAINFO_AUDIO_NO) || defined(MEDIAINFO_TEXT_NO) || defined(MEDIAINFO_IMAGE_NO) || defined(MEDIAINFO_ARCHIVE_NO) \
      || defined(MEDIAINFO_BDAV_NO) || defined(MEDIAINFO_MK_NO) || defined(MEDIAINFO_OGG_NO) || defined(MEDIAINFO_RIFF_NO) || defined(MEDIAINFO_MPEG4_NO) || defined(MEDIAINFO_MPEGPS_NO) || defined(MEDIAINFO_MPEGTS_NO) || defined(MEDIAINFO_DXW_NO) || defined(MEDIAINFO_FLV_NO) || defined(MEDIAINFO_GXF_NO) || defined(MEDIAINFO_HDSF4M_NO) || defined(MEDIAINFO_HLS_NO) || defined(MEDIAINFO_ISM_NO) || defined(MEDIAINFO_IVF_NO) || defined(MEDIAINFO_LXF_NO) || defined(MEDIAINFO_SWF_NO) || defined(MEDIAINFO_MXF_NO) || defined(MEDIAINFO_NUT_NO) || defined(MEDIAINFO_WM_NO) || defined(MEDIAINFO_WTV_NO) || defined(MEDIAINFO_QT_NO) || defined(MEDIAINFO_RM_NO) || defined(MEDIAINFO_DVDIF_NO) || defined(MEDIAINFO_DVDV_NO) || defined(MEDIAINFO_AAF_NO) || defined(MEDIAINFO_CDXA_NO) || defined(MEDIAINFO_DPG_NO) || defined(MEDIAINFO_TSP_NO) \
-     || defined(MEDIAINFO_AVC_NO) || defined(MEDIAINFO_AVSV_NO) || defined(MEDIAINFO_HEVC_NO) || defined(MEDIAINFO_MPEG4V_NO) || defined(MEDIAINFO_MPEGV_NO) || defined(MEDIAINFO_FLIC_NO) || defined(MEDIAINFO_THEORA_NO) || defined(MEDIAINFO_Y4M_NO) \
+     || defined(MEDIAINFO_AV1_NO) || defined(MEDIAINFO_AVC_NO) || defined(MEDIAINFO_AVSV_NO) || defined(MEDIAINFO_HEVC_NO) || defined(MEDIAINFO_MPEG4V_NO) || defined(MEDIAINFO_MPEGV_NO) || defined(MEDIAINFO_FLIC_NO) || defined(MEDIAINFO_THEORA_NO) || defined(MEDIAINFO_Y4M_NO) \
      || defined(MEDIAINFO_AC3_NO) || defined(MEDIAINFO_ADIF_NO) || defined(MEDIAINFO_ADTS_NO) || defined(MEDIAINFO_SMPTEST0337_NO) || defined(MEDIAINFO_AMR_NO) || defined(MEDIAINFO_DTS_NO) || defined(MEDIAINFO_DOLBYE_NO) || defined(MEDIAINFO_FLAC_NO) || defined(MEDIAINFO_APE_NO) || defined(MEDIAINFO_MPC_NO) || defined(MEDIAINFO_MPCSV8_NO) || defined(MEDIAINFO_MPEGA_NO) || defined(MEDIAINFO_OPENMG_NO) || defined(MEDIAINFO_TWINVQ_NO) || defined(MEDIAINFO_XM_NO) || defined(MEDIAINFO_MOD_NO) || defined(MEDIAINFO_S3M_NO) || defined(MEDIAINFO_IT_NO) || defined(MEDIAINFO_SPEEX_NO) || defined(MEDIAINFO_TAK_NO) || defined(MEDIAINFO_PS2A_NO) \
      || defined(MEDIAINFO_CMML_NO)  || defined(MEDIAINFO_KATE_NO)  || defined(MEDIAINFO_PGS_NO) || defined(MEDIAINFO_OTHERTEXT_NO) \
      || defined(MEDIAINFO_ARRIRAW_NO) || defined(MEDIAINFO_BMP_NO) || defined(MEDIAINFO_DDS_NO) || defined(MEDIAINFO_DPX_NO) || defined(MEDIAINFO_EXR_NO) || defined(MEDIAINFO_GIF_NO) || defined(MEDIAINFO_ICO_NO) || defined(MEDIAINFO_JPEG_NO) || defined(MEDIAINFO_PNG_NO) || defined(MEDIAINFO_TGA_NO) || defined(MEDIAINFO_TIFF_NO) \

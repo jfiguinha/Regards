@@ -33,27 +33,8 @@ extern const char* Aac_audioObjectType(int8u audioObjectType);
 //---------------------------------------------------------------------------
 void File_Aac::ps_data(size_t End)
 {
-    FILLING_BEGIN();
-        if (Infos["Format_Settings_PS"].empty())
-        {
-            Infos["Format_Profile"]=__T("HE-AACv2");
-            Ztring Channels=Infos["Channel(s)"];
-            Ztring ChannelPositions=Infos["ChannelPositions"];
-            Ztring SamplingRate=Infos["SamplingRate"];
-            Infos["Channel(s)"]=__T("2");
-            Infos["ChannelPositions"]=__T("Front: L R");
-            if (MediaInfoLib::Config.LegacyStreamDisplay_Get())
-            {
-                Infos["Format_Profile"]+=__T(" / HE-AAC / LC");
-                Infos["Channel(s)"]+=__T(" / ")+Channels+__T(" / ")+Channels;
-                Infos["ChannelPositions"]+=__T(" / ")+ChannelPositions+__T(" / ")+ChannelPositions;
-                Infos["SamplingRate"]=Ztring().From_Number((extension_sampling_frequency_index==(int8u)-1)?(Frequency_b*2):extension_sampling_frequency, 10)+__T(" / ")+SamplingRate;
-            }
-            Infos["Format_Settings_PS"]=__T("Yes (Implicit)");
-            Ztring Codec=Retrieve(Stream_Audio, StreamPos_Last, Audio_Codec);
-            Infos["Codec"]=Ztring().From_Local(Aac_audioObjectType(audioObjectType))+__T("-SBR-PS");
-        }
-    FILLING_END();
+    if (raw_data_block_Pos>=pss.size())
+        pss.resize(raw_data_block_Pos+1);
 
     //Parsing
     Element_Begin1("ps_data");
@@ -62,7 +43,9 @@ void File_Aac::ps_data(size_t End)
     if (enable_ps_header)
     {
         //Init
-        delete ps; ps=new ps_handler();
+        delete pss[raw_data_block_Pos];
+        ps=new ps_handler;
+        pss[raw_data_block_Pos]=ps;
 
         Get_SB(ps->enable_iid,                                  "enable_iid");
         if (ps->enable_iid)
@@ -76,6 +59,8 @@ void File_Aac::ps_data(size_t End)
         }
         Get_SB(ps->enable_ext,                                  "enable_ext");
     }
+    else
+        ps=pss[raw_data_block_Pos];
 
     if (ps==NULL)
     {
@@ -89,6 +74,11 @@ void File_Aac::ps_data(size_t End)
     if (Data_BS_Remain()>End)
         Skip_BS(Data_BS_Remain()-End,                           "Data");
     Element_End0();
+
+    FILLING_BEGIN();
+    if (Infos["Format_Settings_PS"].empty())
+        FillInfosHEAACv2(__T("Implicit"));
+    FILLING_END();
 }
 
 } //NameSpace

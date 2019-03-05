@@ -765,6 +765,14 @@ public :
     #define Info_PA(_INFO, _NAME) Ztring _INFO; Get_PA (_INFO, _NAME)
 
     //***************************************************************************
+    // Others, specialized
+    //***************************************************************************
+
+    #if defined(MEDIAINFO_HEVC_YES) || defined(MEDIAINFO_MPEG4_YES)
+    void Get_MasteringDisplayColorVolume(Ztring &MasteringDisplay_ColorPrimaries, Ztring &MasteringDisplay_Luminance);
+    #endif
+
+    //***************************************************************************
     // Unknown
     //***************************************************************************
 
@@ -1252,7 +1260,13 @@ protected :
     bool FileHeader_Begin_XML(tinyxml2::XMLDocument &Document);
     bool Synchronize_0x000001();
 public:
+    #if defined(MEDIAINFO_FILE_YES)
     void TestContinuousFileNames(size_t CountOfFiles=24, Ztring FileExtension=Ztring(), bool SkipComputeDelay=false);
+    void TestDirectory();
+    #else //defined(MEDIAINFO_FILE_YES)
+    void TestContinuousFileNames(size_t =24, Ztring =Ztring(), bool =false) {}
+    void TestDirectory() {}
+    #endif //defined(MEDIAINFO_FILE_YES)
     #if MEDIAINFO_FIXITY
     bool FixFile(int64u FileOffsetForWriting, const int8u* ToWrite, const size_t ToWrite_Size);
     #endif// MEDIAINFO_FIXITY

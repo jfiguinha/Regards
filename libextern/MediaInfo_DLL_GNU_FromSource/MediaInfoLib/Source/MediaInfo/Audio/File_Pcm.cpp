@@ -103,12 +103,21 @@ void File_Pcm::Streams_Fill()
         Fill(Stream_Audio, 0, Audio_Codec, "PCM");
     }
 
+    //Microsoft WaveFormatEx to Waveformat
+    if (Codec.size() == 36 && Codec.To_UTF8().find("0000")==0 && Codec.To_UTF8().substr(8)=="-0000-0010-8000-00AA00389B71")
+    {
+        Codec.resize(8);
+        Codec.TrimLeft(__T('0'));
+    }
+
     //Filling
     Ztring Firm, ITU;
          if (Codec==__T("EVOB"))             {Firm=__T("");      Endianness='B';            Sign='S';}                        //PCM Signed 16 bits Big Endian, Interleavement is for 2 samples*2 channels L0-1/L0-0/R0-1/R0-0/L1-1/L1-0/R1-1/R1-0/L0-2/R0-2/L1-2/R1-2, http://wiki.multimedia.cx/index.php?title=PCM
     else if (Codec==__T("VOB"))              {Firm=__T("");      Endianness='B';            Sign='S';}                        //PCM Signed 16 bits Big Endian, Interleavement is for 2 samples*2 channels L0-1/L0-0/R0-1/R0-0/L1-1/L1-0/R1-1/R1-0/L0-2/R0-2/L1-2/R1-2, http://wiki.multimedia.cx/index.php?title=PCM
     else if (Codec==__T("M2TS"))             {Firm=__T("");      Endianness='B';            Sign='S';}                        //PCM Signed         Big Endian
+    else if (Codec==__T("A_PCM/FLOAT/IEEE")) {Firm=__T("");      Endianness='L';            Sign='F';}
     else if (Codec==__T("A_PCM/INT/BIG"))    {Firm=__T("");      Endianness='B';}
+    else if (Codec==__T("A_PCM/INT/LIT"))    {Firm=__T("");      Endianness='L';}
     else if (Codec==__T("A_PCM/INT/LITTLE")) {Firm=__T("");      Endianness='L';}
     else if (Codec==__T("A_PCM/INT/FLOAT"))  {Firm=__T("");      Endianness='B';            Sign='F';}
     else if (Codec==__T("fl32"))             {  if (!Endianness) Endianness='B'; if (!Sign) Sign='F'; BitDepth=32;}

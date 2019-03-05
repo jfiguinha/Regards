@@ -362,6 +362,7 @@ private :
     #if MEDIAINFO_DEMUX
     bool Demux_UnpacketizeContainer_Test();
     bool Demux_Avc_Transcode_Iso14496_15_to_Iso14496_10;
+    void Data_Parse_Iso14496();
     #endif //MEDIAINFO_DEMUX
 
     //Buffer - Global
@@ -406,8 +407,12 @@ private :
     void sei_message_user_data_unregistered(int32u payloadSize);
     void sei_message_user_data_unregistered_x264(int32u payloadSize);
     void sei_message_user_data_unregistered_bluray(int32u payloadSize);
+    void sei_message_user_data_unregistered_bluray_MDPM(int32u payloadSize);
+    void consumer_camera_1();
+    void consumer_camera_2();
     void sei_message_recovery_point();
     void sei_message_mainconcept(int32u payloadSize);
+    void sei_alternative_transfer_characteristics();
     void access_unit_delimiter();
     void filler_data();
     void prefix_nal_unit(bool svc_extension_flag);
@@ -534,6 +539,7 @@ private :
     int32u                              Firstpic_order_cnt_lsbInBlock;
     int8u                               nal_ref_idc;
     int8u                               FrameRate_Divider;
+    int8u                               preferred_transfer_characteristics;
     bool                                FirstPFrameInGop_IsParsed;
     bool                                Config_IsRepeated;
     #if MEDIAINFO_ADVANCED2

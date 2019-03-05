@@ -35,6 +35,7 @@ namespace MediaInfoLib
 const char* Mpegv_colour_primaries(int8u colour_primaries);
 const char* Mpegv_transfer_characteristics(int8u transfer_characteristics);
 const char* Mpegv_matrix_coefficients(int8u matrix_coefficients);
+const char* Mpegv_matrix_coefficients_ColorSpace(int8u matrix_coefficients);
 
 //---------------------------------------------------------------------------
 static const char* ProRes_chrominance_factor(int8u chrominance_factor)
@@ -92,6 +93,7 @@ File_ProRes::File_ProRes()
 {
     //Configuration
     ParserName="ProRes";
+    IsRawStream=true;
 }
 
 //***************************************************************************
@@ -152,8 +154,10 @@ void File_ProRes::Read_Buffer_Continue()
         if (chroma)
             Skip_XX(64,                                         "QMatChroma");
     Element_End();
-    if (Element_Offset!=8+(int32u)hdrSize)
+    if (Name==0x69637066 && Element_Offset!=8+(int32u)hdrSize) // Coherency test icpf
         IsOk=false;
+    if (Name==0x69637066) // icpf
+    {
     for (int8u PictureNumber=0; PictureNumber<(frame_type?2:1); PictureNumber++)
     {
         Element_Begin1("Picture layout");
@@ -205,6 +209,7 @@ void File_ProRes::Read_Buffer_Continue()
                 Skip_XX(pic_data_End-Element_Offset,                "Unknown");
         Element_End();
     }
+    }
     bool IsZeroes=true;
     for (size_t Pos=(size_t)Element_Offset; Pos<(size_t)Element_Size; Pos++)
         if (Buffer[Buffer_Offset+Pos])
@@ -215,7 +220,7 @@ void File_ProRes::Read_Buffer_Continue()
     Skip_XX(Element_Size-Element_Offset,                        IsZeroes?"Zeroes":"Unknown");
 
     FILLING_BEGIN();
-        if (IsOk && Name==0x69637066 && !Status[IsAccepted]) //icpf
+        if (IsOk && (Name==0x69637066 || Name==0x70727266) && !Status[IsAccepted]) //icpf (all but RAW) & prrf (RAW)
         {
             Accept();
             Fill();
@@ -228,12 +233,22 @@ void File_ProRes::Read_Buffer_Continue()
             Fill(Stream_Video, 0, Video_ScanType, ProRes_frame_type_ScanType(frame_type));
             Fill(Stream_Video, 0, Video_ScanOrder, ProRes_frame_type_ScanOrder(frame_type));
             Fill(Stream_Video, 0, Video_colour_description_present, "Yes");
-            Fill(Stream_Video, 0, Video_colour_primaries, Mpegv_colour_primaries(primaries));
-            Fill(Stream_Video, 0, Video_transfer_characteristics, Mpegv_transfer_characteristics(transf_func));
-            Fill(Stream_Video, 0, Video_matrix_coefficients, Mpegv_matrix_coefficients(colorMatrix));
+            if (primaries || transf_func || colorMatrix) //Some streams have all 0 when it means unknwon, instead of assigned 2 for unknown
+            {
+                Fill(Stream_Video, 0, Video_colour_primaries, Mpegv_colour_primaries(primaries));
+                Fill(Stream_Video, 0, Video_transfer_characteristics, Mpegv_transfer_characteristics(transf_func));
+                Fill(Stream_Video, 0, Video_matrix_coefficients, Mpegv_matrix_coefficients(colorMatrix));
+                if (colorMatrix!=2)
+                    Fill(Stream_Video, 0, Video_ColorSpace, Mpegv_matrix_coefficients_ColorSpace(colorMatrix), Unlimited, true, true);
+            }
+            else if (chrominance_factor==2)
+                Fill(Stream_Video, 0, Video_ColorSpace, "YUV", Unlimited, true, true); //We are sure it is YUV as there is subsampling
 
             Finish();
         }
+    FILLING_ELSE();
+        if (!Status[IsAccepted])
+            Reject();
     FILLING_END();
 }
 

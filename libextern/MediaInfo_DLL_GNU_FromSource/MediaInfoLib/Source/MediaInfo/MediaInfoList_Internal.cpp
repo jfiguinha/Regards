@@ -18,10 +18,15 @@
 //---------------------------------------------------------------------------
 #include "MediaInfo/MediaInfoList_Internal.h"
 #include "MediaInfo/MediaInfo_Config.h"
+#if defined(MEDIAINFO_FILE_YES)
 #include "ZenLib/File.h"
+#endif //defined(MEDIAINFO_FILE_YES)
+#if defined(MEDIAINFO_DIRECTORY_YES)
 #include "ZenLib/Dir.h"
+#endif //defined(MEDIAINFO_DIRECTORY_YES)
 #include "MediaInfo/Reader/Reader_Directory.h"
 #include "MediaInfo/File__Analyse_Automatic.h"
+#include <algorithm>
 using namespace ZenLib;
 using namespace std;
 //---------------------------------------------------------------------------
@@ -31,7 +36,6 @@ namespace MediaInfoLib
 
 //---------------------------------------------------------------------------
 extern MediaInfo_Config Config;
-extern const Char* MediaInfo_Version;
 //---------------------------------------------------------------------------
 
 //***************************************************************************
@@ -85,10 +89,33 @@ size_t MediaInfoList_Internal::Open(const String &File_Name, const fileoptions_t
     size_t Pos=File_Name.find(__T(':'));
     if (Pos!=string::npos && Pos!=1)
         List.push_back(File_Name);
+    #if defined(MEDIAINFO_FILE_YES)
     else if (File::Exists(File_Name))
         List.push_back(File_Name);
+    #endif //defined(MEDIAINFO_FILE_YES)
+    #if defined(MEDIAINFO_DIRECTORY_YES)
     else
+    {
         List=Dir::GetAllFileNames(File_Name, (Options&FileOption_NoRecursive)?Dir::Include_Files:((Dir::dirlist_t)(Dir::Include_Files|Dir::Parse_SubDirs)));
+        sort(List.begin(), List.end());
+
+        #if MEDIAINFO_ADVANCED
+            if (MediaInfoLib::Config.ParseOnlyKnownExtensions_IsSet())
+            {
+                set<Ztring> ExtensionsList=MediaInfoLib::Config.ParseOnlyKnownExtensions_GetList_Set();
+                bool AcceptNoExtension=ExtensionsList.find(Ztring())!=ExtensionsList.end();
+                for (size_t i=List.size()-1; i!=(size_t)-1; i--)
+                {
+                    const Ztring& Name=List[i];
+                    size_t Extension_Pos=Name.rfind(__T('.'));
+                    if (Extension_Pos!=string::npos && ExtensionsList.find(Name.substr(Extension_Pos+1))==ExtensionsList.end()
+                     || Extension_Pos==string::npos && !AcceptNoExtension)
+                            List.erase(List.begin()+i);
+                }
+            }
+        #endif //MEDIAINFO_ADVANCED
+    }
+    #endif //defined(MEDIAINFO_DIRECTORY_YES)
 
     #if defined(MEDIAINFO_DIRECTORY_YES)
         Reader_Directory().Directory_Cleanup(List);
@@ -126,6 +153,31 @@ size_t MediaInfoList_Internal::Open(const String &File_Name, const fileoptions_t
     }
 }
 
+#if defined(MEDIAINFO_FILE_YES)
+static size_t RemoveFilesFromList(std::queue<String>& ToParse, Ztring CompleteName_Begin, const Ztring &CompleteName_Last)
+{
+    size_t Removed=0;
+    size_t Pos=0;
+    for (; Pos<CompleteName_Begin.size(); Pos++)
+    {
+        if (Pos>=CompleteName_Last.size())
+            break;
+        if (CompleteName_Begin[Pos]!=CompleteName_Last[Pos])
+            break;
+    }
+    if (Pos<CompleteName_Begin.size())
+    {
+        CompleteName_Begin.resize(Pos);
+        while (!ToParse.empty() && ToParse.front().find(CompleteName_Begin)==0)
+        {
+            ToParse.pop();
+            Removed++;
+        }
+    }
+    return Removed;
+}
+#endif //defined(MEDIAINFO_FILE_YES)
+
 void MediaInfoList_Internal::Entry()
 {
     if (ToParse_Total==0)
@@ -138,6 +190,21 @@ void MediaInfoList_Internal::Entry()
         {
             Ztring FileName=ToParse.front();
             ToParse.pop();
+            #if defined(MEDIAINFO_FILE_YES)
+                bool Skip=false;
+                for (size_t i=0; i<ToParse_ToIgnore.size(); i++)
+                {
+                    if (ToParse_ToIgnore[i]==FileName)
+                    {
+                        ToParse_ToIgnore.erase(ToParse_ToIgnore.begin()+i);
+                        ToParse_AlreadyDone++;
+                        Skip=true;
+                        continue;
+                    }
+                }
+                if (Skip)
+                    continue;
+            #endif //defined(MEDIAINFO_FILE_YES)
             MediaInfo_Internal* MI=new MediaInfo_Internal();
             for (std::map<String, String>::iterator Config_MediaInfo_Item=Config_MediaInfo_Items.begin(); Config_MediaInfo_Item!=Config_MediaInfo_Items.end(); ++Config_MediaInfo_Item)
                 MI->Option(Config_MediaInfo_Item->first, Config_MediaInfo_Item->second);
@@ -165,34 +232,60 @@ void MediaInfoList_Internal::Entry()
             CS.Enter();
             ToParse_AlreadyDone++;
 
-            //Removing sequences of files from the list
-            if (!MI->Get(Stream_General, 0, General_CompleteName_Last).empty())
-            {
-                Ztring CompleteName_Begin=MI->Get(Stream_General, 0, General_CompleteName);
-                Ztring CompleteName_Last=MI->Get(Stream_General, 0, General_CompleteName_Last);
-                size_t Pos=0;
-                for (; Pos<CompleteName_Begin.size(); Pos++)
+            #if defined(MEDIAINFO_FILE_YES)
+                //Removing sequences of files from the list
+                if (!MI->Get(Stream_General, 0, General_CompleteName_Last).empty())
+                    ToParse_AlreadyDone+=RemoveFilesFromList(ToParse, MI->Get(Stream_General, 0, General_CompleteName),
+                                                                      MI->Get(Stream_General, 0, General_CompleteName_Last));
+                if (MI->Config.File_TestDirectory_Get() && MI->Get(Stream_General, 0, General_Format)==__T("Directory"))
                 {
-                    if (Pos>=CompleteName_Last.size())
-                        break;
-                    if (CompleteName_Begin[Pos]!=CompleteName_Last[Pos])
-                        break;
+                    for (size_t StreamKind=Stream_General+1; StreamKind<Stream_Max; StreamKind++)
+                        for (size_t StreamPos=0; StreamPos<MI->Count_Get((stream_t)StreamKind); StreamPos++)
+                        {
+                            if (!MI->Get((stream_t)StreamKind, StreamPos, __T("Source_Last")).empty())
+                                ToParse_AlreadyDone+=RemoveFilesFromList(ToParse, MI->Get(Stream_General, 0, General_CompleteName)+MI->Get((stream_t)StreamKind, StreamPos, __T("Source")),
+                                                                                  MI->Get(Stream_General, 0, General_CompleteName)+MI->Get((stream_t)StreamKind, StreamPos, __T("Source_Last")));
+                            else
+                            {
+                                Ztring Source=MI->Get((stream_t)StreamKind, StreamPos, __T("Source"));
+                                if (!Source.empty())
+                                {
+                                    Ztring Dir=MI->Get(Stream_General, 0, General_CompleteName);
+                                    if (!Dir.empty() && Dir[Dir.size()-1]!=__T('/') && Dir[Dir.size()-1]!=__T('\\'))
+                                    {
+                                        size_t Separator_Pos=Dir.find_last_of(__T("\\/"));
+                                        if (Separator_Pos!=string::npos)
+                                            Dir.resize(Separator_Pos+1);
+                                        else
+                                            Dir.clear();
+                                    }
+                                    size_t i;
+                                    if (PathSeparator!=__T('/'))
+                                        while ((i=Source.find(__T('/')))!=string::npos)
+                                            Source[i]=PathSeparator;
+                                    if (PathSeparator!=__T('\\'))
+                                        while ((i=Source.find(__T('\\')))!=string::npos)
+                                            Source[i]=PathSeparator;
+                                    Source=Dir+Source;
+                                    i=0;
+                                    for (; i<Info.size(); i++)
+                                        if (Info[i]->Get(Stream_General, 0, General_CompleteName)==Source)
+                                        {
+                                            delete Info[i];
+                                            Info.erase(Info.begin()+i);
+                                        }
+                                    if (i>=Info.size())
+                                        ToParse_ToIgnore.push_back(Source);
+                                }
+                            }
+                        }
                 }
-                if (Pos<CompleteName_Begin.size())
-                {
-                    CompleteName_Begin.resize(Pos);
-                    while (!ToParse.empty() && ToParse.front().find(CompleteName_Begin)==0)
-                    {
-                        ToParse.pop();
-                        ToParse_Total--;
-                    }
-                }
-            }
-
-            State=ToParse_AlreadyDone*10000/ToParse_Total;
-            //if ((ToParse_AlreadyDone%10)==0)
-            //    printf("%f done (%i/%i %s)\n", ((float)State)/100, (int)ToParse_AlreadyDone, (int)ToParse_Total, Ztring(ToParse.front()).To_UTF8().c_str());
+            #endif //defined(MEDIAINFO_FILE_YES)
         }
+
+        State=ToParse_AlreadyDone*10000/ToParse_Total;
+        //if ((ToParse_AlreadyDone%10)==0)
+        //    printf("%f done (%i/%i %s)\n", ((float)State)/100, (int)ToParse_AlreadyDone, (int)ToParse_Total, Ztring(ToParse.front()).To_UTF8().c_str());
         if (IsTerminating() || State==10000)
         {
             CS.Leave();
@@ -290,180 +383,7 @@ String MediaInfoList_Internal::Inform(size_t FilePos, size_t)
 {
     if (FilePos==Error)
     {
-        #if defined(MEDIAINFO_XML_YES)
-        if (MediaInfoLib::Config.Inform_Get()==__T("MAXML"))
-        {
-            Ztring Result;
-            Result+=__T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T('<');
-            Result+=__T("MediaArea");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediaarea\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xsi:schemaLocation=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediaarea http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediaarea/mediaarea_0_1.xsd\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    version=\"0.1\"");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("<!-- Work in progress, not for production -->")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("<creatingLibrary version=\"")+Ztring(MediaInfo_Version).SubString(__T(" - v"), Ztring())+__T("\" url=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/MediaInfo\">MediaInfoLib</creatingLibrary>");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-
-            for (size_t FilePos=0; FilePos<Info.size(); FilePos++)
-                Result+=Inform(FilePos);
-
-            if (!Result.empty() && Result[Result.size()-1]!=__T('\r') && Result[Result.size()-1]!=__T('\n'))
-                Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("</MediaArea");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-
-            return Result;
-        }
-
-        if (MediaInfoLib::Config.Trace_Level_Get() && MediaInfoLib::Config.Trace_Format_Get()==MediaInfoLib::Config.Trace_Format_XML)
-        {
-            Ztring Result;
-            Result+=__T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T('<');
-            Result+=__T("MediaTrace");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediatrace\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xsi:schemaLocation=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediatrace http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediatrace/mediatrace_0_1.xsd\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    version=\"0.1\"");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("<creatingLibrary version=\"")+Ztring(MediaInfo_Version).SubString(__T(" - v"), Ztring())+__T("\" url=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/MediaInfo\">MediaInfoLib</creatingLibrary>");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-
-            for (size_t FilePos=0; FilePos<Info.size(); FilePos++)
-            {
-                size_t Modified;
-                Result+=__T("<media ref=\"")+MediaInfo_Internal::Xml_Content_Escape(Info[FilePos]->Get(Stream_General, 0, General_CompleteName), Modified)+__T("\"");
-                if (Info[FilePos] && !Info[FilePos]->ParserName.empty())
-                    Result+=__T(" parser=\"")+Info[FilePos]->ParserName+=__T("\"");
-                Result+= __T('>');
-                Result+=MediaInfoLib::Config.LineSeparator_Get();
-                Result+=Inform(FilePos);
-                if (!Result.empty() && Result[Result.size()-1]!=__T('\r') && Result[Result.size()-1]!=__T('\n'))
-                    Result+=MediaInfoLib::Config.LineSeparator_Get();
-                Result+=__T("</media>");
-                Result+=MediaInfoLib::Config.LineSeparator_Get();
-            }
-
-            if (!Result.empty() && Result[Result.size()-1]!=__T('\r') && Result[Result.size()-1]!=__T('\n'))
-                Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("</MediaTrace");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-
-            return Result;
-        }
-
-        if (MediaInfoLib::Config.Trace_Level_Get() && MediaInfoLib::Config.Trace_Format_Get()==MediaInfoLib::Config.Trace_Format_MICRO_XML)
-        {
-            Ztring Result;
-            Result+=__T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T('<');
-            Result+=__T("MicroMediaTrace");
-            Result+=__T(" xmlns=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/micromediatrace\"");
-            Result+=__T(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            Result+=__T(" mtsl=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/micromediatrace http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/micromediatrace/micromediatrace.xsd\"");
-            Result+=__T(" version=\"0.1\">");
-            Result+=__T("<creatingLibrary version=\"")+Ztring(MediaInfo_Version).SubString(__T(" - v"), Ztring())+__T("\" url=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/MediaInfo\">MediaInfoLib</creatingLibrary>");
-
-            for (size_t FilePos=0; FilePos<Info.size(); FilePos++)
-            {
-                size_t Modified;
-                Result+=__T("<media ref=\"")+MediaInfo_Internal::Xml_Content_Escape(Info[FilePos]->Get(Stream_General, 0, General_CompleteName), Modified)+__T("\"");
-                if (Info[FilePos] && !Info[FilePos]->ParserName.empty())
-                    Result+=__T(" parser=\"")+Info[FilePos]->ParserName+=__T("\"");
-                Result+= __T('>');
-                Result+=Inform(FilePos);
-                Result+=__T("</media>");
-            }
-
-            Result+=__T("</MicroMediaTrace>");
-
-            return Result;
-        }
-
-        if (MediaInfoLib::Config.Inform_Get()==__T("MIXML"))
-        {
-            Ztring Result;
-            Result+=__T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T('<');
-            Result+=__T("MediaInfo");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediainfo\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    xsi:schemaLocation=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediainfo http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/mediainfo/mediainfo_2_0.xsd\"");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("    version=\"2.0beta1\"");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("<!-- Work in progress, not for production -->")+MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("<creatingLibrary version=\"")+Ztring(MediaInfo_Version).SubString(__T(" - v"), Ztring())+__T("\" url=\"http")+(MediaInfoLib::Config.Https_Get()?Ztring(__T("s")):Ztring())+__T("://mediaarea.net/MediaInfo\">MediaInfoLib</creatingLibrary>");
-            Result+=MediaInfoLib::Config.LineSeparator_Get();
-
-            for (size_t FilePos=0; FilePos<Info.size(); FilePos++)
-                Result+=Inform(FilePos);
-
-            if (!Result.empty() && Result[Result.size()-1]!=__T('\r') && Result[Result.size()-1]!=__T('\n'))
-                Result+=MediaInfoLib::Config.LineSeparator_Get();
-            Result+=__T("</MediaInfo");
-            Result+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-
-            return Result;
-        }
-        #endif //defined(MEDIAINFO_XML_YES)
-
-        Ztring Retour;
-        FilePos=0;
-        ZtringListList MediaInfo_Custom_View; MediaInfo_Custom_View.Write(Option(__T("Inform_Get")));
-        #if defined(MEDIAINFO_XML_YES)
-        bool XML=false;
-        if (MediaInfoLib::Config.Inform_Get()==__T("XML"))
-            XML=true;
-        if (XML)
-        {
-            Retour+=__T("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")+MediaInfoLib::Config.LineSeparator_Get();
-            Retour+=__T("<Mediainfo version=\"")+MediaInfoLib::Config.Info_Version_Get().SubString(__T(" v"), Ztring())+__T("\">");
-            Retour+=MediaInfoLib::Config.LineSeparator_Get();
-        }
-        else
-        #endif //defined(MEDIAINFO_XML_YES)
-        Retour+=MediaInfo_Custom_View("Page_Begin");
-        while (FilePos<Info.size())
-        {
-            Retour+=Inform(FilePos);
-            if (FilePos<Info.size()-1)
-            {
-                Retour+=MediaInfo_Custom_View("Page_Middle");
-            }
-            FilePos++;
-        }
-        #if defined(MEDIAINFO_XML_YES)
-        if (XML)
-        {
-            if (!Retour.empty() && Retour[Retour.size()-1]!=__T('\r') && Retour[Retour.size()-1]!=__T('\n'))
-                Retour+=MediaInfoLib::Config.LineSeparator_Get();
-            Retour+=__T("</");
-            if (MediaInfoLib::Config.Trace_Format_Get()==MediaInfoLib::Config.Trace_Format_XML)
-                Retour+=__T("MediaTrace");
-            else if (MediaInfoLib::Config.Trace_Format_Get()==MediaInfoLib::Config.Trace_Format_MICRO_XML)
-                Retour+=__T("MicroMediaTrace");
-            else
-                Retour+=__T("Mediainfo");
-            Retour+=__T(">")+MediaInfoLib::Config.LineSeparator_Get();
-        }
-        else
-        #endif //defined(MEDIAINFO_XML_YES)
-            Retour+=MediaInfo_Custom_View("Page_End");//
-        return Retour.c_str();
+        return MediaInfo_Internal::Inform(Info);
     }
 
     CriticalSectionLocker CSL(CS);
@@ -471,9 +391,7 @@ String MediaInfoList_Internal::Inform(size_t FilePos, size_t)
     if (FilePos>=Info.size() || Info[FilePos]==NULL || Info[FilePos]->Count_Get(Stream_General)==0)
         return MediaInfoLib::Config.EmptyString_Get();
 
-    Info[FilePos]->IsFirst=FilePos==0;
-    Info[FilePos]->IsLast=(FilePos+1)==Info.size();
-    return Info[FilePos]->Inform();
+    return MediaInfo_Internal::Inform(Info[FilePos]);
 }
 
 //---------------------------------------------------------------------------
@@ -576,6 +494,10 @@ String MediaInfoList_Internal::Option (const String &Option, const String &Value
         BlockMethod=1;
         return __T("");
     }
+    #if MEDIAINFO_ADVANCED
+        else if (OptionLower.find(__T("file_inform_stringpointer")) == 0 && Info.size() == 1)
+            return Info[0]->Option(Option, Value);
+    #endif //MEDIAINFO_ADVANCED
     else if (OptionLower.find(__T("file_"))==0)
     {
         Config_MediaInfo_Items[Option]=Value;

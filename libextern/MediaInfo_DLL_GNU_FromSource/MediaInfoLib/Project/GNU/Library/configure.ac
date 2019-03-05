@@ -5,7 +5,7 @@ dnl #########################################################################
 dnl -------------------------------------------------------------------------
 dnl Name and version
 dnl
-AC_INIT([libmediainfo], [0.7.98])
+AC_INIT([libmediainfo], [18.12])
 
 dnl -------------------------------------------------------------------------
 dnl Test if we are at the good place
@@ -50,8 +50,11 @@ AC_ARG_ENABLE(visibility,       AC_HELP_STRING([--enable-visibility],       [Ena
 AC_ARG_ENABLE(universal_binary, AC_HELP_STRING([--enable-universal_binary], [Create Mac PPC/i386 Universal binary]),      , enable_universal_binary=no)
 AC_ARG_ENABLE(arch-ppc,         AC_HELP_STRING([--enable-arch-ppc],         [Create Mac PPC architecture]),               , enable_arch_ppc=no)
 AC_ARG_ENABLE(arch-ppc64,       AC_HELP_STRING([--enable-arch-ppc64],       [Create Mac PPC64 architecture]),             , enable_arch_ppc64=no)
-AC_ARG_ENABLE(arch-i386,        AC_HELP_STRING([--enable-arch-i386],        [Create Mac i386 architecture]),              , enable_arch_i386=no)
-AC_ARG_ENABLE(arch-x86_64,      AC_HELP_STRING([--enable-arch-x86_64],      [Create Mac x86_64 architecture]),            , enable_arch_x86_64=no)
+AC_ARG_ENABLE(arch-i386,        AC_HELP_STRING([--enable-arch-i386],        [Create Mac/iPhone i386 architecture]),       , enable_arch_i386=no)
+AC_ARG_ENABLE(arch-x86_64,      AC_HELP_STRING([--enable-arch-x86_64],      [Create Mac/iPhone x86_64 architecture]),     , enable_arch_x86_64=no)
+AC_ARG_ENABLE(arch-armv7,       AC_HELP_STRING([--enable-arch-armv7],       [Create iPhone ARMv7 architecture]),          , enable_arch_armv7=no)
+AC_ARG_ENABLE(arch-armv7s,      AC_HELP_STRING([--enable-arch-armv7s],      [Create iPhone ARMv7s architecture]),         , enable_arch_armv7s=no)
+AC_ARG_ENABLE(arch-arm64,       AC_HELP_STRING([--enable-arch-arm64],       [Create iPhone ARM64 architecture]),          , enable_arch_arm64=no)
 AC_ARG_ENABLE(staticlibs,       AC_HELP_STRING([--enable-staticlibs],       [Use static libmediainfo and libzen]),        , enable_staticlibs=no)
 AC_ARG_ENABLE(minimize-size,    AC_HELP_STRING([--enable-minimize-size],    [Enable size optimisations]),                 MediaInfoMinimizeSize=$enableval, MediaInfoMinimizeSize=depend)
 AC_ARG_ENABLE(minimal,    		AC_HELP_STRING([--enable-minimal],    		[Enable minimal management (except parsers)]),MediaInfoMinimal=$enableval, MediaInfoMinimal=depend)
@@ -59,6 +62,8 @@ AC_ARG_ENABLE(trace,    		AC_HELP_STRING([--enable-trace],    		[Enable trace ma
 AC_ARG_ENABLE(events,    		AC_HELP_STRING([--enable-events],    		[Enable events management]),                  MediaInfoEvents=$enableval,  MediaInfoEvents=depend)
 AC_ARG_ENABLE(demux,    		AC_HELP_STRING([--enable-demux],    		[Enable demux management]),                   MediaInfoDemux=$enableval,   MediaInfoDemux=depend)
 AC_ARG_ENABLE(libmms-describe-support, AC_HELP_STRING([--enable-libmms-describe-support], [Enable customized libmms describe support]), MediaInfoLibmmsDescribeSupport=$enableval, MediaInfoLibmmsDescribeSupport=depend)
+AC_ARG_ENABLE(dll,     AC_HELP_STRING([--disable-dll],     [Disable dll iterface]),                                       MediaInfoDll=$enableval,     MediaInfoDll=depend)
+AC_ARG_ENABLE(jni,     AC_HELP_STRING([--disable-jni],     [Disable jni iterface]),                                       MediaInfoJni=$enableval,     MediaInfoJni=depend)
 AC_ARG_ENABLE(all,     AC_HELP_STRING([--disable-all],     [Disable all parsers]),                                        MediaInfoAll=$enableval,     MediaInfoAll=depend)
 AC_ARG_ENABLE(archive, AC_HELP_STRING([--disable-archive], [Disable all archive parsers]),                                MediaInfoArchive=$enableval, MediaInfoArchive=depend)
 AC_ARG_ENABLE(audio,   AC_HELP_STRING([--disable-audio],   [Disable all audio parsers]),                                  MediaInfoAudio=$enableval,   MediaInfoAudio=depend)
@@ -139,6 +144,7 @@ AC_ARG_ENABLE(gxf,     AC_HELP_STRING([--disable-gxf],     [Disable Multiple - G
 AC_ARG_ENABLE(hdsf4m,  AC_HELP_STRING([--disable-hdsf4m],  [Disable Multiple - HDS F4M (Flash Media Manifest)]),          MediaInfoHdsF4m=$enableval,  MediaInfoHdsf4m=depend)
 AC_ARG_ENABLE(hls,     AC_HELP_STRING([--disable-hls],     [Disable Multiple - HLS]),                                     MediaInfoHls=$enableval,     MediaInfoHls=depend)
 AC_ARG_ENABLE(mk,      AC_HELP_STRING([--disable-mk],      [Disable Multiple - Matroska]),                                MediaInfoMk=$enableval,      MediaInfoMk=depend)
+AC_ARG_ENABLE(mixml,   AC_HELP_STRING([--disable-mixml],   [Disable Multiple - MIXML]),                                   MediaInfoMiXml=$enableval,   MediaInfoMiXml=depend)
 AC_ARG_ENABLE(mpeg4,   AC_HELP_STRING([--disable-mpeg4],   [Disable Multiple - MPEG-4 based formats (MOV, AAC...)]),      MediaInfoMpeg4=$enableval,   MediaInfoMpeg4=depend)
 AC_ARG_ENABLE(mpegps,  AC_HELP_STRING([--disable-mpegps],  [Disable Multiple - MPEG-PS]),                                 MediaInfoMpegPs=$enableval,  MediaInfoMpegPs=depend)
 AC_ARG_ENABLE(mpegts,  AC_HELP_STRING([--disable-mpegts],  [Disable Multiple - MPEG-TS]),                                 MediaInfoMpegTs=$enableval,  MediaInfoMpegTs=depend)
@@ -174,6 +180,7 @@ AC_ARG_ENABLE(pdf,     AC_HELP_STRING([--disable-pdf] ,    [Disable Text - PDF])
 AC_ARG_ENABLE(pgs,     AC_HELP_STRING([--disable-pgs] ,    [Disable Text - PGS]),                                         MediaInfoPgs=$enableval,     MediaInfoPgs=depend)
 AC_ARG_ENABLE(scc,     AC_HELP_STRING([--disable-scc] ,    [Disable Text - SCC]),                                         MediaInfoScc=$enableval,     MediaInfoScc=depend)
 AC_ARG_ENABLE(aic,     AC_HELP_STRING([--disable-aic],     [Disable Video - AIC (Apple Intermediate Codec)]),             MediaInfoAic=$enableval,     MediaInfoAic=depend)
+AC_ARG_ENABLE(av1,     AC_HELP_STRING([--disable-av1],     [Disable Video - Aomedia AV1]),                                MediaInfoAv1=$enableval,     MediaInfoAv1=depend)
 AC_ARG_ENABLE(avc,     AC_HELP_STRING([--disable-avc],     [Disable Video - AVC/H264]),                                   MediaInfoAvc=$enableval,     MediaInfoAvc=depend)
 AC_ARG_ENABLE(avsV,    AC_HELP_STRING([--disable-avsv],    [Disable Video - AVS (Chinese)]),                              MediaInfoAvsV=$enableval,    MediaInfoAvsV=depend)
 AC_ARG_ENABLE(canopus, AC_HELP_STRING([--disable-canopus], [Disable Video - Canopus]),                                    MediaInfoCanopus=$enableval, MediaInfoCanopus=depend)
@@ -194,18 +201,20 @@ AC_ARG_ENABLE(y4m,     AC_HELP_STRING([--disable-y4m],     [Disable Video - YUV4
 dnl -------------------------------------------------------------------------
 dnl With
 dnl
-AC_ARG_WITH(macosx-sdk,         AC_HELP_STRING([--with-macosx-sdk],         [Force the Mac SDK]),                         , with_macosx_sdk=no)
-AC_ARG_WITH(macosx-version-min, AC_HELP_STRING([--with-macosx-version-min], [Force the Mac Version]),                     , with_macosx_version_min=no)
-AC_ARG_WITH(libz_static,        AC_HELP_STRING([--with-libz-static],        [Use static version of Zlib]),                , with_libz_static=no)
-AC_ARG_WITH(libcurl,            AC_HELP_STRING([--with-libcurl],            [Use libcurl (specific directory)]),          , with_libcurl=no)
-AC_ARG_WITH(libmms,             AC_HELP_STRING([--with-libmms],             [Use libmms (specific directory)]),           , with_libmms=no)
-AC_ARG_WITH(libaes,             AC_HELP_STRING([--with-libaes],             [Use libaes (system)]),                       , with_libaes=depend)
-AC_ARG_WITH(libmd5,             AC_HELP_STRING([--with-libmd5],             [Use libmd5 (system)]),                       , with_libmd5=depend)
-AC_ARG_WITH(libsha1,             AC_HELP_STRING([--with-libsha1],             [Use libsha1 (system)]),                       , with_libsha1=depend)
-AC_ARG_WITH(libsha2,             AC_HELP_STRING([--with-libsha2],             [Use libsha2 (system)]),                       , with_libsha2=depend)
-AC_ARG_WITH(libhmac,             AC_HELP_STRING([--with-libhmac],             [Use libhmac (system)]),                       , with_libhmac=depend)
-AC_ARG_WITH(libtinyxml2,        AC_HELP_STRING([--with-libtinyxml2],        [Use libtinyxml2 (system)]),                  , with_libtinyxml2=depend)
-AC_ARG_WITH(libmediainfo-name,  AC_HELP_STRING([--with-libmediainfo-name],  [Force libmediainfo filename]),               , with_libmediainfo_name=mediainfo)
+AC_ARG_WITH(macosx-sdk,           AC_HELP_STRING([--with-macosx-sdk],           [Force the Mac SDK]),                         , with_macosx_sdk=no)
+AC_ARG_WITH(macosx-version-min,   AC_HELP_STRING([--with-macosx-version-min],   [Force the Mac Version]),                     , with_macosx_version_min=no)
+AC_ARG_WITH(iphoneos-sdk,         AC_HELP_STRING([--with-iphoneos-sdk],         [Force the iPhone SDK]),                      , with_iphoneos_sdk=no)
+AC_ARG_WITH(iphoneos-version-min, AC_HELP_STRING([--with-iphoneos-version-min], [Force the iPhone Version]),                  , with_iphoneos_version_min=no)
+AC_ARG_WITH(libz_static,          AC_HELP_STRING([--with-libz-static],          [Use static version of Zlib]),                , with_libz_static=no)
+AC_ARG_WITH(libcurl,              AC_HELP_STRING([--with-libcurl],              [Use libcurl (specific directory)]),          , with_libcurl=no)
+AC_ARG_WITH(libmms,               AC_HELP_STRING([--with-libmms],               [Use libmms (specific directory)]),           , with_libmms=no)
+AC_ARG_WITH(libaes,               AC_HELP_STRING([--with-libaes],               [Use libaes (system)]),                       , with_libaes=depend)
+AC_ARG_WITH(libmd5,               AC_HELP_STRING([--with-libmd5],               [Use libmd5 (system)]),                       , with_libmd5=depend)
+AC_ARG_WITH(libsha1,              AC_HELP_STRING([--with-libsha1],              [Use libsha1 (system)]),                      , with_libsha1=depend)
+AC_ARG_WITH(libsha2,              AC_HELP_STRING([--with-libsha2],              [Use libsha2 (system)]),                      , with_libsha2=depend)
+AC_ARG_WITH(libhmac,              AC_HELP_STRING([--with-libhmac],              [Use libhmac (system)]),                      , with_libhmac=depend)
+AC_ARG_WITH(libtinyxml2,          AC_HELP_STRING([--with-libtinyxml2],          [Use libtinyxml2 (system)]),                  , with_libtinyxml2=depend)
+AC_ARG_WITH(libmediainfo-name,    AC_HELP_STRING([--with-libmediainfo-name],    [Force libmediainfo filename]),               , with_libmediainfo_name=mediainfo)
 
 dnl -------------------------------------------------------------------------
 dnl MediaInfo *
@@ -215,6 +224,7 @@ if test "$MediaInfoMinimal" = "no";  then AC_DEFINE(MEDIAINFO_MINIMAL_NO) fi; if
 if test "$MediaInfoTrace"   = "no";  then AC_DEFINE(MEDIAINFO_TRACE_NO)   fi; if test "$MediaInfoTrace"   = "yes"; then AC_DEFINE(MEDIAINFO_TRACE_YES)   fi
 if test "$MediaInfoEvents"  = "no";  then AC_DEFINE(MEDIAINFO_EVENTS_NO)  fi; if test "$MediaInfoEvents"  = "yes"; then AC_DEFINE(MEDIAINFO_EVENTS_YES)  fi
 if test "$MediaInfoDemux"   = "no";  then AC_DEFINE(MEDIAINFO_DEMUX_NO)   fi; if test "$MediaInfoDemux"   = "yes"; then AC_DEFINE(MEDIAINFO_DEMUX_YES)   fi
+if test "$MediaInfoJni"     = "no";  then AC_DEFINE(MEDIAINFO_JNI_NO)     fi; if test "$MediaInfoJni"     = "yes"; then AC_DEFINE(MEDIAINFO_JNI_YES)   fi
 if test "$MediaInfoLibmmsDescribeSupport" = "yes"; then AC_DEFINE(MEDIAINFO_LIBMMS_DESCRIBE_SUPPORT)   fi
 if test "$MediaInfoAll"     = "no";  then AC_DEFINE(MEDIAINFO_ALL_NO)     fi
 if test "$MediaInfoArchive" = "no";  then AC_DEFINE(MEDIAINFO_ARCHIVE_NO) fi
@@ -295,6 +305,7 @@ if test "$MediaInfoGxf"     = "no";  then AC_DEFINE(MEDIAINFO_GXF_NO)     fi; if
 if test "$MediaInfohdsF4m"  = "no";  then AC_DEFINE(MEDIAINFO_HDSF4M_NO)  fi; if test "$MediaInfoHdsF4m"  = "yes"; then AC_DEFINE(MEDIAINFO_HDSF4M_YES)  fi
 if test "$MediaInfoHls"     = "no";  then AC_DEFINE(MEDIAINFO_HLS_NO)     fi; if test "$MediaInfoHls"     = "yes"; then AC_DEFINE(MEDIAINFO_HLS_YES)     fi
 if test "$MediaInfoMk"      = "no";  then AC_DEFINE(MEDIAINFO_MK_NO)      fi; if test "$MediaInfoMk"      = "yes"; then AC_DEFINE(MEDIAINFO_MK_YES)      fi
+if test "$MediaInfoMiXml"   = "no";  then AC_DEFINE(MEDIAINFO_MIXML_NO)   fi; if test "$MediaInfoMiXml"   = "yes"; then AC_DEFINE(MEDIAINFO_MIXML_YES)   fi
 if test "$MediaInfoMpeg4"   = "no";  then AC_DEFINE(MEDIAINFO_MPEG4_NO)   fi; if test "$MediaInfoMpeg4"   = "yes"; then AC_DEFINE(MEDIAINFO_MPEG4_YES)   fi
 if test "$MediaInfoMpegPs"  = "no";  then AC_DEFINE(MEDIAINFO_MPEGPS_NO)  fi; if test "$MediaInfoMpegPs"  = "yes"; then AC_DEFINE(MEDIAINFO_MPEGPS_YES)  fi
 if test "$MediaInfoMpegTs"  = "no";  then AC_DEFINE(MEDIAINFO_MPEGTS_NO)  fi; if test "$MediaInfoMpegTs"  = "yes"; then AC_DEFINE(MEDIAINFO_MPEGTS_YES)  fi
@@ -330,6 +341,7 @@ if test "$MediaInfoPdf"     = "no";  then AC_DEFINE(MEDIAINFO_PDF_NO)     fi; if
 if test "$MediaInfoPgs"     = "no";  then AC_DEFINE(MEDIAINFO_PGS_NO)     fi; if test "$MediaInfoPgs"     = "yes"; then AC_DEFINE(MEDIAINFO_PGS_YES)     fi
 if test "$MediaInfoScc"     = "no";  then AC_DEFINE(MEDIAINFO_SCC_NO)     fi; if test "$MediaInfoScc"     = "yes"; then AC_DEFINE(MEDIAINFO_SCC_YES)     fi
 if test "$MediaInfoAic"     = "no";  then AC_DEFINE(MEDIAINFO_AIC_NO)     fi; if test "$MediaInfoAic"     = "yes"; then AC_DEFINE(MEDIAINFO_AIC_YES)     fi
+if test "$MediaInfoAv1"     = "no";  then AC_DEFINE(MEDIAINFO_AV1_NO)     fi; if test "$MediaInfoAv1"     = "yes"; then AC_DEFINE(MEDIAINFO_AV1_YES)     fi
 if test "$MediaInfoAvc"     = "no";  then AC_DEFINE(MEDIAINFO_AVC_NO)     fi; if test "$MediaInfoAvc"     = "yes"; then AC_DEFINE(MEDIAINFO_AVC_YES)     fi
 if test "$MediaInfoAvsV"    = "no";  then AC_DEFINE(MEDIAINFO_AVSV_NO)    fi; if test "$MediaInfoAvsV"    = "yes"; then AC_DEFINE(MEDIAINFO_AVSV_YES)    fi
 if test "$MediaInfoCanopus" = "no";  then AC_DEFINE(MEDIAINFO_CANOPUS_NO) fi; if test "$MediaInfoCanopus" = "yes"; then AC_DEFINE(MEDIAINFO_CANOPUS_YES) fi
@@ -346,6 +358,8 @@ if test "$MediaInfoVc1"     = "no";  then AC_DEFINE(MEDIAINFO_VC1_NO)     fi; if
 if test "$MediaInfoVc3"     = "no";  then AC_DEFINE(MEDIAINFO_VC3_NO)     fi; if test "$MediaInfoVc3"     = "yes"; then AC_DEFINE(MEDIAINFO_VC3_YES)     fi
 if test "$MediaInfoVp8"     = "no";  then AC_DEFINE(MEDIAINFO_VP8_NO)     fi; if test "$MediaInfoVp8"     = "yes"; then AC_DEFINE(MEDIAINFO_VP8_YES)     fi
 if test "$MediaInfoY4m"     = "no";  then AC_DEFINE(MEDIAINFO_Y4M_NO)     fi; if test "$MediaInfoY4m"     = "yes"; then AC_DEFINE(MEDIAINFO_Y4M_YES)     fi
+
+AM_CONDITIONAL([COMPILE_DLL], [test "$MediaInfoDll" != "no"])
 
 dnl #########################################################################
 dnl ### Options from elsewhere
@@ -764,6 +778,21 @@ if test "$enable_arch_x86_64" = "yes"; then
 	CFLAGS="$CFLAGS -arch x86_64"
 	LDFLAGS="$LDFLAGS -arch x86_64"
 fi
+if test "$enable_arch_armv7" = "yes"; then
+	CXXFLAGS="$CXXFLAGS -arch armv7"
+	CFLAGS="$CFLAGS -arch armv7"
+	LDFLAGS="$LDFLAGS -arch armv7"
+fi
+if test "$enable_arch_armv7s" = "yes"; then
+	CXXFLAGS="$CXXFLAGS -arch armv7s"
+	CFLAGS="$CFLAGS -arch armv7s"
+	LDFLAGS="$LDFLAGS -arch armv7s"
+fi
+if test "$enable_arch_arm64" = "yes"; then
+	CXXFLAGS="$CXXFLAGS -arch arm64"
+	CFLAGS="$CFLAGS -arch arm64"
+	LDFLAGS="$LDFLAGS -arch arm64"
+fi
 if test "$with_macosx_sdk" = "yes" ; then
 	CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk $CXXFLAGS"
 	CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk $CFLAGS"
@@ -777,6 +806,20 @@ if test "x$with_macosx_version_min" != xno ; then
 	CXXFLAGS="-mmacosx-version-min=$with_macosx_version_min $CXXFLAGS"
 	CFLAGS="-mmacosx-version-min=$with_macosx_version_min $CFLAGS"
 	LDFLAGS="-mmacosx-version-min=$with_macosx_version_min $LDFLAGS"
+fi
+if test "$with_iphoneos_sdk" = "yes" ; then
+	CXXFLAGS="-isysroot /Developer/SDKs/iPhoneOS.sdk $CXXFLAGS"
+	CFLAGS="-isysroot /Developer/SDKs/iPhoneOS.sdk $CFLAGS"
+	LDFLAGS="-isysroot /Developer/SDKs/iPhoneOS.sdk $LDFLAGS"
+elif test "x$with_iphoneos_sdk" != xno ; then
+	CXXFLAGS="-isysroot $with_iphoneos_sdk $CXXFLAGS"
+	CFLAGS="-isysroot $with_iphoneos_sdk $CFLAGS"
+	LDFLAGS="-isysroot $with_iphoneos_sdk $LDFLAGS"
+fi
+if test "x$with_iphoneos_version_min" != xno ; then
+	CXXFLAGS="-miphoneos-version-min=$with_iphoneos_version_min $CXXFLAGS"
+	CFLAGS="-miphoneos-version-min=$with_iphoneos_version_min $CFLAGS"
+	LDFLAGS="-miphoneos-version-min=$with_iphoneos_version_min $LDFLAGS"
 fi
 
 dnl #########################################################################
@@ -975,6 +1018,7 @@ Mcho "HdsF4m " "$MediaInfoHdsF4m"
 Mcho "Hls    " "$MediaInfoHls"
 Mcho "Flv    " "$MediaInfoFlv"
 Mcho "Mk     " "$MediaInfoMk"
+Mcho "MiXml  " "$MediaInfoMiXml"
 Mcho "Mpeg4  " "$MediaInfoMpeg4"
 Mcho "MpegPs " "$MediaInfoMpegPs"
 Mcho "MpegTs " "$MediaInfoMpegTs"
@@ -1009,6 +1053,7 @@ Mcho "Pdf    " "$MediaInfoPdf"
 Mcho "Pgs    " "$MediaInfoPgs"
 Mcho "Scc    " "$MediaInfoScc"
 Mcho "Aic    " "$MediaInfoAic"
+Mcho "Av1    " "$MediaInfoAv1"
 Mcho "Avc    " "$MediaInfoAvc"
 Mcho "AvsV   " "$MediaInfoAvsV"
 Mcho "Canopus" "$MediaInfoCanopus"

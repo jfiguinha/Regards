@@ -28,16 +28,48 @@
 #include "ZenLib/ZtringListList.h"
 #include "ZenLib/Translation.h"
 #include "ZenLib/InfoMap.h"
+#include <set>
 #include <bitset>
 using namespace ZenLib;
 using std::vector;
 using std::string;
 using std::map;
 using std::make_pair;
+using namespace std;
 //---------------------------------------------------------------------------
 
 namespace MediaInfoLib
 {
+
+enum basicformat
+{
+    BasicFormat_Text,
+    BasicFormat_CSV,
+    BasicFormat_XML,
+    BasicFormat_JSON,
+};
+#if MEDIAINFO_ADVANCED
+    #define MEDIAINFO_FLAG1 1
+    enum config_flags1
+    {
+        Flags_Cover_Data_base64,
+    };
+#else //MEDIAINFO_COMPRESS
+    #define MEDIAINFO_FLAG1 0
+#endif //MEDIAINFO_COMPRESS
+
+#if MEDIAINFO_COMPRESS
+    #define MEDIAINFO_FLAGX 1
+    enum config_flagsX
+    {
+        Flags_Inform_zlib,
+        Flags_Inform_base64,
+        Flags_Input_zlib,
+        Flags_Input_base64,
+    };
+#else //MEDIAINFO_COMPRESS
+    #define MEDIAINFO_FLAGX 0
+#endif //MEDIAINFO_COMPRESS
 
 //***************************************************************************
 // Class MediaInfo_Config
@@ -66,8 +98,13 @@ public :
           void      MultipleValues_Set (size_t NewValue);
           size_t    MultipleValues_Get ();
 
-          void      ParseUnknownExtensions_Set (size_t NewValue);
-          size_t    ParseUnknownExtensions_Get ();
+          #if MEDIAINFO_ADVANCED
+          void      ParseOnlyKnownExtensions_Set (const Ztring &NewValue);
+          Ztring    ParseOnlyKnownExtensions_Get();
+          bool      ParseOnlyKnownExtensions_IsSet();
+          set<Ztring> ParseOnlyKnownExtensions_GetList_Set();
+          Ztring    ParseOnlyKnownExtensions_GetList_String();
+          #endif //MEDIAINFO_ADVANCED
 
           void      ShowFiles_Set (const ZtringListList &NewShowFiles);
           size_t    ShowFiles_Nothing_Get ();
@@ -144,12 +181,16 @@ public :
           void      ThousandsPoint_Set (const Ztring &NewValue);
           Ztring    ThousandsPoint_Get ();
 
+          void      CarriageReturnReplace_Set (const Ztring &NewValue);
+          Ztring    CarriageReturnReplace_Get ();
+
           void      StreamMax_Set (const ZtringListList &NewValue);
           Ztring    StreamMax_Get ();
 
           void      Language_Set (const ZtringListList &NewLanguage);
           Ztring    Language_Get ();
           Ztring    Language_Get (const Ztring &Value);
+          Ztring    Language_Get_Translate(const Ztring &Par, const Ztring &Value);
           Ztring    Language_Get (const Ztring &Count, const Ztring &Value, bool ValueIsAlwaysSame=false);
 
           void      Inform_Set (const ZtringListList &NewInform);
@@ -158,6 +199,23 @@ public :
 
           void      Inform_Replace_Set (const ZtringListList &NewInform_Replace);
           ZtringListList Inform_Replace_Get_All ();
+
+          #if MEDIAINFO_ADVANCED
+          Ztring    Cover_Data_Set (const Ztring &NewValue);
+          Ztring    Cover_Data_Get ();
+          #endif //MEDIAINFO_ADVANCED
+          #if MEDIAINFO_COMPRESS
+          Ztring    Inform_Compress_Set (const Ztring &NewInform);
+          Ztring    Inform_Compress_Get ();
+          Ztring    Input_Compressed_Set(const Ztring &NewInform);
+          Ztring    Input_Compressed_Get();
+          #endif //MEDIAINFO_COMPRESS
+          #if MEDIAINFO_FLAG1
+          bool      Flags1_Get(config_flags1 Flag) { return Flags1&(1 << Flag); }
+          #endif //MEDIAINFO_FLAGX
+          #if MEDIAINFO_FLAGX
+          bool      FlagsX_Get(config_flagsX Flag) { return FlagsX&(1 << Flag); }
+          #endif //MEDIAINFO_FLAGX
 
     const Ztring   &Format_Get (const Ztring &Value, infoformat_t KindOfFormatInfo=InfoFormat_Name);
           InfoMap  &Format_Get(); //Should not be, but too difficult to hide it
@@ -179,6 +237,8 @@ public :
     const ZtringListList &Info_Get(stream_t KindOfStream); //Should not be, but too difficult to hide it
 
           Ztring    Info_Parameters_Get (bool Complete=false);
+          Ztring    HideShowParameter   (const Ztring &Value, ZenLib::Char Show);
+          Ztring    Info_OutputFormats_Get(basicformat Format);
           Ztring    Info_Tags_Get       () const;
           Ztring    Info_CodecsID_Get   ();
           Ztring    Info_Codecs_Get     ();
@@ -233,6 +293,12 @@ public :
           void        AcquisitionDataOutputMode_Set (size_t Value);
           size_t      AcquisitionDataOutputMode_Get ();
     #endif //MEDIAINFO_EBUCORE_YES
+    #if defined(MEDIAINFO_EBUCORE_YES) || defined(MEDIAINFO_NISO_YES) || MEDIAINFO_ADVANCED
+          void        ExternalMetadata_Set (Ztring Value);
+          Ztring      ExternalMetadata_Get ();
+          void        ExternalMetaDataConfig_Set (Ztring Value);
+          Ztring      ExternalMetaDataConfig_Get ();
+    #endif //MEDIAINFO_EBUCORE_YES || defined(MEDIAINFO_NISO_YES) || MEDIAINFO_ADVANCED
 
     ZtringListList  SubFile_Config_Get ();
 
@@ -316,14 +382,18 @@ private :
     #if MEDIAINFO_ADVANCED
         bool        Format_Profile_Split;
     #endif //MEDIAINFO_ADVANCED
-    #if defined(MEDIAINFO_EBUCORE_YES)
+    #if defined(MEDIAINFO_EBUCORE_YES) || defined(MEDIAINFO_NISO_YES) || MEDIAINFO_ADVANCED
         size_t      AcquisitionDataOutputMode;
-    #endif //defined(MEDIAINFO_EBUCORE_YES)
+        Ztring      ExternalMetadata;
+        Ztring      ExternalMetaDataConfig;
+    #endif //defined(MEDIAINFO_EBUCORE_YES) || defined(MEDIAINFO_NISO_YES) || MEDIAINFO_ADVANCED
     size_t          Complete;
     size_t          BlockMethod;
     size_t          Internet;
     size_t          MultipleValues;
-    size_t          ParseUnknownExtensions;
+    #ifdef MEDIAINFO_ADVANCED
+    Ztring          ParseOnlyKnownExtensions;
+    #endif
     size_t          ShowFiles_Nothing;
     size_t          ShowFiles_VideoAudio;
     size_t          ShowFiles_VideoOnly;
@@ -333,7 +403,7 @@ private :
     float32         Verbosity;
     float32         Trace_Level;
     int64u          Compat;
-    int64u          Https;
+    bool            Https;
     bool            Trace_TimeSection_OnlyFirstOccurrence;
     std::bitset<32> Trace_Layers; //0-7: Container, 8: Stream
     std::map<Ztring, bool> Trace_Modificators; //If we want to add/remove some details
@@ -350,9 +420,16 @@ private :
     Ztring          Quote;
     Ztring          DecimalPoint;
     Ztring          ThousandsPoint;
+    Ztring          CarriageReturnReplace;
     Translation     Language; //ex. : "KB;Ko"
     ZtringListList  Custom_View; //Definition of "General", "Video", "Audio", "Text", "Other", "Image"
     ZtringListList  Custom_View_Replace; //ToReplace;ReplaceBy
+    #if MEDIAINFO_FLAG1
+        int64u      Flags1;
+    #endif //MEDIAINFO_FLAG1
+    #if MEDIAINFO_FLAGX
+        int64u      FlagsX;
+    #endif //MEDIAINFO_FLAGX
     trace_Format    Trace_Format;
 
     InfoMap         Container;

@@ -31,6 +31,9 @@
 #if defined(MEDIAINFO_MPEG4V_YES)
     #include "MediaInfo/Video/File_Mpeg4v.h"
 #endif
+#if defined(MEDIAINFO_AV1_YES)
+    #include "MediaInfo/Video/File_Av1.h"
+#endif
 #if defined(MEDIAINFO_AVC_YES)
     #include "MediaInfo/Video/File_Avc.h"
 #endif
@@ -92,6 +95,7 @@
 #include <cstring>
 #include <cmath>
 #include <algorithm>
+#include <zlib.h>
 #include "ThirdParty/base64/base64.h"
 #if MEDIAINFO_EVENTS
     #include "MediaInfo/MediaInfo_Events_Internal.h"
@@ -127,6 +131,25 @@ namespace Elements
     const int64u Ebml_DocType=0x282;
     const int64u Ebml_DocTypeVersion=0x287;
     const int64u Ebml_DocTypeReadVersion=0x285;
+
+    //RAWcooked
+    const int64u RawcookedBlock=0x7262;
+    const int64u RawcookedBlock_AfterData=0x02;
+    const int64u RawcookedBlock_BeforeData=0x01;
+    const int64u RawcookedBlock_FileName=0x10;
+    const int64u RawcookedBlock_MaskAdditionAfterData=0x04;
+    const int64u RawcookedBlock_MaskAdditionBeforeData=0x03;
+    const int64u RawcookedBlock_MaskAdditionFileName=0x11;
+    const int64u RawcookedSegment=0x7273;
+    const int64u RawcookedSegment_LibraryName=0x70;
+    const int64u RawcookedSegment_LibraryVersion=0x71;
+    const int64u RawcookedTrackEntry=0x7274;
+    const int64u RawcookedTrackEntry_AfterData=0x02;
+    const int64u RawcookedTrackEntry_BeforeData=0x01;
+    const int64u RawcookedTrackEntry_FileName=0x10;
+    const int64u RawcookedTrackEntry_MaskBaseAfterData=0x04;
+    const int64u RawcookedTrackEntry_MaskBaseBeforeData=0x03;
+    const int64u RawcookedTrackEntry_MaskBaseFileName=0x11;
 
     //Segment
     const int64u Segment=0x8538067;
@@ -322,6 +345,8 @@ namespace Elements
     const int64u Segment_Attachments_AttachedFile_FileName=0x66E;
     const int64u Segment_Attachments_AttachedFile_FileMimeType=0x660;
     const int64u Segment_Attachments_AttachedFile_FileData=0x65C;
+    const int64u Segment_Attachments_AttachedFile_FileData_RawcookedBlock=0x7262;
+    const int64u Segment_Attachments_AttachedFile_FileData_RawcookedTrackEntry=0x7274;
     const int64u Segment_Attachments_AttachedFile_FileUID=0x6AE;
     const int64u Segment_Attachments_AttachedFile_FileReferral=0x675;
     const int64u Segment_Attachments_AttachedFile_FileUsedStartTime=0x661;
@@ -653,15 +678,24 @@ static Ztring Mk_ID_String_From_Source_ID (const Ztring &Value)
 
 //---------------------------------------------------------------------------
 extern std::string ExtensibleWave_ChannelMask (int32u ChannelMask);
-
-//---------------------------------------------------------------------------
 extern std::string ExtensibleWave_ChannelMask2 (int32u ChannelMask);
+extern std::string ExtensibleWave_ChannelMask_ChannelLayout(int32u ChannelMask);
 
 //---------------------------------------------------------------------------
 const char* Mpegv_colour_primaries(int8u colour_primaries);
 const char* Mpegv_transfer_characteristics(int8u transfer_characteristics);
 const char* Mpegv_matrix_coefficients(int8u matrix_coefficients);
-extern const char* Avc_video_full_range[];
+const char* Mpegv_matrix_coefficients_ColorSpace(int8u matrix_coefficients);
+
+const char* Mk_Video_Colour_Range(int8u range)
+{
+    switch (range)
+    {
+        case 1: return "Limited";
+        case 2: return "Full";
+        default: return "";
+    }
+}
 
 //***************************************************************************
 // Constructor/Destructor
@@ -702,6 +736,7 @@ File_Mk::File_Mk()
         Demux_EventWasSent=(int64u)-1;
     #endif //MEDIAINFO_DEMUX
     CRC32Compute_SkipUpTo=0;
+    Stream_Count=0;
 
     //Hints
     File_Buffer_Size_Hint_Pointer=NULL;
@@ -766,7 +801,6 @@ void File_Mk::Streams_Finish()
                     Item->second.erase(Item2);
                     bool Tags_Verified=false;
                     {
-                        Ztring Happ = Retrieve(Stream_General, 0, "Encoded_Application");
                         Ztring Hutc = Retrieve(Stream_General, 0, "Encoded_Date");
                         Hutc.FindAndReplace(__T("UTC "), Ztring());
                         Ztring App, Utc;
@@ -782,8 +816,10 @@ void File_Mk::Streams_Finish()
                             Utc=Item2->second;
                             Item->second.erase(Item2);
                         }
-                        if (App==Happ && Utc==Hutc) Tags_Verified=true;
-                        else Fill(StreamKind_Last, StreamPos_Last, "Statistics Tags Issue", App + __T(' ') + Utc + __T(" / ") + Happ + __T(' ') + Hutc);
+                        if (Utc>=Hutc)
+                            Tags_Verified=true;
+                        else
+                            Fill(StreamKind_Last, StreamPos_Last, "Statistics Tags Issue", App + __T(' ') + Utc + __T(" / ") + Retrieve(Stream_General, 0, "Encoded_Application") + __T(' ') + Hutc);
                     }
                     Ztring TempTag;
 
@@ -975,7 +1011,7 @@ void File_Mk::Streams_Finish()
                                         + (s[ 6]-'0')      *10
                                         + (s[ 7]-'0')         ;
                                 for (size_t i=9; i<s_size; i++)
-                                    d+=(s[i]-'0')/pow(10.0, i-8);
+                                    d+=(s[i]-'0')/std::pow(10.0, double(i)-8);
                                 Fill(StreamKind_Last, StreamPos_Last, "Duration", d*1000, s.size()-12);
                                 continue;
                             }
@@ -1013,6 +1049,7 @@ void File_Mk::Streams_Finish()
         {
             //FrameRate
             bool IsVfr=false;
+            bool RelyOnParser=false;
             if (Temp->second.Segment_Cluster_BlockGroup_BlockDuration_Counts.size()>2)
                 IsVfr=true;
             else if (Temp->second.TimeCodes.size()>1)
@@ -1076,13 +1113,17 @@ void File_Mk::Streams_Finish()
                              && FrameRate_FromParser*2>FrameRate_FromCluster*0.9
                              && FrameRate_FromParser*2<FrameRate_FromCluster*1.1) //TODO: awfull method to detect interlaced content with one field per block
                                 FrameRate_FromCluster/=2;
+                            if (FrameRate_FromParser
+                             && FrameRate_FromParser>FrameRate_FromCluster*0.99
+                             && FrameRate_FromParser<FrameRate_FromCluster*1.01)
+                                RelyOnParser=true; //Disabling frame rate guess, relying on parser precision
                         }
                         if (FrameRate_FromTags)
                         {
                                 if (FrameRate_FromCluster < FrameRate_FromTags - (FrameRate_FromTags*(TimecodeScale*0.0000000010021)) || FrameRate_FromCluster > FrameRate_FromTags + (FrameRate_FromTags*(TimecodeScale*0.0000000010021)))
                                     IsVfr=true;
                         }
-                        else
+                        else if (!RelyOnParser)
                             Fill(Stream_Video, StreamPos_Last, Video_FrameRate, FrameRate_FromCluster);
                     }
                 }
@@ -1090,7 +1131,12 @@ void File_Mk::Streams_Finish()
                     IsVfr=true;
             }
 
-            else if (Temp->second.TrackDefaultDuration)
+            // In case there are not enough frames for computing frame rate, trying to rely on TrackDefaultDuration as a fallback
+            if (!IsVfr && !RelyOnParser && Retrieve(Stream_Video, StreamPos_Last, Video_FrameRate).empty() && Temp->second.TrackDefaultDuration
+             && Temp->second.TrackDefaultDuration!=32999999 // Seen in some 30 fps stream, not the one for all frames
+             && Temp->second.TrackDefaultDuration!=41999998 // Seen in some 24 fps stream, not the one for all frames
+             && Temp->second.TrackDefaultDuration!=41999999 // Seen in some 24 fps stream, not the one for all frames
+                )
             {
                 float32 FrameRate_FromCluster=1000000000/(float32)Temp->second.TrackDefaultDuration;
                 if (Retrieve(Stream_Video, StreamPos_Last, Video_FrameRate).empty())
@@ -1458,15 +1504,15 @@ void File_Mk::Header_Parse()
             Fill(Stream_General, 0, "IsTruncated", "Yes");
     }
 
-	//Should we parse Cluster?
-	if (Element_Level==3 && Name==Elements::Segment_Cluster && !Segment_Tracks_Count)
+    //Should we parse Cluster?
+    if (Element_Level==3 && Name==Elements::Segment_Cluster && !Segment_Tracks_Count)
     {
         //Jumping
         for (size_t Pos=0; Pos<Segment_Seeks.size(); Pos++)
             if (Segment_Seeks[Pos].SeekID==Elements::Segment_Tracks)
             {
                 Fill(Stream_General, 0, General_IsStreamable, "No");
-				Element_DoNotShow();
+                Element_DoNotShow();
                 IsParsingSegmentTrack_SeekBackTo=File_Offset+Buffer_Offset;
 
                 JumpTo(Segment_Seeks[Pos].SeekPosition);
@@ -1534,6 +1580,29 @@ void File_Mk::Data_Parse()
         ATO2(Ebml_DocType, "DocType")
         ATO2(Ebml_DocTypeVersion, "DocTypeVersion")
         ATO2(Ebml_DocTypeReadVersion, "DocTypeReadVersion")
+        ATOM_END_MK
+    LIS2(RawcookedBlock, "RawcookedBlock")
+        ATOM_BEGIN
+        ATO2(RawcookedBlock_AfterData, "AfterData")
+        ATO2(RawcookedBlock_BeforeData, "BeforeData")
+        ATO2(RawcookedBlock_FileName, "FileName")
+        ATO2(RawcookedBlock_MaskAdditionBeforeData, "MaskAdditionBeforeData")
+        ATO2(RawcookedBlock_MaskAdditionAfterData, "MaskAdditionAfterData")
+        ATO2(RawcookedBlock_MaskAdditionFileName, "MaskAdditionFileName")
+        ATOM_END_MK
+    LIS2(RawcookedSegment, "RawcookedSegment")
+        ATOM_BEGIN
+        ATO2(RawcookedSegment_LibraryName, "LibraryName")
+        ATO2(RawcookedSegment_LibraryVersion, "LibraryVersion")
+        ATOM_END_MK
+    LIS2(RawcookedTrackEntry, "RawcookedTrackEntry")
+        ATOM_BEGIN
+        ATO2(RawcookedTrackEntry_BeforeData, "BeforeData")
+        ATO2(RawcookedTrackEntry_AfterData, "AfterData")
+        ATO2(RawcookedTrackEntry_FileName, "FileName")
+        ATO2(RawcookedTrackEntry_MaskBaseAfterData, "MaskBaseAfterData")
+        ATO2(RawcookedTrackEntry_MaskBaseBeforeData, "MaskBaseBeforeData")
+        ATO2(RawcookedTrackEntry_MaskBaseFileName, "MaskBaseFileName")
         ATOM_END_MK
     LIS2(Segment, "Segment")
         ATOM_BEGIN
@@ -1799,7 +1868,11 @@ void File_Mk::Data_Parse()
                 ATO2(Segment_Attachments_AttachedFile_FileDescription, "FileDescription")
                 ATO2(Segment_Attachments_AttachedFile_FileName, "FileName")
                 ATO2(Segment_Attachments_AttachedFile_FileMimeType, "FileMimeType")
-                LIST_SKIP(Segment_Attachments_AttachedFile_FileData) //This is ATOM, but some ATOMs are too big
+                LIS2(Segment_Attachments_AttachedFile_FileData, "FileData") //This is ATOM, but some ATOMs are too big
+                    ATOM_BEGIN
+                    ATO2(Segment_Attachments_AttachedFile_FileData_RawcookedBlock, "RawcookedBlock")
+                    ATO2(Segment_Attachments_AttachedFile_FileData_RawcookedTrackEntry, "RawcookedTrackEntry")
+                    ATOM_END_MK
                 ATO2(Segment_Attachments_AttachedFile_FileUID, "FileUID")
                 ATO2(Segment_Attachments_AttachedFile_FileReferral, "FileReferral")
                 ATO2(Segment_Attachments_AttachedFile_FileUsedStartTime, "FileUsedStartTime")
@@ -2020,6 +2093,11 @@ void File_Mk::Ebml_DocType()
             Accept("Matroska");
             Fill(Stream_General, 0, General_Format, "WebM");
         }
+        else if (Data==__T("rawcooked"))
+        {
+            Accept("RAWcooked");
+            Fill(Stream_General, 0, General_Format, "RAWcooked");
+        }
         else
         {
             Reject("Matroska");
@@ -2048,9 +2126,212 @@ void File_Mk::Ebml_DocTypeReadVersion()
 
     //Filling
     FILLING_BEGIN();
-        if (UInteger!=Format_Version)
+        if (UInteger!=Format_Version && MediaInfoLib::Config.LegacyStreamDisplay_Get())
             Fill(Stream_General, 0, General_Format_Version, __T("Version ")+Ztring::ToZtring(UInteger)); //Adding compatible version for info about legacy decoders
     FILLING_END();
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock()
+{
+    Element_Info1(Ztring().From_Number(RawcookedTrack.FramePos));
+    RawcookedTrack.FramePos++;
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_BeforeData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_AfterData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_FileName()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    if (Size)
+    {
+        FILLING_BEGIN();
+            //Sizes
+            unsigned long Source_Size=(unsigned long)(Element_Size-Element_Offset);
+            unsigned long Dest_Size=Size;
+
+            //Uncompressing
+            int8u* Dest=new int8u[Dest_Size];
+            if (uncompress((Bytef*)Dest, &Dest_Size, (const Bytef*)Buffer+Buffer_Offset+Element_Offset, Source_Size)<0)
+            {
+                Skip_XX(Element_Size-Element_Offset,            "Problem during the decompression");
+                delete[] Dest; //Dest=NULL;
+                return;
+            }
+
+            //Parsing
+            Skip_XX(Element_Size-Element_Offset,                "Compressed data"); Param_Info1(string((const char*)Dest, Size).c_str());
+
+            delete[] Dest; //Dest=NULL;
+        FILLING_END();
+    }
+    else
+        Skip_Local(Element_Size-Element_Offset,                 "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_MaskAdditionBeforeData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_MaskAdditionAfterData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedBlock_MaskAdditionFileName()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    if (Size)
+    {
+        FILLING_BEGIN();
+            //Sizes
+            unsigned long Source_Size=(unsigned long)(Element_Size-Element_Offset);
+            unsigned long Dest_Size=Size;
+
+            //Uncompressing
+            int8u* Dest=new int8u[Dest_Size];
+            if (uncompress((Bytef*)Dest, &Dest_Size, (const Bytef*)Buffer+Buffer_Offset+Element_Offset, Source_Size)<0)
+            {
+                Skip_XX(Element_Size-Element_Offset,            "Problem during the decompression");
+                delete[] Dest; //Dest=NULL;
+                return;
+            }
+
+            //Applying mask
+            for (size_t i=0; i<Size && i<RawcookedTrack.MaskAdditionFileName.size(); i++)
+                Dest[i]+=RawcookedTrack.MaskAdditionFileName[i];
+
+            //Parsing
+            Skip_XX(Element_Size-Element_Offset,                "Compressed data"); Param_Info1(string((const char*)Dest, Size).c_str());
+
+            delete[] Dest; //Dest=NULL;
+        FILLING_END();
+    }
+    else
+        Skip_Local(Element_Size-Element_Offset,                 "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedSegment()
+{
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedSegment_LibraryName()
+{
+    Skip_Local(Element_Size,                                    "LibraryName");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedSegment_LibraryVersion()
+{
+    Skip_Local(Element_Size,                                    "LibraryVersion");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry()
+{
+    RawcookedTrack=rawcookedtrack();
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_BeforeData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_AfterData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_FileName()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    if (Size)
+        Skip_XX(Element_Size-Element_Offset,                    "Data");
+    else
+        Skip_Local(Element_Size-Element_Offset,                 "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_MaskBaseBeforeData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_MaskBaseAfterData()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    Skip_XX(Element_Size-Element_Offset,                        "Data");
+}
+
+//---------------------------------------------------------------------------
+void File_Mk::RawcookedTrackEntry_MaskBaseFileName()
+{
+    int64u Size;
+    Get_EB (Size,                                               "Size");
+    if (Size)
+    {
+        FILLING_BEGIN();
+            //Sizes
+            unsigned long Source_Size=(unsigned long)(Element_Size-Element_Offset);
+            unsigned long Dest_Size=Size;
+
+            //Uncompressing
+            int8u* Dest=new int8u[Dest_Size];
+            if (uncompress((Bytef*)Dest, &Dest_Size, (const Bytef*)Buffer+Buffer_Offset+Element_Offset, Source_Size)<0)
+            {
+                Skip_XX(Element_Size-Element_Offset,            "Problem during the decompression");
+                delete[] Dest; //Dest=NULL;
+                return;
+            }
+
+            //Parsing
+            RawcookedTrack.MaskAdditionFileName=string((const char*)Dest, Size);
+            Skip_XX(Element_Size-Element_Offset,                "Compressed data"); Param_Info1(RawcookedTrack.MaskAdditionFileName.c_str());
+
+            delete[] Dest; //Dest=NULL;
+        FILLING_END();
+    }
+    else
+        Get_String(Element_Size-Element_Offset, RawcookedTrack.MaskAdditionFileName, "Data");
 }
 
 //---------------------------------------------------------------------------
@@ -2132,10 +2413,14 @@ void File_Mk::Segment_Attachments_AttachedFile_FileData()
 
         if (!CoverIsSetFromAttachment && CurrentAttachmentIsCover)
         {
-            std::string Data_Base64(Base64::encode(Data_Raw));
-
             //Filling
-            Fill(Stream_General, 0, General_Cover_Data, Data_Base64);
+            #if MEDIAINFO_ADVANCED
+                if (MediaInfoLib::Config.Flags1_Get(Flags_Cover_Data_base64))
+                {
+                    std::string Data_Base64(Base64::encode(Data_Raw));
+                    Fill(Stream_General, 0, General_Cover_Data, Data_Base64);
+                }
+            #endif //MEDIAINFO_ADVANCED
             Fill(Stream_General, 0, General_Cover, "Yes");
             CoverIsSetFromAttachment=true;
         }
@@ -2155,7 +2440,9 @@ void File_Mk::Segment_Attachments_AttachedFile_FileData()
         #endif //MEDIAINFO_EVENTS
     }
     
-    Skip_XX(Element_TotalSize_Get(),                            "Data");
+    //Skip_XX(Element_TotalSize_Get(),                            "Data");
+
+    Element_ThisIsAList();
 }
 
 //---------------------------------------------------------------------------
@@ -2236,8 +2523,8 @@ void File_Mk::Segment_Cluster()
         
         for (std::map<int64u, stream>::iterator Temp=Stream.begin(); Temp!=Stream.end(); ++Temp)
         {
-            if (Temp->second.Parser)
-                Temp->second.Searching_Payload=true;
+            if (!Temp->second.Parser)
+                Temp->second.Searching_Payload=false;
             if (Temp->second.StreamKind==Stream_Video || Temp->second.StreamKind==Stream_Audio)
                 Temp->second.Searching_TimeStamp_Start=true;
             if (Temp->second.StreamKind==Stream_Video)
@@ -2437,7 +2724,7 @@ void File_Mk::Segment_Cluster_BlockGroup_Block_Lace()
     if (streamItem.ContentCompAlgo!=(int32u)-1 && streamItem.ContentCompAlgo!=3)
         streamItem.Searching_Payload=false; //Unsupported
 
-    if (streamItem.Searching_Payload)
+    if (streamItem.Searching_Payload && streamItem.Parser)
     {
         Element_Parser(streamItem.Parser->ParserName.c_str());
 
@@ -2487,7 +2774,9 @@ void File_Mk::Segment_Cluster_BlockGroup_Block_Lace()
         #endif //MEDIAINFO_DEMUX
             Open_Buffer_Continue(streamItem.Parser, (size_t)(Element_Size-Element_Offset));
         if (streamItem.Parser->Status[IsFinished]
-            || (streamItem.PacketCount>=300 && Config->ParseSpeed<1.0))
+            || (streamItem.PacketCount>=300 && Config->ParseSpeed<1.0)
+            || (streamItem.PacketCount>=3 && Config->ParseSpeed==0)
+            )
         {
             streamItem.Searching_Payload=false;
             if (!streamItem.Searching_TimeStamps && !streamItem.Searching_TimeStamp_Start)
@@ -2516,7 +2805,7 @@ void File_Mk::Segment_Cluster_BlockGroup_Block_Lace()
 
     //Filling
     Frame_Count++;
-    if (!Status[IsFilled] && ((Frame_Count>6 && (Stream_Count==0 ||Config->ParseSpeed==0.0)) || Frame_Count>512*Stream.size()))
+    if (!Status[IsFilled] && (Stream_Count==0 || Frame_Count>(Config->ParseSpeed?512:3)*Stream.size()))
     {
         Fill();
         if (Config->ParseSpeed<1.0)
@@ -2669,8 +2958,8 @@ void File_Mk::Segment_Info_SegmentUID()
     FILLING_BEGIN();
         if (Segment_Info_Count>1)
             return; //First element has the priority
-        Fill(Stream_General, 0, General_UniqueID, Ztring().From_Local(Data.toString(10)));
-        Fill(Stream_General, 0, General_UniqueID_String, Ztring().From_Local(Data.toString(10))+__T(" (0x")+Ztring().From_Local(Data.toString(16))+__T(')'));
+        Fill(Stream_General, 0, General_UniqueID, Ztring().From_UTF8(Data.toString(10)));
+        Fill(Stream_General, 0, General_UniqueID_String, Ztring().From_UTF8(Data.toString(10))+__T(" (0x")+Ztring().From_UTF8(Data.toString(16))+__T(')'));
     FILLING_END();
 }
 
@@ -2913,6 +3202,7 @@ void File_Mk::Segment_Tracks_TrackEntry()
     InfoCodecID_Format_Type=InfoCodecID_Format_Matroska;
     TrackType=(int64u)-1;
     TrackNumber=(int64u)-1;
+    AudioBitDepth=(int64u)-1;
     TrackVideoDisplayWidth=0;
     TrackVideoDisplayHeight=0;
     AvgBytesPerSec=0;
@@ -2936,7 +3226,14 @@ void File_Mk::Segment_Tracks_TrackEntry_Audio_BitDepth()
         if (Segment_Info_Count>1)
             return; //First element has the priority
         if (UInteger)
+        {
             Fill(StreamKind_Last, StreamPos_Last, "BitDepth", UInteger, 10, true);
+
+            #ifdef MEDIAINFO_PCM_YES
+                if (Stream[TrackNumber].Parser && Retrieve(Stream_Audio, StreamPos_Last, Audio_Format)==__T("PCM"))
+                    ((File_Pcm*)Stream[TrackNumber].Parser)->Sign=(UInteger==8?'U':'S');
+            #endif //MEDIAINFO_PCM_YES
+        }
     FILLING_END();
 }
 
@@ -3105,11 +3402,8 @@ void File_Mk::Segment_Tracks_TrackEntry_CodecPrivate__Parse()
     Open_Buffer_OutOfBand(streamItem.Parser);
 
     //Filling
-    if (streamItem.Parser->Status[IsFinished]) //Can be finnished here...
-    {
-        streamItem.Searching_Payload=false;
-        Stream_Count--;
-    }
+    if (!streamItem.Parser->Status[IsFinished]) //Can be finnished here...
+        streamItem.Searching_Payload=true;
 
     //In case of problem
     Element_Show();
@@ -3160,36 +3454,42 @@ void File_Mk::Segment_Tracks_TrackEntry_CodecPrivate_auds()
     if (Option_Size>0)
     {
              if (FormatTag==0xFFFE) //Extensible Wave
-            Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave();
+            Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave(BitsPerSample);
         else Skip_XX(Option_Size,                               "Unknown");
     }
 }
 
 //---------------------------------------------------------------------------
-void File_Mk::Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave()
+void File_Mk::Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave(int16u BitsPerSample)
 {
     //Parsing
     int128u SubFormat;
     int32u ChannelMask;
-    Skip_L2(                                                    "ValidBitsPerSample / SamplesPerBlock");
+    int16u ValidBitsPerSample;
+    Get_L2 (ValidBitsPerSample,                                 "ValidBitsPerSample / SamplesPerBlock");
     Get_L4 (ChannelMask,                                        "ChannelMask");
     Get_GUID(SubFormat,                                         "SubFormat");
 
     FILLING_BEGIN();
-        if ((SubFormat.hi&0xFFFFFFFFFFFF0000LL)==0x0010000000000000LL && SubFormat.lo==0x800000AA00389B71LL)
+        if ((SubFormat.hi&0x0000FFFFFFFFFFFFLL)==0x0000000000001000LL && SubFormat.lo==0x800000AA00389B71LL)
         {
-            CodecID_Fill(Ztring().From_Number((int16u)SubFormat.hi, 16), Stream_Audio, StreamPos_Last, InfoCodecID_Format_Riff);
-            Fill(Stream_Audio, StreamPos_Last, Audio_CodecID, Ztring().From_GUID(SubFormat), true);
-            Fill(Stream_Audio, StreamPos_Last, Audio_Codec, MediaInfoLib::Config.Codec_Get(Ztring().From_Number((int16u)SubFormat.hi, 16)), true);
+            int16u LegacyCodecID=(int16u)((((SubFormat.hi>>48)&0xFF)<<8) | (SubFormat.hi>>56)); // It is Little Endian
+            CodecID_Fill(Ztring().From_Number(LegacyCodecID, 16), Stream_Audio, StreamPos_Last, InfoCodecID_Format_Riff);
+            Ztring CodecID_New=Retrieve(Stream_Audio, StreamPos_Last, Audio_CodecID);
+            Fill(Stream_Audio, StreamPos_Last, Audio_CodecID, __T("A_MS/ACM / ")+Ztring().From_GUID(SubFormat), true);
+            Fill(Stream_Audio, StreamPos_Last, Audio_Codec, MediaInfoLib::Config.Codec_Get(Ztring().From_Number(LegacyCodecID, 16)), true);
 
             //Creating the parser
             #if defined(MEDIAINFO_PCM_YES)
-            if (MediaInfoLib::Config.CodecID_Get(Stream_Audio, InfoCodecID_Format_Riff, Ztring().From_Number((int16u)SubFormat.hi, 16))==__T("PCM"))
+            if (MediaInfoLib::Config.CodecID_Get(Stream_Audio, InfoCodecID_Format_Riff, Ztring().From_Number(LegacyCodecID, 16))==__T("PCM"))
             {
                 //Creating the parser
                 File_Pcm MI;
                 MI.Frame_Count_Valid=0;
-                MI.Codec=Ztring().From_Number((int16u)SubFormat.hi, 16);
+                MI.Codec=Ztring().From_GUID(SubFormat);
+                MI.BitDepth=(int8u)BitsPerSample;
+                if (ValidBitsPerSample!=BitsPerSample)
+                    MI.BitDepth_Significant=(int8u)ValidBitsPerSample;
 
                 //Parsing
                 Open_Buffer_Init(&MI);
@@ -3207,6 +3507,7 @@ void File_Mk::Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave()
         }
         Fill(Stream_Audio, StreamPos_Last, Audio_ChannelPositions, ExtensibleWave_ChannelMask(ChannelMask));
         Fill(Stream_Audio, StreamPos_Last, Audio_ChannelPositions_String2, ExtensibleWave_ChannelMask2(ChannelMask));
+        Fill(Stream_Audio, StreamPos_Last, Audio_ChannelLayout, ExtensibleWave_ChannelMask_ChannelLayout(ChannelMask));
     FILLING_END();
 }
 
@@ -3510,6 +3811,7 @@ void File_Mk::Segment_Tracks_TrackEntry_Video_Colour_MatrixCoefficients()
             return; //First element has the priority
         Stream[TrackNumber].Infos["colour_description_present"]="Yes";
         Stream[TrackNumber].Infos["matrix_coefficients"]=Mpegv_matrix_coefficients(UInteger);
+        Stream[TrackNumber].Infos["ColorSpace"]=Mpegv_matrix_coefficients_ColorSpace(UInteger);
     FILLING_END();
 }
 
@@ -3524,15 +3826,14 @@ void File_Mk::Segment_Tracks_TrackEntry_Video_Colour_BitsPerChannel()
 void File_Mk::Segment_Tracks_TrackEntry_Video_Colour_Range()
 {
     //Parsing
-    int64u UInteger=UInteger_Get(); Element_Info1C(UInteger<2, Avc_video_full_range[UInteger]);
+    int64u UInteger=UInteger_Get(); Element_Info1(Mk_Video_Colour_Range(UInteger));
 
     //Filling
     FILLING_BEGIN();
         if (Segment_Info_Count>1)
             return; //First element has the priority
         Stream[TrackNumber].Infos["colour_description_present"]="Yes";
-        if (UInteger<2)
-            Stream[TrackNumber].Infos["colour_range"]=Avc_video_full_range[UInteger];
+        Stream[TrackNumber].Infos["colour_range"]=Mk_Video_Colour_Range(UInteger);
     FILLING_END();
 }
 
@@ -3999,7 +4300,7 @@ void File_Mk::CodecID_Manage()
     stream& streamItem = Stream[TrackNumber];
 
     //Creating the parser
-    #if defined(MEDIAINFO_MPEG4V_YES) || defined(MEDIAINFO_AVC_YES) || defined(MEDIAINFO_HEVC_YES) || defined(MEDIAINFO_VC1_YES) || defined(MEDIAINFO_DIRAC_YES) || defined(MEDIAINFO_MPEGV_YES) || defined(MEDIAINFO_VP8_YES) || defined(MEDIAINFO_OGG_YES) || defined(MEDIAINFO_DTS_YES)
+    #if defined(MEDIAINFO_MPEG4V_YES) || defined(MEDIAINFO_AV1_YES) || defined(MEDIAINFO_AVC_YES) || defined(MEDIAINFO_HEVC_YES) || defined(MEDIAINFO_VC1_YES) || defined(MEDIAINFO_DIRAC_YES) || defined(MEDIAINFO_MPEGV_YES) || defined(MEDIAINFO_VP8_YES) || defined(MEDIAINFO_OGG_YES) || defined(MEDIAINFO_DTS_YES)
         const Ztring &Format=MediaInfoLib::Config.CodecID_Get(StreamKind_Last, InfoCodecID_Format_Type, CodecID, InfoCodecID_Format);
     #endif
         if (0);
@@ -4008,6 +4309,14 @@ void File_Mk::CodecID_Manage()
     {
         streamItem.Parser=new File_Mpeg4v;
         ((File_Mpeg4v*)streamItem.Parser)->FrameIsAlwaysComplete=true;
+    }
+    #endif
+    #if defined(MEDIAINFO_AV1_YES)
+    else if (Format==__T("AV1"))
+    {
+        File_Av1* Parser=new File_Av1;
+        Parser->FrameIsAlwaysComplete=true;
+        streamItem.Parser=Parser;
     }
     #endif
     #if defined(MEDIAINFO_AVC_YES)
@@ -4216,6 +4525,8 @@ void File_Mk::CodecID_Manage()
     else if (Format==__T("PCM"))
     {
         File_Pcm* parser = new File_Pcm;
+        if (AudioBitDepth!=(int64u)-1)
+            parser->BitDepth=AudioBitDepth;
         streamItem.Parser = parser;
         parser->Codec=CodecID;
     }
@@ -4385,10 +4696,10 @@ void File_Mk::CRC32_Check ()
                                 if (Config->TryToFix_Get() && CRC32Compute[i].Computed!=CRC32Compute[i].Expected)
                                 {
                                     size_t NewBuffer_Size=(size_t)(CRC32Compute[i].UpTo-CRC32Compute[i].From);
-                                    int8u* NewBuffer=new int8u[NewBuffer_Size];
                                     File F;
                                     if (F.Open(File_Name))
                                     {
+                                        int8u* NewBuffer = new int8u[NewBuffer_Size];
                                         F.GoTo(CRC32Compute[i].From);
                                         F.Read(NewBuffer, NewBuffer_Size);
                                         int8u Modified=0;
@@ -4400,8 +4711,8 @@ void File_Mk::CRC32_Check ()
                                             Modified^=1<<BitInBytePosition;
                                             FixFile(CRC32Compute[i].From+BytePosition, &Modified, 1)?Param_Info1("Fixed"):Param_Info1("Not fixed");
                                         }
+                                        delete[] NewBuffer; //NewBuffer=NULL;
                                     }
-                                    delete[] NewBuffer; //NewBuffer=NULL;
                                 }
                             #endif //MEDIAINFO_FIXITY
 

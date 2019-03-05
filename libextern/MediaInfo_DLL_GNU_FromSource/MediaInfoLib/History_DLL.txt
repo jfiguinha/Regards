@@ -7,6 +7,158 @@ x Correction
 bug reports and feature request are here:
 https://sourceforge.net/p/mediainfo/_list/tickets
 
+Version 18.12, 2018-12-10
+--------------
++ DCP: support of multi-reel packages
++ EBUCore: added some FFV1 related metadata
++ JPEG: better info display of CYMK files
++ Provide source of the color related metadata (container or stream) (hidden by default)
++ MXF: display more information when wrapper/essence values are detected as not same
++ MXF: ProRes profiles
++ MPEG-4: ProRes RAW support
++ MPEG-TS: add support of parsing some ETSI TS 103-433 messages
+x MPEG-2 Video: variable GOP detection fix
+x MPEG-7 export: some fields were missing due to the removal of some legacy fields
+x ADTS: Fix display of channel count for 8-channel streams
+x ID3v2: fix some date related issues
+x I298, ID3v2: fix wrong read of recording date in some cases
+x I1032, PBCore2: fix essenceFrameSize with non Video tracks
+x I1096, JPEG: fix crash with one file
+x Several other crash and memory leak fixes
+
+Version 18.08.1, 2018-09-10
+--------------
+x Fix XML/MPEG-7/PBCore2 output discarding non ANSI characters
+
+Version 18.08, 2018-08-31
+--------------
++ Dolby Atmos (in E-AC-3 or TrueHD): support of bed channel count/configuration + objects count + complexity index
++ AC-3/DTS/AAC: display of info about legacy decoders behavior removed
++ AC-3/DTS/AAC: some changes in how format is displayed
++ AC-3/DTS/AAC: better split between technical names and commercial names
++ AAC: support of profile information from MP4_IOD_Tag AudioProfileLevelIndication
++ USAC (xHE-AAC) support
++ Audio channel layout: using a new terminology, better suited for 3D Audio, see https://mediaarea.net/AudioChannelLayout
++ DSD (DSF & DSDIFF) support
++ DXD (Digital eXtreme Definition) commercial name
++ Dolby Vision: use new form for profile (numbers instead of acronyms)
++ New format "Directory" when image sequence + audio file is detected (1 directory style for the moment)
++ PBCore2 export update, thanks to WGBH
++ MPEG-7 export update
++ NISO export update
++ AV1: support of AOmedia AV1 based on 1.0.0 specifications
++ ATRAC9 detection
++ Versionned RPMs
++ HEVC: better support of buggy SEI
++ ADTS: CodecID
++ Support of injection of external metadata
++ HTTPS: support of AWS extension "x-amz-*" in HTTPS headers, permitting to manage temporary credentials (AssumeRole)
++ MPEG-4, #1005: Obey edit list in QuickTime Timecode track
+x MIXML: hide fields which were hidden in normal output
+x Hybrid AC-3/E-AC-3 (in Blu-rays): bit rate info was wrong
+x Lot of bug fixes, see full log for more info
+
+Version 18.05, 2018-05-09
+--------------
++ PBCore 2.1 export update, sponsored by WGBH as part of the NEH-funded PBCore Development and Preservation Project
++ TIFF: more IFDs are supported (density, software...)
++ NISO Z39.87 output
+x Mastering Display Color Primaries: was always showing BT.709 instead of real value, when present
+x Attachments: do not provide anymore attachments content in XML by default, fixes
+
+Version 18.03.1, 2018-03-26
+ --------------
+x Fix regression on Windows with directory names beginning by n or r.
+
+Version 18.03, 2018-03-19
+--------------
++ AV1: support of AOmedia AV1 based on latest specifications draft, raw 
+(OBU) and in MKV
++ MXF: HDR metadata support
++ MXF: detection and parsing of ProRes (SMPTE RDD 44)
++ MXF: framerate container/stream incoherence detection
++ DPX: endianess, packing mode, compression mode
++ AVC: add consumer camera recording date/time
++ AVC: add consumer camera model name and iris F number
++ JPEG: ICC parsing, display of ICC color space
++ EBUCore: possibility to inject external metadata in the output from 
+MediaInfo
++ JSON output
++ Hide/Show fields option
++ Attachments: do not provide anymore attachments content in XML by 
+default, reducing XML output size
+x colour description: trying (again!) to have more coherent labeling
+x DCP/IMF: fix crash with some CPL files
+x I782, FFV1: Golomb Rice parsing was wrong
+x I210, FFV1: remove sar_den test must be 0 if sar_num is 0
+x AAC: SBR parsing issue with 3+ channel streams, with sometimes 
+false-positive PS detection
+x BMP: was wrongly considering 4-bit without palette as with palette so 
+wrong bit depth
+x DPX: some elements in trace were wrongly displayed (wrong endianess)
+x B1082, Ancillary data: fix infinite loop
+
+Version 17.12, 2017-12-21
+--------------
++ MediaInfoOnline: https://mediaarea.net/MediaInfoOnline
++ JavaScript build and example
++ Dolby Vision: detection of Dolby Vision and display of profile for MPEG-TS and MP4 files
++ MPEG-4: Support of external time code tracks (.qtc)
++ JPEG 2000: Support of IMF profiles
++ F523, BDMV: Support of UHD Blu-ray playlist
++ Endianness and Sign report for PCM Matroska tracks
++ MPEG-4: Resolume DXV display
++ MPEG-4: support of file names >64 chars long or non ASCII for referenced files
++ Slight binary size optimizations
++ colour_description: some changes in order to have more readable names (DCI P3, Display P3, sRGB)
+x MP4: crash with some HEVC streams with Dolby Vision
+x VC-3: frame rate should not be detected as wrong when there are several frames per block
+x Matroska: wrong color range info
+x Matroska: fix crash with some corrupted files
+x MXF: better support of height when there is an incoherence between header and footer
+x transfer_characteristics: fix BT.2020 difference between values 14 and 15
+x Trace: fix freeze with some files
+x Trace: invalid character encoding with some MOV files
+x Some memory leak fixes
+
+Version 17.10, 2017-11-02
+--------------
++ We need your support! Visit https://mediaarea.net/SupportUs
++ Version scheme is now YY.MM (year dot month, 2 digits each)
++ New MediaInfo XML output, with XSD, more suitable for automatic parsing. Use Option("Inform", "OLDXML") for keeping previous behavior
++ New "Info_OutputFormats" option for listing supported output formats
++ Universal Ad ID: refactored display, better display of value and registry, XML name slightly modified
++ MOV: support of HDR metadata (MasteringDisplayColorVolume, MaxCLL, MaxFALL)
++ BWF: display of UMID and loudness info
++ AAC: show program_config_element in trace
++ MPEG Audio: frame rate info
++ PCM in WAV and Matroska: Support of ValidBitsPerSample
++ I197, EBUCore: 1.8 output uses now final version of XSD and final XSD location
++ Matroska: tweaking frame rate empirical detection for some corner cases
+x I1070, LAME 3.100 info tag was incorrectly parsed
+x B1068, MPEG Audio: Incoherent duration between General and Audio parts, Audio part duration fixed
+x Matroska: showing "A_MS/ACM" Matroska CodecID
+x MXF: Fix crash with some buggy files
+x MXF: was not well supporting MXF referencing only 1 file
+x PCM in WAV: 8-bit content is unsigned and without endianess
+x PCM in WAV and Matroska: More coherency between Wave info and ExtensibleWave Info (bitdepth, sign)
+x WAV: GUID display was with first 8 bytes in wrong order
+x Several crash fixes
+
+Version 0.7.99, 2017-09-11
+--------------
++ EBUCore: JSON output (--Output=EBUCore_1.8_JSON)
++ EBUCore: add writingLibraryName and writingLibraryVersion attributes
++ Ad-ID identifier display on a single line ("Value (Registry)" format)
++ MPEG-4: Better display of format of VobSub tracks
++ MPEG-4: CodecID is stsd name + ObjectTypeId for mp4a, mp4v, mp4s
++ AVC: preferred_transfer_characteristics support
++ MPEG Video, MPEG-4 Visual, AVC, HEVC, MPEG-4, Matroska: correct detection of RGB
++ matrix_coefficients: detection of Y'D'zD'x and Chromaticity-derived
++ AAC: info about SBR/PS being implicit/explicit/NBC (Not Backward Compatible)
++ AAC: indicate audioObjectType in CodecID
+x Fix a weird 1.334 DAR due to a rounding issue
+
 Version 0.7.98, 2017-08-08
 --------------
 + Delphi XE8 64 bit support

@@ -119,6 +119,7 @@ private :
         inline void Header_Parse_Events() {}
         inline void Header_Parse_Events_Duration(int64u) {}
     #endif //MEDIAINFO_EVENTS
+     void Header_Parse_Events_Duration_Helper(int64u& program_clock_reference, const bool discontinuity_indicator);
 
     //Helpers
     void Streams_Update_Programs();
@@ -136,6 +137,7 @@ private :
     void Streams_Update_Duration_End();
     void SetAllToPES();
     void transport_private_data(int8u transport_private_data_length);
+    void MergeGeneral(complete_stream::stream* Parser, general Parameter);
 
     #if MEDIAINFO_DUPLICATE
         //File__Duplicate

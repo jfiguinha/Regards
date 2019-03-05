@@ -26,12 +26,13 @@
 #include "MediaInfo/OutputHelpers.h"
 #include <ctime>
 #include <cmath>
+#include "tinyxml2.h"
+
 using namespace std;
 //---------------------------------------------------------------------------
 
 namespace MediaInfoLib
 {
-
 //---------------------------------------------------------------------------
 extern MediaInfo_Config Config;
 //---------------------------------------------------------------------------
@@ -413,204 +414,6 @@ int32u EbuCore_VideoCompressionCodeCS_termID(MediaInfo_Internal &MI, size_t Stre
     return 0;
 }
 
-Ztring EbuCore_VideoCompressionCodeCS_Name(int32u termID, MediaInfo_Internal &MI, size_t StreamPos) //xxyyzz: xx=main number, yy=sub-number, zz=sub-sub-number
-{
-    switch (termID/10000)
-    {
-        case 1 : return __T("MPEG-1 Video");
-        case 2 :    switch ((termID%10000)/100)
-                    {
-                        case 1 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video Simple Profile @ Main Level");
-                                        default: return __T("MPEG-2 Video Simple Profile");
-                                    }
-                        case 2 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video Main Profile @ Low Level");
-                                        case 2 : return __T("MPEG-2 Video Main Profile @ Main Level");
-                                        case 3 : return __T("MPEG-2 Video Main Profile @ High 1440 Level");
-                                        case 4 : return __T("MPEG-2 Video Main Profile @ High Level");
-                                        default: return __T("MPEG-2 Video Main Profile");
-                                    }
-                        case 3 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video SNR Scalable Profile @ Low Level");
-                                        case 2 : return __T("MPEG-2 Video SNR Scalable Profile @ Main Level");
-                                        default: return __T("MPEG-2 Video SNR Scalable Profile");
-                                    }
-                        case 4 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video Spatial Scalable Profile @ Main Level");
-                                        case 2 : return __T("MPEG-2 Video Spatial Scalable Profile @ High 1440 Level");
-                                        case 3 : return __T("MPEG-2 Video Spatial Scalable Profile @ High Level");
-                                        default: return __T("MPEG-2 Video Spatial Scalable Profile");
-                                    }
-                        case 5 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video High Profile @ Main Level");
-                                        case 2 : return __T("MPEG-2 Video High Profile @ High 1440 Level");
-                                        case 3 : return __T("MPEG-2 Video High Profile @ High Level");
-                                        default: return __T("MPEG-2 Video High Profile");
-                                    }
-                        case 6 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video Multiview Profile @ Main Level");
-                                        default: return __T("MPEG-2 Video Multiview Profile");
-                                    }
-                        case 7 :    switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-2 Video 4:2:2 Profile @ Main Level");
-                                        default: return __T("MPEG-2 Video 4:2:2 Profile");
-                                    }
-                        default: return __T("MPEG-2 Video");
-                    }
-        case 3 :    switch ((termID%10000)/100)
-                    {
-                        case  1 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Simple Profile @ Level 0");
-                                        case 2 : return __T("MPEG-4 Visual Simple Profile @ Level 1");
-                                        case 3 : return __T("MPEG-4 Visual Simple Profile @ Level 2");
-                                        case 4 : return __T("MPEG-4 Visual Simple Profile @ Level 3");
-                                        default: return __T("MPEG-4 Visual Simple Profile");
-                                    }
-                        case  2 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Simple Scalable Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Simple Scalable Profile @ Level 2");
-                                        default: return __T("MPEG-4 Visual Simple Scalable Profile");
-                                    }
-                        case  3 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 0");
-                                        case 2 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 1");
-                                        case 3 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 2");
-                                        case 4 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 3");
-                                        case 5 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 4");
-                                        case 6 : return __T("MPEG-4 Advanced Visual Simple Profile @ Level 5");
-                                        default: return __T("MPEG-4 Advanced Visual Simple Profile");
-                                    }
-                        case  4 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Core Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Core Profile @ Level 2");
-                                        default: return __T("MPEG-4 Visual Core Profile");
-                                    }
-                        case  5 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Core-Scalable Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Core-Scalable Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Core-Scalable Profile @ Level 3");
-                                        default: return __T("MPEG-4 Visual Core-Scalable Profile");
-                                    }
-                        case  6 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual AdvancedCore Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual AdvancedCore Profile @ Level 2");
-                                        default: return __T("MPEG-4 Visual AdvancedCore Profile");
-                                    }
-                        case  7 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Main Profile @ Level 2");
-                                        case 2 : return __T("MPEG-4 Visual Main Profile @ Level 3");
-                                        case 3 : return __T("MPEG-4 Visual Main Profile @ Level 4");
-                                        default: return __T("MPEG-4 Visual Main Profile");
-                                    }
-                        case  8 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual N-bit Profile @ Level 2");
-                                        default: return __T("MPEG-4 Visual Main Profile");
-                                    }
-                        case  9 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Advanced Real Time Simple Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Advanced Real Time Simple Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Advanced Real Time Simple Profile @ Level 3");
-                                        case 4 : return __T("MPEG-4 Visual Advanced Real Time Simple Profile @ Level 4");
-                                        default: return __T("MPEG-4 Visual Advanced Real Time Simple Profile");
-                                    }
-                        case 10 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Advanced Coding Efficiency Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Advanced Coding Efficiency Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Advanced Coding Efficiency Profile @ Level 3");
-                                        case 4 : return __T("MPEG-4 Visual Advanced Coding Efficiency Profile @ Level 4");
-                                        default: return __T("MPEG-4 Visual Advanced Coding Efficiency Profile");
-                                    }
-                        case 11 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Simple Studio Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Simple Studio Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Simple Studio Profile @ Level 3");
-                                        case 4 : return __T("MPEG-4 Visual Simple Studio Profile @ Level 4");
-                                        default: return __T("MPEG-4 Visual Simple Studio Profile");
-                                    }
-                        case 12 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Core Studio Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Core Studio Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Core Studio Profile @ Level 3");
-                                        case 4 : return __T("MPEG-4 Visual Core Studio Profile @ Level 4");
-                                        default: return __T("MPEG-4 Visual Core Studio Profile");
-                                    }
-                        case 13 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 0");
-                                        case 2 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 1");
-                                        case 3 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 2");
-                                        case 4 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 3");
-                                        case 5 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 4");
-                                        case 6 : return __T("MPEG-4 Visual Fine Granularity Scalable Profile @ Level 5");
-                                        default: return __T("MPEG-4 Visual Fine Granularity Scalable Profile");
-                                    }
-                        case 14 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Simple Face Animation Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Simple Face Animation Profile @ Level 2");
-                                        default: return __T("MPEG-4 Simple Face Animation Profile");
-                                    }
-                        case 15 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Simple FBA Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Simple FBA Profile @ Level 2");
-                                        default: return __T("MPEG-4 Simple FBA Profile");
-                                    }
-                        case 16 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Basic Animated Texture Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Basic Animated Texture Profile @ Level 2");
-                                        default: return __T("MPEG-4 Basic Animated Texture Profile");
-                                    }
-                        case 17 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Advanced Scalable Texture Profile @ Level 1");
-                                        default: return __T("MPEG-4 Advanced Scalable Texture Profile");
-                                    }
-                        case 18 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Advanced Scalable Texture Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Advanced Scalable Texture Profile @ Level 2");
-                                        case 3 : return __T("MPEG-4 Visual Advanced Scalable Texture Profile @ Level 3");
-                                        default: return __T("MPEG-4 Visual Advanced Scalable Texture Profile");
-                                    }
-                        case 19 :   switch (termID%100)
-                                    {
-                                        case 1 : return __T("MPEG-4 Visual Hybrid Profile @ Level 1");
-                                        case 2 : return __T("MPEG-4 Visual Hybrid Profile @ Level 2");
-                                        default: return __T("MPEG-4 Visual Hybrid Profile");
-                                    }
-                        default: return __T("MPEG-4 Visual");
-                    }
-        case 4 :    return __T("JPEG");
-        case 5 :    return __T("MJPEG");
-        case 6 :    return __T("JPEG2000");
-        case 7 :    return __T("H261");
-        case 8 :    return __T("H263");
-        default: return MI.Get(Stream_Video, StreamPos, Video_Format);
-    }
-}
-
 //---------------------------------------------------------------------------
 int32u EbuCore_AudioCompressionCodeCS_termID(MediaInfo_Internal &MI, size_t StreamPos)
 {
@@ -774,12 +577,12 @@ void EbuCore_WithFactor(Node* Parent, const string& Name, const Ztring& Rational
 
     if(Name.empty())
     {
-        Parent->Add_Child("ebucore:factorNumerator", factorNumerator);
-        Parent->Add_Child("ebucore:factorDenominator", factorDenominator);
+        Parent->Add_Child("ebucore:factorNumerator", factorNumerator, true);
+        Parent->Add_Child("ebucore:factorDenominator", factorDenominator, true);
     }
     else
     {
-        Node* Child=Parent->Add_Child(Name, (nominal.empty()?Ztring::ToZtring(Rational.To_float64(), 0):nominal));
+        Node* Child=Parent->Add_Child(Name, (nominal.empty()?Ztring::ToZtring(Rational.To_float64(), 0):nominal), true);
         if (!factorNumerator.empty())
             Child->Add_Attribute("factorNumerator", factorNumerator);
         if (!factorDenominator.empty())
@@ -806,7 +609,12 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
     //if (!MI.Get(Stream_Video, StreamPos, Video_ID).empty())
     //    ToReturn+=__T(" videoFormatId=\"")+MI.Get(Stream_Video, StreamPos, Video_ID)+__T("\"");
     Child->Add_Attribute_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Format, "videoFormatName");
-    Child->Add_Attribute_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Format_Version, "videoFormatVersionId");
+    Ztring Format_Version=MI.Get(Stream_Video, StreamPos, Video_Format_Version);
+    if (!Format_Version.empty())
+    {
+        Format_Version.FindAndReplace(__T("Version "), Ztring());
+        Child->Add_Attribute("videoFormatVersionId", Format_Version);
+    }
 
     //width
     if (!MI.Get(Stream_Video, StreamPos, Video_Width).empty())
@@ -816,7 +624,7 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             Width=MI.Get(Stream_Video, StreamPos, Video_Width_Original);
         else
             Width=MI.Get(Stream_Video, StreamPos, Video_Width);
-        Child->Add_Child("ebucore:width", Width, "unit", "pixel");
+        Child->Add_Child("ebucore:width", Width, "unit", "pixel", true);
     }
 
     //height
@@ -827,11 +635,11 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             Height=MI.Get(Stream_Video, StreamPos, Video_Height_Original);
         else
             Height=MI.Get(Stream_Video, StreamPos, Video_Height);
-        Child->Add_Child("ebucore:height", Height, "unit", "pixel");
+        Child->Add_Child("ebucore:height", Height, "unit", "pixel", true);
     }
 
     //lines
-    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Height_Original, "ebucore:lines");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Height_Original, "ebucore:lines", true);
 
     //frameRate
     if (!MI.Get(Stream_Video, StreamPos, Video_FrameRate).empty())
@@ -849,7 +657,7 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             factorDenominator=AspectRatioString.substr(AspectRatioString_Pos+1);
         }
 
-        Node* Child2=Child->Add_Child("ebucore:aspectRatio", "", "typeLabel", "display");
+        Node* Child2=Child->Add_Child("ebucore:aspectRatio", "", "typeLabel", "display", true);
         EbuCore_WithFactor(Child2, string(), MI.Get(Stream_Video, StreamPos, Video_DisplayAspectRatio), factorNumerator, factorDenominator);
     }
 
@@ -861,7 +669,7 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
         Ztring TermID_String;
         if (TermID)
         {
-            typeLabel=EbuCore_VideoCompressionCodeCS_Name(TermID, MI, StreamPos);
+            typeLabel=VideoCompressionCodeCS_Name(TermID, MI, StreamPos);
             TermID_String=Ztring::ToZtring(TermID/10000);
             if (TermID%10000)
             {
@@ -876,25 +684,30 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
         }
         else
             typeLabel=MI.Get(Stream_Video, StreamPos, Video_Format_Profile);
-        Node* Child2=Child->Add_Child("ebucore:videoEncoding", "", "typeLabel", typeLabel);
-        if (!TermID_String.empty())
-            Child2->Add_Attribute("typeLink", __T("http://www.ebu.ch/metadata/cs/ebu_VideoCompressionCodeCS.xml#")+TermID_String);
+        if (!typeLabel.empty() || !TermID_String.empty())
+        {
+            Node* Child2=Child->Add_Child("ebucore:videoEncoding", string(), true);
+            if (!typeLabel.empty())
+                Child2->Add_Attribute("typeLabel", typeLabel);
+            if (!TermID_String.empty())
+                Child2->Add_Attribute("typeLink", __T("http://www.ebu.ch/metadata/cs/ebu_VideoCompressionCodeCS.xml#")+TermID_String);
+        }
     }
 
     //codec
     if (!MI.Get(Stream_Video, StreamPos, Video_CodecID).empty() || !MI.Get(Stream_Video, StreamPos, Video_Format_Commercial_IfAny).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:codec");
+        Node* Child2=Child->Add_Child("ebucore:codec", true);
         if (!MI.Get(Stream_Video, StreamPos, Video_CodecID).empty())
-            Child2->Add_Child("ebucore:codecIdentifier")->Add_Child("dc:identifier", MI.Get(Stream_Video, StreamPos, Video_CodecID));
-        Child2->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Format_Commercial_IfAny, "ebucore:name");
+            Child2->Add_Child("ebucore:codecIdentifier", true)->Add_Child("dc:identifier", MI.Get(Stream_Video, StreamPos, Video_CodecID), true);
+        Child2->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Format_Commercial_IfAny, "ebucore:name", true);
     }
 
     //bitRate
-    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_BitRate, "ebucore:bitRate");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_BitRate, "ebucore:bitRate", true);
 
     //bitRateMax
-    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_BitRate_Maximum, "ebucore:bitRateMax");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Video, StreamPos, Video_BitRate_Maximum, "ebucore:bitRateMax", true);
 
     //bitRateMode
     if (!MI.Get(Stream_Video, StreamPos, Video_BitRate_Mode).empty())
@@ -904,7 +717,7 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             bitRateMode=__T("constant");
         if (bitRateMode==__T("VBR"))
             bitRateMode=__T("variable");
-        Child->Add_Child("ebucore:bitRateMode", bitRateMode);
+        Child->Add_Child("ebucore:bitRateMode", bitRateMode, true);
     }
 
     //scanningFormat
@@ -914,7 +727,7 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
         if (ScanType==__T("MBAFF"))
             ScanType=__T("Interlaced");
         ScanType.MakeLowerCase();
-        Child->Add_Child("ebucore:scanningFormat", ScanType);
+        Child->Add_Child("ebucore:scanningFormat", ScanType, true);
      }
 
     //scanningOrder
@@ -927,20 +740,20 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             ScanOrder=__T("bottom");
         if (ScanOrder.find(__T("Pulldown"))!=string::npos)
             ScanOrder=__T("pulldown");
-        Child->Add_Child("ebucore:scanningOrder", ScanOrder);
+        Child->Add_Child("ebucore:scanningOrder", ScanOrder, true);
     }
 
     //videoTrack
     if (!MI.Get(Stream_Video, StreamPos, Video_ID).empty() || !MI.Get(Stream_Video, StreamPos, Video_Title).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:videoTrack");
+        Node* Child2=Child->Add_Child("ebucore:videoTrack", true);
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Video, StreamPos, Video_ID, "trackId");
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Title, "trackName");
     }
 
     //flag_3D
     if (!MI.Get(Stream_Video, StreamPos, Video_MultiView_Count).empty())
-        Child->Add_Child("ebucore:flag_3D", "true");
+        Child->Add_Child("ebucore:flag_3D", std::string("true"), true);
 
     //technicalAttributeString - ActiveFormatDescription
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, Video_ActiveFormatDescription, Child, "ActiveFormatDescription");
@@ -969,6 +782,9 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
     //technicalAttributeString - StreamSize
     Add_TechnicalAttributeInteger_IfNotEmpty(MI, Stream_Video, StreamPos, Video_StreamSize, Child, "StreamSize", Export_EbuCore::Version_Max, Version>=Export_EbuCore::Version_1_6?"byte":NULL);
 
+    //technicalAttributeString - Compression_Mode
+    Add_TechnicalAttributeInteger_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Compression_Mode, Child, "Compression_Mode");
+
     //technicalAttributeString - BitDepth
     Add_TechnicalAttributeInteger_IfNotEmpty(MI, Stream_Video, StreamPos, Video_BitDepth, Child, "BitDepth", Export_EbuCore::Version_Max, Version>=Export_EbuCore::Version_1_6?"bit":NULL);
 
@@ -977,6 +793,9 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
 
     //technicalAttributeString
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "FpaVersion", Child, "FPAVersion");
+
+    //technicalAttributeString - Format_Settings_GOP
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, Video_Format_Settings_GOP, Child, "GOP");
 
     //technicalAttributeBoolean - Format_Settings_CABAC
     if (MI.Get(Stream_Video, StreamPos, Video_Format)==__T("AVC"))
@@ -990,7 +809,25 @@ void EbuCore_Transform_Video(Node* Parent, MediaInfo_Internal &MI, size_t Stream
     Add_TechnicalAttributeBoolean_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "FpaPass", Child, "MBAFF");
 
     //technicalAttributeString
-    Child->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "VideoComments", "ebucore:comment", "typeLabel", "VideoComments");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "VideoComments", "ebucore:comment", "typeLabel", std::string("VideoComments"), true);
+
+    //technicalAttributeString - Encoded_Library
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "Encoded_Library/String", Child, "WritingLibrary");
+
+    //technicalAttributeString - Default
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "Default", Child, "Default");
+
+    //technicalAttributeString - Forced
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "Forced", Child, "Forced");
+
+    //technicalAttributeString - coder_type
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "coder_type", Child, "coder_type");
+
+    //technicalAttributeString - ErrorDetectionType
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "ErrorDetectionType", Child, "ErrorDetectionType");
+
+    //technicalAttributeString - MaxSlicesCount
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Video, StreamPos, "MaxSlicesCount", Child, "MaxSlicesCount");
 }
 
 //---------------------------------------------------------------------------
@@ -1009,7 +846,12 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
 
     Node* Child=Parent->Add_Child("ebucore:audioFormat", true);
     Child->Add_Attribute_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Format, "audioFormatName");
-    Child->Add_Attribute_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Format_Version, "audioFormatVersionId");
+    Ztring Format_Version=MI.Get(Stream_Audio, StreamPos, Audio_Format_Version);
+    if (!Format_Version.empty())
+    {
+        Format_Version.FindAndReplace(__T("Version "), Ztring());
+        Child->Add_Attribute("audioFormatVersionId", Format_Version);
+    }
 
     //audioEncoding
     //if (!MI.Get(Stream_Audio, StreamPos, Audio_Format_Profile).empty())
@@ -1035,7 +877,7 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
         else
             typeLabel=MI.Get(Stream_Audio, StreamPos, Audio_Format_Profile);
 
-        Node* Child2=Child->Add_Child("ebucore:audioEncoding", "", "typeLabel", typeLabel);
+        Node* Child2=Child->Add_Child("ebucore:audioEncoding", "", "typeLabel", typeLabel, true);
         if (!TermID_String.empty())
             Child2->Add_Attribute("typeLink", __T("http://www.ebu.ch/metadata/cs/ebu_AudioCompressionCodeCS.xml#")+TermID_String);
     }
@@ -1043,27 +885,27 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
     //codec
     if (!MI.Get(Stream_Audio, StreamPos, Audio_CodecID).empty() || !MI.Get(Stream_Audio, StreamPos, Audio_Format_Commercial_IfAny).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:codec");
+        Node* Child2=Child->Add_Child("ebucore:codec", true);
         if (!MI.Get(Stream_Audio, StreamPos, Audio_CodecID).empty())
-            Child2->Add_Child("ebucore:codecIdentifier")->Add_Child("dc:identifier", MI.Get(Stream_Audio, StreamPos, Audio_CodecID));
-        Child2->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Format_Commercial_IfAny, "ebucore:name");
+            Child2->Add_Child("ebucore:codecIdentifier", true)->Add_Child("dc:identifier", MI.Get(Stream_Audio, StreamPos, Audio_CodecID), true);
+        Child2->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Format_Commercial_IfAny, "ebucore:name", true);
     }
 
     //audioTrackConfiguration
     if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("AudioTrackLayout")).empty())
-        Child->Add_Child("ebucore:audioTrackConfiguration", "", "typeLabel", MI.Get(Stream_Other, As11_Core_Pos, __T("AudioTrackLayout")));
+        Child->Add_Child("ebucore:audioTrackConfiguration", "", "typeLabel", MI.Get(Stream_Other, As11_Core_Pos, __T("AudioTrackLayout")), true);
 
     //samplingRate
-    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_SamplingRate, "ebucore:samplingRate");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_SamplingRate, "ebucore:samplingRate", true);
 
     //sampleSize
-    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitDepth, "ebucore:sampleSize");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitDepth, "ebucore:sampleSize", true);
 
     //bitRate
-    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitRate, "ebucore:bitRate");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitRate, "ebucore:bitRate", true);
 
     //bitRateMax
-    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitRate_Maximum, "ebucore:bitRateMax");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_BitRate_Maximum, "ebucore:bitRateMax", true);
 
     //bitRateMode
     if (!MI.Get(Stream_Audio, StreamPos, Audio_BitRate_Mode).empty())
@@ -1073,13 +915,13 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
             bitRateMode=__T("constant");
         if (bitRateMode==__T("VBR"))
             bitRateMode=__T("variable");
-        Child->Add_Child("ebucore:bitRateMode", bitRateMode);
+        Child->Add_Child("ebucore:bitRateMode", bitRateMode, true);
     }
 
     //audioTrack
     if (!MI.Get(Stream_Audio, StreamPos, Audio_ID).empty() || !MI.Get(Stream_Audio, StreamPos, Audio_Title).empty() || !MI.Get(Stream_Audio, StreamPos, Audio_Language).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:audioTrack");
+        Node* Child2=Child->Add_Child("ebucore:audioTrack", true);
         if (!MI.Get(Stream_Audio, StreamPos, Audio_ID).empty())
         {
             Ztring ID=MI.Get(Stream_Audio, StreamPos, Audio_ID);
@@ -1091,7 +933,7 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
    }
 
     //channels
-    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Channel_s_, "ebucore:channels");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_Channel_s_, "ebucore:channels", true);
 
     //format - technicalAttributeString - ChannelPositions
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_ChannelPositions, Child, "ChannelPositions");
@@ -1109,7 +951,7 @@ void EbuCore_Transform_Audio(Node* Parent, MediaInfo_Internal &MI, size_t Stream
     Add_TechnicalAttributeInteger_IfNotEmpty(MI, Stream_Audio, StreamPos, Audio_StreamSize, Child, "StreamSize", Export_EbuCore::Version_Max, Version>=Export_EbuCore::Version_1_6?"byte":NULL);
 
     //technicalAttributeString
-    Child->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "AudioComments", "ebucore:comment", "typeLabel", "AudioComments");
+    Child->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "AudioComments", "ebucore:comment", "typeLabel", std::string("AudioComments"), true);
 }
 
 //---------------------------------------------------------------------------
@@ -1119,13 +961,18 @@ void EbuCore_Transform_Text(Node* Parent, MediaInfo_Internal &MI, size_t StreamP
 
     //if (!MI.Get(Stream_Text, StreamPos, Text_ID).empty())
     //    ToReturn+=__T(" dataFormatId=\"")+MI.Get(Stream_Text, StreamPos, Text_ID)+__T("\"");
-    Child->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Format_Version, "dataFormatVersionId");
+    Ztring Format_Version=MI.Get(Stream_Text, StreamPos, Text_Format_Version);
+    if (!Format_Version.empty())
+    {
+        Format_Version.FindAndReplace(__T("Version "), Ztring());
+        Child->Add_Attribute("dataFormatVersionId", Format_Version);
+    }
     Child->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Format, "dataFormatName");
     Child->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_ID, "dataTrackId");
 
     //subtitlingTrack
     {
-        Node* Child2=Child->Add_Child("ebucore:captioningFormat");
+        Node* Child2=Child->Add_Child("ebucore:captioningFormat", true);
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Format, "captioningFormatName");
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_ID, "trackId");
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Title, "typeLabel");
@@ -1133,10 +980,10 @@ void EbuCore_Transform_Text(Node* Parent, MediaInfo_Internal &MI, size_t StreamP
 
         if (!MI.Get(Stream_Text, StreamPos, Text_CodecID).empty() || !MI.Get(Stream_Text, StreamPos, Text_Format_Commercial_IfAny).empty())
         {
-            Node* Child3=Child->Add_Child("ebucore:codec");
+            Node* Child3=Child->Add_Child("ebucore:codec", true);
             if (!MI.Get(Stream_Text, StreamPos, Text_CodecID).empty())
-                Child3->Add_Child("ebucore:codecIdentifier")->Add_Child("dc:identifier", MI.Get(Stream_Text, StreamPos, Text_CodecID));
-            Child3->Add_Child_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Format_Commercial_IfAny, "ebucore:name");
+                Child3->Add_Child("ebucore:codecIdentifier", true)->Add_Child("dc:identifier", MI.Get(Stream_Text, StreamPos, Text_CodecID), true);
+            Child3->Add_Child_IfNotEmpty(MI, Stream_Text, StreamPos, Text_Format_Commercial_IfAny, "ebucore:name", true);
         }
     }
 }
@@ -1406,7 +1253,7 @@ void EbuCore_Transform_AcquisitionMetadata_PerFrame_Multiple(Node* Parent, vecto
 //---------------------------------------------------------------------------
 void EbuCore_Transform_AcquisitionMetadata_parameterSegment(Node* Parent, vector<line> &Lines, vector<size_t> &Lines_All, float64 FrameRate)
 {
-    Node* Child=Parent->Add_Child("ebucore:parameterSegmentDataOutput");
+    Node* Child=Parent->Add_Child("ebucore:parameterSegmentDataOutput", true);
 
     for (size_t i = 0; i < Lines_All.size(); ++i)
     {
@@ -1423,7 +1270,7 @@ void EbuCore_Transform_AcquisitionMetadata_parameterSegment(Node* Parent, vector
 //---------------------------------------------------------------------------
 void EbuCore_Transform_AcquisitionMetadata_segmentParameter(Node* Parent, vector<line> &Lines, vector<size_t> &Lines_Unique, vector<size_t> &Lines_Multiple, float64 FrameRate)
 {
-    Node* Child=Parent->Add_Child("ebucore:segmentParameterDataOutput");
+    Node* Child=Parent->Add_Child("ebucore:segmentParameterDataOutput", true);
 
     //Single value
     if (!Lines_Unique.empty())
@@ -1451,7 +1298,7 @@ void EbuCore_Transform_AcquisitionMetadata(Node* Parent, MediaInfo_Internal &MI,
     Node* Child=Parent->Add_Child("ebucore:acquisitionData", true);
     Ztring StreamDuration=MI.Get(Stream_Other, StreamPos, Other_Duration_String3);
     if (!StreamDuration.empty())
-        Child->Add_Child("ebucore:extractionDuration", StreamDuration);
+        Child->Add_Child("ebucore:extractionDuration", StreamDuration, true);
     const Ztring FrameRate_String=MI.Get(Stream_Other, StreamPos, Other_FrameRate);
     const Ztring FrameRate_Num_String=MI.Get(Stream_Other, StreamPos, Other_FrameRate_Num);
     const Ztring FrameRate_Den_String=MI.Get(Stream_Other, StreamPos, Other_FrameRate_Den);
@@ -1521,12 +1368,12 @@ void EbuCore_Transform_TimeCode(Node* Parent, MediaInfo_Internal &MI, size_t Str
 
     //start
     {
-        Child->Add_Child("ebucore:timecodeStart")->Add_Child("ebucore:timecode", MI.Get(Stream_Other, StreamPos, Other_TimeCode_FirstFrame));
+        Child->Add_Child("ebucore:timecodeStart", true)->Add_Child("ebucore:timecode", MI.Get(Stream_Other, StreamPos, Other_TimeCode_FirstFrame), true);
     }
 
     if (!MI.Get(Stream_Other, StreamPos, Other_ID).empty() || !MI.Get(Stream_Other, StreamPos, Other_Title).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:timecodeTrack");
+        Node* Child2=Child->Add_Child("ebucore:timecodeTrack", true);
 
         if (!MI.Get(Stream_Other, StreamPos, Other_ID).empty())
         {
@@ -1564,7 +1411,7 @@ void EbuCore_Transform_Metadata(Node* Parent, MediaInfo_Internal &MI, size_t Str
 
     if (!MI.Get(Stream_Other, StreamPos, Other_ID).empty() || !MI.Get(Stream_Other, StreamPos, Other_Title).empty())
     {
-        Node* Child2=Child->Add_Child("ebucore:metadataTrack");
+        Node* Child2=Child->Add_Child("ebucore:metadataTrack", true);
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Other, StreamPos, Other_ID, "trackId");
         Child2->Add_Attribute_IfNotEmpty(MI, Stream_Other, StreamPos, Other_Title, "trackName");
     }
@@ -1574,8 +1421,10 @@ void EbuCore_Transform_Metadata(Node* Parent, MediaInfo_Internal &MI, size_t Str
 }
 
 //---------------------------------------------------------------------------
-Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquisitiondataoutputmode AcquisitionDataOutputMode)
+Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquisitiondataoutputmode AcquisitionDataOutputMode, format Format, Ztring ExternalMetadataValues, Ztring ExternalMetaDataConfig)
 {
+    bool UseExternalMetaData=(!ExternalMetaDataConfig.empty() && !ExternalMetadataValues.empty());
+
     //Current date/time is ISO format
     time_t Seconds=time(NULL);
     Ztring DateTime; DateTime.Date_From_Seconds_1970((int32u)Seconds);
@@ -1601,119 +1450,148 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
     }
 
     //ebuCoreMain
-    Node Node_CoreMain("ebucore:ebuCoreMain");
-    Node_CoreMain.Add_Attribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
+    Node* Node_CoreMain = new Node("ebucore:ebuCoreMain");
+    Node_CoreMain->Add_Attribute("xmlns:dc", "http://purl.org/dc/elements/1.1/");
     if (Version==Version_1_5)
     {
-        Node_CoreMain.Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebuCore_2014");
-        Node_CoreMain.Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
-        Node_CoreMain.Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        Node_CoreMain.Add_Attribute("xsi:schemaLocation", "urn:ebu:metadata-schema:ebuCore_2014 http://www.ebu.ch/metadata/schemas/EBUCore/20140318/EBU_CORE_20140318.xsd");
-        Node_CoreMain.Add_Attribute("version", "1.5");
+        Node_CoreMain->Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebuCore_2014");
+        Node_CoreMain->Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
+        Node_CoreMain->Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Node_CoreMain->Add_Attribute("xsi:schemaLocation", "urn:ebu:metadata-schema:ebuCore_2014 http://www.ebu.ch/metadata/schemas/EBUCore/20140318/EBU_CORE_20140318.xsd");
+        Node_CoreMain->Add_Attribute("version", "1.5");
     }
     else if (Version==Version_1_6)
     {
-        Node_CoreMain.Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebuCore_2015");
-        Node_CoreMain.Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
-        Node_CoreMain.Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        Node_CoreMain.Add_Attribute("xsi:schemaLocation", string("urn:ebu:metadata-schema:ebuCore_2015 http")+string(MediaInfoLib::Config.Https_Get()?"s":"")+"://www.ebu.ch/metadata/schemas/EBUCore/20150522/ebucore_20150522.xsd");
-        Node_CoreMain.Add_Attribute("version", "1.6");
+        Node_CoreMain->Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebuCore_2015");
+        Node_CoreMain->Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
+        Node_CoreMain->Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Node_CoreMain->Add_Attribute("xsi:schemaLocation", string("urn:ebu:metadata-schema:ebuCore_2015 http")+string(MediaInfoLib::Config.Https_Get()?"s":"")+"://www.ebu.ch/metadata/schemas/EBUCore/20150522/ebucore_20150522.xsd");
+        Node_CoreMain->Add_Attribute("version", "1.6");
     }
     else if (Version==Version_1_8)
     {
-        Node_CoreMain.Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebuCore_2017");
-        Node_CoreMain.Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
-        Node_CoreMain.Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        Node_CoreMain.Add_Attribute("xsi:schemaLocation", string("urn:ebu:metadata-schema:ebuCore_2017 http")+string(MediaInfoLib::Config.Https_Get()?"s":"")+"://raw.githubusercontent.com/ebu/ebucore/master/ebucore.xsd");
-        Node_CoreMain.Add_Attribute("version", "1.8");
+        Node_CoreMain->Add_Attribute("xmlns:ebucore", "urn:ebu:metadata-schema:ebucore");
+        Node_CoreMain->Add_Attribute("xmlns:xalan", "http://xml.apache.org/xalan");
+        Node_CoreMain->Add_Attribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        Node_CoreMain->Add_Attribute("xsi:schemaLocation", string("urn:ebu:metadata-schema:ebucore http")+string(MediaInfoLib::Config.Https_Get()?"s":"")+"://www.ebu.ch/metadata/schemas/EBUCore/20171009/ebucore.xsd");
+        Node_CoreMain->Add_Attribute("version", "1.8");
+        Node_CoreMain->Add_Attribute("writingLibraryName", "MediaInfoLib");
+        Node_CoreMain->Add_Attribute("writingLibraryVersion", MediaInfoLib::Config.Info_Version_Get().SubString(__T(" - v"), Ztring()));
     }
-    Node_CoreMain.Add_Attribute("dateLastModified", Date);
-    Node_CoreMain.Add_Attribute("timeLastModified", Time);
+    Node_CoreMain->Add_Attribute("dateLastModified", Date);
+    Node_CoreMain->Add_Attribute("timeLastModified", Time);
 
     //coreMetadata
-    Node* Node_CoreMetadata=Node_CoreMain.Add_Child("ebucore:coreMetadata");
-
-    //title
-    if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:title", "", "typeLabel", "PROGRAMME TITLE");
-        Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")));
-    }
-    else if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:title", "", "typeLabel", "EPISODE TITLE NUMBER");
-        Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")));
-    }
-
-    //alternativeTitle
-    if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("SeriesTitle")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:alternativeTitle", "", "typeLabel", "SERIES TITLE", true);
-        Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("SeriesTitle")));
-    }
-    if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")).empty() && !MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:alternativeTitle", "", "typeLabel", "EPISODE TITLE NUMBER", true);
-        Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")));
-    }
-
-    //description
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "Synopsis", "ebucore:description", "typeLabel", "SYNOPSIS", "dc:description", true);
-
-    //ProductPlacement
-    if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ProductPlacement")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:description", "", "typeLabel", "PRODUCT PLACEMENT", true);
-        Child->Add_Child("dc:description", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ProductPlacement"))==__T("yes")?"true":"false");
-    }
-
-    //ContactEmail / ContactTelephoneNumber
-    if (As11_UkDpp_Pos!=(size_t)-1 && (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")).empty() || !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")).empty()))
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
-        Node* Child2=Child->Add_Child("ebucore:contactDetails");
-        Node* Child3=Child2->Add_Child("ebucore:details");
-        if (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")).empty())
-            Child3->Add_Child("ebucore:emailAddress", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")));
-        if (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")).empty())
-            Child3->Add_Child("ebucore:telephoneNumber", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")));
-        Child->Add_Child("ebucore:role", "", "typeLabel", "contact");
-    }
-
-    //Originator
-    if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Originator")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
-        Node* Child2=Child->Add_Child("ebucore:organisationDetails");
-        Child2->Add_Child("ebucore:organisationName", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Originator")));
-        Child->Add_Child("ebucore:role", "", "typeLabel", "originator");
-    }
-
-    //Distributor
-    if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Distributor")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
-        Node* Child2=Child->Add_Child("ebucore:organisationDetails");
-        Child2->Add_Child("ebucore:organisationName", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Distributor")));
-        Child->Add_Child("ebucore:role", "", "typeLabel", "distributor");
-    }
-
-    //date
-    if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("CopyrightYear")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:date");
-        Child->Add_Child("ebucore:copyrighted", "", "startYear", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("CopyrightYear")));
-    }
-
-    //type
-    if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Genre")).empty())
-    {
-        Node* Child=Node_CoreMetadata->Add_Child("ebucore:type");
-        Child->Add_Child("ebucore:genre", "", "typeDefinition", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Genre")));
-    }
+    Node* Node_CoreMetadata=Node_CoreMain->Add_Child("ebucore:coreMetadata", true);
 
     //format
-    Node* Node_Format=Node_CoreMetadata->Add_Child("ebucore:format");
+    Node* Node_Format=new Node("ebucore:format", true);
+
+    //Use external metadata
+    if (UseExternalMetaData)
+    {
+        Ztring FileName;
+        if (!MI.Get(Stream_General, 0, General_FileName).empty())
+            FileName=MI.Get(Stream_General, 0, General_FileName);
+        if (!MI.Get(Stream_General, 0, General_FileExtension).empty())
+            FileName+=__T('.')+MI.Get(Stream_General, 0, General_FileExtension);
+        if (FileName.empty())
+        {
+            MediaInfoLib::Config.Log_Send(0xC0, 0xFF, 0, "File name not found in external metadata file");
+            delete Node_CoreMain;
+            delete Node_Format;
+            return Ztring();
+        }
+
+        if (!ExternalMetadata(FileName, ExternalMetadataValues, ExternalMetaDataConfig, ZtringList(__T("ebucore:ebuCoreMain;ebucore:coreMetadata")), __T("ebucore:format"), Node_CoreMetadata, Node_Format))
+        {
+            delete Node_CoreMain;
+            delete Node_Format;
+            return Ztring();
+        }
+    }
+
+    if (!UseExternalMetaData)
+    {
+        //title
+        if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:title", "", "typeLabel", "PROGRAMME TITLE", true);
+            Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")), true);
+        }
+        else if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:title", "", "typeLabel", "EPISODE TITLE NUMBER", true);
+            Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")), true);
+        }
+
+        //alternativeTitle
+        if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("SeriesTitle")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:alternativeTitle", "", "typeLabel", "SERIES TITLE", true);
+            Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("SeriesTitle")), true);
+        }
+        if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")).empty() && !MI.Get(Stream_Other, As11_Core_Pos, __T("ProgrammeTitle")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:alternativeTitle", "", "typeLabel", "EPISODE TITLE NUMBER", true);
+            Child->Add_Child("dc:title", MI.Get(Stream_Other, As11_Core_Pos, __T("EpisodeTitleNumber")), true);
+        }
+
+        //description
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "Synopsis", "ebucore:description", "typeLabel", "SYNOPSIS", "dc:description", true, true);
+
+        //ProductPlacement
+        if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ProductPlacement")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:description", "", "typeLabel", "PRODUCT PLACEMENT", true);
+            Child->Add_Child("dc:description", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ProductPlacement"))==__T("yes")?std::string("true"):std::string("false"), true);
+        }
+
+        //ContactEmail / ContactTelephoneNumber
+        if (As11_UkDpp_Pos!=(size_t)-1 && (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")).empty() || !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")).empty()))
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
+            Node* Child2=Child->Add_Child("ebucore:contactDetails", true);
+            Node* Child3=Child2->Add_Child("ebucore:details", true);
+            if (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")).empty())
+                Child3->Add_Child("ebucore:emailAddress", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactEmail")), true);
+            if (!MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")).empty())
+                Child3->Add_Child("ebucore:telephoneNumber", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("ContactTelephoneNumber")), true);
+            Child->Add_Child("ebucore:role", "", "typeLabel", "contact", true);
+        }
+
+        //Originator
+        if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Originator")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
+            Node* Child2=Child->Add_Child("ebucore:organisationDetails", true);
+            Child2->Add_Child("ebucore:organisationName", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Originator")), true);
+            Child->Add_Child("ebucore:role", "", "typeLabel", "originator", true);
+        }
+
+        //Distributor
+        if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Distributor")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:contributor", true);
+            Node* Child2=Child->Add_Child("ebucore:organisationDetails", true);
+            Child2->Add_Child("ebucore:organisationName", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Distributor")), true);
+            Child->Add_Child("ebucore:role", "", "typeLabel", "distributor", true);
+        }
+
+        //date
+        if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("CopyrightYear")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:date", true);
+            Child->Add_Child("ebucore:copyrighted", "", "startYear", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("CopyrightYear")), true);
+        }
+
+        //type
+        if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Genre")).empty())
+        {
+            Node* Child=Node_CoreMetadata->Add_Child("ebucore:type", true);
+            Child->Add_Child("ebucore:genre", "", "typeDefinition", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("Genre")), true);
+        }
+    }
 
     //format - videoFormat
     for (size_t Pos=0; Pos<MI.Count_Get(Stream_Video); Pos++)
@@ -1724,26 +1602,32 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         EbuCore_Transform_Audio(Node_Format, MI, Pos, Version);
 
     //format - containerFormat
-    Node* Node_Format_ContainerFormat=Node_Format->Add_Child("ebucore:containerFormat");
+    Node* Node_Format_ContainerFormat=Node_Format->Add_Child("ebucore:containerFormat", true);
     Node_Format_ContainerFormat->Add_Attribute_IfNotEmpty(MI, Stream_General, 0, General_Format, Version>=Version_1_6?"containerFormatName":"formatLabel");
-    Node_Format_ContainerFormat->Add_Attribute_IfNotEmpty(MI, Stream_General, 0, General_ID, "containerFormatId");
     if (Version >= Version_1_6)
     {
-        Node* Node_Format_ContainerFormat_ContainerEncoding=Node_Format_ContainerFormat->Add_Child("ebucore:containerEncoding");
+        Ztring Version=MI.Get(Stream_General, 0, General_Format_Version);
+        if (!Version.empty())
+        {
+            Version.FindAndReplace(__T("Version "), Ztring());
+            Node_Format_ContainerFormat->Add_Attribute("containerFormatVersionId", Version);
+        }
+        Node_Format_ContainerFormat->Add_Attribute_IfNotEmpty(MI, Stream_General, 0, MI.Get(Stream_General, 0, General_UniqueID).empty()?General_ID:General_UniqueID, "containerFormatId");
+        Node* Node_Format_ContainerFormat_ContainerEncoding=Node_Format_ContainerFormat->Add_Child("ebucore:containerEncoding", true);
         Node_Format_ContainerFormat_ContainerEncoding->Add_Attribute_IfNotEmpty(MI, Stream_General, 0, General_Format, "formatLabel");
         //if (Version>=Version_1_6 && !MI.Get(Stream_General, 0, General_Format_Profile).empty())
         //    ToReturn+=__T(" containeFormatProfile=\"")+MI.Get(Stream_General, 0, General_Format_Profile)+__T("\"");
     }
     if (!MI.Get(Stream_General, 0, General_CodecID).empty() || (!MI.Get(Stream_General, 0, General_Format_Commercial_IfAny).empty()))
     {
-        Node* Child=Node_Format_ContainerFormat->Add_Child("ebucore:codec");
+        Node* Child=Node_Format_ContainerFormat->Add_Child("ebucore:codec", true);
         if (!MI.Get(Stream_General, 0, General_CodecID).empty())
-        {
-            Node* Child2=Child->Add_Child("ebucore:codecIdentifier");
-            Child2->Add_Child("dc:identifier", MI.Get(Stream_General, 0, General_CodecID));
+        {   
+            Node* Child2=Child->Add_Child("ebucore:codecIdentifier", true);
+            Child2->Add_Child("dc:identifier", MI.Get(Stream_General, 0, General_CodecID), true);
         }
         if (!MI.Get(Stream_General, 0, General_Format_Commercial_IfAny).empty())
-            Child->Add_Child("ebucore:name", MI.Get(Stream_General, 0, General_Format_Commercial_IfAny));
+            Child->Add_Child("ebucore:name", MI.Get(Stream_General, 0, General_Format_Commercial_IfAny), true);
     }
     //format - containerFormat - technicalAttributeString - AS11ShimName
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Other, As11_Core_Pos, "ShimName", Node_Format_ContainerFormat, "AS11ShimName", Version);
@@ -1763,10 +1647,16 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
     //format - containerFormat - technicalAttributeString - Encoded_Library
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_General, 0, "Encoded_Library/String", Node_Format_ContainerFormat, "WritingLibrary", Version);
 
+    //format - containerFormat - technicalAttributeString - ErrorDetectionType
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_General, 0, "ErrorDetectionType", Node_Format_ContainerFormat, "ErrorDetectionType", Version);
+
+    //format - containerFormat - technicalAttributeString - Attachments
+    Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_General, 0, "Attachments", Node_Format_ContainerFormat, "Attachments", Version);
+
     //format - SigningPresent
     if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("SigningPresent")).empty())
     {
-        Node* Child=Node_Format->Add_Child("ebucore:signingFormat", "", "signingPresenceFlag", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("SigningPresent"))==__T("Yes")?"true":"false");
+        Node* Child=Node_Format->Add_Child("ebucore:signingFormat", "", "signingPresenceFlag", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("SigningPresent"))==__T("Yes")?"true":"false", true);
         if (Version==Version_1_5)
             Child->XmlCommentOut="(signingPresenceFlag not in XSD)";
     }
@@ -1779,7 +1669,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
     if (As11_Core_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_Core_Pos, __T("ClosedCaptionsPresent")).empty())
     {
         Node* Child=Node_Format->Add_Child("ebucore:dataFormat", true);
-        Node* Child2=Child->Add_Child("ebucore:captioningFormat", "", "captioningPresenceFlag", MI.Get(Stream_Other, As11_Core_Pos, __T("OpenCaptionsPresent"))==__T("Yes")?"true":"false");
+        Node* Child2=Child->Add_Child("ebucore:captioningFormat", "", "captioningPresenceFlag", MI.Get(Stream_Other, As11_Core_Pos, __T("OpenCaptionsPresent"))==__T("Yes")?"true":"false", true);
         Child2->Add_Attribute("closed", "true");
     }
 
@@ -1787,7 +1677,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
     if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("OpenCaptionsPresent")).empty())
     {
         Node* Child=Node_Format->Add_Child("ebucore:dataFormat", true);
-        Node* Child2=Child->Add_Child("ebucore:captioningFormat", "", "captioningPresenceFlag", MI.Get(Stream_Other, As11_Core_Pos, __T("OpenCaptionsPresent"))==__T("Yes")?"true":"false");
+        Node* Child2=Child->Add_Child("ebucore:captioningFormat", "", "captioningPresenceFlag", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("OpenCaptionsPresent"))==__T("Yes")?"true":"false", true);
         Child2->Add_Attribute("closed", "false");
     }
 
@@ -1810,7 +1700,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
     if (As11_UkDpp_Pos!=(size_t)-1 && !MI.Get(Stream_Other, As11_UkDpp_Pos, __T("LineUpStart")).empty())
     {
         Node* Child=Node_Format->Add_Child("ebucore:start", "", "typeLabel", "LineUpStart", true);
-        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("LineUpStart")));
+        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("LineUpStart")), true);
         startDone=true;
     }
 
@@ -1820,7 +1710,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         Node* Child=Node_Format->Add_Child("ebucore:start", "", "typeLabel", "IdentClockStart", true);
         if (Version==Version_1_5 && startDone)
             Child->XmlCommentOut="Not valid in XSD";
-        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("IdentClockStart")));
+        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("IdentClockStart")), true);
     }
 
     //format - duration
@@ -1840,7 +1730,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         Duration+=Ztring::ToZtring(DurationS, 3)+__T('S');
 
         Node* Child=Node_Format->Add_Child("ebucore:duration", true);
-        Child->Add_Child("ebucore:normalPlayTime", __T("PT")+Duration);
+        Child->Add_Child("ebucore:normalPlayTime", __T("PT")+Duration, true);
         durationDone=true;
     }
 
@@ -1850,11 +1740,11 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         Node* Child=Node_Format->Add_Child("ebucore:duration", "", "typeLabel", "TotalProgrammeDuration", true);
         if (Version==Version_1_5 && durationDone)
             Child->XmlCommentOut="Not valid in XSD";
-        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("TotalProgrammeDuration")));
+        Child->Add_Child("ebucore:timecode", MI.Get(Stream_Other, As11_UkDpp_Pos, __T("TotalProgrammeDuration")), true);
     }
 
     //format - fileSize
-    Node_Format->Add_Child_IfNotEmpty(MI, Stream_General, 0, General_FileSize, "ebucore:fileSize");
+    Node_Format->Add_Child_IfNotEmpty(MI, Stream_General, 0, General_FileSize, "ebucore:fileSize", true);
 
     //format - fileName
     if (!MI.Get(Stream_General, 0, General_FileName).empty())
@@ -1865,11 +1755,11 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
             Name+=__T('.');
             Name+=MI.Get(Stream_General, 0, General_FileExtension);
         }
-        Node_Format->Add_Child("ebucore:fileName", Name);
+        Node_Format->Add_Child("ebucore:fileName", Name, true);
     }
 
     //format - locator
-    Node_Format->Add_Child_IfNotEmpty(MI, Stream_General, 0, General_CompleteName, "ebucore:locator");
+    Node_Format->Add_Child_IfNotEmpty(MI, Stream_General, 0, General_CompleteName, "ebucore:locator", true);
 
     //format - technicalAttributeString - AudioLoudnessStandard
     Add_TechnicalAttributeString_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "AudioLoudnessStandard", Node_Format, "AudioLoudnessStandard");
@@ -1898,7 +1788,7 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         Ztring Date=DateTime.substr(0, 10);
         Ztring Time=DateTime.substr(11);
 
-        Node* Child=Node_Format->Add_Child("ebucore:dateCreated");
+        Node* Child=Node_Format->Add_Child("ebucore:dateCreated", true);
         Child->Add_Attribute("startDate", Date);
         Child->Add_Attribute("startTime", Time);
     }
@@ -1915,55 +1805,64 @@ Ztring Export_EbuCore::Transform(MediaInfo_Internal &MI, version Version, acquis
         Ztring Date=DateTime.substr(0, 10);
         Ztring Time=DateTime.substr(11);
 
-        Node* Child=Node_Format->Add_Child("ebucore:dateModified");
+        Node* Child=Node_Format->Add_Child("ebucore:dateModified", true);
         Child->Add_Attribute("startDate", Date);
         Child->Add_Attribute("startTime", Time);
     }
 
-    //identifier
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "ProductionNumber", "ebucore:identifier", "typeLabel", "PRODUCTION NUMBER", "dc:identifier", true);
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "OtherIdentifier", "ebucore:identifier", "typeLabel", "INTERNAL IDENTIFIER", "dc:identifier", true);
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "OtherIdentifierType", "ebucore:identifier", "typeLabel", "INTERNAL IDENTIFIER TYPE", "dc:identifier", true);
-
-    //format - PrimaryAudioLanguage
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_Core_Pos, "PrimaryAudioLanguage", "ebucore:language", "typeLabel", "PrimaryAudioLanguage", "dc:language", true);
-
-    //format - SecondaryAudioLanguage
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "SecondaryAudioLanguage", "ebucore:language", "typeLabel", "SecondaryAudioLanguage", "dc:language", true);
-
-    //format - TertiaryAudioLanguage
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "TertiaryAudioLanguage", "ebucore:language", "typeLabel", "TertiaryAudioLanguage", "dc:language", true);
-
-    //language
-    Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "ProgrammeTextLanguage", "ebucore:language", "typeLabel", "ProgrammeTextLanguage", "dc:language", true);
-
-    //part
-    if (As11_Segmentation_Pos!=(size_t)-1)
+    if (!UseExternalMetaData)
     {
-        size_t Pos=1;
-        for (;;)
+        Node_CoreMetadata->Childs.push_back(Node_Format);
+
+        //identifier
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "ProductionNumber", "ebucore:identifier", "typeLabel", "PRODUCTION NUMBER", "dc:identifier", true, true);
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "OtherIdentifier", "ebucore:identifier", "typeLabel", "INTERNAL IDENTIFIER", "dc:identifier", true, true);
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "OtherIdentifierType", "ebucore:identifier", "typeLabel", "INTERNAL IDENTIFIER TYPE", "dc:identifier", true, true);
+
+        //format - PrimaryAudioLanguage
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_Core_Pos, "PrimaryAudioLanguage", "ebucore:language", "typeLabel", "PrimaryAudioLanguage", "dc:language", true, true);
+
+        //format - SecondaryAudioLanguage
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "SecondaryAudioLanguage", "ebucore:language", "typeLabel", "SecondaryAudioLanguage", "dc:language", true, true);
+
+        //format - TertiaryAudioLanguage
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "TertiaryAudioLanguage", "ebucore:language", "typeLabel", "TertiaryAudioLanguage", "dc:language", true, true);
+
+        //language
+        Node_CoreMetadata->Add_Child_IfNotEmpty(MI, Stream_Other, As11_UkDpp_Pos, "ProgrammeTextLanguage", "ebucore:language", "typeLabel", "ProgrammeTextLanguage", "dc:language", true, true);
+
+        //part
+        if (As11_Segmentation_Pos!=(size_t)-1)
         {
-            Ztring Content=MI.Get(Stream_Other, As11_Segmentation_Pos, Ztring::ToZtring(Pos));
-            if (Content.empty())
-                break;
+            size_t Pos=1;
+            for (;;)
+            {
+                Ztring Content=MI.Get(Stream_Other, As11_Segmentation_Pos, Ztring::ToZtring(Pos));
+                if (Content.empty())
+                    break;
 
-            Ztring Begin=Content.SubString(Ztring(), __T(" + "));
-            Ztring Duration=Content.SubString(__T(" + "), __T(" = "));
+                Ztring Begin=Content.SubString(Ztring(), __T(" + "));
+                Ztring Duration=Content.SubString(__T(" + "), __T(" = "));
 
-            Node* Child=Node_CoreMetadata->Add_Child("ebucore:part", true);
-            Child->Add_Attribute("partNumber", Ztring::ToZtring(Pos));
-            Child->Add_Attribute("partTotalNumber", MI.Get(Stream_Other, As11_Segmentation_Pos, __T("PartTotal")));
-            Child->Add_Child("ebucore:partStartTime")->Add_Child("ebucore:timecode", Begin);
-            Child->Add_Child("ebucore:partDuration")->Add_Child("ebucore:timecode", Duration);
-            Pos++;
+                Node* Child=Node_CoreMetadata->Add_Child("ebucore:part", true);
+                Child->Add_Attribute("partNumber", Ztring::ToZtring(Pos));
+                Child->Add_Attribute("partTotalNumber", MI.Get(Stream_Other, As11_Segmentation_Pos, __T("PartTotal")));
+                Child->Add_Child("ebucore:partStartTime", true)->Add_Child("ebucore:timecode", Begin, true);
+                Child->Add_Child("ebucore:partDuration", true)->Add_Child("ebucore:timecode", Duration, true);
+                Pos++;
+            }
         }
     }
 
     Ztring ToReturn;
-    ToReturn=Ztring().From_UTF8(To_XML(Node_CoreMain, 0).c_str());
+    if(Format==Format_JSON)
+        ToReturn=Ztring().From_UTF8(To_JSON(*Node_CoreMain, 0, true, true).c_str());
+    else
+        ToReturn=Ztring().From_UTF8(To_XML(*Node_CoreMain, 0, true, true).c_str());
 
     //Carriage return
-    ToReturn.FindAndReplace(__T("\n"), EOL, 0, Ztring_Recursive);
+    if (MediaInfoLib::Config.LineSeparator_Get()!=__T("\n"))
+        ToReturn.FindAndReplace(__T("\n"), MediaInfoLib::Config.LineSeparator_Get(), 0, Ztring_Recursive);
 
     return ToReturn;
 }

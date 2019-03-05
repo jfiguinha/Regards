@@ -21,7 +21,7 @@
 //***************************************************************************
 
 //---------------------------------------------------------------------------
-#if defined(MEDIAINFO_MPEGV_YES) || defined(MEDIAINFO_MPEG4V_YES) || defined(MEDIAINFO_AVC_YES) || defined(MEDIAINFO_MPEG4_YES) || defined(MEDIAINFO_PRORES_YES)
+#if defined(MEDIAINFO_MPEGV_YES) || defined(MEDIAINFO_MPEG4V_YES) || defined(MEDIAINFO_AVC_YES) || defined(MEDIAINFO_HEVC_YES) || defined(MEDIAINFO_MPEG4_YES) || defined(MEDIAINFO_PRORES_YES)
 //---------------------------------------------------------------------------
 
 namespace MediaInfoLib
@@ -43,9 +43,9 @@ extern const char* Mpegv_colour_primaries(int8u colour_primaries)
         case  8 : return "Generic film";
         case  9 : return "BT.2020";                                     //Added in HEVC
         case 10 : return "XYZ";                                         //Added in HEVC 2014
-        case 11 : return "SMPTE RP 431-2";                              //Added in ISO 23001-8:201x/PDAM1
-        case 12 : return "SMPTE EG 432-1";                              //Added in ISO 23001-8:201x/PDAM1
-        case 22 : return "EBU Tech 3213";                               //Added in ISO 23001-8:201x/PDAM1
+        case 11 : return "DCI P3";                                      //Added in HEVC 2016
+        case 12 : return "Display P3";                                  //Added in HEVC 2016
+        case 22 : return "EBU Tech 3213";                               //Added in HEVC 2016
         default : return "";
     }
 }
@@ -55,22 +55,22 @@ extern const char* Mpegv_transfer_characteristics(int8u transfer_characteristics
 {
     switch (transfer_characteristics)
     {
-        case  1 : return "BT.709"; //Same as BT.609
+        case  1 : return "BT.709"; //Same as BT.601
         case  4 : return "BT.470 System M";
-        case  5 : return "BT.470 System B, BT.470 System G";
+        case  5 : return "BT.470 System B/G";
         case  6 : return "BT.601";
         case  7 : return "SMPTE 240M";
         case  8 : return "Linear";
         case  9 : return "Logarithmic (100:1)";                         //Added in MPEG-4 Visual
         case 10 : return "Logarithmic (316.22777:1)";                   //Added in MPEG-4 Visual
-        case 11 : return "IEC 61966-2-4";                               //Added in AVC
-        case 12 : return "BT.1361 extended colour gamut system";        //Added in AVC
-        case 13 : return "sYCC";                                        //Added in HEVC
-        case 14 : return "BT.2020 non-constant";                        //Added in HEVC
-        case 15 : return "BT.2020 constant";                            //Added in HEVC
-        case 16 : return "SMPTE ST 2084";                               //Added in HEVC 2015
-        case 17 : return "SMPTE ST 428-1";                              //Added in HEVC 2015
-        case 18 : return "HLG";                                         //Added in ISO 23001-8:201x/PDAM1
+        case 11 : return "xvYCC";                                       //Added in AVC
+        case 12 : return "BT.1361";                                     //Added in AVC
+        case 13 : return "sRGB/sYCC";                                   //Added in HEVC
+        case 14 : return "BT.2020 (10-bit)"; //Same a BT.601            //Added in HEVC, 10/12-bit difference is in ISO 23001-8
+        case 15 : return "BT.2020 (12-bit)"; //Same a BT.601            //Added in HEVC, 10/12-bit difference is in ISO 23001-8
+        case 16 : return "PQ";                                          //Added in HEVC 2015
+        case 17 : return "SMPTE 428M";                                  //Added in HEVC 2015
+        case 18 : return "HLG";                                         //Added in HEVC 2016
         default : return "";
     }
 }
@@ -83,15 +83,39 @@ extern const char* Mpegv_matrix_coefficients(int8u matrix_coefficients)
         case  0 : return "Identity";                                    //Added in AVC
         case  1 : return "BT.709";
         case  4 : return "FCC 73.682";
-        case  5 : return "BT.470 System B, BT.470 System G"; //Same as BT.601
-        case  6 : return "BT.601";
+        case  5 : return "BT.470 System B/G";
+        case  6 : return "BT.601"; //Same as BT.470 System B/G
         case  7 : return "SMPTE 240M";
         case  8 : return "YCgCo";                                       //Added in AVC
         case  9 : return "BT.2020 non-constant";                        //Added in HEVC
         case 10 : return "BT.2020 constant";                            //Added in HEVC
-        case 11 : return "Chromaticity-derived non-constant";           //Added in ISO 23001-8:201x/PDAM1
-        case 12 : return "Chromaticity-derived constant";               //Added in ISO 23001-8:201x/PDAM1
+        case 11 : return "Y'D'zD'x";                                    //Added in HEVC 2016
+        case 12 : return "Chromaticity-derived non-constant";           //Added in HEVC 2016
+        case 13 : return "Chromaticity-derived constant";               //Added in HEVC 2016
         case 14 : return "ICtCp";                                       //Added in HEVC 2016
+        default : return "";
+    }
+}
+
+//---------------------------------------------------------------------------
+extern const char* Mpegv_matrix_coefficients_ColorSpace(int8u matrix_coefficients)
+{
+    switch (matrix_coefficients)
+    {
+        case  0 :
+                  return "RGB";
+        case  1 :
+        case  4 :
+        case  5 :
+        case  6 :
+        case  7 :
+        case  8 :
+        case  9 :
+        case 10 :
+        case 11 :
+        case 12 :
+        case 14 :
+                  return "YUV";
         default : return "";
     }
 }
@@ -138,12 +162,21 @@ extern const float64 Mpegv_frame_rate[16]=
 };
 
 //---------------------------------------------------------------------------
-const char* Mpegv_Colorimetry_format[4]=
+const char* Mpegv_chroma_format[4]=
 {
     "",
     "4:2:0",
     "4:2:2",
     "4:4:4",
+};
+
+//---------------------------------------------------------------------------
+const char* Mpegv_chroma_format_Colorspace[4] =
+{
+    "",
+    "YUV",
+    "YUV",
+    "",
 };
 
 //---------------------------------------------------------------------------
@@ -1071,6 +1104,7 @@ File_Mpegv::File_Mpegv()
 
     //temporal_reference
     TemporalReference_Offset=0;
+    temporal_reference=0;
     #if defined(MEDIAINFO_DTVCCTRANSPORT_YES)
         GA94_03_Parser=NULL;
         GA94_03_TemporalReference_Offset=0;
@@ -1240,8 +1274,8 @@ void File_Mpegv::Streams_Fill()
 
     Fill(Stream_Video, 0, Video_Width, 0x1000*horizontal_size_extension+horizontal_size_value);
     Fill(Stream_Video, 0, Video_Height, 0x1000*vertical_size_extension+vertical_size_value);
-    Fill(Stream_Video, 0, Video_Colorimetry, Mpegv_Colorimetry_format[chroma_format]);
-    Fill(Stream_Video, 0, Video_ColorSpace, "YUV");
+    Fill(Stream_Video, 0, Video_ChromaSubsampling, Mpegv_chroma_format[chroma_format]);
+    Fill(Stream_Video, 0, Video_ColorSpace, Mpegv_chroma_format_Colorspace[chroma_format]);
     Fill(Stream_Video, 0, Video_BitDepth, 8);
 
     //AspectRatio
@@ -1341,13 +1375,13 @@ void File_Mpegv::Streams_Fill()
     //Profile
     if (!profile_and_level_indication_escape && profile_and_level_indication_profile!=(int8u)-1 && profile_and_level_indication_level!=(int8u)-1)
     {
-        Fill(Stream_Video, 0, Video_Format_Profile, Ztring().From_Local(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_Local(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]));
-        Fill(Stream_Video, 0, Video_Codec_Profile, Ztring().From_Local(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_Local(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]));
+        Fill(Stream_Video, 0, Video_Format_Profile, Ztring().From_UTF8(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_UTF8(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]));
+        Fill(Stream_Video, 0, Video_Codec_Profile, Ztring().From_UTF8(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_UTF8(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]));
     }
     else if (profile_and_level_indication_escape)
     {
-        Fill(Stream_Video, 0, Video_Format_Profile, Ztring().From_Local(Mpegv_profile_and_level_indication(profile_and_level_indication)));
-        Fill(Stream_Video, 0, Video_Codec_Profile, Ztring().From_Local(Mpegv_profile_and_level_indication(profile_and_level_indication)));
+        Fill(Stream_Video, 0, Video_Format_Profile, Ztring().From_UTF8(Mpegv_profile_and_level_indication(profile_and_level_indication)));
+        Fill(Stream_Video, 0, Video_Codec_Profile, Ztring().From_UTF8(Mpegv_profile_and_level_indication(profile_and_level_indication)));
     }
 
     //Standard
@@ -1358,6 +1392,8 @@ void File_Mpegv::Streams_Fill()
         Fill(Stream_Video, 0, Video_colour_primaries, Mpegv_colour_primaries(colour_primaries));
         Fill(Stream_Video, 0, Video_transfer_characteristics, Mpegv_transfer_characteristics(transfer_characteristics));
         Fill(Stream_Video, 0, Video_matrix_coefficients, Mpegv_matrix_coefficients(matrix_coefficients));
+        if (matrix_coefficients!=2)
+            Fill(Stream_Video, 0, Video_ColorSpace, Mpegv_matrix_coefficients_ColorSpace(matrix_coefficients), Unlimited, true, true);
     }
 
     //Matrix
@@ -1549,14 +1585,15 @@ void File_Mpegv::Streams_Finish()
     else if (!TimeCodeIsNotTrustable && Time_End_Seconds!=Error && FrameRate)
     {
         TimeCode Time_Begin_TC;
-        Time_Begin_TC.FramesPerSecond=(int8u)ceil(FrameRate);
-        Time_Begin_TC.DropFrame=group_start_IsParsed?group_start_drop_frame_flag:((FrameRate-ceil(FrameRate))?true:false);
+        const int8u ceilFrameRate=(int8u)ceil(FrameRate);
+        Time_Begin_TC.FramesPerSecond=ceilFrameRate;
+        Time_Begin_TC.DropFrame=group_start_IsParsed?group_start_drop_frame_flag:((FrameRate-ceilFrameRate)?true:false);
         Time_Begin_TC.Hours=(int8u)(Time_Begin_Seconds/3600);
         Time_Begin_TC.Minutes=(int8u)((Time_Begin_Seconds%3600)/60);
         Time_Begin_TC.Seconds=(int8u)(Time_Begin_Seconds%60);
         Time_Begin_TC.Frames=(int8u)Time_Begin_Frames;
         TimeCode Time_End_TC;
-        Time_End_TC.FramesPerSecond=(int8u)ceil(FrameRate);
+        Time_End_TC.FramesPerSecond=ceilFrameRate;
         Time_End_TC.DropFrame=Time_Begin_TC.DropFrame;
         Time_End_TC.Hours=(int8u)(Time_End_Seconds/3600);
         Time_End_TC.Minutes=(int8u)((Time_End_Seconds%3600)/60);
@@ -2021,7 +2058,7 @@ void File_Mpegv::Read_Buffer_Unsynched()
             AfdBarData_Parser->Open_Buffer_Unsynch();
     #endif //defined(MEDIAINFO_AFDBARDATA_YES)
 
-    #if defined(MEDIAINFO_ANCILLARY_YES)
+    #if defined(MEDIAINFO_ANCILLARY_YES) && defined(MEDIAINFO_CDP_YES)
         if (Ancillary && *Ancillary && (*Ancillary)->Cdp_Data.empty())
             (*Ancillary)->AspectRatio=0;
     #endif //defined(MEDIAINFO_ANCILLARY_YES)
@@ -2343,7 +2380,7 @@ void File_Mpegv::picture_start()
         TemporalReference[TemporalReference_Offset+temporal_reference]->IsValid=true;
 
         //picture_coding_types
-        if (picture_coding_type==1) //I-Frame
+        if (picture_coding_type==1  && !FirstFieldFound) //I-Frame
         {
             if (!picture_coding_types_Current.empty())
             {
@@ -2372,7 +2409,7 @@ void File_Mpegv::picture_start()
             }
             picture_coding_types_Current='I';
         }
-        else if (!picture_coding_types_Current.empty()) //If an I-Frame is already found
+        else if (!picture_coding_types_Current.empty() && !FirstFieldFound) //If an I-Frame is already found
             picture_coding_types_Current+=Mpegv_picture_coding_type[picture_coding_type];
 
         //Detecting streams with only I-Frames
@@ -2543,7 +2580,7 @@ void File_Mpegv::slice_start()
                 Element_Info1(__T("Frame (decoding order) ")+Ztring::ToZtring(Frame_Count));
                 if (Frame_Count_LastIFrame!=(int64u)-1)
                     Element_Info1(__T("Frame (presentation order) ")+Ztring::ToZtring(Frame_Count_LastIFrame+temporal_reference));
-                Element_Info1(__T("picture_coding_type ")+Ztring().From_Local(Mpegv_picture_coding_type[picture_coding_type]));
+                Element_Info1(__T("picture_coding_type ")+Ztring().From_UTF8(Mpegv_picture_coding_type[picture_coding_type]));
                 Element_Info1(__T("temporal_reference ")+Ztring::ToZtring(temporal_reference));
                 if (FrameInfo.PTS!=(int64u)-1)
                     Element_Info1(__T("PTS ")+Ztring().Duration_From_Milliseconds(float64_int64s(((float64)FrameInfo.PTS)/1000000)));
@@ -2597,7 +2634,7 @@ void File_Mpegv::slice_start()
         #endif //defined(MEDIAINFO_CDP_YES)
 
         //Active Format Description & Bar Data
-        #if defined(MEDIAINFO_AFDBARDATA_YES)
+        #if defined(MEDIAINFO_AFDBARDATA_YES) && defined(MEDIAINFO_ANCILLARY_YES)
             if (Ancillary && *Ancillary && !(*Ancillary)->AfdBarData_Data.empty())
             {
                 Element_Trace_Begin1("Active Format Description & Bar Data");
@@ -3071,6 +3108,7 @@ void File_Mpegv::slice_start_macroblock_block(int8u i)
                         }
                         Skip_SB(                                "dct_coefficient sign");
                     }
+                    break;
             default:
                     Element_Info1(Mpegv_dct_coefficients[dct_coefficient].mapped_to2);
                     Element_Info1(Mpegv_dct_coefficients[dct_coefficient].mapped_to3);
@@ -3155,7 +3193,7 @@ void File_Mpegv::user_data_start()
     if (Library_Start_Offset>0)
         Skip_XX(Library_Start_Offset,                           "junk");
     if (Library_End_Offset-Library_Start_Offset)
-        Get_Local(Library_End_Offset-Library_Start_Offset, Temp,"data");
+        Get_UTF8(Library_End_Offset-Library_Start_Offset, Temp, "data");
     if (Element_Offset<Element_Size)
         Skip_XX(Element_Size-Element_Offset,                    "junk");
 
@@ -3724,7 +3762,7 @@ void File_Mpegv::extension_start()
                         Get_S1 ( 4, profile_and_level_indication_level, "profile_and_level_indication_level"); Param_Info1(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
                     }
                     Get_SB (    progressive_sequence,           "progressive_sequence");
-                    Get_S1 ( 2, chroma_format,                  "chroma_format"); Param_Info1(Mpegv_Colorimetry_format[chroma_format]);
+                    Get_S1 ( 2, chroma_format,                  "chroma_format"); Param_Info1(Mpegv_chroma_format[chroma_format]);
                     Get_S1 ( 2, horizontal_size_extension,      "horizontal_size_extension");
                     Get_S1 ( 2, vertical_size_extension,        "vertical_size_extension");
                     Get_S2 (12, bit_rate_extension,             "bit_rate_extension");

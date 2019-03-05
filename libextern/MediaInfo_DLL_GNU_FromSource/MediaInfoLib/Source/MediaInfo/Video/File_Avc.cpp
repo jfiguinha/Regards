@@ -251,17 +251,29 @@ const char* Avc_user_data_DTG1_active_format[]=
 const char* Mpegv_colour_primaries(int8u colour_primaries);
 const char* Mpegv_transfer_characteristics(int8u transfer_characteristics);
 const char* Mpegv_matrix_coefficients(int8u matrix_coefficients);
+const char* Mpegv_matrix_coefficients_ColorSpace(int8u matrix_coefficients);
 
 //---------------------------------------------------------------------------
-static const char* Avc_Colorimetry_format_idc(int8u chroma_format_idc)
+static const char* Avc_ChromaSubsampling_format_idc(int8u chroma_format_idc)
 {
     switch (chroma_format_idc)
     {
-        case 0: return "monochrome";
         case 1: return "4:2:0";
         case 2: return "4:2:2";
         case 3: return "4:4:4";
-        default: return "Unknown";
+        default: return "";
+    }
+}
+
+//---------------------------------------------------------------------------
+static const char* Avc_ChromaSubsampling_format_idc_ColorSpace(int8u chroma_format_idc)
+{
+    switch (chroma_format_idc)
+    {
+        case 0: return "Y";
+        case 1: return "YUV";
+        case 2: return "YUV";
+        default: return "";
     }
 }
 
@@ -381,6 +393,49 @@ namespace AVC_Intra_Headers
                                                             0x00, 0x00, 0x01, 0x68, 0xCE, 0x33, 0x48, 0xD0 };
 };
 
+
+//---------------------------------------------------------------------------
+// Some DV Metadata info: http://www.freepatentsonline.com/20050076039.pdf
+static const char* MDPM(int8u ID)
+{
+    switch (ID)
+    {
+        case 0x18: return "Date/Time";                          // Is "Text header" in doc?
+        case 0x19: return "Date/Time (continue 1)";             // Is "Text" in doc?
+        case 0x70: return "Consumer Camera 1";
+        case 0x71: return "Consumer Camera 2";
+        case 0x73: return "Lens";
+        case 0x7F: return "Camera shutter";
+        case 0xA1: return "Iris (F)";
+        case 0xE0: return "Make Model";
+        case 0xE1: return "Rec Info";
+        case 0xE4: return "Model Name";
+        case 0xE5: return "Model Name (continue 1)";
+        case 0xE6: return "Model Name (continue 1)";
+        default  : return "";
+    }
+}
+
+//---------------------------------------------------------------------------
+static const char* MDPM_MakeName(int16u Value)
+{
+    switch (Value)
+    {
+        case 0x0103: return "Panasonic";
+        case 0x0108: return "Sony";
+        case 0x1011: return "Canon";
+        case 0x1104: return "JVC";
+        default    : return "";
+    }
+}
+
+//---------------------------------------------------------------------------
+// From DV
+extern const char*  Dv_consumer_camera_1_ae_mode[];
+extern const char*  Dv_consumer_camera_1_wb_mode[];
+extern const char*  Dv_consumer_camera_1_white_balance(int8u white_balance);
+extern const char*  Dv_consumer_camera_1_fcm[];
+
 //***************************************************************************
 // Constructor/Destructor
 //***************************************************************************
@@ -413,6 +468,9 @@ File_Avc::File_Avc()
 
     //Temporal references
     TemporalReferences_DelayedElement=NULL;
+
+    //Temp
+    preferred_transfer_characteristics=2;
 
     //Text
     #if defined(MEDIAINFO_DTVCCTRANSPORT_YES)
@@ -645,6 +703,8 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
         }
 
         //Colour description
+        if (preferred_transfer_characteristics!=2)
+            Fill(Stream_Video, 0, Video_transfer_characteristics, Mpegv_transfer_characteristics(preferred_transfer_characteristics));
         if ((*seq_parameter_set_Item)->vui_parameters->video_signal_type_present_flag)
         {
             Fill(Stream_Video, 0, Video_Standard, Avc_video_format[(*seq_parameter_set_Item)->vui_parameters->video_format]);
@@ -655,6 +715,8 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
                 Fill(Stream_Video, 0, Video_colour_primaries, Mpegv_colour_primaries((*seq_parameter_set_Item)->vui_parameters->colour_primaries));
                 Fill(Stream_Video, 0, Video_transfer_characteristics, Mpegv_transfer_characteristics((*seq_parameter_set_Item)->vui_parameters->transfer_characteristics));
                 Fill(Stream_Video, 0, Video_matrix_coefficients, Mpegv_matrix_coefficients((*seq_parameter_set_Item)->vui_parameters->matrix_coefficients));
+                if ((*seq_parameter_set_Item)->vui_parameters->matrix_coefficients!=2)
+                    Fill(Stream_Video, 0, Video_ColorSpace, Mpegv_matrix_coefficients_ColorSpace((*seq_parameter_set_Item)->vui_parameters->matrix_coefficients), Unlimited, true, true);
             }
         }
 
@@ -712,7 +774,7 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
     Fill(Stream_Video, 0, Video_Format, "AVC");
     Fill(Stream_Video, 0, Video_Codec, "AVC");
 
-    Ztring Profile=Ztring().From_Local(Avc_profile_idc((*seq_parameter_set_Item)->profile_idc));
+    Ztring Profile=Ztring().From_UTF8(Avc_profile_idc((*seq_parameter_set_Item)->profile_idc));
     switch ((*seq_parameter_set_Item)->profile_idc)
     {
         case  44 : // CAVLC 4:4:4 Intra
@@ -733,7 +795,8 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
     if ((*seq_parameter_set_Item)->frame_crop_top_offset || (*seq_parameter_set_Item)->frame_crop_bottom_offset)
         Fill(Stream_Video, StreamPos_Last, Video_Stored_Height, ((*seq_parameter_set_Item)->pic_height_in_map_units_minus1+1)*16*(2-(*seq_parameter_set_Item)->frame_mbs_only_flag));
     Fill(Stream_Video, 0, Video_PixelAspectRatio, PixelAspectRatio, 3, true);
-    Fill(Stream_Video, 0, Video_DisplayAspectRatio, Width*PixelAspectRatio/Height, 3, true); //More precise
+    if(Height)
+        Fill(Stream_Video, 0, Video_DisplayAspectRatio, Width*PixelAspectRatio/Height, 3, true); //More precise
     if (FrameRate_Divider==2)
     {
         Fill(Stream_Video, StreamPos_Last, Video_Format_Settings_FrameMode, "Frame doubling");
@@ -860,11 +923,9 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
         Fill(Stream_Video, 0, Video_Format_Settings_RefFrames, (*seq_parameter_set_Item)->max_num_ref_frames);
         Fill(Stream_Video, 0, Video_Codec_Settings_RefFrames, (*seq_parameter_set_Item)->max_num_ref_frames);
     }
-    if ((*seq_parameter_set_Item)->vui_parameters && (*seq_parameter_set_Item)->vui_parameters->matrix_coefficients == 0)
-        Fill(Stream_Video, 0, Video_ColorSpace, "RGB");
-    else
-        Fill(Stream_Video, 0, Video_ColorSpace, "YUV");
-    Fill(Stream_Video, 0, Video_Colorimetry, Avc_Colorimetry_format_idc((*seq_parameter_set_Item)->chroma_format_idc));
+    if (Retrieve(Stream_Video, 0, Video_ColorSpace).empty())
+        Fill(Stream_Video, 0, Video_ColorSpace, Avc_ChromaSubsampling_format_idc_ColorSpace((*seq_parameter_set_Item)->chroma_format_idc));
+    Fill(Stream_Video, 0, Video_ChromaSubsampling, Avc_ChromaSubsampling_format_idc((*seq_parameter_set_Item)->chroma_format_idc));
     if ((*seq_parameter_set_Item)->bit_depth_luma_minus8==(*seq_parameter_set_Item)->bit_depth_chroma_minus8)
         Fill(Stream_Video, 0, Video_BitDepth, (*seq_parameter_set_Item)->bit_depth_luma_minus8+8);
 }
@@ -872,7 +933,7 @@ void File_Avc::Streams_Fill(std::vector<seq_parameter_set_struct*>::iterator seq
 //---------------------------------------------------------------------------
 void File_Avc::Streams_Fill_subset(const std::vector<seq_parameter_set_struct*>::iterator seq_parameter_set_Item)
 {
-    Ztring Profile=Ztring().From_Local(Avc_profile_idc((*seq_parameter_set_Item)->profile_idc))+__T("@L")+Ztring().From_Number(((float)(*seq_parameter_set_Item)->level_idc)/10, 1);
+    Ztring Profile=Ztring().From_UTF8(Avc_profile_idc((*seq_parameter_set_Item)->profile_idc))+__T("@L")+Ztring().From_Number(((float)(*seq_parameter_set_Item)->level_idc)/10, 1);
     Ztring Profile_Base=Retrieve(Stream_Video, 0, Video_Format_Profile);
     Fill(Stream_Video, 0, Video_Format_Profile, Profile, true);
     if (!Profile_Base.empty())
@@ -1022,6 +1083,60 @@ bool File_Avc::Synched_Test()
 
 //---------------------------------------------------------------------------
 #if MEDIAINFO_DEMUX
+void File_Avc::Data_Parse_Iso14496()
+{
+    if (Demux_Avc_Transcode_Iso14496_15_to_Iso14496_10)
+    {
+        if (Element_Code==0x07)
+        {
+            std::vector<seq_parameter_set_struct*>::iterator Data_Item=seq_parameter_sets.begin();
+            if (Data_Item!=seq_parameter_sets.end() && (*Data_Item))
+            {
+                delete[] (*Data_Item)->Iso14496_10_Buffer;
+                (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
+                (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
+                (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
+                (*Data_Item)->Iso14496_10_Buffer[3]=0x67;
+                std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
+            }
+        }
+        if (Element_Code==0x08)
+        {
+            std::vector<pic_parameter_set_struct*>::iterator Data_Item=pic_parameter_sets.begin();
+            if (Data_Item!=pic_parameter_sets.end() && (*Data_Item))
+            {
+                delete[] (*Data_Item)->Iso14496_10_Buffer;
+                (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
+                (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
+                (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
+                (*Data_Item)->Iso14496_10_Buffer[3]=0x68;
+                std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
+            }
+        }
+        if (Element_Code==0x0F)
+        {
+            std::vector<seq_parameter_set_struct*>::iterator Data_Item=subset_seq_parameter_sets.begin();
+            if (Data_Item!=subset_seq_parameter_sets.end() && (*Data_Item))
+            {
+                SizeOfNALU_Minus1=0;
+                delete[] (*Data_Item)->Iso14496_10_Buffer;
+                (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
+                (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
+                (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
+                (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
+                (*Data_Item)->Iso14496_10_Buffer[3]=0x6F;
+                std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
 bool File_Avc::Demux_UnpacketizeContainer_Test()
 {
     const int8u*    Buffer_Temp=NULL;
@@ -1739,55 +1854,7 @@ void File_Avc::Data_Parse()
     #endif //MEDIAINFO_DUPLICATE
 
     #if MEDIAINFO_DEMUX
-        if (Demux_Avc_Transcode_Iso14496_15_to_Iso14496_10)
-        {
-            if (Element_Code==0x07)
-            {
-                std::vector<seq_parameter_set_struct*>::iterator Data_Item=seq_parameter_sets.begin();
-                if (Data_Item!=seq_parameter_sets.end() && (*Data_Item))
-                {
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x67;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-            if (Element_Code==0x08)
-            {
-                std::vector<pic_parameter_set_struct*>::iterator Data_Item=pic_parameter_sets.begin();
-                if (Data_Item!=pic_parameter_sets.end() && (*Data_Item))
-                {
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x68;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-            if (Element_Code==0x0F)
-            {
-                std::vector<seq_parameter_set_struct*>::iterator Data_Item=subset_seq_parameter_sets.begin();
-                if (Data_Item!=subset_seq_parameter_sets.end() && (*Data_Item))
-                {
-                    SizeOfNALU_Minus1=0;
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x6F;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-        }
+        Data_Parse_Iso14496();
     #endif //MEDIAINFO_DEMUX
 
     //Dump of the SPS/PPS - Fill
@@ -1816,55 +1883,7 @@ void File_Avc::Data_Parse()
     #endif //MEDIAINFO_ADVANCED2
 
     #if MEDIAINFO_DEMUX
-        if (Demux_Avc_Transcode_Iso14496_15_to_Iso14496_10)
-        {
-            if (Element_Code==0x07)
-            {
-                std::vector<seq_parameter_set_struct*>::iterator Data_Item=seq_parameter_sets.begin();
-                if (Data_Item!=seq_parameter_sets.end() && (*Data_Item))
-                {
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x67;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-            if (Element_Code==0x08)
-            {
-                std::vector<pic_parameter_set_struct*>::iterator Data_Item=pic_parameter_sets.begin();
-                if (Data_Item!=pic_parameter_sets.end() && (*Data_Item))
-                {
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x68;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-            if (Element_Code==0x0F)
-            {
-                std::vector<seq_parameter_set_struct*>::iterator Data_Item=subset_seq_parameter_sets.begin();
-                if (Data_Item!=subset_seq_parameter_sets.end() && (*Data_Item))
-                {
-                    SizeOfNALU_Minus1=0;
-                    delete[] (*Data_Item)->Iso14496_10_Buffer;
-                    (*Data_Item)->Iso14496_10_Buffer_Size=(size_t)(Element_Size+4);
-                    (*Data_Item)->Iso14496_10_Buffer=new int8u[(*Data_Item)->Iso14496_10_Buffer_Size];
-                    (*Data_Item)->Iso14496_10_Buffer[0]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[1]=0x00;
-                    (*Data_Item)->Iso14496_10_Buffer[2]=0x01;
-                    (*Data_Item)->Iso14496_10_Buffer[3]=0x6F;
-                    std::memcpy((*Data_Item)->Iso14496_10_Buffer+4, Buffer+Buffer_Offset, (size_t)Element_Size);
-                }
-            }
-        }
+        Data_Parse_Iso14496();
     #endif //MEDIAINFO_DEMUX
 
     //Trailing zeroes
@@ -1936,7 +1955,7 @@ void File_Avc::slice_header()
             switch(Element_Code)
             {
                 case 5 :    // This is an IDR frame
-                            if (Config->Config_PerPackage && Element_Code==0x05) // First slice of an IDR frame
+                            if (Config->Config_PerPackage) // First slice of an IDR frame
                             {
                                 // IDR
                                 Config->Config_PerPackage->FrameForAlignment(this, true);
@@ -2132,13 +2151,7 @@ void File_Avc::slice_header()
                             }
                             else
                             {
-                                bool Has5=false;
-                                for (std::vector<int8u>::iterator Temp=memory_management_control_operations.begin(); Temp!=memory_management_control_operations.end(); ++Temp)
-                                    if ((*Temp)==5)
-                                    {
-                                        Has5=true;
-                                        break;
-                                    }
+                                const bool Has5 = std::find(memory_management_control_operations.begin(), memory_management_control_operations.end(), 5) != memory_management_control_operations.end();
                                 if (Has5)
                                 {
                                     prevPicOrderCntMsb=0;
@@ -2178,13 +2191,7 @@ void File_Avc::slice_header()
                             break;
                 case 2 :
                             {
-                            bool Has5=false;
-                            for (std::vector<int8u>::iterator Temp=memory_management_control_operations.begin(); Temp!=memory_management_control_operations.end(); ++Temp)
-                                if ((*Temp)==5)
-                                {
-                                    Has5=true;
-                                    break;
-                                }
+                            const bool Has5 = std::find(memory_management_control_operations.begin(), memory_management_control_operations.end(),5) != memory_management_control_operations.end();
                             if (Has5)
                                 prevFrameNumOffset=0;
                             int32u FrameNumOffset;
@@ -2413,7 +2420,7 @@ void File_Avc::slice_header()
                 Element_Info1(TemporalReferences_Offset_pic_order_cnt_lsb_Last);
                 Element_Info1((((*seq_parameter_set_Item)->frame_mbs_only_flag || !field_pic_flag)?__T("Frame "):(bottom_field_flag?__T("Field (Bottom) "):__T("Field (Top) ")))+Ztring::ToZtring(Frame_Count));
                 if (slice_type<9)
-                    Element_Info1(__T("slice_type ")+Ztring().From_Local(Avc_slice_type[slice_type]));
+                    Element_Info1(__T("slice_type ")+Ztring().From_UTF8(Avc_slice_type[slice_type]));
                 Element_Info1(__T("frame_num ")+Ztring::ToZtring(frame_num));
                 if ((*seq_parameter_set_Item)->vui_parameters && (*seq_parameter_set_Item)->vui_parameters->fixed_frame_rate_flag)
                 {
@@ -2659,6 +2666,7 @@ void File_Avc::sei_message(int32u &seq_parameter_set_id)
         case  5 :   sei_message_user_data_unregistered(payloadSize); break;
         case  6 :   sei_message_recovery_point(); break;
         case 32 :   sei_message_mainconcept(payloadSize); break;
+        case 147:   sei_alternative_transfer_characteristics(); break;
         default :
                     Element_Info1("unknown");
                     Skip_XX(payloadSize,                        "data");
@@ -2961,9 +2969,10 @@ void File_Avc::sei_message_user_data_registered_itu_t_t35_GA94_03_Delayed(int32u
                         else if ((*seq_parameter_set_Item)->vui_parameters->aspect_ratio_idc==0xFF && (*seq_parameter_set_Item)->vui_parameters->sar_height)
                             PixelAspectRatio=((float64)(*seq_parameter_set_Item)->vui_parameters->sar_width)/(*seq_parameter_set_Item)->vui_parameters->sar_height;
                     }
-                    int32u Width =((*seq_parameter_set_Item)->pic_width_in_mbs_minus1       +1)*16;
-                    int32u Height=((*seq_parameter_set_Item)->pic_height_in_map_units_minus1+1)*16*(2-(*seq_parameter_set_Item)->frame_mbs_only_flag);
-                    ((File_DtvccTransport*)GA94_03_Parser)->AspectRatio=Width*PixelAspectRatio/Height;
+                    const int32u Width =((*seq_parameter_set_Item)->pic_width_in_mbs_minus1       +1)*16;
+                    const int32u Height=((*seq_parameter_set_Item)->pic_height_in_map_units_minus1+1)*16*(2-(*seq_parameter_set_Item)->frame_mbs_only_flag);
+                    if(Height)
+                        ((File_DtvccTransport*)GA94_03_Parser)->AspectRatio=Width*PixelAspectRatio/Height;
                 }
             }
             if (GA94_03_Parser->PTS_DTS_Needed)
@@ -3061,15 +3070,15 @@ void File_Avc::sei_message_user_data_unregistered(int32u payloadSize)
 
     //Parsing
     int128u uuid_iso_iec_11578;
-    Get_GUID(uuid_iso_iec_11578,                                "uuid_iso_iec_11578");
+    Get_UUID(uuid_iso_iec_11578,                                "uuid_iso_iec_11578");
 
     switch (uuid_iso_iec_11578.hi)
     {
-        case 0xB748D9E6BDE945DCLL : Element_Info1("x264");
+        case 0xDC45E9BDE6D948B7LL : Element_Info1("x264");
                                      sei_message_user_data_unregistered_x264(payloadSize-16); break;
-        case 0x684E92AC604A57FBLL : Element_Info1("eavc");
+        case 0xFB574A60AC924E68LL : Element_Info1("eavc");
                                      sei_message_user_data_unregistered_x264(payloadSize-16); break;
-        case 0xD9114Df8608CEE17LL : Element_Info1("Blu-ray");
+        case 0x17EE8C60F84D11D9LL : Element_Info1("Blu-ray");
                                     sei_message_user_data_unregistered_bluray(payloadSize-16); break;
         default :
                     Element_Info1("unknown");
@@ -3082,8 +3091,8 @@ void File_Avc::sei_message_user_data_unregistered(int32u payloadSize)
 void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
 {
     //Parsing
-    Ztring Data;
-    Peek_Local(payloadSize, Data);
+    string Data;
+    Peek_String(payloadSize, Data);
     if (Data.size()!=payloadSize && Data.size()+1!=payloadSize)
     {
         Skip_XX(payloadSize,                                    "Unknown");
@@ -3093,10 +3102,10 @@ void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
     size_t Loop=0;
     do
     {
-        size_t Data_Pos=Data.find(__T(" - "), Data_Pos_Before);
+        size_t Data_Pos=Data.find(" - ", Data_Pos_Before);
         if (Data_Pos==std::string::npos)
             Data_Pos=Data.size();
-        if (Data.find(__T("options: "), Data_Pos_Before)==Data_Pos_Before)
+        if (Data.find("options: ", Data_Pos_Before)==Data_Pos_Before)
         {
             Element_Begin1("options");
             size_t Options_Pos_Before=Data_Pos_Before;
@@ -3106,16 +3115,16 @@ void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
                 size_t Options_Pos=Data.find(__T(' '), Options_Pos_Before);
                 if (Options_Pos==std::string::npos)
                     Options_Pos=Data.size();
-                Ztring option;
-                Get_Local (Options_Pos-Options_Pos_Before, option, "option");
+                string option;
+                Get_String (Options_Pos-Options_Pos_Before, option, "option");
                 Options_Pos_Before=Options_Pos;
                 do
                 {
-                    Ztring Separator;
-                    Peek_Local(1, Separator);
-                    if (Separator==__T(" "))
+                    string Separator;
+                    Peek_String(1, Separator);
+                    if (Separator==" ")
                     {
-                        Skip_Local(1,                               "separator");
+                        Skip_UTF8(1,                                "separator");
                         Options_Pos_Before+=1;
                     }
                     else
@@ -3124,13 +3133,13 @@ void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
                 while (Options_Pos_Before!=Data.size());
 
                 //Filling
-                if (option!=__T("options:"))
+                if (option!="options:")
                 {
                     if (!Encoded_Library_Settings.empty())
                         Encoded_Library_Settings+=__T(" / ");
-                    Encoded_Library_Settings+=option;
-                    if (option.find(__T("bitrate="))==0)
-                        BitRate_Nominal=option.substr(8)+__T("000"); //After "bitrate="
+                    Encoded_Library_Settings+=Ztring().From_UTF8(option.c_str());
+                    if (option.find("bitrate=")==0)
+                        BitRate_Nominal.From_UTF8(option.substr(8)+"000"); //After "bitrate="
                 }
             }
             while (Options_Pos_Before!=Data.size());
@@ -3138,8 +3147,8 @@ void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
         }
         else
         {
-            Ztring Value;
-            Get_Local(Data_Pos-Data_Pos_Before, Value,          "data");
+            string Value;
+            Get_String(Data_Pos-Data_Pos_Before, Value,          "data");
 
             //Saving
             if (Loop==0)
@@ -3149,18 +3158,18 @@ void File_Avc::sei_message_user_data_unregistered_x264(int32u payloadSize)
                     Value.erase(Value.begin());
                 while (!Value.empty() && Value[Value.size()-1]<0x30)
                     Value.erase(Value.end()-1);
-                Encoded_Library=Value;
+                Encoded_Library.From_UTF8(Value.c_str());
             }
             if (Loop==1 && Encoded_Library.find(__T("x264"))==0)
             {
                 Encoded_Library+=__T(" - ");
-                Encoded_Library+=Value;
+                Encoded_Library+=Ztring().From_UTF8(Value.c_str());
             }
         }
         Data_Pos_Before=Data_Pos;
         if (Data_Pos_Before+3<=Data.size())
         {
-            Skip_Local(3,                                       "separator");
+            Skip_UTF8(3,                                        "separator");
             Data_Pos_Before+=3;
         }
 
@@ -3202,8 +3211,201 @@ void File_Avc::sei_message_user_data_unregistered_bluray(int32u payloadSize)
     switch (Identifier)
     {
         case 0x47413934 :   sei_message_user_data_registered_itu_t_t35_GA94_03(); return;
+        case 0x4D44504D :   sei_message_user_data_unregistered_bluray_MDPM(Element_Size-Element_Offset); return;
         default         :   Skip_XX(Element_Size-Element_Offset, "Unknown");
     }
+}
+
+//---------------------------------------------------------------------------
+// SEI - 5 - bluray - MDPM
+void File_Avc::sei_message_user_data_unregistered_bluray_MDPM(int32u payloadSize)
+{
+    if (payloadSize<1)
+    {
+        Skip_XX(payloadSize, "Unknown");
+        return;
+    }
+
+    Element_Info1("Modified Digital Video Pack Metadata");
+
+    Skip_B1(                                                    "Count");
+    payloadSize--;
+    string DateTime0, DateTime1, DateTime2, Model0, Model1, Model2;
+    int16u MakeName=(int16u)-1;
+    Ztring IrisFNumber;
+    while (payloadSize >= 5)
+    {
+        Element_Begin0();
+        int8u  ID;
+        Get_B1(ID,                                              "ID"); Element_Name(MDPM(ID));
+        switch (ID)
+        {
+            case 0x18:
+                        {
+                        int16u Year;
+                        int8u  MM, Zone_Hours;
+                        bool   Zone_Sign, Zone_Minutes;
+                        BS_Begin();
+                        Mark_0();
+                        Skip_SB(                                "DST flag");
+                        Get_SB (Zone_Sign,                      "Time zone sign");
+                        Get_S1 (4, Zone_Hours,                  "Time zone hours");
+                        Get_SB (Zone_Minutes,                   "Time zone half-hour flag");
+                        BS_End();
+                        Get_B2 (Year,                           "Year");
+                        Get_B1 (MM,                             "Month");
+                        DateTime0+='0'+(Year>>12);
+                        DateTime0+='0'+((Year&0xF00)>>8);
+                        DateTime0+='0'+((Year&0xF0)>>4);
+                        DateTime0+='0'+(Year&0xF);
+                        DateTime0+='-';
+                        DateTime0+='0'+((MM&0xF0)>>4);
+                        DateTime0+='0'+(MM&0xF);
+                        DateTime0+='-';
+                        Element_Info1(DateTime0);
+                        DateTime2+=Zone_Sign?'-':'+';
+                        DateTime2+='0'+Zone_Hours/10;
+                        DateTime2+='0'+Zone_Hours%10;
+                        DateTime2+=':';
+                        DateTime2+=Zone_Minutes?'3':'0';
+                        DateTime2+='0';
+                        Element_Info1(DateTime2);
+                        }
+                        break;
+            case 0x19:
+                        {
+                        int8u  DD, hh, mm, ss;
+                        Get_B1 (DD,                             "Day");
+                        Get_B1 (hh,                             "Hour");
+                        Get_B1 (mm,                             "Minute");
+                        Get_B1 (ss,                             "Second");
+                        DateTime1+='0'+(DD>>4);
+                        DateTime1+='0'+(DD&0xF);
+                        DateTime1+=' ';
+                        DateTime1+='0'+(hh>>4);
+                        DateTime1+='0'+(hh&0xF);
+                        DateTime1+=':';
+                        DateTime1+='0'+(mm>>4);
+                        DateTime1+='0'+(mm&0xF);
+                        DateTime1+=':';
+                        DateTime1+='0'+(ss>>4);
+                        DateTime1+='0'+(ss&0xF);
+                        Element_Info1(DateTime1);
+                        }
+                        break;
+            case 0x70:
+                        consumer_camera_1();
+                        break;
+            case 0x71:
+                        consumer_camera_2();
+                        break;
+            case 0xA1:
+                        {
+                        int16u D, N;
+                        Get_B2 (D,                              "D");
+                        Get_B2 (N,                              "N");
+                        IrisFNumber.From_Number(((float64)D)/N, 6);
+                        Element_Info1(IrisFNumber);
+                        }
+                        break;
+            case 0xE0:
+                        {
+                        Get_B2 (MakeName,                       "Name");
+                        Skip_B2(                                "Category");
+                        Element_Info1(MDPM_MakeName(MakeName));
+                        }
+                        break;
+            case 0xE4:
+                        Get_String(4, Model0,                   "Data"); Element_Info1(Model0);
+                        break;
+            case 0xE5:
+                        Get_String(4, Model1,                   "Data"); Element_Info1(Model1);
+                        break;
+            case 0xE6:
+                        Get_String(4, Model2,                   "Data");
+                        Model2.erase(Model2.find_last_not_of('\0')+1);
+                        Element_Info1(Model2);
+                        break;
+            default: Skip_B4("Data");
+        }
+        Element_End0();
+        payloadSize -= 5;
+    }
+    if (payloadSize)
+        Skip_XX(payloadSize, "Unknown");
+
+    FILLING_BEGIN();
+        if (!Frame_Count && !seq_parameter_sets.empty() && !pic_parameter_sets.empty())
+        {
+            if (!DateTime0.empty() && !DateTime1.empty())
+                Fill(Stream_General, 0, General_Recorded_Date, DateTime0+DateTime1+DateTime2);
+            if (MDPM_MakeName(MakeName)[0] || !Model0.empty())
+            {
+                string Model;
+                if (MDPM_MakeName(MakeName)[0])
+                {
+                    Model=MDPM_MakeName(MakeName);
+                    Fill(Stream_General, 0, General_Encoded_Application_CompanyName, Model);
+                    if (!Model0.empty())
+                        Model+=' ';
+                }
+                Fill(Stream_General, 0, General_Encoded_Application, Model+Model0+Model1+Model2);
+                Fill(Stream_General, 0, General_Encoded_Application_Name, Model0+Model1+Model2);
+            }
+            Fill(Stream_Video, 0, "IrisFNumber", IrisFNumber);
+        }
+    FILLING_END();
+}
+
+//---------------------------------------------------------------------------
+void File_Avc::consumer_camera_1()
+{
+    //Parsing
+    BS_Begin();
+    int8u ae_mode, wb_mode, white_balance, fcm;
+    Mark_1_NoTrustError();
+    Mark_1_NoTrustError();
+    Skip_S1(6,                                                  "iris");
+    Get_S1 (4, ae_mode,                                         "ae mode"); Param_Info1(Dv_consumer_camera_1_ae_mode[ae_mode]);
+    Skip_S1(4,                                                  "agc(Automatic Gain Control)");
+    Get_S1 (3, wb_mode,                                         "wb mode (white balance mode)"); Param_Info1(Dv_consumer_camera_1_wb_mode[wb_mode]);
+    Get_S1 (5, white_balance,                                   "white balance"); Param_Info1(Dv_consumer_camera_1_white_balance(white_balance));
+    Get_S1 (1, fcm,                                             "fcm (Focus mode)"); Param_Info1(Dv_consumer_camera_1_fcm[fcm]);
+    Skip_S1(7,                                                  "focus (focal point)");
+    BS_End();
+
+    /* TODO: need some tweaking
+    FILLING_BEGIN();
+        if (!Frame_Count)
+        {
+            Ztring Settings;
+            if (ae_mode<0x0F) Settings+=__T("ae mode=")+Ztring(Dv_consumer_camera_1_ae_mode[ae_mode])+__T(", ");
+            if (wb_mode<0x08) Settings+=__T("wb mode=")+Ztring(Dv_consumer_camera_1_wb_mode[wb_mode])+__T(", ");
+            if (wb_mode<0x1F) Settings+=__T("white balance=")+Ztring(Dv_consumer_camera_1_white_balance(white_balance))+__T(", ");
+            Settings+=__T("fcm=")+Ztring(Dv_consumer_camera_1_fcm[fcm]);
+            Fill(Stream_Video, 0, "Camera_Settings", Settings);
+        }
+    FILLING_END();
+    */
+}
+
+//---------------------------------------------------------------------------
+void File_Avc::consumer_camera_2()
+{
+    //Parsing
+    BS_Begin();
+    Mark_1_NoTrustError();
+    Mark_1_NoTrustError();
+    Skip_S1(1,                                                  "vpd");
+    Skip_S1(5,                                                  "vertical panning speed");
+    Skip_S1(1,                                                  "is");
+    Skip_S1(1,                                                  "hpd");
+    Skip_S1(6,                                                  "horizontal panning speed");
+    Skip_S1(8,                                                  "focal length");
+    Skip_S1(1,                                                  "zen");
+    Info_S1(3, zoom_U,                                          "units of e-zoom");
+    Info_S1(4, zoom_D,                                          "1/10 of e-zoom"); /*if (zoom_D!=0xF)*/ Param_Info1(__T("zoom=")+Ztring().From_Number(zoom_U+((float32)zoom_U)/10, 2));
+    BS_End();
 }
 
 //---------------------------------------------------------------------------
@@ -3228,16 +3430,25 @@ void File_Avc::sei_message_mainconcept(int32u payloadSize)
     Element_Info1("MainConcept text");
 
     //Parsing
-    Ztring Text;
-    Get_Local(payloadSize, Text,                                "text");
+    string Text;
+    Get_String(payloadSize, Text,                               "text");
 
-    if (Text.find(__T("produced by MainConcept H.264/AVC Codec v"))!=std::string::npos)
+    if (Text.find("produced by MainConcept H.264/AVC Codec v")!=std::string::npos)
     {
-        Encoded_Library=Text.SubString(__T("produced by "), __T(" MainConcept AG"));
+        Encoded_Library=Ztring().From_UTF8(Text).SubString(__T("produced by "), __T(" MainConcept AG"));
         Encoded_Library_Name=__T("MainConcept H.264/AVC Codec");
-        Encoded_Library_Version=Text.SubString(__T("produced by MainConcept H.264/AVC Codec v"), __T(" (c) "));
+        Encoded_Library_Version= Ztring().From_UTF8(Text).SubString(__T("produced by MainConcept H.264/AVC Codec v"), __T(" (c) "));
         Encoded_Library_Date=MediaInfoLib::Config.Library_Get(InfoLibrary_Format_MainConcept_Avc, Encoded_Library_Version, InfoLibrary_Date);
     }
+}
+
+//---------------------------------------------------------------------------
+void File_Avc::sei_alternative_transfer_characteristics()
+{
+    Element_Info1("alternative_transfer_characteristics");
+
+    //Parsing
+    Get_B1(preferred_transfer_characteristics, "preferred_transfer_characteristics"); Param_Info1(Mpegv_transfer_characteristics(preferred_transfer_characteristics));
 }
 
 //---------------------------------------------------------------------------
@@ -3693,7 +3904,7 @@ File_Avc::seq_parameter_set_struct* File_Avc::seq_parameter_set_data(int32u &Dat
         case 128 :  //High profiles
         case 138 :
                     Element_Begin1("high profile specific");
-                    Get_UE (chroma_format_idc,                  "chroma_format_idc"); Param_Info1C((chroma_format_idc<3), Avc_Colorimetry_format_idc(chroma_format_idc));
+                    Get_UE (chroma_format_idc,                  "chroma_format_idc"); Param_Info1C((chroma_format_idc<3), Avc_ChromaSubsampling_format_idc(chroma_format_idc));
                     if (chroma_format_idc==3)
                         Get_SB (separate_colour_plane_flag,     "separate_colour_plane_flag");
                     Get_UE (bit_depth_luma_minus8,              "bit_depth_luma_minus8");
@@ -3902,8 +4113,8 @@ void File_Avc::vui_parameters(seq_parameter_set_struct::vui_parameters_struct* &
                                                                                     pic_struct_present_flag
                                                                                 );
     FILLING_ELSE();
-        delete NAL;
-        delete VCL;
+        delete NAL; NAL=NULL;
+        delete VCL; VCL=NULL;
     FILLING_END();
 }
 
@@ -4119,7 +4330,7 @@ void File_Avc::SPS_PPS()
     FILLING_BEGIN_PRECISE();
         //Detection of some bugs in the file
         if (!seq_parameter_sets.empty() && seq_parameter_sets[0] && (Profile!=seq_parameter_sets[0]->profile_idc || Level!=seq_parameter_sets[0]->level_idc))
-            MuxingMode=Ztring("Container profile=")+Ztring().From_Local(Avc_profile_idc(Profile))+__T("@")+Ztring().From_Number(((float)Level)/10, 1);
+            MuxingMode=Ztring("Container profile=")+Ztring().From_UTF8(Avc_profile_idc(Profile))+__T("@")+Ztring().From_Number(((float)Level)/10, 1);
 
         MustParse_SPS_PPS=false;
         if (!Status[IsAccepted])
@@ -4153,7 +4364,7 @@ std::string File_Avc::GOP_Detect (std::string PictureTypes)
 
             //Finding the longest string
             ZtringList List; List.Separator_Set(0, __T(" "));
-            List.Write(Ztring().From_Local(PictureTypes));
+            List.Write(Ztring().From_UTF8(PictureTypes));
             size_t MaxLength=0;
             size_t MaxLength_Pos=0;
             for (size_t Pos=0; Pos<List.size(); Pos++)
@@ -4162,7 +4373,7 @@ std::string File_Avc::GOP_Detect (std::string PictureTypes)
                     MaxLength=List[Pos].size();
                     MaxLength_Pos=Pos;
                 }
-            PictureTypes=List[MaxLength_Pos].To_Local();
+            PictureTypes=List[MaxLength_Pos].To_UTF8();
 
         }
     }
@@ -4235,7 +4446,7 @@ std::string File_Avc::GOP_Detect (std::string PictureTypes)
                 break;
             }
         if (IsOK)
-            return GOPs[0].To_Local();
+            return GOPs[0].To_UTF8();
     }
 
     return string();
@@ -4263,7 +4474,7 @@ std::string File_Avc::ScanOrder_Detect (std::string ScanOrders)
 
             //Finding the longest string
             ZtringList List; List.Separator_Set(0, __T(" "));
-            List.Write(Ztring().From_Local(ScanOrders));
+            List.Write(Ztring().From_UTF8(ScanOrders));
             size_t MaxLength=0;
             size_t MaxLength_Pos=0;
             for (size_t Pos=0; Pos<List.size(); Pos++)
@@ -4272,7 +4483,7 @@ std::string File_Avc::ScanOrder_Detect (std::string ScanOrders)
                     MaxLength=List[Pos].size();
                     MaxLength_Pos=Pos;
                 }
-            ScanOrders=List[MaxLength_Pos].To_Local();
+            ScanOrders=List[MaxLength_Pos].To_UTF8();
 
         }
     }

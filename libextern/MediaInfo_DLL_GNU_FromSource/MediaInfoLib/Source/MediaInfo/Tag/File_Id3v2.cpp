@@ -954,15 +954,22 @@ void File_Id3v2::APIC()
     }
     if (Element_Offset>Element_Size)
         return; //There is a problem
-    std::string Data_Raw((const char*)(Buffer+(size_t)(Buffer_Offset+Element_Offset)), (size_t)(Element_Size-Element_Offset));
-    std::string Data_Base64(Base64::encode(Data_Raw));
 
     //Filling
     Fill_Name();
     Fill(Stream_General, 0, General_Cover_Description, Description);
     Fill(Stream_General, 0, General_Cover_Type, Id3v2_PictureType(PictureType));
     Fill(Stream_General, 0, General_Cover_Mime, Mime);
-    Fill(Stream_General, 0, General_Cover_Data, Data_Base64);
+    #if MEDIAINFO_ADVANCED
+        if (MediaInfoLib::Config.Flags1_Get(Flags_Cover_Data_base64))
+        {
+            std::string Data_Raw((const char*)(Buffer+(size_t)(Buffer_Offset+Element_Offset)), (size_t)(Element_Size-Element_Offset));
+            std::string Data_Base64(Base64::encode(Data_Raw));
+            Fill(Stream_General, 0, General_Cover_Data, Data_Base64);
+        }
+    #endif //MEDIAINFO_ADVANCED
+
+    Skip_XX(Element_Size-Element_Offset, "Data");
 }
 
 //---------------------------------------------------------------------------
@@ -980,7 +987,7 @@ void File_Id3v2::COMM()
     else if (Element_Values(0)==__T("MusicMatch_Mood"))
     {
         if (Retrieve(Stream_General, 0, General_Mood).empty())
-            Element_Values(0)==__T("Mood");
+            Element_Values(0)=__T("Mood");
         else
             return;
     }
@@ -1202,9 +1209,10 @@ void File_Id3v2::Fill_Name()
         case Elements::TDA  :
         case Elements::TDAT : if (Element_Value.size()==4)
                          {
-                            Month.assign(Element_Value.c_str(), 0, 2);
-                            Day.assign  (Element_Value.c_str(), 2, 2); break;
+                            Day.assign  (Element_Value.c_str(), 0, 2);
+                            Month.assign(Element_Value.c_str(), 2, 2);
                          }
+                         break;
         case Elements::TDEN : Normalize_Date(Element_Value); Fill(Stream_General, 0, "Encoded_Date", Element_Value); break;
         case Elements::TDLY : break;
         case Elements::TDOR : Normalize_Date(Element_Value); Fill(Stream_General, 0, "Original/Released_Date", Element_Value); break;
@@ -1218,8 +1226,9 @@ void File_Id3v2::Fill_Name()
         case Elements::TIME : if (Element_Value.size()==4)
                          {
                             Hour.assign  (Element_Value.c_str(), 0, 2);
-                            Minute.assign(Element_Value.c_str(), 2, 2); break;
+                            Minute.assign(Element_Value.c_str(), 2, 2);
                          }
+                         break;
         case Elements::TIPL : Fill(Stream_General, 0, General_ThanksTo, Element_Value); break;
         case Elements::TIT1 : Fill(Stream_General, 0, General_Grouping, Element_Value); break;
         case Elements::TIT2 : Fill(Stream_General, 0, General_Track, Element_Value); break;
@@ -1403,9 +1412,9 @@ void File_Id3v2::Fill_Name()
 //---------------------------------------------------------------------------
 void File_Id3v2::Normalize_Date(Ztring& Date)
 {
-    if (Date.size()<=8)
-        return; //Format unknown
-    Date[8]=__T(' '); //could be "T"
+    if (Date.size()<=11 || Date[4]!=__T('-') || Date[7]!=__T('-'))
+        return; //Format unknown or without time
+    Date[10]=__T(' '); //could be "T"
     Date=Ztring(__T("UTC "))+Date; //Id3v2 specify a UTC date
 }
 

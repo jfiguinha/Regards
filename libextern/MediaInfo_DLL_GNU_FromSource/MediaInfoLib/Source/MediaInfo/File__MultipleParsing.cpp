@@ -83,6 +83,9 @@
 #if defined(MEDIAINFO_MK_YES)
     #include "MediaInfo/Multiple/File_Mk.h"
 #endif
+#if defined(MEDIAINFO_MIXML_YES)
+    #include "MediaInfo/Multiple/File_MiXml.h"
+#endif
 #if defined(MEDIAINFO_MPEG4_YES)
     #include "MediaInfo/Multiple/File_Mpeg4.h"
 #endif
@@ -128,7 +131,7 @@
 #if defined(MEDIAINFO_WM_YES)
     #include "MediaInfo/Multiple/File_Wm.h"
 #endif
-#if defined(MEDIAINFO_WM_YES)
+#if defined(MEDIAINFO_WTV_YES)
     #include "MediaInfo/Multiple/File_Wtv.h"
 #endif
 #if defined(MEDIAINFO_XDCAM_YES)
@@ -196,6 +199,12 @@
 #endif
 #if defined(MEDIAINFO_CAF_YES)
     #include "MediaInfo/Audio/File_Caf.h"
+#endif
+#if defined(MEDIAINFO_DSF_YES)
+    #include "MediaInfo/Audio/File_Dsf.h"
+#endif
+#if defined(MEDIAINFO_DSDIFF_YES)
+    #include "MediaInfo/Audio/File_Dsdiff.h"
 #endif
 #if defined(MEDIAINFO_DTS_YES)
     #include "MediaInfo/Audio/File_Dts.h"
@@ -460,6 +469,9 @@ File__MultipleParsing::File__MultipleParsing()
     #if defined(MEDIAINFO_MK_YES)
         Parser.push_back(new File_Mk());
     #endif
+    #if defined(MEDIAINFO_MIXML_YES)
+        Parser.push_back(new File_MiXml());
+    #endif
     #if defined(MEDIAINFO_MPEG4_YES)
         Parser.push_back(new File_Mpeg4());
     #endif
@@ -582,6 +594,12 @@ File__MultipleParsing::File__MultipleParsing()
     #endif
     #if defined(MEDIAINFO_CAF_YES)
         Parser.push_back(new File_Caf());
+    #endif
+    #if defined(MEDIAINFO_DSF_YES)
+        Parser.push_back(new File_Dsf());
+    #endif
+    #if defined(MEDIAINFO_DSDIFF_YES)
+        Parser.push_back(new File_Dsdiff());
     #endif
     #if defined(MEDIAINFO_DTS_YES)
         Parser.push_back(new File_Dts());

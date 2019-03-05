@@ -66,6 +66,23 @@ private :
     void Ebml_DocType();
     void Ebml_DocTypeVersion();
     void Ebml_DocTypeReadVersion();
+    void RawcookedBlock();
+    void RawcookedBlock_BeforeData();
+    void RawcookedBlock_AfterData();
+    void RawcookedBlock_FileName();
+    void RawcookedBlock_MaskAdditionBeforeData();
+    void RawcookedBlock_MaskAdditionAfterData();
+    void RawcookedBlock_MaskAdditionFileName();
+    void RawcookedSegment();
+    void RawcookedSegment_LibraryName();
+    void RawcookedSegment_LibraryVersion();
+    void RawcookedTrackEntry();
+    void RawcookedTrackEntry_BeforeData();
+    void RawcookedTrackEntry_AfterData();
+    void RawcookedTrackEntry_FileName();
+    void RawcookedTrackEntry_MaskBaseBeforeData();
+    void RawcookedTrackEntry_MaskBaseAfterData();
+    void RawcookedTrackEntry_MaskBaseFileName();
     void Segment();
     void Segment_SeekHead();
     void Segment_SeekHead_Seek();
@@ -259,6 +276,8 @@ private :
     void Segment_Attachments_AttachedFile_FileName();
     void Segment_Attachments_AttachedFile_FileMimeType();
     void Segment_Attachments_AttachedFile_FileData();
+    void Segment_Attachments_AttachedFile_FileData_RawcookedBlock() {RawcookedBlock();};
+    void Segment_Attachments_AttachedFile_FileData_RawcookedTrackEntry() {RawcookedTrackEntry();};
     void Segment_Attachments_AttachedFile_FileUID(){UInteger_Info();};
     void Segment_Attachments_AttachedFile_FileReferral(){Skip_XX(Element_Size, "Data");};
     void Segment_Attachments_AttachedFile_FileUsedStartTime(){UInteger_Info();};
@@ -351,7 +370,7 @@ private :
             AvgBytesPerSec=0;
             DisplayAspectRatio=0;
             FrameRate=0;
-            Searching_Payload=false;
+            Searching_Payload=true;
             Searching_TimeStamps=false;
             Searching_TimeStamp_Start=false;
             Default=true;
@@ -400,6 +419,7 @@ private :
     infocodecid_format_t InfoCodecID_Format_Type;
     void     CodecID_Manage();
     int64u   TrackType;
+    int64u   AudioBitDepth;
 
     //Temp
     int8u   InvalidByteMax;
@@ -488,13 +508,25 @@ private :
         int64u              Demux_EventWasSent;
     #endif //MEDIAINFO_DEMUX
 
+    //RAWcooked data
+    struct rawcookedtrack
+    {
+        string MaskAdditionFileName;
+        int64u FramePos;
+
+        rawcookedtrack() :
+            FramePos(0)
+        {}
+    };
+    rawcookedtrack RawcookedTrack;
+
     //Hints
     size_t*                 File_Buffer_Size_Hint_Pointer;
 
     //Helpers
     void Segment_Tracks_TrackEntry_CodecPrivate__Parse();
     void Segment_Tracks_TrackEntry_CodecPrivate_auds();
-    void Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave();
+    void Segment_Tracks_TrackEntry_CodecPrivate_auds_ExtensibleWave(int16u BitsPerSample);
     void Segment_Tracks_TrackEntry_CodecPrivate_vids();
     void JumpTo(int64u GoTo);
     void TestMultipleInstances(size_t* Instances=NULL);

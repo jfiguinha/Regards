@@ -861,7 +861,7 @@ const char* Mpeg_Descriptors_MPEG_4_audio_profile_and_level(int8u MPEG_4_audio_p
 
 //---------------------------------------------------------------------------
 extern const float64 Mpegv_frame_rate[16]; //In Video/File_Mpegv.cpp
-extern const char*  Mpegv_Colorimetry_format[]; //In Video/File_Mpegv.cpp
+extern const char*  Mpegv_chroma_format[]; //In Video/File_Mpegv.cpp
 extern const char*  Mpegv_profile_and_level_indication_profile[]; //In Video/File_Mpegv.cpp
 extern const char*  Mpegv_profile_and_level_indication_level[]; //In Video/File_Mpegv.cpp
 
@@ -1318,10 +1318,8 @@ void File_Mpeg_Descriptors::Data_Parse()
             ELEMENT_CASE(34, "MPEG2_stereoscopic_video_format");
             ELEMENT_CASE(35, "Stereoscopic_program_info");
             ELEMENT_CASE(36, "Stereoscopic_video_info");
-            ELEMENT_CASE(37, "ODUpdate");
-            ELEMENT_CASE(38, "Transport_profile");
-            ELEMENT_CASE(39, "HEVC video");
-            ELEMENT_CASE(3A, "HEVC timing and HRD");
+            ELEMENT_CASE(37, "Transport_profile");
+            ELEMENT_CASE(38, "HEVC video");
             ELEMENT_CASE(3F, "Extension");
 
             //Following is in private sections, in case there is not network type detected
@@ -1401,6 +1399,7 @@ void File_Mpeg_Descriptors::Data_Parse()
             ELEMENT_CASE(A9, "ATSC - DCC Arriving Request");
             ELEMENT_CASE(AA, "ATSC - Redistribution Control");
             ELEMENT_CASE(AB, "ATSC - DCC Location Code");
+            ELEMENT_CASE(B0, "Dolby - DOVI_video_stream");
             ELEMENT_CASE(C1, "ARIB - Digital Copy Control");
             ELEMENT_CASE(C4, "SMPTE - ANC"); //SMPTE ST 2038
             ELEMENT_CASE(C8, "ARIB - Video Decode Control");
@@ -1566,7 +1565,7 @@ void File_Mpeg_Descriptors::Descriptor_02()
         Skip_SB(                                                "profile_and_level_indication_escape");
         Get_S1 (3, profile_and_level_indication_profile,        "profile_and_level_indication_profile"); Param_Info1(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile]);
         Get_S1 (4, profile_and_level_indication_level,          "profile_and_level_indication_level"); Param_Info1(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
-        Get_S1 (2, chroma_format,                               "chroma_format"); Param_Info1(Mpegv_Colorimetry_format[chroma_format]);
+        Get_S1 (2, chroma_format,                               "chroma_format"); Param_Info1(Mpegv_chroma_format[chroma_format]);
         Get_SB (   frame_rate_extension_flag,                   "frame_rate_extension_flag");
         Skip_S1(5,                                              "reserved");
     }
@@ -1582,11 +1581,11 @@ void File_Mpeg_Descriptors::Descriptor_02()
                             if (!multiple_frame_rate_flag && !frame_rate_extension_flag && frame_rate_code)
                                 Complete_Stream->Streams[elementary_PID]->Infos["FrameRate"]=Ztring::ToZtring(Mpegv_frame_rate[frame_rate_code]);
                             Complete_Stream->Streams[elementary_PID]->Infos["Format_Version"]=MPEG_1_only_flag?__T("Version 1"):__T("Version 2");
-                            Complete_Stream->Streams[elementary_PID]->Infos["Colorimetry"]=Mpegv_Colorimetry_format[chroma_format];
+                            Complete_Stream->Streams[elementary_PID]->Infos["ChromaSubsampling"]=Mpegv_chroma_format[chroma_format];
                             if (profile_and_level_indication_profile)
                             {
-                                Complete_Stream->Streams[elementary_PID]->Infos["Format_Profile"]=Ztring().From_Local(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_Local(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
-                                Complete_Stream->Streams[elementary_PID]->Infos["Codec_Profile"]=Ztring().From_Local(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_Local(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
+                                Complete_Stream->Streams[elementary_PID]->Infos["Format_Profile"]=Ztring().From_UTF8(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_UTF8(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
+                                Complete_Stream->Streams[elementary_PID]->Infos["Codec_Profile"]=Ztring().From_UTF8(Mpegv_profile_and_level_indication_profile[profile_and_level_indication_profile])+__T("@")+Ztring().From_UTF8(Mpegv_profile_and_level_indication_level[profile_and_level_indication_level]);
                             }
                         }
                         break;
@@ -1988,7 +1987,7 @@ void File_Mpeg_Descriptors::Descriptor_28()
                         if (elementary_PID_IsValid)
                         {
                             Complete_Stream->Streams[elementary_PID]->Infos["Format"]=__T("AVC");
-                            Complete_Stream->Streams[elementary_PID]->Infos["Format_Profile"]=Ztring().From_Local(Avc_profile_idc(profile_idc))+__T("@L")+Ztring().From_Number(((float)level_idc)/10, (level_idc%10)?1:0);
+                            Complete_Stream->Streams[elementary_PID]->Infos["Format_Profile"]=Ztring().From_UTF8(Avc_profile_idc(profile_idc))+__T("@L")+Ztring().From_Number(((float)level_idc)/10, (level_idc%10)?1:0);
                         }
                         break;
             default    : ;
@@ -2031,6 +2030,119 @@ void File_Mpeg_Descriptors::Descriptor_2F()
     Skip_B1(                                                    "aux_video_type"); //ISO/IEC 23002-3
     Get_B1 (aux_video_params_length,                            "aux_video_params_length");
     Skip_XX(aux_video_params_length,                            "aux_video_params");
+}
+
+//---------------------------------------------------------------------------
+extern const char* Hevc_tier_flag(bool tier_flag);
+extern const char* Hevc_profile_idc(int32u profile_idc);
+void File_Mpeg_Descriptors::Descriptor_38()
+{
+    //Parsing
+    int8u  profile_space, profile_idc, level_idc;
+    bool   tier_flag, temporal_layer_subset_flag;
+    BS_Begin();
+    Get_S1 (2, profile_space,                                   "profile_space");
+    Get_SB (   tier_flag,                                       "tier_flag"); Param_Info1(Hevc_tier_flag(tier_flag));
+    Get_S1 (5, profile_idc,                                     "profile_idc"); Param_Info1(Hevc_profile_idc(profile_idc));
+    Skip_S4(32,                                                 "profile_compatibility_flags");
+    Skip_SB(                                                    "progressive_source_flag");
+    Skip_SB(                                                    "interlaced_source_flag");
+    Skip_SB(                                                    "non_packed_constraint_flag");
+    Skip_SB(                                                    "frame_only_constraint_flag");
+    Skip_S6(44,                                                 "reserved");
+    Get_S1 ( 8, level_idc,                                      "level_idc");
+    Get_SB (    temporal_layer_subset_flag,                     "temporal_layer_subset_flag");
+    Skip_SB(                                                    "HEVC_still_present_flag");
+    Skip_SB(                                                    "HEVC_24hr_picture_present_flag");
+    Skip_SB(                                                    "sub_pic_hrd_params_not_present_flag");
+    Skip_S1(4,                                                  "reserved");
+    if (temporal_layer_subset_flag)
+    {
+        Skip_S1(3,                                              "temporal_id_min");
+        Skip_S1(5,                                              "reserved");
+        Skip_S1(3,                                              "temporal_id_max");
+        Skip_S1(5,                                              "reserved");
+    }
+    BS_End();
+
+    FILLING_BEGIN();
+        Ztring Profile;
+        if (profile_space==0)
+        {
+            if (profile_idc)
+                Profile=Ztring().From_UTF8(Hevc_profile_idc(profile_idc));
+            if (level_idc)
+            {
+                if (profile_idc)
+                    Profile+=__T('@');
+                Profile+=__T('L')+Ztring().From_Number(((float)level_idc)/30, (level_idc%10)?1:0);
+                Profile+=__T('@');
+                Profile+=Ztring().From_UTF8(Hevc_tier_flag(tier_flag));
+            }
+        }
+
+        Complete_Stream->Streams[elementary_PID]->Infos["Format_Profile"]=Profile;
+    FILLING_END();
+}
+
+//---------------------------------------------------------------------------
+void File_Mpeg_Descriptors::Descriptor_3F()
+{
+    //Parsing
+    int8u extension_descriptor_tag;
+    Get_B1(extension_descriptor_tag,                             "extension_descriptor_tag");
+
+    #undef ELEMENT_CASE
+    #define ELEMENT_CASE(_NAME, _DETAIL) \
+        case 0x##_NAME : Element_Name(_DETAIL); Descriptor_3F_##_NAME(); break;
+
+    //Parsing
+    switch (extension_descriptor_tag)
+    {
+            ELEMENT_CASE(00, "Reserved");
+            ELEMENT_CASE(01, "Forbidden");
+            ELEMENT_CASE(02, "ODUpdate");
+            ELEMENT_CASE(03, "HEVC_timing_and_HRD");
+            ELEMENT_CASE(04, "af_extensions");
+            ELEMENT_CASE(05, "HEVC_operation_point");
+            ELEMENT_CASE(06, "HEVC_hierarchy_extension");
+            ELEMENT_CASE(07, "Green_extension");
+            ELEMENT_CASE(08, "MPEG-H_3dAudio");
+            ELEMENT_CASE(09, "MPEG-H_3dAudio_config");
+            ELEMENT_CASE(0A, "MPEG-H_3dAudio_scene");
+            ELEMENT_CASE(0B, "MPEG-H_3dAudio_text_label");
+            ELEMENT_CASE(0C, "MPEG-H_3dAudio_multi-stream");
+            ELEMENT_CASE(0D, "MPEG-H_3dAudio_drc_loudness");
+            ELEMENT_CASE(0E, "MPEG-H_3dAudio_command");
+            ELEMENT_CASE(0F, "Quality_extension");
+            ELEMENT_CASE(10, "Virtual_segmentation");
+            default: Element_Info1("Unknown");
+                     Skip_XX(Element_Size,                          "Data");
+    }
+}
+
+//---------------------------------------------------------------------------
+void File_Mpeg_Descriptors::Descriptor_3F_03()
+{
+    //Parsing
+    bool picture_and_timing_info_present_flag, x90kHz_flag=false;
+    BS_Begin();
+    Skip_SB(                                                "hrd_management_valid_flag");
+    Skip_S1(6,                                              "reserved");
+    Get_SB (   picture_and_timing_info_present_flag,        "picture_and_timing_info_present_flag");
+    if (picture_and_timing_info_present_flag)
+    {
+        Get_SB (   x90kHz_flag,                             "90kHz_flag");
+        Skip_S1(7,                                          "reserved");
+        if (x90kHz_flag)
+        {
+            Info_S4(32, N,                                  "N");
+            Info_S4(32, K,                                  "K");
+            Param_Info1(N*27000000.0/K);
+        }
+        Skip_S4(32,                                         "num_units_in_tick");
+    }
+    BS_End();
 }
 
 //---------------------------------------------------------------------------
@@ -2269,6 +2381,7 @@ void File_Mpeg_Descriptors::Descriptor_56()
         Get_S1 (4, teletext_page_number_2,                      "teletext_page_number_2");
         BS_End();
 
+        #if defined(MEDIAINFO_TELETEXT_YES)
         FILLING_BEGIN();
             switch (table_id)
             {
@@ -2286,6 +2399,7 @@ void File_Mpeg_Descriptors::Descriptor_56()
                 default    : ;
             }
         FILLING_END();
+        #endif //MEDIAINFO_TELETEXT_YES
 
         Element_End0();
     }
@@ -2483,7 +2597,7 @@ void File_Mpeg_Descriptors::Descriptor_66()
     Skip_XX(selector_length,                                    "selector_bytes");
     Get_Local(3, ISO_639_language_code,                         "ISO_639_language_code");
     Get_B1 (text_length,                                        "text_length");
-    Skip_Local(text_length,                                     "text_chars");
+    Skip_UTF8(text_length,                                      "text_chars");
 }
 
 //---------------------------------------------------------------------------
@@ -2518,7 +2632,7 @@ void File_Mpeg_Descriptors::Descriptor_6A()
                             if (elementary_PID_IsValid)
                             {
                                 Complete_Stream->Streams[elementary_PID]->descriptor_tag=0x6A;
-                                Complete_Stream->Streams[elementary_PID]->Infos["Channel(s)"]=Ztring().From_Local(Mpeg_Descriptors_AC3_Channels[number_of_channels]);
+                                Complete_Stream->Streams[elementary_PID]->Infos["Channel(s)"]=Ztring().From_UTF8(Mpeg_Descriptors_AC3_Channels[number_of_channels]);
                             }
                             break;
                 default    : ;
@@ -2589,7 +2703,7 @@ void File_Mpeg_Descriptors::Descriptor_7A()
                             if (elementary_PID_IsValid)
                             {
                                 Complete_Stream->Streams[elementary_PID]->descriptor_tag=0x7A;
-                                Complete_Stream->Streams[elementary_PID]->Infos["Channel(s)"]=Ztring().From_Local(Mpeg_Descriptors_AC3_Channels[number_of_channels]);
+                                Complete_Stream->Streams[elementary_PID]->Infos["Channel(s)"]=Ztring().From_UTF8(Mpeg_Descriptors_AC3_Channels[number_of_channels]);
                             }
                             break;
                 default    : ;
@@ -2750,12 +2864,12 @@ void File_Mpeg_Descriptors::Descriptor_81()
     int8u sample_rate_code, bit_rate_code, surround_mode, bsmod, num_channels, langcod, textlen, text_code;
     bool language_flag, language_flag_2;
     BS_Begin();
-    Get_S1 (3, sample_rate_code,                                "sample_rate_code"); if (sample_rate_code<4) {Param_Info2(AC3_SamplingRate[sample_rate_code], " Hz");}
+    Get_S1 (3, sample_rate_code,                                "sample_rate_code"); Param_Info2C(sample_rate_code<4,AC3_SamplingRate[sample_rate_code], " Hz");
     Skip_S1(5,                                                  "bsid");
-    Get_S1 (6, bit_rate_code,                                   "bit_rate_code"); Param_Info2(AC3_BitRate[bit_rate_code]*1000, " Kbps");
-    Get_S1 (2, surround_mode,                                   "surround_mode"); Param_Info1(AC3_Surround[surround_mode]);
+    Get_S1 (6, bit_rate_code,                                   "bit_rate_code"); Param_Info2C(bit_rate_code<19,AC3_BitRate[bit_rate_code]*1000, " Kbps");
+    Get_S1 (2, surround_mode,                                   "surround_mode"); Param_Info1C(surround_mode<4,AC3_Surround[surround_mode]);
     Get_S1 (3, bsmod,                                           "bsmod");
-    Get_S1 (4, num_channels,                                    "num_channels"); if (num_channels<8) {Param_Info2(AC3_Channels[num_channels], " channels");}
+    Get_S1 (4, num_channels,                                    "num_channels"); Param_Info2C(num_channels<8,AC3_Channels[num_channels], " channels");
     Skip_SB(                                                    "full_svc");
     BS_End();
 
@@ -2768,7 +2882,8 @@ void File_Mpeg_Descriptors::Descriptor_81()
                             Complete_Stream->Streams[elementary_PID]->descriptor_tag=0x81;
                             if (sample_rate_code<4)
                                 Complete_Stream->Streams[elementary_PID]->Infos["SamplingRate"]=Ztring::ToZtring(AC3_SamplingRate[sample_rate_code]);
-                            Complete_Stream->Streams[elementary_PID]->Infos["BitRate"]=Ztring::ToZtring(AC3_BitRate[bit_rate_code]*1000);
+                            if (bit_rate_code<19)
+                                Complete_Stream->Streams[elementary_PID]->Infos["BitRate"]=Ztring::ToZtring(AC3_BitRate[bit_rate_code]*1000);
                             if (num_channels<8)
                                 Complete_Stream->Streams[elementary_PID]->Infos["Channel(s)"]=Ztring::ToZtring(AC3_Channels[num_channels]);
                         }
@@ -2817,12 +2932,12 @@ void File_Mpeg_Descriptors::Descriptor_81()
     //Parsing
     if (Element_Offset==Element_Size) return;
     if (language_flag)
-        Get_Local(3, Language1,                                 "language1");
+        Get_UTF8(3, Language1,                                  "language1");
 
     //Parsing
     if (Element_Offset==Element_Size) return;
     if (language_flag_2)
-        Get_Local(3, Language2,                                 "language2");
+        Get_UTF8(3, Language2,                                  "language2");
 
     //Parsing
     if (Element_Offset==Element_Size) return;
@@ -2838,8 +2953,7 @@ void File_Mpeg_Descriptors::Descriptor_86()
 
         if (event_id_IsValid)
         {
-            delete Complete_Stream->Sources[table_id_extension].ATSC_EPG_Blocks[Complete_Stream->Streams[pid]->table_type].Events[event_id].ServiceDescriptors;
-            Complete_Stream->Sources[table_id_extension].ATSC_EPG_Blocks[Complete_Stream->Streams[pid]->table_type].Events[event_id].ServiceDescriptors=new File__Analyze::servicedescriptors;
+            Complete_Stream->Sources[table_id_extension].ATSC_EPG_Blocks[Complete_Stream->Streams[pid]->table_type].Events[event_id].reset(new File__Analyze::servicedescriptors);
         }
         else if (elementary_PID_IsValid)
         {
@@ -3032,7 +3146,7 @@ void File_Mpeg_Descriptors::Descriptor_A1()
         Skip_S1( 3,                                             "reserved");
         Get_S2 (13, elementary_PID,                             "elementary_PID");
         BS_End();
-        Get_Local(3, Language,                                  "ISO_639_language_code");
+        Get_UTF8(3, Language,                                   "ISO_639_language_code");
         Element_End1(Ztring().From_CC2(elementary_PID));
 
         //Filling
@@ -3066,6 +3180,70 @@ void File_Mpeg_Descriptors::Descriptor_AA()
 {
     //Parsing
     Skip_XX(Element_Size,                                       "rc_information");
+}
+
+//---------------------------------------------------------------------------
+extern const size_t DolbyVision_Profiles_Size;
+extern const char* DolbyVision_Profiles[];
+void File_Mpeg_Descriptors::Descriptor_B0()
+{
+    //Parsing
+    int8u  dv_version_major, dv_version_minor, dv_profile, dv_level;
+    bool rpu_present_flag, el_present_flag, bl_present_flag;
+    Get_B1 (dv_version_major,                                   "dv_version_major");
+    Get_B1 (dv_version_minor,                                   "dv_version_minor");
+    if (dv_version_major==1) //Spec says nothing, we hope that a minor version change means that the stream is backward compatible
+    {
+        BS_Begin();
+        Get_S1 (7, dv_profile,                                  "dv_profile");
+        Get_S1 (6, dv_level,                                    "dv_level");
+        Get_SB (   rpu_present_flag,                            "rpu_present_flag");
+        Get_SB (   el_present_flag,                             "el_present_flag");
+        Get_SB (   bl_present_flag,                             "bl_present_flag");
+        BS_End();
+    }
+    else
+        Skip_XX(Element_Size-Element_Offset,                    "Unknown");
+
+    FILLING_BEGIN();
+        Ztring Summary=Ztring::ToZtring(dv_version_major)+__T('.')+Ztring::ToZtring(dv_version_minor);
+        Complete_Stream->Streams[elementary_PID]->Infos["DolbyVision_Version"]=Summary;
+        if (dv_version_major==1)
+        {
+            string Profile, Level;
+            if (dv_profile<DolbyVision_Profiles_Size)
+                Profile+=DolbyVision_Profiles[dv_profile];
+            else
+                Profile+=Ztring().From_CC1(dv_profile).To_UTF8();
+            Profile+=__T('.');
+            Profile+=Ztring().From_CC1(dv_profile).To_UTF8();
+            Level+=Ztring().From_CC1(dv_level).To_UTF8();
+            Complete_Stream->Streams[elementary_PID]->Infos["DolbyVision_Profile"].From_UTF8(Profile);
+            Complete_Stream->Streams[elementary_PID]->Infos["DolbyVision_Level"].From_UTF8(Level);
+            Summary+=__T(',');
+            Summary+=__T(' ');
+            Summary+=Ztring().From_UTF8(Profile);
+            Summary+=__T('.');
+            Summary+=Ztring().From_UTF8(Level);
+
+            string Layers;
+            if (rpu_present_flag|el_present_flag|bl_present_flag)
+            {
+                Summary+=',';
+                Summary+=' ';
+                if (bl_present_flag)
+                    Layers +="BL+";
+                if (el_present_flag)
+                    Layers +="EL+";
+                if (rpu_present_flag)
+                    Layers +="RPU+";
+                Layers.resize(Layers.size()-1);
+                Summary+=Ztring().From_UTF8(Layers);
+            }
+            Complete_Stream->Streams[elementary_PID]->Infos["DolbyVision_Layers"].From_UTF8(Layers);
+            Complete_Stream->Streams[elementary_PID]->Infos["DolbyVision/String"]=Summary;
+        }
+    FILLING_END();
 }
 
 //---------------------------------------------------------------------------
@@ -3376,7 +3554,6 @@ void File_Mpeg_Descriptors::Get_DVB_Text(int64u Size, Ztring &Value, const char*
 {
     if (Size<1)
     {
-        Get_Local(Size, Value,                                  Info);
         return;
     }
 

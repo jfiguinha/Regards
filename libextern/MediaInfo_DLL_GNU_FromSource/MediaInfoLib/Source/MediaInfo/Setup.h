@@ -125,6 +125,9 @@
     #if !defined (MEDIAINFO_EXPORT_NO) && !defined (MEDIAINFO_EXPORT_YES)
         #define MEDIAINFO_EXPORT_NO
     #endif
+    #if !defined (MEDIAINFO_JNI_NO) && !defined (MEDIAINFO_JNI_YES)
+        #define MEDIAINFO_JNI_NO
+    #endif
 #endif
 
 //---------------------------------------------------------------------------
@@ -272,6 +275,16 @@
         #define MEDIAINFO_SHA2 1
     #endif
 #endif
+#if !defined(MEDIAINFO_COMPRESS)
+    #if defined(MEDIAINFO_COMPRESS_NO) && defined(MEDIAINFO_COMPRESS_YES)
+        #undef MEDIAINFO_COMPRESS_NO //MEDIAINFO_COMPRESS_YES has priority
+    #endif
+    #if defined(MEDIAINFO_COMPRESS_NO)
+        #define MEDIAINFO_COMPRESS 0
+    #else
+        #define MEDIAINFO_COMPRESS 1
+    #endif
+#endif
 #if !defined(MEDIAINFO_DEMUX)
     #if !defined(MEDIAINFO_DEMUX_NO) && !defined(MEDIAINFO_DEMUX_YES) && !MEDIAINFO_EVENTS
         #define MEDIAINFO_DEMUX_NO //MEDIAINFO_DEMUX is disabled by default if MEDIAINFO_EVENTS is set to 0
@@ -327,7 +340,7 @@
         #undef MEDIAINFO_READTHREAD_NO //MEDIAINFO_READTHREAD_YES has priority
     #endif
     #if !defined(MEDIAINFO_READTHREAD_NO) && !defined(MEDIAINFO_READTHREAD_YES)
-        #define MEDIAINFO_READTHREAD_NO //MEDIAINFO_READTHREAD_NO by default, as there are 
+        #define MEDIAINFO_READTHREAD_NO //MEDIAINFO_READTHREAD_NO by default, as there are
     #endif
     #if defined(MEDIAINFO_READTHREAD_NO) || !defined(WINDOWS) //Currently supported only on Windows TODO: add support of non Windows OS
         #define MEDIAINFO_READTHREAD 0
@@ -382,6 +395,9 @@
 #if !defined(MEDIAINFO_EXPORT_NO) && !defined(MEDIAINFO_XML_NO) && !defined(MEDIAINFO_XML_YES)
     #define MEDIAINFO_XML_YES
 #endif
+#if !defined(MEDIAINFO_EXPORT_NO) && !defined(MEDIAINFO_JSON_NO) && !defined(MEDIAINFO_JSON_YES)
+    #define MEDIAINFO_JSON_YES
+#endif
 #if !defined(MEDIAINFO_EXPORT_NO) && !defined(MEDIAINFO_CSV_NO) && !defined(MEDIAINFO_CSV_YES)
     #define MEDIAINFO_CSV_YES
 #endif
@@ -402,6 +418,9 @@
 #endif
 #if !defined(MEDIAINFO_EXPORT_NO) && !defined(MEDIAINFO_REVTMD_NO) && !defined(MEDIAINFO_REVTMD_YES)
     #define MEDIAINFO_REVTMD_YES
+#endif
+#if !defined(MEDIAINFO_EXPORT_NO) && !defined(MEDIAINFO_NISO_NO) && !defined(MEDIAINFO_NISO_YES)
+    #define MEDIAINFO_NISO_YES
 #endif
 
 //---------------------------------------------------------------------------
@@ -493,6 +512,9 @@
 #if !defined(MEDIAINFO_MULTI_NO) && !defined(MEDIAINFO_MK_NO) && !defined(MEDIAINFO_MK_YES)
     #define MEDIAINFO_MK_YES
 #endif
+#if !defined(MEDIAINFO_MULTI_NO) && !defined(MEDIAINFO_MIXML_NO) && !defined(MEDIAINFO_MIXML_YES)
+    #define MEDIAINFO_MIXML_YES
+#endif
 #if !defined(MEDIAINFO_MULTI_NO) && !defined(MEDIAINFO_MPEG4_NO) && !defined(MEDIAINFO_MPEG4_YES)
     #define MEDIAINFO_MPEG4_YES
 #endif
@@ -573,6 +595,9 @@
 #endif
 #if !defined(MEDIAINFO_VIDEO_NO) && !defined(MEDIAINFO_AFDBARDATA_NO) && !defined(MEDIAINFO_AFDBARDATA_YES)
     #define MEDIAINFO_AFDBARDATA_YES
+#endif
+#if !defined(MEDIAINFO_VIDEO_NO) && !defined(MEDIAINFO_AV1_NO) && !defined(MEDIAINFO_AV1_YES)
+    #define MEDIAINFO_AV1_YES
 #endif
 #if !defined(MEDIAINFO_VIDEO_NO) && !defined(MEDIAINFO_AVC_NO) && !defined(MEDIAINFO_AVC_YES)
     #define MEDIAINFO_AVC_YES
@@ -673,6 +698,12 @@
 #if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_DOLBYE_NO) && !defined(MEDIAINFO_DOLBYE_YES)
     #define MEDIAINFO_DOLBYE_YES
 #endif
+#if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_DSF_NO) && !defined(MEDIAINFO_DSF_YES)
+    #define MEDIAINFO_DSF_YES
+#endif
+#if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_DSDIFF_NO) && !defined(MEDIAINFO_DSDIFF_YES)
+    #define MEDIAINFO_DSDIFF_YES
+#endif
 #if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_DTS_NO) && !defined(MEDIAINFO_DTS_YES)
     #define MEDIAINFO_DTS_YES
 #endif
@@ -685,7 +716,7 @@
 #if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_LA_NO) && !defined(MEDIAINFO_LA_YES)
     #define MEDIAINFO_LA_YES
 #endif
-#if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_MIDO_NO) && !defined(MEDIAINFO_MIDO_YES)
+#if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_MIDI_NO) && !defined(MEDIAINFO_MIDI_YES)
     #define MEDIAINFO_MIDI_YES
 #endif
 #if !defined(MEDIAINFO_AUDIO_NO) && !defined(MEDIAINFO_MOD_NO) && !defined(MEDIAINFO_MOD_YES)
@@ -933,6 +964,9 @@
 #endif
 #if !defined(MEDIAINFO_UNKNOWN_NO)
     #define MEDIAINFO_UNKNOWN_YES
+#endif
+#if !defined(MEDIAINFO_JNI_NO)
+    #define MEDIAINFO_JNI_YES
 #endif
 
 #endif

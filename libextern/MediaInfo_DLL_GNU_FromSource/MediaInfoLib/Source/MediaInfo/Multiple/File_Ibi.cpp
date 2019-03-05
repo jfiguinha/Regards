@@ -349,7 +349,7 @@ void File_Ibi::Ebml_DocType()
 
     //Parsing
     Ztring Data;
-    Get_Local(Element_Size, Data,                               "Data"); Element_Info1(Data);
+    Get_UTF8(Element_Size, Data,                                "Data"); Element_Info1(Data);
 
     //Filling
     FILLING_BEGIN();
@@ -568,18 +568,16 @@ void File_Ibi::CompressedIndex()
     //Sizes
     unsigned long Source_Size=(unsigned long)(Element_Size-Element_Offset);
     unsigned long Dest_Size=(unsigned long)UncompressedSize;
+    if (Dest_Size>=64*1024*1024)
+    {
+        Reject("Ibi");
+        return;
+    }
 
     //Uncompressing
     int8u* Dest;
-    try
     {
         Dest=new int8u[Dest_Size];
-    }
-    catch (...)
-    {
-        //Memory error
-        Reject();
-        return;
     }
     if (uncompress((Bytef*)Dest, &Dest_Size, (const Bytef*)Buffer+Buffer_Offset+(size_t)Element_Offset, Source_Size)<0)
     {

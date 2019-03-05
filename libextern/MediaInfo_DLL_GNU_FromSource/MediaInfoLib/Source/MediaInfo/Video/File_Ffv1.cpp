@@ -523,6 +523,7 @@ void File_Ffv1::Streams_Accept()
         Version+=Ztring::ToZtring(micro_version);
     }
     Fill(Stream_Video, 0, Video_Format_Version, Version);
+    Fill(Stream_Video, 0, Video_BitRate_Mode, "VBR");
 }
 
 //***************************************************************************
@@ -830,6 +831,14 @@ void File_Ffv1::Read_Buffer_Continue()
         else
         #endif //MEDIAINFO_TRACE
             Skip_XX(Element_Size-Element_Offset,                "SliceContent");
+        if (version<=1 && Element_Offset+5==Element_Size)
+        {
+            crc_left=FFv1_CRC_Compute(Buffer+Buffer_Offset+(size_t)Element_Offset_Begin, (size_t)(Element_Size-Element_Offset_Begin));
+            Element_Size-=5;
+            ec = 1;
+            if (Frame_Count==0)
+                Fill(Stream_Video, 0, "ErrorDetectionType", "Per slice");
+        }
         if (Element_Offset<Element_Size)
         {
             Skip_XX(Element_Size-Element_Offset,                "Junk");
@@ -838,13 +847,16 @@ void File_Ffv1::Read_Buffer_Continue()
 
         //SliceFooter
         Element_Size=Element_Size_Save;
+        if (version>=3 || ec == 1)
+            Element_Begin1("SliceFooter");
         if (version>=3)
         {
-            Element_Begin1("SliceFooter");
             int32u slice_size;
             Get_B3 (slice_size,                                 "slice_size");
             if (Element_Offset_Begin+slice_size+3!=Element_Offset)
                 Param_Error("FFV1-SLICE-slice_size:1");
+        }
+        {
             if (ec == 1)
             {
                 int8u error_status;
@@ -871,9 +883,10 @@ void File_Ffv1::Read_Buffer_Continue()
                         }
                     #endif //MEDIAINFO_FIXITY
                 }
-                Element_End0();
             }
         }
+        if (version>=3 || ec==1)
+            Element_End0();
 
         Element_End0();
         Pos++;
@@ -890,7 +903,7 @@ void File_Ffv1::Read_Buffer_Continue()
         while (current_slice<Slice_Max)
         {
             if (current_slice->sample_buffer)
-                SlicesPlaces[current_slice->slice_y*num_v_slices+current_slice->slice_x]++;
+                SlicesPlaces[current_slice->slice_y*num_h_slices+current_slice->slice_x]++;
 
             current_slice++;
         }
@@ -1146,13 +1159,6 @@ void File_Ffv1::Parameters()
         intra=0;
     }
 
-    if (!coder_type && version<=1)
-    {
-        states States;
-        memset(States, 129, states_size);
-        Skip_RC(States,                                         "end");
-    }
-
     Element_End0();
 
     FILLING_BEGIN();
@@ -1192,7 +1198,7 @@ void File_Ffv1::Parameters()
             if (version>1)
             {
                 Fill(Stream_Video, 0, "MaxSlicesCount", num_h_slices*num_v_slices);
-                if (version>2)
+                if (version>=3)
                 {
                     if (ec)
                         Fill(Stream_Video, 0, "ErrorDetectionType", "Per slice");
@@ -1255,16 +1261,12 @@ void File_Ffv1::SliceContent(states &States)
 
     if (!coder_type)
     {
-        if ((version == 3 && micro_version > 1) || version > 3)
+        if (version>=3)
         {
-            states States;
-            memset(States, 129, states_size);
-            Skip_RC(States,                                     "?");
+            int8u s = 129;
+            RC->get_rac(&s);
         }
-        if ((version > 2 || (!current_slice->x && !current_slice->y)))
-            Element_Offset+=RC->BytesUsed(); // Computing how many bytes where consumed by the range coder
-        else
-            Element_Offset=0;
+        Element_Offset+=RC->BytesUsed(); // Computing how many bytes where consumed by the range coder
         BS_Begin();
     }
 
@@ -1306,21 +1308,19 @@ void File_Ffv1::SliceContent(states &States)
     else if (colorspace_type == 1)
         rgb();
 
+    if (coder_type)
+    {
+        int8u s = 129;
+        RC->get_rac(&s);
+    }
+
     if (BS->BufferUnderRun || RC->Underrun())
         Element_Error("FFV1-SLICE-SliceContent:1");
 
-    if (!coder_type)
-        BS_End();
-
     if (coder_type)
-    {
-        //if (version > 2)
-        {
-            int8u s = 129;
-            RC->get_rac(&s);
-        }
         Skip_XX(RC->BytesUsed(),                                "slice_data");
-    }
+    else
+        BS_End();
 
     #if MEDIAINFO_DECODE
         //Decode(Buffer, Buffer_Size);
@@ -1341,7 +1341,7 @@ bool File_Ffv1::SliceHeader(states &States)
 
     int32u slice_x, slice_y, slice_width_minus1, slice_height_minus1;
     Get_RU (States, slice_x,                                "slice_x");
-    if (slice_x >= num_v_slices)
+    if (slice_x >= num_h_slices)
     {
         Param_Error("FFV1-SLICE-slice_xywh:1");
         Element_End0();
@@ -1402,7 +1402,7 @@ bool File_Ffv1::SliceHeader(states &States)
         Param_Error("FFV1-SLICE-picture_structure:1");
     Get_RU (States, sample_aspect_ratio_num,                "sar_num");
     Get_RU (States, sample_aspect_ratio_den,                "sar_den");
-    if ((sample_aspect_ratio_num && !sample_aspect_ratio_den) || (!sample_aspect_ratio_num && sample_aspect_ratio_den))
+    if ((sample_aspect_ratio_num && !sample_aspect_ratio_den)) // || (!sample_aspect_ratio_num && sample_aspect_ratio_den)) // Second part is deactivated because FFmpeg creates such file when SAR is unknown
         Param_Error("FFV1-SLICE-sar_den:1");
     if (version > 3)
     {
@@ -1410,14 +1410,6 @@ bool File_Ffv1::SliceHeader(states &States)
     }
 
     RC->AssignStateTransitions(state_transitions_table);
-
-    if (!coder_type)
-    {
-        states States;
-        memset(States, 129, states_size);
-        Skip_RC(States,                                     "end");
-    }
-    //Element_Offset+=RC->BytesUsed(); // Computing how many bytes where consumed by the range coder
 
     Element_End0();
     return true;

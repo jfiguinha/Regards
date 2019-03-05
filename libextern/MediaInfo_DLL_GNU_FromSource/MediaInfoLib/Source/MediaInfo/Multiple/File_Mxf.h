@@ -17,6 +17,7 @@
 
 //---------------------------------------------------------------------------
 #include "MediaInfo/File__Analyze.h"
+#include "MediaInfo/File__HasReferences.h"
 #if defined(MEDIAINFO_ANCILLARY_YES)
     #include <MediaInfo/Multiple/File_Ancillary.h>
 #endif //defined(MEDIAINFO_ANCILLARY_YES)
@@ -30,13 +31,11 @@
 namespace MediaInfoLib
 {
 
-class File__ReferenceFilesHelper;
-
 //***************************************************************************
 // Class File_Mxf
 //***************************************************************************
 
-class File_Mxf : public File__Analyze
+class File_Mxf : public File__Analyze, File__HasReferences
 {
 public :
     //Constructor/Destructor
@@ -90,7 +89,11 @@ protected :
     //Buffer - Global
     void Read_Buffer_Init ();
     void Read_Buffer_Continue ();
+    #if defined(MEDIAINFO_FILE_YES)
     void Read_Buffer_CheckFileModifications();
+    #else //defined(MEDIAINFO_FILE_YES)
+    void Read_Buffer_CheckFileModifications() {}
+    #endif //defined(MEDIAINFO_FILE_YES)
     void Read_Buffer_AfterParsing ();
     void Read_Buffer_Unsynched();
     #if MEDIAINFO_SEEK
@@ -286,6 +289,10 @@ protected :
     void GenericPictureEssenceDescriptor_ActiveFormatDescriptor();//3218
     void GenericPictureEssenceDescriptor_ColorPrimaries();      //3219
     void GenericPictureEssenceDescriptor_CodingEquations();     //321A
+    void MasteringDisplayPrimaries();
+    void MasteringDisplayWhitePointChromaticity();
+    void MasteringDisplayMaximumLuminance();
+    void MasteringDisplayMinimumLuminance();
     void GenericSoundEssenceDescriptor_QuantizationBits();      //3D01
     void GenericSoundEssenceDescriptor_Locked();                //3D02
     void GenericSoundEssenceDescriptor_AudioSamplingRate();     //3D03
@@ -559,7 +566,7 @@ protected :
     void Info_UL_01xx01_Items () {Element_Offset+=8;};
     void Info_UL_02xx01_Groups () {Element_Offset+=8;};
     void Info_UL_040101_Values () {Element_Offset+=8;};
-    #define Info_UL(_INFO, _NAME, _PARAM) int128u _INFO;
+    #define Info_UL(_INFO, _NAME, _PARAM) Skip_UL(_NAME)
     #endif //MEDIAINFO_TRACE
 
     //TimeCode
@@ -793,6 +800,9 @@ protected :
         int32u SubSampling_Horizontal;
         int32u SubSampling_Vertical;
         int32u ChannelCount;
+        int32u MinRefLevel;
+        int32u MaxRefLevel;
+        int32u ColorRange;
         int128u ChannelAssignment;
         std::map<std::string, Ztring> Infos;
         int16u BlockAlign;
@@ -864,6 +874,9 @@ protected :
             Height_Display_Offset=(int32u)-1;
             SubSampling_Horizontal=(int32u)-1;
             SubSampling_Vertical=(int32u)-1;
+            MinRefLevel=(int32u)-1;
+            MaxRefLevel=(int32u)-1;
+            ColorRange =(int32u)-1;
             ChannelCount=(int32u)-1;
             ChannelAssignment.hi=(int64u)-1;
             ChannelAssignment.lo=(int64u)-1;
@@ -891,6 +904,10 @@ protected :
             //AudioChannelLabelSubDescriptor specific
             SoundfieldGroupLinkID.hi=(int64u)-1;
             SoundfieldGroupLinkID.lo=(int64u)-1;
+        }
+		bool Is_Interlaced() const
+        {
+            return ScanType==__T("Interlaced");
         }
     };
     typedef std::map<int128u, descriptor> descriptors; //Key is InstanceUID of Descriptor
@@ -920,7 +937,6 @@ protected :
     };
     typedef std::map<int128u, locator> locators; //Key is InstanceUID of the locator
     locators Locators;
-    File__ReferenceFilesHelper* ReferenceFiles;
     #if MEDIAINFO_NEXTPACKET
         bool                    ReferenceFiles_IsParsing;
     #endif //MEDIAINFO_NEXTPACKET
@@ -1138,9 +1154,12 @@ protected :
     void           ChooseParser_SmpteSt0331(const essences::iterator &Essence, const descriptors::iterator &Descriptor);
     void           ChooseParser_SmpteSt0337(const essences::iterator &Essence, const descriptors::iterator &Descriptor);
     void           ChooseParser_Jpeg2000(const essences::iterator &Essence, const descriptors::iterator &Descriptor);
+    void           ChooseParser_ProRes(const essences::iterator &Essence, const descriptors::iterator &Descriptor);
 
     //Helpers
+    int32u Vector(int32u ExpectedLength=(int32u)-1);
     void Subsampling_Compute(descriptors::iterator Descriptor);
+    void ColorLevels_Compute(descriptors::iterator Descriptor, bool Force=false, int32u BitDepth=(int32u)-1);
     #if defined(MEDIAINFO_REFERENCES_YES)
         void Locators_CleanUp();
         void Locators_Test();
@@ -1248,6 +1267,15 @@ protected :
             : Value(Value_)
             , FrameCount(1)
         {}
+        bool Add(const string& Value_)
+        {
+            if (Value == Value_)
+            {
+                FrameCount++;
+                return true;
+            }
+            return false;
+        }
     };
     typedef std::vector<acquisitionmetadata> acquisitionmetadatalist;
     vector<acquisitionmetadatalist*> AcquisitionMetadataLists;
@@ -1259,9 +1287,8 @@ protected :
             AcquisitionMetadataLists[Id]->push_back(acquisitionmetadata(Value));
             return;
         }
-        if ((*AcquisitionMetadataLists[Id])[AcquisitionMetadataLists[Id]->size()-1].Value == Value)
+        if ((*AcquisitionMetadataLists[Id])[AcquisitionMetadataLists[Id]->size()-1].Add(Value))
         {
-            (*AcquisitionMetadataLists[Id])[AcquisitionMetadataLists[Id]->size()-1].FrameCount++;
             return;
         }
         AcquisitionMetadataLists[Id]->push_back(acquisitionmetadata(Value));
@@ -1275,9 +1302,8 @@ protected :
             AcquisitionMetadata_Sony_E201_Lists[Id]->push_back(acquisitionmetadata(Value));
             return;
         }
-        if ((*AcquisitionMetadata_Sony_E201_Lists[Id])[AcquisitionMetadata_Sony_E201_Lists[Id]->size()-1].Value == Value)
+        if ((*AcquisitionMetadata_Sony_E201_Lists[Id])[AcquisitionMetadata_Sony_E201_Lists[Id]->size()-1].Add(Value))
         {
-            (*AcquisitionMetadata_Sony_E201_Lists[Id])[AcquisitionMetadata_Sony_E201_Lists[Id]->size()-1].FrameCount++;
             return;
         }
         AcquisitionMetadata_Sony_E201_Lists[Id]->push_back(acquisitionmetadata(Value));
@@ -1334,7 +1360,11 @@ protected :
         int128u Clip_Code;
         int64u  OverallBitrate_IsCbrForSure;
         bool    Duration_Detected;
+        #if defined(MEDIAINFO_FILE_YES)
         bool    DetectDuration();
+        #else //defined(MEDIAINFO_FILE_YES)
+        bool    DetectDuration() { return false; }
+        #endif //defined(MEDIAINFO_FILE_YES)
         int64u  DemuxedSampleCount_Total;
         int64u  DemuxedSampleCount_Current;
         int64u  DemuxedSampleCount_AddedToFirstFrame;

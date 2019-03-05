@@ -11,20 +11,20 @@
 
 //---------------------------------------------------------------------------
 #include "MediaInfo/File__Analyze.h"
+#include "MediaInfo/File__HasReferences.h"
 #include "MediaInfo/MediaInfo_Internal.h"
+#include "MediaInfo/Multiple/File_Mpeg4_Descriptors.h"
 class File_MpegPs;
 //---------------------------------------------------------------------------
 
 namespace MediaInfoLib
 {
 
-class File__ReferenceFilesHelper;
-
 //***************************************************************************
 // Class File_Mpeg4
 //***************************************************************************
 
-class File_Mpeg4 : public File__Analyze
+class File_Mpeg4 : public File__Analyze, File__HasReferences
 {
 protected :
     //Streams management
@@ -161,10 +161,12 @@ private :
     void moov_trak_mdia_minf_stbl_stsd_xxxx_ARES();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_AORD();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_avcC();
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_avcE();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_bitr();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_btrt();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_chan();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_clap();
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_clli();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_colr();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_colr_nclc(bool LittleEndian=false);
     void moov_trak_mdia_minf_stbl_stsd_xxxx_colr_prof();
@@ -174,14 +176,18 @@ private :
     void moov_trak_mdia_minf_stbl_stsd_xxxx_dec3();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_ddts();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_dvc1();
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_dvcC();
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_dvvC() {moov_trak_mdia_minf_stbl_stsd_xxxx_dvcC();}
     void moov_trak_mdia_minf_stbl_stsd_xxxx_esds();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_fiel();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_glbl();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_hvcC();
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_hvcE();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_idfm();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_jp2h() {jp2h();}
     void moov_trak_mdia_minf_stbl_stsd_xxxx_jp2h_colr() {jp2h_colr();}
     void moov_trak_mdia_minf_stbl_stsd_xxxx_jp2h_ihdr() {jp2h_ihdr();}
+    void moov_trak_mdia_minf_stbl_stsd_xxxx_mdcv();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_pasp();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_sinf();
     void moov_trak_mdia_minf_stbl_stsd_xxxx_sinf_frma();
@@ -231,6 +237,7 @@ private :
     void moov_trak_tref_ssrc();
     void moov_trak_tref_sync();
     void moov_trak_tref_tmcd();
+    void moov_trak_tref_vdep();
     void moov_trak_udta();
     void moov_trak_udta_xxxx();
     void moov_udta();
@@ -296,6 +303,7 @@ private :
     bool Element_Name_Get();
     bool Element_Size_Get();
     Ztring Language_Get(int16u Language);
+    bool IsQt();
     enum method
     {
         Method_None,
@@ -309,6 +317,7 @@ private :
     method Metadata_Get(std::string &Parameter, const std::string &Meta);
     void Descriptors();
     void TimeCode_Associate(int32u TrackID);
+    void AddCodecConfigurationBoxInfo();
 
     //Temp
     bool List;
@@ -346,6 +355,7 @@ private :
     struct stream
     {
         Ztring                  File_Name;
+        std::vector<int32u>     CodecConfigurationBoxInfo;
         std::vector<File__Analyze*> Parsers;
         std::map<string, Ztring> Infos;
         MediaInfo_Internal*     MI;
@@ -407,6 +417,9 @@ private :
         bool                    TimeCode_IsVisual;
         bool                    IsPcm;
         bool                    IsPcmMono;
+        #ifdef MEDIAINFO_DVDIF_ANALYZE_YES
+            bool                IsDvDif;
+        #endif //MEDIAINFO_DVDIF_ANALYZE_YES
         bool                    IsPriorityStream;
         bool                    IsFilled;
         bool                    IsChapter;
@@ -481,6 +494,9 @@ private :
             TimeCode_IsVisual=false;
             IsPcm=false;
             IsPcmMono=false;
+            #ifdef MEDIAINFO_DVDIF_ANALYZE_YES
+                IsDvDif=false;
+            #endif //MEDIAINFO_DVDIF_ANALYZE_YES
             IsPriorityStream=false;
             IsFilled=false;
             IsChapter=false;
@@ -511,13 +527,19 @@ private :
             delete MI; //MI=NULL;
             delete TimeCode; //TimeCode=NULL;
         }
+
+        void Parsers_Clear()
+        {
+            Parsers.clear();
+            #ifdef MEDIAINFO_DVDIF_ANALYZE_YES
+                IsDvDif=false;
+            #endif //MEDIAINFO_DVDIF_ANALYZE_YES
+        }
     };
     typedef std::map<int32u, stream> streams;
     streams             Streams;
     streams::iterator   Stream;
-    #if defined(MEDIAINFO_REFERENCES_YES)
-        File__ReferenceFilesHelper* ReferenceFiles;
-    #endif //defined(MEDIAINFO_REFERENCES_YES)
+    File_Mpeg4_Descriptors::es_id_infos ES_ID_Infos;
     #if MEDIAINFO_NEXTPACKET
         bool                    ReferenceFiles_IsParsing;
     #endif //MEDIAINFO_NEXTPACKET

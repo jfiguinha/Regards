@@ -9,6 +9,8 @@
 #define File__ReferenceFilesHelperH
 //---------------------------------------------------------------------------
 
+#if defined(MEDIAINFO_REFERENCES_YES)
+
 //---------------------------------------------------------------------------
 #include "MediaInfo/File__Analyze.h"
 #include "MediaInfo/MediaInfo_Internal.h"
@@ -32,6 +34,7 @@ public :
 
     //In
     void                            AddSequence(sequence* NewSequence);
+    void                            DetectSameReels(vector<size_t> &ReelCount);
     void                            UpdateFileName(const Ztring& OldFileName, const Ztring& NewFileName);
     void                            UpdateMetaDataFromSourceEncoding(const string& SourceEncoding, const string& Name, const string& Value);
     bool                            TestContinuousFileNames;
@@ -104,5 +107,7 @@ private :
 };
 
 } //NameSpace
+
+#endif //MEDIAINFO_REFERENCES_YES
 
 #endif

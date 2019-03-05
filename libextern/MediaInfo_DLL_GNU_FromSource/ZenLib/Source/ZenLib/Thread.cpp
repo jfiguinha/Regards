@@ -298,15 +298,20 @@ Thread::returnvalue Thread::RequestTerminate()
 //---------------------------------------------------------------------------
 Thread::returnvalue Thread::ForceTerminate()
 {
-    CriticalSectionLocker CSL(C);
+    #ifdef WINDOWS_UWP
+        return Incoherent;
+    #else
+        CriticalSectionLocker CSL(C);
 
-    //Terminating (not clean)
-    TerminateThread((HANDLE)ThreadPointer, 1); ThreadPointer=NULL;
+        //Terminating (not clean)
+        TerminateThread((HANDLE)ThreadPointer, 1);
+        ThreadPointer=NULL;
 
-    //Configuring
-    State=State_Terminated;
+        //Configuring
+        State=State_Terminated;
 
-    return Ok;
+        return Ok;
+    #endif
 }
 
 //***************************************************************************
@@ -477,19 +482,21 @@ Thread::returnvalue Thread::Run()
 
 Thread::returnvalue Thread::RunAgain()
 {
-    //Coherency
-    CriticalSectionLocker CSL(C);
-
-    //Coherency
-    if (State!=State_New
-     && State!=State_Terminated)
     {
-        return Incoherent;
-    }
+        //Coherency
+        CriticalSectionLocker CSL(C);
 
-    //Configuring
-    if (State==State_Terminated)
-        State=State_New;
+        //Coherency
+        if (State!=State_New
+        && State!=State_Terminated)
+        {
+            return Incoherent;
+        }
+
+        //Configuring
+        if (State==State_Terminated)
+            State=State_New;
+    }
 
     return Run();
 }

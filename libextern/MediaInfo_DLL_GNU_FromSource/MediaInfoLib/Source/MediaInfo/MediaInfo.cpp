@@ -85,7 +85,11 @@ MediaInfo::~MediaInfo()
 //---------------------------------------------------------------------------
 size_t MediaInfo::Open(const String &File_Name_)
 {
+#if defined(MEDIAINFO_FILE_YES)
     return Internal->Open(File_Name_);
+#else //defined(MEDIAINFO_FILE_YES)
+    return 0; //Not available
+#endif //defined(MEDIAINFO_FILE_YES)
 }
 
 //---------------------------------------------------------------------------
@@ -143,7 +147,7 @@ void MediaInfo::Close()
 //---------------------------------------------------------------------------
 String MediaInfo::Inform(size_t)
 {
-    return Internal->Inform();
+    return MediaInfo_Internal::Inform(Internal);
 }
 
 //---------------------------------------------------------------------------

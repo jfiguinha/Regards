@@ -219,7 +219,7 @@ void File_Aac::program_config_element()
     BS_End(); //Byte align
     Get_B1 (comment_field_bytes,                                "comment_field_bytes");
     if (comment_field_bytes)
-        Get_Local(comment_field_bytes, comment_field_data,      "comment_field_data");
+        Get_UTF8(comment_field_bytes, comment_field_data,       "comment_field_data");
     BS_Begin(); //The stream needs continuity in the bitstream
     Element_End0();
 
@@ -278,9 +278,10 @@ void File_Aac::program_config_element()
 
         Infos_General["Comment"]=comment_field_data;
 
-        Infos["Format"].From_Local("AAC");
-        Infos["Format_Profile"].From_Local(Aac_Format_Profile(audioObjectType));
-        Infos["Codec"].From_Local(Aac_audioObjectType(audioObjectType));
+        Infos["CodecID"].From_Number(audioObjectType);
+        Infos["Format"].From_UTF8("AAC");
+        Infos["Format_Profile"].From_UTF8(Aac_Format_Profile(audioObjectType));
+        Infos["Codec"].From_UTF8(Aac_audioObjectType(audioObjectType));
         Infos["SamplingRate"].From_Number(Aac_sampling_frequency[sampling_frequency_index]);
         Infos["Channel(s)"].From_Number(Channels);
         Infos["ChannelPositions"]=Channels_Positions;
@@ -289,37 +290,21 @@ void File_Aac::program_config_element()
 
         if (!Infos["Format_Settings_SBR"].empty())
         {
+            const Ztring SamplingRate=Infos["SamplingRate"];
             Infos["Format_Profile"]=__T("HE-AAC");
-            Ztring SamplingRate=Infos["SamplingRate"];
             Infos["SamplingRate"].From_Number((extension_sampling_frequency_index==(int8u)-1)?(Frequency_b*2):extension_sampling_frequency, 10);
             if (MediaInfoLib::Config.LegacyStreamDisplay_Get())
             {
                 Infos["Format_Profile"]+=__T(" / LC");
                 Infos["SamplingRate"]+=__T(" / ")+SamplingRate;
             }
-            Infos["Format_Settings_SBR"]=__T("Yes (Implicit)");
-            Infos["Codec"]=Ztring().From_Local(Aac_audioObjectType(audioObjectType))+__T("-SBR");
+            Infos["Format_Settings"]=__T("NBC"); // "Not Backward Compatible"
+            Infos["Format_Settings_SBR"]=__T("Yes (NBC)"); // "Not Backward Compatible"
+            Infos["Codec"]=Ztring().From_UTF8(Aac_audioObjectType(audioObjectType))+__T("-SBR");
         }
 
         if (!Infos["Format_Settings_PS"].empty())
-        {
-            Infos["Format_Profile"]=__T("HE-AACv2");
-            Ztring Channels=Infos["Channel(s)"];
-            Ztring ChannelPositions=Infos["ChannelPositions"];
-            Ztring SamplingRate=Infos["SamplingRate"];
-            Infos["Channel(s)"]=__T("2");
-            Infos["ChannelPositions"]=__T("Front: L R");
-            if (MediaInfoLib::Config.LegacyStreamDisplay_Get())
-            {
-                Infos["Format_Profile"]+=__T(" / HE-AAC / LC");
-                Infos["Channel(s)"]+=__T(" / ")+Channels+__T(" / ")+Channels;
-                Infos["ChannelPositions"]+=__T(" / ")+ChannelPositions+__T(" / ")+ChannelPositions;
-                Infos["SamplingRate"]=Ztring().From_Number((extension_sampling_frequency_index==(int8u)-1)?(Frequency_b*2):extension_sampling_frequency, 10)+__T(" / ")+SamplingRate;
-            }
-            Infos["Format_Settings_PS"]=__T("Yes (Implicit)");
-            Ztring Codec=Retrieve(Stream_Audio, StreamPos_Last, Audio_Codec);
-            Infos["Codec"]=Ztring().From_Local(Aac_audioObjectType(audioObjectType))+__T("-SBR-PS");
-        }
+            FillInfosHEAACv2(__T("NBC"));
     FILLING_END();
 }
 
@@ -330,6 +315,8 @@ void File_Aac::program_config_element()
 //---------------------------------------------------------------------------
 void File_Aac::raw_data_block()
 {
+    raw_data_block_Pos=0;
+
     if (sampling_frequency_index>=13)
     {
         Trusted_IsNot("(Problem)");
@@ -354,7 +341,8 @@ void File_Aac::raw_data_block()
 
         #if MEDIAINFO_TRACE
             bool Trace_Activated_Save=Trace_Activated;
-            Trace_Activated=false; //It is too big, disabling trace for now for full AAC parsing
+            if (id_syn_ele!=0x05)
+                Trace_Activated=false; //It is too big, disabling trace for now for full AAC parsing
         #endif //MEDIAINFO_TRACE
 
         switch (id_syn_ele)
@@ -369,6 +357,8 @@ void File_Aac::raw_data_block()
             case 0x07 :                                     break; //ID_END
             default   :                                          ; //Can not happen
         }
+        if (id_syn_ele<4) // All "content" element
+            raw_data_block_Pos++;
 
         #if MEDIAINFO_TRACE
             Trace_Activated=Trace_Activated_Save;
@@ -1420,6 +1410,33 @@ void File_Aac::hcod(int8u sect_cb, const char* Name)
 }
 
 
+//---------------------------------------------------------------------------
+void File_Aac::FillInfosHEAACv2(const Ztring& Format_Settings)
+{
+    Infos["Format_Profile"] = __T("HE-AACv2");
+    const Ztring Channels = Infos["Channel(s)"];
+    const Ztring ChannelPositions = Infos["ChannelPositions"];
+    Infos["Channel(s)"] = __T("2");
+    Infos["ChannelPositions"] = __T("Front: L R");
+    if (MediaInfoLib::Config.LegacyStreamDisplay_Get())
+    {
+        const Ztring SamplingRate_Previous = Infos["SamplingRate"];
+        Infos["Format_Profile"] += __T(" / HE-AAC / LC");
+        Infos["Channel(s)"] += __T(" / ") + Channels + __T(" / ") + Channels;
+        Infos["ChannelPositions"] += __T(" / ") + ChannelPositions + __T(" / ") + ChannelPositions;
+        const int32u SamplingRate = (extension_sampling_frequency_index == (int8u)-1) ? (((int32u)Frequency_b) * 2) : extension_sampling_frequency;
+        if (SamplingRate)
+            Infos["SamplingRate"] = Ztring().From_Number(SamplingRate, 10) + __T(" / ") + SamplingRate_Previous;
+    }
+    if (Infos["Format_Settings"] != Format_Settings)
+    {
+        if (!Infos["Format_Settings"].empty())
+            Infos["Format_Settings"].insert(0, __T(" / "));
+        Infos["Format_Settings"].insert(0, Format_Settings);
+    }
+    Infos["Format_Settings_PS"] = __T("Yes (") + Format_Settings + __T(")");
+    Infos["Codec"] = Ztring().From_UTF8(Aac_audioObjectType(audioObjectType)) + __T("-SBR-PS");
+}
 
 //***************************************************************************
 // C++

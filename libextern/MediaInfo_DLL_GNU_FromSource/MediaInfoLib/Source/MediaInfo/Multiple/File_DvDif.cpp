@@ -146,7 +146,7 @@ static const char*  Dv_Emphasis[]=
 };
 
 //---------------------------------------------------------------------------
-static const char*  Dv_consumer_camera_1_ae_mode[]=
+const char*  Dv_consumer_camera_1_ae_mode[]=
 {
     "full automatic",
     "gain priority mode",
@@ -167,12 +167,25 @@ static const char*  Dv_consumer_camera_1_ae_mode[]=
 };
 
 //---------------------------------------------------------------------------
-static const char*  Dv_consumer_camera_1_wb_mode[]=
+const char*  Dv_consumer_camera_1_wb_mode[]=
 {
     "automatic",
     "hold",
     "one push",
     "pre-set",
+    "",
+    "",
+    "",
+    "", //no info
+};
+
+//---------------------------------------------------------------------------
+static const char*  Dv_APT[] =
+{
+    "IEC",
+    "SMPTE",
+    "",
+    "",
     "",
     "",
     "",
@@ -196,7 +209,7 @@ const char* Dv_consumer_camera_1_white_balance(int8u white_balance)
 }
 
 //---------------------------------------------------------------------------
-static const char*  Dv_consumer_camera_1_fcm[]=
+const char*  Dv_consumer_camera_1_fcm[]=
 {
     "auto focus",
     "manual focus",
@@ -356,8 +369,8 @@ void File_DvDif::Streams_Fill()
         }
         else
         {
-            Fill(Stream_Video, 0, Video_ScanType, Interlaced?"Interlaced":"Progressive");
-            Fill(Stream_Video, 0, Video_Interlacement, Interlaced?"Interlaced":"PFF");
+            Fill(Stream_Video, 0, Video_ScanType, "Progressive");
+            Fill(Stream_Video, 0, Video_Interlacement, "PFF");
         }
         switch (aspect)
         {
@@ -381,7 +394,7 @@ void File_DvDif::Streams_Fill()
         {
             switch (video_source_stype)
             {
-                case  0 : Fill(Stream_Video, 0, Video_Colorimetry, "4:1:1"); break; //NTSC 25 Mbps
+                case  0 : Fill(Stream_Video, 0, Video_ChromaSubsampling, "4:1:1"); break; //NTSC 25 Mbps
                 default : ;
             }
         }
@@ -390,16 +403,16 @@ void File_DvDif::Streams_Fill()
             switch (video_source_stype)
             {
                 case  0 : if (APT==0)
-                            Fill(Stream_Video, 0, Video_Colorimetry, "4:2:0");      //PAL 25 Mbps (IEC 61834)
+                            Fill(Stream_Video, 0, Video_ChromaSubsampling, "4:2:0");      //PAL 25 Mbps (IEC 61834)
                           else
-                            Fill(Stream_Video, 0, Video_Colorimetry, "4:1:1");      //PAL 25 Mbps (SMPTE 314M)
+                            Fill(Stream_Video, 0, Video_ChromaSubsampling, "4:1:1");      //PAL 25 Mbps (SMPTE 314M)
                           break;
                 default : ;
             }
         }
     }
     else //DV 50 Mbps and 100 Mbps
-        Fill(Stream_Video, 0, Video_Colorimetry, "4:2:2");
+        Fill(Stream_Video, 0, Video_ChromaSubsampling, "4:2:2");
 
     if (FrameSize_Theory && !IsHd)
     {
@@ -468,7 +481,7 @@ void File_DvDif::Streams_Fill()
             Fill(Stream_Video, 0, Video_BitRate_Mode, "CBR");
         }
     }
-    else if (audio_locked || (Retrieve(Stream_Video, 0, Video_Standard)==__T("PAL") && Retrieve(Stream_Video, 0, Video_Colorimetry)==__T("4:1:1")))
+    else if (audio_locked || (Retrieve(Stream_Video, 0, Video_Standard)==__T("PAL") && Retrieve(Stream_Video, 0, Video_ChromaSubsampling)==__T("4:1:1")))
     {
         Fill(Stream_General, 0, General_Format_Commercial_IfAny, "DVCPRO");
         Fill(Stream_Video, 0, Video_Format_Commercial_IfAny, "DVCPRO");
@@ -1626,9 +1639,7 @@ void File_DvDif::video_recdate()
 
     Element_Name("video_recdate");
 
-    Ztring Date=recdate();
-    if (Recorded_Date_Date.empty())
-        Recorded_Date_Date=Date;
+    recdate(true);
 }
 
 //---------------------------------------------------------------------------
@@ -1642,9 +1653,7 @@ void File_DvDif::video_rectime()
 
     Element_Name("video_rectime");
 
-    Ztring Date=rectime();
-    if (Recorded_Date_Time.empty())
-        Recorded_Date_Time=Date;
+    rectime(true);
 }
 
 //---------------------------------------------------------------------------
@@ -1731,7 +1740,7 @@ void File_DvDif::consumer_camera_2()
 //***************************************************************************
 
 //---------------------------------------------------------------------------
-Ztring File_DvDif::recdate()
+void File_DvDif::recdate(bool FromVideo)
 {
     BS_Begin();
 
@@ -1761,26 +1770,27 @@ Ztring File_DvDif::recdate()
 
     BS_End();
 
-    if (Month>12 || Day>31)
-        return Ztring(); //If all bits are set to 1, this is invalid
-    Ztring MonthString;
-    if (Month<10)
-        MonthString=__T("0");
-    MonthString+=Ztring::ToZtring(Month);
-    Ztring DayString;
-    if (Day<10)
-        DayString=__T("0");
-    DayString+=Ztring::ToZtring(Day);
-    return Ztring::ToZtring(Year)+__T("-")+MonthString+__T("-")+DayString;
+    if (FromVideo && Frame_Count==1 && Month<=12 && Day<=31 && Recorded_Date_Date.empty())
+    {
+        Ztring MonthString;
+        if (Month<10)
+            MonthString.assign(1, __T('0'));
+        MonthString+=Ztring::ToZtring(Month);
+        Ztring DayString;
+        if (Day<10)
+            DayString.assign(1, __T('0'));
+        DayString+=Ztring::ToZtring(Day);
+        Recorded_Date_Date=Ztring::ToZtring(Year)+__T('-')+MonthString+__T('-')+DayString;
+    }
 }
 
 //---------------------------------------------------------------------------
-Ztring File_DvDif::rectime()
+void File_DvDif::rectime(bool FromVideo)
 {
     if (!DSF_IsValid)
     {
         Trusted_IsNot("Not in right order");
-        return Ztring();
+        return;
     }
 
     BS_Begin();
@@ -1792,7 +1802,7 @@ Ztring File_DvDif::rectime()
     )
     {
         Skip_XX(4,                                              "All zero");
-        return Ztring();
+        return;
     }
 
     int8u Temp;
@@ -1826,10 +1836,8 @@ Ztring File_DvDif::rectime()
 
     BS_End();
 
-    if (Time!=167185000)
-        return Ztring().Duration_From_Milliseconds(Time);
-    else
-        return Ztring(); //If all bits are set to 1, this is invalid
+    if (FromVideo && Frame_Count==1 && Time!=167185000 && Recorded_Date_Time.empty()) //If all bits are set to 1, this is invalid
+        Recorded_Date_Time.Duration_From_Milliseconds(Time);
 }
 
 } //NameSpace

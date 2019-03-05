@@ -135,12 +135,15 @@ const size_t Buffer_NormalSize=/*188*7;//*/64*1024;
 
 MediaInfo_Config_MediaInfo::MediaInfo_Config_MediaInfo()
 {
+    MediaInfoLib::Config.Init(); //Initialize Configuration
+
     RequestTerminate=false;
     FileIsSeekable=true;
     FileIsSub=false;
     FileIsDetectingDuration=false;
     FileIsReferenced=false;
     FileTestContinuousFileNames=true;
+    FileTestDirectory=true;
     FileKeepInfo=false;
     FileStopAfterFilled=false;
     FileStopSubStreamAfterFilled=false;
@@ -155,6 +158,8 @@ MediaInfo_Config_MediaInfo::MediaInfo_Config_MediaInfo()
         File_Source_List=false;
         File_RiskyBitRateEstimation=false;
         File_MergeBitRateInfo=true;
+        File_HighestFormat=true;
+        File_ChannelLayout=true;
         #if MEDIAINFO_DEMUX
             File_Demux_Unpacketize_StreamLayoutChange_Skip=false;
         #endif //MEDIAINFO_DEMUX
@@ -377,6 +382,15 @@ Ztring MediaInfo_Config_MediaInfo::Option (const String &Option, const String &V
     {
         return File_TestContinuousFileNames_Get()?"1":"0";
     }
+    if (Option_Lower==__T("file_testdirectory"))
+    {
+        File_TestDirectory_Set(!(Value==__T("0") || Value.empty()));
+        return __T("");
+    }
+    else if (Option_Lower==__T("file_testdirectory_get"))
+    {
+        return File_TestDirectory_Get()?"1":"0";
+    }
     if (Option_Lower==__T("file_keepinfo"))
     {
         File_KeepInfo_Set(!(Value==__T("0") || Value.empty()));
@@ -498,6 +512,24 @@ Ztring MediaInfo_Config_MediaInfo::Option (const String &Option, const String &V
     {
         #if MEDIAINFO_ADVANCED
             File_MergeBitRateInfo_Set(!(Value==__T("0") || Value.empty()));
+            return Ztring();
+        #else //MEDIAINFO_ADVANCED
+            return __T("Advanced features are disabled due to compilation options");
+        #endif //MEDIAINFO_ADVANCED
+    }
+    else if (Option_Lower==__T("file_highestformat"))
+    {
+        #if MEDIAINFO_ADVANCED
+            File_HighestFormat_Set(!(Value==__T("0") || Value.empty()));
+            return Ztring();
+        #else //MEDIAINFO_ADVANCED
+            return __T("Advanced features are disabled due to compilation options");
+        #endif //MEDIAINFO_ADVANCED
+    }
+    else if (Option_Lower==__T("file_channellayout"))
+    {
+        #if MEDIAINFO_ADVANCED
+            File_ChannelLayout_Set(Value==__T("2018"));
             return Ztring();
         #else //MEDIAINFO_ADVANCED
             return __T("Advanced features are disabled due to compilation options");
@@ -639,6 +671,11 @@ Ztring MediaInfo_Config_MediaInfo::Option (const String &Option, const String &V
     else if (Option_Lower==__T("file_forceparser_get"))
     {
         return File_ForceParser_Get();
+    }
+    else if (Option_Lower==__T("file_forceparser_config"))
+    {
+        File_ForceParser_Config_Set(Value);
+        return __T("");
     }
     else if (Option_Lower==__T("file_buffer_size_hint_pointer"))
     {
@@ -1335,6 +1372,19 @@ bool MediaInfo_Config_MediaInfo::File_TestContinuousFileNames_Get ()
     return FileTestContinuousFileNames;
 }
 
+//---------------------------------------------------------------------------
+void MediaInfo_Config_MediaInfo::File_TestDirectory_Set (bool NewValue)
+{
+    CriticalSectionLocker CSL(CS);
+    FileTestDirectory=NewValue;
+}
+
+bool MediaInfo_Config_MediaInfo::File_TestDirectory_Get ()
+{
+    CriticalSectionLocker CSL(CS);
+    return FileTestDirectory;
+}
+
 //***************************************************************************
 // Stop after filled
 //***************************************************************************
@@ -1578,6 +1628,36 @@ bool MediaInfo_Config_MediaInfo::File_MergeBitRateInfo_Get ()
 #endif //MEDIAINFO_ADVANCED
 
 //---------------------------------------------------------------------------
+#if MEDIAINFO_ADVANCED
+void MediaInfo_Config_MediaInfo::File_ChannelLayout_Set (bool NewValue)
+{
+    CriticalSectionLocker CSL(CS);
+    File_ChannelLayout =NewValue;
+}
+
+bool MediaInfo_Config_MediaInfo::File_ChannelLayout_Get ()
+{
+    CriticalSectionLocker CSL(CS);
+    return File_ChannelLayout;
+}
+#endif //MEDIAINFO_ADVANCED
+
+//---------------------------------------------------------------------------
+#if MEDIAINFO_ADVANCED
+void MediaInfo_Config_MediaInfo::File_HighestFormat_Set (bool NewValue)
+{
+    CriticalSectionLocker CSL(CS);
+    File_HighestFormat=NewValue;
+}
+
+bool MediaInfo_Config_MediaInfo::File_HighestFormat_Get ()
+{
+    CriticalSectionLocker CSL(CS);
+    return File_HighestFormat;
+}
+#endif //MEDIAINFO_ADVANCED
+
+//---------------------------------------------------------------------------
 #if MEDIAINFO_DEMUX
 #if MEDIAINFO_ADVANCED
 void MediaInfo_Config_MediaInfo::File_Demux_Unpacketize_StreamLayoutChange_Skip_Set (bool NewValue)
@@ -1690,6 +1770,19 @@ Ztring MediaInfo_Config_MediaInfo::File_ForceParser_Get ()
 {
     CriticalSectionLocker CSL(CS);
     return File_ForceParser;
+}
+
+//---------------------------------------------------------------------------
+void MediaInfo_Config_MediaInfo::File_ForceParser_Config_Set (const Ztring &NewValue)
+{
+    CriticalSectionLocker CSL(CS);
+    File_ForceParser_Config=NewValue;
+}
+
+Ztring MediaInfo_Config_MediaInfo::File_ForceParser_Config_Get ()
+{
+    CriticalSectionLocker CSL(CS);
+    return File_ForceParser_Config;
 }
 
 //---------------------------------------------------------------------------
@@ -2434,6 +2527,7 @@ void MediaInfo_Config_MediaInfo::Event_Send (File__Analyze* Source, const int8u*
     {
         MediaInfo_Event_Generic* Temp=(MediaInfo_Event_Generic*)Data_Content;
 
+        #if MEDIAINFO_DEMUX
         if (Demux_Offset_Frame!=(int64u)-1)
         {
             if (Temp->FrameNumber!=(int64u)-1)
@@ -2455,6 +2549,8 @@ void MediaInfo_Config_MediaInfo::Event_Send (File__Analyze* Source, const int8u*
                     Temp->PTS-=Demux_Offset_DTS_FromStream;
             }
         }
+        #endif //MEDIAINFO_DEMUX
+
         if (File_IgnoreEditsBefore)
         {
             if (Temp->FrameNumber!=(int64u)-1)
@@ -2466,7 +2562,7 @@ void MediaInfo_Config_MediaInfo::Event_Send (File__Analyze* Source, const int8u*
             }
             if (Temp->DTS!=(int64u)-1)
             {
-                if (File_IgnoreEditsBefore && File_EditRate)
+                if (File_EditRate)
                 {
                     int64u TimeOffset=float64_int64s(((float64)File_IgnoreEditsBefore)/File_EditRate*1000000000);
                     if (Temp->DTS>TimeOffset)
@@ -2512,7 +2608,9 @@ void MediaInfo_Config_MediaInfo::Event_Send (File__Analyze* Source, const int8u*
                 for (size_t Pos=0; Pos<Events_TimestampShift_Delayed.size(); Pos++)
                     if (Events_TimestampShift_Delayed[Pos])
                     {
+                        CS.Leave();
                         Event_Send(NULL, Events_TimestampShift_Delayed[Pos]->Data_Content, Events_TimestampShift_Delayed[Pos]->Data_Size, Events_TimestampShift_Delayed[Pos]->File_Name);
+                        CS.Enter();
 
                         int32u EventCode=*((int32u*)Events_TimestampShift_Delayed[Pos]->Data_Content);
                         bool IsSimpleText=(EventCode&0x00FFFF00)==(MediaInfo_Event_Global_SimpleText<<8);

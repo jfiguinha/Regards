@@ -23,7 +23,6 @@
     #include <aescpp.h>
 #endif //MEDIAINFO_AES
 #include "MediaInfo/HashWrapper.h"
-#include <cstring>
 //---------------------------------------------------------------------------
 
 namespace MediaInfoLib
@@ -480,6 +479,7 @@ public :
     inline void Param      (const char*   Parameter, const int8u*  Value, size_t Value_Size, bool Utf8=true) {Param(Parameter, (const char*)Value, Value_Size, Utf8);}
     inline void Param_GUID (const char*   Parameter, int128u Value){Param(Parameter, Ztring().From_GUID(Value));}
     inline void Param_UUID (const char*   Parameter, int128u Value){Param(Parameter, Ztring().From_UUID(Value));}
+    inline void Param_CC   (const char*   Parameter, const int8u*  Value, int8u Value_Size){Ztring Name2; for (int8s i=0; i<Value_Size; i++) Name2.append(1, (Char)(Value[i])); Param(Parameter, Name2);}
     /* #ifdef SIZE_T_IS_LONG */
     /* inline void Param      (const char*   Parameter, size_t Value, intu Radix) {if (Trace_Activated) Param(Parameter, Ztring::ToZtring(Value, Radix).MakeUpperCase()+__T(" (")+Ztring::ToZtring(Value, 10).MakeUpperCase()+__T(")"));} */
     /* #endif //SIZE_T_IS_LONG */
@@ -863,6 +863,14 @@ public :
     void Peek_PA(std::string &Info);
     void Skip_PA(                   const char* Name);
     #define Info_PA(_INFO, _NAME) Ztring _INFO; Get_PA (_INFO, _NAME)
+
+    //***************************************************************************
+    // Others, specialized
+    //***************************************************************************
+
+    #if defined(MEDIAINFO_HEVC_YES) || defined(MEDIAINFO_MPEG4_YES)
+    void Get_MasteringDisplayColorVolume(Ztring &MasteringDisplay_ColorPrimaries, Ztring &MasteringDisplay_Luminance);
+    #endif
 
     //***************************************************************************
     // Unknown
@@ -1317,7 +1325,13 @@ protected :
     bool FileHeader_Begin_XML(tinyxml2::XMLDocument &Document);
     bool Synchronize_0x000001();
 public:
+    #if defined(MEDIAINFO_FILE_YES)
     void TestContinuousFileNames(size_t CountOfFiles=24, Ztring FileExtension=Ztring(), bool SkipComputeDelay=false);
+    void TestDirectory();
+    #else //defined(MEDIAINFO_FILE_YES)
+    void TestContinuousFileNames(size_t =24, Ztring =Ztring(), bool =false) {}
+    void TestDirectory() {}
+    #endif //defined(MEDIAINFO_FILE_YES)
     #if MEDIAINFO_FIXITY
     bool FixFile(int64u FileOffsetForWriting, const int8u* ToWrite, const size_t ToWrite_Size);
     #endif// MEDIAINFO_FIXITY

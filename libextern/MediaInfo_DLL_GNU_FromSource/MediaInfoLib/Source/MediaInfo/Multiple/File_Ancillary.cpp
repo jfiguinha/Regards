@@ -343,9 +343,9 @@ void File_Ancillary::Streams_Finish()
     #endif //defined(MEDIAINFO_MXF_YES)
 
     //Unsupported streams
-    for (DataID = 0; DataID<Unknown.size(); DataID++)
-        for (SecondaryDataID = 0; SecondaryDataID<Unknown[DataID].size(); SecondaryDataID++)
-            for (perid::iterator Stream = Unknown[DataID][SecondaryDataID].begin(); Stream!=Unknown[DataID][SecondaryDataID].end(); ++Stream)
+    for (size_t i = 0; i<Unknown.size(); i++)
+        for (size_t j = 0; j<Unknown[i].size(); j++)
+            for (perid::iterator Stream = Unknown[i][j].begin(); Stream!=Unknown[i][j].end(); ++Stream)
             {
                 Stream_Prepare(Stream->second.StreamKind);
                 for (std::map<string, Ztring>::iterator Info=Stream->second.Infos.begin(); Info!=Stream->second.Infos.end(); ++Info)
@@ -569,10 +569,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x40 :
@@ -602,10 +599,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x41 :
@@ -648,10 +642,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x43 :
@@ -694,10 +685,7 @@ void File_Ancillary::Data_Parse()
                                         #endif //defined(MEDIAINFO_MXF_YES)
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x44 :
@@ -717,10 +705,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x45 : // (from SMPTE 2020-1)
@@ -744,10 +729,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x46 :
@@ -761,10 +743,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x50 :
@@ -778,10 +757,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x5F : // (from ARIB STD-B37)
@@ -804,10 +780,9 @@ void File_Ancillary::Data_Parse()
                             #endif //defined(MEDIAINFO_ARIBSTDB24B37_YES)
                         }
                         else
-                            if (TestAndPrepare())
-                            {
-                                Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                            }
+                        {
+                            SetDefaultFormat();
+                        }
                         break;
             case 0x60 :
                         switch (SecondaryDataID)
@@ -838,10 +813,7 @@ void File_Ancillary::Data_Parse()
                                         #endif //defined(MEDIAINFO_TIMECODE_YES)
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x61 : //Defined data services (from SMPTE 334-1)
@@ -884,10 +856,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x62 : //Variable-format data services (from SMPTE 334-1)
@@ -915,10 +884,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x64 :
@@ -953,10 +919,7 @@ void File_Ancillary::Data_Parse()
                                         }
                                         break;
                             default   :
-                                        if (TestAndPrepare())
-                                        {
-                                            Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
-                                        }
+                                        SetDefaultFormat();
                         }
                         break;
             case 0x00 : // Undefined format
@@ -979,6 +942,14 @@ void File_Ancillary::Data_Parse()
 // Presence
 //***************************************************************************
 
+//---------------------------------------------------------------------------
+void File_Ancillary::SetDefaultFormat()
+{
+    if (TestAndPrepare())
+    {
+        Unknown[DataID][SecondaryDataID][string()].Infos["Format"]=Ztring().From_CC1(DataID)+__T('-')+Ztring().From_CC1(SecondaryDataID);
+    }
+}
 //---------------------------------------------------------------------------
 bool File_Ancillary::TestAndPrepare(const string* Unique)
 {

@@ -27,6 +27,7 @@ public :
     int8u   NumberOfFrames;
     bool    DropFrame;
     bool    NegativeTimes;
+    int64s  FirstEditOffset;
 
     //Out
     int64s  Pos;
@@ -39,6 +40,7 @@ protected :
     void Streams_Fill();
 
     //Buffer - Global
+    void Read_Buffer_Init();
     void Read_Buffer_Continue();
 };
 

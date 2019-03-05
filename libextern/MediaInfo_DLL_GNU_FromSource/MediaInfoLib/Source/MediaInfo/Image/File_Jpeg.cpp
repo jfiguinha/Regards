@@ -144,6 +144,34 @@ struct Jpeg_samplingfactor
 };
 
 //---------------------------------------------------------------------------
+void Jpeg_AddDec(string& Current, int8u Value)
+{
+    if (Value < 10)
+        Current += '0' + Value;
+    else
+    {
+        Current += '1';
+        Current += '0' - 10 + Value;
+    }
+}
+
+//---------------------------------------------------------------------------
+string Jpeg_WithLevel(string Profile, int8u Level, bool HasSubLevel=false)
+{
+    Profile += '@';
+    if (HasSubLevel)
+        Profile += 'M'; // Has Mainlevel
+    Profile += 'L';
+    Jpeg_AddDec(Profile, Level & 0xF);
+    if (HasSubLevel)
+    {
+        Profile += 'S'; // Has Sublevel
+        Profile += 'L';
+        Jpeg_AddDec(Profile, Level >> 4);
+    }
+    return Profile;
+}
+
 string Jpeg2000_Rsiz(int16u Rsiz)
 {
     switch (Rsiz)
@@ -156,15 +184,63 @@ string Jpeg2000_Rsiz(int16u Rsiz)
         case 0x0005: return "D-Cinema 2k Scalable";
         case 0x0006: return "D-Cinema 4k Scalable";
         case 0x0007: return "Long-term storage";
-        case 0x0101: return "BCS@L1"; //Broadcast Contribution Single Tile
-        case 0x0102: return "BCS@L2"; //Broadcast Contribution Single Tile
-        case 0x0103: return "BCS@L3"; //Broadcast Contribution Single Tile
-        case 0x0104: return "BCS@L4"; //Broadcast Contribution Single Tile
-        case 0x0105: return "BCS@L5"; //Broadcast Contribution Single Tile
-        case 0x0205: return "BCM@L5"; //Broadcast Contribution Multi-tile
         case 0x0306: return "BCMR@L6"; //Broadcast Contribution Multi-tile Reversible
         case 0x0307: return "BCMR@L7"; //Broadcast Contribution Multi-tile Reversible
-        default: return Ztring::ToZtring(Rsiz, 16).To_UTF8();
+        default:
+            switch ((Rsiz & 0xFFF0))
+            {
+                case 0x0100: return Jpeg_WithLevel("BCS", (int8u)Rsiz); //Broadcast Contribution Single-tile 
+                case 0x0200: return Jpeg_WithLevel("BCM", (int8u)Rsiz); //Broadcast Contribution Multi-tile
+                default:;
+            }
+            switch ((Rsiz & 0xFF00))
+            {
+                case 0x0400: return Jpeg_WithLevel("IMFS2k", (int8u)Rsiz, true); // IMF Single-tile 2k
+                case 0x0500: return Jpeg_WithLevel("IMFS4k", (int8u)Rsiz, true); // IMF Single-tile 4k
+                case 0x0600: return Jpeg_WithLevel("IMFS8k", (int8u)Rsiz, true); // IMF Single-tile 8k
+                case 0x0700: return Jpeg_WithLevel("IMFMR2k", (int8u)Rsiz, true); // IMF Single/Multi-tile 2k
+                case 0x0800: return Jpeg_WithLevel("IMFMR4k", (int8u)Rsiz, true); // IMF Single/Multi-tile 4k
+                case 0x0900: return Jpeg_WithLevel("IMFMR8k", (int8u)Rsiz, true); // IMF Single/Multi-tile 8k
+                default:;
+            }
+            return Ztring::ToZtring(Rsiz, 16).To_UTF8();
+    }
+}
+
+string ICC_Tag(int32u Signature)
+{
+    switch (Signature)
+    {
+        case 0x63707274: return "Copyright";
+        case 0x64657363: return "Profile description";
+        case 0x77747074: return "White point";
+        case 0x626B7074: return "Black point";
+        case 0x72545243: return "Reproduction curve, red";
+        case 0x67545243: return "Reproduction curve, green";
+        case 0x62545243: return "Reproduction curve, blue";
+        case 0x7258595A: return "Matrix, red";
+        case 0x6758595A: return "Matrix, green";
+        case 0x6258595A: return "Matrix, blue";
+        default        : return Ztring().From_CC4(Signature).To_UTF8();
+    }
+}
+
+string ICC_ColorSpace(int32u ColorSpace)
+{
+    switch (ColorSpace)
+    {
+        case 0x434D5920: return "CMY";
+        case 0x434D594B: return "CMYK";
+        case 0x47524159: return "Y";
+        case 0x484C5320: return "HLS";
+        case 0x48535620: return "HSV";
+        case 0x4C616220: return "Lab";
+        case 0x4C757620: return "Luv";
+        case 0x52474220: return "RGB";
+        case 0x58595A20: return "XYZ";
+        case 0x59436272: return "YCbCr";
+        case 0x59787920: return "xyY";
+        default        : return Ztring().From_CC4(ColorSpace).To_UTF8();
     }
 }
 
@@ -858,6 +934,7 @@ void File_Jpeg::SOF_()
             Fill(StreamKind_Last, 0, "Width", Width);
 
             //ColorSpace from http://docs.oracle.com/javase/1.4.2/docs/api/javax/imageio/metadata/doc-files/jpeg_metadata.html
+            //TODO: if APPE_Adobe0_transform is present, indicate that K is inverted, see http://halicery.com/Image/jpeg/JPEGCMYK.html
             switch (APPE_Adobe0_transform)
             {
                 case 0x01 :
@@ -866,7 +943,7 @@ void File_Jpeg::SOF_()
                             break;
                 case 0x02 :
                             if (Count==4)
-                                Fill(StreamKind_Last, 0, "ColorSpace", "YCCB");
+                                Fill(StreamKind_Last, 0, "ColorSpace", "YUVK");
                             break;
                 default   :
                             {
@@ -889,6 +966,8 @@ void File_Jpeg::SOF_()
                                                   || (SamplingFactors[0].Ci==0 && SamplingFactors[1].Ci==1 && SamplingFactors[2].Ci==2)                                 //012
                                                   || (SamplingFactors[0].Ci==1 && SamplingFactors[1].Ci==2 && SamplingFactors[2].Ci==3))                                //123
                                                 Fill(StreamKind_Last, 0, "ColorSpace", "YUV");
+                                            else if (APPE_Adobe0_transform==0 || APPE_Adobe0_transform==(int8u)-1)                                                      //transform set to RGB (it is a guess)
+                                                Fill(StreamKind_Last, 0, "ColorSpace", "RGB");
                                             break;
                                 case 4 :
                                                  if (!APP0_JFIF_Parsed && Ci['R']==1 && Ci['G']==1 && Ci['B']==1 && Ci['A']==1)                                         //RGBA
@@ -899,8 +978,10 @@ void File_Jpeg::SOF_()
                                                   || (SamplingFactors[0].Ci==0 && SamplingFactors[1].Ci==1 && SamplingFactors[2].Ci==2 && SamplingFactors[3].Ci==3)     //0123
                                                   || (SamplingFactors[0].Ci==1 && SamplingFactors[1].Ci==2 && SamplingFactors[2].Ci==3 && SamplingFactors[3].Ci==4))    //1234
                                                 Fill(StreamKind_Last, 0, "ColorSpace", "YUVA");
-                                            else if (APPE_Adobe0_transform==0)                                                                                          //transform set to CMYK
-                                                Fill(StreamKind_Last, 0, "ColorSpace", "YCCB");
+                                            else if (Ci['C']==1 && Ci['M']==1 && Ci['Y']==1 && Ci['K']==1)                                                              //CMYK
+                                                Fill(StreamKind_Last, 0, "ColorSpace", "CMYK");
+                                            else if (APPE_Adobe0_transform==0 || APPE_Adobe0_transform==(int8u)-1)                                                      //transform set to CMYK (it is a guess)
+                                                Fill(StreamKind_Last, 0, "ColorSpace", "CMYK");
                                             break;
                                 default:    ;
                             }
@@ -916,7 +997,7 @@ void File_Jpeg::SOF_()
                     case 1 :
                             switch (SamplingFactors[0].Vi)
                             {
-                                case 1 : ChromaSubsampling="4:4:4"; break;
+                                case 1 : if (Retrieve(StreamKind_Last, 0, "ColorSpace").find(__T("YUV"))==0) ChromaSubsampling="4:4:4"; break;
                                 default: ;
                             }
                             break;
@@ -940,13 +1021,8 @@ void File_Jpeg::SOF_()
                 }
                 if (!ChromaSubsampling.empty())
                 {
-                    if (SamplingFactors.size()==4)
-                    {
-                        if (ChromaSubsampling=="4:4:4" && SamplingFactors[3].Hi==1 && SamplingFactors[3].Vi==1)
-                            ChromaSubsampling+=":4";
-                        else
-                            ChromaSubsampling+=":?";
-                    }
+                    if (SamplingFactors.size()>3 && (SamplingFactors[3].Hi!=SamplingFactors[0].Hi || SamplingFactors[3].Vi!=SamplingFactors[0].Vi))
+                        ChromaSubsampling+=":?";
                     Fill(StreamKind_Last, 0, "ChromaSubsampling", ChromaSubsampling);
                 }
             }
@@ -1148,6 +1224,215 @@ void File_Jpeg::APP1_EXIF()
         Skip_B4(                                                "First_IFD");
     if (Alignment==0x4D4D2A00)
         Skip_L4(                                                "First_IFD");
+}
+
+//---------------------------------------------------------------------------
+void File_Jpeg::APP2()
+{
+    //Parsing
+    if (Element_Size>=12 && Buffer[Buffer_Offset+11]==0 && string((const char*)Buffer+Buffer_Offset)=="ICC_PROFILE")
+    {
+        Element_Info1("ICC profile");
+        int8u Pos;
+        Skip_Local(12,                                          "Signature");
+        Get_B1 (Pos,                                            "Chunk position?"); //1-based?
+        Skip_B1(                                                "Chunk Max?"); //1-based?
+        if (Pos<=1) //Multi-chunk ICC is not supported so we test it is order to skip the extra ICC blocks
+            APP2_ICC_PROFILE();
+        else
+            Skip_XX(Element_Size-Element_Offset,                "(Multi-chunk ICC is not supported)");
+    }
+    else
+        Skip_XX(Element_Size,                                   "Data");
+}
+
+//---------------------------------------------------------------------------
+struct icctagtable
+{
+    int32u Signature;
+    int32u Offset;
+    int32u Size;
+};
+void File_Jpeg::APP2_ICC_PROFILE()
+{
+    Element_Begin1("ICC profile");
+
+    //Parsing
+    int64u Element_Start=Element_Offset; // Needed for tags position
+    int32u ColorSpace;
+    Element_Begin1("Profile header");
+        Skip_B4(                                                "Profile size");
+        Skip_C4(                                                "Preferred CMM type");
+        Element_Begin1("Profile version number");
+            int8u M;
+            Get_B1(M,                                           "Major");
+            if (M>4)
+            {
+                Element_End0();
+                Element_End0();
+                Element_End0();
+                return;
+            }
+            BS_Begin();
+            Info_S1(4, m,                                       "Minor");
+            Info_S1(4, f,                                       "Fix");
+            BS_End();
+            Skip_B2(                                            "Reserved");
+            Element_Info1(Ztring().From_Number(M)+__T('.')+Ztring().From_Number(m)+__T('.')+Ztring().From_Number(f));
+        Element_End0();
+        Skip_C4(                                                "Profile/Device class");
+        Get_C4 (ColorSpace,                                     "Colour space of data");
+        Skip_C4(                                                "PCS");
+        Element_Begin1("Date/Time");
+            Info_B2(YY,                                         "Year");
+            Info_B2(MM,                                         "Month");
+            Info_B2(DD,                                         "Day");
+            Info_B2(hh,                                         "Hour");
+            Info_B2(mm,                                         "Minute");
+            Info_B2(ss,                                         "Second");
+            #if MEDIAINFO_TRACE
+                string DateTime;
+                DateTime+='0'+YY/1000;
+                DateTime+='0'+(YY%1000)/100;
+                DateTime+='0'+(YY%100)/10;
+                DateTime+='0'+(YY%1000);
+                DateTime+='-';
+                DateTime+='0'+MM/10;
+                DateTime+='0'+(MM%10);
+                DateTime+='-';
+                DateTime+='0'+DD/10;
+                DateTime+='0'+(DD%10);
+                DateTime+=' ';
+                DateTime+='0'+hh/10;
+                DateTime+='0'+(hh%10);
+                DateTime+=':';
+                DateTime+='0'+mm/10;
+                DateTime+='0'+(mm%10);
+                DateTime+=':';
+                DateTime+='0'+ss/10;
+                DateTime+='0'+(ss%10);
+                Element_Info1(DateTime.c_str());
+            #endif //MEDIAINFO_TRACE
+        Element_End0();
+        Skip_C4(                                                "'acsp' profile file signature ");
+        Skip_C4(                                                "Primary platform signature");
+        Skip_B4(                                                "Profile flags");
+        Skip_C4(                                                "Device manufacturer");
+        Skip_B4(                                                "Device model");
+        Skip_B4(                                                "Device attributes TODO 1");
+        Skip_B4(                                                "Device attributes TODO 2");
+        Skip_B4(                                                "Rendering Intent");
+        Element_Begin1("Illuminant of the PCS");
+            APP2_ICC_PROFILE_XYZNumber();
+        Element_End0();
+        Skip_C4(                                                "Profile creator signature");
+        Skip_XX(16,                                             "Profile ID");
+        Skip_XX(28,                                             "Reserved");
+    Element_End0();
+
+    int32u Count;
+    vector<icctagtable> TagTables;
+    Element_Begin1("Tag table");
+        Get_B4(Count,                                           "Count");
+        if (Count*12>Element_Size-Element_Offset)
+            Count=(Element_Size-Element_Offset)/12;
+        for (int32u i=0; i<Count; i++)
+        {
+            icctagtable TagTable;
+            Get_C4(TagTable.Signature,                          "Signature"); Param_Info1(ICC_Tag(TagTable.Signature).c_str());
+            Get_B4(TagTable.Offset,                             "Offset");
+            Get_B4(TagTable.Size,                               "Size");
+            if (((int64u)TagTable.Offset)+TagTable.Size<=Element_Size-Element_Start)
+                TagTables.push_back(TagTable);
+        }
+    Element_End0();
+
+    Element_Begin1("Tagged element data");
+        Count=(int32u)TagTables.size();
+        for (int32u i=0; i<Count; i++)
+        {
+            icctagtable& TagTable=TagTables[i];
+            Ztring Name;
+            
+            Element_Begin1(ICC_Tag(TagTable.Signature).c_str());
+            Element_Offset=Element_Start+TagTable.Offset;
+            int32u Type;
+            Get_C4(Type,                                        "Type");
+            switch (Type)
+            {
+                case 0x63757276: //curv
+                                if (TagTable.Size<12)
+                                    Skip_XX(TagTable.Size-4,    "Unknown");
+                                else
+                                {
+                                    int32u Count;
+                                    Skip_B4(                    "Reserved");
+                                    Get_B4(Count,               "Count");
+                                    if (12+4*((Count+1)/2)!=TagTable.Size)
+                                        Skip_XX(TagTable.Size-12, "Unknown");
+                                    else
+                                    {
+                                        for (int32u i=0; i<Count; i++)
+                                            Skip_B2(            "Value");
+                                        if (Count%2)
+                                            Skip_B2(            "Padding");
+                                    }
+                                }
+                                break;
+                case 0x64657363: //desc
+                                if (TagTable.Size<12)
+                                    Skip_XX(TagTable.Size-4,    "Unknown");
+                                else
+                                {
+                                    Skip_B7(                    "?");
+                                    Skip_B1(                    "String size");
+                                    Skip_Local(TagTable.Size-12, "Value"); //TODO: beter handling of this complex type
+                                }
+                                break;
+                case 0x74657874: //text
+                                if (TagTable.Size<8)
+                                    Skip_XX(TagTable.Size-4,    "Unknown");
+                                else
+                                {
+                                    Skip_B4(                    "Reserved");
+                                    Skip_Local(TagTable.Size-8, "Value");
+                                }
+                                break;
+                case 0x58595A20: //XYZ
+                                if (TagTable.Size!=20)
+                                    Skip_XX(TagTable.Size-4,    "Unknown");
+                                else
+                                {
+                                    Skip_B4(                    "Reserved");
+                                    APP2_ICC_PROFILE_XYZNumber();
+                                }
+                                break;
+                default:        Skip_XX(TagTable.Size-4,        "Unknown");
+            }
+            Element_End0();
+        }
+    Element_End0();
+    Element_End0();
+
+    FILLING_BEGIN()
+        Fill(StreamKind, 0, "ColorSpace_ICC", ICC_ColorSpace(ColorSpace));
+    FILLING_END()
+}
+
+void File_Jpeg::APP2_ICC_PROFILE_XYZNumber()
+{
+    #if MEDIAINFO_TRACE
+        APP2_ICC_PROFILE_s15Fixed16Number("X");
+        APP2_ICC_PROFILE_s15Fixed16Number("Y");
+        APP2_ICC_PROFILE_s15Fixed16Number("Z");
+    #else //MEDIAINFO_TRACE
+        Element_Offset+=12;
+    #endif //MEDIAINFO_TRACE
+}
+
+void File_Jpeg::APP2_ICC_PROFILE_s15Fixed16Number(const char* Name)
+{
+    Info_B4(Value,                                              Name); Param_Info1(Ztring().From_Number(((float64)Value)/0x10000, 6));
 }
 
 //---------------------------------------------------------------------------

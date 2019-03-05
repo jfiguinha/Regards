@@ -300,10 +300,15 @@ protected :
     int16u  ltp_lag;
 
     //Temp - SBR
+    vector<sbr_handler*> sbrs;
     sbr_handler* sbr;
 
     //Temp - PS
+    vector<ps_handler*> pss;
     ps_handler* ps;
+
+    //Temp - Position
+    size_t  raw_data_block_Pos;
 
     //***********************************************************************
     // Elements - Structured Audio (SA)
@@ -362,6 +367,9 @@ protected :
     std::map<std::string, Ztring>   Infos_General;
     std::map<std::string, Ztring>   Infos;
     bool                            CanFill;
+
+private :
+    void FillInfosHEAACv2(const Ztring& Format_Settings);
 };
 
 } //NameSpace
