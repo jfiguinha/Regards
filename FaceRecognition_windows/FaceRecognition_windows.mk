@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=jfigu
-Date                   :=04/03/2019
+Date                   :=06/03/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
 SharedObjectLinkerName :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe -shared -fPIC
@@ -77,13 +77,20 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d "..\.build-release\FaceRecognition" $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(SharedObjectLinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
 	@$(MakeDirCommand) "C:\developpement\git\Regards/.build-release"
 	@echo rebuilt > "C:\developpement\git\Regards/.build-release/FaceRecognition_windows"
+
+"..\.build-release\FaceRecognition":
+	@$(MakeDirCommand) "..\.build-release"
+	@echo stam > "..\.build-release\FaceRecognition"
+
+
+
 
 MakeIntermediateDirs:
 	@$(MakeDirCommand) "./Release"
