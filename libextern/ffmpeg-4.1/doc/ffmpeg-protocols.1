@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffmpeg\-protocols \- FFmpeg protocols
+ffmpeg\-protocols
+ \- FFmpeg protocols
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This document describes the input and output protocols provided by the
@@ -664,11 +665,11 @@ The destination \s-1UDP\s0 ports are \f(CW\*(C`port + 2\*(C'\fR for the column \
 and \f(CW\*(C`port + 4\*(C'\fR for the row \s-1FEC\s0 stream.
 .PP
 This protocol accepts the following options:
-.IP "\fBl=\fR\fIn\fR" 4
-.IX Item "l=n"
+.IP "\fBl=\fR\fIn\fR\fB \fR" 4
+.IX Item "l=n "
 The number of columns (4\-20, LxD <= 100)
-.IP "\fBd=\fR\fIn\fR" 4
-.IX Item "d=n"
+.IP "\fBd=\fR\fIn\fR\fB \fR" 4
+.IX Item "d=n "
 The number of rows (4\-20, LxD <= 100)
 .PP
 Example usage:
@@ -945,20 +946,20 @@ rtp://\fIhostname\fR[:\fIport\fR][?\fIoption\fR=\fIval\fR...]
 \&\fIport\fR specifies the \s-1RTP\s0 port to use.
 .PP
 The following \s-1URL\s0 options are supported:
-.IP "\fBttl=\fR\fIn\fR" 4
-.IX Item "ttl=n"
+.IP "\fBttl=\fR\fIn\fR\fB \fR" 4
+.IX Item "ttl=n "
 Set the \s-1TTL\s0 (Time-To-Live) value (for multicast only).
-.IP "\fBrtcpport=\fR\fIn\fR" 4
-.IX Item "rtcpport=n"
+.IP "\fBrtcpport=\fR\fIn\fR\fB \fR" 4
+.IX Item "rtcpport=n "
 Set the remote \s-1RTCP\s0 port to \fIn\fR.
-.IP "\fBlocalrtpport=\fR\fIn\fR" 4
-.IX Item "localrtpport=n"
+.IP "\fBlocalrtpport=\fR\fIn\fR\fB \fR" 4
+.IX Item "localrtpport=n "
 Set the local \s-1RTP\s0 port to \fIn\fR.
 .IP "\fBlocalrtcpport=\fR\fIn\fR\fB'\fR" 4
 .IX Item "localrtcpport=n'"
 Set the local \s-1RTCP\s0 port to \fIn\fR.
-.IP "\fBpkt_size=\fR\fIn\fR" 4
-.IX Item "pkt_size=n"
+.IP "\fBpkt_size=\fR\fIn\fR\fB \fR" 4
+.IX Item "pkt_size=n "
 Set max packet size (in bytes) to \fIn\fR.
 .IP "\fBconnect=0|1\fR" 4
 .IX Item "connect=0|1"
@@ -974,8 +975,8 @@ List disallowed (blocked) source \s-1IP\s0 addresses.
 .IX Item "write_to_source=0|1"
 Send packets to the source address of the latest received packet (if
 set to 1) or to a default remote address (if set to 0).
-.IP "\fBlocalport=\fR\fIn\fR" 4
-.IX Item "localport=n"
+.IP "\fBlocalport=\fR\fIn\fR\fB \fR" 4
+.IX Item "localport=n "
 Set the local \s-1RTP\s0 port to \fIn\fR.
 .Sp
 This is a deprecated option. Instead, \fBlocalrtpport\fR should be
@@ -1167,22 +1168,22 @@ The \s-1RTP\s0 packets are sent to \fIdestination\fR on port \fIport\fR,
 or to port 5004 if no port is specified.
 \&\fIoptions\fR is a \f(CW\*(C`&\*(C'\fR\-separated list. The following options
 are supported:
-.IP "\fBannounce_addr=\fR\fIaddress\fR" 4
-.IX Item "announce_addr=address"
+.IP "\fBannounce_addr=\fR\fIaddress\fR\fB \fR" 4
+.IX Item "announce_addr=address "
 Specify the destination \s-1IP\s0 address for sending the announcements to.
 If omitted, the announcements are sent to the commonly used \s-1SAP\s0
 announcement multicast address 224.2.127.254 (sap.mcast.net), or
 ff0e::2:7ffe if \fIdestination\fR is an IPv6 address.
-.IP "\fBannounce_port=\fR\fIport\fR" 4
-.IX Item "announce_port=port"
+.IP "\fBannounce_port=\fR\fIport\fR\fB \fR" 4
+.IX Item "announce_port=port "
 Specify the port to send the announcements on, defaults to
 9875 if not specified.
-.IP "\fBttl=\fR\fIttl\fR" 4
-.IX Item "ttl=ttl"
+.IP "\fBttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ttl=ttl "
 Specify the time to live value for the announcements and \s-1RTP\s0 packets,
 defaults to 255.
-.IP "\fBsame_port=\fR\fI0|1\fR" 4
-.IX Item "same_port=0|1"
+.IP "\fBsame_port=\fR\fI0|1\fR\fB \fR" 4
+.IX Item "same_port=0|1 "
 If set to 1, send all \s-1RTP\s0 streams on the same port pair. If zero (the
 default), all streams are sent on unique ports, with each stream on a
 port 2 numbers higher than the previous.
@@ -1287,15 +1288,15 @@ Connection timeout; \s-1SRT\s0 cannot connect for \s-1RTT\s0 > 1500 msec
 connection modes. The connect timeout is 10 times the value
 set for the rendezvous mode (which can be used as a
 workaround for this connection problem with earlier versions).
-.IP "\fBffs=\fR\fIbytes\fR" 4
-.IX Item "ffs=bytes"
+.IP "\fBffs=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "ffs=bytes "
 Flight Flag Size (Window Size), in bytes. \s-1FFS\s0 is actually an
 internal parameter and you should set it to not less than
 \&\fBrecv_buffer_size\fR and \fBmss\fR. The default value
 is relatively large, therefore unless you set a very large receiver buffer,
 you do not need to change this option. Default value is 25600.
-.IP "\fBinputbw=\fR\fIbytes/seconds\fR" 4
-.IX Item "inputbw=bytes/seconds"
+.IP "\fBinputbw=\fR\fIbytes/seconds\fR\fB \fR" 4
+.IX Item "inputbw=bytes/seconds "
 Sender nominal input rate, in bytes per seconds. Used along with
 \&\fBoheadbw\fR, when \fBmaxbw\fR is set to relative (0), to
 calculate maximum sending rate when recovery packets are sent
@@ -1304,11 +1305,11 @@ along with the main media stream:
 if \fBinputbw\fR is not set while \fBmaxbw\fR is set to
 relative (0), the actual input rate is evaluated inside
 the library. Default value is 0.
-.IP "\fBiptos=\fR\fItos\fR" 4
-.IX Item "iptos=tos"
+.IP "\fBiptos=\fR\fItos\fR\fB \fR" 4
+.IX Item "iptos=tos "
 \&\s-1IP\s0 Type of Service. Applies to sender only. Default value is 0xB8.
-.IP "\fBipttl=\fR\fIttl\fR" 4
-.IX Item "ipttl=ttl"
+.IP "\fBipttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ipttl=ttl "
 \&\s-1IP\s0 Time To Live. Applies to sender only. Default value is 64.
 .IP "\fBlatency\fR" 4
 .IX Item "latency"
@@ -1324,22 +1325,22 @@ sending is not supported.
 .IP "\fBlisten_timeout\fR" 4
 .IX Item "listen_timeout"
 Set socket listen timeout.
-.IP "\fBmaxbw=\fR\fIbytes/seconds\fR" 4
-.IX Item "maxbw=bytes/seconds"
+.IP "\fBmaxbw=\fR\fIbytes/seconds\fR\fB \fR" 4
+.IX Item "maxbw=bytes/seconds "
 Maximum sending bandwidth, in bytes per seconds.
 \&\-1 infinite (\s-1CSRTCC\s0 limit is 30mbps)
 0 relative to input rate (see \fBinputbw\fR)
 >0 absolute limit value
 Default value is 0 (relative)
-.IP "\fBmode=\fR\fIcaller|listener|rendezvous\fR" 4
-.IX Item "mode=caller|listener|rendezvous"
+.IP "\fBmode=\fR\fIcaller|listener|rendezvous\fR\fB \fR" 4
+.IX Item "mode=caller|listener|rendezvous "
 Connection mode.
 \&\fBcaller\fR opens client connection.
 \&\fBlistener\fR starts server to listen for incoming connections.
 \&\fBrendezvous\fR use Rendez-Vous connection mode.
 Default value is caller.
-.IP "\fBmss=\fR\fIbytes\fR" 4
-.IX Item "mss=bytes"
+.IP "\fBmss=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "mss=bytes "
 Maximum Segment Size, in bytes. Used for buffer allocation
 and rate calculation using a packet counter assuming fully
 filled packets. The smallest \s-1MSS\s0 between the peers is
@@ -1347,17 +1348,17 @@ used. This is 1500 by default in the overall internet.
 This is the maximum size of the \s-1UDP\s0 packet and can be
 only decreased, unless you have some unusual dedicated
 network settings. Default value is 1500.
-.IP "\fBnakreport=\fR\fI1|0\fR" 4
-.IX Item "nakreport=1|0"
+.IP "\fBnakreport=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "nakreport=1|0 "
 If set to 1, Receiver will send `UMSG_LOSSREPORT` messages
 periodically until a lost packet is retransmitted or
 intentionally dropped. Default value is 1.
-.IP "\fBoheadbw=\fR\fIpercents\fR" 4
-.IX Item "oheadbw=percents"
+.IP "\fBoheadbw=\fR\fIpercents\fR\fB \fR" 4
+.IX Item "oheadbw=percents "
 Recovery bandwidth overhead above input rate, in percents.
 See \fBinputbw\fR. Default value is 25%.
-.IP "\fBpassphrase=\fR\fIstring\fR" 4
-.IX Item "passphrase=string"
+.IP "\fBpassphrase=\fR\fIstring\fR\fB \fR" 4
+.IX Item "passphrase=string "
 HaiCrypt Encryption/Decryption Passphrase string, length
 from 10 to 79 characters. The passphrase is the shared
 secret between the sender and the receiver. It is used
@@ -1366,8 +1367,8 @@ to generate the Key Encrypting Key using \s-1PBKDF2\s0
 only if \fBpbkeylen\fR is non-zero. It is used on
 the receiver only if the received data is encrypted.
 The configured passphrase cannot be recovered (write-only).
-.IP "\fBpayload_size=\fR\fIbytes\fR" 4
-.IX Item "payload_size=bytes"
+.IP "\fBpayload_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "payload_size=bytes "
 Sets the maximum declared size of a packet transferred
 during the single call to the sending function in Live
 mode. Use 0 if this value isn't used (which is default in
@@ -1378,15 +1379,15 @@ to send any different kind of payload, such as, for example,
 wrapping a live stream in very small frames, then you can
 use a bigger maximum frame size, though not greater than
 1456 bytes.
-.IP "\fBpkt_size=\fR\fIbytes\fR" 4
-.IX Item "pkt_size=bytes"
+.IP "\fBpkt_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "pkt_size=bytes "
 Alias for \fBpayload_size\fR.
 .IP "\fBpeerlatency\fR" 4
 .IX Item "peerlatency"
 The latency value (as described in \fBrcvlatency\fR) that is
 set by the sender side as a minimum value for the receiver.
-.IP "\fBpbkeylen=\fR\fIbytes\fR" 4
-.IX Item "pbkeylen=bytes"
+.IP "\fBpbkeylen=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "pbkeylen=bytes "
 Sender encryption key length, in bytes.
 Only can be set to 0, 16, 24 and 32.
 Enable sender encryption if not 0.
@@ -1405,11 +1406,11 @@ packet. The effective latency value will be the maximum
 of this options' value and the value of \fBpeerlatency\fR
 set by the peer side. Before version 1.3.0 this option
 is only available as \fBlatency\fR.
-.IP "\fBrecv_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "recv_buffer_size=bytes"
+.IP "\fBrecv_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "recv_buffer_size=bytes "
 Set \s-1UDP\s0 receive buffer size, expressed in bytes.
-.IP "\fBsend_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "send_buffer_size=bytes"
+.IP "\fBsend_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "send_buffer_size=bytes "
 Set \s-1UDP\s0 send buffer size, expressed in bytes.
 .IP "\fBrw_timeout\fR" 4
 .IX Item "rw_timeout"
@@ -1418,8 +1419,8 @@ Set raise error timeout for read/write optations.
 This option is only relevant in read mode:
 if no data arrived in more than this time
 interval, raise error.
-.IP "\fBtlpktdrop=\fR\fI1|0\fR" 4
-.IX Item "tlpktdrop=1|0"
+.IP "\fBtlpktdrop=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tlpktdrop=1|0 "
 Too-late Packet Drop. When enabled on receiver, it skips
 missing packets that have not been delivered in time and
 delivers the following packets to the application when
@@ -1429,16 +1430,16 @@ receiving peer, the sender drops the older packets that
 have no chance of being delivered in time. It was
 automatically enabled in the sender if the receiver
 supports it.
-.IP "\fBsndbuf=\fR\fIbytes\fR" 4
-.IX Item "sndbuf=bytes"
+.IP "\fBsndbuf=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "sndbuf=bytes "
 Set send buffer size, expressed in bytes.
-.IP "\fBrcvbuf=\fR\fIbytes\fR" 4
-.IX Item "rcvbuf=bytes"
+.IP "\fBrcvbuf=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "rcvbuf=bytes "
 Set receive buffer size, expressed in bytes.
 .Sp
 Receive buffer must not be greater than \fBffs\fR.
-.IP "\fBlossmaxttl=\fR\fIpackets\fR" 4
-.IX Item "lossmaxttl=packets"
+.IP "\fBlossmaxttl=\fR\fIpackets\fR\fB \fR" 4
+.IX Item "lossmaxttl=packets "
 The value up to which the Reorder Tolerance may grow. When
 Reorder Tolerance is > 0, then packet loss report is delayed
 until that number of packets come in. Reorder Tolerance
@@ -1457,8 +1458,8 @@ will be rejected.
 .Sp
 The version format in hex is 0xXXYYZZ for x.y.z in human readable
 form.
-.IP "\fBstreamid=\fR\fIstring\fR" 4
-.IX Item "streamid=string"
+.IP "\fBstreamid=\fR\fIstring\fR\fB \fR" 4
+.IX Item "streamid=string "
 A string limited to 512 characters that can be set on the socket prior
 to connecting. This stream \s-1ID\s0 will be able to be retrieved by the
 listener side from the socket that is returned from srt_accept and
@@ -1467,14 +1468,14 @@ any special interpretation of the contents of this string.
 This option doesnXt make sense in Rendezvous connection; the result
 might be that simply one side will override the value from the other
 side and itXs the matter of luck which one would win
-.IP "\fBsmoother=\fR\fIlive|file\fR" 4
-.IX Item "smoother=live|file"
+.IP "\fBsmoother=\fR\fIlive|file\fR\fB \fR" 4
+.IX Item "smoother=live|file "
 The type of Smoother used for the transmission for that socket, which
 is responsible for the transmission and congestion control. The Smoother
 type must be exactly the same on both connecting parties, otherwise
 the connection is rejected.
-.IP "\fBmessageapi=\fR\fI1|0\fR" 4
-.IX Item "messageapi=1|0"
+.IP "\fBmessageapi=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "messageapi=1|0 "
 When set, this socket uses the Message \s-1API,\s0 otherwise it uses Buffer
 \&\s-1API.\s0 Note that in live mode (see \fBtranstype\fR) thereXs only
 message \s-1API\s0 available. In File mode you can chose to use one of two modes:
@@ -1495,8 +1496,8 @@ receiver shall use as large buffer as necessary to receive the message,
 otherwise the message will not be given up. When the message is not
 complete (not all packets received or there was a packet loss) it will
 not be given up.
-.IP "\fBtranstype=\fR\fIlive|file\fR" 4
-.IX Item "transtype=live|file"
+.IP "\fBtranstype=\fR\fIlive|file\fR\fB \fR" 4
+.IX Item "transtype=live|file "
 Sets the transmission type for the socket, in particular, setting this
 option sets multiple other parameters to their default values as required
 for a particular transmission type.
@@ -1604,29 +1605,29 @@ The required syntax for a \s-1TCP\s0 url is:
 \&\fIkey\fR=\fIval\fR.
 .PP
 The list of supported options follows.
-.IP "\fBlisten=\fR\fI1|0\fR" 4
-.IX Item "listen=1|0"
+.IP "\fBlisten=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "listen=1|0 "
 Listen for an incoming connection. Default value is 0.
-.IP "\fBtimeout=\fR\fImicroseconds\fR" 4
-.IX Item "timeout=microseconds"
+.IP "\fBtimeout=\fR\fImicroseconds\fR\fB \fR" 4
+.IX Item "timeout=microseconds "
 Set raise error timeout, expressed in microseconds.
 .Sp
 This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
-.IP "\fBlisten_timeout=\fR\fImilliseconds\fR" 4
-.IX Item "listen_timeout=milliseconds"
+.IP "\fBlisten_timeout=\fR\fImilliseconds\fR\fB \fR" 4
+.IX Item "listen_timeout=milliseconds "
 Set listen timeout, expressed in milliseconds.
-.IP "\fBrecv_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "recv_buffer_size=bytes"
+.IP "\fBrecv_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "recv_buffer_size=bytes "
 Set receive buffer size, expressed bytes.
-.IP "\fBsend_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "send_buffer_size=bytes"
+.IP "\fBsend_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "send_buffer_size=bytes "
 Set send buffer size, expressed bytes.
-.IP "\fBtcp_nodelay=\fR\fI1|0\fR" 4
-.IX Item "tcp_nodelay=1|0"
+.IP "\fBtcp_nodelay=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tcp_nodelay=1|0 "
 Set \s-1TCP_NODELAY\s0 to disable Nagle's algorithm. Default value is 0.
-.IP "\fBtcp_mss=\fR\fIbytes\fR" 4
-.IX Item "tcp_mss=bytes"
+.IP "\fBtcp_mss=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "tcp_mss=bytes "
 Set maximum segment size for outgoing \s-1TCP\s0 packets, expressed in bytes.
 .PP
 The following example shows how to setup a listening \s-1TCP\s0 connection
@@ -1648,15 +1649,15 @@ The required syntax for a \s-1TLS/SSL\s0 url is:
 .PP
 The following parameters can be set via command line options
 (or in code via \f(CW\*(C`AVOption\*(C'\fRs):
-.IP "\fBca_file, cafile=\fR\fIfilename\fR" 4
-.IX Item "ca_file, cafile=filename"
+.IP "\fBca_file, cafile=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "ca_file, cafile=filename "
 A file containing certificate authority (\s-1CA\s0) root certificates to treat
 as trusted. If the linked \s-1TLS\s0 library contains a default this might not
 need to be specified for verification to work, but not all libraries and
 setups have defaults built in.
 The file must be in OpenSSL \s-1PEM\s0 format.
-.IP "\fBtls_verify=\fR\fI1|0\fR" 4
-.IX Item "tls_verify=1|0"
+.IP "\fBtls_verify=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tls_verify=1|0 "
 If enabled, try to verify the peer that we are communicating with.
 Note, if using OpenSSL, this currently only makes sure that the
 peer certificate is signed by one of the root certificates in the \s-1CA\s0
@@ -1666,17 +1667,17 @@ the host name is validated as well.)
 .Sp
 This is disabled by default since it requires a \s-1CA\s0 database to be
 provided by the caller in many cases.
-.IP "\fBcert_file, cert=\fR\fIfilename\fR" 4
-.IX Item "cert_file, cert=filename"
+.IP "\fBcert_file, cert=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "cert_file, cert=filename "
 A file containing a certificate to use in the handshake with the peer.
 (When operating as server, in listen mode, this is more often required
 by the peer, while client certificates only are mandated in certain
 setups.)
-.IP "\fBkey_file, key=\fR\fIfilename\fR" 4
-.IX Item "key_file, key=filename"
+.IP "\fBkey_file, key=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "key_file, key=filename "
 A file containing the private key for the certificate.
-.IP "\fBlisten=\fR\fI1|0\fR" 4
-.IX Item "listen=1|0"
+.IP "\fBlisten=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "listen=1|0 "
 If enabled, listen for connections on the provided port, and assume
 the server role in the handshake instead of the client role.
 .PP
@@ -1711,37 +1712,37 @@ to store the incoming data, which allows one to reduce loss of data due to
 \&\fIoverrun_nonfatal\fR options are related to this buffer.
 .PP
 The list of supported options follows.
-.IP "\fBbuffer_size=\fR\fIsize\fR" 4
-.IX Item "buffer_size=size"
+.IP "\fBbuffer_size=\fR\fIsize\fR\fB \fR" 4
+.IX Item "buffer_size=size "
 Set the \s-1UDP\s0 maximum socket buffer size in bytes. This is used to set either
 the receive or send buffer size, depending on what the socket is used for.
 Default is 64KB.  See also \fIfifo_size\fR.
-.IP "\fBbitrate=\fR\fIbitrate\fR" 4
-.IX Item "bitrate=bitrate"
+.IP "\fBbitrate=\fR\fIbitrate\fR\fB \fR" 4
+.IX Item "bitrate=bitrate "
 If set to nonzero, the output will have the specified constant bitrate if the
 input has enough packets to sustain it.
-.IP "\fBburst_bits=\fR\fIbits\fR" 4
-.IX Item "burst_bits=bits"
+.IP "\fBburst_bits=\fR\fIbits\fR\fB \fR" 4
+.IX Item "burst_bits=bits "
 When using \fIbitrate\fR this specifies the maximum number of bits in
 packet bursts.
-.IP "\fBlocalport=\fR\fIport\fR" 4
-.IX Item "localport=port"
+.IP "\fBlocalport=\fR\fIport\fR\fB \fR" 4
+.IX Item "localport=port "
 Override the local \s-1UDP\s0 port to bind with.
-.IP "\fBlocaladdr=\fR\fIaddr\fR" 4
-.IX Item "localaddr=addr"
+.IP "\fBlocaladdr=\fR\fIaddr\fR\fB \fR" 4
+.IX Item "localaddr=addr "
 Local \s-1IP\s0 address of a network interface used for sending packets or joining
 multicast groups.
-.IP "\fBpkt_size=\fR\fIsize\fR" 4
-.IX Item "pkt_size=size"
+.IP "\fBpkt_size=\fR\fIsize\fR\fB \fR" 4
+.IX Item "pkt_size=size "
 Set the size in bytes of \s-1UDP\s0 packets.
-.IP "\fBreuse=\fR\fI1|0\fR" 4
-.IX Item "reuse=1|0"
+.IP "\fBreuse=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "reuse=1|0 "
 Explicitly allow or disallow reusing \s-1UDP\s0 sockets.
-.IP "\fBttl=\fR\fIttl\fR" 4
-.IX Item "ttl=ttl"
+.IP "\fBttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ttl=ttl "
 Set the time to live value (for multicast only).
-.IP "\fBconnect=\fR\fI1|0\fR" 4
-.IX Item "connect=1|0"
+.IP "\fBconnect=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "connect=1|0 "
 Initialize the \s-1UDP\s0 socket with \f(CW\*(C`connect()\*(C'\fR. In this case, the
 destination address can't be changed with ff_udp_set_remote_url later.
 If the destination address isn't known at the start, this option can
@@ -1759,22 +1760,22 @@ also subscribe to multicast traffic coming from these addresses only.
 .IX Item "block=address[,address]"
 Ignore packets sent from the specified addresses. In case of multicast, also
 exclude the source addresses in the multicast subscription.
-.IP "\fBfifo_size=\fR\fIunits\fR" 4
-.IX Item "fifo_size=units"
+.IP "\fBfifo_size=\fR\fIunits\fR\fB \fR" 4
+.IX Item "fifo_size=units "
 Set the \s-1UDP\s0 receiving circular buffer size, expressed as a number of
 packets with size of 188 bytes. If not specified defaults to 7*4096.
-.IP "\fBoverrun_nonfatal=\fR\fI1|0\fR" 4
-.IX Item "overrun_nonfatal=1|0"
+.IP "\fBoverrun_nonfatal=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "overrun_nonfatal=1|0 "
 Survive in case of \s-1UDP\s0 receiving circular buffer overrun. Default
 value is 0.
-.IP "\fBtimeout=\fR\fImicroseconds\fR" 4
-.IX Item "timeout=microseconds"
+.IP "\fBtimeout=\fR\fImicroseconds\fR\fB \fR" 4
+.IX Item "timeout=microseconds "
 Set raise error timeout, expressed in microseconds.
 .Sp
 This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
-.IP "\fBbroadcast=\fR\fI1|0\fR" 4
-.IX Item "broadcast=1|0"
+.IP "\fBbroadcast=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "broadcast=1|0 "
 Explicitly allow or disallow \s-1UDP\s0 broadcasting.
 .Sp
 Note that broadcasting may not work properly on networks having

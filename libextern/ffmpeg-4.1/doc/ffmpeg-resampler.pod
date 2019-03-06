@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-resampler - FFmpeg Resampler
+ffmpeg-resampler - FFmpeg Resampler
 
 =head1 DESCRIPTION
 

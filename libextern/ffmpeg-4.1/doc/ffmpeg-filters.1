@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffmpeg\-filters \- FFmpeg filters
+ffmpeg\-filters
+ \- FFmpeg filters
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This document describes filters, sources, and sinks provided by the
@@ -4151,11 +4152,11 @@ needs.
 .IX Subsection "Remapping examples"
 .PP
 The channel remapping will be effective if, and only if:
-.IP "*<gain coefficients are zeroes or ones,>" 4
-.IX Item "*<gain coefficients are zeroes or ones,>"
+.IP "*<gain coefficients are zeroes or ones, >" 4
+.IX Item "*<gain coefficients are zeroes or ones, >"
 .PD 0
-.IP "*<only one input per channel output,>" 4
-.IX Item "*<only one input per channel output,>"
+.IP "*<only one input per channel output, >" 4
+.IX Item "*<only one input per channel output, >"
 .PD
 .PP
 If all these conditions are satisfied, the filter will notify the user (\*(L"Pure
@@ -9975,13 +9976,13 @@ looks like this:
 .PP
 In these examples, we can see what \fIp\fR, \fIc\fR and \fIn\fR mean;
 basically, they refer to the frame and field of the opposite parity:
-.IP "*<\fIp\fR matches the field of the opposite parity in the previous frame>" 4
-.IX Item "*<p matches the field of the opposite parity in the previous frame>"
+.IP "*<\fIp\fR matches the field of the opposite parity in the previous frame >" 4
+.IX Item "*<p matches the field of the opposite parity in the previous frame >"
 .PD 0
-.IP "*<\fIc\fR matches the field of the opposite parity in the current frame>" 4
-.IX Item "*<c matches the field of the opposite parity in the current frame>"
-.IP "*<\fIn\fR matches the field of the opposite parity in the next frame>" 4
-.IX Item "*<n matches the field of the opposite parity in the next frame>"
+.IP "*<\fIc\fR matches the field of the opposite parity in the current frame >" 4
+.IX Item "*<c matches the field of the opposite parity in the current frame >"
+.IP "*<\fIn\fR matches the field of the opposite parity in the next frame >" 4
+.IX Item "*<n matches the field of the opposite parity in the next frame >"
 .PD
 .PP
 u/b
@@ -11074,8 +11075,8 @@ not possible.
 .Sp
 Defaults to \fIread+write\fR if not specified.
 .RE
-.IP "\fBderive_device\fR \fItype\fR" 4
-.IX Item "derive_device type"
+.IP "\fBderive_device\fR \fItype\fR\fB \fR" 4
+.IX Item "derive_device type "
 Rather than using the device supplied at initialisation, instead derive a new
 device of type \fItype\fR from the device the input frames exist on.
 .IP "\fBreverse\fR" 4
@@ -15499,9 +15500,9 @@ filter may be changed by later filters in the filterchain, e.g. if
 another \*(L"setsar\*(R" or a \*(L"setdar\*(R" filter is applied.
 .PP
 It accepts the following parameters:
-.ie n .IP "\fBr, ratio, dar (\f(CB""setdar""\fB only), sar (\f(CB""setsar""\fB only)\fR" 4
-.el .IP "\fBr, ratio, dar (\f(CBsetdar\fB only), sar (\f(CBsetsar\fB only)\fR" 4
-.IX Item "r, ratio, dar (setdar only), sar (setsar only)"
+.ie n .IP "\fBr, ratio, dar (\f(CB""setdar""\fB only), sar (\f(CB""setsar""\fB only) \fR" 4
+.el .IP "\fBr, ratio, dar (\f(CBsetdar\fB only), sar (\f(CBsetsar\fB only) \fR" 4
+.IX Item "r, ratio, dar (setdar only), sar (setsar only) "
 Set the aspect ratio used by the filter.
 .Sp
 The parameter can be a floating point number string, an expression, or
@@ -20841,8 +20842,8 @@ The \s-1PTS\s0 of the first video frame in the video. It's \s-1NAN\s0 if undefin
 .IP "\fBstart_t\fR" 4
 .IX Item "start_t"
 The time of the first video frame in the video. It's \s-1NAN\s0 if undefined.
-.IP "\fBpict_type\fR \fI(video only)\fR" 4
-.IX Item "pict_type (video only)"
+.IP "\fBpict_type\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "pict_type (video only) "
 The type of the filtered frame. It can assume one of the following
 values:
 .RS 4
@@ -20864,8 +20865,8 @@ values:
 .RE
 .RS 4
 .RE
-.IP "\fBinterlace_type\fR \fI(video only)\fR" 4
-.IX Item "interlace_type (video only)"
+.IP "\fBinterlace_type\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "interlace_type (video only) "
 .PD
 The frame interlace type. It can assume one of the following values:
 .RS 4
@@ -20881,14 +20882,14 @@ The frame is bottom-field-first.
 .RE
 .RS 4
 .RE
-.IP "\fBconsumed_sample_n\fR \fI(audio only)\fR" 4
-.IX Item "consumed_sample_n (audio only)"
+.IP "\fBconsumed_sample_n\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "consumed_sample_n (audio only) "
 the number of selected samples before the current frame
-.IP "\fBsamples_n\fR \fI(audio only)\fR" 4
-.IX Item "samples_n (audio only)"
+.IP "\fBsamples_n\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "samples_n (audio only) "
 the number of samples in the current frame
-.IP "\fBsample_rate\fR \fI(audio only)\fR" 4
-.IX Item "sample_rate (audio only)"
+.IP "\fBsample_rate\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "sample_rate (audio only) "
 the input sample rate
 .IP "\fBkey\fR" 4
 .IX Item "key"
@@ -20897,8 +20898,8 @@ This is 1 if the filtered frame is a key-frame, 0 otherwise.
 .IX Item "pos"
 the position in the file of the filtered frame, \-1 if the information
 is not available (e.g. for synthetic video)
-.IP "\fBscene\fR \fI(video only)\fR" 4
-.IX Item "scene (video only)"
+.IP "\fBscene\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "scene (video only) "
 value between 0 and 1 to indicate a new scene; a low value reflects a low
 probability for the current frame to introduce a new scene, while a higher
 value means the current frame is more likely to be one (see the example below)

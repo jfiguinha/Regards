@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffprobe \- ffprobe media prober
+ffprobe
+ \- ffprobe media prober
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 ffprobe [\fIoptions\fR] [\fIinput_url\fR]
@@ -209,8 +210,8 @@ An empty stream specifier matches all streams. For example, \f(CW\*(C`\-codec co
 or \f(CW\*(C`\-codec: copy\*(C'\fR would copy all the streams without reencoding.
 .PP
 Possible forms of stream specifiers are:
-.IP "\fIstream_index\fR" 4
-.IX Item "stream_index"
+.IP "\fIstream_index\fR\fB \fR" 4
+.IX Item "stream_index "
 Matches the stream with this index. E.g. \f(CW\*(C`\-threads:1 4\*(C'\fR would set the
 thread count for the second stream to 4.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
@@ -235,8 +236,8 @@ In the third version matches streams in the program with the id \fIprogram_id\fR
 tag \fIkey\fR having the specified value. If
 \&\fIvalue\fR is not given, matches streams that contain the given tag with any
 value.
-.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR" 4
-.IX Item "#stream_id or i:stream_id"
+.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR\fB \fR" 4
+.IX Item "#stream_id or i:stream_id "
 Match the stream by stream id (e.g. \s-1PID\s0 in MPEG-TS container).
 .IP "\fBm:\fR\fIkey\fR\fB[:\fR\fIvalue\fR\fB]\fR" 4
 .IX Item "m:key[:value]"
@@ -271,24 +272,24 @@ Print advanced tool options in addition to the basic tool options.
 .IX Item "full"
 Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
-.IP "\fBdecoder=\fR\fIdecoder_name\fR" 4
-.IX Item "decoder=decoder_name"
+.IP "\fBdecoder=\fR\fIdecoder_name\fR\fB \fR" 4
+.IX Item "decoder=decoder_name "
 Print detailed information about the decoder named \fIdecoder_name\fR. Use the
 \&\fB\-decoders\fR option to get a list of all decoders.
-.IP "\fBencoder=\fR\fIencoder_name\fR" 4
-.IX Item "encoder=encoder_name"
+.IP "\fBencoder=\fR\fIencoder_name\fR\fB \fR" 4
+.IX Item "encoder=encoder_name "
 Print detailed information about the encoder named \fIencoder_name\fR. Use the
 \&\fB\-encoders\fR option to get a list of all encoders.
-.IP "\fBdemuxer=\fR\fIdemuxer_name\fR" 4
-.IX Item "demuxer=demuxer_name"
+.IP "\fBdemuxer=\fR\fIdemuxer_name\fR\fB \fR" 4
+.IX Item "demuxer=demuxer_name "
 Print detailed information about the demuxer named \fIdemuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all demuxers and muxers.
-.IP "\fBmuxer=\fR\fImuxer_name\fR" 4
-.IX Item "muxer=muxer_name"
+.IP "\fBmuxer=\fR\fImuxer_name\fR\fB \fR" 4
+.IX Item "muxer=muxer_name "
 Print detailed information about the muxer named \fImuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all muxers and demuxers.
-.IP "\fBfilter=\fR\fIfilter_name\fR" 4
-.IX Item "filter=filter_name"
+.IP "\fBfilter=\fR\fIfilter_name\fR\fB \fR" 4
+.IX Item "filter=filter_name "
 Print detailed information about the filter name \fIfilter_name\fR. Use the
 \&\fB\-filters\fR option to get a list of all filters.
 .RE
@@ -360,8 +361,8 @@ The returned list cannot be assumed to be always complete.
 .Vb 1
 \&        ffmpeg \-sinks pulse,server=192.168.0.4
 .Ve
-.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR" 4
-.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel"
+.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR\fB \fR" 4
+.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel "
 Set logging level and flags used by the library.
 .Sp
 The optional \fIflags\fR prefix can consist of the following values:
@@ -645,8 +646,8 @@ prepending v/a/s to the options name is now obsolete and will be
 removed soon.
 .SS "Main options"
 .IX Subsection "Main options"
-.IP "\fB\-f\fR \fIformat\fR" 4
-.IX Item "-f format"
+.IP "\fB\-f\fR \fIformat\fR\fB \fR" 4
+.IX Item "-f format "
 Force format to use.
 .IP "\fB\-unit\fR" 4
 .IX Item "-unit"
@@ -685,8 +686,8 @@ Writers section below.
 .IX Item "-sections"
 Print sections structure and section information, and exit. The output
 is not meant to be parsed by a machine.
-.IP "\fB\-select_streams\fR \fIstream_specifier\fR" 4
-.IX Item "-select_streams stream_specifier"
+.IP "\fB\-select_streams\fR \fIstream_specifier\fR\fB \fR" 4
+.IX Item "-select_streams stream_specifier "
 Select only the streams specified by \fIstream_specifier\fR. This
 option affects only the options related to streams
 (e.g. \f(CW\*(C`show_streams\*(C'\fR, \f(CW\*(C`show_packets\*(C'\fR, etc.).
@@ -709,8 +710,8 @@ Show payload data, as a hexadecimal and \s-1ASCII\s0 dump. Coupled with
 \&\fB\-show_streams\fR, it will dump the codec extradata.
 .Sp
 The dump is printed as the \*(L"data\*(R" field. It may contain newlines.
-.IP "\fB\-show_data_hash\fR \fIalgorithm\fR" 4
-.IX Item "-show_data_hash algorithm"
+.IP "\fB\-show_data_hash\fR \fIalgorithm\fR\fB \fR" 4
+.IX Item "-show_data_hash algorithm "
 Show a hash of payload data, for packets with \fB\-show_packets\fR and for
 codec extradata with \fB\-show_streams\fR.
 .IP "\fB\-show_error\fR" 4
@@ -725,15 +726,15 @@ stream.
 .Sp
 All the container format information is printed within a section with
 name \*(L"\s-1FORMAT\*(R".\s0
-.IP "\fB\-show_format_entry\fR \fIname\fR" 4
-.IX Item "-show_format_entry name"
+.IP "\fB\-show_format_entry\fR \fIname\fR\fB \fR" 4
+.IX Item "-show_format_entry name "
 Like \fB\-show_format\fR, but only prints the specified entry of the
 container format information, rather than all. This option may be given more
 than once, then all specified entries will be shown.
 .Sp
 This option is deprecated, use \f(CW\*(C`show_entries\*(C'\fR instead.
-.IP "\fB\-show_entries\fR \fIsection_entries\fR" 4
-.IX Item "-show_entries section_entries"
+.IP "\fB\-show_entries\fR \fIsection_entries\fR\fB \fR" 4
+.IX Item "-show_entries section_entries "
 Set list of entries to show.
 .Sp
 Entries are specified according to the following
@@ -802,8 +803,8 @@ multimedia stream.
 .Sp
 The information for each single frame is printed within a dedicated
 section with name \*(L"\s-1FRAME\*(R"\s0 or \*(L"\s-1SUBTITLE\*(R".\s0
-.IP "\fB\-show_log\fR \fIloglevel\fR" 4
-.IX Item "-show_log loglevel"
+.IP "\fB\-show_log\fR \fIloglevel\fR\fB \fR" 4
+.IX Item "-show_log loglevel "
 Show logging information from the decoder about each frame according to
 the value set in \fIloglevel\fR, (see \f(CW\*(C`\-loglevel\*(C'\fR). This option requires \f(CW\*(C`\-show_frames\*(C'\fR.
 .Sp
@@ -836,8 +837,8 @@ corresponding stream section.
 .IX Item "-count_packets"
 Count the number of packets per stream and report it in the
 corresponding stream section.
-.IP "\fB\-read_intervals\fR \fIread_intervals\fR" 4
-.IX Item "-read_intervals read_intervals"
+.IP "\fB\-read_intervals\fR \fIread_intervals\fR\fB \fR" 4
+.IX Item "-read_intervals read_intervals "
 Read only the specified intervals. \fIread_intervals\fR must be a
 sequence of interval specifications separated by \*(L",\*(R".
 \&\fBffprobe\fR will seek to the interval starting point, and will
@@ -936,8 +937,8 @@ with name \*(L"\s-1PIXEL_FORMAT\*(R".\s0
 .IX Item "-bitexact"
 Force bitexact output, useful to produce output which is not dependent
 on the specific build.
-.IP "\fB\-i\fR \fIinput_url\fR" 4
-.IX Item "-i input_url"
+.IP "\fB\-i\fR \fIinput_url\fR\fB \fR" 4
+.IX Item "-i input_url "
 Read \fIinput_url\fR.
 .SH "WRITERS"
 .IX Header "WRITERS"
@@ -2624,11 +2625,11 @@ iter motion estimation
 .RE
 .RS 4
 .RE
-.IP "\fBextradata_size\fR \fIinteger\fR" 4
-.IX Item "extradata_size integer"
+.IP "\fBextradata_size\fR \fIinteger\fR\fB \fR" 4
+.IX Item "extradata_size integer "
 Set extradata size.
-.IP "\fBtime_base\fR \fIrational number\fR" 4
-.IX Item "time_base rational number"
+.IP "\fBtime_base\fR \fIrational number\fR\fB \fR" 4
+.IX Item "time_base rational number "
 Set codec time base.
 .Sp
 It is the fundamental unit of time (in seconds) in terms of which
@@ -2657,11 +2658,11 @@ samples per channel. May be 0 when the codec has
 \&\s-1CODEC_CAP_VARIABLE_FRAME_SIZE\s0 set, in that case the frame size is not
 restricted. It is set by some decoders to indicate constant frame
 size.
-.IP "\fBframe_number\fR \fIinteger\fR" 4
-.IX Item "frame_number integer"
+.IP "\fBframe_number\fR \fIinteger\fR\fB \fR" 4
+.IX Item "frame_number integer "
 Set the frame number.
-.IP "\fBdelay\fR \fIinteger\fR" 4
-.IX Item "delay integer"
+.IP "\fBdelay\fR \fIinteger\fR\fB \fR" 4
+.IX Item "delay integer "
 .PD 0
 .IP "\fBqcomp\fR \fIfloat\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "qcomp float (encoding,video)"
@@ -2704,27 +2705,27 @@ Set strategy to choose between I/P/B\-frames.
 .IP "\fBps\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "ps integer (encoding,video)"
 Set \s-1RTP\s0 payload size in bytes.
-.IP "\fBmv_bits\fR \fIinteger\fR" 4
-.IX Item "mv_bits integer"
+.IP "\fBmv_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mv_bits integer "
 .PD 0
-.IP "\fBheader_bits\fR \fIinteger\fR" 4
-.IX Item "header_bits integer"
-.IP "\fBi_tex_bits\fR \fIinteger\fR" 4
-.IX Item "i_tex_bits integer"
-.IP "\fBp_tex_bits\fR \fIinteger\fR" 4
-.IX Item "p_tex_bits integer"
-.IP "\fBi_count\fR \fIinteger\fR" 4
-.IX Item "i_count integer"
-.IP "\fBp_count\fR \fIinteger\fR" 4
-.IX Item "p_count integer"
-.IP "\fBskip_count\fR \fIinteger\fR" 4
-.IX Item "skip_count integer"
-.IP "\fBmisc_bits\fR \fIinteger\fR" 4
-.IX Item "misc_bits integer"
-.IP "\fBframe_bits\fR \fIinteger\fR" 4
-.IX Item "frame_bits integer"
-.IP "\fBcodec_tag\fR \fIinteger\fR" 4
-.IX Item "codec_tag integer"
+.IP "\fBheader_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "header_bits integer "
+.IP "\fBi_tex_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "i_tex_bits integer "
+.IP "\fBp_tex_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "p_tex_bits integer "
+.IP "\fBi_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "i_count integer "
+.IP "\fBp_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "p_count integer "
+.IP "\fBskip_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "skip_count integer "
+.IP "\fBmisc_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "misc_bits integer "
+.IP "\fBframe_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "frame_bits integer "
+.IP "\fBcodec_tag\fR \fIinteger\fR\fB \fR" 4
+.IX Item "codec_tag integer "
 .IP "\fBbug\fR \fIflags\fR \fB(\fR\fIdecoding,video\fR\fB)\fR" 4
 .IX Item "bug flags (decoding,video)"
 .PD
@@ -2862,11 +2863,11 @@ consider things that a sane encoder should not do as an error
 .RE
 .RS 4
 .RE
-.IP "\fBhas_b_frames\fR \fIinteger\fR" 4
-.IX Item "has_b_frames integer"
+.IP "\fBhas_b_frames\fR \fIinteger\fR\fB \fR" 4
+.IX Item "has_b_frames integer "
 .PD 0
-.IP "\fBblock_align\fR \fIinteger\fR" 4
-.IX Item "block_align integer"
+.IP "\fBblock_align\fR \fIinteger\fR\fB \fR" 4
+.IX Item "block_align integer "
 .IP "\fBmpeg_quant\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "mpeg_quant integer (encoding,video)"
 .PD
@@ -2881,8 +2882,8 @@ Set experimental quantizer modulation.
 .IP "\fBrc_qmod_freq\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "rc_qmod_freq integer (encoding,video)"
 Set experimental quantizer modulation.
-.IP "\fBrc_override_count\fR \fIinteger\fR" 4
-.IX Item "rc_override_count integer"
+.IP "\fBrc_override_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "rc_override_count integer "
 .PD 0
 .IP "\fBrc_eq\fR \fIstring\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "rc_eq string (encoding,video)"
@@ -3004,8 +3005,8 @@ floating point \s-1AAN IDCT\s0
 .RE
 .RS 4
 .RE
-.IP "\fBslice_count\fR \fIinteger\fR" 4
-.IX Item "slice_count integer"
+.IP "\fBslice_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "slice_count integer "
 .PD 0
 .IP "\fBec\fR \fIflags\fR \fB(\fR\fIdecoding,video\fR\fB)\fR" 4
 .IX Item "ec flags (decoding,video)"
@@ -3026,8 +3027,8 @@ favor predicting from the previous frame instead of the current
 .RE
 .RS 4
 .RE
-.IP "\fBbits_per_coded_sample\fR \fIinteger\fR" 4
-.IX Item "bits_per_coded_sample integer"
+.IP "\fBbits_per_coded_sample\fR \fIinteger\fR\fB \fR" 4
+.IX Item "bits_per_coded_sample integer "
 .PD 0
 .IP "\fBpred\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "pred integer (encoding,video)"
@@ -3395,8 +3396,8 @@ Set diamond type & size for motion estimation pre-pass.
 .IP "\fBsubq\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "subq integer (encoding,video)"
 Set sub pel motion estimation quality.
-.IP "\fBdtg_active_format\fR \fIinteger\fR" 4
-.IX Item "dtg_active_format integer"
+.IP "\fBdtg_active_format\fR \fIinteger\fR\fB \fR" 4
+.IX Item "dtg_active_format integer "
 .PD 0
 .IP "\fBme_range\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "me_range integer (encoding,video)"
@@ -3408,8 +3409,8 @@ Set intra quant bias.
 .IP "\fBpbias\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "pbias integer (encoding,video)"
 Set inter quant bias.
-.IP "\fBcolor_table_id\fR \fIinteger\fR" 4
-.IX Item "color_table_id integer"
+.IP "\fBcolor_table_id\fR \fIinteger\fR\fB \fR" 4
+.IX Item "color_table_id integer "
 .PD 0
 .IP "\fBglobal_quality\fR \fIinteger\fR \fB(\fR\fIencoding,audio,video\fR\fB)\fR" 4
 .IX Item "global_quality integer (encoding,audio,video)"
@@ -3439,8 +3440,8 @@ deflate-based coder
 .IP "\fBcontext\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "context integer (encoding,video)"
 Set context model.
-.IP "\fBslice_flags\fR \fIinteger\fR" 4
-.IX Item "slice_flags integer"
+.IP "\fBslice_flags\fR \fIinteger\fR\fB \fR" 4
+.IX Item "slice_flags integer "
 .PD 0
 .IP "\fBmbd\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "mbd integer (encoding,video)"
@@ -3461,8 +3462,8 @@ use best rate distortion
 .RE
 .RS 4
 .RE
-.IP "\fBstream_codec_tag\fR \fIinteger\fR" 4
-.IX Item "stream_codec_tag integer"
+.IP "\fBstream_codec_tag\fR \fIinteger\fR\fB \fR" 4
+.IX Item "stream_codec_tag integer "
 .PD 0
 .IP "\fBsc_threshold\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "sc_threshold integer (encoding,video)"
@@ -3775,8 +3776,8 @@ Set \s-1GOP\s0 timecode frame start number, in non drop frame format.
 .IP "\fBrequest_channels\fR \fIinteger\fR \fB(\fR\fIdecoding,audio\fR\fB)\fR" 4
 .IX Item "request_channels integer (decoding,audio)"
 Set desired number of audio channels.
-.IP "\fBbits_per_raw_sample\fR \fIinteger\fR" 4
-.IX Item "bits_per_raw_sample integer"
+.IP "\fBbits_per_raw_sample\fR \fIinteger\fR\fB \fR" 4
+.IX Item "bits_per_raw_sample integer "
 .PD 0
 .IP "\fBchannel_layout\fR \fIinteger\fR \fB(\fR\fIdecoding/encoding,audio\fR\fB)\fR" 4
 .IX Item "channel_layout integer (decoding/encoding,audio)"
@@ -4012,8 +4013,8 @@ Possible values:
 .RE
 .RS 4
 .RE
-.IP "\fBlog_level_offset\fR \fIinteger\fR" 4
-.IX Item "log_level_offset integer"
+.IP "\fBlog_level_offset\fR \fIinteger\fR\fB \fR" 4
+.IX Item "log_level_offset integer "
 .PD
 Set the log level offset.
 .IP "\fBslices\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
@@ -4083,8 +4084,8 @@ Karaoke
 .IX Item "request_sample_fmt sample_fmt (decoding,audio)"
 Set sample format audio decoders should prefer. Default value is
 \&\f(CW\*(C`none\*(C'\fR.
-.IP "\fBpkt_timebase\fR \fIrational number\fR" 4
-.IX Item "pkt_timebase rational number"
+.IP "\fBpkt_timebase\fR \fIrational number\fR\fB \fR" 4
+.IX Item "pkt_timebase rational number "
 .PD 0
 .IP "\fBsub_charenc\fR \fIencoding\fR \fB(\fR\fIdecoding,subtitles\fR\fB)\fR" 4
 .IX Item "sub_charenc encoding (decoding,subtitles)"
@@ -4173,8 +4174,8 @@ This decoder decodes rawvideo streams.
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fBtop\fR \fItop_field_first\fR" 4
-.IX Item "top top_field_first"
+.IP "\fBtop\fR \fItop_field_first\fR\fB \fR" 4
+.IX Item "top top_field_first "
 Specify the assumed field type of the input video.
 .RS 4
 .IP "\fB\-1\fR" 4
@@ -4207,8 +4208,8 @@ the undocumented RealAudio 3 (a.k.a. dnet).
 .PP
 \fI\s-1AC\-3\s0 Decoder Options\fR
 .IX Subsection "AC-3 Decoder Options"
-.IP "\fB\-drc_scale\fR \fIvalue\fR" 4
-.IX Item "-drc_scale value"
+.IP "\fB\-drc_scale\fR \fIvalue\fR\fB \fR" 4
+.IX Item "-drc_scale value "
 Dynamic Range Scale Factor. The factor to apply to dynamic range values
 from the \s-1AC\-3\s0 stream. This factor is applied exponentially.
 There are 3 notable scale factor ranges:
@@ -5118,8 +5119,8 @@ latency. Must be an integer not lesser than 32. It is 5000000 by default.
 .IP "\fBpacketsize\fR \fIinteger\fR \fB(\fR\fIoutput\fR\fB)\fR" 4
 .IX Item "packetsize integer (output)"
 Set packet size.
-.IP "\fBfflags\fR \fIflags\fR" 4
-.IX Item "fflags flags"
+.IP "\fBfflags\fR \fIflags\fR\fB \fR" 4
+.IX Item "fflags flags "
 Set format flags. Some are implemented for a limited number of formats.
 .Sp
 Possible values for input files:
@@ -5360,8 +5361,8 @@ Format stream specifiers allow selection of one or more streams that
 match specific properties.
 .PP
 Possible forms of stream specifiers are:
-.IP "\fIstream_index\fR" 4
-.IX Item "stream_index"
+.IP "\fIstream_index\fR\fB \fR" 4
+.IX Item "stream_index "
 Matches the stream with this index.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
 .IX Item "stream_type[:stream_index]"
@@ -5375,8 +5376,8 @@ this type.
 If \fIstream_index\fR is given, then it matches the stream with number
 \&\fIstream_index\fR in the program with the id
 \&\fIprogram_id\fR. Otherwise, it matches all streams in the program.
-.IP "\fB#\fR\fIstream_id\fR" 4
-.IX Item "#stream_id"
+.IP "\fB#\fR\fIstream_id\fR\fB \fR" 4
+.IX Item "#stream_id "
 Matches the stream by a format-specific \s-1ID.\s0
 .PP
 The exact semantics of stream specifiers is defined by the
@@ -5425,14 +5426,14 @@ All headers, but the \s-1PNG\s0 signature, up to (but not including) the first
 fcTL chunk are transmitted as extradata.
 Frames are then split as being all the chunks between two fcTL ones, or
 between the last fcTL and \s-1IEND\s0 chunks.
-.IP "\fB\-ignore_loop\fR \fIbool\fR" 4
-.IX Item "-ignore_loop bool"
+.IP "\fB\-ignore_loop\fR \fIbool\fR\fB \fR" 4
+.IX Item "-ignore_loop bool "
 Ignore the loop variable in the file if set.
-.IP "\fB\-max_fps\fR \fIint\fR" 4
-.IX Item "-max_fps int"
+.IP "\fB\-max_fps\fR \fIint\fR\fB \fR" 4
+.IX Item "-max_fps int "
 Maximum framerate in frames per second (0 for no limit).
-.IP "\fB\-default_fps\fR \fIint\fR" 4
-.IX Item "-default_fps int"
+.IP "\fB\-default_fps\fR \fIint\fR\fB \fR" 4
+.IX Item "-default_fps int "
 Default framerate in frames per second when none is specified in the file
 (0 meaning as fast as possible).
 .SS "asf"
@@ -5440,8 +5441,8 @@ Default framerate in frames per second when none is specified in the file
 Advanced Systems Format demuxer.
 .PP
 This demuxer is used to demux \s-1ASF\s0 files and \s-1MMS\s0 network streams.
-.IP "\fB\-no_resync_search\fR \fIbool\fR" 4
-.IX Item "-no_resync_search bool"
+.IP "\fB\-no_resync_search\fR \fIbool\fR\fB \fR" 4
+.IX Item "-no_resync_search bool "
 Do not try to resynchronize by looking for a certain optional start code.
 .SS "concat"
 .IX Subsection "concat"
@@ -5470,34 +5471,34 @@ each file.
 The script is a text file in extended-ASCII, with one directive per line.
 Empty lines, leading spaces and lines starting with '#' are ignored. The
 following directive is recognized:
-.ie n .IP "\fB\f(CB""file \f(CBpath\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBfile \f(CBpath\f(CB\fB\fR" 4
-.IX Item "file path"
+.ie n .IP "\fB\f(CB""file \f(CBpath\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBfile \f(CBpath\f(CB\fB \fR" 4
+.IX Item "file path "
 Path to a file to read; special characters and spaces must be escaped with
 backslash or single quotes.
 .Sp
 All subsequent file-related directives apply to that file.
-.ie n .IP "\fB\f(CB""ffconcat version 1.0""\fB\fR" 4
-.el .IP "\fB\f(CBffconcat version 1.0\fB\fR" 4
-.IX Item "ffconcat version 1.0"
+.ie n .IP "\fB\f(CB""ffconcat version 1.0""\fB \fR" 4
+.el .IP "\fB\f(CBffconcat version 1.0\fB \fR" 4
+.IX Item "ffconcat version 1.0 "
 Identify the script type and version. It also sets the \fBsafe\fR option
 to 1 if it was \-1.
 .Sp
 To make FFmpeg recognize the format automatically, this directive must
 appear exactly as is (no extra space or byte-order-mark) on the very first
 line of the script.
-.ie n .IP "\fB\f(CB""duration \f(CBdur\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBduration \f(CBdur\f(CB\fB\fR" 4
-.IX Item "duration dur"
+.ie n .IP "\fB\f(CB""duration \f(CBdur\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBduration \f(CBdur\f(CB\fB \fR" 4
+.IX Item "duration dur "
 Duration of the file. This information can be specified from the file;
 specifying it here may be more efficient or help if the information from the
 file is not available or accurate.
 .Sp
 If the duration is set for all files, then it is possible to seek in the
 whole concatenated video.
-.ie n .IP "\fB\f(CB""inpoint \f(CBtimestamp\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBinpoint \f(CBtimestamp\f(CB\fB\fR" 4
-.IX Item "inpoint timestamp"
+.ie n .IP "\fB\f(CB""inpoint \f(CBtimestamp\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBinpoint \f(CBtimestamp\f(CB\fB \fR" 4
+.IX Item "inpoint timestamp "
 In point of the file. When the demuxer opens the file it instantly seeks to the
 specified timestamp. Seeking is done so that all streams can be presented
 successfully at In point.
@@ -5513,9 +5514,9 @@ directive) will be reduced based on their specified In point.
 .Sp
 Because of potential packets before the specified In point, packet timestamps
 may overlap between two concatenated files.
-.ie n .IP "\fB\f(CB""outpoint \f(CBtimestamp\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBoutpoint \f(CBtimestamp\f(CB\fB\fR" 4
-.IX Item "outpoint timestamp"
+.ie n .IP "\fB\f(CB""outpoint \f(CBtimestamp\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBoutpoint \f(CBtimestamp\f(CB\fB \fR" 4
+.IX Item "outpoint timestamp "
 Out point of the file. When the demuxer reaches the specified decoding
 timestamp in any of the streams, it handles it as an end of file condition and
 skips the current and all the remaining packets from all streams.
@@ -5533,15 +5534,15 @@ stream until Out point.
 .Sp
 The duration of the files (if not specified by the \f(CW\*(C`duration\*(C'\fR
 directive) will be reduced based on their specified Out point.
-.ie n .IP "\fB\f(CB""file_packet_metadata \f(CBkey=value\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBfile_packet_metadata \f(CBkey=value\f(CB\fB\fR" 4
-.IX Item "file_packet_metadata key=value"
+.ie n .IP "\fB\f(CB""file_packet_metadata \f(CBkey=value\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBfile_packet_metadata \f(CBkey=value\f(CB\fB \fR" 4
+.IX Item "file_packet_metadata key=value "
 Metadata of the packets of the file. The specified metadata will be set for
 each file packet. You can specify this directive multiple times to add multiple
 metadata entries.
-.ie n .IP "\fB\f(CB""stream""\fB\fR" 4
-.el .IP "\fB\f(CBstream\fB\fR" 4
-.IX Item "stream"
+.ie n .IP "\fB\f(CB""stream""\fB \fR" 4
+.el .IP "\fB\f(CBstream\fB \fR" 4
+.IX Item "stream "
 Introduce a stream in the virtual file.
 All subsequent stream-related directives apply to the last introduced
 stream.
@@ -5549,9 +5550,9 @@ Some streams properties must be set in order to allow identifying the
 matching streams in the subfiles.
 If no streams are defined in the script, the streams from the first file are
 copied.
-.ie n .IP "\fB\f(CB""exact_stream_id \f(CBid\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBexact_stream_id \f(CBid\f(CB\fB\fR" 4
-.IX Item "exact_stream_id id"
+.ie n .IP "\fB\f(CB""exact_stream_id \f(CBid\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBexact_stream_id \f(CBid\f(CB\fB \fR" 4
+.IX Item "exact_stream_id id "
 Set the id of the stream.
 If this directive is given, the string with the corresponding id in the
 subfiles will be used.
@@ -5638,14 +5639,14 @@ This demuxer is used to demux \s-1FLV\s0 files and \s-1RTMP\s0 network streams. 
 \&        ffmpeg \-f flv \-i myfile.flv ...
 \&        ffmpeg \-f live_flv \-i rtmp://<any.server>/anything/key ....
 .Ve
-.IP "\fB\-flv_metadata\fR \fIbool\fR" 4
-.IX Item "-flv_metadata bool"
+.IP "\fB\-flv_metadata\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_metadata bool "
 Allocate the streams according to the onMetaData array content.
-.IP "\fB\-flv_ignore_prevtag\fR \fIbool\fR" 4
-.IX Item "-flv_ignore_prevtag bool"
+.IP "\fB\-flv_ignore_prevtag\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_ignore_prevtag bool "
 Ignore the size of previous tag value.
-.IP "\fB\-flv_full_metadata\fR \fIbool\fR" 4
-.IX Item "-flv_full_metadata bool"
+.IP "\fB\-flv_full_metadata\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_full_metadata bool "
 Output all context of the onMetadata.
 .SS "gif"
 .IX Subsection "gif"
@@ -5777,8 +5778,8 @@ Select a glob wildcard pattern type.
 .Sp
 The pattern is interpreted like a \f(CW\*(C`glob()\*(C'\fR pattern. This is only
 selectable if libavformat was compiled with globbing support.
-.IP "\fBglob_sequence\fR \fI(deprecated, will be removed)\fR" 4
-.IX Item "glob_sequence (deprecated, will be removed)"
+.IP "\fBglob_sequence\fR \fI(deprecated, will be removed)\fR\fB \fR" 4
+.IX Item "glob_sequence (deprecated, will be removed) "
 Select a mixed glob wildcard/sequence pattern.
 .Sp
 If your version of libavformat was compiled with globbing support, and
@@ -6617,11 +6618,11 @@ The destination \s-1UDP\s0 ports are \f(CW\*(C`port + 2\*(C'\fR for the column \
 and \f(CW\*(C`port + 4\*(C'\fR for the row \s-1FEC\s0 stream.
 .PP
 This protocol accepts the following options:
-.IP "\fBl=\fR\fIn\fR" 4
-.IX Item "l=n"
+.IP "\fBl=\fR\fIn\fR\fB \fR" 4
+.IX Item "l=n "
 The number of columns (4\-20, LxD <= 100)
-.IP "\fBd=\fR\fIn\fR" 4
-.IX Item "d=n"
+.IP "\fBd=\fR\fIn\fR\fB \fR" 4
+.IX Item "d=n "
 The number of rows (4\-20, LxD <= 100)
 .PP
 Example usage:
@@ -6898,20 +6899,20 @@ rtp://\fIhostname\fR[:\fIport\fR][?\fIoption\fR=\fIval\fR...]
 \&\fIport\fR specifies the \s-1RTP\s0 port to use.
 .PP
 The following \s-1URL\s0 options are supported:
-.IP "\fBttl=\fR\fIn\fR" 4
-.IX Item "ttl=n"
+.IP "\fBttl=\fR\fIn\fR\fB \fR" 4
+.IX Item "ttl=n "
 Set the \s-1TTL\s0 (Time-To-Live) value (for multicast only).
-.IP "\fBrtcpport=\fR\fIn\fR" 4
-.IX Item "rtcpport=n"
+.IP "\fBrtcpport=\fR\fIn\fR\fB \fR" 4
+.IX Item "rtcpport=n "
 Set the remote \s-1RTCP\s0 port to \fIn\fR.
-.IP "\fBlocalrtpport=\fR\fIn\fR" 4
-.IX Item "localrtpport=n"
+.IP "\fBlocalrtpport=\fR\fIn\fR\fB \fR" 4
+.IX Item "localrtpport=n "
 Set the local \s-1RTP\s0 port to \fIn\fR.
 .IP "\fBlocalrtcpport=\fR\fIn\fR\fB'\fR" 4
 .IX Item "localrtcpport=n'"
 Set the local \s-1RTCP\s0 port to \fIn\fR.
-.IP "\fBpkt_size=\fR\fIn\fR" 4
-.IX Item "pkt_size=n"
+.IP "\fBpkt_size=\fR\fIn\fR\fB \fR" 4
+.IX Item "pkt_size=n "
 Set max packet size (in bytes) to \fIn\fR.
 .IP "\fBconnect=0|1\fR" 4
 .IX Item "connect=0|1"
@@ -6927,8 +6928,8 @@ List disallowed (blocked) source \s-1IP\s0 addresses.
 .IX Item "write_to_source=0|1"
 Send packets to the source address of the latest received packet (if
 set to 1) or to a default remote address (if set to 0).
-.IP "\fBlocalport=\fR\fIn\fR" 4
-.IX Item "localport=n"
+.IP "\fBlocalport=\fR\fIn\fR\fB \fR" 4
+.IX Item "localport=n "
 Set the local \s-1RTP\s0 port to \fIn\fR.
 .Sp
 This is a deprecated option. Instead, \fBlocalrtpport\fR should be
@@ -7120,22 +7121,22 @@ The \s-1RTP\s0 packets are sent to \fIdestination\fR on port \fIport\fR,
 or to port 5004 if no port is specified.
 \&\fIoptions\fR is a \f(CW\*(C`&\*(C'\fR\-separated list. The following options
 are supported:
-.IP "\fBannounce_addr=\fR\fIaddress\fR" 4
-.IX Item "announce_addr=address"
+.IP "\fBannounce_addr=\fR\fIaddress\fR\fB \fR" 4
+.IX Item "announce_addr=address "
 Specify the destination \s-1IP\s0 address for sending the announcements to.
 If omitted, the announcements are sent to the commonly used \s-1SAP\s0
 announcement multicast address 224.2.127.254 (sap.mcast.net), or
 ff0e::2:7ffe if \fIdestination\fR is an IPv6 address.
-.IP "\fBannounce_port=\fR\fIport\fR" 4
-.IX Item "announce_port=port"
+.IP "\fBannounce_port=\fR\fIport\fR\fB \fR" 4
+.IX Item "announce_port=port "
 Specify the port to send the announcements on, defaults to
 9875 if not specified.
-.IP "\fBttl=\fR\fIttl\fR" 4
-.IX Item "ttl=ttl"
+.IP "\fBttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ttl=ttl "
 Specify the time to live value for the announcements and \s-1RTP\s0 packets,
 defaults to 255.
-.IP "\fBsame_port=\fR\fI0|1\fR" 4
-.IX Item "same_port=0|1"
+.IP "\fBsame_port=\fR\fI0|1\fR\fB \fR" 4
+.IX Item "same_port=0|1 "
 If set to 1, send all \s-1RTP\s0 streams on the same port pair. If zero (the
 default), all streams are sent on unique ports, with each stream on a
 port 2 numbers higher than the previous.
@@ -7240,15 +7241,15 @@ Connection timeout; \s-1SRT\s0 cannot connect for \s-1RTT\s0 > 1500 msec
 connection modes. The connect timeout is 10 times the value
 set for the rendezvous mode (which can be used as a
 workaround for this connection problem with earlier versions).
-.IP "\fBffs=\fR\fIbytes\fR" 4
-.IX Item "ffs=bytes"
+.IP "\fBffs=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "ffs=bytes "
 Flight Flag Size (Window Size), in bytes. \s-1FFS\s0 is actually an
 internal parameter and you should set it to not less than
 \&\fBrecv_buffer_size\fR and \fBmss\fR. The default value
 is relatively large, therefore unless you set a very large receiver buffer,
 you do not need to change this option. Default value is 25600.
-.IP "\fBinputbw=\fR\fIbytes/seconds\fR" 4
-.IX Item "inputbw=bytes/seconds"
+.IP "\fBinputbw=\fR\fIbytes/seconds\fR\fB \fR" 4
+.IX Item "inputbw=bytes/seconds "
 Sender nominal input rate, in bytes per seconds. Used along with
 \&\fBoheadbw\fR, when \fBmaxbw\fR is set to relative (0), to
 calculate maximum sending rate when recovery packets are sent
@@ -7257,11 +7258,11 @@ along with the main media stream:
 if \fBinputbw\fR is not set while \fBmaxbw\fR is set to
 relative (0), the actual input rate is evaluated inside
 the library. Default value is 0.
-.IP "\fBiptos=\fR\fItos\fR" 4
-.IX Item "iptos=tos"
+.IP "\fBiptos=\fR\fItos\fR\fB \fR" 4
+.IX Item "iptos=tos "
 \&\s-1IP\s0 Type of Service. Applies to sender only. Default value is 0xB8.
-.IP "\fBipttl=\fR\fIttl\fR" 4
-.IX Item "ipttl=ttl"
+.IP "\fBipttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ipttl=ttl "
 \&\s-1IP\s0 Time To Live. Applies to sender only. Default value is 64.
 .IP "\fBlatency\fR" 4
 .IX Item "latency"
@@ -7277,22 +7278,22 @@ sending is not supported.
 .IP "\fBlisten_timeout\fR" 4
 .IX Item "listen_timeout"
 Set socket listen timeout.
-.IP "\fBmaxbw=\fR\fIbytes/seconds\fR" 4
-.IX Item "maxbw=bytes/seconds"
+.IP "\fBmaxbw=\fR\fIbytes/seconds\fR\fB \fR" 4
+.IX Item "maxbw=bytes/seconds "
 Maximum sending bandwidth, in bytes per seconds.
 \&\-1 infinite (\s-1CSRTCC\s0 limit is 30mbps)
 0 relative to input rate (see \fBinputbw\fR)
 >0 absolute limit value
 Default value is 0 (relative)
-.IP "\fBmode=\fR\fIcaller|listener|rendezvous\fR" 4
-.IX Item "mode=caller|listener|rendezvous"
+.IP "\fBmode=\fR\fIcaller|listener|rendezvous\fR\fB \fR" 4
+.IX Item "mode=caller|listener|rendezvous "
 Connection mode.
 \&\fBcaller\fR opens client connection.
 \&\fBlistener\fR starts server to listen for incoming connections.
 \&\fBrendezvous\fR use Rendez-Vous connection mode.
 Default value is caller.
-.IP "\fBmss=\fR\fIbytes\fR" 4
-.IX Item "mss=bytes"
+.IP "\fBmss=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "mss=bytes "
 Maximum Segment Size, in bytes. Used for buffer allocation
 and rate calculation using a packet counter assuming fully
 filled packets. The smallest \s-1MSS\s0 between the peers is
@@ -7300,17 +7301,17 @@ used. This is 1500 by default in the overall internet.
 This is the maximum size of the \s-1UDP\s0 packet and can be
 only decreased, unless you have some unusual dedicated
 network settings. Default value is 1500.
-.IP "\fBnakreport=\fR\fI1|0\fR" 4
-.IX Item "nakreport=1|0"
+.IP "\fBnakreport=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "nakreport=1|0 "
 If set to 1, Receiver will send `UMSG_LOSSREPORT` messages
 periodically until a lost packet is retransmitted or
 intentionally dropped. Default value is 1.
-.IP "\fBoheadbw=\fR\fIpercents\fR" 4
-.IX Item "oheadbw=percents"
+.IP "\fBoheadbw=\fR\fIpercents\fR\fB \fR" 4
+.IX Item "oheadbw=percents "
 Recovery bandwidth overhead above input rate, in percents.
 See \fBinputbw\fR. Default value is 25%.
-.IP "\fBpassphrase=\fR\fIstring\fR" 4
-.IX Item "passphrase=string"
+.IP "\fBpassphrase=\fR\fIstring\fR\fB \fR" 4
+.IX Item "passphrase=string "
 HaiCrypt Encryption/Decryption Passphrase string, length
 from 10 to 79 characters. The passphrase is the shared
 secret between the sender and the receiver. It is used
@@ -7319,8 +7320,8 @@ to generate the Key Encrypting Key using \s-1PBKDF2\s0
 only if \fBpbkeylen\fR is non-zero. It is used on
 the receiver only if the received data is encrypted.
 The configured passphrase cannot be recovered (write-only).
-.IP "\fBpayload_size=\fR\fIbytes\fR" 4
-.IX Item "payload_size=bytes"
+.IP "\fBpayload_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "payload_size=bytes "
 Sets the maximum declared size of a packet transferred
 during the single call to the sending function in Live
 mode. Use 0 if this value isn't used (which is default in
@@ -7331,15 +7332,15 @@ to send any different kind of payload, such as, for example,
 wrapping a live stream in very small frames, then you can
 use a bigger maximum frame size, though not greater than
 1456 bytes.
-.IP "\fBpkt_size=\fR\fIbytes\fR" 4
-.IX Item "pkt_size=bytes"
+.IP "\fBpkt_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "pkt_size=bytes "
 Alias for \fBpayload_size\fR.
 .IP "\fBpeerlatency\fR" 4
 .IX Item "peerlatency"
 The latency value (as described in \fBrcvlatency\fR) that is
 set by the sender side as a minimum value for the receiver.
-.IP "\fBpbkeylen=\fR\fIbytes\fR" 4
-.IX Item "pbkeylen=bytes"
+.IP "\fBpbkeylen=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "pbkeylen=bytes "
 Sender encryption key length, in bytes.
 Only can be set to 0, 16, 24 and 32.
 Enable sender encryption if not 0.
@@ -7358,11 +7359,11 @@ packet. The effective latency value will be the maximum
 of this options' value and the value of \fBpeerlatency\fR
 set by the peer side. Before version 1.3.0 this option
 is only available as \fBlatency\fR.
-.IP "\fBrecv_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "recv_buffer_size=bytes"
+.IP "\fBrecv_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "recv_buffer_size=bytes "
 Set \s-1UDP\s0 receive buffer size, expressed in bytes.
-.IP "\fBsend_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "send_buffer_size=bytes"
+.IP "\fBsend_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "send_buffer_size=bytes "
 Set \s-1UDP\s0 send buffer size, expressed in bytes.
 .IP "\fBrw_timeout\fR" 4
 .IX Item "rw_timeout"
@@ -7371,8 +7372,8 @@ Set raise error timeout for read/write optations.
 This option is only relevant in read mode:
 if no data arrived in more than this time
 interval, raise error.
-.IP "\fBtlpktdrop=\fR\fI1|0\fR" 4
-.IX Item "tlpktdrop=1|0"
+.IP "\fBtlpktdrop=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tlpktdrop=1|0 "
 Too-late Packet Drop. When enabled on receiver, it skips
 missing packets that have not been delivered in time and
 delivers the following packets to the application when
@@ -7382,16 +7383,16 @@ receiving peer, the sender drops the older packets that
 have no chance of being delivered in time. It was
 automatically enabled in the sender if the receiver
 supports it.
-.IP "\fBsndbuf=\fR\fIbytes\fR" 4
-.IX Item "sndbuf=bytes"
+.IP "\fBsndbuf=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "sndbuf=bytes "
 Set send buffer size, expressed in bytes.
-.IP "\fBrcvbuf=\fR\fIbytes\fR" 4
-.IX Item "rcvbuf=bytes"
+.IP "\fBrcvbuf=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "rcvbuf=bytes "
 Set receive buffer size, expressed in bytes.
 .Sp
 Receive buffer must not be greater than \fBffs\fR.
-.IP "\fBlossmaxttl=\fR\fIpackets\fR" 4
-.IX Item "lossmaxttl=packets"
+.IP "\fBlossmaxttl=\fR\fIpackets\fR\fB \fR" 4
+.IX Item "lossmaxttl=packets "
 The value up to which the Reorder Tolerance may grow. When
 Reorder Tolerance is > 0, then packet loss report is delayed
 until that number of packets come in. Reorder Tolerance
@@ -7410,8 +7411,8 @@ will be rejected.
 .Sp
 The version format in hex is 0xXXYYZZ for x.y.z in human readable
 form.
-.IP "\fBstreamid=\fR\fIstring\fR" 4
-.IX Item "streamid=string"
+.IP "\fBstreamid=\fR\fIstring\fR\fB \fR" 4
+.IX Item "streamid=string "
 A string limited to 512 characters that can be set on the socket prior
 to connecting. This stream \s-1ID\s0 will be able to be retrieved by the
 listener side from the socket that is returned from srt_accept and
@@ -7420,14 +7421,14 @@ any special interpretation of the contents of this string.
 This option doesnXt make sense in Rendezvous connection; the result
 might be that simply one side will override the value from the other
 side and itXs the matter of luck which one would win
-.IP "\fBsmoother=\fR\fIlive|file\fR" 4
-.IX Item "smoother=live|file"
+.IP "\fBsmoother=\fR\fIlive|file\fR\fB \fR" 4
+.IX Item "smoother=live|file "
 The type of Smoother used for the transmission for that socket, which
 is responsible for the transmission and congestion control. The Smoother
 type must be exactly the same on both connecting parties, otherwise
 the connection is rejected.
-.IP "\fBmessageapi=\fR\fI1|0\fR" 4
-.IX Item "messageapi=1|0"
+.IP "\fBmessageapi=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "messageapi=1|0 "
 When set, this socket uses the Message \s-1API,\s0 otherwise it uses Buffer
 \&\s-1API.\s0 Note that in live mode (see \fBtranstype\fR) thereXs only
 message \s-1API\s0 available. In File mode you can chose to use one of two modes:
@@ -7448,8 +7449,8 @@ receiver shall use as large buffer as necessary to receive the message,
 otherwise the message will not be given up. When the message is not
 complete (not all packets received or there was a packet loss) it will
 not be given up.
-.IP "\fBtranstype=\fR\fIlive|file\fR" 4
-.IX Item "transtype=live|file"
+.IP "\fBtranstype=\fR\fIlive|file\fR\fB \fR" 4
+.IX Item "transtype=live|file "
 Sets the transmission type for the socket, in particular, setting this
 option sets multiple other parameters to their default values as required
 for a particular transmission type.
@@ -7557,29 +7558,29 @@ The required syntax for a \s-1TCP\s0 url is:
 \&\fIkey\fR=\fIval\fR.
 .PP
 The list of supported options follows.
-.IP "\fBlisten=\fR\fI1|0\fR" 4
-.IX Item "listen=1|0"
+.IP "\fBlisten=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "listen=1|0 "
 Listen for an incoming connection. Default value is 0.
-.IP "\fBtimeout=\fR\fImicroseconds\fR" 4
-.IX Item "timeout=microseconds"
+.IP "\fBtimeout=\fR\fImicroseconds\fR\fB \fR" 4
+.IX Item "timeout=microseconds "
 Set raise error timeout, expressed in microseconds.
 .Sp
 This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
-.IP "\fBlisten_timeout=\fR\fImilliseconds\fR" 4
-.IX Item "listen_timeout=milliseconds"
+.IP "\fBlisten_timeout=\fR\fImilliseconds\fR\fB \fR" 4
+.IX Item "listen_timeout=milliseconds "
 Set listen timeout, expressed in milliseconds.
-.IP "\fBrecv_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "recv_buffer_size=bytes"
+.IP "\fBrecv_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "recv_buffer_size=bytes "
 Set receive buffer size, expressed bytes.
-.IP "\fBsend_buffer_size=\fR\fIbytes\fR" 4
-.IX Item "send_buffer_size=bytes"
+.IP "\fBsend_buffer_size=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "send_buffer_size=bytes "
 Set send buffer size, expressed bytes.
-.IP "\fBtcp_nodelay=\fR\fI1|0\fR" 4
-.IX Item "tcp_nodelay=1|0"
+.IP "\fBtcp_nodelay=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tcp_nodelay=1|0 "
 Set \s-1TCP_NODELAY\s0 to disable Nagle's algorithm. Default value is 0.
-.IP "\fBtcp_mss=\fR\fIbytes\fR" 4
-.IX Item "tcp_mss=bytes"
+.IP "\fBtcp_mss=\fR\fIbytes\fR\fB \fR" 4
+.IX Item "tcp_mss=bytes "
 Set maximum segment size for outgoing \s-1TCP\s0 packets, expressed in bytes.
 .PP
 The following example shows how to setup a listening \s-1TCP\s0 connection
@@ -7601,15 +7602,15 @@ The required syntax for a \s-1TLS/SSL\s0 url is:
 .PP
 The following parameters can be set via command line options
 (or in code via \f(CW\*(C`AVOption\*(C'\fRs):
-.IP "\fBca_file, cafile=\fR\fIfilename\fR" 4
-.IX Item "ca_file, cafile=filename"
+.IP "\fBca_file, cafile=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "ca_file, cafile=filename "
 A file containing certificate authority (\s-1CA\s0) root certificates to treat
 as trusted. If the linked \s-1TLS\s0 library contains a default this might not
 need to be specified for verification to work, but not all libraries and
 setups have defaults built in.
 The file must be in OpenSSL \s-1PEM\s0 format.
-.IP "\fBtls_verify=\fR\fI1|0\fR" 4
-.IX Item "tls_verify=1|0"
+.IP "\fBtls_verify=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "tls_verify=1|0 "
 If enabled, try to verify the peer that we are communicating with.
 Note, if using OpenSSL, this currently only makes sure that the
 peer certificate is signed by one of the root certificates in the \s-1CA\s0
@@ -7619,17 +7620,17 @@ the host name is validated as well.)
 .Sp
 This is disabled by default since it requires a \s-1CA\s0 database to be
 provided by the caller in many cases.
-.IP "\fBcert_file, cert=\fR\fIfilename\fR" 4
-.IX Item "cert_file, cert=filename"
+.IP "\fBcert_file, cert=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "cert_file, cert=filename "
 A file containing a certificate to use in the handshake with the peer.
 (When operating as server, in listen mode, this is more often required
 by the peer, while client certificates only are mandated in certain
 setups.)
-.IP "\fBkey_file, key=\fR\fIfilename\fR" 4
-.IX Item "key_file, key=filename"
+.IP "\fBkey_file, key=\fR\fIfilename\fR\fB \fR" 4
+.IX Item "key_file, key=filename "
 A file containing the private key for the certificate.
-.IP "\fBlisten=\fR\fI1|0\fR" 4
-.IX Item "listen=1|0"
+.IP "\fBlisten=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "listen=1|0 "
 If enabled, listen for connections on the provided port, and assume
 the server role in the handshake instead of the client role.
 .PP
@@ -7664,37 +7665,37 @@ to store the incoming data, which allows one to reduce loss of data due to
 \&\fIoverrun_nonfatal\fR options are related to this buffer.
 .PP
 The list of supported options follows.
-.IP "\fBbuffer_size=\fR\fIsize\fR" 4
-.IX Item "buffer_size=size"
+.IP "\fBbuffer_size=\fR\fIsize\fR\fB \fR" 4
+.IX Item "buffer_size=size "
 Set the \s-1UDP\s0 maximum socket buffer size in bytes. This is used to set either
 the receive or send buffer size, depending on what the socket is used for.
 Default is 64KB.  See also \fIfifo_size\fR.
-.IP "\fBbitrate=\fR\fIbitrate\fR" 4
-.IX Item "bitrate=bitrate"
+.IP "\fBbitrate=\fR\fIbitrate\fR\fB \fR" 4
+.IX Item "bitrate=bitrate "
 If set to nonzero, the output will have the specified constant bitrate if the
 input has enough packets to sustain it.
-.IP "\fBburst_bits=\fR\fIbits\fR" 4
-.IX Item "burst_bits=bits"
+.IP "\fBburst_bits=\fR\fIbits\fR\fB \fR" 4
+.IX Item "burst_bits=bits "
 When using \fIbitrate\fR this specifies the maximum number of bits in
 packet bursts.
-.IP "\fBlocalport=\fR\fIport\fR" 4
-.IX Item "localport=port"
+.IP "\fBlocalport=\fR\fIport\fR\fB \fR" 4
+.IX Item "localport=port "
 Override the local \s-1UDP\s0 port to bind with.
-.IP "\fBlocaladdr=\fR\fIaddr\fR" 4
-.IX Item "localaddr=addr"
+.IP "\fBlocaladdr=\fR\fIaddr\fR\fB \fR" 4
+.IX Item "localaddr=addr "
 Local \s-1IP\s0 address of a network interface used for sending packets or joining
 multicast groups.
-.IP "\fBpkt_size=\fR\fIsize\fR" 4
-.IX Item "pkt_size=size"
+.IP "\fBpkt_size=\fR\fIsize\fR\fB \fR" 4
+.IX Item "pkt_size=size "
 Set the size in bytes of \s-1UDP\s0 packets.
-.IP "\fBreuse=\fR\fI1|0\fR" 4
-.IX Item "reuse=1|0"
+.IP "\fBreuse=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "reuse=1|0 "
 Explicitly allow or disallow reusing \s-1UDP\s0 sockets.
-.IP "\fBttl=\fR\fIttl\fR" 4
-.IX Item "ttl=ttl"
+.IP "\fBttl=\fR\fIttl\fR\fB \fR" 4
+.IX Item "ttl=ttl "
 Set the time to live value (for multicast only).
-.IP "\fBconnect=\fR\fI1|0\fR" 4
-.IX Item "connect=1|0"
+.IP "\fBconnect=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "connect=1|0 "
 Initialize the \s-1UDP\s0 socket with \f(CW\*(C`connect()\*(C'\fR. In this case, the
 destination address can't be changed with ff_udp_set_remote_url later.
 If the destination address isn't known at the start, this option can
@@ -7712,22 +7713,22 @@ also subscribe to multicast traffic coming from these addresses only.
 .IX Item "block=address[,address]"
 Ignore packets sent from the specified addresses. In case of multicast, also
 exclude the source addresses in the multicast subscription.
-.IP "\fBfifo_size=\fR\fIunits\fR" 4
-.IX Item "fifo_size=units"
+.IP "\fBfifo_size=\fR\fIunits\fR\fB \fR" 4
+.IX Item "fifo_size=units "
 Set the \s-1UDP\s0 receiving circular buffer size, expressed as a number of
 packets with size of 188 bytes. If not specified defaults to 7*4096.
-.IP "\fBoverrun_nonfatal=\fR\fI1|0\fR" 4
-.IX Item "overrun_nonfatal=1|0"
+.IP "\fBoverrun_nonfatal=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "overrun_nonfatal=1|0 "
 Survive in case of \s-1UDP\s0 receiving circular buffer overrun. Default
 value is 0.
-.IP "\fBtimeout=\fR\fImicroseconds\fR" 4
-.IX Item "timeout=microseconds"
+.IP "\fBtimeout=\fR\fImicroseconds\fR\fB \fR" 4
+.IX Item "timeout=microseconds "
 Set raise error timeout, expressed in microseconds.
 .Sp
 This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
-.IP "\fBbroadcast=\fR\fI1|0\fR" 4
-.IX Item "broadcast=1|0"
+.IP "\fBbroadcast=\fR\fI1|0\fR\fB \fR" 4
+.IX Item "broadcast=1|0 "
 Explicitly allow or disallow \s-1UDP\s0 broadcasting.
 .Sp
 Note that broadcasting may not work properly on networks having
@@ -7917,13 +7918,13 @@ All available devices can be enumerated by using \fB\-list_devices true\fR, list
 all device names and corresponding indices.
 .PP
 There are two device name aliases:
-.ie n .IP """default""" 4
-.el .IP "\f(CWdefault\fR" 4
-.IX Item "default"
+.ie n .IP """default """ 4
+.el .IP "\f(CWdefault \fR" 4
+.IX Item "default "
 Select the AVFoundation default device of the corresponding type.
-.ie n .IP """none""" 4
-.el .IP "\f(CWnone\fR" 4
-.IX Item "none"
+.ie n .IP """none """ 4
+.el .IP "\f(CWnone \fR" 4
+.IX Item "none "
 Do not record the corresponding media type.
 This is equivalent to specifying an empty device name or index.
 .PP
@@ -13727,11 +13728,11 @@ needs.
 .IX Subsection "Remapping examples"
 .PP
 The channel remapping will be effective if, and only if:
-.IP "*<gain coefficients are zeroes or ones,>" 4
-.IX Item "*<gain coefficients are zeroes or ones,>"
+.IP "*<gain coefficients are zeroes or ones, >" 4
+.IX Item "*<gain coefficients are zeroes or ones, >"
 .PD 0
-.IP "*<only one input per channel output,>" 4
-.IX Item "*<only one input per channel output,>"
+.IP "*<only one input per channel output, >" 4
+.IX Item "*<only one input per channel output, >"
 .PD
 .PP
 If all these conditions are satisfied, the filter will notify the user (\*(L"Pure
@@ -19551,13 +19552,13 @@ looks like this:
 .PP
 In these examples, we can see what \fIp\fR, \fIc\fR and \fIn\fR mean;
 basically, they refer to the frame and field of the opposite parity:
-.IP "*<\fIp\fR matches the field of the opposite parity in the previous frame>" 4
-.IX Item "*<p matches the field of the opposite parity in the previous frame>"
+.IP "*<\fIp\fR matches the field of the opposite parity in the previous frame >" 4
+.IX Item "*<p matches the field of the opposite parity in the previous frame >"
 .PD 0
-.IP "*<\fIc\fR matches the field of the opposite parity in the current frame>" 4
-.IX Item "*<c matches the field of the opposite parity in the current frame>"
-.IP "*<\fIn\fR matches the field of the opposite parity in the next frame>" 4
-.IX Item "*<n matches the field of the opposite parity in the next frame>"
+.IP "*<\fIc\fR matches the field of the opposite parity in the current frame >" 4
+.IX Item "*<c matches the field of the opposite parity in the current frame >"
+.IP "*<\fIn\fR matches the field of the opposite parity in the next frame >" 4
+.IX Item "*<n matches the field of the opposite parity in the next frame >"
 .PD
 .PP
 u/b
@@ -20650,8 +20651,8 @@ not possible.
 .Sp
 Defaults to \fIread+write\fR if not specified.
 .RE
-.IP "\fBderive_device\fR \fItype\fR" 4
-.IX Item "derive_device type"
+.IP "\fBderive_device\fR \fItype\fR\fB \fR" 4
+.IX Item "derive_device type "
 Rather than using the device supplied at initialisation, instead derive a new
 device of type \fItype\fR from the device the input frames exist on.
 .IP "\fBreverse\fR" 4
@@ -25075,9 +25076,9 @@ filter may be changed by later filters in the filterchain, e.g. if
 another \*(L"setsar\*(R" or a \*(L"setdar\*(R" filter is applied.
 .PP
 It accepts the following parameters:
-.ie n .IP "\fBr, ratio, dar (\f(CB""setdar""\fB only), sar (\f(CB""setsar""\fB only)\fR" 4
-.el .IP "\fBr, ratio, dar (\f(CBsetdar\fB only), sar (\f(CBsetsar\fB only)\fR" 4
-.IX Item "r, ratio, dar (setdar only), sar (setsar only)"
+.ie n .IP "\fBr, ratio, dar (\f(CB""setdar""\fB only), sar (\f(CB""setsar""\fB only) \fR" 4
+.el .IP "\fBr, ratio, dar (\f(CBsetdar\fB only), sar (\f(CBsetsar\fB only) \fR" 4
+.IX Item "r, ratio, dar (setdar only), sar (setsar only) "
 Set the aspect ratio used by the filter.
 .Sp
 The parameter can be a floating point number string, an expression, or
@@ -30417,8 +30418,8 @@ The \s-1PTS\s0 of the first video frame in the video. It's \s-1NAN\s0 if undefin
 .IP "\fBstart_t\fR" 4
 .IX Item "start_t"
 The time of the first video frame in the video. It's \s-1NAN\s0 if undefined.
-.IP "\fBpict_type\fR \fI(video only)\fR" 4
-.IX Item "pict_type (video only)"
+.IP "\fBpict_type\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "pict_type (video only) "
 The type of the filtered frame. It can assume one of the following
 values:
 .RS 4
@@ -30440,8 +30441,8 @@ values:
 .RE
 .RS 4
 .RE
-.IP "\fBinterlace_type\fR \fI(video only)\fR" 4
-.IX Item "interlace_type (video only)"
+.IP "\fBinterlace_type\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "interlace_type (video only) "
 .PD
 The frame interlace type. It can assume one of the following values:
 .RS 4
@@ -30457,14 +30458,14 @@ The frame is bottom-field-first.
 .RE
 .RS 4
 .RE
-.IP "\fBconsumed_sample_n\fR \fI(audio only)\fR" 4
-.IX Item "consumed_sample_n (audio only)"
+.IP "\fBconsumed_sample_n\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "consumed_sample_n (audio only) "
 the number of selected samples before the current frame
-.IP "\fBsamples_n\fR \fI(audio only)\fR" 4
-.IX Item "samples_n (audio only)"
+.IP "\fBsamples_n\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "samples_n (audio only) "
 the number of samples in the current frame
-.IP "\fBsample_rate\fR \fI(audio only)\fR" 4
-.IX Item "sample_rate (audio only)"
+.IP "\fBsample_rate\fR \fI(audio only)\fR\fB \fR" 4
+.IX Item "sample_rate (audio only) "
 the input sample rate
 .IP "\fBkey\fR" 4
 .IX Item "key"
@@ -30473,8 +30474,8 @@ This is 1 if the filtered frame is a key-frame, 0 otherwise.
 .IX Item "pos"
 the position in the file of the filtered frame, \-1 if the information
 is not available (e.g. for synthetic video)
-.IP "\fBscene\fR \fI(video only)\fR" 4
-.IX Item "scene (video only)"
+.IP "\fBscene\fR \fI(video only)\fR\fB \fR" 4
+.IX Item "scene (video only) "
 value between 0 and 1 to indicate a new scene; a low value reflects a low
 probability for the current frame to introduce a new scene, while a higher
 value means the current frame is more likely to be one (see the example below)

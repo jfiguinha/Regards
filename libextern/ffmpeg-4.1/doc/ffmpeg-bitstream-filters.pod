@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-bitstream-filters - FFmpeg bitstream filters
+ffmpeg-bitstream-filters - FFmpeg bitstream filters
 
 =head1 DESCRIPTION
 

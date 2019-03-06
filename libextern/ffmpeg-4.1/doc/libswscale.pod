@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-libswscale - video scaling and pixel format conversion library
+libswscale - video scaling and pixel format conversion library
 
 =head1 DESCRIPTION
 

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-devices - FFmpeg devices
+ffmpeg-devices - FFmpeg devices
 
 =head1 DESCRIPTION
 
@@ -198,12 +198,12 @@ There are two device name aliases:
 
 
 
-=item C<default>
+=item C<default>
 
 Select the AVFoundation default device of the corresponding type.
 
 
-=item C<none>
+=item C<none>
 
 Do not record the corresponding media type.
 This is equivalent to specifying an empty device name or index.

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-formats - FFmpeg formats
+ffmpeg-formats - FFmpeg formats
 
 =head1 DESCRIPTION
 
@@ -59,7 +59,7 @@ latency. Must be an integer not lesser than 32. It is 5000000 by default.
 Set packet size.
 
 
-=item B<fflags> I<flags>
+=item B<fflags> I<flags>B<>
 
 Set format flags. Some are implemented for a limited number of formats.
 
@@ -392,7 +392,7 @@ Possible forms of stream specifiers are:
 =over 4
 
 
-=item I<stream_index>
+=item I<stream_index>B<>
 
 Matches the stream with this index.
 
@@ -413,7 +413,7 @@ I<stream_index> in the program with the id
 I<program_id>. Otherwise, it matches all streams in the program.
 
 
-=item B<#>I<stream_id>
+=item B<#>I<stream_id>B<>
 
 Matches the stream by a format-specific ID.
 
@@ -483,15 +483,15 @@ between the last fcTL and IEND chunks.
 =over 4
 
 
-=item B<-ignore_loop> I<bool>
+=item B<-ignore_loop> I<bool>B<>
 
 Ignore the loop variable in the file if set.
 
-=item B<-max_fps> I<int>
+=item B<-max_fps> I<int>B<>
 
 Maximum framerate in frames per second (0 for no limit).
 
-=item B<-default_fps> I<int>
+=item B<-default_fps> I<int>B<>
 
 Default framerate in frames per second when none is specified in the file
 (0 meaning as fast as possible).
@@ -511,7 +511,7 @@ This demuxer is used to demux ASF files and MMS network streams.
 =over 4
 
 
-=item B<-no_resync_search> I<bool>
+=item B<-no_resync_search> I<bool>B<>
 
 Do not try to resynchronize by looking for a certain optional start code.
 
@@ -555,7 +555,7 @@ following directive is recognized:
 
 
 
-=item B<C<file I<path>>>
+=item B<C<file I<path>>>
 
 Path to a file to read; special characters and spaces must be escaped with
 backslash or single quotes.
@@ -563,7 +563,7 @@ backslash or single quotes.
 All subsequent file-related directives apply to that file.
 
 
-=item B<C<ffconcat version 1.0>>
+=item B<C<ffconcat version 1.0>>
 
 Identify the script type and version. It also sets the B<safe> option
 to 1 if it was -1.
@@ -573,7 +573,7 @@ appear exactly as is (no extra space or byte-order-mark) on the very first
 line of the script.
 
 
-=item B<C<duration I<dur>>>
+=item B<C<duration I<dur>>>
 
 Duration of the file. This information can be specified from the file;
 specifying it here may be more efficient or help if the information from the
@@ -583,7 +583,7 @@ If the duration is set for all files, then it is possible to seek in the
 whole concatenated video.
 
 
-=item B<C<inpoint I<timestamp>>>
+=item B<C<inpoint I<timestamp>>>
 
 In point of the file. When the demuxer opens the file it instantly seeks to the
 specified timestamp. Seeking is done so that all streams can be presented
@@ -602,7 +602,7 @@ Because of potential packets before the specified In point, packet timestamps
 may overlap between two concatenated files.
 
 
-=item B<C<outpoint I<timestamp>>>
+=item B<C<outpoint I<timestamp>>>
 
 Out point of the file. When the demuxer reaches the specified decoding
 timestamp in any of the streams, it handles it as an end of file condition and
@@ -623,14 +623,14 @@ The duration of the files (if not specified by the C<duration>
 directive) will be reduced based on their specified Out point.
 
 
-=item B<C<file_packet_metadata I<key=value>>>
+=item B<C<file_packet_metadata I<key=value>>>
 
 Metadata of the packets of the file. The specified metadata will be set for
 each file packet. You can specify this directive multiple times to add multiple
 metadata entries.
 
 
-=item B<C<stream>>
+=item B<C<stream>>
 
 Introduce a stream in the virtual file.
 All subsequent stream-related directives apply to the last introduced
@@ -641,7 +641,7 @@ If no streams are defined in the script, the streams from the first file are
 copied.
 
 
-=item B<C<exact_stream_id I<id>>>
+=item B<C<exact_stream_id I<id>>>
 
 Set the id of the stream.
 If this directive is given, the string with the corresponding id in the
@@ -771,17 +771,17 @@ This demuxer is used to demux FLV files and RTMP network streams. In case of liv
 =over 4
 
 
-=item B<-flv_metadata> I<bool>
+=item B<-flv_metadata> I<bool>B<>
 
 Allocate the streams according to the onMetaData array content.
 
 
-=item B<-flv_ignore_prevtag> I<bool>
+=item B<-flv_ignore_prevtag> I<bool>B<>
 
 Ignore the size of previous tag value.
 
 
-=item B<-flv_full_metadata> I<bool>
+=item B<-flv_full_metadata> I<bool>B<>
 
 Output all context of the onMetadata.
 
@@ -968,7 +968,7 @@ The pattern is interpreted like a C<glob()> pattern. This is only
 selectable if libavformat was compiled with globbing support.
 
 
-=item B<glob_sequence> I<(deprecated, will be removed)>
+=item B<glob_sequence> I<(deprecated, will be removed)>B<>
 
 Select a mixed glob wildcard/sequence pattern.
 
@@ -1562,7 +1562,7 @@ This muxer accepts the following options:
 
 
 
-=item B<flvflags> I<flags>
+=item B<flvflags> I<flags>B<>
 
 Possible values:
 
@@ -1646,80 +1646,80 @@ as defined in section 5.3.9.4.4 of the standard. Available identifiers are "$Rep
 =over 4
 
 
-=item B<-min_seg_duration> I<microseconds>
+=item B<-min_seg_duration> I<microseconds>B<>
 
 This is a deprecated option to set the segment length in microseconds, use I<seg_duration> instead.
 
-=item B<-seg_duration> I<duration>
+=item B<-seg_duration> I<duration>B<>
 
 Set the segment length in seconds (fractional value can be set). The value is
 treated as average segment duration when I<use_template> is enabled and
 I<use_timeline> is disabled and as minimum segment duration for all the other
 use cases.
 
-=item B<-window_size> I<size>
+=item B<-window_size> I<size>B<>
 
 Set the maximum number of segments kept in the manifest.
 
-=item B<-extra_window_size> I<size>
+=item B<-extra_window_size> I<size>B<>
 
 Set the maximum number of segments kept outside of the manifest before removing from disk.
 
-=item B<-remove_at_exit> I<remove>
+=item B<-remove_at_exit> I<remove>B<>
 
 Enable (1) or disable (0) removal of all segments when finished.
 
-=item B<-use_template> I<template>
+=item B<-use_template> I<template>B<>
 
 Enable (1) or disable (0) use of SegmentTemplate instead of SegmentList.
 
-=item B<-use_timeline> I<timeline>
+=item B<-use_timeline> I<timeline>B<>
 
 Enable (1) or disable (0) use of SegmentTimeline in SegmentTemplate.
 
-=item B<-single_file> I<single_file>
+=item B<-single_file> I<single_file>B<>
 
 Enable (1) or disable (0) storing all segments in one file, accessed using byte ranges.
 
-=item B<-single_file_name> I<file_name>
+=item B<-single_file_name> I<file_name>B<>
 
 DASH-templated name to be used for baseURL. Implies I<single_file> set to "1".
 
-=item B<-init_seg_name> I<init_name>
+=item B<-init_seg_name> I<init_name>B<>
 
 DASH-templated name to used for the initialization segment. Default is "init-stream$RepresentationID$.m4s"
 
-=item B<-media_seg_name> I<segment_name>
+=item B<-media_seg_name> I<segment_name>B<>
 
 DASH-templated name to used for the media segments. Default is "chunk-stream$RepresentationID$-$Number%05d$.m4s"
 
-=item B<-utc_timing_url> I<utc_url>
+=item B<-utc_timing_url> I<utc_url>B<>
 
 URL of the page that will return the UTC timestamp in ISO format. Example: "https://time.akamai.com/?iso"
 
-=item B<method> I<method>
+=item B<method> I<method>B<>
 
 Use the given HTTP method to create output files. Generally set to PUT or POST.
 
-=item B<-http_user_agent> I<user_agent>
+=item B<-http_user_agent> I<user_agent>B<>
 
 Override User-Agent field in HTTP header. Applicable only for HTTP output.
 
-=item B<-http_persistent> I<http_persistent>
+=item B<-http_persistent> I<http_persistent>B<>
 
 Use persistent HTTP connections. Applicable only for HTTP output.
 
-=item B<-hls_playlist> I<hls_playlist>
+=item B<-hls_playlist> I<hls_playlist>B<>
 
 Generate HLS playlist files as well. The master playlist is generated with the filename master.m3u8.
 One media playlist file is generated for each stream with filenames media_0.m3u8, media_1.m3u8, etc.
 
-=item B<-streaming> I<streaming>
+=item B<-streaming> I<streaming>B<>
 
 Enable (1) or disable (0) chunk streaming mode of output. In chunk streaming
 mode, each frame will be a moof fragment which forms a chunk.
 
-=item B<-adaptation_sets> I<adaptation_sets>
+=item B<-adaptation_sets> I<adaptation_sets>B<>
 
 Assign streams to AdaptationSets. Syntax is "id=x,streams=a,b,c id=y,streams=d,e" with x and y being the IDs
 of the adaptation sets and a,b,c,d and e are the indices of the mapped streams.
@@ -1728,11 +1728,11 @@ To map all video (or audio) streams to an AdaptationSet, "v" (or "a") can be use
 
 When no assignment is defined, this defaults to an AdaptationSet for each stream.
 
-=item B<-timeout> I<timeout>
+=item B<-timeout> I<timeout>B<>
 
 Set timeout for socket I/O operations. Applicable only for HTTP output.
 
-=item B<-index_correction> I<index_correction>
+=item B<-index_correction> I<index_correction>B<>
 
 Enable (1) or Disable (0) segment index correction logic. Applicable only when
 I<use_template> is enabled and I<use_timeline> is disabled.
@@ -1745,14 +1745,14 @@ Typically this logic is needed in live streaming use cases. The network bandwidt
 fluctuations are common during long run streaming. Each fluctuation can cause
 the segment indexes fall behind the expected real time position.
 
-=item B<-format_options> I<options_list>
+=item B<-format_options> I<options_list>B<>
 
 Set container format (mp4/webm) options using a C<:> separated list of
 key=value parameters. Values containing C<:> special characters must be
 escaped.
 
 
-=item B<dash_segment_type> I<dash_segment_type>
+=item B<dash_segment_type> I<dash_segment_type>B<>
 
 Possible values:
 
@@ -1848,7 +1848,7 @@ for the packet.
 =over 4
 
 
-=item B<hash> I<algorithm>
+=item B<hash> I<algorithm>B<>
 
 Use the cryptographic hash function specified by the string I<algorithm>.
 Supported values include C<MD5>, C<murmur3>, C<RIPEMD128>,
@@ -1977,7 +1977,7 @@ representing the computed hash.
 =over 4
 
 
-=item B<hash> I<algorithm>
+=item B<hash> I<algorithm>B<>
 
 Use the cryptographic hash function specified by the string I<algorithm>.
 Supported values include C<MD5>, C<murmur3>, C<RIPEMD128>,
@@ -2045,7 +2045,7 @@ This muxer supports the following options:
 =over 4
 
 
-=item B<hls_init_time> I<seconds>
+=item B<hls_init_time> I<seconds>B<>
 
 Set the initial target segment length in seconds. Default value is I<0>.
 Segment will be cut on the next key frame after this time has passed on the first m3u8 list.
@@ -2053,19 +2053,19 @@ After the initial playlist is filled B<ffmpeg> will cut segments
 at duration equal to C<hls_time>
 
 
-=item B<hls_time> I<seconds>
+=item B<hls_time> I<seconds>B<>
 
 Set the target segment length in seconds. Default value is 2.
 Segment will be cut on the next key frame after this time has passed.
 
 
-=item B<hls_list_size> I<size>
+=item B<hls_list_size> I<size>B<>
 
 Set the maximum number of playlist entries. If set to 0 the list file
 will contain all the segments. Default value is 5.
 
 
-=item B<hls_delete_threshold> I<size>
+=item B<hls_delete_threshold> I<size>B<>
 
 Set the number of unreferenced segments to keep on disk before C<hls_flags delete_segments>
 deletes them. Increase this to allow continue clients to download segments which
@@ -2073,14 +2073,14 @@ were recently referenced in the playlist. Default value is 1, meaning segments o
 C<hls_list_size+1> will be deleted.
 
 
-=item B<hls_ts_options> I<options_list>
+=item B<hls_ts_options> I<options_list>B<>
 
 Set output format options using a :-separated list of key=value
 parameters. Values containing C<:> special characters must be
 escaped.
 
 
-=item B<hls_wrap> I<wrap>
+=item B<hls_wrap> I<wrap>B<>
 
 This is a deprecated option, you can use C<hls_list_size>
 and C<hls_flags delete_segments> instead it
@@ -2125,7 +2125,7 @@ The start number will be based on the current date/time as YYYYmmddHHMMSS. e.g. 
 
 
 
-=item B<start_number> I<number>
+=item B<start_number> I<number>B<>
 
 Start the playlist sequence number (C<#EXT-X-MEDIA-SEQUENCE>) from the specified I<number>
 when I<hls_start_number_source> value is I<generic>. (This is the default case.)
@@ -2133,12 +2133,12 @@ Unless C<hls_flags single_file> is set, it also specifies starting sequence numb
 Default value is 0.
 
 
-=item B<hls_allow_cache> I<allowcache>
+=item B<hls_allow_cache> I<allowcache>B<>
 
 Explicitly set whether the client MAY (1) or MUST NOT (0) cache media segments.
 
 
-=item B<hls_base_url> I<baseurl>
+=item B<hls_base_url> I<baseurl>B<>
 
 Append I<baseurl> to every entry in the playlist.
 Useful to generate playlists with absolute paths.
@@ -2149,7 +2149,7 @@ which can be cyclic, for example if the B<wrap> option is
 specified.
 
 
-=item B<hls_segment_filename> I<filename>
+=item B<hls_segment_filename> I<filename>B<>
 
 Set the segment filename. Unless C<hls_flags single_file> is set,
 I<filename> is used as a string format with the segment number:
@@ -2241,7 +2241,7 @@ F<2016/02/15/file-20160215-1455569023.ts>, F<2016/02/15/file-20160215-1455569024
 
 
 
-=item B<hls_key_info_file> I<key_info_file>
+=item B<hls_key_info_file> I<key_info_file>B<>
 
 Use the information in I<key_info_file> for segment encryption. The first
 line of I<key_info_file> specifies the key URI written to the playlist. The
@@ -2299,32 +2299,32 @@ Example shell script:
 
 
 
-=item B<-hls_enc> I<enc>
+=item B<-hls_enc> I<enc>B<>
 
 Enable (1) or disable (0) the AES128 encryption.
 When enabled every segment generated is encrypted and the encryption key
 is saved as I<playlist name>.key.
 
 
-=item B<-hls_enc_key> I<key>
+=item B<-hls_enc_key> I<key>B<>
 
 Hex-coded 16byte key to encrypt the segments, by default it
 is randomly generated.
 
 
-=item B<-hls_enc_key_url> I<keyurl>
+=item B<-hls_enc_key_url> I<keyurl>B<>
 
 If set, I<keyurl> is prepended instead of I<baseurl> to the key filename
 in the playlist.
 
 
-=item B<-hls_enc_iv> I<iv>
+=item B<-hls_enc_iv> I<iv>B<>
 
 Hex-coded 16byte initialization vector for every segment instead
 of the autogenerated ones.
 
 
-=item B<hls_segment_type> I<flags>
+=item B<hls_segment_type> I<flags>B<>
 
 Possible values:
 
@@ -2348,7 +2348,7 @@ fmp4 files may be used in HLS version 7 and above.
 
 
 
-=item B<hls_fmp4_init_filename> I<filename>
+=item B<hls_fmp4_init_filename> I<filename>B<>
 
 Set filename to the fragment files header file, default filename is F<init.mp4>.
 
@@ -2362,7 +2362,7 @@ enables creation of init files corresponding to different variant streams in
 subdirectories.
 
 
-=item B<hls_flags> I<flags>
+=item B<hls_flags> I<flags>B<>
 
 Possible values:
 
@@ -3009,7 +3009,7 @@ how to cut the file into fragments:
 =over 4
 
 
-=item B<-moov_size> I<bytes>
+=item B<-moov_size> I<bytes>B<>
 
 Reserves space for the moov atom at the beginning of the file instead of placing the
 moov atom at the end. If the space reserved is insufficient, muxing will fail.
@@ -3018,11 +3018,11 @@ moov atom at the end. If the space reserved is insufficient, muxing will fail.
 
 Start a new fragment at each video keyframe.
 
-=item B<-frag_duration> I<duration>
+=item B<-frag_duration> I<duration>B<>
 
 Create fragments that are I<duration> microseconds long.
 
-=item B<-frag_size> I<size>
+=item B<-frag_size> I<size>B<>
 
 Create fragments that contain up to I<size> bytes of payload data.
 
@@ -3033,7 +3033,7 @@ calling C<av_write_frame(ctx, NULL)> to write a fragment with
 the packets written so far. (This is only useful with other
 applications integrating libavformat, not from B<ffmpeg>.)
 
-=item B<-min_frag_duration> I<duration>
+=item B<-min_frag_duration> I<duration>B<>
 
 Don't create fragments that are shorter than I<duration> microseconds long.
 
@@ -3241,13 +3241,13 @@ The muxer options are:
 =over 4
 
 
-=item B<mpegts_transport_stream_id> I<integer>
+=item B<mpegts_transport_stream_id> I<integer>B<>
 
 Set the B<transport_stream_id>. This identifies a transponder in DVB.
 Default is C<0x0001>.
 
 
-=item B<mpegts_original_network_id> I<integer>
+=item B<mpegts_original_network_id> I<integer>B<>
 
 Set the B<original_network_id>. This is unique identifier of a
 network in DVB. Its main use is in the unique identification of a service
@@ -3255,13 +3255,13 @@ through the path B<Original_Network_ID, Transport_Stream_ID>. Default
 is C<0x0001>.
 
 
-=item B<mpegts_service_id> I<integer>
+=item B<mpegts_service_id> I<integer>B<>
 
 Set the B<service_id>, also known as program in DVB. Default is
 C<0x0001>.
 
 
-=item B<mpegts_service_type> I<integer>
+=item B<mpegts_service_type> I<integer>B<>
 
 Set the program B<service_type>. Default is C<digital_tv>.
 Accepts the following options:
@@ -3306,34 +3306,34 @@ Advanced Codec Digital HDTV service.
 
 
 
-=item B<mpegts_pmt_start_pid> I<integer>
+=item B<mpegts_pmt_start_pid> I<integer>B<>
 
 Set the first PID for PMT. Default is C<0x1000>. Max is C<0x1f00>.
 
 
-=item B<mpegts_start_pid> I<integer>
+=item B<mpegts_start_pid> I<integer>B<>
 
 Set the first PID for data packets. Default is C<0x0100>. Max is
 C<0x0f00>.
 
 
-=item B<mpegts_m2ts_mode> I<boolean>
+=item B<mpegts_m2ts_mode> I<boolean>B<>
 
 Enable m2ts mode if set to C<1>. Default value is C<-1> which
 disables m2ts mode.
 
 
-=item B<muxrate> I<integer>
+=item B<muxrate> I<integer>B<>
 
 Set a constant muxrate. Default is VBR.
 
 
-=item B<pes_payload_size> I<integer>
+=item B<pes_payload_size> I<integer>B<>
 
 Set minimum PES packet payload in bytes. Default is C<2930>.
 
 
-=item B<mpegts_flags> I<flags>
+=item B<mpegts_flags> I<flags>B<>
 
 Set mpegts flags. Accepts the following options:
 
@@ -3364,40 +3364,40 @@ Mark the initial packet of each stream as discontinuity.
 
 
 
-=item B<resend_headers> I<integer>
+=item B<resend_headers> I<integer>B<>
 
 Reemit PAT/PMT before writing the next packet. This option is deprecated:
 use B<mpegts_flags> instead.
 
 
-=item B<mpegts_copyts> I<boolean>
+=item B<mpegts_copyts> I<boolean>B<>
 
 Preserve original timestamps, if value is set to C<1>. Default value
 is C<-1>, which results in shifting timestamps so that they start from 0.
 
 
-=item B<omit_video_pes_length> I<boolean>
+=item B<omit_video_pes_length> I<boolean>B<>
 
 Omit the PES packet length for video packets. Default is C<1> (true).
 
 
-=item B<pcr_period> I<integer>
+=item B<pcr_period> I<integer>B<>
 
 Override the default PCR retransmission time in milliseconds. Ignored if
 variable muxrate is selected. Default is C<20>.
 
 
-=item B<pat_period> I<double>
+=item B<pat_period> I<double>B<>
 
 Maximum time in seconds between PAT/PMT tables.
 
 
-=item B<sdt_period> I<double>
+=item B<sdt_period> I<double>B<>
 
 Maximum time in seconds between SDT tables.
 
 
-=item B<tables_version> I<integer>
+=item B<tables_version> I<integer>B<>
 
 Set PAT, PMT and SDT version (default C<0>, valid values are from 0 to 31, inclusively).
 This option allows updating stream structure so that standard consumer may
@@ -3450,7 +3450,7 @@ The muxer options are:
 =over 4
 
 
-=item B<store_user_comments> I<bool>
+=item B<store_user_comments> I<bool>B<>
 
 Set if user comments should be stored if available or never.
 IRT D-10 does not allow user comments. The default is thus to write them for
@@ -3491,7 +3491,7 @@ Alternatively you can write the command as:
 =over 4
 
 
-=item B<-syncpoints> I<flags>
+=item B<-syncpoints> I<flags>B<>
 
 Change the syncpoint usage in nut:
 
@@ -3516,7 +3516,7 @@ Change the syncpoint usage in nut:
 
 The I<none> and I<timestamped> flags are experimental.
 
-=item B<-write_index> I<bool>
+=item B<-write_index> I<bool>B<>
 
 Write index at the end, the default is to write an index.
 
@@ -3537,7 +3537,7 @@ Ogg container muxer.
 =over 4
 
 
-=item B<-page_duration> I<duration>
+=item B<-page_duration> I<duration>B<>
 
 Preferred page duration, in microseconds. The muxer will attempt to create
 pages that are approximately I<duration> microseconds long. This allows the
@@ -3547,7 +3547,7 @@ possible. A value of 1 will effectively use 1 packet-per-page in most
 situations, giving a small seek granularity at the cost of additional container
 overhead.
 
-=item B<-serial_offset> I<value>
+=item B<-serial_offset> I<value>B<>
 
 Serial value from which to set the streams serial number.
 Setting it to different and sufficiently large values ensures that the produced
@@ -3604,7 +3604,7 @@ The segment muxer supports the following options:
 =over 4
 
 
-=item B<increment_tc> I<1|0>
+=item B<increment_tc> I<1|0>B<>
 
 if set to C<1>, increment timecode between each segment
 If this is selected, the input need to have
@@ -3612,7 +3612,7 @@ a timecode in the first video stream. Default value is
 C<0>.
 
 
-=item B<reference_stream> I<specifier>
+=item B<reference_stream> I<specifier>B<>
 
 Set the reference stream, as specified by the string I<specifier>.
 If I<specifier> is set to C<auto>, the reference is chosen
@@ -3621,26 +3621,26 @@ specifiers'' chapter in the ffmpeg manual) which specifies the
 reference stream. The default value is C<auto>.
 
 
-=item B<segment_format> I<format>
+=item B<segment_format> I<format>B<>
 
 Override the inner container format, by default it is guessed by the filename
 extension.
 
 
-=item B<segment_format_options> I<options_list>
+=item B<segment_format_options> I<options_list>B<>
 
 Set output format options using a :-separated list of key=value
 parameters. Values containing the C<:> special character must be
 escaped.
 
 
-=item B<segment_list> I<name>
+=item B<segment_list> I<name>B<>
 
 Generate also a listfile named I<name>. If not specified no
 listfile is generated.
 
 
-=item B<segment_list_flags> I<flags>
+=item B<segment_list_flags> I<flags>B<>
 
 Set flags affecting the segment list generation.
 
@@ -3662,20 +3662,20 @@ Allow live-friendly file generation.
 
 
 
-=item B<segment_list_size> I<size>
+=item B<segment_list_size> I<size>B<>
 
 Update the list file so that it contains at most I<size>
 segments. If 0 the list file will contain all the segments. Default
 value is 0.
 
 
-=item B<segment_list_entry_prefix> I<prefix>
+=item B<segment_list_entry_prefix> I<prefix>B<>
 
 Prepend I<prefix> to each entry. Useful to generate absolute paths.
 By default no prefix is applied.
 
 
-=item B<segment_list_type> I<type>
+=item B<segment_list_type> I<type>B<>
 
 Select the listing format.
 
@@ -3732,7 +3732,7 @@ A list file with the suffix C<".m3u8"> will auto-select this format.
 If not specified the type is guessed from the list file name suffix.
 
 
-=item B<segment_time> I<time>
+=item B<segment_time> I<time>B<>
 
 Set segment duration to I<time>, the value must be a duration
 specification. Default value is "2". See also the
@@ -3743,7 +3743,7 @@ reference stream key-frames at the given time. See the introductory
 notice and the examples below.
 
 
-=item B<segment_atclocktime> I<1|0>
+=item B<segment_atclocktime> I<1|0>B<>
 
 If set to "1" split at regular clock time intervals starting from 00:00
 o'clock. The I<time> value specified in B<segment_time> is
@@ -3755,7 +3755,7 @@ to create files at 12:00 o'clock, 12:15, 12:30, etc.
 Default value is "0".
 
 
-=item B<segment_clocktime_offset> I<duration>
+=item B<segment_clocktime_offset> I<duration>B<>
 
 Delay the segment splitting times with the specified duration when using
 B<segment_atclocktime>.
@@ -3767,7 +3767,7 @@ create files at 12:05, 12:20, 12:35, etc.
 Default value is "0".
 
 
-=item B<segment_clocktime_wrap_duration> I<duration>
+=item B<segment_clocktime_wrap_duration> I<duration>B<>
 
 Force the segmenter to only start a new segment if a packet reaches the muxer
 within the specified duration after the segmenting clock time. This way you
@@ -3778,7 +3778,7 @@ Default is the maximum possible duration which means starting a new segment
 regardless of the elapsed time since the last clock time.
 
 
-=item B<segment_time_delta> I<delta>
+=item B<segment_time_delta> I<delta>B<>
 
 Specify the accuracy time when selecting the start time for a
 segment, expressed as a duration specification. Default value is "0".
@@ -3802,14 +3802,14 @@ before the specified time. For constant frame rate videos a value of
 the specified time and the time set by I<force_key_frames>.
 
 
-=item B<segment_times> I<times>
+=item B<segment_times> I<times>B<>
 
 Specify a list of split points. I<times> contains a list of comma
 separated duration specifications, in increasing order. See also
 the B<segment_time> option.
 
 
-=item B<segment_frames> I<frames>
+=item B<segment_frames> I<frames>B<>
 
 Specify a list of split video frame numbers. I<frames> contains a
 list of comma separated integer numbers, in increasing order.
@@ -3819,17 +3819,17 @@ stream key frame is found and the sequential number (starting from 0)
 of the frame is greater or equal to the next value in the list.
 
 
-=item B<segment_wrap> I<limit>
+=item B<segment_wrap> I<limit>B<>
 
 Wrap around segment index once it reaches I<limit>.
 
 
-=item B<segment_start_number> I<number>
+=item B<segment_start_number> I<number>B<>
 
 Set the sequence number of the first segment. Defaults to C<0>.
 
 
-=item B<strftime> I<1|0>
+=item B<strftime> I<1|0>B<>
 
 Use the C<strftime> function to define the name of the new
 segments to write. If this is selected, the output segment name must
@@ -3837,7 +3837,7 @@ contain a C<strftime> function template. Default value is
 C<0>.
 
 
-=item B<break_non_keyframes> I<1|0>
+=item B<break_non_keyframes> I<1|0>B<>
 
 If enabled, allow segments to start on frames other than keyframes. This
 improves behavior on some players when the time between keyframes is
@@ -3845,7 +3845,7 @@ inconsistent, but may make things worse on others, and can cause some oddities
 during seeking. Defaults to C<0>.
 
 
-=item B<reset_timestamps> I<1|0>
+=item B<reset_timestamps> I<1|0>B<>
 
 Reset timestamps at the beginning of each segment, so that each segment
 will start with near-zero timestamps. It is meant to ease the playback
@@ -3853,13 +3853,13 @@ of the generated segments. May not work with some combinations of
 muxers/codecs. It is set to C<0> by default.
 
 
-=item B<initial_offset> I<offset>
+=item B<initial_offset> I<offset>B<>
 
 Specify timestamp offset to apply to the output packet timestamps. The
 argument must be a time duration specification, and defaults to 0.
 
 
-=item B<write_empty_segments> I<1|0>
+=item B<write_empty_segments> I<1|0>B<>
 
 If enabled, write an empty segment if there are no packets during the period a
 segment would usually span. Otherwise, the segment will be filled with the next
@@ -4046,7 +4046,7 @@ Specify format options for the underlying muxer. Muxer options can be specified
 as a list of I<key>=I<value> pairs separated by ':'.
 
 
-=item B<drop_pkts_on_overflow> I<bool>
+=item B<drop_pkts_on_overflow> I<bool>B<>
 
 If set to 1 (true), in case the fifo queue fills up, packets will be dropped
 rather than blocking the encoder. This makes it possible to continue streaming without
@@ -4055,7 +4055,7 @@ this option is set to 0 (false), so in such cases the encoder will be blocked
 until the muxer processes some of the packets and none of them is lost.
 
 
-=item B<attempt_recovery> I<bool>
+=item B<attempt_recovery> I<bool>B<>
 
 If failure occurs, attempt to recover the output. This is especially useful
 when used with network output, since it makes it possible to restart streaming transparently.
@@ -4068,13 +4068,13 @@ Sets maximum number of successive unsuccessful recovery attempts after which
 the output fails permanently. By default this option is set to 0 (unlimited).
 
 
-=item B<recovery_wait_time> I<duration>
+=item B<recovery_wait_time> I<duration>B<>
 
 Waiting time before the next recovery attempt after previous unsuccessful
 recovery attempt. Default value is 5 seconds.
 
 
-=item B<recovery_wait_streamtime> I<bool>
+=item B<recovery_wait_streamtime> I<bool>B<>
 
 If set to 0 (false), the real time is used when waiting for the recovery
 attempt (i.e. the recovery will be attempted after at least
@@ -4085,7 +4085,7 @@ seconds of the stream is omitted).
 By default, this option is set to 0 (false).
 
 
-=item B<recover_any_error> I<bool>
+=item B<recover_any_error> I<bool>B<>
 
 If set to 1 (true), recovery will be attempted regardless of type of the error
 causing the failure. By default this option is set to 0 (false) and in case of
@@ -4093,7 +4093,7 @@ certain (usually permanent) errors the recovery is not attempted even when
 I<attempt_recovery> is set to 1.
 
 
-=item B<restart_with_keyframe> I<bool>
+=item B<restart_with_keyframe> I<bool>B<>
 
 Specify whether to wait for the keyframe after recovering from
 queue overflow or failure. This option is set to 0 (false) by default.
@@ -4162,7 +4162,7 @@ section in the ffmpeg-utils(1) manual>).
 
 
 
-=item B<use_fifo> I<bool>
+=item B<use_fifo> I<bool>B<>
 
 If set to 1, slave outputs will be processed in separate threads using the B<fifo>
 muxer. This allows to compensate for different speed/latency/reliability of
@@ -4213,7 +4213,7 @@ Options for a bitstream filter must be specified in the form of C<opt=value>.
 Several bitstream filters can be specified, separated by ",".
 
 
-=item B<use_fifo> I<bool>
+=item B<use_fifo> I<bool>B<>
 
 This allows to override tee muxer use_fifo option for individual slave muxer.
 

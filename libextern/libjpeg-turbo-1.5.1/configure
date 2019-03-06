@@ -690,6 +690,8 @@ SO_MINOR_VERSION
 SO_MAJOR_VERSION
 JPEG_LIB_VERSION_DECIMAL
 JPEG_LIB_VERSION
+PKG_CONFIG_LIBDIR
+PKG_CONFIG_PATH
 PKG_CONFIG
 LT_SYS_LIBRARY_PATH
 OTOOL64
@@ -848,6 +850,8 @@ CCAS
 CCASFLAGS
 LT_SYS_LIBRARY_PATH
 PKG_CONFIG
+PKG_CONFIG_PATH
+PKG_CONFIG_LIBDIR
 JPEG_LIB_VERSION
 SO_MAJOR_VERSION
 SO_MINOR_VERSION
@@ -1538,6 +1542,10 @@ Some influential environment variables:
   LT_SYS_LIBRARY_PATH
               User-defined run-time library search path.
   PKG_CONFIG  path to pkg-config utility
+  PKG_CONFIG_PATH
+              directories to add to pkg-config's search path
+  PKG_CONFIG_LIBDIR
+              path overriding pkg-config's built-in search path
   JPEG_LIB_VERSION
               libjpeg API version (62, 70, or 80)
   SO_MAJOR_VERSION
@@ -6301,7 +6309,7 @@ else
     lt_cv_sys_max_cmd_len=-1;
     ;;
 
-  cygwin* | mingw* | cegcc*)
+  cygwin* | msys* | mingw* | cegcc*)
     # On Win9x/ME, this test blows up -- it succeeds, but takes
     # about 5 minutes as the teststring grows exponentially.
     # Worse, since 9x/ME are not pre-emptively multitasking,
@@ -6467,7 +6475,7 @@ else
       *-*-mingw* ) # actually msys
         lt_cv_to_host_file_cmd=func_convert_file_msys_to_w32
         ;;
-      *-*-cygwin* )
+      *-*-cygwin* | *-*-msys* )
         lt_cv_to_host_file_cmd=func_convert_file_cygwin_to_w32
         ;;
       * ) # otherwise, assume *nix
@@ -6475,12 +6483,12 @@ else
         ;;
     esac
     ;;
-  *-*-cygwin* )
+  *-*-cygwin* | *-*-msys* )
     case $build in
       *-*-mingw* ) # actually msys
         lt_cv_to_host_file_cmd=func_convert_file_msys_to_cygwin
         ;;
-      *-*-cygwin* )
+      *-*-cygwin* | *-*-msys* )
         lt_cv_to_host_file_cmd=func_convert_file_noop
         ;;
       * ) # otherwise, assume *nix
@@ -6546,7 +6554,7 @@ case $reload_flag in
 esac
 reload_cmds='$LD$reload_flag -o $output$reload_objs'
 case $host_os in
-  cygwin* | mingw* | pw32* | cegcc*)
+  cygwin* | msys* | mingw* | pw32* | cegcc*)
     if test yes != "$GCC"; then
       reload_cmds=false
     fi
@@ -6704,7 +6712,7 @@ bsdi[45]*)
   lt_cv_file_magic_test_file=/shlib/libc.so
   ;;
 
-cygwin*)
+cygwin* | msys*)
   # func_win32_libid is a shell function defined in ltmain.sh
   lt_cv_deplibs_check_method='file_magic ^x86 archive import|^x86 DLL'
   lt_cv_file_magic_cmd='func_win32_libid'
@@ -7023,7 +7031,7 @@ else
   lt_cv_sharedlib_from_linklib_cmd='unknown'
 
 case $host_os in
-cygwin* | mingw* | pw32* | cegcc*)
+cygwin* | msys* | mingw* | pw32* | cegcc*)
   # two different shell functions defined in ltmain.sh;
   # decide which one to use based on capabilities of $DLLTOOL
   case `$DLLTOOL --help 2>&1` in
@@ -7515,7 +7523,7 @@ case $host_os in
 aix*)
   symcode='[BCDT]'
   ;;
-cygwin* | mingw* | pw32* | cegcc*)
+cygwin* | msys* | mingw* | pw32* | cegcc*)
   symcode='[ABCDGISTW]'
   ;;
 hpux*)
@@ -9723,7 +9731,7 @@ lt_prog_compiler_static=
       # PIC is the default for these OSes.
       ;;
 
-    mingw* | cygwin* | pw32* | os2* | cegcc*)
+    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       # Although the cygwin gcc ignores -fPIC, still need this for old-style
@@ -9826,7 +9834,7 @@ lt_prog_compiler_static=
       esac
       ;;
 
-    mingw* | cygwin* | pw32* | os2* | cegcc*)
+    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
       # This hack is so that the source file can tell whether it is being
       # built for inclusion in a dll (and should export symbols for example).
       lt_prog_compiler_pic='-DDLL_EXPORT'
@@ -10328,7 +10336,7 @@ $as_echo_n "checking whether the $compiler linker ($LD) supports shared librarie
   extract_expsyms_cmds=
 
   case $host_os in
-  cygwin* | mingw* | pw32* | cegcc*)
+  cygwin* | msys* | mingw* | pw32* | cegcc*)
     # FIXME: the MSVC++ port hasn't been tested in a loooong time
     # When not using gcc, we currently assume that we are using
     # Microsoft Visual C++.
@@ -10443,7 +10451,7 @@ _LT_EOF
       fi
       ;;
 
-    cygwin* | mingw* | pw32* | cegcc*)
+    cygwin* | msys* | mingw* | pw32* | cegcc*)
       # _LT_TAGVAR(hardcode_libdir_flag_spec, ) is actually meaningless,
       # as there is no search path for DLLs.
       hardcode_libdir_flag_spec='-L$libdir'
@@ -10453,6 +10461,7 @@ _LT_EOF
       enable_shared_with_static_runtimes=yes
       export_symbols_cmds='$NM $libobjs $convenience | $global_symbol_pipe | $SED -e '\''/^[BCDGRS][ ]/s/.*[ ]\([^ ]*\)/\1 DATA/;s/^.*[ ]__nm__\([^ ]*\)[ ][^ ]*/\1 DATA/;/^I[ ]/d;/^[AITW][ ]/s/.* //'\'' | sort | uniq > $export_symbols'
       exclude_expsyms='[_]+GLOBAL_OFFSET_TABLE_|[_]+GLOBAL__[FID]_.*|[_]+head_[A-Za-z0-9_]+_dll|[A-Za-z0-9_]+_dll_iname'
+      file_list_spec='@'
 
       if $LD --help 2>&1 | $GREP 'auto-import' > /dev/null; then
         archive_cmds='$CC -shared $libobjs $deplibs $compiler_flags -o $output_objdir/$soname $wl--enable-auto-image-base -Xlinker --out-implib -Xlinker $lib'
@@ -10983,7 +10992,7 @@ fi
       export_dynamic_flag_spec=-rdynamic
       ;;
 
-    cygwin* | mingw* | pw32* | cegcc*)
+    cygwin* | msys* | mingw* | pw32* | cegcc*)
       # When not using gcc, we currently assume that we are using
       # Microsoft Visual C++.
       # hardcode_libdir_flag_spec is actually meaningless, as there is
@@ -12018,7 +12027,7 @@ bsdi[45]*)
   # libtool to hard-code these into programs
   ;;
 
-cygwin* | mingw* | pw32* | cegcc*)
+cygwin* | msys* | mingw* | pw32* | cegcc*)
   version_type=windows
   shrext_cmds=.dll
   need_version=no
@@ -12047,6 +12056,12 @@ cygwin* | mingw* | pw32* | cegcc*)
     cygwin*)
       # Cygwin DLLs use 'cyg' prefix rather than 'lib'
       soname_spec='`echo $libname | sed -e 's/^lib/cyg/'``echo $release | $SED -e 's/[.]/-/g'`$versuffix$shared_ext'
+
+      sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
+      ;;
+    msys*)
+      # MSYS DLLs use 'msys-' prefix rather than 'lib'
+      soname_spec='`echo $libname | sed -e 's/^lib/msys-/'``echo $release | $SED -e 's/[.]/-/g'`$versuffix$shared_ext'
 
       sys_lib_search_path_spec="$sys_lib_search_path_spec /usr/lib/w32api"
       ;;
@@ -12084,7 +12099,7 @@ cygwin* | mingw* | pw32* | cegcc*)
       # Convert to MSYS style.
       sys_lib_search_path_spec=`$ECHO "$sys_lib_search_path_spec" | sed -e 's|\\\\|/|g' -e 's| \\([a-zA-Z]\\):| /\\1|g' -e 's|^ ||'`
       ;;
-    cygwin*)
+    cygwin* | msys*)
       # Convert to unix form, then to dos form, then back to unix form
       # but this time dos style (no spaces!) so that the unix form looks
       # like /cygdrive/c/PROGRA~1:/cygdr...
@@ -12786,7 +12801,7 @@ else
     lt_cv_dlopen_libs=
     ;;
 
-  cygwin*)
+  cygwin* | msys*)
     lt_cv_dlopen=dlopen
     lt_cv_dlopen_libs=
     ;;
@@ -13433,6 +13448,11 @@ fi
 
 
 
+
+
+
+
+
 if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
 	if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}pkg-config", so it can be a program name with args.
@@ -13545,7 +13565,6 @@ $as_echo "yes" >&6; }
 $as_echo "no" >&6; }
 		PKG_CONFIG=""
 	fi
-
 fi
 
 # When the prefix is /opt/libjpeg-turbo, we assume that an "official" binary is
@@ -14744,7 +14763,7 @@ $as_echo "$NAFLAGS" >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the assembler ($NASM $NAFLAGS) works" >&5
 $as_echo_n "checking whether the assembler ($NASM $NAFLAGS) works... " >&6; }
 cat > conftest.asm <<EOF
-%line 14747 "configure"
+%line 14766 "configure"
         section .text
         global  _main,main
 _main:
@@ -14945,7 +14964,7 @@ $as_echo "$NAFLAGS" >&6; }
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the assembler ($NASM $NAFLAGS) works" >&5
 $as_echo_n "checking whether the assembler ($NASM $NAFLAGS) works... " >&6; }
 cat > conftest.asm <<EOF
-%line 14948 "configure"
+%line 14967 "configure"
         section .text
         global  _main,main
 _main:

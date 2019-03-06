@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-utils - FFmpeg utilities
+ffmpeg-utils - FFmpeg utilities
 
 =head1 DESCRIPTION
 

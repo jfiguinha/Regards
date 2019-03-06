@@ -123,7 +123,7 @@ EXPAT_LIBS = -lexpat
 
 # **********************************************************************
 # Video support
-ENABLE_VIDEO = 
+ENABLE_VIDEO = 1
 
 # **********************************************************************
 # Libraries, include files, functions

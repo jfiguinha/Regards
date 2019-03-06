@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-scaler - FFmpeg video scaling and pixel format converter
+ffmpeg-scaler - FFmpeg video scaling and pixel format converter
 
 =head1 DESCRIPTION
 

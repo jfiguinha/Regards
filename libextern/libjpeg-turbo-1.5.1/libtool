@@ -1,6 +1,6 @@
 #! /bin/sh
 # Generated automatically by config.status (libjpeg-turbo) 1.5.1
-# Libtool was configured on host surface:
+# Libtool was configured on host LAPTOP-C27IAGV2:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 
 # Provide generalized library-building support services.
@@ -192,7 +192,7 @@ nm_file_list_spec="@"
 lt_sysroot=
 
 # Command to truncate a binary pipe.
-lt_truncate_bin="/usr/bin/sed -e 4q"
+lt_truncate_bin="/usr/bin/dd bs=4096 count=1"
 
 # The name of the directory that contains temporary libtool files.
 objdir=.libs
@@ -292,7 +292,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/7.2.0 C:/msys64/mingw64/lib/gcc C:/msys64/mingw64/x86_64-w64-mingw32/lib C:/msys64/mingw64/lib "
+sys_lib_search_path_spec="C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/8.3.0 C:/msys64/mingw64/lib/gcc C:/msys64/mingw64/x86_64-w64-mingw32/lib C:/msys64/mingw64/lib "
 
 # Detected run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib /usr/lib"
@@ -446,7 +446,7 @@ prelink_cmds=""
 postlink_cmds=""
 
 # Specify filename containing input files.
-file_list_spec=""
+file_list_spec="@"
 
 # How to hardcode a shared library path into an executable.
 hardcode_action=immediate

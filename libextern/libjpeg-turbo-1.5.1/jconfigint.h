@@ -1,13 +1,15 @@
-#define VERSION "1.5.1"
+/* jconfigint.h.  Generated from jconfigint.h.in by configure.  */
+/* libjpeg-turbo build number */
 #define BUILD "20190306"
+
+/* How to obtain function inlining. */
+#define INLINE inline __attribute__((always_inline))
+
+/* Define to the full name of this package. */
 #define PACKAGE_NAME "libjpeg-turbo"
 
-#ifndef INLINE
-#if defined(__GNUC__)
-#define INLINE inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-#define INLINE __forceinline
-#else
-#define INLINE
-#endif
-#endif
+/* Version number of package */
+#define VERSION "1.5.1"
+
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T 8

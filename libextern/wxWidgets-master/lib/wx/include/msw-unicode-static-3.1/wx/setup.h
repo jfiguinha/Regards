@@ -751,7 +751,7 @@
 /*
  * Define if your compiler has std::wstring
  */
-/* #undef HAVE_STD_WSTRING */
+#define HAVE_STD_WSTRING 1
 /*
  * Define if your compiler has compliant std::string::compare
  */
@@ -801,7 +801,7 @@
 /*
  * Define if your compiler has <type_traits>
  */
-/* #undef HAVE_TYPE_TRAITS */
+#define HAVE_TYPE_TRAITS 1
 
 /*
  * Define if the compiler supports simple visibility declarations.
@@ -1005,7 +1005,7 @@
 /* #undef HAVE_STATVFS */
 
 /* Define if you have strtoull() and strtoll() */
-/* #undef HAVE_STRTOULL */
+#define HAVE_STRTOULL 1
 
 /* Define if you have all functions to set thread priority */
 /* #undef HAVE_THREAD_PRIORITY_FUNCTIONS */

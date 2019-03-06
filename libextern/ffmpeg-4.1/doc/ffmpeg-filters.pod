@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-filters - FFmpeg filters
+ffmpeg-filters - FFmpeg filters
 
 =head1 DESCRIPTION
 
@@ -6040,10 +6040,10 @@ The channel remapping will be effective if, and only if:
 =over 4
 
 
-=item *<gain coefficients are zeroes or ones,>
+=item *<gain coefficients are zeroes or ones,>
 
 
-=item *<only one input per channel output,>
+=item *<only one input per channel output,>
 
 
 =back
@@ -14698,13 +14698,13 @@ basically, they refer to the frame and field of the opposite parity:
 =over 4
 
 
-=item *<I<p> matches the field of the opposite parity in the previous frame>
+=item *<I<p> matches the field of the opposite parity in the previous frame>
 
 
-=item *<I<c> matches the field of the opposite parity in the current frame>
+=item *<I<c> matches the field of the opposite parity in the current frame>
 
 
-=item *<I<n> matches the field of the opposite parity in the next frame>
+=item *<I<n> matches the field of the opposite parity in the next frame>
 
 
 =back
@@ -16371,7 +16371,7 @@ not possible.
 Defaults to I<read+write> if not specified.
 
 
-=item B<derive_device> I<type>
+=item B<derive_device> I<type>B<>
 
 Rather than using the device supplied at initialisation, instead derive a new
 device of type I<type> from the device the input frames exist on.
@@ -23018,7 +23018,7 @@ It accepts the following parameters:
 =over 4
 
 
-=item B<r, ratio, dar (C<setdar> only), sar (C<setsar> only)>
+=item B<r, ratio, dar (C<setdar> only), sar (C<setsar> only)>
 
 Set the aspect ratio used by the filter.
 
@@ -31005,7 +31005,7 @@ The PTS of the first video frame in the video. It's NAN if undefined.
 The time of the first video frame in the video. It's NAN if undefined.
 
 
-=item B<pict_type> I<(video only)>
+=item B<pict_type> I<(video only)>B<>
 
 The type of the filtered frame. It can assume one of the following
 values:
@@ -31038,7 +31038,7 @@ values:
 
 
 
-=item B<interlace_type> I<(video only)>
+=item B<interlace_type> I<(video only)>B<>
 
 The frame interlace type. It can assume one of the following values:
 
@@ -31061,17 +31061,17 @@ The frame is bottom-field-first.
 
 
 
-=item B<consumed_sample_n> I<(audio only)>
+=item B<consumed_sample_n> I<(audio only)>B<>
 
 the number of selected samples before the current frame
 
 
-=item B<samples_n> I<(audio only)>
+=item B<samples_n> I<(audio only)>B<>
 
 the number of samples in the current frame
 
 
-=item B<sample_rate> I<(audio only)>
+=item B<sample_rate> I<(audio only)>B<>
 
 the input sample rate
 
@@ -31087,7 +31087,7 @@ the position in the file of the filtered frame, -1 if the information
 is not available (e.g. for synthetic video)
 
 
-=item B<scene> I<(video only)>
+=item B<scene> I<(video only)>B<>
 
 value between 0 and 1 to indicate a new scene; a low value reflects a low
 probability for the current frame to introduce a new scene, while a higher

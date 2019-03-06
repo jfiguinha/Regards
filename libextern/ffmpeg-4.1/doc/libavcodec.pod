@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-libavcodec - media streams decoding and encoding library
+libavcodec - media streams decoding and encoding library
 
 =head1 DESCRIPTION
 

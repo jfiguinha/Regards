@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffmpeg\-codecs \- FFmpeg codecs
+ffmpeg\-codecs
+ \- FFmpeg codecs
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This document describes the codecs (decoders and encoders) provided by
@@ -287,11 +288,11 @@ iter motion estimation
 .RE
 .RS 4
 .RE
-.IP "\fBextradata_size\fR \fIinteger\fR" 4
-.IX Item "extradata_size integer"
+.IP "\fBextradata_size\fR \fIinteger\fR\fB \fR" 4
+.IX Item "extradata_size integer "
 Set extradata size.
-.IP "\fBtime_base\fR \fIrational number\fR" 4
-.IX Item "time_base rational number"
+.IP "\fBtime_base\fR \fIrational number\fR\fB \fR" 4
+.IX Item "time_base rational number "
 Set codec time base.
 .Sp
 It is the fundamental unit of time (in seconds) in terms of which
@@ -320,11 +321,11 @@ samples per channel. May be 0 when the codec has
 \&\s-1CODEC_CAP_VARIABLE_FRAME_SIZE\s0 set, in that case the frame size is not
 restricted. It is set by some decoders to indicate constant frame
 size.
-.IP "\fBframe_number\fR \fIinteger\fR" 4
-.IX Item "frame_number integer"
+.IP "\fBframe_number\fR \fIinteger\fR\fB \fR" 4
+.IX Item "frame_number integer "
 Set the frame number.
-.IP "\fBdelay\fR \fIinteger\fR" 4
-.IX Item "delay integer"
+.IP "\fBdelay\fR \fIinteger\fR\fB \fR" 4
+.IX Item "delay integer "
 .PD 0
 .IP "\fBqcomp\fR \fIfloat\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "qcomp float (encoding,video)"
@@ -367,27 +368,27 @@ Set strategy to choose between I/P/B\-frames.
 .IP "\fBps\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "ps integer (encoding,video)"
 Set \s-1RTP\s0 payload size in bytes.
-.IP "\fBmv_bits\fR \fIinteger\fR" 4
-.IX Item "mv_bits integer"
+.IP "\fBmv_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mv_bits integer "
 .PD 0
-.IP "\fBheader_bits\fR \fIinteger\fR" 4
-.IX Item "header_bits integer"
-.IP "\fBi_tex_bits\fR \fIinteger\fR" 4
-.IX Item "i_tex_bits integer"
-.IP "\fBp_tex_bits\fR \fIinteger\fR" 4
-.IX Item "p_tex_bits integer"
-.IP "\fBi_count\fR \fIinteger\fR" 4
-.IX Item "i_count integer"
-.IP "\fBp_count\fR \fIinteger\fR" 4
-.IX Item "p_count integer"
-.IP "\fBskip_count\fR \fIinteger\fR" 4
-.IX Item "skip_count integer"
-.IP "\fBmisc_bits\fR \fIinteger\fR" 4
-.IX Item "misc_bits integer"
-.IP "\fBframe_bits\fR \fIinteger\fR" 4
-.IX Item "frame_bits integer"
-.IP "\fBcodec_tag\fR \fIinteger\fR" 4
-.IX Item "codec_tag integer"
+.IP "\fBheader_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "header_bits integer "
+.IP "\fBi_tex_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "i_tex_bits integer "
+.IP "\fBp_tex_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "p_tex_bits integer "
+.IP "\fBi_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "i_count integer "
+.IP "\fBp_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "p_count integer "
+.IP "\fBskip_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "skip_count integer "
+.IP "\fBmisc_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "misc_bits integer "
+.IP "\fBframe_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "frame_bits integer "
+.IP "\fBcodec_tag\fR \fIinteger\fR\fB \fR" 4
+.IX Item "codec_tag integer "
 .IP "\fBbug\fR \fIflags\fR \fB(\fR\fIdecoding,video\fR\fB)\fR" 4
 .IX Item "bug flags (decoding,video)"
 .PD
@@ -525,11 +526,11 @@ consider things that a sane encoder should not do as an error
 .RE
 .RS 4
 .RE
-.IP "\fBhas_b_frames\fR \fIinteger\fR" 4
-.IX Item "has_b_frames integer"
+.IP "\fBhas_b_frames\fR \fIinteger\fR\fB \fR" 4
+.IX Item "has_b_frames integer "
 .PD 0
-.IP "\fBblock_align\fR \fIinteger\fR" 4
-.IX Item "block_align integer"
+.IP "\fBblock_align\fR \fIinteger\fR\fB \fR" 4
+.IX Item "block_align integer "
 .IP "\fBmpeg_quant\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "mpeg_quant integer (encoding,video)"
 .PD
@@ -544,8 +545,8 @@ Set experimental quantizer modulation.
 .IP "\fBrc_qmod_freq\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "rc_qmod_freq integer (encoding,video)"
 Set experimental quantizer modulation.
-.IP "\fBrc_override_count\fR \fIinteger\fR" 4
-.IX Item "rc_override_count integer"
+.IP "\fBrc_override_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "rc_override_count integer "
 .PD 0
 .IP "\fBrc_eq\fR \fIstring\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "rc_eq string (encoding,video)"
@@ -667,8 +668,8 @@ floating point \s-1AAN IDCT\s0
 .RE
 .RS 4
 .RE
-.IP "\fBslice_count\fR \fIinteger\fR" 4
-.IX Item "slice_count integer"
+.IP "\fBslice_count\fR \fIinteger\fR\fB \fR" 4
+.IX Item "slice_count integer "
 .PD 0
 .IP "\fBec\fR \fIflags\fR \fB(\fR\fIdecoding,video\fR\fB)\fR" 4
 .IX Item "ec flags (decoding,video)"
@@ -689,8 +690,8 @@ favor predicting from the previous frame instead of the current
 .RE
 .RS 4
 .RE
-.IP "\fBbits_per_coded_sample\fR \fIinteger\fR" 4
-.IX Item "bits_per_coded_sample integer"
+.IP "\fBbits_per_coded_sample\fR \fIinteger\fR\fB \fR" 4
+.IX Item "bits_per_coded_sample integer "
 .PD 0
 .IP "\fBpred\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "pred integer (encoding,video)"
@@ -1058,8 +1059,8 @@ Set diamond type & size for motion estimation pre-pass.
 .IP "\fBsubq\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "subq integer (encoding,video)"
 Set sub pel motion estimation quality.
-.IP "\fBdtg_active_format\fR \fIinteger\fR" 4
-.IX Item "dtg_active_format integer"
+.IP "\fBdtg_active_format\fR \fIinteger\fR\fB \fR" 4
+.IX Item "dtg_active_format integer "
 .PD 0
 .IP "\fBme_range\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "me_range integer (encoding,video)"
@@ -1071,8 +1072,8 @@ Set intra quant bias.
 .IP "\fBpbias\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "pbias integer (encoding,video)"
 Set inter quant bias.
-.IP "\fBcolor_table_id\fR \fIinteger\fR" 4
-.IX Item "color_table_id integer"
+.IP "\fBcolor_table_id\fR \fIinteger\fR\fB \fR" 4
+.IX Item "color_table_id integer "
 .PD 0
 .IP "\fBglobal_quality\fR \fIinteger\fR \fB(\fR\fIencoding,audio,video\fR\fB)\fR" 4
 .IX Item "global_quality integer (encoding,audio,video)"
@@ -1102,8 +1103,8 @@ deflate-based coder
 .IP "\fBcontext\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "context integer (encoding,video)"
 Set context model.
-.IP "\fBslice_flags\fR \fIinteger\fR" 4
-.IX Item "slice_flags integer"
+.IP "\fBslice_flags\fR \fIinteger\fR\fB \fR" 4
+.IX Item "slice_flags integer "
 .PD 0
 .IP "\fBmbd\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "mbd integer (encoding,video)"
@@ -1124,8 +1125,8 @@ use best rate distortion
 .RE
 .RS 4
 .RE
-.IP "\fBstream_codec_tag\fR \fIinteger\fR" 4
-.IX Item "stream_codec_tag integer"
+.IP "\fBstream_codec_tag\fR \fIinteger\fR\fB \fR" 4
+.IX Item "stream_codec_tag integer "
 .PD 0
 .IP "\fBsc_threshold\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
 .IX Item "sc_threshold integer (encoding,video)"
@@ -1438,8 +1439,8 @@ Set \s-1GOP\s0 timecode frame start number, in non drop frame format.
 .IP "\fBrequest_channels\fR \fIinteger\fR \fB(\fR\fIdecoding,audio\fR\fB)\fR" 4
 .IX Item "request_channels integer (decoding,audio)"
 Set desired number of audio channels.
-.IP "\fBbits_per_raw_sample\fR \fIinteger\fR" 4
-.IX Item "bits_per_raw_sample integer"
+.IP "\fBbits_per_raw_sample\fR \fIinteger\fR\fB \fR" 4
+.IX Item "bits_per_raw_sample integer "
 .PD 0
 .IP "\fBchannel_layout\fR \fIinteger\fR \fB(\fR\fIdecoding/encoding,audio\fR\fB)\fR" 4
 .IX Item "channel_layout integer (decoding/encoding,audio)"
@@ -1675,8 +1676,8 @@ Possible values:
 .RE
 .RS 4
 .RE
-.IP "\fBlog_level_offset\fR \fIinteger\fR" 4
-.IX Item "log_level_offset integer"
+.IP "\fBlog_level_offset\fR \fIinteger\fR\fB \fR" 4
+.IX Item "log_level_offset integer "
 .PD
 Set the log level offset.
 .IP "\fBslices\fR \fIinteger\fR \fB(\fR\fIencoding,video\fR\fB)\fR" 4
@@ -1746,8 +1747,8 @@ Karaoke
 .IX Item "request_sample_fmt sample_fmt (decoding,audio)"
 Set sample format audio decoders should prefer. Default value is
 \&\f(CW\*(C`none\*(C'\fR.
-.IP "\fBpkt_timebase\fR \fIrational number\fR" 4
-.IX Item "pkt_timebase rational number"
+.IP "\fBpkt_timebase\fR \fIrational number\fR\fB \fR" 4
+.IX Item "pkt_timebase rational number "
 .PD 0
 .IP "\fBsub_charenc\fR \fIencoding\fR \fB(\fR\fIdecoding,subtitles\fR\fB)\fR" 4
 .IX Item "sub_charenc encoding (decoding,subtitles)"
@@ -1836,8 +1837,8 @@ This decoder decodes rawvideo streams.
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fBtop\fR \fItop_field_first\fR" 4
-.IX Item "top top_field_first"
+.IP "\fBtop\fR \fItop_field_first\fR\fB \fR" 4
+.IX Item "top top_field_first "
 Specify the assumed field type of the input video.
 .RS 4
 .IP "\fB\-1\fR" 4
@@ -1870,8 +1871,8 @@ the undocumented RealAudio 3 (a.k.a. dnet).
 .PP
 \fI\s-1AC\-3\s0 Decoder Options\fR
 .IX Subsection "AC-3 Decoder Options"
-.IP "\fB\-drc_scale\fR \fIvalue\fR" 4
-.IX Item "-drc_scale value"
+.IP "\fB\-drc_scale\fR \fIvalue\fR\fB \fR" 4
+.IX Item "-drc_scale value "
 Dynamic Range Scale Factor. The factor to apply to dynamic range values
 from the \s-1AC\-3\s0 stream. This factor is applied exponentially.
 There are 3 notable scale factor ranges:
@@ -2264,21 +2265,21 @@ indicated accordingly with a note in the option list below.
 .PP
 These parameters are described in detail in several publicly-available
 documents.
-.IP "*<<\fBhttp://www.atsc.org/cms/standards/a_52\-2010.pdf\fR>>" 4
-.IX Item "*<<http://www.atsc.org/cms/standards/a_52-2010.pdf>>"
+.IP "*<<\fBhttp://www.atsc.org/cms/standards/a_52\-2010.pdf\fR> >" 4
+.IX Item "*<<http://www.atsc.org/cms/standards/a_52-2010.pdf> >"
 .PD 0
-.IP "*<<\fBhttp://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf\fR>>" 4
-.IX Item "*<<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf>>"
-.IP "*<<\fBhttp://www.dolby.com/uploadedFiles/zz\-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf\fR>>" 4
-.IX Item "*<<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf>>"
-.IP "*<<\fBhttp://www.dolby.com/uploadedFiles/zz\-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf\fR>>" 4
-.IX Item "*<<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf>>"
+.IP "*<<\fBhttp://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf\fR> >" 4
+.IX Item "*<<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf> >"
+.IP "*<<\fBhttp://www.dolby.com/uploadedFiles/zz\-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf\fR> >" 4
+.IX Item "*<<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf> >"
+.IP "*<<\fBhttp://www.dolby.com/uploadedFiles/zz\-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf\fR> >" 4
+.IX Item "*<<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf> >"
 .PD
 .PP
 Metadata Control Options
 .IX Subsection "Metadata Control Options"
-.IP "\fB\-per_frame_metadata\fR \fIboolean\fR" 4
-.IX Item "-per_frame_metadata boolean"
+.IP "\fB\-per_frame_metadata\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-per_frame_metadata boolean "
 Allow Per-Frame Metadata. Specifies if the encoder should check for changing
 metadata for each frame.
 .RS 4
@@ -2295,8 +2296,8 @@ Metadata values can be changed before encoding each frame.
 .PP
 Downmix Levels
 .IX Subsection "Downmix Levels"
-.IP "\fB\-center_mixlev\fR \fIlevel\fR" 4
-.IX Item "-center_mixlev level"
+.IP "\fB\-center_mixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-center_mixlev level "
 Center Mix Level. The amount of gain the decoder should apply to the center
 channel when downmixing to stereo. This field will only be written to the
 bitstream if a center channel is present. The value is specified as a scale
@@ -2314,8 +2315,8 @@ Apply \-6dB gain
 .RE
 .RS 4
 .RE
-.IP "\fB\-surround_mixlev\fR \fIlevel\fR" 4
-.IX Item "-surround_mixlev level"
+.IP "\fB\-surround_mixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-surround_mixlev level "
 Surround Mix Level. The amount of gain the decoder should apply to the surround
 channel(s) when downmixing to stereo. This field will only be written to the
 bitstream if one or more surround channels are present. The value is specified
@@ -2339,16 +2340,16 @@ Audio Production Information
 .PP
 Audio Production Information is optional information describing the mixing
 environment.  Either none or both of the fields are written to the bitstream.
-.IP "\fB\-mixing_level\fR \fInumber\fR" 4
-.IX Item "-mixing_level number"
+.IP "\fB\-mixing_level\fR \fInumber\fR\fB \fR" 4
+.IX Item "-mixing_level number "
 Mixing Level. Specifies peak sound pressure level (\s-1SPL\s0) in the production
 environment when the mix was mastered. Valid values are 80 to 111, or \-1 for
 unknown or not indicated. The default value is \-1, but that value cannot be
 used if the Audio Production Information is written to the bitstream. Therefore,
 if the \f(CW\*(C`room_type\*(C'\fR option is not the default value, the \f(CW\*(C`mixing_level\*(C'\fR
 option must not be \-1.
-.IP "\fB\-room_type\fR \fItype\fR" 4
-.IX Item "-room_type type"
+.IP "\fB\-room_type\fR \fItype\fR\fB \fR" 4
+.IX Item "-room_type type "
 Room Type. Describes the equalization used during the final mixing session at
 the studio or on the dubbing stage. A large room is a dubbing stage with the
 industry standard X\-curve equalization; a small room has flat equalization.
@@ -2382,8 +2383,8 @@ Small Room
 .PP
 Other Metadata Options
 .IX Subsection "Other Metadata Options"
-.IP "\fB\-copyright\fR \fIboolean\fR" 4
-.IX Item "-copyright boolean"
+.IP "\fB\-copyright\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-copyright boolean "
 Copyright Indicator. Specifies whether a copyright exists for this audio.
 .RS 4
 .IP "\fB0\fR" 4
@@ -2403,8 +2404,8 @@ Copyright Exists
 .RE
 .RS 4
 .RE
-.IP "\fB\-dialnorm\fR \fIvalue\fR" 4
-.IX Item "-dialnorm value"
+.IP "\fB\-dialnorm\fR \fIvalue\fR\fB \fR" 4
+.IX Item "-dialnorm value "
 Dialogue Normalization. Indicates how far the average dialogue level of the
 program is below digital 100% full scale (0 dBFS). This parameter determines a
 level shift during audio reproduction that sets the average volume of the
@@ -2412,8 +2413,8 @@ dialogue to a preset level. The goal is to match volume level between program
 sources. A value of \-31dB will result in no volume level change, relative to
 the source volume, during audio reproduction. Valid values are whole numbers in
 the range \-31 to \-1, with \-31 being the default.
-.IP "\fB\-dsur_mode\fR \fImode\fR" 4
-.IX Item "-dsur_mode mode"
+.IP "\fB\-dsur_mode\fR \fImode\fR\fB \fR" 4
+.IX Item "-dsur_mode mode "
 Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround
 (Pro Logic). This field will only be written to the bitstream if the audio
 stream is stereo. Using this option does \fB\s-1NOT\s0\fR mean the encoder will actually
@@ -2443,8 +2444,8 @@ Dolby Surround Encoded
 .RE
 .RS 4
 .RE
-.IP "\fB\-original\fR \fIboolean\fR" 4
-.IX Item "-original boolean"
+.IP "\fB\-original\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-original boolean "
 Original Bit Stream Indicator. Specifies whether this audio is from the
 original source and not a copy.
 .RS 4
@@ -2480,8 +2481,8 @@ Syntax.
 .PP
 Extended Bitstream Information \- Part 1
 .IX Subsection "Extended Bitstream Information - Part 1"
-.IP "\fB\-dmix_mode\fR \fImode\fR" 4
-.IX Item "-dmix_mode mode"
+.IP "\fB\-dmix_mode\fR \fImode\fR\fB \fR" 4
+.IX Item "-dmix_mode mode "
 Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt
 (Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode.
 .RS 4
@@ -2509,8 +2510,8 @@ Lo/Ro Downmix Preferred
 .RE
 .RS 4
 .RE
-.IP "\fB\-ltrt_cmixlev\fR \fIlevel\fR" 4
-.IX Item "-ltrt_cmixlev level"
+.IP "\fB\-ltrt_cmixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-ltrt_cmixlev level "
 Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lt/Rt mode.
 .RS 4
@@ -2541,8 +2542,8 @@ Silence Center Channel
 .RE
 .RS 4
 .RE
-.IP "\fB\-ltrt_surmixlev\fR \fIlevel\fR" 4
-.IX Item "-ltrt_surmixlev level"
+.IP "\fB\-ltrt_surmixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-ltrt_surmixlev level "
 Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lt/Rt mode.
 .RS 4
@@ -2564,8 +2565,8 @@ Silence Surround Channel(s)
 .RE
 .RS 4
 .RE
-.IP "\fB\-loro_cmixlev\fR \fIlevel\fR" 4
-.IX Item "-loro_cmixlev level"
+.IP "\fB\-loro_cmixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-loro_cmixlev level "
 Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lo/Ro mode.
 .RS 4
@@ -2596,8 +2597,8 @@ Silence Center Channel
 .RE
 .RS 4
 .RE
-.IP "\fB\-loro_surmixlev\fR \fIlevel\fR" 4
-.IX Item "-loro_surmixlev level"
+.IP "\fB\-loro_surmixlev\fR \fIlevel\fR\fB \fR" 4
+.IX Item "-loro_surmixlev level "
 Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lo/Ro mode.
 .RS 4
@@ -2622,8 +2623,8 @@ Silence Surround Channel(s)
 .PP
 Extended Bitstream Information \- Part 2
 .IX Subsection "Extended Bitstream Information - Part 2"
-.IP "\fB\-dsurex_mode\fR \fImode\fR" 4
-.IX Item "-dsurex_mode mode"
+.IP "\fB\-dsurex_mode\fR \fImode\fR\fB \fR" 4
+.IX Item "-dsurex_mode mode "
 Dolby Surround \s-1EX\s0 Mode. Indicates whether the stream uses Dolby Surround \s-1EX\s0
 (7.1 matrixed to 5.1). Using this option does \fB\s-1NOT\s0\fR mean the encoder will actually
 apply Dolby Surround \s-1EX\s0 processing.
@@ -2652,8 +2653,8 @@ Dolby Surround \s-1EX\s0 On
 .RE
 .RS 4
 .RE
-.IP "\fB\-dheadphone_mode\fR \fImode\fR" 4
-.IX Item "-dheadphone_mode mode"
+.IP "\fB\-dheadphone_mode\fR \fImode\fR\fB \fR" 4
+.IX Item "-dheadphone_mode mode "
 Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone
 encoding (multi-channel matrixed to 2.0 for use with headphones). Using this
 option does \fB\s-1NOT\s0\fR mean the encoder will actually apply Dolby Headphone
@@ -2683,8 +2684,8 @@ Dolby Headphone On
 .RE
 .RS 4
 .RE
-.IP "\fB\-ad_conv_type\fR \fItype\fR" 4
-.IX Item "-ad_conv_type type"
+.IP "\fB\-ad_conv_type\fR \fItype\fR\fB \fR" 4
+.IX Item "-ad_conv_type type "
 A/D Converter Type. Indicates whether the audio has passed through \s-1HDCD A/D\s0
 conversion.
 .RS 4
@@ -2708,14 +2709,14 @@ Standard A/D Converter (default)
 .PP
 \fIOther \s-1AC\-3\s0 Encoding Options\fR
 .IX Subsection "Other AC-3 Encoding Options"
-.IP "\fB\-stereo_rematrixing\fR \fIboolean\fR" 4
-.IX Item "-stereo_rematrixing boolean"
+.IP "\fB\-stereo_rematrixing\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-stereo_rematrixing boolean "
 Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This
 is an optional \s-1AC\-3\s0 feature that increases quality by selectively encoding
 the left/right channels as mid/side. This option is enabled by default, and it
 is highly recommended that it be left as enabled except for testing purposes.
-.IP "\fBcutoff\fR \fIfrequency\fR" 4
-.IX Item "cutoff frequency"
+.IP "\fBcutoff\fR \fIfrequency\fR\fB \fR" 4
+.IX Item "cutoff frequency "
 Set lowpass cutoff frequency. If unspecified, the encoder selects a default
 determined by various other encoding parameters.
 .PP
@@ -2725,8 +2726,8 @@ determined by various other encoding parameters.
 These options are only valid for the floating-point encoder and do not exist
 for the fixed-point encoder due to the corresponding features not being
 implemented in fixed-point.
-.IP "\fB\-channel_coupling\fR \fIboolean\fR" 4
-.IX Item "-channel_coupling boolean"
+.IP "\fB\-channel_coupling\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-channel_coupling boolean "
 Enables/Disables use of channel coupling, which is an optional \s-1AC\-3\s0 feature
 that increases quality by combining high frequency information from multiple
 channels into a single channel. The per-channel high frequency information is
@@ -2760,8 +2761,8 @@ Enable Channel Coupling
 .RE
 .RS 4
 .RE
-.IP "\fB\-cpl_start_band\fR \fInumber\fR" 4
-.IX Item "-cpl_start_band number"
+.IP "\fB\-cpl_start_band\fR \fInumber\fR\fB \fR" 4
+.IX Item "-cpl_start_band number "
 Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a
 value higher than the bandwidth is used, it will be reduced to 1 less than the
 coupling end band. If \fIauto\fR is used, the start band will be determined by
@@ -3593,8 +3594,8 @@ Vidvox Hap video encoder.
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fBformat\fR \fIinteger\fR" 4
-.IX Item "format integer"
+.IP "\fBformat\fR \fIinteger\fR\fB \fR" 4
+.IX Item "format integer "
 Specifies the Hap format to encode.
 .RS 4
 .IP "\fBhap\fR" 4
@@ -3610,15 +3611,15 @@ Specifies the Hap format to encode.
 .Sp
 Default value is \fBhap\fR.
 .RE
-.IP "\fBchunks\fR \fIinteger\fR" 4
-.IX Item "chunks integer"
+.IP "\fBchunks\fR \fIinteger\fR\fB \fR" 4
+.IX Item "chunks integer "
 Specifies the number of chunks to split frames into, between 1 and 64. This
 permits multithreaded decoding of large frames, potentially at the cost of
 data-rate. The encoder may modify this value to divide frames evenly.
 .Sp
 Default value is \fI1\fR.
-.IP "\fBcompressor\fR \fIinteger\fR" 4
-.IX Item "compressor integer"
+.IP "\fBcompressor\fR \fIinteger\fR\fB \fR" 4
+.IX Item "compressor integer "
 Specifies the second-stage compressor to use. If set to \fBnone\fR,
 \&\fBchunks\fR will be limited to 1, as chunked uncompressed frames offer no
 benefit.
@@ -3866,8 +3867,8 @@ follows: \f(CW\*(C`(maxrate * 100 / bitrate)\*(C'\fR.
 Set \s-1GOP\s0 min bitrate in bits/s. Note \fBvpxenc\fR's option is specified as a
 percentage of the target bitrate, the libvpx wrapper converts this value as
 follows: \f(CW\*(C`(minrate * 100 / bitrate)\*(C'\fR.
-.IP "\fBminrate, maxrate, b\fR \fIend\-usage=cbr\fR" 4
-.IX Item "minrate, maxrate, b end-usage=cbr"
+.IP "\fBminrate, maxrate, b\fR \fIend\-usage=cbr\fR\fB \fR" 4
+.IX Item "minrate, maxrate, b end-usage=cbr "
 \&\f(CW\*(C`(minrate == maxrate == bitrate)\*(C'\fR.
 .IP "\fBcrf (\fR\fIend\-usage=cq\fR\fB,\fR \fIcq-level\fR\fB)\fR" 4
 .IX Item "crf (end-usage=cq, cq-level)"
@@ -3975,31 +3976,31 @@ Enable frame parallel decodability features.
 .IX Item "aq-mode"
 Set adaptive quantization mode (0: off (default), 1: variance 2: complexity, 3:
 cyclic refresh, 4: equator360).
-.IP "\fBcolorspace\fR \fIcolor-space\fR" 4
-.IX Item "colorspace color-space"
+.IP "\fBcolorspace\fR \fIcolor-space\fR\fB \fR" 4
+.IX Item "colorspace color-space "
 Set input color space. The \s-1VP9\s0 bitstream supports signaling the following
 colorspaces:
 .RS 4
-.IP "\fB\fBrgb\fB \f(BIsRGB\fB\fR" 4
-.IX Item "rgb sRGB"
+.IP "\fB\fBrgb\fB \f(BIsRGB\fB \fR" 4
+.IX Item "rgb sRGB "
 .PD 0
-.IP "\fB\fBbt709\fB \f(BIbt709\fB\fR" 4
-.IX Item "bt709 bt709"
-.IP "\fB\fBunspecified\fB \f(BIunknown\fB\fR" 4
-.IX Item "unspecified unknown"
-.IP "\fB\fBbt470bg\fB \f(BIbt601\fB\fR" 4
-.IX Item "bt470bg bt601"
-.IP "\fB\fBsmpte170m\fB \f(BIsmpte170\fB\fR" 4
-.IX Item "smpte170m smpte170"
-.IP "\fB\fBsmpte240m\fB \f(BIsmpte240\fB\fR" 4
-.IX Item "smpte240m smpte240"
-.IP "\fB\fBbt2020_ncl\fB \f(BIbt2020\fB\fR" 4
-.IX Item "bt2020_ncl bt2020"
+.IP "\fB\fBbt709\fB \f(BIbt709\fB \fR" 4
+.IX Item "bt709 bt709 "
+.IP "\fB\fBunspecified\fB \f(BIunknown\fB \fR" 4
+.IX Item "unspecified unknown "
+.IP "\fB\fBbt470bg\fB \f(BIbt601\fB \fR" 4
+.IX Item "bt470bg bt601 "
+.IP "\fB\fBsmpte170m\fB \f(BIsmpte170\fB \fR" 4
+.IX Item "smpte170m smpte170 "
+.IP "\fB\fBsmpte240m\fB \f(BIsmpte240\fB \fR" 4
+.IX Item "smpte240m smpte240 "
+.IP "\fB\fBbt2020_ncl\fB \f(BIbt2020\fB \fR" 4
+.IX Item "bt2020_ncl bt2020 "
 .RE
 .RS 4
 .RE
-.IP "\fBrow-mt\fR \fIboolean\fR" 4
-.IX Item "row-mt boolean"
+.IP "\fBrow-mt\fR \fIboolean\fR\fB \fR" 4
+.IX Item "row-mt boolean "
 .PD
 Enable row based multi-threading.
 .IP "\fBtune-content\fR" 4
@@ -4037,11 +4038,11 @@ convenience.
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fB\-lossless\fR \fIboolean\fR" 4
-.IX Item "-lossless boolean"
+.IP "\fB\-lossless\fR \fIboolean\fR\fB \fR" 4
+.IX Item "-lossless boolean "
 Enables/Disables use of lossless mode. Default is 0.
-.IP "\fB\-compression_level\fR \fIinteger\fR" 4
-.IX Item "-compression_level integer"
+.IP "\fB\-compression_level\fR \fIinteger\fR\fB \fR" 4
+.IX Item "-compression_level integer "
 For lossy, this is a quality/speed tradeoff. Higher values give better quality
 for a given size at the cost of increased encoding time. For lossless, this is
 a size/speed tradeoff. Higher values give smaller size at the cost of increased
@@ -4049,14 +4050,14 @@ encoding time. More specifically, it controls the number of extra algorithms
 and compression tools used, and varies the combination of these tools. This
 maps to the \fImethod\fR option in libwebp. The valid range is 0 to 6.
 Default is 4.
-.IP "\fB\-qscale\fR \fIfloat\fR" 4
-.IX Item "-qscale float"
+.IP "\fB\-qscale\fR \fIfloat\fR\fB \fR" 4
+.IX Item "-qscale float "
 For lossy encoding, this controls image quality, 0 to 100. For lossless
 encoding, this controls the effort and time spent at compressing more. The
 default value is 75. Note that for usage via libavcodec, this option is called
 \&\fIglobal_quality\fR and must be multiplied by \fI\s-1FF_QP2LAMBDA\s0\fR.
-.IP "\fB\-preset\fR \fItype\fR" 4
-.IX Item "-preset type"
+.IP "\fB\-preset\fR \fItype\fR\fB \fR" 4
+.IX Item "-preset type "
 Configuration preset. This does some automatic settings based on the general
 type of the image.
 .RS 4
@@ -4494,8 +4495,8 @@ For example to specify libx264 encoding options with \fBffmpeg\fR:
 .Vb 1
 \&        ffmpeg \-i foo.mpg \-c:v libx264 \-x264opts keyint=123:min\-keyint=20 \-an out.mkv
 .Ve
-.IP "\fBa53cc\fR \fIboolean\fR" 4
-.IX Item "a53cc boolean"
+.IP "\fBa53cc\fR \fIboolean\fR\fB \fR" 4
+.IX Item "a53cc boolean "
 Import closed captions (which must be \s-1ATSC\s0 compatible format) into output.
 Only the mpeg2 and h264 decoders provide these. Default is 1 (on).
 .IP "\fBx264\-params (N.A.)\fR" 4
@@ -4731,8 +4732,8 @@ fastest.
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fBseq_disp_ext\fR \fIinteger\fR" 4
-.IX Item "seq_disp_ext integer"
+.IP "\fBseq_disp_ext\fR \fIinteger\fR\fB \fR" 4
+.IX Item "seq_disp_ext integer "
 Specifies if the encoder should write a sequence_display_extension to the
 output.
 .RS 4
@@ -4761,8 +4762,8 @@ Always write it.
 .RE
 .RS 4
 .RE
-.IP "\fBvideo_format\fR \fIinteger\fR" 4
-.IX Item "video_format integer"
+.IP "\fBvideo_format\fR \fIinteger\fR\fB \fR" 4
+.IX Item "video_format integer "
 Specifies the video_format written into the sequence display extension
 indicating the source of the video pictures. The default is \fBunspecified\fR,
 can be \fBcomponent\fR, \fBpal\fR, \fBntsc\fR, \fBsecam\fR or \fBmac\fR.
@@ -4773,11 +4774,11 @@ For maximum compatibility, use \fBcomponent\fR.
 .PP
 \fIPrivate options\fR
 .IX Subsection "Private options"
-.IP "\fBdpi\fR \fIinteger\fR" 4
-.IX Item "dpi integer"
+.IP "\fBdpi\fR \fIinteger\fR\fB \fR" 4
+.IX Item "dpi integer "
 Set physical density of pixels, in dots per inch, unset by default
-.IP "\fBdpm\fR \fIinteger\fR" 4
-.IX Item "dpm integer"
+.IP "\fBdpm\fR \fIinteger\fR\fB \fR" 4
+.IX Item "dpm integer "
 Set physical density of pixels, in dots per meter, unset by default
 .SS "ProRes"
 .IX Subsection "ProRes"
@@ -4788,8 +4789,8 @@ The used encoder can be chosen with the \f(CW\*(C`\-vcodec\*(C'\fR option.
 .PP
 \fIPrivate Options for prores-ks\fR
 .IX Subsection "Private Options for prores-ks"
-.IP "\fBprofile\fR \fIinteger\fR" 4
-.IX Item "profile integer"
+.IP "\fBprofile\fR \fIinteger\fR\fB \fR" 4
+.IX Item "profile integer "
 Select the ProRes profile to encode
 .RS 4
 .IP "\fBproxy\fR" 4
@@ -4808,8 +4809,8 @@ Select the ProRes profile to encode
 .RE
 .RS 4
 .RE
-.IP "\fBquant_mat\fR \fIinteger\fR" 4
-.IX Item "quant_mat integer"
+.IP "\fBquant_mat\fR \fIinteger\fR\fB \fR" 4
+.IX Item "quant_mat integer "
 .PD
 Select quantization matrix.
 .RS 4
@@ -4834,21 +4835,21 @@ If set to \fIauto\fR, the matrix matching the profile will be picked.
 If not set, the matrix providing the highest quality, \fIdefault\fR, will be
 picked.
 .RE
-.IP "\fBbits_per_mb\fR \fIinteger\fR" 4
-.IX Item "bits_per_mb integer"
+.IP "\fBbits_per_mb\fR \fIinteger\fR\fB \fR" 4
+.IX Item "bits_per_mb integer "
 How many bits to allot for coding one macroblock. Different profiles use
 between 200 and 2400 bits per macroblock, the maximum is 8000.
-.IP "\fBmbs_per_slice\fR \fIinteger\fR" 4
-.IX Item "mbs_per_slice integer"
+.IP "\fBmbs_per_slice\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mbs_per_slice integer "
 Number of macroblocks in each slice (1\-8); the default value (8)
 should be good in almost all situations.
-.IP "\fBvendor\fR \fIstring\fR" 4
-.IX Item "vendor string"
+.IP "\fBvendor\fR \fIstring\fR\fB \fR" 4
+.IX Item "vendor string "
 Override the 4\-byte vendor \s-1ID.
 A\s0 custom vendor \s-1ID\s0 like \fIapl0\fR would claim the stream was produced by
 the Apple encoder.
-.IP "\fBalpha_bits\fR \fIinteger\fR" 4
-.IX Item "alpha_bits integer"
+.IP "\fBalpha_bits\fR \fIinteger\fR\fB \fR" 4
+.IX Item "alpha_bits integer "
 Specify number of bits for alpha component.
 Possible values are \fI0\fR, \fI8\fR and \fI16\fR.
 Use \fI0\fR to disable alpha plane coding.

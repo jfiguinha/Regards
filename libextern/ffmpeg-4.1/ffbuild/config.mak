@@ -17,7 +17,7 @@ SRC_LINK=.
 ifndef MAIN_MAKEFILE
 SRC_PATH:=$(SRC_PATH:.%=..%)
 endif
-CC_IDENT=gcc 8.2.1 (Rev1, Built by MSYS2 project) 20181123
+CC_IDENT=gcc 8.3.0 (Rev1, Built by MSYS2 project)
 ARCH=x86
 INTRINSICS=none
 EXTERN_PREFIX=

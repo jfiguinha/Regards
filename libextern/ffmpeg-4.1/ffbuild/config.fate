@@ -1,1 +1,1 @@
-config:x86:x86_64:generic:mingw32:gcc 8.2.1 (Rev1, Built by MSYS2 project) 20181123:--enable-libaom
+config:x86:x86_64:generic:mingw32:gcc 8.3.0 (Rev1, Built by MSYS2 project):--enable-libaom

@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffprobe \- ffprobe media prober
+ffprobe
+ \- ffprobe media prober
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 ffprobe [\fIoptions\fR] [\fIinput_url\fR]
@@ -209,8 +210,8 @@ An empty stream specifier matches all streams. For example, \f(CW\*(C`\-codec co
 or \f(CW\*(C`\-codec: copy\*(C'\fR would copy all the streams without reencoding.
 .PP
 Possible forms of stream specifiers are:
-.IP "\fIstream_index\fR" 4
-.IX Item "stream_index"
+.IP "\fIstream_index\fR\fB \fR" 4
+.IX Item "stream_index "
 Matches the stream with this index. E.g. \f(CW\*(C`\-threads:1 4\*(C'\fR would set the
 thread count for the second stream to 4.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
@@ -235,8 +236,8 @@ In the third version matches streams in the program with the id \fIprogram_id\fR
 tag \fIkey\fR having the specified value. If
 \&\fIvalue\fR is not given, matches streams that contain the given tag with any
 value.
-.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR" 4
-.IX Item "#stream_id or i:stream_id"
+.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR\fB \fR" 4
+.IX Item "#stream_id or i:stream_id "
 Match the stream by stream id (e.g. \s-1PID\s0 in MPEG-TS container).
 .IP "\fBm:\fR\fIkey\fR\fB[:\fR\fIvalue\fR\fB]\fR" 4
 .IX Item "m:key[:value]"
@@ -271,24 +272,24 @@ Print advanced tool options in addition to the basic tool options.
 .IX Item "full"
 Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
-.IP "\fBdecoder=\fR\fIdecoder_name\fR" 4
-.IX Item "decoder=decoder_name"
+.IP "\fBdecoder=\fR\fIdecoder_name\fR\fB \fR" 4
+.IX Item "decoder=decoder_name "
 Print detailed information about the decoder named \fIdecoder_name\fR. Use the
 \&\fB\-decoders\fR option to get a list of all decoders.
-.IP "\fBencoder=\fR\fIencoder_name\fR" 4
-.IX Item "encoder=encoder_name"
+.IP "\fBencoder=\fR\fIencoder_name\fR\fB \fR" 4
+.IX Item "encoder=encoder_name "
 Print detailed information about the encoder named \fIencoder_name\fR. Use the
 \&\fB\-encoders\fR option to get a list of all encoders.
-.IP "\fBdemuxer=\fR\fIdemuxer_name\fR" 4
-.IX Item "demuxer=demuxer_name"
+.IP "\fBdemuxer=\fR\fIdemuxer_name\fR\fB \fR" 4
+.IX Item "demuxer=demuxer_name "
 Print detailed information about the demuxer named \fIdemuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all demuxers and muxers.
-.IP "\fBmuxer=\fR\fImuxer_name\fR" 4
-.IX Item "muxer=muxer_name"
+.IP "\fBmuxer=\fR\fImuxer_name\fR\fB \fR" 4
+.IX Item "muxer=muxer_name "
 Print detailed information about the muxer named \fImuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all muxers and demuxers.
-.IP "\fBfilter=\fR\fIfilter_name\fR" 4
-.IX Item "filter=filter_name"
+.IP "\fBfilter=\fR\fIfilter_name\fR\fB \fR" 4
+.IX Item "filter=filter_name "
 Print detailed information about the filter name \fIfilter_name\fR. Use the
 \&\fB\-filters\fR option to get a list of all filters.
 .RE
@@ -360,8 +361,8 @@ The returned list cannot be assumed to be always complete.
 .Vb 1
 \&        ffmpeg \-sinks pulse,server=192.168.0.4
 .Ve
-.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR" 4
-.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel"
+.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR\fB \fR" 4
+.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel "
 Set logging level and flags used by the library.
 .Sp
 The optional \fIflags\fR prefix can consist of the following values:
@@ -645,8 +646,8 @@ prepending v/a/s to the options name is now obsolete and will be
 removed soon.
 .SS "Main options"
 .IX Subsection "Main options"
-.IP "\fB\-f\fR \fIformat\fR" 4
-.IX Item "-f format"
+.IP "\fB\-f\fR \fIformat\fR\fB \fR" 4
+.IX Item "-f format "
 Force format to use.
 .IP "\fB\-unit\fR" 4
 .IX Item "-unit"
@@ -685,8 +686,8 @@ Writers section below.
 .IX Item "-sections"
 Print sections structure and section information, and exit. The output
 is not meant to be parsed by a machine.
-.IP "\fB\-select_streams\fR \fIstream_specifier\fR" 4
-.IX Item "-select_streams stream_specifier"
+.IP "\fB\-select_streams\fR \fIstream_specifier\fR\fB \fR" 4
+.IX Item "-select_streams stream_specifier "
 Select only the streams specified by \fIstream_specifier\fR. This
 option affects only the options related to streams
 (e.g. \f(CW\*(C`show_streams\*(C'\fR, \f(CW\*(C`show_packets\*(C'\fR, etc.).
@@ -709,8 +710,8 @@ Show payload data, as a hexadecimal and \s-1ASCII\s0 dump. Coupled with
 \&\fB\-show_streams\fR, it will dump the codec extradata.
 .Sp
 The dump is printed as the \*(L"data\*(R" field. It may contain newlines.
-.IP "\fB\-show_data_hash\fR \fIalgorithm\fR" 4
-.IX Item "-show_data_hash algorithm"
+.IP "\fB\-show_data_hash\fR \fIalgorithm\fR\fB \fR" 4
+.IX Item "-show_data_hash algorithm "
 Show a hash of payload data, for packets with \fB\-show_packets\fR and for
 codec extradata with \fB\-show_streams\fR.
 .IP "\fB\-show_error\fR" 4
@@ -725,15 +726,15 @@ stream.
 .Sp
 All the container format information is printed within a section with
 name \*(L"\s-1FORMAT\*(R".\s0
-.IP "\fB\-show_format_entry\fR \fIname\fR" 4
-.IX Item "-show_format_entry name"
+.IP "\fB\-show_format_entry\fR \fIname\fR\fB \fR" 4
+.IX Item "-show_format_entry name "
 Like \fB\-show_format\fR, but only prints the specified entry of the
 container format information, rather than all. This option may be given more
 than once, then all specified entries will be shown.
 .Sp
 This option is deprecated, use \f(CW\*(C`show_entries\*(C'\fR instead.
-.IP "\fB\-show_entries\fR \fIsection_entries\fR" 4
-.IX Item "-show_entries section_entries"
+.IP "\fB\-show_entries\fR \fIsection_entries\fR\fB \fR" 4
+.IX Item "-show_entries section_entries "
 Set list of entries to show.
 .Sp
 Entries are specified according to the following
@@ -802,8 +803,8 @@ multimedia stream.
 .Sp
 The information for each single frame is printed within a dedicated
 section with name \*(L"\s-1FRAME\*(R"\s0 or \*(L"\s-1SUBTITLE\*(R".\s0
-.IP "\fB\-show_log\fR \fIloglevel\fR" 4
-.IX Item "-show_log loglevel"
+.IP "\fB\-show_log\fR \fIloglevel\fR\fB \fR" 4
+.IX Item "-show_log loglevel "
 Show logging information from the decoder about each frame according to
 the value set in \fIloglevel\fR, (see \f(CW\*(C`\-loglevel\*(C'\fR). This option requires \f(CW\*(C`\-show_frames\*(C'\fR.
 .Sp
@@ -836,8 +837,8 @@ corresponding stream section.
 .IX Item "-count_packets"
 Count the number of packets per stream and report it in the
 corresponding stream section.
-.IP "\fB\-read_intervals\fR \fIread_intervals\fR" 4
-.IX Item "-read_intervals read_intervals"
+.IP "\fB\-read_intervals\fR \fIread_intervals\fR\fB \fR" 4
+.IX Item "-read_intervals read_intervals "
 Read only the specified intervals. \fIread_intervals\fR must be a
 sequence of interval specifications separated by \*(L",\*(R".
 \&\fBffprobe\fR will seek to the interval starting point, and will
@@ -936,8 +937,8 @@ with name \*(L"\s-1PIXEL_FORMAT\*(R".\s0
 .IX Item "-bitexact"
 Force bitexact output, useful to produce output which is not dependent
 on the specific build.
-.IP "\fB\-i\fR \fIinput_url\fR" 4
-.IX Item "-i input_url"
+.IP "\fB\-i\fR \fIinput_url\fR\fB \fR" 4
+.IX Item "-i input_url "
 Read \fIinput_url\fR.
 .SH "WRITERS"
 .IX Header "WRITERS"

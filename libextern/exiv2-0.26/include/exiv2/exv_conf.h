@@ -37,7 +37,7 @@
 #endif /* !EXV_COMMERCIAL_VERSION */
 
 /* Define to 1 to include video code in the library */
-/* #undef EXV_ENABLE_VIDEO */
+#define EXV_ENABLE_VIDEO 1
 
 /* Define to 1 to include webready code in the library */
 /* #undef EXV_ENABLE_WEBREADY */

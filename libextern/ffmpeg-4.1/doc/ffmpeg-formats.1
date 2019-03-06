@@ -139,7 +139,8 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffmpeg\-formats \- FFmpeg formats
+ffmpeg\-formats
+ \- FFmpeg formats
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This document describes the supported formats (muxers and demuxers)
@@ -176,8 +177,8 @@ latency. Must be an integer not lesser than 32. It is 5000000 by default.
 .IP "\fBpacketsize\fR \fIinteger\fR \fB(\fR\fIoutput\fR\fB)\fR" 4
 .IX Item "packetsize integer (output)"
 Set packet size.
-.IP "\fBfflags\fR \fIflags\fR" 4
-.IX Item "fflags flags"
+.IP "\fBfflags\fR \fIflags\fR\fB \fR" 4
+.IX Item "fflags flags "
 Set format flags. Some are implemented for a limited number of formats.
 .Sp
 Possible values for input files:
@@ -418,8 +419,8 @@ Format stream specifiers allow selection of one or more streams that
 match specific properties.
 .PP
 Possible forms of stream specifiers are:
-.IP "\fIstream_index\fR" 4
-.IX Item "stream_index"
+.IP "\fIstream_index\fR\fB \fR" 4
+.IX Item "stream_index "
 Matches the stream with this index.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
 .IX Item "stream_type[:stream_index]"
@@ -433,8 +434,8 @@ this type.
 If \fIstream_index\fR is given, then it matches the stream with number
 \&\fIstream_index\fR in the program with the id
 \&\fIprogram_id\fR. Otherwise, it matches all streams in the program.
-.IP "\fB#\fR\fIstream_id\fR" 4
-.IX Item "#stream_id"
+.IP "\fB#\fR\fIstream_id\fR\fB \fR" 4
+.IX Item "#stream_id "
 Matches the stream by a format-specific \s-1ID.\s0
 .PP
 The exact semantics of stream specifiers is defined by the
@@ -483,14 +484,14 @@ All headers, but the \s-1PNG\s0 signature, up to (but not including) the first
 fcTL chunk are transmitted as extradata.
 Frames are then split as being all the chunks between two fcTL ones, or
 between the last fcTL and \s-1IEND\s0 chunks.
-.IP "\fB\-ignore_loop\fR \fIbool\fR" 4
-.IX Item "-ignore_loop bool"
+.IP "\fB\-ignore_loop\fR \fIbool\fR\fB \fR" 4
+.IX Item "-ignore_loop bool "
 Ignore the loop variable in the file if set.
-.IP "\fB\-max_fps\fR \fIint\fR" 4
-.IX Item "-max_fps int"
+.IP "\fB\-max_fps\fR \fIint\fR\fB \fR" 4
+.IX Item "-max_fps int "
 Maximum framerate in frames per second (0 for no limit).
-.IP "\fB\-default_fps\fR \fIint\fR" 4
-.IX Item "-default_fps int"
+.IP "\fB\-default_fps\fR \fIint\fR\fB \fR" 4
+.IX Item "-default_fps int "
 Default framerate in frames per second when none is specified in the file
 (0 meaning as fast as possible).
 .SS "asf"
@@ -498,8 +499,8 @@ Default framerate in frames per second when none is specified in the file
 Advanced Systems Format demuxer.
 .PP
 This demuxer is used to demux \s-1ASF\s0 files and \s-1MMS\s0 network streams.
-.IP "\fB\-no_resync_search\fR \fIbool\fR" 4
-.IX Item "-no_resync_search bool"
+.IP "\fB\-no_resync_search\fR \fIbool\fR\fB \fR" 4
+.IX Item "-no_resync_search bool "
 Do not try to resynchronize by looking for a certain optional start code.
 .SS "concat"
 .IX Subsection "concat"
@@ -528,34 +529,34 @@ each file.
 The script is a text file in extended-ASCII, with one directive per line.
 Empty lines, leading spaces and lines starting with '#' are ignored. The
 following directive is recognized:
-.ie n .IP "\fB\f(CB""file \f(CBpath\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBfile \f(CBpath\f(CB\fB\fR" 4
-.IX Item "file path"
+.ie n .IP "\fB\f(CB""file \f(CBpath\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBfile \f(CBpath\f(CB\fB \fR" 4
+.IX Item "file path "
 Path to a file to read; special characters and spaces must be escaped with
 backslash or single quotes.
 .Sp
 All subsequent file-related directives apply to that file.
-.ie n .IP "\fB\f(CB""ffconcat version 1.0""\fB\fR" 4
-.el .IP "\fB\f(CBffconcat version 1.0\fB\fR" 4
-.IX Item "ffconcat version 1.0"
+.ie n .IP "\fB\f(CB""ffconcat version 1.0""\fB \fR" 4
+.el .IP "\fB\f(CBffconcat version 1.0\fB \fR" 4
+.IX Item "ffconcat version 1.0 "
 Identify the script type and version. It also sets the \fBsafe\fR option
 to 1 if it was \-1.
 .Sp
 To make FFmpeg recognize the format automatically, this directive must
 appear exactly as is (no extra space or byte-order-mark) on the very first
 line of the script.
-.ie n .IP "\fB\f(CB""duration \f(CBdur\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBduration \f(CBdur\f(CB\fB\fR" 4
-.IX Item "duration dur"
+.ie n .IP "\fB\f(CB""duration \f(CBdur\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBduration \f(CBdur\f(CB\fB \fR" 4
+.IX Item "duration dur "
 Duration of the file. This information can be specified from the file;
 specifying it here may be more efficient or help if the information from the
 file is not available or accurate.
 .Sp
 If the duration is set for all files, then it is possible to seek in the
 whole concatenated video.
-.ie n .IP "\fB\f(CB""inpoint \f(CBtimestamp\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBinpoint \f(CBtimestamp\f(CB\fB\fR" 4
-.IX Item "inpoint timestamp"
+.ie n .IP "\fB\f(CB""inpoint \f(CBtimestamp\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBinpoint \f(CBtimestamp\f(CB\fB \fR" 4
+.IX Item "inpoint timestamp "
 In point of the file. When the demuxer opens the file it instantly seeks to the
 specified timestamp. Seeking is done so that all streams can be presented
 successfully at In point.
@@ -571,9 +572,9 @@ directive) will be reduced based on their specified In point.
 .Sp
 Because of potential packets before the specified In point, packet timestamps
 may overlap between two concatenated files.
-.ie n .IP "\fB\f(CB""outpoint \f(CBtimestamp\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBoutpoint \f(CBtimestamp\f(CB\fB\fR" 4
-.IX Item "outpoint timestamp"
+.ie n .IP "\fB\f(CB""outpoint \f(CBtimestamp\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBoutpoint \f(CBtimestamp\f(CB\fB \fR" 4
+.IX Item "outpoint timestamp "
 Out point of the file. When the demuxer reaches the specified decoding
 timestamp in any of the streams, it handles it as an end of file condition and
 skips the current and all the remaining packets from all streams.
@@ -591,15 +592,15 @@ stream until Out point.
 .Sp
 The duration of the files (if not specified by the \f(CW\*(C`duration\*(C'\fR
 directive) will be reduced based on their specified Out point.
-.ie n .IP "\fB\f(CB""file_packet_metadata \f(CBkey=value\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBfile_packet_metadata \f(CBkey=value\f(CB\fB\fR" 4
-.IX Item "file_packet_metadata key=value"
+.ie n .IP "\fB\f(CB""file_packet_metadata \f(CBkey=value\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBfile_packet_metadata \f(CBkey=value\f(CB\fB \fR" 4
+.IX Item "file_packet_metadata key=value "
 Metadata of the packets of the file. The specified metadata will be set for
 each file packet. You can specify this directive multiple times to add multiple
 metadata entries.
-.ie n .IP "\fB\f(CB""stream""\fB\fR" 4
-.el .IP "\fB\f(CBstream\fB\fR" 4
-.IX Item "stream"
+.ie n .IP "\fB\f(CB""stream""\fB \fR" 4
+.el .IP "\fB\f(CBstream\fB \fR" 4
+.IX Item "stream "
 Introduce a stream in the virtual file.
 All subsequent stream-related directives apply to the last introduced
 stream.
@@ -607,9 +608,9 @@ Some streams properties must be set in order to allow identifying the
 matching streams in the subfiles.
 If no streams are defined in the script, the streams from the first file are
 copied.
-.ie n .IP "\fB\f(CB""exact_stream_id \f(CBid\f(CB""\fB\fR" 4
-.el .IP "\fB\f(CBexact_stream_id \f(CBid\f(CB\fB\fR" 4
-.IX Item "exact_stream_id id"
+.ie n .IP "\fB\f(CB""exact_stream_id \f(CBid\f(CB""\fB \fR" 4
+.el .IP "\fB\f(CBexact_stream_id \f(CBid\f(CB\fB \fR" 4
+.IX Item "exact_stream_id id "
 Set the id of the stream.
 If this directive is given, the string with the corresponding id in the
 subfiles will be used.
@@ -696,14 +697,14 @@ This demuxer is used to demux \s-1FLV\s0 files and \s-1RTMP\s0 network streams. 
 \&        ffmpeg \-f flv \-i myfile.flv ...
 \&        ffmpeg \-f live_flv \-i rtmp://<any.server>/anything/key ....
 .Ve
-.IP "\fB\-flv_metadata\fR \fIbool\fR" 4
-.IX Item "-flv_metadata bool"
+.IP "\fB\-flv_metadata\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_metadata bool "
 Allocate the streams according to the onMetaData array content.
-.IP "\fB\-flv_ignore_prevtag\fR \fIbool\fR" 4
-.IX Item "-flv_ignore_prevtag bool"
+.IP "\fB\-flv_ignore_prevtag\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_ignore_prevtag bool "
 Ignore the size of previous tag value.
-.IP "\fB\-flv_full_metadata\fR \fIbool\fR" 4
-.IX Item "-flv_full_metadata bool"
+.IP "\fB\-flv_full_metadata\fR \fIbool\fR\fB \fR" 4
+.IX Item "-flv_full_metadata bool "
 Output all context of the onMetadata.
 .SS "gif"
 .IX Subsection "gif"
@@ -835,8 +836,8 @@ Select a glob wildcard pattern type.
 .Sp
 The pattern is interpreted like a \f(CW\*(C`glob()\*(C'\fR pattern. This is only
 selectable if libavformat was compiled with globbing support.
-.IP "\fBglob_sequence\fR \fI(deprecated, will be removed)\fR" 4
-.IX Item "glob_sequence (deprecated, will be removed)"
+.IP "\fBglob_sequence\fR \fI(deprecated, will be removed)\fR\fB \fR" 4
+.IX Item "glob_sequence (deprecated, will be removed) "
 Select a mixed glob wildcard/sequence pattern.
 .Sp
 If your version of libavformat was compiled with globbing support, and
@@ -1235,8 +1236,8 @@ and the input video converted to \s-1MPEG\-2\s0 video, use the command:
 Adobe Flash Video Format muxer.
 .PP
 This muxer accepts the following options:
-.IP "\fBflvflags\fR \fIflags\fR" 4
-.IX Item "flvflags flags"
+.IP "\fBflvflags\fR \fIflags\fR\fB \fR" 4
+.IX Item "flvflags flags "
 Possible values:
 .RS 4
 .IP "\fBaac_seq_header_detect\fR" 4
@@ -1283,75 +1284,75 @@ as defined in section 5.3.9.4.4 of the standard. Available identifiers are \*(L"
 \&        \-window_size 5 \-adaptation_sets "id=0,streams=v id=1,streams=a"
 \&        \-f dash /path/to/out.mpd
 .Ve
-.IP "\fB\-min_seg_duration\fR \fImicroseconds\fR" 4
-.IX Item "-min_seg_duration microseconds"
+.IP "\fB\-min_seg_duration\fR \fImicroseconds\fR\fB \fR" 4
+.IX Item "-min_seg_duration microseconds "
 This is a deprecated option to set the segment length in microseconds, use \fIseg_duration\fR instead.
-.IP "\fB\-seg_duration\fR \fIduration\fR" 4
-.IX Item "-seg_duration duration"
+.IP "\fB\-seg_duration\fR \fIduration\fR\fB \fR" 4
+.IX Item "-seg_duration duration "
 Set the segment length in seconds (fractional value can be set). The value is
 treated as average segment duration when \fIuse_template\fR is enabled and
 \&\fIuse_timeline\fR is disabled and as minimum segment duration for all the other
 use cases.
-.IP "\fB\-window_size\fR \fIsize\fR" 4
-.IX Item "-window_size size"
+.IP "\fB\-window_size\fR \fIsize\fR\fB \fR" 4
+.IX Item "-window_size size "
 Set the maximum number of segments kept in the manifest.
-.IP "\fB\-extra_window_size\fR \fIsize\fR" 4
-.IX Item "-extra_window_size size"
+.IP "\fB\-extra_window_size\fR \fIsize\fR\fB \fR" 4
+.IX Item "-extra_window_size size "
 Set the maximum number of segments kept outside of the manifest before removing from disk.
-.IP "\fB\-remove_at_exit\fR \fIremove\fR" 4
-.IX Item "-remove_at_exit remove"
+.IP "\fB\-remove_at_exit\fR \fIremove\fR\fB \fR" 4
+.IX Item "-remove_at_exit remove "
 Enable (1) or disable (0) removal of all segments when finished.
-.IP "\fB\-use_template\fR \fItemplate\fR" 4
-.IX Item "-use_template template"
+.IP "\fB\-use_template\fR \fItemplate\fR\fB \fR" 4
+.IX Item "-use_template template "
 Enable (1) or disable (0) use of SegmentTemplate instead of SegmentList.
-.IP "\fB\-use_timeline\fR \fItimeline\fR" 4
-.IX Item "-use_timeline timeline"
+.IP "\fB\-use_timeline\fR \fItimeline\fR\fB \fR" 4
+.IX Item "-use_timeline timeline "
 Enable (1) or disable (0) use of SegmentTimeline in SegmentTemplate.
-.IP "\fB\-single_file\fR \fIsingle_file\fR" 4
-.IX Item "-single_file single_file"
+.IP "\fB\-single_file\fR \fIsingle_file\fR\fB \fR" 4
+.IX Item "-single_file single_file "
 Enable (1) or disable (0) storing all segments in one file, accessed using byte ranges.
-.IP "\fB\-single_file_name\fR \fIfile_name\fR" 4
-.IX Item "-single_file_name file_name"
+.IP "\fB\-single_file_name\fR \fIfile_name\fR\fB \fR" 4
+.IX Item "-single_file_name file_name "
 DASH-templated name to be used for baseURL. Implies \fIsingle_file\fR set to \*(L"1\*(R".
-.IP "\fB\-init_seg_name\fR \fIinit_name\fR" 4
-.IX Item "-init_seg_name init_name"
+.IP "\fB\-init_seg_name\fR \fIinit_name\fR\fB \fR" 4
+.IX Item "-init_seg_name init_name "
 DASH-templated name to used for the initialization segment. Default is \*(L"init\-stream$RepresentationID$.m4s\*(R"
-.IP "\fB\-media_seg_name\fR \fIsegment_name\fR" 4
-.IX Item "-media_seg_name segment_name"
+.IP "\fB\-media_seg_name\fR \fIsegment_name\fR\fB \fR" 4
+.IX Item "-media_seg_name segment_name "
 DASH-templated name to used for the media segments. Default is \*(L"chunk\-stream$RepresentationID$\-$Number%05d$.m4s\*(R"
-.IP "\fB\-utc_timing_url\fR \fIutc_url\fR" 4
-.IX Item "-utc_timing_url utc_url"
+.IP "\fB\-utc_timing_url\fR \fIutc_url\fR\fB \fR" 4
+.IX Item "-utc_timing_url utc_url "
 \&\s-1URL\s0 of the page that will return the \s-1UTC\s0 timestamp in \s-1ISO\s0 format. Example: \*(L"https://time.akamai.com/?iso\*(R"
-.IP "\fBmethod\fR \fImethod\fR" 4
-.IX Item "method method"
+.IP "\fBmethod\fR \fImethod\fR\fB \fR" 4
+.IX Item "method method "
 Use the given \s-1HTTP\s0 method to create output files. Generally set to \s-1PUT\s0 or \s-1POST.\s0
-.IP "\fB\-http_user_agent\fR \fIuser_agent\fR" 4
-.IX Item "-http_user_agent user_agent"
+.IP "\fB\-http_user_agent\fR \fIuser_agent\fR\fB \fR" 4
+.IX Item "-http_user_agent user_agent "
 Override User-Agent field in \s-1HTTP\s0 header. Applicable only for \s-1HTTP\s0 output.
-.IP "\fB\-http_persistent\fR \fIhttp_persistent\fR" 4
-.IX Item "-http_persistent http_persistent"
+.IP "\fB\-http_persistent\fR \fIhttp_persistent\fR\fB \fR" 4
+.IX Item "-http_persistent http_persistent "
 Use persistent \s-1HTTP\s0 connections. Applicable only for \s-1HTTP\s0 output.
-.IP "\fB\-hls_playlist\fR \fIhls_playlist\fR" 4
-.IX Item "-hls_playlist hls_playlist"
+.IP "\fB\-hls_playlist\fR \fIhls_playlist\fR\fB \fR" 4
+.IX Item "-hls_playlist hls_playlist "
 Generate \s-1HLS\s0 playlist files as well. The master playlist is generated with the filename master.m3u8.
 One media playlist file is generated for each stream with filenames media_0.m3u8, media_1.m3u8, etc.
-.IP "\fB\-streaming\fR \fIstreaming\fR" 4
-.IX Item "-streaming streaming"
+.IP "\fB\-streaming\fR \fIstreaming\fR\fB \fR" 4
+.IX Item "-streaming streaming "
 Enable (1) or disable (0) chunk streaming mode of output. In chunk streaming
 mode, each frame will be a moof fragment which forms a chunk.
-.IP "\fB\-adaptation_sets\fR \fIadaptation_sets\fR" 4
-.IX Item "-adaptation_sets adaptation_sets"
+.IP "\fB\-adaptation_sets\fR \fIadaptation_sets\fR\fB \fR" 4
+.IX Item "-adaptation_sets adaptation_sets "
 Assign streams to AdaptationSets. Syntax is \*(L"id=x,streams=a,b,c id=y,streams=d,e\*(R" with x and y being the IDs
 of the adaptation sets and a,b,c,d and e are the indices of the mapped streams.
 .Sp
 To map all video (or audio) streams to an AdaptationSet, \*(L"v\*(R" (or \*(L"a\*(R") can be used as stream identifier instead of IDs.
 .Sp
 When no assignment is defined, this defaults to an AdaptationSet for each stream.
-.IP "\fB\-timeout\fR \fItimeout\fR" 4
-.IX Item "-timeout timeout"
+.IP "\fB\-timeout\fR \fItimeout\fR\fB \fR" 4
+.IX Item "-timeout timeout "
 Set timeout for socket I/O operations. Applicable only for \s-1HTTP\s0 output.
-.IP "\fB\-index_correction\fR \fIindex_correction\fR" 4
-.IX Item "-index_correction index_correction"
+.IP "\fB\-index_correction\fR \fIindex_correction\fR\fB \fR" 4
+.IX Item "-index_correction index_correction "
 Enable (1) or Disable (0) segment index correction logic. Applicable only when
 \&\fIuse_template\fR is enabled and \fIuse_timeline\fR is disabled.
 .Sp
@@ -1362,13 +1363,13 @@ corrects that index value.
 Typically this logic is needed in live streaming use cases. The network bandwidth
 fluctuations are common during long run streaming. Each fluctuation can cause
 the segment indexes fall behind the expected real time position.
-.IP "\fB\-format_options\fR \fIoptions_list\fR" 4
-.IX Item "-format_options options_list"
+.IP "\fB\-format_options\fR \fIoptions_list\fR\fB \fR" 4
+.IX Item "-format_options options_list "
 Set container format (mp4/webm) options using a \f(CW\*(C`:\*(C'\fR separated list of
 key=value parameters. Values containing \f(CW\*(C`:\*(C'\fR special characters must be
 escaped.
-.IP "\fBdash_segment_type\fR \fIdash_segment_type\fR" 4
-.IX Item "dash_segment_type dash_segment_type"
+.IP "\fBdash_segment_type\fR \fIdash_segment_type\fR\fB \fR" 4
+.IX Item "dash_segment_type dash_segment_type "
 Possible values:
 .IP "\fBmp4\fR" 4
 .IX Item "mp4"
@@ -1447,8 +1448,8 @@ packet of the form:
 .PP
 \&\fIhash\fR is a hexadecimal number representing the computed hash
 for the packet.
-.IP "\fBhash\fR \fIalgorithm\fR" 4
-.IX Item "hash algorithm"
+.IP "\fBhash\fR \fIalgorithm\fR\fB \fR" 4
+.IX Item "hash algorithm "
 Use the cryptographic hash function specified by the string \fIalgorithm\fR.
 Supported values include \f(CW\*(C`MD5\*(C'\fR, \f(CW\*(C`murmur3\*(C'\fR, \f(CW\*(C`RIPEMD128\*(C'\fR,
 \&\f(CW\*(C`RIPEMD160\*(C'\fR, \f(CW\*(C`RIPEMD256\*(C'\fR, \f(CW\*(C`RIPEMD320\*(C'\fR, \f(CW\*(C`SHA160\*(C'\fR,
@@ -1549,8 +1550,8 @@ The output of the muxer consists of a single line of the form:
 \&\fIalgo\fR=\fIhash\fR, where \fIalgo\fR is a short string representing
 the hash function used, and \fIhash\fR is a hexadecimal number
 representing the computed hash.
-.IP "\fBhash\fR \fIalgorithm\fR" 4
-.IX Item "hash algorithm"
+.IP "\fBhash\fR \fIalgorithm\fR\fB \fR" 4
+.IX Item "hash algorithm "
 Use the cryptographic hash function specified by the string \fIalgorithm\fR.
 Supported values include \f(CW\*(C`MD5\*(C'\fR, \f(CW\*(C`murmur3\*(C'\fR, \f(CW\*(C`RIPEMD128\*(C'\fR,
 \&\f(CW\*(C`RIPEMD160\*(C'\fR, \f(CW\*(C`RIPEMD256\*(C'\fR, \f(CW\*(C`RIPEMD320\*(C'\fR, \f(CW\*(C`SHA160\*(C'\fR,
@@ -1606,33 +1607,33 @@ segmentation.
 .IX Subsection "Options"
 .PP
 This muxer supports the following options:
-.IP "\fBhls_init_time\fR \fIseconds\fR" 4
-.IX Item "hls_init_time seconds"
+.IP "\fBhls_init_time\fR \fIseconds\fR\fB \fR" 4
+.IX Item "hls_init_time seconds "
 Set the initial target segment length in seconds. Default value is \fI0\fR.
 Segment will be cut on the next key frame after this time has passed on the first m3u8 list.
 After the initial playlist is filled \fBffmpeg\fR will cut segments
 at duration equal to \f(CW\*(C`hls_time\*(C'\fR
-.IP "\fBhls_time\fR \fIseconds\fR" 4
-.IX Item "hls_time seconds"
+.IP "\fBhls_time\fR \fIseconds\fR\fB \fR" 4
+.IX Item "hls_time seconds "
 Set the target segment length in seconds. Default value is 2.
 Segment will be cut on the next key frame after this time has passed.
-.IP "\fBhls_list_size\fR \fIsize\fR" 4
-.IX Item "hls_list_size size"
+.IP "\fBhls_list_size\fR \fIsize\fR\fB \fR" 4
+.IX Item "hls_list_size size "
 Set the maximum number of playlist entries. If set to 0 the list file
 will contain all the segments. Default value is 5.
-.IP "\fBhls_delete_threshold\fR \fIsize\fR" 4
-.IX Item "hls_delete_threshold size"
+.IP "\fBhls_delete_threshold\fR \fIsize\fR\fB \fR" 4
+.IX Item "hls_delete_threshold size "
 Set the number of unreferenced segments to keep on disk before \f(CW\*(C`hls_flags delete_segments\*(C'\fR
 deletes them. Increase this to allow continue clients to download segments which
 were recently referenced in the playlist. Default value is 1, meaning segments older than
 \&\f(CW\*(C`hls_list_size+1\*(C'\fR will be deleted.
-.IP "\fBhls_ts_options\fR \fIoptions_list\fR" 4
-.IX Item "hls_ts_options options_list"
+.IP "\fBhls_ts_options\fR \fIoptions_list\fR\fB \fR" 4
+.IX Item "hls_ts_options options_list "
 Set output format options using a :\-separated list of key=value
 parameters. Values containing \f(CW\*(C`:\*(C'\fR special characters must be
 escaped.
-.IP "\fBhls_wrap\fR \fIwrap\fR" 4
-.IX Item "hls_wrap wrap"
+.IP "\fBhls_wrap\fR \fIwrap\fR\fB \fR" 4
+.IX Item "hls_wrap wrap "
 This is a deprecated option, you can use \f(CW\*(C`hls_list_size\*(C'\fR
 and \f(CW\*(C`hls_flags delete_segments\*(C'\fR instead it
 .Sp
@@ -1661,17 +1662,17 @@ The start number will be based on the current date/time as YYYYmmddHHMMSS. e.g. 
 .RE
 .RS 4
 .RE
-.IP "\fBstart_number\fR \fInumber\fR" 4
-.IX Item "start_number number"
+.IP "\fBstart_number\fR \fInumber\fR\fB \fR" 4
+.IX Item "start_number number "
 Start the playlist sequence number (\f(CW\*(C`#EXT\-X\-MEDIA\-SEQUENCE\*(C'\fR) from the specified \fInumber\fR
 when \fIhls_start_number_source\fR value is \fIgeneric\fR. (This is the default case.)
 Unless \f(CW\*(C`hls_flags single_file\*(C'\fR is set, it also specifies starting sequence numbers of segment and subtitle filenames.
 Default value is 0.
-.IP "\fBhls_allow_cache\fR \fIallowcache\fR" 4
-.IX Item "hls_allow_cache allowcache"
+.IP "\fBhls_allow_cache\fR \fIallowcache\fR\fB \fR" 4
+.IX Item "hls_allow_cache allowcache "
 Explicitly set whether the client \s-1MAY\s0 (1) or \s-1MUST NOT\s0 (0) cache media segments.
-.IP "\fBhls_base_url\fR \fIbaseurl\fR" 4
-.IX Item "hls_base_url baseurl"
+.IP "\fBhls_base_url\fR \fIbaseurl\fR\fB \fR" 4
+.IX Item "hls_base_url baseurl "
 Append \fIbaseurl\fR to every entry in the playlist.
 Useful to generate playlists with absolute paths.
 .Sp
@@ -1679,8 +1680,8 @@ Note that the playlist sequence number must be unique for each segment
 and it is not to be confused with the segment filename sequence number
 which can be cyclic, for example if the \fBwrap\fR option is
 specified.
-.IP "\fBhls_segment_filename\fR \fIfilename\fR" 4
-.IX Item "hls_segment_filename filename"
+.IP "\fBhls_segment_filename\fR \fIfilename\fR\fB \fR" 4
+.IX Item "hls_segment_filename filename "
 Set the segment filename. Unless \f(CW\*(C`hls_flags single_file\*(C'\fR is set,
 \&\fIfilename\fR is used as a string format with the segment number:
 .Sp
@@ -1773,8 +1774,8 @@ produce the playlist, \fIout.m3u8\fR, and segment files:
 This example will create a directory hierarchy 2016/02/15 (if any of them do not exist), and then
 produce the playlist, \fIout.m3u8\fR, and segment files:
 \&\fI2016/02/15/file\-20160215\-1455569023.ts\fR, \fI2016/02/15/file\-20160215\-1455569024.ts\fR, etc.
-.IP "\fBhls_key_info_file\fR \fIkey_info_file\fR" 4
-.IX Item "hls_key_info_file key_info_file"
+.IP "\fBhls_key_info_file\fR \fIkey_info_file\fR\fB \fR" 4
+.IX Item "hls_key_info_file key_info_file "
 Use the information in \fIkey_info_file\fR for segment encryption. The first
 line of \fIkey_info_file\fR specifies the key \s-1URI\s0 written to the playlist. The
 key \s-1URL\s0 is used to access the encryption key during playback. The second line
@@ -1835,25 +1836,25 @@ Example shell script:
 \&        ffmpeg \-f lavfi \-re \-i testsrc \-c:v h264 \-hls_flags delete_segments \e
 \&          \-hls_key_info_file file.keyinfo out.m3u8
 .Ve
-.IP "\fB\-hls_enc\fR \fIenc\fR" 4
-.IX Item "-hls_enc enc"
+.IP "\fB\-hls_enc\fR \fIenc\fR\fB \fR" 4
+.IX Item "-hls_enc enc "
 Enable (1) or disable (0) the \s-1AES128\s0 encryption.
 When enabled every segment generated is encrypted and the encryption key
 is saved as \fIplaylist name\fR.key.
-.IP "\fB\-hls_enc_key\fR \fIkey\fR" 4
-.IX Item "-hls_enc_key key"
+.IP "\fB\-hls_enc_key\fR \fIkey\fR\fB \fR" 4
+.IX Item "-hls_enc_key key "
 Hex-coded 16byte key to encrypt the segments, by default it
 is randomly generated.
-.IP "\fB\-hls_enc_key_url\fR \fIkeyurl\fR" 4
-.IX Item "-hls_enc_key_url keyurl"
+.IP "\fB\-hls_enc_key_url\fR \fIkeyurl\fR\fB \fR" 4
+.IX Item "-hls_enc_key_url keyurl "
 If set, \fIkeyurl\fR is prepended instead of \fIbaseurl\fR to the key filename
 in the playlist.
-.IP "\fB\-hls_enc_iv\fR \fIiv\fR" 4
-.IX Item "-hls_enc_iv iv"
+.IP "\fB\-hls_enc_iv\fR \fIiv\fR\fB \fR" 4
+.IX Item "-hls_enc_iv iv "
 Hex-coded 16byte initialization vector for every segment instead
 of the autogenerated ones.
-.IP "\fBhls_segment_type\fR \fIflags\fR" 4
-.IX Item "hls_segment_type flags"
+.IP "\fBhls_segment_type\fR \fIflags\fR\fB \fR" 4
+.IX Item "hls_segment_type flags "
 Possible values:
 .RS 4
 .IP "\fBmpegts\fR" 4
@@ -1867,8 +1868,8 @@ fmp4 files may be used in \s-1HLS\s0 version 7 and above.
 .RE
 .RS 4
 .RE
-.IP "\fBhls_fmp4_init_filename\fR \fIfilename\fR" 4
-.IX Item "hls_fmp4_init_filename filename"
+.IP "\fBhls_fmp4_init_filename\fR \fIfilename\fR\fB \fR" 4
+.IX Item "hls_fmp4_init_filename filename "
 Set filename to the fragment files header file, default filename is \fIinit.mp4\fR.
 .Sp
 When \f(CW\*(C`var_stream_map\*(C'\fR is set with two or more variant streams, the
@@ -1879,8 +1880,8 @@ containing the file. If the string is present in the directory name, then
 sub-directories are created after expanding the directory name pattern. This
 enables creation of init files corresponding to different variant streams in
 subdirectories.
-.IP "\fBhls_flags\fR \fIflags\fR" 4
-.IX Item "hls_flags flags"
+.IP "\fBhls_flags\fR \fIflags\fR\fB \fR" 4
+.IX Item "hls_flags flags "
 Possible values:
 .RS 4
 .IP "\fBsingle_file\fR" 4
@@ -2395,18 +2396,18 @@ is that it is less compatible with other applications.
 .PP
 Fragmentation is enabled by setting one of the AVOptions that define
 how to cut the file into fragments:
-.IP "\fB\-moov_size\fR \fIbytes\fR" 4
-.IX Item "-moov_size bytes"
+.IP "\fB\-moov_size\fR \fIbytes\fR\fB \fR" 4
+.IX Item "-moov_size bytes "
 Reserves space for the moov atom at the beginning of the file instead of placing the
 moov atom at the end. If the space reserved is insufficient, muxing will fail.
 .IP "\fB\-movflags frag_keyframe\fR" 4
 .IX Item "-movflags frag_keyframe"
 Start a new fragment at each video keyframe.
-.IP "\fB\-frag_duration\fR \fIduration\fR" 4
-.IX Item "-frag_duration duration"
+.IP "\fB\-frag_duration\fR \fIduration\fR\fB \fR" 4
+.IX Item "-frag_duration duration "
 Create fragments that are \fIduration\fR microseconds long.
-.IP "\fB\-frag_size\fR \fIsize\fR" 4
-.IX Item "-frag_size size"
+.IP "\fB\-frag_size\fR \fIsize\fR\fB \fR" 4
+.IX Item "-frag_size size "
 Create fragments that contain up to \fIsize\fR bytes of payload data.
 .IP "\fB\-movflags frag_custom\fR" 4
 .IX Item "-movflags frag_custom"
@@ -2414,8 +2415,8 @@ Allow the caller to manually choose when to cut fragments, by
 calling \f(CW\*(C`av_write_frame(ctx, NULL)\*(C'\fR to write a fragment with
 the packets written so far. (This is only useful with other
 applications integrating libavformat, not from \fBffmpeg\fR.)
-.IP "\fB\-min_frag_duration\fR \fIduration\fR" 4
-.IX Item "-min_frag_duration duration"
+.IP "\fB\-min_frag_duration\fR \fIduration\fR\fB \fR" 4
+.IX Item "-min_frag_duration duration "
 Don't create fragments that are shorter than \fIduration\fR microseconds long.
 .PP
 If more than one condition is specified, fragments are cut when
@@ -2579,22 +2580,22 @@ and \f(CW\*(C`service_name\*(C'\fR. If they are not set the default for
 .IX Subsection "Options"
 .PP
 The muxer options are:
-.IP "\fBmpegts_transport_stream_id\fR \fIinteger\fR" 4
-.IX Item "mpegts_transport_stream_id integer"
+.IP "\fBmpegts_transport_stream_id\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_transport_stream_id integer "
 Set the \fBtransport_stream_id\fR. This identifies a transponder in \s-1DVB.\s0
 Default is \f(CW0x0001\fR.
-.IP "\fBmpegts_original_network_id\fR \fIinteger\fR" 4
-.IX Item "mpegts_original_network_id integer"
+.IP "\fBmpegts_original_network_id\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_original_network_id integer "
 Set the \fBoriginal_network_id\fR. This is unique identifier of a
 network in \s-1DVB.\s0 Its main use is in the unique identification of a service
 through the path \fBOriginal_Network_ID, Transport_Stream_ID\fR. Default
 is \f(CW0x0001\fR.
-.IP "\fBmpegts_service_id\fR \fIinteger\fR" 4
-.IX Item "mpegts_service_id integer"
+.IP "\fBmpegts_service_id\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_service_id integer "
 Set the \fBservice_id\fR, also known as program in \s-1DVB.\s0 Default is
 \&\f(CW0x0001\fR.
-.IP "\fBmpegts_service_type\fR \fIinteger\fR" 4
-.IX Item "mpegts_service_type integer"
+.IP "\fBmpegts_service_type\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_service_type integer "
 Set the program \fBservice_type\fR. Default is \f(CW\*(C`digital_tv\*(C'\fR.
 Accepts the following options:
 .RS 4
@@ -2626,25 +2627,25 @@ Advanced Codec Digital \s-1HDTV\s0 service.
 .RE
 .RS 4
 .RE
-.IP "\fBmpegts_pmt_start_pid\fR \fIinteger\fR" 4
-.IX Item "mpegts_pmt_start_pid integer"
+.IP "\fBmpegts_pmt_start_pid\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_pmt_start_pid integer "
 Set the first \s-1PID\s0 for \s-1PMT.\s0 Default is \f(CW0x1000\fR. Max is \f(CW0x1f00\fR.
-.IP "\fBmpegts_start_pid\fR \fIinteger\fR" 4
-.IX Item "mpegts_start_pid integer"
+.IP "\fBmpegts_start_pid\fR \fIinteger\fR\fB \fR" 4
+.IX Item "mpegts_start_pid integer "
 Set the first \s-1PID\s0 for data packets. Default is \f(CW0x0100\fR. Max is
 \&\f(CW0x0f00\fR.
-.IP "\fBmpegts_m2ts_mode\fR \fIboolean\fR" 4
-.IX Item "mpegts_m2ts_mode boolean"
+.IP "\fBmpegts_m2ts_mode\fR \fIboolean\fR\fB \fR" 4
+.IX Item "mpegts_m2ts_mode boolean "
 Enable m2ts mode if set to \f(CW1\fR. Default value is \f(CW\*(C`\-1\*(C'\fR which
 disables m2ts mode.
-.IP "\fBmuxrate\fR \fIinteger\fR" 4
-.IX Item "muxrate integer"
+.IP "\fBmuxrate\fR \fIinteger\fR\fB \fR" 4
+.IX Item "muxrate integer "
 Set a constant muxrate. Default is \s-1VBR.\s0
-.IP "\fBpes_payload_size\fR \fIinteger\fR" 4
-.IX Item "pes_payload_size integer"
+.IP "\fBpes_payload_size\fR \fIinteger\fR\fB \fR" 4
+.IX Item "pes_payload_size integer "
 Set minimum \s-1PES\s0 packet payload in bytes. Default is \f(CW2930\fR.
-.IP "\fBmpegts_flags\fR \fIflags\fR" 4
-.IX Item "mpegts_flags flags"
+.IP "\fBmpegts_flags\fR \fIflags\fR\fB \fR" 4
+.IX Item "mpegts_flags flags "
 Set mpegts flags. Accepts the following options:
 .RS 4
 .IP "\fBresend_headers\fR" 4
@@ -2665,29 +2666,29 @@ Mark the initial packet of each stream as discontinuity.
 .RE
 .RS 4
 .RE
-.IP "\fBresend_headers\fR \fIinteger\fR" 4
-.IX Item "resend_headers integer"
+.IP "\fBresend_headers\fR \fIinteger\fR\fB \fR" 4
+.IX Item "resend_headers integer "
 Reemit \s-1PAT/PMT\s0 before writing the next packet. This option is deprecated:
 use \fBmpegts_flags\fR instead.
-.IP "\fBmpegts_copyts\fR \fIboolean\fR" 4
-.IX Item "mpegts_copyts boolean"
+.IP "\fBmpegts_copyts\fR \fIboolean\fR\fB \fR" 4
+.IX Item "mpegts_copyts boolean "
 Preserve original timestamps, if value is set to \f(CW1\fR. Default value
 is \f(CW\*(C`\-1\*(C'\fR, which results in shifting timestamps so that they start from 0.
-.IP "\fBomit_video_pes_length\fR \fIboolean\fR" 4
-.IX Item "omit_video_pes_length boolean"
+.IP "\fBomit_video_pes_length\fR \fIboolean\fR\fB \fR" 4
+.IX Item "omit_video_pes_length boolean "
 Omit the \s-1PES\s0 packet length for video packets. Default is \f(CW1\fR (true).
-.IP "\fBpcr_period\fR \fIinteger\fR" 4
-.IX Item "pcr_period integer"
+.IP "\fBpcr_period\fR \fIinteger\fR\fB \fR" 4
+.IX Item "pcr_period integer "
 Override the default \s-1PCR\s0 retransmission time in milliseconds. Ignored if
 variable muxrate is selected. Default is \f(CW20\fR.
-.IP "\fBpat_period\fR \fIdouble\fR" 4
-.IX Item "pat_period double"
+.IP "\fBpat_period\fR \fIdouble\fR\fB \fR" 4
+.IX Item "pat_period double "
 Maximum time in seconds between \s-1PAT/PMT\s0 tables.
-.IP "\fBsdt_period\fR \fIdouble\fR" 4
-.IX Item "sdt_period double"
+.IP "\fBsdt_period\fR \fIdouble\fR\fB \fR" 4
+.IX Item "sdt_period double "
 Maximum time in seconds between \s-1SDT\s0 tables.
-.IP "\fBtables_version\fR \fIinteger\fR" 4
-.IX Item "tables_version integer"
+.IP "\fBtables_version\fR \fIinteger\fR\fB \fR" 4
+.IX Item "tables_version integer "
 Set \s-1PAT, PMT\s0 and \s-1SDT\s0 version (default \f(CW0\fR, valid values are from 0 to 31, inclusively).
 This option allows updating stream structure so that standard consumer may
 detect the change. To do so, reopen output \f(CW\*(C`AVFormatContext\*(C'\fR (in case of \s-1API\s0
@@ -2726,8 +2727,8 @@ usage) or restart \fBffmpeg\fR instance, cyclically changing
 .IX Subsection "Options"
 .PP
 The muxer options are:
-.IP "\fBstore_user_comments\fR \fIbool\fR" 4
-.IX Item "store_user_comments bool"
+.IP "\fBstore_user_comments\fR \fIbool\fR\fB \fR" 4
+.IX Item "store_user_comments bool "
 Set if user comments should be stored if available or never.
 \&\s-1IRT D\-10\s0 does not allow user comments. The default is thus to write them for
 mxf but not for mxf_d10
@@ -2756,8 +2757,8 @@ Alternatively you can write the command as:
 .Ve
 .SS "nut"
 .IX Subsection "nut"
-.IP "\fB\-syncpoints\fR \fIflags\fR" 4
-.IX Item "-syncpoints flags"
+.IP "\fB\-syncpoints\fR \fIflags\fR\fB \fR" 4
+.IX Item "-syncpoints flags "
 Change the syncpoint usage in nut:
 .RS 4
 .IP "\fIdefault\fR \fBuse the normal low-overhead seeking aids.\fR" 4
@@ -2780,8 +2781,8 @@ Change the syncpoint usage in nut:
 .Sp
 The \fInone\fR and \fItimestamped\fR flags are experimental.
 .RE
-.IP "\fB\-write_index\fR \fIbool\fR" 4
-.IX Item "-write_index bool"
+.IP "\fB\-write_index\fR \fIbool\fR\fB \fR" 4
+.IX Item "-write_index bool "
 Write index at the end, the default is to write an index.
 .PP
 .Vb 1
@@ -2790,8 +2791,8 @@ Write index at the end, the default is to write an index.
 .SS "ogg"
 .IX Subsection "ogg"
 Ogg container muxer.
-.IP "\fB\-page_duration\fR \fIduration\fR" 4
-.IX Item "-page_duration duration"
+.IP "\fB\-page_duration\fR \fIduration\fR\fB \fR" 4
+.IX Item "-page_duration duration "
 Preferred page duration, in microseconds. The muxer will attempt to create
 pages that are approximately \fIduration\fR microseconds long. This allows the
 user to compromise between seek granularity and container overhead. The default
@@ -2799,8 +2800,8 @@ is 1 second. A value of 0 will fill all segments, making pages as large as
 possible. A value of 1 will effectively use 1 packet-per-page in most
 situations, giving a small seek granularity at the cost of additional container
 overhead.
-.IP "\fB\-serial_offset\fR \fIvalue\fR" 4
-.IX Item "-serial_offset value"
+.IP "\fB\-serial_offset\fR \fIvalue\fR\fB \fR" 4
+.IX Item "-serial_offset value "
 Serial value from which to set the streams serial number.
 Setting it to different and sufficiently large values ensures that the produced
 ogg files can be safely chained.
@@ -2842,34 +2843,34 @@ implementation for \s-1HLS\s0 segmentation.
 .IX Subsection "Options"
 .PP
 The segment muxer supports the following options:
-.IP "\fBincrement_tc\fR \fI1|0\fR" 4
-.IX Item "increment_tc 1|0"
+.IP "\fBincrement_tc\fR \fI1|0\fR\fB \fR" 4
+.IX Item "increment_tc 1|0 "
 if set to \f(CW1\fR, increment timecode between each segment
 If this is selected, the input need to have
 a timecode in the first video stream. Default value is
 \&\f(CW0\fR.
-.IP "\fBreference_stream\fR \fIspecifier\fR" 4
-.IX Item "reference_stream specifier"
+.IP "\fBreference_stream\fR \fIspecifier\fR\fB \fR" 4
+.IX Item "reference_stream specifier "
 Set the reference stream, as specified by the string \fIspecifier\fR.
 If \fIspecifier\fR is set to \f(CW\*(C`auto\*(C'\fR, the reference is chosen
 automatically. Otherwise it must be a stream specifier (see the ``Stream
 specifiers'' chapter in the ffmpeg manual) which specifies the
 reference stream. The default value is \f(CW\*(C`auto\*(C'\fR.
-.IP "\fBsegment_format\fR \fIformat\fR" 4
-.IX Item "segment_format format"
+.IP "\fBsegment_format\fR \fIformat\fR\fB \fR" 4
+.IX Item "segment_format format "
 Override the inner container format, by default it is guessed by the filename
 extension.
-.IP "\fBsegment_format_options\fR \fIoptions_list\fR" 4
-.IX Item "segment_format_options options_list"
+.IP "\fBsegment_format_options\fR \fIoptions_list\fR\fB \fR" 4
+.IX Item "segment_format_options options_list "
 Set output format options using a :\-separated list of key=value
 parameters. Values containing the \f(CW\*(C`:\*(C'\fR special character must be
 escaped.
-.IP "\fBsegment_list\fR \fIname\fR" 4
-.IX Item "segment_list name"
+.IP "\fBsegment_list\fR \fIname\fR\fB \fR" 4
+.IX Item "segment_list name "
 Generate also a listfile named \fIname\fR. If not specified no
 listfile is generated.
-.IP "\fBsegment_list_flags\fR \fIflags\fR" 4
-.IX Item "segment_list_flags flags"
+.IP "\fBsegment_list_flags\fR \fIflags\fR\fB \fR" 4
+.IX Item "segment_list_flags flags "
 Set flags affecting the segment list generation.
 .Sp
 It currently supports the following flags:
@@ -2883,17 +2884,17 @@ Allow live-friendly file generation.
 .RE
 .RS 4
 .RE
-.IP "\fBsegment_list_size\fR \fIsize\fR" 4
-.IX Item "segment_list_size size"
+.IP "\fBsegment_list_size\fR \fIsize\fR\fB \fR" 4
+.IX Item "segment_list_size size "
 Update the list file so that it contains at most \fIsize\fR
 segments. If 0 the list file will contain all the segments. Default
 value is 0.
-.IP "\fBsegment_list_entry_prefix\fR \fIprefix\fR" 4
-.IX Item "segment_list_entry_prefix prefix"
+.IP "\fBsegment_list_entry_prefix\fR \fIprefix\fR\fB \fR" 4
+.IX Item "segment_list_entry_prefix prefix "
 Prepend \fIprefix\fR to each entry. Useful to generate absolute paths.
 By default no prefix is applied.
-.IP "\fBsegment_list_type\fR \fItype\fR" 4
-.IX Item "segment_list_type type"
+.IP "\fBsegment_list_type\fR \fItype\fR\fB \fR" 4
+.IX Item "segment_list_type type "
 Select the listing format.
 .Sp
 The following values are recognized:
@@ -2939,8 +2940,8 @@ A list file with the suffix \f(CW".m3u8"\fR will auto-select this format.
 .Sp
 If not specified the type is guessed from the list file name suffix.
 .RE
-.IP "\fBsegment_time\fR \fItime\fR" 4
-.IX Item "segment_time time"
+.IP "\fBsegment_time\fR \fItime\fR\fB \fR" 4
+.IX Item "segment_time time "
 Set segment duration to \fItime\fR, the value must be a duration
 specification. Default value is \*(L"2\*(R". See also the
 \&\fBsegment_times\fR option.
@@ -2948,8 +2949,8 @@ specification. Default value is \*(L"2\*(R". See also the
 Note that splitting may not be accurate, unless you force the
 reference stream key-frames at the given time. See the introductory
 notice and the examples below.
-.IP "\fBsegment_atclocktime\fR \fI1|0\fR" 4
-.IX Item "segment_atclocktime 1|0"
+.IP "\fBsegment_atclocktime\fR \fI1|0\fR\fB \fR" 4
+.IX Item "segment_atclocktime 1|0 "
 If set to \*(L"1\*(R" split at regular clock time intervals starting from 00:00
 o'clock. The \fItime\fR value specified in \fBsegment_time\fR is
 used for setting the length of the splitting interval.
@@ -2958,8 +2959,8 @@ For example with \fBsegment_time\fR set to \*(L"900\*(R" this makes it possible
 to create files at 12:00 o'clock, 12:15, 12:30, etc.
 .Sp
 Default value is \*(L"0\*(R".
-.IP "\fBsegment_clocktime_offset\fR \fIduration\fR" 4
-.IX Item "segment_clocktime_offset duration"
+.IP "\fBsegment_clocktime_offset\fR \fIduration\fR\fB \fR" 4
+.IX Item "segment_clocktime_offset duration "
 Delay the segment splitting times with the specified duration when using
 \&\fBsegment_atclocktime\fR.
 .Sp
@@ -2968,8 +2969,8 @@ For example with \fBsegment_time\fR set to \*(L"900\*(R" and
 create files at 12:05, 12:20, 12:35, etc.
 .Sp
 Default value is \*(L"0\*(R".
-.IP "\fBsegment_clocktime_wrap_duration\fR \fIduration\fR" 4
-.IX Item "segment_clocktime_wrap_duration duration"
+.IP "\fBsegment_clocktime_wrap_duration\fR \fIduration\fR\fB \fR" 4
+.IX Item "segment_clocktime_wrap_duration duration "
 Force the segmenter to only start a new segment if a packet reaches the muxer
 within the specified duration after the segmenting clock time. This way you
 can make the segmenter more resilient to backward local time jumps, such as
@@ -2977,8 +2978,8 @@ leap seconds or transition to standard time from daylight savings time.
 .Sp
 Default is the maximum possible duration which means starting a new segment
 regardless of the elapsed time since the last clock time.
-.IP "\fBsegment_time_delta\fR \fIdelta\fR" 4
-.IX Item "segment_time_delta delta"
+.IP "\fBsegment_time_delta\fR \fIdelta\fR\fB \fR" 4
+.IX Item "segment_time_delta delta "
 Specify the accuracy time when selecting the start time for a
 segment, expressed as a duration specification. Default value is \*(L"0\*(R".
 .Sp
@@ -3000,49 +3001,49 @@ issues, with the consequence that a key frame time may result set just
 before the specified time. For constant frame rate videos a value of
 1/(2*\fIframe_rate\fR) should address the worst case mismatch between
 the specified time and the time set by \fIforce_key_frames\fR.
-.IP "\fBsegment_times\fR \fItimes\fR" 4
-.IX Item "segment_times times"
+.IP "\fBsegment_times\fR \fItimes\fR\fB \fR" 4
+.IX Item "segment_times times "
 Specify a list of split points. \fItimes\fR contains a list of comma
 separated duration specifications, in increasing order. See also
 the \fBsegment_time\fR option.
-.IP "\fBsegment_frames\fR \fIframes\fR" 4
-.IX Item "segment_frames frames"
+.IP "\fBsegment_frames\fR \fIframes\fR\fB \fR" 4
+.IX Item "segment_frames frames "
 Specify a list of split video frame numbers. \fIframes\fR contains a
 list of comma separated integer numbers, in increasing order.
 .Sp
 This option specifies to start a new segment whenever a reference
 stream key frame is found and the sequential number (starting from 0)
 of the frame is greater or equal to the next value in the list.
-.IP "\fBsegment_wrap\fR \fIlimit\fR" 4
-.IX Item "segment_wrap limit"
+.IP "\fBsegment_wrap\fR \fIlimit\fR\fB \fR" 4
+.IX Item "segment_wrap limit "
 Wrap around segment index once it reaches \fIlimit\fR.
-.IP "\fBsegment_start_number\fR \fInumber\fR" 4
-.IX Item "segment_start_number number"
+.IP "\fBsegment_start_number\fR \fInumber\fR\fB \fR" 4
+.IX Item "segment_start_number number "
 Set the sequence number of the first segment. Defaults to \f(CW0\fR.
-.IP "\fBstrftime\fR \fI1|0\fR" 4
-.IX Item "strftime 1|0"
+.IP "\fBstrftime\fR \fI1|0\fR\fB \fR" 4
+.IX Item "strftime 1|0 "
 Use the \f(CW\*(C`strftime\*(C'\fR function to define the name of the new
 segments to write. If this is selected, the output segment name must
 contain a \f(CW\*(C`strftime\*(C'\fR function template. Default value is
 \&\f(CW0\fR.
-.IP "\fBbreak_non_keyframes\fR \fI1|0\fR" 4
-.IX Item "break_non_keyframes 1|0"
+.IP "\fBbreak_non_keyframes\fR \fI1|0\fR\fB \fR" 4
+.IX Item "break_non_keyframes 1|0 "
 If enabled, allow segments to start on frames other than keyframes. This
 improves behavior on some players when the time between keyframes is
 inconsistent, but may make things worse on others, and can cause some oddities
 during seeking. Defaults to \f(CW0\fR.
-.IP "\fBreset_timestamps\fR \fI1|0\fR" 4
-.IX Item "reset_timestamps 1|0"
+.IP "\fBreset_timestamps\fR \fI1|0\fR\fB \fR" 4
+.IX Item "reset_timestamps 1|0 "
 Reset timestamps at the beginning of each segment, so that each segment
 will start with near-zero timestamps. It is meant to ease the playback
 of the generated segments. May not work with some combinations of
 muxers/codecs. It is set to \f(CW0\fR by default.
-.IP "\fBinitial_offset\fR \fIoffset\fR" 4
-.IX Item "initial_offset offset"
+.IP "\fBinitial_offset\fR \fIoffset\fR\fB \fR" 4
+.IX Item "initial_offset offset "
 Specify timestamp offset to apply to the output packet timestamps. The
 argument must be a time duration specification, and defaults to 0.
-.IP "\fBwrite_empty_segments\fR \fI1|0\fR" 4
-.IX Item "write_empty_segments 1|0"
+.IP "\fBwrite_empty_segments\fR \fI1|0\fR\fB \fR" 4
+.IX Item "write_empty_segments 1|0 "
 If enabled, write an empty segment if there are no packets during the period a
 segment would usually span. Otherwise, the segment will be filled with the next
 packet written. Defaults to \f(CW0\fR.
@@ -3155,15 +3156,15 @@ Specify size of the queue (number of packets). Default value is 60.
 .IX Item "format_opts"
 Specify format options for the underlying muxer. Muxer options can be specified
 as a list of \fIkey\fR=\fIvalue\fR pairs separated by ':'.
-.IP "\fBdrop_pkts_on_overflow\fR \fIbool\fR" 4
-.IX Item "drop_pkts_on_overflow bool"
+.IP "\fBdrop_pkts_on_overflow\fR \fIbool\fR\fB \fR" 4
+.IX Item "drop_pkts_on_overflow bool "
 If set to 1 (true), in case the fifo queue fills up, packets will be dropped
 rather than blocking the encoder. This makes it possible to continue streaming without
 delaying the input, at the cost of omitting part of the stream. By default
 this option is set to 0 (false), so in such cases the encoder will be blocked
 until the muxer processes some of the packets and none of them is lost.
-.IP "\fBattempt_recovery\fR \fIbool\fR" 4
-.IX Item "attempt_recovery bool"
+.IP "\fBattempt_recovery\fR \fIbool\fR\fB \fR" 4
+.IX Item "attempt_recovery bool "
 If failure occurs, attempt to recover the output. This is especially useful
 when used with network output, since it makes it possible to restart streaming transparently.
 By default this option is set to 0 (false).
@@ -3171,12 +3172,12 @@ By default this option is set to 0 (false).
 .IX Item "max_recovery_attempts"
 Sets maximum number of successive unsuccessful recovery attempts after which
 the output fails permanently. By default this option is set to 0 (unlimited).
-.IP "\fBrecovery_wait_time\fR \fIduration\fR" 4
-.IX Item "recovery_wait_time duration"
+.IP "\fBrecovery_wait_time\fR \fIduration\fR\fB \fR" 4
+.IX Item "recovery_wait_time duration "
 Waiting time before the next recovery attempt after previous unsuccessful
 recovery attempt. Default value is 5 seconds.
-.IP "\fBrecovery_wait_streamtime\fR \fIbool\fR" 4
-.IX Item "recovery_wait_streamtime bool"
+.IP "\fBrecovery_wait_streamtime\fR \fIbool\fR\fB \fR" 4
+.IX Item "recovery_wait_streamtime bool "
 If set to 0 (false), the real time is used when waiting for the recovery
 attempt (i.e. the recovery will be attempted after at least
 recovery_wait_time seconds).
@@ -3184,14 +3185,14 @@ If set to 1 (true), the time of the processed stream is taken into account
 instead (i.e. the recovery will be attempted after at least \fIrecovery_wait_time\fR
 seconds of the stream is omitted).
 By default, this option is set to 0 (false).
-.IP "\fBrecover_any_error\fR \fIbool\fR" 4
-.IX Item "recover_any_error bool"
+.IP "\fBrecover_any_error\fR \fIbool\fR\fB \fR" 4
+.IX Item "recover_any_error bool "
 If set to 1 (true), recovery will be attempted regardless of type of the error
 causing the failure. By default this option is set to 0 (false) and in case of
 certain (usually permanent) errors the recovery is not attempted even when
 \&\fIattempt_recovery\fR is set to 1.
-.IP "\fBrestart_with_keyframe\fR \fIbool\fR" 4
-.IX Item "restart_with_keyframe bool"
+.IP "\fBrestart_with_keyframe\fR \fIbool\fR\fB \fR" 4
+.IX Item "restart_with_keyframe bool "
 Specify whether to wait for the keyframe after recovering from
 queue overflow or failure. This option is set to 0 (false) by default.
 .PP
@@ -3233,8 +3234,8 @@ section in the \fBffmpeg\-utils\fB\|(1) manual\fR).
 .PP
 \fIOptions\fR
 .IX Subsection "Options"
-.IP "\fBuse_fifo\fR \fIbool\fR" 4
-.IX Item "use_fifo bool"
+.IP "\fBuse_fifo\fR \fIbool\fR\fB \fR" 4
+.IX Item "use_fifo bool "
 If set to 1, slave outputs will be processed in separate threads using the \fBfifo\fR
 muxer. This allows to compensate for different speed/latency/reliability of
 outputs and setup transparent recovery. By default this feature is turned off.
@@ -3270,8 +3271,8 @@ be applied e.g. \f(CW\*(C`h264_mp4toannexb\*(C'\fR being applied to an output co
 Options for a bitstream filter must be specified in the form of \f(CW\*(C`opt=value\*(C'\fR.
 .Sp
 Several bitstream filters can be specified, separated by \*(L",\*(R".
-.IP "\fBuse_fifo\fR \fIbool\fR" 4
-.IX Item "use_fifo bool"
+.IP "\fBuse_fifo\fR \fIbool\fR\fB \fR" 4
+.IX Item "use_fifo bool "
 This allows to override tee muxer use_fifo option for individual slave muxer.
 .IP "\fBfifo_options\fR" 4
 .IX Item "fifo_options"
