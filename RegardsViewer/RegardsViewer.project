@@ -179,7 +179,7 @@
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/libexif-master/libexif/.libs"/>
-        <LibraryPath Value="../libextern/libwebp-0.6.0/src/.libs"/>
+        <LibraryPath Value="../libextern/libwebp-0.6.0/"/>
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/CMake/ZenLib"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/CMake"/>
