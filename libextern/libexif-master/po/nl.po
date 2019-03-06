@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libexif-0.6.20\n"
 "Report-Msgid-Bugs-To: libexif-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-01-13 21:21+0100\n"
+"POT-Creation-Date: 2012-07-12 20:41+0200\n"
 "PO-Revision-Date: 2010-12-16 15:50+0100\n"
 "Last-Translator: Erwin Poeze <erwin.poeze@gmail.com>\n"
 "Language-Team: Dutch <vertaling@vrijschrift.org>\n"
@@ -149,7 +149,8 @@ msgstr "Langzame synchronisatie"
 msgid "Auto, red-eye reduction"
 msgstr "Automatisch + rode-ogenreductie"
 
-#: libexif/canon/mnote-canon-entry.c:89 libexif/pentax/mnote-pentax-entry.c:200
+#: libexif/canon/mnote-canon-entry.c:89
+#: libexif/pentax/mnote-pentax-entry.c:200
 msgid "On, red-eye reduction"
 msgstr "Ingeschakeld, rode-ogenreductie"
 
@@ -272,7 +273,8 @@ msgstr "Volledig automatisch"
 #: libexif/canon/mnote-canon-entry.c:121 libexif/canon/mnote-canon-entry.c:179
 #: libexif/canon/mnote-canon-entry.c:201 libexif/canon/mnote-canon-entry.c:288
 #: libexif/canon/mnote-canon-entry.c:395 libexif/exif-entry.c:764
-#: libexif/fuji/mnote-fuji-entry.c:112 libexif/olympus/mnote-olympus-entry.c:93
+#: libexif/fuji/mnote-fuji-entry.c:112
+#: libexif/olympus/mnote-olympus-entry.c:93
 #: libexif/olympus/mnote-olympus-entry.c:203
 #: libexif/pentax/mnote-pentax-entry.c:79
 #: libexif/pentax/mnote-pentax-entry.c:102
@@ -340,7 +342,8 @@ msgstr "Levendig"
 msgid "Neutral"
 msgstr "Neutraal"
 
-#: libexif/canon/mnote-canon-entry.c:135 libexif/pentax/mnote-pentax-entry.c:93
+#: libexif/canon/mnote-canon-entry.c:135
+#: libexif/pentax/mnote-pentax-entry.c:93
 msgid "Flash off"
 msgstr "Flitser uitgeschakeld"
 
@@ -1197,7 +1200,8 @@ msgid "Highest"
 msgstr "Hoogst"
 
 #: libexif/canon/mnote-canon-entry.c:404 libexif/exif-entry.c:734
-#: libexif/fuji/mnote-fuji-entry.c:74 libexif/olympus/mnote-olympus-entry.c:136
+#: libexif/fuji/mnote-fuji-entry.c:74
+#: libexif/olympus/mnote-olympus-entry.c:136
 #: libexif/pentax/mnote-pentax-entry.c:98
 #: libexif/pentax/mnote-pentax-entry.c:246
 msgid "Daylight"
@@ -1290,7 +1294,8 @@ msgstr "Brandpuntsafstand"
 msgid "Settings (Second Part)"
 msgstr "Instellingen (tweede deel)"
 
-#: libexif/canon/mnote-canon-tag.c:38 libexif/olympus/mnote-olympus-entry.c:601
+#: libexif/canon/mnote-canon-tag.c:38
+#: libexif/olympus/mnote-olympus-entry.c:601
 #: libexif/pentax/mnote-pentax-entry.c:177
 msgid "Panorama"
 msgstr "Panorama"
@@ -1345,8 +1350,8 @@ msgstr "Kwaliteit"
 
 #: libexif/canon/mnote-canon-tag.c:59 libexif/fuji/mnote-fuji-tag.c:43
 #: libexif/olympus/mnote-olympus-tag.c:45
-#: libexif/olympus/mnote-olympus-tag.c:127 libexif/pentax/mnote-pentax-tag.c:38
-#: libexif/pentax/mnote-pentax-tag.c:73
+#: libexif/olympus/mnote-olympus-tag.c:127
+#: libexif/pentax/mnote-pentax-tag.c:38 libexif/pentax/mnote-pentax-tag.c:73
 msgid "Flash Mode"
 msgstr "Flitsmodus"
 
@@ -1357,8 +1362,9 @@ msgstr "Drive-modus"
 #: libexif/canon/mnote-canon-tag.c:61 libexif/canon/mnote-canon-tag.c:82
 #: libexif/olympus/mnote-olympus-tag.c:43
 #: libexif/olympus/mnote-olympus-tag.c:134
-#: libexif/olympus/mnote-olympus-tag.c:173 libexif/pentax/mnote-pentax-tag.c:37
-#: libexif/pentax/mnote-pentax-tag.c:74 libexif/pentax/mnote-pentax-tag.c:130
+#: libexif/olympus/mnote-olympus-tag.c:173
+#: libexif/pentax/mnote-pentax-tag.c:37 libexif/pentax/mnote-pentax-tag.c:74
+#: libexif/pentax/mnote-pentax-tag.c:130
 msgid "Focus Mode"
 msgstr "Scherpstellingsmodus"
 
@@ -1377,7 +1383,8 @@ msgstr "Direct fotograferen"
 #: libexif/canon/mnote-canon-tag.c:65 libexif/olympus/mnote-olympus-tag.c:64
 #: libexif/olympus/mnote-olympus-tag.c:101
 #: libexif/olympus/mnote-olympus-tag.c:110
-#: libexif/olympus/mnote-olympus-tag.c:180 libexif/pentax/mnote-pentax-tag.c:89
+#: libexif/olympus/mnote-olympus-tag.c:180
+#: libexif/pentax/mnote-pentax-tag.c:89
 msgid "Digital Zoom"
 msgstr "Digitale zoom"
 
@@ -1749,7 +1756,8 @@ msgstr "chunky-structuur"
 msgid "Planar format"
 msgstr "planar-structuur"
 
-#: libexif/exif-entry.c:671 libexif/exif-entry.c:763 test/nls/test-codeset.c:54
+#: libexif/exif-entry.c:671 libexif/exif-entry.c:763
+#: test/nls/test-codeset.c:54
 msgid "Not defined"
 msgstr "Niet gedefiniëerd"
 
@@ -1899,7 +1907,8 @@ msgid "High saturation"
 msgstr "Hoge verzadiging"
 
 #: libexif/exif-entry.c:698 libexif/exif-entry.c:699
-#: libexif/fuji/mnote-fuji-entry.c:63 libexif/olympus/mnote-olympus-entry.c:208
+#: libexif/fuji/mnote-fuji-entry.c:63
+#: libexif/olympus/mnote-olympus-entry.c:208
 #: libexif/olympus/mnote-olympus-entry.c:217
 #: libexif/pentax/mnote-pentax-entry.c:106
 #: libexif/pentax/mnote-pentax-entry.c:170
@@ -5124,7 +5133,8 @@ msgid "Contrast Curve"
 msgstr "Contrastkromme"
 
 #: libexif/olympus/mnote-olympus-tag.c:71
-#: libexif/olympus/mnote-olympus-tag.c:95 libexif/pentax/mnote-pentax-tag.c:134
+#: libexif/olympus/mnote-olympus-tag.c:95
+#: libexif/pentax/mnote-pentax-tag.c:134
 msgid "Color Mode"
 msgstr "Kleurmodus"
 
@@ -5296,11 +5306,13 @@ msgstr "Zwartniveau"
 msgid "White Balance Setting"
 msgstr "Instelling witbalans"
 
-#: libexif/olympus/mnote-olympus-tag.c:143 libexif/pentax/mnote-pentax-tag.c:87
+#: libexif/olympus/mnote-olympus-tag.c:143
+#: libexif/pentax/mnote-pentax-tag.c:87
 msgid "Red Balance"
 msgstr "Roodbalans"
 
-#: libexif/olympus/mnote-olympus-tag.c:144 libexif/pentax/mnote-pentax-tag.c:86
+#: libexif/olympus/mnote-olympus-tag.c:144
+#: libexif/pentax/mnote-pentax-tag.c:86
 msgid "Blue Balance"
 msgstr "Blauwbalans"
 

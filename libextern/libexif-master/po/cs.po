@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: libexif 0.6.20\n"
 "Report-Msgid-Bugs-To: libexif-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2019-01-13 21:21+0100\n"
+"POT-Creation-Date: 2012-07-12 20:41+0200\n"
 "PO-Revision-Date: 2010-12-16 22:23+0000\n"
 "Last-Translator: Jan Patera <patera@users.sourceforge.net>\n"
 "Language-Team: Czech <translation-team-cs@lists.sourceforge.net>\n"
@@ -146,7 +146,8 @@ msgstr "Pomalá synchronizace"
 msgid "Auto, red-eye reduction"
 msgstr "Automaticky + redukce červených očí"
 
-#: libexif/canon/mnote-canon-entry.c:89 libexif/pentax/mnote-pentax-entry.c:200
+#: libexif/canon/mnote-canon-entry.c:89
+#: libexif/pentax/mnote-pentax-entry.c:200
 msgid "On, red-eye reduction"
 msgstr "Zapnuto + redukce červených očí"
 
@@ -272,7 +273,8 @@ msgstr "Plně automatický"
 #: libexif/canon/mnote-canon-entry.c:121 libexif/canon/mnote-canon-entry.c:179
 #: libexif/canon/mnote-canon-entry.c:201 libexif/canon/mnote-canon-entry.c:288
 #: libexif/canon/mnote-canon-entry.c:395 libexif/exif-entry.c:764
-#: libexif/fuji/mnote-fuji-entry.c:112 libexif/olympus/mnote-olympus-entry.c:93
+#: libexif/fuji/mnote-fuji-entry.c:112
+#: libexif/olympus/mnote-olympus-entry.c:93
 #: libexif/olympus/mnote-olympus-entry.c:203
 #: libexif/pentax/mnote-pentax-entry.c:79
 #: libexif/pentax/mnote-pentax-entry.c:102
@@ -340,7 +342,8 @@ msgstr "Živé"
 msgid "Neutral"
 msgstr "Neutrální"
 
-#: libexif/canon/mnote-canon-entry.c:135 libexif/pentax/mnote-pentax-entry.c:93
+#: libexif/canon/mnote-canon-entry.c:135
+#: libexif/pentax/mnote-pentax-entry.c:93
 msgid "Flash off"
 msgstr "Blesk vypnut"
 
@@ -1197,7 +1200,8 @@ msgid "Highest"
 msgstr "Nejvyšší"
 
 #: libexif/canon/mnote-canon-entry.c:404 libexif/exif-entry.c:734
-#: libexif/fuji/mnote-fuji-entry.c:74 libexif/olympus/mnote-olympus-entry.c:136
+#: libexif/fuji/mnote-fuji-entry.c:74
+#: libexif/olympus/mnote-olympus-entry.c:136
 #: libexif/pentax/mnote-pentax-entry.c:98
 #: libexif/pentax/mnote-pentax-entry.c:246
 msgid "Daylight"
@@ -1290,7 +1294,8 @@ msgstr "Ohnisková vzdálenost"
 msgid "Settings (Second Part)"
 msgstr "Nastavení (druhá část)"
 
-#: libexif/canon/mnote-canon-tag.c:38 libexif/olympus/mnote-olympus-entry.c:601
+#: libexif/canon/mnote-canon-tag.c:38
+#: libexif/olympus/mnote-olympus-entry.c:601
 #: libexif/pentax/mnote-pentax-entry.c:177
 msgid "Panorama"
 msgstr "Panorama"
@@ -1345,8 +1350,8 @@ msgstr "Kvalita"
 
 #: libexif/canon/mnote-canon-tag.c:59 libexif/fuji/mnote-fuji-tag.c:43
 #: libexif/olympus/mnote-olympus-tag.c:45
-#: libexif/olympus/mnote-olympus-tag.c:127 libexif/pentax/mnote-pentax-tag.c:38
-#: libexif/pentax/mnote-pentax-tag.c:73
+#: libexif/olympus/mnote-olympus-tag.c:127
+#: libexif/pentax/mnote-pentax-tag.c:38 libexif/pentax/mnote-pentax-tag.c:73
 msgid "Flash Mode"
 msgstr "Režim blesku"
 
@@ -1357,8 +1362,9 @@ msgstr ""
 #: libexif/canon/mnote-canon-tag.c:61 libexif/canon/mnote-canon-tag.c:82
 #: libexif/olympus/mnote-olympus-tag.c:43
 #: libexif/olympus/mnote-olympus-tag.c:134
-#: libexif/olympus/mnote-olympus-tag.c:173 libexif/pentax/mnote-pentax-tag.c:37
-#: libexif/pentax/mnote-pentax-tag.c:74 libexif/pentax/mnote-pentax-tag.c:130
+#: libexif/olympus/mnote-olympus-tag.c:173
+#: libexif/pentax/mnote-pentax-tag.c:37 libexif/pentax/mnote-pentax-tag.c:74
+#: libexif/pentax/mnote-pentax-tag.c:130
 msgid "Focus Mode"
 msgstr "Režim zaostřování"
 
@@ -1377,7 +1383,8 @@ msgstr "Režim snadného focení"
 #: libexif/canon/mnote-canon-tag.c:65 libexif/olympus/mnote-olympus-tag.c:64
 #: libexif/olympus/mnote-olympus-tag.c:101
 #: libexif/olympus/mnote-olympus-tag.c:110
-#: libexif/olympus/mnote-olympus-tag.c:180 libexif/pentax/mnote-pentax-tag.c:89
+#: libexif/olympus/mnote-olympus-tag.c:180
+#: libexif/pentax/mnote-pentax-tag.c:89
 msgid "Digital Zoom"
 msgstr "Digitální zoom"
 
@@ -1744,7 +1751,8 @@ msgstr ""
 msgid "Planar format"
 msgstr ""
 
-#: libexif/exif-entry.c:671 libexif/exif-entry.c:763 test/nls/test-codeset.c:54
+#: libexif/exif-entry.c:671 libexif/exif-entry.c:763
+#: test/nls/test-codeset.c:54
 msgid "Not defined"
 msgstr "Nedefinováno"
 
@@ -1894,7 +1902,8 @@ msgid "High saturation"
 msgstr "Vysoká sytost"
 
 #: libexif/exif-entry.c:698 libexif/exif-entry.c:699
-#: libexif/fuji/mnote-fuji-entry.c:63 libexif/olympus/mnote-olympus-entry.c:208
+#: libexif/fuji/mnote-fuji-entry.c:63
+#: libexif/olympus/mnote-olympus-entry.c:208
 #: libexif/olympus/mnote-olympus-entry.c:217
 #: libexif/pentax/mnote-pentax-entry.c:106
 #: libexif/pentax/mnote-pentax-entry.c:170
@@ -4809,7 +4818,8 @@ msgid "Contrast Curve"
 msgstr ""
 
 #: libexif/olympus/mnote-olympus-tag.c:71
-#: libexif/olympus/mnote-olympus-tag.c:95 libexif/pentax/mnote-pentax-tag.c:134
+#: libexif/olympus/mnote-olympus-tag.c:95
+#: libexif/pentax/mnote-pentax-tag.c:134
 msgid "Color Mode"
 msgstr "Barevný režim"
 
@@ -4981,11 +4991,13 @@ msgstr ""
 msgid "White Balance Setting"
 msgstr "Nastavení vyvážení bílé"
 
-#: libexif/olympus/mnote-olympus-tag.c:143 libexif/pentax/mnote-pentax-tag.c:87
+#: libexif/olympus/mnote-olympus-tag.c:143
+#: libexif/pentax/mnote-pentax-tag.c:87
 msgid "Red Balance"
 msgstr "Vyvážení červené"
 
-#: libexif/olympus/mnote-olympus-tag.c:144 libexif/pentax/mnote-pentax-tag.c:86
+#: libexif/olympus/mnote-olympus-tag.c:144
+#: libexif/pentax/mnote-pentax-tag.c:86
 msgid "Blue Balance"
 msgstr "Vyvážení modré"
 
