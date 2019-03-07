@@ -1,5 +1,5 @@
 #include <header.h>
-#include "ThumbnailFacePertinenceToolbar.h"
+#include "ThumbnailFacePertinenceToolBar.h"
 #include <ToolbarSlide.h>
 #include <ToolbarTexte.h>
 #include <LibResource.h>
