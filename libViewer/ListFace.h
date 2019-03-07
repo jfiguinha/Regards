@@ -2,7 +2,7 @@
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
-#include "ThumbnailFacePertinenceToolbar.h"
+#include "ThumbnailFacePertinenceToolBar.h"
 #include <WindowMain.h>
 using namespace Regards::Window;
 using namespace std;

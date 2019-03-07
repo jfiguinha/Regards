@@ -90,8 +90,8 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Thumbnail">
     <VirtualDirectory Name="src">
+      <File Name="ThumbnailFacePertinenceToolBar.cpp"/>
       <File Name="ThumbnailFace.cpp"/>
-      <File Name="ThumbnailFacePertinenceToolbar.cpp"/>
       <File Name="ThumbnailFaceToolBar.cpp"/>
       <File Name="ThumbnailFolder.cpp"/>
       <File Name="ThumbnailToolBar.cpp"/>
@@ -102,8 +102,8 @@
       <File Name="ThumbnailViewerVideo.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="ThumbnailFacePertinenceToolBar.h"/>
       <File Name="ThumbnailFace.h"/>
-      <File Name="ThumbnailFacePertinenceToolbar.h"/>
       <File Name="ThumbnailFaceToolBar.h"/>
       <File Name="ThumbnailFolder.h"/>
       <File Name="ThumbnailToolBar.h"/>
