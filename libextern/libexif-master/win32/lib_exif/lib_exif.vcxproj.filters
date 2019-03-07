@@ -92,9 +92,6 @@
     <ClInclude Include="..\..\libexif\_stdint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\libexif\exif-byte-order.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -180,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\libexif\pentax\mnote-pentax-tag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -69,6 +69,9 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)\libExtern\libexif-master\win32\lib_exif;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -134,8 +137,8 @@
     <ClCompile Include="..\..\libexif\exif-loader.c" />
     <ClCompile Include="..\..\libexif\exif-log.c" />
     <ClCompile Include="..\..\libexif\exif-mem.c">
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\libextern\libexif-master\libexif\config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\libextern\libexif-master\libexif\config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\libextern\libexif-master\win32\lib_exif\config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\libextern\libexif-master\win32\lib_exif\config.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="..\..\libexif\canon\exif-mnote-data-canon.c" />
     <ClCompile Include="..\..\libexif\fuji\exif-mnote-data-fuji.c" />
