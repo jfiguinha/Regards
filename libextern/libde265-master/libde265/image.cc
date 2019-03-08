@@ -47,6 +47,12 @@
 #elif _WIN32
 #define ALLOC_ALIGNED(alignment, size)         _aligned_malloc((size), (alignment))
 #define FREE_ALIGNED(mem)                      _aligned_free((mem))
+#elif __APPLE__
+static inline void *ALLOC_ALIGNED(size_t alignment, size_t size) {
+    void *mem = malloc(size);
+    return mem;
+};
+#define FREE_ALIGNED(mem)                       free((mem))
 #elif defined(HAVE_POSIX_MEMALIGN)
 static inline void *ALLOC_ALIGNED(size_t alignment, size_t size) {
     void *mem = NULL;
