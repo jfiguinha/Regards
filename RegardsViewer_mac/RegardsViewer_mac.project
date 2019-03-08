@@ -28,7 +28,9 @@
   </Plugins>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="src"/>
+  <VirtualDirectory Name="src">
+    <File Name="../Regards/Regards.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
