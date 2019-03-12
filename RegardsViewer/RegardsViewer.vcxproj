@@ -138,6 +138,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>heif_shared.lib;swscale.lib;libfftw3f-3.lib;glut64.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>cp $(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll $(SolutionDir)\x64\Debug
+cp -r $(SolutionDir)\Regards\Resources $(SolutionDir)\x64\Debug
+cp $(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll $(SolutionDir)\x64\Debug
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -218,8 +224,16 @@
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>mkdir "$(SolutionDir)\x64\Release\Resources"
+mkdir "$(SolutionDir)\x64\Release\Resources\1"
+XCOPY /Y  "$(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll" "$(SolutionDir)\x64\Release"
+XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Release\Resources"
+XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Release\Resources\1"
+XCOPY /Y "$(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll" "$(SolutionDir)\x64\Release"
+XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Release"
+XCOPY /Y "$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\bin\x64\turbojpeg.dll" "$(SolutionDir)\x64\Release"
+XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Release"
+XCOPY /Y "C:\Program Files (x86)\AMD APP SDK\3.0\bin\x86_64\glut64.dll"  "$(SolutionDir)\x64\Release"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
