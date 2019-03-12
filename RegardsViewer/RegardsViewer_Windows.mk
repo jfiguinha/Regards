@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=jfigu
-Date                   :=06/03/2019
+Date                   :=11/03/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
 SharedObjectLinkerName :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe -shared -fPIC
@@ -77,11 +77,198 @@ Objects=$(Objects0)
 .PHONY: all clean PreBuild PrePreBuild PostBuild MakeIntermediateDirs
 all: $(OutputFile)
 
-$(OutputFile): $(IntermediateDirectory)/.d $(Objects) 
+$(OutputFile): $(IntermediateDirectory)/.d "..\.build-debug\include" "..\.build-debug\libWindowMain" "..\.build-debug\libWindow" "..\.build-debug\libViewer" "..\.build-debug\libVideoThumbnail" "..\.build-debug\libVideoFFMpeg" "..\.build-debug\libUtility" "..\.build-debug\libTheme" "..\.build-debug\libSqlite" "..\.build-debug\libSqlEngine" "..\.build-debug\libSqlData" "..\.build-debug\libResource" "..\.build-debug\libPrint" "..\.build-debug\libPicture" "..\.build-debug\libParameter" "..\.build-debug\libOpenCL" "..\.build-debug\libIntro" "..\.build-debug\libGeolocalisation" "..\.build-debug\libFiltre" "..\.build-debug\libExif" "..\.build-debug\libEmail" "..\.build-debug\libDialog" "..\.build-debug\libDataStructure" "..\.build-debug\libCompress" "..\.build-debug\RegardsRaw" "..\.build-debug\CxImage" "..\.build-debug\libControl" "..\.build-debug\wxCheckTree" "..\.build-debug\wxSVG" "..\.build-debug\libMediaInfo" "..\.build-debug\libPsd" "..\.build-debug\libOpenGL" "..\.build-debug\libJbig" "..\.build-debug\libavcodec" "..\.build-debug\libbpg" "..\.build-debug\libavutil" "..\.build-debug\libRegardsBpg_windows" $(Objects) 
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
+
+"..\.build-debug\include":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\include"
+
+
+"..\.build-debug\libWindowMain":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libWindowMain"
+
+
+"..\.build-debug\libWindow":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libWindow"
+
+
+"..\.build-debug\libViewer":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libViewer"
+
+
+"..\.build-debug\libVideoThumbnail":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libVideoThumbnail"
+
+
+"..\.build-debug\libVideoFFMpeg":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libVideoFFMpeg"
+
+
+"..\.build-debug\libUtility":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libUtility"
+
+
+"..\.build-debug\libTheme":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libTheme"
+
+
+"..\.build-debug\libSqlite":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libSqlite"
+
+
+"..\.build-debug\libSqlEngine":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libSqlEngine"
+
+
+"..\.build-debug\libSqlData":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libSqlData"
+
+
+"..\.build-debug\libResource":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libResource"
+
+
+"..\.build-debug\libPrint":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libPrint"
+
+
+"..\.build-debug\libPicture":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libPicture"
+
+
+"..\.build-debug\libParameter":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libParameter"
+
+
+"..\.build-debug\libOpenCL":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libOpenCL"
+
+
+"..\.build-debug\libIntro":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libIntro"
+
+
+"..\.build-debug\libGeolocalisation":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libGeolocalisation"
+
+
+"..\.build-debug\libFiltre":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libFiltre"
+
+
+"..\.build-debug\libExif":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libExif"
+
+
+"..\.build-debug\libEmail":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libEmail"
+
+
+"..\.build-debug\libDialog":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libDialog"
+
+
+"..\.build-debug\libDataStructure":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libDataStructure"
+
+
+"..\.build-debug\libCompress":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libCompress"
+
+
+"..\.build-debug\RegardsRaw":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\RegardsRaw"
+
+
+"..\.build-debug\CxImage":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\CxImage"
+
+
+"..\.build-debug\libControl":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libControl"
+
+
+"..\.build-debug\wxCheckTree":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\wxCheckTree"
+
+
+"..\.build-debug\wxSVG":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\wxSVG"
+
+
+"..\.build-debug\libMediaInfo":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libMediaInfo"
+
+
+"..\.build-debug\libPsd":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libPsd"
+
+
+"..\.build-debug\libOpenGL":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libOpenGL"
+
+
+"..\.build-debug\libJbig":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libJbig"
+
+
+"..\.build-debug\libavcodec":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libavcodec"
+
+
+"..\.build-debug\libbpg":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libbpg"
+
+
+"..\.build-debug\libavutil":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libavutil"
+
+
+"..\.build-debug\libRegardsBpg_windows":
+	@$(MakeDirCommand) "..\.build-debug"
+	@echo stam > "..\.build-debug\libRegardsBpg_windows"
+
+
+
 
 PostBuild:
 	@echo Executing Post Build commands ...

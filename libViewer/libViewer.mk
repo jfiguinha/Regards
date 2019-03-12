@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=jfigu
-Date                   :=06/03/2019
+Date                   :=11/03/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
 SharedObjectLinkerName :=C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe -shared -fPIC
@@ -65,10 +65,10 @@ CodeLiteDir:=C:\Program Files\CodeLite
 PATH:=C:\msys64\usr\bin;$PATH
 WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
 WXCFG:=lib/mswud
-Objects0=$(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewThumbnailSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ListFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/AnimationToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerThemeInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParamInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/CriteriaFolderSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewFaceSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/ModificationManager.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ViewerParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/CentralWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewThumbnailSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ListFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/AnimationToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerThemeInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParamInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/CriteriaFolderSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewFaceSplitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/ModificationManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParam.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/PreviewToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/CentralWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) $(IntermediateDirectory)/FilterPreviewSplitter.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/ThumbnailVideoPanel.cpp$(ObjectSuffix) 
 
 
@@ -114,14 +114,6 @@ $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(DependSuffix): InfosSep
 
 $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(PreprocessSuffix): InfosSeparationBarExplorer.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(PreprocessSuffix) InfosSeparationBarExplorer.cpp
-
-$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix): CategoryFolderWindow.cpp $(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/CategoryFolderWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix): CategoryFolderWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix) -MM CategoryFolderWindow.cpp
-
-$(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix): CategoryFolderWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix) CategoryFolderWindow.cpp
 
 $(IntermediateDirectory)/PreviewThumbnailSplitter.cpp$(ObjectSuffix): PreviewThumbnailSplitter.cpp $(IntermediateDirectory)/PreviewThumbnailSplitter.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/PreviewThumbnailSplitter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PreviewThumbnailSplitter.cpp$(ObjectSuffix) $(IncludePath)
@@ -363,6 +355,14 @@ $(IntermediateDirectory)/ListPicture.cpp$(DependSuffix): ListPicture.cpp
 $(IntermediateDirectory)/ListPicture.cpp$(PreprocessSuffix): ListPicture.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ListPicture.cpp$(PreprocessSuffix) ListPicture.cpp
 
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix): CategoryFolderWindow.cpp $(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/CategoryFolderWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix): CategoryFolderWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix) -MM CategoryFolderWindow.cpp
+
+$(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix): CategoryFolderWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix) CategoryFolderWindow.cpp
+
 $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix): ViewerTheme.cpp $(IntermediateDirectory)/ViewerTheme.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/ViewerTheme.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ViewerTheme.cpp$(DependSuffix): ViewerTheme.cpp
@@ -379,6 +379,14 @@ $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix): ThumbnailToolB
 $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix): ThumbnailToolBarZoom.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix) ThumbnailToolBarZoom.cpp
 
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix): ThumbnailFacePertinenceToolBar.cpp $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/ThumbnailFacePertinenceToolBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix): ThumbnailFacePertinenceToolBar.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix) -MM ThumbnailFacePertinenceToolBar.cpp
+
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix): ThumbnailFacePertinenceToolBar.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix) ThumbnailFacePertinenceToolBar.cpp
+
 $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix): ThumbnailFace.cpp $(IntermediateDirectory)/ThumbnailFace.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/ThumbnailFace.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ThumbnailFace.cpp$(DependSuffix): ThumbnailFace.cpp
@@ -386,14 +394,6 @@ $(IntermediateDirectory)/ThumbnailFace.cpp$(DependSuffix): ThumbnailFace.cpp
 
 $(IntermediateDirectory)/ThumbnailFace.cpp$(PreprocessSuffix): ThumbnailFace.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFace.cpp$(PreprocessSuffix) ThumbnailFace.cpp
-
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(ObjectSuffix): ThumbnailFacePertinenceToolbar.cpp $(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/ThumbnailFacePertinenceToolbar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(DependSuffix): ThumbnailFacePertinenceToolbar.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(DependSuffix) -MM ThumbnailFacePertinenceToolbar.cpp
-
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(PreprocessSuffix): ThumbnailFacePertinenceToolbar.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFacePertinenceToolbar.cpp$(PreprocessSuffix) ThumbnailFacePertinenceToolbar.cpp
 
 $(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix): ThumbnailFaceToolBar.cpp $(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git/Regards/libViewer/ThumbnailFaceToolBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix) $(IncludePath)

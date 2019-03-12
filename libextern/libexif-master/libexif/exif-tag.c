@@ -877,8 +877,7 @@ static const struct TagEntry {
  * Return the number of entries in the EXIF tag table, including the
  * terminating NULL entry.
  */
-inline unsigned int
-exif_tag_table_count (void)
+unsigned int exif_tag_table_count (void)
 {
 	return sizeof (ExifTagTable) / sizeof (ExifTagTable[0]);
 }

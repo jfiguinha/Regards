@@ -131,6 +131,9 @@
     <Image Include="D:\developpement\regardsv2\RegardsWxWidget\resource\viewer.ico">
       <Filter>Fichiers de ressources</Filter>
     </Image>
+    <Image Include="..\Regards\Resources\viewer.ico">
+      <Filter>Fichiers de ressources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
