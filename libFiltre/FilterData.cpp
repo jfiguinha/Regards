@@ -999,7 +999,6 @@ void CFiltreData::InitFilterListLabel()
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_DECODE_RAW, "LBLBLACKROOM"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_VIDEO,"LBLVIDEOEFFECT"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_NLMEAN,"LBLNLMEANS"));
-	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_BILATERAL,"LBLNLMEANS"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_BILATERAL,"LBLBILATERALDENOISING"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_CLAHE,"LBLENHANCELOCALCONTRAST"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_ROTATE90, "LBLROTATE90"));

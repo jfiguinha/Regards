@@ -99,8 +99,9 @@ int CScrollbarVerticalWnd::GetWidthSize()
 
 void CScrollbarVerticalWnd::CalculBarSize()
 {
-	barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	barEndY = height - barStartY;
+	//barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+	barStartY = 0;
+    barEndY = height - barStartY;
 
 	if (showEmptyRectangle)
 	{
@@ -266,8 +267,8 @@ void CScrollbarVerticalWnd::DrawElement(wxDC * dc)
 
 	FillRect(dc, rc, themeScroll.colorBack);
 
-	DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
-	DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
+	//DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
+	//DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
 	DrawRectangleElement(dc, themeScroll.colorBar);
 }
 
@@ -545,16 +546,17 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 	else
 	{
 
-		if (FindTopTriangle(yPos, xPos))
-			DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangleActif);
-		else if (FindBottomTriangle(yPos, xPos))
-			DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangleActif);
-		else if (FindRectangleBar(yPos, xPos))
+		//if (FindTopTriangle(yPos, xPos))
+		//	DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangleActif);
+		//else if (FindBottomTriangle(yPos, xPos))
+		//	DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangleActif);
+		//else if (FindRectangleBar(yPos, xPos))
+        if (FindRectangleBar(yPos, xPos))
 			DrawRectangleElement(&dc, themeScroll.colorBarActif);
 		else
 		{
-			DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangle);
-			DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
+			//DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangle);
+			//DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
 			DrawRectangleElement(&dc, themeScroll.colorBar);
 		}
 	}

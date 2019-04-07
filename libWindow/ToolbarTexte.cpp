@@ -57,17 +57,20 @@ void CToolbarTexte::DrawShapeElement(wxDC * dc, const wxRect &rc)
 {
 	if (themeTexte.GetRectangleSize() > 0)
 	{
+        
 		wxPen penTop(themeTexte.rectTop, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penTop);
 		dc->DrawLine(rc.x, rc.height, rc.width, rc.height);
-		dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
+		//dc->DrawLine(rc.x, rc.height, rc.x, rc.y);
 		dc->SetPen(wxNullPen);
-
+        
+        /*
 		wxPen penBottom(themeTexte.rectBottom, themeTexte.GetRectangleSize(), wxPENSTYLE_SOLID);
 		dc->SetPen(penBottom);
 		dc->DrawLine(rc.x, rc.y, rc.width, rc.y);
-		dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
+        dc->DrawLine(rc.width, rc.y, rc.width, rc.height);
 		dc->SetPen(wxNullPen);
+        */
 	}
 }
 
@@ -112,20 +115,22 @@ void CToolbarTexte::CreatePushButton(wxDC * dc, const int &x, const int &y)
 	rc.width = x + GetWidth() - size;
 	rc.y = y + size;
 	rc.height = y + GetHeight() - size;
-    
+
+    /*
     wxRect rcColor;
     rcColor.x = x + size;
     rcColor.width = GetWidth() - size;
     rcColor.y = y + size;
     rcColor.height = GetHeight() - size;
-    CWindowMain::FillRect(dc, rcColor, wxColor(255,255,255));
+    CWindowMain::FillRect(dc, rcColor, wxColor(255,255,255));  
+    */
 	DrawShapeElement(dc, rc);
-	DrawElement(dc, x, y, wxColor(0,0,0));
+	DrawElement(dc, x, y, themeTexte.font.GetColorFont());
 }
 
 void CToolbarTexte::CreateInactifButton(wxDC * dc, const int &x, const int &y)
 {
-	DrawElement(dc, x, y, themeTexte.font.GetColorFont());
+	DrawElement(dc, x, y, wxColor(0,0,0));
 }
 
 void CToolbarTexte::CreateActifButton(wxDC * dc, const int &x, const int &y)
