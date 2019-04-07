@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+<plist version="0.9">
 <dict>
 	<key>NSPrincipalClass</key>
 	<string>wxNSApplication</string>
@@ -17,8 +17,6 @@
 		<string>fr</string>
 		<string>it</string>
 	</array>
-    <key>NSHighResolutionCapable</key>
-     <true/>
 	<key>CFBundleExecutable</key>
 	<string>EXECUTABLE</string>
 	<key>CFBundleIconFile</key>
@@ -34,11 +32,11 @@
 	<key>CFBundleShortVersionString</key>
 	<string>VERSION</string>
 	<key>CFBundleGetInfoString</key>
-	<string>EXECUTABLE version VERSION, (c) 2014-2019 Figuinha</string>
+	<string>EXECUTABLE version VERSION, (c) 2014-2018 Figuinha</string>
 	<key>CFBundleLongVersionString</key>
-	<string>VERSION, (c) 2014-2019 Figuinha</string>
+	<string>VERSION, (c) 2014-2018 Figuinha</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2014-2019 Figuinha</string>
+	<string>Copyright 2014-2018 Figuinha</string>
 	<key>LSRequiresCarbon</key>
 	<true/>
 	<key>CSResourcesFileMapped</key>
@@ -48,6 +46,5 @@
 	    <key>NSAllowsArbitraryLoads</key>
 	    <true/>
 	</dict>
-	
 </dict>
 </plist>
