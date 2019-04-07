@@ -1823,7 +1823,7 @@ void CViewerTheme::LoadTheme()
 		InitThumbnail();
 		InitThumbnailVideo();
 		InitBitmapInfos();
-
+        InitClickInfosToolbar();
 		InitCategoryFolderSplitter();
 		InitPaneFolder();
 		InitFolderTheme();
@@ -1865,6 +1865,7 @@ void CViewerTheme::InitTheme()
 
 	InitInfosPane();
 	InitInfosToolbar();
+    InitClickInfosToolbar();
 
 	InitScrollFiltre();
 	InitScrollThumbnailEffect();

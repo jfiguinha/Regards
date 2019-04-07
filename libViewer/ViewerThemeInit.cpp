@@ -35,7 +35,6 @@ void CViewerThemeInit::Initialize(CViewerTheme * param)
  
         wxStandardPathsBase& stdp = wxStandardPaths::Get();
         wxString documentPath = stdp.GetDocumentsDir();       
-
         
 #ifdef WIN32
 		
@@ -49,6 +48,7 @@ void CViewerThemeInit::Initialize(CViewerTheme * param)
         _singleton = param;
         _singleton->OpenFile(documentPath);
 #endif
+
 	}
 }
 
