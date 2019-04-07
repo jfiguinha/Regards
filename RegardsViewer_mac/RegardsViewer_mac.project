@@ -77,6 +77,48 @@
     <Project Name="FaceRecognition_mac"/>
     <Project Name="libRegardsBpg_mac"/>
   </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libavutil"/>
+    <Project Name="libavcodec"/>
+    <Project Name="FaceRecognition"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -142,6 +184,7 @@
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
+        <Library Value="wxjpeg-3.1"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -223,7 +266,6 @@
         <Library Value="IlmImf"/>
         <Library Value="IexMath"/>
         <Library Value="Half"/>
-        <Library Value="wxjpeg-3.1"/>
         <Library Value="wxpng-3.1"/>
         <Library Value="wxtiff-3.1"/>
         <Library Value="fftw3f"/>
@@ -293,7 +335,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.18.2/" \
+	-e "s/VERSION/2.18.3/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -324,7 +366,7 @@
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.2.1.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libGLEW.2.1.0.dylib</Command>
         <Command Enabled="yes">#cp ../libextern/libaom/libaom.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
-		<Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libzen.0.dylib</Command>
+        <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libzen.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
@@ -341,7 +383,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.1.0.dylib @executable_path/../Frameworks/libGLEW.2.1.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Debug/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libexiv2.26.dylib @executable_path/../Frameworks/libexiv2.26.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmng.2.dylib @executable_path/../Frameworks/libmng.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -448,7 +490,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.18.2/" \
+	-e "s/VERSION/2.18.3/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -478,9 +520,9 @@
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf.23.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf.23.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/libexif/lib/libexif.12.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.2.1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libGLEW.2.1.0.dylib</Command>
-        <Command Enabled="yes">#cp ../libextern/libaom/libaom.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
+        <Command Enabled="no">#cp ../libextern/libaom/libaom.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
-		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libzen.0.dylib</Command>
+        <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libzen.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
@@ -491,18 +533,18 @@
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libHalf.23.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_2.23.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
-        <Command Enabled="yes">#chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
+        <Command Enabled="no">#chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libexif/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">#install_name_tool -change @rpath/libaom.0.dylib @executable_path/../Frameworks/libaom.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="no">#install_name_tool -change @rpath/libaom.0.dylib @executable_path/../Frameworks/libaom.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.1.0.dylib @executable_path/../Frameworks/libGLEW.2.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Release/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libexiv2.26.dylib @executable_path/../Frameworks/libexiv2.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmng.2.dylib @executable_path/../Frameworks/libmng.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /Users/jacques/developpement/codelite/Regards/libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_2.23.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_2.23.dylib @executable_path/../Frameworks/libIex-2_2.23.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_2.23.dylib</Command>
@@ -545,46 +587,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libavutil"/>
-    <Project Name="libavcodec"/>
-    <Project Name="FaceRecognition"/>
-  </Dependencies>
 </CodeLite_Project>
