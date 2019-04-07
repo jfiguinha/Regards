@@ -45,6 +45,9 @@ namespace Regards
 			bool IsPanelThumbnailVisible();
             void UpdateScreenRatio();
             void HidePanel();
+
+
+
 		private:
 
 			void SetThumbnailBottom(wxCommandEvent& aEvent);

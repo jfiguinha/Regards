@@ -75,12 +75,26 @@ CPreviewFaceSplitter::CPreviewFaceSplitter(wxWindow* parent, wxWindowID id, ISta
 		bool isFaceVisible = false;
 		viewerconfig = (CViewerParam *)configParam;
 		this->posBar = viewerconfig->GetPositionPreviewFace();
+		if (this->posBar == viewerconfig->GetDefaultPositionPreviewFace())
+			repositionPosBar = true;
 		viewerconfig->GetShowFace(isFaceVisible);
 		if (!isFaceVisible)
 			this->ClosePane(PANEL2_FILTER);
 
 		this->FastRefresh(this);
 	}
+}
+
+int CPreviewFaceSplitter::GetDefaultPositionForWindow2()
+{
+	if (repositionPosBar)
+	{
+		int width = GetSize().GetX();
+		int pos = width - viewerconfig->GetDefaultPositionPreviewFace();
+		repositionPosBar = false;
+		return pos;
+	}
+	return -1;
 }
 
 CPreviewFaceSplitter::~CPreviewFaceSplitter()

@@ -261,6 +261,11 @@ void CSplitter::DrawSeparationBar(const int &x, const int &y, const int &width, 
 	}
 }
 
+void CSplitter::ResizeEvent()
+{
+
+}
+
 void CSplitter::Resize()
 {
 	windowResize = true;
@@ -270,10 +275,42 @@ void CSplitter::Resize()
 	oldHeight = GetWindowHeight();
 
 	windowResize = false;
+
+	ResizeEvent();
 }
 
 void CSplitter::ResizeVertical()
 {
+	int width = GetSize().GetX();
+	int height = GetSize().GetY();
+
+#if defined(WIN32) 
+	wchar_t Temp[10];
+	swprintf_s(Temp, L"%d", width);
+	OutputDebugString(L"width : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+
+	swprintf_s(Temp, L"%d", height);
+	OutputDebugString(L"height : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+
+	int window1Width = window1->GetSize().GetWidth();
+	int window2Height = window1->GetSize().GetHeight();
+
+	swprintf_s(Temp, L"%d", window1Width);
+	OutputDebugString(L"window1Width : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+
+	swprintf_s(Temp, L"%d", window2Height);
+	OutputDebugString(L"window2Height : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+#endif
+
+
 	if (fastRender && moving)
 	{
 		int x = posBar;// +themeSplitter.themeSeparation.size / 2 + themeSplitter.themeFast.size;
@@ -338,6 +375,12 @@ void CSplitter::ResizeVertical()
 
 void CSplitter::ResizeHorizontal()
 {
+	int width = GetSize().GetX();
+	int height = GetSize().GetY();
+
+	printf("Width %d \n", width);
+	printf("height %d \n", height);
+
 	if (fastRender && moving)
 	{
 		int y = posBar + themeSplitter.themeSeparation.size / 2 + themeSplitter.themeFast.size;

@@ -7,6 +7,8 @@ using namespace rapidxml;
 using namespace Regards::Viewer;
 
 
+#define POSITION_PREVIEW_FACE 300
+
 CViewerParam::CViewerParam()
 {
 	sqlRequest = "";
@@ -24,7 +26,7 @@ CViewerParam::CViewerParam()
 	showVideoThumbnail = true;
 	position = 400;
 	positionCriteriaPreview = 200;
-	positionPreviewFace = 200;
+	positionPreviewFace = POSITION_PREVIEW_FACE;
 	showInfos = true;
 	showFilter = true;
 	delai = 3;
@@ -559,8 +561,14 @@ void CViewerParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai,
 	enAvant = this->enAvant;
 }
 
+int CViewerParam::GetDefaultPositionPreviewFace()
+{
+	return POSITION_PREVIEW_FACE;
+}
+
 int CViewerParam::GetPositionPreviewFace()
 {
+
 	return positionPreviewFace;
 }
 

@@ -35,8 +35,12 @@ namespace Regards
 			void SetNewPosition();
 			void Resize();
 			void Resize(wxWindow * window);
+			
 
 		protected:
+
+			virtual void ResizeEvent();
+
 			int posBar;
 			bool horizontal;
 			int oldWidth;

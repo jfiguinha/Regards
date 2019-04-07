@@ -38,6 +38,10 @@ namespace Regards
 			void ShowFilter();
 			wxString GetSqlRequest();
             void HidePanel();
+
+		protected:
+			int GetDefaultPositionForWindow2();
+
 		private:
 			int posBarInfos;
 			CFilterPreviewSplitter * filterPreviewSplitter;
@@ -49,6 +53,7 @@ namespace Regards
 			int lastWindow;
 			bool isThumbnailBottom;
 			int thumbnailPosition;
+			bool repositionPosBar = false;
 		};
 	}
 }

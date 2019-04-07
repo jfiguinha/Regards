@@ -32,6 +32,7 @@ namespace Regards
 			void GetShowInfos(bool &infos);
 			void GetShowFilter(bool &infos);
 			void GetCheckIsUpdate(bool &infos);
+			int GetDefaultPositionPreviewFace();
 
 			bool GetFullscreenDiaporamaOption();
 			bool GetEnAvantDiaporamaOption();

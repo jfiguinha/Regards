@@ -31,7 +31,8 @@ namespace Regards
 
 			//void ShowWindow(const bool & showInfos);
 			void ShowWindow(const int &id, const bool &show);
-
+			virtual int GetDefaultPositionForWindow2();
+			virtual int GetDefaultPositionForWindow1();
 			int posBarInfos;
 			CPane * paneWindow1;
 			CClickToolbar * clickWindow1Toolbar;

@@ -209,7 +209,13 @@ void CSplitterWithPanel::ShowWindow(const int &id, const bool &show)
 					if (numWindow == 1)
 						SetWindow1FixPosition(true, size);
 					else
+					{
+						int defaultPosition = GetDefaultPositionForWindow1();
+						if (defaultPosition != -1)
+							posBarInfos = defaultPosition;
+
 						SetWindow1FixPosition(false, posBarInfos);
+					}
 					
 				}
 				else
@@ -257,6 +263,8 @@ void CSplitterWithPanel::ShowWindow(const int &id, const bool &show)
 		{
 			if (show)
 			{
+
+
 				paneWindow2->Show(true);
 				clickWindow2Toolbar->Show(false);
 				if (paneWindow1->IsShown())
@@ -265,7 +273,13 @@ void CSplitterWithPanel::ShowWindow(const int &id, const bool &show)
 					if (numWindow == 2)
 						SetWindow2FixPosition(true, size);
 					else
+					{
+						int defaultPosition = GetDefaultPositionForWindow2();
+						if (defaultPosition != -1)
+							posBarInfos = defaultPosition;
+
 						SetWindow2FixPosition(false, posBarInfos);
+					}
 				}
 				else
 				{
@@ -311,4 +325,13 @@ void CSplitterWithPanel::ShowWindow(const int &id, const bool &show)
 		break;
 		}
 	}
+}
+
+int CSplitterWithPanel::GetDefaultPositionForWindow2()
+{
+	return -1;
+}
+int CSplitterWithPanel::GetDefaultPositionForWindow1()
+{
+	return -1;
 }
