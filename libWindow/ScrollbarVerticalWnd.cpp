@@ -2,6 +2,7 @@
 #include "ScrollbarVerticalWnd.h"
 #include "ScrollInterface.h"
 #include <window_id.h>
+#include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
 #define BARSIZEMIN 10
@@ -69,6 +70,8 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(CScrollInterface * scrollInterface,
 	Connect(TIMER_STOPMOVING, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerStopMoving), nullptr, this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseCaptureLost));
     Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CScrollbarVerticalWnd::OnRefresh));
+
+	SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
 }
 
 void CScrollbarVerticalWnd::CallRefresh()
@@ -269,7 +272,7 @@ void CScrollbarVerticalWnd::DrawElement(wxDC * dc)
 
 	//DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
 	//DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
-	DrawRectangleElement(dc, themeScroll.colorBar);
+	DrawRectangleElement(dc, themeScroll.colorBarActif);
 }
 
 void CScrollbarVerticalWnd::ShowEmptyRectangle(const bool &show, const int &heightSize)
@@ -355,6 +358,8 @@ void CScrollbarVerticalWnd::DrawBottomTriangleElement(wxDC * dc, const wxRect &r
 
 void CScrollbarVerticalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colorBar)
 {
+	wxBrush brush = wxBrush(colorBar);
+	dc->SetBrush(brush);
 	wxRect rc = rcPosBar;
 	if (rcPosBar.height > barEndY)
 	{
@@ -370,7 +375,10 @@ void CScrollbarVerticalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colo
 
 	rc.height = rcPosBar.height - rcPosBar.y;
 	rc.width = width - (themeScroll.GetMarge() * 2);
-	FillRect(dc, rc, colorBar);
+	//FillRect(dc, rc, colorBar);
+
+	dc->DrawRoundedRectangle(rc, (width / 2) - themeScroll.GetMarge());
+	dc->SetBrush(wxNullBrush);
 }
 
 void CScrollbarVerticalWnd::SetIsMoving()
@@ -490,7 +498,9 @@ bool CScrollbarVerticalWnd::FindRectangleBar(const int &yPosition, const int &xP
 
 void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 {
-	wxWindowDC dc(this);
+	
+	//wxWindowDC dc(this);
+	wxBufferedPaintDC dc(this);
 
 	wxRect rc;
 	rc.x = 0;
@@ -499,7 +509,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 	rc.height = rcPosTriangleBottom.y - rcPosTriangleTop.height;
 
 	FillRect(&dc, rc, themeScroll.colorBack);
-
+	
 	int diff = pictureHeight - screenHeight;
 	float currentPosPourcentage = ((float)currentPos / (float)diff);
 	float sizeFree = (barEndY - barStartY) - barSize;
@@ -523,6 +533,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 	}
 
 	DrawRectangleElement(&dc, color);
+	//this->Refresh();
 }
 
 void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
@@ -551,6 +562,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 		//else if (FindBottomTriangle(yPos, xPos))
 		//	DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangleActif);
 		//else if (FindRectangleBar(yPos, xPos))
+		/*
         if (FindRectangleBar(yPos, xPos))
 			DrawRectangleElement(&dc, themeScroll.colorBarActif);
 		else
@@ -559,6 +571,8 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 			//DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
 			DrawRectangleElement(&dc, themeScroll.colorBar);
 		}
+		*/
+		this->Refresh();
 	}
 }
 
@@ -725,10 +739,9 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 
 void CScrollbarVerticalWnd::OnPaint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
-    //wxAutoBufferedPaintDC dc(this);
-    //wxGraphicsContext* gc = wxGraphicsContext::Create(dc);    
+	wxBufferedPaintDC dc(this);
 	DrawElement(&dc);
+	SetTransparent(128);
 }
 
 void CScrollbarVerticalWnd::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)

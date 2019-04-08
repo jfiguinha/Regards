@@ -3,6 +3,7 @@
 #include "ScrollInterface.h"
 #include <ClosedHandCursor.h>
 #include <window_id.h>
+#include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
 #define BARSIZEMIN 10
@@ -64,6 +65,8 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(CScrollInterface * scrollInterf
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseCaptureLost));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarHorizontalWnd::OnEraseBackground));
     Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CScrollbarHorizontalWnd::OnRefresh));
+
+	SetBackgroundStyle(wxBG_STYLE_TRANSPARENT);
 }
 
 void CScrollbarHorizontalWnd::CallRefresh()
@@ -324,6 +327,8 @@ void CScrollbarHorizontalWnd::DrawRightTriangleElement(wxDC * dc, const wxRect &
 
 void CScrollbarHorizontalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colorBar)
 {
+	wxBrush brush = wxBrush(colorBar);
+	dc->SetBrush(brush);
 	wxRect rc = rcPosBar;
 
 
@@ -341,7 +346,9 @@ void CScrollbarHorizontalWnd::DrawRectangleElement(wxDC * dc, const wxColour &co
 
 	rc.width = rcPosBar.width - rcPosBar.x;
 	rc.height = height - (themeScroll.GetMarge() * 2);
-	FillRect(dc, rc, colorBar);
+	dc->DrawRoundedRectangle(rc, (height / 2) - themeScroll.GetMarge());
+	dc->SetBrush(wxNullBrush);
+	//FillRect(dc, rc, colorBar);
 }
 
 void CScrollbarHorizontalWnd::OnMouseLeave(wxMouseEvent& event)
@@ -408,7 +415,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	wxWindowDC dc(this);
+	//wxWindowDC dc(this);
 	SetIsMoving();
 
 	if (captureBar)
@@ -428,14 +435,15 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 		//else if (yPos > rcPosTriangleRight.y && yPos < rcPosTriangleRight.height && xPos > rcPosTriangleRight.x && xPos < rcPosTriangleRight.width)
 			//DrawRightTriangleElement(&dc, rcPosTriangleRight, themeScroll.colorTriangleActif);
 		//else if (yPos > rcPosBar.y && yPos < rcPosBar.height && xPos > rcPosBar.x && xPos < rcPosBar.width)
-        if (yPos > rcPosBar.y && yPos < rcPosBar.height && xPos > rcPosBar.x && xPos < rcPosBar.width)
-			DrawRectangleElement(&dc, themeScroll.colorBarActif);
-		else
-		{
+        //if (yPos > rcPosBar.y && yPos < rcPosBar.height && xPos > rcPosBar.x && xPos < rcPosBar.width)
+		//	DrawRectangleElement(&dc, themeScroll.colorBarActif);
+		//else
+		//{
 			//DrawLeftTriangleElement(&dc, rcPosTriangleLeft, themeScroll.colorTriangle);
 			//DrawRightTriangleElement(&dc, rcPosTriangleRight, themeScroll.colorTriangle);
-			DrawRectangleElement(&dc, themeScroll.colorBar);
-		}
+		//	DrawRectangleElement(&dc, themeScroll.colorBar);
+		//}
+		this->Refresh();
 	}
 }
 
@@ -491,15 +499,16 @@ bool CScrollbarHorizontalWnd::FindRectangleBar(const int &yPosition, const int &
 
 void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 {
-	wxWindowDC dc(this);
+	
+	
+	wxBufferedPaintDC dc(this);
 	wxRect rc;
 	rc.x = rcPosTriangleLeft.width;
 	rc.width = rcPosTriangleRight.x - rcPosTriangleLeft.width;
 	rc.y = 0;
 	rc.height = height;
-
 	FillRect(&dc, rc, themeScroll.colorBack);
-
+	
 	int diff = pictureWidth - screenWidth;
 	float currentPosPourcentage = ((float)currentPos / (float)diff);
 	float sizeFree = (barEndX - barStartX) - barSize;
@@ -521,6 +530,8 @@ void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 	}
 
 	DrawRectangleElement(&dc, color);
+	
+	///this->Refresh();
 }
 
 void CScrollbarHorizontalWnd::OnLButtonDown(wxMouseEvent& event)
@@ -676,9 +687,10 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)
 	rc.width = width;
 	rc.height = height;
 	FillRect(dc, rc, themeScroll.colorBack);
+	
 	//DrawLeftTriangleElement(dc, rcPosTriangleLeft, themeScroll.colorTriangle);
 	//DrawRightTriangleElement(dc, rcPosTriangleRight, themeScroll.colorTriangle);
-	DrawRectangleElement(dc, themeScroll.colorBar);
+	DrawRectangleElement(dc, themeScroll.colorBarActif);
 #if defined(WIN32) && defined(_DEBUG)
 	//OutputDebugString(L"CScrollbarHorizontalWnd::OnPaint \n");
 #endif
@@ -686,13 +698,16 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)
 
 void CScrollbarHorizontalWnd::OnPaint(wxPaintEvent& event)
 {
-	wxPaintDC dc(this);
+	wxBufferedPaintDC dc(this);
 	DrawElement(&dc);
+	SetTransparent(128);
 }
+
 
 void CScrollbarHorizontalWnd::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)
 {
 	wxBrush brush = wxBrush(color);
 	dc->SetBrush(brush);
 	dc->DrawRectangle(rc);
+	dc->SetBrush(wxNullBrush);
 }

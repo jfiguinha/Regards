@@ -281,6 +281,14 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 
     }
 
+	wxPoint* pt = new wxPoint();
+	pt->x = xPos;
+	pt->y = yPos;
+	wxWindow* window = this->GetParent();
+	wxCommandEvent localEvent(wxEVT_MOUSEMOVEPOSITION);
+	localEvent.SetClientData(pt);
+	wxPostEvent(window, localEvent);
+
 }
 
 void CTreeWindow::OnLButtonUp(wxMouseEvent& event)

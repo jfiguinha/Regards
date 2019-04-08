@@ -148,7 +148,7 @@ void CListPicture::SetBottom(wxCommandEvent& event)
 	showToolbar = false;
 	thumbToolbar->Show(false);
 	thumbToolbarZoom->Show(false);
-	thumbscrollbar->HideVerticalScroll();
+	//thumbscrollbar->HideVerticalScroll();
 	thumbnailFolder->SetNoVScroll(true);
 	thumbnailFolder->SetCheck(false);
 	thumbnailFolder->Init(&photoVector, typeAffichage);
@@ -167,7 +167,7 @@ void CListPicture::SetRight(wxCommandEvent& event)
 	showToolbar = true;
 	thumbToolbar->Show(true);
 	thumbToolbarZoom->Show(true);
-	thumbscrollbar->ShowVerticalScroll();
+	//thumbscrollbar->ShowVerticalScroll();
 	thumbnailFolder->SetNoVScroll(false);
 	thumbnailFolder->SetCheck(true);
 	thumbnailFolder->Init(&photoVector, typeAffichage);
