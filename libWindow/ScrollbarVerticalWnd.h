@@ -117,6 +117,8 @@ namespace Regards
 
 			CThemeScrollBar themeScroll;
 			CScrollInterface * scrollInterface;
+            
+            bool showTriangle = false;
 		};
 	}
 }

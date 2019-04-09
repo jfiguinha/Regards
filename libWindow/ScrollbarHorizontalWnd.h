@@ -110,6 +110,8 @@ namespace Regards
 			int width;
 			int height;
 			CScrollInterface * scrollInterface;
+            
+            bool showTriangle = false;
 		};
 	}
 }

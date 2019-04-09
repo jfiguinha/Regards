@@ -100,7 +100,11 @@ int CScrollbarVerticalWnd::GetWidthSize()
 
 void CScrollbarVerticalWnd::CalculBarSize()
 {
-	barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    if(showTriangle)
+        barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    else
+        barStartY = 0;//themeScroll.GetRectangleSize();
+        
 	barEndY = height - barStartY;
 
 	if (showEmptyRectangle)
@@ -211,7 +215,7 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 	{
 		currentYPos = top;
 
-		if (TestMaxY())
+		if (TestMaxY() && showTriangle)
 		{
 			ClickBottomTriangle();
 		}
@@ -267,8 +271,11 @@ void CScrollbarVerticalWnd::DrawElement(wxDC * dc)
 
 	FillRect(dc, rc, themeScroll.colorBack);
 
-	DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
-	DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
+    if(showTriangle)
+    {
+        DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
+        DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
+    }
     if (captureBar)
         DrawRectangleElement(dc, themeScroll.colorBarActif);
     else
@@ -394,9 +401,7 @@ void CScrollbarVerticalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colo
 	}
 
 	rc.height = rcPosBar.height - rcPosBar.y;
-	rc.width = width - (themeScroll.GetMarge() * 2);
-	//FillRect(dc, rc, colorBar);
-
+    rc.width = width - (themeScroll.GetMarge() * 2);
 	dc->DrawRoundedRectangle(rc, (width / 2) - themeScroll.GetMarge());
 	dc->SetBrush(wxNullBrush);    
 }
@@ -445,7 +450,10 @@ void CScrollbarVerticalWnd::OnMouseHover(wxMouseEvent& events)
 
 void CScrollbarVerticalWnd::Resize()
 {
-	barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    if(showTriangle)
+        barStartY = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    else
+        barStartY = themeScroll.GetRectangleSize();
 	barEndY = height - barStartY;
 	int tailleY = height;
 
@@ -458,15 +466,19 @@ void CScrollbarVerticalWnd::Resize()
 	if (barPosY == 0)
 		barPosY = barStartY;
 
-	rcPosTriangleTop.x = themeScroll.GetMarge();
-	rcPosTriangleTop.width = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	rcPosTriangleTop.y = themeScroll.GetMarge();
-	rcPosTriangleTop.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    if(showTriangle)
+    {
+        rcPosTriangleTop.x = themeScroll.GetMarge();
+        rcPosTriangleTop.width = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+        rcPosTriangleTop.y = themeScroll.GetMarge();
+        rcPosTriangleTop.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
 
-	rcPosTriangleBottom.x = themeScroll.GetMarge();
-	rcPosTriangleBottom.width = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
-	rcPosTriangleBottom.y = tailleY - themeScroll.GetRectangleSize() - themeScroll.GetMarge();
-	rcPosTriangleBottom.height = tailleY - themeScroll.GetMarge();
+        rcPosTriangleBottom.x = themeScroll.GetMarge();
+        rcPosTriangleBottom.width = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+        rcPosTriangleBottom.y = tailleY - themeScroll.GetRectangleSize() - themeScroll.GetMarge();
+        rcPosTriangleBottom.height = tailleY - themeScroll.GetMarge();        
+    }
+
 
 	if (barEndY > 0)
 	{
@@ -659,14 +671,16 @@ void CScrollbarVerticalWnd::OnLButtonDown(wxMouseEvent& event)
 	int yPos = event.GetY();
 	//bool initTimer = false;
 
-	if (FindTopTriangle(yPos, xPos))
+    //if(showTriangle)
+
+	if (showTriangle && FindTopTriangle(yPos, xPos))
 	{
 		scrollMoving = true;
 		//initTimer = true;
 		ClickTopTriangle();
 		triangleTop->Start(100);
 	}
-	else if (FindBottomTriangle(yPos, xPos))
+	else if (showTriangle && FindBottomTriangle(yPos, xPos))
 	{
 		SetIsMoving();
 		//initTimer = true;

@@ -130,7 +130,7 @@ bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 		currentXPos = left;
 		TestMaxX();
 
-		if (TestMaxX())
+		if (TestMaxX() && showTriangle)
 		{
 			ClickRightTriangle();
 		}
@@ -212,7 +212,10 @@ bool CScrollbarHorizontalWnd::UpdateScrollBar(const int &posLargeur, const int &
 
 void CScrollbarHorizontalWnd::CalculBarSize()
 {
-	barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    if(showTriangle)
+        barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    else
+        barStartX = 0;
 	barEndX = width - barStartX;
 
 	int diff = pictureWidth - screenWidth;
@@ -395,7 +398,11 @@ void CScrollbarHorizontalWnd::OnMouseHover(wxMouseEvent& event)
 
 void CScrollbarHorizontalWnd::Resize()
 {
-	barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    if(showTriangle)
+        barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
+    else
+        barStartX = 0;
+        
 	barEndX = width - barStartX;
 	//int tailleY = height;
 
@@ -563,14 +570,16 @@ void CScrollbarHorizontalWnd::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 	//bool initTimer = false;
+    
+    //if(showTriangle)
 
-	if (FindLeftTriangle(yPos, xPos))
+	if (showTriangle && FindLeftTriangle(yPos, xPos))
 	{
 		ClickLeftTriangle();
 		//initTimer = true;
 		triangleLeft->Start(100);
 	}
-	else if (FindRightTriangle(yPos, xPos))
+	else if (showTriangle && FindRightTriangle(yPos, xPos))
 	{
 		ClickRightTriangle();
 		//initTimer = true;
@@ -707,8 +716,11 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)
 	rc.width = width;
 	rc.height = height;
 	FillRect(dc, rc, themeScroll.colorBack);
-	DrawLeftTriangleElement(dc, rcPosTriangleLeft, themeScroll.colorTriangle);
-	DrawRightTriangleElement(dc, rcPosTriangleRight, themeScroll.colorTriangle);
+    if(showTriangle)
+    {
+        DrawLeftTriangleElement(dc, rcPosTriangleLeft, themeScroll.colorTriangle);
+        DrawRightTriangleElement(dc, rcPosTriangleRight, themeScroll.colorTriangle);
+    }
 	//DrawRectangleElement(dc, themeScroll.colorBar);
     if (captureBar)
         DrawRectangleElement(dc, themeScroll.colorBarActif);
