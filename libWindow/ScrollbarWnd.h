@@ -49,6 +49,8 @@ namespace Regards
 			wxTimer* loadingTimer;
 			bool showV;
 			bool showH;
+			bool _showV = false;
+			bool _showH = false;
 			int width;
 			int height;
             bool useScaleFactor = false;

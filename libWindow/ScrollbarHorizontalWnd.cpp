@@ -427,6 +427,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxX();
 		MoveBar(currentXPos, themeScroll.colorBarActif);
         scrollInterface->SetLeftPosition(currentXPos);
+		this->Refresh();
     }
 	else
 	{
@@ -442,8 +443,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 			//DrawLeftTriangleElement(&dc, rcPosTriangleLeft, themeScroll.colorTriangle);
 			//DrawRightTriangleElement(&dc, rcPosTriangleRight, themeScroll.colorTriangle);
 		//	DrawRectangleElement(&dc, themeScroll.colorBar);
-		//}
-		this->Refresh();
+		//}	
 	}
 }
 
@@ -500,7 +500,7 @@ bool CScrollbarHorizontalWnd::FindRectangleBar(const int &yPosition, const int &
 void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 {
 	
-	
+	/*
 	wxBufferedPaintDC dc(this);
 	wxRect rc;
 	rc.x = rcPosTriangleLeft.width;
@@ -508,7 +508,7 @@ void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 	rc.y = 0;
 	rc.height = height;
 	FillRect(&dc, rc, themeScroll.colorBack);
-	
+	*/
 	int diff = pictureWidth - screenWidth;
 	float currentPosPourcentage = ((float)currentPos / (float)diff);
 	float sizeFree = (barEndX - barStartX) - barSize;
@@ -529,9 +529,9 @@ void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 		rcPosBar.width = barStartX + barSize;
 	}
 
-	DrawRectangleElement(&dc, color);
+	//DrawRectangleElement(&dc, color);
 	
-	///this->Refresh();
+	
 }
 
 void CScrollbarHorizontalWnd::OnLButtonDown(wxMouseEvent& event)

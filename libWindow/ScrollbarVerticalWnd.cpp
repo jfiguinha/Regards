@@ -498,7 +498,7 @@ bool CScrollbarVerticalWnd::FindRectangleBar(const int &yPosition, const int &xP
 
 void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 {
-	
+	/*
 	//wxWindowDC dc(this);
 	wxBufferedPaintDC dc(this);
 
@@ -509,7 +509,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 	rc.height = rcPosTriangleBottom.y - rcPosTriangleTop.height;
 
 	FillRect(&dc, rc, themeScroll.colorBack);
-	
+	*/
 	int diff = pictureHeight - screenHeight;
 	float currentPosPourcentage = ((float)currentPos / (float)diff);
 	float sizeFree = (barEndY - barStartY) - barSize;
@@ -532,7 +532,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 		rcPosBar.height = barStartY + barSize;
 	}
 
-	DrawRectangleElement(&dc, color);
+	//DrawRectangleElement(&dc, color);
 	//this->Refresh();
 }
 
@@ -553,6 +553,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxY();
 		MoveBar(currentYPos, themeScroll.colorBarActif);
         scrollInterface->SetTopPosition(currentYPos);
+		this->Refresh();
     }
 	else
 	{
@@ -572,7 +573,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 			DrawRectangleElement(&dc, themeScroll.colorBar);
 		}
 		*/
-		this->Refresh();
+		//this->Refresh();
 	}
 }
 

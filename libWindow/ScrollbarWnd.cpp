@@ -32,6 +32,8 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id)
 
 void CScrollbarWnd::OnHide(wxTimerEvent& event)
 {
+	showV = false;
+	showH = false;
 	Resize();
 }
 
@@ -47,29 +49,31 @@ void CScrollbarWnd::SetCentralWindow(CScrollInterface * scrollInterface, const C
 
 void CScrollbarWnd::OnMouseMove(wxCommandEvent& event)
 {
+	_showV = false;
+	_showH = false;
 	wxPoint* pt = (wxPoint *)event.GetClientData();
 	if (pt != nullptr)
 	{
 		int xPos = pt->x;
 		int yPos = pt->y;
 		if (pt->x >= width - scrollVertical->GetWidthSize())
-			showV = true;
-		else
-			showV = false;
+			_showV = true;
 
 		if (pt->y >= height - scrollHorizontal->GetHeightSize())
-			showH = true;
-		else
-			showH = false;
+			_showH = true;
 
 		delete pt;
 
-		if (showV || showH)
+		if (_showH || _showV)
 		{
 			if(loadingTimer->IsRunning())
 				loadingTimer->Stop();
-			else
-				Resize();
+
+			if (_showV)
+				showV = _showV;
+
+			if (_showH)
+				showH = _showH;
 		}
 		else
 		{
@@ -77,6 +81,8 @@ void CScrollbarWnd::OnMouseMove(wxCommandEvent& event)
 			loadingTimer->Start(500, true);
 		}
 	}
+
+	Resize();
 }
 
 void CScrollbarWnd::SetPageSize(const int &pageSize)
