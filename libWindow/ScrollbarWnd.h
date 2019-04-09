@@ -26,6 +26,9 @@ namespace Regards
 
 			void SetPageSize(const int &pageSize);
 			void SetLineSize(const int &lineSize);
+			void HideVerticalScroll();
+			void HideHorizontalScroll();
+			void ShowVerticalScroll();
 			int GetBarWidth();
 			int GetBarHeight();
 			void SetControlSize(const int &width, const int &height, const bool &useScaleFactor = false);
@@ -37,20 +40,15 @@ namespace Regards
 
 		protected:
 
-			void OnHide(wxTimerEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnEraseBackground(wxEraseEvent& event){};
-			void OnMouseMove(wxCommandEvent& event);
 
 			CScrollbarHorizontalWnd * scrollHorizontal;
 			CScrollbarVerticalWnd * scrollVertical;
 			CScrollInterface * scrollInterface;
 
-			wxTimer* loadingTimer;
 			bool showV;
 			bool showH;
-			bool _showV = false;
-			bool _showH = false;
 			int width;
 			int height;
             bool useScaleFactor = false;

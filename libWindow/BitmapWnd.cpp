@@ -903,8 +903,6 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 	}
 
 	MouseClick(xPos * scale_factor, yPos * scale_factor);
-
-	event.Skip();
 }
 
 //-----------------------------------------------------------------
@@ -933,9 +931,6 @@ void CBitmapWnd::OnLButtonUp(wxMouseEvent& event)
 	}
 
 	MouseRelease(xPos, yPos);
-
-
-	event.Skip();
 }
 
 void CBitmapWnd::OnKeyUp(wxKeyEvent& event)
@@ -1143,16 +1138,6 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 	}
 
 	MouseMove(xPos * scale_factor, yPos * scale_factor);
-
-	wxPoint* pt = new wxPoint();
-	pt->x = xPos;
-	pt->y = yPos;
-	wxWindow* window = this->GetParent();
-	wxCommandEvent localEvent(wxEVT_MOUSEMOVEPOSITION);
-	localEvent.SetClientData(pt);
-	wxPostEvent(window, localEvent);
-
-	event.Skip();
 }
 
 

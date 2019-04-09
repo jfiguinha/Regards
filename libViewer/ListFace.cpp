@@ -92,7 +92,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
         thumbFacePertinenceToolbar->Show(true);
 
 	thumbFaceToolbar->Show(true);
-	//thumbscrollbar->ShowVerticalScroll();
+	thumbscrollbar->ShowVerticalScroll();
 	thumbnailFace->SetNoVScroll(false);
 	thumbnailFace->SetCheck(true);
 	thumbnailFace->Init();

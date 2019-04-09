@@ -69,7 +69,7 @@ CThumbnailVideoPanel::CThumbnailVideoPanel(wxWindow* parent, wxWindowID id, ISta
 		thumbnailVideo = new CThumbnailViewerVideo(scrollThumbnailVideo, wxID_ANY, statusBarInterface, theme, checkValidity);
 
 		scrollThumbnailVideo->SetCentralWindow(thumbnailVideo, themeScroll);
-		//scrollThumbnailVideo->HideVerticalScroll();
+		scrollThumbnailVideo->HideVerticalScroll();
 		scrollThumbnailVideo->SetPageSize(1000);
 		scrollThumbnailVideo->SetLineSize(200);
 
