@@ -5,7 +5,7 @@
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
-#define BARSIZEMIN 10
+#define BARSIZEMIN 20
 #define LINESIZE 5
 #define PAGESIZE 50
 
