@@ -1007,9 +1007,9 @@ void CFiltreData::InitFilterListLabel()
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FLIPHORIZONTAL, "LBLFLIPH"));
 	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_WAVE_EFFECT, "LBLWAVEFILTER"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BEST_EXPOSURE, "LBLHDRBESTEXPOSUREFILTER"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HDR_DEBLURRING, "LBLHDRDEBLURRINGFILTER"));
+    //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_HDR_DEBLURRING, "LBLHDRDEBLURRINGFILTER"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_KUWAHARA, "LBLFILTERKUWAHARA"));
-    labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
+    //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
     
 }
