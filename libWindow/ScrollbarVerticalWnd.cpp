@@ -269,7 +269,10 @@ void CScrollbarVerticalWnd::DrawElement(wxDC * dc)
 
 	DrawTopTriangleElement(dc, rcPosTriangleTop, themeScroll.colorTriangle);
 	DrawBottomTriangleElement(dc, rcPosTriangleBottom, themeScroll.colorTriangle);
-	DrawRectangleElement(dc, themeScroll.colorBar);
+    if (captureBar)
+        DrawRectangleElement(dc, themeScroll.colorBarActif);
+    else
+        DrawRectangleElement(dc, themeScroll.colorBar);
 }
 
 void CScrollbarVerticalWnd::ShowEmptyRectangle(const bool &show, const int &heightSize)
@@ -355,6 +358,8 @@ void CScrollbarVerticalWnd::DrawBottomTriangleElement(wxDC * dc, const wxRect &r
 
 void CScrollbarVerticalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colorBar)
 {
+    
+    /*
 	wxRect rc = rcPosBar;
 	if (rcPosBar.height > barEndY)
 	{
@@ -371,7 +376,29 @@ void CScrollbarVerticalWnd::DrawRectangleElement(wxDC * dc, const wxColour &colo
 	rc.height = rcPosBar.height - rcPosBar.y;
 	rc.width = width - (themeScroll.GetMarge() * 2);
 	FillRect(dc, rc, colorBar);
+    */
+    
+	wxBrush brush = wxBrush(colorBar);
+	dc->SetBrush(brush);
+	wxRect rc = rcPosBar;
+	if (rcPosBar.height > barEndY)
+	{
+		rcPosBar.y = barEndY - barSize;
+		rcPosBar.height = barEndY;
+	}
 
+	if (rcPosBar.y < barStartY)
+	{
+		rcPosBar.y = barStartY;
+		rcPosBar.height = barStartY + barSize;
+	}
+
+	rc.height = rcPosBar.height - rcPosBar.y;
+	rc.width = width - (themeScroll.GetMarge() * 2);
+	//FillRect(dc, rc, colorBar);
+
+	dc->DrawRoundedRectangle(rc, (width / 2) - themeScroll.GetMarge());
+	dc->SetBrush(wxNullBrush);    
 }
 
 void CScrollbarVerticalWnd::SetIsMoving()
@@ -532,7 +559,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	wxWindowDC dc(this);
+	//wxWindowDC dc(this);
 	SetIsMoving();
 
 	if (captureBar)
@@ -545,7 +572,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxY();
 		MoveBar(currentYPos, themeScroll.colorBarActif);
         scrollInterface->SetTopPosition(currentYPos);
-    }
+    }/*
 	else
 	{
 
@@ -561,7 +588,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 			DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
 			DrawRectangleElement(&dc, themeScroll.colorBar);
 		}
-	}
+	}*/
 }
 
 bool CScrollbarVerticalWnd::TestMaxY()
@@ -727,7 +754,8 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 
 void CScrollbarVerticalWnd::OnPaint(wxPaintEvent& event)
 {
-	wxBufferedPaintDC dc(this);
+	//wxBufferedPaintDC dc(this);
+    wxPaintDC dc(this);
     //wxAutoBufferedPaintDC dc(this);
     //wxGraphicsContext* gc = wxGraphicsContext::Create(dc);    
 	DrawElement(&dc);
