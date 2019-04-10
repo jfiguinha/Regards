@@ -280,7 +280,7 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
     {
 
     }
-
+    this->GetParent()->GetEventHandler()->ProcessEvent(event);
 }
 
 void CTreeWindow::OnLButtonUp(wxMouseEvent& event)

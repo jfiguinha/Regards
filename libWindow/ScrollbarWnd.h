@@ -12,7 +12,7 @@ namespace Regards
 		class CScrollbarWnd : public wxWindow
 		{
 		public:
-			CScrollbarWnd(wxWindow* parent, wxWindowID id);
+			CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden = true);
 			~CScrollbarWnd();
 
 			void SetCentralWindow(CScrollInterface * scrollInterface, const CThemeScrollBar & theme);
@@ -42,13 +42,17 @@ namespace Regards
 
 			void OnSize(wxSizeEvent& event);
 			void OnEraseBackground(wxEraseEvent& event){};
-
+            void OnMouseMove(wxMouseEvent& event);
+            void OnHide(wxTimerEvent& event);
+            
 			CScrollbarHorizontalWnd * scrollHorizontal;
 			CScrollbarVerticalWnd * scrollVertical;
 			CScrollInterface * scrollInterface;
 
 			bool showV;
 			bool showH;
+            bool _showV = false;
+            bool _showH = false;
 			int width;
 			int height;
             bool useScaleFactor = false;
@@ -56,6 +60,8 @@ namespace Regards
 			int posLargeur;
 			int controlHeight;
 			int controlWidth;
+            bool autohidden = false;
+            wxTimer * loadingTimer;
 		};
 	}
 }

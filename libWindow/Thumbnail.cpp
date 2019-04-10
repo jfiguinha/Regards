@@ -681,6 +681,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 #endif
     }
 
+    this->GetParent()->GetEventHandler()->ProcessEvent(event);
 }
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
