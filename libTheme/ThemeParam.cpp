@@ -22,7 +22,7 @@ CThemeParam::~CThemeParam()
 void CThemeParam::InitBitmapWindow()
 {
 	themeBitmapWindow.colorBack.Set(0, 0, 0);
-	themeBitmapWindow.colorScreen.Set(128, 128, 128); 
+	themeBitmapWindow.colorScreen.Set(50, 54, 63); 
 	themeBitmapWindow.colorFullscreen.Set(0, 0, 0);
 }
 
@@ -98,9 +98,10 @@ void CThemeParam::InitVideoToolbar()
 
 void CThemeParam::InitBitmapToolbar()
 {
-	themeBitmapToolbar.colorBack.Set(30, 30, 30);
-	themeBitmapToolbar.colorTop.Set(74, 74, 74);
-	themeBitmapToolbar.colorBottom.Set(74, 74, 74);
+	themeBitmapToolbar.colorBack.Set(45, 48, 56);
+	themeBitmapToolbar.colorTop.Set(45, 48, 56);
+	//themeBitmapToolbar.colorBottom.Set(74, 74, 74);
+    themeBitmapToolbar.colorBottom.Set(45, 48, 56);
 	themeBitmapToolbar.position = NAVIGATOR_CENTER;
 	themeBitmapToolbar.SetHeight(40);
 	themeBitmapToolbar.SetMargeX(5);

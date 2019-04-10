@@ -27,6 +27,7 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autoh
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CScrollbarWnd::OnSize));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarWnd::OnEraseBackground));
     Connect(wxEVT_MOTION, wxMouseEventHandler(CScrollbarWnd::OnMouseMove));
+    Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarWnd::OnMouseLeave));
 }
 
 void CScrollbarWnd::OnHide(wxTimerEvent& event)
@@ -36,6 +37,10 @@ void CScrollbarWnd::OnHide(wxTimerEvent& event)
 	Resize();
 }
 
+void CScrollbarWnd::OnMouseLeave(wxMouseEvent& event)
+{
+     loadingTimer->Start(500, true);
+}
 
 void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
 {

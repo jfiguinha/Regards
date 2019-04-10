@@ -1315,7 +1315,7 @@ CThemeTitleBar::CThemeTitleBar()
 	croixHeight = 15;
 	height = 30;
 	marge = 5;
-	colorBack.Set(128, 128, 128);
+	colorBack.Set(80, 84, 91);
 	colorCross.Set(0, 0, 0);
 	font.SetColorFont(wxColour(255, 255, 255));
 	font.SetFontSize(14);
@@ -1618,7 +1618,7 @@ CThemeBitmapInfos::CThemeBitmapInfos()
 	themeFont.SetFontSize(16);
 	themeFont.SetFontQuality(DEFAULT_QUALITY);
 	themeFont.SetColorFont(wxColour(255, 255, 255));
-	colorBack.Set(74, 74, 74);
+	colorBack.Set(61, 65, 73);
 	height = 40;
     checkboxHeight = 20;
     checkboxWidth = 20;
@@ -2439,8 +2439,8 @@ CThemeToolbar::CThemeToolbar()
 	isVertical = 0;
 	colorBack.Set(30, 30, 30);
 	//colorTop.Set(74, 74, 74);
-    colorTop.Set(29, 29, 29);
-	colorBottom.Set(29, 29, 29);
+    colorTop.Set(50, 54, 63);
+	colorBottom.Set(50, 54, 63);
     replaceColor.Set(255,255,255);
 };
 

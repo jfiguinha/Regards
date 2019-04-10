@@ -44,6 +44,7 @@ namespace Regards
 			void OnEraseBackground(wxEraseEvent& event){};
             void OnMouseMove(wxMouseEvent& event);
             void OnHide(wxTimerEvent& event);
+            void OnMouseLeave(wxMouseEvent& event);
             
 			CScrollbarHorizontalWnd * scrollHorizontal;
 			CScrollbarVerticalWnd * scrollVertical;

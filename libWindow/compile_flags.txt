@@ -37,6 +37,5 @@
 -I/home/figuinha/developpement/git/Regards/libextern/wxWidgets-master/include
 -D__WXGTK__
 -DwxDEBUG_LEVEL=0
--D_FILE_OFFSET_BITS=64
 -DFFMPEG
--DNDEBUG
+-D_FILE_OFFSET_BITS=64
