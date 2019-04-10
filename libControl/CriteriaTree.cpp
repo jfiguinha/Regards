@@ -150,6 +150,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 	if (filename == picture)
 		return;
     
+    filename = picture;
     this->numPhotoId = numPhotoId;
     
     top = tr.begin();
@@ -259,7 +260,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
                 }
                 else
                 {
-	 for(CCriteria criteria : criteriaVector)
+                    for(CCriteria criteria : criteriaVector)
 					{
                    
 						wxString libelleCategorie = photoCategorie.GetLibelle();
