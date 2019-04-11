@@ -73,8 +73,8 @@ void CViewerTheme::InitThumbnailFaceThemeToolbar()
 void CViewerTheme::InitThumbnailToolbar()
 {
 	themeThumbnailToolbar.colorBack.Set(30, 30, 30);
-	themeThumbnailToolbar.colorTop.Set(29, 29, 29);
-	themeThumbnailToolbar.colorBottom.Set(29, 29, 29);
+	themeThumbnailToolbar.colorTop.Set(50, 54, 63);
+	themeThumbnailToolbar.colorBottom.Set(50, 54, 63);
 	themeThumbnailToolbar.position = NAVIGATOR_CENTER;
 	themeThumbnailToolbar.SetWidth(30);
 	themeThumbnailToolbar.SetHeight(30);
@@ -156,7 +156,7 @@ void CViewerTheme::InitScrollThumbnail()
 	themeScrollThumbnail.colorBack.Set(29, 29, 29);
 	themeScrollThumbnail.colorTriangle.Set(74, 74, 74);
 	themeScrollThumbnail.colorTriangleActif.Set(128, 128, 128);
-	themeScrollThumbnail.colorBar.Set(74, 74, 74);
+	themeScrollThumbnail.colorBar.Set(50, 54, 63);
 	themeScrollThumbnail.colorBarActif.Set(128, 128, 128);
 	themeScrollThumbnail.SetMarge(2);
 }
@@ -251,7 +251,7 @@ void CViewerTheme::InitScrollCategory()
 	themeScrollCategory.colorBack.Set(29, 29, 29);
 	themeScrollCategory.colorTriangle.Set(74, 74, 74);
 	themeScrollCategory.colorTriangleActif.Set(128, 128, 128);
-	themeScrollCategory.colorBar.Set(74, 74, 74);
+	themeScrollCategory.colorBar.Set(50, 54, 63);
 	themeScrollCategory.colorBarActif.Set(128, 128, 128);
 	themeScrollCategory.SetMarge(2);
 }
@@ -259,8 +259,8 @@ void CViewerTheme::InitScrollCategory()
 void CViewerTheme::InitCategoryTree()
 {
 	themeCategoryTree.SetMargeX(5);
-	themeCategoryTree.bgColorOne.Set(29, 29, 29);
-	themeCategoryTree.bgColorTwo.Set(128, 128, 128);
+	themeCategoryTree.bgColorOne.Set(45, 48, 56);
+	themeCategoryTree.bgColorTwo.Set(180, 84, 91);
 }
 
 void CViewerTheme::InitPaneCategory()
@@ -352,9 +352,9 @@ void CViewerTheme::InitBitmapInfos()
 
 void CViewerTheme::InitInfosFileTree()
 {
-	themeInfosFileTree.bgColorOne.Set(29, 29, 29);
+	themeInfosFileTree.bgColorOne.Set(45, 48, 56);
 	themeInfosFileTree.bgColorActif.Set(255, 255, 255);
-	themeInfosFileTree.bgColorTwo.Set(74, 74, 74);
+	themeInfosFileTree.bgColorTwo.Set(80, 84, 91);
 	themeInfosFileTree.SetRowHeight(20);
 	themeInfosFileTree.SetMargeX(5);
 	themeInfosFileTree.themeCheckbox.SetWidth(15);
@@ -382,9 +382,9 @@ void CViewerTheme::InitInfosFileTree()
 
 void CViewerTheme::InitEffectVideoWndTree()
 {
-	themeEffectVideoWndTree.bgColorOne.Set(29, 29, 29);
+	themeEffectVideoWndTree.bgColorOne.Set(45, 48, 56);
 	themeEffectVideoWndTree.bgColorActif.Set(255, 255, 255);
-	themeEffectVideoWndTree.bgColorTwo.Set(74, 74, 74);
+	themeEffectVideoWndTree.bgColorTwo.Set(80, 84, 91);
 	themeEffectVideoWndTree.SetRowHeight(20);
 	themeEffectVideoWndTree.SetMargeX(5);
 	themeEffectVideoWndTree.themeCheckbox.SetWidth(15);
@@ -412,9 +412,9 @@ void CViewerTheme::InitEffectVideoWndTree()
 
 void CViewerTheme::InitHistoryEffectTree()
 {
-	themeHistoryEffectTree.bgColorOne.Set(29, 29, 29);
+	themeHistoryEffectTree.bgColorOne.Set(45, 48, 56);
 	themeHistoryEffectTree.bgColorActif.Set(255, 255, 255);
-	themeHistoryEffectTree.bgColorTwo.Set(74, 74, 74);
+	themeHistoryEffectTree.bgColorTwo.Set(80, 84, 91);
 	themeHistoryEffectTree.SetRowHeight(20);
 	themeHistoryEffectTree.SetMargeX(5);
 	themeHistoryEffectTree.themeCheckbox.SetWidth(15);
@@ -452,7 +452,7 @@ void CViewerTheme::InitThumbnail()
 	themeThumbnail.themeIcone.colorSelectBottom.Set(171, 171, 171);
 	themeThumbnail.colorBack.Set(50, 54, 63);
 	themeThumbnail.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
-	themeThumbnail.themeSeparation.colorBack.Set(74, 74, 74);
+	themeThumbnail.themeSeparation.colorBack.Set(80, 84, 91);
 	//themeThumbnail.themeSeparation.colorBack.Set(45, 45, 48);
 	themeThumbnail.themeSeparation.colorTop.Set(45, 45, 48);
 	themeThumbnail.themeSeparation.colorBottom.Set(45, 45, 48);
@@ -545,7 +545,7 @@ void CViewerTheme::InitScrollThumbnailEffect()
 	themeScrollThumbnailEffect.colorBack.Set(29, 29, 29);
 	themeScrollThumbnailEffect.colorTriangle.Set(74, 74, 74);
 	themeScrollThumbnailEffect.colorTriangleActif.Set(128, 128, 128);
-	themeScrollThumbnailEffect.colorBar.Set(74, 74, 74);
+	themeScrollThumbnailEffect.colorBar.Set(50, 54, 63);
 	themeScrollThumbnailEffect.colorBarActif.Set(128, 128, 128);
 	themeScrollThumbnailEffect.SetMarge(2);
 }
@@ -556,7 +556,7 @@ void CViewerTheme::InitScrollInfosFile()
 	themeScrollInfosFile.colorBack.Set(29, 29, 29);
 	themeScrollInfosFile.colorTriangle.Set(74, 74, 74);
 	themeScrollInfosFile.colorTriangleActif.Set(128, 128, 128);
-	themeScrollInfosFile.colorBar.Set(74, 74, 74);
+	themeScrollInfosFile.colorBar.Set(50, 54, 63);
 	themeScrollInfosFile.colorBarActif.Set(128, 128, 128);
 	themeScrollInfosFile.SetMarge(2);
 }
@@ -567,7 +567,7 @@ void CViewerTheme::InitScrollHistoryEffect()
 	themeScrollHistoryEffect.colorBack.Set(29, 29, 29);
 	themeScrollHistoryEffect.colorTriangle.Set(74, 74, 74);
 	themeScrollHistoryEffect.colorTriangleActif.Set(128, 128, 128);
-	themeScrollHistoryEffect.colorBar.Set(74, 74, 74);
+	themeScrollHistoryEffect.colorBar.Set(50, 54, 63);
 	themeScrollHistoryEffect.colorBarActif.Set(128, 128, 128);
 	themeScrollHistoryEffect.SetMarge(2);
 }
@@ -578,7 +578,7 @@ void CViewerTheme::InitScrollEffectVideo()
 	themeScrollEffectVideo.colorBack.Set(29, 29, 29);
 	themeScrollEffectVideo.colorTriangle.Set(74, 74, 74);
 	themeScrollEffectVideo.colorTriangleActif.Set(128, 128, 128);
-	themeScrollEffectVideo.colorBar.Set(74, 74, 74);
+	themeScrollEffectVideo.colorBar.Set(50, 54, 63);
 	themeScrollEffectVideo.colorBarActif.Set(128, 128, 128);
 	themeScrollEffectVideo.SetMarge(2);
 }
@@ -591,7 +591,7 @@ void CViewerTheme::InitScrollThumbnailVideo()
 	themeScrollThumbnailVideo.colorBack.Set(29, 29, 29);
 	themeScrollThumbnailVideo.colorTriangle.Set(74, 74, 74);
 	themeScrollThumbnailVideo.colorTriangleActif.Set(128, 128, 128);
-	themeScrollThumbnailVideo.colorBar.Set(74, 74, 74);
+	themeScrollThumbnailVideo.colorBar.Set(50, 54, 63);
 	themeScrollThumbnailVideo.colorBarActif.Set(128, 128, 128);
 	themeScrollThumbnailVideo.SetMarge(2);
 }
@@ -602,7 +602,7 @@ void CViewerTheme::InitScrollFiltre()
 	themeScrollFiltre.colorBack.Set(29, 29, 29);
 	themeScrollFiltre.colorTriangle.Set(74, 74, 74);
 	themeScrollFiltre.colorTriangleActif.Set(128, 128, 128);
-	themeScrollFiltre.colorBar.Set(74, 74, 74);
+	themeScrollFiltre.colorBar.Set(50, 54, 63);
 	themeScrollFiltre.colorBarActif.Set(128, 128, 128);
 	themeScrollFiltre.SetMarge(2);
 }

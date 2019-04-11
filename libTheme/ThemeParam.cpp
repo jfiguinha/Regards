@@ -32,7 +32,7 @@ void CThemeParam::InitBitmapScrollbar()
 	themeBitmapScrollbar.colorBack.Set(29, 29, 29);
 	themeBitmapScrollbar.colorTriangle.Set(74, 74, 74);
 	themeBitmapScrollbar.colorTriangleActif.Set(128, 128, 128);
-	themeBitmapScrollbar.colorBar.Set(74, 74, 74);
+	themeBitmapScrollbar.colorBar.Set(50, 54, 63);
 	themeBitmapScrollbar.colorBarActif.Set(128, 128, 128);
 	themeBitmapScrollbar.SetMarge(2);
 }

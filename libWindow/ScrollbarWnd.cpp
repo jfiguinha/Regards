@@ -55,10 +55,10 @@ void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
         _showV = false;
         _showH = false;
 
-        if (xPos >= width - scrollVertical->GetWidthSize())
+        if (xPos >= width - (2 * scrollVertical->GetWidthSize()))
             _showV = true;
 
-        if (yPos >= height - scrollHorizontal->GetHeightSize())
+        if (yPos >= height - ( 2 * scrollHorizontal->GetHeightSize()))
             _showH = true;
 
         if (_showH || _showV)
@@ -148,14 +148,16 @@ CScrollbarVerticalWnd * CScrollbarWnd::GetVScrollbar()
 
 CScrollbarWnd::~CScrollbarWnd()
 {
-	delete(scrollHorizontal);
-	delete(scrollVertical);
+
 	if (loadingTimer != nullptr)
 	{
 		if (loadingTimer->IsRunning())
 			loadingTimer->Stop();
 		delete loadingTimer;
 	}
+	//delete(scrollVertical);
+	//delete(scrollHorizontal);
+	
 }
 
 void CScrollbarWnd::UpdateScreenRatio()

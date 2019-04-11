@@ -32,16 +32,16 @@ void CIntroTheme::InitAboutScrollbar()
 	themeAboutScroll.colorBack.Set(29, 29, 29);
 	themeAboutScroll.colorTriangle.Set(74, 74, 74);
 	themeAboutScroll.colorTriangleActif.Set(128, 128, 128);
-	themeAboutScroll.colorBar.Set(74, 74, 74);
+	themeAboutScroll.colorBar.Set(50, 54, 63);
 	themeAboutScroll.colorBarActif.Set(128, 128, 128);
 	themeAboutScroll.SetMarge(2);
 }
 
 void CIntroTheme::InitAboutTree()
 {
-	themeAbout.bgColorOne.Set(29, 29, 29);
+	themeAbout.bgColorOne.Set(50, 54, 63);
 	themeAbout.bgColorActif.Set(255, 255, 255);
-	themeAbout.bgColorTwo.Set(74, 74, 74);
+	themeAbout.bgColorTwo.Set(80, 84, 91);
 	themeAbout.SetRowHeight(20);
 	themeAbout.SetMargeX(5);
 	themeAbout.themeCheckbox.SetWidth(15);

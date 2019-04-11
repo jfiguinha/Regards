@@ -556,9 +556,9 @@ class CThemeTree : public CTheme
 public:
 	CThemeTree()
 	{
-		bgColorOne = wxColour(29, 29, 29);
+		bgColorOne = wxColour(45, 48, 56);
 		bgColorActif = wxColour(255, 255, 255);
-		bgColorTwo = wxColour(74, 74, 74);
+		bgColorTwo = wxColour(80, 84, 91);
 #ifndef WIN32
 		bgColorBackground = wxColour(255, 255, 255, 255);
 #else
@@ -635,7 +635,7 @@ public:
 		colorBack = wxColour(29, 29, 29);
 		colorTriangle = wxColour(74, 74, 74);
 		colorTriangleActif = wxColour(128, 128, 128);
-		colorBar = wxColour(74, 74, 74);
+		colorBar = wxColour(50, 54, 63);
 		colorBarActif = wxColour(128, 128, 128);
 		marge = 2;
 	};

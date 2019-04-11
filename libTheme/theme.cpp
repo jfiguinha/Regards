@@ -1315,7 +1315,7 @@ CThemeTitleBar::CThemeTitleBar()
 	croixHeight = 15;
 	height = 30;
 	marge = 5;
-	colorBack.Set(80, 84, 91);
+	colorBack.Set(45, 48, 56);
 	colorCross.Set(0, 0, 0);
 	font.SetColorFont(wxColour(255, 255, 255));
 	font.SetFontSize(14);
