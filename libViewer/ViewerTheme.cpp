@@ -347,7 +347,7 @@ void CViewerTheme::InitBitmapInfos()
 	themeBitmapInfos.themeFont.SetFontSize(16);
 	themeBitmapInfos.themeFont.SetFontQuality(DEFAULT_QUALITY);
 	themeBitmapInfos.themeFont.SetColorFont(wxColour(255, 255, 255));
-	themeBitmapInfos.colorBack.Set(74, 74, 74);
+	themeBitmapInfos.colorBack.Set(61, 65, 73);
 }
 
 void CViewerTheme::InitInfosFileTree()
@@ -445,12 +445,12 @@ void CViewerTheme::InitThumbnail()
 	themeThumbnail.themeIcone.SetWidth(200);
 	themeThumbnail.themeIcone.SetHeight(200);
 	themeThumbnail.themeIcone.showOnlyThumbnail = false;
-	themeThumbnail.themeIcone.colorBack.Set(0, 0, 0);
-	themeThumbnail.themeIcone.colorTop.Set(74, 74, 74);
-	themeThumbnail.themeIcone.colorBottom.Set(74, 74, 74);
+	themeThumbnail.themeIcone.colorBack.Set(40, 44, 53);
+	themeThumbnail.themeIcone.colorTop.Set(80, 84, 91);
+	themeThumbnail.themeIcone.colorBottom.Set(80, 84, 91);
 	themeThumbnail.themeIcone.colorSelectTop.Set(205, 205, 205);
 	themeThumbnail.themeIcone.colorSelectBottom.Set(171, 171, 171);
-	themeThumbnail.colorBack.Set(74, 74, 74);
+	themeThumbnail.colorBack.Set(50, 54, 63);
 	themeThumbnail.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
 	themeThumbnail.themeSeparation.colorBack.Set(74, 74, 74);
 	//themeThumbnail.themeSeparation.colorBack.Set(45, 45, 48);
@@ -491,12 +491,12 @@ void CViewerTheme::InitThumbnailViewerEffectTree()
 	themeThumbnailViewerEffectTree.themeIcone.SetWidth(200);
 	themeThumbnailViewerEffectTree.themeIcone.SetHeight(200);
 	themeThumbnailViewerEffectTree.themeIcone.showOnlyThumbnail = false;
-	themeThumbnailViewerEffectTree.themeIcone.colorBack.Set(0, 0, 0);
-	themeThumbnailViewerEffectTree.themeIcone.colorTop.Set(74, 74, 74);
-	themeThumbnailViewerEffectTree.themeIcone.colorBottom.Set(74, 74, 74);
+	themeThumbnailViewerEffectTree.themeIcone.colorBack.Set(40, 44, 53);
+	themeThumbnailViewerEffectTree.themeIcone.colorTop.Set(80, 84, 91);
+	themeThumbnailViewerEffectTree.themeIcone.colorBottom.Set(80, 84, 91);
 	themeThumbnailViewerEffectTree.themeIcone.colorSelectTop.Set(205, 205, 205);
 	themeThumbnailViewerEffectTree.themeIcone.colorSelectBottom.Set(171, 171, 171);
-	themeThumbnailViewerEffectTree.colorBack.Set(74, 74, 74);
+	themeThumbnailViewerEffectTree.colorBack.Set(50, 54, 63);
 	themeThumbnailViewerEffectTree.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
 	//themeThumbnailViewerEffectTree.themeSeparation.colorBack.Set(74, 74, 74);
 	themeThumbnailViewerEffectTree.themeSeparation.colorBack.Set(45, 45, 48);
@@ -855,8 +855,8 @@ void CViewerTheme::InitClickThumbnailToolbar()
 void CViewerTheme::InitViewerToolbar()
 {
 	themeMainToolbar.colorBack.Set(30, 30, 30);
-	themeMainToolbar.colorTop.Set(29, 29, 29);
-	themeMainToolbar.colorBottom.Set(29, 29, 29);
+	themeMainToolbar.colorTop.Set(50, 54, 63);
+	themeMainToolbar.colorBottom.Set(50, 54, 63);
 	themeMainToolbar.position = NAVIGATOR_LEFT;
 	themeMainToolbar.SetWidth(60);
 	themeMainToolbar.SetHeight(60);
@@ -881,8 +881,8 @@ void CViewerTheme::InitViewerToolbar()
 void CViewerTheme::InitInfosToolbar()
 {
 	themeInfosToolbar.colorBack.Set(30, 30, 30);
-	themeInfosToolbar.colorTop.Set(74, 74, 74);
-	themeInfosToolbar.colorBottom.Set(74, 74, 74);
+	themeInfosToolbar.colorTop.Set(61, 65, 73);
+	themeInfosToolbar.colorBottom.Set(61, 65, 73);
 	themeInfosToolbar.position = NAVIGATOR_CENTER;
 	themeInfosToolbar.SetWidth(120);
 	themeInfosToolbar.SetHeight(30);
@@ -936,8 +936,8 @@ void CViewerTheme::InitClickInfosToolbar()
 void CViewerTheme::InitPreviewToolbar()
 {
 	themePreviewToolbar.colorBack.Set(30, 30, 30);
-	themePreviewToolbar.colorTop.Set(29, 29, 29);
-	themePreviewToolbar.colorBottom.Set(29, 29, 29);
+	themePreviewToolbar.colorTop.Set(50, 54, 63);
+	themePreviewToolbar.colorBottom.Set(50, 54, 63);
 	themePreviewToolbar.position = NAVIGATOR_CENTER;
 	themePreviewToolbar.SetWidth(60);
 	themePreviewToolbar.SetHeight(60);

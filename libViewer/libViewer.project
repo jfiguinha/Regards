@@ -115,9 +115,9 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="Theme">
+    <File Name="ViewerTheme.cpp"/>
     <File Name="ViewerTheme.h"/>
     <File Name="ViewerThemeInit.h"/>
-    <File Name="ViewerTheme.cpp"/>
     <File Name="ViewerThemeInit.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Parameter">
