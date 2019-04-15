@@ -284,6 +284,7 @@ void CImageLoadingFormat::SetPicture(CRegardsBitmap * image, const bool &convert
 	{
 		format = TYPE_IMAGE_REGARDSIMAGE;
 		_image = image;
+		orientation = image->GetOrientation();
 		filename = _image->GetFilename();
 		this->convertToRGB24 = convertToRGB24;
 	}

@@ -636,7 +636,7 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 {
     TRACE();
     printf("CBitmapWnd::SetBitmap \n");
-    this->SetFocus();
+    //this->SetFocus();
 	if(bitmapIn != nullptr)
 	{
 		if(bitmapIn->IsOk())
@@ -698,8 +698,11 @@ CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
 	if(filtreEffet != nullptr && bitmapLoad)
 	{
 		CRegardsBitmap * bitmap =  filtreEffet->GetBitmap(source);
-		if(bitmap != nullptr)
+		if (bitmap != nullptr)
+		{
+			bitmap->SetOrientation(orientation);
 			bitmap->SetFilename(this->filename);
+		}
 		return bitmap;
 	}
 	return nullptr;
