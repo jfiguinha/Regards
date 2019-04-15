@@ -169,7 +169,7 @@
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/OpenCL-Headers"/>
+        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>

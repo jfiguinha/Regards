@@ -37,8 +37,9 @@
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>
 #include <StatusText.h>
-#include <jpge.h>
-using namespace jpge;
+#include <turbojpeg.h>
+//#include <jpge.h>
+//using namespace jpge;
 using namespace Regards::Viewer;
 //const long ONE_MSEC = 1000;
 using namespace std;
@@ -735,7 +736,7 @@ void CMainWindow::FacialRecognition(void * param)
 				bool result = false;
 				uint8_t * data = nullptr;
 				uint8_t * dataBitmap = nullptr;
-				int size = 0;
+				unsigned long size = 0;
 				long bitmapSize = 0;
 
 				face->GetFaceData(i, width, height, pertinence, dataBitmap, bitmapSize);
@@ -746,8 +747,35 @@ void CMainWindow::FacialRecognition(void * param)
 
 					size = bitmapSize;
 					//Compression au format JPEG 
-					data = new uint8_t[bitmapSize];
-					result = compress_image_to_jpeg_file_in_memory(data, size, width, height, 4, dataBitmap);
+					//data = new uint8_t[bitmapSize];
+					//result = compress_image_to_jpeg_file_in_memory(data, size, width, height, 4, dataBitmap);
+                    
+        uint8_t * data = nullptr;
+  
+	    const int JPEG_QUALITY = 75;
+
+	    tjhandle _jpegCompressor = tjInitCompress();
+    
+		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_RGBX,
+			&data, &size, TJSAMP_444, JPEG_QUALITY,
+			TJFLAG_FASTDCT);  
+
+/*
+	if (convertToRGB24)
+	{
+		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_BGRX,
+			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
+			TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+	}
+	else
+	{
+		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_RGBX,
+			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
+			TJFLAG_FASTDCT);
+	}*/
+	      tjDestroy(_jpegCompressor);
+
+                    
 					if(size > 0 && data != nullptr)
 					{
 						int numFace = 0;
@@ -784,7 +812,11 @@ void CMainWindow::FacialRecognition(void * param)
 				}
 
 				if(data != nullptr)
-					delete[] data;
+                {
+                    tjFree(data);
+                    data = nullptr;
+                }
+					//delete[] data;
 
 				if(dataBitmap != nullptr)
 					delete[] dataBitmap;
