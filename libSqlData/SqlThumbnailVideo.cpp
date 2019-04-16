@@ -2,11 +2,9 @@
 #include "SqlThumbnailVideo.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
-#include <jpgd.h>
 #include <RegardsBitmap.h>
 #include <ImageVideoThumbnail.h>
 #include <wx/mstream.h>
-using namespace jpgd;
 using namespace Regards::Sqlite;
 
 CSqlThumbnailVideo::CSqlThumbnailVideo()
@@ -192,36 +190,12 @@ int CSqlThumbnailVideo::TraitementResult(CSqlResult * sqlResult)
 						int actual_comps = 4;
 						uint8_t * data = new uint8_t[size];
 						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-                        
-                        //wxMemoryInputStream jpegStream(data, size);
-                        //bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);                        
-
-                        uint8_t * dest = decompress_jpeg_image_from_memory(data, size, &width, &height, &actual_comps, req_comps);
-                        CRegardsBitmap * bitmap = new CRegardsBitmap();
-                        bitmap->SetBitmap(dest, width, height, false, true);
-                        bitmap->SetFilename(filename);
-                        bitmap->VertFlipBuf();
-                        bitmap->ConvertToBgr();                        
-                        delete[] dest;
-                        
+                        wxImage * bitmap = new wxImage();
+                        wxMemoryInputStream jpegStream(data, size);
+                        bitmap->LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);                                               
                         videoThumbnail->image = new CImageLoadingFormat();
                         videoThumbnail->image->SetPicture(bitmap);
-                        /*
-                        uint8_t * dest = decompress_jpeg_image_from_memory(data, size, &width, &height, &actual_comps, req_comps);
-                        regardsBitmap = new CRegardsBitmap();
-                        regardsBitmap->SetBitmap(dest, width, height, false, true);
-                        regardsBitmap->SetFilename(filename);
-                        regardsBitmap->VertFlipBuf();
-                        regardsBitmap->ConvertToBgr();
-                        delete[] dest;
-                        */
-                        /*
-                        uint8_t * dest = decompress_jpeg_image_from_memory(data, size, &width, &height, &actual_comps, req_comps);
-                        regardsBitmap = new CRegardsBitmap();
-                        regardsBitmap->SetBitmap(dest, width, height, false, true);
-                        regardsBitmap->SetFilename(filename);
-                        delete[] dest;
-						*/
+
 						delete[] data;
 					}
 				}

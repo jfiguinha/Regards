@@ -3,10 +3,8 @@
 #include "SqlThumbnail.h"
 #include "SqlThumbnailVideo.h"
 #include <wxmd5.h>
-#include <jpge.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
-using namespace jpge;
 using namespace Regards::Sqlite;
 #include <ImageLoadingFormat.h>
 #ifdef TURBOJPEG

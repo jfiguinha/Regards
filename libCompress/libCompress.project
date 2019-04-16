@@ -29,13 +29,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="jpgd.cpp"/>
-    <File Name="jpge.cpp"/>
     <File Name="lz4.c"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="jpgd.h"/>
-    <File Name="jpge.h"/>
     <File Name="lz4.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>

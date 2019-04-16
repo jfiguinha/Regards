@@ -2,11 +2,8 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
-#include <jpgd.h>
 #include <wx/mstream.h>
 using namespace Regards::Sqlite;
-using namespace jpgd;
-
 
 CSqlFacePhoto::CSqlFacePhoto()
 	: CSqlExecuteRequest(L"RegardsDB")

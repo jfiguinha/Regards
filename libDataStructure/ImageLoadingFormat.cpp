@@ -9,8 +9,6 @@
 #include <InterpolationFloatBicubic.h>
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
-#include <jpge.h>
-using namespace jpge;
 
 #if defined(EXIV2)
 #include <MetadataExiv2.h>

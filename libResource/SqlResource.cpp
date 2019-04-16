@@ -1,9 +1,6 @@
 #include "header.h"
 #include "SqlResource.h"
 #include <lz4.h>
-#include <jpgd.h>
-#include <jpge.h>
-#include <lz4.h>
 #include <RegardsBitmap.h>
 #include <libPicture.h>
 #include <fstream>
