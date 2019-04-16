@@ -10,7 +10,7 @@ using namespace Regards::Window;
 CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-    this->autohidden = autohidden;
+    this->autohidden = false;
 	scrollHorizontal = nullptr;
 	scrollVertical = nullptr;
 	scrollInterface = nullptr;

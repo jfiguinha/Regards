@@ -378,9 +378,6 @@ void CSplitter::ResizeHorizontal()
 	int width = GetSize().GetX();
 	int height = GetSize().GetY();
 
-	printf("Width %d \n", width);
-	printf("height %d \n", height);
-
 	if (fastRender && moving)
 	{
 		int y = posBar + themeSplitter.themeSeparation.size / 2 + themeSplitter.themeFast.size;
