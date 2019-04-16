@@ -13,7 +13,7 @@
 #include <wx/statline.h>
 #include <wx/button.h>
 #include <wx/webview.h>
-
+#include <wx/html/webkit.h>
 
 
 namespace Regards
@@ -28,9 +28,7 @@ namespace Regards
             wxButton* m_buttonOK;
             wxButton* m_buttonCancel;
             wxWebView * webBrowser;
-        protected:
-            void OnWebBrowserRClick(wxMouseEvent& event);
-            
+
         public:
             CMapDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Select new location"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,200), long style = wxDEFAULT_DIALOG_STYLE);
             virtual ~CMapDialogBox();

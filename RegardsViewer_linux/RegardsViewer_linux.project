@@ -167,7 +167,7 @@
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-lwebkitgtk-3.0;-Wl,--allow-multiple-definition">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0">
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
@@ -283,6 +283,7 @@
         <Library Value="fftw3f"/>
         <Library Value="aom"/>
         <Library Value="exif"/>
+        <Library Value="webkit2gtk-4.0"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

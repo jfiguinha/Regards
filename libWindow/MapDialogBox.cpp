@@ -41,12 +41,11 @@ CMapDialogBox::CMapDialogBox(wxWindow* parent, wxWindowID id, const wxString& ti
     
     boxSizer12->Add(m_buttonCancel, 0, wxLEFT|wxRIGHT|wxTOP|wxBOTTOM, 5);
     
-
-    
-    SetSize(wxSize(500,300));
+    SetSize(wxSize(500,350));
     Centre();
     // Connect events
 }
+
 
 void CMapDialogBox::SetUrl(const wxString &url)
 {
@@ -55,16 +54,13 @@ void CMapDialogBox::SetUrl(const wxString &url)
 
 wxString CMapDialogBox::GetUrl()
 {
+    wxString url = webBrowser->GetCurrentURL();
+    printf("WebBrowser url : %s \n", url.ToStdString().c_str()); 
     return webBrowser->GetCurrentURL();
 }
 
 
+
 CMapDialogBox::~CMapDialogBox()
 {
-}
-
-void CMapDialogBox::OnWebBrowserRClick(wxMouseEvent& event)
-{
-    const wxPoint pt = event.GetPosition();
-    wxString msg = wxString::Format("Point (%d, %d) is ", pt.x, pt.y);
 }

@@ -51,7 +51,7 @@ void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
     
-    printf("CScrollbarWnd::OnMouseMove \n");
+    //printf("CScrollbarWnd::OnMouseMove \n");
     
     if(autohidden)
     {
