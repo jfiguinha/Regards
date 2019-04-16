@@ -818,12 +818,13 @@ CRegardsBitmap * CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage & imag
     if (image.IsOk())
     {
         
-	    CxImage * _image = ConvertwxImageToCxImage(image);
+		CxImage * _image = ConvertwxImageToCxImage(image);
         wxString error = _image->GetLastError();
         if (error == "")
             bitmap = ConvertCXImageToRegardsBitmap(_image);
         
-        /*
+        
+		/*
         bitmap = new CRegardsBitmap(image.GetWidth(), image.GetHeight());
         unsigned char *rgb   = image.GetData();
         unsigned char *alpha = image.GetAlpha();
@@ -839,7 +840,7 @@ CRegardsBitmap * CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage & imag
              else
                 *result++ = 0;
         }
-         * */
+        */
     }
 
     return bitmap;

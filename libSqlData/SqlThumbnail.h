@@ -16,7 +16,7 @@ namespace Regards
 			~CSqlThumbnail();
 			bool InsertThumbnail(const wxString & path, const uint8_t *zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash);
 			wxImage GetThumbnail(const wxString & path);
-			CRegardsBitmap * GetPictureThumbnail(const wxString & pathh, const int &typePicture = 3);
+			CRegardsBitmap * GetPictureThumbnail(const wxString & path);
 			bool DeleteThumbnail(const wxString &path);
 			bool DeleteThumbnail(const int & numPhoto);
 			bool EraseThumbnail();

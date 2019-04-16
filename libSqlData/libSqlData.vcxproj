@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>FFMPEG;TURBOJPEG;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\include;..\libFiltreInterface;..\libPicture;..\libFiltre;..\libResource;..\libUtility;..\libSqlEngine;..\libDatastructure;..\libsqlite;..\libCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libextern\libjpeg-turbo-1.5.1;.;..\include;..\libFiltreInterface;..\libPicture;..\libFiltre;..\libResource;..\libUtility;..\libSqlEngine;..\libDatastructure;..\libsqlite;..\libCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -158,7 +158,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>FFMPEG;TURBOJPEG;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\include;..\libFiltreInterface;..\libPicture;..\libFiltre;..\libResource;..\libUtility;..\libSqlEngine;..\libDatastructure;..\libsqlite;..\libCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libextern\libjpeg-turbo-1.5.1;.;..\include;..\libFiltreInterface;..\libPicture;..\libFiltre;..\libResource;..\libUtility;..\libSqlEngine;..\libDatastructure;..\libsqlite;..\libCompress;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>

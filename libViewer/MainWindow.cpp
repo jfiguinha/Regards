@@ -289,22 +289,6 @@ void CMainWindow::OnThumbnailRight()
 void CMainWindow::OnLoadPicture()
 {
     TRACE();
-    /*
-    CSqlThumbnail sqlThumbnail;
-    CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-    CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(filenameTimer);
-    if(bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
-    {
-        _loadingPicture->SetPicture(bitmapThumbnail);
-        CBitmapReturn * bitmapReturn = new CBitmapReturn();
-        bitmapReturn->myThread = nullptr;
-        bitmapReturn->isThumbnail = true;
-        bitmapReturn->bitmap = _loadingPicture;
-        wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
-        event->SetClientData(bitmapReturn);
-        wxQueueEvent(this, event);         
-    }    
-    */
     
     if(!processLoadPicture)
     {

@@ -4,6 +4,8 @@
 #include "SqlEngine.h"
 #include <RegardsBitmap.h>
 #include <wx/mstream.h>
+#include <libPicture.h>
+#include <turbojpeg.h>
 using namespace Regards::Sqlite;
 
 CSqlThumbnail::CSqlThumbnail()
@@ -72,9 +74,10 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 	return bitmap;
 }
 
-CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path, const int &typePicture)
+CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 {
-	type = typePicture;
+	CLibPicture libPicture;
+	type = 3;
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
@@ -116,7 +119,6 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 
 		switch (type)
 		{
-		case 4:
 		case 3:
 		case 1:
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
@@ -140,15 +142,27 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 				{
 					int size = sqlResult->ColumnDataBlobSize(i);
 					if (size > 0)
-					{		
-						const int req_comps = 4;
-						int actual_comps = 4;
-						uint8_t * data = new uint8_t[size];
-						sqlResult->ColumnDataBlob(i, (void * &)data, size);
-						wxMemoryInputStream jpegStream(data, size);
-						bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);
+					{
+						uint8_t* data = new uint8_t[size];
+						sqlResult->ColumnDataBlob(i, (void*&)data, size);
+						if (type == 3)
+						{
+							tjhandle _jpegDecompressor = tjInitDecompress();
+							regardsBitmap = new CRegardsBitmap(width, height);
+
+							tjDecompress2(_jpegDecompressor, data, size, regardsBitmap->GetPtBitmap(), regardsBitmap->GetBitmapWidth(), 0, regardsBitmap->GetBitmapHeight(), TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+
+							tjDestroy(_jpegDecompressor);
+
+						}
+						else
+						{
+							wxMemoryInputStream jpegStream(data, size);
+							bitmap.LoadFile(jpegStream, wxBITMAP_TYPE_JPEG);	
+						}
 						delete[] data;
 					}
+
 				}
 				break;
 				}
