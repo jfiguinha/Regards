@@ -10,7 +10,7 @@ using namespace Regards::Window;
 CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-    this->autohidden = autohidden;
+    this->autohidden = false;
 	scrollHorizontal = nullptr;
 	scrollVertical = nullptr;
 	scrollInterface = nullptr;
@@ -32,14 +32,18 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autoh
 
 void CScrollbarWnd::OnHide(wxTimerEvent& event)
 {
-	showV = false;
-	showH = false;
-	Resize();
+    if(autohidden)
+    {
+        showV = false;
+        showH = false;
+        Resize();
+    }
 }
 
 void CScrollbarWnd::OnMouseLeave(wxMouseEvent& event)
 {
-     loadingTimer->Start(500, true);
+    if(autohidden)
+        loadingTimer->Start(500, true);
 }
 
 void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
