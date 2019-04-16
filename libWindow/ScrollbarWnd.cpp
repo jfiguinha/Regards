@@ -10,7 +10,7 @@ using namespace Regards::Window;
 CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-    this->autohidden = false;
+    this->autohidden = autohidden;
 	scrollHorizontal = nullptr;
 	scrollVertical = nullptr;
 	scrollInterface = nullptr;
@@ -306,7 +306,7 @@ void CScrollbarWnd::Resize()
 	wxWindow * control = scrollInterface->GetWindow();
     if(!useScaleFactor)
         scale_factor = 1.0f;
-    printf("CScrollbarWnd::Resize() \n");
+    printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight);
 
     if(scrollHorizontal != nullptr && scrollVertical != nullptr)
     {   
