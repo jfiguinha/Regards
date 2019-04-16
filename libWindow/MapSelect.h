@@ -13,6 +13,7 @@ namespace Regards
 {
     namespace Window
     {
+        class CMapDialogBox;
         class CMapSelect
         {
         public:
@@ -25,6 +26,8 @@ namespace Regards
             double GetLatitudeNumber();
             double GetLongitudeNumber();
         private:
+        
+            CMapDialogBox * mapDialog = nullptr;
             wxString latitude;
             wxString longitude;
             

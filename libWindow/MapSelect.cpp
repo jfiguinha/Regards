@@ -18,6 +18,8 @@
 using namespace Regards::Window;
 using namespace Regards::Internet;
 
+
+
 CMapSelect::CMapSelect()
 {
 	latitude = "";
@@ -55,11 +57,13 @@ wxString CMapSelect::GetLongitude()
 wxString CMapSelect::SelectNewMapLocalisation(wxWindow * window, const wxString & url)
 {
     wxString infoGpsLocalisation = "";
-    CMapDialogBox mapDialog(window);
-    mapDialog.SetUrl(url);
-    if(mapDialog.ShowModal() == wxID_OK)
+    if(mapDialog == nullptr)
+        mapDialog = new CMapDialogBox(window);
+    mapDialog->SetUrl(url);
+    printf("CMapSelect::SelectNewMapLocalisation 1 \n");
+    if(mapDialog->ShowModal() == wxID_OK)
     {
-        wxString getMapUrl = mapDialog.GetUrl();
+        wxString getMapUrl = mapDialog->GetUrl();
         vector<wxString> mapInfos = CConvertUtility::split(getMapUrl, '#');
         if(mapInfos.size() == 2)
         {
