@@ -81,6 +81,8 @@ CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
+    if(regardsBitmap != nullptr)
+        regardsBitmap->SetFilename(path);
 	return regardsBitmap;
 }
 
