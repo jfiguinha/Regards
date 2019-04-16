@@ -198,13 +198,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="jpgd.cpp" />
-    <ClCompile Include="jpge.cpp" />
     <ClCompile Include="lz4.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="jpgd.h" />
-    <ClInclude Include="jpge.h" />
     <ClInclude Include="lz4.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
