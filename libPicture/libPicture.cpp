@@ -68,7 +68,7 @@ using namespace Regards::exiv2;
 
 #include <wxSVG/SVGDocument.h>
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(__WXMAC__)
 using namespace Imf_2_3;
 using namespace Imath_2_3;
 #else
