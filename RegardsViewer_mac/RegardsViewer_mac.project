@@ -520,7 +520,12 @@
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf.24.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/libexif/lib/libexif.12.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.2.1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libGLEW.2.1.0.dylib</Command>
-        <Command Enabled="no">#cp ../libextern/libaom/libaom.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/pixman/lib/libpixman-1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpixman-1.0.dylib</Command>
+		<Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
+		<Command Enabled="yes">cp /usr/local/opt/freetype/lib/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfreetype.6.dylib</Command>
+		<Command Enabled="yes">cp /usr/local/opt/libpng/lib/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpng16.16.dylib</Command>
+		<Command Enabled="yes">cp /usr/local/opt/pcre/lib/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpcre.1.dylib</Command>
+		<Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libintl.8.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libzen.0.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
@@ -533,9 +538,13 @@
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libHalf.24.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_3.24.dylib</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
-        <Command Enabled="no">#chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libaom.0.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libpixman-1.0.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libfreetype.6.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libpng16.16.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libpcre.1.dylib</Command>
+		<Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libintl.8.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libexif/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="no">#install_name_tool -change @rpath/libaom.0.dylib @executable_path/../Frameworks/libaom.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.1.0.dylib @executable_path/../Frameworks/libGLEW.2.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Release/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
 		<Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -546,7 +555,6 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer</Command>
@@ -564,6 +572,22 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIlmThread-2_3.24.dylib @executable_path/../Frameworks/libIlmThread-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libImath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_3.24.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libFaceRecognition.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIMath-2_3.24.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_3.24.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/pixman/lib/libpixman-1.0.dylib @executable_path/../Frameworks/libpixman-1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/freetype/lib/libfreetype.6.dylib @executable_path/../Frameworks/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/freetype/lib/libfreetype.6.dylib @executable_path/../Frameworks/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfreetype.6.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/pcre/lib/libpcre.1.dylib @executable_path/../Frameworks/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
+		
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
