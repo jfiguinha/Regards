@@ -106,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libTheme;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libTheme;..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -152,7 +152,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libTheme;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libTheme;..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -201,6 +201,7 @@
     <ClInclude Include="CalendarDialogBox.h" />
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
     <ClInclude Include="IconeList.h" />
     <ClInclude Include="IMoveWindow.h" />
@@ -270,6 +271,7 @@
     <ClCompile Include="SeparationBar.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="Splitter.cpp" />
+    <ClCompile Include="TabWindow.cpp" />
     <ClCompile Include="Thumbnail.cpp" />
     <ClCompile Include="TitleBar.cpp" />
     <ClCompile Include="ToolbarButton.cpp" />

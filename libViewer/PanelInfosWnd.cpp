@@ -171,6 +171,7 @@ CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
 
 void CPanelInfosWnd::OnPaint(wxPaintEvent& event)
 {
+
     int width = GetWindowWidth();
     int height = GetWindowHeight();
     if(width == 0 || height == 0)
@@ -608,21 +609,7 @@ void CPanelInfosWnd::OnSize(wxSizeEvent& event)
     
 	int pictureWidth = event.GetSize().GetWidth();
 	int pictureHeight = event.GetSize().GetHeight();
-	/*
-	int pictureWidth = width;
-	int pictureHeight = height;
 
-    if(scrollHorizontal != nullptr && scrollVertical != nullptr)
-    {
-        bool valueH = scrollHorizontal->IsShown();
-        bool valueV = scrollVertical->IsShown();
-        if (valueV)
-            pictureWidth -= scrollVertical->GetWidthSize();
-
-        if (valueH)
-            pictureHeight -= scrollHorizontal->GetHeightSize();
-    }
-	*/
 	if(pictureWidth > 0 && pictureHeight > 0)
 	{
 		width = pictureWidth;

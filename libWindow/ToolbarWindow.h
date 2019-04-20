@@ -22,6 +22,7 @@ namespace Regards
 			int GetNavigatorWidth();
 			bool IsMouseOver();
             void UpdateScreenRatio();
+
             
 		protected:
 
