@@ -1,6 +1,6 @@
 #pragma once
 #include <SplitterWithPanel.h>
-#include "PreviewFaceSplitter.h"
+#include "FilterPreviewSplitter.h"
 #ifdef NORMAL
 #include "ThumbnailFolder.h"
 #else
@@ -32,7 +32,6 @@ namespace Regards
 			void FullscreenMode();
 			void ScreenMode();
 			void ShowToolbar();
-			void ShowListFace();
 			void ShowThumbnail();
 			void HideToolbar();
 			void SetDiaporamaMode();
@@ -56,16 +55,15 @@ namespace Regards
 			void HidePanelThumbnail(wxCommandEvent& aEvent);
             void CloseThumbnailPane();
 			int posBarInfos;
-			CPreviewFaceSplitter * previewFaceSplitter;
+			CFilterPreviewSplitter * filterPreviewSplitter;
 			CListPicture * listPicture;
 			CViewerParam * viewerconfig;
 			bool fullscreen;
-			bool clickToolbarShow;
-			bool panel2Show;
-			int lastWindow;
-            bool isThumbnailVisible;
 			bool isThumbnailBottom;
+            bool oldThumbnailBottom;
 			int thumbnailPosition;
+            bool clickToolbarShow;
+            bool thumbnailShow;
 		};
 	}
 }

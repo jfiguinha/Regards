@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="TabWindow.cpp"/>
     <File Name="BitmapWnd.cpp"/>
     <File Name="EmptyWindow.cpp"/>
     <File Name="Icone.cpp"/>
@@ -71,6 +72,7 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="TabWindow.h"/>
     <File Name="BitmapInterface.h"/>
     <File Name="BitmapWnd.h"/>
     <File Name="EmptyWindow.h"/>

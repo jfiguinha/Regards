@@ -30,7 +30,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent,id,theme)
 {
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);//L"Effect";
-	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLOPENFOLDER",1);//L"Crop";
+	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);//L"Crop";
 	wxString lblAssociate = CLibResource::LoadStringFromResource(L"LBLASSOCIATE",1);//L"Shrink Picture";
     wxString libelleRefreshFolder = CLibResource::LoadStringFromResource(L"LBLREFRESH",1);
     wxString libelleRefreshThumbnail = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL",1);
@@ -72,12 +72,13 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
     refreshFilter->SetCommandId(IDM_REFRESHFILTER);
     navElement.push_back(refreshFilter);
     
+    /*
 	CToolbarButton * criteria = new CToolbarButton(themeToolbar.button);
 	criteria->SetButtonResourceId(L"IDB_SEARCH");
 	criteria->SetLibelle(lblCriteria);
 	criteria->SetCommandId(IDM_CRITERIA);
 	navElement.push_back(criteria);
-
+    */
 	CToolbarButton * thumbnail = new CToolbarButton(themeToolbar.button);
 	thumbnail->SetButtonResourceId(L"IDB_THUMBNAILPNG");
 	thumbnail->SetLibelle(lblThumbnail);
@@ -96,12 +97,14 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	infos->SetCommandId(IDM_SHOWINFOS);
 	navElement.push_back(infos);
 
+    /*
 	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
 	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
 	thumbnailFace->SetLibelle(lblListFace);
 	thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
 	navElement.push_back(thumbnailFace);
-
+    */
+    
 	/*
 	CToolbarButton * exportButton = new CToolbarButton(themeToolbar.button);
 	exportButton->SetButtonResourceId(L"IDB_EXPORT");

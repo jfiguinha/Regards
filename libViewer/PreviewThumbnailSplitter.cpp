@@ -22,13 +22,12 @@ CPreviewThumbnailSplitter::CPreviewThumbnailSplitter(wxWindow* parent, wxWindowI
 	: CSplitterWithPanel(parent, id, theme, themeInfosToolbar, horizontal)
 {
 	posBarInfos = 0;
-	previewFaceSplitter = nullptr;
+	filterPreviewSplitter = nullptr;
 	listPicture = nullptr;
 	viewerconfig = nullptr;
 	fullscreen = false;
 	clickToolbarShow = false;
-	panel2Show = false;
-	lastWindow = ALL_WINDOW;
+	//panel2Show = false;
 	isThumbnailBottom = false;
 	thumbnailPosition = 2;
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
@@ -45,8 +44,8 @@ CPreviewThumbnailSplitter::CPreviewThumbnailSplitter(wxWindow* parent, wxWindowI
 		paneWindow1->SetTitleBarVisibility(false);
 		CThemeSplitter theme;
 		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
-		previewFaceSplitter = new CPreviewFaceSplitter(paneWindow1, PREVIEWFACESPLITTER, statusBarInterface, theme, themeInfosToolbar);
-		paneWindow1->SetOtherWindow(previewFaceSplitter);
+		filterPreviewSplitter = new CFilterPreviewSplitter(paneWindow1, FILTERPREVIEWSPLITTER, statusBarInterface, theme, false);
+		paneWindow1->SetOtherWindow(filterPreviewSplitter);
 	}
 
 	//Criteria
@@ -71,12 +70,10 @@ CPreviewThumbnailSplitter::CPreviewThumbnailSplitter(wxWindow* parent, wxWindowI
 	Connect(wxEVENT_SHOWPANELTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewThumbnailSplitter::ShowPanelThumbnail));
 	Connect(wxEVENT_HIDEPANELTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewThumbnailSplitter::HidePanelThumbnail));
 
-    isThumbnailVisible = true;
-	//bool showFilter = true;
 	CConfigParam * configParam = CViewerParamInit::getInstance();
 	if (configParam != nullptr)
 	{
-		bool isThumbnailVisible = false;
+        bool isThumbnailVisible;
 		viewerconfig = (CViewerParam *)configParam;
 		this->posBar = viewerconfig->GetPositionPreviewThumbnail();
 		isThumbnailBottom = viewerconfig->IsThumbnailBottom();
@@ -115,8 +112,8 @@ CPreviewThumbnailSplitter::~CPreviewThumbnailSplitter()
 	}
 
 
-	if (previewFaceSplitter != nullptr)
-		delete(previewFaceSplitter);
+	if (filterPreviewSplitter != nullptr)
+		delete(filterPreviewSplitter);
 
 	if (listPicture != nullptr)
 		delete(listPicture);
@@ -150,7 +147,6 @@ void CPreviewThumbnailSplitter::UpdateScreenRatio()
 
 void CPreviewThumbnailSplitter::ShowThumbnail()
 {
-    isThumbnailVisible = true;
 	wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);
 	paneWindow2->SetTitle(libelle);
 
@@ -185,12 +181,6 @@ void CPreviewThumbnailSplitter::ShowThumbnail()
 	}
 
 }
-
-void CPreviewThumbnailSplitter::ShowListFace()
-{
-	previewFaceSplitter->ShowListFace();
-}
-
 
 void CPreviewThumbnailSplitter::SetThumbnailBottom(wxCommandEvent& aEvent)
 {
@@ -235,28 +225,28 @@ void CPreviewThumbnailSplitter::SetActifItem(const int &numItem, const bool &mov
 
 void CPreviewThumbnailSplitter::SetEffect(const bool &effect)
 {
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->SetEffect(effect);
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetEffect(effect);
 }
 
 bool CPreviewThumbnailSplitter::IsPanelInfosVisible()
 {
-	if (previewFaceSplitter != nullptr)
-		return previewFaceSplitter->IsPanelInfosVisible();
+	if (filterPreviewSplitter != nullptr)
+		return filterPreviewSplitter->IsPanelInfosVisible();
 	return false;
 }
 
 void CPreviewThumbnailSplitter::SetVideo(const wxString &path)
 {
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->SetVideo(path);
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetVideo(path);
 }
 
 
 wxString CPreviewThumbnailSplitter::GetSqlRequest()
 {
-	if (previewFaceSplitter != nullptr)
-		return previewFaceSplitter->GetSqlRequest();
+	if (filterPreviewSplitter != nullptr)
+		return filterPreviewSplitter->GetSqlRequest();
 	return "";
 }
 
@@ -264,14 +254,13 @@ wxString CPreviewThumbnailSplitter::GetSqlRequest()
 void CPreviewThumbnailSplitter::ShowPanelThumbnail(wxCommandEvent& aEvent)
 {
 	ClickShowButton(PANEL2_FILTER);
-    isThumbnailVisible = true;
 	this->Resize();
 }
 
 void CPreviewThumbnailSplitter::HidePanel()
 {
 	CloseThumbnailPane();
-    previewFaceSplitter->HidePanel();
+    filterPreviewSplitter->HidePanel();
 	//paneWindow2->Hide();
 	this->Resize();
 }
@@ -290,9 +279,11 @@ bool CPreviewThumbnailSplitter::IsPanelThumbnailVisible()
 
 void CPreviewThumbnailSplitter::StartLoadingPicture(const int &numElement)
 {
-	if (previewFaceSplitter != nullptr)
+	if (filterPreviewSplitter != nullptr)
 	{
-		previewFaceSplitter->StartLoadingPicture(numElement);
+		//filterPreviewSplitter->StartLoadingPicture(numElement);
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
+		filterPreviewSplitter->GetEventHandler()->AddPendingEvent(evt);
 	}
 	
 	if (listPicture != nullptr)
@@ -322,19 +313,18 @@ bool CPreviewThumbnailSplitter::SetBitmap(CImageLoadingFormat * bitmap, const bo
     TRACE();
 	if(bitmap != nullptr && bitmap->IsOk())
 	{
-		if (previewFaceSplitter != nullptr)
-			return previewFaceSplitter->SetBitmap(bitmap, isThumbnail, isAnimation);
+		if (filterPreviewSplitter != nullptr)
+			return filterPreviewSplitter->SetBitmap(bitmap, isThumbnail, isAnimation);
 	}
 	return false;
 }
 
 void CPreviewThumbnailSplitter::FullscreenMode()
 {
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->FullscreenMode();
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->FullscreenMode();
 
-	clickToolbarShow = this->clickWindow2Toolbar->IsShown();
-	panel2Show = this->paneWindow2->IsShown();
+    oldThumbnailBottom = isThumbnailBottom;
 	fullscreen = true;
     if(!isThumbnailBottom)
     {
@@ -342,37 +332,40 @@ void CPreviewThumbnailSplitter::FullscreenMode()
         SetThumbnailBottom(aEvent);        
     }
 
-    if(!isThumbnailVisible)
-        CloseThumbnailPane();
-        
-	if (!panel2Show)
-		ClosePane(PANEL2_FILTER);
-        
     this->Resize();
 }
 
 void CPreviewThumbnailSplitter::ScreenMode()
 {
-	this->paneWindow2->Show();
+	//this->paneWindow2->Show();
+    bool isPaneWindow2Show = this->paneWindow2->IsShown();
 
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->ScreenMode();
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->ScreenMode();
 
 	fullscreen = false;
+    
+    if(!oldThumbnailBottom)
+    {
+        wxCommandEvent aEvent;
+        SetThumbnailRight(aEvent); 
+        if(!isPaneWindow2Show)
+            ClosePane(PANEL2_FILTER);
+    }
 
+    /*
 	if (clickToolbarShow)
 		CloseThumbnailPane();
 
 	if (panel2Show)
 		ClickShowButton(PANEL2_FILTER);
-
+    */
 	this->Resize();
 }
 
 void CPreviewThumbnailSplitter::CloseThumbnailPane()
 {
     ClosePane(PANEL2_FILTER);
-    isThumbnailVisible = false;
 }
 
 void CPreviewThumbnailSplitter::ShowToolbar()
@@ -391,7 +384,7 @@ void CPreviewThumbnailSplitter::ShowToolbar()
 		if(clickToolbarShow)
 			this->clickWindow2Toolbar->Show();
 
-		if(panel2Show)
+		if(thumbnailShow)
 			this->paneWindow2->Show();
 	}
 	this->Resize();
@@ -411,7 +404,7 @@ void CPreviewThumbnailSplitter::HideToolbar()
 	if (fullscreen)
 	{
 		clickToolbarShow = this->clickWindow2Toolbar->IsShown();
-		panel2Show = this->paneWindow2->IsShown();
+		thumbnailShow = this->paneWindow2->IsShown();
 		this->paneWindow2->Hide();
 		this->clickWindow2Toolbar->Hide();
 	}
@@ -420,13 +413,13 @@ void CPreviewThumbnailSplitter::HideToolbar()
 
 void CPreviewThumbnailSplitter::SetDiaporamaMode()
 {
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->SetDiaporamaMode();
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetDiaporamaMode();
 }
 
 void CPreviewThumbnailSplitter::SetNormalMode()
 {
-	if (previewFaceSplitter != nullptr)
-		previewFaceSplitter->SetNormalMode();
+	if (filterPreviewSplitter != nullptr)
+		filterPreviewSplitter->SetNormalMode();
 
 }

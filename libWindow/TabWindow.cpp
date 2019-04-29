@@ -3,10 +3,11 @@
 #include "TabWindow.h"
 using namespace Regards::Window;
 
-CTabWindow::CTabWindow(wxWindow* parent, wxWindowID id, const CThemeBitmapWindow & themeBitmap)
-	: CWindowMain("CPanelInfosWnd", parent, id)
+CTabWindow::CTabWindow(const wxString & windowName, wxWindow* parent, wxWindowID id)
+	: CWindowMain(windowName, parent, id)
 {
-	this->themeBitmap = themeBitmap;
+	Connect(wxEVT_SIZE, wxSizeEventHandler(CTabWindow::OnSize));
+    Connect(wxEVT_PAINT, wxPaintEventHandler(CTabWindow::OnPaint));
 }
 
 void CTabWindow::OnPaint(wxPaintEvent & event)
@@ -22,7 +23,14 @@ void CTabWindow::OnPaint(wxPaintEvent & event)
 
 CTabWindow::~CTabWindow()
 {
-
+    for (CTabWindowData* window : listWindow)
+    {
+        if(window != nullptr)
+        {
+            delete window;
+            window = nullptr;
+        }
+    }
 }
 
 void CTabWindow::UpdateScreenRatio()
@@ -30,7 +38,8 @@ void CTabWindow::UpdateScreenRatio()
 	for (CTabWindowData* window : listWindow)
 	{
 		if (window != nullptr)
-			window->window->UpdateScreenRatio();
+            if(window->windowMain != nullptr)
+                window->windowMain->UpdateScreenRatio();
 	}
 
 	if(toolbarWindow != nullptr)

@@ -142,8 +142,8 @@ CCentralWnd::~CCentralWnd()
 
 void CCentralWnd::ShowListFace()
 {
-	if (previewThumbnailSplitter != nullptr)
-		previewThumbnailSplitter->ShowListFace();
+	//if (previewThumbnailSplitter != nullptr)
+	//	previewThumbnailSplitter->ShowListFace();
 
 	this->RedrawBarPos();
 }

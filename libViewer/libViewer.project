@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="10.0.0">
+  <VirtualDirectory Name="Tab Window">
+    <VirtualDirectory Name="Panel Search Photo">
+      <File Name="PanelPhotoWnd.h"/>
+      <File Name="PanelPhotoWnd.cpp"/>
+      <VirtualDirectory Name="Toolbar">
+        <File Name="ToolbarPhoto.h"/>
+        <File Name="ToolbarPhoto.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Panel Infos">
+      <VirtualDirectory Name="Window">
+        <File Name="InfoEffectWnd.cpp"/>
+        <File Name="InfoEffectWnd.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Toolbar">
+        <File Name="ToolbarInfos.h"/>
+        <File Name="ToolbarInfos.cpp"/>
+      </VirtualDirectory>
+      <File Name="PanelInfosWnd.h"/>
+      <File Name="PanelInfosWnd.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -38,26 +60,21 @@
     <File Name="InfoEffect.cpp"/>
     <File Name="MainWindow.cpp"/>
     <File Name="ModificationManager.cpp"/>
-    <File Name="PanelInfosWnd.cpp"/>
     <File Name="PreviewInfosWnd.cpp"/>
     <File Name="PreviewToolbar.cpp"/>
     <File Name="PreviewWnd.cpp"/>
     <File Name="toolbar.cpp"/>
-    <File Name="ToolbarInfos.cpp"/>
     <File Name="ViewerFrame.cpp"/>
     <File Name="CategoryFolderWindow.cpp"/>
     <File Name="CategoryWnd.cpp"/>
     <File Name="FilterPreviewSplitter.cpp"/>
     <File Name="FiltreEffectWnd.cpp"/>
-    <File Name="InfoEffectWnd.cpp"/>
-    <File Name="CriteriaFolderSplitter.cpp"/>
     <File Name="PreviewThumbnailSplitter.cpp"/>
     <File Name="InfosSeparationBarExplorer.cpp"/>
     <File Name="ListPicture.cpp"/>
     <File Name="CentralWnd.cpp"/>
     <File Name="InfosSeparationBarFace.cpp"/>
     <File Name="ListFace.cpp"/>
-    <File Name="PreviewFaceSplitter.cpp"/>
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
@@ -67,24 +84,19 @@
     <File Name="InfoEffect.h"/>
     <File Name="MainWindow.h"/>
     <File Name="ModificationManager.h"/>
-    <File Name="PanelInfosWnd.h"/>
     <File Name="PreviewInfosWnd.h"/>
     <File Name="PreviewToolbar.h"/>
     <File Name="PreviewWnd.h"/>
     <File Name="Toolbar.h"/>
-    <File Name="ToolbarInfos.h"/>
     <File Name="CategoryFolderWindow.h"/>
     <File Name="CategoryWnd.h"/>
     <File Name="FilterPreviewSplitter.h"/>
     <File Name="FiltreEffectWnd.h"/>
-    <File Name="InfoEffectWnd.h"/>
-    <File Name="CriteriaFolderSplitter.h"/>
     <File Name="PreviewThumbnailSplitter.h"/>
     <File Name="InfosSeparationBarExplorer.h"/>
     <File Name="ListPicture.h"/>
     <File Name="InfosSeparationBarFace.h"/>
     <File Name="ListFace.h"/>
-    <File Name="PreviewFaceSplitter.h"/>
     <File Name="AnimationToolbar.h"/>
     <File Name="ViewerFrame.h"/>
   </VirtualDirectory>

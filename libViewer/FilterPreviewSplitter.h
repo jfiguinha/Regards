@@ -1,6 +1,6 @@
 #pragma once
 #include <Splitter.h>
-#include "CriteriaFolderSplitter.h"
+#include "PanelPhotoWnd.h"
 #include "PreviewInfosWnd.h"
 #include "ViewerParam.h"
 using namespace std;
@@ -39,15 +39,14 @@ namespace Regards
 		private:
 
 			void OnHidePane(wxCommandEvent& event);
-			void ShowPanelCriteria(wxCommandEvent& aEvent);
-			void ShowPanelFolder(wxCommandEvent& aEvent);
+			void ShowPanelPhotoList(wxCommandEvent& aEvent);
 			void CloseWindow(wxCommandEvent& event);
 			void ShowWindow(const bool & showInfos);
 
 			int posBarInfos;
-			CPane * paneFilter;
+			CPane * panePhoto;
 			CClickToolbar * clickInfoToolbar;
-			CCriteriaFolderSplitter * criteriaFolderWnd;
+			CPanelPhotoWnd * panelPhotoWnd;
 			CPreviewInfosWnd * previewInfosWnd;
 			CViewerParam * viewerconfig ;
 

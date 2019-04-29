@@ -11,7 +11,7 @@
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
-
+#define PANE_FOLDER 2
 wxDEFINE_EVENT(EVENT_HIDDENPANE, wxCommandEvent);
 
 CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id, 
@@ -19,9 +19,9 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 	: CSplitter(parent, id, theme)
 {
 	posBarInfos = 0;
-	paneFilter = nullptr;
+	panePhoto = nullptr;
 	clickInfoToolbar = nullptr;
-	criteriaFolderWnd = nullptr;
+	panelPhotoWnd = nullptr;
 	previewInfosWnd = nullptr;
 	viewerconfig = nullptr;
 
@@ -30,6 +30,16 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 	clickToobarShow = false;
 
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+
+    
+	if (viewerTheme != nullptr)
+	{
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
+		CThemePane theme;
+		viewerTheme->GetInfosPaneTheme(&theme);
+		panePhoto = new CPane(this, wxID_ANY, this, PANE_FOLDER, theme);
+		panePhoto->SetTitle(libelle);
+	}
 
 	if (viewerTheme != nullptr)
 	{
@@ -44,13 +54,8 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 
 	if (viewerTheme != nullptr)
 	{
-		CThemeSplitter theme;
-		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
-
-		CThemeToolbar themeClickInfosToolbar;
-		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-
-		criteriaFolderWnd = new CCriteriaFolderSplitter(this, CRITERIAFOLDERWINDOWID, statusBarInterface, theme, themeClickInfosToolbar, false);
+		panelPhotoWnd = new CPanelPhotoWnd(panePhoto, CRITERIAFOLDERWINDOWID, statusBarInterface);
+        panePhoto->SetOtherWindow(panelPhotoWnd);
 	}
 
 
@@ -64,7 +69,7 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 
 	SetHorizontal(horizontal);
 
-	this->SetWindow(criteriaFolderWnd, previewInfosWnd);
+	this->SetWindow(panePhoto, previewInfosWnd);
 
 	bool showFolder = true;
 	bool showFilter = true;
@@ -72,7 +77,6 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 	if (configParam != nullptr)
 	{
 		viewerconfig = (CViewerParam *)configParam;
-		this->posBar = viewerconfig->GetPositionCriteriaPreview();
 		viewerconfig->GetShowFilter(showFilter);
 		viewerconfig->GetShowFolder(showFolder);
 
@@ -86,9 +90,14 @@ CFilterPreviewSplitter::CFilterPreviewSplitter(wxWindow* parent, wxWindowID id,
 	//Connect(EVENT_HIDDENPANE, wxCommandEventHandler(CFilterPreviewSplitter::OnHidePane));
 	Connect(EVENT_HIDDENPANE, wxCommandEventHandler(CFilterPreviewSplitter::OnHidePane));
 	Connect(wxEVENT_ALLPANECLOSED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::CloseWindow));
-	Connect(wxEVENT_PANELCRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::ShowPanelCriteria));
-	Connect(wxEVENT_PANELFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::ShowPanelFolder));
+	Connect(wxEVENT_PANELFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CFilterPreviewSplitter::ShowPanelPhotoList));
 
+	if (configParam != nullptr)
+	{
+		viewerconfig = (CViewerParam *)configParam;
+		this->posBar = viewerconfig->GetPositionCriteriaPreview();
+        this->FastRefresh(this);
+    }
 }
 
 CFilterPreviewSplitter::~CFilterPreviewSplitter()
@@ -99,14 +108,17 @@ CFilterPreviewSplitter::~CFilterPreviewSplitter()
 	if (previewInfosWnd != nullptr)
 		delete(previewInfosWnd);
 
-	if (criteriaFolderWnd != nullptr)
-		delete(criteriaFolderWnd);
+    if(panePhoto != nullptr)
+        delete(panePhoto);
+
+	if (panelPhotoWnd != nullptr)
+		delete(panelPhotoWnd);
 }
 
 wxString CFilterPreviewSplitter::GetSqlRequest()
 {
-	if (criteriaFolderWnd != nullptr)
-		return criteriaFolderWnd->GetSqlRequest();
+	if (panelPhotoWnd != nullptr)
+		return panelPhotoWnd->GetSqlRequest();
 	return "";
 }
 
@@ -120,37 +132,12 @@ void CFilterPreviewSplitter::OnHidePane(wxCommandEvent& event)
 	this->Resize(this);
 }
 
-void CFilterPreviewSplitter::ShowPanelCriteria(wxCommandEvent& aEvent)
+void CFilterPreviewSplitter::ShowPanelPhotoList(wxCommandEvent& aEvent)
 {
-	if (criteriaFolderWnd != nullptr)
+	if (panePhoto != nullptr)
 	{
-		if (!criteriaFolderWnd->IsShown())
+		if (!panePhoto->IsShown())
 			ClickShowButton(CATALOG_FILTER);
-
-		wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
-		if (window)
-		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELCRITERIA);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-
-	}
-}
-
-void CFilterPreviewSplitter::ShowPanelFolder(wxCommandEvent& aEvent)
-{
-	if (criteriaFolderWnd != nullptr)
-	{
-		if (!criteriaFolderWnd->IsShown())
-			ClickShowButton(CATALOG_FILTER);
-
-		//criteriaFolderWnd->ShowPanelFolder();
-		wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
-		if (window)
-		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_PANELFOLDER);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
 	}
 }
 
@@ -172,8 +159,8 @@ void CFilterPreviewSplitter::UpdateScreenRatio()
 	if (previewInfosWnd != nullptr)
 		previewInfosWnd->UpdateScreenRatio();
 
-	if (criteriaFolderWnd != nullptr)
-		criteriaFolderWnd->UpdateScreenRatio();
+	if (panePhoto != nullptr)
+		panePhoto->UpdateScreenRatio();
 }
 
 void CFilterPreviewSplitter::SetEffect(const bool &effect)
@@ -219,8 +206,8 @@ void CFilterPreviewSplitter::FullscreenMode()
 
 	fullscreen = true;
 	this->posBarInfos = this->posBar;
-	paneFilterShow = criteriaFolderWnd->IsShown();
-	criteriaFolderWnd->Show(false);
+	paneFilterShow = panePhoto->IsShown();
+	panePhoto->Show(false);
 	clickToobarShow = clickInfoToolbar->IsShown();
 
 	clickInfoToolbar->Show(false);
@@ -235,17 +222,15 @@ void CFilterPreviewSplitter::ScreenMode()
 
 	fullscreen = false;
 	
-	if(criteriaFolderWnd != nullptr)
-	{
-		criteriaFolderWnd->Show(paneFilterShow);
-		criteriaFolderWnd->ScreenMode();
-	}
-
 	if (!paneFilterShow)
-		ClosePane(CATALOG_FILTER);
+    {
+        clickInfoToolbar->Show(true);
+        ClosePane(CATALOG_FILTER);
+    }
 	else
 	{
-		this->SetWindow(criteriaFolderWnd, previewInfosWnd);
+        panePhoto->Show(true);
+		this->SetWindow(panePhoto, previewInfosWnd);
 		//ShowPanelInfos();
 		wxWindow * window = this->FindWindowById(PREVIEWINFOWND);
 		if (window)
@@ -305,24 +290,22 @@ void CFilterPreviewSplitter::HidePanel()
 {
     ClosePane(CATALOG_FILTER);
     previewInfosWnd->HidePanel();
-    criteriaFolderWnd->HidePanel();
 }
 
 void CFilterPreviewSplitter::ShowWindow(const bool & showInfos)
 {
 	if (showInfos)
 	{
-		criteriaFolderWnd->Show(true);
-		criteriaFolderWnd->ShowWindow();
+		panePhoto->Show(true);
 		clickInfoToolbar->Show(false);
-		this->SetWindow(criteriaFolderWnd, previewInfosWnd);
+		this->SetWindow(panePhoto, previewInfosWnd);
 		SetWindow1FixPosition(false, posBarInfos);
 		this->SetSeparationBarVisible(true);
 		posBar = posBarInfos;
 	}
 	else
 	{
-		criteriaFolderWnd->Show(false);
+		panePhoto->Show(false);
 		clickInfoToolbar->Show(true);
 		this->SetWindow(clickInfoToolbar, previewInfosWnd);
 		posBarInfos = posBar;

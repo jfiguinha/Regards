@@ -14,7 +14,8 @@ namespace Regards
 		public:
 			CTabWindowData() {};
 			~CTabWindowData() {};
-			CWindowMain* window;
+			wxWindow * window = nullptr;
+            CWindowMain * windowMain= nullptr;
 			int windowName;
 		};
 
@@ -22,20 +23,24 @@ namespace Regards
 		{
 		public:
 
-			CTabWindow(wxWindow* parent, wxWindowID id, const CThemeBitmapWindow& themeBitmap);
+			CTabWindow(const wxString & windowName, wxWindow* parent, wxWindowID id);
 			~CTabWindow();
-			void ClickShowButton(const int& id);
+			void UpdateScreenRatio();
+
+        private:
+            
+			void OnSize(wxSizeEvent& event);
+            void OnPaint(wxPaintEvent& event);       
 
 		protected:
 
+            void Resize();
+            void ClickShowButton(const int& id);
+            void HideAllWindow();
 			virtual void LoadInfo() = 0;
-			void Resize();
-			void HideAllWindow();
-			void OnSize(wxSizeEvent& event);
-			void UpdateScreenRatio();
-			void OnPaint(wxPaintEvent& event);
+
 			vector<CTabWindowData*> listWindow;
-			CToolbarWindow * toolbarWindow;
+			CToolbarWindow * toolbarWindow = nullptr;
 			int windowVisible;
 			int width;
 			int height;
