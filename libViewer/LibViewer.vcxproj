@@ -206,7 +206,6 @@
     <ClInclude Include="CategoryFolderWindow.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CentralWnd.h" />
-    <ClInclude Include="CriteriaFolderSplitter.h" />
     <ClInclude Include="FilterPreviewSplitter.h" />
     <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="FiltreEffect.h" />
@@ -223,6 +222,7 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="PanelInfosWnd.h" />
+    <ClInclude Include="PanelPhotoWnd.h" />
     <ClInclude Include="PreviewFaceSplitter.h" />
     <ClInclude Include="PreviewInfosWnd.h" />
     <ClInclude Include="PreviewThumbnailSplitter.h" />
@@ -241,6 +241,7 @@
     <ClInclude Include="ThumbnailViewerVideo.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ToolbarInfos.h" />
+    <ClInclude Include="ToolbarPhoto.h" />
     <ClInclude Include="ViewerFrame.h" />
     <ClInclude Include="ViewerParam.h" />
     <ClInclude Include="ViewerParamInit.h" />
@@ -257,7 +258,6 @@
     <ClCompile Include="CategoryFolderWindow.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CentralWnd.cpp" />
-    <ClCompile Include="CriteriaFolderSplitter.cpp" />
     <ClCompile Include="FilterPreviewSplitter.cpp" />
     <ClCompile Include="FiltreEffect.cpp" />
     <ClCompile Include="FiltreEffectWnd.cpp" />
@@ -272,6 +272,7 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
+    <ClCompile Include="PanelPhotoWnd.cpp" />
     <ClCompile Include="PreviewFaceSplitter.cpp" />
     <ClCompile Include="PreviewInfosWnd.cpp" />
     <ClCompile Include="PreviewThumbnailSplitter.cpp" />
@@ -290,6 +291,7 @@
     <ClCompile Include="ThumbnailViewerVideo.cpp" />
     <ClCompile Include="toolbar.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
+    <ClCompile Include="ToolbarPhoto.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
     <ClCompile Include="ViewerParam.cpp" />
     <ClCompile Include="ViewerParamInit.cpp" />

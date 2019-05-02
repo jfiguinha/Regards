@@ -34,6 +34,24 @@
     <Filter Include="header">
       <UniqueIdentifier>{56c425f1-aabc-4ae1-a0db-f164f723aa22}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Toolbar">
+      <UniqueIdentifier>{264b42ea-3270-4804-a186-abe2f5a60739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Toolbar\include">
+      <UniqueIdentifier>{d875a534-5c7d-44e7-a043-4307970990f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Toolbar\source">
+      <UniqueIdentifier>{924a745d-2661-4098-ba56-a5ea53e3e83f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Panel">
+      <UniqueIdentifier>{f2889eb3-9883-49e1-98fc-6711d38725b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Panel\include">
+      <UniqueIdentifier>{b6a5d10a-fe5c-4ebb-ab67-3b3fce40ce6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Panel\source">
+      <UniqueIdentifier>{3dec332c-d93b-45ed-8eb5-1cb042bc7eb6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -99,9 +117,6 @@
     <ClInclude Include="CentralWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="CriteriaFolderSplitter.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="FilterPreviewSplitter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -144,9 +159,6 @@
     <ClInclude Include="ModificationManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="PanelInfosWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="PreviewFaceSplitter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -162,14 +174,23 @@
     <ClInclude Include="PreviewWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Toolbar.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolbarInfos.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="Toolbar.h">
+      <Filter>Toolbar\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarInfos.h">
+      <Filter>Toolbar\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarPhoto.h">
+      <Filter>Toolbar\include</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelInfosWnd.h">
+      <Filter>Panel\include</Filter>
+    </ClInclude>
+    <ClInclude Include="PanelPhotoWnd.h">
+      <Filter>Panel\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +257,6 @@
     <ClCompile Include="CentralWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="CriteriaFolderSplitter.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="FilterPreviewSplitter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -275,9 +293,6 @@
     <ClCompile Include="ModificationManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PanelInfosWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="PreviewFaceSplitter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -293,14 +308,23 @@
     <ClCompile Include="PreviewWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="toolbar.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolbarInfos.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="toolbar.cpp">
+      <Filter>Toolbar\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarInfos.cpp">
+      <Filter>Toolbar\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarPhoto.cpp">
+      <Filter>Toolbar\source</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelInfosWnd.cpp">
+      <Filter>Panel\source</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelPhotoWnd.cpp">
+      <Filter>Panel\source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
