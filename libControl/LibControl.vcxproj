@@ -201,7 +201,6 @@
     <ClInclude Include="BitmapPrintout.h" />
     <ClInclude Include="BitmapToolbar.h" />
     <ClInclude Include="BitmapWndViewer.h" />
-    <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="CriteriaTree.h" />
     <ClInclude Include="CriteriaTreeWnd.h" />
     <ClInclude Include="effect.h" />
@@ -224,7 +223,6 @@
     <ClCompile Include="BitmapPrintout.cpp" />
     <ClCompile Include="BitmapToolbar.cpp" />
     <ClCompile Include="BitmapWndViewer.cpp" />
-    <ClCompile Include="ClickToolbar.cpp" />
     <ClCompile Include="CriteriaTree.cpp" />
     <ClCompile Include="CriteriaTreeWnd.cpp" />
     <ClCompile Include="InfosFile.cpp" />

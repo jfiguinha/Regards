@@ -33,8 +33,8 @@ namespace Regards
 			void ZoomOff();
 			void ZoomPosition(const int &position);
 			void SetCheck(const bool &check);
-			int GetWidth();
-			int GetHeight();
+			virtual int GetWidth();
+			virtual int GetHeight();
 
 			wxWindow * GetWindow(){
 				return this;

@@ -31,6 +31,7 @@ namespace Regards
             #endif
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowMain::OnSize));
                 Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
+				Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowMain::OnResize));
 				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
 				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));
 			}
@@ -38,6 +39,14 @@ namespace Regards
 			virtual ~CWindowMain()
 			{
 
+			}
+
+			virtual int GetWidth() { return this->GetWidth(); };
+			virtual int GetHeight() { return this->GetHeight(); };
+
+			virtual void OnResize(wxCommandEvent& event)
+			{
+				this->Resize();
 			}
             
             virtual void OnRefresh(wxCommandEvent& event)

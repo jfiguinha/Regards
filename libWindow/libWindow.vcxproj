@@ -200,7 +200,9 @@
     <ClInclude Include="BitmapWnd.h" />
     <ClInclude Include="CalendarDialogBox.h" />
     <ClInclude Include="CalendarSelect.h" />
+    <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
     <ClInclude Include="IconeList.h" />
@@ -254,6 +256,7 @@
     <ClCompile Include="BitmapWnd.cpp" />
     <ClCompile Include="CalendarDialogBox.cpp" />
     <ClCompile Include="CalendarSelect.cpp" />
+    <ClCompile Include="ClickToolbar.cpp" />
     <ClCompile Include="EmptyWindow.cpp" />
     <ClCompile Include="Icone.cpp" />
     <ClCompile Include="IconeList.cpp" />
@@ -261,6 +264,7 @@
     <ClCompile Include="MapDialogBox.cpp" />
     <ClCompile Include="MapSelect.cpp" />
     <ClCompile Include="Pane.cpp" />
+    <ClCompile Include="PanelWithClickToolbar.cpp" />
     <ClCompile Include="PositionElement.cpp" />
     <ClCompile Include="RenderBitmapInterfaceOpenGL.cpp" />
     <ClCompile Include="RenderPreviewBitmap.cpp" />

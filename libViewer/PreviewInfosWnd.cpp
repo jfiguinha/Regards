@@ -24,13 +24,22 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 	paneInfos = nullptr;
 	panelInfosWindow = nullptr;
 	previewWindow = nullptr;
-	clickInfoToolbar = nullptr;
 	isVideo = false;
 	posBarInfos = 0;
 	isDiapoarama = false;
     clickToobarShow = false;
     paneInfosShow = false;
     isThumbnail = false;
+
+	bool showInfos = true;
+	int positionBar = 0;
+
+	CViewerParam * viewerParam = CViewerParamInit::getInstance();
+	if (viewerParam != nullptr)
+	{
+		viewerParam->GetShowInfos(showInfos);
+		viewerParam->GetPositionSplitter(positionBar);
+	}
 
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
     
@@ -48,55 +57,35 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS",1);
 		CThemePane theme;
 		viewerTheme->GetInfosPaneTheme(&theme);
-		paneInfos = new CPane(this, wxID_ANY, this, PANE_INFOS, theme);
-		paneInfos->SetTitle(libelle);
+		CThemeToolbar themeClickInfosToolbar;
+		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
+		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", wxID_ANY, theme, themeClickInfosToolbar, libelle, showInfos);
+		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
+		paneInfos->SetWindow(panelInfosWindow);
 	}
 
 	SetHorizontal(horizontal);
-
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar themeClickInfosToolbar;
-		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-		clickInfoToolbar = new CClickToolbar(this, wxID_ANY, themeClickInfosToolbar, this, PANE_INFOS);
-		clickInfoToolbar->SetVertical(true);
-	}
-	
 	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, statusBarInterface, fileGeolocalisation);
-	panelInfosWindow = new CPanelInfosWnd(paneInfos, PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
+	
 
-	bool showInfos = true;
-	int positionBar = 0;
+	
+	this->posBar = positionBar;
+	this->SetWindow(previewWindow, paneInfos);
 
-	CViewerParam * viewerParam = CViewerParamInit::getInstance();
-	if (viewerParam != nullptr)
-	{
-		viewerParam->GetShowInfos(showInfos);
-		viewerParam->GetPositionSplitter(positionBar);
-	}
+	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CPreviewInfosWnd::OnResize));
 
-	paneInfos->SetOtherWindow(panelInfosWindow);
-	//panePreview->SetOtherWindow(previewWindow);
+	RedrawBarPos();
+}
 
-	if (showInfos)
-	{
-		this->posBar = positionBar;
-		this->SetWindow(previewWindow, paneInfos);
-	}
-	else
-	{
-		posBarInfos = positionBar;
-		paneInfos->Show(false);
-		clickInfoToolbar->Show(true);
-		this->SetWindow(previewWindow, clickInfoToolbar);
-		RedrawBarPos();
-	}
-
-	Connect(wxEVENT_SHOWPANELINFO, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewInfosWnd::ShowPanelInfos));
-	Connect(wxEVENT_HIDEPANELINFO, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewInfosWnd::HidePanelInfos));
+void CPreviewInfosWnd::StopLoadingPicture()
+{
 
 }
 
+void CPreviewInfosWnd::OnResize(wxCommandEvent& event)
+{
+	RedrawBarPos();
+}
 
 bool CPreviewInfosWnd::IsToolbarVisible()
 {
@@ -109,41 +98,10 @@ bool CPreviewInfosWnd::IsToolbarVisible()
 void CPreviewInfosWnd::UpdateScreenRatio()
 {
     paneInfos->UpdateScreenRatio();
-    //panePreview->UpdateScreenRatio();
-    
     panelInfosWindow->UpdateScreenRatio();
     previewWindow->UpdateScreenRatio();
     
-    clickInfoToolbar->UpdateScreenRatio();
-    
     this->ResizeWindow();
-}
-
-void CPreviewInfosWnd::ShowPanelInfos(wxCommandEvent& event)
-{
-	if (paneInfos != nullptr)
-	{
-		if (!paneInfos->IsShown())
-		{
-			ClickShowButton(PANE_INFOS);
-		}
-	}
-}
-
-void CPreviewInfosWnd::HidePanelInfos(wxCommandEvent& event)
-{
-	if (paneInfos != nullptr)
-	{
-		if (paneInfos->IsShown())
-			ClosePane(PANE_INFOS);
-	}
-}
-
-bool CPreviewInfosWnd::IsPanelInfosVisible()
-{
-	if (paneInfos != nullptr)
-		return paneInfos->IsShown();
-	return false;
 }
 
 CPreviewInfosWnd::~CPreviewInfosWnd()
@@ -168,12 +126,6 @@ CPreviewInfosWnd::~CPreviewInfosWnd()
 
 	if (paneInfos != nullptr)
 		delete(paneInfos);
-
-	//if (panePreview != nullptr)
-	//	delete(panePreview);
-
-	if (clickInfoToolbar != nullptr)
-		delete(clickInfoToolbar);
     
     if(fileGeolocalisation != nullptr)
         delete(fileGeolocalisation);
@@ -181,36 +133,9 @@ CPreviewInfosWnd::~CPreviewInfosWnd()
 
 }
 
-void CPreviewInfosWnd::ClosePane(const int &id)
+bool CPreviewInfosWnd::IsPanelInfosVisible()
 {
-	switch (id)
-	{
-		case PANE_INFOS:
-		{
-			posBarInfos = posBar;
-
-			if (paneInfos != nullptr)
-				if (paneInfos->IsShown())
-					paneInfos->Show(false);
-
-			if (clickInfoToolbar != nullptr)
-				clickInfoToolbar->Show(true);
-
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetShowInfos(false);
-			}
-
-			if (clickInfoToolbar != nullptr && previewWindow != nullptr)
-				this->SetWindow(previewWindow, clickInfoToolbar);
-			RedrawBarPos();
-		}
-		break;
-	}
-
-	this->Resize(this);
+	return paneInfos->IsPanelVisible();
 }
 
 void CPreviewInfosWnd::ResizeWindow()
@@ -224,21 +149,26 @@ void CPreviewInfosWnd::RedrawBarPos()
 {
     if(paneInfos != nullptr)
     {
-        bool showInfos = paneInfos->IsShown();
+		if (!paneInfos->IsPanelVisible())
+		{
+			/*
+			wxRect rc = this->GetWindowRect();
 
-        if (!showInfos && clickInfoToolbar != nullptr)
-        {
-            wxRect rc = this->GetWindowRect();
-		
-            int taille = rc.width - clickInfoToolbar->GetNavigatorWidth();
-            if (taille > 0)
-                posBar = taille;
-
-            SetWindow2FixPosition(true, clickInfoToolbar->GetNavigatorWidth());
-        }
+			int taille = rc.width - paneInfos->GetWidth();
+			if (taille > 0)
+				posBar = taille;
+			*/
+			SetWindow2FixPosition(true, paneInfos->GetWidth());
+			this->SetSeparationBarVisible(false);
+		}
+		else
+		{
+			this->SetSeparationBarVisible(true);
+			SetWindow2FixPosition(false, posBarInfos);
+		}
     }
 
-	this->SetSeparationBarVisible(false);
+	
 	this->Resize(this);
 
 }
@@ -248,43 +178,6 @@ void CPreviewInfosWnd::SetEffect(const bool &effect)
 	if (previewWindow != nullptr)
 		previewWindow->SetEffect(effect);
 }
-
-void CPreviewInfosWnd::ClickShowButton(const int &id)
-{
-	switch (id)
-	{
-		case PANE_INFOS:
-		{
-			if (clickInfoToolbar->IsShown())
-				clickInfoToolbar->Show(false);
-
-			if (!paneInfos->IsShown())
-				paneInfos->Show(true);
-
-			this->SetSeparationBarVisible(true);
-
-			SetWindow2FixPosition(false, posBarInfos);
-
-			posBar = posBarInfos;
-
-			CViewerParam * config = CViewerParamInit::getInstance();
-			if (config != nullptr)
-			{
-				CViewerParam * viewerParam = (CViewerParam *)config;
-				viewerParam->SetPositionSplitter(posBar);
-				viewerParam->SetShowInfos(true);
-			}
-
-			this->SetWindow(previewWindow, paneInfos);
-
-			SetPanelInfos(false);
-
-			this->RedrawBarPos();
-		}
-		break;
-	}
-}
-
 void CPreviewInfosWnd::SetDiaporamaMode()
 {
 	isDiapoarama = true;
@@ -295,11 +188,6 @@ void CPreviewInfosWnd::SetNormalMode()
 {
 	isDiapoarama = false;
 	previewWindow->SetNormalMode();
-}
-
-void CPreviewInfosWnd::HidePanel()
-{
-    ClosePane(PANE_INFOS);
 }
 
 bool CPreviewInfosWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation)
@@ -408,9 +296,8 @@ void CPreviewInfosWnd::FullscreenMode()
     paneInfosShow = paneInfos->IsShown();
 	paneInfos->Show(false);
 	//panePreview->SetTitleBarVisibility(false);
-    clickToobarShow = clickInfoToolbar->IsShown();
-    
-    clickInfoToolbar->Show(false);
+    //clickToobarShow = clickInfoToolbar->IsShown();  
+    //clickInfoToolbar->Show(false);
 	previewWindow->SetFullscreen(true);
 	this->SetWindow(previewWindow, nullptr);
 	this->Resize(this);
@@ -420,10 +307,20 @@ void CPreviewInfosWnd::FullscreenMode()
 void CPreviewInfosWnd::ScreenMode()
 {
 	fullscreen = false;
-	paneInfos->Show(paneInfosShow);
+	
 	//panePreview->SetTitleBarVisibility(true);
     previewWindow->SetFullscreen(false);
-    
+	this->SetWindow(previewWindow, paneInfos);
+	if (!paneInfosShow)
+		paneInfos->Show();
+	else
+	{
+		paneInfos->Show(paneInfosShow);
+		this->SetSeparationBarVisible(true);
+		this->Resize(this);
+	}
+	
+	/*
 	if (!paneInfosShow)
         ClosePane(PANE_INFOS);
     else
@@ -434,5 +331,6 @@ void CPreviewInfosWnd::ScreenMode()
         this->SetSeparationBarVisible(true);
         this->Resize(this);
     }
+	*/
 }
 

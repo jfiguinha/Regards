@@ -453,7 +453,8 @@ void CViewerTheme::InitThumbnail()
 	themeThumbnail.colorBack.Set(50, 54, 63);
 	themeThumbnail.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
 	themeThumbnail.themeSeparation.colorBack.Set(80, 84, 91);
-	//themeThumbnail.themeSeparation.colorBack.Set(45, 45, 48);
+	//wxColour(45, 48, 56);
+	//themeThumbnail.themeSeparation.colorBack.Set(45, 48, 56);
 	themeThumbnail.themeSeparation.colorTop.Set(45, 45, 48);
 	themeThumbnail.themeSeparation.colorBottom.Set(45, 45, 48);
 	themeThumbnail.themeSeparation.themeFont.SetColorFont(wxColour(255, 255, 255));

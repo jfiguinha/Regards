@@ -11,7 +11,7 @@
 #include <Photos.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-using namespace Regards::Control;
+//using namespace Regards::Control;
 
 class CFindPhotoCriteria;
 class CFolderCatalog;

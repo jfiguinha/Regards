@@ -30,7 +30,7 @@ using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
-CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, CImageList * imageList)
+CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar)
 	: CWindowMain("CListPicture",parent, id)
 {
 	thumbscrollbar = nullptr;
@@ -38,19 +38,14 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 	thumbToolbarZoom = nullptr;
 	thumbnailFolder = nullptr;
 	typeAffichage = SHOW_ALL;
-	update = true;
 	showToolbar = true;
-	isBottom = false;
+
 	bool checkValidity = false;
 	CViewerParam * config = CViewerParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	if (imageList != nullptr)
-	{
-		photoVector = imageList->GetCopy();
-	}
-	
+
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
@@ -98,15 +93,15 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 	Connect(wxEVENT_COPYFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::CopyFile));
 	Connect(wxEVENT_GEOLOCALIZEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::GeolocalizeFile));
 	Connect(wxEVENT_CHANGEDATEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ChangeDateFile));
-	Connect(wxEVENT_SETTHUMBNAILBOTTOM, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::SetBottom));
-	Connect(wxEVENT_SETTHUMBNAILRIGHT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::SetRight));
-	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ChangeTypeAffichage));
-	Connect(wxEVENT_SETLISTPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::SetListeFile));
 	Connect(wxEVENT_GENERATEINDEXFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::GenerateIndexFile));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CListPicture::OnIdle));
 
-	update = false;
-	processIdle = true;
+	showToolbar = true;
+	thumbToolbar->Show(true);
+	thumbToolbarZoom->Show(true);
+	thumbscrollbar->ShowVerticalScroll();
+	thumbnailFolder->SetNoVScroll(false);
+	thumbnailFolder->SetCheck(true);
+
 }
 
 CListPicture::~CListPicture()
@@ -122,56 +117,10 @@ int CListPicture::GetThumbnailHeight()
 	return thumbnailFolder->GetIconeHeight() + thumbscrollbar->GetBarHeight();
 }
 
-void CListPicture::OnIdle(wxIdleEvent& evt)
+void CListPicture::ChangeTypeAffichage(PhotosVector * photoVector, const long & typeAffichage)
 {
-    //TRACE();
-    //if (processIdle && !endProgram)
-    //    ProcessIdle();
-	//StartThread();
-
-	if (processIdle && !endProgram)
-	{
-		printf("CListPicture::ProcessIdle() \n");
-		if (update)
-		{
-			thumbnailFolder->Init(&photoVector, typeAffichage);
-			update = false;
-		}
-		processIdle = false;
-	}
-}
-
-void CListPicture::SetBottom(wxCommandEvent& event)
-{
-	
-	isBottom = true;
-	showToolbar = false;
-	thumbToolbar->Show(false);
-	thumbToolbarZoom->Show(false);
-	thumbscrollbar->HideVerticalScroll();
-	thumbnailFolder->SetNoVScroll(true);
-	thumbnailFolder->SetCheck(false);
-	thumbnailFolder->Init(&photoVector, typeAffichage);
-	this->Resize();
-}
-
-void CListPicture::ChangeTypeAffichage(wxCommandEvent& event)
-{
-	typeAffichage = event.GetExtraLong();
-	thumbnailFolder->Init(&photoVector, typeAffichage);
-}
-
-void CListPicture::SetRight(wxCommandEvent& event)
-{
-	isBottom = false;
-	showToolbar = true;
-	thumbToolbar->Show(true);
-	thumbToolbarZoom->Show(true);
-	thumbscrollbar->ShowVerticalScroll();
-	thumbnailFolder->SetNoVScroll(false);
-	thumbnailFolder->SetCheck(true);
-	thumbnailFolder->Init(&photoVector, typeAffichage);
-	this->Resize();
+	this->typeAffichage = typeAffichage;
+	thumbnailFolder->Init(photoVector, typeAffichage);
 }
 
 void CListPicture::SetActifItem(const int &numItem, const bool &move)
@@ -180,23 +129,14 @@ void CListPicture::SetActifItem(const int &numItem, const bool &move)
 		thumbnailFolder->SetActifItem(numItem, move);
 }
 
-void CListPicture::SetListeFile(wxCommandEvent& event)
+void CListPicture::SetListeFile(PhotosVector * photoVector)
 {
-	CImageList * listPicture = (CImageList *)event.GetClientData();
-	if (listPicture != nullptr)
-	{
-		this->photoVector.clear();
-		photoVector = listPicture->GetCopy();
-	}
-
 	if (thumbnailFolder != nullptr)
-		thumbnailFolder->Init(&this->photoVector, typeAffichage);
-	if (!isBottom)
+	{
+		thumbnailFolder->Init(photoVector, typeAffichage);
 		thumbnailFolder->SetCheck(true);
+	}
 }
-
-
-
 
 void CListPicture::ThumbnailZoomOn(wxCommandEvent& event)
 {

@@ -1,7 +1,6 @@
 #include <header.h>
 #include "MainWindow.h"
 #include <LibResource.h>
-#include "CentralWnd.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include "ViewerParamInit.h"
@@ -43,7 +42,6 @@
 using namespace Regards::Viewer;
 //const long ONE_MSEC = 1000;
 using namespace std;
-using namespace Regards::Control;
 using namespace Regards::Sqlite;
 
 
@@ -114,7 +112,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
-	centralWnd = new CCentralWnd(this, CENTRALVIEWERWINDOWID, statusBarViewer, imageList);
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeSplitter theme;
+		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
+		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, statusBarViewer, theme, imageList, false);
+	}
 	this->statusBarViewer = statusBarViewer;
 
 
@@ -127,12 +131,11 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_CRITERIASHOWUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshCriteriaPictureList));
 	Connect(TOOLBAR_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnShowToolbar));
 	Connect(VIDEO_END_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoEnd));
-	Connect(VIDEO_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::SetVideoPos));
     Connect(VIDEO_START, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoStart));
 	Connect(wxEVENT_ADDFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnAddFolder));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
 	Connect(wxEVENT_REMOVEFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRemoveFolder));
-	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::ChangeTypeAffichage));
+	//Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_ONPICTURECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnPictureClick));
     Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
 	Connect(wxEVENT_PICTURECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::PictureClick));
@@ -150,7 +153,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
-    Connect(wxEVT_ANIMATIONTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StartAnimation));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 
@@ -195,16 +197,12 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	faceData->LoadData((const char*)model.mb_str(wxConvUTF8), (const char*)facelandmark.mb_str(wxConvUTF8));
 	//centralWnd->ScreenMode();
+
+	updateFolder = true;
+	processIdle = true;
 	
 }
 
-void CMainWindow::StartAnimation(wxCommandEvent& event)
-{
-    TRACE();
-    //this_thread::sleep_for(chrono::milliseconds(1000));
-    centralWnd->StartAnimation();
-    printf("CMainWindow::StartAnimation \n");
-}
 
 void CMainWindow::StopAnimation(wxCommandEvent& event)
 {
@@ -237,22 +235,6 @@ void CMainWindow::OnFacePertinence()
 
 }
 
-void CMainWindow::OnThumbnailBottom()
-{
-    TRACE();
-	wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
-	if (window)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETTHUMBNAILBOTTOM);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-	/*
-	if (centralWnd != nullptr)
-		centralWnd->OnThumbnailBottom();
-		*/
-}
-
 void CMainWindow::SetFilterInterpolation(const int &filter)
 {
     TRACE();
@@ -269,21 +251,6 @@ void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
 	refreshFolder = true;
     processIdle = true;
 	refreshTimer->Stop();
-}
-
-void CMainWindow::OnThumbnailRight()
-{
-    TRACE();
-	wxWindow * window = this->FindWindowById(FILTERPREVIEWSPLITTER);
-	if (window)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETTHUMBNAILRIGHT);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-	/*
-	if (centralWnd != nullptr)
-		centralWnd->OnThumbnailRight();
-		*/
 }
 
 void CMainWindow::OnLoadPicture()
@@ -325,7 +292,7 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
     processIdle = true;
 }
 
-
+/*
 void CMainWindow::ChangeTypeAffichage(wxCommandEvent& event)
 {
     TRACE();
@@ -339,8 +306,7 @@ void CMainWindow::ChangeTypeAffichage(wxCommandEvent& event)
 	}
     processIdle = true;
 }
-
-
+*/
 
 void CMainWindow::RefreshPictureList(wxCommandEvent& event)
 {
@@ -993,7 +959,7 @@ void CMainWindow::ProcessIdle()
 		bool isValid = true;
 		//wxString photoName = imageList->GetFilePath(numElement, isValid);
 		wxString requestSql = centralWnd->GetSqlRequest();
-
+		//wxString requestSql = "";
 		if (requestSql != "")
 		{
 			sqlFindPhotos.SearchPhotos(requestSql);
@@ -1029,7 +995,7 @@ void CMainWindow::ProcessIdle()
 
 		//centralWnd->SetNumElement(numElement);
 
-		wxWindow * window = this->FindWindowById(LISTPICTUREID);
+		wxWindow * window = this->FindWindowById(CENTRALVIEWERWINDOWID);
 		if (window)
 		{
 			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETLISTPICTURE);
@@ -1040,14 +1006,12 @@ void CMainWindow::ProcessIdle()
 		//centralWnd->SetListeFile(&pictures, typeAffichage);
 		updateFolder = false;
 		updatePicture = true;
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
-		this->GetEventHandler()->AddPendingEvent(evt);
+        //wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
+		//this->GetEventHandler()->AddPendingEvent(evt);
         hasDoneOneThings = true;
 	}
 	else if (updatePicture)
 	{
-		
-
 		if (imageList->GetNbElement() > 0)
 		{
             bool isValid = true;
@@ -1061,7 +1025,9 @@ void CMainWindow::ProcessIdle()
 
 			if (isValid)
 			{
-				centralWnd->SetNumElement(numElement);
+				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+				if (viewerWindow != nullptr)
+					viewerWindow->SetNumElement(numElement);
 
 				if (firstFileToShow != L"")
 				{
@@ -1092,7 +1058,10 @@ void CMainWindow::ProcessIdle()
 					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
 					this->GetEventHandler()->AddPendingEvent(evt);
 				}
-				centralWnd->SetNumElement(numElement);
+				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+				if (viewerWindow != nullptr)
+					viewerWindow->SetNumElement(numElement);
+
 				this->filename = photoName;
 				loadPicture = false;
 				sendMessageVideoStop = false;
@@ -1245,7 +1214,7 @@ void CMainWindow::SetSelectFile(const wxString &filename)
 {
     TRACE();
 	this->filename = filename;
-    centralWnd->HidePanel();
+    //centralWnd->HidePanel();
 }
 
 void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
@@ -1272,8 +1241,10 @@ CMainWindow::~CMainWindow()
 	bool showInfos;
 	bool showThumbnail;
 
-	showInfos = centralWnd->IsPanelInfosVisible();
-	showThumbnail = centralWnd->IsPanelThumbnailVisible();
+	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+	if (viewerWindow != nullptr)
+		showInfos = viewerWindow->IsPanelInfosVisible();
+//	showThumbnail = centralWnd->IsPanelThumbnailVisible();
 
 	if (viewerParam != nullptr)
 	{
@@ -1409,10 +1380,6 @@ void CMainWindow::StartDiaporama()
 	
 	if (viewerParam != nullptr)
 	{
-		//centralWnd->SetDiaporamaMode();
-
-		//if (viewerParam->GetFullscreenDiaporamaOption())
-		//	SetFullscreen();
 		bool isValid = false;
         wxString fileToLoad = imageList->GetFilePath(numElement,isValid);
 		if (isValid)
@@ -1440,16 +1407,6 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 	{
 		//int64_t pos = event.GetExtraLong();
 		centralWnd->SetPosition(timePosition);
-	}
-}
-
-void CMainWindow::SetVideoPos(wxCommandEvent& event)
-{
-    TRACE();
-	if (centralWnd != nullptr)
-	{
-		int64_t pos = event.GetExtraLong();
-		centralWnd->SetVideoPosition(pos);
 	}
 }
 
@@ -1620,16 +1577,6 @@ bool CMainWindow::OpenFolder()
 		if (viewerParam != nullptr)
 			viewerParam->SetCatalogCriteria("");
 
-
-		wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
-		if (window != nullptr)
-		{
-			wxString * folder = new wxString(path);
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CHANGETYPEAFFICHAGE);
-			evt.SetClientData(folder);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-
 		AddFolder(path);
 
 		updateCriteria = true;
@@ -1666,7 +1613,9 @@ void CMainWindow::RefreshPicture(wxCommandEvent& event)
 {
     TRACE();
 	LoadPictureInThread(this->filename);
-    centralWnd->SetNumElement(numElement, false);
+	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+	if (viewerWindow != nullptr)
+		viewerWindow->SetNumElement(numElement, false);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1679,7 +1628,9 @@ void CMainWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbna
 	{
         clock_t tStart = clock();
 		filename = bitmap->GetFilename();
-		centralWnd->SetBitmap(bitmap, isThumbnail);
+		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+		if (viewerWindow != nullptr)
+			viewerWindow->SetBitmap(bitmap, isThumbnail);
 		UpdateInfos(bitmap);
         printf("SetPicture Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
 	}
@@ -1780,10 +1731,14 @@ void CMainWindow::ShowToolbar()
     TRACE();
 	showToolbar = !showToolbar;
 
-	if (!showToolbar)
-		centralWnd->HideToolbar();
-	else
-		centralWnd->ShowToolbar();
+	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+	if (viewerWindow != nullptr)
+	{
+		if (!showToolbar)
+			viewerWindow->HideToolbar();
+		else
+			viewerWindow->ShowToolbar();
+	}
 }
 
 
@@ -1821,28 +1776,6 @@ void CMainWindow::LoadThumbnail(const int &numElement)
                 delete _loadingPicture;
         }
     }
-    /*
-    if(bitmap == nullptr || !bitmap->IsValid())
-    {
-        //Chargement du thumbnail de l'image
-        CLibPicture libPicture;
-        _loadingPicture = libPicture.LoadThumbnail(filename, true);
-    }
-	else
-	{
-		_loadingPicture->SetPicture(bitmap);
-	}
-    
-    needToReload = false;
-
-    if (_loadingPicture != nullptr)
-    {
-        if (_loadingPicture->GetFilename() == firstFileToShow)
-			SetPicture(_loadingPicture, true);
-		else
-			delete _loadingPicture;
-    }
-    */
 }
 
 void CMainWindow::LoadPictureInThread(const wxString &filename, const bool &load)
@@ -1858,14 +1791,22 @@ void CMainWindow::LoadPictureInThread(const wxString &filename, const bool &load
     
 	if (libPicture.TestIsVideo(filename))
 	{
-        centralWnd->StartLoadingPicture(numElement);
-		centralWnd->SetVideo(filename);
+		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+		if (viewerWindow != nullptr)
+		{
+			viewerWindow->StartLoadingPicture(numElement);
+			viewerWindow->SetVideo(filename);
+		}
+
 		wxString infos = "Regards Viewer : " + CFileUtility::GetFileName(filename);
 		statusBarViewer->SetWindowTitle(infos); 
 	}
     else if(libPicture.TestIsAnimation(filename))
     {
-        centralWnd->SetAnimation(filename);
+		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+		if (viewerWindow != nullptr)
+			viewerWindow->SetAnimation(filename);
+
         if (startDiaporama)
         {
             wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_DIAPORAMATIMERSTART);
@@ -1876,10 +1817,11 @@ void CMainWindow::LoadPictureInThread(const wxString &filename, const bool &load
     }
 	else
 	{
-        centralWnd->StartLoadingPicture(numElement);
+		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+		if (viewerWindow != nullptr)
+			viewerWindow->StartLoadingPicture(numElement);
         LoadingPicture(filename);   
 	}
- 
 }
 
 void CMainWindow::SetScreenEvent(wxCommandEvent& event)
@@ -2031,14 +1973,17 @@ void CMainWindow::ShowPicture(wxCommandEvent& event)
         {
             SetPicture(pictureData->bitmap, pictureData->isThumbnail);
 
-            if (!pictureData->isThumbnail)
-                centralWnd->StopLoadingPicture();               
+			if (!pictureData->isThumbnail)
+			{
+				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+				if (viewerWindow != nullptr)
+					viewerWindow->StopLoadingPicture();
+			}
+                               
         }
         else
             delete pictureData->bitmap;
             
         delete pictureData;
     }  
-    //processIdle = true;
-
 }

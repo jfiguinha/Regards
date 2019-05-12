@@ -1,7 +1,7 @@
 #pragma once
 #include "Toolbar.h"
 #include <StatusBarInterface.h>
-#include "CentralWnd.h"
+#include "CentralWindow.h"
 #include "FileUtility.h"
 #include <EffectVideoParameter.h>
 #include <WindowMain.h>
@@ -207,16 +207,12 @@ namespace Regards
 			bool OpenFolder();
 			bool IsFullscreen();
 			void ShowToolbar();
-			void SetIsNeedToCheck(const bool &check);
 			void Exit();
 			void OnShowToolbar(wxCommandEvent& event);
 			void SetText(const int &numPos, const wxString &libelle);
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
-			void SetVideoPos(wxCommandEvent& event);
 			void AddFolder(const wxString &folder);
-			void OnThumbnailBottom();
-			void OnThumbnailRight();
 			void SetFilterInterpolation(const int &filter);
 			void OnAddFolder(wxCommandEvent& event);
 			void OnFacePertinence();
@@ -235,7 +231,6 @@ namespace Regards
 			void PictureClick(wxCommandEvent& event);
 			void PictureClickMove(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);
-			void ChangeTypeAffichage(wxCommandEvent& event);
             void CriteriaChange(wxCommandEvent& event);
 			void RefreshPictureList(wxCommandEvent& event);
 			void ShowPicture(wxCommandEvent& event);
@@ -255,7 +250,6 @@ namespace Regards
 			void FaceInfosUpdate(wxCommandEvent& event);
 			void FaceClick(wxCommandEvent& event);
             void RefreshTimer(wxCommandEvent& event);
-            void StartAnimation(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
@@ -267,24 +261,20 @@ namespace Regards
 			static void CheckMD5(void * param);
 			static void FacialRecognition(void * param);
 
-			void CheckRenderVideo();
-			void CheckRenderEffect();
-			void CheckRenderPreview();
-			void CheckRenderTransition();
-
 			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
 			void LoadingPicture(const wxString &filenameToShow);
 			void LoadPicture(const int &numElement);
 			void LoadPictureInThread(const wxString &filename, const bool &load = false);
 			void UpdateInfos(CImageLoadingFormat * bitmap);
-			void ExecuteRegardsShop(const wxString &filename);
             void LoadThumbnail(const int &numElement);
-			bool fullscreen ;
+
+
+			bool fullscreen;
 			CFaceLoadData * faceData;
 			wxGauge * progressBar;
 			wxStatusBar * statusBar;
 			CToolbar * toolbar;
-			CCentralWnd * centralWnd;
+			CCentralWindow * centralWnd;
 			wxTimer * diaporamaTimer;
 			wxTimer * refreshTimer;
 			IStatusBarInterface * statusBarViewer;
@@ -305,9 +295,6 @@ namespace Regards
             void OnLoadPicture();
             
             CImageList * imageList = nullptr;
-			//PhotosVector pictures;
-			//mutex muPictureList;
-			//int nbElement = 0;
 			int numElement;
 			wxString firstFileToShow;
 			bool showToolbar;

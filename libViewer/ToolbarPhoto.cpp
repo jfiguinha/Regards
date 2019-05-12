@@ -14,8 +14,6 @@ CToolbarPhoto::CToolbarPhoto(wxWindow* parent, wxWindowID id, const CThemeToolba
     saveLastPush = true;
 	wxString folder_label = CLibResource::LoadStringFromResource(L"LBLFOLDER",1);// L"Folder";
 	wxString criteria_label = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);//L"Criteria";
-    wxString facelist_label = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);//L"Criteria";
-
 
 	folder = new CToolbarTexte(themeToolbar.texte);
 	folder->SetCommandId(WM_FOLDER);
@@ -26,11 +24,7 @@ CToolbarPhoto::CToolbarPhoto(wxWindow* parent, wxWindowID id, const CThemeToolba
 	criteria->SetCommandId(WM_CRITERIA);
 	criteria->SetLibelle(criteria_label);
 	navElement.push_back(criteria);
-    
-	facelist = new CToolbarTexte(themeToolbar.texte);
-	facelist->SetCommandId(WM_FACELIST);
-	facelist->SetLibelle(facelist_label);
-	navElement.push_back(facelist);
+
 }
 
 CToolbarPhoto::~CToolbarPhoto()

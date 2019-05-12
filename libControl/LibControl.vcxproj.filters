@@ -40,12 +40,6 @@
     <Filter Include="Thumbnail\Video">
       <UniqueIdentifier>{9052f6b8-51f9-403b-b306-cc034b7c730e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Toolbar">
-      <UniqueIdentifier>{da2beff0-102d-445c-bbc2-a2ef37845e8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Toolbar\ClickToolbar">
-      <UniqueIdentifier>{5a4084f1-0c5d-4a41-8fe2-1db4e4767d40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ShowBitmap">
       <UniqueIdentifier>{bc067904-6abb-4780-8c90-b6c80e6ed7b2}</UniqueIdentifier>
     </Filter>
@@ -96,9 +90,6 @@
     <ClInclude Include="ThumbnailVideo.h">
       <Filter>Thumbnail\Video</Filter>
     </ClInclude>
-    <ClInclude Include="ClickToolbar.h">
-      <Filter>Toolbar\ClickToolbar</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapToolbar.h">
       <Filter>ShowBitmap\Toolbar</Filter>
     </ClInclude>
@@ -148,9 +139,6 @@
     </ClCompile>
     <ClCompile Include="ThumbnailVideo.cpp">
       <Filter>Thumbnail\Video</Filter>
-    </ClCompile>
-    <ClCompile Include="ClickToolbar.cpp">
-      <Filter>Toolbar\ClickToolbar</Filter>
     </ClCompile>
     <ClCompile Include="BitmapToolbar.cpp">
       <Filter>ShowBitmap\Toolbar</Filter>

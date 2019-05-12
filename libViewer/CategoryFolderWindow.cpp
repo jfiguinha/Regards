@@ -275,6 +275,7 @@ void CCategoryFolderWindow::ProcessIdle()
 		criteria.DeleteCriteriaAlone();
 
 		//UpdatePhotoList();
+		/*
 		if (needToSendMessage)
 		{
 			CWindowMain * windowMain = (CWindowMain *)this->FindWindowById(MAINVIEWERWINDOWID);
@@ -285,7 +286,7 @@ void CCategoryFolderWindow::ProcessIdle()
 				//wxCommandEvent * event = new wxCommandEvent(EVENT_REFRESHLIST);
 				//wxQueueEvent(windowMain, event);
 			}
-		}
+		}*/
 		traitementEnd = true;
 	}
 	else if (refreshFolder)

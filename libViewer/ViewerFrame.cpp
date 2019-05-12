@@ -274,10 +274,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
     menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
 
-	wxMenu *menuThumbnail = new wxMenu;
-	menuThumbnail->Append(ID_THUMBNAILRIGHT, labelThumbnailRight_link, labelThumbnailRight);
-	menuThumbnail->Append(ID_THUMBNAILBOTTOM, labelThumbnailBottom_link, labelThumbnailBottom);
-	
+
 	//wxMenu *menuFace = new wxMenu;
 	//menuFace->Append(ID_FACEPERTINENCE, "&Face Pertinence", "Face Pertinence");
 
@@ -296,10 +293,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuParameter, labelParameter);
     menuBar->Append(menuSizeIcon, labelSizeIcon);
-	menuBar->Append(menuThumbnail, labelThumbnail);
-	//menuBar->Append(menuFace, "&Face");
-	//menuBar->Append(menuVideoBar, "&Video");
-	//menuBar->Append(menuInterpolation, "&Interpolation");
+
 	menuBar->Append(menuHelp, labelHelp);
 	SetMenuBar(menuBar);
 
@@ -734,71 +728,6 @@ void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 		}
 	}
 }
-
-void CViewerFrame::OnThumbnailBottom(wxCommandEvent& event)
-{
-	mainWindow->OnThumbnailBottom();
-}
-
-void CViewerFrame::OnThumbnailRight(wxCommandEvent& event)
-{
-	mainWindow->OnThumbnailRight();
-}
-
-void CViewerFrame::BoxFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(BOXFILTER);
-}
-void CViewerFrame::BilinearFilter(wxCommandEvent& event)
-{
-	mainWindow->SetFilterInterpolation(BILINEARFILTER);
-}
-void CViewerFrame::GaussianFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(GAUSSIANFILTER);
-}
-void CViewerFrame::HammingFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(HAMMINGFILTER);
-}
-void CViewerFrame::CubicFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(CUBICFILTER);
-}
-void CViewerFrame::BlackmanFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(BLACKMANFILTER);
-}
-void CViewerFrame::QuadraticFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(QUADRATICFILTER);
-}
-void CViewerFrame::MitchellFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(MITCHELLFILTER);
-}
-void CViewerFrame::TriangleFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(TRIANGLEFILTER);
-}
-void CViewerFrame::SincFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(SINCFILTER);
-}
-void CViewerFrame::BesselFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(BESSELFILTER);
-}
-void CViewerFrame::BlackmanBesselFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(BLACKMANBESSELFILTER);
-}
-void CViewerFrame::BlackmanSincFilter(wxCommandEvent& event){
-
-	mainWindow->SetFilterInterpolation(BLACKMANSINCFILTER);
-}
-void CViewerFrame::LanczosFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(LANCZOSFILTER);
-}
-void CViewerFrame::HermiteFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(HERMITEFILTER);
-}
-void CViewerFrame::HanningFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(HANNINGFILTER);
-}
-void CViewerFrame::CatromFilter(wxCommandEvent& event){
-	mainWindow->SetFilterInterpolation(CATROMFILTER);
-}
-
 #ifdef __WXMAC__
 void CViewerFrame::OnPageMargins(wxCommandEvent& WXUNUSED(event))
 {
@@ -821,30 +750,11 @@ EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
 EVT_MENU(ID_OpenCL, CViewerFrame::OnOpenCLConfiguration)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
-EVT_MENU(ID_THUMBNAILBOTTOM, CViewerFrame::OnThumbnailBottom)
-EVT_MENU(ID_THUMBNAILRIGHT, CViewerFrame::OnThumbnailRight)
 EVT_MENU(ID_FACEPERTINENCE, CViewerFrame::OnFacePertinence)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
-EVT_MENU(ID_BOXFILTER, CViewerFrame::BoxFilter)
-EVT_MENU(ID_BILINEARFILTER,CViewerFrame::BilinearFilter)
-EVT_MENU(ID_GAUSSIANFILTER,CViewerFrame::GaussianFilter)
-EVT_MENU(ID_HAMMINGFILTER,CViewerFrame::HammingFilter)
-EVT_MENU(ID_CUBICFILTER,CViewerFrame::CubicFilter)
-EVT_MENU(ID_BLACKMANFILTER,CViewerFrame::BlackmanFilter)
-EVT_MENU(ID_QUADRATICFILTER,CViewerFrame::QuadraticFilter)
-EVT_MENU(ID_MITCHELLFILTER,CViewerFrame::MitchellFilter)
-EVT_MENU(ID_TRIANGLEFILTER,CViewerFrame::TriangleFilter)
-EVT_MENU(ID_SINCFILTER,CViewerFrame::SincFilter)
-EVT_MENU(ID_BESSELFILTER,CViewerFrame::BesselFilter)
-EVT_MENU(ID_BLACKMANBESSELFILTER,CViewerFrame::BlackmanBesselFilter)
-EVT_MENU(ID_BLACKMANSINCFILTER,CViewerFrame::BlackmanSincFilter)
-EVT_MENU(ID_LANCZOSFILTER,CViewerFrame::LanczosFilter)
-EVT_MENU(ID_HERMITEFILTER,CViewerFrame::HermiteFilter)
-EVT_MENU(ID_HANNINGFILTER,CViewerFrame::HanningFilter)
-EVT_MENU(ID_CATROMFILTER,CViewerFrame::CatromFilter)
 #ifdef __WXMAC__
 	EVT_MENU(WXPRINT_PAGE_MARGINS, CViewerFrame::OnPageMargins)
 #endif

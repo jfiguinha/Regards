@@ -37,7 +37,7 @@ namespace Regards
 			void ImageSuivante();
 			void ImagePrecedente();
 			void Resize();
-			void SetVideoPosition(const int &videoTime);
+			//void SetVideoPosition(const int &videoTime);
             void UpdateScreenRatio();
 
 			bool IsToolbarVisible();

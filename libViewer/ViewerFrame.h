@@ -37,9 +37,7 @@ namespace Regards
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
             void OnIconSizeMore(wxCommandEvent& event);
-			void OnThumbnailBottom(wxCommandEvent& event);
 			void OnFacePertinence(wxCommandEvent& event);
-			void OnThumbnailRight(wxCommandEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnAbout(wxCommandEvent& event);
 			void OnHello(wxCommandEvent& event);
@@ -50,23 +48,6 @@ namespace Regards
 			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
-			void BoxFilter(wxCommandEvent& event);
-			void BilinearFilter(wxCommandEvent& event);
-			void GaussianFilter(wxCommandEvent& event);
-			void HammingFilter(wxCommandEvent& event);
-			void CubicFilter(wxCommandEvent& event);
-			void BlackmanFilter(wxCommandEvent& event);
-			void QuadraticFilter(wxCommandEvent& event);
-			void MitchellFilter(wxCommandEvent& event);
-			void TriangleFilter(wxCommandEvent& event);
-			void SincFilter(wxCommandEvent& event);
-			void BesselFilter(wxCommandEvent& event);
-			void BlackmanBesselFilter(wxCommandEvent& event);
-			void BlackmanSincFilter(wxCommandEvent& event);
-			void LanczosFilter(wxCommandEvent& event);
-			void HermiteFilter(wxCommandEvent& event);
-			void HanningFilter(wxCommandEvent& event);
-			void CatromFilter(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
 
 #ifdef __WXMAC__

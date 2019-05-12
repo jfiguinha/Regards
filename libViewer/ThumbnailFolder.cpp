@@ -32,6 +32,8 @@ CThumbnailFolder::~CThumbnailFolder(void)
 
 }
 
+
+
 void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
 {
     this->SetFocus();
@@ -73,16 +75,6 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
             if (!scrollV->IsMoving())
             {
                 wxRect rect = numActif->GetPos();
-               
-                //Positionnement au milieu
-                
-                //int windowHeight = this->GetHeight();
-               // int windowWidth = this->GetWidth();
-                //int iconeHeight = numActif->GetHeight();
-                //int iconeWidth = numActif->GetWidth();
-                
-                //int xPos = (windowWidth - iconeWidth) / 2;
-                //int yPos = (windowHeight - iconeHeight) / 2;
                 
                 int yPos = max((rect.y - scrollV->GetScreenHeight() / 2),0);
                 int xPos = max((rect.x - scrollH->GetScreenWidth() / 2), 0);
@@ -101,8 +93,6 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
         }
     }
     
-    
-    
     numSelect = iconeList->GetElement(numItem);
     
     if (numSelect != nullptr)
@@ -120,17 +110,8 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
 
 void CThumbnailFolder::OnPictureClick(CThumbnailData * data)
 {
-    CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONPICTURECLICK);
-		evt.SetExtraLong(data->GetNumPhotoId());
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-		//mainWindow->PictureClick(data->GetNumPhotoId(), false);
 
 }
-
 
 void CThumbnailFolder::AddSeparatorBar(const wxString &libelle, PhotosVector * photoVector, int &nbElement)
 {
@@ -387,15 +368,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 {
 	threadDataProcess = false;
 
-	/*
-	while (nbProcess > 0)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-
-	if (threadMain != nullptr)
-		threadMain->join();
-	*/
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -679,24 +651,6 @@ void CThumbnailFolder::FindOtherElement(wxDC * dc, const int &x, const int &y)
 
 void CThumbnailFolder::ResizeThumbnail()
 {
-  // if(widthThumbnail != width || heightThumbnail != height)
-  // {
-        if (noVscroll)
-            ResizeThumbnailWithoutVScroll();
-        else
-            ResizeThumbnailWithVScroll();
-        
-       widthThumbnail = GetWindowWidth();
-       heightThumbnail = GetWindowHeight();
-       
-       UpdateScroll();
-  // }
-}
-
-void CThumbnailFolder::ResizeThumbnailWithVScroll()
-{
-    
-    
 	int x = 0;
 	int y = 0;
 
@@ -766,57 +720,10 @@ void CThumbnailFolder::ResizeThumbnailWithVScroll()
 
 	}
 
-}
+	widthThumbnail = GetWindowWidth();
+	heightThumbnail = GetWindowHeight();
 
-void CThumbnailFolder::ResizeThumbnailWithoutVScroll()
-{
-
-    int x = 0;
-	int y = 0;
-
-	//int nbPhoto = pIconeList.size();
-
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * pBitmapIcone = iconeList->GetElement(i);
-		if (pBitmapIcone != nullptr)
-		{
-			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-			pBitmapIcone->SetWindowPos(x, y);
-			x += themeThumbnail.themeIcone.GetWidth();
-		}
-	}
-    
-    
-}
-
-
-void CThumbnailFolder::RenderIconeWithoutVScroll(wxDC * deviceContext)
-{
-    
-	posLargeur = scrollbar->GetPosLargeur();
-
-//#pragma omp parallel for
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * pBitmapIcone = iconeList->GetElement(i);
-        if (pBitmapIcone != nullptr)
-        {
-            pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
-            wxRect rc = pBitmapIcone->GetPos();
-
-            //if visible
-            int left = rc.x - posLargeur;
-            int right = rc.x + rc.width - posLargeur;
-
-            if (right > 0 && left < GetWindowWidth())
-                RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
-            else
-                pBitmapIcone->DestroyCache();
-        }
-    }
+	UpdateScroll();
 }
 
 CIcone * CThumbnailFolder::FindElement(const int &xPos, const int &yPos)

@@ -72,9 +72,6 @@
     <ClInclude Include="ViewerThemeInit.h">
       <Filter>Theme</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailBitmap.h">
-      <Filter>Thumbnail\include</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailFace.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
@@ -93,9 +90,6 @@
     <ClInclude Include="ThumbnailToolBarZoom.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailVideoPanel.h">
-      <Filter>Thumbnail\include</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailViewerEffect.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
@@ -112,12 +106,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="CategoryWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="CentralWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="FilterPreviewSplitter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="FilterWindowParam.h">
@@ -159,13 +147,7 @@
     <ClInclude Include="ModificationManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="PreviewFaceSplitter.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="PreviewInfosWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="PreviewThumbnailSplitter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="PreviewToolbar.h">
@@ -183,14 +165,23 @@
     <ClInclude Include="ToolbarInfos.h">
       <Filter>Toolbar\include</Filter>
     </ClInclude>
-    <ClInclude Include="ToolbarPhoto.h">
-      <Filter>Toolbar\include</Filter>
-    </ClInclude>
     <ClInclude Include="PanelInfosWnd.h">
       <Filter>Panel\include</Filter>
     </ClInclude>
     <ClInclude Include="PanelPhotoWnd.h">
       <Filter>Panel\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerPicture.h">
+      <Filter>Thumbnail\include</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarPhoto.h">
+      <Filter>Toolbar\include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,9 +203,6 @@
     <ClCompile Include="ViewerThemeInit.cpp">
       <Filter>Theme</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailBitmap.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailFace.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
@@ -233,9 +221,6 @@
     <ClCompile Include="ThumbnailToolBarZoom.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailVideoPanel.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailViewerEffect.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
@@ -252,12 +237,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CategoryWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="CentralWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="FilterPreviewSplitter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="FiltreEffect.cpp">
@@ -293,13 +272,7 @@
     <ClCompile Include="ModificationManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PreviewFaceSplitter.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="PreviewInfosWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="PreviewThumbnailSplitter.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PreviewToolbar.cpp">
@@ -317,14 +290,23 @@
     <ClCompile Include="ToolbarInfos.cpp">
       <Filter>Toolbar\source</Filter>
     </ClCompile>
-    <ClCompile Include="ToolbarPhoto.cpp">
-      <Filter>Toolbar\source</Filter>
-    </ClCompile>
     <ClCompile Include="PanelInfosWnd.cpp">
       <Filter>Panel\source</Filter>
     </ClCompile>
     <ClCompile Include="PanelPhotoWnd.cpp">
       <Filter>Panel\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerPicture.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarPhoto.cpp">
+      <Filter>Toolbar\include</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

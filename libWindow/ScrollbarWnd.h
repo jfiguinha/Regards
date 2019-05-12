@@ -1,6 +1,6 @@
 #pragma once
 #include <theme.h>
-
+#include <WindowMain.h>
 namespace Regards
 {
 	namespace Window
@@ -9,10 +9,10 @@ namespace Regards
 		class CScrollbarHorizontalWnd;
 		class CScrollbarVerticalWnd;
 
-		class CScrollbarWnd : public wxWindow
+		class CScrollbarWnd : public CWindowMain
 		{
 		public:
-			CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden = true);
+			CScrollbarWnd(wxWindow* parent, wxWindowID id, const wxString & windowName = "ScrollBar", const bool & autohidden = true);
 			~CScrollbarWnd();
 
 			void SetCentralWindow(CScrollInterface * scrollInterface, const CThemeScrollBar & theme);
@@ -34,6 +34,9 @@ namespace Regards
 			void SetControlSize(const int &width, const int &height, const bool &useScaleFactor = false);
 			void SetPosition(const int &posX, const int &posY);
 			void Resize();
+
+			virtual int GetHeight();
+			virtual int GetWidth();
 
 			int GetPosLargeur();
 			int GetPosHauteur();

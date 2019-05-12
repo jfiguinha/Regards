@@ -220,9 +220,13 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 	int videoPos = position / 1000;
 	if (videoPos != videoPosOld)
 	{
-		wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_UPDATE_ID);
-		event.SetExtraLong(videoPos);
-		windowMain->GetEventHandler()->AddPendingEvent(event);
+		wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+		if (viewerWindow != nullptr)
+		{
+			wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_UPDATE_ID);
+			event.SetExtraLong(videoPos);
+			viewerWindow->GetEventHandler()->AddPendingEvent(event);
+		}
 		videoPosOld = videoPos;
 	}
 	//wxPostEvent(main, event);

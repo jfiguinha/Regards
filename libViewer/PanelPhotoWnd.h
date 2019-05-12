@@ -33,7 +33,6 @@ namespace Regards
 			CCategoryFolderWindow * categoryFolderWnd;
 			wxGenericDirCtrl * folderWnd;
             CToolbarPhoto * photoToolbar;
-            CListFace * listFace;
 		};
 
 	}

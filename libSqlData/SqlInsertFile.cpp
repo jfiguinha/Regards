@@ -124,7 +124,7 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
 		}
 	}
-	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in(SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
+	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
 	CommitTransection();
 }

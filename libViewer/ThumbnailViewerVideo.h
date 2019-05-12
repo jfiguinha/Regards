@@ -21,6 +21,12 @@ namespace Regards
 			{
 				this->filename = filename;
 			}
+
+			int GetHeight()
+			{
+				return GetIconeHeight();
+			}
+
 		private:
 
 			void OnPictureClick(CThumbnailData * data);

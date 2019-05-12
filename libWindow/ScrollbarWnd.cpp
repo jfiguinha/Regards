@@ -7,8 +7,8 @@ using namespace Regards::Window;
 
 #define TIMER_HIDE 1
 
-CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const bool & autohidden)
-	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
+CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const wxString & windowName, const bool & autohidden)
+	: CWindowMain(windowName, parent, id)
 {
     this->autohidden = false;
 	scrollHorizontal = nullptr;
@@ -44,6 +44,16 @@ void CScrollbarWnd::OnMouseLeave(wxMouseEvent& event)
 {
     if(autohidden)
         loadingTimer->Start(500, true);
+}
+
+int CScrollbarWnd::GetHeight()
+{
+	return scrollInterface->GetHeight() + this->GetBarHeight();
+}
+
+int CScrollbarWnd::GetWidth()
+{
+	return scrollInterface->GetHeight() + this->GetBarWidth();
 }
 
 void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
@@ -103,7 +113,7 @@ void CScrollbarWnd::SetCentralWindow(CScrollInterface * scrollInterface, const C
 {
     if(autohidden)
     {
-        printf("SetCentralWindow \n");
+        //printf("SetCentralWindow \n");
         scrollHorizontal = new CScrollbarHorizontalWnd(scrollInterface, scrollInterface->GetWindow(), wxID_ANY, theme);
         scrollVertical = new CScrollbarVerticalWnd(scrollInterface, scrollInterface->GetWindow(), wxID_ANY, theme);
     }

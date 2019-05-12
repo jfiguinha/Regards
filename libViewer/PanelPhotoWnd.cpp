@@ -63,18 +63,6 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
         tabInfosFile->windowName = WM_CRITERIA;
         listWindow.push_back(tabInfosFile);
 	}
-
-	if (viewerTheme != nullptr)
-	{
-		listFace = new CListFace(this, LISTFACEID, statusBarInterface);
-		listFace->Show(false);
-        
-        CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = listFace;
-        tabInfosFile->windowMain = listFace;
-        tabInfosFile->windowName = WM_FACELIST;
-        listWindow.push_back(tabInfosFile);
-	}
     
 	if (viewerTheme != nullptr)
 	{

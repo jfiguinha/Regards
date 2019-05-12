@@ -1,11 +1,11 @@
 #include <header.h>
+#include "ViewerWindow.h"
 #include "AnimationToolbar.h"
 #include "ToolbarSlide.h"
 #include "ViewerParamInit.h"
 #include <ConfigParam.h>
 #include <LibResource.h>
 #include "ViewerParam.h"
-#include "CentralWnd.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -64,21 +64,21 @@ CAnimationToolbar::~CAnimationToolbar()
 
 void CAnimationToolbar::NextPicture()
 {
-	CCentralWnd * mainWindow = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	CViewerWindow * mainWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
 	if (mainWindow != nullptr)
 		mainWindow->AnimationPictureNext();
 }
 
 void CAnimationToolbar::PreviousPicture()
 {
-	CCentralWnd * mainWindow = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	CViewerWindow * mainWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
 	if (mainWindow != nullptr)
 		mainWindow->AnimationPicturePrevious();
 }
 
 void CAnimationToolbar::AnimationStart()
 {
-	CCentralWnd * mainWindow = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	CViewerWindow * mainWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
 	if (mainWindow != nullptr)
 	{
 		imagePlayDiaporama->SetVisible(false);
@@ -90,7 +90,7 @@ void CAnimationToolbar::AnimationStart()
 
 void CAnimationToolbar::AnimationStop()
 {
-	CCentralWnd * mainWindow = (CCentralWnd *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	CViewerWindow * mainWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
 	if (mainWindow != nullptr)
 	{
 		imageStopDiaporama->SetVisible(false);
