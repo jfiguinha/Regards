@@ -107,9 +107,7 @@ void CCentralWindow::ShowFile()
 {
 	if (!panelSearch->IsPanelVisible())
 	{
-		this->posBar = posBarInfos;
-		this->SetSeparationBarVisible(true);
-		SetWindow1FixPosition(false, posBarInfos);
+		panelSearch->ShowPanel();
 	}
 }
 

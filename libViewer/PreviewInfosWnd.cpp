@@ -148,9 +148,7 @@ void CPreviewInfosWnd::ShowInfos()
 {
 	if (paneInfos->IsPanelVisible())
 	{
-		this->posBar = posBarInfos;
-		this->SetSeparationBarVisible(true);
-		SetWindow2FixPosition(false, posBarInfos);
+		paneInfos->ShowPanel();
 	}
 }
 
