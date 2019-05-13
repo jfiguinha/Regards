@@ -60,12 +60,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetInfosPaneTheme(&theme);
 
 		CThemeToolbar themetoolbar;
-		CThemeScrollBar themeScroll;
-		CThemeThumbnail themeVideo;
-		viewerTheme->GetClickThumbnailVideoToolbarTheme(&themetoolbar);
-		viewerTheme->GetScrollThumbnailVideoTheme(&themeScroll);
-		viewerTheme->GetThumbnailVideoTheme(&themeVideo);
-
+		viewerTheme->GetClickInfosToolbarTheme(&themetoolbar);
 		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible);
 		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID, statusBarInterface);
 		panelSearch->SetWindow(panelPhotoWnd);
@@ -79,6 +74,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	Connect(wxEVENT_SETLISTPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
+	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CCentralWindow::OnResize));
 
 	if (config != nullptr)
 	{
@@ -90,6 +86,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	windowMode = 1;
 }
 
+
+void CCentralWindow::OnResize(wxCommandEvent& event)
+{
+	RedrawBarPos();
+}
+
+
 void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 {
 	if (listPicture != nullptr)
@@ -98,6 +101,38 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		listPicture->ChangeTypeAffichage(&photoVector, typeAffichage);
 	}
 		
+}
+
+void CCentralWindow::ShowFile()
+{
+	if (!panelSearch->IsPanelVisible())
+	{
+		this->posBar = posBarInfos;
+		this->SetSeparationBarVisible(true);
+		SetWindow1FixPosition(false, posBarInfos);
+	}
+}
+
+void CCentralWindow::RedrawBarPos()
+{
+	if (panelSearch != nullptr)
+	{
+		if (!panelSearch->IsPanelVisible())
+		{
+			posBarInfos = this->posBar;
+			SetWindow1FixPosition(true, panelSearch->GetWidth());
+			this->SetSeparationBarVisible(false);
+		}
+		else
+		{
+			this->posBar = posBarInfos;
+			this->SetSeparationBarVisible(true);
+			SetWindow1FixPosition(false, posBarInfos);
+		}
+	}
+
+	this->Resize(this);
+
 }
 
 void CCentralWindow::SetListeFile(wxCommandEvent& event)

@@ -434,6 +434,8 @@ void CViewerWindow::RedrawBarPos()
     printf("CViewerWindow::RedrawBarPos() \n");
 }
 
+
+
 void CViewerWindow::SetNumElement(const int &numElement, const bool &move)
 {
 	if (thumbnailPicture != nullptr)
@@ -626,6 +628,7 @@ void CViewerWindow::ScreenMode()
 	previewInfosWnd->ScreenMode();
 	RedrawBarPos();
 }
+
 
 
 bool CViewerWindow::IsPanelThumbnailVisible()

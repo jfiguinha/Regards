@@ -17,14 +17,16 @@ using namespace Regards::Viewer;
 #define IDM_THUMBNAILFACE 153
 #define IDM_VIEWERMODE 154
 #define IDM_EXPLORERMODE 155
-#define IDM_QUITTER 156
+#define IDM_SHOWINFOS 156
+#define IDM_QUITTER 157
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	: CToolbarWindow(parent,id,theme)
 {
-	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);//L"Effect";
-	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);//L"Crop";
-	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);// L"Zoom Off
+	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
+	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
+	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
+	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
 	wxString lblListFace = "Face List";
 
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
@@ -32,6 +34,12 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	screen->SetCommandId(IDM_WINDOWSEARCH);
 	screen->SetLibelle(lblOpenFolder);
 	navElement.push_back(screen);
+
+	CToolbarButton* infos = new CToolbarButton(themeToolbar.button);
+	infos->SetButtonResourceId(L"IDB_INFOS");
+	infos->SetLibelle(lblInfos);
+	infos->SetCommandId(IDM_SHOWINFOS);
+	navElement.push_back(infos);
 
 	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
 	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
@@ -67,12 +75,20 @@ void CToolbar::EventManager(const int &id)
 {
 	CCentralWindow * centralWnd = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
 	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-
-	if (centralWnd != nullptr && mainWindow != nullptr)
+	CPreviewInfosWnd * previewInfo = (CPreviewInfosWnd*)this->FindWindowById(PREVIEWINFOWND);
+	if (centralWnd != nullptr && mainWindow != nullptr && previewInfo != nullptr)
 	{
 		switch (id)
 		{
                 
+		case IDM_WINDOWSEARCH:
+			centralWnd->ShowFile();
+			break;
+
+		case IDM_SHOWINFOS:
+			previewInfo->ShowInfos();
+			break;
+
             
         case IDM_VIEWERMODE:
 			centralWnd->SetMode(1);

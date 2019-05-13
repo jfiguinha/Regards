@@ -32,6 +32,7 @@ namespace Regards
             void StartLoadingPicture(const int &numElement);
             void StopLoadingPicture();
 
+
             void UpdateScreenRatio();
 
 			bool IsPanelThumbnailVisible();

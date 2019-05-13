@@ -144,6 +144,16 @@ void CPreviewInfosWnd::ResizeWindow()
 	this->Resize(this);
 }
 
+void CPreviewInfosWnd::ShowInfos()
+{
+	if (paneInfos->IsPanelVisible())
+	{
+		this->posBar = posBarInfos;
+		this->SetSeparationBarVisible(true);
+		SetWindow2FixPosition(false, posBarInfos);
+	}
+}
+
 
 void CPreviewInfosWnd::RedrawBarPos()
 {
@@ -151,18 +161,13 @@ void CPreviewInfosWnd::RedrawBarPos()
     {
 		if (!paneInfos->IsPanelVisible())
 		{
-			/*
-			wxRect rc = this->GetWindowRect();
-
-			int taille = rc.width - paneInfos->GetWidth();
-			if (taille > 0)
-				posBar = taille;
-			*/
+			posBarInfos = this->posBar;
 			SetWindow2FixPosition(true, paneInfos->GetWidth());
 			this->SetSeparationBarVisible(false);
 		}
 		else
 		{
+			this->posBar = posBarInfos;
 			this->SetSeparationBarVisible(true);
 			SetWindow2FixPosition(false, posBarInfos);
 		}

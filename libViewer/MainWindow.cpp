@@ -1827,22 +1827,6 @@ void CMainWindow::LoadPictureInThread(const wxString &filename, const bool &load
 void CMainWindow::SetScreenEvent(wxCommandEvent& event)
 {
     TRACE();
-    if(event.GetInt() == 1)
-    {
-        statusBarViewer->SetScreen();
-        fullscreen = false;
-        centralWnd->ScreenMode();
-        toolbar->Show(true);
-        statusBar->Show(true);        
-    }
-    else
-    {
-        fullscreen = true;
-		centralWnd->FullscreenMode();
-		toolbar->Show(false);
-		statusBar->Show(false);   
-    }
-
     this->Resize();
 #ifdef __APPLE__
     wxWindow * window = this->FindWindowById(BITMAPWINDOWVIEWERID);
@@ -1856,9 +1840,13 @@ void CMainWindow::SetFullscreenMode()
     TRACE();
 	if (!fullscreen)
 	{
-		
+		fullscreen = true;
+		centralWnd->FullscreenMode();
+		toolbar->Show(false);
+		statusBar->Show(false);
+
+
         wxCommandEvent event(wxEVENT_SETSCREEN);
-        event.SetInt(2);
         wxPostEvent(this, event);  
 
 	}
@@ -1869,8 +1857,13 @@ void CMainWindow::SetScreen()
     TRACE();
 	if (fullscreen)
 	{
+		statusBarViewer->SetScreen();
+		fullscreen = false;
+		centralWnd->ScreenMode();
+		toolbar->Show(true);
+		statusBar->Show(true);
+
         wxCommandEvent event(wxEVENT_SETSCREEN);
-        event.SetInt(1);
         wxPostEvent(this, event);         
     }
 }

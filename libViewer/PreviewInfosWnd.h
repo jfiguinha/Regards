@@ -25,6 +25,7 @@ namespace Regards
 			void SetVideo(const wxString &filename);
 
 			void SetEffect(const bool &effect);
+			void ShowInfos();
 
 			void FullscreenMode();
 			void ScreenMode();
