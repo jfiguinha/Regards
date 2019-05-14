@@ -354,7 +354,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * st
     Connect(wxEVENT_ONSTARTTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StartThumbnail));
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
-	Connect(wxEVENT_REFRESHTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::EraseThumbnail));
+	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::EraseThumbnail));
 		
 	processIdle = true;
     

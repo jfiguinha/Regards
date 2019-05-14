@@ -61,7 +61,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickInfosToolbarTheme(&themetoolbar);
-		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible);
+		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible, true);
 		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID, statusBarInterface);
 		panelSearch->SetWindow(panelPhotoWnd);
 	}
@@ -76,6 +76,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CCentralWindow::OnResize));
+	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CCentralWindow::OnRefresh));
 
 	if (config != nullptr)
 	{
@@ -93,6 +94,10 @@ void CCentralWindow::OnResize(wxCommandEvent& event)
 	RedrawBarPos();
 }
 
+void CCentralWindow::OnRefresh(wxCommandEvent& event)
+{
+	panelPhotoWnd->RefreshData();
+}
 
 void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 {

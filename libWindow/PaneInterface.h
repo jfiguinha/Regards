@@ -9,9 +9,8 @@ class CPaneInterface
 
 public:
 
-	CPaneInterface(){};
-	~CPaneInterface(){};
-	virtual void ClosePane(const int &id){};
+	virtual void ClosePane(const int &id) = 0;
+	virtual void RefreshPane(const int& id) = 0;
 };
 
 

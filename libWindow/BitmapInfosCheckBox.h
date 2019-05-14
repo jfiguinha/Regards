@@ -24,14 +24,9 @@ namespace Regards
 			void OnPaint(wxPaintEvent& event);
             void OnLButtonDown(wxMouseEvent& event);
             void DrawInformations(wxDC * dc);
-            
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector);
-            
+                       
             wxImage bitmapCheckOn;
-            wxImage bitmapCheckOff;
-            
-            wxString checkOnVector;
-            wxString checkOffVector;
+			wxImage bitmapCheckOff;
             
             bool isSelected;
             

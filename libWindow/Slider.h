@@ -28,7 +28,6 @@ namespace Regards
 
 		private:
 
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
@@ -63,7 +62,6 @@ namespace Regards
 			int positionXSlider;
 			int positionYSlider;
             
-            wxString buttonVector;
 			CThemeSlider themeSlider;
 		};
 

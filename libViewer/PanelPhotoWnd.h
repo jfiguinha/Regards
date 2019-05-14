@@ -20,7 +20,7 @@ namespace Regards
 			CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface);
 			~CPanelPhotoWnd();
             wxString GetSqlRequest();
-            
+			void RefreshData();
 		protected:
         
 			void SetFolder(wxCommandEvent& folderEvent);

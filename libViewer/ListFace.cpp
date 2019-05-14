@@ -50,7 +50,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
 
 		viewerTheme->GetThumbnailTheme(themeThumbnail);
-		thumbnailFace = new CThumbnailFace(thumbscrollbar, THUMBNAILFOLDER, statusbar, themeThumbnail, checkValidity);
+		thumbnailFace = new CThumbnailFace(thumbscrollbar, THUMBNAILFACE, statusbar, themeThumbnail, checkValidity);
 		//thumbnailWindow->Init(typeAffichage);
 		thumbscrollbar->SetCentralWindow(thumbnailFace, theme);
 	}

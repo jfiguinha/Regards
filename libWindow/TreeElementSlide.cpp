@@ -10,7 +10,7 @@ using namespace Regards::Window;
 
 
 
-CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface * eventInterface)
+CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface* eventInterface)
 {
 	//eventInterface = nullptr;
 	//CLoadingResource loadingResource;
@@ -21,23 +21,10 @@ CTreeElementSlide::CTreeElementSlide(CTreeElementSlideInterface * eventInterface
 	exifKey = L"";
 	height = 0;
 	position = 0;
-	button.Create(0,0);
+	button.Create(0, 0);
 	buttonPlus.Create(0, 0);
 	buttonMoins.Create(0, 0);
-	buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
-	buttonPlusVector = CLibResource::GetVector("IDB_PLUS");
-	buttonMoinsVector = CLibResource::GetVector("IDB_MINUS");
 }
-
-
-wxImage CTreeElementSlide::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
-{
-    wxStringInputStream memBuffer(vectorCode);
-    wxSVGDocument svgDoc;
-    svgDoc.Load(memBuffer);
-    return svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-}
-
 
 CTreeElementSlide& CTreeElementSlide::operator=(const CTreeElementSlide &other)
 {
@@ -317,7 +304,7 @@ void CTreeElementSlide::RenderSlide(wxDC * dc, const int &width, const int &heig
     
 
         if(!button.IsOk() || (button.GetWidth() != themeSlide.GetButtonWidth() || button.GetHeight() != themeSlide.GetButtonHeight()))
-            button = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonVector);
+            button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight());
         memDC.DrawBitmap(button, positionButton.x, positionButton.y);
 
 
@@ -443,7 +430,7 @@ void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const in
 	moinsPos.height = themeSlide.GetButtonHeight();
 
 		if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeSlide.GetButtonWidth() || buttonMoins.GetHeight() != themeSlide.GetButtonHeight()))
-			buttonMoins = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonMoinsVector);
+			buttonMoins = CLibResource::CreatePictureFromSVG("IDB_MINUS", themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight());
 		memDC.DrawBitmap(buttonMoins.ConvertToDisabled(), moinsPos.x, moinsPos.y);
 
 
@@ -454,7 +441,7 @@ void CTreeElementSlide::DrawElement(wxDC * deviceContext, const int &x, const in
 
 
 		if (!buttonPlus.IsOk() || (buttonPlus.GetWidth() != themeSlide.GetButtonWidth() || buttonPlus.GetHeight() != themeSlide.GetButtonHeight()))
-			buttonPlus = CreateFromSVG(themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight(), buttonPlusVector);
+			buttonPlus = CLibResource::CreatePictureFromSVG("IDB_PLUS", themeSlide.GetButtonWidth(), themeSlide.GetButtonHeight());
 		memDC.DrawBitmap(buttonPlus.ConvertToDisabled(), plusPos.x, plusPos.y);
 
 	memDC.SelectObject(wxNullBitmap);

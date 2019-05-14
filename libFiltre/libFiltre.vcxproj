@@ -246,7 +246,6 @@
     <ClInclude Include="MultiThreadFiltre.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="NlmeansFilter.h" />
-    <ClInclude Include="Painting.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
     <ClInclude Include="PhotoFiltreFilter.h" />
@@ -317,7 +316,6 @@
     <ClCompile Include="MotionBlur.cpp" />
     <ClCompile Include="MotionBlurFilter.cpp" />
     <ClCompile Include="NlmeansFilter.cpp" />
-    <ClCompile Include="Painting.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PiccanteFilter.cpp" />

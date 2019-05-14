@@ -60,22 +60,6 @@ void CToolbarButton::ReplaceColor(const wxColor & colorToReplace, const wxColor 
     this->colorInactifReplacement = colorInactifReplacement;
 }
 
-wxImage CToolbarButton::CreateFromSVG(const int & buttonWidth, const int & buttonHeight)
-{
-    wxImage img;
-    if(vector.size() > 0)
-    {
-        wxStringInputStream memBuffer(vector);
-        wxSVGDocument svgDoc;
-        svgDoc.Load(memBuffer);
-        img = svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-    }
-    else
-    {
-        img.Create(buttonWidth, buttonHeight);
-    }
-    return img;
-}
 
 int CToolbarButton::GetBitmapWidth()
 {
@@ -95,25 +79,17 @@ int CToolbarButton::GetBitmapHeight()
 
 void CToolbarButton::SetButtonResourceId(const wxString &resourceId)
 {
-
     this->resourceId = resourceId;
-    vector = CLibResource::GetVector(resourceId);
 
 }
 
 int CToolbarButton::GetWidth()
 {
-	//if (button.GetWidth() > themeButton.GetTailleX())
-	//	return button.GetWidth();
-		
 	return themeButton.GetTailleX();
 }
 
 int CToolbarButton::GetHeight()
 {
-	//if (button.GetHeight() > themeButton.GetTailleY())
-	//	return button.GetHeight();
-
 	return themeButton.GetTailleY();
 }
 
@@ -165,7 +141,7 @@ void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bo
         //float ratio = 1.0;
 
             if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
-                button = CreateFromSVG(buttonWidth, buttonHeight);
+                button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
 
             imageScale = button;
 
@@ -232,7 +208,7 @@ void CToolbarButton::DrawElement(wxDC * dc, const int &x, const int &y, const bo
         
 
             if(!button.IsOk() || (button.GetWidth() != buttonWidth || button.GetHeight() != buttonHeight))
-                button = CreateFromSVG(buttonWidth, buttonHeight);
+                button = CLibResource::CreatePictureFromSVG(resourceId, buttonWidth, buttonHeight);
             
             imageScale = button;
 
@@ -297,16 +273,7 @@ void CToolbarButton::CreatePushButton(wxDC * dc, const int &x, const int &y)
         memDC.SelectObject(wxNullBitmap);
         
         wxBackground = imageBackground.ConvertToImage();
-        
-        /*
-		wxRect rc;
-		rc.x = x;
-		rc.y = y;
-		rc.width = GetWidth();
-		rc.height = GetHeight();
-		dc->GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-        */
-        
+               
         dc->DrawBitmap(imageBackground, x, y);
         
 		int size = themeButton.GetRectangleSize() / 2;
@@ -344,14 +311,6 @@ void CToolbarButton::CreateActifButton(wxDC * dc, const int &x, const int &y)
         
         wxBackground = imageBackground.ConvertToImage();
         
-        /*
-         wxRect rc;
-         rc.x = x;
-         rc.y = y;
-         rc.width = GetWidth();
-         rc.height = GetHeight();
-         dc->GradientFillLinear(rc, themeButton.actifTop, themeButton.actifBottom);
-         */
         
         dc->DrawBitmap(imageBackground, x, y);
         

@@ -18,7 +18,7 @@ namespace Regards
 		class CPanelWithClickToolbar : public CWindowMain, public CPaneInterface, public CToolbarInterface
 		{
 		public:
-			CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id, const CThemePane& themePane, const CThemeToolbar& themeToolbar, const wxString& paneLibelle, const bool& isPanelVisible);
+			CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id, const CThemePane& themePane, const CThemeToolbar& themeToolbar, const wxString& paneLibelle, const bool& isPanelVisible, const bool &refreshButton);
 			virtual ~CPanelWithClickToolbar();
 			wxWindow * GetPaneWindow();
 			void UpdateScreenRatio();
@@ -29,6 +29,7 @@ namespace Regards
 			int GetHeight();
 			void ShowPanel();
 			void HidePanel(const bool& refresh = true);
+			
 
 		protected:
 
@@ -36,6 +37,7 @@ namespace Regards
 			void ClosePane(wxCommandEvent& event);
 			void ClickShowButton(const int &id);
 			void ClosePane(const int &id);
+			void RefreshPane(const int& id);
 			void Resize();
 
 			CPane * paneWindow;

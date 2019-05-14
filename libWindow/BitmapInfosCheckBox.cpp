@@ -26,27 +26,6 @@ CBitmapInfosCheckBox::CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, cons
 	xPos = 0;
 	yPos = 0;
 
-    checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
-    checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
-
-}
-
-wxImage CBitmapInfosCheckBox::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector)
-{
-    wxImage img;
-    if(vector.size() > 0)
-    {
-        wxStringInputStream memBuffer(vector);
-        wxSVGDocument svgDoc;
-        svgDoc.Load(memBuffer);
-        img = svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-        
-    }
-    else
-    {
-        img.Create(buttonWidth, buttonHeight);
-    }
-    return img;
 }
 
 
@@ -135,13 +114,13 @@ void CBitmapInfosCheckBox::DrawInformations(wxDC * dc)
 
             if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() || bitmapCheckOn.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
             {
-                bitmapCheckOn = CreateFromSVG(bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight(), checkOnVector);
+                bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight());
                 bitmapCheckOn = bitmapCheckOn.ConvertToDisabled();
             }
             
             if (!bitmapCheckOff.IsOk() ||  (bitmapCheckOff.GetHeight() != bitmapInfosTheme.GetCheckboxHeight() || bitmapCheckOff.GetWidth() != bitmapInfosTheme.GetCheckboxWidth()))
             {
-                bitmapCheckOff = CreateFromSVG(bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight(), checkOffVector);
+                bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", bitmapInfosTheme.GetCheckboxWidth(), bitmapInfosTheme.GetCheckboxHeight());
                 bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
             }
 

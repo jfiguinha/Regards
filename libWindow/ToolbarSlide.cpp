@@ -19,31 +19,12 @@ CToolbarSlide::CToolbarSlide(const CThemeSlider & themeSlider, CSliderInterface 
 	hCursorHand = CResourceCursor::GetClosedHand();
 	mouseBlock = false;
 	captureBall = false;
-    buttonVector = CLibResource::GetVector(L"IDB_BOULESLIDER");
 }
 
 void CToolbarSlide::Resize(const int &tailleX, const int &tailleY)
 {
 	themeSlider.SetWidth(tailleX);
 	themeSlider.SetHeight(tailleY);
-}
-
-wxImage CToolbarSlide::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector)
-{
-    wxImage img;
-    if(vector.size() > 0)
-    {
-        wxStringInputStream memBuffer(vector);
-        wxSVGDocument svgDoc;
-        svgDoc.Load(memBuffer);
-        img = svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-        
-    }
-    else
-    {
-        img.Create(buttonWidth, buttonHeight);
-    }
-    return img;
 }
 
 CToolbarSlide::~CToolbarSlide()
@@ -363,7 +344,7 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
     
 
         if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-            button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
+            button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
         dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
 
 }

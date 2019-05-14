@@ -9,8 +9,6 @@
 CTreeElementListBox::CTreeElementListBox(CTreeElementSlideInterface * eventInterface)
 {
 	this->eventInterface = eventInterface;
-	buttonPlusVector = CLibResource::GetVector("IDB_PLUS");
-	buttonMoinsVector = CLibResource::GetVector("IDB_MINUS");
 	position = 0;
 }
 
@@ -142,13 +140,13 @@ void CTreeElementListBox::DrawElement(wxDC * deviceContext, const int &x, const 
 
 	if (!buttonMoins.IsOk() || (buttonMoins.GetWidth() != themeTreeListBox.GetButtonWidth() || buttonMoins.GetHeight() != themeTreeListBox.GetButtonHeight()))
 	{
-		buttonMoins = CreateFromSVG(themeTreeListBox.GetButtonWidth(), themeTreeListBox.GetButtonHeight(), buttonMoinsVector);	
+		buttonMoins = CLibResource::CreatePictureFromSVG("IDB_MINUS", themeTreeListBox.GetButtonWidth(), themeTreeListBox.GetButtonHeight()); 
 	}
 	
 
 	if (!buttonPlus.IsOk() || (buttonPlus.GetWidth() != themeTreeListBox.GetButtonWidth() || buttonPlus.GetHeight() != themeTreeListBox.GetButtonHeight()))
 	{
-		buttonPlus = CreateFromSVG(themeTreeListBox.GetButtonWidth(), themeTreeListBox.GetButtonHeight(), buttonPlusVector);
+		buttonPlus = CLibResource::CreatePictureFromSVG("IDB_PLUS", themeTreeListBox.GetButtonWidth(), themeTreeListBox.GetButtonHeight());
 	}
 
 
@@ -173,12 +171,3 @@ void CTreeElementListBox::DrawElement(wxDC * deviceContext, const int &x, const 
 
 	deviceContext->DrawBitmap(bitmapBuffer, x, y);
 }
-
-
- wxImage CTreeElementListBox::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
- {
-    wxStringInputStream memBuffer(vectorCode);
-    wxSVGDocument svgDoc;
-    svgDoc.Load(memBuffer);
-    return svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
- }

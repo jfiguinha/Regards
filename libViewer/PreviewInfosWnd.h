@@ -45,6 +45,8 @@ namespace Regards
 		protected:
 
 			void OnResize(wxCommandEvent& event);
+
+
 			void SetPanelInfos(const bool &isThumbnail);
 
 			void RedrawBarPos();

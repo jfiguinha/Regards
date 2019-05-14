@@ -53,21 +53,15 @@ CSliderVideo::CSliderVideo(wxWindow* parent, wxWindowID id, CSliderInterface * s
     //button = loadingResource.LoadImageResource(L"IDB_BOULESLIDER");
 
         button.Create(0,0);
+		/*
         buttonVector = CLibResource::GetVector(L"IDB_BOULESLIDER");
         buttonPlayVector = CLibResource::GetVector(L"IDB_PLAY_VIDEO");
         buttonPauseVector = CLibResource::GetVector(L"IDB_PAUSE_VIDEO");
         buttonVolumeUpVector = CLibResource::GetVector(L"IDB_PLUS");
         buttonVolumeDownVector = CLibResource::GetVector(L"IDB_MINUS");
         buttonSpeakerVector = CLibResource::GetVector(L"IDB_VOLUME_UP_VIDEO");
+		*/
 
-}
-
-wxImage CSliderVideo::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
-{
-    wxStringInputStream memBuffer(vectorCode);
-    wxSVGDocument svgDoc;
-    svgDoc.Load(memBuffer);
-    return svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
 }
 
 CSliderVideo::~CSliderVideo()
@@ -228,7 +222,7 @@ void CSliderVideo::InsertPlayButton(wxDC * context)
 
             if(!buttonPause.IsOk() || (buttonPause.GetWidth() != themeSlider.GetButtonPauseWidth() || buttonPause.GetHeight() != themeSlider.GetButtonPauseHeight()))
             {
-                buttonPause = CreateFromSVG(themeSlider.GetButtonPauseWidth(), themeSlider.GetButtonPauseHeight(), buttonPauseVector);
+                buttonPause = CLibResource::CreatePictureFromSVG("IDB_PAUSE_VIDEO", themeSlider.GetButtonPauseWidth(), themeSlider.GetButtonPauseHeight());
             }
             bmp = buttonPause;
 
@@ -249,7 +243,7 @@ void CSliderVideo::InsertPlayButton(wxDC * context)
 
             if(!buttonPlay.IsOk() || (buttonPlay.GetWidth() != themeSlider.GetButtonPlayWidth() || buttonPlay.GetHeight() != themeSlider.GetButtonPlayHeight()))
             {
-                buttonPlay = CreateFromSVG(themeSlider.GetButtonPauseWidth(), themeSlider.GetButtonPlayHeight(), buttonPlayVector);
+                buttonPlay = CLibResource::CreatePictureFromSVG("IDB_PLAY_VIDEO", themeSlider.GetButtonPauseWidth(), themeSlider.GetButtonPlayHeight());
             }
             bmp = buttonPlay;
 
@@ -287,7 +281,7 @@ void CSliderVideo::InsertSpeakerButton(const int &xStart, wxDC * context)
 
         if(!buttonSpeaker.IsOk() || (buttonSpeaker.GetWidth() != themeSlider.GetButtonSpeakerWidth() || buttonSpeaker.GetHeight() != themeSlider.GetButtonSpeakerHeight()))
         {
-            buttonSpeaker = CreateFromSVG(themeSlider.GetButtonSpeakerWidth(), themeSlider.GetButtonSpeakerHeight(), buttonSpeakerVector);
+            buttonSpeaker = CLibResource::CreatePictureFromSVG("IDB_VOLUME_UP_VIDEO", themeSlider.GetButtonSpeakerWidth(), themeSlider.GetButtonSpeakerHeight());
         }
         bmp = buttonSpeaker;
 
@@ -310,7 +304,7 @@ void CSliderVideo::InsertVolumeUpButton(const int &xStart, wxDC * context)
 
         if(!buttonVolumeUp.IsOk() || (buttonVolumeUp.GetWidth() != themeSlider.GetButtonVolumeUpWidth() || buttonVolumeUp.GetHeight() != themeSlider.GetButtonVolumeUpHeight()))
         {
-            buttonVolumeUp = CreateFromSVG(themeSlider.GetButtonVolumeUpWidth(), themeSlider.GetButtonVolumeUpHeight(), buttonVolumeUpVector);
+            buttonVolumeUp = CLibResource::CreatePictureFromSVG("IDB_PLUS", themeSlider.GetButtonVolumeUpWidth(), themeSlider.GetButtonVolumeUpHeight());
         }
         bmp = buttonVolumeUp;
 
@@ -352,7 +346,7 @@ void CSliderVideo::InsertVolumeDownButton(const int &xStart, wxDC * context)
 
         if(!buttonVolumeDown.IsOk() || (buttonVolumeDown.GetWidth() != themeSlider.GetButtonVolumeDownWidth() || buttonVolumeDown.GetHeight() != themeSlider.GetButtonVolumeDownHeight()))
         {
-            buttonVolumeDown = CreateFromSVG(themeSlider.GetButtonVolumeDownWidth(), themeSlider.GetButtonVolumeDownHeight(), buttonVolumeDownVector);
+            buttonVolumeDown = CLibResource::CreatePictureFromSVG("IDB_MINUS", themeSlider.GetButtonVolumeDownWidth(), themeSlider.GetButtonVolumeDownHeight());
         }
         bmp = buttonVolumeDown;
 
@@ -407,7 +401,7 @@ void CSliderVideo::Draw(wxDC * context)
 		InsertPlayButton(&sourceDCContext);
 
             if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-                button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
+                button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
             sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 
 		int xButtonPos = positionSlider.x + positionSlider.width + (totalTimeSize + themeSlider.GetMarge());

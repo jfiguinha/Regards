@@ -138,9 +138,6 @@
     <ClInclude Include="Line.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
-    <ClInclude Include="Painting.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
     <ClInclude Include="Selection.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
@@ -378,9 +375,6 @@
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="MotionBlur.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Painting.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
     <ClCompile Include="PerlinNoise.cpp">

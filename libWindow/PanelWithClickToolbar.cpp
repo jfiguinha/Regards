@@ -4,7 +4,7 @@ using namespace Regards::Window;
 
 #define PANE_WITHCLICKTOOLBAR 1
 
-CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible)
+CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible, const bool& refreshButton)
 	: CWindowMain(windowName,parent,id)
 {
 	paneWindow = nullptr;
@@ -16,7 +16,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	//----------------------------------------------------------------------------------------
 	//Panel Thumbnail Video
 	//----------------------------------------------------------------------------------------
-	paneWindow = new CPane(this, wxID_ANY, this, PANE_WITHCLICKTOOLBAR, themePane);
+	paneWindow = new CPane(this, wxID_ANY, this, PANE_WITHCLICKTOOLBAR, themePane, refreshButton);
 	paneWindow->SetTitle(paneLibelle);
 	clickWindow = new CClickToolbar(this, wxID_ANY, themeToolbar, this, PANE_WITHCLICKTOOLBAR);
 
@@ -87,6 +87,19 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id)
 		break;
 	}
 
+}
+
+void CPanelWithClickToolbar::RefreshPane(const int& id)
+{
+	switch (id)
+	{
+		case PANE_WITHCLICKTOOLBAR:
+		{
+			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESH);
+			wxQueueEvent(this->GetParent(), event);
+		}
+		break;
+	}
 }
 
 

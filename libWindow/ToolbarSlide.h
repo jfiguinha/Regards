@@ -28,8 +28,7 @@ namespace Regards
 			int GetPositionValue();
 
 		private:
-            
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector);
+
 			void CalculZoomPosition(const int &x);
 			void CalculPositionButton(const int &x);
 			void CalculPositionButton();
@@ -56,8 +55,6 @@ namespace Regards
 			bool colorBackground;
 			int position;
 			vector<int> tabValue;
-            
-            wxString buttonVector;
 			wxRect posRectangle;
 		};
 

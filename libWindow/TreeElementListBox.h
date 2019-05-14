@@ -51,20 +51,18 @@ public:
 private:  
     
 	wxBitmap CreateTriangle(const int &width, const int &height, const wxColor & color, const wxColor & colorBack);
-	CTreeElementSlideInterface * eventInterface;
 	wxString GetPositionValue();
-	wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode);
-	vector<CMetadata> tabValue;
 	void TestMaxMinValue();
-	CThemeTreeListBox themeTreeListBox;
+	
 
-	wxString buttonPlusVector;
-	wxString buttonMoinsVector;
+	CTreeElementSlideInterface* eventInterface;
+	vector<CMetadata> tabValue;
 	wxString exifKey;
 	wxImage buttonPlus;
 	wxImage buttonMoins;
 	wxRect plusPos;
 	wxRect moinsPos;
 	int position;
+	CThemeTreeListBox themeTreeListBox;
 };
 

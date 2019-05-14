@@ -13,5 +13,6 @@ public:
 	static wxString LoadExifNameFromResource(const wxString &id);
     static wxString GetShaderProgram(const wxString &idName);
     static wxString GetVector(const wxString &idName);
+	static wxImage CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight);
     static int GetExtensionId(const wxString &extension);
 };

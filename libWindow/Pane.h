@@ -13,7 +13,7 @@ namespace Regards
 		{
 		public:
 
-			CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme);
+			CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme, const bool& refreshButton);
 			virtual ~CPane();
 
 			int SetTooltipText(const wxString & tooltip);
@@ -35,7 +35,8 @@ namespace Regards
             void UpdateScreenRatio();
 
 			void SetClosable(const bool &value);
-			void ClosePane();
+			virtual void ClosePane();
+			virtual void RefreshPane();
 			void Resize();
 
 			void SetTitleBarVisibility(const bool &visible);

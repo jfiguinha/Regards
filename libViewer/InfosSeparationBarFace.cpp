@@ -27,9 +27,9 @@ CInfosSeparationBarFace::CInfosSeparationBarFace(const CThemeInfosSeparationBar 
 	parentWindow = nullptr;
 	isSelected = false;
 	isSelectIcone = false;
-    checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
-    checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
-	editVector = CLibResource::GetVector(L"IDB_EDIT_LABEL");
+   // checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
+   // checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
+	//editVector = CLibResource::GetVector(L"IDB_EDIT_LABEL");
 	libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSELECTABLE", 1);
 	libelleSelectIcone = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
 }
@@ -48,24 +48,6 @@ void CInfosSeparationBarFace::SetNumFace(const CFaceName &faceName)
 {
 	this->numFace = faceName.numFace;
 	this->isSelected = faceName.isSelectable;
-}
-
-wxImage CInfosSeparationBarFace::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector)
-{
-    wxImage img;
-    if(vector.size() > 0)
-    {
-        wxStringInputStream memBuffer(vector);
-        wxSVGDocument svgDoc;
-        svgDoc.Load(memBuffer);
-        img = svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-        
-    }
-    else
-    {
-        img.Create(buttonWidth, buttonHeight);
-    }
-    return img;
 }
 
 void CInfosSeparationBarFace::OnClick(const int &x, const int &y)
@@ -124,19 +106,19 @@ void CInfosSeparationBarFace::RenderIcone(wxDC * deviceContext, const int &posLa
 	
 	if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != theme.GetCheckboxHeight() || bitmapCheckOn.GetWidth() != theme.GetCheckboxWidth()))
     {
-        bitmapCheckOn = CreateFromSVG(theme.GetCheckboxWidth(), theme.GetCheckboxHeight(), checkOnVector);
+        bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", theme.GetCheckboxWidth(), theme.GetCheckboxHeight());
         bitmapCheckOn = bitmapCheckOn.ConvertToDisabled();
     }
         
 	if (!bitmapCheckOff.IsOk() ||  (bitmapCheckOff.GetHeight() != theme.GetCheckboxHeight() || bitmapCheckOff.GetWidth() != theme.GetCheckboxWidth()))
     {
-        bitmapCheckOff = CreateFromSVG(theme.GetCheckboxWidth(), theme.GetCheckboxHeight(), checkOffVector);
+        bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", theme.GetCheckboxWidth(), theme.GetCheckboxHeight());
         bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
     }
 
 	if(!bitmapEdit.IsOk())
 	{
-		bitmapEdit = CreateFromSVG(theme.GetCheckboxWidth(), theme.GetCheckboxHeight(), editVector);
+		bitmapEdit = CLibResource::CreatePictureFromSVG("IDB_EDIT_LABEL", theme.GetCheckboxWidth(), theme.GetCheckboxHeight());
 		bitmapEdit = bitmapEdit.ConvertToDisabled();
 	}
 

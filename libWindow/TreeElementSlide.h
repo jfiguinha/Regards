@@ -59,7 +59,6 @@ namespace Regards
 		private:
 
 			bool TestEgality(CTreeElementValue * value1, CTreeElementValue * value2, int type);
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode);
 			bool FindCirclePos(wxWindow * window, const int &y, const int &x);
 			void ClickLeftPage(const int &x);
 			void ClickRightPage(const int &x);
@@ -88,12 +87,6 @@ namespace Regards
 			bool mouseBlock;
 			bool captureBall;
 			CThemeTreeSlide themeSlide;
-            
-            
-            wxString buttonVector;
-			wxString buttonPlusVector;
-			wxString buttonMoinsVector;
-
 			wxRect plusPos;
 			wxRect moinsPos;
 			wxRect slidePos;

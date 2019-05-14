@@ -24,18 +24,15 @@ public:
 
 protected:
 
-	void CalculNewSize(int &imageWidth, int &imageHeight);
 	virtual void DrawElement(wxDC * dc, const int &x, const int &y, const bool &inactif = false);
 
 private:
-    wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight);
-    CRegardsBitmap *   BilinearFiltering(CRegardsBitmap *  pBitmap);
+
 	void CreateInactifButton(wxDC * dc, const int &x, const int &y);
 	void CreateActifButton(wxDC * dc, const int &x, const int &y);
 	void CreatePushButton(wxDC * dc, const int &x, const int &y);
 	void DrawShapeElement(wxDC * dc, const wxRect &rc);
-	bool LoadPictureFromResource();
-			
+		
     
 	int width;
 	int height;

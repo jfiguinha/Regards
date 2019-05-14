@@ -40,18 +40,11 @@ public:
 
 private:
 
-    wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector);
 	void DrawBitmap(wxDC * deviceContext, const int &xPos, const int &yPos);
 	bool checked;
 
 	wxBitmap checkOn;
 	wxBitmap checkOff;
-    
-    wxString checkOnVector;
-    wxString checkOffVector;
-    
-    
-
 	CThemeTreeCheckBox themeTreeCheckBox;
 };
 

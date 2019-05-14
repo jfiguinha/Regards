@@ -46,8 +46,6 @@ namespace Regards
 
 		private:
             
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode);
-
 			void Resize();
 			void OnMouseMove(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
@@ -82,13 +80,15 @@ namespace Regards
 			wxImage buttonSpeaker;
 			wxImage button;
             
+			/*
             wxString buttonPlayVector;
             wxString buttonPauseVector;
             wxString buttonVolumeUpVector;
             wxString buttonVolumeDownVector;
             wxString buttonSpeakerVector;
             wxString buttonVector;
-            
+            */
+
             wxColor colorToReplace;
             wxColor colorActifReplacement;
             wxColor colorInactifReplacement;

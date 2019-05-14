@@ -65,7 +65,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		viewerTheme->GetScrollThumbnailVideoTheme(&themeScroll);
 		viewerTheme->GetThumbnailVideoTheme(&themeVideo);
 
-		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible);
+		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false);
 		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), wxID_ANY);
 		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, statusBarInterface, themeVideo, checkValidity);
 		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
@@ -113,7 +113,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		viewerTheme->GetThumbnailScrollTheme(themeScroll);
 		viewerTheme->GetThumbnailVideoTheme(&themeThumbnail);
 		viewerTheme->GetClickThumbnailVideoToolbarTheme(&themetoolbar);
-		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible);
+		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true);
 		scrollPictureWindow = new CScrollbarWnd(panelPicture->GetPaneWindow(), wxID_ANY);
 		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, statusBarInterface, themeThumbnail, checkValidity);
 		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
@@ -129,6 +129,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
     Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerWindow::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerWindow::OnSize));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerWindow::OnResize));
+	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CViewerWindow::OnRefresh));
 
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 
@@ -177,6 +178,17 @@ void CViewerWindow::OnTimerAnimation(wxTimerEvent& event)
             wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_ANIMATIONTIMERSTOP);
             windowMain->GetEventHandler()->AddPendingEvent(evt);       
         }            
+	}
+}
+
+void CViewerWindow::OnRefresh(wxCommandEvent& event)
+{
+	wxWindow* window = this->FindWindowById(THUMBNAILFOLDER);
+	if (window)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHTHUMBNAIL);
+		evt.SetExtraLong(1);
+		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 

@@ -1,9 +1,8 @@
 #pragma once
-#include "Painting.h"
 class CRegardsBitmap;
 class CRgbaquad;
 
-class CLine : public CPainting
+class CLine
 {
 public:
 	CLine(const int & heightMax, const int & widthMax);

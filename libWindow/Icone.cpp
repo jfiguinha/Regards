@@ -312,12 +312,12 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
    
                 if(!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != themeIcone.GetCheckboxHeight() || bitmapCheckOn.GetWidth() != themeIcone.GetCheckboxWidth()))
                 {
-                    bitmapCheckOn = CreateFromSVG(themeIcone.GetCheckboxWidth(), themeIcone.GetCheckboxHeight(), checkOnVector);
+                    bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", themeIcone.GetCheckboxWidth(), themeIcone.GetCheckboxHeight());
                 }
                 
                 if(!bitmapCheckOff.IsOk() || (bitmapCheckOff.GetHeight() != themeIcone.GetCheckboxHeight() || bitmapCheckOff.GetWidth() != themeIcone.GetCheckboxWidth()))
                 {
-                    bitmapCheckOff = CreateFromSVG(themeIcone.GetCheckboxWidth(), themeIcone.GetCheckboxHeight(), checkOffVector);
+                    bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", themeIcone.GetCheckboxWidth(), themeIcone.GetCheckboxHeight());
                     
                 }
 

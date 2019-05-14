@@ -22,14 +22,9 @@ namespace Regards
 
 		protected:
 
-            wxImage CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector);
-            
 			wxImage bitmapCheckOn;
 			wxImage bitmapCheckOff;
 			wxImage bitmapEdit;
-            wxString editVector;
-            wxString checkOnVector;
-            wxString checkOffVector;
             
 			wxString libelleSelectIcone;
 			wxString libelleSelectAll;

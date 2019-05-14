@@ -24,27 +24,8 @@ CInfosSeparationBarExplorer::CInfosSeparationBarExplorer(const CThemeInfosSepara
 {
 	libelleSelectAll = CLibResource::LoadStringFromResource(L"LBLSelectAll", 1);
 	isSelected = false;
-    checkOnVector = CLibResource::GetVector(L"IDB_CHECKBOX_ON");
-    checkOffVector = CLibResource::GetVector(L"IDB_CHECKBOX_OFF");
 
-}
 
-wxImage CInfosSeparationBarExplorer::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vector)
-{
-    wxImage img;
-    if(vector.size() > 0)
-    {
-        wxStringInputStream memBuffer(vector);
-        wxSVGDocument svgDoc;
-        svgDoc.Load(memBuffer);
-        img = svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-        
-    }
-    else
-    {
-        img.Create(buttonWidth, buttonHeight);
-    }
-    return img;
 }
 
 void CInfosSeparationBarExplorer::OnClick(const int &x, const int &y)
@@ -64,13 +45,13 @@ void CInfosSeparationBarExplorer::RenderIcone(wxDC * deviceContext, const int &p
 
 	if (!bitmapCheckOn.IsOk() || (bitmapCheckOn.GetHeight() != theme.GetCheckboxHeight() || bitmapCheckOn.GetWidth() != theme.GetCheckboxWidth()))
     {
-        bitmapCheckOn = CreateFromSVG(theme.GetCheckboxWidth(), theme.GetCheckboxHeight(), checkOnVector);
+        bitmapCheckOn = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_ON", theme.GetCheckboxWidth(), theme.GetCheckboxHeight());
         bitmapCheckOn = bitmapCheckOn.ConvertToDisabled();
     }
         
 	if (!bitmapCheckOff.IsOk() ||  (bitmapCheckOff.GetHeight() != theme.GetCheckboxHeight() || bitmapCheckOff.GetWidth() != theme.GetCheckboxWidth()))
     {
-        bitmapCheckOff = CreateFromSVG(theme.GetCheckboxWidth(), theme.GetCheckboxHeight(), checkOffVector);
+        bitmapCheckOff = CLibResource::CreatePictureFromSVG("IDB_CHECKBOX_OFF", theme.GetCheckboxWidth(), theme.GetCheckboxHeight());
         bitmapCheckOff = bitmapCheckOff.ConvertToDisabled();
     }
     

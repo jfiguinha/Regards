@@ -1,9 +1,8 @@
 #pragma once
-#include "Painting.h"
 class CRegardsBitmap;
 class CRgbaquad;
 
-class CCircle : public CPainting
+class CCircle
 {
 public:
 	CCircle(){};

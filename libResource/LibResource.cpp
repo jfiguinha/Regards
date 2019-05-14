@@ -8,6 +8,9 @@
 #include <ConvertUtility.h>
 #include <RegardsConfigParam.h>
 #include "ParamInit.h"
+#include <wxSVG/SVGDocument.h>
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
 using namespace Regards::Sqlite;
 
 void CLibResource::InitializeSQLServerDatabase(const wxString & folder)
@@ -26,6 +29,24 @@ void CLibResource::InitializeSQLServerDatabase(const wxString & folder)
 void CLibResource::KillSqlEngine()
 {
 	CSqlEngine::kill(L"ResourceDB");
+}
+
+wxImage CLibResource::CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight)
+{
+	wxImage img;
+	wxString vector = CLibResource::GetVector(idName);
+	if (vector.size() > 0)
+	{
+		wxStringInputStream memBuffer(vector);
+		wxSVGDocument svgDoc;
+		svgDoc.Load(memBuffer);
+		img = svgDoc.Render(buttonWidth, buttonHeight, NULL, true, true);
+	}
+	else
+	{
+		img.Create(buttonWidth, buttonHeight);
+	}
+	return img;
 }
 
 wxString CLibResource::LoadExifNameFromResource(const wxString &id)

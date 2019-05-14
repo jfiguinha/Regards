@@ -73,6 +73,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 
     toolbarWindow = photoToolbar;
     photoToolbar->SetFolderPush();
+	windowVisible = WM_FOLDER;
     
 	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged), NULL, this);
 	Connect(wxEVENT_SETFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SetFolder));
@@ -167,6 +168,34 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 	}
 }
 
+void CPanelPhotoWnd::RefreshData()
+{
+	switch (windowVisible)
+	{
+	case WM_FOLDER:
+		{
+			wxWindow* window = this->FindWindowById(MAINVIEWERWINDOWID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+		break;
+	case WM_CRITERIA:
+		{
+			wxWindow* window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+				evt.SetExtraLong(3);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+		break;
+	}
+}
+
 void CPanelPhotoWnd::LoadInfo()
 {
 	if (this->IsShown())
@@ -178,9 +207,6 @@ void CPanelPhotoWnd::LoadInfo()
 			break;
         case WM_CRITERIA:
             photoToolbar->SetCriteriaPush();
-            break;
-        case WM_FACELIST:
-            photoToolbar->SetFaceListPush();
             break;
 		}
 	}

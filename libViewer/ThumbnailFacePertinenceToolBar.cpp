@@ -141,7 +141,7 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 	wxWindow * mainWindow = (wxWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if(mainWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CRITERIASHOWUPDATE);
+		wxCommandEvent evt(wxEVENT_CRITERIASHOWUPDATE);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 	

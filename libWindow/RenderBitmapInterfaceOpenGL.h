@@ -27,16 +27,11 @@ namespace Regards
 
 			void ApplyPreviewEffect(const int &left, const int &top, const int &numEffect, CEffectParameter * effectParameter);
             void LoadingResource(const double & scale_factor);
-			GLTexture * GetCopyTextureBitmap(const int &width, const int &height, cl_context context);
-			void Print(int x, int y, const char *string);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
 			void ShowTransitionBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const float &alphaValue);
 
 		private:
-
-			
-			wxImage CreateFromSVG(const wxString & vector, const int & buttonWidth, const int & buttonHeight);
 
 			//Effect
 			void PhotoFiltre(const int &left, const int &top, CEffectParameter * effectParameter);

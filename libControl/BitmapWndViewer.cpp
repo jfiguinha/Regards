@@ -148,31 +148,13 @@ void CBitmapWndViewer::LoadingResource()
 #endif    
 	wxColor colorToReplace = wxColor(0, 0, 0);
 	wxColor colorActifReplacement = wxColor(255, 255, 255);
-	arrowPrevious = CreateFromSVG(CLibResource::GetVector("IDB_ARROWLPNG") , 32 * scale_factor, 32 * scale_factor);
+	arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG" , 32 * scale_factor, 32 * scale_factor);
 	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
-	arrowNext = CreateFromSVG(CLibResource::GetVector("IDB_ARROWRPNG"), 32 * scale_factor, 32 * scale_factor);
+	arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
 	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
 
-}
-
-
-wxImage CBitmapWndViewer::CreateFromSVG(const wxString & vector, const int & buttonWidth, const int & buttonHeight)
-{
-	wxImage img;
-	if (vector.size() > 0)
-	{
-		wxStringInputStream memBuffer(vector);
-		wxSVGDocument svgDoc;
-		svgDoc.Load(memBuffer);
-		img = svgDoc.Render(buttonWidth, buttonHeight, NULL, true, true);
-	}
-	else
-	{
-		img.Create(buttonWidth, buttonHeight);
-	}
-	return img;
 }
 
 

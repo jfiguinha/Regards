@@ -12,7 +12,7 @@ const double pi = 3.14159265358979323846264338327950288419716939937510;
 ///////////////////////////////////////////////////////////////////////////////////////
 wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, const float &fAlpha)
 {
-	wxImage image = CreateFromSVG(iTaille * 2, iTaille * 2, CLibResource::GetVector("IDB_CIRCLE"));
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille * 2, iTaille * 2);
 
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
@@ -50,7 +50,7 @@ wxImage CCircle::GenerateCircle(const CRgbaquad &m_color, const int &iTaille, co
 ///////////////////////////////////////////////////////////////////////////////////////
 wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaille, const float &fAlpha)
 {
-	wxImage image = CreateFromSVG(iTaille, iTaille, CLibResource::GetVector("IDB_CIRCLE"));
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	int rayon = iTaille / 2;
 
@@ -130,7 +130,7 @@ wxImage CCircle::Burst(const int &iTaille, const int &iColor, const int &iIntens
 	}
 
 
-	wxImage image = CreateFromSVG(iTaille, iTaille, CLibResource::GetVector("IDB_CIRCLE"));
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 
 	
@@ -211,7 +211,7 @@ wxImage CCircle::HaloGradient(const int &iTaille, const int &iWidth, const float
 	}
 
 
-	wxImage image = CreateFromSVG(iTaille, iTaille, CLibResource::GetVector("IDB_CIRCLE"));
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	uint8_t * alpha = nullptr;
 	if (image.HasAlpha())
@@ -276,7 +276,7 @@ wxImage CCircle::Halo(const int &iColor, const int &iColorIntensity, const int &
 	vector<CRgbaquad> listColorCenter;
 	vector<CRgbaquad> listColorOut;
 
-	wxImage image = CreateFromSVG(iTaille, iTaille, CLibResource::GetVector("IDB_CIRCLE"));
+	wxImage image = CLibResource::CreatePictureFromSVG("IDB_CIRCLE", iTaille, iTaille);
 
 	float y1 = 0.3f;
 	float x1 = 0.5f;

@@ -9,9 +9,8 @@ class CTitleBarInterface
 
 public:
 
-	CTitleBarInterface(){};
-	~CTitleBarInterface(){};
-	virtual void ClosePane(){};
+	virtual void ClosePane() = 0;
+	virtual void RefreshPane() = 0;
 };
 
 

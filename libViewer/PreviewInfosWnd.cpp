@@ -59,7 +59,7 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		viewerTheme->GetInfosPaneTheme(&theme);
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos);
+		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false);
 		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
 		paneInfos->SetWindow(panelInfosWindow);
 	}
@@ -73,6 +73,7 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 	this->SetWindow(previewWindow, paneInfos);
 
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CPreviewInfosWnd::OnResize));
+	
 
 	RedrawBarPos();
 }

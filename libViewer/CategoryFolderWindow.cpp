@@ -273,20 +273,6 @@ void CCategoryFolderWindow::ProcessIdle()
 		//Nettoyage des criteres non utilises
 		CSqlCriteria criteria;
 		criteria.DeleteCriteriaAlone();
-
-		//UpdatePhotoList();
-		/*
-		if (needToSendMessage)
-		{
-			CWindowMain * windowMain = (CWindowMain *)this->FindWindowById(MAINVIEWERWINDOWID);
-			if (windowMain != nullptr)
-			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CRITERIASHOWUPDATE);
-				windowMain->GetEventHandler()->AddPendingEvent(evt);
-				//wxCommandEvent * event = new wxCommandEvent(EVENT_REFRESHLIST);
-				//wxQueueEvent(windowMain, event);
-			}
-		}*/
 		traitementEnd = true;
 	}
 	else if (refreshFolder)

@@ -31,7 +31,8 @@ namespace Regards
 			void SetNumElement(const int &numElement, const bool &move = true);
             void StartLoadingPicture(const int &numElement);
             void StopLoadingPicture();
-
+			void ClosePane(const int& id) {};
+			void RefreshPane(const int& id) {};
 
             void UpdateScreenRatio();
 
@@ -60,7 +61,11 @@ namespace Regards
 			void StartAnimation();
 			void StopAnimation();
 
+
+
 		private:
+
+			void OnRefresh(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
 			void LoadAnimationBitmap(const int &numFrame);
 			void OnSize(wxSizeEvent& event);

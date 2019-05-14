@@ -35,8 +35,7 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent
 	this->sliderEvent = sliderEvent;
 	this->themeSlider = themeSlider;
 
-        button.Create(0,0);
-        buttonVector = CLibResource::GetVector("IDB_BOULESLIDER");
+    button.Create(0,0);
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CSlider::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CSlider::OnMouseMove));
@@ -45,15 +44,6 @@ CSlider::CSlider(wxWindow* parent, wxWindowID id, CSliderInterface * sliderEvent
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CSlider::OnMouseCaptureLost));
 
 }
-
-wxImage CSlider::CreateFromSVG(const int & buttonWidth, const int & buttonHeight, const wxString &vectorCode)
-{
-    wxStringInputStream memBuffer(vectorCode);
-    wxSVGDocument svgDoc;
-    svgDoc.Load(memBuffer);
-    return svgDoc.Render(buttonWidth,buttonHeight,NULL,true,true);
-}
-
 
 CSlider::~CSlider()
 {
@@ -154,7 +144,7 @@ void CSlider::Draw(wxDC * context)
 		CalculPositionButton();
 
         if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-            button = CreateFromSVG(themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight(), buttonVector);
+            button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
         sourceDCContext.DrawBitmap(button, positionButton.x, positionButton.y);
 		
 		sourceDCContext.SelectObject(wxNullBitmap);

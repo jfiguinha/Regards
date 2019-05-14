@@ -6,7 +6,7 @@ using namespace Regards::Window;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme) :
+CPane::CPane(wxWindow* parent, wxWindowID id, CPaneInterface * paneInterface, const int &idPane, const CThemePane & theme, const bool &refreshButton) :
 CWindowMain("CPane",parent, id)
 {
 	titleBar = nullptr;
@@ -15,6 +15,7 @@ CWindowMain("CPane",parent, id)
 	titleBarVisible = true;
 	this->paneInterface = paneInterface;
 	titleBar = new CTitleBar(this, wxID_ANY, this);
+	titleBar->SetRefresh(refreshButton);
 	this->idPane = idPane;
 	this->themePane = themePane;
 	//titleBar->Show(false)
@@ -79,31 +80,17 @@ void CPane::Resize()
 	printf("CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
 	if (titleBarVisible)
 	{
-		//CDeferPos deferpos;
 		titleBar->SetSize(0, 0, GetWindowWidth(), titleBar->GetWindowHeight());
 		if (hWndOther != nullptr)
 		{
             int height =  GetWindowHeight() - titleBar->GetWindowHeight();
 			hWndOther->SetSize(0, titleBar->GetWindowHeight(), GetWindowWidth(), height);
-			//hWndOther->PostSizeEvent();
 		}
 	}
 	else if (hWndOther != nullptr)
 	{
 		hWndOther->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-		//hWndOther->PostSizeEvent();
 	}
-
-	/*
-	toShow = "CPane OnIdle size x : " + to_string(GetWindowWidth()) + " y : " + to_string(GetWindowHeight()) + "\n";
-	OutputDebugString(toShow.ToStdWstring().c_str());
-	if (hWndOther != nullptr)
-	{
-		wxSize otherSize = hWndOther->GetSize();
-		wxString toShow = "CPane OnIdle otherSize size x : " + to_string(otherSize.x) + " y : " + to_string(otherSize.y) + "\n";
-		OutputDebugString(toShow.ToStdWstring().c_str());
-	}
-	*/
 }
 
 void CPane::OnMouseMove(wxMouseEvent& event)
@@ -123,6 +110,11 @@ void CPane::SetTitleBarVisibility(const bool &visible)
 void CPane::ClosePane()
 {
 	paneInterface->ClosePane(idPane);
+}
+
+void CPane::RefreshPane()
+{
+	paneInterface->RefreshPane(idPane);
 }
 
 void CPane::SetTitle(const wxString & title)

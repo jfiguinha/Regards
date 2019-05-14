@@ -29,6 +29,7 @@ namespace Regards
 
 		private:
 
+			void OnRefresh(wxCommandEvent& event);
 			void SetListeFile(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);

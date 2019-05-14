@@ -61,8 +61,7 @@ namespace Regards
 #ifdef KeyPress
 #undef KeyPress
 #endif
-			
-			wxImage CreateFromSVG(const wxString & vector, const int & buttonWidth, const int & buttonHeight);
+
 			void KeyPress(const int &key);
 			void MouseMove(const int &xPos, const int &yPos);
 			void MouseClick(const int &xPos, const int &yPos);

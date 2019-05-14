@@ -526,7 +526,7 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
 
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CRITERIASHOWUPDATE);
+		wxCommandEvent evt(wxEVENT_CRITERIASHOWUPDATE);
 		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 
