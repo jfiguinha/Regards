@@ -2,12 +2,12 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libViewer
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=C:/developpement/git_gcc/Regards
 ProjectPath            :=C:/developpement/git_gcc/Regards/libViewer
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)VIEWER $(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)OPENGL $(PreprocessorSwitch)WEBVIEWER $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)VIEWER $(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)OPENGL $(PreprocessorSwitch)WEBVIEWER 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -37,9 +37,9 @@ PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
-LinkOptions            :=  -s 
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch)../wxCheckTree $(IncludeSwitch)../Otherlib/RegardsRaw $(IncludeSwitch). $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libWindow $(IncludeSwitch)../libPrint $(IncludeSwitch)../libPicture $(IncludeSwitch)../libTheme $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libControl $(IncludeSwitch)../libIntro $(IncludeSwitch)../libDialog $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libVideoFFMpeg $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libVideoThumbnail $(IncludeSwitch)../FaceRecognition $(IncludeSwitch)../libCompress $(IncludeSwitch)../libAppleFunction $(IncludeSwitch)../libextern/glew-2.1.0/include $(IncludeSwitch)../libextern/libjpeg-turbo-1.5.1 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -52,8 +52,8 @@ LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK
 AR       := C:/msys64/mingw64/bin/ar.exe rcu
 CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
 CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
+CFLAGS   :=  -Wall -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/msys64/mingw64/bin/as.exe
 
@@ -65,10 +65,10 @@ CodeLiteDir:=C:\Program Files\CodeLite
 PATH:=C:\msys64\usr\bin;$PATH
 WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
 WXCFG:=lib/mswud
-Objects0=$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/AnimationToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ListFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(ObjectSuffix) $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerThemeInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ModificationManager.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParamInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelPhotoWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarPhoto.cpp$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/AnimationToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ListFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix) $(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerThemeInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/ModificationManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFaceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerTheme.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/ThumbnailViewerEffect.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParamInit.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelPhotoWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ViewerParam.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarPhoto.cpp$(ObjectSuffix) \
 	
 
 
@@ -86,51 +86,27 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "C:\developpement\git_gcc\Regards/.build-release"
-	@echo rebuilt > "C:\developpement\git_gcc\Regards/.build-release/libViewer"
+	@$(MakeDirCommand) "C:\developpement\git_gcc\Regards/.build-debug"
+	@echo rebuilt > "C:\developpement\git_gcc\Regards/.build-debug/libViewer"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 
-./Release:
-	@$(MakeDirCommand) "./Release"
+./Debug:
+	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
 ##
 ## Objects
 ##
-$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix): ThumbnailViewerPicture.cpp $(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailViewerPicture.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix): ThumbnailViewerPicture.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix) -MM ThumbnailViewerPicture.cpp
-
-$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(PreprocessSuffix): ThumbnailViewerPicture.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(PreprocessSuffix) ThumbnailViewerPicture.cpp
-
-$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix): ViewerWindow.cpp $(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ViewerWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix): ViewerWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix) -MM ViewerWindow.cpp
-
-$(IntermediateDirectory)/ViewerWindow.cpp$(PreprocessSuffix): ViewerWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ViewerWindow.cpp$(PreprocessSuffix) ViewerWindow.cpp
-
-$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix): CentralWindow.cpp $(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/CentralWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix): CentralWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix) -MM CentralWindow.cpp
-
-$(IntermediateDirectory)/CentralWindow.cpp$(PreprocessSuffix): CentralWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CentralWindow.cpp$(PreprocessSuffix) CentralWindow.cpp
-
 $(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix): ToolbarInfos.cpp $(IntermediateDirectory)/ToolbarInfos.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ToolbarInfos.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarInfos.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ToolbarInfos.cpp$(DependSuffix): ToolbarInfos.cpp
@@ -138,22 +114,6 @@ $(IntermediateDirectory)/ToolbarInfos.cpp$(DependSuffix): ToolbarInfos.cpp
 
 $(IntermediateDirectory)/ToolbarInfos.cpp$(PreprocessSuffix): ToolbarInfos.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarInfos.cpp$(PreprocessSuffix) ToolbarInfos.cpp
-
-$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix): InfoEffectWnd.cpp $(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/InfoEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix): InfoEffectWnd.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix) -MM InfoEffectWnd.cpp
-
-$(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix): InfoEffectWnd.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix) InfoEffectWnd.cpp
-
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix): ThumbnailFacePertinenceToolBar.cpp $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailFacePertinenceToolBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix): ThumbnailFacePertinenceToolBar.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix) -MM ThumbnailFacePertinenceToolBar.cpp
-
-$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix): ThumbnailFacePertinenceToolBar.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix) ThumbnailFacePertinenceToolBar.cpp
 
 $(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix): ThumbnailFace.cpp $(IntermediateDirectory)/ThumbnailFace.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailFace.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFace.cpp$(ObjectSuffix) $(IncludePath)
@@ -203,30 +163,6 @@ $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(DependSuffix): InfosSeparat
 $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(PreprocessSuffix): InfosSeparationBarFace.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfosSeparationBarFace.cpp$(PreprocessSuffix) InfosSeparationBarFace.cpp
 
-$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix): MainWindow.cpp $(IntermediateDirectory)/MainWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/MainWindow.cpp$(DependSuffix): MainWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MainWindow.cpp$(DependSuffix) -MM MainWindow.cpp
-
-$(IntermediateDirectory)/MainWindow.cpp$(PreprocessSuffix): MainWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MainWindow.cpp$(PreprocessSuffix) MainWindow.cpp
-
-$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix): PreviewInfosWnd.cpp $(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/PreviewInfosWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix): PreviewInfosWnd.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix) -MM PreviewInfosWnd.cpp
-
-$(IntermediateDirectory)/PreviewInfosWnd.cpp$(PreprocessSuffix): PreviewInfosWnd.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(PreprocessSuffix) PreviewInfosWnd.cpp
-
-$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix): FiltreEffect.cpp $(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/FiltreEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix): FiltreEffect.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix) -MM FiltreEffect.cpp
-
-$(IntermediateDirectory)/FiltreEffect.cpp$(PreprocessSuffix): FiltreEffect.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FiltreEffect.cpp$(PreprocessSuffix) FiltreEffect.cpp
-
 $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix): InfosSeparationBarExplorer.cpp $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/InfosSeparationBarExplorer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(DependSuffix): InfosSeparationBarExplorer.cpp
@@ -235,13 +171,37 @@ $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(DependSuffix): InfosSep
 $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(PreprocessSuffix): InfosSeparationBarExplorer.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfosSeparationBarExplorer.cpp$(PreprocessSuffix) InfosSeparationBarExplorer.cpp
 
-$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix): PreviewWnd.cpp $(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/PreviewWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix): PreviewWnd.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix) -MM PreviewWnd.cpp
+$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix): CentralWindow.cpp $(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/CentralWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix): CentralWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CentralWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CentralWindow.cpp$(DependSuffix) -MM CentralWindow.cpp
 
-$(IntermediateDirectory)/PreviewWnd.cpp$(PreprocessSuffix): PreviewWnd.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PreviewWnd.cpp$(PreprocessSuffix) PreviewWnd.cpp
+$(IntermediateDirectory)/CentralWindow.cpp$(PreprocessSuffix): CentralWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CentralWindow.cpp$(PreprocessSuffix) CentralWindow.cpp
+
+$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix): MainWindow.cpp $(IntermediateDirectory)/MainWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/MainWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MainWindow.cpp$(DependSuffix): MainWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MainWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MainWindow.cpp$(DependSuffix) -MM MainWindow.cpp
+
+$(IntermediateDirectory)/MainWindow.cpp$(PreprocessSuffix): MainWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MainWindow.cpp$(PreprocessSuffix) MainWindow.cpp
+
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix): InfoEffectWnd.cpp $(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/InfoEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix): InfoEffectWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfoEffectWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfoEffectWnd.cpp$(DependSuffix) -MM InfoEffectWnd.cpp
+
+$(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix): InfoEffectWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfoEffectWnd.cpp$(PreprocessSuffix) InfoEffectWnd.cpp
+
+$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix): ViewerWindow.cpp $(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ViewerWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix): ViewerWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ViewerWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ViewerWindow.cpp$(DependSuffix) -MM ViewerWindow.cpp
+
+$(IntermediateDirectory)/ViewerWindow.cpp$(PreprocessSuffix): ViewerWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ViewerWindow.cpp$(PreprocessSuffix) ViewerWindow.cpp
 
 $(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix): ThumbnailToolBar.cpp $(IntermediateDirectory)/ThumbnailToolBar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailToolBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailToolBar.cpp$(ObjectSuffix) $(IncludePath)
@@ -251,14 +211,6 @@ $(IntermediateDirectory)/ThumbnailToolBar.cpp$(DependSuffix): ThumbnailToolBar.c
 $(IntermediateDirectory)/ThumbnailToolBar.cpp$(PreprocessSuffix): ThumbnailToolBar.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailToolBar.cpp$(PreprocessSuffix) ThumbnailToolBar.cpp
 
-$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix): ThumbnailToolBarZoom.cpp $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailToolBarZoom.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix): ThumbnailToolBarZoom.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix) -MM ThumbnailToolBarZoom.cpp
-
-$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix): ThumbnailToolBarZoom.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix) ThumbnailToolBarZoom.cpp
-
 $(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix): ImageList.cpp $(IntermediateDirectory)/ImageList.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ImageList.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ImageList.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/ImageList.cpp$(DependSuffix): ImageList.cpp
@@ -266,6 +218,14 @@ $(IntermediateDirectory)/ImageList.cpp$(DependSuffix): ImageList.cpp
 
 $(IntermediateDirectory)/ImageList.cpp$(PreprocessSuffix): ImageList.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ImageList.cpp$(PreprocessSuffix) ImageList.cpp
+
+$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix): ThumbnailToolBarZoom.cpp $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailToolBarZoom.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix): ThumbnailToolBarZoom.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(DependSuffix) -MM ThumbnailToolBarZoom.cpp
+
+$(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix): ThumbnailToolBarZoom.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailToolBarZoom.cpp$(PreprocessSuffix) ThumbnailToolBarZoom.cpp
 
 $(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix): ListPicture.cpp $(IntermediateDirectory)/ListPicture.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ListPicture.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ListPicture.cpp$(ObjectSuffix) $(IncludePath)
@@ -282,14 +242,6 @@ $(IntermediateDirectory)/CategoryFolderWindow.cpp$(DependSuffix): CategoryFolder
 
 $(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix): CategoryFolderWindow.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CategoryFolderWindow.cpp$(PreprocessSuffix) CategoryFolderWindow.cpp
-
-$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix): InfoEffect.cpp $(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/InfoEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix): InfoEffect.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix) -MM InfoEffect.cpp
-
-$(IntermediateDirectory)/InfoEffect.cpp$(PreprocessSuffix): InfoEffect.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfoEffect.cpp$(PreprocessSuffix) InfoEffect.cpp
 
 $(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix): CategoryWnd.cpp $(IntermediateDirectory)/CategoryWnd.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/CategoryWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CategoryWnd.cpp$(ObjectSuffix) $(IncludePath)
@@ -315,6 +267,30 @@ $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(DependSuffix): ThumbnailViewe
 $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(PreprocessSuffix): ThumbnailViewerVideo.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailViewerVideo.cpp$(PreprocessSuffix) ThumbnailViewerVideo.cpp
 
+$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix): InfoEffect.cpp $(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/InfoEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix): InfoEffect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfoEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfoEffect.cpp$(DependSuffix) -MM InfoEffect.cpp
+
+$(IntermediateDirectory)/InfoEffect.cpp$(PreprocessSuffix): InfoEffect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfoEffect.cpp$(PreprocessSuffix) InfoEffect.cpp
+
+$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix): FiltreEffect.cpp $(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/FiltreEffect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix): FiltreEffect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/FiltreEffect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/FiltreEffect.cpp$(DependSuffix) -MM FiltreEffect.cpp
+
+$(IntermediateDirectory)/FiltreEffect.cpp$(PreprocessSuffix): FiltreEffect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/FiltreEffect.cpp$(PreprocessSuffix) FiltreEffect.cpp
+
+$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix): PreviewInfosWnd.cpp $(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/PreviewInfosWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix): PreviewInfosWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PreviewInfosWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PreviewInfosWnd.cpp$(DependSuffix) -MM PreviewInfosWnd.cpp
+
+$(IntermediateDirectory)/PreviewInfosWnd.cpp$(PreprocessSuffix): PreviewInfosWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PreviewInfosWnd.cpp$(PreprocessSuffix) PreviewInfosWnd.cpp
+
 $(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix): toolbar.cpp $(IntermediateDirectory)/toolbar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/toolbar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/toolbar.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/toolbar.cpp$(DependSuffix): toolbar.cpp
@@ -322,6 +298,14 @@ $(IntermediateDirectory)/toolbar.cpp$(DependSuffix): toolbar.cpp
 
 $(IntermediateDirectory)/toolbar.cpp$(PreprocessSuffix): toolbar.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/toolbar.cpp$(PreprocessSuffix) toolbar.cpp
+
+$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix): PreviewWnd.cpp $(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/PreviewWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix): PreviewWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/PreviewWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/PreviewWnd.cpp$(DependSuffix) -MM PreviewWnd.cpp
+
+$(IntermediateDirectory)/PreviewWnd.cpp$(PreprocessSuffix): PreviewWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PreviewWnd.cpp$(PreprocessSuffix) PreviewWnd.cpp
 
 $(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix): ViewerFrame.cpp $(IntermediateDirectory)/ViewerFrame.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ViewerFrame.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ViewerFrame.cpp$(ObjectSuffix) $(IncludePath)
@@ -395,13 +379,13 @@ $(IntermediateDirectory)/ViewerParam.cpp$(DependSuffix): ViewerParam.cpp
 $(IntermediateDirectory)/ViewerParam.cpp$(PreprocessSuffix): ViewerParam.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ViewerParam.cpp$(PreprocessSuffix) ViewerParam.cpp
 
-$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix): ThumbnailFolder.cpp $(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailFolder.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix): ThumbnailFolder.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix) -MM ThumbnailFolder.cpp
+$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix): ThumbnailViewerPicture.cpp $(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailViewerPicture.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix): ThumbnailViewerPicture.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(DependSuffix) -MM ThumbnailViewerPicture.cpp
 
-$(IntermediateDirectory)/ThumbnailFolder.cpp$(PreprocessSuffix): ThumbnailFolder.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFolder.cpp$(PreprocessSuffix) ThumbnailFolder.cpp
+$(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(PreprocessSuffix): ThumbnailViewerPicture.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailViewerPicture.cpp$(PreprocessSuffix) ThumbnailViewerPicture.cpp
 
 $(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix): PanelInfosWnd.cpp $(IntermediateDirectory)/PanelInfosWnd.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/PanelInfosWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PanelInfosWnd.cpp$(ObjectSuffix) $(IncludePath)
@@ -410,6 +394,22 @@ $(IntermediateDirectory)/PanelInfosWnd.cpp$(DependSuffix): PanelInfosWnd.cpp
 
 $(IntermediateDirectory)/PanelInfosWnd.cpp$(PreprocessSuffix): PanelInfosWnd.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/PanelInfosWnd.cpp$(PreprocessSuffix) PanelInfosWnd.cpp
+
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix): ThumbnailFacePertinenceToolBar.cpp $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailFacePertinenceToolBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix): ThumbnailFacePertinenceToolBar.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(DependSuffix) -MM ThumbnailFacePertinenceToolBar.cpp
+
+$(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix): ThumbnailFacePertinenceToolBar.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFacePertinenceToolBar.cpp$(PreprocessSuffix) ThumbnailFacePertinenceToolBar.cpp
+
+$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix): ThumbnailFolder.cpp $(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailFolder.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix): ThumbnailFolder.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ThumbnailFolder.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ThumbnailFolder.cpp$(DependSuffix) -MM ThumbnailFolder.cpp
+
+$(IntermediateDirectory)/ThumbnailFolder.cpp$(PreprocessSuffix): ThumbnailFolder.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ThumbnailFolder.cpp$(PreprocessSuffix) ThumbnailFolder.cpp
 
 $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix): ThumbnailViewerEffectWnd.cpp $(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libViewer/ThumbnailViewerEffectWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ThumbnailViewerEffectWnd.cpp$(ObjectSuffix) $(IncludePath)
@@ -433,7 +433,7 @@ $(IntermediateDirectory)/ToolbarPhoto.cpp$(PreprocessSuffix): ToolbarPhoto.cpp
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 

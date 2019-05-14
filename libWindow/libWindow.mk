@@ -2,12 +2,12 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Release
+## Debug
 ProjectName            :=libWindow
-ConfigurationName      :=Release
+ConfigurationName      :=Debug
 WorkspacePath          :=C:/developpement/git_gcc/Regards
 ProjectPath            :=C:/developpement/git_gcc/Regards/libWindow
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
@@ -28,7 +28,7 @@ LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
 OutputFile             :=$(IntermediateDirectory)/$(ProjectName).a
-Preprocessors          :=$(PreprocessorSwitch)FFMPEG $(PreprocessorSwitch)NDEBUG 
+Preprocessors          :=$(PreprocessorSwitch)FFMPEG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -37,9 +37,9 @@ PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
-LinkOptions            :=  -s
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)"C:\Program Files (x86)\AMD APP SDK\3.0_mingw\include" $(IncludeSwitch)/mingw64/include/libxml2 $(IncludeSwitch)/mingw64/include/OpenEXR  $(IncludeSwitch)../Otherlib/RegardsRaw $(IncludeSwitch). $(IncludeSwitch)../libextern/glew-2.1.0/include $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libTheme $(IncludeSwitch)../libextern/libRapidXML $(IncludeSwitch)../libextern/ffmpeg-2.6.2 $(IncludeSwitch)../libextern/SDL2-2.0.3/include $(IncludeSwitch)../libGeolocalisation $(IncludeSwitch)../libParameter $(IncludeSwitch)../libUtility $(IncludeSwitch)../libFiltreInterface $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../libResource $(IncludeSwitch)../libSqlData $(IncludeSwitch)../libRenderBitmap $(IncludeSwitch)../libSqlEngine $(IncludeSwitch)../libSqlite $(IncludeSwitch)../libFiltre $(IncludeSwitch)../include $(IncludeSwitch)../libDataStructure $(IncludeSwitch)../Otherlib/wxSVG/include $(IncludeSwitch)../libPicture $(IncludeSwitch)../libWindowMain $(IncludeSwitch)../libOpenCL $(IncludeSwitch)../libOpenGL $(IncludeSwitch)../libExif $(IncludeSwitch)../libPiccante $(IncludeSwitch)../libextern/OpenCL-Headers 
-IncludePCH             :=  -include ../include/Release/header.h 
+IncludePCH             :=  -include ../include/Debug/header.h 
 RcIncludePath          := 
 Libs                   := 
 ArLibs                 :=  
@@ -52,8 +52,8 @@ LibPath                :=$(LibraryPathSwitch)"C:\Program Files (x86)\AMD APP SDK
 AR       := C:/msys64/mingw64/bin/ar.exe rcu
 CXX      := C:/msys64/usr/bin/ccache.exe C:/msys64/mingw64/bin/g++.exe
 CC       := C:/msys64/usr/bin/ccache.exe  C:/msys64/mingw64/bin/gcc.exe
-CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -O2 -msse4.1 $(Preprocessors)
-CFLAGS   :=  -Wall -O2 -msse4.1 $(Preprocessors)
+CXXFLAGS := $(shell ../libextern/wxWidgets-master/wx-config --cppflags) -Wall -pthread  -fopenmp -std=gnu++11 -Wall -ggdb -O0 $(Preprocessors)
+CFLAGS   :=  -Wall -ggdb -O0 $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/msys64/mingw64/bin/as.exe
 
@@ -65,10 +65,10 @@ CodeLiteDir:=C:\Program Files\CodeLite
 PATH:=C:\msys64\usr\bin;$PATH
 WXWIN:=C:\Regards\libextern\wxwidgets-3.1.2
 WXCFG:=lib/mswud
-Objects0=$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/IconeList.cpp$(ObjectSuffix) $(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexteClick.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTriangle.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementDelete.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeControl.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Pane.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/PositionElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) $(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/TitleBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarVerticalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/Icone.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) $(IntermediateDirectory)/SeparationBar.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarTexte.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenderPreviewBitmap.cpp$(ObjectSuffix) $(IntermediateDirectory)/Splitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelWithClickToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenderBitmapInterfaceOpenGL.cpp$(ObjectSuffix) $(IntermediateDirectory)/EmptyWindow.cpp$(ObjectSuffix) \
+Objects0=$(IntermediateDirectory)/BitmapInfosCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/IconeList.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexteClick.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTriangle.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementDelete.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeControl.cpp$(ObjectSuffix) $(IntermediateDirectory)/Pane.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarWindow.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/PositionElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarElement.cpp$(ObjectSuffix) $(IntermediateDirectory)/TitleBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/BitmapInfosGps.cpp$(ObjectSuffix) $(IntermediateDirectory)/Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarVerticalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/Icone.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/ScrollbarWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) $(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IntermediateDirectory)/SeparationBar.cpp$(ObjectSuffix) $(IntermediateDirectory)/ToolbarTexte.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/BitmapWnd.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenderPreviewBitmap.cpp$(ObjectSuffix) $(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) $(IntermediateDirectory)/Splitter.cpp$(ObjectSuffix) $(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) $(IntermediateDirectory)/PanelWithClickToolbar.cpp$(ObjectSuffix) $(IntermediateDirectory)/RenderBitmapInterfaceOpenGL.cpp$(ObjectSuffix) $(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/EmptyWindow.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/TreeElementListBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/MapSelect.cpp$(ObjectSuffix) $(IntermediateDirectory)/CalendarDialogBox.cpp$(ObjectSuffix) 
 
 
@@ -86,21 +86,21 @@ $(OutputFile): $(Objects)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
 	$(AR) $(ArchiveOutputSwitch)$(OutputFile) @$(ObjectsFileList) $(ArLibs)
-	@$(MakeDirCommand) "C:\developpement\git_gcc\Regards/.build-release"
-	@echo rebuilt > "C:\developpement\git_gcc\Regards/.build-release/libWindow"
+	@$(MakeDirCommand) "C:\developpement\git_gcc\Regards/.build-debug"
+	@echo rebuilt > "C:\developpement\git_gcc\Regards/.build-debug/libWindow"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 
-./Release:
-	@$(MakeDirCommand) "./Release"
+./Debug:
+	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
 
 # PreCompiled Header
-../include/Release/header.h.gch: ../include/Release/header.h
-	$(CXX) $(SourceSwitch) ../include/Release/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
+../include/Debug/header.h.gch: ../include/Debug/header.h
+	$(CXX) $(SourceSwitch) ../include/Debug/header.h $(PCHCompileFlags) $(CXXFLAGS) $(IncludePath)
 
 
 
@@ -122,14 +122,6 @@ $(IntermediateDirectory)/IconeList.cpp$(DependSuffix): IconeList.cpp
 
 $(IntermediateDirectory)/IconeList.cpp$(PreprocessSuffix): IconeList.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/IconeList.cpp$(PreprocessSuffix) IconeList.cpp
-
-$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix): CalendarSelect.cpp $(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/CalendarSelect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix): CalendarSelect.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix) -MM CalendarSelect.cpp
-
-$(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix): CalendarSelect.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix) CalendarSelect.cpp
 
 $(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix): BitmapInfos.cpp $(IntermediateDirectory)/BitmapInfos.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/BitmapInfos.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/BitmapInfos.cpp$(ObjectSuffix) $(IncludePath)
@@ -163,14 +155,6 @@ $(IntermediateDirectory)/TreeElementDelete.cpp$(DependSuffix): TreeElementDelete
 $(IntermediateDirectory)/TreeElementDelete.cpp$(PreprocessSuffix): TreeElementDelete.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementDelete.cpp$(PreprocessSuffix) TreeElementDelete.cpp
 
-$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix): TreeElementCheckBox.cpp $(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementCheckBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix): TreeElementCheckBox.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix) -MM TreeElementCheckBox.cpp
-
-$(IntermediateDirectory)/TreeElementCheckBox.cpp$(PreprocessSuffix): TreeElementCheckBox.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementCheckBox.cpp$(PreprocessSuffix) TreeElementCheckBox.cpp
-
 $(IntermediateDirectory)/TreeElement.cpp$(ObjectSuffix): TreeElement.cpp $(IntermediateDirectory)/TreeElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElement.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/TreeElement.cpp$(DependSuffix): TreeElement.cpp
@@ -203,30 +187,6 @@ $(IntermediateDirectory)/ToolbarWindow.cpp$(DependSuffix): ToolbarWindow.cpp
 $(IntermediateDirectory)/ToolbarWindow.cpp$(PreprocessSuffix): ToolbarWindow.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarWindow.cpp$(PreprocessSuffix) ToolbarWindow.cpp
 
-$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix): ClickToolbar.cpp $(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ClickToolbar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix): ClickToolbar.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix) -MM ClickToolbar.cpp
-
-$(IntermediateDirectory)/ClickToolbar.cpp$(PreprocessSuffix): ClickToolbar.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ClickToolbar.cpp$(PreprocessSuffix) ClickToolbar.cpp
-
-$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix): ToolbarSlide.cpp $(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ToolbarSlide.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix): ToolbarSlide.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix) -MM ToolbarSlide.cpp
-
-$(IntermediateDirectory)/ToolbarSlide.cpp$(PreprocessSuffix): ToolbarSlide.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarSlide.cpp$(PreprocessSuffix) ToolbarSlide.cpp
-
-$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix): TreeElementSlide.cpp $(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementSlide.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix): TreeElementSlide.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix) -MM TreeElementSlide.cpp
-
-$(IntermediateDirectory)/TreeElementSlide.cpp$(PreprocessSuffix): TreeElementSlide.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementSlide.cpp$(PreprocessSuffix) TreeElementSlide.cpp
-
 $(IntermediateDirectory)/PositionElement.cpp$(ObjectSuffix): PositionElement.cpp $(IntermediateDirectory)/PositionElement.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/PositionElement.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PositionElement.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/PositionElement.cpp$(DependSuffix): PositionElement.cpp
@@ -242,38 +202,6 @@ $(IntermediateDirectory)/ToolbarElement.cpp$(DependSuffix): ToolbarElement.cpp
 
 $(IntermediateDirectory)/ToolbarElement.cpp$(PreprocessSuffix): ToolbarElement.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarElement.cpp$(PreprocessSuffix) ToolbarElement.cpp
-
-$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix): TreeElementTexte.cpp $(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementTexte.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix): TreeElementTexte.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix) -MM TreeElementTexte.cpp
-
-$(IntermediateDirectory)/TreeElementTexte.cpp$(PreprocessSuffix): TreeElementTexte.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementTexte.cpp$(PreprocessSuffix) TreeElementTexte.cpp
-
-$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix): TabWindow.cpp $(IntermediateDirectory)/TabWindow.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TabWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/TabWindow.cpp$(DependSuffix): TabWindow.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TabWindow.cpp$(DependSuffix) -MM TabWindow.cpp
-
-$(IntermediateDirectory)/TabWindow.cpp$(PreprocessSuffix): TabWindow.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TabWindow.cpp$(PreprocessSuffix) TabWindow.cpp
-
-$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix): InfosSeparationBar.cpp $(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/InfosSeparationBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix): InfosSeparationBar.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix) -MM InfosSeparationBar.cpp
-
-$(IntermediateDirectory)/InfosSeparationBar.cpp$(PreprocessSuffix): InfosSeparationBar.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfosSeparationBar.cpp$(PreprocessSuffix) InfosSeparationBar.cpp
-
-$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix): ScrollbarHorizontalWnd.cpp $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ScrollbarHorizontalWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix): ScrollbarHorizontalWnd.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix) -MM ScrollbarHorizontalWnd.cpp
-
-$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(PreprocessSuffix): ScrollbarHorizontalWnd.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(PreprocessSuffix) ScrollbarHorizontalWnd.cpp
 
 $(IntermediateDirectory)/TitleBar.cpp$(ObjectSuffix): TitleBar.cpp $(IntermediateDirectory)/TitleBar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TitleBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TitleBar.cpp$(ObjectSuffix) $(IncludePath)
@@ -298,6 +226,22 @@ $(IntermediateDirectory)/Slider.cpp$(DependSuffix): Slider.cpp
 
 $(IntermediateDirectory)/Slider.cpp$(PreprocessSuffix): Slider.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Slider.cpp$(PreprocessSuffix) Slider.cpp
+
+$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix): ToolbarButton.cpp $(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ToolbarButton.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix): ToolbarButton.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix) -MM ToolbarButton.cpp
+
+$(IntermediateDirectory)/ToolbarButton.cpp$(PreprocessSuffix): ToolbarButton.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarButton.cpp$(PreprocessSuffix) ToolbarButton.cpp
+
+$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix): TreeElementTexte.cpp $(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementTexte.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix): TreeElementTexte.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementTexte.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementTexte.cpp$(DependSuffix) -MM TreeElementTexte.cpp
+
+$(IntermediateDirectory)/TreeElementTexte.cpp$(PreprocessSuffix): TreeElementTexte.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementTexte.cpp$(PreprocessSuffix) TreeElementTexte.cpp
 
 $(IntermediateDirectory)/TreeWindow.cpp$(ObjectSuffix): TreeWindow.cpp $(IntermediateDirectory)/TreeWindow.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeWindow.cpp$(ObjectSuffix) $(IncludePath)
@@ -331,13 +275,61 @@ $(IntermediateDirectory)/ScrollbarWnd.cpp$(DependSuffix): ScrollbarWnd.cpp
 $(IntermediateDirectory)/ScrollbarWnd.cpp$(PreprocessSuffix): ScrollbarWnd.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ScrollbarWnd.cpp$(PreprocessSuffix) ScrollbarWnd.cpp
 
-$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix): ToolbarButton.cpp $(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ToolbarButton.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix): ToolbarButton.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ToolbarButton.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ToolbarButton.cpp$(DependSuffix) -MM ToolbarButton.cpp
+$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix): ScrollbarHorizontalWnd.cpp $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ScrollbarHorizontalWnd.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix): ScrollbarHorizontalWnd.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(DependSuffix) -MM ScrollbarHorizontalWnd.cpp
 
-$(IntermediateDirectory)/ToolbarButton.cpp$(PreprocessSuffix): ToolbarButton.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarButton.cpp$(PreprocessSuffix) ToolbarButton.cpp
+$(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(PreprocessSuffix): ScrollbarHorizontalWnd.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ScrollbarHorizontalWnd.cpp$(PreprocessSuffix) ScrollbarHorizontalWnd.cpp
+
+$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix): InfosSeparationBar.cpp $(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/InfosSeparationBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix): InfosSeparationBar.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/InfosSeparationBar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/InfosSeparationBar.cpp$(DependSuffix) -MM InfosSeparationBar.cpp
+
+$(IntermediateDirectory)/InfosSeparationBar.cpp$(PreprocessSuffix): InfosSeparationBar.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/InfosSeparationBar.cpp$(PreprocessSuffix) InfosSeparationBar.cpp
+
+$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix): TabWindow.cpp $(IntermediateDirectory)/TabWindow.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TabWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/TabWindow.cpp$(DependSuffix): TabWindow.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TabWindow.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TabWindow.cpp$(DependSuffix) -MM TabWindow.cpp
+
+$(IntermediateDirectory)/TabWindow.cpp$(PreprocessSuffix): TabWindow.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TabWindow.cpp$(PreprocessSuffix) TabWindow.cpp
+
+$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix): ToolbarSlide.cpp $(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ToolbarSlide.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix): ToolbarSlide.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ToolbarSlide.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ToolbarSlide.cpp$(DependSuffix) -MM ToolbarSlide.cpp
+
+$(IntermediateDirectory)/ToolbarSlide.cpp$(PreprocessSuffix): ToolbarSlide.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ToolbarSlide.cpp$(PreprocessSuffix) ToolbarSlide.cpp
+
+$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix): TreeElementSlide.cpp $(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementSlide.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix): TreeElementSlide.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementSlide.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementSlide.cpp$(DependSuffix) -MM TreeElementSlide.cpp
+
+$(IntermediateDirectory)/TreeElementSlide.cpp$(PreprocessSuffix): TreeElementSlide.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementSlide.cpp$(PreprocessSuffix) TreeElementSlide.cpp
+
+$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix): ClickToolbar.cpp $(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ClickToolbar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix): ClickToolbar.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ClickToolbar.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ClickToolbar.cpp$(DependSuffix) -MM ClickToolbar.cpp
+
+$(IntermediateDirectory)/ClickToolbar.cpp$(PreprocessSuffix): ClickToolbar.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ClickToolbar.cpp$(PreprocessSuffix) ClickToolbar.cpp
+
+$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix): CalendarSelect.cpp $(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/CalendarSelect.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix): CalendarSelect.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/CalendarSelect.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/CalendarSelect.cpp$(DependSuffix) -MM CalendarSelect.cpp
+
+$(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix): CalendarSelect.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/CalendarSelect.cpp$(PreprocessSuffix) CalendarSelect.cpp
 
 $(IntermediateDirectory)/SeparationBar.cpp$(ObjectSuffix): SeparationBar.cpp $(IntermediateDirectory)/SeparationBar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/SeparationBar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SeparationBar.cpp$(ObjectSuffix) $(IncludePath)
@@ -346,30 +338,6 @@ $(IntermediateDirectory)/SeparationBar.cpp$(DependSuffix): SeparationBar.cpp
 
 $(IntermediateDirectory)/SeparationBar.cpp$(PreprocessSuffix): SeparationBar.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SeparationBar.cpp$(PreprocessSuffix) SeparationBar.cpp
-
-$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix): MapDialogBox.cpp $(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/MapDialogBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix): MapDialogBox.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix) -MM MapDialogBox.cpp
-
-$(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix): MapDialogBox.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix) MapDialogBox.cpp
-
-$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix): Thumbnail.cpp $(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/Thumbnail.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix): Thumbnail.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix) -MM Thumbnail.cpp
-
-$(IntermediateDirectory)/Thumbnail.cpp$(PreprocessSuffix): Thumbnail.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Thumbnail.cpp$(PreprocessSuffix) Thumbnail.cpp
-
-$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix): ScrollInterface.cpp $(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ScrollInterface.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix): ScrollInterface.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix) -MM ScrollInterface.cpp
-
-$(IntermediateDirectory)/ScrollInterface.cpp$(PreprocessSuffix): ScrollInterface.cpp
-	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ScrollInterface.cpp$(PreprocessSuffix) ScrollInterface.cpp
 
 $(IntermediateDirectory)/ToolbarTexte.cpp$(ObjectSuffix): ToolbarTexte.cpp $(IntermediateDirectory)/ToolbarTexte.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ToolbarTexte.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ToolbarTexte.cpp$(ObjectSuffix) $(IncludePath)
@@ -395,6 +363,14 @@ $(IntermediateDirectory)/RenderPreviewBitmap.cpp$(DependSuffix): RenderPreviewBi
 $(IntermediateDirectory)/RenderPreviewBitmap.cpp$(PreprocessSuffix): RenderPreviewBitmap.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RenderPreviewBitmap.cpp$(PreprocessSuffix) RenderPreviewBitmap.cpp
 
+$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix): ScrollInterface.cpp $(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/ScrollInterface.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix): ScrollInterface.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ScrollInterface.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ScrollInterface.cpp$(DependSuffix) -MM ScrollInterface.cpp
+
+$(IntermediateDirectory)/ScrollInterface.cpp$(PreprocessSuffix): ScrollInterface.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ScrollInterface.cpp$(PreprocessSuffix) ScrollInterface.cpp
+
 $(IntermediateDirectory)/Splitter.cpp$(ObjectSuffix): Splitter.cpp $(IntermediateDirectory)/Splitter.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/Splitter.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Splitter.cpp$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/Splitter.cpp$(DependSuffix): Splitter.cpp
@@ -402,6 +378,22 @@ $(IntermediateDirectory)/Splitter.cpp$(DependSuffix): Splitter.cpp
 
 $(IntermediateDirectory)/Splitter.cpp$(PreprocessSuffix): Splitter.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Splitter.cpp$(PreprocessSuffix) Splitter.cpp
+
+$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix): MapDialogBox.cpp $(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/MapDialogBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix): MapDialogBox.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/MapDialogBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/MapDialogBox.cpp$(DependSuffix) -MM MapDialogBox.cpp
+
+$(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix): MapDialogBox.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MapDialogBox.cpp$(PreprocessSuffix) MapDialogBox.cpp
+
+$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix): Thumbnail.cpp $(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/Thumbnail.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix): Thumbnail.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Thumbnail.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Thumbnail.cpp$(DependSuffix) -MM Thumbnail.cpp
+
+$(IntermediateDirectory)/Thumbnail.cpp$(PreprocessSuffix): Thumbnail.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Thumbnail.cpp$(PreprocessSuffix) Thumbnail.cpp
 
 $(IntermediateDirectory)/PanelWithClickToolbar.cpp$(ObjectSuffix): PanelWithClickToolbar.cpp $(IntermediateDirectory)/PanelWithClickToolbar.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/PanelWithClickToolbar.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/PanelWithClickToolbar.cpp$(ObjectSuffix) $(IncludePath)
@@ -418,6 +410,14 @@ $(IntermediateDirectory)/RenderBitmapInterfaceOpenGL.cpp$(DependSuffix): RenderB
 
 $(IntermediateDirectory)/RenderBitmapInterfaceOpenGL.cpp$(PreprocessSuffix): RenderBitmapInterfaceOpenGL.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/RenderBitmapInterfaceOpenGL.cpp$(PreprocessSuffix) RenderBitmapInterfaceOpenGL.cpp
+
+$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix): TreeElementCheckBox.cpp $(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/TreeElementCheckBox.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix): TreeElementCheckBox.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/TreeElementCheckBox.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/TreeElementCheckBox.cpp$(DependSuffix) -MM TreeElementCheckBox.cpp
+
+$(IntermediateDirectory)/TreeElementCheckBox.cpp$(PreprocessSuffix): TreeElementCheckBox.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/TreeElementCheckBox.cpp$(PreprocessSuffix) TreeElementCheckBox.cpp
 
 $(IntermediateDirectory)/EmptyWindow.cpp$(ObjectSuffix): EmptyWindow.cpp $(IntermediateDirectory)/EmptyWindow.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "C:/developpement/git_gcc/Regards/libWindow/EmptyWindow.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/EmptyWindow.cpp$(ObjectSuffix) $(IncludePath)
@@ -457,7 +457,7 @@ $(IntermediateDirectory)/CalendarDialogBox.cpp$(PreprocessSuffix): CalendarDialo
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
-	$(RM) ../include/Release/header.h.gch
+	$(RM) -r ./Debug/
+	$(RM) ../include/Debug/header.h.gch
 
 
