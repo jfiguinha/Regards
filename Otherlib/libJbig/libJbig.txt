@@ -1,1 +1,1 @@
-./Debug/jbig.c.o ./Debug/jbig_tab.c.o
+./Release/jbig.c.o ./Release/jbig_tab.c.o

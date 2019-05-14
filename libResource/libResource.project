@@ -62,6 +62,7 @@
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

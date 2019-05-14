@@ -32,7 +32,6 @@
     <File Name="BitmapPrintout.cpp"/>
     <File Name="BitmapToolbar.cpp"/>
     <File Name="BitmapWndViewer.cpp"/>
-    <File Name="ClickToolbar.cpp"/>
     <File Name="InfosFile.cpp"/>
     <File Name="InfosSeparationBarEffect.cpp"/>
     <File Name="ShowBitmap.cpp"/>
@@ -49,7 +48,6 @@
     <File Name="BitmapPrintout.h"/>
     <File Name="BitmapToolbar.h"/>
     <File Name="BitmapWndViewer.h"/>
-    <File Name="ClickToolbar.h"/>
     <File Name="CriteriaTree.h"/>
     <File Name="CriteriaTreeWnd.h"/>
     <File Name="effect.h"/>

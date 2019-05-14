@@ -1,27 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="10.0.0">
-  <VirtualDirectory Name="Tab Window">
-    <VirtualDirectory Name="Panel Search Photo">
-      <File Name="PanelPhotoWnd.h"/>
-      <File Name="PanelPhotoWnd.cpp"/>
-      <VirtualDirectory Name="Toolbar">
-        <File Name="ToolbarPhoto.h"/>
-        <File Name="ToolbarPhoto.cpp"/>
-      </VirtualDirectory>
-    </VirtualDirectory>
-    <VirtualDirectory Name="Panel Infos">
-      <VirtualDirectory Name="Window">
-        <File Name="InfoEffectWnd.cpp"/>
-        <File Name="InfoEffectWnd.h"/>
-      </VirtualDirectory>
-      <VirtualDirectory Name="Toolbar">
-        <File Name="ToolbarInfos.h"/>
-        <File Name="ToolbarInfos.cpp"/>
-      </VirtualDirectory>
-      <File Name="PanelInfosWnd.h"/>
-      <File Name="PanelInfosWnd.cpp"/>
-    </VirtualDirectory>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -48,6 +26,28 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Tab Window">
+    <VirtualDirectory Name="Panel Search Photo">
+      <File Name="PanelPhotoWnd.h"/>
+      <File Name="PanelPhotoWnd.cpp"/>
+      <VirtualDirectory Name="Toolbar">
+        <File Name="ToolbarPhoto.h"/>
+        <File Name="ToolbarPhoto.cpp"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Panel Infos">
+      <VirtualDirectory Name="Window">
+        <File Name="InfoEffectWnd.cpp"/>
+        <File Name="InfoEffectWnd.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="Toolbar">
+        <File Name="ToolbarInfos.h"/>
+        <File Name="ToolbarInfos.cpp"/>
+      </VirtualDirectory>
+      <File Name="PanelInfosWnd.h"/>
+      <File Name="PanelInfosWnd.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <VirtualDirectory Name="DataStructure">
     <File Name="ImageList.h"/>
     <File Name="ImageList.cpp"/>
@@ -55,6 +55,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ViewerWindow.cpp"/>
+    <File Name="CentralWindow.cpp"/>
     <File Name="FiltreEffect.cpp"/>
     <File Name="FiltreToolbar.cpp"/>
     <File Name="InfoEffect.cpp"/>
@@ -67,18 +69,16 @@
     <File Name="ViewerFrame.cpp"/>
     <File Name="CategoryFolderWindow.cpp"/>
     <File Name="CategoryWnd.cpp"/>
-    <File Name="FilterPreviewSplitter.cpp"/>
     <File Name="FiltreEffectWnd.cpp"/>
-    <File Name="PreviewThumbnailSplitter.cpp"/>
     <File Name="InfosSeparationBarExplorer.cpp"/>
     <File Name="ListPicture.cpp"/>
-    <File Name="CentralWnd.cpp"/>
     <File Name="InfosSeparationBarFace.cpp"/>
     <File Name="ListFace.cpp"/>
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="CentralWnd.h"/>
+    <File Name="ViewerWindow.h"/>
+    <File Name="CentralWindow.h"/>
     <File Name="FiltreEffect.h"/>
     <File Name="FiltreToolbar.h"/>
     <File Name="InfoEffect.h"/>
@@ -90,9 +90,7 @@
     <File Name="Toolbar.h"/>
     <File Name="CategoryFolderWindow.h"/>
     <File Name="CategoryWnd.h"/>
-    <File Name="FilterPreviewSplitter.h"/>
     <File Name="FiltreEffectWnd.h"/>
-    <File Name="PreviewThumbnailSplitter.h"/>
     <File Name="InfosSeparationBarExplorer.h"/>
     <File Name="ListPicture.h"/>
     <File Name="InfosSeparationBarFace.h"/>
@@ -102,25 +100,25 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Thumbnail">
     <VirtualDirectory Name="src">
+      <File Name="ThumbnailViewerPicture.cpp"/>
       <File Name="ThumbnailFacePertinenceToolBar.cpp"/>
       <File Name="ThumbnailFace.cpp"/>
       <File Name="ThumbnailFaceToolBar.cpp"/>
       <File Name="ThumbnailFolder.cpp"/>
       <File Name="ThumbnailToolBar.cpp"/>
       <File Name="ThumbnailToolBarZoom.cpp"/>
-      <File Name="ThumbnailVideoPanel.cpp"/>
       <File Name="ThumbnailViewerEffect.cpp"/>
       <File Name="ThumbnailViewerEffectWnd.cpp"/>
       <File Name="ThumbnailViewerVideo.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="ThumbnailViewerPicture.h"/>
       <File Name="ThumbnailFacePertinenceToolBar.h"/>
       <File Name="ThumbnailFace.h"/>
       <File Name="ThumbnailFaceToolBar.h"/>
       <File Name="ThumbnailFolder.h"/>
       <File Name="ThumbnailToolBar.h"/>
       <File Name="ThumbnailToolBarZoom.h"/>
-      <File Name="ThumbnailVideoPanel.h"/>
       <File Name="ThumbnailViewerEffect.h"/>
       <File Name="ThumbnailViewerEffectWnd.h"/>
       <File Name="ThumbnailViewerVideo.h"/>

@@ -29,6 +29,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="PanelWithClickToolbar.cpp"/>
+    <File Name="ClickToolbar.cpp"/>
     <File Name="TabWindow.cpp"/>
     <File Name="BitmapWnd.cpp"/>
     <File Name="EmptyWindow.cpp"/>
@@ -72,6 +74,8 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="PanelWithClickToolbar.h"/>
+    <File Name="ClickToolbar.h"/>
     <File Name="TabWindow.h"/>
     <File Name="BitmapInterface.h"/>
     <File Name="BitmapWnd.h"/>
