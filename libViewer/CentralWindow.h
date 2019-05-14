@@ -26,16 +26,13 @@ namespace Regards
 			void FullscreenMode();
 			void ScreenMode();
 			wxString GetSqlRequest();
-			void SetMode(const int &mode);
-
-
-			void ShowFile();
 
 		private:
 
 			void SetListeFile(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
+			void SetMode(wxCommandEvent& event);
 			void RedrawBarPos();
 
 			int posBarInfos;

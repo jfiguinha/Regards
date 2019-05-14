@@ -84,7 +84,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 	wxWindow * mainWindow = (CMainWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CHANGETYPEAFFICHAGE);
+		wxCommandEvent evt(wxEVENT_CHANGETYPEAFFICHAGE);
 		evt.SetExtraLong(typeAffichage);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}

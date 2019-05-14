@@ -151,6 +151,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
     Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
     Connect(wxTIMER_DIAPORAMATIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StartDiaporamaMessage));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
+	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
@@ -292,21 +293,6 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
     processIdle = true;
 }
 
-/*
-void CMainWindow::ChangeTypeAffichage(wxCommandEvent& event)
-{
-    TRACE();
-	typeAffichage = event.GetExtraLong();
-	wxWindow * window = this->FindWindowById(LISTPICTUREID);
-	if (window)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_CHANGETYPEAFFICHAGE);
-		evt.SetExtraLong(typeAffichage);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-    processIdle = true;
-}
-*/
 
 void CMainWindow::RefreshPictureList(wxCommandEvent& event)
 {
@@ -991,23 +977,18 @@ void CMainWindow::ProcessIdle()
 			if (isFound)
 				numElement = position;
 		}
-		
-
-		//centralWnd->SetNumElement(numElement);
 
 		wxWindow * window = this->FindWindowById(CENTRALVIEWERWINDOWID);
 		if (window)
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETLISTPICTURE);
+			wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
 			evt.SetClientData(imageList);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
 
-		//centralWnd->SetListeFile(&pictures, typeAffichage);
 		updateFolder = false;
 		updatePicture = true;
-        //wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
-		//this->GetEventHandler()->AddPendingEvent(evt);
+
         hasDoneOneThings = true;
 	}
 	else if (updatePicture)
@@ -1243,8 +1224,10 @@ CMainWindow::~CMainWindow()
 
 	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
 	if (viewerWindow != nullptr)
+	{
 		showInfos = viewerWindow->IsPanelInfosVisible();
-//	showThumbnail = centralWnd->IsPanelThumbnailVisible();
+		showThumbnail = viewerWindow->IsPanelThumbnailVisible();
+	}
 
 	if (viewerParam != nullptr)
 	{
@@ -1557,7 +1540,7 @@ bool CMainWindow::GetProcessEnd()
 }
 
 
-void CMainWindow::Exit()
+void CMainWindow::OnExit(wxCommandEvent& event)
 {
     TRACE();
 	statusBarViewer->Exit();
@@ -1703,11 +1686,6 @@ void CMainWindow::Reload()
 void CMainWindow::ImageFin()
 {
     TRACE();
-	/*
-	numElement = (int)imageList->GetNbElement() - 1;
-	LoadPicture(numElement);
-	centralWnd->SetNumElement(numElement);
-	*/
 	this->numElement = (int)imageList->GetNbElement() - 1;
 	loadPicture = true;
     processIdle = true;
@@ -1716,11 +1694,6 @@ void CMainWindow::ImageFin()
 void CMainWindow::ImageDebut()
 {
     TRACE();
-		/*
-	numElement = 0;
-	LoadPicture(numElement);
-	centralWnd->SetNumElement(numElement);
-	*/
 	this->numElement = 0;
 	loadPicture = true;
     processIdle = true;
@@ -1740,9 +1713,6 @@ void CMainWindow::ShowToolbar()
 			viewerWindow->ShowToolbar();
 	}
 }
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ///Affichage en mode plein écran

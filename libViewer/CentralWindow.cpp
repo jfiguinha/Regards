@@ -72,8 +72,9 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	this->SetWindow(panelSearch, viewerWindow);
 
-	Connect(wxEVENT_SETLISTPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWindow::SetListeFile));
-	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
+	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
+	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
+	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CCentralWindow::OnResize));
 
 	if (config != nullptr)
@@ -101,14 +102,6 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		listPicture->ChangeTypeAffichage(&photoVector, typeAffichage);
 	}
 		
-}
-
-void CCentralWindow::ShowFile()
-{
-	if (!panelSearch->IsPanelVisible())
-	{
-		panelSearch->ShowPanel();
-	}
 }
 
 void CCentralWindow::RedrawBarPos()
@@ -170,14 +163,14 @@ CCentralWindow::~CCentralWindow()
 		delete(listFace);
 }
 
-void CCentralWindow::SetMode(const int &mode)
+void CCentralWindow::SetMode(wxCommandEvent& event)
 {
-	windowMode = mode;
+	windowMode = event.GetInt();
 	viewerWindow->Show(false);
 	listFace->Show(false);
 	listPicture->Show(false);
 
-	switch (mode)
+	switch (windowMode)
 	{
 	case 1:
 		viewerWindow->Show(true);

@@ -406,6 +406,7 @@ void CViewerWindow::RedrawBarPos()
 		{
 			int iconeHeight = panelVideo->GetHeight();
 			panelVideo->SetSize(0, 0, width, iconeHeight);
+			panelVideo->Refresh();
    			topHeight += iconeHeight;
 		}
 

@@ -207,26 +207,27 @@ namespace Regards
 			bool OpenFolder();
 			bool IsFullscreen();
 			void ShowToolbar();
-			void Exit();
-			void OnShowToolbar(wxCommandEvent& event);
+			
 			void SetText(const int &numPos, const wxString &libelle);
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
 			void AddFolder(const wxString &folder);
 			void SetFilterInterpolation(const int &filter);
-			void OnAddFolder(wxCommandEvent& event);
+			
 			void OnFacePertinence();
 			void SetSelectFile(const wxString &filename);
 			bool GetProcessEnd();
+			void OnAddFolder(wxCommandEvent& event);
 
 		private:
 
-
+			
+			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);
 			void OnSetRangeProgressBar(wxCommandEvent& event);
 			void OnSetValueProgressBar(wxCommandEvent& event);
 
-            
+			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
 			void PictureClick(wxCommandEvent& event);
 			void PictureClickMove(wxCommandEvent& event);

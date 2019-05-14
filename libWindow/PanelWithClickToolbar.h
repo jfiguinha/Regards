@@ -32,6 +32,8 @@ namespace Regards
 
 		protected:
 
+			void ShowPane(wxCommandEvent& event);
+			void ClosePane(wxCommandEvent& event);
 			void ClickShowButton(const int &id);
 			void ClosePane(const int &id);
 			void Resize();

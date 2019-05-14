@@ -73,39 +73,72 @@ CToolbar::~CToolbar()
 
 void CToolbar::EventManager(const int &id)
 {
-	CCentralWindow * centralWnd = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	CPreviewInfosWnd * previewInfo = (CPreviewInfosWnd*)this->FindWindowById(PREVIEWINFOWND);
-	if (centralWnd != nullptr && mainWindow != nullptr && previewInfo != nullptr)
+	//CCentralWindow * centralWnd = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
+	//CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	//CPreviewInfosWnd * previewInfo = (CPreviewInfosWnd*)this->FindWindowById(PREVIEWINFOWND);
+	//wxWindow * window = nullptr;
+	switch (id)
 	{
-		switch (id)
-		{
                 
-		case IDM_WINDOWSEARCH:
-			centralWnd->ShowFile();
-			break;
+	case IDM_WINDOWSEARCH:
+		{
+			wxWindow* central = this->FindWindowById(PHOTOSEEARCHPANEL);
+			wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWPANE);
+			wxQueueEvent(central, event);
+		}
+		break;
 
-		case IDM_SHOWINFOS:
-			previewInfo->ShowInfos();
-			break;
+	case IDM_SHOWINFOS:
+		{
+			wxWindow* central = this->FindWindowById(PANELCLICKINFOSWNDID);
+			wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWPANE);
+			wxQueueEvent(central, event);
+		}
+		//previewInfo->ShowInfos();
+		break;
 
             
-        case IDM_VIEWERMODE:
-			centralWnd->SetMode(1);
-	        break;
-                               
-		case IDM_THUMBNAILFACE:
-			centralWnd->SetMode(2);
-			break;
-
-		case IDM_EXPLORERMODE:
-			centralWnd->SetMode(3);
-			break;
+    case IDM_VIEWERMODE:
+		{
 
 
-		case IDM_QUITTER:
-			mainWindow->Exit();
-			break;
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(1);
+			wxPostEvent(central, event);
 		}
+		//wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		//centralWnd->SetMode(1);
+	    break;
+                               
+	case IDM_THUMBNAILFACE:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(2);
+			wxPostEvent(central, event);
+		}
+		//centralWnd->SetMode(2);
+		break;
+
+	case IDM_EXPLORERMODE:
+		{
+			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+			event.SetInt(3);
+			wxPostEvent(central, event);
+		}
+		//centralWnd->SetMode(3);
+		break;
+
+
+	case IDM_QUITTER:
+		{
+			wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
+			wxQueueEvent(central, event);
+		}
+		//mainWindow->Exit();
+		break;
 	}
 }

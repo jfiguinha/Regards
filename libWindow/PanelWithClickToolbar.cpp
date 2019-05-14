@@ -20,6 +20,11 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	paneWindow->SetTitle(paneLibelle);
 	clickWindow = new CClickToolbar(this, wxID_ANY, themeToolbar, this, PANE_WITHCLICKTOOLBAR);
 
+	//#define wxEVENT_SHOWPANE 214
+	//#define wxEVENT_CLOSEPANE 215
+	Connect(wxEVENT_SHOWPANE, wxCommandEventHandler(CPanelWithClickToolbar::ShowPane));
+	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePane));
+
 	if(isPanelVisible)
 	{
 		clickWindow->Show(false);
@@ -32,6 +37,15 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	}
 }
 
+void CPanelWithClickToolbar::ShowPane(wxCommandEvent& event)
+{
+	ClickShowButton(PANE_WITHCLICKTOOLBAR);
+}
+
+void CPanelWithClickToolbar::ClosePane(wxCommandEvent& event)
+{
+	ClosePane(PANE_WITHCLICKTOOLBAR);
+}
 
 wxWindow * CPanelWithClickToolbar::GetPaneWindow()
 {

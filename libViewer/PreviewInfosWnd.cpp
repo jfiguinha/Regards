@@ -59,7 +59,7 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		viewerTheme->GetInfosPaneTheme(&theme);
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", wxID_ANY, theme, themeClickInfosToolbar, libelle, showInfos);
+		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos);
 		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
 		paneInfos->SetWindow(panelInfosWindow);
 	}
