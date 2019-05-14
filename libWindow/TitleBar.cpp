@@ -15,7 +15,7 @@ CWindowMain("CTitleBar",parent, id)
 	isRefresh = true;
 	this->titleBarInterface = titleBarInterface;
 	tooltip = CLibResource::LoadStringFromResource("LBLClose",1);
-	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESH", 1);
+	refreshtip = CLibResource::LoadStringFromResource("LBLREFRESHDATA", 1);
 	CreateBitmapCrossOff();
 	CreateBitmapCrossOn();
 	m_refreshButton = CLibResource::CreatePictureFromSVG("IDB_FOLDER_REFRESH", themeTitle.GetCroixWidth() - 2, themeTitle.GetCroixHeight() - 2);

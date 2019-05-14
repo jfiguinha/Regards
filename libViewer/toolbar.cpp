@@ -27,7 +27,9 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
-	wxString lblListFace = "Face List";
+	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
+	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
+	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
 	screen->SetButtonResourceId(L"IDB_FOLDER");
@@ -49,13 +51,13 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
 
 	CToolbarButton * explorer = new CToolbarButton(themeToolbar.button);
 	explorer->SetButtonResourceId(L"IDB_SEARCH");
-	explorer->SetLibelle("Explorer Mode");
+	explorer->SetLibelle(lblExplorerMode);
 	explorer->SetCommandId(IDM_EXPLORERMODE);
 	navElement.push_back(explorer);
     
 	CToolbarButton * viewer = new CToolbarButton(themeToolbar.button);
 	viewer->SetButtonResourceId(L"IDB_THUMBNAILPNG");
-	viewer->SetLibelle(L"Viewer Mode");
+	viewer->SetLibelle(lblViewerMode);
 	viewer->SetCommandId(IDM_VIEWERMODE);
 	navElement.push_back(viewer);
     
@@ -73,10 +75,6 @@ CToolbar::~CToolbar()
 
 void CToolbar::EventManager(const int &id)
 {
-	//CCentralWindow * centralWnd = (CCentralWindow *)this->FindWindowById(CENTRALVIEWERWINDOWID);
-	//CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	//CPreviewInfosWnd * previewInfo = (CPreviewInfosWnd*)this->FindWindowById(PREVIEWINFOWND);
-	//wxWindow * window = nullptr;
 	switch (id)
 	{
                 
@@ -94,21 +92,16 @@ void CToolbar::EventManager(const int &id)
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWPANE);
 			wxQueueEvent(central, event);
 		}
-		//previewInfo->ShowInfos();
 		break;
 
             
     case IDM_VIEWERMODE:
 		{
-
-
 			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
 			wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 			event.SetInt(1);
 			wxPostEvent(central, event);
 		}
-		//wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
-		//centralWnd->SetMode(1);
 	    break;
                                
 	case IDM_THUMBNAILFACE:
@@ -118,7 +111,6 @@ void CToolbar::EventManager(const int &id)
 			event.SetInt(2);
 			wxPostEvent(central, event);
 		}
-		//centralWnd->SetMode(2);
 		break;
 
 	case IDM_EXPLORERMODE:
@@ -128,7 +120,6 @@ void CToolbar::EventManager(const int &id)
 			event.SetInt(3);
 			wxPostEvent(central, event);
 		}
-		//centralWnd->SetMode(3);
 		break;
 
 
@@ -138,7 +129,6 @@ void CToolbar::EventManager(const int &id)
 			wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
 			wxQueueEvent(central, event);
 		}
-		//mainWindow->Exit();
 		break;
 	}
 }
