@@ -183,6 +183,9 @@
     <ClInclude Include="ToolbarPhoto.h">
       <Filter>Toolbar\include</Filter>
     </ClInclude>
+    <ClInclude Include="PictureElement.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">

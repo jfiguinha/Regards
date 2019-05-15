@@ -37,6 +37,7 @@
 #include <SqlFaceLabel.h>
 #include <StatusText.h>
 #include <turbojpeg.h>
+#include "PictureElement.h"
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Viewer;
@@ -87,15 +88,9 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	numElementTraitement = 0;
 	start = true;
 	criteriaSendMessage = false;
-	photoCancel = "";    
-	processLoadPicture = false;
 	videoStart = false;
 	nbProcessFacePhoto = 0;
     imageList = new CImageList();
-	//threadFacePhoto = nullptr;
-    //wxSVGDocument* svgDoc = new wxSVGDocument;
-    //svgDoc->Load("/Users/jacques/Pictures/test.svg");
-    //wxImage img = svgDoc->Render(40,40,NULL,true,true);
     PhotosVector pictures;
 	CSqlFindPhotos sqlFindPhotos;
 	sqlFindPhotos.SearchPhotos(&pictures);
@@ -125,8 +120,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerDiaporama), nullptr, this);
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_SETSCREEN, wxCommandEventHandler(CMainWindow::SetScreenEvent));
-    Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CMainWindow::ShowPicture));
-	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CMainWindow::EndPictureThread));
+	Connect(wxEVENT_INFOS, wxCommandEventHandler(CMainWindow::OnUpdateInfos));
+	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CMainWindow::OnEndPictureLoad));
 	Connect(EVENT_REFRESHLIST, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshPictureList));
 	Connect(wxEVENT_CRITERIASHOWUPDATE, wxCommandEventHandler(CMainWindow::RefreshCriteriaPictureList));
 	Connect(TOOLBAR_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnShowToolbar));
@@ -137,17 +132,14 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_REMOVEFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRemoveFolder));
 	Connect(wxEVENT_ONPICTURECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnPictureClick));
     Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
-	Connect(wxEVENT_PICTURECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::PictureClick));
-	Connect(wxEVENT_PICTURECLICKMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::PictureClickMove));
 	Connect(wxEVENT_PICTUREVIDEOCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::PictureVideoClick));
 	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
-    Connect(wxEVENT_REFRESHPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshPicture));
+    Connect(wxEVENT_REFRESHPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
 	Connect(wxEVENT_MD5CHECKING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::Md5Checking));
 	Connect(wxEVENT_FACEPHOTOUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::FacePhotoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::AddFacePhoto));
 	Connect(wxEVENT_FACEINFOSUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::FaceInfosUpdate));
-	Connect(wxEVENT_FACECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::FaceClick));
-    Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
+   Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
     Connect(wxTIMER_DIAPORAMATIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StartDiaporamaMessage));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
@@ -168,13 +160,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	refreshTimer->Start(300000, wxTIMER_ONE_SHOT);
     //diaporamaTimer->Start(2000, wxTIMER_ONE_SHOT);
 	updatePicture = true;
-	loadFacePicture = false;
-
-#ifdef WIN32
-	this->photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-	this->photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
 
 	refreshFolder = true;
     if(imageList->GetNbElement() > 0)
@@ -253,21 +238,23 @@ void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
 	refreshTimer->Stop();
 }
 
-void CMainWindow::OnLoadPicture()
+void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 {
-    TRACE();
-    
-    if(!processLoadPicture)
-    {
-        CThreadPictureData * pictureData = new CThreadPictureData();
-        pictureData->mainWindow = this;
-        pictureData->picture = filenameTimer;
-        pictureData->isVisible = true;
-        thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
-        pictureData->myThread = threadloadPicture; 
-        processLoadPicture = true;
-        threadPictureFilename = filenameTimer;
-    }
+	wxString * threadFilename = (wxString *)event.GetClientData();
+	if (startDiaporama)
+	{
+		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
+		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
+	}
+
+	if (*threadFilename != firstFileToShow)
+	{
+		updatePicture = true;
+		processIdle = true;
+	}
+
+	if (threadFilename != nullptr)
+		delete threadFilename;
 }
 
 void CMainWindow::CriteriaChange(wxCommandEvent& event)
@@ -394,42 +381,6 @@ void CMainWindow::SetPosProgressBar(const int &position)
     event->SetInt(position);
     wxQueueEvent(this, event);
 }
-
-void CMainWindow::EndPictureThread(wxCommandEvent& event)
-{
-    TRACE();
-	processLoadPicture = false;
-
-    if(!multithread)
-    {
-        muPicture.lock();
-        threadloadPicture->join();
-        delete(threadloadPicture);
-        threadloadPicture = nullptr;
-        muPicture.unlock();
-    }
-    
-    std::thread * myThread = ( std::thread *)event.GetClientData();
-    if (myThread != nullptr)
-    {
-        myThread->join();
-        delete myThread;
-    }   
-
-    if (startDiaporama)
-    {
-        int timeDelai = viewerParam->GetDelaiDiaporamaOption();
-        diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
-    }  
-    
-    if(threadPictureFilename != firstFileToShow)
-    {
-        updatePicture = true;
-        processIdle = true;
-    }
-    
-}
-
 void CMainWindow::StartDiaporamaMessage(wxCommandEvent& event)
 {
     TRACE();
@@ -1005,19 +956,18 @@ void CMainWindow::ProcessIdle()
 
 			if (isValid)
 			{
-				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-				if (viewerWindow != nullptr)
-					viewerWindow->SetNumElement(numElement);
-
 				if (firstFileToShow != L"")
 				{
-					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
+					wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+					wxCommandEvent evt(wxEVENT_LOADPICTURE);
+					CPictureElement * pictureElement = new CPictureElement();
+					pictureElement->filename = firstFileToShow;
+					pictureElement->numElement = numElement;
+					evt.SetClientData(pictureElement);
+					viewerWindow->GetEventHandler()->AddPendingEvent(evt);
 					filename = firstFileToShow;
-					this->GetEventHandler()->AddPendingEvent(evt);
 				}
 			}
-			//LoadPictureInThread(firstFileToShow);
-
 			numElementTraitement = 0;
 		}
 		updatePicture = false;
@@ -1035,13 +985,18 @@ void CMainWindow::ProcessIdle()
 				{
 					firstFileToShow = photoName;
 					this->filename = photoName;
-					wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
-					this->GetEventHandler()->AddPendingEvent(evt);
+					wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+					wxCommandEvent evt(wxEVENT_LOADPICTURE);
+					CPictureElement * pictureElement = new CPictureElement();
+					pictureElement->filename = firstFileToShow;
+					pictureElement->numElement = numElement;
+					evt.SetClientData(pictureElement);
+					viewerWindow->GetEventHandler()->AddPendingEvent(evt);
+					//wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+					//wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
+					//evt.SetInt(numElement);
+					//viewerWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
-				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-				if (viewerWindow != nullptr)
-					viewerWindow->SetNumElement(numElement);
-
 				this->filename = photoName;
 				loadPicture = false;
 				sendMessageVideoStop = false;
@@ -1162,26 +1117,19 @@ void CMainWindow::CheckMD5(void * param)
 	CThreadMD5 * path = (CThreadMD5 *)param;
 	if (path != nullptr)
 	{
+		CSqlThumbnail sqlThumbnail;
+		//wxString md5file = md5.GetFileMD5(path->filename);
+		wxFileName file(path->filename);
+		wxULongLong sizeFile = file.GetSize();
+		wxString md5file = sizeFile.ToString();
 
-		//Test if picture
-		//CLibPicture libPicture;
-		//if (libPicture.TestIsPicture(path->filename))
-		//{
-			//wxMD5 md5;
-			CSqlThumbnail sqlThumbnail;
-			//wxString md5file = md5.GetFileMD5(path->filename);
-			wxFileName file(path->filename);
-			wxULongLong sizeFile = file.GetSize();
-			wxString md5file = sizeFile.ToString();
+		bool result = sqlThumbnail.TestThumbnail(path->filename, md5file);
+		if (!result)
+		{
+			//Remove thumbnail
+			sqlThumbnail.DeleteThumbnail(path->filename);
+		}
 
-
-			bool result = sqlThumbnail.TestThumbnail(path->filename, md5file);
-			if (!result)
-			{
-				//Remove thumbnail
-				sqlThumbnail.DeleteThumbnail(path->filename);
-			}
-		//}
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_MD5CHECKING);
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
@@ -1392,46 +1340,6 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 	}
 }
 
-void CMainWindow::FaceClick(wxCommandEvent& event)
-{
-    TRACE();
-	//int photoId = event.GetExtraLong();
-	wxString * photoPath = (wxString *)event.GetClientData();
-	if(photoPath != nullptr && *photoPath != firstFileToShow)
-	{
-		wxString filename;
-		bool findElement = false;
-		filename = *photoPath;
-		delete photoPath;
-		numElement = imageList->FindFileIndex(filename);
-
-		if(!findElement)
-		{
-            if(!processLoadPicture)
-            {
-                CThreadPictureData * pictureData = new CThreadPictureData();
-                pictureData->mainWindow = this;
-                pictureData->picture = filename;
-                pictureData->isVisible = true;
-                thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
-                pictureData->myThread = threadloadPicture; 
-                processLoadPicture = true;
-                threadPictureFilename = filenameTimer;
-            }
-			//LoadThumbnail(filename);
-
-			firstFileToShow = filename;
-		}
-
-		if(findElement)
-		{
-			//this->numElement = numElement;
-			loadPicture = true;
-            processIdle = true;
-		}
-	}
-}
-
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
     TRACE();
@@ -1440,23 +1348,6 @@ void CMainWindow::OnPictureClick(wxCommandEvent& event)
 	loadPicture = true;
 	processIdle = true;
 }
-
-void CMainWindow::PictureClickMove(wxCommandEvent& event)
-{
-    TRACE();
-	this->numElement = event.GetExtraLong();
-	loadPicture = true;
-    processIdle = true;
-}
-
-void CMainWindow::PictureClick(wxCommandEvent& event)
-{
-    TRACE();
-	this->numElement = event.GetExtraLong();
-	loadPicture = true;
-    processIdle = true;
-}
-
 void CMainWindow::TransitionEnd()
 {
     TRACE();
@@ -1502,22 +1393,16 @@ void CMainWindow::StopDiaporama()
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-///Mise à jour des informations sur les fichiers
-////////////////////////////////////////////////////////////////////////////////////////////////
-void CMainWindow::UpdateInfos(CImageLoadingFormat * bitmap)
+void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {
-    TRACE();
-	if(bitmap != nullptr && bitmap->IsOk())
+	TRACE();
+	CImageLoadingFormat * bitmap = (CImageLoadingFormat *)event.GetClientData();
+	if (bitmap != nullptr && bitmap->IsOk())
 	{
 		filename = bitmap->GetFilename();
 		if (filename[0] != '\0')
 		{
-			//wxString folder = CFileUtility::GetFolder(filename);
-			//wxString fichier = CFileUtility::GetFileName(filename);
 			statusBarViewer->SetText(1, filename);
-			//statusBarViewer->SetText(2, fichier);
-			//Mise à jour de la barre de status
 		}
 
 		wxString infos = to_string(bitmap->GetWidth()) + "x" + to_string(bitmap->GetHeight());
@@ -1526,13 +1411,12 @@ void CMainWindow::UpdateInfos(CImageLoadingFormat * bitmap)
 		infos = "Regards Viewer : " + CFileUtility::GetFileName(filename);
 		statusBarViewer->SetWindowTitle(infos);
 	}
-	
 }
 
 bool CMainWindow::GetProcessEnd()
 {
     TRACE();
-	if(processLoadPicture || nbProcessMD5 > 0 || nbProcessFacePhoto > 0)
+	if(nbProcessMD5 > 0 || nbProcessFacePhoto > 0)
 		return false;
 
 	return true;
@@ -1591,33 +1475,6 @@ void CMainWindow::FaceInfosUpdate(wxCommandEvent& event)
     processIdle = true;
 }
 
-void CMainWindow::RefreshPicture(wxCommandEvent& event)
-{
-    TRACE();
-	LoadPictureInThread(this->filename);
-	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-	if (viewerWindow != nullptr)
-		viewerWindow->SetNumElement(numElement, false);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-///Mise à jour des informations sur les fichiers
-////////////////////////////////////////////////////////////////////////////////////////////////
-void CMainWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail)
-{
-    TRACE();
-	if(bitmap != nullptr && bitmap->IsOk())
-	{
-        clock_t tStart = clock();
-		filename = bitmap->GetFilename();
-		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-		if (viewerWindow != nullptr)
-			viewerWindow->SetBitmap(bitmap, isThumbnail);
-		UpdateInfos(bitmap);
-        printf("SetPicture Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-	}
-}
-
 void CMainWindow::ImageSuivante()
 {
     TRACE();
@@ -1627,18 +1484,8 @@ void CMainWindow::ImageSuivante()
 	if (numElement >= imageList->GetNbElement())
 		numElement = 0;
 
-    //LoadThumbnail(numElement);
-     
-	//centralWnd->SetNumElement(numElement);
-    
-    printf("Image Suivante %d \n",numElement);
-    
 	loadPicture = true;
     processIdle = true;
-    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
-    
-    
-    
 }
 
 void CMainWindow::ImagePrecedente()
@@ -1647,40 +1494,23 @@ void CMainWindow::ImagePrecedente()
 	numElement--;
 	if (numElement < 0)
 		numElement = (int)imageList->GetNbElement() - 1;
-	/*
-	LoadPicture(numElement);
-	centralWnd->SetNumElement(numElement);
-	*/
+
 	loadPicture = true;
     processIdle = true;
 }
 
 
-void CMainWindow::LoadPicture(const int &numElement)
+void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
-    TRACE();
-    bool isValid = false;
-    wxString fileToLoad = imageList->GetFilePath(numElement,isValid);
-    if (isValid)
-	{
-		if (fileToLoad != firstFileToShow)
-		{
-			firstFileToShow = fileToLoad;
-			LoadPictureInThread(firstFileToShow);
-		}
-		this->filename = fileToLoad;
-	}
-	else
-	{
-		ImageSuivante();
-	}
+	wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+	wxCommandEvent evt(wxEVENT_LOADPICTURE);
+	CPictureElement * pictureElement = new CPictureElement();
+	pictureElement->filename = filename;
+	pictureElement->numElement = numElement;
+	evt.SetClientData(pictureElement);
+	viewerWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
-void CMainWindow::Reload()
-{
-    TRACE();
-	LoadPicture(numElement);
-}
 
 void CMainWindow::ImageFin()
 {
@@ -1720,77 +1550,6 @@ void CMainWindow::SetFullscreen()
 {
     TRACE();
 	statusBarViewer->SetFullscreen();
-}
-
-
-void CMainWindow::LoadThumbnail(const int &numElement)
-{
-    TRACE();
-    bool isValid = false;
-    wxString filename = imageList->GetFilePath(numElement,isValid);
-    if (isValid)
-    {
-        CSqlThumbnail sqlThumbnail;
-        CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-        CRegardsBitmap * bitmap = sqlThumbnail.GetPictureThumbnail(filename);
-        if(bitmap != nullptr )
-        {
-            if(bitmap->IsValid())
-            {
-                _loadingPicture->SetPicture(bitmap);
-                if (_loadingPicture->GetFilename() == firstFileToShow)
-                    SetPicture(_loadingPicture, true);        
-            }
-            else
-                delete _loadingPicture;
-        }
-    }
-}
-
-void CMainWindow::LoadPictureInThread(const wxString &filename, const bool &load)
-{
-    TRACE();
-    printf("CMainWindow::LoadPictureInThread %s \n", CConvertUtility::ConvertToUTF8(filename));
-	if (!wxFileExists(filename))
-		this->filename = photoCancel;
-	else
-		this->filename = filename;
-
-	CLibPicture libPicture;  
-    
-	if (libPicture.TestIsVideo(filename))
-	{
-		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-		if (viewerWindow != nullptr)
-		{
-			viewerWindow->StartLoadingPicture(numElement);
-			viewerWindow->SetVideo(filename);
-		}
-
-		wxString infos = "Regards Viewer : " + CFileUtility::GetFileName(filename);
-		statusBarViewer->SetWindowTitle(infos); 
-	}
-    else if(libPicture.TestIsAnimation(filename))
-    {
-		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-		if (viewerWindow != nullptr)
-			viewerWindow->SetAnimation(filename);
-
-        if (startDiaporama)
-        {
-            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_DIAPORAMATIMERSTART);
-            this->GetEventHandler()->AddPendingEvent(evt);
-        } 
-		wxString infos = "Regards Viewer : " + CFileUtility::GetFileName(filename);
-		statusBarViewer->SetWindowTitle(infos);  
-    }
-	else
-	{
-		CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-		if (viewerWindow != nullptr)
-			viewerWindow->StartLoadingPicture(numElement);
-        LoadingPicture(filename);   
-	}
 }
 
 void CMainWindow::SetScreenEvent(wxCommandEvent& event)
@@ -1835,117 +1594,4 @@ void CMainWindow::SetScreen()
         wxCommandEvent event(wxEVENT_SETSCREEN);
         wxPostEvent(this, event);         
     }
-}
-
-void CMainWindow::LoadingNewPicture(CThreadPictureData * pictureData)
-{
-    TRACE();
-	CLibPicture libPicture;
-	CImageLoadingFormat * bitmap = nullptr;
-    
-    if (pictureData != nullptr)
-	{
-        //if(!pictureData->mainWindow->startDiaporama)
-        //{
-            CSqlThumbnail sqlThumbnail;
-            CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-            CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(pictureData->picture);
-            if(bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
-            {
-                _loadingPicture->SetPicture(bitmapThumbnail);
-                CBitmapReturn * bitmapReturn = new CBitmapReturn();
-                bitmapReturn->myThread = nullptr;
-                bitmapReturn->isThumbnail = true;
-                bitmapReturn->bitmap = _loadingPicture;
-                wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
-                event->SetClientData(bitmapReturn);
-                wxQueueEvent(pictureData->mainWindow, event);         
-            }
-        //}
-        
-        
-        clock_t tStart = clock();
-        bitmap = libPicture.LoadPicture(pictureData->picture);
-        int timeToLoad = (int)((clock() - tStart)/(CLOCKS_PER_SEC / 1000));
-        printf("Time To Load : %d \n",timeToLoad);
-        if(timeToLoad < 300)
-        {
-            CRegardsConfigParam * config;
-            config = CParamInit::getInstance();
-            //Test si transition
-            if(config != nullptr)
-            {
-                int numEffect = config->GetEffect();
-                if(numEffect > 0)
-                {
-                    std::this_thread::sleep_for(std::chrono::milliseconds(300 - timeToLoad));
-                }
-                    
-            }
-        }
-		
-		if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
-		{
-			if (bitmap != nullptr)
-				delete bitmap;
-#ifdef WIN32
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-			bitmap = libPicture.LoadPicture(photoCancel);
-		}
-	}
-
-	if (bitmap != nullptr)
-	{
-        CBitmapReturn * bitmapReturn = new CBitmapReturn();
-        bitmapReturn->myThread = nullptr;
-        bitmapReturn->isThumbnail = false;
-        bitmapReturn->bitmap = bitmap;
-		wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
-		event->SetClientData(bitmapReturn);
-		wxQueueEvent(pictureData->mainWindow, event);
-	}
-
-	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
-    event->SetClientData(pictureData->myThread);
-	wxQueueEvent(pictureData->mainWindow, event);
-
-	delete pictureData;
-	pictureData = nullptr;
-}
-
-void CMainWindow::LoadingPicture(const wxString &filenameToShow)
-{
-    TRACE();
-      
-    filenameTimer = filenameToShow;
-    
-	OnLoadPicture();
-}
-
-void CMainWindow::ShowPicture(wxCommandEvent& event)
-{
-    TRACE();
-    CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
-    if (pictureData != nullptr)
-    {
-        if (pictureData->bitmap->GetFilename() == firstFileToShow)
-        {
-            SetPicture(pictureData->bitmap, pictureData->isThumbnail);
-
-			if (!pictureData->isThumbnail)
-			{
-				CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-				if (viewerWindow != nullptr)
-					viewerWindow->StopLoadingPicture();
-			}
-                               
-        }
-        else
-            delete pictureData->bitmap;
-            
-        delete pictureData;
-    }  
 }

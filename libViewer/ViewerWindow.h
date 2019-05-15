@@ -17,6 +17,43 @@ namespace Regards
 {
 	namespace Viewer
 	{
+		class CThreadPictureData
+		{
+		public:
+
+			CThreadPictureData()
+			{
+				mainWindow = nullptr;
+				isVisible = false;
+				myThread = nullptr;
+				isThumbnail = false;
+			}
+
+			~CThreadPictureData()
+			{
+			}
+
+			wxWindow * mainWindow;
+			wxString picture;
+			bool isVisible;
+			bool isThumbnail;
+			thread * myThread;
+		};
+
+		class CBitmapReturn
+		{
+		public:
+			CBitmapReturn()
+			{
+				bitmap = nullptr;
+				isThumbnail = false;
+				myThread = nullptr;
+			};
+
+			CImageLoadingFormat * bitmap;
+			bool isThumbnail;
+			thread * myThread;
+		};
 
 		class CViewerWindow : public CWindowMain, public CPaneInterface
 		{
@@ -61,9 +98,18 @@ namespace Regards
 			void StartAnimation();
 			void StopAnimation();
 
-
+			bool GetProcessEnd();
 
 		private:
+
+			//Picture Loading
+			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
+			void LoadPictureInThread(const wxString &filename, const int &numElement, const bool &load = false);
+			static void LoadingNewPicture(CThreadPictureData * pictureData);
+			void LoadingPicture(const wxString &filenameToShow);
+			void OnLoadPicture(wxCommandEvent& event);
+			void OnShowPicture(wxCommandEvent& event);
+			void EndPictureThread(wxCommandEvent& event);
 
 			void OnRefresh(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
@@ -98,6 +144,7 @@ namespace Regards
 			bool isAnimation;
 			bool isPicture;
 			bool isFullscreen;
+			bool processLoadPicture;
 			wxString filename;
 			int width;
 			int height;

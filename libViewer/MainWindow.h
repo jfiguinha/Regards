@@ -44,6 +44,7 @@ namespace Regards
 
         };
 
+		/*
 		class CThreadPictureData
 		{
 		public:
@@ -66,7 +67,9 @@ namespace Regards
             bool isThumbnail;
             thread * myThread;
 		};
-        
+        */
+
+		/*
         class CBitmapReturn
         {
         public:
@@ -81,6 +84,7 @@ namespace Regards
             bool isThumbnail;
             thread * myThread;
         };
+		*/
 
 		class CWaitingWindow : public CWindowMain
 		{
@@ -198,7 +202,7 @@ namespace Regards
 			void ImagePrecedente();
 			void ImageFin();
 			void ImageDebut();
-			void Reload();
+			//void Reload();
 			void SetFullscreen();
 			void SetFullscreenMode();
 			void SetScreen();
@@ -221,21 +225,19 @@ namespace Regards
 
 		private:
 
-			
+			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);
 			void OnSetRangeProgressBar(wxCommandEvent& event);
 			void OnSetValueProgressBar(wxCommandEvent& event);
+			void OnEndPictureLoad(wxCommandEvent& event);
+			void OnRefreshPicture(wxCommandEvent& event);
 
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
-			void PictureClick(wxCommandEvent& event);
-			void PictureClickMove(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);
             void CriteriaChange(wxCommandEvent& event);
 			void RefreshPictureList(wxCommandEvent& event);
-			void ShowPicture(wxCommandEvent& event);
-			void EndPictureThread(wxCommandEvent& event);
 			void OnVideoEnd(wxCommandEvent& event);
             void OnVideoStart(wxCommandEvent& event);
 			void StartDiaporamaMessage(wxCommandEvent& event);
@@ -243,13 +245,11 @@ namespace Regards
 			void OnTimerDiaporama(wxTimerEvent& event);
 			void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
-            void RefreshPicture(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
 			void FacePhotoAdd(wxCommandEvent& event);
 			void AddFacePhoto(wxCommandEvent& event);
 			void RefreshCriteriaPictureList(wxCommandEvent& event);
 			void FaceInfosUpdate(wxCommandEvent& event);
-			void FaceClick(wxCommandEvent& event);
             void RefreshTimer(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
@@ -258,17 +258,8 @@ namespace Regards
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
 
-			static void LoadingNewPicture(CThreadPictureData * pictureData);
 			static void CheckMD5(void * param);
 			static void FacialRecognition(void * param);
-
-			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
-			void LoadingPicture(const wxString &filenameToShow);
-			void LoadPicture(const int &numElement);
-			void LoadPictureInThread(const wxString &filename, const bool &load = false);
-			void UpdateInfos(CImageLoadingFormat * bitmap);
-            void LoadThumbnail(const int &numElement);
-
 
 			bool fullscreen;
 			CFaceLoadData * faceData;
@@ -283,9 +274,6 @@ namespace Regards
 			wxRect posWindow;
 			wxString filename;
 			bool startDiaporama;
-			thread * threadloadPicture;
-			//thread * threadMD5;
-			//thread * threadFacePhoto;
 			mutex muPicture;
 			int nbProcessMD5;
 			int nbProcessFacePhoto;
@@ -293,8 +281,6 @@ namespace Regards
 			CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput);
 
-            void OnLoadPicture();
-            
             CImageList * imageList = nullptr;
 			int numElement;
 			wxString firstFileToShow;
@@ -302,7 +288,6 @@ namespace Regards
 			CViewerParam * viewerParam;
             bool multithread;
             bool needToReload;
-            wxString filenameTimer;
 			int typeAffichage;
 			bool updateCriteria;
 			bool updateFolder;
@@ -311,14 +296,9 @@ namespace Regards
 			int numElementTraitement;
 			bool start;
 			bool criteriaSendMessage;
-			wxString photoCancel;
 			bool videoStart;
 			bool sendMessageVideoStop;
 			bool loadPicture;
-			bool processLoadPicture;
-			bool loadFacePicture;
-            bool threadPictureLoad = false;
-            wxString threadPictureFilename;
 		};
 	}
 

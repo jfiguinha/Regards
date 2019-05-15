@@ -8,10 +8,20 @@
 #include <ConvertUtility.h>
 #include <RegardsConfigParam.h>
 #include "ParamInit.h"
+#include <FileUtility.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 using namespace Regards::Sqlite;
+
+wxString CLibResource::GetPhotoCancel()
+{
+#ifdef WIN32
+	return CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+	return CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+}
 
 void CLibResource::InitializeSQLServerDatabase(const wxString & folder)
 {
