@@ -13,7 +13,6 @@
 #include "SqlFindPhotos.h"
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
-#include <wxmd5.h>
 #include <wx/filename.h>
 #include "ImageList.h"
 #include <ConvertUtility.h>
@@ -29,15 +28,9 @@
 #include <SqlFindCriteria.h>
 #include <CopyFileDlg.h>
 #include <ShowVideo.h>
-#include <FaceRecognition.h>
-#include <SqlFacePhoto.h>
-#include <SqlFaceDescriptor.h>
-#include <SqlFindFacePhoto.h>
-#include <SqlFaceRecognition.h>
-#include <SqlFaceLabel.h>
 #include <StatusText.h>
-#include <turbojpeg.h>
 #include "PictureElement.h"
+#include "FaceInfosUpdate.h"
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Viewer;
@@ -57,13 +50,13 @@ public:
 		thread = nullptr;
 		mainWindow = nullptr;
 	};
-	~CThreadMD5(){};
+	~CThreadMD5() {
+	};
 
 	wxString filename;
 	std::thread * thread;
-	CMainWindow * mainWindow;
+	wxWindow * mainWindow;
 };
-
 
 
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
@@ -89,7 +82,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	start = true;
 	criteriaSendMessage = false;
 	videoStart = false;
-	nbProcessFacePhoto = 0;
+	
     imageList = new CImageList();
     PhotosVector pictures;
 	CSqlFindPhotos sqlFindPhotos;
@@ -117,12 +110,13 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	this->statusBarViewer = statusBarViewer;
 
 
+	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
+	Connect(wxEVENT_FACEINFOSUPDATE, wxCommandEventHandler(CMainWindow::OnFaceInfosUpdate));
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerDiaporama), nullptr, this);
 	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_SETSCREEN, wxCommandEventHandler(CMainWindow::SetScreenEvent));
 	Connect(wxEVENT_INFOS, wxCommandEventHandler(CMainWindow::OnUpdateInfos));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CMainWindow::OnEndPictureLoad));
-	Connect(EVENT_REFRESHLIST, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshPictureList));
 	Connect(wxEVENT_CRITERIASHOWUPDATE, wxCommandEventHandler(CMainWindow::RefreshCriteriaPictureList));
 	Connect(TOOLBAR_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnShowToolbar));
 	Connect(VIDEO_END_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoEnd));
@@ -136,10 +130,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
     Connect(wxEVENT_REFRESHPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
 	Connect(wxEVENT_MD5CHECKING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::Md5Checking));
-	Connect(wxEVENT_FACEPHOTOUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::FacePhotoAdd));
-	Connect(wxEVENT_FACEPHOTOADD, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::AddFacePhoto));
-	Connect(wxEVENT_FACEINFOSUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::FaceInfosUpdate));
-   Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
+	Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
     Connect(wxTIMER_DIAPORAMATIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StartDiaporamaMessage));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
@@ -166,22 +157,6 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
         processIdle = true;
     else
         processIdle = false;
-	faceData = new CFaceLoadData();
-
-#ifdef WIN32
-	//Face Data Preload
-	
-	wxString model = CFileUtility::GetResourcesFolderPath() + "\\dlib_face_recognition_resnet_model_v1.dat";
-    wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "\\shape_predictor_5_face_landmarks.dat";
-
-#else
-	wxString model = CFileUtility::GetResourcesFolderPath() + "/dlib_face_recognition_resnet_model_v1.dat";
-	//wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "/shape_predictor_68_face_landmarks.dat";
-    wxString facelandmark = CFileUtility::GetResourcesFolderPath() + "/shape_predictor_5_face_landmarks.dat";
-#endif
-
-	faceData->LoadData((const char*)model.mb_str(wxConvUTF8), (const char*)facelandmark.mb_str(wxConvUTF8));
-	//centralWnd->ScreenMode();
 
 	updateFolder = true;
 	processIdle = true;
@@ -218,16 +193,6 @@ void CMainWindow::OnFacePertinence()
 	updateFolder = true;
     processIdle = true;
 
-}
-
-void CMainWindow::SetFilterInterpolation(const int &filter)
-{
-    TRACE();
-	CBitmapWnd * window = (CBitmapWnd *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-	if (window)
-	{
-		window->SetFilterInterpolation(filter);
-	}
 }
 
 void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
@@ -279,16 +244,6 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
     processIdle = true;
 }
 
-
-void CMainWindow::RefreshPictureList(wxCommandEvent& event)
-{
-    TRACE();
-	if(typeAffichage > 0)
-    {
-		updateFolder = true;
-        processIdle = true;
-    }
-}
 
 void CMainWindow::OnVideoStart(wxCommandEvent& event)
 {
@@ -414,351 +369,6 @@ wxString GetFileName(const wxString &nameFile)
 }
 
 
-//---------------------------------------------------------------------------------------
-//Test si compatible avec une autre Face à déplacer ailleurs
-//---------------------------------------------------------------------------------------	
-void CMainWindow::AddFacePhoto(wxCommandEvent& event)
-{
-    TRACE();
-	if(event.GetClientData() != nullptr)
-	{
-		CFaceDescriptor * faceDescriptor = (CFaceDescriptor *)event.GetClientData();
-		CSqlFaceLabel sqlfaceLabel;
-		CFace * face = new CFace();
-		bool findFaceCompatible = false;
-		CSqlFaceRecognition sqlfaceRecognition;
-		CSqlFindFacePhoto sqlfindFacePhoto;
-
-		std::vector<CFaceDescriptor*> listFace = sqlfindFacePhoto.GetUniqueFaceDescriptor(faceDescriptor->numFace);
-		for(int i = 0;i < listFace.size();i++)
-		{
-				
-			CFaceDescriptor * facede = listFace[i];	
-			float isCompatible = face->IsCompatibleFace(faceDescriptor->descriptor, facede->descriptor);
-			if(isCompatible < 0.6)
-			{
-				sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, facede->numFace);
-				findFaceCompatible = true;
-				break;
-			}
-		}
-
-		for(int i = 0;i < listFace.size();i++)
-		{
-			CFaceDescriptor * facede = listFace[i];		
-			delete facede;
-		}
-
-		if(!findFaceCompatible)
-		{
-			wxString label = "Face number " + to_string(faceDescriptor->numFace);
-			sqlfaceRecognition.InsertFaceRecognition(faceDescriptor->numFace, faceDescriptor->numFace);
-			sqlfaceLabel.InsertFaceLabel(faceDescriptor->numFace,label, true);
-			updateCriteria = true;
-
-		}		
-
-		if(faceDescriptor != nullptr)
-			delete faceDescriptor;
-			
-		delete face;
-	}
-}
-
-
-float CMainWindow::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput)
-{
-    TRACE();
-	if (pictureWidth == 0 && pictureHeight == 0)
-		return 1.0f;
-
-	float newRatio = 1;
-
-	if (pictureWidth > pictureHeight)
-		newRatio = (float)widthOutput / (float)(pictureWidth);
-	else
-		newRatio = (float)heightOutput / (float)(pictureHeight);
-
-	if ((pictureHeight * newRatio) > heightOutput)
-	{
-		newRatio = (float)heightOutput / (float)(pictureHeight);
-	}
-	else
-	{
-		if ((pictureWidth * newRatio) > widthOutput)
-		{
-			newRatio = (float)widthOutput / (float)(pictureWidth);
-		}
-	}
-
-	return newRatio;
-}
-
-CPictureData * CMainWindow::LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
-{
-    TRACE();
-	CPictureData * pictureData = nullptr;
-	CLibPicture libPicture;
-	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
-	if(imageLoading != nullptr)
-	{
-		pictureOK = imageLoading->IsOk();
-		if(pictureOK)
-		{
-			imageLoading->ApplyExifOrientation(1);
-			imageLoading->ConvertToRGB24(true);
-			//Calcul Resize Size
-			pictureData = new CPictureData();
-			if(resizeWidth != 0 && resizeHeight != 0)
-			{
-				float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth, resizeHeight);
-				pictureData->width = imageLoading->GetWidth() * ratio;
-				pictureData->height = imageLoading->GetHeight() * ratio;
-				imageLoading->Resize(pictureData->width, pictureData->height, 1);
-			}
-			else
-			{
-				pictureData->width = imageLoading->GetWidth();
-				pictureData->height = imageLoading->GetHeight();
-			}
-						
-			unsigned long outputsize = 0;
-			int compressMethod = 0;
-			uint8_t * data = imageLoading->GetJpegData(outputsize, compressMethod);
-			pictureData->data = new uint8_t[outputsize];
-			memcpy(pictureData->data, data, outputsize);
-			imageLoading->DestroyJpegData(data, compressMethod);
-
-			pictureData->size = outputsize;
-						
-		}
-	}
-
-	if(imageLoading != nullptr)
-		delete imageLoading;
-
-	imageLoading = nullptr;
-
-	return pictureData;
-}
-
-//---------------------------------------------------------------------------------------
-//Test FacialRecognition
-//---------------------------------------------------------------------------------------
-void CMainWindow::FacialRecognition(void * param)
-{
-    TRACE();
-	CThreadMD5 * path = (CThreadMD5 *)param;
-	bool pictureOK = false;
-	CSqlFaceLabel sqlfaceLabel;
-	void * faceData = path->mainWindow->faceData->GetCopyFaceData();
-	CSqlFacePhoto sqlfacePhoto;
-	CSqlFaceDescriptor sqlfaceDescritor;
-	CFace * face = new CFace();
-	CPictureData * pictureData = nullptr;
-	int nbFaceFound = 0;
-    CSqlThumbnail sqlThumbnail;
-	CRegardsConfigParam * config = (CRegardsConfigParam*)CParamInit::getInstance();
-	int pictureSize = config->GetFaceDetectionPictureSize();
-
-	switch(pictureSize)
-	{
-		case 0: //Thumbnail Size
-			if(sqlThumbnail.TestThumbnail(path->filename))
-			{
-				pictureData = sqlThumbnail.GetJpegThumbnail(path->filename);
-				if(pictureData != nullptr)
-					pictureOK = true;
-			}
-			else
-			{
-				pictureData = path->mainWindow->LoadPictureToJpeg(path->filename, pictureOK);
-			}
-			break;
-		case 1: //Original Size
-			{
-				pictureData = path->mainWindow->LoadPictureToJpeg(path->filename, pictureOK);
-			}
-			break;
-
-		case 2: //SD Format 
-			{
-				pictureData = path->mainWindow->LoadPictureToJpeg(path->filename, pictureOK, 640, 480);
-			}
-			break;
-
-
-		case 3: //HD Format 
-			{
-				pictureData = path->mainWindow->LoadPictureToJpeg(path->filename, pictureOK, 1280, 720);
-			}
-			break;
-
-		case 4: //Full HD Format 
-			{
-				pictureData = path->mainWindow->LoadPictureToJpeg(path->filename, pictureOK, 1920, 1080);
-			}
-			break;
-	}
-
-
-
-
-	if(pictureOK)
-	{
-		if(pictureData != nullptr)
-			face->LoadPictureFromJpegBuffer(pictureData->data, pictureData->size, 0, faceData);
-	
-		int nbFace = face->GetNbFaceFound();
-
-		if(nbFace > 0)
-		{
-			for(int i = 0;i < nbFace;i++)
-			{
-				//bool findFaceCompatible = false;
-				long width = 0;
-				long height = 0;
-				double pertinence = 0.0;
-				bool result = false;
-				uint8_t * data = nullptr;
-				uint8_t * dataBitmap = nullptr;
-				unsigned long size = 0;
-				long bitmapSize = 0;
-
-				face->GetFaceData(i, width, height, pertinence, dataBitmap, bitmapSize);
-				if(bitmapSize > 0)
-				{
-					dataBitmap = new uint8_t[bitmapSize];
-					face->GetFaceData(i, width, height, pertinence, dataBitmap, bitmapSize);
-
-					size = bitmapSize;
-					//Compression au format JPEG 
-					//data = new uint8_t[bitmapSize];
-					//result = compress_image_to_jpeg_file_in_memory(data, size, width, height, 4, dataBitmap);
-                    
-        uint8_t * data = nullptr;
-  
-	    const int JPEG_QUALITY = 75;
-
-	    tjhandle _jpegCompressor = tjInitCompress();
-    
-		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_RGBX,
-			&data, &size, TJSAMP_444, JPEG_QUALITY,
-			TJFLAG_FASTDCT);  
-
-/*
-	if (convertToRGB24)
-	{
-		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_BGRX,
-			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
-			TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
-	}
-	else
-	{
-		tjCompress2(_jpegCompressor, dataBitmap, width, 0, height, TJPF_RGBX,
-			&data, &outputsize, TJSAMP_444, JPEG_QUALITY,
-			TJFLAG_FASTDCT);
-	}*/
-	      tjDestroy(_jpegCompressor);
-
-                    
-					if(size > 0 && data != nullptr)
-					{
-						int numFace = 0;
-						if(data != nullptr)
-						{
-							numFace = sqlfacePhoto.InsertFace(path->filename, i, width, height, pertinence, data, size);
-							//numFace = sqlfacePhoto.GetNumFace(path->filename, i);
-						}
-	
-						//Récupération des données du visage
-
-						CFaceDescriptor * faceDescriptor = new CFaceDescriptor();
-						faceDescriptor->numFace = numFace;
-						faceDescriptor->size = 0;
-						face->GetFaceDescriptor(i, faceDescriptor->descriptor, faceDescriptor->size);
-						if(faceDescriptor->size > 0)
-						{
-							faceDescriptor->descriptor = new char[faceDescriptor->size+1];
-							face->GetFaceDescriptor(i, faceDescriptor->descriptor, faceDescriptor->size);
-						}
-
-						sqlfaceDescritor.InsertFaceDescriptor(numFace, faceDescriptor->descriptor, faceDescriptor->size);
-				
-						if (path->mainWindow != nullptr)
-						{
-							wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_FACEPHOTOADD);
-							evt.SetClientData(faceDescriptor);
-							path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
-						}
-
-						nbFaceFound++;
-					}
-
-				}
-
-				if(data != nullptr)
-                {
-                    tjFree(data);
-                    data = nullptr;
-                }
-					//delete[] data;
-
-				if(dataBitmap != nullptr)
-					delete[] dataBitmap;
-			}
-		}
-	}
-	
-
-	if(nbFaceFound == 0)
-	{
-		sqlfacePhoto.InsertFace(path->filename, 0, 0, 0, 0, nullptr, 0);
-	}
-
-	if(pictureData != nullptr)
-		delete pictureData;
-
-	if(face != nullptr)
-		delete face;
-
-	path->mainWindow->faceData->DeleteCopyFaceData(faceData);
-
-	if (path->mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_FACEPHOTOUPDATE);
-		evt.SetClientData(path);
-		//evt.SetInt(updateCriteria);
-		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
-
-void CMainWindow::FacePhotoAdd(wxCommandEvent& event)
-{
-    TRACE();
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILADD);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-
-
-	CThreadMD5 * path = (CThreadMD5 *)event.GetClientData();
-	if (path->thread != nullptr)
-	{
-		path->thread->join();
-		delete(path->thread);
-		path->thread = nullptr;	
-	}
-
-	if(path != nullptr)
-		delete path;
-
-	nbProcessFacePhoto--;
-}
-
 void CMainWindow::RefreshTimer(wxCommandEvent& event)
 {
     TRACE();
@@ -769,45 +379,18 @@ void CMainWindow::RefreshTimer(wxCommandEvent& event)
 void CMainWindow::ProcessIdle()
 {
     TRACE();
-	//muPictureList.lock();
-   // printf("CMainWindow::ProcessIdle() \n");
-    bool hasDoneOneThings = false;
-	//int nbProcesseur = thread::hardware_concurrency() / 2;
+	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
-    CSqlFacePhoto facePhoto;
-    vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
 
-	
-	//Recherche Nb Fichier non traité pour le visage
-	if(nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
+	wxWindow * window = this->FindWindowById(LISTFACEID);
+	if (window)
 	{
-        PhotosVector photoList;
-        CSqlFindPhotos findphotos;
-        findphotos.GetAllPhotos(&photoList);
-
-        CSqlFacePhoto sqlFacePhoto;
-        sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
-
-        CThreadMD5 * path = new CThreadMD5();
-        path->filename = listPhoto.at(0);
-        path->mainWindow = this;
-        path->thread = new thread(FacialRecognition, path);	
-        if (statusBarViewer != nullptr)
-        {
-            wxString message = "Photo : " + path->filename;
-            statusBarViewer->SetText(2, message);
-            message = "Processing : " + to_string(photoList.size() - listPhoto.size()) + "/" + to_string(photoList.size());
-            statusBarViewer->SetText(3, message);
-            statusBarViewer->SetRangeProgressBar(photoList.size());
-            statusBarViewer->SetPosProgressBar(photoList.size() - listPhoto.size());
-            nbProcessFacePhoto++;
-        }
-        hasDoneOneThings = true;
+		wxCommandEvent evt(wxEVENT_REFRESH);
+		window->GetEventHandler()->AddPendingEvent(evt);
 	}
-	
     
 	if (updateCriteria)
 	{
@@ -992,10 +575,6 @@ void CMainWindow::ProcessIdle()
 					pictureElement->numElement = numElement;
 					evt.SetClientData(pictureElement);
 					viewerWindow->GetEventHandler()->AddPendingEvent(evt);
-					//wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
-					//wxCommandEvent evt(wxEVENT_REFRESHPICTURE);
-					//evt.SetInt(numElement);
-					//viewerWindow->GetEventHandler()->AddPendingEvent(evt);
 				}
 				this->filename = photoName;
 				loadPicture = false;
@@ -1066,8 +645,7 @@ void CMainWindow::ProcessIdle()
     if(!hasDoneOneThings)
         processIdle = false;
         
-    if(listPhoto.size() > 0)
-        processIdle = true;
+ 
 }
 
 void CMainWindow::OnIdle(wxIdleEvent& evt)
@@ -1163,9 +741,6 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 CMainWindow::~CMainWindow()
 {
     TRACE();
-	if(faceData != nullptr)
-		delete(faceData);
-
 	bool showInfos;
 	bool showThumbnail;
 
@@ -1382,16 +957,22 @@ void CMainWindow::StopDiaporama()
 		startDiaporama = false;
 		if (diaporamaTimer->IsRunning())
 			diaporamaTimer->Stop();
-
-		//centralWnd->SetNormalMode();
-
-		//centralWnd->SetNumElement(numElement);
-		
-
-
 	}
 }
 
+void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
+{
+	CFaceInfosUpdate * infoUpdate = (CFaceInfosUpdate *)event.GetClientData();
+	if (infoUpdate != nullptr)
+	{
+		statusBarViewer->SetText(2, infoUpdate->message_2);
+		statusBarViewer->SetText(3, infoUpdate->message_3);
+		statusBarViewer->SetRangeProgressBar(infoUpdate->photolistSize);
+		statusBarViewer->SetPosProgressBar(infoUpdate->photolistSize - infoUpdate->listPhotoSize);
+		delete infoUpdate;
+	}
+
+}
 
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {
@@ -1416,7 +997,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 bool CMainWindow::GetProcessEnd()
 {
     TRACE();
-	if(nbProcessMD5 > 0 || nbProcessFacePhoto > 0)
+	if(nbProcessMD5 > 0)
 		return false;
 
 	return true;
@@ -1468,7 +1049,7 @@ void CMainWindow::InitPictures(wxCommandEvent& event)
 }
 
 
-void CMainWindow::FaceInfosUpdate(wxCommandEvent& event)
+void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 {
     TRACE();
 	updateCriteria = true;

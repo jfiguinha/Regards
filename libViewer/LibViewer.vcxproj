@@ -205,6 +205,7 @@
     <ClInclude Include="AnimationToolbar.h" />
     <ClInclude Include="CategoryFolderWindow.h" />
     <ClInclude Include="CategoryWnd.h" />
+    <ClInclude Include="FaceInfosUpdate.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />

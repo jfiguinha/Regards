@@ -7,10 +7,14 @@
 using namespace Regards::Window;
 using namespace std;
 
+class CFaceLoadData;
+
 namespace Regards
 {
 	namespace Viewer
 	{
+		
+
 		class CListFace : public CWindowMain
 		{
 		public:
@@ -24,6 +28,11 @@ namespace Regards
 
 		private:
 
+			void ProcessIdle();
+			void OnRefreshProcess(wxCommandEvent& event);
+			void OnFacePhotoAdd(wxCommandEvent& event);
+			void OnAddFacePhoto(wxCommandEvent& event);
+			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
@@ -32,13 +41,17 @@ namespace Regards
 			void ThumbnailRemove(wxCommandEvent& event);
 			void ThumbnailMove(wxCommandEvent& event);
 			void Resize();
-			void SetListeFile(wxCommandEvent& event);
+			bool GetProcessEnd();
+			static void FacialRecognition(void * param);
+
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
 			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			//CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			CThumbnailFace * thumbnailFace;
 			bool update;
+			int nbProcessFacePhoto;
+			CFaceLoadData * faceData;
 		};
 	}
 }

@@ -44,48 +44,6 @@ namespace Regards
 
         };
 
-		/*
-		class CThreadPictureData
-		{
-		public:
-
-			CThreadPictureData()
-			{
-				mainWindow = nullptr;
-				isVisible = false;
-				myThread = nullptr;
-                isThumbnail = false;
-			}
-
-			~CThreadPictureData()
-			{
-			}
-
-			CMainWindow * mainWindow;
-			wxString picture;
-			bool isVisible;
-            bool isThumbnail;
-            thread * myThread;
-		};
-        */
-
-		/*
-        class CBitmapReturn
-        {
-        public:
-			CBitmapReturn()
-			{
-				bitmap = nullptr;
-				isThumbnail = false;
-				myThread = nullptr;
-			};
-
-            CImageLoadingFormat * bitmap;
-            bool isThumbnail;
-            thread * myThread;
-        };
-		*/
-
 		class CWaitingWindow : public CWindowMain
 		{
 		public:
@@ -216,7 +174,6 @@ namespace Regards
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
 			void AddFolder(const wxString &folder);
-			void SetFilterInterpolation(const int &filter);
 			
 			void OnFacePertinence();
 			void SetSelectFile(const wxString &filename);
@@ -237,7 +194,6 @@ namespace Regards
 			void InitPictures(wxCommandEvent& event);
 			void PictureVideoClick(wxCommandEvent& event);
             void CriteriaChange(wxCommandEvent& event);
-			void RefreshPictureList(wxCommandEvent& event);
 			void OnVideoEnd(wxCommandEvent& event);
             void OnVideoStart(wxCommandEvent& event);
 			void StartDiaporamaMessage(wxCommandEvent& event);
@@ -246,10 +202,10 @@ namespace Regards
 			void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
-			void FacePhotoAdd(wxCommandEvent& event);
-			void AddFacePhoto(wxCommandEvent& event);
+
 			void RefreshCriteriaPictureList(wxCommandEvent& event);
-			void FaceInfosUpdate(wxCommandEvent& event);
+			void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
+			void OnFaceInfosUpdate(wxCommandEvent& event);
             void RefreshTimer(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
@@ -259,10 +215,9 @@ namespace Regards
 			void OnIdle(wxIdleEvent& evt);
 
 			static void CheckMD5(void * param);
-			static void FacialRecognition(void * param);
 
 			bool fullscreen;
-			CFaceLoadData * faceData;
+			
 			wxGauge * progressBar;
 			wxStatusBar * statusBar;
 			CToolbar * toolbar;
@@ -276,11 +231,7 @@ namespace Regards
 			bool startDiaporama;
 			mutex muPicture;
 			int nbProcessMD5;
-			int nbProcessFacePhoto;
-            
-			CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
-			float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput);
-
+			
             CImageList * imageList = nullptr;
 			int numElement;
 			wxString firstFileToShow;
