@@ -11,7 +11,7 @@ namespace Regards
 		class CPreviewToolbar : public CToolbarWindow
 		{
 		public:
-			CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface);
+			CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
 			~CPreviewToolbar();
 
             void SetFullscreen();

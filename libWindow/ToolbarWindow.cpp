@@ -6,9 +6,10 @@ using namespace Regards::Window;
 #define TIMER_PUSHID 1
 
 
-CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme) :
+CToolbarWindow::CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool &vertical) :
 CWindowMain("CToolbarWindow",parent, id)
 {
+	isVertical = vertical;
 	m_bMouseOver = false;
 	m_bMouseMove = false;
 	saveLastPush = false;
@@ -83,7 +84,7 @@ void CToolbarWindow::UpdateScreenRatio()
 int CToolbarWindow::GetNavigatorHeight()
 {
 	int size = 0;
-	if (themeToolbar.isVertical)
+	if (isVertical)
 	{
 	for (CToolbarElement * nav : navElement)
 		{
@@ -106,7 +107,7 @@ int CToolbarWindow::GetNavigatorHeight()
 int CToolbarWindow::GetNavigatorWidth()
 {
 	int size = 0;
-	if (themeToolbar.isVertical)
+	if (isVertical)
 	{
         for (CToolbarElement * nav : navElement)
 		{
@@ -329,7 +330,7 @@ bool CToolbarWindow::IsMouseOver()
 
 void CToolbarWindow::DrawBackground(wxDC * deviceContext, const wxRect &rc)
 {
-	if (themeToolbar.isVertical)
+	if (isVertical)
 		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom);
 	else
 		deviceContext->GradientFillLinear(rc, themeToolbar.colorTop, themeToolbar.colorBottom, wxNORTH);
@@ -390,7 +391,7 @@ void CToolbarWindow::OnPaint(wxPaintEvent& event)
 	int navigatorWidth = GetNavigatorWidth();
 	int navigatorHeight = GetNavigatorHeight();
 
-	if (themeToolbar.isVertical)
+	if (isVertical)
 	{
 		int xStart = (GetWindowWidth() - navigatorWidth) / 2;
 		int yStart = 0;

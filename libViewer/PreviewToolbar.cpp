@@ -11,8 +11,8 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface)
-	: CToolbarWindow(parent, id, theme)
+CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	imagePlayDiaporama = nullptr;
 	imageStopDiaporama = nullptr;

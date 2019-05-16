@@ -14,8 +14,8 @@ using namespace Regards::Viewer;
 #define WM_CALENDAR 1025
 #define WM_GEOLOCALISE 1026
 
-CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent, id, theme)
+CThumbnailFacePertinenceToolBar::CThumbnailFacePertinenceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
     wxString pertinence = CLibResource::LoadStringFromResource(L"LBLPERTINENCELEVEL",1);//L"History";

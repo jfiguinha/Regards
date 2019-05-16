@@ -14,7 +14,7 @@ namespace Regards
 		class CToolbarInfos : public CToolbarWindow
 		{
 		public:
-			CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface);
+			CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
 			~CToolbarInfos();
 			void SetVideoToolbar();
 			void SetPictureToolbar();

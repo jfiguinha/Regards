@@ -14,7 +14,7 @@ namespace Regards
 		{
 		public:
 
-			CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme);
+			CToolbarWindow(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
 			virtual ~CToolbarWindow();
 			int GetHeight();
 			int GetWidth();
@@ -50,7 +50,8 @@ namespace Regards
 			CToolbarElement * navPush;
 			CThemeToolbar themeToolbar;
             bool saveLastPush;
-            
+			bool isVertical;
+
 		private:
 
             void DrawButton(wxDC * dc, CToolbarElement * nav);
@@ -63,6 +64,7 @@ namespace Regards
             wxBitmap background;
             wxImage backPicture;
 			wxTimer * pushButton;
+			
 		};
 	}
 }

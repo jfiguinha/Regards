@@ -4,7 +4,7 @@ using namespace Regards::Window;
 
 #define PANE_WITHCLICKTOOLBAR 1
 
-CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible, const bool& refreshButton)
+CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible, const bool& refreshButton, const bool& vertical)
 	: CWindowMain(windowName,parent,id)
 {
 	paneWindow = nullptr;
@@ -18,7 +18,8 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	//----------------------------------------------------------------------------------------
 	paneWindow = new CPane(this, wxID_ANY, this, PANE_WITHCLICKTOOLBAR, themePane, refreshButton);
 	paneWindow->SetTitle(paneLibelle);
-	clickWindow = new CClickToolbar(this, wxID_ANY, themeToolbar, this, PANE_WITHCLICKTOOLBAR);
+	//vertical = true;
+	clickWindow = new CClickToolbar(this, wxID_ANY, themeToolbar, this, PANE_WITHCLICKTOOLBAR, vertical);
 
 	//#define wxEVENT_SHOWPANE 214
 	//#define wxEVENT_CLOSEPANE 215

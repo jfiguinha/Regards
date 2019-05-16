@@ -77,7 +77,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
 
-	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, themeToolbar);
+	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, themeToolbar, false);
 	pictureToolbar->SetTabValue(value);
 
 	if (config != nullptr)

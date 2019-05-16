@@ -80,7 +80,6 @@ void CThemeParam::InitVideoToolbar()
 	themeVideoToolbar.SetHeight(70);
 	themeVideoToolbar.SetMargeX(5);
 	themeVideoToolbar.SetMargeY(0);
-	themeVideoToolbar.isVertical = false;
 
 	themeVideoToolbar.button.SetTailleX(60);
 	themeVideoToolbar.button.SetTailleY(60);
@@ -106,7 +105,6 @@ void CThemeParam::InitBitmapToolbar()
 	themeBitmapToolbar.SetHeight(40);
 	themeBitmapToolbar.SetMargeX(5);
 	themeBitmapToolbar.SetMargeY(0);
-	themeBitmapToolbar.isVertical = false;
 
 	themeBitmapToolbar.button.SetTailleX(30);
 	themeBitmapToolbar.button.SetTailleY(30);

@@ -20,8 +20,8 @@ using namespace Regards::Viewer;
 #define IDM_SHOWINFOS 156
 #define IDM_QUITTER 157
 
-CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent,id,theme)
+CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent,id,theme, vertical)
 {
 	wxString export_label = CLibResource::LoadStringFromResource(L"LBLEXPORT", 1);
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);

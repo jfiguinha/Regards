@@ -51,6 +51,7 @@ namespace Regards
 			CThumbnailFace * thumbnailFace;
 			bool update;
 			int nbProcessFacePhoto;
+			bool updateFaceList;
 			CFaceLoadData * faceData;
 		};
 	}

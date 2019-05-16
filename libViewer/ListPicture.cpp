@@ -52,10 +52,10 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 	{
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
-		viewerTheme->GetThumbnailScrollTheme(theme);
+		viewerTheme->GetScrollTheme(&theme);
 		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
 
-		viewerTheme->GetThumbnailTheme(themeThumbnail);
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		thumbnailFolder = new CThumbnailFolder(thumbscrollbar, THUMBNAILFOLDER, statusbar, themeThumbnail, checkValidity);
 		//thumbnailWindow->Init(typeAffichage);
 		thumbscrollbar->SetCentralWindow(thumbnailFolder, theme);
@@ -66,7 +66,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 		std::vector<int> value = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbToolbar = new CThumbnailToolBar(this, wxID_ANY, theme);
+		thumbToolbar = new CThumbnailToolBar(this, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
 		thumbToolbar->SetTrackBarPosition(4);
 	}
@@ -186,7 +186,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 
 			CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 			CThemeThumbnail themeThumbnail;
-			viewerTheme->GetThumbnailTheme(themeThumbnail);
+			viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
 			CThemeIcone themeIcone = themeThumbnail.themeIcone;
 			themeIcone.font.SetColorFont(fontColor);

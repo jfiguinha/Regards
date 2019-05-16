@@ -18,7 +18,7 @@ namespace Regards
 		class CPanelWithClickToolbar : public CWindowMain, public CPaneInterface, public CToolbarInterface
 		{
 		public:
-			CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id, const CThemePane& themePane, const CThemeToolbar& themeToolbar, const wxString& paneLibelle, const bool& isPanelVisible, const bool &refreshButton);
+			CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id, const CThemePane& themePane, const CThemeToolbar& themeToolbar, const wxString& paneLibelle, const bool& isPanelVisible, const bool &refreshButton, const bool &vertical);
 			virtual ~CPanelWithClickToolbar();
 			wxWindow * GetPaneWindow();
 			void UpdateScreenRatio();

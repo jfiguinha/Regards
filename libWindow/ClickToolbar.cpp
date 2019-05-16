@@ -3,19 +3,19 @@
 using namespace Regards::Window;
 
 
-CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * interfaceToolbar, const int &idMessage)
-	: CToolbarWindow(parent, id, theme)
+CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * interfaceToolbar, const int &idMessage, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	screen = nullptr;
 	this->interfaceToolbar = interfaceToolbar;
 	idObject = idMessage;
+	isVertical = vertical;
 
 	screen = new CToolbarButton(themeToolbar.button);
     screen->ReplaceColor(wxColor(0,0,0), wxColor(0,0,0), themeToolbar.replaceColor);
-	if (themeToolbar.isVertical)
+	if (vertical)
 	{
-		screen->Resize(themeToolbar.button.GetRealTailleY(), themeToolbar.button.GetRealTailleX());
-       
+		screen->Resize(themeToolbar.button.GetRealTailleY(), themeToolbar.button.GetRealTailleX()); 
 		screen->SetButtonResourceId("IDB_BUTTON_CLICK_VERTICAL");
 	}
 	else
@@ -32,8 +32,8 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 
 void CClickToolbar::SetVertical(const bool &vertical)
 {
-	themeToolbar.isVertical = vertical;
-	if (themeToolbar.isVertical)
+	isVertical = vertical;
+	if (isVertical)
 	{
 		screen->Resize(themeToolbar.button.GetRealTailleY(), themeToolbar.button.GetRealTailleX());
 		screen->SetButtonResourceId("IDB_BUTTON_CLICK_VERTICAL");
@@ -56,14 +56,14 @@ CClickToolbar::~CClickToolbar()
 
 int CClickToolbar::GetWidth()
 {
-	if (themeToolbar.isVertical)
+	if (isVertical)
 		return themeToolbar.button.GetRealTailleY();
 
 	return themeToolbar.button.GetRealTailleX();
 }
 int CClickToolbar::GetHeight()
 {
-	if (themeToolbar.isVertical)
+	if (isVertical)
 		return themeToolbar.button.GetRealTailleX();
 
 	return themeToolbar.button.GetRealTailleY();

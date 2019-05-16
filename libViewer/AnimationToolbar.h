@@ -11,7 +11,7 @@ namespace Regards
 		class CAnimationToolbar : public CToolbarWindow
 		{
 		public:
-			CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface);
+			CAnimationToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical);
 			~CAnimationToolbar();
 			void AnimationStart();
 			void AnimationStop();

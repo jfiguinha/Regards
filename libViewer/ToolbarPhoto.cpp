@@ -5,8 +5,8 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CToolbarPhoto::CToolbarPhoto(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface)
-	: CToolbarWindow(parent, id, theme)
+CToolbarPhoto::CToolbarPhoto(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * toolbarInterface, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	folder = nullptr;
     criteria = nullptr;

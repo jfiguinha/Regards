@@ -9,8 +9,8 @@ using namespace Regards::Viewer;
 #define WM_OK 1
 #define WM_CANCEL 2
 
-CFiltreToolbar::CFiltreToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent, id, theme)
+CFiltreToolbar::CFiltreToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	numFiltre = 0;
 	wxString libelleOk = CLibResource::LoadStringFromResource(L"IDS_LBLOK",1);

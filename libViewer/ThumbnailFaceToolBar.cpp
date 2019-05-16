@@ -11,8 +11,8 @@ using namespace Regards::Viewer;
 #define WM_CALENDAR 1025
 #define WM_GEOLOCALISE 1026
 
-CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent, id, theme)
+CThumbnailFaceToolBar::CThumbnailFaceToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
     wxString refresh = CLibResource::LoadStringFromResource(L"LBLREFRESHTHUMBNAIL",1);//L"History";

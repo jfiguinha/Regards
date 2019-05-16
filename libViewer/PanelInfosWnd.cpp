@@ -70,10 +70,10 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	if (viewerTheme != nullptr)
 	{
         CThemeScrollBar themeScroll;
-        viewerTheme->GetScrollInfosFileTheme(&themeScroll);
+        viewerTheme->GetScrollTheme(&themeScroll);
         
         CThemeTree theme;
-        viewerTheme->GetTreeInfosFileTheme(&theme);
+        viewerTheme->GetTreeTheme(&theme);
         
         infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
 
@@ -89,10 +89,10 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
  	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
-		viewerTheme->GetFiltreScrollTheme(&themeScroll);
+		viewerTheme->GetScrollTheme(&themeScroll);
 
 		CThemeTree themeTree;
-		viewerTheme->GetTreeFiltreEffectTheme(&themeTree);
+		viewerTheme->GetTreeTheme(&themeTree);
 
         filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);    
         filtreEffectWnd->Show(false);
@@ -107,10 +107,10 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollHistoryEffectTheme(&themeScroll);
+		viewerTheme->GetScrollTheme(&themeScroll);
 
 		CThemeTree themeTree;
-		viewerTheme->GetTreeHistoryTheme(&themeTree);
+		viewerTheme->GetTreeTheme(&themeTree);
 		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree);
 		historyEffectWnd->Show(false);
         
@@ -127,10 +127,10 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	if (viewerTheme != nullptr)
 	{
 		CThemeScrollBar themeScroll;
-		viewerTheme->GetScrollThumbnailEffectTheme(&themeScroll);
+		viewerTheme->GetScrollTheme(&themeScroll);
 
 		CThemeThumbnail themeThumbnail;
-		viewerTheme->GetTreeThumbnailViewerEffectTheme(&themeThumbnail);
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
         
 		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, statusBarInterface, themeScroll, themeThumbnail);
 		
@@ -171,16 +171,16 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetInfosToolbarTheme(&theme);
-		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this);
+		infosToolbar = new CToolbarInfos(this, wxID_ANY, theme, this, false);
 	}
     
     if (viewerTheme != nullptr)
     {
         CThemeScrollBar themeScroll;
-        viewerTheme->GetScrollThumbnailEffectTheme(&themeScroll);
+        viewerTheme->GetScrollTheme(&themeScroll);
         
         CThemeTree themeTree;
-        viewerTheme->GetTreeInfosFileTheme(&themeTree);
+        viewerTheme->GetTreeTheme(&themeTree);
         criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
     
         CTabWindowData * tabInfosFile = new CTabWindowData();

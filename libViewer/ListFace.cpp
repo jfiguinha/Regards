@@ -158,10 +158,10 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 	{
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
-		viewerTheme->GetThumbnailScrollTheme(theme);
+		viewerTheme->GetScrollTheme(&theme);
 		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
 
-		viewerTheme->GetThumbnailTheme(themeThumbnail);
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		thumbnailFace = new CThumbnailFace(thumbscrollbar, THUMBNAILFACE, statusbar, themeThumbnail, checkValidity);
 		//thumbnailWindow->Init(typeAffichage);
 		thumbscrollbar->SetCentralWindow(thumbnailFace, theme);
@@ -174,7 +174,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbFaceToolbar = new CThumbnailFaceToolBar(this, wxID_ANY, theme);
+		thumbFaceToolbar = new CThumbnailFaceToolBar(this, wxID_ANY, theme, false);
 		thumbFaceToolbar->SetTabValue(value);
 		thumbFaceToolbar->SetTrackBarPosition(4);
 
@@ -190,7 +190,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 			}
 		}
 
-		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
+		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(valuePertinence);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
 	}
@@ -219,7 +219,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 	Connect(wxEVENT_FACEPHOTOUPDATE, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnAddFacePhoto));
 	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CListFace::OnRefreshProcess));
-	
+	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 
 
 #ifdef WIN32
@@ -282,7 +282,7 @@ void CListFace::ProcessIdle()
 		path->thread = new thread(FacialRecognition, path);
 
 		CFaceInfosUpdate * infoUpdate = new CFaceInfosUpdate();
-		infoUpdate->message_2 = "Photo : " + path->filename;
+		//infoUpdate->message_2 = "Photo : " + path->filename;
 		infoUpdate->message_3 = "Processing : " + to_string(photoList.size() - listPhoto.size()) + "/" + to_string(photoList.size());
 		infoUpdate->photolistSize = photoList.size();
 		infoUpdate->listPhotoSize = listPhoto.size();
@@ -291,7 +291,7 @@ void CListFace::ProcessIdle()
 		if (mainWindow != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_FACEINFOSUPDATESTATUSBAR);
-			mainWindow->SetClientData(infoUpdate);
+			evt.SetClientData(infoUpdate);
 			mainWindow->GetEventHandler()->AddPendingEvent(evt);
 		}
 
@@ -299,6 +299,12 @@ void CListFace::ProcessIdle()
 		
 		hasDoneOneThings = true;
 	}
+	if (updateFaceList)
+	{
+		thumbnailFace->Init();
+		updateFaceList = false;
+	}
+
 
 	if (!hasDoneOneThings)
 		processIdle = false;
@@ -319,17 +325,20 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ThumbnailAdd(wxCommandEvent& event)
 {
-	thumbnailFace->Init();//thumbnailFace->UpdatePhotoFace();
+	updateFaceList = true;
+	processIdle = true;
 }
 
 void CListFace::ThumbnailRemove(wxCommandEvent& event)
 {
-	thumbnailFace->Init();//thumbnailFace->DeletePhotoFace();
+	updateFaceList = true;
+	processIdle = true;
 }
 
 void CListFace::ThumbnailUpdate(wxCommandEvent& event)
 {
-	thumbnailFace->Init();
+	updateFaceList = true;
+	processIdle = true;
 }
 
 void CListFace::ThumbnailMove(wxCommandEvent& event)

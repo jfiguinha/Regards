@@ -19,8 +19,8 @@ void CBitmapToolbar::SetBitmapDisplayPt(Regards::Control::CBitmapWndViewer * bit
 	this->bitmapWindow = bitmapWindow;
 }
 
-CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent, id, theme)
+CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	slide = nullptr;

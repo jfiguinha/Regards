@@ -47,15 +47,15 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id,
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetPreviewToolbarTheme(&theme);
-		previewToolbar = new CPreviewToolbar(this, wxID_ANY, theme, this);
-		animationToolbar = new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this);
+		previewToolbar = new CPreviewToolbar(this, wxID_ANY, theme, this, false);
+		animationToolbar = new CAnimationToolbar(this, ANIMATIONTOOLBARWINDOWID, theme, this, false);
 	}
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetFiltreToolbarTheme(&theme);
-		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme);
+		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
 	}
     
     if (viewerTheme != nullptr)

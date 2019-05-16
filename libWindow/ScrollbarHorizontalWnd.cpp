@@ -23,6 +23,8 @@ enum
 CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(CScrollInterface * scrollInterface, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
+
+
 	scrollMoving = false;
 	width = 0;
 	height = 0;

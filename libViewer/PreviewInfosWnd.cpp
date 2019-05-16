@@ -56,10 +56,10 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 	{
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS",1);
 		CThemePane theme;
-		viewerTheme->GetInfosPaneTheme(&theme);
+		viewerTheme->GetPaneTheme(&theme);
 		CThemeToolbar themeClickInfosToolbar;
-		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false);
+		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
+		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, false);
 		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
 		paneInfos->SetWindow(panelInfosWindow);
 	}

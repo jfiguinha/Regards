@@ -63,12 +63,12 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		CThemeToolbar themetoolbar;
 		CThemeScrollBar themeScroll;
 		CThemeThumbnail themeVideo;
-		viewerTheme->GetThumbnailVideoPaneTheme(&theme);
-		viewerTheme->GetClickThumbnailVideoToolbarTheme(&themetoolbar);
-		viewerTheme->GetScrollThumbnailVideoTheme(&themeScroll);
-		viewerTheme->GetThumbnailVideoTheme(&themeVideo);
+		viewerTheme->GetPaneTheme(&theme);
+		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		viewerTheme->GetScrollTheme(&themeScroll);
+		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false);
+		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false, true);
 		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), wxID_ANY);
 		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, statusBarInterface, themeVideo, checkValidity);
 		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
@@ -84,11 +84,10 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 	if (viewerTheme != nullptr)
 	{
 		CThemeSplitter theme;
-		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
+		viewerTheme->GetSplitterTheme(&theme);
 
 		CThemeToolbar themeClickInfosToolbar;
-		viewerTheme->GetClickInfosToolbarTheme(&themeClickInfosToolbar);
-		//previewInfosWnd = new CPreviewThumbnailFolderSplitter(this, wxID_ANY, statusBarInterface, theme, themeClickInfosToolbar, videoEffectParameter, false);
+		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		previewInfosWnd = new CPreviewInfosWnd(this, PREVIEWINFOWND, statusBarInterface, theme, false);
 	}
 
@@ -112,11 +111,11 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		CThemeToolbar themetoolbar;
 		CThemeScrollBar themeScroll;
 		CThemeThumbnail themeThumbnail;
-		viewerTheme->GetPaneCategory(theme);
-		viewerTheme->GetThumbnailScrollTheme(themeScroll);
-		viewerTheme->GetThumbnailVideoTheme(&themeThumbnail);
-		viewerTheme->GetClickThumbnailVideoToolbarTheme(&themetoolbar);
-		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true);
+		viewerTheme->GetPaneTheme(&theme);
+		viewerTheme->GetScrollTheme(&themeScroll);
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
+		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true, true);
 		scrollPictureWindow = new CScrollbarWnd(panelPicture->GetPaneWindow(), wxID_ANY);
 		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, statusBarInterface, themeThumbnail, checkValidity);
 		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);

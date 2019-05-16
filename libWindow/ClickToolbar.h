@@ -14,7 +14,7 @@ namespace Regards
 		class CClickToolbar : public CToolbarWindow
 		{
 		public:
-			CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * interfaceToolbar, const int &idMessage);
+			CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, CToolbarInterface * interfaceToolbar, const int &idMessage, const bool &vertical);
 			virtual ~CClickToolbar();
 			void SetVertical(const bool &vertical);
 			int GetWidth();

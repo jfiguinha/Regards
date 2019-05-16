@@ -11,7 +11,7 @@ namespace Regards
 		class CToolbar : public CToolbarWindow
 		{
 		public:
-			CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme);
+			CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
 			~CToolbar();
 
 		private:

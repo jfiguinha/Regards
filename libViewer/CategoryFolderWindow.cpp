@@ -88,10 +88,10 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, IS
 		CThemeScrollBar themeScroll;
 		CThemeTree themeTree;
 
-		viewerTheme->GetCategoryScrollTheme(themeScroll);
+		viewerTheme->GetScrollTheme(&themeScroll);
 		catalogWndScroll = new CScrollbarWnd(this, wxID_ANY);
 		
-		viewerTheme->GetCategoryTreeTheme(themeTree);
+		viewerTheme->GetTreeTheme(&themeTree);
 		treeWindow = new CTreeWindow(catalogWndScroll, CATEGORYWINDOWID, themeTree);
 		catalogWndScroll->SetCentralWindow(treeWindow, themeScroll);
 	}

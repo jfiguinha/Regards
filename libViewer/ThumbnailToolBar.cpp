@@ -12,8 +12,8 @@ using namespace Regards::Viewer;
 #define WM_GEOLOCALISE 1026
 #define WM_INDEX 1027
 
-CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme)
-	: CToolbarWindow(parent, id, theme)
+CThumbnailToolBar::CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	wxString index = CLibResource::LoadStringFromResource(L"LBLINDEXPHOTO", 1);

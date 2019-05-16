@@ -366,21 +366,7 @@ void CThumbnailEffect::LoadPicture(void * param)
     CSqlThumbnail sqlThumbnail;  
     CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
 	CRegardsBitmap * bitmap = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
-    /*
-    if(bitmap != nullptr)
-    {      
-        float ratio = 0.0;
-        CImageLoadingFormat image; 
-        image.SetPicture(bitmap);
-        CFiltreEffet * filtre = new CFiltreEffet(colorQuad, nullptr, &image);        
-        int tailleAffichageBitmapWidth = threadLoadingBitmap->thumbnail->themeThumbnail.themeIcone.GetWidth();
-        int tailleAffichageBitmapHeight = threadLoadingBitmap->thumbnail->themeThumbnail.themeIcone.GetHeight();
-        threadLoadingBitmap->thumbnail->GetBitmapDimension(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, ratio);
-        filtre->Interpolation(tailleAffichageBitmapWidth, tailleAffichageBitmapHeight, 0,0,0,0);  
-        thumbnail.SetPicture(filtre->GetBitmap(false));  
-        delete filtre;    
-    }
-    */
+
     
 	if(bitmap != nullptr)
     {

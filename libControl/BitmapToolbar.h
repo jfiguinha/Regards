@@ -15,7 +15,7 @@ namespace Regards
 
 		public:
 
-			CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme);
+			CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
 			~CBitmapToolbar();
 			void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
 			void SetTrackBarPosition(const int &iPos);

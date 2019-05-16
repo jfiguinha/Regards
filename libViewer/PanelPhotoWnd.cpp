@@ -68,7 +68,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetInfosToolbarTheme(&theme);
-		photoToolbar = new CToolbarPhoto(this, wxID_ANY, theme, this);
+		photoToolbar = new CToolbarPhoto(this, wxID_ANY, theme, this, false);
 	}
 
     toolbarWindow = photoToolbar;

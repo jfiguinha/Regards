@@ -1425,7 +1425,6 @@ public:
     wxColour replaceColor;
 
 	int position;
-	int isVertical;
 
 	CThemeToolbarButton button;
 	CThemeToolbarTexte texte;

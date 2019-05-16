@@ -108,7 +108,7 @@ void CThemeBitmapWindow::LoadXML(xml_node<> * root_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
-	xml_node<> * node = root_node->first_node("ThemeBitmapWindow");
+	xml_node<> * node = root_node->first_node("Theme");
 	if (node != 0)
 	{
 		xml_node<> * child_node = node->first_node("colorBack");
@@ -2436,7 +2436,6 @@ CThemeToolbar::CThemeToolbar()
 	margeX = 5;
 	margeY = 5;
 	position = 0;
-	isVertical = 0;
 	colorBack.Set(30, 30, 30);
 	//colorTop.Set(74, 74, 74);
     colorTop.Set(50, 54, 63);
@@ -2518,14 +2517,6 @@ void CThemeToolbar::LoadXML(xml_node<> * root_node)
 			nodeName = child_node->name();
 			position = atoi(value.c_str());
 		}
-
-		child_node = node->first_node("isVertical");
-		if (child_node != 0)
-		{
-			value = child_node->value();
-			nodeName = child_node->name();
-			isVertical = atoi(value.c_str());
-		}
 	}
 }
 
@@ -2544,7 +2535,6 @@ void CThemeToolbar::SaveXML(xml_document<> & doc, xml_node<>* sectionPosition)
 	section->append_node(node(doc, "margeX", to_string(margeX)));
 	section->append_node(node(doc, "margeY", to_string(margeY)));
 	section->append_node(node(doc, "position", to_string(position)));
-	section->append_node(node(doc, "isVertical", to_string(isVertical)));
 
 	sectionPosition->append_node(section);
 }
@@ -2558,7 +2548,6 @@ CThemeToolbar& CThemeToolbar::operator=(const CThemeToolbar& other)
 	this->margeX = other.margeX;
 	this->margeY = other.margeY;
 	this->position = other.position;
-	this->isVertical = other.isVertical;
 	this->button = other.button;
 	this->texte = other.texte;
 	this->slider = other.slider;

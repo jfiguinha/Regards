@@ -57,11 +57,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLSELECTFILE", 1);
 		CThemePane theme;
-		viewerTheme->GetInfosPaneTheme(&theme);
+		viewerTheme->GetPaneTheme(&theme);
 
 		CThemeToolbar themetoolbar;
-		viewerTheme->GetClickInfosToolbarTheme(&themetoolbar);
-		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible, true);
+		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible, true, false);
 		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID, statusBarInterface);
 		panelSearch->SetWindow(panelPhotoWnd);
 	}

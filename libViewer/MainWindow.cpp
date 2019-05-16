@@ -95,7 +95,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	{
 		CThemeToolbar theme;
 		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbar = new CToolbar(this, wxID_ANY, theme);
+		toolbar = new CToolbar(this, wxID_ANY, theme, false);
 	}
 
 	refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
@@ -104,7 +104,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	if (viewerTheme != nullptr)
 	{
 		CThemeSplitter theme;
-		viewerTheme->GetPreviewInfosSplitterTheme(&theme);
+		viewerTheme->GetSplitterTheme(&theme);
 		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, statusBarViewer, theme, imageList, false);
 	}
 	this->statusBarViewer = statusBarViewer;
@@ -965,8 +965,8 @@ void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
 	CFaceInfosUpdate * infoUpdate = (CFaceInfosUpdate *)event.GetClientData();
 	if (infoUpdate != nullptr)
 	{
-		statusBarViewer->SetText(2, infoUpdate->message_2);
-		statusBarViewer->SetText(3, infoUpdate->message_3);
+		//statusBarViewer->SetText(2, infoUpdate->message_2);
+		statusBarViewer->SetText(2, infoUpdate->message_3);
 		statusBarViewer->SetRangeProgressBar(infoUpdate->photolistSize);
 		statusBarViewer->SetPosProgressBar(infoUpdate->photolistSize - infoUpdate->listPhotoSize);
 		delete infoUpdate;

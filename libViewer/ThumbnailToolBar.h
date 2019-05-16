@@ -11,7 +11,7 @@ namespace Regards
 		class CThumbnailToolBar : public CToolbarWindow, public CSliderInterface
 		{
 		public:
-			CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme);
+			CThumbnailToolBar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
 			virtual ~CThumbnailToolBar();
 
 			void SetTrackBarPosition(const int &iPos);

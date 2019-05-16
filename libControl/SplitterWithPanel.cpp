@@ -32,11 +32,8 @@ CSplitterWithPanel::CSplitterWithPanel(wxWindow* parent, wxWindowID id, const CT
 	showclickWindow1Toolbar = true;
 	showclickWindow2Toolbar = true;
 
-	clickWindow1Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL1_FILTER);
-	clickWindow1Toolbar->SetVertical(!horizontal);
-
-	clickWindow2Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL2_FILTER);
-	clickWindow2Toolbar->SetVertical(!horizontal);
+	clickWindow1Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL1_FILTER, !horizontal);
+	clickWindow2Toolbar = new CClickToolbar(this, wxID_ANY, themeInfosToolbar, this, PANEL2_FILTER, !horizontal);
 
 	this->horizontal = horizontal;
 	separationBar->SetHorizontal(horizontal);
