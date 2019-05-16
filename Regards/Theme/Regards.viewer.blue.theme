@@ -1,0 +1,1979 @@
+<?xml?>
+<Theme>
+	<Main>
+		<MainToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>80</tailleX>
+					<tailleY>60</tailleY>
+					<rectangleSize>2</rectangleSize>
+					<showButtonOnly>0</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>60</height>
+				<width>60</width>
+				<colorTop>rgb(50, 54, 63)</colorTop>
+				<colorBottom>rgb(50, 54, 63)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>1</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</MainToolbar>
+		<CentralWndSplitter>
+			<ThemeSplitter>
+				<ThemeFastDrawBar>
+					<firstColor>rgb(29, 29, 29)</firstColor>
+					<secondColor>rgb(128, 128, 128)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>4</size>
+				</ThemeFastDrawBar>
+				<ThemeSeparationBar>
+					<firstColor>rgb(29, 29, 29)</firstColor>
+					<secondColor>rgb(128, 128, 128)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>10</size>
+				</ThemeSeparationBar>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemeSplitter>
+		</CentralWndSplitter>
+	</Main>
+	<VideoPreview>
+		<VideoControl>
+			<Theme>
+				<colorBack>rgb(0, 0, 0)</colorBack>
+			</Theme>
+		</VideoControl>
+		<VideoToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>60</tailleX>
+					<tailleY>60</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<showButtonOnly>1</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>70</height>
+				<width>60</width>
+				<colorTop>rgb(29, 29, 29)</colorTop>
+				<colorBottom>rgb(29, 29, 29)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</VideoToolbar>
+		<SliderVideo>
+			<ThemeSlider>
+				<ThemeFont>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<bold>0</bold>
+					<positionFont>2</positionFont>
+					<colorFont>rgb(255, 255, 255)</colorFont>
+					<fontName>Verdana</fontName>
+					<fontSize>8</fontSize>
+					<marge>5</marge>
+					<fontQuality>0</fontQuality>
+				</ThemeFont>
+				<width>200</width>
+				<height>40</height>
+				<rectangleHeight>10</rectangleHeight>
+				<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+				<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+				<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+				<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+			</ThemeSlider>
+		</SliderVideo>
+	</VideoPreview>
+	<BitmapPreview>
+		<BitmapWindow>
+			<Theme>
+				<colorBack>rgb(0, 0, 0)</colorBack>
+				<colorFullscreen>rgb(0, 0, 0)</colorFullscreen>
+				<colorScreen>rgb(50, 54, 63)</colorScreen>
+			</Theme>
+		</BitmapWindow>
+		<BitmapScrollbar>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+		</BitmapScrollbar>
+		<BitmapToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>30</tailleX>
+					<tailleY>30</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<showButtonOnly>1</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>30</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>40</height>
+				<width>60</width>
+				<colorTop>rgb(45, 48, 56)</colorTop>
+				<colorBottom>rgb(45, 48, 56)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</BitmapToolbar>
+	</BitmapPreview>
+	<PreviewWindow>
+		<PreviewInfos>
+			<ThemeSplitter>
+				<ThemeFastDrawBar>
+					<firstColor>rgb(29, 29, 29)</firstColor>
+					<secondColor>rgb(128, 128, 128)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>4</size>
+				</ThemeFastDrawBar>
+				<ThemeSeparationBar>
+					<firstColor>rgb(29, 29, 29)</firstColor>
+					<secondColor>rgb(128, 128, 128)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>10</size>
+				</ThemeSeparationBar>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemeSplitter>
+		</PreviewInfos>
+		<PreviewPane>
+			<ThemePane>
+				<ThemeTitleBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>14</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<height>30</height>
+					<marge>5</marge>
+					<croixWidth>15</croixWidth>
+					<croixHeight>30</croixHeight>
+					<colorCross>rgb(0, 0, 0)</colorCross>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTitleBar>
+				<height>20</height>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemePane>
+		</PreviewPane>
+		<PreviewToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>60</tailleX>
+					<tailleY>60</tailleY>
+					<rectangleSize>2</rectangleSize>
+					<showButtonOnly>0</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>60</height>
+				<width>60</width>
+				<colorTop>rgb(50, 54, 63)</colorTop>
+				<colorBottom>rgb(50, 54, 63)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</PreviewToolbar>
+		<BitmapInfos>
+			<ThemeBitmapInfos>
+				<ThemeFont>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<bold>0</bold>
+					<positionFont>2</positionFont>
+					<colorFont>rgb(255, 255, 255)</colorFont>
+					<fontName>Verdana</fontName>
+					<fontSize>16</fontSize>
+					<marge>5</marge>
+					<fontQuality>0</fontQuality>
+				</ThemeFont>
+				<colorBack>rgb(61, 65, 73)</colorBack>
+				<height>40</height>
+				<checkboxHeight>20</checkboxHeight>
+				<checkboxWidth>20</checkboxWidth>
+			</ThemeBitmapInfos>
+		</BitmapInfos>
+	</PreviewWindow>
+	<Thumbnail>
+		<ThumbnailPane>
+			<ThemePane>
+				<ThemeTitleBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>14</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<height>30</height>
+					<marge>5</marge>
+					<croixWidth>15</croixWidth>
+					<croixHeight>30</croixHeight>
+					<colorCross>rgb(0, 0, 0)</colorCross>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTitleBar>
+				<height>20</height>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemePane>
+		</ThumbnailPane>
+		<Thumbnail>
+			<ThemeThumbnail>
+				<ThemeIcone>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>200</height>
+					<checkboxWidth>20</checkboxWidth>
+					<checkboxHeight>20</checkboxHeight>
+					<showOnlyThumbnail>0</showOnlyThumbnail>
+					<marge>5</marge>
+					<colorBack>rgb(40, 44, 53)</colorBack>
+					<colorTop>rgb(80, 84, 91)</colorTop>
+					<colorBottom>rgb(80, 84, 91)</colorBottom>
+					<colorSelectTop>rgb(205, 205, 205)</colorSelectTop>
+					<colorSelectBottom>rgb(171, 171, 171)</colorSelectBottom>
+				</ThemeIcone>
+				<ThemeInfosSeparationBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<height>40</height>
+					<colorBack>rgb(80, 84, 91)</colorBack>
+					<colorTop>rgb(45, 45, 48)</colorTop>
+					<colorBottom>rgb(45, 45, 48)</colorBottom>
+					<checkboxHeight>20</checkboxHeight>
+					<checkboxWidth>20</checkboxWidth>
+				</ThemeInfosSeparationBar>
+				<colorBack>rgb(50, 54, 63)</colorBack>
+			</ThemeThumbnail>
+		</Thumbnail>
+		<ClickThumbnailToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>60</tailleX>
+					<tailleY>10</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<showButtonOnly>0</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>10</height>
+				<width>60</width>
+				<colorTop>rgb(29, 29, 29)</colorTop>
+				<colorBottom>rgb(29, 29, 29)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</ClickThumbnailToolbar>
+		<ScrollThumbnail>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+		</ScrollThumbnail>
+		<ThumbnailToolbarZoom>
+			<ThemeToolBarZoom>
+				<Font>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>12</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+				</Font>
+				<FontActif>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(48, 128, 254)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>12</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+				</FontActif>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<height>30</height>
+				<checkboxHeight>20</checkboxHeight>
+				<checkboxWidth>20</checkboxWidth>
+			</ThemeToolBarZoom>
+		</ThumbnailToolbarZoom>
+		<ThumbnailToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>30</tailleX>
+					<tailleY>30</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<showButtonOnly>1</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>120</tailleX>
+					<tailleY>30</tailleY>
+					<rectangleSize>0</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>30</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>30</height>
+				<width>30</width>
+				<colorTop>rgb(50, 54, 63)</colorTop>
+				<colorBottom>rgb(50, 54, 63)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</ThumbnailToolbar>
+	</Thumbnail>
+	<ThumbnailVideo>
+		<ThumbnailVideoPane>
+			<ThemePane>
+				<ThemeTitleBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>14</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<height>30</height>
+					<marge>5</marge>
+					<croixWidth>15</croixWidth>
+					<croixHeight>30</croixHeight>
+					<colorCross>rgb(0, 0, 0)</colorCross>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTitleBar>
+				<height>20</height>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemePane>
+		</ThumbnailVideoPane>
+		<ThumbnailVideo>
+			<ThemeThumbnail>
+				<ThemeIcone>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>200</height>
+					<checkboxWidth>20</checkboxWidth>
+					<checkboxHeight>20</checkboxHeight>
+					<showOnlyThumbnail>0</showOnlyThumbnail>
+					<marge>5</marge>
+					<colorBack>rgb(0, 0, 0)</colorBack>
+					<colorTop>rgb(74, 74, 74)</colorTop>
+					<colorBottom>rgb(74, 74, 74)</colorBottom>
+					<colorSelectTop>rgb(205, 205, 205)</colorSelectTop>
+					<colorSelectBottom>rgb(171, 171, 171)</colorSelectBottom>
+				</ThemeIcone>
+				<ThemeInfosSeparationBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<height>40</height>
+					<colorBack>rgb(74, 74, 74)</colorBack>
+					<colorTop>rgb(45, 45, 48)</colorTop>
+					<colorBottom>rgb(45, 45, 48)</colorBottom>
+					<checkboxHeight>20</checkboxHeight>
+					<checkboxWidth>20</checkboxWidth>
+				</ThemeInfosSeparationBar>
+				<colorBack>rgb(74, 74, 74)</colorBack>
+			</ThemeThumbnail>
+		</ThumbnailVideo>
+		<ClickThumbnailVideoToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>60</tailleX>
+					<tailleY>10</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<showButtonOnly>0</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>100</tailleX>
+					<tailleY>100</tailleY>
+					<rectangleSize>4</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>10</height>
+				<width>60</width>
+				<colorTop>rgb(29, 29, 29)</colorTop>
+				<colorBottom>rgb(29, 29, 29)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>5</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</ClickThumbnailVideoToolbar>
+		<ScrollThumbnailVideo>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+		</ScrollThumbnailVideo>
+	</ThumbnailVideo>
+	<InfoVideoPicture>
+		<InfosToolbar>
+			<ThemeToolbar>
+				<ThemeToolbarButton>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<tailleX>60</tailleX>
+					<tailleY>60</tailleY>
+					<rectangleSize>2</rectangleSize>
+					<showButtonOnly>0</showButtonOnly>
+					<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+					<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+					<actifTop>rgb(255, 255, 255)</actifTop>
+					<actifBottom>rgb(223, 223, 223)</actifBottom>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+				</ThemeToolbarButton>
+				<ThemeToolbarTexte>
+					<Font>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</Font>
+					<FontActif>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+					</FontActif>
+					<tailleX>120</tailleX>
+					<tailleY>30</tailleY>
+					<rectangleSize>2</rectangleSize>
+					<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+					<actifTop>rgb(48, 48, 48)</actifTop>
+					<actifBottom>rgb(128, 128, 128)</actifBottom>
+					<rectTop>rgb(222, 222, 222)</rectTop>
+					<rectBottom>rgb(156, 156, 156)</rectBottom>
+				</ThemeToolbarTexte>
+				<ThemeSlider>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>8</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>40</height>
+					<rectangleHeight>10</rectangleHeight>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+					<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+				</ThemeSlider>
+				<height>30</height>
+				<width>120</width>
+				<colorTop>rgb(61, 65, 73)</colorTop>
+				<colorBottom>rgb(61, 65, 73)</colorBottom>
+				<replaceColor>rgb(255, 255, 255)</replaceColor>
+				<margeX>0</margeX>
+				<margeY>0</margeY>
+				<position>2</position>
+				<isVertical>0</isVertical>
+			</ThemeToolbar>
+		</InfosToolbar>
+		<InfosPane>
+			<ThemePane>
+				<ThemeTitleBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>14</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<height>30</height>
+					<marge>5</marge>
+					<croixWidth>15</croixWidth>
+					<croixHeight>30</croixHeight>
+					<colorCross>rgb(0, 0, 0)</colorCross>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTitleBar>
+				<height>20</height>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemePane>
+		</InfosPane>
+		<Infos>
+			<ClickInfosToolbar>
+				<ThemeToolbar>
+					<ThemeToolbarButton>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+						<tailleX>60</tailleX>
+						<tailleY>10</tailleY>
+						<rectangleSize>4</rectangleSize>
+						<showButtonOnly>0</showButtonOnly>
+						<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+						<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+						<actifTop>rgb(255, 255, 255)</actifTop>
+						<actifBottom>rgb(223, 223, 223)</actifBottom>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<replaceColor>rgb(255, 255, 255)</replaceColor>
+					</ThemeToolbarButton>
+					<ThemeToolbarTexte>
+						<Font>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</Font>
+						<FontActif>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</FontActif>
+						<tailleX>100</tailleX>
+						<tailleY>100</tailleY>
+						<rectangleSize>4</rectangleSize>
+						<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+						<actifTop>rgb(48, 48, 48)</actifTop>
+						<actifBottom>rgb(128, 128, 128)</actifBottom>
+						<rectTop>rgb(222, 222, 222)</rectTop>
+						<rectBottom>rgb(156, 156, 156)</rectBottom>
+					</ThemeToolbarTexte>
+					<ThemeSlider>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>8</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>200</width>
+						<height>40</height>
+						<rectangleHeight>10</rectangleHeight>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+					</ThemeSlider>
+					<height>60</height>
+					<width>10</width>
+					<colorTop>rgb(29, 29, 29)</colorTop>
+					<colorBottom>rgb(29, 29, 29)</colorBottom>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+					<margeX>0</margeX>
+					<margeY>5</margeY>
+					<position>2</position>
+					<isVertical>1</isVertical>
+				</ThemeToolbar>
+			</ClickInfosToolbar>
+			<InfosFileTree>
+				<ThemeTree>
+					<ThemeTreeTriangle>
+						<width>10</width>
+						<height>10</height>
+						<elementWidth>10</elementWidth>
+						<elementHeight>10</elementHeight>
+						<marge>2</marge>
+						<color>rgb(0, 0, 0)</color>
+					</ThemeTreeTriangle>
+					<ThemeTreeDelete>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<crossColor>rgb(255, 0, 0)</crossColor>
+						<colorBackActif>rgba(0, 0, 0, 0.000)</colorBackActif>
+						<position>0</position>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeDelete>
+					<ThemeTreeSlide>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<marge>4</marge>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeSlide>
+					<ThemeTreeTexte>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>20</width>
+						<height>20</height>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeTexte>
+					<ThemeTreeCheckBox>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeCheckBox>
+					<ThemeTreeListBox>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<marge>4</marge>
+						<buttonWidth>17</buttonWidth>
+						<buttonHeight>17</buttonHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeListBox>
+					<rowWidth>20</rowWidth>
+					<rowHeight>20</rowHeight>
+					<margeX>5</margeX>
+					<bgColorOne>rgb(45, 48, 56)</bgColorOne>
+					<bgColorTwo>rgb(80, 84, 91)</bgColorTwo>
+					<bgColorBackground>rgba(255, 255, 255, 0.000)</bgColorBackground>
+					<bgColorActif>rgb(255, 255, 255)</bgColorActif>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTree>
+			</InfosFileTree>
+			<ScrollInfosFile>
+				<ThemeScrollBar>
+					<rectangleSize>10</rectangleSize>
+					<marge>2</marge>
+					<colorBack>rgb(29, 29, 29)</colorBack>
+					<colorBar>rgb(50, 54, 63)</colorBar>
+					<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+					<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+					<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+				</ThemeScrollBar>
+			</ScrollInfosFile>
+		</Infos>
+		<Filtre>
+			<FiltreToolbar>
+				<ThemeToolbar>
+					<ThemeToolbarButton>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+						<tailleX>30</tailleX>
+						<tailleY>40</tailleY>
+						<rectangleSize>4</rectangleSize>
+						<showButtonOnly>1</showButtonOnly>
+						<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+						<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+						<actifTop>rgb(255, 255, 255)</actifTop>
+						<actifBottom>rgb(223, 223, 223)</actifBottom>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<replaceColor>rgb(255, 255, 255)</replaceColor>
+					</ThemeToolbarButton>
+					<ThemeToolbarTexte>
+						<Font>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</Font>
+						<FontActif>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</FontActif>
+						<tailleX>100</tailleX>
+						<tailleY>100</tailleY>
+						<rectangleSize>4</rectangleSize>
+						<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+						<actifTop>rgb(48, 48, 48)</actifTop>
+						<actifBottom>rgb(128, 128, 128)</actifBottom>
+						<rectTop>rgb(222, 222, 222)</rectTop>
+						<rectBottom>rgb(156, 156, 156)</rectBottom>
+					</ThemeToolbarTexte>
+					<ThemeSlider>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>8</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>200</width>
+						<height>40</height>
+						<rectangleHeight>10</rectangleHeight>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+					</ThemeSlider>
+					<height>40</height>
+					<width>60</width>
+					<colorTop>rgb(29, 29, 29)</colorTop>
+					<colorBottom>rgb(29, 29, 29)</colorBottom>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+					<margeX>5</margeX>
+					<margeY>0</margeY>
+					<position>2</position>
+					<isVertical>0</isVertical>
+				</ThemeToolbar>
+			</FiltreToolbar>
+			<FiltreEffectTree>
+				<ThemeTree>
+					<ThemeTreeTriangle>
+						<width>10</width>
+						<height>10</height>
+						<elementWidth>10</elementWidth>
+						<elementHeight>10</elementHeight>
+						<marge>2</marge>
+						<color>rgb(0, 0, 0)</color>
+					</ThemeTreeTriangle>
+					<ThemeTreeDelete>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<crossColor>rgb(255, 0, 0)</crossColor>
+						<colorBackActif>rgba(0, 0, 0, 0.000)</colorBackActif>
+						<position>0</position>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeDelete>
+					<ThemeTreeSlide>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<marge>4</marge>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeSlide>
+					<ThemeTreeTexte>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>20</width>
+						<height>20</height>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeTexte>
+					<ThemeTreeCheckBox>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeCheckBox>
+					<ThemeTreeListBox>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<marge>4</marge>
+						<buttonWidth>17</buttonWidth>
+						<buttonHeight>17</buttonHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeListBox>
+					<rowWidth>20</rowWidth>
+					<rowHeight>20</rowHeight>
+					<margeX>5</margeX>
+					<bgColorOne>rgb(29, 29, 29)</bgColorOne>
+					<bgColorTwo>rgb(74, 74, 74)</bgColorTwo>
+					<bgColorBackground>rgba(255, 255, 255, 0.000)</bgColorBackground>
+					<bgColorActif>rgb(255, 255, 255)</bgColorActif>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTree>
+			</FiltreEffectTree>
+			<ScrollFiltre>
+				<ThemeScrollBar>
+					<rectangleSize>10</rectangleSize>
+					<marge>2</marge>
+					<colorBack>rgb(29, 29, 29)</colorBack>
+					<colorBar>rgb(50, 54, 63)</colorBar>
+					<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+					<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+					<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+				</ThemeScrollBar>
+			</ScrollFiltre>
+		</Filtre>
+		<History>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+			<ScrollHistoryEffect/>
+			<ThemeTree>
+				<ThemeTreeTriangle>
+					<width>10</width>
+					<height>10</height>
+					<elementWidth>10</elementWidth>
+					<elementHeight>10</elementHeight>
+					<marge>2</marge>
+					<color>rgb(0, 0, 0)</color>
+				</ThemeTreeTriangle>
+				<ThemeTreeDelete>
+					<width>15</width>
+					<height>15</height>
+					<elementWidth>15</elementWidth>
+					<elementHeight>15</elementHeight>
+					<crossColor>rgb(255, 0, 0)</crossColor>
+					<colorBackActif>rgba(0, 0, 0, 0.000)</colorBackActif>
+					<position>0</position>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeDelete>
+				<ThemeTreeSlide>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>14</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>250</width>
+					<height>20</height>
+					<elementWidth>250</elementWidth>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<marge>4</marge>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeSlide>
+				<ThemeTreeTexte>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>20</width>
+					<height>20</height>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeTexte>
+				<ThemeTreeCheckBox>
+					<width>15</width>
+					<height>15</height>
+					<elementWidth>15</elementWidth>
+					<elementHeight>15</elementHeight>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeCheckBox>
+				<ThemeTreeListBox>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>12</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>250</width>
+					<height>20</height>
+					<elementWidth>250</elementWidth>
+					<marge>4</marge>
+					<buttonWidth>17</buttonWidth>
+					<buttonHeight>17</buttonHeight>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeListBox>
+				<rowWidth>20</rowWidth>
+				<rowHeight>20</rowHeight>
+				<margeX>5</margeX>
+				<bgColorOne>rgb(45, 48, 56)</bgColorOne>
+				<bgColorTwo>rgb(80, 84, 91)</bgColorTwo>
+				<bgColorBackground>rgba(255, 255, 255, 0.000)</bgColorBackground>
+				<bgColorActif>rgb(255, 255, 255)</bgColorActif>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemeTree>
+			<HistoryEffectTree/>
+		</History>
+		<ThumbnailFiltre>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+			<ScrollThumbnailEffect/>
+			<ThemeThumbnail>
+				<ThemeIcone>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<width>200</width>
+					<height>200</height>
+					<checkboxWidth>20</checkboxWidth>
+					<checkboxHeight>20</checkboxHeight>
+					<showOnlyThumbnail>0</showOnlyThumbnail>
+					<marge>5</marge>
+					<colorBack>rgb(40, 44, 53)</colorBack>
+					<colorTop>rgb(80, 84, 91)</colorTop>
+					<colorBottom>rgb(80, 84, 91)</colorBottom>
+					<colorSelectTop>rgb(205, 205, 205)</colorSelectTop>
+					<colorSelectBottom>rgb(171, 171, 171)</colorSelectBottom>
+				</ThemeIcone>
+				<ThemeInfosSeparationBar>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>4</fontQuality>
+					</ThemeFont>
+					<height>40</height>
+					<colorBack>rgb(45, 45, 48)</colorBack>
+					<colorTop>rgb(45, 45, 48)</colorTop>
+					<colorBottom>rgb(45, 45, 48)</colorBottom>
+					<checkboxHeight>20</checkboxHeight>
+					<checkboxWidth>20</checkboxWidth>
+				</ThemeInfosSeparationBar>
+				<colorBack>rgb(50, 54, 63)</colorBack>
+			</ThemeThumbnail>
+			<ThumbnailViewerEffectTree/>
+		</ThumbnailFiltre>
+		<EffectVideo>
+			<ThemeScrollBar>
+				<rectangleSize>10</rectangleSize>
+				<marge>2</marge>
+				<colorBack>rgb(29, 29, 29)</colorBack>
+				<colorBar>rgb(50, 54, 63)</colorBar>
+				<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+				<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+				<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+			</ThemeScrollBar>
+			<ScrollEffectVideo/>
+			<ThemeTree>
+				<ThemeTreeTriangle>
+					<width>10</width>
+					<height>10</height>
+					<elementWidth>10</elementWidth>
+					<elementHeight>10</elementHeight>
+					<marge>2</marge>
+					<color>rgb(0, 0, 0)</color>
+				</ThemeTreeTriangle>
+				<ThemeTreeDelete>
+					<width>15</width>
+					<height>15</height>
+					<elementWidth>15</elementWidth>
+					<elementHeight>15</elementHeight>
+					<crossColor>rgb(255, 0, 0)</crossColor>
+					<colorBackActif>rgba(0, 0, 0, 0.000)</colorBackActif>
+					<position>0</position>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeDelete>
+				<ThemeTreeSlide>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>250</width>
+					<height>20</height>
+					<elementWidth>250</elementWidth>
+					<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+					<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+					<marge>4</marge>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeSlide>
+				<ThemeTreeTexte>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>10</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>20</width>
+					<height>20</height>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeTexte>
+				<ThemeTreeCheckBox>
+					<width>15</width>
+					<height>15</height>
+					<elementWidth>15</elementWidth>
+					<elementHeight>15</elementHeight>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeCheckBox>
+				<ThemeTreeListBox>
+					<ThemeFont>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<bold>0</bold>
+						<positionFont>2</positionFont>
+						<colorFont>rgb(255, 255, 255)</colorFont>
+						<fontName>Verdana</fontName>
+						<fontSize>12</fontSize>
+						<marge>5</marge>
+						<fontQuality>0</fontQuality>
+					</ThemeFont>
+					<width>250</width>
+					<height>20</height>
+					<elementWidth>250</elementWidth>
+					<marge>4</marge>
+					<buttonWidth>17</buttonWidth>
+					<buttonHeight>17</buttonHeight>
+					<color>rgb(128, 128, 128)</color>
+				</ThemeTreeListBox>
+				<rowWidth>20</rowWidth>
+				<rowHeight>20</rowHeight>
+				<margeX>5</margeX>
+				<bgColorOne>rgb(45, 48, 56)</bgColorOne>
+				<bgColorTwo>rgb(80, 84, 91)</bgColorTwo>
+				<bgColorBackground>rgba(255, 255, 255, 0.000)</bgColorBackground>
+				<bgColorActif>rgb(255, 255, 255)</bgColorActif>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemeTree>
+			<EffectVideoWndTree/>
+		</EffectVideo>
+	</InfoVideoPicture>
+	<CategoryFolder>
+		<CategoryFolderSplitter>
+			<ThemeSplitter>
+				<ThemeFastDrawBar>
+					<firstColor>rgb(200, 200, 200)</firstColor>
+					<secondColor>rgb(255, 255, 255)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>4</size>
+				</ThemeFastDrawBar>
+				<ThemeSeparationBar>
+					<firstColor>rgb(200, 200, 200)</firstColor>
+					<secondColor>rgb(255, 255, 255)</secondColor>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+					<size>10</size>
+				</ThemeSeparationBar>
+				<colorBack>rgb(128, 128, 128)</colorBack>
+			</ThemeSplitter>
+		</CategoryFolderSplitter>
+		<Folder>
+			<PaneFolder>
+				<ThemePane>
+					<ThemeTitleBar>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>14</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<height>30</height>
+						<marge>5</marge>
+						<croixWidth>15</croixWidth>
+						<croixHeight>15</croixHeight>
+						<colorCross>rgb(0, 0, 0)</colorCross>
+						<colorBack>rgb(45, 48, 56)</colorBack>
+					</ThemeTitleBar>
+					<height>20</height>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemePane>
+			</PaneFolder>
+			<Folder>
+				<ThemeFolder>
+					<colorBack>rgb(74, 74, 74)</colorBack>
+					<colorFont>rgb(255, 255, 255)</colorFont>
+				</ThemeFolder>
+			</Folder>
+			<ClickFolderToolbar>
+				<ThemeToolbar>
+					<ThemeToolbarButton>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>8</fontSize>
+							<marge>5</marge>
+							<fontQuality>4</fontQuality>
+						</ThemeFont>
+						<tailleX>60</tailleX>
+						<tailleY>60</tailleY>
+						<rectangleSize>2</rectangleSize>
+						<showButtonOnly>0</showButtonOnly>
+						<lineColorTop>rgb(222, 222, 222)</lineColorTop>
+						<lineColorBottom>rgb(156, 156, 156)</lineColorBottom>
+						<actifTop>rgb(255, 255, 255)</actifTop>
+						<actifBottom>rgb(223, 223, 223)</actifBottom>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<replaceColor>rgb(255, 255, 255)</replaceColor>
+					</ThemeToolbarButton>
+					<ThemeToolbarTexte>
+						<Font>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</Font>
+						<FontActif>
+							<ThemeFont>
+								<colorBack>rgb(128, 128, 128)</colorBack>
+								<bold>0</bold>
+								<positionFont>2</positionFont>
+								<colorFont>rgb(255, 255, 255)</colorFont>
+								<fontName>Verdana</fontName>
+								<fontSize>10</fontSize>
+								<marge>5</marge>
+								<fontQuality>4</fontQuality>
+							</ThemeFont>
+						</FontActif>
+						<tailleX>100</tailleX>
+						<tailleY>100</tailleY>
+						<rectangleSize>4</rectangleSize>
+						<colorBack>rgba(0, 0, 0, 0.000)</colorBack>
+						<actifTop>rgb(48, 48, 48)</actifTop>
+						<actifBottom>rgb(128, 128, 128)</actifBottom>
+						<rectTop>rgb(222, 222, 222)</rectTop>
+						<rectBottom>rgb(156, 156, 156)</rectBottom>
+					</ThemeToolbarTexte>
+					<ThemeSlider>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>8</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>200</width>
+						<height>40</height>
+						<rectangleHeight>10</rectangleHeight>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<colorBack>rgb(128, 128, 128)</colorBack>
+						<colorActifReplacement>rgb(48, 128, 254)</colorActifReplacement>
+						<colorInactifReplacement>rgb(255, 255, 255)</colorInactifReplacement>
+					</ThemeSlider>
+					<height>60</height>
+					<width>60</width>
+					<colorTop>rgb(50, 54, 63)</colorTop>
+					<colorBottom>rgb(50, 54, 63)</colorBottom>
+					<replaceColor>rgb(255, 255, 255)</replaceColor>
+					<margeX>5</margeX>
+					<margeY>5</margeY>
+					<position>0</position>
+					<isVertical>0</isVertical>
+				</ThemeToolbar>
+			</ClickFolderToolbar>
+		</Folder>
+		<Category>
+			<PaneCategory>
+				<ThemePane>
+					<ThemeTitleBar>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>14</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<height>30</height>
+						<marge>5</marge>
+						<croixWidth>15</croixWidth>
+						<croixHeight>15</croixHeight>
+						<colorCross>rgb(0, 0, 0)</colorCross>
+						<colorBack>rgb(45, 48, 56)</colorBack>
+					</ThemeTitleBar>
+					<height>20</height>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemePane>
+			</PaneCategory>
+			<CategoryTree>
+				<ThemeTree>
+					<ThemeTreeTriangle>
+						<width>10</width>
+						<height>10</height>
+						<elementWidth>10</elementWidth>
+						<elementHeight>10</elementHeight>
+						<marge>2</marge>
+						<color>rgb(0, 0, 0)</color>
+					</ThemeTreeTriangle>
+					<ThemeTreeDelete>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<crossColor>rgb(255, 0, 0)</crossColor>
+						<colorBackActif>rgba(0, 0, 0, 0.000)</colorBackActif>
+						<position>0</position>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeDelete>
+					<ThemeTreeSlide>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>14</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<rectanglePast>rgb(0, 0, 128)</rectanglePast>
+						<rectangleNext>rgb(48, 128, 254)</rectangleNext>
+						<marge>4</marge>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeSlide>
+					<ThemeTreeTexte>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>10</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>20</width>
+						<height>20</height>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeTexte>
+					<ThemeTreeCheckBox>
+						<width>15</width>
+						<height>15</height>
+						<elementWidth>15</elementWidth>
+						<elementHeight>15</elementHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeCheckBox>
+					<ThemeTreeListBox>
+						<ThemeFont>
+							<colorBack>rgb(128, 128, 128)</colorBack>
+							<bold>0</bold>
+							<positionFont>2</positionFont>
+							<colorFont>rgb(255, 255, 255)</colorFont>
+							<fontName>Verdana</fontName>
+							<fontSize>12</fontSize>
+							<marge>5</marge>
+							<fontQuality>0</fontQuality>
+						</ThemeFont>
+						<width>250</width>
+						<height>20</height>
+						<elementWidth>250</elementWidth>
+						<marge>4</marge>
+						<buttonWidth>17</buttonWidth>
+						<buttonHeight>17</buttonHeight>
+						<color>rgb(128, 128, 128)</color>
+					</ThemeTreeListBox>
+					<rowWidth>20</rowWidth>
+					<rowHeight>20</rowHeight>
+					<margeX>17</margeX>
+					<bgColorOne>rgb(45, 48, 56)</bgColorOne>
+					<bgColorTwo>rgb(80, 84, 91)</bgColorTwo>
+					<bgColorBackground>rgba(255, 255, 255, 0.000)</bgColorBackground>
+					<bgColorActif>rgb(255, 255, 255)</bgColorActif>
+					<colorBack>rgb(128, 128, 128)</colorBack>
+				</ThemeTree>
+			</CategoryTree>
+			<ScrollCategory>
+				<ThemeScrollBar>
+					<rectangleSize>10</rectangleSize>
+					<marge>2</marge>
+					<colorBack>rgb(29, 29, 29)</colorBack>
+					<colorBar>rgb(50, 54, 63)</colorBar>
+					<colorTriangle>rgb(74, 74, 74)</colorTriangle>
+					<colorBarActif>rgb(128, 128, 128)</colorBarActif>
+					<colorTriangleActif>rgb(128, 128, 128)</colorTriangleActif>
+				</ThemeScrollBar>
+			</ScrollCategory>
+		</Category>
+	</CategoryFolder>
+</Theme>
+
