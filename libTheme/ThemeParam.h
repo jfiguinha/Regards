@@ -25,7 +25,14 @@ public:
 
 	void GetBitmapWindowTheme(CThemeBitmapWindow * theme);
 	void GetBitmapToolbarTheme(CThemeToolbar * theme);
-	void GetBitmapScrollbarTheme(CThemeScrollBar * theme);
+
+	//Default Theme
+	void GetScrollTheme(CThemeScrollBar* theme);
+	void GetPaneTheme(CThemePane* theme);
+	void GetTreeTheme(CThemeTree* theme);
+	void GetSplitterTheme(CThemeSplitter* theme);
+	void GetClickToolbarTheme(CThemeToolbar* theme);
+	void GetThumbnailTheme(CThemeThumbnail* theme);
 
 protected:
 
@@ -35,9 +42,15 @@ protected:
 
 	void InitBitmapWindow();
 	void InitBitmapToolbar();
-	void InitBitmapScrollbar();
 
 
+	//Default Theme
+	void InitScrollTheme();
+	void InitPaneTheme();
+	void InitTreeTheme();
+	void InitSplitterTheme();
+	void InitClickToolbarTheme();
+	void InitThumbnail();
 
 	virtual void LoadTheme(){};
 	virtual void SaveTheme(){};
@@ -55,7 +68,15 @@ protected:
 
 	CThemeBitmapWindow themeBitmapWindow;
 	CThemeToolbar themeBitmapToolbar;
-	CThemeScrollBar themeBitmapScrollbar;
+
+
+	//Default Theme
+	CThemeScrollBar themeScroll;
+	CThemePane themePane;
+	CThemeTree themeTree;
+	CThemeSplitter themeSplitter;
+	CThemeToolbar themeClickToolbar;
+	CThemeThumbnail themeThumbnail;
 
 };
 

@@ -68,7 +68,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	this->bitmapInterface = bitmapInterface;
 
 	if (config != nullptr)
-		config->GetBitmapScrollbarTheme(&themeScroll);
+		config->GetScrollTheme(&themeScroll);
 
 	scrollbar = new CScrollbarWnd(this, wxID_ANY, "BitmapScroll", false);
 

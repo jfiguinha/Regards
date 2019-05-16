@@ -109,10 +109,6 @@ void CViewerTheme::InitThumbnailToolbar()
 
 }
 
-void CViewerTheme::GetThumbnailTheme(CThemeThumbnail * theme)
-{
-	*theme = themeThumbnail;
-}
 
 void CViewerTheme::GetThumbnailFaceToolbarTheme(CThemeToolbar &theme)
 {
@@ -129,26 +125,7 @@ void CViewerTheme::GetThumbnailToolbarZoomTheme(CThemeToolBarZoom &theme)
 	theme = themeThumbnailToolbarZoom;
 }
 
-void CViewerTheme::GetScrollTheme(CThemeScrollBar * theme)
-{
-	*theme = themeScroll;
-}
 
-void CViewerTheme::GetPaneTheme(CThemePane* theme)
-{
-	*theme = themePane;
-}
-
-void CViewerTheme::InitScrollTheme()
-{
-	themeScroll.SetRectangleSize(10);
-	themeScroll.colorBack.Set(29, 29, 29);
-	themeScroll.colorTriangle.Set(74, 74, 74);
-	themeScroll.colorTriangleActif.Set(128, 128, 128);
-	themeScroll.colorBar.Set(50, 54, 63);
-	themeScroll.colorBarActif.Set(128, 128, 128);
-	themeScroll.SetMarge(2);
-}
 
 void CViewerTheme::InitThumbnailToolbarZoomTheme()
 {
@@ -173,23 +150,7 @@ void CViewerTheme::InitFolderTheme()
 	themeFolder.colorFont.Set(255, 255, 255);
 }
 
-void CViewerTheme::InitPaneTheme()
-{
-	themePane.SetHeight(20);
-	themePane.themeTitle.SetCroixWidth(15);
-	themePane.themeTitle.SetCroixHeight(15);
-	themePane.themeTitle.SetHeight(30);
-	themePane.themeTitle.SetMarge(5);
-	themePane.themeTitle.font.SetColorFont(wxColour(255, 255, 255));
-	themePane.themeTitle.font.SetFontSize(14);
-}
 
-
-
-void CViewerTheme::GetTreeTheme(CThemeTree * theme)
-{
-	*theme = themeTree;
-}
 
 
 void CViewerTheme::GetBitmapInfosTheme(CThemeBitmapInfos * theme)
@@ -208,73 +169,6 @@ void CViewerTheme::InitBitmapInfos()
 	themeBitmapInfos.colorBack.Set(61, 65, 73);
 }
 
-void CViewerTheme::InitTreeTheme()
-{
-	themeTree.bgColorOne.Set(45, 48, 56);
-	themeTree.bgColorActif.Set(255, 255, 255);
-	themeTree.bgColorTwo.Set(80, 84, 91);
-	themeTree.SetRowHeight(20);
-	themeTree.SetMargeX(5);
-	themeTree.themeCheckbox.SetWidth(15);
-	themeTree.themeCheckbox.SetHeight(15);
-	themeTree.themeSlide.SetHeight(20);
-	themeTree.themeSlide.SetWidth(250);
-	themeTree.themeSlide.font.SetColorFont(wxColour(255, 255, 255));
-	themeTree.themeSlide.font.SetFontName("Verdana");
-	themeTree.themeSlide.font.SetFontSize(10);
-	themeTree.themeSlide.rectanglePast.Set(0, 0, 128);
-	themeTree.themeSlide.rectangleNext.Set(48, 128, 254);
-	themeTree.themeTexte.SetHeight(20);
-	themeTree.themeTexte.SetWidth(20);
-	themeTree.themeTexte.font.SetColorFont(wxColour(255, 255, 255));
-	themeTree.themeTexte.font.SetFontName("Verdana");
-	themeTree.themeTexte.font.SetFontSize(10);
-	themeTree.themeTriangle.SetMarge(2);
-	themeTree.themeTriangle.SetElementHeight(10);
-	themeTree.themeTriangle.SetHeight(10);
-	themeTree.themeTriangle.SetElementWidth(10);
-	themeTree.themeTriangle.SetWidth(10);
-	themeTree.themeTriangle.color.Set(0, 0, 0);
-}
-
-
-void CViewerTheme::InitThumbnail()
-{
-	themeThumbnail.themeIcone.SetWidth(200);
-	themeThumbnail.themeIcone.SetHeight(200);
-	themeThumbnail.themeIcone.showOnlyThumbnail = false;
-	themeThumbnail.themeIcone.colorBack.Set(40, 44, 53);
-	themeThumbnail.themeIcone.colorTop.Set(80, 84, 91);
-	themeThumbnail.themeIcone.colorBottom.Set(80, 84, 91);
-	themeThumbnail.themeIcone.colorSelectTop.Set(205, 205, 205);
-	themeThumbnail.themeIcone.colorSelectBottom.Set(171, 171, 171);
-	themeThumbnail.colorBack.Set(50, 54, 63);
-	themeThumbnail.themeIcone.font.SetColorFont(wxColour(255, 255, 255));
-	themeThumbnail.themeSeparation.colorBack.Set(80, 84, 91);
-	//wxColour(45, 48, 56);
-	//themeThumbnail.themeSeparation.colorBack.Set(45, 48, 56);
-	themeThumbnail.themeSeparation.colorTop.Set(45, 45, 48);
-	themeThumbnail.themeSeparation.colorBottom.Set(45, 45, 48);
-	themeThumbnail.themeSeparation.themeFont.SetColorFont(wxColour(255, 255, 255));
-	themeThumbnail.themeSeparation.themeFont.SetFontName("Verdana");
-	themeThumbnail.themeSeparation.themeFont.SetFontSize(10);
-	themeThumbnail.themeSeparation.themeFont.SetFontQuality(ANTIALIASED_QUALITY);
-	themeThumbnail.themeSeparation.SetHeight(40);
-}
-
-
-void CViewerTheme::GetSplitterTheme(CThemeSplitter* theme)
-{
-	*theme = themeSplitter;
-}
-
-void CViewerTheme::InitSplitterTheme()
-{
-	themeSplitter.themeFast.firstColor.Set(29, 29, 29);
-	themeSplitter.themeFast.secondColor.Set(128, 128, 128);
-	themeSplitter.themeSeparation.firstColor.Set(29, 29, 29);
-	themeSplitter.themeSeparation.secondColor.Set(128, 128, 128);
-}
 
 void CViewerTheme::GetMainToolbarTheme(CThemeToolbar * theme)
 {
@@ -296,10 +190,7 @@ void CViewerTheme::GetPreviewToolbarTheme(CThemeToolbar * theme)
 	*theme = themePreviewToolbar;
 }
 
-void CViewerTheme::GetClickToolbarTheme(CThemeToolbar* theme)
-{
-	*theme = themeClickToolbar;
-}
+
 
 
 void CViewerTheme::InitFiltreToolbar()
@@ -329,30 +220,7 @@ void CViewerTheme::InitFiltreToolbar()
 
 
 
-void CViewerTheme::InitClickToolbarTheme()
-{
-	themeClickToolbar.colorBack.Set(30, 30, 30);
-	themeClickToolbar.colorTop.Set(29, 29, 29);
-	themeClickToolbar.colorBottom.Set(29, 29, 29);
-	themeClickToolbar.position = NAVIGATOR_CENTER;
-	themeClickToolbar.SetWidth(60);
-	themeClickToolbar.SetHeight(10);
-	themeClickToolbar.SetMargeX(5);
-	themeClickToolbar.SetMargeY(0);
 
-	themeClickToolbar.button.SetTailleX(60);
-	themeClickToolbar.button.SetTailleY(10);
-	themeClickToolbar.button.lineColorTop.Set(222, 222, 222);
-	themeClickToolbar.button.lineColorBottom.Set(156, 156, 156);
-	themeClickToolbar.button.actifTop.Set(255, 255, 255);
-	themeClickToolbar.button.actifBottom.Set(223, 223, 223);
-	themeClickToolbar.button.font.SetFontName("Verdana");
-	themeClickToolbar.button.font.SetFontSize(10);
-	themeClickToolbar.button.font.SetFontQuality(ANTIALIASED_QUALITY);
-	themeClickToolbar.button.font.SetColorFont(wxColour(255, 255, 255));
-	themeClickToolbar.button.SetRectangleSize(4);
-	themeClickToolbar.button.showButtonOnly = 0;
-}
 
 void CViewerTheme::InitViewerToolbar()
 {
@@ -544,13 +412,6 @@ void CViewerTheme::SaveTheme()
         if (local_section != 0)
         {             
             themeBitmapWindow.SaveXML(doc, local_section);
-            section->append_node(local_section);
-        }
-        
-        local_section = node("BitmapScrollbar");
-        if (local_section != 0)
-        {             
-            themeBitmapScrollbar.SaveXML(doc, local_section);
             section->append_node(local_section);
         }
 
@@ -751,13 +612,7 @@ void CViewerTheme::LoadTheme()
             themeBitmapWindow.LoadXML(nodePreview);
         else
             InitBitmapWindow();
-            
-        nodePreview = child_node->first_node("BitmapScrollbar");
-        if (nodePreview != 0)          
-            themeBitmapScrollbar.LoadXML(nodePreview);
-        else
-            InitBitmapScrollbar();
-            
+                       
         nodePreview = child_node->first_node("BitmapToolbar");
         if (nodePreview != 0)
             themeBitmapToolbar.LoadXML(nodePreview);
@@ -768,7 +623,6 @@ void CViewerTheme::LoadTheme()
 	{
 		InitBitmapWindow();
 		InitBitmapToolbar();
-		InitBitmapScrollbar();
 	}
 
 	child_node = root_node->first_node("PreviewWindow");
@@ -863,6 +717,8 @@ void CViewerTheme::InitTheme()
 	InitPaneTheme();
 	InitTreeTheme();
 	InitSplitterTheme();
+	InitThumbnail();
+	InitClickToolbarTheme();
 
 	//------------------------------------------
 	InitFiltreToolbar();
@@ -872,10 +728,9 @@ void CViewerTheme::InitTheme()
 	InitVideoSlider();
 	InitBitmapWindow();
 	InitBitmapToolbar();
-	InitBitmapScrollbar();
 	InitPreviewToolbar();
 	InitInfosToolbar();
-	InitThumbnail();
+	
 	InitThumbnailToolbarZoomTheme();
 	InitThumbnailToolbar();
 }

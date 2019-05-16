@@ -61,46 +61,54 @@ namespace Regards
 			CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface);
 			~CViewerWindow();
 
-			void SetListeFile(PhotosVector * photoVector);
-			void SetVideo(const wxString &path);
-            bool SetAnimation(const wxString &filename);
-			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail);
-			void SetNumElement(const int &numElement, const bool &move = true);
-            void StartLoadingPicture(const int &numElement);
-            void StopLoadingPicture();
-			void ClosePane(const int& id) {};
-			void RefreshPane(const int& id) {};
-
-            void UpdateScreenRatio();
+			void SetListeFile(PhotosVector* photoVector);
 
 			bool IsPanelThumbnailVisible();
 			bool IsPanelInfosVisible();
 
-			void SetEffect(const bool &effect);
-
-			void FullscreenMode();
-			void ScreenMode();
-			
-			void SetDiaporamaMode();
-			void SetNormalMode();
-
-			void SetVideoPosition(const int64_t &videoTime);
-			void SetPosition(const long &timePosition);
 			void ShowToolbar();
 			void HideToolbar();
-			void ShowPanelVideoThumbnail();
-            void HidePanel();
-			void Resize();
-
-			void AnimationPictureNext();
-			void AnimationPicturePrevious();
 
 			void StartAnimation();
 			void StopAnimation();
 
-			bool GetProcessEnd();
+			void FullscreenMode();
+			void ScreenMode();
+
+
+			void AnimationPictureNext();
+			void AnimationPicturePrevious();
+
+			void UpdateScreenRatio();
 
 		private:
+
+			bool GetProcessEnd();
+
+			void StartLoadingPicture(const int& numElement);
+			void StopLoadingPicture();
+			void ClosePane(const int& id) {};
+			void RefreshPane(const int& id) {};
+
+			void SetEffect(const bool& effect);
+
+
+
+			void SetDiaporamaMode();
+			void SetNormalMode();
+
+			void SetVideoPosition(const int64_t& videoTime);
+			void SetPosition(const long& timePosition);
+
+			void ShowPanelVideoThumbnail();
+			void HidePanel();
+			void Resize();
+
+
+
+			void SetVideo(const wxString& path);
+			bool SetAnimation(const wxString& filename);
+			bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 
 			//Picture Loading
 			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);

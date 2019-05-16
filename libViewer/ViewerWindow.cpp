@@ -68,7 +68,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false, true);
+		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false, false);
 		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), wxID_ANY);
 		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, statusBarInterface, themeVideo, checkValidity);
 		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
@@ -115,7 +115,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
-		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true, true);
+		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true, false);
 		scrollPictureWindow = new CScrollbarWnd(panelPicture->GetPaneWindow(), wxID_ANY);
 		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, statusBarInterface, themeThumbnail, checkValidity);
 		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
@@ -452,13 +452,6 @@ void CViewerWindow::RedrawBarPos()
 }
 
 
-
-void CViewerWindow::SetNumElement(const int &numElement, const bool &move)
-{
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetActifItem(numElement, move);
-}
-
 void CViewerWindow::OnSize(wxSizeEvent& event)
 {
     
@@ -781,7 +774,8 @@ void CViewerWindow::OnLoadPicture(wxCommandEvent& event)
 	TRACE();
 	CPictureElement * pictureElement = (CPictureElement *)event.GetClientData();
 	LoadPictureInThread(pictureElement->filename, pictureElement->numElement);
-	SetNumElement(pictureElement->numElement, false);
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
 	delete pictureElement;
 }
 

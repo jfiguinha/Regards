@@ -23,13 +23,7 @@ namespace Regards
 			void GetThumbnailToolbarZoomTheme(CThemeToolBarZoom &theme);
 			
 
-			//Default Theme
-			void GetScrollTheme(CThemeScrollBar* theme);
-			void GetPaneTheme(CThemePane* theme);
-			void GetTreeTheme(CThemeTree* theme);
-			void GetSplitterTheme(CThemeSplitter* theme);
-			void GetClickToolbarTheme(CThemeToolbar* theme);
-			void GetThumbnailTheme(CThemeThumbnail* theme);
+
 
 		private:
 
@@ -37,13 +31,6 @@ namespace Regards
 			void SaveTheme();
 			void InitTheme();
 
-			//Default Theme
-			void InitScrollTheme();
-			void InitPaneTheme();
-			void InitTreeTheme();
-			void InitSplitterTheme();
-			void InitClickToolbarTheme();
-			void InitThumbnail();
 
 			//--------------------------------------------------------------
 			void InitInfosToolbar();
@@ -58,13 +45,6 @@ namespace Regards
 			void InitThumbnailFaceThemeToolbar();
 
 
-			//Default Theme
-			CThemeScrollBar themeScroll;
-			CThemePane themePane;
-			CThemeTree themeTree;
-			CThemeSplitter themeSplitter;
-			CThemeToolbar themeClickToolbar;
-			CThemeThumbnail themeThumbnail;
 			//-------------------------------------------------------
 
 			CThemeToolbar themeInfosToolbar;
