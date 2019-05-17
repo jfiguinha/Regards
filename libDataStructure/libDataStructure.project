@@ -52,6 +52,7 @@
     <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ThumbnailMessage.h"/>
     <File Name="ThumbnailDataSQL.h"/>
     <File Name="StatusText.h"/>
     <File Name="RegardsJpegPicture.h"/>
