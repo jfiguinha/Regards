@@ -10,29 +10,16 @@
 using namespace Regards::Viewer;
 
 CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree)
-: CWindowMain("CInfoEffectWnd",parent, id)
+	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree)
 {
-	historyEffectScroll = nullptr;
-	treeHistoryEffect = nullptr;
 	historyEffectOld = nullptr;
-    historyEffectScroll = new CScrollbarWnd(this, wxID_ANY);
-    treeHistoryEffect = new CTreeWindow(historyEffectScroll, wxID_ANY, themeTree);
-    historyEffectScroll->SetCentralWindow(treeHistoryEffect, themeScroll);
-
 }
 
 CInfoEffectWnd::~CInfoEffectWnd(void)
 {
-    if(treeHistoryEffect != nullptr)
-        delete(treeHistoryEffect);
-    
-    if(historyEffectScroll != nullptr)
-        delete(historyEffectScroll);
-    
     if(historyEffectOld != nullptr)
         delete(historyEffectOld);
-    
-
+ 
 }
 
 void CInfoEffectWnd::AddModification(CRegardsBitmap * bitmap,const wxString & libelle)
@@ -45,34 +32,10 @@ void CInfoEffectWnd::HistoryUpdate(CRegardsBitmap * bitmap,const wxString & file
 {
     if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)
     {
-        CInfoEffect * historyEffect = new CInfoEffect(bitmapViewer, treeHistoryEffect->GetTheme(), treeHistoryEffect, modificationManager);
+        CInfoEffect * historyEffect = new CInfoEffect(bitmapViewer, treeWindow, modificationManager);
         historyEffect->Init(bitmap, filename, historyLibelle);
-        treeHistoryEffect->SetTreeControl(historyEffect);
+		treeWindow->SetTreeControl(historyEffect);
         delete(historyEffectOld);
         historyEffectOld = historyEffect;
     }
-}
-
-void CInfoEffectWnd::UpdateScreenRatio()
-{
-    if(historyEffectScroll != nullptr)
-        historyEffectScroll->UpdateScreenRatio();
-    
-    if(treeHistoryEffect != nullptr)
-        treeHistoryEffect->UpdateScreenRatio();
-    
-    if(historyEffectOld != nullptr)
-        historyEffectOld->UpdateScreenRatio();
-
-}
-
-void CInfoEffectWnd::Resize()
-{
-	if(historyEffectScroll != nullptr)
-	{
-		historyEffectScroll->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
-		//historyEffectScroll->SendSizeEvent();
-		treeHistoryEffect->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
-		//treeHistoryEffect->SendSizeEvent();
-	}
 }

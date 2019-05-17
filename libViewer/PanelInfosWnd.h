@@ -5,7 +5,6 @@
 #include "ModificationManager.h"
 #include <wx/webview.h>
 #include <ScrollbarWnd.h>
-#include <StatusBarInterface.h>
 #include <wx/animate.h>
 #include <CriteriaTreeWnd.h>
 #include <FilterWindowParam.h>
@@ -39,7 +38,7 @@ namespace Regards
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
-			CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation);
+			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, CFileGeolocation * fileGeolocalisation);
 			~CPanelInfosWnd();
 			void OnFiltreOk(const int &numFiltre);
 			void OnFiltreCancel();

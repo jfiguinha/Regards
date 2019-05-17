@@ -4,7 +4,6 @@
 #include "BitmapToolbar.h"
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
-#include <StatusBarInterface.h>
 #include <OpenCLContext.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
@@ -19,7 +18,7 @@ namespace Regards
 		{
 		public:
 
-			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config);
+			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config);
 			~CShowBitmap();
 			bool SetPhoto(const wxString &filename);
 			CRegardsBitmap * GetBitmap(const bool &source);

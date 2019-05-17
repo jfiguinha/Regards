@@ -2,7 +2,6 @@
 #include "BitmapWnd.h"
 #include <RenderPreviewBitmap.h>
 #include <BitmapInterface.h>
-#include <StatusBarInterface.h>
 #include <Draw.h>
 #include <FiltreUpdate.h>
 #include <OpenCLContext.h>
@@ -22,7 +21,7 @@ namespace Regards
 		class CBitmapWndViewer : public CBitmapWnd, public IFiltreUpdate
 		{
 		public:
-			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface);
+			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface);
 			~CBitmapWndViewer();
 			CEffectParameter * GetParameter();
 			void SendEmail();
@@ -95,12 +94,12 @@ namespace Regards
 			CEffectParameter * effectParameter;
 			CRenderPreviewBitmap * renderPreviewBitmap;
 			CDecodeRawPicture * rawDecoder;
-			IStatusBarInterface * statusBarInterface;
+
 			wxPoint oldMouse;
 
 			//Thread Parameter
 			bool m_bTransition;
-			void OnThreadStep();
+
 			bool isDiaporama;
 			bool isInUse;
 			bool invertColor;

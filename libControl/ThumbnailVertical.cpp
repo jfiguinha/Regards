@@ -9,8 +9,8 @@
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 
-CThumbnailVertical::CThumbnailVertical(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnail(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailVertical::CThumbnailVertical(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
 	noVscroll = false;
 	typeAffichage = TYPEPHOTO;

@@ -28,7 +28,7 @@ wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
-CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation)
+CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation)
 	: CTabWindow("CPanelInfosWnd",parent, id)
 {
 	infosFileWnd = nullptr;
@@ -132,7 +132,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
         
-		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, statusBarInterface, themeScroll, themeThumbnail);
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail);
 		
 		thumbnailEffectWnd->Show(false);
         

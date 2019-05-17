@@ -213,6 +213,9 @@
     <ClInclude Include="ThumbnailDataSQL.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailMessage.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Catalog.cpp">

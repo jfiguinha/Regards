@@ -135,7 +135,14 @@ void CBitmapWndViewer::SetNormalMode()
 void CBitmapWndViewer::PrintPicture()
 {
 	CRegardsBitmap * bitmap = GetBitmap(true);
-	statusBarInterface->PrintPreview(bitmap);
+	wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_PRINTPICTURE);
+		evt.SetClientData(bitmap);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+	//statusBarInterface->PrintPreview(bitmap);
 	//delete bitmap;
 }
 
@@ -158,7 +165,7 @@ void CBitmapWndViewer::LoadingResource()
 }
 
 
-CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface)
+CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface)
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
 	filtreraw = nullptr;
@@ -177,7 +184,6 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	invertColor = false;
 	transitionTimer = nullptr;
 	selectEffectTimer = nullptr;
-	this->statusBarInterface = statusBarInterface;
     LoadingResource();
 	etape = 0;
 	fixArrow = true;

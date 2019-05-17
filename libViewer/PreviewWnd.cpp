@@ -17,8 +17,7 @@ using namespace Regards::Viewer;
 #define PANE_PREVIEW 3
 
 
-CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id,
-	IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
+CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
 	: CWindowMain("CPreviewWnd",parent, id)
 {
 	showBitmapWindow = nullptr;
@@ -65,7 +64,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id,
 
 
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, statusBarInterface, viewerTheme);
+	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme);
 	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);
     Connect(wxEVT_PAINT, wxPaintEventHandler(CPreviewWnd::OnPaint));
     

@@ -3,7 +3,6 @@
 #include <ThumbnailData.h>
 #include <SqlThumbnail.h>
 #include "ScrollInterface.h"
-#include "StatusBarInterface.h"
 #include "IconeList.h"
 #include "WindowMain.h"
 #include <wx/animate.h>
@@ -25,7 +24,7 @@ namespace Regards
 		class CThumbnail : public CWindowMain, public CScrollInterface
 		{
 		public:
-			CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnail();
 			
 			
@@ -75,7 +74,6 @@ namespace Regards
 			virtual void ResizeThumbnail(){};
 			void Resize();
 			virtual void ProcessIdle();
-			void OnTimerThumbnail(wxTimerEvent& event);
 			void OnIdle(wxIdleEvent& evt);
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
@@ -90,7 +88,6 @@ namespace Regards
 			void CalculControlSize();
 			virtual void OnPictureClick(CThumbnailData * data) = 0;
 			void InitScrollingPos();
-			void CreateBitmapFolder();
 			virtual void EraseThumbnailList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
 
@@ -136,7 +133,7 @@ namespace Regards
 			static const int TabSize[];
 			static const int Max;
 
-			IStatusBarInterface * statusbar;
+
 			CThemeThumbnail themeThumbnail;
 
 			int controlWidth;

@@ -17,7 +17,7 @@ using namespace Regards::Viewer;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, 
+CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, 
 	const CThemeSplitter & theme, const bool &horizontal)
 	: CSplitter(parent, id, theme)
 {
@@ -60,12 +60,12 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarIn
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
-		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, statusBarInterface, fileGeolocalisation);
+		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID, fileGeolocalisation);
 		paneInfos->SetWindow(panelInfosWindow);
 	}
 
 	SetHorizontal(horizontal);
-	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, statusBarInterface, fileGeolocalisation);
+	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, fileGeolocalisation);
 	
 
 	

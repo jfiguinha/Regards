@@ -14,7 +14,7 @@ namespace Regards
 		class CListPicture : public CWindowMain
 		{
 		public:
-			CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar);
+			CListPicture(wxWindow* parent, wxWindowID id);
 			~CListPicture();
 
 			void PictureClick(const wxString &filepath, const int &numElement);

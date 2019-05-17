@@ -13,7 +13,7 @@ using namespace Regards::Control;
 using namespace Regards::Viewer;
 
 CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, 
-	IStatusBarInterface * statusBarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail)
+	const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail)
 : CWindowMain("CThumbnailViewerEffectWnd",parent, id)
 {
     thumbnailEffectScroll = nullptr;
@@ -24,7 +24,7 @@ CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowI
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY, statusBarInterface, themeThumbnail, checkValidity);
+	thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY,  themeThumbnail, checkValidity);
     thumbnailEffectScroll->SetCentralWindow(thumbnailEffect, themeScroll);
 }
 

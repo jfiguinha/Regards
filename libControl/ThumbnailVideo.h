@@ -29,7 +29,7 @@ namespace Regards
 		class CThumbnailVideo : public CThumbnailHorizontal
 		{
 		public:
-			CThumbnailVideo(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailVideo(void);
 
 			void SetVideoThumbnail(const wxString &videoFile, vector<CImageVideoThumbnail *> * pictureThumbnail);

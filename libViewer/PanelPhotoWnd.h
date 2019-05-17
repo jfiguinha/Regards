@@ -1,7 +1,6 @@
 #pragma once
 #include "ToolbarPhoto.h"
 #include <ScrollbarWnd.h>
-#include <StatusBarInterface.h>
 #include "TabWindow.h"
 #include "ListFace.h"
 #include <directoryctrl.h>
@@ -17,7 +16,7 @@ namespace Regards
 		class CPanelPhotoWnd : public CTabWindow
 		{
 		public:
-			CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface);
+			CPanelPhotoWnd(wxWindow* parent, wxWindowID id);
 			~CPanelPhotoWnd();
             wxString GetSqlRequest();
 			void RefreshData();

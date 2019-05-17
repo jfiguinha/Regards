@@ -151,7 +151,7 @@ namespace Regards
 		class CMainWindow : public CWindowMain
 		{
 		public:
-			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer);
+			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar);
 			~CMainWindow();
             void UpdateScreenRatio();
 			void StartDiaporama();
@@ -189,6 +189,9 @@ namespace Regards
 			void OnSetValueProgressBar(wxCommandEvent& event);
 			void OnEndPictureLoad(wxCommandEvent& event);
 			void OnRefreshPicture(wxCommandEvent& event);
+			
+			void UpdateCriteriaMessage(wxCommandEvent& event);
+			void UpdateThumbnailMessage(wxCommandEvent& event);
 
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
@@ -202,7 +205,7 @@ namespace Regards
 			void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
-
+			void PrintPreview(wxCommandEvent& event);
 			void RefreshCriteriaPictureList(wxCommandEvent& event);
 			void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
 			void OnFaceInfosUpdate(wxCommandEvent& event);

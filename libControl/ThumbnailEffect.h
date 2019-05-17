@@ -13,7 +13,7 @@ namespace Regards
 		class CThumbnailEffect : public CThumbnail
 		{
 		public:
-			CThumbnailEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailEffect(void);
 
 			void SetFile(const wxString &filename);

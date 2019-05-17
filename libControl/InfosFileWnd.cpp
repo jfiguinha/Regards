@@ -15,15 +15,10 @@ using namespace Regards::Window;
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CInfosFileWnd::CInfosFileWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & theme)
-: CWindowMain("CInfosFileWnd",parent, id)
+: CTreeWithScrollbar("CInfosFileWnd",parent, id, themeScroll, theme)
 {
-	InfosFileScroll = nullptr;
-	treeWindow = nullptr;
 	infosFile = nullptr;
 	oldInfosFileControl = nullptr;
-    InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-    treeWindow = new CTreeWindow(InfosFileScroll, INFOSFILEWINDOWID, theme);
-    InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
     Connect(EVENT_UPDATEINFOSTHREAD, wxCommandEventHandler(CInfosFileWnd::UpdateTreeInfosEvent));
 }
 
@@ -33,12 +28,6 @@ CInfosFileWnd::~CInfosFileWnd(void)
     
     if(oldInfosFileControl != nullptr)
         delete(oldInfosFileControl);
-    
-    if(treeWindow != nullptr)
-        delete(treeWindow);
-    
-    if(InfosFileScroll != nullptr)
-        delete(InfosFileScroll);
 }
 
 void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
@@ -88,15 +77,6 @@ void CInfosFileWnd::InfosUpdate(const wxString &filename)
 		event->SetClientData(this);
 		wxQueueEvent(this->GetParent(), event);
 	}
-	/*
-	int x = InfosFileScroll->GetSize().x;
-	int y = InfosFileScroll->GetSize().y;
-
-	int width = GetWindowWidth();
-	int height = GetWindowHeight();
-
-	Resize();
-	*/
 }
 
 void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
@@ -109,30 +89,4 @@ void CInfosFileWnd::GenerateTreeInfos(CThreadLoadInfos * threadInfos)
     wxCommandEvent * event = new wxCommandEvent(EVENT_UPDATEINFOSTHREAD);
     event->SetClientData(threadInfos);
     wxQueueEvent(threadInfos->panelInfos, event);
-}
-
-void CInfosFileWnd::UpdateScreenRatio()
-{
-    TRACE();
-    
-    InfosFileScroll->UpdateScreenRatio();
-    
-    if(oldInfosFileControl != nullptr)
-    {
-        oldInfosFileControl->UpdateScreenRatio();
-        treeWindow->UpdateScreenRatio();
-    }
-}
-
-void CInfosFileWnd::Resize()
-{
-    TRACE();
-    
-	if(InfosFileScroll != nullptr)
-	{
-		InfosFileScroll->SetSize(GetWindowWidth(), GetWindowHeight());
-		//InfosFileScroll->SendSizeEvent();
-		treeWindow->SetSize(GetWindowWidth(),GetWindowHeight());
-		//treeWindow->SendSizeEvent();
-	}
 }

@@ -18,7 +18,7 @@ namespace Regards
 		class CPreviewInfosWnd :public CSplitter
 		{
 		public:
-			CPreviewInfosWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, const bool &horizontal = true);
+			CPreviewInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeSplitter & theme, const bool &horizontal = true);
 			~CPreviewInfosWnd();
 
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);

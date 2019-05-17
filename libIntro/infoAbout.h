@@ -11,7 +11,7 @@ namespace Regards
 		{
 		public:
 
-			CInfoAbout(CThemeTree * theme);
+			CInfoAbout(const CThemeTree & theme);
 			~CInfoAbout();
 
 			void Init();
@@ -24,7 +24,6 @@ namespace Regards
             void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
 			void CreateElement();
 			void CreateChildTree(tree<CTreeData *>::sibling_iterator &parent);
-			void AddLibelle(const wxString &libelle, const wxString &key);
 
 			int index;
 			int yPos;

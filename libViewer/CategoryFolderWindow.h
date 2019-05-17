@@ -6,8 +6,7 @@
 #include <TreeWindow.h>
 #include "CategoryWnd.h"
 #include "ViewerParam.h"
-#include <WindowMain.h>
-#include <StatusBarInterface.h>
+#include <TreeWithScrollbar.h>
 #include <Photos.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -20,13 +19,12 @@ namespace Regards
 {
 	namespace Viewer
 	{
-		class CCategoryFolderWindow : public CWindowMain
+		class CCategoryFolderWindow : public CTreeWithScrollbar
 		{
 		public:
-			CCategoryFolderWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer);
+			CCategoryFolderWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarViewer, const CThemeScrollBar & themeScroll, const CThemeTree & theme);
 			~CCategoryFolderWindow();
 
-            void UpdateScreenRatio();
             void InitSaveParameter();
 			void Init();
             wxString GetSqlRequest();
@@ -37,21 +35,17 @@ namespace Regards
 
 		private:
 			
-			void FacePhotoUpdate(wxCommandEvent& event);
 			void CriteriaPhotoUpdate(wxCommandEvent& event);
 			void RefreshCriteriaSearch(wxCommandEvent& event);
 			void OnIdle(wxIdleEvent& evt);
 			bool GetProcessEnd();
 
-			void Resize();
 			static void FindPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria);
             static void FindGPSPhotoCriteria(CFindPhotoCriteria * findPhotoCriteria);
 			void RefreshThreadFolder(CFolderCatalog * folder);
 			void OnTimerRefresh(wxTimerEvent& event);
 			void ProcessIdle();
 
-			CScrollbarWnd * catalogWndScroll;
-			CTreeWindow * treeWindow;
 			CCategoryWnd * catalogWndOld;
 			CViewerParam * explorerconfig ;
 			int oldPos;
@@ -61,7 +55,7 @@ namespace Regards
 			int numProcess;
 			int nbProcesseur;
 			bool refreshFolder;
-			IStatusBarInterface * statusBarViewer;
+
 			bool needToSendMessage;
 			bool threadDataProcess;
 			bool noCategoryMessage;

@@ -38,18 +38,13 @@ wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, 
 	CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll)
-: CWindowMain("CCriteriaTreeWnd",parent, id)
+: CTreeWithScrollbar("CCriteriaTreeWnd", parent, id, themeScroll, theme)
 {
-	InfosFileScroll = nullptr;
-	treeWindow = nullptr;
 	criteriaTree = nullptr;
 	oldCriteriaTree = nullptr;
 	numPhotoId = 0;
 	this->mainWindowID = mainWindowID;
     this->fileGeolocalisation = fileGeolocalisation;
-    InfosFileScroll = new CScrollbarWnd(this, wxID_ANY);
-    treeWindow = new CTreeWindow(InfosFileScroll, wxID_ANY, theme);
-    InfosFileScroll->SetCentralWindow(treeWindow, themeScroll);
     Connect(wxEVT_SHOWCALENDAR, wxCommandEventHandler(CCriteriaTreeWnd::ShowCalendar));
     Connect(wxEVT_SHOWMAP, wxCommandEventHandler(CCriteriaTreeWnd::ShowMap));
 }
@@ -181,12 +176,6 @@ CCriteriaTreeWnd::~CCriteriaTreeWnd(void)
 {
     if(oldCriteriaTree != nullptr)
         delete(oldCriteriaTree);
-    
-    if(treeWindow != nullptr)
-        delete(treeWindow);
-    
-    if(InfosFileScroll != nullptr)
-        delete(InfosFileScroll);
 }
 
 void CCriteriaTreeWnd::UpdateTreeData()
@@ -210,27 +199,4 @@ void CCriteriaTreeWnd::SetFile(const wxString &filename)
     UpdateTreeData();
     
     this->FastRefresh(this);
-}
-
-
-void CCriteriaTreeWnd::UpdateScreenRatio()
-{
-    InfosFileScroll->UpdateScreenRatio();
-    
-    if(oldCriteriaTree != nullptr)
-    {
-        oldCriteriaTree->UpdateScreenRatio();
-        treeWindow->UpdateScreenRatio();
-    }
-}
-
-void CCriteriaTreeWnd::Resize()
-{
-    if(InfosFileScroll != nullptr)
-	{
-		InfosFileScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-		//InfosFileScroll->SendSizeEvent();
-		treeWindow->SetSize(GetWindowWidth(),GetWindowHeight());
-		//treeWindow->SendSizeEvent();
-	}
 }

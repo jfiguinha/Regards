@@ -6,9 +6,9 @@
 
 using namespace Regards::Introduction;
 
-CInfoAbout::CInfoAbout(CThemeTree * theme)
+CInfoAbout::CInfoAbout(const CThemeTree & theme)
 {
-	themeTree = *theme;
+	themeTree = theme;
 	themeTree.themeTexte.SetHeight(themeTree.GetRowHeight());
 	themeTree.SetMargeX(5);
 	rowWidth.push_back(0);

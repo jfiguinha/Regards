@@ -22,7 +22,7 @@ using namespace Regards::Viewer;
 #define PANE_VIDEOTHUMBNAIL 2
 #define DELAY_ANIMATION 20
 
-CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface)
+CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CentralWindow", parent, id)
 {
 	previewInfosWnd = nullptr;
@@ -70,7 +70,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 
 		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILVIDEOPANEL, theme, themetoolbar, libelle, isPanelVisible, false, false);
 		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), wxID_ANY);
-		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, statusBarInterface, themeVideo, checkValidity);
+		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, themeVideo, checkValidity);
 		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(1000);
@@ -88,7 +88,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
-		previewInfosWnd = new CPreviewInfosWnd(this, PREVIEWINFOWND, statusBarInterface, theme, false);
+		previewInfosWnd = new CPreviewInfosWnd(this, PREVIEWINFOWND, theme, false);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterfac
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true, false);
 		scrollPictureWindow = new CScrollbarWnd(panelPicture->GetPaneWindow(), wxID_ANY);
-		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, statusBarInterface, themeThumbnail, checkValidity);
+		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, themeThumbnail, checkValidity);
 		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
 		scrollPictureWindow->HideVerticalScroll();
 		scrollPictureWindow->SetPageSize(1000);

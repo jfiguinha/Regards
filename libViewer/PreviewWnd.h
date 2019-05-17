@@ -28,7 +28,7 @@ namespace Regards
 		class CPreviewWnd : public CWindowMain, public CBitmapInterface, public CToolbarInterface
 		{
 		public:
-			CPreviewWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
+			CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
 			~CPreviewWnd();
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation = false);
 			bool SetVideo(const wxString &filename);

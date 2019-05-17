@@ -18,7 +18,7 @@ namespace Regards
 		class CListFace : public CWindowMain
 		{
 		public:
-			CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar);
+			CListFace(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
 			~CListFace();
 
 			void PictureClick(const wxString &filepath, const int &numElement);
