@@ -36,9 +36,7 @@ namespace Regards
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
-			void ThumbnailUpdate(wxCommandEvent& event);
-			void ThumbnailAdd(wxCommandEvent& event);
-			void ThumbnailRemove(wxCommandEvent& event);
+			void ThumbnailRefresh(wxCommandEvent& event);
 			void ThumbnailMove(wxCommandEvent& event);
 			void Resize();
 			bool GetProcessEnd();

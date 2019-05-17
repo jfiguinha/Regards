@@ -212,9 +212,9 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * stat
 	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
 	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomPosition));
-	Connect(wxEVENT_THUMBNAILUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailUpdate));
-	Connect(wxEVENT_THUMBNAILADD, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailAdd));
-	Connect(wxEVENT_THUMBNAILREMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailRemove));
+	//Connect(wxEVENT_THUMBNAILUPDATE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailUpdate));
+	//Connect(wxEVENT_THUMBNAILADD, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailAdd));
+	Connect(wxEVENT_THUMBNAILREFRESH, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailRefresh));
 	Connect(wxEVENT_THUMBNAILMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_FACEPHOTOUPDATE, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnAddFacePhoto));
@@ -322,20 +322,7 @@ bool CListFace::GetProcessEnd()
 	return true;
 }
 
-
-void CListFace::ThumbnailAdd(wxCommandEvent& event)
-{
-	updateFaceList = true;
-	processIdle = true;
-}
-
-void CListFace::ThumbnailRemove(wxCommandEvent& event)
-{
-	updateFaceList = true;
-	processIdle = true;
-}
-
-void CListFace::ThumbnailUpdate(wxCommandEvent& event)
+void CListFace::ThumbnailRefresh(wxCommandEvent& event)
 {
 	updateFaceList = true;
 	processIdle = true;
@@ -601,7 +588,7 @@ void CListFace::FacialRecognition(void * param)
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
 	TRACE();
-	wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILADD);
+	wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
 	this->GetEventHandler()->AddPendingEvent(evt);
 
 	CThreadFace * path = (CThreadFace *)event.GetClientData();

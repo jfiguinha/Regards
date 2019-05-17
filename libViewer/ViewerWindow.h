@@ -124,7 +124,6 @@ namespace Regards
 			void LoadAnimationBitmap(const int &numFrame);
 			void OnSize(wxSizeEvent& event);
             void AnimationSetPosition(wxCommandEvent& event);
-            void StartTimerAnimation(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
 
 			void RedrawBarPos();

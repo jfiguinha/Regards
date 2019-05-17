@@ -15,6 +15,7 @@
 #include <utility.h>
 #include <GL/glut.h>
 #include "ffmpegToBitmap.h"
+#include <RegardsBitmap.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(EVENT_ENDVIDEOTHREAD, wxCommandEvent);

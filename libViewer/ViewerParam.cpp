@@ -24,8 +24,8 @@ CViewerParam::CViewerParam()
 	positionRegardsViewer.height = 800;
 	showThumbnail = true;
 	showVideoThumbnail = true;
-	position = 400;
-	positionCriteriaPreview = 200;
+	position = 0;
+	positionCriteriaPreview = 400;
 	positionPreviewFace = POSITION_PREVIEW_FACE;
 	showInfos = true;
 	showFilter = true;

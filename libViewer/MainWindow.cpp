@@ -184,12 +184,6 @@ void CMainWindow::RefreshCriteriaPictureList(wxCommandEvent& event)
 void CMainWindow::OnFacePertinence()
 {
     TRACE();
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILUPDATE);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
 	updateFolder = true;
     processIdle = true;
 
@@ -846,15 +840,6 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 {
     TRACE();
-    
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREMOVE);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-
 	wxString * info = (wxString *)event.GetClientData();
 	if (*info != "")
 	{
