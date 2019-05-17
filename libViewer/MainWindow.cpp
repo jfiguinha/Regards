@@ -108,7 +108,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 		viewerTheme->GetSplitterTheme(&theme);
 		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, imageList, false);
 	}
-	this->statusBarViewer = statusBarViewer;
+	this->statusBarViewer = statusbar;
 
 
 	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
