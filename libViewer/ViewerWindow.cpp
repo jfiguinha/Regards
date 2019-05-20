@@ -15,6 +15,7 @@
 #include <ParamInit.h>
 #include <StatusText.h>
 #include "PictureElement.h"
+#include "ThumbnailMessage.h"
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -760,9 +761,13 @@ void CViewerWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumb
 		SetBitmap(bitmap, isThumbnail);
 		//UpdateInfos(bitmap);
 
+		CPictureInfosMessage * pictureInfos = new CPictureInfosMessage();
+		pictureInfos->filename = filename;
+		pictureInfos->infos = to_string(bitmap->GetWidth()) + "x" + to_string(bitmap->GetHeight());
+
 		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent evt(wxEVENT_INFOS);
-		evt.SetClientData(bitmap);
+		evt.SetClientData(pictureInfos);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 
 	}

@@ -8,3 +8,10 @@ public:
 	int thumbnailPos;
 	int typeMessage;
 };
+
+class CPictureInfosMessage
+{
+public:
+	wxString filename;
+	wxString infos;
+};

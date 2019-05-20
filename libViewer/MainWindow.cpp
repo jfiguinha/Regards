@@ -1058,20 +1058,22 @@ void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {
 	TRACE();
-	CImageLoadingFormat * bitmap = (CImageLoadingFormat *)event.GetClientData();
-	if (bitmap != nullptr && bitmap->IsOk())
+	CPictureInfosMessage * pictureInfos = (CPictureInfosMessage *)event.GetClientData();
+	if (pictureInfos != nullptr)
 	{
-		filename = bitmap->GetFilename();
+		filename = pictureInfos->filename;
 		if (filename[0] != '\0')
 		{
 			statusBarViewer->SetText(1, filename);
 		}
 
-		wxString infos = to_string(bitmap->GetWidth()) + "x" + to_string(bitmap->GetHeight());
-		statusBarViewer->SetText(0, infos);
+		statusBarViewer->SetText(0, pictureInfos->infos);
 
-		infos = "Regards Viewer : " + CFileUtility::GetFileName(filename);
+		wxString label = CLibResource::LoadStringFromResource(L"LBLUPDATEINFOS", 1);
+		wxString infos = label + CFileUtility::GetFileName(filename);
 		statusBarViewer->SetWindowTitle(infos);
+
+		delete pictureInfos
 	}
 }
 
