@@ -1,1 +1,1 @@
-./Release/SliderVideo.cpp.o ./Release/ffmpegToBitmap.cpp.o ./Release/VideoControl_soft.cpp.o ./Release/VideoControl.cpp.o ./Release/VideoControlInterface.cpp.o ./Release/ShowVideo.cpp.o ./Release/RenderBitmapInterfaceOpenGL.cpp.o ./Release/ffmpeg_dxva2.cpp.o ./Release/ffplaycore.cpp.o
+./Release/ShowVideo.cpp.o ./Release/ffplaycore.cpp.o ./Release/VideoControl_soft.cpp.o ./Release/ffmpegToBitmap.cpp.o ./Release/VideoControlInterface.cpp.o ./Release/RenderBitmapInterfaceOpenGL.cpp.o ./Release/SliderVideo.cpp.o ./Release/VideoControl.cpp.o ./Release/ffmpeg_dxva2.cpp.o

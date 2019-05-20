@@ -358,7 +358,7 @@ void CMainWindow::OnSetValueProgressBar(wxCommandEvent& event)
     TRACE();
     
 	int position = event.GetInt();
-    cout << "OnSetValueProgressBar Pos : " << position << endl;
+    //cout << "OnSetValueProgressBar Pos : " << position << endl;
 	if (progressBar != nullptr)
     {
         if(progressBar->GetRange() > 0)
@@ -378,7 +378,7 @@ void CMainWindow::OnSetRangeProgressBar(wxCommandEvent& event)
 {
     TRACE();
 	int range = event.GetInt();
-    cout << "OnSetRangeProgressBar Pos : " << range << endl;
+   // cout << "OnSetRangeProgressBar Pos : " << range << endl;
 	if (progressBar != nullptr)
 		progressBar->SetRange(range);
 }
@@ -703,8 +703,8 @@ void CMainWindow::ProcessIdle()
         }
 
 
-
-        wxString message = L"File Checking " + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
+		wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
+        wxString message = label+ to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
         if (statusBarViewer != nullptr)
         {
             statusBarViewer->SetText(3, message);
@@ -758,7 +758,8 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 	}
 	nbProcessMD5--;
 	numElementTraitement++;
-	wxString message = L"File Checking " + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
+	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
+	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
 	if (statusBarViewer != nullptr)
 	{
 		statusBarViewer->SetText(3, message);
@@ -1059,7 +1060,7 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 		wxString infos = label + CFileUtility::GetFileName(filename);
 		statusBarViewer->SetWindowTitle(infos);
 
-		delete pictureInfos
+		delete pictureInfos;
 	}
 }
 

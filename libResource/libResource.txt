@@ -1,1 +1,1 @@
-./Release/LibResource.cpp.o ./Release/ClosedHandCursor.cpp.o ./Release/PictureData.cpp.o ./Release/SqlLibResource.cpp.o ./Release/SqlResource.cpp.o
+./Release/LibResource.cpp.o ./Release/ClosedHandCursor.cpp.o ./Release/PictureData.cpp.o ./Release/SqlResource.cpp.o ./Release/SqlLibResource.cpp.o

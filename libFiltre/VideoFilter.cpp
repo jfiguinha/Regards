@@ -35,8 +35,8 @@ CVideoFilter::CVideoFilter()
 	enableColorEffect = CLibResource::LoadStringFromResource(L"LBLenableColorEffect",1);//L"Color Boost.Enable";
 	enableBandCEffect = CLibResource::LoadStringFromResource(L"LBLenableBandCEffect",1);//L"Tone.Enable";
 	enableGrayScale = CLibResource::LoadStringFromResource(L"LBLenableGrayScale",1);//L"Effect.Gray Scale";
-    enableBicubicInterpolation = L"Effect.Bicubic Interpolation";
-    enableOpenCL = L"Effect.OpenCL Decoding";
+    enableBicubicInterpolation = CLibResource::LoadStringFromResource(L"LBLEFFECTBICUBICINTERPOLATION", 1);//LBLEFFECTBICUBICINTERPOLATION
+    enableOpenCL = CLibResource::LoadStringFromResource(L"LBLEFFECTOPENCL", 1);//LBLEFFECTOPENCL
 	showFPS = CLibResource::LoadStringFromResource(L"LBLshowFPS",1);//L"Effect.Show FPS";
 }
 
