@@ -76,7 +76,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CCentralWindow::OnResize));
-	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CCentralWindow::OnRefresh));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CCentralWindow::OnRefreshData));
 
 	if (config != nullptr)
 	{
@@ -94,7 +94,7 @@ void CCentralWindow::OnResize(wxCommandEvent& event)
 	RedrawBarPos();
 }
 
-void CCentralWindow::OnRefresh(wxCommandEvent& event)
+void CCentralWindow::OnRefreshData(wxCommandEvent& event)
 {
 	panelPhotoWnd->RefreshData();
 }

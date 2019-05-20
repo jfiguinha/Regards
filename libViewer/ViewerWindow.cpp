@@ -131,6 +131,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
     Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerWindow::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerWindow::OnSize));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerWindow::OnResize));
+    Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CViewerWindow::OnRefreshData));
 	Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CViewerWindow::OnLoadPicture));
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CViewerWindow::OnShowPicture));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CViewerWindow::EndPictureThread));
@@ -185,7 +186,7 @@ void CViewerWindow::OnTimerAnimation(wxTimerEvent& event)
 	}
 }
 
-void CViewerWindow::OnRefresh(wxCommandEvent& event)
+void CViewerWindow::OnRefreshData(wxCommandEvent& event)
 {
 	wxWindow* window = this->FindWindowById(THUMBNAILFOLDER);
 	if (window)
@@ -747,7 +748,7 @@ void CViewerWindow::OnShowPicture(wxCommandEvent& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-///Mise à jour des informations sur les fichiers
+///Mise Ã  jour des informations sur les fichiers
 ////////////////////////////////////////////////////////////////////////////////////////////////
 void CViewerWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail)
 {

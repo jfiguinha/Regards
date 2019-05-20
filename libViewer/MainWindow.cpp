@@ -463,7 +463,7 @@ void CMainWindow::ProcessIdle()
 	wxWindow * window = this->FindWindowById(LISTFACEID);
 	if (window)
 	{
-		wxCommandEvent evt(wxEVENT_REFRESH);
+		wxCommandEvent evt(wxEVENT_REFRESHDATA);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
     

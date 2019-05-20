@@ -96,7 +96,7 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 	{
 		case PANE_WITHCLICKTOOLBAR:
 		{
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESH);
+			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESHDATA);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;

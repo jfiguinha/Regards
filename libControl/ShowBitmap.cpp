@@ -85,10 +85,14 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 
 	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	
+    loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
 	pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
-
 	scrollbar->SetCentralWindow(bitmapWindow, themeScroll);
-
+	progressBar = new wxGauge(this, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, 10), wxGA_HORIZONTAL);
+	progressBar->SetRange(100);
+	progressBar->SetValue(0);    
+    
+    Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CShowBitmap::OnTimerRefresh), nullptr, this);
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowBitmap::OnSize));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
@@ -96,7 +100,13 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StopLoadingPicture));
-    
+    progressValue = 0;
+}
+
+void CShowBitmap::OnTimerRefresh(wxTimerEvent& event)
+{
+    progressValue += 5;
+    progressBar->SetValue(progressValue);
 }
 
 void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
@@ -136,6 +146,7 @@ void CShowBitmap::HideCropButton()
 
 CShowBitmap::~CShowBitmap()
 {
+    delete(progressBar);
 	delete(pictureToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
@@ -200,9 +211,10 @@ void CShowBitmap::Resize()
 		{
 			//CDeferPos deferpos;
 			int pictureWidth = width;
-			int pictureHeight = height - pictureToolbar->GetHeight();
+			int pictureHeight = height - pictureToolbar->GetHeight() - 10;
 
 			scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+            progressBar->SetSize(0, height - pictureToolbar->GetHeight() - 10, width, 10);
 			pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
 		}
 		else
@@ -297,6 +309,7 @@ void CShowBitmap::StartLoadingPicture(wxCommandEvent& event)
     if (bitmapWindow != nullptr)
     {
         bitmapWindow->StartLoadingBitmap();
+
     }
 }
 
@@ -305,6 +318,7 @@ void CShowBitmap::StopLoadingPicture(wxCommandEvent& event)
     if (bitmapWindow != nullptr)
     {
         bitmapWindow->StopLoadingBitmap();
+        loadingTimer->Stop();
     }
 }
 
@@ -349,6 +363,10 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
+        loadingTimer->Start(100);
+        progressBar->SetValue(0); 
+        progressValue = 0;        
+        
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
@@ -380,6 +398,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 		//bitmapWindow->Refresh();
+        loadingTimer->Stop();
 		return true;
 	}
 	return false;
