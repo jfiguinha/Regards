@@ -486,7 +486,12 @@ void CViewerWindow::SetVideo(const wxString &path)
 void CViewerWindow::StartLoadingPicture(const int &numElement)
 {
 	//thumbnailPicture->StartLoadingPicture(numElement);
-
+	wxWindow* showBitmapWindow = (wxWindow*)this->FindWindowById(SHOWBITMAPVIEWERID);
+	if (showBitmapWindow != nullptr)
+	{
+		wxCommandEvent eventUpdate(wxEVENT_ONSTARTLOADINGPICTURE);
+		showBitmapWindow->GetEventHandler()->AddPendingEvent(eventUpdate);
+	}
 }
 
 void CViewerWindow::AnimationSetPosition(wxCommandEvent& event)
