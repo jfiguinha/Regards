@@ -218,7 +218,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailMove));
 	Connect(wxEVENT_FACEPHOTOUPDATE, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
 	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnAddFacePhoto));
-	Connect(wxEVENT_REFRESH, wxCommandEventHandler(CListFace::OnRefreshProcess));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CListFace::OnRefreshProcess));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
 
 
