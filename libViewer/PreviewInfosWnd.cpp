@@ -323,18 +323,6 @@ void CPreviewInfosWnd::ScreenMode()
 		this->SetSeparationBarVisible(true);
 		this->Resize(this);
 	}
-	
-	/*
-	if (!paneInfosShow)
-        ClosePane(PANE_INFOS);
-    else
-    {
-		this->SetWindow(previewWindow, paneInfos);
-		wxCommandEvent event;
-		ShowPanelInfos(event);
-        this->SetSeparationBarVisible(true);
-        this->Resize(this);
-    }
-	*/
+
 }
 

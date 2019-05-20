@@ -265,12 +265,6 @@ void CMainWindow::RefreshCriteriaPictureList(wxCommandEvent& event)
 void CMainWindow::OnFacePertinence()
 {
     TRACE();
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILUPDATE);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
 	updateFolder = true;
     processIdle = true;
 
@@ -469,7 +463,7 @@ void CMainWindow::ProcessIdle()
 	wxWindow * window = this->FindWindowById(LISTFACEID);
 	if (window)
 	{
-		wxCommandEvent evt(wxEVENT_REFRESH);
+		wxCommandEvent evt(wxEVENT_REFRESHDATA);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
     
@@ -551,6 +545,7 @@ void CMainWindow::ProcessIdle()
         wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
 		this->GetEventHandler()->AddPendingEvent(evt);
         hasDoneOneThings = true;
+        numElementTraitement = 0;
 	}
 	else if (updateFolder)
 	{
@@ -632,7 +627,7 @@ void CMainWindow::ProcessIdle()
 					filename = firstFileToShow;
 				}
 			}
-			numElementTraitement = 0;
+			//numElementTraitement = 0;
 		}
 		updatePicture = false;
         hasDoneOneThings = true;
@@ -927,15 +922,6 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 {
     TRACE();
-    
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if(listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREMOVE);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-
 	wxString * info = (wxString *)event.GetClientData();
 	if (*info != "")
 	{

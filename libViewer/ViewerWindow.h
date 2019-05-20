@@ -119,12 +119,11 @@ namespace Regards
 			void OnShowPicture(wxCommandEvent& event);
 			void EndPictureThread(wxCommandEvent& event);
 
-			void OnRefresh(wxCommandEvent& event);
+			void OnRefreshData(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
 			void LoadAnimationBitmap(const int &numFrame);
 			void OnSize(wxSizeEvent& event);
             void AnimationSetPosition(wxCommandEvent& event);
-            void StartTimerAnimation(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
 
 			void RedrawBarPos();

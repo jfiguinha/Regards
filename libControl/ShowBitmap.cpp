@@ -45,7 +45,7 @@ void CShowBitmap::UpdateScreenRatio()
 }
 
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config)
+	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config)
 	: wxWindow(parent, id, wxPoint(0,0), wxSize(0,0), 0)
 {
 	transitionEnd = false;
@@ -85,18 +85,28 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 
 	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	
+    loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
 	pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
-
 	scrollbar->SetCentralWindow(bitmapWindow, themeScroll);
-
+	progressBar = new wxGauge(this, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, 10), wxGA_HORIZONTAL);
+	progressBar->SetRange(100);
+	progressBar->SetValue(0);    
+    
+    Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CShowBitmap::OnTimerRefresh), nullptr, this);
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowBitmap::OnSize));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
-	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StartLoadingPicture));
+	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CShowBitmap::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StopLoadingPicture));
-    
+    progressValue = 0;
+}
+
+void CShowBitmap::OnTimerRefresh(wxTimerEvent& event)
+{
+    progressValue += 5;
+    progressBar->SetValue(progressValue);
 }
 
 void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
@@ -136,6 +146,7 @@ void CShowBitmap::HideCropButton()
 
 CShowBitmap::~CShowBitmap()
 {
+    delete(progressBar);
 	delete(pictureToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
@@ -199,11 +210,23 @@ void CShowBitmap::Resize()
 		if (pictureToolbar->IsShown())
 		{
 			//CDeferPos deferpos;
-			int pictureWidth = width;
-			int pictureHeight = height - pictureToolbar->GetHeight();
+			if (showLoadBar)
+			{
+				int pictureWidth = width;
+				int pictureHeight = height - pictureToolbar->GetHeight() - 10;
 
-			scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
-			pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
+				scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+				progressBar->SetSize(0, height - pictureToolbar->GetHeight() - 10, width, 10);
+				pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
+			}
+			else
+			{
+				int pictureWidth = width;
+				int pictureHeight = height - pictureToolbar->GetHeight();
+
+				scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+				pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
+			}
 		}
 		else
 		{
@@ -211,7 +234,7 @@ void CShowBitmap::Resize()
 
 		}
 	}
-
+	/*
 	if(pictureToolbar != nullptr)
 	{
 		if (pictureToolbar->IsShown())
@@ -221,6 +244,7 @@ void CShowBitmap::Resize()
 
 	if(scrollbar != nullptr)
 		scrollbar->PostSizeEvent();
+	*/
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
@@ -296,7 +320,13 @@ void CShowBitmap::StartLoadingPicture(wxCommandEvent& event)
 {
     if (bitmapWindow != nullptr)
     {
+		showLoadBar = true;
         bitmapWindow->StartLoadingBitmap();
+		loadingTimer->Start(100);
+		progressBar->SetValue(0);
+		progressValue = 0;
+		progressBar->Show();
+		this->Resize();
     }
 }
 
@@ -304,7 +334,11 @@ void CShowBitmap::StopLoadingPicture(wxCommandEvent& event)
 {
     if (bitmapWindow != nullptr)
     {
+		showLoadBar = false;
         bitmapWindow->StopLoadingBitmap();
+        loadingTimer->Stop();
+		progressBar->Hide();
+		this->Resize();
     }
 }
 
@@ -349,6 +383,8 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
+   
+        
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
@@ -380,6 +416,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 		//bitmapWindow->Refresh();
+       
 		return true;
 	}
 	return false;

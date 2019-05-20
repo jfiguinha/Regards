@@ -5,6 +5,7 @@
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
 #include <OpenCLContext.h>
+#include <wx/gauge.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;
 
@@ -40,18 +41,13 @@ namespace Regards
 			void SetShrinkImage(const bool &value);
 			void ShrinkImage();
 			void PrintPicture();
-			void ExecuteRegardsShop();
 			void SendEmail();
 			void HideToolbar();
 			void ShowToolbar();
 			bool IsToolbarMouseOver();
 			void TransitionEnd();
 			void SetBitmapPreviewEffect(const int &effect);
-			//void ShowCropButton();
-			//void HideCropButton();
 			void SetFullscreen(const bool &fullscreen);
-
-			void SetTheme(CThemeBitmapWindow * theme);
 			CBitmapWndViewer * GetBitmapViewer();
 
             void UpdateScreenRatio();
@@ -68,7 +64,10 @@ namespace Regards
             void OnViewerZoomIn(wxCommandEvent& event);
             void OnViewerZoomOut(wxCommandEvent& event);
 			void Resize();
-
+            void OnTimerRefresh(wxTimerEvent& event);
+            
+			bool showLoadBar = false;
+            wxGauge * progressBar;
 			CScrollbarWnd * scrollbar;
 			CBitmapToolbar * pictureToolbar;
 			CBitmapWndViewer * bitmapWindow;
@@ -82,6 +81,8 @@ namespace Regards
 			int width;
 			bool transitionEnd;
 			int height;
+            wxTimer * loadingTimer;
+            int progressValue;
 			
 		};
 	}

@@ -132,6 +132,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
     Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerWindow::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerWindow::OnSize));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerWindow::OnResize));
+    Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CViewerWindow::OnRefreshData));
 	Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CViewerWindow::OnLoadPicture));
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CViewerWindow::OnShowPicture));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CViewerWindow::EndPictureThread));
@@ -186,7 +187,7 @@ void CViewerWindow::OnTimerAnimation(wxTimerEvent& event)
 	}
 }
 
-void CViewerWindow::OnRefresh(wxCommandEvent& event)
+void CViewerWindow::OnRefreshData(wxCommandEvent& event)
 {
 	wxWindow* window = this->FindWindowById(THUMBNAILFOLDER);
 	if (window)
@@ -486,7 +487,12 @@ void CViewerWindow::SetVideo(const wxString &path)
 void CViewerWindow::StartLoadingPicture(const int &numElement)
 {
 	//thumbnailPicture->StartLoadingPicture(numElement);
-
+	wxWindow* showBitmapWindow = (wxWindow*)this->FindWindowById(SHOWBITMAPVIEWERID);
+	if (showBitmapWindow != nullptr)
+	{
+		wxCommandEvent eventUpdate(wxEVENT_ONSTARTLOADINGPICTURE);
+		showBitmapWindow->GetEventHandler()->AddPendingEvent(eventUpdate);
+	}
 }
 
 void CViewerWindow::AnimationSetPosition(wxCommandEvent& event)
@@ -505,6 +511,8 @@ void CViewerWindow::StartAnimation()
 	animationPosition = 0;
     LoadAnimationBitmap(0);
 	animationTimer->Start(DELAY_ANIMATION, wxTIMER_ONE_SHOT);
+
+
 }
 
 void CViewerWindow::StopAnimation()
@@ -593,14 +601,10 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
 	if(refresh)
 		RedrawBarPos();
 
-    //animationTimer->Start(2000, wxTIMER_ONE_SHOT);
+	CAnimationToolbar* animationToolbar = (CAnimationToolbar*)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
+	if (animationToolbar != nullptr)
+		animationToolbar->AnimationStart();
     return result;
-}
-
-
-void CViewerWindow::StartTimerAnimation(wxCommandEvent& event)
-{
-     StartAnimation();
 }
 
 bool CViewerWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail)
@@ -750,7 +754,7 @@ void CViewerWindow::OnShowPicture(wxCommandEvent& event)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-///Mise à jour des informations sur les fichiers
+///Mise Ã  jour des informations sur les fichiers
 ////////////////////////////////////////////////////////////////////////////////////////////////
 void CViewerWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail)
 {
@@ -814,8 +818,13 @@ void CViewerWindow::LoadPictureInThread(const wxString &filename, const int &num
 
 		if (isDiaporama)
 		{
+			wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 			wxCommandEvent evt(wxTIMER_DIAPORAMATIMERSTART);
-			this->GetEventHandler()->AddPendingEvent(evt);
+			mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
+		else
+		{
+
 		}
 	}
 	else

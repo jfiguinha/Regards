@@ -134,7 +134,7 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 	if(listFace != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILUPDATE);
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
 

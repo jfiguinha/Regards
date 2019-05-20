@@ -6,6 +6,7 @@
 #include <wx/mstream.h>
 #include <libPicture.h>
 #include <turbojpeg.h>
+#include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 
 CSqlThumbnail::CSqlThumbnail()
@@ -24,7 +25,7 @@ CSqlThumbnail::~CSqlThumbnail()
 CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
 {
 	type = 5;
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	return picture;
@@ -33,8 +34,8 @@ CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
 bool CSqlThumbnail::TestThumbnail(const wxString & path, const wxString &hash)
 {
 	type = 2;
-	wxString fullpath(path);
-	fullpath.Replace("'", "''");
+    wxString fullpath(path);
+    fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "' and hash = '" + hash + "'");
 	if (!find)
 	{
@@ -60,7 +61,7 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 
 bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash)
 {
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	return ExecuteInsertBlobData("INSERT INTO PHOTOSTHUMBNAIL (FullPath, width, height, hash, thumbnail) VALUES('" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "', ? )", 4, zBlob, nBlob);
 }
@@ -68,7 +69,7 @@ bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob
 wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 {
 	type = 1;
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	return bitmap;
@@ -78,7 +79,7 @@ CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 {
 	CLibPicture libPicture;
 	type = 3;
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath, width, height, hash, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
     if(regardsBitmap != nullptr)
@@ -88,7 +89,7 @@ CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 
 bool CSqlThumbnail::DeleteThumbnail(const wxString & path)
 {
-	wxString fullpath = path;
+	wxString fullpath(path);
 	fullpath.Replace("'", "''");
 	return (ExecuteRequestWithNoResult("DELETE FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'") != -1) ? true : false;
 }

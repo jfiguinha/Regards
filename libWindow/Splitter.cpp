@@ -347,7 +347,7 @@ void CSplitter::ResizeVertical()
 
 			if (posBar == 0)
 			{
-				taille = GetWindowWidth() / 3 - (themeSplitter.themeSeparation.size / 2);
+				taille = GetWindowWidth() / 2 - (themeSplitter.themeSeparation.size / 2);
 				posWindow = taille + themeSplitter.themeSeparation.size;
 				diff = GetWindowWidth() - taille - (themeSplitter.themeSeparation.size / 2);
 				posBar = taille + (themeSplitter.themeSeparation.size / 2);

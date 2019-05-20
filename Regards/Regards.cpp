@@ -269,7 +269,6 @@ private:
 	CRegardsConfigParam * regardsParam;
 	MyFrameIntro * frameStart;
 	CViewerFrame * frameViewer;
-	thread * thread;
 	wxString fileToOpen;
 
 };
