@@ -551,6 +551,7 @@ void CMainWindow::ProcessIdle()
         wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
 		this->GetEventHandler()->AddPendingEvent(evt);
         hasDoneOneThings = true;
+        numElementTraitement = 0;
 	}
 	else if (updateFolder)
 	{
@@ -632,7 +633,7 @@ void CMainWindow::ProcessIdle()
 					filename = firstFileToShow;
 				}
 			}
-			numElementTraitement = 0;
+			//numElementTraitement = 0;
 		}
 		updatePicture = false;
         hasDoneOneThings = true;
