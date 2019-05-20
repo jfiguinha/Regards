@@ -6,10 +6,12 @@
 #include <LibResource.h>
 #include <RegardsBitmap.h>
 #include <FilterData.h>
+#include "ViewerTheme.h"
+#include "ViewerThemeInit.h"
 #define TAILLEMAX 1024
 using namespace Regards::Viewer;
 
-CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
+CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl)
 {
 	filtre = 0;
 	widthPosition = 0;
@@ -17,8 +19,11 @@ CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CThemeTree * theme, C
 	source = nullptr;
 	index = 0;
 
+	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	if (viewerTheme)
+		viewerTheme->GetTreeTheme(&themeTree);
 	this->bitmapViewer = bitmapViewer;
-	themeTree = *theme;
+
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeDelete.SetHeight(themeTree.GetRowHeight());

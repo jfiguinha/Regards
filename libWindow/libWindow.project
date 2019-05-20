@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="TreeWithScrollbar.cpp"/>
     <File Name="PanelWithClickToolbar.cpp"/>
     <File Name="ClickToolbar.cpp"/>
     <File Name="TabWindow.cpp"/>
@@ -74,6 +75,7 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="TreeWithScrollbar.h"/>
     <File Name="PanelWithClickToolbar.h"/>
     <File Name="ClickToolbar.h"/>
     <File Name="TabWindow.h"/>

@@ -298,7 +298,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	SetMenuBar(menuBar);
 
 	SetLabel(wxT("Regards Viewer"));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
+	//Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	

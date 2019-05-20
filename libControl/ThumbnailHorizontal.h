@@ -12,10 +12,9 @@ namespace Regards
 		class CThumbnailHorizontal : public CThumbnail
 		{
 		public:
-			CThumbnailHorizontal(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailHorizontal(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailHorizontal(void);
             void SetListeFile(const vector<wxString> & files);
-			void SetIconeSize(const int &width, const int &height);
             void InitPosition();
             wxString GetWaitingMessage();
             

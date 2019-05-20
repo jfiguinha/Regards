@@ -19,7 +19,7 @@ namespace Regards
 		class CCentralWindow :public CSplitter
 		{
 		public:
-			CCentralWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal = true);
+			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal = true);
 			~CCentralWindow();
 
 			void UpdateScreenRatio();

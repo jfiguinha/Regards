@@ -30,7 +30,7 @@ using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
-CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar)
+CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CListPicture",parent, id)
 {
 	thumbscrollbar = nullptr;
@@ -56,7 +56,7 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface 
 		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFolder = new CThumbnailFolder(thumbscrollbar, THUMBNAILFOLDER, statusbar, themeThumbnail, checkValidity);
+		thumbnailFolder = new CThumbnailFolder(thumbscrollbar, THUMBNAILFOLDER, themeThumbnail, checkValidity);
 		//thumbnailWindow->Init(typeAffichage);
 		thumbscrollbar->SetCentralWindow(thumbnailFolder, theme);
 	}

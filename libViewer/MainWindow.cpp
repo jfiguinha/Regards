@@ -30,6 +30,7 @@
 #include <ShowVideo.h>
 #include <StatusText.h>
 #include "PictureElement.h"
+#include <ThumbnailMessage.h>
 #include "FaceInfosUpdate.h"
 //#include <jpge.h>
 //using namespace jpge;
@@ -61,7 +62,7 @@ public:
 
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
-CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer)
+CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar)
 	: CWindowMain("CMainWindow",parent, id)
 {
 	sendMessageVideoStop = false;
@@ -105,9 +106,9 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	{
 		CThemeSplitter theme;
 		viewerTheme->GetSplitterTheme(&theme);
-		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, statusBarViewer, theme, imageList, false);
+		centralWnd = new CCentralWindow(this, CENTRALVIEWERWINDOWID, theme, imageList, false);
 	}
-	this->statusBarViewer = statusBarViewer;
+	this->statusBarViewer = statusbar;
 
 
 	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
@@ -135,6 +136,10 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
 	Connect(wxEVENT_SETRANGEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetRangeProgressBar));
+	Connect(wxEVENT_PRINTPICTURE, wxCommandEventHandler(CMainWindow::PrintPreview));
+	Connect(wxEVENT_UPDATEMESSAGETHUMBNAIL, wxCommandEventHandler(CMainWindow::UpdateThumbnailMessage));
+	Connect(wxEVENT_UPDATEMESSAGECRITERIA, wxCommandEventHandler(CMainWindow::UpdateCriteriaMessage));
+	
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
@@ -163,6 +168,75 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	
 }
 
+void CMainWindow::UpdateThumbnailMessage(wxCommandEvent& event)
+{
+	TRACE();
+	CThumbnailMessage * thumbnailMessage = (CThumbnailMessage *)event.GetClientData();
+	if (thumbnailMessage != nullptr)
+	{
+		wxString picture = CLibResource::LoadStringFromResource(L"LBLPICTURERENDER", 1);
+		wxString message = picture + to_string(thumbnailMessage->nbPhoto);
+		if (statusBarViewer != nullptr)
+		{
+			statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
+			statusBarViewer->SetText(2, message);
+			statusBarViewer->SetPosProgressBar(thumbnailMessage->thumbnailPos + 1);
+		}
+
+		delete thumbnailMessage;
+	}
+}
+
+void CMainWindow::UpdateCriteriaMessage(wxCommandEvent& event)
+{
+	TRACE();
+	CThumbnailMessage * thumbnailMessage = (CThumbnailMessage *)event.GetClientData();
+	if (thumbnailMessage != nullptr)
+	{
+		switch (thumbnailMessage->typeMessage)
+		{
+			case 0:
+			{
+				wxString picture = CLibResource::LoadStringFromResource(L"LBLCRITERIANBIMAGE", 1);
+				wxString message = picture + to_string(thumbnailMessage->nbPhoto);
+
+				if (statusBarViewer != nullptr)
+				{
+					statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbPhoto);
+					statusBarViewer->SetPosProgressBar(0);
+					statusBarViewer->SetText(2, message);
+				}
+			}
+			break;
+
+			case 1:
+			{
+				if (statusBarViewer != nullptr)
+				{
+					statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
+					statusBarViewer->SetPosProgressBar(0);
+				}
+			}
+			break;
+
+			case 2:
+				{
+					wxString picture = CLibResource::LoadStringFromResource(L"LBLFOLDERPROCESSING", 1);
+					wxString message = picture + to_string(thumbnailMessage->thumbnailPos) + " / " + to_string(thumbnailMessage->nbPhoto);
+					if (statusBarViewer != nullptr)
+					{
+						statusBarViewer->SetText(2, message);
+						statusBarViewer->SetPosProgressBar(thumbnailMessage->thumbnailPos);
+					}
+				}
+				break;
+		}
+		delete thumbnailMessage;
+	}
+}
+
+
+
 
 void CMainWindow::StopAnimation(wxCommandEvent& event)
 {
@@ -172,6 +246,13 @@ void CMainWindow::StopAnimation(wxCommandEvent& event)
         int timeDelai = viewerParam->GetDelaiDiaporamaOption();
         diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
     }     
+}
+
+void CMainWindow::PrintPreview(wxCommandEvent& event)
+{
+	CRegardsBitmap * bitmap = (CRegardsBitmap *)event.GetClientData();
+	if (bitmap != nullptr)
+		statusBarViewer->PrintPreview(bitmap);
 }
 
 void CMainWindow::RefreshCriteriaPictureList(wxCommandEvent& event)
@@ -464,6 +545,7 @@ void CMainWindow::ProcessIdle()
         wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
 		this->GetEventHandler()->AddPendingEvent(evt);
         hasDoneOneThings = true;
+        numElementTraitement = 0;
 	}
 	else if (updateFolder)
 	{
@@ -545,7 +627,7 @@ void CMainWindow::ProcessIdle()
 					filename = firstFileToShow;
 				}
 			}
-			numElementTraitement = 0;
+			//numElementTraitement = 0;
 		}
 		updatePicture = false;
         hasDoneOneThings = true;

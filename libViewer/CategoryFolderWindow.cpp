@@ -1,8 +1,6 @@
 #include <header.h>
 #include "CategoryFolderWindow.h"
 #include <LibResource.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
 #include "ViewerParamInit.h"
 #include <ListCriteriaPhoto.h>
 #include <window_id.h>
@@ -24,6 +22,7 @@
 #include <RegardsBitmap.h>
 #include <SqlPhotoGPS.h>
 #include <ConvertUtility.h>
+#include <ThumbnailMessage.h>
 using namespace std;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
@@ -56,11 +55,10 @@ public:
     bool fromGps;
 };
 
-CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarViewer)
-	: CWindowMain("CCategoryFolderWindow", parent, id)
+CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & theme)
+	: CTreeWithScrollbar("CCategoryFolderWindow", parent, id, themeScroll, theme)
 {
-	catalogWndScroll = nullptr;
-	treeWindow = nullptr;
+
 	catalogWndOld = nullptr;
 	explorerconfig = nullptr;
 	oldPos = 0;
@@ -76,26 +74,11 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, IS
 	if (config != nullptr)
 		nbProcesseur = config->GetExifProcess();
 
-	this->statusBarViewer = statusBarViewer;
+	//this->statusBarViewer = statusBarViewer;
 	catalogWndOld = nullptr;
-	treeWindow = nullptr;//new CTreeWindow();
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
-    gpsLocalisationFinish = true;
-    
-	if (viewerTheme != nullptr)
-	{
-		wxString libelle = CLibResource::LoadStringFromResource(L"LBLCRITERIA", 1);
-		CThemeScrollBar themeScroll;
-		CThemeTree themeTree;
 
-		viewerTheme->GetScrollTheme(&themeScroll);
-		catalogWndScroll = new CScrollbarWnd(this, wxID_ANY);
-		
-		viewerTheme->GetTreeTheme(&themeTree);
-		treeWindow = new CTreeWindow(catalogWndScroll, CATEGORYWINDOWID, themeTree);
-		catalogWndScroll->SetCentralWindow(treeWindow, themeScroll);
-	}
-    
+    gpsLocalisationFinish = true;
+   
     
     CRegardsConfigParam * param = CParamInit::getInstance();
     if (param != nullptr)
@@ -138,23 +121,12 @@ void CCategoryFolderWindow::RefreshCriteriaSearch(wxCommandEvent& event)
         catalogWndOld->RefreshCriteriaSearch();
 }
 
-void CCategoryFolderWindow::UpdateScreenRatio()
-{
-    printf("CCategoryFolderWindow::UpdateScreenRatio() \n");
-    catalogWndScroll->UpdateScreenRatio();
-    catalogWndOld->UpdateScreenRatio();
-    treeWindow->UpdateScreenRatio();
-}
-
-
 CCategoryFolderWindow::~CCategoryFolderWindow()
 {
 	if (refreshTimer->IsRunning())
 		refreshTimer->Stop();
 
 	delete(refreshTimer);	
-	delete(treeWindow);
-	delete(catalogWndScroll);
 	delete(catalogWndOld);
 }
 
@@ -197,14 +169,6 @@ void CCategoryFolderWindow::UpdateCriteria(const bool &needToSendMessage)
     processIdle = true;
 }
 
-void CCategoryFolderWindow::Resize()
-{
-	if (catalogWndScroll != nullptr)
-		catalogWndScroll->SetSize(GetWindowWidth(), GetWindowHeight());
-
-	catalogWndScroll->PostSizeEvent();
-}
-
 void CCategoryFolderWindow::RefreshFilter()
 {
     update = false;
@@ -234,6 +198,15 @@ void CCategoryFolderWindow::ProcessIdle()
     CSqlInsertFile sqlInsertFile;
     nbPhotos = sqlInsertFile.GetNbPhotosToProcess(); 
 
+	CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+	thumbnailMessage->nbPhoto = nbPhotos;
+	thumbnailMessage->typeMessage = 0;
+	wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+	eventChange.SetClientData(thumbnailMessage);
+	mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+
+	/*
     wxString message = "Criteria Nb Image to Process :  " + to_string(nbPhotos);
 
     if (statusBarViewer != nullptr)
@@ -242,7 +215,7 @@ void CCategoryFolderWindow::ProcessIdle()
         statusBarViewer->SetPosProgressBar(0);
         statusBarViewer->SetText(2, message);
     }
-
+*/
 
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
@@ -283,21 +256,40 @@ void CCategoryFolderWindow::ProcessIdle()
 		FolderCatalogVector catalogfolderVector;
 		folder.GetFolderCatalog(&catalogfolderVector, 1);
 
+		CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+		thumbnailMessage->nbElement = catalogfolderVector.size();
+		thumbnailMessage->typeMessage = 1;
+		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+		eventChange.SetClientData(thumbnailMessage);
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+
+		/*
 		if (statusBarViewer != nullptr)
 		{
 			statusBarViewer->SetRangeProgressBar((int)catalogfolderVector.size());
 			statusBarViewer->SetPosProgressBar(0);
 		}
-
+		*/
 		for (CFolderCatalog folder : catalogfolderVector)
 		{
 			counter++;
+			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+			thumbnailMessage->thumbnailPos = counter;
+			thumbnailMessage->nbElement = catalogfolderVector.size();
+			thumbnailMessage->typeMessage = 2;
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+			eventChange.SetClientData(thumbnailMessage);
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			/*
 			message = "Folder Processing " + to_string(counter) + " / " + to_string(catalogfolderVector.size());
 			if (statusBarViewer != nullptr)
 			{
 				statusBarViewer->SetText(2, message);
 				statusBarViewer->SetPosProgressBar(counter);
 			}
+			*/
 			RefreshThreadFolder(&folder);
 		}
 

@@ -14,7 +14,7 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Control;
 
-CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface)
+CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelPhotoWnd",parent, id)
 {
     categoryFolderWnd = nullptr;
@@ -54,7 +54,13 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id, IStatusBarInterf
 
 	if (viewerTheme != nullptr)
 	{
-		categoryFolderWnd = new CCategoryFolderWindow(this, CATEGORYFOLDERWINDOWID, statusBarInterface);
+		CThemeScrollBar themeScroll;
+		CThemeTree theme;
+
+		viewerTheme->GetScrollTheme(&themeScroll);
+		viewerTheme->GetTreeTheme(&theme);
+
+		categoryFolderWnd = new CCategoryFolderWindow(this, CATEGORYFOLDERWINDOWID, themeScroll, theme);
 		categoryFolderWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();

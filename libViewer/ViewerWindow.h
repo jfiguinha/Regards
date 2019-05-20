@@ -58,7 +58,7 @@ namespace Regards
 		class CViewerWindow : public CWindowMain, public CPaneInterface
 		{
 		public:
-			CViewerWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface);
+			CViewerWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
 			~CViewerWindow();
 
 			void SetListeFile(PhotosVector* photoVector);

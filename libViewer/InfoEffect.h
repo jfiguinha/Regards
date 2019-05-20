@@ -13,7 +13,7 @@ namespace Regards
 		{
 		public:
 
-			CInfoEffect(CBitmapWndViewer * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager);
+			CInfoEffect(CBitmapWndViewer * bitmapViewer, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager);
 			~CInfoEffect();
 
 			wxString GetFilename();

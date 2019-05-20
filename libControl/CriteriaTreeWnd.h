@@ -1,6 +1,6 @@
 #pragma once
 #include "CriteriaTree.h"
-#include <ScrollbarWnd.h>
+#include <TreeWithScrollbar.h>
 #include <WindowMain.h>
 #include <FileGeolocation.h>
 using namespace Regards::Window;
@@ -13,25 +13,21 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CCriteriaTreeWnd : public CWindowMain
+		class CCriteriaTreeWnd : public CTreeWithScrollbar
 		{
 		public:
 
 			CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll);
             ~CCriteriaTreeWnd(void);
-            void UpdateScreenRatio();
             void SetFile(const wxString & filename);
             
 		private:
 
-            void Resize();
             void ShowCalendar(wxCommandEvent &event);
             void ShowMap(wxCommandEvent &event);
             wxString GenerateUrl();
             void UpdateTreeData();
-            
-            CScrollbarWnd * InfosFileScroll;
-            CTreeWindow * treeWindow;
+
             CCriteriaTree * criteriaTree;
             CCriteriaTree * oldCriteriaTree;
             CFileGeolocation * fileGeolocalisation;

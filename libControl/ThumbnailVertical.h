@@ -13,7 +13,7 @@ namespace Regards
 		class CThumbnailVertical : public CThumbnail
 		{
 		public:
-			CThumbnailVertical(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailVertical(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailVertical(void);
 			int GetTypeAffichage();
 			int GetNumCatalog();

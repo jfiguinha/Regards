@@ -4,8 +4,8 @@
 #include <window_id.h>
 using namespace Regards::Viewer;
 
-CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailVideo(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnailVideo(parent, id, themeThumbnail, testValidity)
 {
 	filename = L"";
 }

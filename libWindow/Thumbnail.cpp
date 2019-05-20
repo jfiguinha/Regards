@@ -21,6 +21,7 @@
 #include <ThumbnailDataStorage.h>
 //#include <ThumbnailDataVideo.h>
 #include <SqlFaceThumbnail.h>
+#include <ThumbnailMessage.h>
 using namespace Regards::Window;
 
 class CImageLoadingFormat;
@@ -287,7 +288,7 @@ void CThumbnail::ZoomPosition(const int &position)
 }
 
 
-CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CWindowMain("CThumbnail",parent, id)
 {
 	controlWidth = 0;
@@ -328,7 +329,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, IStatusBarInterface * st
 	defaultPageSize = 200;
 	defaultLineSize = 200;
 
-	this->statusbar = statusbar;
+	//this->statusbar = statusbar;
 	this->themeThumbnail = themeThumbnail;
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CThumbnail::OnIdle));
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::OnPaint));
@@ -473,7 +474,6 @@ void CThumbnail::ProcessIdle()
 	{
 		wxCommandEvent * event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
 		event->SetExtraLong(photoList.size());
-		statusbar->SetRangeProgressBar(iconeList->GetNbElement());
 		wxQueueEvent(this, event);
 
 
@@ -551,13 +551,27 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 {
     TRACE();
 	int nbPhoto = event.GetExtraLong();
-	wxString message = L"Picture render missing : " + to_string(nbPhoto);
+	CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+	thumbnailMessage->nbPhoto = nbPhoto;
+	thumbnailMessage->thumbnailPos = thumbnailPos;
+	thumbnailMessage->nbElement = iconeList->GetNbElement();
+
+	wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGETHUMBNAIL);
+	eventChange.SetClientData(thumbnailMessage);
+	mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+
+	//wxString message = L"Picture render missing : " + to_string(nbPhoto);
+
+	//statusbar->SetRangeProgressBar(iconeList->GetNbElement());
+	/*
 	if (statusbar != nullptr)
 	{
 		statusbar->SetText(2, message);
 		
 		statusbar->SetPosProgressBar(thumbnailPos + 1);
 	}
+	*/
 	thumbnailPos++;
 }
 

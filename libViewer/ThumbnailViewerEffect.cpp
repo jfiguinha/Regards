@@ -4,8 +4,8 @@
 #include <window_id.h>
 using namespace Regards::Viewer;
 
-CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailEffect(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailViewerEffect::CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnailEffect(parent, id, themeThumbnail, testValidity)
 {
 
 }

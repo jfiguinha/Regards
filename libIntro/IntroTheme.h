@@ -13,19 +13,12 @@ namespace Regards
 			CIntroTheme();
 			~CIntroTheme(){};
 			void GetAboutTexteTheme(CThemeIntroLogo * theme);
-			void GetAboutTreeControlTheme(CThemeTree * theme);
-			void GetScrollAboutTheme(CThemeScrollBar * theme);
 
 		private:
 
 			void LoadTheme(){};
 			void SaveTheme(){};
 
-			void InitAboutTree();
-			void InitAboutScrollbar();
-
-			CThemeTree themeAbout;
-			CThemeScrollBar themeAboutScroll;
 			CThemeIntroLogo themeIntroLogo;
 		};
 	}

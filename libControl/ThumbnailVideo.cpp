@@ -14,8 +14,8 @@ using namespace Regards::Window;
 
 #define wxEVENT_UPDATEVIDEOTHUMBNAIL 1001
 
-CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailHorizontal(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnailHorizontal(parent, id, themeThumbnail, testValidity)
 {
 	numItemSelected = -1;
 	isThreadStart = false;

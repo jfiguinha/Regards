@@ -11,7 +11,7 @@ namespace Regards
 		class CThumbnailViewerEffect : public CThumbnailEffect
 		{
 		public:
-			CThumbnailViewerEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailViewerEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailViewerEffect(void);
 
 		private:

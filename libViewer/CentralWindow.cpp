@@ -12,7 +12,7 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, 
-	IStatusBarInterface * statusBarInterface, const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
+	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
 	: CSplitter(parent, id, theme)
 {
 	posBarInfos = 0;
@@ -32,20 +32,20 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	if (viewerTheme != nullptr)
 	{
-		viewerWindow = new CViewerWindow(this, VIEWERPICTUREWND, statusBarInterface);
+		viewerWindow = new CViewerWindow(this, VIEWERPICTUREWND);
 		viewerWindow->SetListeFile(&photoVector);
 	}
 
 	if (viewerTheme != nullptr)
 	{
-		listPicture = new CListPicture(this, LISTPICTUREID, statusBarInterface);
+		listPicture = new CListPicture(this, LISTPICTUREID);
 		listPicture->Show(false);
 		listPicture->SetListeFile(&photoVector);
 	}
 
 	if (viewerTheme != nullptr)
 	{
-		listFace = new CListFace(this, LISTFACEID, statusBarInterface);
+		listFace = new CListFace(this, LISTFACEID);
 		listFace->Show(false);
 	}
 
@@ -62,7 +62,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible, true, true);
-		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID, statusBarInterface);
+		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID);
 		panelSearch->SetWindow(panelPhotoWnd);
 	}
 

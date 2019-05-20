@@ -18,7 +18,7 @@ namespace Regards
         class CThumbnailViewerEffectWnd : public CWindowMain
         {
         public:
-            CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail);
+            CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail);
             virtual ~CThumbnailViewerEffectWnd(void);
             
             void UpdateScreenRatio();

@@ -237,6 +237,13 @@ public:
 #endif    
 
 
+	virtual void ShowViewer()
+	{
+		frameViewer = new CViewerFrame("Regards Viewer", wxPoint(50, 50), wxSize(1200, 800), this, fileToOpen);
+		frameViewer->Centre(wxBOTH);
+		frameViewer->Show(true);
+	}
+
 	virtual void ShowAbout()
 	{
 
@@ -256,6 +263,7 @@ public:
 			frameStart->Show(false);
 
 	}
+
 
 private:
 	CRegardsConfigParam * regardsParam;
@@ -458,17 +466,14 @@ bool MyApp::OnInit()
     
      
     //wxXmlResource::Get()->LoadAllFiles("rc");
-
+	
 	frameStart = new MyFrameIntro("Welcome to Regards", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);
 	frameStart->Show(true);
-
     
 	CViewerFrame::SetViewerMode(true);
-	frameViewer = new CViewerFrame("Regards Viewer", wxPoint(50, 50), wxSize(1200, 800), this, fileToOpen);
-	frameViewer->Centre(wxBOTH);
-	frameViewer->Show(true);
-    
+
+   
 
 	// success: wxApp::OnRun() will be called which will enter the main message
 	// loop and the application will run. If we returned false here, the

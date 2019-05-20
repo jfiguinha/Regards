@@ -45,7 +45,7 @@ void CShowBitmap::UpdateScreenRatio()
 }
 
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
-	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, IStatusBarInterface * statusBarInterface, CThemeParam * config)
+	wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config)
 	: wxWindow(parent, id, wxPoint(0,0), wxSize(0,0), 0)
 {
 	transitionEnd = false;
@@ -83,7 +83,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	if (config != nullptr)
 		config->GetBitmapWindowTheme(&themeBitmap);
 
-	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface, statusBarInterface);
+	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	
 	pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
 

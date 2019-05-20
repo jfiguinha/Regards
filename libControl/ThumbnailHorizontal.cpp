@@ -11,8 +11,8 @@
 using namespace Regards::Control;
 
 
-CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnail(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailHorizontal::CThumbnailHorizontal(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
 }
 

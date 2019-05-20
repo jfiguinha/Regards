@@ -7,8 +7,7 @@
 //
 
 #include "FiltreEffect.h"
-#include <ScrollbarWnd.h>
-#include <TreeWindow.h>
+#include <TreeWithScrollbar.h>
 using namespace Regards::Window;
 
 
@@ -19,14 +18,11 @@ namespace Regards
         class CInfoEffectWnd;
         class CPanelInfosWnd;
         
-        class CFiltreEffectScrollWnd : public CWindowMain
+        class CFiltreEffectScrollWnd : public CTreeWithScrollbar
         {
         public:
             CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree);
             ~CFiltreEffectScrollWnd(void);
-            
-            void UpdateScreenRatio();
-            void Resize();
             void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos, const wxString &filename, const int & isVideo);
             void OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd);
             CFiltreEffect * GetFiltreEffect();
@@ -35,8 +31,6 @@ namespace Regards
             
 			CRegardsBitmap * bitmap;
             CEffectParameter * effectParameter;
-            CScrollbarWnd * filtreEffectScroll;
-            CTreeWindow * treeFiltreEffect;
             CFiltreEffect * filtreEffectOld;
 			int numFiltre;
         };

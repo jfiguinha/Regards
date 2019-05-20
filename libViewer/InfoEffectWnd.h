@@ -7,28 +7,24 @@
 //
 
 #include "InfoEffect.h"
-#include <ScrollbarWnd.h>
-using namespace Regards::Control;
+#include <TreeWithScrollbar.h>
+using namespace Regards::Window;
 
 namespace Regards
 {
     namespace Viewer
     {
-        class CInfoEffectWnd : public CWindowMain
+        class CInfoEffectWnd : public CTreeWithScrollbar
         {
         public:
             CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree);
             ~CInfoEffectWnd(void);
-            
-            void UpdateScreenRatio();
-            void Resize();
+
             void AddModification(CRegardsBitmap * bitmap,const wxString & libelle);
             void HistoryUpdate(CRegardsBitmap * bitmap,const wxString & filename, const wxString & historyLibelle, CBitmapWndViewer * bitmapViewer, CModificationManager * modificationManager);
             
         private:
-            
-            CScrollbarWnd * historyEffectScroll;
-            CTreeWindow * treeHistoryEffect;
+          
             CInfoEffect * historyEffectOld;
         };
     }

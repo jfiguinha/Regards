@@ -17,8 +17,8 @@
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
-CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnailVertical(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {
 	
 	barseparationHeight = 40;

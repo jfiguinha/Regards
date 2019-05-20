@@ -21,7 +21,7 @@ namespace Regards
 		{
 		public:
 
-			CFiltreEffect(IFiltreUpdate * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);
+			CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl);
 			~CFiltreEffect(void);
 			virtual void Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre);
 			virtual void SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key);

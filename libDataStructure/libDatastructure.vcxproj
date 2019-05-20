@@ -250,6 +250,7 @@
     <ClInclude Include="ThumbnailData.h" />
     <ClInclude Include="ThumbnailDataSQL.h" />
     <ClInclude Include="ThumbnailDataStorage.h" />
+    <ClInclude Include="ThumbnailMessage.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="TreeData.h" />
     <ClInclude Include="TreeDataCategory.h" />

@@ -49,8 +49,8 @@ public:
 	CThumbnailEffect * thumbnail;
 };
 
-CThumbnailEffect::CThumbnailEffect(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
-	: CThumbnail(parent, id, statusBarInterface, themeThumbnail, testValidity)
+CThumbnailEffect::CThumbnailEffect(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
+	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
 	isAllProcess = true;
     processIdle = false;

@@ -39,27 +39,16 @@
 using namespace Regards::Viewer;
 
 CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree)
-: CWindowMain("CFiltreEffectScrollWnd",parent, id)
+: CTreeWithScrollbar("CFiltreEffectScrollWnd",parent, id, themeScroll, themeTree)
 {
 	bitmap = nullptr;
 	numFiltre = 0;
     effectParameter = nullptr;
-    filtreEffectScroll = nullptr;
-    treeFiltreEffect = nullptr;
     filtreEffectOld = nullptr;
-    filtreEffectScroll = new CScrollbarWnd(this, wxID_ANY);
-    treeFiltreEffect = new CTreeWindow(filtreEffectScroll, wxID_ANY, themeTree);
-    filtreEffectScroll->SetCentralWindow(treeFiltreEffect, themeScroll);
 }
 
 CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
-{
-    if(treeFiltreEffect != nullptr)
-        delete(treeFiltreEffect);
-    
-    if(filtreEffectScroll != nullptr)
-        delete(filtreEffectScroll);
-    
+{   
     if(filtreEffectOld != nullptr)
         delete(filtreEffectOld);
     
@@ -69,30 +58,12 @@ CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
 	if(bitmap != nullptr)
 		delete bitmap;
 }
-void CFiltreEffectScrollWnd::UpdateScreenRatio()
-{
-    if(filtreEffectScroll != nullptr)
-        filtreEffectScroll->UpdateScreenRatio();
-    
-    if(treeFiltreEffect != nullptr)
-        treeFiltreEffect->UpdateScreenRatio();
-    
-    if(filtreEffectOld != nullptr)
-        filtreEffectOld->UpdateScreenRatio();
-    
-}
 
-void CFiltreEffectScrollWnd::Resize()
-{
-    filtreEffectScroll->SetSize(0,0,GetWindowWidth(),GetWindowHeight());
-}
 
 void CFiltreEffectScrollWnd::OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd)
 {
-	//wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 	CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
-    //CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer *)this->FindWindowById(BITMAPWINDOWVIEWERID);
-	
+
     if (showBitmap != nullptr)
     {
 		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
@@ -132,7 +103,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 		{
 			CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
 			bitmapViewer->ApplyEffect(numItem);
-			CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeFiltreEffect->GetTheme(), treeFiltreEffect);
+			CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow);
         
 			if (bitmapViewer != nullptr)
 			{
@@ -169,7 +140,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 						if (previewWindow != nullptr)
 							previewWindow->ShowValidationToolbar(true, numItem);
 						panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
-						treeFiltreEffect->SetTreeControl(filtreEffect);
+						treeWindow->SetTreeControl(filtreEffect);
                        if(filtreEffectOld != nullptr)
                             delete(filtreEffectOld);
 						filtreEffectOld = filtreEffect;
@@ -194,7 +165,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 	{
 		CShowVideo * showVideo = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
 		//CVideoControl * videoControl = showVideo->GetVideoControl();
-		CFiltreEffect * filtreEffect = new CFiltreEffect(showVideo, treeFiltreEffect->GetTheme(), treeFiltreEffect);
+		CFiltreEffect * filtreEffect = new CFiltreEffect(showVideo, treeWindow);
 		switch (numItem)
 		{
 			case IDM_FILTRE_VIDEO:
@@ -205,7 +176,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 				showVideo->SetVideoPreviewEffect(effectParameter);
 				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
 				panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
-				treeFiltreEffect->SetTreeControl(filtreEffect);
+				treeWindow->SetTreeControl(filtreEffect);
 				delete(filtreEffectOld);
 				filtreEffectOld = filtreEffect;
 				break;
@@ -219,7 +190,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 				showVideo->SetVideoPreviewEffect(effectParameter);
 				filtreEffect->Init(effectParameter, nullptr, filename, numItem);
 				panelInfos->ShowFiltre(CFiltreData::GetFilterLabel(numItem));
-				treeFiltreEffect->SetTreeControl(filtreEffect);
+				treeWindow->SetTreeControl(filtreEffect);
 				delete(filtreEffectOld);
 				filtreEffectOld = filtreEffect;
 				break;

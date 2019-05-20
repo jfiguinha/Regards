@@ -4,14 +4,20 @@
 #include "TreeElementTriangle.h"
 #include "ModificationManager.h"
 #include <ImageLoadingFormat.h>
+#include "ViewerTheme.h"
+#include "ViewerThemeInit.h"
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CInfoEffect::CInfoEffect(CBitmapWndViewer * bitmapViewer, CThemeTree * theme, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
+CInfoEffect::CInfoEffect(CBitmapWndViewer * bitmapViewer, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
 {
 	widthPosition = 0;
-	themeTree = *theme;
+	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+
+	if (viewerTheme != nullptr)
+		viewerTheme->GetTreeTheme(&themeTree);
+
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeDelete.SetHeight(themeTree.GetRowHeight());

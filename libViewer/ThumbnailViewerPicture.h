@@ -18,7 +18,7 @@ namespace Regards
 		class CThumbnailViewerPicture : public CThumbnailVertical
 		{
 		public:
-			CThumbnailViewerPicture(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailViewerPicture(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailViewerPicture(void);
 			void Init(PhotosVector * photoVector, const int &typeAffichage = SHOW_ALL);
 			void SetActifItem(const int &numItem, const bool &move);

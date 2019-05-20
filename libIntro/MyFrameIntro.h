@@ -11,11 +11,17 @@ namespace Regards
 		public:
 			MyFrameIntro(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface);
 			~MyFrameIntro();
-			void OnClose(wxCloseEvent& event);
+			
 		private:
 
+			void OnClose(wxCloseEvent& event);
+			void OnSize(wxSizeEvent& event);
+			void OnTimeShowViewer(wxTimerEvent& event);
+
+			CTitleIntro * titleIntro;
 			CMyCentralWindowIntro * myCentralWindow;
 			IMainInterface * mainInterface;
+			wxTimer * diaporamaTimer;
 		};
 	}
 }

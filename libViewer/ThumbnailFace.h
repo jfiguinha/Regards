@@ -21,7 +21,7 @@ namespace Regards
 		class CThumbnailFace : public CThumbnailVertical
 		{
 		public:
-			CThumbnailFace(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusBarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
+			CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFace(void);
 			void Init();
             void SetActifItem(const int &numItem, const bool &move); 
