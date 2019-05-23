@@ -41,8 +41,8 @@ namespace Regards
 
 			}
 
-			virtual int GetWidth() { return this->GetWidth(); };
-			virtual int GetHeight() { return this->GetHeight(); };
+			virtual int GetWidth() { return this->GetWindowWidth(); };
+			virtual int GetHeight() { return this->GetWindowHeight(); };
 
 			virtual void OnResize(wxCommandEvent& event)
 			{
