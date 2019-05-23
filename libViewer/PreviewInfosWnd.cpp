@@ -78,10 +78,6 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id,
 	RedrawBarPos();
 }
 
-void CPreviewInfosWnd::StopLoadingPicture()
-{
-
-}
 
 void CPreviewInfosWnd::OnResize(wxCommandEvent& event)
 {
@@ -234,14 +230,6 @@ bool CPreviewInfosWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThu
 		}
 	}
 	return 0;
-}
-
-
-
-
-void CPreviewInfosWnd::StartLoadingPicture()
-{
-    previewWindow->StartLoadingPicture();
 }
 
 void CPreviewInfosWnd::SetPanelInfos(const bool &isThumbnail)

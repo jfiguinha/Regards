@@ -448,6 +448,7 @@ void CPreviewWnd::UpdateInfos()
 bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation )
 {
     TRACE();
+
 	if(bitmap != nullptr && bitmap->IsOk())
 	{
 		wxString filename = bitmap->GetFilename();
@@ -488,10 +489,6 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 		}
 		else if(!isThumbnail)
 		{
-			//showBitmapWindow->StopLoadingPicture();
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
-			showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
-
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
 			this->Resize();
 		}
@@ -499,12 +496,6 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 	return 1;
 }
 
-void CPreviewWnd::StartLoadingPicture()
-{
-    //showBitmapWindow->StartLoadingPicture();
-	wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
-	showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
-}
 
 bool CPreviewWnd::SetVideo(const wxString &filename)
 {

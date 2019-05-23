@@ -50,12 +50,11 @@ namespace Regards
 
 			void SetDiaporamaMode();
 			void SetNormalMode();
-            
-            void StartLoadingPicture();
 
             void UpdateInfos();
             
 		protected:
+
 
 			void ShowToolbar(wxCommandEvent& event);
 			void HideToolbar(wxCommandEvent& event);

@@ -35,8 +35,6 @@ namespace Regards
 			void ResizeWindow();
             
             void UpdateScreenRatio();
-            void StartLoadingPicture();
-			void StopLoadingPicture();
 
 			void SetDiaporamaMode();
 			void SetNormalMode();

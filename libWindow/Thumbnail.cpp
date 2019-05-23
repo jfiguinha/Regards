@@ -353,8 +353,8 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
     Connect(wxEVENT_ONSTARTTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StartThumbnail));
-	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
-	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
+	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
+	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::EraseThumbnail));
 		
 	processIdle = true;
@@ -808,6 +808,7 @@ void CThumbnail::OnLoading(wxTimerEvent& event)
     if (stepLoading == m_animation->GetFrameCount())
         stepLoading = 0;
 
+	loadingIcone->DestroyCache();
     loadingIcone->SetPictureLoading(m_animation->GetFrame(stepLoading));
     
     bufferUpdate = true;
@@ -842,6 +843,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
 {
     TRACE();
+
     if(loadingIcone != nullptr)
     {
         loadingIcone->StopLoadingPicture();
@@ -851,7 +853,7 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
     showLoadingBitmap = false;
     if (loadingTimer->IsRunning())
         loadingTimer->Stop();
-    
+
     bufferUpdate = true;
 #ifdef __APPLE__
     this->CallRefresh(this);

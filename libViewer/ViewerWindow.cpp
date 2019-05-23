@@ -118,7 +118,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		panelPicture = new CPanelWithClickToolbar(this, "CThumbnailPicturePanel", THUMBNAILPICTUREPANEL, theme, themetoolbar, libelle, isPanelVisible, true, false);
 		scrollPictureWindow = new CScrollbarWnd(panelPicture->GetPaneWindow(), wxID_ANY);
-		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, wxID_ANY, themeThumbnail, checkValidity);
+		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
 		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
 		scrollPictureWindow->HideVerticalScroll();
 		scrollPictureWindow->SetPageSize(1000);
@@ -486,12 +486,14 @@ void CViewerWindow::SetVideo(const wxString &path)
 
 void CViewerWindow::StartLoadingPicture(const int &numElement)
 {
-	//thumbnailPicture->StartLoadingPicture(numElement);
-	wxWindow* showBitmapWindow = (wxWindow*)this->FindWindowById(SHOWBITMAPVIEWERID);
-	if (showBitmapWindow != nullptr)
+	//showBitmapWindow->StartLoadingPicture();
+	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
+	if (bitmapWindow != nullptr)
 	{
-		wxCommandEvent eventUpdate(wxEVENT_ONSTARTLOADINGPICTURE);
-		showBitmapWindow->GetEventHandler()->AddPendingEvent(eventUpdate);
+		wxCommandEvent evt(wxEVENT_ONSTARTLOADINGPICTURE);
+		evt.SetExtraLong(numElement);
+		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -524,7 +526,14 @@ void CViewerWindow::StopAnimation()
 
 void CViewerWindow::StopLoadingPicture()
 {
-	previewInfosWnd->StopLoadingPicture();
+	//showBitmapWindow->StopLoadingPicture();
+	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
+	if (bitmapWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ONSTOPLOADINGPICTURE);
+		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CViewerWindow::LoadAnimationBitmap(const int &numFrame)

@@ -99,7 +99,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CShowBitmap::StartLoadingPicture));
-	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::StopLoadingPicture));
+	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxCommandEventHandler(CShowBitmap::StopLoadingPicture));
     progressValue = 0;
 }
 
@@ -229,7 +229,7 @@ void CShowBitmap::StartLoadingPicture(wxCommandEvent& event)
 {
     if (bitmapWindow != nullptr)
     {
-		showLoadBar = true;
+		showLoadBar = false;
         bitmapWindow->StartLoadingBitmap();
 		loadingTimer->Start(100);
 		progressBar->SetValue(0);
