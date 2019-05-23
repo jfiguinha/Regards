@@ -400,6 +400,7 @@ void CListFace::Resize()
 
 void CListFace::PictureClick(const wxString &filepath, const int &numElement)
 {
+	/*
 	if (thumbnailFace != nullptr)
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
@@ -409,6 +410,7 @@ void CListFace::PictureClick(const wxString &filepath, const int &numElement)
 		evt2.SetExtraLong(numElement);
 		thumbnailFace->GetEventHandler()->AddPendingEvent(evt2);
 	}
+	*/
 }
 
 //---------------------------------------------------------------------------------------

@@ -42,8 +42,6 @@ namespace Regards
 
 		private:
 
-			void StartLoadingPicture(wxCommandEvent& event);
-			void StopLoadingPicture(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnIdle(wxIdleEvent& evt);
             void OnViewerDblClick(wxCommandEvent& event);

@@ -495,13 +495,13 @@ void CListPicture::PictureClick(const wxString &filepath, const int &numElement)
 {
 	if (thumbnailFolder != nullptr)
 	{
-		//thumbnailFolder->StopLoadingPicture();
-		//thumbnailFolder->StartLoadingPicture(numElement);
+		/*
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
 		thumbnailFolder->GetEventHandler()->AddPendingEvent(evt);
 
 		wxCommandEvent evt2(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
 		evt2.SetExtraLong(numElement);
 		thumbnailFolder->GetEventHandler()->AddPendingEvent(evt2);
+		*/
 	}
 }
