@@ -66,7 +66,7 @@ void CFiltreEffectScrollWnd::OnFiltreOk(const int &numFiltre, CInfoEffectWnd * h
 
     if (showBitmap != nullptr)
     {
-		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
+		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
 		if(bitmapViewer != nullptr)
 		{
 			bitmapViewer->OnFiltreOk();
@@ -101,12 +101,11 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
     
 		if (showBitmap != nullptr)
 		{
-			CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
-			bitmapViewer->ApplyEffect(numItem);
-			CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow);
-        
+			CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
 			if (bitmapViewer != nullptr)
 			{
+				bitmapViewer->ApplyEffect(numItem);
+				CFiltreEffect * filtreEffect = new CFiltreEffect(bitmapViewer, treeWindow);
 				int typeData = CFiltreData::TypeApplyFilter(numItem);
 
 				switch (typeData)

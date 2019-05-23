@@ -17,7 +17,7 @@ namespace Regards
 
 			CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical);
 			~CBitmapToolbar();
-			void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
+			//void SetBitmapDisplayPt(CBitmapWndViewer * bitmapWindow);
 			void SetTrackBarPosition(const int &iPos);
 			void SetTabValue(vector<int> value);
 			void ZoomOn();
@@ -41,7 +41,7 @@ namespace Regards
 			//CToolbarButton * crop;
 			CToolbarButton * email;
 			CToolbarSlide * slide;
-			CBitmapWndViewer * bitmapWindow;
+			
 			
 		};
 	}

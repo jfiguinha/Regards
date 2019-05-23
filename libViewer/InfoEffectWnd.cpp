@@ -28,11 +28,11 @@ void CInfoEffectWnd::AddModification(CRegardsBitmap * bitmap,const wxString & li
         historyEffectOld->AddModification(bitmap, libelle);
 }
 
-void CInfoEffectWnd::HistoryUpdate(CRegardsBitmap * bitmap,const wxString & filename, const wxString & historyLibelle, CBitmapWndViewer * bitmapViewer, CModificationManager * modificationManager)
+void CInfoEffectWnd::HistoryUpdate(CRegardsBitmap * bitmap,const wxString & filename, const wxString & historyLibelle, CModificationManager * modificationManager)
 {
     if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)
     {
-        CInfoEffect * historyEffect = new CInfoEffect(bitmapViewer, treeWindow, modificationManager);
+        CInfoEffect * historyEffect = new CInfoEffect(treeWindow, modificationManager);
         historyEffect->Init(bitmap, filename, historyLibelle);
 		treeWindow->SetTreeControl(historyEffect);
         delete(historyEffectOld);

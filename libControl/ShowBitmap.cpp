@@ -86,7 +86,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	
     loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
-	pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
+	//pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
 	scrollbar->SetCentralWindow(bitmapWindow, themeScroll);
 	progressBar = new wxGauge(this, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, 10), wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
@@ -123,26 +123,6 @@ void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
         }
     }
 }
-
-CBitmapWndViewer * CShowBitmap::GetBitmapViewer()
-{
-	return bitmapWindow;
-}
-
-/*
-void CShowBitmap::ShowCropButton()
-{
-	if (pictureToolbar != nullptr)
-		pictureToolbar->ShowCropButton();
-}
-
-void CShowBitmap::HideCropButton()
-{
-	if (pictureToolbar != nullptr)
-		pictureToolbar->HideCropButton();
-
-}
-*/
 
 CShowBitmap::~CShowBitmap()
 {
@@ -198,6 +178,7 @@ void CShowBitmap::ShowToolbar()
 		}
 	}
 }
+
 void CShowBitmap::Resize()
 {
 	if (isDiaporama)
@@ -234,17 +215,6 @@ void CShowBitmap::Resize()
 
 		}
 	}
-	/*
-	if(pictureToolbar != nullptr)
-	{
-		if (pictureToolbar->IsShown())
-			pictureToolbar->PostSizeEvent();
-	}
-
-
-	if(scrollbar != nullptr)
-		scrollbar->PostSizeEvent();
-	*/
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
@@ -253,67 +223,6 @@ void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
 	{
 		bitmapWindow->SetBitmapPreviewEffect(effect);
 	}
-}
-
-void CShowBitmap::SendEmail()
-{
-	if (bitmapWindow != nullptr)
-	{
-		bitmapWindow->SendEmail();
-	}
-}
-
-
-bool CShowBitmap::GetShrinkImage()
-{
-	if (bitmapWindow != nullptr)
-		return bitmapWindow->GetShrinkImage();
-
-	return false;
-}
-
-void CShowBitmap::PrintPicture()
-{
-	if (bitmapWindow != nullptr)
-	{
-		bitmapWindow->PrintPicture();
-	}
-}
-
-void CShowBitmap::SetShrinkImage(const bool &value)
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->SetShrinkImage(value);
-}
-
-void CShowBitmap::ShrinkImage()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->ShrinkImage();
-}
-
-bool CShowBitmap::SetPhoto(const wxString &filename)
-{
-	CLibPicture libPicture;
-	bool returnValue = false;
-	CImageLoadingFormat * pBitmap = libPicture.LoadPicture(filename.c_str());
-	if (pBitmap != nullptr)
-    {
-		returnValue = SetBitmap(pBitmap, false);
-    }
-	if (!pBitmap->IsOk())
-	{
-		if (pBitmap != nullptr)
-			delete pBitmap;
-#ifdef WIN32
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-		pBitmap = libPicture.LoadPicture(photoCancel);
-	}
-
-	return returnValue;
 }
 
 void CShowBitmap::StartLoadingPicture(wxCommandEvent& event)
@@ -431,52 +340,12 @@ CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
 	return nullptr;
 }
 
-int CShowBitmap::GetBitmapWidth()
-{
-	if (bitmapWindow != nullptr)
-		return bitmapWindow->GetBitmapWidth(); 
-
-	return -1;
-}
-
-int CShowBitmap::GetBitmapHeight()
-{
-	if (bitmapWindow != nullptr)
-		return bitmapWindow->GetBitmapHeight();
-	
-	return -1;
-}
-
 void CShowBitmap::OnSize(wxSizeEvent& event)
 {
     
 	width = event.GetSize().GetWidth();
 	height = event.GetSize().GetHeight();
 	Resize();
-}
-
-void CShowBitmap::DeplacementDroite()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->MoveRight();
-}
-
-void CShowBitmap::DeplacementGauche()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->MoveLeft();
-}
-
-void CShowBitmap::DeplacementHaut()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->MoveTop();
-}
-
-void CShowBitmap::DeplacementBas()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->MoveBottom();
 }
 
 void CShowBitmap::OnViewerZoomIn(wxCommandEvent& event)
@@ -514,16 +383,3 @@ void CShowBitmap::FlipHorizontal()
 	if (bitmapWindow != nullptr)
 		bitmapWindow->FlipHorizontal();
 }
-
-void CShowBitmap::ZoomOn()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->ZoomOn();
-}
-
-void CShowBitmap::ZoomOut()
-{
-	if (bitmapWindow != nullptr)
-		bitmapWindow->ZoomOut();
-}
-

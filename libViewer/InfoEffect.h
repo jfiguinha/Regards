@@ -13,7 +13,7 @@ namespace Regards
 		{
 		public:
 
-			CInfoEffect(CBitmapWndViewer * bitmapViewer, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager);
+			CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager);
 			~CInfoEffect();
 
 			wxString GetFilename();
@@ -28,7 +28,7 @@ namespace Regards
 
             void InitTree(const wxString &libelle, const wxString &key);
 			wxString GetNumModification();
-			void DeleteFolder(const int &numFolder);
+
 			void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
 			void MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
 
@@ -44,7 +44,6 @@ namespace Regards
 			//tree<CTreeData *>::iterator childStart;
 			CModificationManager * modificationManager;
 			int widthPosition;
-			CBitmapWndViewer * bitmapViewer;
 			wxString filename;
 		};
 

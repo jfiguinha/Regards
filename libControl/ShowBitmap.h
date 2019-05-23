@@ -21,36 +21,22 @@ namespace Regards
 
 			CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId, wxWindowID mainViewerId, CBitmapInterface * bitmapInterfaceCTreeWithScrollbarInterface, CThemeParam * config);
 			~CShowBitmap();
-			bool SetPhoto(const wxString &filename);
-			CRegardsBitmap * GetBitmap(const bool &source);
-			int GetBitmapWidth();
-			int GetBitmapHeight();
-			void DeplacementDroite();
-			void DeplacementGauche();
-			void DeplacementHaut();
-			void DeplacementBas();
+
+			void HideToolbar();
+			void ShowToolbar();
 			void FlipVertical();
 			void Rotate90();
 			void Rotate270();
 			void FlipHorizontal();
-			void ZoomOn();
-			void ZoomOut();
-			void StopTransition();
-			bool SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail);
-			bool GetShrinkImage();
-			void SetShrinkImage(const bool &value);
-			void ShrinkImage();
-			void PrintPicture();
-			void SendEmail();
-			void HideToolbar();
-			void ShowToolbar();
+			bool SetBitmap(CImageLoadingFormat* bitmap, const bool& isThumbnail);
 			bool IsToolbarMouseOver();
+			void SetBitmapPreviewEffect(const int& effect);
+			void SetFullscreen(const bool& fullscreen);
+			void StopTransition();
 			void TransitionEnd();
-			void SetBitmapPreviewEffect(const int &effect);
-			void SetFullscreen(const bool &fullscreen);
-			CBitmapWndViewer * GetBitmapViewer();
+			CRegardsBitmap* GetBitmap(const bool& source);
 
-            void UpdateScreenRatio();
+			void UpdateScreenRatio();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 

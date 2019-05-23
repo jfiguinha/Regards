@@ -21,7 +21,7 @@ namespace Regards
             ~CInfoEffectWnd(void);
 
             void AddModification(CRegardsBitmap * bitmap,const wxString & libelle);
-            void HistoryUpdate(CRegardsBitmap * bitmap,const wxString & filename, const wxString & historyLibelle, CBitmapWndViewer * bitmapViewer, CModificationManager * modificationManager);
+            void HistoryUpdate(CRegardsBitmap * bitmap,const wxString & filename, const wxString & historyLibelle, CModificationManager * modificationManager);
             
         private:
           

@@ -337,11 +337,10 @@ void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-	CShowBitmap * showBitmap = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERID);
+	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
    
-    if (showBitmap != nullptr)
+    if (bitmapViewer != nullptr)
 	{
-		CBitmapWndViewer * bitmapViewer = showBitmap->GetBitmapViewer();
 		bitmapViewer->OnFiltreCancel();
         bitmapViewer->SetBitmapPreviewEffect(0);
 	}
@@ -401,7 +400,7 @@ void CPanelInfosWnd::HistoryUpdate()
 		if(bitmapViewer != nullptr)
 		{
 			CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
-			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, bitmapViewer->GetBitmapViewer(), modificationManager);
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
 			delete bitmap;
 		}
 	}

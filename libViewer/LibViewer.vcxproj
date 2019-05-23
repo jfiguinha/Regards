@@ -209,9 +209,7 @@
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
-    <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="FiltreEffect.h" />
-    <ClInclude Include="FiltreEffectInterface.h" />
     <ClInclude Include="FiltreEffectWnd.h" />
     <ClInclude Include="FiltreToolbar.h" />
     <ClInclude Include="ImageList.h" />

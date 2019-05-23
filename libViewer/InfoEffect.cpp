@@ -10,7 +10,7 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 
 
-CInfoEffect::CInfoEffect(CBitmapWndViewer * bitmapViewer, CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
+CInfoEffect::CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
 {
 	widthPosition = 0;
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
@@ -26,7 +26,6 @@ CInfoEffect::CInfoEffect(CBitmapWndViewer * bitmapViewer, CTreeElementControlInt
 	eventControl = interfaceControl;
 	themeTree.SetMargeX(5);
 	this->modificationManager = modificationManager;
-	this->bitmapViewer = bitmapViewer;
 	rowWidth.push_back(0);
 };
 
@@ -101,6 +100,7 @@ void CInfoEffect::ClickOnElement(CPositionElement * element, wxWindow * window, 
 	CTreeData * treeData = (CTreeData *)element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
+		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)window->FindWindowById(BITMAPWINDOWVIEWERID);
 		if (bitmapViewer != nullptr)
 		{
 			wxString key = treeData->GetExifKey();
