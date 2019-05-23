@@ -46,7 +46,7 @@
         <Preprocessor Value="USE_X265"/>
         <Preprocessor Value="_DEBUG"/>
       </Compiler>
-      <Linker Options="">
+      <Linker Options="-headerpad_max_install_names">
         <LibraryPath Value="."/>
         <LibraryPath Value="../../../libextern/x265_2.5/source"/>
         <Library Value="x265"/>
