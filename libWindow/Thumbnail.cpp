@@ -330,6 +330,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	defaultLineSize = 200;
 
 	//this->statusbar = statusbar;
+
 	this->themeThumbnail = themeThumbnail;
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CThumbnail::OnIdle));
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnail::OnPaint));
