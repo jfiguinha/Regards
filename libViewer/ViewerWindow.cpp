@@ -818,7 +818,7 @@ void CViewerWindow::LoadPictureInThread(const wxString &filename, const int &num
 
 	if (libPicture.TestIsVideo(filename))
 	{
-		StartLoadingPicture(numElement);
+		//StartLoadingPicture(numElement);
 		SetVideo(filename);
 	}
 	else if (libPicture.TestIsAnimation(filename))
