@@ -1,1 +1,0 @@
-./Release/up_FaceRecognition_dllmain.cpp.o ./Release/up_FaceRecognition_FaceRecognition.cpp.o

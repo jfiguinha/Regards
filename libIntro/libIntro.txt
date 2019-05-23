@@ -1,1 +1,0 @@
-./Release/MyCentralWindowIntro.cpp.o ./Release/IntroTheme.cpp.o ./Release/MyFrameIntro.cpp.o ./Release/infoAbout.cpp.o ./Release/TitleIntro.cpp.o

@@ -1,1 +1,0 @@
-./Release/libPicture.cpp.o ./Release/CPCD.cpp.o ./Release/raw.cpp.o ./Release/ScaleThumbnail.cpp.o ./Release/Heic.cpp.o

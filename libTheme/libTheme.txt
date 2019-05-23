@@ -1,1 +1,0 @@
-./Release/theme.cpp.o ./Release/ThemeInit.cpp.o ./Release/ThemeParam.cpp.o

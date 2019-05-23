@@ -1,1 +1,0 @@
-./Release/GLSLShader.cpp.o ./Release/GLSLParameter.cpp.o ./Release/GLTexture.cpp.o ./Release/RenderOpenGL.cpp.o

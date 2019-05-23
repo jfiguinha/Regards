@@ -1,1 +1,0 @@
-./Release/FileGeolocation.cpp.o ./Release/Gps.cpp.o

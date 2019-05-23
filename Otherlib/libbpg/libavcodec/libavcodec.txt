@@ -1,1 +1,0 @@
-./Release/golomb.c.o ./Release/hevc_cabac.c.o ./Release/hevc_filter.c.o ./Release/utils.c.o ./Release/cabac.c.o ./Release/hevcpred.c.o ./Release/allcodecs.c.o ./Release/bit_depth_template.c.o ./Release/hevcdsp.c.o ./Release/videodsp.c.o ./Release/hevc_mvs.c.o ./Release/hevc_ps.c.o ./Release/hevc.c.o ./Release/hevc_refs.c.o ./Release/hevc_sei.c.o
