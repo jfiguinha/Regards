@@ -222,7 +222,7 @@ namespace Regards
             mutex muBitmap;
             bool updateContext = true;
             bool timerUpdate = false;
-            bool fastRenderOpenGL = false;
+            //bool fastRenderOpenGL = false;
             bool updateFilter = false;
 		};
 	}

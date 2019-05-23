@@ -128,7 +128,7 @@ void CBitmapWnd::OnLoading(wxTimerEvent& event)
     TRACE();
     if(timerUpdate)
     {
-       fastRenderOpenGL = false;
+       //fastRenderOpenGL = false;
         //this->Resize();
         UpdateResized();
         timerUpdate = false;
@@ -176,7 +176,7 @@ void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 	else
 		themeBitmap.colorBack = themeBitmap.colorScreen;
        
-    fastRenderOpenGL = true;
+    //fastRenderOpenGL = true;
     //this->FastRefresh(this,true);
 }
 
@@ -1677,10 +1677,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 void CBitmapWnd::RefreshWindow()
 {
 #ifdef __APPLE__
-    if(!fastRenderOpenGL)
+    //if(!fastRenderOpenGL)
         this->FastRefresh(this,true);
-    else
-        this->FastRefresh(this);
+    //else
+    //    this->FastRefresh(this);
 #else
 	this->FastRefresh(this);
 #endif
