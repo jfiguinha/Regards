@@ -6,6 +6,7 @@
 #include "SqlCriteria.h"
 #include "SqlPhotoCriteria.h"
 #include "SqlThumbnail.h"
+#include "SqlThumbnailVideo.h"
 #include "SqlFindCriteria.h"
 #include "SqlFacePhoto.h"
 #include "SqlFaceDescriptor.h"
@@ -103,6 +104,9 @@ bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseFolderThumbnail(numFolder);
+
+	CSqlThumbnailVideo sqlThumbnailVideo;
+	sqlThumbnailVideo.EraseFolderThumbnail(numFolder);
 
 	//Suppression des photos du catalog
 	CSqlPhotos sqlPhoto;

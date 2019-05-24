@@ -31,6 +31,7 @@
 #include <StatusText.h>
 #include "PictureElement.h"
 #include <ThumbnailMessage.h>
+#include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
 //#include <jpge.h>
 //using namespace jpge;
@@ -773,6 +774,7 @@ void CMainWindow::CheckMD5(void * param)
 	if (path != nullptr)
 	{
 		CSqlThumbnail sqlThumbnail;
+		CSqlThumbnailVideo sqlThumbnailVideo;
 		//wxString md5file = md5.GetFileMD5(path->filename);
 		wxFileName file(path->filename);
 		wxULongLong sizeFile = file.GetSize();
@@ -783,6 +785,7 @@ void CMainWindow::CheckMD5(void * param)
 		{
 			//Remove thumbnail
 			sqlThumbnail.DeleteThumbnail(path->filename);
+			sqlThumbnailVideo.DeleteThumbnail(path->filename);
 		}
 
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_MD5CHECKING);

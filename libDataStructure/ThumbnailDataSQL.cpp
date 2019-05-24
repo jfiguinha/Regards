@@ -68,7 +68,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
     else
     {
         if(numFrame >= nbFrame)
-            numFrame = 0;
+            numFrame = 1;
         
         if(numFrame < nbFrame)
         {
@@ -76,6 +76,11 @@ wxImage CThumbnailDataSQL::GetwxImage()
             {
                 CSqlThumbnailVideo sqlThumbnailVideo;
                 frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+				if (!frameOut.IsOk())
+				{
+					numFrame = 1;
+					frameOut = sqlThumbnailVideo.GetThumbnail(filename, numFrame);
+				}
             }
         }
     }

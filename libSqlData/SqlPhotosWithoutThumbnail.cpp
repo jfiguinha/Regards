@@ -39,8 +39,9 @@ void CSqlPhotosWithoutThumbnail::UpdateVideoList()
             if(sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
             {
                 wxString fullpath = photo.GetPath();
-                fullpath.Replace("'", "''");                
-                ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath + "', 1, 0)");
+                fullpath.Replace("'", "''");          
+				if(!IsPathFind(photo.GetPath()))
+					ExecuteRequestWithNoResult("INSERT INTO PHOTOSWIHOUTTHUMBNAIL (FullPath, Priority, ProcessStart) VALUES ('" + fullpath + "', 1, 0)");
             }
         }
     }  
@@ -58,7 +59,19 @@ void CSqlPhotosWithoutThumbnail::GetPhotoList(vector<wxString> * photoList)
 {
 	this->photoList = photoList;
 	typeResult = 0;
-	ExecuteRequest("SELECT FullPath from PHOTOSWIHOUTTHUMBNAIL");
+	ExecuteRequest("SELECT DISTINCT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE ProcessStart = 0");
+}
+
+bool CSqlPhotosWithoutThumbnail::IsPathFind(const wxString & photo)
+{
+	typeResult = 3;
+	fullpath = "";
+	wxString path = photo;
+	path.Replace("'", "''");
+	ExecuteRequest("SELECT FullPath from PHOTOSWIHOUTTHUMBNAIL WHERE FullPath = '" + path + "'");
+	if (fullpath == photo)
+		return true;
+	return false;
 }
 
 void CSqlPhotosWithoutThumbnail::InsertPhotoPriority(const wxString & photoPath)
@@ -68,7 +81,7 @@ void CSqlPhotosWithoutThumbnail::InsertPhotoPriority(const wxString & photoPath)
 	typeResult = 1;
 	//ExecuteRequest("SELECT distinct Priority from PHOTOSWIHOUTTHUMBNAIL ORDER BY Priority desc LIMIT 1");
 	//priority++;
-	//ExecuteRequestWithNoResult("UPDATE PHOTOSWIHOUTTHUMBNAIL SET Priority = " + to_string(priority) + " WHERE FullPath = '" + filename + "'");
+	ExecuteRequestWithNoResult("UPDATE PHOTOSWIHOUTTHUMBNAIL SET Priority = " + to_string(priority) + " WHERE FullPath = '" + filename + "'");
 }
 
 void CSqlPhotosWithoutThumbnail::InsertProcessStart(const wxString & photoPath)
@@ -107,6 +120,20 @@ int CSqlPhotosWithoutThumbnail::TraitementResult(CSqlResult * sqlResult)
 				{
 				case 0:
 					priority = sqlResult->ColumnDataInt(i);
+					break;
+				}
+			}
+
+			nbResult++;
+		}
+		else if (typeResult == 3)
+		{
+			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+			{
+				switch (i)
+				{
+				case 0:
+					fullpath = sqlResult->ColumnDataText(i);
 					break;
 				}
 			}

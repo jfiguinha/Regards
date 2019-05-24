@@ -353,7 +353,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
-    Connect(wxEVENT_ONSTARTTHUMBNAIL, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CThumbnail::StartThumbnail));
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
 	Connect(wxEVENT_REFRESHTHUMBNAIL, wxCommandEventHandler(CThumbnail::EraseThumbnail));
@@ -395,12 +394,6 @@ CThumbnail::~CThumbnail()
 	}
 }
 
-void CThumbnail::StopThumbnail(wxCommandEvent& event)
-{
-    TRACE();
-	threadDataProcess = false;
-}
-
 int CThumbnail::GetWidth()
 {
     TRACE();
@@ -438,12 +431,6 @@ void CThumbnail::SetIconeSize(const int &width, const int &height)
 	themeThumbnail.themeIcone.SetHeight(height);
     
     ResizeThumbnail();
-}
-
-void CThumbnail::StartThumbnail(wxCommandEvent& event)
-{
-    TRACE();
-    processIdle = true;
 }
 
 void CThumbnail::ProcessIdle()
@@ -506,7 +493,6 @@ void CThumbnail::ProcessIdle()
                     {
                         if (pThumbnailData->GetFilename() == filename)
                         {
-                            bool thumbnailLoad = false;
                             wxString filename = pThumbnailData->GetFilename();
                             bool isLoad = pThumbnailData->IsLoad();
                             bool isProcess = pThumbnailData->IsProcess();
@@ -520,13 +506,9 @@ void CThumbnail::ProcessIdle()
                                 pLoadBitmap->thumbnail = this;
                                 pLoadBitmap->numIcone = i;
                                 pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
-                                thumbnailLoad = true;
                                 nbProcess++;
                                 pThumbnailData->SetIsProcess(true);
-                            }
-                            else
-                            {
-                                thumbnailLoad = true;
+								photoList.erase(photoList.begin());
                             }
                             sqlPhoto.InsertProcessStart(filename);
                             
@@ -541,10 +523,10 @@ void CThumbnail::ProcessIdle()
 			}
 		}
 	}
-    else
-    {
-        processIdle = false;     
-    }
+
+	if (photoList.size() == 0)
+		processIdle = false;     
+
 	
 }
 

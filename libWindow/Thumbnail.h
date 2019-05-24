@@ -57,8 +57,6 @@ namespace Regards
 			void UpdateMessage(wxCommandEvent& event);
             void OnLoading(wxTimerEvent& event);
             void OnRefreshIcone(wxTimerEvent& event);
-			void StopThumbnail(wxCommandEvent& event);
-            void StartThumbnail(wxCommandEvent& event);
 			virtual void ProcessThumbnailIdle(){};
 
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
