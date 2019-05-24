@@ -671,11 +671,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
     if(needtoRedraw)
     {
          bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+		 this->Refresh();
     }
 
     this->GetParent()->GetEventHandler()->ProcessEvent(event);
@@ -773,11 +769,7 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	}
     
     bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 
 }
 
@@ -885,11 +877,7 @@ void CThumbnail::Resize()
     
     bufferUpdate = true;  
     
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 void CThumbnail::CalculControlSize()
@@ -1041,6 +1029,7 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
     if(threadLoadingBitmap == nullptr)
     {
         bufferUpdate = true;
+		this->Refresh();
         //this->FastRefresh(this);
         return;
     }
@@ -1128,10 +1117,5 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         threadLoadingBitmap = nullptr;
     }
 
-
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
