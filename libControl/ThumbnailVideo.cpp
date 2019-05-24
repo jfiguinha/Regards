@@ -113,7 +113,6 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	numSelect = pIcone;
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-    bufferUpdate = true;
 	this->FastRefresh(this);
 }
 
@@ -213,8 +212,6 @@ void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
 	}
 	
 	delete videoData;
-
-    bufferUpdate = true;
     
     if(videoFilename == videoData->videoFilename)
         this->FastRefresh(this);
@@ -271,8 +268,6 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName)
 		if(thumbnail != nullptr)
 			delete thumbnail;
 	}
-    
-    bufferUpdate = true;
 
 }
 
@@ -325,8 +320,7 @@ void CThumbnailVideo::SetVideoThumbnail(const wxString &videoFile, vector<CImage
 			x += themeThumbnail.themeIcone.GetWidth();
 		}
 		videoFilename = videoFile;
-            
-        bufferUpdate = true;      
+  
 	}
 
 
@@ -344,5 +338,4 @@ void CThumbnailVideo::SetVideoFile(const wxString &videoFile)
         this->FastRefresh(this);
 	}
 
-    bufferUpdate = true;
 }

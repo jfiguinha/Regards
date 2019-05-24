@@ -55,8 +55,6 @@ namespace Regards
 			void StartLoadingPicture(wxCommandEvent& event);
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
-            void OnLoading(wxTimerEvent& event);
-            void OnRefreshIcone(wxTimerEvent& event);
 			virtual void ProcessThumbnailIdle(){};
 
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
@@ -78,8 +76,6 @@ namespace Regards
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLDoubleClick(wxMouseEvent& event);
 			void OnMouseWheel(wxMouseEvent& event);
-            void OnEnterWindow(wxMouseEvent& event);
-            void OnLeaveWindow(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			bool GetProcessEnd();
 
@@ -145,8 +141,6 @@ namespace Regards
 			CIcone * numSelect;
 			bool threadDataProcess;
 			bool allThreadEnd;
-            wxTimer * loadingTimer;
-            wxTimer * refreshTimer;
             bool showLoadingBitmap;
             int stepLoading;
             CIcone * loadingIcone;
@@ -155,7 +149,6 @@ namespace Regards
 			bool check;
 			bool testValidity;
             wxBitmap bitmapMemory;
-            bool bufferUpdate;
             int oldPosLargeur;
             int oldPosHauteur;
 		};

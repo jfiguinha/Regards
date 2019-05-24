@@ -88,12 +88,7 @@ void CThumbnailViewerPicture::SetActifItem(const int &numItem, const bool &move)
 		numSelect->SetSelected(true);
 		//numSelect->RenderIcone(&winDC);
 	}
-	bufferUpdate = true;
-#ifdef __APPLE__
-	this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 void CThumbnailViewerPicture::OnPictureClick(CThumbnailData * data)
@@ -156,13 +151,9 @@ void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-	bufferUpdate = true;
+
 	processIdle = true;
-#ifdef __APPLE__
-	this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 CIcone * CThumbnailViewerPicture::FindIcone(const int &photoId)
@@ -237,13 +228,14 @@ void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 		{
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
 			wxRect rc = pBitmapIcone->GetPos();
-			pBitmapIcone->DestroyCache();
+			
 			//if visible
 			int left = rc.x - posLargeur;
 			int right = rc.x + rc.width - posLargeur;
 
 			if (right > 0 && left < GetWindowWidth())
 			{
+				pBitmapIcone->DestroyCache();
 				RenderBitmap(deviceContext, pBitmapIcone, -posLargeur, 0);
 			}
 

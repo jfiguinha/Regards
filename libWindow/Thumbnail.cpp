@@ -211,17 +211,8 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 		//numSelect->RenderIcone(&winDC);
 	}
 
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
 
-	//if (numSelect->GetData() != NULL)
-	//	return numSelect->GetData()->GetFilename();
-
-	//return L"";
+	this->Refresh();
 }
 
 void CThumbnail::SetTheme(CThemeThumbnail * theme)
@@ -239,14 +230,8 @@ void CThumbnail::ZoomOn()
 
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
-	//UpdateScroll();
-    
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+
+	this->Refresh();
 }
 
 void CThumbnail::ZoomOff()
@@ -258,13 +243,8 @@ void CThumbnail::ZoomOff()
 
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
-	//UpdateScroll();
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+
+	this->Refresh();
 }
 
 void CThumbnail::ZoomPosition(const int &position)
@@ -278,13 +258,8 @@ void CThumbnail::ZoomPosition(const int &position)
 
 	int sizeIcone = TabSize[positionSize - 1];
 	SetIconeSize(sizeIcone, sizeIcone);
-	//UpdateScroll();
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+
+	this->Refresh();
 }
 
 
@@ -294,7 +269,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	controlWidth = 0;
 	controlHeight = 0;
 	thumbnailPos = 0;
-    bufferUpdate = true;
     oldPosLargeur = 0;
     oldPosHauteur = 0;    
 	nbProcess = 0;
@@ -302,7 +276,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	numSelect = nullptr;
 	threadDataProcess = false;
 	allThreadEnd = true;
-    loadingTimer = nullptr;
     showLoadingBitmap = false;
     stepLoading = 0;
     loadingIcone = nullptr;
@@ -341,14 +314,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
 	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::UpdateRenderIcone));
 	Connect(EVENT_UPDATEMESSAGE, wxCommandEventHandler(CThumbnail::UpdateMessage));
-    Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
-    Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CThumbnail::OnLeaveWindow));
-    
-    loadingTimer = new wxTimer(this, TIMER_LOADING);
-    Connect(TIMER_LOADING, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnLoading), nullptr, this);
-    
-    refreshTimer = new wxTimer(this, TIMER_REFRESH);
-    Connect(TIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIcone), nullptr, this);
     
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
@@ -361,29 +326,10 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     
 }
 
-void CThumbnail::OnEnterWindow(wxMouseEvent& event)
-{
-    TRACE();
-    refreshTimer->Start(100);
-}
-void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
-{
-    TRACE();
-    refreshTimer->Stop();
-}
-
 CThumbnail::~CThumbnail()
 {
     TRACE();
 	threadDataProcess = false;
-    refreshTimer->Stop();
-    
-    while(refreshTimer->IsRunning())
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-    
-    delete refreshTimer;
     
 	if (m_animation != nullptr)
 		delete m_animation;
@@ -670,20 +616,10 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
     
     if(needtoRedraw)
     {
-         bufferUpdate = true;
 		 this->Refresh();
     }
 
     this->GetParent()->GetEventHandler()->ProcessEvent(event);
-}
-
-void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
-{
-    TRACE();
-	refreshTimer->Stop();
-     bufferUpdate = true;
-     this->FastRefresh(this);    
-	 refreshTimer->Start(100);
 }
 
 void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur)
@@ -767,31 +703,9 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	{
 		FindOtherElement(&winDC, xPos, yPos);
 	}
-    
-    bufferUpdate = true;
+
 	this->Refresh();
 
-}
-
-
-
-
-void CThumbnail::OnLoading(wxTimerEvent& event)
-{
-    TRACE();
-    stepLoading += 1;
-    if (stepLoading == m_animation->GetFrameCount())
-        stepLoading = 0;
-
-	loadingIcone->DestroyCache();
-    loadingIcone->SetPictureLoading(m_animation->GetFrame(stepLoading));
-    
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
 }
 
 void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
@@ -810,8 +724,7 @@ void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
     
     stepLoading = 0;
     showLoadingBitmap = true;
-    
-    loadingTimer->Start(100);
+
     loadingIcone->StartLoadingPicture();
 }
 
@@ -826,15 +739,8 @@ void CThumbnail::StopLoadingPicture(wxCommandEvent& event)
     }
     
     showLoadingBitmap = false;
-    if (loadingTimer->IsRunning())
-        loadingTimer->Stop();
 
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 
 }
 
@@ -857,11 +763,6 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     FillRect(&dc, rc, themeThumbnail.colorBack);
     RenderIcone(&dc);
 
-    //bitmapMemory = background;
-    
-    bufferUpdate = false;    
-    
-    //dc.DrawBitmap(bitmapMemory, 0, 0);  
 	render = false;
 
     oldPosLargeur = posLargeur;
@@ -874,8 +775,6 @@ void CThumbnail::Resize()
     
 	CalculControlSize();
 	ResizeThumbnail();
-    
-    bufferUpdate = true;  
     
 	this->Refresh();
 }
@@ -930,19 +829,15 @@ void CThumbnail::OnKeyDown(wxKeyEvent& event)
 		{
 		case WXK_UP:
 			this->MoveTop();
-            bufferUpdate = true;
 			break;
 		case WXK_LEFT:
 			this->MoveLeft();
-             bufferUpdate = true;
 			break;
 		case WXK_DOWN:
 			this->MoveBottom();
-             bufferUpdate = true;
 			break;
 		case WXK_RIGHT:
 			this->MoveRight();
-             bufferUpdate = true;
 			break;
 
 		}
@@ -968,8 +863,7 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
         this->MoveBottom();
     
 #endif
-    
-    bufferUpdate = true;  
+
 }
 
 
@@ -997,8 +891,7 @@ void CThumbnail::InitScrollingPos()
 
 	if (posLargeur < 0)
 		posLargeur = 0;
-        
-    bufferUpdate = true;       
+   
 }
 
 CIcone * CThumbnail::FindIcone(const wxString &filename)
@@ -1028,9 +921,6 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
     CThreadLoadingBitmap * threadLoadingBitmap = (CThreadLoadingBitmap *)event.GetClientData();
     if(threadLoadingBitmap == nullptr)
     {
-        bufferUpdate = true;
-		this->Refresh();
-        //this->FastRefresh(this);
         return;
     }
     
@@ -1074,22 +964,10 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 				pThumbnailData->SetIsProcess(false);
                 pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
                     
-                //wxWindowDC winDC(this);
                 pThumbnailData->SetIsLoading(false);
-                    
-                wxFileName filename(pThumbnailData->GetFilename());
-                wxString file = filename.GetFullName();
-                wxString info = L"Render : " + file;
-                //if (statusbar != nullptr)
-                //    statusbar->SetText(1, info);
                     
                 icone->DestroyCache();
 
-
-				if (!render)
-                {
-                    bufferUpdate = true;
-                }
             }
         }
     }

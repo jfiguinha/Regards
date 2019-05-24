@@ -352,7 +352,6 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 
 	threadDataProcess = true;
     processIdle = true;
-    bufferUpdate = true;
 	this->FastRefresh(this);
 }
 
@@ -492,8 +491,6 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
 	CThreadBitmapEffect * threadLoadingBitmap = (CThreadBitmapEffect *)event.GetClientData();
 	if (threadLoadingBitmap == nullptr)
 	{
-        bufferUpdate = true;
-		this->FastRefresh(this);
 		return;
 	}
 
@@ -531,7 +528,6 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
                         icone->DestroyCache();
                         if (!render)
                         {
-                            bufferUpdate = true;
                             needToRefresh = true;
                         }
                             

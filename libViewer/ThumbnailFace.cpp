@@ -94,13 +94,8 @@ void CThumbnailFace::SetActifItem(const int &numItem, const bool &move)
         numSelect->SetSelected(true);
         //numSelect->RenderIcone(&winDC);
     }
-    
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+
+	this->Refresh();
 }
 
 void CThumbnailFace::OnPictureClick(CThumbnailData * data)
@@ -288,7 +283,7 @@ void CThumbnailFace::Init()
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    bufferUpdate = true;
+
 	this->FastRefresh(this);
 }
 
@@ -404,7 +399,7 @@ void CThumbnailFace::MoveFace(const wxString &faceName)
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    bufferUpdate = true;
+
 	this->FastRefresh(this);
 }
 

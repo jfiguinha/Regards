@@ -100,12 +100,7 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
         numSelect->SetSelected(true);
         //numSelect->RenderIcone(&winDC);
     }
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 void CThumbnailFolder::OnPictureClick(CThumbnailData * data)
@@ -482,12 +477,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    bufferUpdate = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 void CThumbnailFolder::Init(PhotosVector * photoVector, const int &typeAffichage)
@@ -544,13 +534,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
-    bufferUpdate = true;
     processIdle = true;	
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	this->FastRefresh(this);
-#endif
+	this->Refresh();
 }
 
 CIcone * CThumbnailFolder::FindIcone(const int &photoId)
