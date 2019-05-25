@@ -915,4 +915,7 @@ public:
         @return @false if an error occurred.
     */
     virtual bool SwapBuffers();
+#if defined(__APPLE__)
+	virtual void Refresh(bool eraseBackground = true, const wxRect *rect=NULL) wxOVERRIDE;
+#endif
 };
