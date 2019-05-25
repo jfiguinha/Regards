@@ -97,6 +97,8 @@ public:
 
     // implement wxGLCanvasBase methods
     virtual bool SwapBuffers() wxOVERRIDE;
+	
+	virtual void Refresh(bool eraseBackground = true, const wxRect *rect=NULL) wxOVERRIDE;
 
 
     // Mac-specific functions
@@ -158,7 +160,6 @@ public:
     // implementation-only from now on
 
 protected:
-#if wxOSX_USE_IPHONE
     bool DoCreate(wxWindow *parent,
                               wxWindowID id,
                               const wxPoint& pos,
@@ -166,7 +167,6 @@ protected:
                               long style,
                   const wxString& name);
 
-#endif
     WXGLPixelFormat m_glFormat;
     wxGLAttributes m_GLAttrs;
 
