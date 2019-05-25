@@ -102,6 +102,18 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         tabInfosFile->windowMain = filtreEffectWnd;
         tabInfosFile->windowName = WM_EFFECTPARAMETER;
         listWindow.push_back(tabInfosFile);
+
+		CTabWindowData * tabInfosFileVideo = new CTabWindowData();
+		tabInfosFileVideo->window = filtreEffectWnd;
+		tabInfosFileVideo->windowMain = filtreEffectWnd;
+		tabInfosFileVideo->windowName = WM_VIDEOEFFECT;
+		listWindow.push_back(tabInfosFileVideo);
+
+		CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
+		tabInfosFileAudioVideo->window = filtreEffectWnd;
+		tabInfosFileAudioVideo->windowMain = filtreEffectWnd;
+		tabInfosFileAudioVideo->windowName = WM_AUDIOVIDEO;
+		listWindow.push_back(tabInfosFileAudioVideo);
 	}
 
 	if (viewerTheme != nullptr)
@@ -136,23 +148,25 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 		
 		thumbnailEffectWnd->Show(false);
         
+		/*
         CTabWindowData * tabInfosFileVideo = new CTabWindowData();
         tabInfosFileVideo->window = thumbnailEffectWnd;
         tabInfosFileVideo->windowMain = thumbnailEffectWnd;
         tabInfosFileVideo->windowName = WM_VIDEOEFFECT;
         listWindow.push_back(tabInfosFileVideo);
-        
+        */
         CTabWindowData * tabInfosFileEffect = new CTabWindowData();
         tabInfosFileEffect->window = thumbnailEffectWnd;
         tabInfosFileEffect->windowMain = thumbnailEffectWnd;
         tabInfosFileEffect->windowName = WM_EFFECT;
         listWindow.push_back(tabInfosFileEffect);
-        
+        /*
         CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
         tabInfosFileAudioVideo->window = thumbnailEffectWnd;
         tabInfosFileAudioVideo->windowMain = thumbnailEffectWnd;
         tabInfosFileAudioVideo->windowName = WM_AUDIOVIDEO;
         listWindow.push_back(tabInfosFileAudioVideo);
+		*/
 	}
     
     if(webBrowser == nullptr)
