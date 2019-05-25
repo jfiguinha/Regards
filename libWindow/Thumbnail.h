@@ -4,6 +4,7 @@
 #include <SqlThumbnail.h>
 #include "ScrollInterface.h"
 #include "IconeList.h"
+
 #include "WindowMain.h"
 #include <wx/animate.h>
 #include <OpenCLEngine.h>

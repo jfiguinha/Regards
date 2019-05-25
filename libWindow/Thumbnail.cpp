@@ -282,6 +282,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     m_animation = nullptr;
 	render = false;
 	check = false;
+	
     iconeList = new CIconeList();
 	this->testValidity = testValidity;
 	thumbnailSizeX = 0;
