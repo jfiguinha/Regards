@@ -39,11 +39,7 @@ CThumbnailToolBarZoom::~CThumbnailToolBarZoom()
 
 void CThumbnailToolBarZoom::Resize()
 {
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+    Refresh();
 }
 
 void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
@@ -88,11 +84,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 		evt.SetExtraLong(typeAffichage);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+    Refresh();
 }
 
 void CThumbnailToolBarZoom::OnMouseMove(wxMouseEvent& event)

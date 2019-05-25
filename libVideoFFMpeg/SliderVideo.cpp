@@ -76,21 +76,13 @@ bool CSliderVideo::IsMouseOver()
 void CSliderVideo::SetPlay()
 {
 	isPlay = true;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+    Refresh();
 }
 
 void CSliderVideo::SetPause()
 {
 	isPlay = false;
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+    Refresh();
 }
 
 
@@ -133,11 +125,7 @@ void CSliderVideo::SetTotalSecondTime(const int64_t &secondTime)
 {
 	secondTotalTime = secondTime / 1000;
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+Refresh();
 }
 
 void CSliderVideo::SetPastSecondTime(const int64_t &secondTime)
@@ -149,11 +137,7 @@ void CSliderVideo::SetPastSecondTime(const int64_t &secondTime)
         {
             secondTimePast = timeToSecond;
             timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif            
+Refresh();          
         }
 
 	}
@@ -456,11 +440,7 @@ void CSliderVideo::CalculTimePosition(const int &x)
 	secondTimePast = (double)(posX / total)* secondTotalTime;
 	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
 	//DrawTimePast(&winDC, timePast);
-#ifdef __APPLE__
-    this->CallRefresh(this);
-#else
-	Refresh();
-#endif
+Refresh();
 }
 
 void CSliderVideo::ClickLeftPage(const int &x)
