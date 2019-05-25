@@ -17,6 +17,7 @@
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 
+
 CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {
