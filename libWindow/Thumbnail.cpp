@@ -316,6 +316,12 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::UpdateRenderIcone));
 	Connect(EVENT_UPDATEMESSAGE, wxCommandEventHandler(CThumbnail::UpdateMessage));
     
+    Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CThumbnail::OnEnterWindow));
+    Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CThumbnail::OnLeaveWindow));
+    
+    refreshTimer = new wxTimer(this, TIMER_REFRESH);
+    Connect(TIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CThumbnail::OnRefreshIcone), nullptr, this);
+
     wxString resourcePath = CFileUtility::GetResourcesFolderPath();
     m_animation = new wxAnimation(resourcePath + "/loading.gif");
 
@@ -327,10 +333,27 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     
 }
 
+void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
+{
+    TRACE();
+	refreshTimer->Stop();
+     this->Refresh();    
+	 refreshTimer->Start(100);
+}
+
 CThumbnail::~CThumbnail()
 {
     TRACE();
 	threadDataProcess = false;
+    
+    refreshTimer->Stop();
+    
+    while(refreshTimer->IsRunning())
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    
+    delete refreshTimer;
     
 	if (m_animation != nullptr)
 		delete m_animation;
@@ -802,6 +825,17 @@ void CThumbnail::TestMaxX()
 
 	if (posLargeur < 0)
 		posLargeur = 0;
+}
+
+void CThumbnail::OnEnterWindow(wxMouseEvent& event)
+{
+    TRACE();
+    refreshTimer->Start(100);
+}
+void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
+{
+    TRACE();
+    refreshTimer->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

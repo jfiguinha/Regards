@@ -33,6 +33,8 @@ namespace Regards
 
 			virtual wxString GetWaitingMessage(){ return wxString();};
             
+            virtual void CallRefresh(wxWindow * window);
+            
 		protected:
 
 			static void ThreadIdle(void * data);

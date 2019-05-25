@@ -78,6 +78,8 @@ namespace Regards
 			void OnLDoubleClick(wxMouseEvent& event);
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
+            void OnEnterWindow(wxMouseEvent& event);
+            void OnLeaveWindow(wxMouseEvent& event);
 			bool GetProcessEnd();
 
 			void CalculControlSize();
@@ -86,6 +88,7 @@ namespace Regards
 			virtual void EraseThumbnailList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
 
+            void OnRefreshIcone(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC * dc) = 0;
 			virtual void UpdateScroll() = 0;
 			static void LoadPicture(void * param);
@@ -128,7 +131,7 @@ namespace Regards
 			static const int TabSize[];
 			static const int Max;
 
-
+            wxTimer * refreshTimer;
 			CThemeThumbnail themeThumbnail;
 
 			int controlWidth;

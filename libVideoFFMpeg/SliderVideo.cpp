@@ -125,7 +125,7 @@ void CSliderVideo::SetTotalSecondTime(const int64_t &secondTime)
 {
 	secondTotalTime = secondTime / 1000;
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
-Refresh();
+
 }
 
 void CSliderVideo::SetPastSecondTime(const int64_t &secondTime)
@@ -137,8 +137,10 @@ void CSliderVideo::SetPastSecondTime(const int64_t &secondTime)
         {
             secondTimePast = timeToSecond;
             timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
-Refresh();          
+          
         }
+        
+
 
 	}
 }
@@ -439,8 +441,6 @@ void CSliderVideo::CalculTimePosition(const int &x)
 	float total = positionSlider.width;
 	secondTimePast = (double)(posX / total)* secondTotalTime;
 	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
-	//DrawTimePast(&winDC, timePast);
-Refresh();
 }
 
 void CSliderVideo::ClickLeftPage(const int &x)
@@ -470,6 +470,7 @@ void CSliderVideo::UpdatePositionEvent()
 {
 	if (sliderEvent != nullptr)
 		sliderEvent->MoveSlider(secondTimePast);
+
 }
 
 void CSliderVideo::OnMouseMove(wxMouseEvent& event)
@@ -544,12 +545,10 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 		else if (xPos > (positionButton.width + positionButton.x))
 		{
 			ClickRightPage(xPos);
-			Refresh();
 		}
 		else if (xPos < positionButton.x)
 		{
 			ClickLeftPage(xPos);
-			Refresh();
 		}
 	}
 	else
@@ -560,32 +559,28 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 			if (isPlay)
 			{
 				sliderEvent->ClickButton(PAUSEBUTTONID);
-				Refresh();
 			}
 			else
 			{
 				sliderEvent->ClickButton(PLAYBUTTONID);
-				Refresh();
 			}
 		}
 		else if (xPos >= positionVolumeUpButton.x && xPos <= (positionVolumeUpButton.x + positionVolumeUpButton.width))
 		{
             wxSetCursor(hCursorHand);
 			sliderEvent->ClickButton(VOLUMEUPBUTTONID);
-			Refresh();
 		}
 		else if (xPos >= positionVolumeDownButton.x && xPos <= (positionVolumeDownButton.x + positionVolumeDownButton.width))
 		{
             wxSetCursor(hCursorHand);
 			sliderEvent->ClickButton(VOLUMEDOWNBUTTONID);
-			Refresh();
 		}
         else
         {
              wxSetCursor(wxCURSOR_ARROW);
         }
 	}
-    
+    this->Refresh();
 }
 
 void CSliderVideo::OnLButtonUp(wxMouseEvent& event)

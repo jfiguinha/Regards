@@ -81,6 +81,12 @@ CMasterWindow::CMasterWindow(void)
 
 }
 
+void CMasterWindow::CallRefresh(wxWindow * window)
+{
+    wxCommandEvent event(wxEVENT_VIDEOREFRESH);
+    wxPostEvent(window, event);  
+}
+
 CMasterWindow::~CMasterWindow(void)
 {
 	if(windowMainPimpl != nullptr)
