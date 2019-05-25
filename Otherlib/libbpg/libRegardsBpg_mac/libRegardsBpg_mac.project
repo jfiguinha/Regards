@@ -53,7 +53,7 @@
         <Library Value="bpg"/>
         <Library Value="avcodec"/>
         <Library Value="avutil"/>
-        <Library Value="gomp"/>
+        <Library Value="omp"/>
         <Library Value="z"/>
       </Linker>
       <ResourceCompiler Options=""/>
