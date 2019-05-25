@@ -56,7 +56,7 @@ void CBitmapInfosCheckBox::UpdateScreenRatio()
 
 void CBitmapInfosCheckBox::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CBitmapInfosCheckBox::Redraw()
@@ -79,7 +79,7 @@ void CBitmapInfosCheckBox::OnLButtonDown(wxMouseEvent& event)
     if((x > xPos && x < xPos + bitmapCheckOn.GetWidth()) && (y > yPos && y < yPos + bitmapCheckOn.GetHeight()))
     {
         isSelected = !isSelected;
-        this->FastRefresh(this);
+        Refresh();
         
         wxCommandEvent * event = new wxCommandEvent(wxEVENT_CHANGECHECKBOX);
         wxQueueEvent(this->GetParent(), event);

@@ -63,7 +63,7 @@ void CThumbnailVertical::SetListeFile(const vector<wxString> & files)
 	}
 
 	threadDataProcess = true;
-	this->FastRefresh(this);
+	Refresh();
 }
 
 CThumbnailVertical::~CThumbnailVertical(void)
@@ -207,7 +207,7 @@ void CThumbnailVertical::SetListeFile(const wxArrayString & listFile, const bool
 void CThumbnailVertical::SetNoVScroll(const bool &noVscroll)
 {
 	this->noVscroll = noVscroll;
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CThumbnailVertical::SetListeFile(const PhotosVector & photoVector, const bool &erase)
@@ -268,7 +268,7 @@ void CThumbnailVertical::SetListeFile(const PhotosVector & photoVector, const bo
 
 
 
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)

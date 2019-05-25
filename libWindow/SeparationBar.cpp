@@ -28,7 +28,7 @@ void CSeparationBar::SetHorizontal(const bool &horizontal)
 
 void CSeparationBar::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 CSeparationBar::~CSeparationBar()

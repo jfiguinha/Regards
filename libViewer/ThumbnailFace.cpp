@@ -285,7 +285,7 @@ void CThumbnailFace::Init()
 	heightThumbnail = 0;
 	ResizeThumbnail();
 
-	this->FastRefresh(this);
+	Refresh();
 }
 
 
@@ -401,7 +401,7 @@ void CThumbnailFace::MoveFace(const wxString &faceName)
 	heightThumbnail = 0;
 	ResizeThumbnail();
 
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CThumbnailFace::DeleteEmptyFace()

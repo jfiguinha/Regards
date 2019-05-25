@@ -228,7 +228,7 @@ void CSlider::ClickRightPage(const int &x)
 
 void CSlider::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CSlider::UpdatePositionEvent()
@@ -246,7 +246,7 @@ void CSlider::OnMouseMove(wxMouseEvent& event)
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
 			CalculTimePosition(xPos);
-			this->FastRefresh(this);
+			Refresh();
 		}
 	}
 }
@@ -265,12 +265,12 @@ void CSlider::OnLButtonDown(wxMouseEvent& event)
 	else if (xPos > positionButton.width)
 	{
 		ClickRightPage(xPos);
-		this->FastRefresh(this);
+		Refresh();
 	}
 	else if (xPos < positionButton.x)
 	{
 		ClickLeftPage(xPos);
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 

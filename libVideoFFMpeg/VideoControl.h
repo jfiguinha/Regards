@@ -35,7 +35,7 @@ public:
 
     void RedrawFrame()
     {
-        this->FastRefresh(this);
+        this->Refresh();
     }
 
 	void SetVideoDuration(int64_t duration);

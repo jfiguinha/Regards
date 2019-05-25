@@ -82,7 +82,7 @@ void CBitmapInfos::OnTimerGPSUpdate(wxTimerEvent& event)
     if(gpsInfos == "" && fileGeolocalisation->GetFilename() == filename)
         gpsTimer->Start(500, wxTIMER_ONE_SHOT);
     else
-        this->FastRefresh(this);
+        Refresh();
 }
 
 void CBitmapInfos::SetFilename(const wxString &libelle)
@@ -147,7 +147,7 @@ void CBitmapInfos::UpdateData()
     
     processIdle = true;
 	mufileGeoloc.unlock();
-    this->FastRefresh(this);
+    Refresh();
 }
 
 int CBitmapInfos::Dayofweek(int d, int m, int y)
@@ -199,7 +199,7 @@ void CBitmapInfos::UpdateScreenRatio()
 
 void CBitmapInfos::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CBitmapInfos::Redraw()

@@ -353,7 +353,7 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 
 	threadDataProcess = true;
     processIdle = true;
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CThumbnailEffect::LoadPicture(void * param)
@@ -534,7 +534,7 @@ void CThumbnailEffect::UpdateRenderIcone(wxCommandEvent& event)
                             
                     }
                     if(needToRefresh)
-                         this->FastRefresh(this);
+                         Refresh();
                 }
 			}
 		}

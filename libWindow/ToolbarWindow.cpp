@@ -78,7 +78,7 @@ void CToolbarWindow::EmptyNavigator()
 
 void CToolbarWindow::UpdateScreenRatio()
 {
-    this->FastRefresh(this);
+    Refresh();
 }
 
 int CToolbarWindow::GetNavigatorHeight()
@@ -130,7 +130,7 @@ int CToolbarWindow::GetNavigatorWidth()
 
 void CToolbarWindow::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
@@ -176,7 +176,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
     }
     
     if(needToRedraw)
-        this->FastRefresh(this);
+        Refresh();
 }
 
 
@@ -214,7 +214,7 @@ void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 		}
 	}
     
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CToolbarWindow::RedrawElement(wxDC * dc, CToolbarElement * nav)
@@ -297,7 +297,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
         if (navPush != nullptr)
             EventManager(navPush->GetCommandId());
     
-    //this->FastRefresh(this);
+    //Refresh();
 }
 
 void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)

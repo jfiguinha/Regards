@@ -72,7 +72,7 @@ namespace Regards
 
 			virtual void Resize()
 			{
-				this->FastRefresh(this);
+				this->Refresh();
 			}
 
 			virtual void OnEraseBackground(wxEraseEvent& event){};

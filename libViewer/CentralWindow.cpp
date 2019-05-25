@@ -82,7 +82,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	{
 		viewerconfig = (CViewerParam *)config;
 		this->posBar = viewerconfig->GetPositionCriteriaPreview();
-        this->FastRefresh(this);
+        Refresh();
     }
 
 	windowMode = 1;

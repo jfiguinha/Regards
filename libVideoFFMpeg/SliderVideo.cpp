@@ -79,7 +79,7 @@ void CSliderVideo::SetPlay()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 
@@ -89,7 +89,7 @@ void CSliderVideo::SetPause()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 
@@ -136,7 +136,7 @@ void CSliderVideo::SetTotalSecondTime(const int64_t &secondTime)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 
@@ -152,7 +152,7 @@ void CSliderVideo::SetPastSecondTime(const int64_t &secondTime)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif            
         }
 
@@ -459,7 +459,7 @@ void CSliderVideo::CalculTimePosition(const int &x)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 
@@ -483,7 +483,7 @@ void CSliderVideo::ClickRightPage(const int &x)
 
 void CSliderVideo::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CSliderVideo::UpdatePositionEvent()
@@ -534,7 +534,7 @@ void CSliderVideo::OnMouseMove(wxMouseEvent& event)
 			buttonVolumeDownActif = false;
 		}
 	}
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CSliderVideo::OnMouseLeave(wxMouseEvent& event)
@@ -564,12 +564,12 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 		else if (xPos > (positionButton.width + positionButton.x))
 		{
 			ClickRightPage(xPos);
-			this->FastRefresh(this);
+			Refresh();
 		}
 		else if (xPos < positionButton.x)
 		{
 			ClickLeftPage(xPos);
-			this->FastRefresh(this);
+			Refresh();
 		}
 	}
 	else
@@ -580,25 +580,25 @@ void CSliderVideo::OnLButtonDown(wxMouseEvent& event)
 			if (isPlay)
 			{
 				sliderEvent->ClickButton(PAUSEBUTTONID);
-				this->FastRefresh(this);
+				Refresh();
 			}
 			else
 			{
 				sliderEvent->ClickButton(PLAYBUTTONID);
-				this->FastRefresh(this);
+				Refresh();
 			}
 		}
 		else if (xPos >= positionVolumeUpButton.x && xPos <= (positionVolumeUpButton.x + positionVolumeUpButton.width))
 		{
             wxSetCursor(hCursorHand);
 			sliderEvent->ClickButton(VOLUMEUPBUTTONID);
-			this->FastRefresh(this);
+			Refresh();
 		}
 		else if (xPos >= positionVolumeDownButton.x && xPos <= (positionVolumeDownButton.x + positionVolumeDownButton.width))
 		{
             wxSetCursor(hCursorHand);
 			sliderEvent->ClickButton(VOLUMEDOWNBUTTONID);
-			this->FastRefresh(this);
+			Refresh();
 		}
         else
         {

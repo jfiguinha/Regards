@@ -56,7 +56,7 @@ public:
 
     void RedrawFrame()
     {
-        this->FastRefresh(this);
+        this->Refresh();
     }
     void SetRotation(const int &rotation);
     void SetVideoStart();

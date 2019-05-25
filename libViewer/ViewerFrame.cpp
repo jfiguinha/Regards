@@ -612,7 +612,7 @@ void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
         config->SetIconSizeRatio(ratio);
         
         mainWindow->UpdateScreenRatio();
-        //this->FastRefresh(this);
+        //Refresh();
     }
     
 }
@@ -629,7 +629,7 @@ void CViewerFrame::OnIconSizeMore(wxCommandEvent& event)
         config->SetIconSizeRatio(ratio);
         
         mainWindow->UpdateScreenRatio();
-        //this->FastRefresh(this);
+        //Refresh();
     }
 }
 

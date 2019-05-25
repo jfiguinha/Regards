@@ -29,6 +29,6 @@ void CEmptyWindow::OnPaint(wxPaintEvent& event)
 
 void CEmptyWindow::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 

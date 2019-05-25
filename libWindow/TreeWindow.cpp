@@ -142,7 +142,7 @@ void CTreeWindow::OnKeyDown(wxKeyEvent& event)
     if(update)
     {
         bufferUpdate = true;
-        this->FastRefresh(this);
+        Refresh();
     }
 
 }
@@ -186,7 +186,7 @@ void CTreeWindow::OnMouseWheel(wxMouseEvent& event)
     if(update)
     {
         bufferUpdate = true;
-        this->FastRefresh(this);
+        Refresh();
     }
 
 
@@ -250,7 +250,7 @@ void CTreeWindow::Resize()
     TRACE();
 	//UpdateTreeControl();
     bufferUpdate = true;
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
@@ -361,7 +361,7 @@ void CTreeWindow::UpdateTreeControl()
     printf("CTreeWindow::UpdateTreeControl \n");
     bufferUpdate = true;
 	CalculControlSize();
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CTreeWindow::UpdateScreenRatio()
@@ -371,7 +371,7 @@ void CTreeWindow::UpdateScreenRatio()
     //bufferUpdate = true;
     if(this->treeControl != nullptr)
         this->treeControl->UpdateScreenRatio();
-    //this->FastRefresh(this);
+    //Refresh();
 }
 
 
@@ -381,7 +381,7 @@ void CTreeWindow::SetTreeControl(CTreeControl * treeControl)
     printf("CTreeWindow::SetTreeControl \n");
 	this->treeControl = treeControl;
     bufferUpdate = true;          
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CTreeWindow::OnPaint(wxPaintEvent& event)

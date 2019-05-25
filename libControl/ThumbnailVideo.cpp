@@ -114,7 +114,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	numSelect = pIcone;
 	//numSelect->RenderIcone(&dc);
 	numItemSelected = numItem;
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CThumbnailVideo::LoadVideoThumbnail(CThreadVideoData * videoData)
@@ -215,7 +215,7 @@ void CThumbnailVideo::UpdateVideoThumbnail(wxCommandEvent& event)
 	delete videoData;
     
     if(videoFilename == videoData->videoFilename)
-        this->FastRefresh(this);
+        Refresh();
 }
 
 void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName)
@@ -336,7 +336,7 @@ void CThumbnailVideo::SetVideoFile(const wxString &videoFile)
         StartThreadVideoLoading(videoFile);
 		videoFilename = videoFile;	
         
-        this->FastRefresh(this);
+        Refresh();
 	}
 
 }

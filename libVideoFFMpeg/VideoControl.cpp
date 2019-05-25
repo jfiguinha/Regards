@@ -135,7 +135,7 @@ void CVideoControl::UpdateFiltre(CEffectParameter * effectParameter)
 	videoEffectParameter = *videoParameter;
 	muVideoEffect.unlock();
 
-	//this->FastRefresh(this);
+	//Refresh();
 }
 
 void CVideoControl::SetVideoPreviewEffect(CEffectParameter * effectParameter)
@@ -163,7 +163,7 @@ bool CVideoControl::GetProcessEnd()
 
 void CVideoControl::OnRefresh(wxCommandEvent& event)
 {
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CVideoControl::OnIdle(wxIdleEvent& evt)
@@ -965,7 +965,7 @@ void CVideoControl::SetPos(int64_t pos)
 	videoPosition = pos;
 	if (eventPlayer != nullptr)
 		eventPlayer->OnPositionVideo(pos);
-	//this->FastRefresh(this);
+	//Refresh();
 }
 
 void CVideoControl::VolumeUp()
@@ -1126,7 +1126,7 @@ void CVideoControl::Resize()
     if(pause && isffmpegDecode && copyFrameBuffer != nullptr)
     {
          SetFrameData(copyFrameBuffer);
-         this->FastRefresh(this);
+         Refresh();
     } 
 }
 

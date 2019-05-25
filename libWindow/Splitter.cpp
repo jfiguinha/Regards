@@ -460,12 +460,12 @@ void CSplitter::Resize(wxWindow * window)
                 
             if(window1 != nullptr)
             {
-                this->FastRefresh(window1);
+				window1->Refresh();
             }
         
             if(window2 != nullptr)
             {
-                this->FastRefresh(window2);      
+				window2->Refresh();
             }
 			separationBar->Refresh();
 			return;

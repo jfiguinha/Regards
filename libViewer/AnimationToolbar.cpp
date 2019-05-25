@@ -84,7 +84,7 @@ void CAnimationToolbar::AnimationStart()
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
 		mainWindow->StartAnimation();
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 
@@ -96,7 +96,7 @@ void CAnimationToolbar::AnimationStop()
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
 		mainWindow->StopAnimation();
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 

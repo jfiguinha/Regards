@@ -97,7 +97,7 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
     if(photoCriteria != nullptr)
         delete photoCriteria;
     
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
@@ -167,7 +167,7 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
     if(photoCriteria != nullptr)
         delete photoCriteria;
     
-    this->FastRefresh(this);
+    Refresh();
 }
 
 
@@ -198,5 +198,5 @@ void CCriteriaTreeWnd::SetFile(const wxString &filename)
     
     UpdateTreeData();
     
-    this->FastRefresh(this);
+    Refresh();
 }

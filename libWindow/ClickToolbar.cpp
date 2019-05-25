@@ -47,7 +47,7 @@ void CClickToolbar::SetVertical(const bool &vertical)
 	}
 
 	
-	this->FastRefresh(this);
+	Refresh();
 }
 
 CClickToolbar::~CClickToolbar()

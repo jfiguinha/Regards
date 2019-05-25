@@ -87,38 +87,6 @@ CMasterWindow::~CMasterWindow(void)
 		delete windowMainPimpl;
 }
 
-void CMasterWindow::CallRefresh(wxWindow * window)
-{
-    wxCommandEvent event(wxEVENT_VIDEOREFRESH);
-    wxPostEvent(window, event);  
-}
-
-void CMasterWindow::FastRefresh(wxWindow * window,const bool &special)
-{
-    if(window != nullptr)
-    {
-    #if defined(__APPLE__)
-        if(special)
-        {
-            wxPaintEvent event(wxEVT_PAINT);
-            wxPostEvent(window, event);            
-        }
-        else
-            window->Refresh();
-    #elif defined(__WXGTK__)
-        wxCommandEvent event(wxEVENT_VIDEOREFRESH);
-        wxPostEvent(window, event);  
-    #else
-        window->Refresh();
-    #endif 
-    }
-}
- 
- void CMasterWindow::OnRefresh(wxCommandEvent& event)
- {
-     
- }
-
 void CMasterWindow::FillRect(wxDC * dc, const wxRect &rc, const wxColour &color)
 {
 	CWindowUtility winUtility;

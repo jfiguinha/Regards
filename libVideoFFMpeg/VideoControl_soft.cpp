@@ -134,7 +134,7 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
 	videoEffectParameter = *videoParameter;
 	muVideoEffect.unlock();
 
-	//this->FastRefresh(this);
+	//Refresh();
 }
 
 CVideoControlInterface * CVideoControlSoft::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
@@ -348,7 +348,7 @@ int CVideoControlSoft::getHeight()
 void CVideoControlSoft::UpdateScreenRatio()
 {
 #ifdef __APPLE__
-         this->FastRefresh(this,true);
+         Refresh();
 #else
          this->Refresh();
 #endif
@@ -577,7 +577,7 @@ void CVideoControlSoft::SetPos(int64_t pos)
 	videoPosition = pos;
 	if (eventPlayer != nullptr)
 		eventPlayer->OnPositionVideo(pos);
-	//this->FastRefresh(this);
+	//Refresh();
 }
 
 void CVideoControlSoft::VolumeUp()
@@ -631,7 +631,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
     std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
     
-    this->FastRefresh(this,true);
+    Refresh();
  
 }
 
@@ -649,7 +649,7 @@ void CVideoControlSoft::Resize()
     } 
     
 #ifdef __APPLE__
-         this->FastRefresh(this,true);
+         Refresh();
 #else
          this->Refresh();
 #endif

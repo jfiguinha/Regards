@@ -31,7 +31,7 @@ int CTitleIntro::GetHeight()
 
 void CTitleIntro::Resize()
 {
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CTitleIntro::OnPaint(wxPaintEvent& event)

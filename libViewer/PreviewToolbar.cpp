@@ -111,14 +111,14 @@ void CPreviewToolbar::SetFullscreen()
 {
     wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLSCREEN",1);
     fullscreen->SetLibelle(libelleFullscreen);
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CPreviewToolbar::SetScreen()
 {
     wxString libelleFullscreen = CLibResource::LoadStringFromResource(L"LBLFULLSCREEN",1);
     fullscreen->SetLibelle(libelleFullscreen);
-    this->FastRefresh(this);
+    Refresh();
 }
 
 void CPreviewToolbar::Rotate90()
@@ -187,7 +187,7 @@ void CPreviewToolbar::DiaporamaStart()
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
 		mainWindow->StartDiaporama();
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 
@@ -199,7 +199,7 @@ void CPreviewToolbar::DiaporamaStop()
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
 		mainWindow->StopDiaporama();
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 

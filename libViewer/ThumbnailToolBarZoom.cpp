@@ -42,7 +42,7 @@ void CThumbnailToolBarZoom::Resize()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 
@@ -91,7 +91,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 

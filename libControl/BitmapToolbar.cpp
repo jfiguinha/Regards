@@ -163,7 +163,7 @@ void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		this->FastRefresh(this);
+		Refresh();
 		//this->Update();
 	}
 }
@@ -176,7 +176,7 @@ void CBitmapToolbar::ShowSaveButton()
 		if (!save->IsVisible())
 		{
 			save->SetVisible(true);
-			this->FastRefresh(this);
+			Refresh();
 		}
 	}
 }
@@ -187,7 +187,7 @@ void CBitmapToolbar::HideSaveButton()
 		if (save->IsVisible())
 		{
 			save->SetVisible(false);
-			this->FastRefresh(this);
+			Refresh();
 		}
 	}
 }

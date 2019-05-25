@@ -33,13 +33,9 @@ namespace Regards
 
 			virtual wxString GetWaitingMessage(){ return wxString();};
             
-            virtual void FastRefresh(wxWindow * window,const bool &special = false);
-            void CallRefresh(wxWindow * window);
-            
 		protected:
 
 			static void ThreadIdle(void * data);
-            virtual void OnRefresh(wxCommandEvent& event);
 			virtual void ProcessOnIdleEndEvent(wxCommandEvent& event);
 			virtual void ProcessOnSizeEvent(wxSizeEvent& event);
 			virtual void ProcessIdle(){};

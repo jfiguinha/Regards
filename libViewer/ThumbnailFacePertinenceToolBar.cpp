@@ -63,7 +63,7 @@ void CThumbnailFacePertinenceToolBar::ZoomOn()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }
@@ -81,7 +81,7 @@ void CThumbnailFacePertinenceToolBar::ZoomOff()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }
@@ -101,7 +101,7 @@ void CThumbnailFacePertinenceToolBar::SetTrackBarPosition(const int &iPos)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }

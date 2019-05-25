@@ -363,7 +363,7 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 		break;
 	}
 
-	//this->FastRefresh(this);
+	//Refresh();
 }
 
 void CBitmapWndViewer::Resize()

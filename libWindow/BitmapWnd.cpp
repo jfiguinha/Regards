@@ -177,7 +177,7 @@ void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorScreen;
        
     //fastRenderOpenGL = true;
-    //this->FastRefresh(this,true);
+    //Refresh();
 }
 
 int CBitmapWnd::GetWidth()
@@ -1125,7 +1125,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
                     {
                         RefreshWindow();
                     }
-                    //this->FastRefresh(this,true);
+                    //Refresh();
 				}
 			}
 			break;
@@ -1678,11 +1678,11 @@ void CBitmapWnd::RefreshWindow()
 {
 #ifdef __APPLE__
     //if(!fastRenderOpenGL)
-        this->FastRefresh(this,true);
+        Refresh();
     //else
-    //    this->FastRefresh(this);
+    //    Refresh();
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 }
 

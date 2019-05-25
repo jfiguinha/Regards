@@ -65,7 +65,7 @@ namespace Regards
 			
 			void Update()
 			{
-				this->FastRefresh(this);
+				Refresh();
 			}
 
 			void TestMaxX();

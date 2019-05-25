@@ -75,7 +75,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 
 	threadDataProcess = true;
 
-	this->FastRefresh(this);
+	Refresh();
 }
 
 

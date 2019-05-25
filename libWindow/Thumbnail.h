@@ -61,7 +61,7 @@ namespace Regards
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
 
 			void OpenFileViewer(const wxString &filename);
-			void Update(){ this->FastRefresh(this); };
+			void Update(){ Refresh(); };
 			void TestMaxX();
 			void TestMaxY();
 			void SetIconeSize(const int &width, const int &height);

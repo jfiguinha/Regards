@@ -96,7 +96,7 @@ void CThumbnailToolBar::ZoomOn()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }
@@ -113,7 +113,7 @@ void CThumbnailToolBar::ZoomOff()
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }
@@ -133,7 +133,7 @@ void CThumbnailToolBar::SetTrackBarPosition(const int &iPos)
 #ifdef __APPLE__
     this->CallRefresh(this);
 #else
-	this->FastRefresh(this);
+	Refresh();
 #endif
 	}
 }

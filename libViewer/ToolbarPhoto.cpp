@@ -55,7 +55,7 @@ void CToolbarPhoto::Resize()
 	{
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarPhoto::EventManager(const int &id)

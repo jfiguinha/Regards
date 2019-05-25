@@ -108,7 +108,7 @@ namespace Regards
 			void SetTexte(const wxString &libelle)
 			{
 				textToShow = libelle;
-				this->FastRefresh(this);
+				Refresh();
 			}
 			
 

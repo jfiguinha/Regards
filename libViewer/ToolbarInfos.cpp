@@ -117,19 +117,19 @@ void CToolbarInfos::SetInfosActif()
 void CToolbarInfos::SetMapActif()
 {
 	map->SetVisible(true);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetMapInactif()
 {
 	map->SetVisible(false);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetEffectActif()
 {
 	effect->SetVisible(true);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetCriteriaPush()
@@ -141,13 +141,13 @@ void CToolbarInfos::SetCriteriaPush()
 void CToolbarInfos::SetEffectInactif()
 {
 	effect->SetVisible(false);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetEffectParameterInactif()
 {
 	effectParameter->SetVisible(false);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
@@ -160,7 +160,7 @@ void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
 		if (navPush != nullptr)
 			navPush->SetInactif();
 		effectParameter->SetActif();
-		this->FastRefresh(this);
+		Refresh();
 	}
 }
 
@@ -172,7 +172,7 @@ void CToolbarInfos::SetVideoToolbar()
     effect->SetVisible(false);
 	videoeffect->SetVisible(true);
 	audiovideo->SetVisible(true);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::SetPictureThumbnailToolbar()
@@ -182,7 +182,7 @@ void CToolbarInfos::SetPictureThumbnailToolbar()
 	videoeffect->SetVisible(false);
     history->SetVisible(false);
     effectParameter->SetVisible(false);
-    this->FastRefresh(this);
+    Refresh();
 }
 
 
@@ -193,7 +193,7 @@ void CToolbarInfos::SetPictureToolbar()
 	history->SetVisible(true);
 	audiovideo->SetVisible(false);
 	effectParameter->SetVisible(false);
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::Resize()
@@ -205,7 +205,7 @@ void CToolbarInfos::Resize()
 	{
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
-	this->FastRefresh(this);
+	Refresh();
 }
 
 void CToolbarInfos::EventManager(const int &id)
