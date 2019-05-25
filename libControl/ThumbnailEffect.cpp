@@ -18,6 +18,7 @@
 #include <config_id.h>
 #include <picture_id.h>
 #include <ImageLoadingFormat.h>
+
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Control;

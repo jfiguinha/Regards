@@ -1,7 +1,6 @@
 #include <header.h>
 #include "ThumbnailHorizontal.h"
 #include <ThumbnailDataSQL.h>
-//#include <omp.h>
 #include <queue>
 #include <deque>
 #include <FileUtility.h>

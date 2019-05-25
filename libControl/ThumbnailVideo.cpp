@@ -9,6 +9,7 @@
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <SqlThumbnailVideo.h>
+
 using namespace Regards::Control;
 using namespace Regards::Window;
 
