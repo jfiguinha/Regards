@@ -83,7 +83,7 @@ CMasterWindow::CMasterWindow(void)
 
 void CMasterWindow::CallRefresh(wxWindow * window)
 {
-    wxCommandEvent event(wxEVENT_VIDEOREFRESH);
+    wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(window, event);  
 }
 
