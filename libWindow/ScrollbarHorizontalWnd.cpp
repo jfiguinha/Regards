@@ -66,12 +66,12 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(CScrollInterface * scrollInterf
 	Connect(TIMER_STOPMOVING, wxEVT_TIMER, wxTimerEventHandler(CScrollbarHorizontalWnd::OnTimerStopMoving), nullptr, this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseCaptureLost));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarHorizontalWnd::OnEraseBackground));
-    Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CScrollbarHorizontalWnd::OnRefresh));
+    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CScrollbarHorizontalWnd::OnRefresh));
 }
 
 void CScrollbarHorizontalWnd::CallRefresh()
 {
-    wxCommandEvent event(wxEVENT_VIDEOREFRESH);
+    wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(this, event);     
 }
 

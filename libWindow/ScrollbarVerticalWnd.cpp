@@ -69,12 +69,12 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(CScrollInterface * scrollInterface,
 	Connect(TIMER_PAGEBOTTOM, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerPageBottom), nullptr, this);
 	Connect(TIMER_STOPMOVING, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerStopMoving), nullptr, this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseCaptureLost));
-    Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CScrollbarVerticalWnd::OnRefresh));
+    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CScrollbarVerticalWnd::OnRefresh));
 }
 
 void CScrollbarVerticalWnd::CallRefresh()
 {
-        wxCommandEvent event(wxEVENT_VIDEOREFRESH);
+        wxCommandEvent event(wxEVENT_REFRESH);
         wxPostEvent(this, event);     
 }
 
