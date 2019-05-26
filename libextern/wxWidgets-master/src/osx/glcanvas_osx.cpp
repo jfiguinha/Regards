@@ -85,8 +85,6 @@
 // ----------------------------------------------------------------------------
 // OSX specific values
 
-
-
 wxGLContextAttrs& wxGLContextAttrs::CoreProfile()
 {
     AddAttribute(WXOpenGLPFAOpenGLProfile);
@@ -503,8 +501,13 @@ bool wxGLCanvas::Create(wxWindow *parent,
     // Make a copy of attributes. Will use at wxGLContext ctor
     m_GLAttrs = dispAttrs;
 
+#if wxOSX_USE_IPHONE
     if ( !wxGLCanvas::DoCreate(parent,id,pos,size,style,name) )
         return false;
+#else
+    if ( !wxWindow::Create(parent, id, pos, size, style, name) )
+        return false;
+#endif
     
     return true;
 }
@@ -514,6 +517,7 @@ void wxGLCanvas::Refresh(bool eraseBackground, const wxRect *rect)
     wxPaintEvent event(wxEVT_PAINT);
     wxPostEvent(this, event);    	
 } 	
+
 
 #if WXWIN_COMPATIBILITY_2_8
 
