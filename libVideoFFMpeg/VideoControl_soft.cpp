@@ -73,7 +73,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
     Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
-    Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
     fpsTimer = new wxTimer(this, TIMER_FPS);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
@@ -163,11 +162,6 @@ CEffectParameter * CVideoControlSoft::GetParameter()
 bool CVideoControlSoft::GetProcessEnd()
 {
 	return videoEnd;
-}
-
-void CVideoControlSoft::OnRefresh(wxCommandEvent& event)
-{
-    this->Refresh();
 }
 
 void CVideoControlSoft::OnIdle(wxIdleEvent& evt)
@@ -348,11 +342,7 @@ int CVideoControlSoft::getHeight()
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
-#ifdef __APPLE__
-         Refresh();
-#else
-         this->Refresh();
-#endif
+    this->Refresh();
 }
 
 void CVideoControlSoft::OnPaint(wxPaintEvent& event)
@@ -632,8 +622,13 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
     std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
     
-    Refresh();
- 
+    //Refresh();
+#if defined(__WXGTK__)
+    wxCommandEvent event(wxEVENT_REFRESH);
+    wxPostEvent(this, event);  
+#else
+    this->Refresh();
+#endif 
 }
 
 void CVideoControlSoft::Resize()
@@ -648,10 +643,6 @@ void CVideoControlSoft::Resize()
     {
          SetFrameData(copyFrameBuffer);
     } 
-    
-#ifdef __APPLE__
-         Refresh();
-#else
-         this->Refresh();
-#endif
+
+    Refresh();
 }

@@ -66,7 +66,7 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
     Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControl::VideoStart));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControl::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControl::VideoRotation));
-    Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CVideoControl::OnRefresh));
+    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControl::OnRefresh));
     fpsTimer = new wxTimer(this, TIMER_FPS);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControl::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControl::OnShowFPS), nullptr, this);
