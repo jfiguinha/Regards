@@ -116,7 +116,6 @@ namespace Regards
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
 		    void OnEraseBackground(wxEraseEvent& event){};
-            void OnEnableOpenGLRefresh(wxCommandEvent& event);
             
 #ifdef KeyPress
 #undef KeyPress
@@ -198,10 +197,7 @@ namespace Regards
 			CSliderInterface * sliderInterface;
 			CThemeBitmapWindow themeBitmap;
 			CRegardsConfigParam * config;
-            wxTimer * loadingTimer;
-            bool showLoadingBitmap;
-            int stepLoading;
-            bool useLoadingPicture;
+
 			COpenCLEngine * openCLEngine;
 			COpenCLContext * openclContext;
 			CFiltreEffet * filtreEffet;

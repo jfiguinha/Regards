@@ -52,10 +52,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
 	config = nullptr;
-    loadingTimer = nullptr;
-    showLoadingBitmap = false;
-    stepLoading = 0;
-    useLoadingPicture = false;
+
     openCLEngine = nullptr;
 	filtreEffet = nullptr;
 	flipVertical = 0;
@@ -93,27 +90,15 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CBitmapWnd::OnKeyDown));
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd::OnMouseCaptureLost));
-    Connect(wxEVENT_OPENGLENABLEREFRESH, wxCommandEventHandler(CBitmapWnd::OnEnableOpenGLRefresh));
+
 	bitmapwidth = 0;
 	bitmapheight = 0;
 	bitmapUpdate = false;
 	source = nullptr;
 	bitmapLoad = false;
 
-    loadingTimer = new wxTimer(this, TIMER_LOADING);
-    Connect(TIMER_LOADING, wxEVT_TIMER, wxTimerEventHandler(CBitmapWnd::OnLoading), nullptr, this);
-    
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	filterInterpolation = CUBICFILTER;
-}
-
-void CBitmapWnd::OnEnableOpenGLRefresh(wxCommandEvent& event)
-{
-    TRACE();
-#ifdef __APPLE__
-    timerUpdate = true;
-    loadingTimer->Start(50, true);
-#endif
 }
 
 void CBitmapWnd::SetFilterInterpolation(const int &filter)
@@ -123,50 +108,6 @@ void CBitmapWnd::SetFilterInterpolation(const int &filter)
     RefreshWindow();
 }
 
-void CBitmapWnd::OnLoading(wxTimerEvent& event)
-{
-    TRACE();
-    if(timerUpdate)
-    {
-       //fastRenderOpenGL = false;
-        //this->Resize();
-        UpdateResized();
-        timerUpdate = false;
-    }
-    else
-    {
-        stepLoading += 1;
-        if (stepLoading == 8)
-            stepLoading = 0;
-
-        loadingTimer->Start(50, true);        
-    }
-
-    RefreshWindow();
-}
-
-
-void CBitmapWnd::StopLoadingBitmap()
-{
-    TRACE();
-    if(useLoadingPicture)
-    {
-        showLoadingBitmap = false;
-        if (loadingTimer->IsRunning())
-            loadingTimer->Stop();
-    }
-}
-
-void CBitmapWnd::StartLoadingBitmap()
-{
-    TRACE();
-    if(useLoadingPicture)
-    {
-        stepLoading = 0;
-        showLoadingBitmap = true;
-        loadingTimer->Start(50, true);
-    }
-}
 
 void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 {

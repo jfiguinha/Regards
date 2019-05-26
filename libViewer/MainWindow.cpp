@@ -1210,11 +1210,7 @@ void CMainWindow::SetScreenEvent(wxCommandEvent& event)
 {
     TRACE();
     this->Resize();
-#ifdef __APPLE__
-    wxWindow * window = this->FindWindowById(BITMAPWINDOWVIEWERID);
-    wxCommandEvent localEvent(wxEVENT_OPENGLENABLEREFRESH);
-    wxPostEvent(window, localEvent);  
-#endif
+
 }
 
 void CMainWindow::SetFullscreenMode()
