@@ -34,7 +34,6 @@ public:
 	void OnPause();
 	int PlayMovie(const wxString &movie);
 
-    void OnRefresh(wxCommandEvent& event);
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);
     int getWidth();

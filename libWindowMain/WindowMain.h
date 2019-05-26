@@ -30,7 +30,7 @@ namespace Regards
                 scaleFactor = 1.0f;
             #endif
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowMain::OnSize));
-                Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
+                Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowMain::OnRefresh));
 				Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowMain::OnResize));
 				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowMain::OnEraseBackground));
 				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CWindowMain::OnProcessIdleEnd));

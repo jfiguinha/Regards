@@ -31,7 +31,7 @@ namespace Regards
                 scaleFactor = 1.0f;
             #endif
 				this->name = name;
-                Connect(wxEVENT_VIDEOREFRESH, wxCommandEventHandler(CWindowOpenGLMain::OnRefresh));
+                Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowOpenGLMain::OnRefresh));
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowOpenGLMain::OnSize));
 				Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CWindowOpenGLMain::OnEraseBackground));
 				Connect(wxEVENT_IDLETHREADING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CWindowOpenGLMain::OnProcessIdleEnd));
