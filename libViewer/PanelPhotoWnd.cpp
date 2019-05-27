@@ -95,13 +95,6 @@ CPanelPhotoWnd::~CPanelPhotoWnd()
     delete(photoToolbar);
 }
 
-wxString CPanelPhotoWnd::GetSqlRequest()
-{
-	if (categoryFolderWnd != nullptr)
-		return categoryFolderWnd->GetSqlRequest();
-	return "";
-}
-
 void CPanelPhotoWnd::SaveParameter(wxCommandEvent& event)
 {
 	if (categoryFolderWnd != nullptr)

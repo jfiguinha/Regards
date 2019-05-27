@@ -18,7 +18,6 @@ namespace Regards
 		public:
 			CPanelPhotoWnd(wxWindow* parent, wxWindowID id);
 			~CPanelPhotoWnd();
-            wxString GetSqlRequest();
 			void RefreshData();
 		protected:
         

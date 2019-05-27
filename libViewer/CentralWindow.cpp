@@ -193,13 +193,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	this->Resize(this);
 }
 
-wxString CCentralWindow::GetSqlRequest()
-{
-	if (panelPhotoWnd != nullptr)
-		return panelPhotoWnd->GetSqlRequest();
-	return "";
-}
-
 void CCentralWindow::UpdateScreenRatio()
 {
 	if (viewerWindow != nullptr)

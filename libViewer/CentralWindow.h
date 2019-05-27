@@ -25,7 +25,6 @@ namespace Regards
 			void UpdateScreenRatio();
 			void FullscreenMode();
 			void ScreenMode();
-			wxString GetSqlRequest();
 
 		private:
 

@@ -550,12 +550,15 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (updateFolder)
 	{
+        wxString requestSql = "";
         PhotosVector pictures;
 		CSqlFindPhotos sqlFindPhotos;
 		bool isValid = true;
 		//wxString photoName = imageList->GetFilePath(numElement, isValid);
-		wxString requestSql = centralWnd->GetSqlRequest();
-		//wxString requestSql = "";
+        CCategoryFolderWindow * categoryFolder = this->FindWindowById(CATEGORYFOLDERWINDOWID);
+        if(categoryFolder != nullptr)
+            requestSql = categoryFolder->GetSqlRequest();
+            
 		if (requestSql != "")
 		{
 			sqlFindPhotos.SearchPhotos(requestSql);
