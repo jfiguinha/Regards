@@ -34,9 +34,7 @@ namespace Regards
             
 		protected:
 
-            void CallRefresh();
 			void DrawElement(wxDC * dc);
-            void OnRefresh(wxCommandEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);

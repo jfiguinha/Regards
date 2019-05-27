@@ -1617,14 +1617,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 void CBitmapWnd::RefreshWindow()
 {
-#ifdef __APPLE__
-    //if(!fastRenderOpenGL)
-        Refresh();
-    //else
-    //    Refresh();
-#else
 	Refresh();
-#endif
 }
 
 //-----------------------------------------------------------------

@@ -69,19 +69,7 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(CScrollInterface * scrollInterface,
 	Connect(TIMER_PAGEBOTTOM, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerPageBottom), nullptr, this);
 	Connect(TIMER_STOPMOVING, wxEVT_TIMER, wxTimerEventHandler(CScrollbarVerticalWnd::OnTimerStopMoving), nullptr, this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CScrollbarVerticalWnd::OnMouseCaptureLost));
-    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CScrollbarVerticalWnd::OnRefresh));
 }
-
-void CScrollbarVerticalWnd::CallRefresh()
-{
-        wxCommandEvent event(wxEVENT_REFRESH);
-        wxPostEvent(this, event);     
-}
-
- void CScrollbarVerticalWnd::OnRefresh(wxCommandEvent& event)
- {
-     this->Refresh();
- }
 
 void CScrollbarVerticalWnd::OnMouseCaptureLost(wxMouseEvent& event)
 {
@@ -182,11 +170,7 @@ bool CScrollbarVerticalWnd::UpdateScrollBar(const int &posHauteur, const int &sc
 
 		if (needToRedraw)
 		{
-        #ifdef __APPLE__
-            this->CallRefresh();
-        #else
              this->Refresh();
-        #endif
         }
 	}
 
@@ -253,11 +237,7 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 		value = false;
 	}
 	
-#ifdef __APPLE__
-    this->CallRefresh();
-#else
-	 this->Refresh();
-#endif
+    this->Refresh();
 	return value;
 }
 
@@ -497,8 +477,6 @@ void CScrollbarVerticalWnd::OnSize(wxSizeEvent& event)
 	width = event.GetSize().GetWidth();
 	height =  event.GetSize().GetHeight();
 	Resize();
-    //wxPaintEvent paintevent(wxEVT_PAINT);
-    //wxPostEvent(this, paintevent); 
 }
 
 bool CScrollbarVerticalWnd::FindTopTriangle(const int &yPosition, const int &xPosition)
@@ -584,23 +562,8 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxY();
 		MoveBar(currentYPos, themeScroll.colorBarActif);
         scrollInterface->SetTopPosition(currentYPos);
-    }/*
-	else
-	{
-
-		if (FindTopTriangle(yPos, xPos))
-			DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangleActif);
-		else if (FindBottomTriangle(yPos, xPos))
-			DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangleActif);
-		else if (FindRectangleBar(yPos, xPos))
-			DrawRectangleElement(&dc, themeScroll.colorBarActif);
-		else
-		{
-			DrawTopTriangleElement(&dc, rcPosTriangleTop, themeScroll.colorTriangle);
-			DrawBottomTriangleElement(&dc, rcPosTriangleBottom, themeScroll.colorTriangle);
-			DrawRectangleElement(&dc, themeScroll.colorBar);
-		}
-	}*/
+        this->Refresh();
+    }
 }
 
 bool CScrollbarVerticalWnd::TestMaxY()
