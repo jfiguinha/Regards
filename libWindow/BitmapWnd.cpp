@@ -76,7 +76,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	defaultPageSize = 50;
 	defaultLineSize = 5;
 	showScroll = true;
-	fastRender = false;
 	themeBitmap = theme;
 
     Connect(wxEVT_SIZE, wxSizeEventHandler(CBitmapWnd::OnSize));
@@ -116,9 +115,6 @@ void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorFullscreen;
 	else
 		themeBitmap.colorBack = themeBitmap.colorScreen;
-       
-    //fastRenderOpenGL = true;
-    //Refresh();
 }
 
 int CBitmapWnd::GetWidth()

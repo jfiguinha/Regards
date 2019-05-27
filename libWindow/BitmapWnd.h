@@ -188,11 +188,8 @@ namespace Regards
 			int mouseScrollX;
 			int mouseScrollY;
 
-			bool fastRender;
-			//bool addToTexture;
 			bool externBitmap;
-			//wxImage render;
-			//CRegardsBitmap * bitmap;
+
 			wxWindowID idWindowMain;
 			CSliderInterface * sliderInterface;
 			CThemeBitmapWindow themeBitmap;
@@ -217,8 +214,7 @@ namespace Regards
 			bool bitmapLoad;
             mutex muBitmap;
             bool updateContext = true;
-            bool timerUpdate = false;
-            //bool fastRenderOpenGL = false;
+
             bool updateFilter = false;
 		};
 	}
