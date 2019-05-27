@@ -398,21 +398,6 @@ void CListFace::Resize()
 	thumbFaceToolbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight() + pictureHeight, GetWindowWidth(), thumbFaceToolbar->GetHeight());
 }
 
-void CListFace::PictureClick(const wxString &filepath, const int &numElement)
-{
-	/*
-	if (thumbnailFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
-		thumbnailFace->GetEventHandler()->AddPendingEvent(evt);
-
-		wxCommandEvent evt2(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
-		evt2.SetExtraLong(numElement);
-		thumbnailFace->GetEventHandler()->AddPendingEvent(evt2);
-	}
-	*/
-}
-
 //---------------------------------------------------------------------------------------
 //Test FacialRecognition
 //---------------------------------------------------------------------------------------

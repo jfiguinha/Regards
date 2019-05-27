@@ -16,8 +16,6 @@ namespace Regards
 		public:
 			CListPicture(wxWindow* parent, wxWindowID id);
 			~CListPicture();
-
-			void PictureClick(const wxString &filepath, const int &numElement);
             void UpdateScreenRatio();
 			void SetActifItem(const int &numItem, const bool &move);	
 			int GetThumbnailHeight();

@@ -490,18 +490,3 @@ void CListPicture::Resize()
 	}
 
 }
-
-void CListPicture::PictureClick(const wxString &filepath, const int &numElement)
-{
-	if (thumbnailFolder != nullptr)
-	{
-		/*
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTOPLOADINGPICTURE);
-		thumbnailFolder->GetEventHandler()->AddPendingEvent(evt);
-
-		wxCommandEvent evt2(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONSTARTLOADINGPICTURE);
-		evt2.SetExtraLong(numElement);
-		thumbnailFolder->GetEventHandler()->AddPendingEvent(evt2);
-		*/
-	}
-}
