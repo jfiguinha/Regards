@@ -27,11 +27,10 @@ namespace Regards
 
             void InitSaveParameter();
 			void Init();
-            wxString GetSqlRequest();
 			void UpdateCriteria(const bool &needToSendMessage);
-            void RefreshFilter();
 			wxString GetWaitingMessage();
 			void RefreshCriteriaSearch();
+			wxString GetSqlRequest();
 
 		private:
 			

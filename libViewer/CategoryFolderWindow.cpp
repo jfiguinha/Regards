@@ -169,13 +169,6 @@ void CCategoryFolderWindow::UpdateCriteria(const bool &needToSendMessage)
     processIdle = true;
 }
 
-void CCategoryFolderWindow::RefreshFilter()
-{
-    update = false;
-    traitementEnd = false;
-    processIdle = true;
-}
-
 bool CCategoryFolderWindow::GetProcessEnd()
 {
 	if(numProcess > 0  || !processEnd)
@@ -495,8 +488,6 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria * findPhotoCrit
 		event->SetClientData(findPhotoCriteria);
 		wxQueueEvent(findPhotoCriteria->mainWindow, event);
 	}
-
-	
 }
 
 wxString CCategoryFolderWindow::GetSqlRequest()

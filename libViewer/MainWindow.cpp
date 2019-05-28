@@ -555,7 +555,7 @@ void CMainWindow::ProcessIdle()
 		CSqlFindPhotos sqlFindPhotos;
 		bool isValid = true;
 		//wxString photoName = imageList->GetFilePath(numElement, isValid);
-        CCategoryFolderWindow * categoryFolder = this->FindWindowById(CATEGORYFOLDERWINDOWID);
+        CCategoryFolderWindow * categoryFolder = (CCategoryFolderWindow *)this->FindWindowById(CATEGORYFOLDERWINDOWID);
         if(categoryFolder != nullptr)
             requestSql = categoryFolder->GetSqlRequest();
             
