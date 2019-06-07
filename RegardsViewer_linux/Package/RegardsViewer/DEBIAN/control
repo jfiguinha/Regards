@@ -1,9 +1,0 @@
-Package: RegardsViewer
-Version: 2.19.1
-Architecture: amd64
-Depends: ocl-icd-opencl-dev, libwebkit2gtk-4.0-dev, freeglut3-dev, libva-dev, libsndio-dev, liblzma-dev, libxml2-dev, libcurl4-openssl-dev, libopenexr-dev, libasound-dev, libxv-dev, libxtst-dev
-Maintainer: Figuinha Jacques
-Section: Application
-Priority: Optional
-Installed-Size: 208000000
-Description: RegardsViewer is a picture viewer and video player
