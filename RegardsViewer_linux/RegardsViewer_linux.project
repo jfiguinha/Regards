@@ -436,6 +436,9 @@
         <Command Enabled="yes">cp ../FaceRecognition_unix/Release/libFaceRecognition.so ./Release/libFaceRecognition.so</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release/libexiv2.so.26</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release/libde265.so</Command>
+        <Command Enabled="yes">cp -r ./Release/* ./Package/RegardsViewer/opt/RegardsViewer</Command>
+        <Command Enabled="yes">dpkg -b ./Package/RegardsViewer</Command>
+        <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
