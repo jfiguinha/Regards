@@ -1,0 +1,16 @@
+[Desktop Entry]
+Version=2.19.1
+Name=RegardsViewer
+GenericName=Regards Viewer
+Comment=Picture and Video Viewer
+Exec=/usr/bin/env sh -c "/opt/RegardsViewer/RegardsViewer %f" 
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Utility;Viewer;
+StartupNotify=true
+Icon=/opt/RegardsViewer/Resources/viewer.png
+X-AppStream-Ignore=true
+MimeType=image/gif;image/jpeg;image/png;video/webm;video/mp4;image/pgm;image/bmp;image/pcx;image/jpg;image/jpe;image/jpeg;image/jfif;image/jif;image/jfi;image/tif;image/tga;image/pcd;image/webp;image/bpg;image/jp2;image/jpc;image/j2c;image/pgx;image/ppm;image/psd;image/pdd;image/mng;image/jng;image/iff;image/xpm;image/ico;image/cur;image/ani;image/svg;image/nef;image/crw;image/cr2;image/dng;image/arw;image/erf;image/3fr;image/dcr;image/raw;image/x3f;image/mef;image/raf;image/mrw;image/pef;image/sr2;image/orf;image/heic;image/hdr;image/exr;video/mp4;video/dat;video/m4s;video/vob;video/mod;video/mpv2;video/mp2;video/m1v;video/mpe;video/mpg;video/mpeg;video/wtv;video/dvr-ms;video/m2ts;video/m2t;video/avi;video/wmv;video/asf;video/vm;video/mov;video/qt;video/vp8;video/vp9;video/webm;video/mkv;video/y4m;video/m4v
+
+
+
