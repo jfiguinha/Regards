@@ -264,7 +264,6 @@ public:
 
 	}
 
-
 private:
 	CRegardsConfigParam * regardsParam;
 	MyFrameIntro * frameStart;

@@ -202,14 +202,14 @@ namespace Regards
 			void StartDiaporamaMessage(wxCommandEvent& event);
 			void OnRemoveFolder(wxCommandEvent& event);
 			void OnTimerDiaporama(wxTimerEvent& event);
-			void OnTimerRefresh(wxTimerEvent& event);
+			//void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);
 			void PrintPreview(wxCommandEvent& event);
 			void RefreshCriteriaPictureList(wxCommandEvent& event);
 			void OnFaceInfosStatusBarUpdate(wxCommandEvent& event);
 			void OnFaceInfosUpdate(wxCommandEvent& event);
-            void RefreshTimer(wxCommandEvent& event);
+            //void RefreshTimer(wxCommandEvent& event);
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
@@ -226,7 +226,7 @@ namespace Regards
 			CToolbar * toolbar;
 			CCentralWindow * centralWnd;
 			wxTimer * diaporamaTimer;
-			wxTimer * refreshTimer;
+			//wxTimer * refreshTimer;
 			IStatusBarInterface * statusBarViewer;
 
 			wxRect posWindow;

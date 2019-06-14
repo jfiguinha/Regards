@@ -100,7 +100,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 		toolbar = new CToolbar(this, wxID_ANY, theme, false);
 	}
 
-	refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
+	//refreshTimer = new wxTimer(this, wxTIMER_REFRESH);
 	diaporamaTimer = new wxTimer(this, wxTIMER_DIAPORAMA);
 
 	if (viewerTheme != nullptr)
@@ -115,7 +115,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_FACEINFOSUPDATESTATUSBAR, wxCommandEventHandler(CMainWindow::OnFaceInfosStatusBarUpdate));
 	Connect(wxEVENT_FACEINFOSUPDATE, wxCommandEventHandler(CMainWindow::OnFaceInfosUpdate));
 	Connect(wxTIMER_DIAPORAMA, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerDiaporama), nullptr, this);
-	Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefresh), nullptr, this);
+	//Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CMainWindow::OnTimerRefresh), nullptr, this);
 	Connect(wxEVENT_SETSCREEN, wxCommandEventHandler(CMainWindow::SetScreenEvent));
 	Connect(wxEVENT_INFOS, wxCommandEventHandler(CMainWindow::OnUpdateInfos));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CMainWindow::OnEndPictureLoad));
@@ -132,7 +132,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
     Connect(wxEVENT_REFRESHPICTURE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRefreshPicture));
 	Connect(wxEVENT_MD5CHECKING, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::Md5Checking));
-	Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
+	//Connect(wxTIMER_REFRESHTIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::RefreshTimer));
     Connect(wxTIMER_DIAPORAMATIMERSTART, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StartDiaporamaMessage));
 	Connect(wxEVENT_SETSTATUSTEXT, wxCommandEventHandler(CMainWindow::OnStatusSetText));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CMainWindow::OnExit));
@@ -154,7 +154,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	progressBar->SetRange(100);
 	progressBar->SetValue(50);
 
-	refreshTimer->Start(300000, wxTIMER_ONE_SHOT);
+	//refreshTimer->Start(300000, wxTIMER_ONE_SHOT);
     //diaporamaTimer->Start(2000, wxTIMER_ONE_SHOT);
 	updatePicture = true;
 
@@ -270,7 +270,7 @@ void CMainWindow::OnFacePertinence()
     processIdle = true;
 
 }
-
+/*
 void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
 {
     TRACE();
@@ -278,7 +278,7 @@ void CMainWindow::OnTimerRefresh(wxTimerEvent& event)
     processIdle = true;
 	refreshTimer->Stop();
 }
-
+*/
 void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 {
 	wxString * threadFilename = (wxString *)event.GetClientData();
@@ -444,13 +444,13 @@ wxString GetFileName(const wxString &nameFile)
 	return folder;
 }
 
-
+/*
 void CMainWindow::RefreshTimer(wxCommandEvent& event)
 {
     TRACE();
     refreshTimer->Start();
 }
-
+*/
 
 void CMainWindow::ProcessIdle()
 {
@@ -483,7 +483,7 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (refreshFolder)
 	{
-		refreshTimer->Stop();
+		//refreshTimer->Stop();
 		FolderCatalogVector folderList;
 		CSqlFindFolderCatalog folderCatalog;
 		folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
@@ -543,8 +543,8 @@ void CMainWindow::ProcessIdle()
 			updateCriteria = true;
 		}
 		refreshFolder = false;
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
-		this->GetEventHandler()->AddPendingEvent(evt);
+        //wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxTIMER_REFRESHTIMERSTART);
+		//this->GetEventHandler()->AddPendingEvent(evt);
         hasDoneOneThings = true;
         numElementTraitement = 0;
 	}
@@ -736,8 +736,8 @@ void CMainWindow::OnIdle(wxIdleEvent& evt)
         if (diaporamaTimer->IsRunning())
             diaporamaTimer->Stop();
 
-        if (refreshTimer->IsRunning())
-            refreshTimer->Stop();
+        //if (refreshTimer->IsRunning())
+       //     refreshTimer->Stop();
     }    
     
 
@@ -847,10 +847,10 @@ CMainWindow::~CMainWindow()
 
 	delete(diaporamaTimer);
 
-	if (refreshTimer->IsRunning())
-		refreshTimer->Stop();
+	//if (refreshTimer->IsRunning())
+	//	refreshTimer->Stop();
 
-	delete(refreshTimer);
+	//delete(refreshTimer);
 	delete(centralWnd);
 	delete(toolbar);
 }
@@ -895,6 +895,8 @@ void CMainWindow::AddFolder(const wxString &folder)
 		CSqlInsertFile sqlInsertFile;
 		sqlInsertFile.ImportFileFromFolder(folder, idFolder, filename);
 	}
+    
+    statusBarViewer->AddFSEntry(folder);
 
 	wxWindow * window = this->FindWindowById(CRITERIAFOLDERWINDOWID);
 	if (window)
@@ -946,6 +948,8 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 			updateCriteria = true;
 			updateFolder = true;
 			criteriaSendMessage = true;
+            
+            statusBarViewer->RemoveFSEntry(*info);
 		}
 	}
 	delete info;

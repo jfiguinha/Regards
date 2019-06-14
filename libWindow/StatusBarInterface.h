@@ -14,4 +14,6 @@ public:
 	virtual void PrintPreview(CRegardsBitmap * imageToPrint){};
 	virtual void Exit() = 0;
 	virtual void ShowViewer(){};
+    virtual bool AddFSEntry(const wxString& dirPath){};
+    virtual bool RemoveFSEntry(const wxString& dirPath){};
 };
