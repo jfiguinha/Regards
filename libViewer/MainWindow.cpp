@@ -949,7 +949,8 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 			updateFolder = true;
 			criteriaSendMessage = true;
             
-            statusBarViewer->RemoveFSEntry(*info);
+            //wxString dir = *info;
+            //statusBarViewer->RemoveFSEntry(dir);
 		}
 	}
 	delete info;
