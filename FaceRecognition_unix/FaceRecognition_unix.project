@@ -27,7 +27,7 @@
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
-        <LibraryPath Value="../FaceRecognition/Debug"/>
+        <LibraryPath Value="../FaceRecognition/Release"/>
         <Library Value="FaceRecognition"/>
       </Linker>
       <ResourceCompiler Options=""/>
