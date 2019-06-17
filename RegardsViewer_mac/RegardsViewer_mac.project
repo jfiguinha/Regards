@@ -335,7 +335,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.19.1/" \
+	-e "s/VERSION/2.20.0/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -353,9 +353,9 @@
         <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libturbojpeg.0.dylib</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libSDL2-2.0.0.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/cairo/lib/libcairo.2.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/llvm/lib/libomp.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libomp.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libglib-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/llvm/lib/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/openexr/lib/libIlmImf-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_3.24.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIexMath-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIMath-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libIMath-2_3.24.dylib</Command>
@@ -393,9 +393,9 @@
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Debug/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Debug/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/openexr/lib/libIlmImf-2_3.24.dylib @executable_path/../Frameworks/libIlmImf-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_3.24.dylib @executable_path/../Frameworks/libIexMath-2_3.24.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf.24.dylib @executable_path/../Frameworks/libHalf.24.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -490,7 +490,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.19.1/" \
+	-e "s/VERSION/2.20.0/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -509,9 +509,9 @@
         <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libturbojpeg.0.dylib</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libSDL2-2.0.0.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/cairo/lib/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/llvm/lib/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/llvm/lib/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libc++.1.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/openexr/lib/libIlmImf-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_3.24.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIexMath-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIMath-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIMath-2_3.24.dylib</Command>
@@ -557,9 +557,9 @@
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/openexr/lib/libIlmImf-2_3.24.dylib @executable_path/../Frameworks/libIlmImf-2_3.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_3.24.dylib @executable_path/../Frameworks/libIexMath-2_3.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf.24.dylib @executable_path/../Frameworks/libHalf.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -573,9 +573,9 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libImath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.2.1/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/cairo/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libFaceRecognition.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libFaceRecognition.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_3.24.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/ilmbase/2.3.0/lib/libIex-2_3.24.dylib @executable_path/../Frameworks/libIex-2_3.24.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_3.24.dylib</Command>
