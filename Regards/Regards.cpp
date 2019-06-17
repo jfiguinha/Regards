@@ -25,7 +25,7 @@
 #include <SqlResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
-
+#include <curl/curl.h>
 
 #ifdef SDL2
 #include <SDL.h>
@@ -173,6 +173,8 @@ public:
 		regardsParam = nullptr;
 		frameStart = nullptr;
 		//frameViewer = nullptr;
+        curl_global_init(CURL_GLOBAL_ALL);
+        
 #ifdef __WXGTK__
 		int result = XInitThreads();
                 
@@ -357,6 +359,7 @@ int MyApp::Close()
     
 
 	sqlite3_shutdown();
+    curl_global_cleanup();
 
 	this->Exit();
 

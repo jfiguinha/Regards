@@ -33,6 +33,8 @@
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"
+#include "CheckVersion.h"
+#include <wx/mimetype.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Viewer;
@@ -84,7 +86,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	start = true;
 	criteriaSendMessage = false;
 	videoStart = false;
-	
+	checkVersion = true;
     imageList = new CImageList();
     PhotosVector pictures;
 	CSqlFindPhotos sqlFindPhotos;
@@ -467,6 +469,34 @@ void CMainWindow::ProcessIdle()
 		wxCommandEvent evt(wxEVENT_REFRESHDATA);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+    
+    if(checkVersion)
+    {
+        wxString localVersion = CLibResource::LoadStringFromResource("REGARDSVERSION",1);
+        wxString serverURL = CLibResource::LoadStringFromResource("ADRESSEWEBVERSION",1);
+        CCheckVersion _checkVersion(serverURL);
+        wxString serverVersion = _checkVersion.GetLastVersion();
+        serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
+        if(serverVersion != "error" && serverVersion != "")
+        {
+            if(localVersion != serverVersion )
+            {
+                wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS",1);
+                wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE",1);
+                
+                int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, this);
+                if (answer == wxYES)
+                {
+                    wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB",1);
+                    wxMimeTypesManager manager;
+                    wxFileType *filetype=manager.GetFileTypeFromExtension("html");
+                    wxString command=filetype->GetOpenCommand(siteweb);
+                    wxExecute(command);
+                }
+            }
+        }
+        checkVersion = false;
+    }
     
 	if (updateCriteria)
 	{
@@ -949,8 +979,8 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 			updateFolder = true;
 			criteriaSendMessage = true;
             
-            //wxString dir = *info;
-            //statusBarViewer->RemoveFSEntry(dir);
+            wxString dir = wxString(*info);
+            statusBarViewer->RemoveFSEntry(dir);
 		}
 	}
 	delete info;

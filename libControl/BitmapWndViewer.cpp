@@ -41,6 +41,7 @@
 #include <RegardsFloatBitmap.h>
 #include <PiccanteFilter.h>
 #include <RegardsBitmap.h>
+#include <wx/mimetype.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -79,10 +80,13 @@ enum
 
 void CBitmapWndViewer::SendEmail()
 {
+    wxString subject = CLibResource::LoadStringFromResource(L"LBLEMAILSUBJECT", 1);;
+    wxString body = CLibResource::LoadStringFromResource(L"lblemailbody", 1);
+
 #ifdef __APPLE__
     
     CSendEmail sendEmail;
-    sendEmail.SendEmail("", "My Photo", CConvertUtility::ConvertToStdString(filename));
+    sendEmail.SendEmail("", subject, CConvertUtility::ConvertToStdString(filename));
     
 #elif defined(WIN32)
 
@@ -95,6 +99,7 @@ void CBitmapWndViewer::SendEmail()
 		m_cMapi.SendEmail("", attachment);
 
 #else
+/*
     wxEmailMessage email("My Photo","This is my Photo \n","");
     email.AddFile(filename);
     
@@ -106,7 +111,12 @@ void CBitmapWndViewer::SendEmail()
     wxFileOutputStream outputFile(emailFile);
     //filename.Assign(emailFile);
     email.Encode(outputFile);
-	wxLaunchDefaultApplication(emailFile);
+	//wxLaunchDefaultApplication(emailFile);
+    wxMimeTypesManager manager;
+    wxFileType *filetype=manager.GetFileTypeFromExtension("eml");
+    wxString command=filetype->GetOpenCommand(emailFile);
+     * */
+    wxExecute("thunderbird -remote \"xfeDoCommand(composeMessage,subject='" + subject + "',body='" + body + "',attachment='" + filename + "')\"");    
 #endif
 }
 

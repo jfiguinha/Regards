@@ -175,6 +175,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxTIMER_EXIT, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::CheckAllProcessEnd), nullptr, this);
 
 	bool folderChange = false;
+    
+    m_watcher = new wxFileSystemWatcher();
+    m_watcher->SetOwner(this); 
+
+    Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));    
 
 	//Test de la validité des répertoires
 	for (CFolderCatalog folderlocal : folderList)
@@ -185,6 +190,10 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			CSQLRemoveData::DeleteFolder(folderlocal.GetNumFolder());
 			folderChange = true;
 		}
+        else
+        {
+            AddFSEntry(folderlocal.GetFolderPath());
+        }
 	}
 
 	//Test de la validité des fichiers
@@ -332,6 +341,30 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     mainInterface->HideAbout();
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 }
+
+bool CViewerFrame::RemoveFSEntry(const wxString& dirPath)
+{
+     if(m_watcher == NULL)
+         return false;
+    
+     if(wxDirExists(dirPath) == false)
+         return false;    
+    
+     wxFileName dirname(dirPath, "" );
+     return m_watcher->Remove(dirname);
+}
+
+bool CViewerFrame::AddFSEntry(const wxString& dirPath)
+ {
+     if(m_watcher == NULL)
+         return false;
+
+     if(wxDirExists(dirPath) == false)
+         return false;
+
+     wxFileName dirname(dirPath, "" );
+     return m_watcher->AddTree(dirname);
+ }
 
 void CViewerFrame::OnClose(wxCloseEvent& event)
 {
@@ -600,6 +633,12 @@ void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
     ShowOpenCLConfiguration(true);
 }
 
+void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
+{
+    wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+    mainWindow->GetEventHandler()->AddPendingEvent(evt);
+}
+
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
 {
     float ratio = 1.0;
@@ -649,6 +688,7 @@ void CViewerFrame::OnHello(wxCommandEvent& event)
 {
 	wxLogMessage("Hello world from wxWidgets!");
 }
+
 
 void CViewerFrame::PrintPreview(CRegardsBitmap * imageToPrint)
 {
