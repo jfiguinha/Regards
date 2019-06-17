@@ -26,6 +26,8 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <curl/curl.h>
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
 
 #ifdef SDL2
 #include <SDL.h>
@@ -174,6 +176,13 @@ public:
 		frameStart = nullptr;
 		//frameViewer = nullptr;
         curl_global_init(CURL_GLOBAL_ALL);
+        
+        vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+        if(listPlatform.size() == 0)
+        {
+			wxMessageBox(wxT("OpenCL device Required. Regards can't run."), wxT("Fatal Error"), wxOK | wxICON_ERROR);            
+            exit(0);
+        }
         
 #ifdef __WXGTK__
 		int result = XInitThreads();
