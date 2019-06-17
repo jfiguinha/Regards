@@ -54,7 +54,23 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
-
+News for version 2.20
+- Bug Correction
+- Add Folder Watcher
+- Add Version Checker
+- Use Thunderbird to send email in linux
+News for version 2.19.1
+- Bug Correction
+- Mac OS Compilation for High Sierra for the moment
+News for version 2.19.0
+- New User Interface
+- Cleaning Code source
+- Bug Correction
+- Mac OS Compilation for High Sierra for the moment
+News for version 2.18.4
+- Compatible with MacOS 10.10 or Superior 
+- Bug Correction 
+- New default Theme - you need to delete Regards.viewer.theme on Documents/Regards folder
 News for version 2.18.1
 - Bug Correction 
 - Theme support -theme file save into Regards directory in documents folder
