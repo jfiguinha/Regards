@@ -1,0 +1,59 @@
+//**************************************************************************	
+Description
+//**************************************************************************
+
+Regards is a modern photo viewer. 
+Support highDPI definition screen.
+Support reading Picture format : JPEG, GIF, PNG, PCX, TGA, TIFF, BMP, Kodak Photo-Cd, JPEG2000, Photoshop PSD, PPM, PGM, Camera Raw, SVG, WEBP, HEIC, EXR, HDR and BPG.
+Support reading Video format (DXVA2 acceleration support) : mpeg4, avi, mkv, webp, y4m, quicktime and AVCHD.
+Support Exif and xmp file information.
+Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
+Support GPS informations from Photo and Apple Iphone Video. 
+Hi Quality display interpolation. 
+OpenGL Picture display and OpenCL post Effect.
+
+Picture extension support :
+
+pgm, bmp, pcx, jpg, jpe, jpeg, jfif, jif, jfi, tif,	gif, png, tga, pcd, webp, bpg, jp2, jpc, j2c, pgx, ppm, psd, pdd, mng, jng, iff, xpm, ico, cur, ani, svg, nef, crw, cr2, dng, arw, erf, 3fr, dcr, raw, x3f, mef, raf, mrw, pef, sr2, orf, heic, hdr, exr;
+
+Video extension support :
+
+mp4, dat, m4s, vob, mod, mpv2, mp2, m1v, mpe, mpg, mpeg, wtv, dvr-ms, m2ts, m2t, avi, wmv, asf, vm, mov, qt, vp8, vp9, webm, mkv, y4m
+
+//**************************************************************************
+//Installation
+//**************************************************************************
+
+Linux Mint 18 or Ubuntu 16.04 x64 Installation
+- Please check if you have an opencl compatibility device :
+Tape clinfo 
+- if it is not working please consult this website to install a driver :
+https://wiki.tiker.net/OpenCLHowTo
+- Run deb package
+
+Installation on Windows
+- Run RegardsViewer2Setup.exe
+
+Installation on Mac os X 10.10 and Later
+- Open DMG file and Copy RegardsViewer to Application Folder.
+
+//**************************************************************************
+//Configuration
+//**************************************************************************
+
+Works on minimum windows 7 and above, Mac OS X 10.12 and above, Linux Mint 18 or Ubuntu 16.04 x64 and above. 
+An OpenCL 1.2 compatible device is necessary to use this software.
+
+//**************************************************************************
+//Software Review
+//**************************************************************************
+
+SOFTPEDIA 3,5 / 5
+FIND MY SOFT 3 / 5 
+
+
+Copyright
+Figuinha Jacques - 2019 - Email Me For More information
+
+All - Version
+
