@@ -1,6 +1,7 @@
 #pragma once
 #include <StatusBarInterface.h>
 #include "wx/print.h"
+#include <wx/fswatcher.h>
 #include <MyFrameIntro.h>
 #include <MainInterface.h>
 using namespace Regards::Introduction;
@@ -33,6 +34,9 @@ namespace Regards
             void OpenFile(const wxString &filename);
             static bool GetViewerMode();
             static void SetViewerMode(const bool &viewerMode);
+            bool AddFSEntry(const wxString& dirPath);
+            bool RemoveFSEntry(const wxString& dirPath);
+            
 		private:
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
@@ -49,7 +53,8 @@ namespace Regards
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
-
+            void OnFileSystemModified(wxFileSystemWatcherEvent& event);
+            
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif
@@ -66,12 +71,13 @@ namespace Regards
 			bool fullscreen;
             static bool viewerMode;
             bool onExit;
-
+            bool m_fsWatcher = true;
 			void OnTimerLoadPicture(wxTimerEvent& event);
 			wxTimer * loadPictureTimer;
 			wxString filenameTimer;
 			int nbTime;
 			CRegardsBitmap * picture;
+            wxFileSystemWatcher * m_watcher;
 		};
 	}
 }
