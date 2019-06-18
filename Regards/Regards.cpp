@@ -25,7 +25,9 @@
 #include <SqlResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
+#ifdef USECURL
 #include <curl/curl.h>
+#endif
 #include <OpenCLEngine.h>
 using namespace Regards::OpenCL;
 
@@ -175,8 +177,9 @@ public:
 		regardsParam = nullptr;
 		frameStart = nullptr;
 		//frameViewer = nullptr;
+#ifdef USECURL
         curl_global_init(CURL_GLOBAL_ALL);
-        
+#endif        
         vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
         if(listPlatform.size() == 0)
         {
@@ -368,8 +371,9 @@ int MyApp::Close()
     
 
 	sqlite3_shutdown();
+#ifdef USECURL
     curl_global_cleanup();
-
+#endif
 	this->Exit();
 
 	CWindowMain::listMainWindow.clear();
