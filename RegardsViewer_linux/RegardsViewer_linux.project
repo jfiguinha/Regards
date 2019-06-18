@@ -166,6 +166,7 @@
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
+        <Preprocessor Value="USECURL"/>
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0">
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>

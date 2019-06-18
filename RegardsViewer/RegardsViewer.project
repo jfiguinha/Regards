@@ -161,6 +161,7 @@
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
+        <Preprocessor Value="USECURL"/>
       </Compiler>
       <Linker Options="$(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;regards.rc.o">
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
