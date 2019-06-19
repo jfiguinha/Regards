@@ -118,8 +118,6 @@ EXPORTS
     av_div_i
     av_div_q
     av_downmix_info_update_side_data
-    av_dynamic_hdr_plus_alloc
-    av_dynamic_hdr_plus_create_side_data
     av_dynarray2_add
     av_dynarray_add
     av_dynarray_add_nofree
@@ -443,7 +441,6 @@ EXPORTS
     av_spherical_from_name
     av_spherical_projection_name
     av_spherical_tile_bounds
-    av_sscanf
     av_stereo3d_alloc
     av_stereo3d_create_side_data
     av_stereo3d_from_name
