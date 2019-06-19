@@ -168,7 +168,7 @@
         <Preprocessor Value="LIBBPG"/>
         <Preprocessor Value="USECURL"/>
       </Compiler>
-      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0">
+      <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
@@ -182,6 +182,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libavutil"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
+        <LibraryPath Value="../libextern/ffmpeg-4.1/libpostproc"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
@@ -245,9 +246,10 @@
         <Library Value="turbojpeg"/>
         <Library Value="gomp"/>
         <Library Value="avformat"/>
-        <Library Value="avcodec"/>
-        <Library Value="avdevice"/>
         <Library Value="avfilter"/>
+        <Library Value="avcodec"/>
+        <Library Value="postproc"/>
+        <Library Value="avdevice"/>
         <Library Value="avutil"/>
         <Library Value="swresample"/>
         <Library Value="swscale"/>
@@ -285,6 +287,19 @@
         <Library Value="aom"/>
         <Library Value="exif"/>
         <Library Value="webkit2gtk-4.0"/>
+        <Library Value="vorbisenc"/>
+        <Library Value="vorbis"/>
+        <Library Value="fdk-aac"/>
+        <Library Value="x264"/>
+        <Library Value="mp3lame"/>
+        <Library Value="faac"/>
+        <Library Value="ass"/>
+        <Library Value="gpac"/>
+        <Library Value="opus"/>
+        <Library Value="theora"/>
+        <Library Value="vpx"/>
+        <Library Value="theoraenc"/>
+        <Library Value="theoradec"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
