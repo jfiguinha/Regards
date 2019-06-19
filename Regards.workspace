@@ -70,7 +70,7 @@
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
-    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="Yes"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">

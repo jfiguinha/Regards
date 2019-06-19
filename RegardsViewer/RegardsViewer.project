@@ -170,13 +170,7 @@
         <LibraryPath Value="../libextern/exiv2-0.26/src/.libs"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libavcodec"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libavformat"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libavdevice"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libavfilter"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libavutil"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
+        <LibraryPath Value="../libextern/ffmpeg-4.1/lib"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/libexif-master/libexif/.libs"/>
@@ -273,15 +267,17 @@
         <Library Value="Jbig"/>
         <Library Value="mng"/>
         <Library Value="gomp"/>
-        <Library Value="avformat"/>
-        <Library Value="avcodec"/>
-        <Library Value="swresample"/>
-        <Library Value="avdevice"/>
-        <Library Value="avfilter"/>
-        <Library Value="avcodec"/>
-        <Library Value="avutil"/>
-        <Library Value="swresample"/>
-        <Library Value="swscale"/>
+        <Library Value="VideoThumbnail"/>
+        <Library Value="avformat.dll"/>
+        <Library Value="avcodec.dll"/>
+        <Library Value="swresample.dll"/>
+        <Library Value="avdevice.dll"/>
+        <Library Value="avfilter.dll"/>
+        <Library Value="avcodec.dll"/>
+        <Library Value="avutil.dll"/>
+        <Library Value="swresample.dll"/>
+        <Library Value="swscale.dll"/>
+        <Library Value="postproc.dll"/>
         <Library Value="glib-2.0"/>
         <Library Value="Psd"/>
         <Library Value="turbojpeg"/>
@@ -330,7 +326,6 @@
         <Library Value="aom"/>
         <Library Value="Bcrypt"/>
         <Library Value="libheif_shared"/>
-        <Library Value="VideoThumbnail"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
       </Linker>
@@ -451,6 +446,15 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avcodec-58.dll ./Debug/avcodec-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avdevice-58.dll ./Debug/avdevice-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avfilter-7.dll ./Debug/avfilter-7.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avformat-58.dll ./Debug/avformat-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avutil-56.dll ./Debug/avutil-56.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/postproc-55.dll ./Debug/postproc-55.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/swresample-3.dll ./Debug/swresample-3.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/swscale-5.dll ./Debug/swscale-5.dll</Command>
+        <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -590,6 +594,14 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avcodec-58.dll ./Release/avcodec-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avdevice-58.dll ./Release/avdevice-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avfilter-7.dll ./Release/avfilter-7.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avformat-58.dll ./Release/avformat-58.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/avutil-56.dll ./Release/avutil-56.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/postproc-55.dll ./Release/postproc-55.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/swresample-3.dll ./Release/swresample-3.dll</Command>
+        <Command Enabled="yes">cp ../libextern/ffmpeg-4.1/bin/swscale-5.dll ./Release/swscale-5.dll</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">"C:\Program Files (x86)\NSIS\makensis.exe" ./package/install_modern.nsi</Command>
         <Command Enabled="yes">cp ./package/RegardsViewer2Setup.exe Y:/Developpement/package</Command>
