@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-codecs - FFmpeg codecs
+ffmpeg-codecs - FFmpeg codecs
 
 =head1 DESCRIPTION
 
@@ -206,12 +206,12 @@ iter motion estimation
 
 
 
-=item B<extradata_size> I<integer>B<>
+=item B<extradata_size> I<integer>
 
 Set extradata size.
 
 
-=item B<time_base> I<rational number>B<>
+=item B<time_base> I<rational number>
 
 Set codec time base.
 
@@ -253,12 +253,12 @@ restricted. It is set by some decoders to indicate constant frame
 size.
 
 
-=item B<frame_number> I<integer>B<>
+=item B<frame_number> I<integer>
 
 Set the frame number.
 
 
-=item B<delay> I<integer>B<>
+=item B<delay> I<integer>
 
 
 
@@ -322,34 +322,34 @@ Set strategy to choose between I/P/B-frames.
 Set RTP payload size in bytes.
 
 
-=item B<mv_bits> I<integer>B<>
+=item B<mv_bits> I<integer>
 
 
-=item B<header_bits> I<integer>B<>
+=item B<header_bits> I<integer>
 
 
-=item B<i_tex_bits> I<integer>B<>
+=item B<i_tex_bits> I<integer>
 
 
-=item B<p_tex_bits> I<integer>B<>
+=item B<p_tex_bits> I<integer>
 
 
-=item B<i_count> I<integer>B<>
+=item B<i_count> I<integer>
 
 
-=item B<p_count> I<integer>B<>
+=item B<p_count> I<integer>
 
 
-=item B<skip_count> I<integer>B<>
+=item B<skip_count> I<integer>
 
 
-=item B<misc_bits> I<integer>B<>
+=item B<misc_bits> I<integer>
 
 
-=item B<frame_bits> I<integer>B<>
+=item B<frame_bits> I<integer>
 
 
-=item B<codec_tag> I<integer>B<>
+=item B<codec_tag> I<integer>
 
 
 =item B<bug> I<flags> B<(>I<decoding,video>B<)>
@@ -530,11 +530,11 @@ consider things that a sane encoder should not do as an error
 
 
 
-=item B<has_b_frames> I<integer>B<>
+=item B<has_b_frames> I<integer>
 
 
 
-=item B<block_align> I<integer>B<>
+=item B<block_align> I<integer>
 
 
 
@@ -559,7 +559,7 @@ Set experimental quantizer modulation.
 Set experimental quantizer modulation.
 
 
-=item B<rc_override_count> I<integer>B<>
+=item B<rc_override_count> I<integer>
 
 
 
@@ -749,7 +749,7 @@ floating point AAN IDCT
 
 
 
-=item B<slice_count> I<integer>B<>
+=item B<slice_count> I<integer>
 
 
 
@@ -778,7 +778,7 @@ favor predicting from the previous frame instead of the current
 
 
 
-=item B<bits_per_coded_sample> I<integer>B<>
+=item B<bits_per_coded_sample> I<integer>
 
 
 
@@ -1281,7 +1281,7 @@ Set diamond type & size for motion estimation pre-pass.
 Set sub pel motion estimation quality.
 
 
-=item B<dtg_active_format> I<integer>B<>
+=item B<dtg_active_format> I<integer>
 
 
 
@@ -1300,7 +1300,7 @@ Set intra quant bias.
 Set inter quant bias.
 
 
-=item B<color_table_id> I<integer>B<>
+=item B<color_table_id> I<integer>
 
 
 
@@ -1345,7 +1345,7 @@ deflate-based coder
 Set context model.
 
 
-=item B<slice_flags> I<integer>B<>
+=item B<slice_flags> I<integer>
 
 
 
@@ -1374,7 +1374,7 @@ use best rate distortion
 
 
 
-=item B<stream_codec_tag> I<integer>B<>
+=item B<stream_codec_tag> I<integer>
 
 
 
@@ -1848,7 +1848,7 @@ Set GOP timecode frame start number, in non drop frame format.
 Set desired number of audio channels.
 
 
-=item B<bits_per_raw_sample> I<integer>B<>
+=item B<bits_per_raw_sample> I<integer>
 
 
 =item B<channel_layout> I<integer> B<(>I<decoding/encoding,audio>B<)>
@@ -2159,7 +2159,7 @@ Possible values:
 
 
 
-=item B<log_level_offset> I<integer>B<>
+=item B<log_level_offset> I<integer>
 
 Set the log level offset.
 
@@ -2255,7 +2255,7 @@ Set sample format audio decoders should prefer. Default value is
 C<none>.
 
 
-=item B<pkt_timebase> I<rational number>B<>
+=item B<pkt_timebase> I<rational number>
 
 
 
@@ -2385,7 +2385,7 @@ This decoder decodes rawvideo streams.
 =over 4
 
 
-=item B<top> I<top_field_first>B<>
+=item B<top> I<top_field_first>
 
 Specify the assumed field type of the input video.
 
@@ -2445,7 +2445,7 @@ the undocumented RealAudio 3 (a.k.a. dnet).
 
 
 
-=item B<-drc_scale> I<value>B<>
+=item B<-drc_scale> I<value>
 
 Dynamic Range Scale Factor. The factor to apply to dynamic range values
 from the AC-3 stream. This factor is applied exponentially.
@@ -3023,16 +3023,16 @@ documents.
 =over 4
 
 
-=item *<E<lt>B<http://www.atsc.org/cms/standards/a_52-2010.pdf>E<gt>>
+=item *<E<lt>B<http://www.atsc.org/cms/standards/a_52-2010.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf>E<gt>>
+=item *<E<lt>B<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf>E<gt>>
+=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf>E<gt>>
+=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf>E<gt>>
 
 
 =back
@@ -3047,7 +3047,7 @@ documents.
 
 
 
-=item B<-per_frame_metadata> I<boolean>B<>
+=item B<-per_frame_metadata> I<boolean>
 
 Allow Per-Frame Metadata. Specifies if the encoder should check for changing
 metadata for each frame.
@@ -3080,7 +3080,7 @@ Metadata values can be changed before encoding each frame.
 
 
 
-=item B<-center_mixlev> I<level>B<>
+=item B<-center_mixlev> I<level>
 
 Center Mix Level. The amount of gain the decoder should apply to the center
 channel when downmixing to stereo. This field will only be written to the
@@ -3106,7 +3106,7 @@ Apply -6dB gain
 
 
 
-=item B<-surround_mixlev> I<level>B<>
+=item B<-surround_mixlev> I<level>
 
 Surround Mix Level. The amount of gain the decoder should apply to the surround
 channel(s) when downmixing to stereo. This field will only be written to the
@@ -3146,7 +3146,7 @@ environment.  Either none or both of the fields are written to the bitstream.
 
 
 
-=item B<-mixing_level> I<number>B<>
+=item B<-mixing_level> I<number>
 
 Mixing Level. Specifies peak sound pressure level (SPL) in the production
 environment when the mix was mastered. Valid values are 80 to 111, or -1 for
@@ -3156,7 +3156,7 @@ if the C<room_type> option is not the default value, the C<mixing_level>
 option must not be -1.
 
 
-=item B<-room_type> I<type>B<>
+=item B<-room_type> I<type>
 
 Room Type. Describes the equalization used during the final mixing session at
 the studio or on the dubbing stage. A large room is a dubbing stage with the
@@ -3204,7 +3204,7 @@ Small Room
 
 
 
-=item B<-copyright> I<boolean>B<>
+=item B<-copyright> I<boolean>
 
 Copyright Indicator. Specifies whether a copyright exists for this audio.
 
@@ -3229,7 +3229,7 @@ Copyright Exists
 
 
 
-=item B<-dialnorm> I<value>B<>
+=item B<-dialnorm> I<value>
 
 Dialogue Normalization. Indicates how far the average dialogue level of the
 program is below digital 100% full scale (0 dBFS). This parameter determines a
@@ -3240,7 +3240,7 @@ the source volume, during audio reproduction. Valid values are whole numbers in
 the range -31 to -1, with -31 being the default.
 
 
-=item B<-dsur_mode> I<mode>B<>
+=item B<-dsur_mode> I<mode>
 
 Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround
 (Pro Logic). This field will only be written to the bitstream if the audio
@@ -3275,7 +3275,7 @@ Dolby Surround Encoded
 
 
 
-=item B<-original> I<boolean>B<>
+=item B<-original> I<boolean>
 
 Original Bit Stream Indicator. Specifies whether this audio is from the
 original source and not a copy.
@@ -3325,7 +3325,7 @@ Syntax.
 
 
 
-=item B<-dmix_mode> I<mode>B<>
+=item B<-dmix_mode> I<mode>
 
 Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt
 (Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode.
@@ -3358,7 +3358,7 @@ Lo/Ro Downmix Preferred
 
 
 
-=item B<-ltrt_cmixlev> I<level>B<>
+=item B<-ltrt_cmixlev> I<level>
 
 Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lt/Rt mode.
@@ -3402,7 +3402,7 @@ Silence Center Channel
 
 
 
-=item B<-ltrt_surmixlev> I<level>B<>
+=item B<-ltrt_surmixlev> I<level>
 
 Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lt/Rt mode.
@@ -3434,7 +3434,7 @@ Silence Surround Channel(s)
 
 
 
-=item B<-loro_cmixlev> I<level>B<>
+=item B<-loro_cmixlev> I<level>
 
 Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lo/Ro mode.
@@ -3478,7 +3478,7 @@ Silence Center Channel
 
 
 
-=item B<-loro_surmixlev> I<level>B<>
+=item B<-loro_surmixlev> I<level>
 
 Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lo/Ro mode.
@@ -3522,7 +3522,7 @@ Silence Surround Channel(s)
 
 
 
-=item B<-dsurex_mode> I<mode>B<>
+=item B<-dsurex_mode> I<mode>
 
 Dolby Surround EX Mode. Indicates whether the stream uses Dolby Surround EX
 (7.1 matrixed to 5.1). Using this option does B<NOT> mean the encoder will actually
@@ -3556,7 +3556,7 @@ Dolby Surround EX On
 
 
 
-=item B<-dheadphone_mode> I<mode>B<>
+=item B<-dheadphone_mode> I<mode>
 
 Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone
 encoding (multi-channel matrixed to 2.0 for use with headphones). Using this
@@ -3591,7 +3591,7 @@ Dolby Headphone On
 
 
 
-=item B<-ad_conv_type> I<type>B<>
+=item B<-ad_conv_type> I<type>
 
 A/D Converter Type. Indicates whether the audio has passed through HDCD A/D
 conversion.
@@ -3629,7 +3629,7 @@ HDCD A/D Converter
 
 
 
-=item B<-stereo_rematrixing> I<boolean>B<>
+=item B<-stereo_rematrixing> I<boolean>
 
 Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This
 is an optional AC-3 feature that increases quality by selectively encoding
@@ -3637,7 +3637,7 @@ the left/right channels as mid/side. This option is enabled by default, and it
 is highly recommended that it be left as enabled except for testing purposes.
 
 
-=item B<cutoff> I<frequency>B<>
+=item B<cutoff> I<frequency>
 
 Set lowpass cutoff frequency. If unspecified, the encoder selects a default
 determined by various other encoding parameters.
@@ -3659,7 +3659,7 @@ implemented in fixed-point.
 
 
 
-=item B<-channel_coupling> I<boolean>B<>
+=item B<-channel_coupling> I<boolean>
 
 Enables/Disables use of channel coupling, which is an optional AC-3 feature
 that increases quality by combining high frequency information from multiple
@@ -3698,7 +3698,7 @@ Enable Channel Coupling
 
 
 
-=item B<-cpl_start_band> I<number>B<>
+=item B<-cpl_start_band> I<number>
 
 Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a
 value higher than the bandwidth is used, it will be reduced to 1 less than the
@@ -4975,7 +4975,7 @@ Vidvox Hap video encoder.
 =over 4
 
 
-=item B<format> I<integer>B<>
+=item B<format> I<integer>
 
 Specifies the Hap format to encode.
 
@@ -4998,7 +4998,7 @@ Specifies the Hap format to encode.
 Default value is B<hap>.
 
 
-=item B<chunks> I<integer>B<>
+=item B<chunks> I<integer>
 
 Specifies the number of chunks to split frames into, between 1 and 64. This
 permits multithreaded decoding of large frames, potentially at the cost of
@@ -5007,7 +5007,7 @@ data-rate. The encoder may modify this value to divide frames evenly.
 Default value is I<1>.
 
 
-=item B<compressor> I<integer>B<>
+=item B<compressor> I<integer>
 
 Specifies the second-stage compressor to use. If set to B<none>,
 B<chunks> will be limited to 1, as chunked uncompressed frames offer no
@@ -5392,7 +5392,7 @@ percentage of the target bitrate, the libvpx wrapper converts this value as
 follows: C<(minrate * 100 / bitrate)>.
 
 
-=item B<minrate, maxrate, b> I<end-usage=cbr>B<>
+=item B<minrate, maxrate, b> I<end-usage=cbr>
 
 C<(minrate == maxrate == bitrate)>.
 
@@ -5541,7 +5541,7 @@ Enable frame parallel decodability features.
 Set adaptive quantization mode (0: off (default), 1: variance 2: complexity, 3:
 cyclic refresh, 4: equator360).
 
-=item B<colorspace> I<color-space>B<>
+=item B<colorspace> I<color-space>
 
 Set input color space. The VP9 bitstream supports signaling the following
 colorspaces:
@@ -5549,31 +5549,31 @@ colorspaces:
 =over 4
 
 
-=item B<B<rgb> I<sRGB>>
+=item B<B<rgb> I<sRGB>>
 
 
-=item B<B<bt709> I<bt709>>
+=item B<B<bt709> I<bt709>>
 
 
-=item B<B<unspecified> I<unknown>>
+=item B<B<unspecified> I<unknown>>
 
 
-=item B<B<bt470bg> I<bt601>>
+=item B<B<bt470bg> I<bt601>>
 
 
-=item B<B<smpte170m> I<smpte170>>
+=item B<B<smpte170m> I<smpte170>>
 
 
-=item B<B<smpte240m> I<smpte240>>
+=item B<B<smpte240m> I<smpte240>>
 
 
-=item B<B<bt2020_ncl> I<bt2020>>
+=item B<B<bt2020_ncl> I<bt2020>>
 
 
 =back
 
 
-=item B<row-mt> I<boolean>B<>
+=item B<row-mt> I<boolean>
 
 Enable row based multi-threading.
 
@@ -5628,12 +5628,12 @@ convenience.
 
 
 
-=item B<-lossless> I<boolean>B<>
+=item B<-lossless> I<boolean>
 
 Enables/Disables use of lossless mode. Default is 0.
 
 
-=item B<-compression_level> I<integer>B<>
+=item B<-compression_level> I<integer>
 
 For lossy, this is a quality/speed tradeoff. Higher values give better quality
 for a given size at the cost of increased encoding time. For lossless, this is
@@ -5644,7 +5644,7 @@ maps to the I<method> option in libwebp. The valid range is 0 to 6.
 Default is 4.
 
 
-=item B<-qscale> I<float>B<>
+=item B<-qscale> I<float>
 
 For lossy encoding, this controls image quality, 0 to 100. For lossless
 encoding, this controls the effort and time spent at compressing more. The
@@ -5652,7 +5652,7 @@ default value is 75. Note that for usage via libavcodec, this option is called
 I<global_quality> and must be multiplied by I<FF_QP2LAMBDA>.
 
 
-=item B<-preset> I<type>B<>
+=item B<-preset> I<type>
 
 Configuration preset. This does some automatic settings based on the general
 type of the image.
@@ -6288,7 +6288,7 @@ For example to specify libx264 encoding options with B<ffmpeg>:
 
 
 
-=item B<a53cc> I<boolean>B<>
+=item B<a53cc> I<boolean>
 
 Import closed captions (which must be ATSC compatible format) into output.
 Only the mpeg2 and h264 decoders provide these. Default is 1 (on).
@@ -6646,7 +6646,7 @@ MPEG-2 video encoder.
 =over 4
 
 
-=item B<seq_disp_ext> I<integer>B<>
+=item B<seq_disp_ext> I<integer>
 
 Specifies if the encoder should write a sequence_display_extension to the
 output.
@@ -6679,7 +6679,7 @@ Always write it.
 =back
 
 
-=item B<video_format> I<integer>B<>
+=item B<video_format> I<integer>
 
 Specifies the video_format written into the sequence display extension
 indicating the source of the video pictures. The default is B<unspecified>,
@@ -6703,11 +6703,11 @@ PNG image encoder.
 =over 4
 
 
-=item B<dpi> I<integer>B<>
+=item B<dpi> I<integer>
 
 Set physical density of pixels, in dots per inch, unset by default
 
-=item B<dpm> I<integer>B<>
+=item B<dpm> I<integer>
 
 Set physical density of pixels, in dots per meter, unset by default
 
@@ -6731,7 +6731,7 @@ The used encoder can be chosen with the C<-vcodec> option.
 =over 4
 
 
-=item B<profile> I<integer>B<>
+=item B<profile> I<integer>
 
 Select the ProRes profile to encode
 
@@ -6760,7 +6760,7 @@ Select the ProRes profile to encode
 
 
 
-=item B<quant_mat> I<integer>B<>
+=item B<quant_mat> I<integer>
 
 Select quantization matrix.
 
@@ -6792,26 +6792,26 @@ If not set, the matrix providing the highest quality, I<default>, will be
 picked.
 
 
-=item B<bits_per_mb> I<integer>B<>
+=item B<bits_per_mb> I<integer>
 
 How many bits to allot for coding one macroblock. Different profiles use
 between 200 and 2400 bits per macroblock, the maximum is 8000.
 
 
-=item B<mbs_per_slice> I<integer>B<>
+=item B<mbs_per_slice> I<integer>
 
 Number of macroblocks in each slice (1-8); the default value (8)
 should be good in almost all situations.
 
 
-=item B<vendor> I<string>B<>
+=item B<vendor> I<string>
 
 Override the 4-byte vendor ID.
 A custom vendor ID like I<apl0> would claim the stream was produced by
 the Apple encoder.
 
 
-=item B<alpha_bits> I<integer>B<>
+=item B<alpha_bits> I<integer>
 
 Specify number of bits for alpha component.
 Possible values are I<0>, I<8> and I<16>.

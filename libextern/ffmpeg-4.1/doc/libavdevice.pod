@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-libavdevice - multimedia device handling library
+libavdevice - multimedia device handling library
 
 =head1 DESCRIPTION
 

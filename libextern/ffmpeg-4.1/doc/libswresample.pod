@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-libswresample - audio resampling library
+libswresample - audio resampling library
 
 =head1 DESCRIPTION
 

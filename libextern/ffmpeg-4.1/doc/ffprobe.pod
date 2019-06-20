@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffprobe - ffprobe media prober
+ffprobe - ffprobe media prober
 
 =head1 SYNOPSIS
 
@@ -88,7 +88,7 @@ Possible forms of stream specifiers are:
 =over 4
 
 
-=item I<stream_index>B<>
+=item I<stream_index>
 
 Matches the stream with this index. E.g. C<-threads:1 4> would set the
 thread count for the second stream to 4.
@@ -118,7 +118,7 @@ I<value> is not given, matches streams that contain the given tag with any
 value.
 
 
-=item B<#>I<stream_id> B<or i:>I<stream_id>B<>
+=item B<#>I<stream_id> B<or i:>I<stream_id>
 
 Match the stream by stream id (e.g. PID in MPEG-TS container).
 
@@ -177,31 +177,31 @@ Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
 
 
-=item B<decoder=>I<decoder_name>B<>
+=item B<decoder=>I<decoder_name>
 
 Print detailed information about the decoder named I<decoder_name>. Use the
 B<-decoders> option to get a list of all decoders.
 
 
-=item B<encoder=>I<encoder_name>B<>
+=item B<encoder=>I<encoder_name>
 
 Print detailed information about the encoder named I<encoder_name>. Use the
 B<-encoders> option to get a list of all encoders.
 
 
-=item B<demuxer=>I<demuxer_name>B<>
+=item B<demuxer=>I<demuxer_name>
 
 Print detailed information about the demuxer named I<demuxer_name>. Use the
 B<-formats> option to get a list of all demuxers and muxers.
 
 
-=item B<muxer=>I<muxer_name>B<>
+=item B<muxer=>I<muxer_name>
 
 Print detailed information about the muxer named I<muxer_name>. Use the
 B<-formats> option to get a list of all muxers and demuxers.
 
 
-=item B<filter=>I<filter_name>B<>
+=item B<filter=>I<filter_name>
 
 Print detailed information about the filter name I<filter_name>. Use the
 B<-filters> option to get a list of all filters.
@@ -308,7 +308,7 @@ The returned list cannot be assumed to be always complete.
 
 
 
-=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>B<>
+=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>
 
 Set logging level and flags used by the library.
 
@@ -690,7 +690,7 @@ removed soon.
 
 
 
-=item B<-f> I<format>B<>
+=item B<-f> I<format>
 
 Force format to use.
 
@@ -745,7 +745,7 @@ Print sections structure and section information, and exit. The output
 is not meant to be parsed by a machine.
 
 
-=item B<-select_streams> I<stream_specifier>B<>
+=item B<-select_streams> I<stream_specifier>
 
 Select only the streams specified by I<stream_specifier>. This
 option affects only the options related to streams
@@ -771,7 +771,7 @@ B<-show_streams>, it will dump the codec extradata.
 The dump is printed as the "data" field. It may contain newlines.
 
 
-=item B<-show_data_hash> I<algorithm>B<>
+=item B<-show_data_hash> I<algorithm>
 
 Show a hash of payload data, for packets with B<-show_packets> and for
 codec extradata with B<-show_streams>.
@@ -793,7 +793,7 @@ All the container format information is printed within a section with
 name "FORMAT".
 
 
-=item B<-show_format_entry> I<name>B<>
+=item B<-show_format_entry> I<name>
 
 Like B<-show_format>, but only prints the specified entry of the
 container format information, rather than all. This option may be given more
@@ -802,7 +802,7 @@ than once, then all specified entries will be shown.
 This option is deprecated, use C<show_entries> instead.
 
 
-=item B<-show_entries> I<section_entries>B<>
+=item B<-show_entries> I<section_entries>
 
 Set list of entries to show.
 
@@ -873,7 +873,7 @@ The information for each single frame is printed within a dedicated
 section with name "FRAME" or "SUBTITLE".
 
 
-=item B<-show_log> I<loglevel>B<>
+=item B<-show_log> I<loglevel>
 
 Show logging information from the decoder about each frame according to
 the value set in I<loglevel>, (see C<-loglevel>). This option requires C<-show_frames>.
@@ -919,7 +919,7 @@ Count the number of packets per stream and report it in the
 corresponding stream section.
 
 
-=item B<-read_intervals> I<read_intervals>B<>
+=item B<-read_intervals> I<read_intervals>
 
 
 Read only the specified intervals. I<read_intervals> must be a
@@ -1042,7 +1042,7 @@ Force bitexact output, useful to produce output which is not dependent
 on the specific build.
 
 
-=item B<-i> I<input_url>B<>
+=item B<-i> I<input_url>
 
 Read I<input_url>.
 

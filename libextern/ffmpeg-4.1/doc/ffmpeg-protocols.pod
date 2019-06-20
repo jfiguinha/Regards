@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg-protocols - FFmpeg protocols
+ffmpeg-protocols - FFmpeg protocols
 
 =head1 DESCRIPTION
 
@@ -734,12 +734,12 @@ This protocol accepts the following options:
 
 
 
-=item B<l=>I<n>B<>
+=item B<l=>I<n>
 
 The number of columns (4-20, LxD E<lt>= 100)
 
 
-=item B<d=>I<n>B<>
+=item B<d=>I<n>
 
 The number of rows (4-20, LxD E<lt>= 100)
 
@@ -1134,17 +1134,17 @@ The following URL options are supported:
 
 
 
-=item B<ttl=>I<n>B<>
+=item B<ttl=>I<n>
 
 Set the TTL (Time-To-Live) value (for multicast only).
 
 
-=item B<rtcpport=>I<n>B<>
+=item B<rtcpport=>I<n>
 
 Set the remote RTCP port to I<n>.
 
 
-=item B<localrtpport=>I<n>B<>
+=item B<localrtpport=>I<n>
 
 Set the local RTP port to I<n>.
 
@@ -1154,7 +1154,7 @@ Set the local RTP port to I<n>.
 Set the local RTCP port to I<n>.
 
 
-=item B<pkt_size=>I<n>B<>
+=item B<pkt_size=>I<n>
 
 Set max packet size (in bytes) to I<n>.
 
@@ -1181,7 +1181,7 @@ Send packets to the source address of the latest received packet (if
 set to 1) or to a default remote address (if set to 0).
 
 
-=item B<localport=>I<n>B<>
+=item B<localport=>I<n>
 
 Set the local RTP port to I<n>.
 
@@ -1463,7 +1463,7 @@ are supported:
 
 
 
-=item B<announce_addr=>I<address>B<>
+=item B<announce_addr=>I<address>
 
 Specify the destination IP address for sending the announcements to.
 If omitted, the announcements are sent to the commonly used SAP
@@ -1471,19 +1471,19 @@ announcement multicast address 224.2.127.254 (sap.mcast.net), or
 ff0e::2:7ffe if I<destination> is an IPv6 address.
 
 
-=item B<announce_port=>I<port>B<>
+=item B<announce_port=>I<port>
 
 Specify the port to send the announcements on, defaults to
 9875 if not specified.
 
 
-=item B<ttl=>I<ttl>B<>
+=item B<ttl=>I<ttl>
 
 Specify the time to live value for the announcements and RTP packets,
 defaults to 255.
 
 
-=item B<same_port=>I<0|1>B<>
+=item B<same_port=>I<0|1>
 
 If set to 1, send all RTP streams on the same port pair. If zero (the
 default), all streams are sent on unique ports, with each stream on a
@@ -1612,7 +1612,7 @@ set for the rendezvous mode (which can be used as a
 workaround for this connection problem with earlier versions).
 
 
-=item B<ffs=>I<bytes>B<>
+=item B<ffs=>I<bytes>
 
 Flight Flag Size (Window Size), in bytes. FFS is actually an
 internal parameter and you should set it to not less than
@@ -1621,7 +1621,7 @@ is relatively large, therefore unless you set a very large receiver buffer,
 you do not need to change this option. Default value is 25600.
 
 
-=item B<inputbw=>I<bytes/seconds>B<>
+=item B<inputbw=>I<bytes/seconds>
 
 Sender nominal input rate, in bytes per seconds. Used along with
 B<oheadbw>, when B<maxbw> is set to relative (0), to
@@ -1633,12 +1633,12 @@ relative (0), the actual input rate is evaluated inside
 the library. Default value is 0.
 
 
-=item B<iptos=>I<tos>B<>
+=item B<iptos=>I<tos>
 
 IP Type of Service. Applies to sender only. Default value is 0xB8.
 
 
-=item B<ipttl=>I<ttl>B<>
+=item B<ipttl=>I<ttl>
 
 IP Time To Live. Applies to sender only. Default value is 64.
 
@@ -1661,7 +1661,7 @@ sending is not supported.
 Set socket listen timeout.
 
 
-=item B<maxbw=>I<bytes/seconds>B<>
+=item B<maxbw=>I<bytes/seconds>
 
 Maximum sending bandwidth, in bytes per seconds.
 -1 infinite (CSRTCC limit is 30mbps)
@@ -1670,7 +1670,7 @@ E<gt>0 absolute limit value
 Default value is 0 (relative)
 
 
-=item B<mode=>I<caller|listener|rendezvous>B<>
+=item B<mode=>I<caller|listener|rendezvous>
 
 Connection mode.
 B<caller> opens client connection.
@@ -1679,7 +1679,7 @@ B<rendezvous> use Rendez-Vous connection mode.
 Default value is caller.
 
 
-=item B<mss=>I<bytes>B<>
+=item B<mss=>I<bytes>
 
 Maximum Segment Size, in bytes. Used for buffer allocation
 and rate calculation using a packet counter assuming fully
@@ -1690,20 +1690,20 @@ only decreased, unless you have some unusual dedicated
 network settings. Default value is 1500.
 
 
-=item B<nakreport=>I<1|0>B<>
+=item B<nakreport=>I<1|0>
 
 If set to 1, Receiver will send `UMSG_LOSSREPORT` messages
 periodically until a lost packet is retransmitted or
 intentionally dropped. Default value is 1.
 
 
-=item B<oheadbw=>I<percents>B<>
+=item B<oheadbw=>I<percents>
 
 Recovery bandwidth overhead above input rate, in percents.
 See B<inputbw>. Default value is 25%.
 
 
-=item B<passphrase=>I<string>B<>
+=item B<passphrase=>I<string>
 
 HaiCrypt Encryption/Decryption Passphrase string, length
 from 10 to 79 characters. The passphrase is the shared
@@ -1715,7 +1715,7 @@ the receiver only if the received data is encrypted.
 The configured passphrase cannot be recovered (write-only).
 
 
-=item B<payload_size=>I<bytes>B<>
+=item B<payload_size=>I<bytes>
 
 Sets the maximum declared size of a packet transferred
 during the single call to the sending function in Live
@@ -1729,7 +1729,7 @@ use a bigger maximum frame size, though not greater than
 1456 bytes.
 
 
-=item B<pkt_size=>I<bytes>B<>
+=item B<pkt_size=>I<bytes>
 
 Alias for B<payload_size>.
 
@@ -1740,7 +1740,7 @@ The latency value (as described in B<rcvlatency>) that is
 set by the sender side as a minimum value for the receiver.
 
 
-=item B<pbkeylen=>I<bytes>B<>
+=item B<pbkeylen=>I<bytes>
 
 Sender encryption key length, in bytes.
 Only can be set to 0, 16, 24 and 32.
@@ -1764,12 +1764,12 @@ set by the peer side. Before version 1.3.0 this option
 is only available as B<latency>.
 
 
-=item B<recv_buffer_size=>I<bytes>B<>
+=item B<recv_buffer_size=>I<bytes>
 
 Set UDP receive buffer size, expressed in bytes.
 
 
-=item B<send_buffer_size=>I<bytes>B<>
+=item B<send_buffer_size=>I<bytes>
 
 Set UDP send buffer size, expressed in bytes.
 
@@ -1783,7 +1783,7 @@ if no data arrived in more than this time
 interval, raise error.
 
 
-=item B<tlpktdrop=>I<1|0>B<>
+=item B<tlpktdrop=>I<1|0>
 
 Too-late Packet Drop. When enabled on receiver, it skips
 missing packets that have not been delivered in time and
@@ -1796,19 +1796,19 @@ automatically enabled in the sender if the receiver
 supports it.
 
 
-=item B<sndbuf=>I<bytes>B<>
+=item B<sndbuf=>I<bytes>
 
 Set send buffer size, expressed in bytes.
 
 
-=item B<rcvbuf=>I<bytes>B<>
+=item B<rcvbuf=>I<bytes>
 
 Set receive buffer size, expressed in bytes.
 
 Receive buffer must not be greater than B<ffs>.
 
 
-=item B<lossmaxttl=>I<packets>B<>
+=item B<lossmaxttl=>I<packets>
 
 The value up to which the Reorder Tolerance may grow. When
 Reorder Tolerance is E<gt> 0, then packet loss report is delayed
@@ -1832,7 +1832,7 @@ The version format in hex is 0xXXYYZZ for x.y.z in human readable
 form.
 
 
-=item B<streamid=>I<string>B<>
+=item B<streamid=>I<string>
 
 A string limited to 512 characters that can be set on the socket prior
 to connecting. This stream ID will be able to be retrieved by the
@@ -1844,7 +1844,7 @@ might be that simply one side will override the value from the other
 side and it’s the matter of luck which one would win
 
 
-=item B<smoother=>I<live|file>B<>
+=item B<smoother=>I<live|file>
 
 The type of Smoother used for the transmission for that socket, which
 is responsible for the transmission and congestion control. The Smoother
@@ -1852,7 +1852,7 @@ type must be exactly the same on both connecting parties, otherwise
 the connection is rejected.
 
 
-=item B<messageapi=>I<1|0>B<>
+=item B<messageapi=>I<1|0>
 
 When set, this socket uses the Message API, otherwise it uses Buffer
 API. Note that in live mode (see B<transtype>) there’s only
@@ -1876,7 +1876,7 @@ complete (not all packets received or there was a packet loss) it will
 not be given up.
 
 
-=item B<transtype=>I<live|file>B<>
+=item B<transtype=>I<live|file>
 
 Sets the transmission type for the socket, in particular, setting this
 option sets multiple other parameters to their default values as required
@@ -2023,12 +2023,12 @@ The list of supported options follows.
 =over 4
 
 
-=item B<listen=>I<1|0>B<>
+=item B<listen=>I<1|0>
 
 Listen for an incoming connection. Default value is 0.
 
 
-=item B<timeout=>I<microseconds>B<>
+=item B<timeout=>I<microseconds>
 
 Set raise error timeout, expressed in microseconds.
 
@@ -2036,27 +2036,27 @@ This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
 
 
-=item B<listen_timeout=>I<milliseconds>B<>
+=item B<listen_timeout=>I<milliseconds>
 
 Set listen timeout, expressed in milliseconds.
 
 
-=item B<recv_buffer_size=>I<bytes>B<>
+=item B<recv_buffer_size=>I<bytes>
 
 Set receive buffer size, expressed bytes.
 
 
-=item B<send_buffer_size=>I<bytes>B<>
+=item B<send_buffer_size=>I<bytes>
 
 Set send buffer size, expressed bytes.
 
 
-=item B<tcp_nodelay=>I<1|0>B<>
+=item B<tcp_nodelay=>I<1|0>
 
 Set TCP_NODELAY to disable Nagle's algorithm. Default value is 0.
 
 
-=item B<tcp_mss=>I<bytes>B<>
+=item B<tcp_mss=>I<bytes>
 
 Set maximum segment size for outgoing TCP packets, expressed in bytes.
 
@@ -2089,7 +2089,7 @@ The following parameters can be set via command line options
 
 
 
-=item B<ca_file, cafile=>I<filename>B<>
+=item B<ca_file, cafile=>I<filename>
 
 A file containing certificate authority (CA) root certificates to treat
 as trusted. If the linked TLS library contains a default this might not
@@ -2098,7 +2098,7 @@ setups have defaults built in.
 The file must be in OpenSSL PEM format.
 
 
-=item B<tls_verify=>I<1|0>B<>
+=item B<tls_verify=>I<1|0>
 
 If enabled, try to verify the peer that we are communicating with.
 Note, if using OpenSSL, this currently only makes sure that the
@@ -2111,7 +2111,7 @@ This is disabled by default since it requires a CA database to be
 provided by the caller in many cases.
 
 
-=item B<cert_file, cert=>I<filename>B<>
+=item B<cert_file, cert=>I<filename>
 
 A file containing a certificate to use in the handshake with the peer.
 (When operating as server, in listen mode, this is more often required
@@ -2119,12 +2119,12 @@ by the peer, while client certificates only are mandated in certain
 setups.)
 
 
-=item B<key_file, key=>I<filename>B<>
+=item B<key_file, key=>I<filename>
 
 A file containing the private key for the certificate.
 
 
-=item B<listen=>I<1|0>B<>
+=item B<listen=>I<1|0>
 
 If enabled, listen for connections on the provided port, and assume
 the server role in the handshake instead of the client role.
@@ -2171,52 +2171,52 @@ The list of supported options follows.
 =over 4
 
 
-=item B<buffer_size=>I<size>B<>
+=item B<buffer_size=>I<size>
 
 Set the UDP maximum socket buffer size in bytes. This is used to set either
 the receive or send buffer size, depending on what the socket is used for.
 Default is 64KB.  See also I<fifo_size>.
 
 
-=item B<bitrate=>I<bitrate>B<>
+=item B<bitrate=>I<bitrate>
 
 If set to nonzero, the output will have the specified constant bitrate if the
 input has enough packets to sustain it.
 
 
-=item B<burst_bits=>I<bits>B<>
+=item B<burst_bits=>I<bits>
 
 When using I<bitrate> this specifies the maximum number of bits in
 packet bursts.
 
 
-=item B<localport=>I<port>B<>
+=item B<localport=>I<port>
 
 Override the local UDP port to bind with.
 
 
-=item B<localaddr=>I<addr>B<>
+=item B<localaddr=>I<addr>
 
 Local IP address of a network interface used for sending packets or joining
 multicast groups.
 
 
-=item B<pkt_size=>I<size>B<>
+=item B<pkt_size=>I<size>
 
 Set the size in bytes of UDP packets.
 
 
-=item B<reuse=>I<1|0>B<>
+=item B<reuse=>I<1|0>
 
 Explicitly allow or disallow reusing UDP sockets.
 
 
-=item B<ttl=>I<ttl>B<>
+=item B<ttl=>I<ttl>
 
 Set the time to live value (for multicast only).
 
 
-=item B<connect=>I<1|0>B<>
+=item B<connect=>I<1|0>
 
 Initialize the UDP socket with C<connect()>. In this case, the
 destination address can't be changed with ff_udp_set_remote_url later.
@@ -2241,19 +2241,19 @@ Ignore packets sent from the specified addresses. In case of multicast, also
 exclude the source addresses in the multicast subscription.
 
 
-=item B<fifo_size=>I<units>B<>
+=item B<fifo_size=>I<units>
 
 Set the UDP receiving circular buffer size, expressed as a number of
 packets with size of 188 bytes. If not specified defaults to 7*4096.
 
 
-=item B<overrun_nonfatal=>I<1|0>B<>
+=item B<overrun_nonfatal=>I<1|0>
 
 Survive in case of UDP receiving circular buffer overrun. Default
 value is 0.
 
 
-=item B<timeout=>I<microseconds>B<>
+=item B<timeout=>I<microseconds>
 
 Set raise error timeout, expressed in microseconds.
 
@@ -2261,7 +2261,7 @@ This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
 
 
-=item B<broadcast=>I<1|0>B<>
+=item B<broadcast=>I<1|0>
 
 Explicitly allow or disallow UDP broadcasting.
 

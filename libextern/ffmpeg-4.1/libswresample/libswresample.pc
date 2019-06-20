@@ -1,7 +1,7 @@
-prefix=/usr/local
+prefix=/home/jfigu_000/ffmpeg_build
 exec_prefix=${prefix}
-libdir=/usr/local/lib
-includedir=/usr/local/include
+libdir=/home/jfigu_000/ffmpeg_build/lib
+includedir=/home/jfigu_000/ffmpeg_build/include
 
 Name: libswresample
 Description: FFmpeg audio resampling library

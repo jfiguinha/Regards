@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg - ffmpeg video converter
+ffmpeg - ffmpeg video converter
 
 =head1 SYNOPSIS
 
@@ -501,7 +501,7 @@ Possible forms of stream specifiers are:
 =over 4
 
 
-=item I<stream_index>B<>
+=item I<stream_index>
 
 Matches the stream with this index. E.g. C<-threads:1 4> would set the
 thread count for the second stream to 4.
@@ -531,7 +531,7 @@ I<value> is not given, matches streams that contain the given tag with any
 value.
 
 
-=item B<#>I<stream_id> B<or i:>I<stream_id>B<>
+=item B<#>I<stream_id> B<or i:>I<stream_id>
 
 Match the stream by stream id (e.g. PID in MPEG-TS container).
 
@@ -590,31 +590,31 @@ Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
 
 
-=item B<decoder=>I<decoder_name>B<>
+=item B<decoder=>I<decoder_name>
 
 Print detailed information about the decoder named I<decoder_name>. Use the
 B<-decoders> option to get a list of all decoders.
 
 
-=item B<encoder=>I<encoder_name>B<>
+=item B<encoder=>I<encoder_name>
 
 Print detailed information about the encoder named I<encoder_name>. Use the
 B<-encoders> option to get a list of all encoders.
 
 
-=item B<demuxer=>I<demuxer_name>B<>
+=item B<demuxer=>I<demuxer_name>
 
 Print detailed information about the demuxer named I<demuxer_name>. Use the
 B<-formats> option to get a list of all demuxers and muxers.
 
 
-=item B<muxer=>I<muxer_name>B<>
+=item B<muxer=>I<muxer_name>
 
 Print detailed information about the muxer named I<muxer_name>. Use the
 B<-formats> option to get a list of all muxers and demuxers.
 
 
-=item B<filter=>I<filter_name>B<>
+=item B<filter=>I<filter_name>
 
 Print detailed information about the filter name I<filter_name>. Use the
 B<-filters> option to get a list of all filters.
@@ -721,7 +721,7 @@ The returned list cannot be assumed to be always complete.
 
 
 
-=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>B<>
+=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>
 
 Set logging level and flags used by the library.
 
@@ -1658,11 +1658,11 @@ Calculate PSNR of compressed frames.
 
 Dump video coding statistics to F<vstats_HHMMSS.log>.
 
-=item B<-vstats_file> I<file>B<>
+=item B<-vstats_file> I<file>
 
 Dump video coding statistics to I<file>.
 
-=item B<-vstats_version> I<file>B<>
+=item B<-vstats_version> I<file>
 
 Specifies which version of the vstats format to use. Default is 2.
 
@@ -1678,7 +1678,7 @@ C<out= %2d st= %2d frame= %5d q= %2.1f PSNR= %6.2f f_size= %6d s_size= %8.0fkB t
 
 top=1/bottom=0/auto=-1 field first
 
-=item B<-dc> I<precision>B<>
+=item B<-dc> I<precision>
 
 Intra_dc_precision.
 
@@ -1690,7 +1690,7 @@ Force video tag/fourcc. This is an alias for C<-tag:v>.
 
 Show QP histogram
 
-=item B<-vbsf> I<bitstream_filter>B<>
+=item B<-vbsf> I<bitstream_filter>
 
 Deprecated see -bsf
 
@@ -1927,7 +1927,7 @@ extension.
 
 
 
-=item B<-init_hw_device> I<type>B<[=>I<name>B<]@>I<source>B<>
+=item B<-init_hw_device> I<type>B<[=>I<name>B<]@>I<source>
 
 Initialise a new hardware device of type I<type> called I<name>,
 deriving it from the existing device with the name I<source>.
@@ -1938,7 +1938,7 @@ deriving it from the existing device with the name I<source>.
 List all hardware device types supported in this build of ffmpeg.
 
 
-=item B<-filter_hw_device> I<name>B<>
+=item B<-filter_hw_device> I<name>
 
 Pass the hardware device called I<name> to all filters in any filter graph.
 This can be used to set the device to upload to with the C<hwupload> filter,
@@ -2095,7 +2095,7 @@ This is an alias for C<-filter:a>, see the B<-filter option>.
 
 Force audio tag/fourcc. This is an alias for C<-tag:a>.
 
-=item B<-absf> I<bitstream_filter>B<>
+=item B<-absf> I<bitstream_filter>
 
 Deprecated, see -bsf
 
@@ -2127,7 +2127,7 @@ Set the subtitle codec. This is an alias for C<-codec:s>.
 Disable subtitle recording. For full manual control see the C<-map>
 option.
 
-=item B<-sbsf> I<bitstream_filter>B<>
+=item B<-sbsf> I<bitstream_filter>
 
 Deprecated, see -bsf
 
@@ -2158,7 +2158,7 @@ subtitle packet is decoded: it may increase memory consumption and latency a
 lot.
 
 
-=item B<-canvas_size> I<size>B<>
+=item B<-canvas_size> I<size>
 
 Set the size of the canvas used to render subtitles.
 
@@ -2339,7 +2339,7 @@ A metadata specifier can have the following forms:
 =over 4
 
 
-=item I<g>B<>
+=item I<g>
 
 global metadata, i.e. metadata that applies to the whole file
 
@@ -2352,12 +2352,12 @@ matching stream is copied from. In an output metadata specifier, all matching
 streams are copied to.
 
 
-=item I<c>B<:>I<chapter_index>B<>
+=item I<c>B<:>I<chapter_index>
 
 per-chapter metadata. I<chapter_index> is the zero-based chapter index.
 
 
-=item I<p>B<:>I<program_index>B<>
+=item I<p>B<:>I<program_index>
 
 per-program metadata. I<program_index> is the zero-based program index.
 
@@ -2426,13 +2426,13 @@ By default B<ffmpeg> attempts to read the input(s) as fast as possible.
 This option will slow down the reading of the input(s) to the native frame rate
 of the input(s). It is useful for real-time output (e.g. live streaming).
 
-=item B<-loop_output> I<number_of_times>B<>
+=item B<-loop_output> I<number_of_times>
 
 Repeatedly loop output for formats that support looping such as animated GIF
 (0 will loop the output infinitely).
 This option is deprecated, use -loop.
 
-=item B<-vsync> I<parameter>B<>
+=item B<-vsync> I<parameter>
 
 Video sync method.
 For compatibility reasons old values can be specified as numbers.
@@ -2478,7 +2478,7 @@ taken. You can leave either video or audio unchanged and sync the
 remaining stream(s) to the unchanged one.
 
 
-=item B<-frame_drop_threshold> I<parameter>B<>
+=item B<-frame_drop_threshold> I<parameter>
 
 Frame drop threshold, which specifies how much behind video frames can
 be before they are dropped. In frame rate units, so 1.0 is one frame.
@@ -2487,7 +2487,7 @@ of noisy timestamps or to increase frame drop precision in case of exact
 timestamps.
 
 
-=item B<-async> I<samples_per_second>B<>
+=item B<-async> I<samples_per_second>
 
 Audio sync method. "Stretches/squeezes" the audio stream to match the timestamps,
 the parameter is the maximum samples per second by which the audio is changed.
@@ -2521,7 +2521,7 @@ This means that using e.g. C<-ss 50> will make output timestamps start at
 50 seconds, regardless of what timestamp the input file started at.
 
 
-=item B<-copytb> I<mode>B<>
+=item B<-copytb> I<mode>
 
 Specify how to set the encoder timebase when stream copying.  I<mode> is an
 integer numeric value, and can assume one of the following values:
@@ -2645,7 +2645,7 @@ to get the list of bitstream filters.
 Force a tag/fourcc for matching streams.
 
 
-=item B<-timecode> I<hh>B<:>I<mm>B<:>I<ss>B<SEP>I<ff>B<>
+=item B<-timecode> I<hh>B<:>I<mm>B<:>I<ss>B<SEP>I<ff>
 
 Specify Timecode for writing. I<SEP> is ':' for non drop timecode and ';'
 (or '.') for drop.
@@ -5151,12 +5151,12 @@ iter motion estimation
 
 
 
-=item B<extradata_size> I<integer>B<>
+=item B<extradata_size> I<integer>
 
 Set extradata size.
 
 
-=item B<time_base> I<rational number>B<>
+=item B<time_base> I<rational number>
 
 Set codec time base.
 
@@ -5198,12 +5198,12 @@ restricted. It is set by some decoders to indicate constant frame
 size.
 
 
-=item B<frame_number> I<integer>B<>
+=item B<frame_number> I<integer>
 
 Set the frame number.
 
 
-=item B<delay> I<integer>B<>
+=item B<delay> I<integer>
 
 
 
@@ -5267,34 +5267,34 @@ Set strategy to choose between I/P/B-frames.
 Set RTP payload size in bytes.
 
 
-=item B<mv_bits> I<integer>B<>
+=item B<mv_bits> I<integer>
 
 
-=item B<header_bits> I<integer>B<>
+=item B<header_bits> I<integer>
 
 
-=item B<i_tex_bits> I<integer>B<>
+=item B<i_tex_bits> I<integer>
 
 
-=item B<p_tex_bits> I<integer>B<>
+=item B<p_tex_bits> I<integer>
 
 
-=item B<i_count> I<integer>B<>
+=item B<i_count> I<integer>
 
 
-=item B<p_count> I<integer>B<>
+=item B<p_count> I<integer>
 
 
-=item B<skip_count> I<integer>B<>
+=item B<skip_count> I<integer>
 
 
-=item B<misc_bits> I<integer>B<>
+=item B<misc_bits> I<integer>
 
 
-=item B<frame_bits> I<integer>B<>
+=item B<frame_bits> I<integer>
 
 
-=item B<codec_tag> I<integer>B<>
+=item B<codec_tag> I<integer>
 
 
 =item B<bug> I<flags> B<(>I<decoding,video>B<)>
@@ -5475,11 +5475,11 @@ consider things that a sane encoder should not do as an error
 
 
 
-=item B<has_b_frames> I<integer>B<>
+=item B<has_b_frames> I<integer>
 
 
 
-=item B<block_align> I<integer>B<>
+=item B<block_align> I<integer>
 
 
 
@@ -5504,7 +5504,7 @@ Set experimental quantizer modulation.
 Set experimental quantizer modulation.
 
 
-=item B<rc_override_count> I<integer>B<>
+=item B<rc_override_count> I<integer>
 
 
 
@@ -5694,7 +5694,7 @@ floating point AAN IDCT
 
 
 
-=item B<slice_count> I<integer>B<>
+=item B<slice_count> I<integer>
 
 
 
@@ -5723,7 +5723,7 @@ favor predicting from the previous frame instead of the current
 
 
 
-=item B<bits_per_coded_sample> I<integer>B<>
+=item B<bits_per_coded_sample> I<integer>
 
 
 
@@ -6226,7 +6226,7 @@ Set diamond type & size for motion estimation pre-pass.
 Set sub pel motion estimation quality.
 
 
-=item B<dtg_active_format> I<integer>B<>
+=item B<dtg_active_format> I<integer>
 
 
 
@@ -6245,7 +6245,7 @@ Set intra quant bias.
 Set inter quant bias.
 
 
-=item B<color_table_id> I<integer>B<>
+=item B<color_table_id> I<integer>
 
 
 
@@ -6290,7 +6290,7 @@ deflate-based coder
 Set context model.
 
 
-=item B<slice_flags> I<integer>B<>
+=item B<slice_flags> I<integer>
 
 
 
@@ -6319,7 +6319,7 @@ use best rate distortion
 
 
 
-=item B<stream_codec_tag> I<integer>B<>
+=item B<stream_codec_tag> I<integer>
 
 
 
@@ -6793,7 +6793,7 @@ Set GOP timecode frame start number, in non drop frame format.
 Set desired number of audio channels.
 
 
-=item B<bits_per_raw_sample> I<integer>B<>
+=item B<bits_per_raw_sample> I<integer>
 
 
 =item B<channel_layout> I<integer> B<(>I<decoding/encoding,audio>B<)>
@@ -7104,7 +7104,7 @@ Possible values:
 
 
 
-=item B<log_level_offset> I<integer>B<>
+=item B<log_level_offset> I<integer>
 
 Set the log level offset.
 
@@ -7200,7 +7200,7 @@ Set sample format audio decoders should prefer. Default value is
 C<none>.
 
 
-=item B<pkt_timebase> I<rational number>B<>
+=item B<pkt_timebase> I<rational number>
 
 
 
@@ -7330,7 +7330,7 @@ This decoder decodes rawvideo streams.
 =over 4
 
 
-=item B<top> I<top_field_first>B<>
+=item B<top> I<top_field_first>
 
 Specify the assumed field type of the input video.
 
@@ -7390,7 +7390,7 @@ the undocumented RealAudio 3 (a.k.a. dnet).
 
 
 
-=item B<-drc_scale> I<value>B<>
+=item B<-drc_scale> I<value>
 
 Dynamic Range Scale Factor. The factor to apply to dynamic range values
 from the AC-3 stream. This factor is applied exponentially.
@@ -7968,16 +7968,16 @@ documents.
 =over 4
 
 
-=item *<E<lt>B<http://www.atsc.org/cms/standards/a_52-2010.pdf>E<gt>>
+=item *<E<lt>B<http://www.atsc.org/cms/standards/a_52-2010.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf>E<gt>>
+=item *<E<lt>B<http://www.atsc.org/cms/standards/a_54a_with_corr_1.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf>E<gt>>
+=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/18_Metadata.Guide.pdf>E<gt>>
 
 
-=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf>E<gt>>
+=item *<E<lt>B<http://www.dolby.com/uploadedFiles/zz-_Shared_Assets/English_PDFs/Professional/46_DDEncodingGuidelines.pdf>E<gt>>
 
 
 =back
@@ -7992,7 +7992,7 @@ documents.
 
 
 
-=item B<-per_frame_metadata> I<boolean>B<>
+=item B<-per_frame_metadata> I<boolean>
 
 Allow Per-Frame Metadata. Specifies if the encoder should check for changing
 metadata for each frame.
@@ -8025,7 +8025,7 @@ Metadata values can be changed before encoding each frame.
 
 
 
-=item B<-center_mixlev> I<level>B<>
+=item B<-center_mixlev> I<level>
 
 Center Mix Level. The amount of gain the decoder should apply to the center
 channel when downmixing to stereo. This field will only be written to the
@@ -8051,7 +8051,7 @@ Apply -6dB gain
 
 
 
-=item B<-surround_mixlev> I<level>B<>
+=item B<-surround_mixlev> I<level>
 
 Surround Mix Level. The amount of gain the decoder should apply to the surround
 channel(s) when downmixing to stereo. This field will only be written to the
@@ -8091,7 +8091,7 @@ environment.  Either none or both of the fields are written to the bitstream.
 
 
 
-=item B<-mixing_level> I<number>B<>
+=item B<-mixing_level> I<number>
 
 Mixing Level. Specifies peak sound pressure level (SPL) in the production
 environment when the mix was mastered. Valid values are 80 to 111, or -1 for
@@ -8101,7 +8101,7 @@ if the C<room_type> option is not the default value, the C<mixing_level>
 option must not be -1.
 
 
-=item B<-room_type> I<type>B<>
+=item B<-room_type> I<type>
 
 Room Type. Describes the equalization used during the final mixing session at
 the studio or on the dubbing stage. A large room is a dubbing stage with the
@@ -8149,7 +8149,7 @@ Small Room
 
 
 
-=item B<-copyright> I<boolean>B<>
+=item B<-copyright> I<boolean>
 
 Copyright Indicator. Specifies whether a copyright exists for this audio.
 
@@ -8174,7 +8174,7 @@ Copyright Exists
 
 
 
-=item B<-dialnorm> I<value>B<>
+=item B<-dialnorm> I<value>
 
 Dialogue Normalization. Indicates how far the average dialogue level of the
 program is below digital 100% full scale (0 dBFS). This parameter determines a
@@ -8185,7 +8185,7 @@ the source volume, during audio reproduction. Valid values are whole numbers in
 the range -31 to -1, with -31 being the default.
 
 
-=item B<-dsur_mode> I<mode>B<>
+=item B<-dsur_mode> I<mode>
 
 Dolby Surround Mode. Specifies whether the stereo signal uses Dolby Surround
 (Pro Logic). This field will only be written to the bitstream if the audio
@@ -8220,7 +8220,7 @@ Dolby Surround Encoded
 
 
 
-=item B<-original> I<boolean>B<>
+=item B<-original> I<boolean>
 
 Original Bit Stream Indicator. Specifies whether this audio is from the
 original source and not a copy.
@@ -8270,7 +8270,7 @@ Syntax.
 
 
 
-=item B<-dmix_mode> I<mode>B<>
+=item B<-dmix_mode> I<mode>
 
 Preferred Stereo Downmix Mode. Allows the user to select either Lt/Rt
 (Dolby Surround) or Lo/Ro (normal stereo) as the preferred stereo downmix mode.
@@ -8303,7 +8303,7 @@ Lo/Ro Downmix Preferred
 
 
 
-=item B<-ltrt_cmixlev> I<level>B<>
+=item B<-ltrt_cmixlev> I<level>
 
 Lt/Rt Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lt/Rt mode.
@@ -8347,7 +8347,7 @@ Silence Center Channel
 
 
 
-=item B<-ltrt_surmixlev> I<level>B<>
+=item B<-ltrt_surmixlev> I<level>
 
 Lt/Rt Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lt/Rt mode.
@@ -8379,7 +8379,7 @@ Silence Surround Channel(s)
 
 
 
-=item B<-loro_cmixlev> I<level>B<>
+=item B<-loro_cmixlev> I<level>
 
 Lo/Ro Center Mix Level. The amount of gain the decoder should apply to the
 center channel when downmixing to stereo in Lo/Ro mode.
@@ -8423,7 +8423,7 @@ Silence Center Channel
 
 
 
-=item B<-loro_surmixlev> I<level>B<>
+=item B<-loro_surmixlev> I<level>
 
 Lo/Ro Surround Mix Level. The amount of gain the decoder should apply to the
 surround channel(s) when downmixing to stereo in Lo/Ro mode.
@@ -8467,7 +8467,7 @@ Silence Surround Channel(s)
 
 
 
-=item B<-dsurex_mode> I<mode>B<>
+=item B<-dsurex_mode> I<mode>
 
 Dolby Surround EX Mode. Indicates whether the stream uses Dolby Surround EX
 (7.1 matrixed to 5.1). Using this option does B<NOT> mean the encoder will actually
@@ -8501,7 +8501,7 @@ Dolby Surround EX On
 
 
 
-=item B<-dheadphone_mode> I<mode>B<>
+=item B<-dheadphone_mode> I<mode>
 
 Dolby Headphone Mode. Indicates whether the stream uses Dolby Headphone
 encoding (multi-channel matrixed to 2.0 for use with headphones). Using this
@@ -8536,7 +8536,7 @@ Dolby Headphone On
 
 
 
-=item B<-ad_conv_type> I<type>B<>
+=item B<-ad_conv_type> I<type>
 
 A/D Converter Type. Indicates whether the audio has passed through HDCD A/D
 conversion.
@@ -8574,7 +8574,7 @@ HDCD A/D Converter
 
 
 
-=item B<-stereo_rematrixing> I<boolean>B<>
+=item B<-stereo_rematrixing> I<boolean>
 
 Stereo Rematrixing. Enables/Disables use of rematrixing for stereo input. This
 is an optional AC-3 feature that increases quality by selectively encoding
@@ -8582,7 +8582,7 @@ the left/right channels as mid/side. This option is enabled by default, and it
 is highly recommended that it be left as enabled except for testing purposes.
 
 
-=item B<cutoff> I<frequency>B<>
+=item B<cutoff> I<frequency>
 
 Set lowpass cutoff frequency. If unspecified, the encoder selects a default
 determined by various other encoding parameters.
@@ -8604,7 +8604,7 @@ implemented in fixed-point.
 
 
 
-=item B<-channel_coupling> I<boolean>B<>
+=item B<-channel_coupling> I<boolean>
 
 Enables/Disables use of channel coupling, which is an optional AC-3 feature
 that increases quality by combining high frequency information from multiple
@@ -8643,7 +8643,7 @@ Enable Channel Coupling
 
 
 
-=item B<-cpl_start_band> I<number>B<>
+=item B<-cpl_start_band> I<number>
 
 Coupling Start Band. Sets the channel coupling start band, from 1 to 15. If a
 value higher than the bandwidth is used, it will be reduced to 1 less than the
@@ -9920,7 +9920,7 @@ Vidvox Hap video encoder.
 =over 4
 
 
-=item B<format> I<integer>B<>
+=item B<format> I<integer>
 
 Specifies the Hap format to encode.
 
@@ -9943,7 +9943,7 @@ Specifies the Hap format to encode.
 Default value is B<hap>.
 
 
-=item B<chunks> I<integer>B<>
+=item B<chunks> I<integer>
 
 Specifies the number of chunks to split frames into, between 1 and 64. This
 permits multithreaded decoding of large frames, potentially at the cost of
@@ -9952,7 +9952,7 @@ data-rate. The encoder may modify this value to divide frames evenly.
 Default value is I<1>.
 
 
-=item B<compressor> I<integer>B<>
+=item B<compressor> I<integer>
 
 Specifies the second-stage compressor to use. If set to B<none>,
 B<chunks> will be limited to 1, as chunked uncompressed frames offer no
@@ -10337,7 +10337,7 @@ percentage of the target bitrate, the libvpx wrapper converts this value as
 follows: C<(minrate * 100 / bitrate)>.
 
 
-=item B<minrate, maxrate, b> I<end-usage=cbr>B<>
+=item B<minrate, maxrate, b> I<end-usage=cbr>
 
 C<(minrate == maxrate == bitrate)>.
 
@@ -10486,7 +10486,7 @@ Enable frame parallel decodability features.
 Set adaptive quantization mode (0: off (default), 1: variance 2: complexity, 3:
 cyclic refresh, 4: equator360).
 
-=item B<colorspace> I<color-space>B<>
+=item B<colorspace> I<color-space>
 
 Set input color space. The VP9 bitstream supports signaling the following
 colorspaces:
@@ -10494,31 +10494,31 @@ colorspaces:
 =over 4
 
 
-=item B<B<rgb> I<sRGB>>
+=item B<B<rgb> I<sRGB>>
 
 
-=item B<B<bt709> I<bt709>>
+=item B<B<bt709> I<bt709>>
 
 
-=item B<B<unspecified> I<unknown>>
+=item B<B<unspecified> I<unknown>>
 
 
-=item B<B<bt470bg> I<bt601>>
+=item B<B<bt470bg> I<bt601>>
 
 
-=item B<B<smpte170m> I<smpte170>>
+=item B<B<smpte170m> I<smpte170>>
 
 
-=item B<B<smpte240m> I<smpte240>>
+=item B<B<smpte240m> I<smpte240>>
 
 
-=item B<B<bt2020_ncl> I<bt2020>>
+=item B<B<bt2020_ncl> I<bt2020>>
 
 
 =back
 
 
-=item B<row-mt> I<boolean>B<>
+=item B<row-mt> I<boolean>
 
 Enable row based multi-threading.
 
@@ -10573,12 +10573,12 @@ convenience.
 
 
 
-=item B<-lossless> I<boolean>B<>
+=item B<-lossless> I<boolean>
 
 Enables/Disables use of lossless mode. Default is 0.
 
 
-=item B<-compression_level> I<integer>B<>
+=item B<-compression_level> I<integer>
 
 For lossy, this is a quality/speed tradeoff. Higher values give better quality
 for a given size at the cost of increased encoding time. For lossless, this is
@@ -10589,7 +10589,7 @@ maps to the I<method> option in libwebp. The valid range is 0 to 6.
 Default is 4.
 
 
-=item B<-qscale> I<float>B<>
+=item B<-qscale> I<float>
 
 For lossy encoding, this controls image quality, 0 to 100. For lossless
 encoding, this controls the effort and time spent at compressing more. The
@@ -10597,7 +10597,7 @@ default value is 75. Note that for usage via libavcodec, this option is called
 I<global_quality> and must be multiplied by I<FF_QP2LAMBDA>.
 
 
-=item B<-preset> I<type>B<>
+=item B<-preset> I<type>
 
 Configuration preset. This does some automatic settings based on the general
 type of the image.
@@ -11233,7 +11233,7 @@ For example to specify libx264 encoding options with B<ffmpeg>:
 
 
 
-=item B<a53cc> I<boolean>B<>
+=item B<a53cc> I<boolean>
 
 Import closed captions (which must be ATSC compatible format) into output.
 Only the mpeg2 and h264 decoders provide these. Default is 1 (on).
@@ -11591,7 +11591,7 @@ MPEG-2 video encoder.
 =over 4
 
 
-=item B<seq_disp_ext> I<integer>B<>
+=item B<seq_disp_ext> I<integer>
 
 Specifies if the encoder should write a sequence_display_extension to the
 output.
@@ -11624,7 +11624,7 @@ Always write it.
 =back
 
 
-=item B<video_format> I<integer>B<>
+=item B<video_format> I<integer>
 
 Specifies the video_format written into the sequence display extension
 indicating the source of the video pictures. The default is B<unspecified>,
@@ -11648,11 +11648,11 @@ PNG image encoder.
 =over 4
 
 
-=item B<dpi> I<integer>B<>
+=item B<dpi> I<integer>
 
 Set physical density of pixels, in dots per inch, unset by default
 
-=item B<dpm> I<integer>B<>
+=item B<dpm> I<integer>
 
 Set physical density of pixels, in dots per meter, unset by default
 
@@ -11676,7 +11676,7 @@ The used encoder can be chosen with the C<-vcodec> option.
 =over 4
 
 
-=item B<profile> I<integer>B<>
+=item B<profile> I<integer>
 
 Select the ProRes profile to encode
 
@@ -11705,7 +11705,7 @@ Select the ProRes profile to encode
 
 
 
-=item B<quant_mat> I<integer>B<>
+=item B<quant_mat> I<integer>
 
 Select quantization matrix.
 
@@ -11737,26 +11737,26 @@ If not set, the matrix providing the highest quality, I<default>, will be
 picked.
 
 
-=item B<bits_per_mb> I<integer>B<>
+=item B<bits_per_mb> I<integer>
 
 How many bits to allot for coding one macroblock. Different profiles use
 between 200 and 2400 bits per macroblock, the maximum is 8000.
 
 
-=item B<mbs_per_slice> I<integer>B<>
+=item B<mbs_per_slice> I<integer>
 
 Number of macroblocks in each slice (1-8); the default value (8)
 should be good in almost all situations.
 
 
-=item B<vendor> I<string>B<>
+=item B<vendor> I<string>
 
 Override the 4-byte vendor ID.
 A custom vendor ID like I<apl0> would claim the stream was produced by
 the Apple encoder.
 
 
-=item B<alpha_bits> I<integer>B<>
+=item B<alpha_bits> I<integer>
 
 Specify number of bits for alpha component.
 Possible values are I<0>, I<8> and I<16>.
@@ -13437,7 +13437,7 @@ latency. Must be an integer not lesser than 32. It is 5000000 by default.
 Set packet size.
 
 
-=item B<fflags> I<flags>B<>
+=item B<fflags> I<flags>
 
 Set format flags. Some are implemented for a limited number of formats.
 
@@ -13770,7 +13770,7 @@ Possible forms of stream specifiers are:
 =over 4
 
 
-=item I<stream_index>B<>
+=item I<stream_index>
 
 Matches the stream with this index.
 
@@ -13791,7 +13791,7 @@ I<stream_index> in the program with the id
 I<program_id>. Otherwise, it matches all streams in the program.
 
 
-=item B<#>I<stream_id>B<>
+=item B<#>I<stream_id>
 
 Matches the stream by a format-specific ID.
 
@@ -13861,15 +13861,15 @@ between the last fcTL and IEND chunks.
 =over 4
 
 
-=item B<-ignore_loop> I<bool>B<>
+=item B<-ignore_loop> I<bool>
 
 Ignore the loop variable in the file if set.
 
-=item B<-max_fps> I<int>B<>
+=item B<-max_fps> I<int>
 
 Maximum framerate in frames per second (0 for no limit).
 
-=item B<-default_fps> I<int>B<>
+=item B<-default_fps> I<int>
 
 Default framerate in frames per second when none is specified in the file
 (0 meaning as fast as possible).
@@ -13889,7 +13889,7 @@ This demuxer is used to demux ASF files and MMS network streams.
 =over 4
 
 
-=item B<-no_resync_search> I<bool>B<>
+=item B<-no_resync_search> I<bool>
 
 Do not try to resynchronize by looking for a certain optional start code.
 
@@ -13933,7 +13933,7 @@ following directive is recognized:
 
 
 
-=item B<C<file I<path>>>
+=item B<C<file I<path>>>
 
 Path to a file to read; special characters and spaces must be escaped with
 backslash or single quotes.
@@ -13941,7 +13941,7 @@ backslash or single quotes.
 All subsequent file-related directives apply to that file.
 
 
-=item B<C<ffconcat version 1.0>>
+=item B<C<ffconcat version 1.0>>
 
 Identify the script type and version. It also sets the B<safe> option
 to 1 if it was -1.
@@ -13951,7 +13951,7 @@ appear exactly as is (no extra space or byte-order-mark) on the very first
 line of the script.
 
 
-=item B<C<duration I<dur>>>
+=item B<C<duration I<dur>>>
 
 Duration of the file. This information can be specified from the file;
 specifying it here may be more efficient or help if the information from the
@@ -13961,7 +13961,7 @@ If the duration is set for all files, then it is possible to seek in the
 whole concatenated video.
 
 
-=item B<C<inpoint I<timestamp>>>
+=item B<C<inpoint I<timestamp>>>
 
 In point of the file. When the demuxer opens the file it instantly seeks to the
 specified timestamp. Seeking is done so that all streams can be presented
@@ -13980,7 +13980,7 @@ Because of potential packets before the specified In point, packet timestamps
 may overlap between two concatenated files.
 
 
-=item B<C<outpoint I<timestamp>>>
+=item B<C<outpoint I<timestamp>>>
 
 Out point of the file. When the demuxer reaches the specified decoding
 timestamp in any of the streams, it handles it as an end of file condition and
@@ -14001,14 +14001,14 @@ The duration of the files (if not specified by the C<duration>
 directive) will be reduced based on their specified Out point.
 
 
-=item B<C<file_packet_metadata I<key=value>>>
+=item B<C<file_packet_metadata I<key=value>>>
 
 Metadata of the packets of the file. The specified metadata will be set for
 each file packet. You can specify this directive multiple times to add multiple
 metadata entries.
 
 
-=item B<C<stream>>
+=item B<C<stream>>
 
 Introduce a stream in the virtual file.
 All subsequent stream-related directives apply to the last introduced
@@ -14019,7 +14019,7 @@ If no streams are defined in the script, the streams from the first file are
 copied.
 
 
-=item B<C<exact_stream_id I<id>>>
+=item B<C<exact_stream_id I<id>>>
 
 Set the id of the stream.
 If this directive is given, the string with the corresponding id in the
@@ -14149,17 +14149,17 @@ This demuxer is used to demux FLV files and RTMP network streams. In case of liv
 =over 4
 
 
-=item B<-flv_metadata> I<bool>B<>
+=item B<-flv_metadata> I<bool>
 
 Allocate the streams according to the onMetaData array content.
 
 
-=item B<-flv_ignore_prevtag> I<bool>B<>
+=item B<-flv_ignore_prevtag> I<bool>
 
 Ignore the size of previous tag value.
 
 
-=item B<-flv_full_metadata> I<bool>B<>
+=item B<-flv_full_metadata> I<bool>
 
 Output all context of the onMetadata.
 
@@ -14346,7 +14346,7 @@ The pattern is interpreted like a C<glob()> pattern. This is only
 selectable if libavformat was compiled with globbing support.
 
 
-=item B<glob_sequence> I<(deprecated, will be removed)>B<>
+=item B<glob_sequence> I<(deprecated, will be removed)>
 
 Select a mixed glob wildcard/sequence pattern.
 
@@ -14940,7 +14940,7 @@ This muxer accepts the following options:
 
 
 
-=item B<flvflags> I<flags>B<>
+=item B<flvflags> I<flags>
 
 Possible values:
 
@@ -15024,80 +15024,80 @@ as defined in section 5.3.9.4.4 of the standard. Available identifiers are "$Rep
 =over 4
 
 
-=item B<-min_seg_duration> I<microseconds>B<>
+=item B<-min_seg_duration> I<microseconds>
 
 This is a deprecated option to set the segment length in microseconds, use I<seg_duration> instead.
 
-=item B<-seg_duration> I<duration>B<>
+=item B<-seg_duration> I<duration>
 
 Set the segment length in seconds (fractional value can be set). The value is
 treated as average segment duration when I<use_template> is enabled and
 I<use_timeline> is disabled and as minimum segment duration for all the other
 use cases.
 
-=item B<-window_size> I<size>B<>
+=item B<-window_size> I<size>
 
 Set the maximum number of segments kept in the manifest.
 
-=item B<-extra_window_size> I<size>B<>
+=item B<-extra_window_size> I<size>
 
 Set the maximum number of segments kept outside of the manifest before removing from disk.
 
-=item B<-remove_at_exit> I<remove>B<>
+=item B<-remove_at_exit> I<remove>
 
 Enable (1) or disable (0) removal of all segments when finished.
 
-=item B<-use_template> I<template>B<>
+=item B<-use_template> I<template>
 
 Enable (1) or disable (0) use of SegmentTemplate instead of SegmentList.
 
-=item B<-use_timeline> I<timeline>B<>
+=item B<-use_timeline> I<timeline>
 
 Enable (1) or disable (0) use of SegmentTimeline in SegmentTemplate.
 
-=item B<-single_file> I<single_file>B<>
+=item B<-single_file> I<single_file>
 
 Enable (1) or disable (0) storing all segments in one file, accessed using byte ranges.
 
-=item B<-single_file_name> I<file_name>B<>
+=item B<-single_file_name> I<file_name>
 
 DASH-templated name to be used for baseURL. Implies I<single_file> set to "1".
 
-=item B<-init_seg_name> I<init_name>B<>
+=item B<-init_seg_name> I<init_name>
 
 DASH-templated name to used for the initialization segment. Default is "init-stream$RepresentationID$.m4s"
 
-=item B<-media_seg_name> I<segment_name>B<>
+=item B<-media_seg_name> I<segment_name>
 
 DASH-templated name to used for the media segments. Default is "chunk-stream$RepresentationID$-$Number%05d$.m4s"
 
-=item B<-utc_timing_url> I<utc_url>B<>
+=item B<-utc_timing_url> I<utc_url>
 
 URL of the page that will return the UTC timestamp in ISO format. Example: "https://time.akamai.com/?iso"
 
-=item B<method> I<method>B<>
+=item B<method> I<method>
 
 Use the given HTTP method to create output files. Generally set to PUT or POST.
 
-=item B<-http_user_agent> I<user_agent>B<>
+=item B<-http_user_agent> I<user_agent>
 
 Override User-Agent field in HTTP header. Applicable only for HTTP output.
 
-=item B<-http_persistent> I<http_persistent>B<>
+=item B<-http_persistent> I<http_persistent>
 
 Use persistent HTTP connections. Applicable only for HTTP output.
 
-=item B<-hls_playlist> I<hls_playlist>B<>
+=item B<-hls_playlist> I<hls_playlist>
 
 Generate HLS playlist files as well. The master playlist is generated with the filename master.m3u8.
 One media playlist file is generated for each stream with filenames media_0.m3u8, media_1.m3u8, etc.
 
-=item B<-streaming> I<streaming>B<>
+=item B<-streaming> I<streaming>
 
 Enable (1) or disable (0) chunk streaming mode of output. In chunk streaming
 mode, each frame will be a moof fragment which forms a chunk.
 
-=item B<-adaptation_sets> I<adaptation_sets>B<>
+=item B<-adaptation_sets> I<adaptation_sets>
 
 Assign streams to AdaptationSets. Syntax is "id=x,streams=a,b,c id=y,streams=d,e" with x and y being the IDs
 of the adaptation sets and a,b,c,d and e are the indices of the mapped streams.
@@ -15106,11 +15106,11 @@ To map all video (or audio) streams to an AdaptationSet, "v" (or "a") can be use
 
 When no assignment is defined, this defaults to an AdaptationSet for each stream.
 
-=item B<-timeout> I<timeout>B<>
+=item B<-timeout> I<timeout>
 
 Set timeout for socket I/O operations. Applicable only for HTTP output.
 
-=item B<-index_correction> I<index_correction>B<>
+=item B<-index_correction> I<index_correction>
 
 Enable (1) or Disable (0) segment index correction logic. Applicable only when
 I<use_template> is enabled and I<use_timeline> is disabled.
@@ -15123,14 +15123,14 @@ Typically this logic is needed in live streaming use cases. The network bandwidt
 fluctuations are common during long run streaming. Each fluctuation can cause
 the segment indexes fall behind the expected real time position.
 
-=item B<-format_options> I<options_list>B<>
+=item B<-format_options> I<options_list>
 
 Set container format (mp4/webm) options using a C<:> separated list of
 key=value parameters. Values containing C<:> special characters must be
 escaped.
 
 
-=item B<dash_segment_type> I<dash_segment_type>B<>
+=item B<dash_segment_type> I<dash_segment_type>
 
 Possible values:
 
@@ -15226,7 +15226,7 @@ for the packet.
 =over 4
 
 
-=item B<hash> I<algorithm>B<>
+=item B<hash> I<algorithm>
 
 Use the cryptographic hash function specified by the string I<algorithm>.
 Supported values include C<MD5>, C<murmur3>, C<RIPEMD128>,
@@ -15355,7 +15355,7 @@ representing the computed hash.
 =over 4
 
 
-=item B<hash> I<algorithm>B<>
+=item B<hash> I<algorithm>
 
 Use the cryptographic hash function specified by the string I<algorithm>.
 Supported values include C<MD5>, C<murmur3>, C<RIPEMD128>,
@@ -15423,7 +15423,7 @@ This muxer supports the following options:
 =over 4
 
 
-=item B<hls_init_time> I<seconds>B<>
+=item B<hls_init_time> I<seconds>
 
 Set the initial target segment length in seconds. Default value is I<0>.
 Segment will be cut on the next key frame after this time has passed on the first m3u8 list.
@@ -15431,19 +15431,19 @@ After the initial playlist is filled B<ffmpeg> will cut segments
 at duration equal to C<hls_time>
 
 
-=item B<hls_time> I<seconds>B<>
+=item B<hls_time> I<seconds>
 
 Set the target segment length in seconds. Default value is 2.
 Segment will be cut on the next key frame after this time has passed.
 
 
-=item B<hls_list_size> I<size>B<>
+=item B<hls_list_size> I<size>
 
 Set the maximum number of playlist entries. If set to 0 the list file
 will contain all the segments. Default value is 5.
 
 
-=item B<hls_delete_threshold> I<size>B<>
+=item B<hls_delete_threshold> I<size>
 
 Set the number of unreferenced segments to keep on disk before C<hls_flags delete_segments>
 deletes them. Increase this to allow continue clients to download segments which
@@ -15451,14 +15451,14 @@ were recently referenced in the playlist. Default value is 1, meaning segments o
 C<hls_list_size+1> will be deleted.
 
 
-=item B<hls_ts_options> I<options_list>B<>
+=item B<hls_ts_options> I<options_list>
 
 Set output format options using a :-separated list of key=value
 parameters. Values containing C<:> special characters must be
 escaped.
 
 
-=item B<hls_wrap> I<wrap>B<>
+=item B<hls_wrap> I<wrap>
 
 This is a deprecated option, you can use C<hls_list_size>
 and C<hls_flags delete_segments> instead it
@@ -15503,7 +15503,7 @@ The start number will be based on the current date/time as YYYYmmddHHMMSS. e.g. 
 
 
 
-=item B<start_number> I<number>B<>
+=item B<start_number> I<number>
 
 Start the playlist sequence number (C<#EXT-X-MEDIA-SEQUENCE>) from the specified I<number>
 when I<hls_start_number_source> value is I<generic>. (This is the default case.)
@@ -15511,12 +15511,12 @@ Unless C<hls_flags single_file> is set, it also specifies starting sequence numb
 Default value is 0.
 
 
-=item B<hls_allow_cache> I<allowcache>B<>
+=item B<hls_allow_cache> I<allowcache>
 
 Explicitly set whether the client MAY (1) or MUST NOT (0) cache media segments.
 
 
-=item B<hls_base_url> I<baseurl>B<>
+=item B<hls_base_url> I<baseurl>
 
 Append I<baseurl> to every entry in the playlist.
 Useful to generate playlists with absolute paths.
@@ -15527,7 +15527,7 @@ which can be cyclic, for example if the B<wrap> option is
 specified.
 
 
-=item B<hls_segment_filename> I<filename>B<>
+=item B<hls_segment_filename> I<filename>
 
 Set the segment filename. Unless C<hls_flags single_file> is set,
 I<filename> is used as a string format with the segment number:
@@ -15619,7 +15619,7 @@ F<2016/02/15/file-20160215-1455569023.ts>, F<2016/02/15/file-20160215-1455569024
 
 
 
-=item B<hls_key_info_file> I<key_info_file>B<>
+=item B<hls_key_info_file> I<key_info_file>
 
 Use the information in I<key_info_file> for segment encryption. The first
 line of I<key_info_file> specifies the key URI written to the playlist. The
@@ -15677,32 +15677,32 @@ Example shell script:
 
 
 
-=item B<-hls_enc> I<enc>B<>
+=item B<-hls_enc> I<enc>
 
 Enable (1) or disable (0) the AES128 encryption.
 When enabled every segment generated is encrypted and the encryption key
 is saved as I<playlist name>.key.
 
 
-=item B<-hls_enc_key> I<key>B<>
+=item B<-hls_enc_key> I<key>
 
 Hex-coded 16byte key to encrypt the segments, by default it
 is randomly generated.
 
 
-=item B<-hls_enc_key_url> I<keyurl>B<>
+=item B<-hls_enc_key_url> I<keyurl>
 
 If set, I<keyurl> is prepended instead of I<baseurl> to the key filename
 in the playlist.
 
 
-=item B<-hls_enc_iv> I<iv>B<>
+=item B<-hls_enc_iv> I<iv>
 
 Hex-coded 16byte initialization vector for every segment instead
 of the autogenerated ones.
 
 
-=item B<hls_segment_type> I<flags>B<>
+=item B<hls_segment_type> I<flags>
 
 Possible values:
 
@@ -15726,7 +15726,7 @@ fmp4 files may be used in HLS version 7 and above.
 
 
 
-=item B<hls_fmp4_init_filename> I<filename>B<>
+=item B<hls_fmp4_init_filename> I<filename>
 
 Set filename to the fragment files header file, default filename is F<init.mp4>.
 
@@ -15740,7 +15740,7 @@ enables creation of init files corresponding to different variant streams in
 subdirectories.
 
 
-=item B<hls_flags> I<flags>B<>
+=item B<hls_flags> I<flags>
 
 Possible values:
 
@@ -16387,7 +16387,7 @@ how to cut the file into fragments:
 =over 4
 
 
-=item B<-moov_size> I<bytes>B<>
+=item B<-moov_size> I<bytes>
 
 Reserves space for the moov atom at the beginning of the file instead of placing the
 moov atom at the end. If the space reserved is insufficient, muxing will fail.
@@ -16396,11 +16396,11 @@ moov atom at the end. If the space reserved is insufficient, muxing will fail.
 
 Start a new fragment at each video keyframe.
 
-=item B<-frag_duration> I<duration>B<>
+=item B<-frag_duration> I<duration>
 
 Create fragments that are I<duration> microseconds long.
 
-=item B<-frag_size> I<size>B<>
+=item B<-frag_size> I<size>
 
 Create fragments that contain up to I<size> bytes of payload data.
 
@@ -16411,7 +16411,7 @@ calling C<av_write_frame(ctx, NULL)> to write a fragment with
 the packets written so far. (This is only useful with other
 applications integrating libavformat, not from B<ffmpeg>.)
 
-=item B<-min_frag_duration> I<duration>B<>
+=item B<-min_frag_duration> I<duration>
 
 Don't create fragments that are shorter than I<duration> microseconds long.
 
@@ -16619,13 +16619,13 @@ The muxer options are:
 =over 4
 
 
-=item B<mpegts_transport_stream_id> I<integer>B<>
+=item B<mpegts_transport_stream_id> I<integer>
 
 Set the B<transport_stream_id>. This identifies a transponder in DVB.
 Default is C<0x0001>.
 
 
-=item B<mpegts_original_network_id> I<integer>B<>
+=item B<mpegts_original_network_id> I<integer>
 
 Set the B<original_network_id>. This is unique identifier of a
 network in DVB. Its main use is in the unique identification of a service
@@ -16633,13 +16633,13 @@ through the path B<Original_Network_ID, Transport_Stream_ID>. Default
 is C<0x0001>.
 
 
-=item B<mpegts_service_id> I<integer>B<>
+=item B<mpegts_service_id> I<integer>
 
 Set the B<service_id>, also known as program in DVB. Default is
 C<0x0001>.
 
 
-=item B<mpegts_service_type> I<integer>B<>
+=item B<mpegts_service_type> I<integer>
 
 Set the program B<service_type>. Default is C<digital_tv>.
 Accepts the following options:
@@ -16684,34 +16684,34 @@ Advanced Codec Digital HDTV service.
 
 
 
-=item B<mpegts_pmt_start_pid> I<integer>B<>
+=item B<mpegts_pmt_start_pid> I<integer>
 
 Set the first PID for PMT. Default is C<0x1000>. Max is C<0x1f00>.
 
 
-=item B<mpegts_start_pid> I<integer>B<>
+=item B<mpegts_start_pid> I<integer>
 
 Set the first PID for data packets. Default is C<0x0100>. Max is
 C<0x0f00>.
 
 
-=item B<mpegts_m2ts_mode> I<boolean>B<>
+=item B<mpegts_m2ts_mode> I<boolean>
 
 Enable m2ts mode if set to C<1>. Default value is C<-1> which
 disables m2ts mode.
 
 
-=item B<muxrate> I<integer>B<>
+=item B<muxrate> I<integer>
 
 Set a constant muxrate. Default is VBR.
 
 
-=item B<pes_payload_size> I<integer>B<>
+=item B<pes_payload_size> I<integer>
 
 Set minimum PES packet payload in bytes. Default is C<2930>.
 
 
-=item B<mpegts_flags> I<flags>B<>
+=item B<mpegts_flags> I<flags>
 
 Set mpegts flags. Accepts the following options:
 
@@ -16742,40 +16742,40 @@ Mark the initial packet of each stream as discontinuity.
 
 
 
-=item B<resend_headers> I<integer>B<>
+=item B<resend_headers> I<integer>
 
 Reemit PAT/PMT before writing the next packet. This option is deprecated:
 use B<mpegts_flags> instead.
 
 
-=item B<mpegts_copyts> I<boolean>B<>
+=item B<mpegts_copyts> I<boolean>
 
 Preserve original timestamps, if value is set to C<1>. Default value
 is C<-1>, which results in shifting timestamps so that they start from 0.
 
 
-=item B<omit_video_pes_length> I<boolean>B<>
+=item B<omit_video_pes_length> I<boolean>
 
 Omit the PES packet length for video packets. Default is C<1> (true).
 
 
-=item B<pcr_period> I<integer>B<>
+=item B<pcr_period> I<integer>
 
 Override the default PCR retransmission time in milliseconds. Ignored if
 variable muxrate is selected. Default is C<20>.
 
 
-=item B<pat_period> I<double>B<>
+=item B<pat_period> I<double>
 
 Maximum time in seconds between PAT/PMT tables.
 
 
-=item B<sdt_period> I<double>B<>
+=item B<sdt_period> I<double>
 
 Maximum time in seconds between SDT tables.
 
 
-=item B<tables_version> I<integer>B<>
+=item B<tables_version> I<integer>
 
 Set PAT, PMT and SDT version (default C<0>, valid values are from 0 to 31, inclusively).
 This option allows updating stream structure so that standard consumer may
@@ -16828,7 +16828,7 @@ The muxer options are:
 =over 4
 
 
-=item B<store_user_comments> I<bool>B<>
+=item B<store_user_comments> I<bool>
 
 Set if user comments should be stored if available or never.
 IRT D-10 does not allow user comments. The default is thus to write them for
@@ -16869,7 +16869,7 @@ Alternatively you can write the command as:
 =over 4
 
 
-=item B<-syncpoints> I<flags>B<>
+=item B<-syncpoints> I<flags>
 
 Change the syncpoint usage in nut:
 
@@ -16894,7 +16894,7 @@ Change the syncpoint usage in nut:
 
 The I<none> and I<timestamped> flags are experimental.
 
-=item B<-write_index> I<bool>B<>
+=item B<-write_index> I<bool>
 
 Write index at the end, the default is to write an index.
 
@@ -16915,7 +16915,7 @@ Ogg container muxer.
 =over 4
 
 
-=item B<-page_duration> I<duration>B<>
+=item B<-page_duration> I<duration>
 
 Preferred page duration, in microseconds. The muxer will attempt to create
 pages that are approximately I<duration> microseconds long. This allows the
@@ -16925,7 +16925,7 @@ possible. A value of 1 will effectively use 1 packet-per-page in most
 situations, giving a small seek granularity at the cost of additional container
 overhead.
 
-=item B<-serial_offset> I<value>B<>
+=item B<-serial_offset> I<value>
 
 Serial value from which to set the streams serial number.
 Setting it to different and sufficiently large values ensures that the produced
@@ -16982,7 +16982,7 @@ The segment muxer supports the following options:
 =over 4
 
 
-=item B<increment_tc> I<1|0>B<>
+=item B<increment_tc> I<1|0>
 
 if set to C<1>, increment timecode between each segment
 If this is selected, the input need to have
@@ -16990,7 +16990,7 @@ a timecode in the first video stream. Default value is
 C<0>.
 
 
-=item B<reference_stream> I<specifier>B<>
+=item B<reference_stream> I<specifier>
 
 Set the reference stream, as specified by the string I<specifier>.
 If I<specifier> is set to C<auto>, the reference is chosen
@@ -16999,26 +16999,26 @@ specifiers'' chapter in the ffmpeg manual) which specifies the
 reference stream. The default value is C<auto>.
 
 
-=item B<segment_format> I<format>B<>
+=item B<segment_format> I<format>
 
 Override the inner container format, by default it is guessed by the filename
 extension.
 
 
-=item B<segment_format_options> I<options_list>B<>
+=item B<segment_format_options> I<options_list>
 
 Set output format options using a :-separated list of key=value
 parameters. Values containing the C<:> special character must be
 escaped.
 
 
-=item B<segment_list> I<name>B<>
+=item B<segment_list> I<name>
 
 Generate also a listfile named I<name>. If not specified no
 listfile is generated.
 
 
-=item B<segment_list_flags> I<flags>B<>
+=item B<segment_list_flags> I<flags>
 
 Set flags affecting the segment list generation.
 
@@ -17040,20 +17040,20 @@ Allow live-friendly file generation.
 
 
 
-=item B<segment_list_size> I<size>B<>
+=item B<segment_list_size> I<size>
 
 Update the list file so that it contains at most I<size>
 segments. If 0 the list file will contain all the segments. Default
 value is 0.
 
 
-=item B<segment_list_entry_prefix> I<prefix>B<>
+=item B<segment_list_entry_prefix> I<prefix>
 
 Prepend I<prefix> to each entry. Useful to generate absolute paths.
 By default no prefix is applied.
 
 
-=item B<segment_list_type> I<type>B<>
+=item B<segment_list_type> I<type>
 
 Select the listing format.
 
@@ -17110,7 +17110,7 @@ A list file with the suffix C<".m3u8"> will auto-select this format.
 If not specified the type is guessed from the list file name suffix.
 
 
-=item B<segment_time> I<time>B<>
+=item B<segment_time> I<time>
 
 Set segment duration to I<time>, the value must be a duration
 specification. Default value is "2". See also the
@@ -17121,7 +17121,7 @@ reference stream key-frames at the given time. See the introductory
 notice and the examples below.
 
 
-=item B<segment_atclocktime> I<1|0>B<>
+=item B<segment_atclocktime> I<1|0>
 
 If set to "1" split at regular clock time intervals starting from 00:00
 o'clock. The I<time> value specified in B<segment_time> is
@@ -17133,7 +17133,7 @@ to create files at 12:00 o'clock, 12:15, 12:30, etc.
 Default value is "0".
 
 
-=item B<segment_clocktime_offset> I<duration>B<>
+=item B<segment_clocktime_offset> I<duration>
 
 Delay the segment splitting times with the specified duration when using
 B<segment_atclocktime>.
@@ -17145,7 +17145,7 @@ create files at 12:05, 12:20, 12:35, etc.
 Default value is "0".
 
 
-=item B<segment_clocktime_wrap_duration> I<duration>B<>
+=item B<segment_clocktime_wrap_duration> I<duration>
 
 Force the segmenter to only start a new segment if a packet reaches the muxer
 within the specified duration after the segmenting clock time. This way you
@@ -17156,7 +17156,7 @@ Default is the maximum possible duration which means starting a new segment
 regardless of the elapsed time since the last clock time.
 
 
-=item B<segment_time_delta> I<delta>B<>
+=item B<segment_time_delta> I<delta>
 
 Specify the accuracy time when selecting the start time for a
 segment, expressed as a duration specification. Default value is "0".
@@ -17180,14 +17180,14 @@ before the specified time. For constant frame rate videos a value of
 the specified time and the time set by I<force_key_frames>.
 
 
-=item B<segment_times> I<times>B<>
+=item B<segment_times> I<times>
 
 Specify a list of split points. I<times> contains a list of comma
 separated duration specifications, in increasing order. See also
 the B<segment_time> option.
 
 
-=item B<segment_frames> I<frames>B<>
+=item B<segment_frames> I<frames>
 
 Specify a list of split video frame numbers. I<frames> contains a
 list of comma separated integer numbers, in increasing order.
@@ -17197,17 +17197,17 @@ stream key frame is found and the sequential number (starting from 0)
 of the frame is greater or equal to the next value in the list.
 
 
-=item B<segment_wrap> I<limit>B<>
+=item B<segment_wrap> I<limit>
 
 Wrap around segment index once it reaches I<limit>.
 
 
-=item B<segment_start_number> I<number>B<>
+=item B<segment_start_number> I<number>
 
 Set the sequence number of the first segment. Defaults to C<0>.
 
 
-=item B<strftime> I<1|0>B<>
+=item B<strftime> I<1|0>
 
 Use the C<strftime> function to define the name of the new
 segments to write. If this is selected, the output segment name must
@@ -17215,7 +17215,7 @@ contain a C<strftime> function template. Default value is
 C<0>.
 
 
-=item B<break_non_keyframes> I<1|0>B<>
+=item B<break_non_keyframes> I<1|0>
 
 If enabled, allow segments to start on frames other than keyframes. This
 improves behavior on some players when the time between keyframes is
@@ -17223,7 +17223,7 @@ inconsistent, but may make things worse on others, and can cause some oddities
 during seeking. Defaults to C<0>.
 
 
-=item B<reset_timestamps> I<1|0>B<>
+=item B<reset_timestamps> I<1|0>
 
 Reset timestamps at the beginning of each segment, so that each segment
 will start with near-zero timestamps. It is meant to ease the playback
@@ -17231,13 +17231,13 @@ of the generated segments. May not work with some combinations of
 muxers/codecs. It is set to C<0> by default.
 
 
-=item B<initial_offset> I<offset>B<>
+=item B<initial_offset> I<offset>
 
 Specify timestamp offset to apply to the output packet timestamps. The
 argument must be a time duration specification, and defaults to 0.
 
 
-=item B<write_empty_segments> I<1|0>B<>
+=item B<write_empty_segments> I<1|0>
 
 If enabled, write an empty segment if there are no packets during the period a
 segment would usually span. Otherwise, the segment will be filled with the next
@@ -17424,7 +17424,7 @@ Specify format options for the underlying muxer. Muxer options can be specified
 as a list of I<key>=I<value> pairs separated by ':'.
 
 
-=item B<drop_pkts_on_overflow> I<bool>B<>
+=item B<drop_pkts_on_overflow> I<bool>
 
 If set to 1 (true), in case the fifo queue fills up, packets will be dropped
 rather than blocking the encoder. This makes it possible to continue streaming without
@@ -17433,7 +17433,7 @@ this option is set to 0 (false), so in such cases the encoder will be blocked
 until the muxer processes some of the packets and none of them is lost.
 
 
-=item B<attempt_recovery> I<bool>B<>
+=item B<attempt_recovery> I<bool>
 
 If failure occurs, attempt to recover the output. This is especially useful
 when used with network output, since it makes it possible to restart streaming transparently.
@@ -17446,13 +17446,13 @@ Sets maximum number of successive unsuccessful recovery attempts after which
 the output fails permanently. By default this option is set to 0 (unlimited).
 
 
-=item B<recovery_wait_time> I<duration>B<>
+=item B<recovery_wait_time> I<duration>
 
 Waiting time before the next recovery attempt after previous unsuccessful
 recovery attempt. Default value is 5 seconds.
 
 
-=item B<recovery_wait_streamtime> I<bool>B<>
+=item B<recovery_wait_streamtime> I<bool>
 
 If set to 0 (false), the real time is used when waiting for the recovery
 attempt (i.e. the recovery will be attempted after at least
@@ -17463,7 +17463,7 @@ seconds of the stream is omitted).
 By default, this option is set to 0 (false).
 
 
-=item B<recover_any_error> I<bool>B<>
+=item B<recover_any_error> I<bool>
 
 If set to 1 (true), recovery will be attempted regardless of type of the error
 causing the failure. By default this option is set to 0 (false) and in case of
@@ -17471,7 +17471,7 @@ certain (usually permanent) errors the recovery is not attempted even when
 I<attempt_recovery> is set to 1.
 
 
-=item B<restart_with_keyframe> I<bool>B<>
+=item B<restart_with_keyframe> I<bool>
 
 Specify whether to wait for the keyframe after recovering from
 queue overflow or failure. This option is set to 0 (false) by default.
@@ -17540,7 +17540,7 @@ section in the ffmpeg-utils(1) manual>).
 
 
 
-=item B<use_fifo> I<bool>B<>
+=item B<use_fifo> I<bool>
 
 If set to 1, slave outputs will be processed in separate threads using the B<fifo>
 muxer. This allows to compensate for different speed/latency/reliability of
@@ -17591,7 +17591,7 @@ Options for a bitstream filter must be specified in the form of C<opt=value>.
 Several bitstream filters can be specified, separated by ",".
 
 
-=item B<use_fifo> I<bool>B<>
+=item B<use_fifo> I<bool>
 
 This allows to override tee muxer use_fifo option for individual slave muxer.
 
@@ -18669,12 +18669,12 @@ This protocol accepts the following options:
 
 
 
-=item B<l=>I<n>B<>
+=item B<l=>I<n>
 
 The number of columns (4-20, LxD E<lt>= 100)
 
 
-=item B<d=>I<n>B<>
+=item B<d=>I<n>
 
 The number of rows (4-20, LxD E<lt>= 100)
 
@@ -19069,17 +19069,17 @@ The following URL options are supported:
 
 
 
-=item B<ttl=>I<n>B<>
+=item B<ttl=>I<n>
 
 Set the TTL (Time-To-Live) value (for multicast only).
 
 
-=item B<rtcpport=>I<n>B<>
+=item B<rtcpport=>I<n>
 
 Set the remote RTCP port to I<n>.
 
 
-=item B<localrtpport=>I<n>B<>
+=item B<localrtpport=>I<n>
 
 Set the local RTP port to I<n>.
 
@@ -19089,7 +19089,7 @@ Set the local RTP port to I<n>.
 Set the local RTCP port to I<n>.
 
 
-=item B<pkt_size=>I<n>B<>
+=item B<pkt_size=>I<n>
 
 Set max packet size (in bytes) to I<n>.
 
@@ -19116,7 +19116,7 @@ Send packets to the source address of the latest received packet (if
 set to 1) or to a default remote address (if set to 0).
 
 
-=item B<localport=>I<n>B<>
+=item B<localport=>I<n>
 
 Set the local RTP port to I<n>.
 
@@ -19398,7 +19398,7 @@ are supported:
 
 
 
-=item B<announce_addr=>I<address>B<>
+=item B<announce_addr=>I<address>
 
 Specify the destination IP address for sending the announcements to.
 If omitted, the announcements are sent to the commonly used SAP
@@ -19406,19 +19406,19 @@ announcement multicast address 224.2.127.254 (sap.mcast.net), or
 ff0e::2:7ffe if I<destination> is an IPv6 address.
 
 
-=item B<announce_port=>I<port>B<>
+=item B<announce_port=>I<port>
 
 Specify the port to send the announcements on, defaults to
 9875 if not specified.
 
 
-=item B<ttl=>I<ttl>B<>
+=item B<ttl=>I<ttl>
 
 Specify the time to live value for the announcements and RTP packets,
 defaults to 255.
 
 
-=item B<same_port=>I<0|1>B<>
+=item B<same_port=>I<0|1>
 
 If set to 1, send all RTP streams on the same port pair. If zero (the
 default), all streams are sent on unique ports, with each stream on a
@@ -19547,7 +19547,7 @@ set for the rendezvous mode (which can be used as a
 workaround for this connection problem with earlier versions).
 
 
-=item B<ffs=>I<bytes>B<>
+=item B<ffs=>I<bytes>
 
 Flight Flag Size (Window Size), in bytes. FFS is actually an
 internal parameter and you should set it to not less than
@@ -19556,7 +19556,7 @@ is relatively large, therefore unless you set a very large receiver buffer,
 you do not need to change this option. Default value is 25600.
 
 
-=item B<inputbw=>I<bytes/seconds>B<>
+=item B<inputbw=>I<bytes/seconds>
 
 Sender nominal input rate, in bytes per seconds. Used along with
 B<oheadbw>, when B<maxbw> is set to relative (0), to
@@ -19568,12 +19568,12 @@ relative (0), the actual input rate is evaluated inside
 the library. Default value is 0.
 
 
-=item B<iptos=>I<tos>B<>
+=item B<iptos=>I<tos>
 
 IP Type of Service. Applies to sender only. Default value is 0xB8.
 
 
-=item B<ipttl=>I<ttl>B<>
+=item B<ipttl=>I<ttl>
 
 IP Time To Live. Applies to sender only. Default value is 64.
 
@@ -19596,7 +19596,7 @@ sending is not supported.
 Set socket listen timeout.
 
 
-=item B<maxbw=>I<bytes/seconds>B<>
+=item B<maxbw=>I<bytes/seconds>
 
 Maximum sending bandwidth, in bytes per seconds.
 -1 infinite (CSRTCC limit is 30mbps)
@@ -19605,7 +19605,7 @@ E<gt>0 absolute limit value
 Default value is 0 (relative)
 
 
-=item B<mode=>I<caller|listener|rendezvous>B<>
+=item B<mode=>I<caller|listener|rendezvous>
 
 Connection mode.
 B<caller> opens client connection.
@@ -19614,7 +19614,7 @@ B<rendezvous> use Rendez-Vous connection mode.
 Default value is caller.
 
 
-=item B<mss=>I<bytes>B<>
+=item B<mss=>I<bytes>
 
 Maximum Segment Size, in bytes. Used for buffer allocation
 and rate calculation using a packet counter assuming fully
@@ -19625,20 +19625,20 @@ only decreased, unless you have some unusual dedicated
 network settings. Default value is 1500.
 
 
-=item B<nakreport=>I<1|0>B<>
+=item B<nakreport=>I<1|0>
 
 If set to 1, Receiver will send `UMSG_LOSSREPORT` messages
 periodically until a lost packet is retransmitted or
 intentionally dropped. Default value is 1.
 
 
-=item B<oheadbw=>I<percents>B<>
+=item B<oheadbw=>I<percents>
 
 Recovery bandwidth overhead above input rate, in percents.
 See B<inputbw>. Default value is 25%.
 
 
-=item B<passphrase=>I<string>B<>
+=item B<passphrase=>I<string>
 
 HaiCrypt Encryption/Decryption Passphrase string, length
 from 10 to 79 characters. The passphrase is the shared
@@ -19650,7 +19650,7 @@ the receiver only if the received data is encrypted.
 The configured passphrase cannot be recovered (write-only).
 
 
-=item B<payload_size=>I<bytes>B<>
+=item B<payload_size=>I<bytes>
 
 Sets the maximum declared size of a packet transferred
 during the single call to the sending function in Live
@@ -19664,7 +19664,7 @@ use a bigger maximum frame size, though not greater than
 1456 bytes.
 
 
-=item B<pkt_size=>I<bytes>B<>
+=item B<pkt_size=>I<bytes>
 
 Alias for B<payload_size>.
 
@@ -19675,7 +19675,7 @@ The latency value (as described in B<rcvlatency>) that is
 set by the sender side as a minimum value for the receiver.
 
 
-=item B<pbkeylen=>I<bytes>B<>
+=item B<pbkeylen=>I<bytes>
 
 Sender encryption key length, in bytes.
 Only can be set to 0, 16, 24 and 32.
@@ -19699,12 +19699,12 @@ set by the peer side. Before version 1.3.0 this option
 is only available as B<latency>.
 
 
-=item B<recv_buffer_size=>I<bytes>B<>
+=item B<recv_buffer_size=>I<bytes>
 
 Set UDP receive buffer size, expressed in bytes.
 
 
-=item B<send_buffer_size=>I<bytes>B<>
+=item B<send_buffer_size=>I<bytes>
 
 Set UDP send buffer size, expressed in bytes.
 
@@ -19718,7 +19718,7 @@ if no data arrived in more than this time
 interval, raise error.
 
 
-=item B<tlpktdrop=>I<1|0>B<>
+=item B<tlpktdrop=>I<1|0>
 
 Too-late Packet Drop. When enabled on receiver, it skips
 missing packets that have not been delivered in time and
@@ -19731,19 +19731,19 @@ automatically enabled in the sender if the receiver
 supports it.
 
 
-=item B<sndbuf=>I<bytes>B<>
+=item B<sndbuf=>I<bytes>
 
 Set send buffer size, expressed in bytes.
 
 
-=item B<rcvbuf=>I<bytes>B<>
+=item B<rcvbuf=>I<bytes>
 
 Set receive buffer size, expressed in bytes.
 
 Receive buffer must not be greater than B<ffs>.
 
 
-=item B<lossmaxttl=>I<packets>B<>
+=item B<lossmaxttl=>I<packets>
 
 The value up to which the Reorder Tolerance may grow. When
 Reorder Tolerance is E<gt> 0, then packet loss report is delayed
@@ -19767,7 +19767,7 @@ The version format in hex is 0xXXYYZZ for x.y.z in human readable
 form.
 
 
-=item B<streamid=>I<string>B<>
+=item B<streamid=>I<string>
 
 A string limited to 512 characters that can be set on the socket prior
 to connecting. This stream ID will be able to be retrieved by the
@@ -19779,7 +19779,7 @@ might be that simply one side will override the value from the other
 side and it’s the matter of luck which one would win
 
 
-=item B<smoother=>I<live|file>B<>
+=item B<smoother=>I<live|file>
 
 The type of Smoother used for the transmission for that socket, which
 is responsible for the transmission and congestion control. The Smoother
@@ -19787,7 +19787,7 @@ type must be exactly the same on both connecting parties, otherwise
 the connection is rejected.
 
 
-=item B<messageapi=>I<1|0>B<>
+=item B<messageapi=>I<1|0>
 
 When set, this socket uses the Message API, otherwise it uses Buffer
 API. Note that in live mode (see B<transtype>) there’s only
@@ -19811,7 +19811,7 @@ complete (not all packets received or there was a packet loss) it will
 not be given up.
 
 
-=item B<transtype=>I<live|file>B<>
+=item B<transtype=>I<live|file>
 
 Sets the transmission type for the socket, in particular, setting this
 option sets multiple other parameters to their default values as required
@@ -19958,12 +19958,12 @@ The list of supported options follows.
 =over 4
 
 
-=item B<listen=>I<1|0>B<>
+=item B<listen=>I<1|0>
 
 Listen for an incoming connection. Default value is 0.
 
 
-=item B<timeout=>I<microseconds>B<>
+=item B<timeout=>I<microseconds>
 
 Set raise error timeout, expressed in microseconds.
 
@@ -19971,27 +19971,27 @@ This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
 
 
-=item B<listen_timeout=>I<milliseconds>B<>
+=item B<listen_timeout=>I<milliseconds>
 
 Set listen timeout, expressed in milliseconds.
 
 
-=item B<recv_buffer_size=>I<bytes>B<>
+=item B<recv_buffer_size=>I<bytes>
 
 Set receive buffer size, expressed bytes.
 
 
-=item B<send_buffer_size=>I<bytes>B<>
+=item B<send_buffer_size=>I<bytes>
 
 Set send buffer size, expressed bytes.
 
 
-=item B<tcp_nodelay=>I<1|0>B<>
+=item B<tcp_nodelay=>I<1|0>
 
 Set TCP_NODELAY to disable Nagle's algorithm. Default value is 0.
 
 
-=item B<tcp_mss=>I<bytes>B<>
+=item B<tcp_mss=>I<bytes>
 
 Set maximum segment size for outgoing TCP packets, expressed in bytes.
 
@@ -20024,7 +20024,7 @@ The following parameters can be set via command line options
 
 
 
-=item B<ca_file, cafile=>I<filename>B<>
+=item B<ca_file, cafile=>I<filename>
 
 A file containing certificate authority (CA) root certificates to treat
 as trusted. If the linked TLS library contains a default this might not
@@ -20033,7 +20033,7 @@ setups have defaults built in.
 The file must be in OpenSSL PEM format.
 
 
-=item B<tls_verify=>I<1|0>B<>
+=item B<tls_verify=>I<1|0>
 
 If enabled, try to verify the peer that we are communicating with.
 Note, if using OpenSSL, this currently only makes sure that the
@@ -20046,7 +20046,7 @@ This is disabled by default since it requires a CA database to be
 provided by the caller in many cases.
 
 
-=item B<cert_file, cert=>I<filename>B<>
+=item B<cert_file, cert=>I<filename>
 
 A file containing a certificate to use in the handshake with the peer.
 (When operating as server, in listen mode, this is more often required
@@ -20054,12 +20054,12 @@ by the peer, while client certificates only are mandated in certain
 setups.)
 
 
-=item B<key_file, key=>I<filename>B<>
+=item B<key_file, key=>I<filename>
 
 A file containing the private key for the certificate.
 
 
-=item B<listen=>I<1|0>B<>
+=item B<listen=>I<1|0>
 
 If enabled, listen for connections on the provided port, and assume
 the server role in the handshake instead of the client role.
@@ -20106,52 +20106,52 @@ The list of supported options follows.
 =over 4
 
 
-=item B<buffer_size=>I<size>B<>
+=item B<buffer_size=>I<size>
 
 Set the UDP maximum socket buffer size in bytes. This is used to set either
 the receive or send buffer size, depending on what the socket is used for.
 Default is 64KB.  See also I<fifo_size>.
 
 
-=item B<bitrate=>I<bitrate>B<>
+=item B<bitrate=>I<bitrate>
 
 If set to nonzero, the output will have the specified constant bitrate if the
 input has enough packets to sustain it.
 
 
-=item B<burst_bits=>I<bits>B<>
+=item B<burst_bits=>I<bits>
 
 When using I<bitrate> this specifies the maximum number of bits in
 packet bursts.
 
 
-=item B<localport=>I<port>B<>
+=item B<localport=>I<port>
 
 Override the local UDP port to bind with.
 
 
-=item B<localaddr=>I<addr>B<>
+=item B<localaddr=>I<addr>
 
 Local IP address of a network interface used for sending packets or joining
 multicast groups.
 
 
-=item B<pkt_size=>I<size>B<>
+=item B<pkt_size=>I<size>
 
 Set the size in bytes of UDP packets.
 
 
-=item B<reuse=>I<1|0>B<>
+=item B<reuse=>I<1|0>
 
 Explicitly allow or disallow reusing UDP sockets.
 
 
-=item B<ttl=>I<ttl>B<>
+=item B<ttl=>I<ttl>
 
 Set the time to live value (for multicast only).
 
 
-=item B<connect=>I<1|0>B<>
+=item B<connect=>I<1|0>
 
 Initialize the UDP socket with C<connect()>. In this case, the
 destination address can't be changed with ff_udp_set_remote_url later.
@@ -20176,19 +20176,19 @@ Ignore packets sent from the specified addresses. In case of multicast, also
 exclude the source addresses in the multicast subscription.
 
 
-=item B<fifo_size=>I<units>B<>
+=item B<fifo_size=>I<units>
 
 Set the UDP receiving circular buffer size, expressed as a number of
 packets with size of 188 bytes. If not specified defaults to 7*4096.
 
 
-=item B<overrun_nonfatal=>I<1|0>B<>
+=item B<overrun_nonfatal=>I<1|0>
 
 Survive in case of UDP receiving circular buffer overrun. Default
 value is 0.
 
 
-=item B<timeout=>I<microseconds>B<>
+=item B<timeout=>I<microseconds>
 
 Set raise error timeout, expressed in microseconds.
 
@@ -20196,7 +20196,7 @@ This option is only relevant in read mode: if no data arrived in more
 than this time interval, raise error.
 
 
-=item B<broadcast=>I<1|0>B<>
+=item B<broadcast=>I<1|0>
 
 Explicitly allow or disallow UDP broadcasting.
 
@@ -20458,12 +20458,12 @@ There are two device name aliases:
 
 
 
-=item C<default>
+=item C<default>
 
 Select the AVFoundation default device of the corresponding type.
 
 
-=item C<none>
+=item C<none>
 
 Do not record the corresponding media type.
 This is equivalent to specifying an empty device name or index.
@@ -29854,10 +29854,10 @@ The channel remapping will be effective if, and only if:
 =over 4
 
 
-=item *<gain coefficients are zeroes or ones,>
+=item *<gain coefficients are zeroes or ones,>
 
 
-=item *<only one input per channel output,>
+=item *<only one input per channel output,>
 
 
 =back
@@ -38512,13 +38512,13 @@ basically, they refer to the frame and field of the opposite parity:
 =over 4
 
 
-=item *<I<p> matches the field of the opposite parity in the previous frame>
+=item *<I<p> matches the field of the opposite parity in the previous frame>
 
 
-=item *<I<c> matches the field of the opposite parity in the current frame>
+=item *<I<c> matches the field of the opposite parity in the current frame>
 
 
-=item *<I<n> matches the field of the opposite parity in the next frame>
+=item *<I<n> matches the field of the opposite parity in the next frame>
 
 
 =back
@@ -40185,7 +40185,7 @@ not possible.
 Defaults to I<read+write> if not specified.
 
 
-=item B<derive_device> I<type>B<>
+=item B<derive_device> I<type>
 
 Rather than using the device supplied at initialisation, instead derive a new
 device of type I<type> from the device the input frames exist on.
@@ -46832,7 +46832,7 @@ It accepts the following parameters:
 =over 4
 
 
-=item B<r, ratio, dar (C<setdar> only), sar (C<setsar> only)>
+=item B<r, ratio, dar (C<setdar> only), sar (C<setsar> only)>
 
 Set the aspect ratio used by the filter.
 
@@ -54819,7 +54819,7 @@ The PTS of the first video frame in the video. It's NAN if undefined.
 The time of the first video frame in the video. It's NAN if undefined.
 
 
-=item B<pict_type> I<(video only)>B<>
+=item B<pict_type> I<(video only)>
 
 The type of the filtered frame. It can assume one of the following
 values:
@@ -54852,7 +54852,7 @@ values:
 
 
 
-=item B<interlace_type> I<(video only)>B<>
+=item B<interlace_type> I<(video only)>
 
 The frame interlace type. It can assume one of the following values:
 
@@ -54875,17 +54875,17 @@ The frame is bottom-field-first.
 
 
 
-=item B<consumed_sample_n> I<(audio only)>B<>
+=item B<consumed_sample_n> I<(audio only)>
 
 the number of selected samples before the current frame
 
 
-=item B<samples_n> I<(audio only)>B<>
+=item B<samples_n> I<(audio only)>
 
 the number of samples in the current frame
 
 
-=item B<sample_rate> I<(audio only)>B<>
+=item B<sample_rate> I<(audio only)>
 
 the input sample rate
 
@@ -54901,7 +54901,7 @@ the position in the file of the filtered frame, -1 if the information
 is not available (e.g. for synthetic video)
 
 
-=item B<scene> I<(video only)>B<>
+=item B<scene> I<(video only)>
 
 value between 0 and 1 to indicate a new scene; a low value reflects a low
 probability for the current frame to introduce a new scene, while a higher

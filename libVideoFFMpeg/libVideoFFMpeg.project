@@ -74,7 +74,6 @@
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libOpenGL"/>
-        <IncludePath Value="../libextern/OpenCL-Headers"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="YUV"/>

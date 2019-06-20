@@ -139,8 +139,7 @@
 .if n .ad l
 .nh
 .SH "NAME"
-ffmpeg
- \- ffmpeg video converter
+ffmpeg \- ffmpeg video converter
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 ffmpeg [\fIglobal_options\fR] {[\fIinput_file_options\fR] \-i \fIinput_url\fR} ... {[\fIoutput_file_options\fR] \fIoutput_url\fR} ...
@@ -579,8 +578,8 @@ An empty stream specifier matches all streams. For example, \f(CW\*(C`\-codec co
 or \f(CW\*(C`\-codec: copy\*(C'\fR would copy all the streams without reencoding.
 .PP
 Possible forms of stream specifiers are:
-.IP "\fIstream_index\fR\fB \fR" 4
-.IX Item "stream_index "
+.IP "\fIstream_index\fR" 4
+.IX Item "stream_index"
 Matches the stream with this index. E.g. \f(CW\*(C`\-threads:1 4\*(C'\fR would set the
 thread count for the second stream to 4.
 .IP "\fIstream_type\fR\fB[:\fR\fIstream_index\fR\fB]\fR" 4
@@ -605,8 +604,8 @@ In the third version matches streams in the program with the id \fIprogram_id\fR
 tag \fIkey\fR having the specified value. If
 \&\fIvalue\fR is not given, matches streams that contain the given tag with any
 value.
-.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR\fB \fR" 4
-.IX Item "#stream_id or i:stream_id "
+.IP "\fB#\fR\fIstream_id\fR \fBor i:\fR\fIstream_id\fR" 4
+.IX Item "#stream_id or i:stream_id"
 Match the stream by stream id (e.g. \s-1PID\s0 in MPEG-TS container).
 .IP "\fBm:\fR\fIkey\fR\fB[:\fR\fIvalue\fR\fB]\fR" 4
 .IX Item "m:key[:value]"
@@ -641,24 +640,24 @@ Print advanced tool options in addition to the basic tool options.
 .IX Item "full"
 Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
-.IP "\fBdecoder=\fR\fIdecoder_name\fR\fB \fR" 4
-.IX Item "decoder=decoder_name "
+.IP "\fBdecoder=\fR\fIdecoder_name\fR" 4
+.IX Item "decoder=decoder_name"
 Print detailed information about the decoder named \fIdecoder_name\fR. Use the
 \&\fB\-decoders\fR option to get a list of all decoders.
-.IP "\fBencoder=\fR\fIencoder_name\fR\fB \fR" 4
-.IX Item "encoder=encoder_name "
+.IP "\fBencoder=\fR\fIencoder_name\fR" 4
+.IX Item "encoder=encoder_name"
 Print detailed information about the encoder named \fIencoder_name\fR. Use the
 \&\fB\-encoders\fR option to get a list of all encoders.
-.IP "\fBdemuxer=\fR\fIdemuxer_name\fR\fB \fR" 4
-.IX Item "demuxer=demuxer_name "
+.IP "\fBdemuxer=\fR\fIdemuxer_name\fR" 4
+.IX Item "demuxer=demuxer_name"
 Print detailed information about the demuxer named \fIdemuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all demuxers and muxers.
-.IP "\fBmuxer=\fR\fImuxer_name\fR\fB \fR" 4
-.IX Item "muxer=muxer_name "
+.IP "\fBmuxer=\fR\fImuxer_name\fR" 4
+.IX Item "muxer=muxer_name"
 Print detailed information about the muxer named \fImuxer_name\fR. Use the
 \&\fB\-formats\fR option to get a list of all muxers and demuxers.
-.IP "\fBfilter=\fR\fIfilter_name\fR\fB \fR" 4
-.IX Item "filter=filter_name "
+.IP "\fBfilter=\fR\fIfilter_name\fR" 4
+.IX Item "filter=filter_name"
 Print detailed information about the filter name \fIfilter_name\fR. Use the
 \&\fB\-filters\fR option to get a list of all filters.
 .RE
@@ -730,8 +729,8 @@ The returned list cannot be assumed to be always complete.
 .Vb 1
 \&        ffmpeg \-sinks pulse,server=192.168.0.4
 .Ve
-.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR\fB \fR" 4
-.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel "
+.IP "\fB\-loglevel [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR \fB| \-v [\fR\fIflags\fR\fB+]\fR\fIloglevel\fR" 4
+.IX Item "-loglevel [flags+]loglevel | -v [flags+]loglevel"
 Set logging level and flags used by the library.
 .Sp
 The optional \fIflags\fR prefix can consist of the following values:
@@ -1461,11 +1460,11 @@ Calculate \s-1PSNR\s0 of compressed frames.
 .IP "\fB\-vstats\fR" 4
 .IX Item "-vstats"
 Dump video coding statistics to \fIvstats_HHMMSS.log\fR.
-.IP "\fB\-vstats_file\fR \fIfile\fR\fB \fR" 4
-.IX Item "-vstats_file file "
+.IP "\fB\-vstats_file\fR \fIfile\fR" 4
+.IX Item "-vstats_file file"
 Dump video coding statistics to \fIfile\fR.
-.IP "\fB\-vstats_version\fR \fIfile\fR\fB \fR" 4
-.IX Item "-vstats_version file "
+.IP "\fB\-vstats_version\fR \fIfile\fR" 4
+.IX Item "-vstats_version file"
 Specifies which version of the vstats format to use. Default is 2.
 .Sp
 version = 1 :
@@ -1478,8 +1477,8 @@ version > 1:
 .IP "\fB\-top[:\fR\fIstream_specifier\fR\fB]\fR \fIn\fR \fB(\fR\fIoutput,per\-stream\fR\fB)\fR" 4
 .IX Item "-top[:stream_specifier] n (output,per-stream)"
 top=1/bottom=0/auto=\-1 field first
-.IP "\fB\-dc\fR \fIprecision\fR\fB \fR" 4
-.IX Item "-dc precision "
+.IP "\fB\-dc\fR \fIprecision\fR" 4
+.IX Item "-dc precision"
 Intra_dc_precision.
 .IP "\fB\-vtag\fR \fIfourcc/tag\fR \fB(\fR\fIoutput\fR\fB)\fR" 4
 .IX Item "-vtag fourcc/tag (output)"
@@ -1487,8 +1486,8 @@ Force video tag/fourcc. This is an alias for \f(CW\*(C`\-tag:v\*(C'\fR.
 .IP "\fB\-qphist (\fR\fIglobal\fR\fB)\fR" 4
 .IX Item "-qphist (global)"
 Show \s-1QP\s0 histogram
-.IP "\fB\-vbsf\fR \fIbitstream_filter\fR\fB \fR" 4
-.IX Item "-vbsf bitstream_filter "
+.IP "\fB\-vbsf\fR \fIbitstream_filter\fR" 4
+.IX Item "-vbsf bitstream_filter"
 Deprecated see \-bsf
 .IP "\fB\-force_key_frames[:\fR\fIstream_specifier\fR\fB]\fR \fItime\fR\fB[,\fR\fItime\fR\fB...] (\fR\fIoutput,per\-stream\fR\fB)\fR" 4
 .IX Item "-force_key_frames[:stream_specifier] time[,time...] (output,per-stream)"
@@ -1670,15 +1669,15 @@ extension.
 .RE
 .RS 4
 .RE
-.IP "\fB\-init_hw_device\fR \fItype\fR\fB[=\fR\fIname\fR\fB]@\fR\fIsource\fR\fB \fR" 4
-.IX Item "-init_hw_device type[=name]@source "
+.IP "\fB\-init_hw_device\fR \fItype\fR\fB[=\fR\fIname\fR\fB]@\fR\fIsource\fR" 4
+.IX Item "-init_hw_device type[=name]@source"
 Initialise a new hardware device of type \fItype\fR called \fIname\fR,
 deriving it from the existing device with the name \fIsource\fR.
 .IP "\fB\-init_hw_device list\fR" 4
 .IX Item "-init_hw_device list"
 List all hardware device types supported in this build of ffmpeg.
-.IP "\fB\-filter_hw_device\fR \fIname\fR\fB \fR" 4
-.IX Item "-filter_hw_device name "
+.IP "\fB\-filter_hw_device\fR \fIname\fR" 4
+.IX Item "-filter_hw_device name"
 Pass the hardware device called \fIname\fR to all filters in any filter graph.
 This can be used to set the device to upload to with the \f(CW\*(C`hwupload\*(C'\fR filter,
 or the device to map to with the \f(CW\*(C`hwmap\*(C'\fR filter.  Other filters may also
@@ -1785,8 +1784,8 @@ This is an alias for \f(CW\*(C`\-filter:a\*(C'\fR, see the \fB\-filter option\fR
 .IP "\fB\-atag\fR \fIfourcc/tag\fR \fB(\fR\fIoutput\fR\fB)\fR" 4
 .IX Item "-atag fourcc/tag (output)"
 Force audio tag/fourcc. This is an alias for \f(CW\*(C`\-tag:a\*(C'\fR.
-.IP "\fB\-absf\fR \fIbitstream_filter\fR\fB \fR" 4
-.IX Item "-absf bitstream_filter "
+.IP "\fB\-absf\fR \fIbitstream_filter\fR" 4
+.IX Item "-absf bitstream_filter"
 Deprecated, see \-bsf
 .IP "\fB\-guess_layout_max\fR \fIchannels\fR \fB(\fR\fIinput,per\-stream\fR\fB)\fR" 4
 .IX Item "-guess_layout_max channels (input,per-stream)"
@@ -1804,8 +1803,8 @@ Set the subtitle codec. This is an alias for \f(CW\*(C`\-codec:s\*(C'\fR.
 .IX Item "-sn (output)"
 Disable subtitle recording. For full manual control see the \f(CW\*(C`\-map\*(C'\fR
 option.
-.IP "\fB\-sbsf\fR \fIbitstream_filter\fR\fB \fR" 4
-.IX Item "-sbsf bitstream_filter "
+.IP "\fB\-sbsf\fR \fIbitstream_filter\fR" 4
+.IX Item "-sbsf bitstream_filter"
 Deprecated, see \-bsf
 .SS "Advanced Subtitle options"
 .IX Subsection "Advanced Subtitle options"
@@ -1822,8 +1821,8 @@ non-monotonic timestamps.
 Note that this option will delay the output of all data until the next
 subtitle packet is decoded: it may increase memory consumption and latency a
 lot.
-.IP "\fB\-canvas_size\fR \fIsize\fR\fB \fR" 4
-.IX Item "-canvas_size size "
+.IP "\fB\-canvas_size\fR \fIsize\fR" 4
+.IX Item "-canvas_size size"
 Set the size of the canvas used to render subtitles.
 .SS "Advanced options"
 .IX Subsection "Advanced options"
@@ -1994,8 +1993,8 @@ those are file indices (zero-based), not filenames.
 Optional \fImetadata_spec_in/out\fR parameters specify, which metadata to copy.
 A metadata specifier can have the following forms:
 .RS 4
-.IP "\fIg\fR\fB \fR" 4
-.IX Item "g "
+.IP "\fIg\fR" 4
+.IX Item "g"
 global metadata, i.e. metadata that applies to the whole file
 .IP "\fIs\fR\fB[:\fR\fIstream_spec\fR\fB]\fR" 4
 .IX Item "s[:stream_spec]"
@@ -2003,11 +2002,11 @@ per-stream metadata. \fIstream_spec\fR is a stream specifier as described
 in the \fBStream specifiers\fR chapter. In an input metadata specifier, the first
 matching stream is copied from. In an output metadata specifier, all matching
 streams are copied to.
-.IP "\fIc\fR\fB:\fR\fIchapter_index\fR\fB \fR" 4
-.IX Item "c:chapter_index "
+.IP "\fIc\fR\fB:\fR\fIchapter_index\fR" 4
+.IX Item "c:chapter_index"
 per-chapter metadata. \fIchapter_index\fR is the zero-based chapter index.
-.IP "\fIp\fR\fB:\fR\fIprogram_index\fR\fB \fR" 4
-.IX Item "p:program_index "
+.IP "\fIp\fR\fB:\fR\fIprogram_index\fR" 4
+.IX Item "p:program_index"
 per-program metadata. \fIprogram_index\fR is the zero-based program index.
 .RE
 .RS 4
@@ -2069,13 +2068,13 @@ loss).
 By default \fBffmpeg\fR attempts to read the input(s) as fast as possible.
 This option will slow down the reading of the input(s) to the native frame rate
 of the input(s). It is useful for real-time output (e.g. live streaming).
-.IP "\fB\-loop_output\fR \fInumber_of_times\fR\fB \fR" 4
-.IX Item "-loop_output number_of_times "
+.IP "\fB\-loop_output\fR \fInumber_of_times\fR" 4
+.IX Item "-loop_output number_of_times"
 Repeatedly loop output for formats that support looping such as animated \s-1GIF\s0
 (0 will loop the output infinitely).
 This option is deprecated, use \-loop.
-.IP "\fB\-vsync\fR \fIparameter\fR\fB \fR" 4
-.IX Item "-vsync parameter "
+.IP "\fB\-vsync\fR \fIparameter\fR" 4
+.IX Item "-vsync parameter"
 Video sync method.
 For compatibility reasons old values can be specified as numbers.
 Newly added values will have to be specified as strings always.
@@ -2110,15 +2109,15 @@ With \-map you can select from which stream the timestamps should be
 taken. You can leave either video or audio unchanged and sync the
 remaining stream(s) to the unchanged one.
 .RE
-.IP "\fB\-frame_drop_threshold\fR \fIparameter\fR\fB \fR" 4
-.IX Item "-frame_drop_threshold parameter "
+.IP "\fB\-frame_drop_threshold\fR \fIparameter\fR" 4
+.IX Item "-frame_drop_threshold parameter"
 Frame drop threshold, which specifies how much behind video frames can
 be before they are dropped. In frame rate units, so 1.0 is one frame.
 The default is \-1.1. One possible usecase is to avoid framedrops in case
 of noisy timestamps or to increase frame drop precision in case of exact
 timestamps.
-.IP "\fB\-async\fR \fIsamples_per_second\fR\fB \fR" 4
-.IX Item "-async samples_per_second "
+.IP "\fB\-async\fR \fIsamples_per_second\fR" 4
+.IX Item "-async samples_per_second"
 Audio sync method. \*(L"Stretches/squeezes\*(R" the audio stream to match the timestamps,
 the parameter is the maximum samples per second by which the audio is changed.
 \&\-async 1 is a special case where only the start of the audio stream is corrected
@@ -2145,8 +2144,8 @@ When used with \fBcopyts\fR, shift input timestamps so they start at zero.
 .Sp
 This means that using e.g. \f(CW\*(C`\-ss 50\*(C'\fR will make output timestamps start at
 50 seconds, regardless of what timestamp the input file started at.
-.IP "\fB\-copytb\fR \fImode\fR\fB \fR" 4
-.IX Item "-copytb mode "
+.IP "\fB\-copytb\fR \fImode\fR" 4
+.IX Item "-copytb mode"
 Specify how to set the encoder timebase when stream copying.  \fImode\fR is an
 integer numeric value, and can assume one of the following values:
 .RS 4
@@ -2240,8 +2239,8 @@ to get the list of bitstream filters.
 .IP "\fB\-tag[:\fR\fIstream_specifier\fR\fB]\fR \fIcodec_tag\fR \fB(\fR\fIinput/output,per\-stream\fR\fB)\fR" 4
 .IX Item "-tag[:stream_specifier] codec_tag (input/output,per-stream)"
 Force a tag/fourcc for matching streams.
-.IP "\fB\-timecode\fR \fIhh\fR\fB:\fR\fImm\fR\fB:\fR\fIss\fR\fB\s-1SEP\s0\fR\fIff\fR\fB \fR" 4
-.IX Item "-timecode hh:mm:ssSEPff "
+.IP "\fB\-timecode\fR \fIhh\fR\fB:\fR\fImm\fR\fB:\fR\fIss\fR\fB\s-1SEP\s0\fR\fIff\fR" 4
+.IX Item "-timecode hh:mm:ssSEPff"
 Specify Timecode for writing. \fI\s-1SEP\s0\fR is ':' for non drop timecode and ';'
 (or '.') for drop.
 .Sp

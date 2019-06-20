@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-libavutil - multimedia-biased utility library
+libavutil - multimedia-biased utility library
 
 =head1 DESCRIPTION
 

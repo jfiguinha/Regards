@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ffmpeg - ffmpeg video converter
+ffmpeg - ffmpeg video converter
 
 =head1 SYNOPSIS
 
@@ -501,7 +501,7 @@ Possible forms of stream specifiers are:
 =over 4
 
 
-=item I<stream_index>B<>
+=item I<stream_index>
 
 Matches the stream with this index. E.g. C<-threads:1 4> would set the
 thread count for the second stream to 4.
@@ -531,7 +531,7 @@ I<value> is not given, matches streams that contain the given tag with any
 value.
 
 
-=item B<#>I<stream_id> B<or i:>I<stream_id>B<>
+=item B<#>I<stream_id> B<or i:>I<stream_id>
 
 Match the stream by stream id (e.g. PID in MPEG-TS container).
 
@@ -590,31 +590,31 @@ Print complete list of options, including shared and private options
 for encoders, decoders, demuxers, muxers, filters, etc.
 
 
-=item B<decoder=>I<decoder_name>B<>
+=item B<decoder=>I<decoder_name>
 
 Print detailed information about the decoder named I<decoder_name>. Use the
 B<-decoders> option to get a list of all decoders.
 
 
-=item B<encoder=>I<encoder_name>B<>
+=item B<encoder=>I<encoder_name>
 
 Print detailed information about the encoder named I<encoder_name>. Use the
 B<-encoders> option to get a list of all encoders.
 
 
-=item B<demuxer=>I<demuxer_name>B<>
+=item B<demuxer=>I<demuxer_name>
 
 Print detailed information about the demuxer named I<demuxer_name>. Use the
 B<-formats> option to get a list of all demuxers and muxers.
 
 
-=item B<muxer=>I<muxer_name>B<>
+=item B<muxer=>I<muxer_name>
 
 Print detailed information about the muxer named I<muxer_name>. Use the
 B<-formats> option to get a list of all muxers and demuxers.
 
 
-=item B<filter=>I<filter_name>B<>
+=item B<filter=>I<filter_name>
 
 Print detailed information about the filter name I<filter_name>. Use the
 B<-filters> option to get a list of all filters.
@@ -721,7 +721,7 @@ The returned list cannot be assumed to be always complete.
 
 
 
-=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>B<>
+=item B<-loglevel [>I<flags>B<+]>I<loglevel> B<| -v [>I<flags>B<+]>I<loglevel>
 
 Set logging level and flags used by the library.
 
@@ -1658,11 +1658,11 @@ Calculate PSNR of compressed frames.
 
 Dump video coding statistics to F<vstats_HHMMSS.log>.
 
-=item B<-vstats_file> I<file>B<>
+=item B<-vstats_file> I<file>
 
 Dump video coding statistics to I<file>.
 
-=item B<-vstats_version> I<file>B<>
+=item B<-vstats_version> I<file>
 
 Specifies which version of the vstats format to use. Default is 2.
 
@@ -1678,7 +1678,7 @@ C<out= %2d st= %2d frame= %5d q= %2.1f PSNR= %6.2f f_size= %6d s_size= %8.0fkB t
 
 top=1/bottom=0/auto=-1 field first
 
-=item B<-dc> I<precision>B<>
+=item B<-dc> I<precision>
 
 Intra_dc_precision.
 
@@ -1690,7 +1690,7 @@ Force video tag/fourcc. This is an alias for C<-tag:v>.
 
 Show QP histogram
 
-=item B<-vbsf> I<bitstream_filter>B<>
+=item B<-vbsf> I<bitstream_filter>
 
 Deprecated see -bsf
 
@@ -1927,7 +1927,7 @@ extension.
 
 
 
-=item B<-init_hw_device> I<type>B<[=>I<name>B<]@>I<source>B<>
+=item B<-init_hw_device> I<type>B<[=>I<name>B<]@>I<source>
 
 Initialise a new hardware device of type I<type> called I<name>,
 deriving it from the existing device with the name I<source>.
@@ -1938,7 +1938,7 @@ deriving it from the existing device with the name I<source>.
 List all hardware device types supported in this build of ffmpeg.
 
 
-=item B<-filter_hw_device> I<name>B<>
+=item B<-filter_hw_device> I<name>
 
 Pass the hardware device called I<name> to all filters in any filter graph.
 This can be used to set the device to upload to with the C<hwupload> filter,
@@ -2095,7 +2095,7 @@ This is an alias for C<-filter:a>, see the B<-filter option>.
 
 Force audio tag/fourcc. This is an alias for C<-tag:a>.
 
-=item B<-absf> I<bitstream_filter>B<>
+=item B<-absf> I<bitstream_filter>
 
 Deprecated, see -bsf
 
@@ -2127,7 +2127,7 @@ Set the subtitle codec. This is an alias for C<-codec:s>.
 Disable subtitle recording. For full manual control see the C<-map>
 option.
 
-=item B<-sbsf> I<bitstream_filter>B<>
+=item B<-sbsf> I<bitstream_filter>
 
 Deprecated, see -bsf
 
@@ -2158,7 +2158,7 @@ subtitle packet is decoded: it may increase memory consumption and latency a
 lot.
 
 
-=item B<-canvas_size> I<size>B<>
+=item B<-canvas_size> I<size>
 
 Set the size of the canvas used to render subtitles.
 
@@ -2339,7 +2339,7 @@ A metadata specifier can have the following forms:
 =over 4
 
 
-=item I<g>B<>
+=item I<g>
 
 global metadata, i.e. metadata that applies to the whole file
 
@@ -2352,12 +2352,12 @@ matching stream is copied from. In an output metadata specifier, all matching
 streams are copied to.
 
 
-=item I<c>B<:>I<chapter_index>B<>
+=item I<c>B<:>I<chapter_index>
 
 per-chapter metadata. I<chapter_index> is the zero-based chapter index.
 
 
-=item I<p>B<:>I<program_index>B<>
+=item I<p>B<:>I<program_index>
 
 per-program metadata. I<program_index> is the zero-based program index.
 
@@ -2426,13 +2426,13 @@ By default B<ffmpeg> attempts to read the input(s) as fast as possible.
 This option will slow down the reading of the input(s) to the native frame rate
 of the input(s). It is useful for real-time output (e.g. live streaming).
 
-=item B<-loop_output> I<number_of_times>B<>
+=item B<-loop_output> I<number_of_times>
 
 Repeatedly loop output for formats that support looping such as animated GIF
 (0 will loop the output infinitely).
 This option is deprecated, use -loop.
 
-=item B<-vsync> I<parameter>B<>
+=item B<-vsync> I<parameter>
 
 Video sync method.
 For compatibility reasons old values can be specified as numbers.
@@ -2478,7 +2478,7 @@ taken. You can leave either video or audio unchanged and sync the
 remaining stream(s) to the unchanged one.
 
 
-=item B<-frame_drop_threshold> I<parameter>B<>
+=item B<-frame_drop_threshold> I<parameter>
 
 Frame drop threshold, which specifies how much behind video frames can
 be before they are dropped. In frame rate units, so 1.0 is one frame.
@@ -2487,7 +2487,7 @@ of noisy timestamps or to increase frame drop precision in case of exact
 timestamps.
 
 
-=item B<-async> I<samples_per_second>B<>
+=item B<-async> I<samples_per_second>
 
 Audio sync method. "Stretches/squeezes" the audio stream to match the timestamps,
 the parameter is the maximum samples per second by which the audio is changed.
@@ -2521,7 +2521,7 @@ This means that using e.g. C<-ss 50> will make output timestamps start at
 50 seconds, regardless of what timestamp the input file started at.
 
 
-=item B<-copytb> I<mode>B<>
+=item B<-copytb> I<mode>
 
 Specify how to set the encoder timebase when stream copying.  I<mode> is an
 integer numeric value, and can assume one of the following values:
@@ -2645,7 +2645,7 @@ to get the list of bitstream filters.
 Force a tag/fourcc for matching streams.
 
 
-=item B<-timecode> I<hh>B<:>I<mm>B<:>I<ss>B<SEP>I<ff>B<>
+=item B<-timecode> I<hh>B<:>I<mm>B<:>I<ss>B<SEP>I<ff>
 
 Specify Timecode for writing. I<SEP> is ':' for non drop timecode and ';'
 (or '.') for drop.
