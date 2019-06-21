@@ -1,5 +1,5 @@
 #decompression
-# pacman -S unzip
+sudo apt install unzip
 tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
@@ -7,13 +7,20 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
 chmod +x configure
-./configure --enable-video
+./configure --enable-video --enable-webready
+make -j`nproc`
+cd ..
+
+#Compile fftw-3.3.8  :
+cd fftw-3.3.8 
+chmod +x configure
+./configure --enable-float
 make -j`nproc`
 cd ..
 
 #Compile heif-master
 cd heif-master/srcs 
-cmake -G "MSYS Makefiles" ../srcs 
+cmake ../srcs 
 make -j`nproc`
 cd ..
 cd ..
@@ -26,7 +33,7 @@ cd ..
 
 #Compile libde265-master
 cd libde265-master
-cmake -G "MSYS Makefiles" ../libde265-master 
+cmake ../libde265-master 
 make -j`nproc`
 cd ..
 
@@ -45,19 +52,15 @@ cd ..
 
 #Compile libwebp-0.6.0
 cd libwebp-0.6.0
-cmake -G "MSYS Makefiles" ../libwebp-0.6.0
+cmake ../libwebp-0.6.0
 make -j`nproc`
 cd .. 
 
 #Compile MediaInfo_DLL_GNU_FromSource
-cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
-./configure 
-make -j`nproc`
+cd MediaInfo_DLL_GNU_FromSource
+chmod +x SO_compile.sh
+ ./SO_compile.sh
 cd .. 
-cd .. 
-cd .. 
-cd .. 
-cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
@@ -75,7 +78,7 @@ make install
 cd ..
 
 #Compile x265_2.5
-cd x265_2.5/build/msys
+cd x265_2.5/build/linux
 ./multilib.sh
 cd .. 
 cd .. 
@@ -89,4 +92,4 @@ make -j`nproc`
 cd ..
 
 #Compille ffmpeg
-./ffmpeg_build_windows.sh
+./ffmpeg_build.sh
