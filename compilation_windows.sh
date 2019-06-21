@@ -6,14 +6,17 @@ echo $NBPROC
 pacman -Syuu
 
 #installation default package for msys64
-pacman -Ss --needed base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake 
-pacman -Ss yasm 
-pacman -Ss nasm 
-pacman -Ss mingw-w64-x86_64-pango
-pacman -Ss mingw-w64-x86_64-fftw 
-pacman -Ss mingw-w64-x86_64-openexr 
-pacman -Ss git 
-pacman -Ss mingw-w64-x86_64-freeglut
+pacman -S --needed base-devel mingw-w64-x86_64-toolchain
+pacman -S mingw-w64-x86_64-cmake 
+pacman -S yasm 
+pacman -S nasm 
+pacman -S mingw-w64-x86_64-pango
+pacman -S mingw-w64-x86_64-fftw 
+pacman -S mingw-w64-x86_64-openexr 
+pacman -S git 
+pacman -S mingw-w64-x86_64-freeglut
+pacman -S libxml2-devel
+pacman -S mingw-w64-x86_64-glew
 
 #Install External Library
 cd libextern
