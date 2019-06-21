@@ -187,6 +187,7 @@
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/x265_2.5/build/linux/8bit"/>
+        <LibraryPath Value="../libextern/aom/build"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -258,7 +259,6 @@
         <Library Value="xcb-xfixes"/>
         <Library Value="xcb-shape"/>
         <Library Value="SM"/>
-        <Library Value="xml2"/>
         <Library Value="webp"/>
         <Library Value="SDL2"/>
         <Library Value="FaceRecognition"/>
