@@ -3,7 +3,6 @@ NBPROC=$(nproc)
 echo $NBPROC
 
 #decompression
-pacman -S unzip
 tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
@@ -17,7 +16,14 @@ cd ..
 
 #Compile heif-master
 cd heif-master/srcs 
-cmake -G "MSYS Makefiles" ../srcs 
+cmake ../srcs 
+make -j$NBPROC
+cd ..
+cd ..
+
+#Compile fftw
+cd fftw-3.3.8
+ ./configure --enable-float 
 make -j$NBPROC
 cd ..
 cd ..
@@ -30,7 +36,7 @@ cd ..
 
 #Compile libde265-master
 cd libde265-master
-cmake -G "MSYS Makefiles" ../libde265-master 
+cmake ../libde265-master 
 make -j$NBPROC
 cd ..
 
@@ -73,24 +79,16 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug 
+./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
 make -j$NBPROC
 cd ..
 
 #Compile x265_2.5
-cd x265_2.5/build/msys
-chmod +x multilib.sh
-./multilib.sh
-cd .. 
-cd .. 
-cd .. 
-
-#Compile libexif
-cd libexif-master
-chmod +x configure
-./configure
+cd x265_2.5/source 
+cmake ../source
 make -j$NBPROC
-cd ..
+cd .. 
+cd .. 
 
 #Compille ffmpeg
-./ffmpeg_build_windows.sh
+./ffmpeg_build_macos.sh

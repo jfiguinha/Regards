@@ -471,7 +471,7 @@ AUTOCONF = ${SHELL} /c/developpement/git_gcc/Regards/libextern/libjpeg-turbo-1.5
 AUTOHEADER = ${SHELL} /c/developpement/git_gcc/Regards/libextern/libjpeg-turbo-1.5.1/missing autoheader
 AUTOMAKE = ${SHELL} /c/developpement/git_gcc/Regards/libextern/libjpeg-turbo-1.5.1/missing automake-1.15
 AWK = gawk
-BUILD = 20190315
+BUILD = 20190621
 CC = gcc
 CCAS = gcc
 CCASDEPMODE = depmode=gcc3
@@ -523,7 +523,7 @@ MANIFEST_TOOL = :
 MEM_SRCDST_FUNCTIONS = global:  jpeg_mem_dest;  jpeg_mem_src;
 MKDIR_P = /usr/bin/mkdir -p
 NAFLAGS = -fwin64 -DWIN64 -D__x86_64__
-NASM = yasm
+NASM = nasm
 NM = /mingw64/bin/nm -B
 NMEDIT = 
 OBJDUMP = objdump

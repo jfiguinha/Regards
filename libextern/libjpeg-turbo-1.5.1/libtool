@@ -292,7 +292,7 @@ finish_eval=""
 hardcode_into_libs=no
 
 # Compile-time system search path for libraries.
-sys_lib_search_path_spec="C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/8.3.0 C:/msys64/mingw64/lib/gcc C:/msys64/mingw64/x86_64-w64-mingw32/lib C:/msys64/mingw64/lib "
+sys_lib_search_path_spec="C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/9.1.0 C:/msys64/mingw64/lib/gcc C:/msys64/mingw64/x86_64-w64-mingw32/lib C:/msys64/mingw64/lib "
 
 # Detected run-time system search path for libraries.
 sys_lib_dlsearch_path_spec="/lib /usr/lib"
