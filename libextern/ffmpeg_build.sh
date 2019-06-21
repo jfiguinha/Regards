@@ -5,15 +5,6 @@ echo $NBPROC
 sudo apt-get update
 sudo apt-get -y install autoconf automake build-essential git libass-dev libfaac-dev libgpac-dev libmp3lame-dev libopus-dev libtheora-dev libtool libvorbis-dev libvpx-dev pkg-config texi2html yasm zlib1g-dev
 
-# YASM
-wget http://www.tortall.net/projects/yasm/releases/yasm-1.2.0.tar.gz
-tar xf yasm-1.2.0.tar.gz
-cd yasm-1.2.0
-./configure
-make -j$NBPROC
-sudo make install
-cd ..
-
 # x264
 git clone --depth 1 git://git.videolan.org/x264.git
 cd x264
