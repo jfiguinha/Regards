@@ -71,7 +71,6 @@ chmod +x configure
 chmod +x src/stc/gen_iface.py
 ./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug 
 make -j`nproc`
-make install
 cd ..
 
 #Compile x265_2.5
