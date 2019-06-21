@@ -53,15 +53,26 @@ cmake -G "MSYS Makefiles" ../libwebp-0.6.0
 make -j$NBPROC
 cd .. 
 
-#Compile MediaInfo_DLL_GNU_FromSource
+#Compile Zen From MediaInfo_DLL_GNU_FromSource
+cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake
+cmake ../CMake/ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+make install
+cd .. 
+cd .. 
+cd .. 
+cd .. 
+
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+
+#Compile MediaInfoLib From MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
-./configure 
+./configure
 make -j$NBPROC
 cd .. 
 cd .. 
 cd .. 
 cd .. 
-cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
