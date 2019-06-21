@@ -62,8 +62,8 @@ cd ..
 
 #Compile MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource
-chmod +x SO_compile.sh
- ./SO_compile.sh
+chmod +x SO_Compile.sh
+ ./SO_Compile.sh
 cd .. 
 
 #Compile SDL2-2.0.5
@@ -89,7 +89,7 @@ cd ..
 cd .. 
 
 #Compile libexif
-cd libexif 
+cd libexif-master
 chmod +x configure
 ./configure
 make -j$NBPROC
