@@ -1,5 +1,5 @@
 #!/bin/bash
-NBPROC=$(nproc)
+NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
 # libaom

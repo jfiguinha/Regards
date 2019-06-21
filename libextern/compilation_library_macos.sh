@@ -1,5 +1,5 @@
 #!/bin/bash
-NBPROC=$(nproc)
+NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
 #decompression
@@ -7,12 +7,14 @@ tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
+
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
 chmod +x configure
 ./configure --enable-video
 make -j$NBPROC
 cd ..
+
 
 #Compile heif-master
 cd heif-master/srcs 
@@ -25,7 +27,6 @@ cd ..
 cd fftw-3.3.8
  ./configure --enable-float 
 make -j$NBPROC
-cd ..
 cd ..
 
 #Compile jasper-1.900.1
@@ -55,22 +56,34 @@ cd ..
 
 #Compile libwebp-0.6.0
 cd libwebp-0.6.0
-cmake -G "MSYS Makefiles" ../libwebp-0.6.0
+cmake ../libwebp-0.6.0
 make -j$NBPROC
 cd .. 
 
+
 #Compile MediaInfo_DLL_GNU_FromSource
-cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
-./configure 
+cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/GNU/Library
+./configure
 make -j$NBPROC
-cd .. 
-cd .. 
-cd .. 
-cd .. 
+cd ..
+cd ..
+cd ..
+cd ..
+cd ..
+
+cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
+./configure
+make -j$NBPROC
+cd ..
+cd ..
+cd ..
+cd ..
+cd ..
 cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
+chmod +x configure
 ./configure
 make -j$NBPROC
 cd ..
