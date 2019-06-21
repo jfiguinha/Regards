@@ -20,9 +20,9 @@ pacman -S unzip
 pacman -S zip
 
 #Install External Library
-cd libextern
-chmod +x compilation_library_window.sh
-./compilation_library_window.sh
-cd ..
+# cd libextern
+# chmod +x compilation_library_window.sh
+# ./compilation_library_window.sh
+# cd ..
 
-/bin/sh -c '/usr/bin/make -j12 -e -f Makefile'
+# /bin/sh -c '/usr/bin/make -j12 -e -f Makefile'
