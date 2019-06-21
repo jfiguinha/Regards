@@ -15,8 +15,9 @@ pacman -S mingw-w64-x86_64-fftw
 pacman -S mingw-w64-x86_64-openexr 
 pacman -S git 
 pacman -S mingw-w64-x86_64-freeglut
-pacman -S libxml2-devel
 pacman -S mingw-w64-x86_64-glew
+pacman -S unzip
+pacman -S zip
 
 #Install External Library
 cd libextern
