@@ -11,6 +11,7 @@ brew install pango
 brew install git 
 brew install libexif 
 brew install OpenEXR
+brew install glew
 
 #Install External Library
 #cd libextern

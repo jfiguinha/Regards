@@ -1,7 +1,3 @@
-#!/bin/bash
-NBPROC=$(sysctl -n hw.ncpu)
-echo $NBPROC
-
 #decompression
 tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
@@ -35,6 +31,12 @@ cd jasper-1.900.1
 make -j$NBPROC
 cd ..
 
+#Compile glew-2.1.0
+cd glew-2.1.0
+chmod +x config/config.guess
+make -j$NBPROC
+cd ..
+
 #Compile libde265-master
 cd libde265-master
 cmake ../libde265-master 
@@ -44,6 +46,7 @@ cd ..
 #Compile libjpeg-turbo-1.5.1
 cd libjpeg-turbo-1.5.1 
 chmod +x configure
+chmod +x simd/nasm_lt.sh
 ./configure
 make -j$NBPROC
 cd .. 
@@ -60,7 +63,6 @@ cmake ../libwebp-0.6.0
 make -j$NBPROC
 cd .. 
 
-
 #Compile MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/GNU/Library
 ./configure
@@ -74,7 +76,6 @@ cd ..
 cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
 ./configure
 make -j$NBPROC
-cd ..
 cd ..
 cd ..
 cd ..

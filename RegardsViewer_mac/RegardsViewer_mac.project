@@ -178,6 +178,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libavutil"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
+        <LibraryPath Value="../libextern/ffmpeg-4.1/libpostproc"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/libwebp-0.6.0"/>
@@ -185,6 +186,7 @@
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
+        <LibraryPath Value="../libextern/aom/build"/>
         <Library Value="wxjpeg-3.1"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
@@ -248,12 +250,12 @@
         <Library Value="avfilter"/>
         <Library Value="avcodec"/>
         <Library Value="avutil"/>
+        <Library Value="postproc"/>
         <Library Value="swresample"/>
         <Library Value="swscale"/>
         <Library Value="glib-2.0"/>
         <Library Value="Psd"/>
         <Library Value="turbojpeg"/>
-        <Library Value="xml2"/>
         <Library Value="webp"/>
         <Library Value="lzma"/>
         <Library Value="SDL2"/>
@@ -271,6 +273,7 @@
         <Library Value="wxtiff-3.1"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
+        <Library Value="aom"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
