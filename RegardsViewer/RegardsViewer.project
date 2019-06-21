@@ -183,9 +183,9 @@
         <LibraryPath Value="../libextern/libexif-master/libexif/.libs"/>
         <LibraryPath Value="../libextern/libwebp-0.6.0/"/>
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
-        <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/CMake/ZenLib"/>
-        <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/CMake"/>
-        <LibraryPath Value="../libextern/aom_build"/>
+        <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake"/>
+        <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
+        <LibraryPath Value="../libextern/aom/build"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -290,7 +290,6 @@
         <Library Value="wxjpeg-3.1"/>
         <Library Value="wxpng-3.1"/>
         <Library Value="wxtiff-3.1"/>
-        <Library Value="xml2"/>
         <Library Value="webp"/>
         <Library Value="lzma"/>
         <Library Value="SDL2"/>
@@ -567,13 +566,11 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpcre-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpixman-1-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpng16-16.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/librtmp-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssh2-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libstdc++-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtasn1-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libunistring-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwinpthread-1.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libxml2-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/zlib1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlidec.dll ./Release</Command>
