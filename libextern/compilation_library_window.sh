@@ -15,6 +15,19 @@ chmod +x configure
 make -j$NBPROC
 cd ..
 
+#Compile glew-2.1.0
+cd glew-2.1.0
+mkdir -p lib
+mkdir -p bin
+cd build/cmake/
+cmake ./ -G"MSYS Makefiles" 
+make -j$NBPROC
+cp lib/*.* ../../lib
+cp bin/*.* ../../bin
+cd ..
+cd ..
+cd ..
+
 #Compile heif-master
 cd heif-master/srcs 
 cmake -G "MSYS Makefiles" ../srcs 
