@@ -73,6 +73,7 @@ cd ..
 cd .. 
 cd .. 
 cd .. 
+cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 

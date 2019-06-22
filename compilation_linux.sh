@@ -29,9 +29,9 @@ sudo apt install liblzma-dev
 sudo apt install libva-dev
 sudo apt install libwebp-dev
 
-#install AMD SDK
-#wget http://cs.wisc.edu/~riccardo/assets/AMD-APP-SDKInstaller-v3.0.130.136-GA-linux64.tar.bz2
-# Install AMD SDK
+#Get AMD SDK
+#wget https://github.com/microsoft/LightGBM/releases/download/v2.0.12/AMD-APP-SDKInstaller-v3.0.130.136-GA-linux64.tar.bz2
+#Install AMD SDK
 #tar -xvf AMD-APP-SDKInstaller-v3.0.130.136-GA-linux64.tar.bz2
 #chmod +x AMD-APP-SDK-v3.0.130.136-GA-linux64.sh
 #sudo bash AMD-APP-SDK-v3.0.130.136-GA-linux64.sh
