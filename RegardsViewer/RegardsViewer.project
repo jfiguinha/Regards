@@ -155,7 +155,6 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
-        <IncludePath Value="../libextern/dlfcn-win32-master"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>

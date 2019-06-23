@@ -161,6 +161,7 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="FFMPEG"/>
