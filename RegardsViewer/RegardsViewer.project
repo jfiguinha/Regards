@@ -413,7 +413,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libidn2-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_3.dll ./Debug</Command>
@@ -428,30 +427,28 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpcre-1.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpixman-1-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpng16-16.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/librtmp-1.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssh2-1.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libstdc++-6.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtasn1-6.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libunistring-2.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwinpthread-1.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libxml2-2.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/zlib1.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlidec.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpsl-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlicommon.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libidn2-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfftw3f-3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg-0.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/glew32.dll ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Debug/libx265.dll</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Debug/libRegardsBpg.dll</Command>
-        <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
+        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Debug/libRegardsBpg.dll ./Debug/libRegardsBpg.dll</Command>
+        <Command Enabled="yes">cp ../FaceRecognition_windows/Debug/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
-        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
+        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -581,7 +578,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg-0.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/glew32.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
