@@ -79,7 +79,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);</LibraryPath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
@@ -92,7 +92,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;C:\Program Files (x86)\AMD APP SDK\3.0\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
