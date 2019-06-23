@@ -7,9 +7,6 @@ pacman -S unzip
 tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
-wget https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/files/1406216/lightOCLSDK.zip
-mkdir -p openCLSDK
-unzip lightOCLSDK.zip -d libOpenCL
 
 #Compile exiv2-0.26 :
 cd exiv2-0.26 

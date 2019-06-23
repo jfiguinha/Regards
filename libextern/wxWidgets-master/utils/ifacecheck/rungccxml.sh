@@ -49,7 +49,7 @@ for f in $headerlist; do
 done
 
 # filter the configure flags to pass to gccxml
-wx_top_builddir="/c/developpement/git_gcc/Regards/libextern/wxWidgets-master"
+wx_top_builddir="/c/developpement/git/Regards/libextern/wxWidgets-master"
 top_srcdir="../.."
 flags="-D_FILE_OFFSET_BITS=64 -DwxDEBUG_LEVEL=0 -I${wx_top_builddir}/lib/wx/include/msw-unicode-static-3.1 -I${top_srcdir}/include -O2 "
 

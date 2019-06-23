@@ -12,7 +12,7 @@ exec_prefix = ${prefix}
 datarootdir = ${prefix}/share
 INSTALL = /usr/bin/install -c
 EXEEXT = .exe
-BK_DEPS = /c/developpement/git_gcc/Regards/libextern/wxWidgets-master/bk-deps
+BK_DEPS = /c/developpement/git/Regards/libextern/wxWidgets-master/bk-deps
 srcdir = .
 top_srcdir = ../..
 LIBS = -lz -lrpcrt4 -loleaut32 -lole32 -luuid -lwinspool -lwinmm -lshell32 -lshlwapi -lcomctl32 -lcomdlg32 -ladvapi32 -lversion -lwsock32 -lgdi32 -loleacc
@@ -31,7 +31,7 @@ CXXWARNINGS = -Wall -Wundef -Wunused-parameter -Wno-ctor-dtor-privacy -Woverload
 HOST_SUFFIX = 
 SAMPLES_RPATH_FLAG = 
 SAMPLES_CXXFLAGS = 
-wx_top_builddir = /c/developpement/git_gcc/Regards/libextern/wxWidgets-master
+wx_top_builddir = /c/developpement/git/Regards/libextern/wxWidgets-master
 
 ### Variables: ###
 

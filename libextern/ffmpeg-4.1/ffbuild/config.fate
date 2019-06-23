@@ -1,1 +1,1 @@
-config:x86:x86_64:generic:mingw32:gcc 9.1.0 (Rev3, Built by MSYS2 project):--prefix=/home/jfigu_000/ffmpeg_build --extra-cflags=-I/home/jfigu_000/ffmpeg_build/include --extra-ldflags=-L/home/jfigu_000/ffmpeg_build/lib --bindir=/usr/bin --enable-gpl --enable-nonfree --enable-libaom
+config:x86:x86_64:generic:mingw32:gcc 9.1.0 (Rev3, Built by MSYS2 project):--prefix=/home/jfigu/ffmpeg_build --extra-cflags=-I/home/jfigu/ffmpeg_build/include --extra-ldflags=-L/home/jfigu/ffmpeg_build/lib --bindir=/usr/bin --enable-gpl --enable-nonfree --enable-libaom

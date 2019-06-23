@@ -1,4 +1,4 @@
-# Install script for directory: C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/encoder
+# Install script for directory: C:/developpement/git/Regards/libextern/libde265-master/libde265/encoder
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/encoder/algo/cmake_install.cmake")
+  include("C:/developpement/git/Regards/libextern/libde265-master/libde265/encoder/algo/cmake_install.cmake")
 
 endif()
 

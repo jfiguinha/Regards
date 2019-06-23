@@ -348,8 +348,8 @@
 @set have-struct-sockaddr-storage yes
 @c @set have-struct-stat-st-mtim-tv-nsec no
 @c @set have-struct-v4l2-frmivalenum-discrete no
-@c @set have-makeinfo no
-@c @set have-makeinfo-html no
+@set have-makeinfo yes
+@set have-makeinfo-html yes
 @c @set have-opencl-d3d11 no
 @c @set have-opencl-drm-arm no
 @c @set have-opencl-drm-beignet no
@@ -357,13 +357,13 @@
 @c @set have-opencl-vaapi-beignet no
 @c @set have-opencl-vaapi-intel-media no
 @set have-perl yes
-@set have-pod2man yes
+@c @set have-pod2man no
 @c @set have-texi2html no
 @set config-doc yes
-@c @set config-htmlpages no
-@set config-manpages yes
+@set config-htmlpages yes
+@c @set config-manpages no
 @set config-podpages yes
-@c @set config-txtpages no
+@set config-txtpages yes
 @set config-avio-dir-cmd-example yes
 @set config-avio-reading-example yes
 @set config-decode-audio-example yes
