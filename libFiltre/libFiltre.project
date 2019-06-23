@@ -228,6 +228,7 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libWindowMain"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -79,6 +79,7 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

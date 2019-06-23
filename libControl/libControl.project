@@ -102,7 +102,7 @@
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libPiccante"/>
-        <IncludePath Value="../libextern/OpenCL-Headers"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
         <Preprocessor Value="EXIV2"/>
         <Preprocessor Value="FFMPEG"/>
       </Compiler>

@@ -28,6 +28,7 @@ sudo apt install libexpat-dev
 sudo apt install liblzma-dev
 sudo apt install libva-dev
 sudo apt install libwebp-dev
+sudo apt install ocl-icd-opencl-dev
 
 #Get AMD SDK
 #wget https://github.com/microsoft/LightGBM/releases/download/v2.0.12/AMD-APP-SDKInstaller-v3.0.130.136-GA-linux64.tar.bz2

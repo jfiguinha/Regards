@@ -156,6 +156,7 @@
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libextern/dlfcn-win32-master"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="FFMPEG"/>
@@ -186,6 +187,7 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/aom/build"/>
+        <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>

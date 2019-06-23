@@ -33,6 +33,7 @@
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
