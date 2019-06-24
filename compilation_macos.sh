@@ -4,19 +4,20 @@ echo $NBPROC
 
 #update pacman
 brew update 
-brew upgrade 
+brew upgrade
 xcode-select --install
-brew install llvm@7
-brew install pango 
-brew install git 
-brew install libexif 
-brew install OpenEXR
-brew install glew
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC llvm@7
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC pango 
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC git 
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC libexif 
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC OpenEXR
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC glew
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC coreutils
 
 #Install External Library
-#cd libextern
-#chmod +x compilation_library_macos.sh
-#./compilation_library_macos.sh
-#cd ..
+cd libextern
+chmod +x compilation_library_macos.sh
+./compilation_library_macos.sh
+cd ..
 
 #/bin/sh -c '/usr/bin/make -j12 -e -f Makefile.macos'

@@ -1,3 +1,7 @@
+#!/bin/bash
+NBPROC=$(sysctl -n hw.physicalcpu)
+echo $NBPROC
+
 #decompression
 tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
