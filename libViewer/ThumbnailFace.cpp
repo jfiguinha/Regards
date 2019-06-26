@@ -1,4 +1,5 @@
 ﻿#include <header.h>
+#ifndef __NOFACE_DETECTION__
 #include "ThumbnailFace.h"
 #include "MainWindow.h"
 #include "ViewerParamInit.h"
@@ -710,3 +711,4 @@ void CThumbnailFace::UpdateScrollWithVScroll()
         }
 
 }
+#endif

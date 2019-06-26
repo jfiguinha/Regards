@@ -3,12 +3,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include <xmmintrin.h>  
-
-union SSEfloatUnion{
-    __m128 v;    // SSE 4 x float vector
-    float a[4];  // scalar array of 4 floats
-};
 
 class CRegardsFloatBitmap
 {

@@ -1,3 +1,4 @@
+#ifndef __NOFACE_DETECTION__
 #pragma once
 #include <ToolbarWindow.h>
 #include <ToolbarSlide.h>
@@ -34,3 +35,4 @@ namespace Regards
 		};
 	}
 }
+#endif

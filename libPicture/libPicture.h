@@ -69,7 +69,6 @@ public:
     
 private:
 
-    float clamp(float val, float minval, float maxval);
 	uint8_t * readfile(const wxString & fileName, size_t&size);
 	void writefile(const wxString & fileName, uint8_t * data, size_t & size);
 	//-----------------------------------------------------------------------------

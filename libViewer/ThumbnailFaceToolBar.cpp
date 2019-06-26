@@ -1,4 +1,5 @@
 #include <header.h>
+#ifndef __NOFACE_DETECTION__
 #include "ThumbnailFaceToolBar.h"
 #include <ToolbarSlide.h>
 #include <LibResource.h>
@@ -150,3 +151,5 @@ void CThumbnailFaceToolBar::EventManager(const int &id)
 		}
 	}
 }
+
+#endif

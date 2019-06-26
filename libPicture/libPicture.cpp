@@ -1442,13 +1442,6 @@ float CLibPicture::CalculPictureRatio(const int &pictureWidth, const int &pictur
 	return newRatio;
 }
 
-float CLibPicture::clamp(float val, float minval, float maxval)
-{
-    _mm_store_ss( &val, _mm_min_ss( _mm_max_ss(_mm_set_ss(val),_mm_set_ss(minval)), _mm_set_ss(maxval) ) );
-    return val;    
-}
-
-
 //------------------------------------------------------------------------------
 //Chargement d'une image par son nom
 //------------------------------------------------------------------------------
@@ -1525,10 +1518,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
                     {
                         for (int j = 0; j < width; j++, k+=4)
                         {
-                            float rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-                            float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-                            float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);                        
-                            float avalue = clamp(float(pixels[i][j].a), 0.0f, 1.0f);    
+                            float rvalue = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+                            float gvalue = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+                            float bvalue = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+                            float avalue = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
                             
                             data[k] = (int)(bvalue * 255.0);
                             data[k+1] = (int)(gvalue * 255.0);
@@ -1570,10 +1563,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
                     {
                         for (int j = 0; j < width; j++, k+=4)
                         {
-                            data[k] = clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-                            data[k+1] = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-                            data[k+2] = clamp(float(pixels[i][j].b), 0.0f, 1.0f);                        
-                            data[k+3] = clamp(float(pixels[i][j].a), 0.0f, 1.0f);    
+                            data[k] = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+                            data[k+1] = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+                            data[k+2] = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+                            data[k+3] = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
                         }
                     }
                     bitmap->SetPicture(picture);

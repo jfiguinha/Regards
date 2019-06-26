@@ -1,4 +1,5 @@
 #include <header.h>
+#ifndef __NOFACE_DETECTION__
 #include "ThumbnailFacePertinenceToolBar.h"
 #include <ToolbarSlide.h>
 #include <ToolbarTexte.h>
@@ -96,19 +97,7 @@ void CThumbnailFacePertinenceToolBar::SetTrackBarPosition(const int &iPos)
 
 void CThumbnailFacePertinenceToolBar::SlidePosChange(const int &position, const wxString &key)
 {
-	/*
-	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
-	if (listFace != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMPOSITION);
-		evt.SetExtraLong(position);
-		listFace->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
 	OnChangeValue();
-	
-
-
 }
 
 void  CThumbnailFacePertinenceToolBar::OnChangeValue()
@@ -119,13 +108,14 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 		viewerParam->SetPertinenceValue((double)(slide->GetPositionValue()) / 100.0f);
 	}
 
+#ifndef __NOFACE_DETECTION__
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 	if(listFace != nullptr)
 	{
 		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
-
+#endif
 	wxWindow * mainWindow = (wxWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if(mainWindow != nullptr)
 	{
@@ -163,3 +153,4 @@ void CThumbnailFacePertinenceToolBar::EventManager(const int &id)
 
 	}
 }
+#endif

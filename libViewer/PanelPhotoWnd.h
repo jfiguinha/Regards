@@ -2,12 +2,11 @@
 #include "ToolbarPhoto.h"
 #include <ScrollbarWnd.h>
 #include "TabWindow.h"
-#include "ListFace.h"
 #include <directoryctrl.h>
 #include "CategoryFolderWindow.h"
 using namespace std;
 using namespace Regards::Window;
-using namespace Regards::Control;
+//using namespace Regards::Control;
 
 namespace Regards
 {

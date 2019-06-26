@@ -42,13 +42,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		listPicture->Show(false);
 		listPicture->SetListeFile(&photoVector);
 	}
-
+#ifndef __NOFACE_DETECTION__
 	if (viewerTheme != nullptr)
 	{
 		listFace = new CListFace(this, LISTFACEID);
 		listFace->Show(false);
 	}
-
+#endif
 	if (viewerTheme != nullptr)
 	{
 		bool isPanelVisible = true;
@@ -164,15 +164,19 @@ CCentralWindow::~CCentralWindow()
 	if (listPicture != nullptr)
 		delete(listPicture);
 
+#ifndef __NOFACE_DETECTION__
 	if (listFace != nullptr)
 		delete(listFace);
+#endif
 }
 
 void CCentralWindow::SetMode(wxCommandEvent& event)
 {
 	windowMode = event.GetInt();
 	viewerWindow->Show(false);
+#ifndef __NOFACE_DETECTION__
 	listFace->Show(false);
+#endif
 	listPicture->Show(false);
 
 	switch (windowMode)
@@ -181,10 +185,12 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		viewerWindow->Show(true);
 		this->SetWindow(panelSearch, viewerWindow);
 		break;
+#ifndef __NOFACE_DETECTION__
 	case 2:
 		listFace->Show(true);
 		this->SetWindow(panelSearch, listFace);
 		break;
+#endif
 	case 3:
 		listPicture->Show(true);
 		this->SetWindow(panelSearch, listPicture);

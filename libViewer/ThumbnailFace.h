@@ -1,3 +1,4 @@
+#ifndef __NOFACE_DETECTION__
 #pragma once
 #include <ThumbnailVertical.h>
 #include "InfosSeparationBarFace.h"
@@ -55,3 +56,4 @@ namespace Regards
 }
 
 
+#endif

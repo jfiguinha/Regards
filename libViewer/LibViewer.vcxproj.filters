@@ -311,11 +311,11 @@
     <ClCompile Include="CentralWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ToolbarPhoto.cpp">
-      <Filter>Toolbar\include</Filter>
-    </ClCompile>
     <ClCompile Include="CheckVersion.cpp">
       <Filter>CheckVersion</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarPhoto.cpp">
+      <Filter>Toolbar\source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

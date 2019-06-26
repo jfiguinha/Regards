@@ -1080,7 +1080,6 @@ void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
 		statusBarViewer->SetPosProgressBar(infoUpdate->photolistSize - infoUpdate->listPhotoSize);
 		delete infoUpdate;
 	}
-
 }
 
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)

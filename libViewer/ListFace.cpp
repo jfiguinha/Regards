@@ -1,4 +1,5 @@
 ﻿#include <header.h>
+#ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #include <MoveFaceDialog.h>
 #include <FileUtility.h>
@@ -649,3 +650,4 @@ void CListFace::OnAddFacePhoto(wxCommandEvent& event)
 		delete face;
 	}
 }
+#endif

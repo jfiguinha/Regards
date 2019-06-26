@@ -1,4 +1,5 @@
 #pragma once
+#ifndef __NOFACE_DETECTION__
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
@@ -53,3 +54,4 @@ namespace Regards
 	}
 }
 
+#endif

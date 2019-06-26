@@ -27,7 +27,9 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	wxString lblOpenFolder = CLibResource::LoadStringFromResource(L"LBLSELECTFILE",1);
 	wxString lblInfos = CLibResource::LoadStringFromResource(L"LBLINFOS", 1);
 	wxString lblQuit = CLibResource::LoadStringFromResource(L"LBLQUIT", 1);
+#ifndef __NOFACE_DETECTION__
 	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
+#endif
 	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 
@@ -43,12 +45,13 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	infos->SetCommandId(IDM_SHOWINFOS);
 	navElement.push_back(infos);
 
+#ifndef __NOFACE_DETECTION__
 	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
 	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");
 	thumbnailFace->SetLibelle(lblListFace);
 	thumbnailFace->SetCommandId(IDM_THUMBNAILFACE);
 	navElement.push_back(thumbnailFace);
-
+#endif
 	CToolbarButton * explorer = new CToolbarButton(themeToolbar.button);
 	explorer->SetButtonResourceId(L"IDB_SEARCH");
 	explorer->SetLibelle(lblExplorerMode);
@@ -103,7 +106,8 @@ void CToolbar::EventManager(const int &id)
 			wxPostEvent(central, event);
 		}
 	    break;
-                               
+                
+#ifndef __NOFACE_DETECTION__
 	case IDM_THUMBNAILFACE:
 		{
 			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
@@ -112,7 +116,7 @@ void CToolbar::EventManager(const int &id)
 			wxPostEvent(central, event);
 		}
 		break;
-
+#endif
 	case IDM_EXPLORERMODE:
 		{
 			wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);

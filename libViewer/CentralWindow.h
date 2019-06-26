@@ -3,7 +3,9 @@
 #include "PanelPhotoWnd.h"
 #include "ViewerWindow.h"
 #include "ListPicture.h"
+#ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
+#endif
 #include "ViewerParam.h"
 #include <PanelWithClickToolbar.h>
 using namespace std;
@@ -47,8 +49,9 @@ namespace Regards
 			//Explorer Window
 			CListPicture * listPicture;
 			//Face List
+#ifndef __NOFACE_DETECTION__
 			CListFace * listFace;
-
+#endif
 
 			PhotosVector photoVector;
 

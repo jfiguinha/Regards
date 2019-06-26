@@ -29,9 +29,13 @@ float CPiccanteFilter::clamp ( float val, float minval, float maxval )
 {
     // Branchless SSE clamp.
     // return minss( maxss(val,minval), maxval );
-
+#if defined(__x86_64__) || defined(_M_AMD64)
     _mm_store_ss( &val, _mm_min_ss( _mm_max_ss(_mm_set_ss(val),_mm_set_ss(minval)), _mm_set_ss(maxval) ) );
-    return val;
+	return val;
+#else
+	return min(max(val, minval), maxval);
+#endif
+   
 }
 
 
