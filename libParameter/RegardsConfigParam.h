@@ -13,6 +13,9 @@ public:
 	CRegardsConfigParam();
 	~CRegardsConfigParam();
 
+	int GetInterpolationType();
+	void SetInterpolationType(const int& numInterpolation);
+
 	int GetPreviewLibrary();
 	void SetPreviewLibrary(const int &numLib);
 
@@ -114,6 +117,7 @@ protected:
 	int numEffect;
 	int openCLNumIndex;
     int numLanguage;
+	int numInterpolation;
 
 	//Diaporama
 	int diaporamaTime;

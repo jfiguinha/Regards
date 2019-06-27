@@ -29,6 +29,17 @@ CRegardsConfigParam::CRegardsConfigParam()
     nbProcessFace = 1;
     nbGpsFileByMinute = 60;
     numLanguage = 1;
+	numInterpolation = 0;
+}
+
+int CRegardsConfigParam::GetInterpolationType()
+{
+	return numInterpolation;
+}
+
+void CRegardsConfigParam::SetInterpolationType(const int& numInterpolation)
+{
+	this->numInterpolation = numInterpolation;
 }
 
 int CRegardsConfigParam::GetOpenCLLoadFromBinaries(){
@@ -226,6 +237,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("OpenCLNumIndex", to_string(openCLNumIndex)));
 	sectionPosition->append_node(node("OpenCLPlatformName", openCLPlatformName));
     sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
+	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 }
 
 
@@ -340,6 +352,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		nodeName = child_node->name();
 		loadFromBinaries = atoi(child_node->value());
 	}
+
+	child_node = position_node->first_node("NumInterpolation");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		numInterpolation = atoi(child_node->value());
+	}	
 }
 
 

@@ -1703,7 +1703,8 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 	try
 	{
 		COpenCLFilter openclFilter(context);
-		output = openclFilter.Interpolation(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
+		//output = openclFilter.Interpolation(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
+		output = openclFilter.Interpolation_bbox(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
 	}
 	catch(...)
 	{
@@ -1728,7 +1729,8 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 	}
 
 	COpenCLFilter openclFilter(context);
-	cl_mem output = openclFilter.Interpolation(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
+	//cl_mem output = openclFilter.Interpolation(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
+	cl_mem output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
 
 	paramOutput = new COpenCLParameterClMem();
 	paramOutput->SetValue(output);

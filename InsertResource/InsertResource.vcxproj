@@ -113,9 +113,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)\libextern\SDL2-2.0.4\include;$(SolutionDir)\libextern\ffmpeg\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);</IncludePath>
-    <LibraryPath>$(SolutionDir)\libextern\libmediainfo_0.7.75_AllInclusive\MediaInfoLib\Project\MSVC2015\Library\x64\Release;$(SolutionDir)\libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libextern\SDL2-2.0.4\lib\x64;$(SolutionDir)\libExtern\ffmpeg\lib\;$(SolutionDir)\libExtern\libxml2\lib\x64;$(VCInstallDir)lib\amd64;$(VCInstallDir)atlmfc\lib\amd64;$(WindowsSdkDir)lib\x64;$(SolutionDir)\libExtern\cairo-1.10.2\lib\x64;$(INTELOCLSDKROOT)\lib\x64;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
+    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -220,7 +220,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
-      <AdditionalDependencies>swscale.lib;heif_shared.lib;glut64.lib;D3d9.lib;opengl32.lib;sdl2.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rpcrt4.lib;comctl32.lib;heif_shared.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -294,17 +294,44 @@
     <ProjectReference Include="..\libextern\glew-2.1.0\libglew.vcxproj">
       <Project>{703de35d-15a1-445c-94a2-6b7fb4d7232c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libextern\jasper-1.900.1\src\libjasper\jasper.vcxproj">
+      <Project>{ffda5da1-bb65-4695-b678-be59b4a1355d}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libextern\libde265-master\libde265.vcxproj">
       <Project>{b2a389c1-2895-4fbf-9aeb-3f7689efee23}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\libexif-0.6.20\win32\lib_exif\lib_exif.vcxproj">
       <Project>{db081b8e-c5a3-44fb-bb6c-8803c26a705a}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libextern\libexif-master\win32\lib_exif\lib_exif.vcxproj">
+      <Project>{db081b8e-c5a3-44fb-bb6c-8803c26a705a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libextern\libiconv\build-VS2015\libiconv-static\libiconv-static.vcxproj">
       <Project>{46cafe4a-b5bd-4422-acc6-117d4ad041e2}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libextern\libjpeg\libjpeg.vcxproj">
+      <Project>{60691709-37b1-4f01-9564-db3039a69c0c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\libmng-2.0.3\mng.vcxproj">
+      <Project>{40a69f40-063e-43fd-8543-455495d8733e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
+      <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\libwebp-0.6.0\src\libwebp.vcxproj">
+      <Project>{8228fec1-478d-47a9-836d-85e7127055ea}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libextern\libxml2\build-VS2015\libxml2-static\libxml2-static.vcxproj">
       <Project>{8eee40e4-037a-4dc5-b598-f9381f7372e6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\MediaInfo_DLL_GNU_FromSource\MediaInfoLib\Project\MSVC2015\Library\MediaInfoLib.vcxproj">
+      <Project>{20e0f8d6-213c-460b-b361-9c725cb375c7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\MediaInfo_DLL_GNU_FromSource\ZenLib\Project\MSVC2015\Library\ZenLib.vcxproj">
+      <Project>{0da1da7d-f393-4e7c-a7ce-cb5c6a67bc94}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\SDL2-2.0.5\VisualC\SDL\SDL.vcxproj">
+      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\wxsvg\wxsvg.vcxproj">
       <Project>{58ac16a3-2d52-4737-8b04-9bff91429228}</Project>
@@ -363,6 +390,9 @@
     <ProjectReference Include="..\libVideoThumbnail\libFFmpegThumbnailer.vcxproj">
       <Project>{4824cb9f-9777-4a3d-8287-671c1407e7a1}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libViewer\LibViewer.vcxproj">
+      <Project>{caa0ba1b-f0ec-48ea-9158-dad73cdb55a4}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libViewer\RegardsViewer.vcxproj">
       <Project>{caa0ba1b-f0ec-48ea-9158-dad73cdb55a4}</Project>
     </ProjectReference>
@@ -393,6 +423,9 @@
     <ProjectReference Include="..\otherlib\libbpg\libgetopt\getopt.vcxproj">
       <Project>{a2169bc8-cf99-40bf-83f3-b0e38f7067bd}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
+      <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\otherlib\libpsd\libpsd.vcxproj">
       <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
     </ProjectReference>
@@ -413,6 +446,12 @@
     </ProjectReference>
     <ProjectReference Include="..\otherlib\RawSpeed\RawSpeed.vcxproj">
       <Project>{482a0abf-1ae3-4ee4-815a-428880dae0c6}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\otherlib\RegardsRaw\libRegardsRaw.vcxproj">
+      <Project>{8d1fc752-18a1-41ef-95fe-e2aaf8926955}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\otherlib\wxsvg\wxsvg.vcxproj">
+      <Project>{58ac16a3-2d52-4737-8b04-9bff91429228}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Viewer\Viewer.vcxproj">
       <Project>{a6062c66-3bbe-4e95-b7ce-924ede3abc0d}</Project>

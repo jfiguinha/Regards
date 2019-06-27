@@ -60,6 +60,8 @@ namespace Regards
 			cl_mem Rotate(const wxString &functionName, const int &widthOut, const int &heightOut, const double &angle, cl_mem inputData, int width, int height);
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
+			cl_mem Interpolation_bbox(const int& widthOut, const int& heightOut, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
+			cl_mem Interpolation_bbox(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle);
 			cl_mem Fusion(cl_mem inputData, cl_mem secondPictureData, const float &pourcentage, int width, int height);
 			cl_mem ConvertToY(cl_mem inputData, int width, int height);
 			cl_mem InsertYValue(cl_mem inputData, cl_mem sourceData, int width, int height);
