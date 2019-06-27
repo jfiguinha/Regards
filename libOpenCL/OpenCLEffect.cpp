@@ -11,9 +11,13 @@
 #include "utility.h"
 #include <ImageLoadingFormat.h>
 #include <ximage.h>
+#include <RegardsConfigParam.h>
+#include <ParamInit.h>
 #include "OpenCLBm3D.h"
 using namespace Regards::OpenCL;
 using namespace Regards::FiltreEffet;
+
+#define NONE_FILTER 12
 
 COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * context, CImageLoadingFormat * bitmap)
 	: IFiltreEffet(backColor)
@@ -1698,13 +1702,22 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 		delete paramOutput;
 	}
 
+	int filtre = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		filtre = config->GetInterpolationType();
+
 	cl_mem output = nullptr;
 
 	try
 	{
 		COpenCLFilter openclFilter(context);
-		//output = openclFilter.Interpolation(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
-		output = openclFilter.Interpolation_bbox(widthOut, heightOut, method, input->GetValue(), width, height, flipH, flipV, angle);
+		if(filtre == 0)
+			output = openclFilter.Interpolation(widthOut, heightOut, "BicubicInterpolation", input->GetValue(), width, height, flipH, flipV, angle);
+		else if(filtre == NONE_FILTER)
+			output = openclFilter.Interpolation(widthOut, heightOut, "FastInterpolation", input->GetValue(), width, height, flipH, flipV, angle);
+		else
+			output = openclFilter.Interpolation_bbox(widthOut, heightOut, filtre, input->GetValue(), width, height, flipH, flipV, angle);
 	}
 	catch(...)
 	{
@@ -1728,9 +1741,30 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 		delete paramOutput;
 	}
 
-	COpenCLFilter openclFilter(context);
+	int filtre = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		filtre = config->GetInterpolationType();
+
+	cl_mem output = nullptr;
+	//COpenCLFilter openclFilter(context);
 	//cl_mem output = openclFilter.Interpolation(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
-	cl_mem output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
+	//cl_mem output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
+
+	try
+	{
+		COpenCLFilter openclFilter(context);
+		if (filtre == 0)
+			output = openclFilter.Interpolation(widthOut, heightOut, rc, "BicubicInterpolationZone", input->GetValue(), width, height, flipH, flipV, angle);
+		else if (filtre == NONE_FILTER)
+			output = openclFilter.Interpolation(widthOut, heightOut, rc, "FastInterpolationZone", input->GetValue(), width, height, flipH, flipV, angle);
+		else
+			output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, filtre, input->GetValue(), width, height, flipH, flipV, angle);
+	}
+	catch (...)
+	{
+		output = nullptr;
+	}
 
 	paramOutput = new COpenCLParameterClMem();
 	paramOutput->SetValue(output);

@@ -1542,7 +1542,7 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 
 
 
-cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
+cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
 {
 	cl_mem outputValue = nullptr;
 	
@@ -1598,7 +1598,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		{
 			program->SetParameter(&vecParam,  widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
 			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "BicubicInterpolation");
+			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
 		}
 		catch(...)
@@ -1621,7 +1621,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 	return outputValue;
 }
 
-cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
+cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
 {
 	cl_mem outputValue = nullptr;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
@@ -1695,7 +1695,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		{
 			program->SetKeepOutput(true);
 			program->SetParameter(&vecParam,  widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
-			program->ExecuteProgram(programCL->GetProgram(), "BicubicInterpolationZone");
+			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
 		}
 		catch(...)
@@ -1723,11 +1723,6 @@ cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightO
 {
 	int filtre = 0;
 	cl_mem outputValue = nullptr;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		filtre = config->GetInterpolationType();
-
-
 	COpenCLProgram* programCL = nullptr;
 	programCL = GetProgram("IDR_OPENCL_BBOXINTERPOLATION");
 	if (programCL != nullptr)
@@ -1778,7 +1773,7 @@ cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightO
 
 		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
 		paramtype->SetLibelle("type");
-		paramtype->SetValue(filtre);
+		paramtype->SetValue(method);
 		vecParam.push_back(paramtype);
 
 		try
@@ -1914,4 +1909,3 @@ cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightO
 	}
 	return outputValue;
 }
-
