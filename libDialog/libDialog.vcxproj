@@ -205,6 +205,7 @@
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
+    <ClCompile Include="InterpolationFilterSelect.cpp" />
     <ClCompile Include="JpegOption.cpp" />
     <ClCompile Include="MoveFaceDialog.cpp" />
     <ClCompile Include="OpenCLDialog.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="IndexGenerator.h" />
+    <ClInclude Include="InterpolationFilterSelect.h" />
     <ClInclude Include="JpegOption.h" />
     <ClInclude Include="MoveFaceDialog.h" />
     <ClInclude Include="OpenCLDialog.h" />

@@ -46,6 +46,9 @@
     <Filter Include="OpenCL">
       <UniqueIdentifier>{1b34044e-3a98-45ac-9cf0-c43503ec730c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="InterpolationFiltre">
+      <UniqueIdentifier>{ffcf16eb-5edf-45a1-a29d-3be4c4de4ce6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -102,6 +105,9 @@
     <ClCompile Include="OpenCLDialog.cpp">
       <Filter>OpenCL</Filter>
     </ClCompile>
+    <ClCompile Include="InterpolationFilterSelect.cpp">
+      <Filter>InterpolationFiltre</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CopyFileDlg.h">
@@ -157,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="OpenCLDialog.h">
       <Filter>OpenCL</Filter>
+    </ClInclude>
+    <ClInclude Include="InterpolationFilterSelect.h">
+      <Filter>InterpolationFiltre</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

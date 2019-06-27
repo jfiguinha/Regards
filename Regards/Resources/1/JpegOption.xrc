@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
 	<object class="wxDialog" name="JpegOption">
-		<title>Dialog</title>
+		<title>Jpeg Compression</title>
 		<centered>1</centered>
 		<size>400,356</size>
 		<object class="wxRadioBox" name="ID_RBCODEC">

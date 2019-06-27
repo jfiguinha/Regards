@@ -49,6 +49,7 @@ namespace Regards
 			void OnClose(wxCloseEvent& event);
 			void OnConfiguration(wxCommandEvent& event);
 			void OnEraseDatabase(wxCommandEvent& event);
+			void OnInterpolationFilter(wxCommandEvent& event);
 			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);

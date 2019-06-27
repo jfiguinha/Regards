@@ -22,6 +22,7 @@
 #include <SqlFindPhotos.h>
 #include <SqlFindFolderCatalog.h>
 #include <OpenCLDialog.h>
+#include <InterpolationFilterSelect.h>
 #include <FilterData.h>
 using namespace std;
 using namespace Regards::Print;
@@ -48,23 +49,7 @@ enum
 	ID_THUMBNAILRIGHT = 8,
 	ID_THUMBNAILBOTTOM = 9,
 	ID_FACEPERTINENCE = 10,
-	ID_BOXFILTER=1001,
-	ID_BILINEARFILTER=1002,
-	ID_GAUSSIANFILTER=1003,
-	ID_HAMMINGFILTER=1004,
-	ID_CUBICFILTER=1005,
-	ID_BLACKMANFILTER=1006,
-	ID_QUADRATICFILTER=1007,
-	ID_MITCHELLFILTER=1008,
-	ID_TRIANGLEFILTER=1009,
-	ID_SINCFILTER=1010,
-	ID_BESSELFILTER=1011,
-	ID_BLACKMANBESSELFILTER=1012,
-	ID_BLACKMANSINCFILTER=1013,
-	ID_LANCZOSFILTER=1014,
-	ID_HERMITEFILTER=1015,
-	ID_HANNINGFILTER=1016,
-	ID_CATROMFILTER=1017,
+	ID_INTERPOLATIONFILTER = 11,
 	ID_VIDEO = 1018,
 	ID_AUDIO = 1019,
 	ID_SUBTITLE = 1020,
@@ -230,27 +215,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	loadPictureTimer = new wxTimer(this, TIMER_LOADPICTURE);
 	wxMenu *menuFile = new wxMenu;
 	wxMenu *menuParameter = new wxMenu;
-    
-    /*
-	wxMenu * menuInterpolation = new wxMenu;
-	menuInterpolation->Append(ID_BOXFILTER, "Box Filter", "Box Filter");
-	menuInterpolation->Append(ID_BILINEARFILTER, "Bilinear Filter", "Box Filter");
-	menuInterpolation->Append(ID_GAUSSIANFILTER, "Gaussian Filter", "Gaussian Filter");
-	menuInterpolation->Append(ID_HAMMINGFILTER, "Hamming Filter", "Hamming Filter");
-	menuInterpolation->Append(ID_CUBICFILTER, "Cubic Filter", "Cubic Filter");
-	menuInterpolation->Append(ID_BLACKMANFILTER, "Blackman Filter", "Blackman Filter");
-	menuInterpolation->Append(ID_QUADRATICFILTER, "Quadratic Filter", "Quadratic Filter");
-	menuInterpolation->Append(ID_MITCHELLFILTER, "Mitchell Filter", "Mitchell Filter");
-	menuInterpolation->Append(ID_TRIANGLEFILTER, "Triangle Filter", "Triangle Filter");
-	menuInterpolation->Append(ID_SINCFILTER, "Sinc Filter", "Sinc Filter");
-	menuInterpolation->Append(ID_BESSELFILTER, "Bessel Filter", "Bessel Filter");
-	menuInterpolation->Append(ID_BLACKMANBESSELFILTER, "Blackman Filter", "Blackman Filter");
-	menuInterpolation->Append(ID_BLACKMANSINCFILTER, "Blackman Sinc Filter", "Blackman Sinc Filter");
-	menuInterpolation->Append(ID_LANCZOSFILTER, "Lanczos Filter", "Lanczosc Filter");
-	menuInterpolation->Append(ID_HERMITEFILTER, "Hermite Filter", "Hermite Filter");
-	menuInterpolation->Append(ID_HANNINGFILTER, "Hanning Filter", "Hanning Filter");
-	menuInterpolation->Append(ID_CATROMFILTER, "Catrom Filter", "Catrom Filter");
-    */
+
     
     wxString labelDecreaseIconSize = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize",1);//L"Decrease Icon Size";
     wxString labelDecreaseIconSize_link = CLibResource::LoadStringFromResource(L"labelDecreaseIconSize_link",1);//L"&Decrease Icon Size";
@@ -282,6 +247,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuParameter->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
 	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
     menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
+	menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
 
 
 	//wxMenu *menuFace = new wxMenu;
@@ -384,6 +350,18 @@ void CViewerFrame::OnHelp(wxCommandEvent& event)
     wxString helpFile = CFileUtility::GetResourcesFolderPath();
     helpFile.Append("//NoticeRegardsViewer.pdf");
     wxLaunchDefaultApplication(helpFile);
+}
+
+void CViewerFrame::OnInterpolationFilter(wxCommandEvent& event)
+{
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+	{
+		CInterpolationFilterSelect filterDialog(this);
+		filterDialog.ShowModal();
+		if (filterDialog.IsOk())
+			config->SetInterpolationType(filterDialog.GetFilterIndex());
+	}
 }
 
 void CViewerFrame::CheckAllProcessEnd(wxTimerEvent& event)
@@ -794,6 +772,7 @@ EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
 EVT_MENU(ID_FACEPERTINENCE, CViewerFrame::OnFacePertinence)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
+EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
