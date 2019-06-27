@@ -357,11 +357,11 @@
 @c @set have-opencl-vaapi-beignet no
 @c @set have-opencl-vaapi-intel-media no
 @set have-perl yes
-@c @set have-pod2man no
+@set have-pod2man yes
 @c @set have-texi2html no
 @set config-doc yes
 @set config-htmlpages yes
-@c @set config-manpages no
+@set config-manpages yes
 @set config-podpages yes
 @set config-txtpages yes
 @set config-avio-dir-cmd-example yes

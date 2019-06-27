@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="CompressionOption.cpp"/>
     <File Name="ConfigRegards.cpp"/>
     <File Name="CopyFileDlg.cpp"/>
@@ -47,6 +48,7 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="InterpolationFilterSelect.h"/>
     <File Name="CompressionOption.h"/>
     <File Name="ConfigRegards.h"/>
     <File Name="CopyFileDlg.h"/>

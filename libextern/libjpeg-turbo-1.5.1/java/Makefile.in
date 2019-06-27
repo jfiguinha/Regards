@@ -428,9 +428,9 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-@WITH_JAVA_FALSE@clean-local:
-@WITH_JAVA_FALSE@uninstall-local:
 @WITH_JAVA_FALSE@install-exec-local:
+@WITH_JAVA_FALSE@uninstall-local:
+@WITH_JAVA_FALSE@clean-local:
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local clean-noinstJAVA \

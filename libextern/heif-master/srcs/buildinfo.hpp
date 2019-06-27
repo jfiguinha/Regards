@@ -14,6 +14,6 @@ namespace BuildInfo
 {
 
 constexpr auto Version = "v3.4.0";
-constexpr auto Time = "2019-06-22T21:21:55Z";
+constexpr auto Time = "2019-06-23T15:54:16Z";
 
 }
