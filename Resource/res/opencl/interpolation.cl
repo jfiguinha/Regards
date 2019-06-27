@@ -309,7 +309,7 @@ __kernel void BilinearInterpolationZone(__global float4 *output, const __global 
 //----------------------------------------------------------------------------
 //Fast Interpolation
 //----------------------------------------------------------------------------
-__kernel void FastInterpolation(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
+__kernel void FastInterpolation(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle)
 {
 	int width = widthOut;
 	int height = heightOut;
@@ -381,12 +381,12 @@ __kernel void FastInterpolation(__global float4 *output, const __global float4 *
 	}
 
 	int position = x + y * widthOut;
-	int positionIn = (int)posX + (int)posY * widthIn;
-	output[position] = input[positionIn];
+
+	output[position] = GetColorSrc(posX, posY, input, widthIn, heightIn);
 
 }
 
-__kernel void FastInterpolationZone(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight)
+__kernel void FastInterpolationZone(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -455,6 +455,5 @@ __kernel void FastInterpolationZone(__global float4 *output, const __global floa
 	}
 		
 	int position = x + y * widthOut;
-	int positionIn = (int)posX + (int)posY * widthIn;
-	output[position] = input[positionIn];
+	output[position] = GetColorSrc(posX, posY, input, widthIn, heightIn);
 }
