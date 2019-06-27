@@ -19,7 +19,7 @@ namespace Regards
 			static void InitializeSQLServerDatabase()
 			{
 				CSqlLibResource * libResource = new CSqlLibResource(false, false);
-				wstring filename = L"C:\\developpement\\git\\Regards\\Regards\\Resources\\resource.db";
+				wstring filename = L"C:\\developpement\\git_vs\\Regards\\Regards\\Resources\\resource.db";
 				//wstring filename = L"C:\\Regards\\Regards\\Resources\\resource.db";
 				CSqlEngine::Initialize(filename,"ResourceDB",libResource);
 			}

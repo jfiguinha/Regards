@@ -311,35 +311,150 @@ __kernel void BilinearInterpolationZone(__global float4 *output, const __global 
 //----------------------------------------------------------------------------
 __kernel void FastInterpolation(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut)
 {
+	int width = widthOut;
+	int height = heightOut;
+
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
-	float ratioX = (float)widthIn / (float)widthOut;
-	float ratioY = (float)heightIn / (float)heightOut;	
-		
-	float posX = (float)x * ratioX;
+	float ratioX = (float)widthIn / (float)width;
+	float ratioY = (float)heightIn / (float)height;
+	if (angle == 90 || angle == 270)
+	{
+		ratioX = (float)widthIn / (float)height;
+		ratioY = (float)heightIn / (float)width;
+	}
+
 	float posY = (float)y * ratioY;
+	float posX = (float)x * ratioX;
+
+	if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+	
+	if(angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
 
 	int position = x + y * widthOut;
-	int positionIn = (int)posX + (int)posY *widthIn;
-
+	int positionIn = (int)posX + (int)posY * widthIn;
 	output[position] = input[positionIn];
 
 }
 
 __kernel void FastInterpolationZone(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight)
 {
-    int x =  get_global_id(0);
-	int y =  get_global_id(1);
-		
-	float ratioX = (float)widthIn / (float)bitmapWidth;
-	float ratioY = (float)heightIn / (float)bitmapHeight;	
-		
-	float posX = (float)x * ratioX + (float)left * ratioX;
-	float posY = (float)y * ratioY + (float)top * ratioY;
+    int x = get_global_id(0);
+	int y = get_global_id(1);
 
+	float ratioX = (float)widthIn / bitmapWidth;
+	float ratioY = (float)heightIn / bitmapHeight;
+	if (angle == 90 || angle == 270)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;
+	}
+
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
+
+	if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+
+	if(angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
+		
 	int position = x + y * widthOut;
 	int positionIn = (int)posX + (int)posY * widthIn;
-
 	output[position] = input[positionIn];
 }
