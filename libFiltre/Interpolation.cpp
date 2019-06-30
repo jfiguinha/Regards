@@ -605,7 +605,7 @@ wxImage CInterpolation::Execute(CRegardsBitmap * In, const int &widthOut, const 
 	return imageout;
 }
 
-void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow)
+void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle)
 {
 	int32_t width = Out->GetBitmapWidth();
 	int32_t height = Out->GetBitmapHeight();
@@ -613,25 +613,24 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const 
 	int32_t widthIn = In->GetBitmapWidth();
 	int32_t heightIn = In->GetBitmapHeight();
 
-	float ratioX = float(widthIn) / float(rectToShow.width);
-	float ratioY = float(heightIn) / float(rectToShow.height);
-
-	float posTop = float(rectToShow.y) * ratioY;
-	float posLeft = float(rectToShow.x) * ratioY;
-
-
-#pragma omp parallel for
-	for (auto y = 0; y < height; y++)
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
 	{
 #pragma omp parallel for
-		for (auto x = 0; x < width; x++)
+		for (auto y = 0; y < height; y++)
 		{
-			float posY = float(y) * ratioY + posTop;
-			float posX = float(x) * ratioX + posLeft;
-			//CRgbaquad * color = In->GetPtColorValue(posX, posY);
-			Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+#pragma omp parallel for
+			for (auto x = 0; x < width; x++)
+			{
+
+				float posY = 0;
+				float posX = 0;
+				CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, rectToShow, flipH, flipV, angle, posX, posY);
+				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+			}
 		}
 	}
+
+
 
 }
 
@@ -644,23 +643,95 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 	int widthIn = In->GetBitmapWidth();
 	int heightIn = In->GetBitmapHeight();
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
+	{
+
+		float ratioX = (float)widthIn / (float)width;
+		float ratioY = (float)heightIn / (float)height;
 
 #pragma omp parallel for
-	for (auto y = 0; y < height; y++)
-	{
-#pragma omp parallel for
-		for (auto x = 0; x < width; x++)
+		for (auto y = 0; y < height; y++)
 		{
-			float posY = float(y) * ratioY;
-			float posX = float(x) * ratioX;
-			//CRgbaquad * color = In->GetPtColorValue(posX, posY);
-			//Out->SetColorValue(x, y, *color);
-            Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+#pragma omp parallel for
+			for (auto x = 0; x < width; x++)
+			{
+				float posY = float(y) * ratioY;
+				float posX = float(x) * ratioX;
+				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+			}
 		}
 	}
+}
 
+void CInterpolation::CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY)
+{
+	int width = widthOut;
+	int height = heightOut;
+
+	float ratioX = float(widthIn) / float(rectToShow.width);
+	float ratioY = float(heightIn) / float(rectToShow.height);
+
+	
+	if (angle == 90 || angle == 270)
+	{
+		ratioX = float(heightIn) / float(rectToShow.width);
+		ratioY = float(widthIn) / float(rectToShow.height);
+	}
+	
+	posX = (float)x * ratioX + rectToShow.x * ratioX;
+	posY = (float)y * ratioY + rectToShow.y * ratioY;
+
+	if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+
+	if (angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
 }
 
 void CInterpolation::CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY)
@@ -671,11 +742,13 @@ void CInterpolation::CalculPosition(const int &x, const int &y, const int &width
 
 	float ratioX = (float)widthIn / (float)width;
 	float ratioY = (float)heightIn / (float)height;
+
 	if (angle == 90 || angle == 270)
 	{
 		ratioX = (float)widthIn / (float)height;
 		ratioY = (float)heightIn / (float)width;
 	}
+	
 
 	posY = (float)y * ratioY;
 	posX = (float)x * ratioX;
@@ -742,19 +815,20 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const 
 	int widthIn = In->GetBitmapWidth();
 	int heightIn = In->GetBitmapHeight();
 
-	float ratioX = (float)widthIn / (float)width;
-	float ratioY = (float)heightIn / (float)height;
+	if (widthIn > 0 && heightIn > 0 && width > 0 && height > 0)
+	{
 
 #pragma omp parallel for
-	for (auto y = 0; y < height; y++)
-	{
-#pragma omp parallel for
-		for (auto x = 0; x < width; x++)
+		for (auto y = 0; y < height; y++)
 		{
-			float posY = 0;
-			float posX = 0;
-			CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, flipH, flipV, angle, posX, posY);
-			Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+#pragma omp parallel for
+			for (auto x = 0; x < width; x++)
+			{
+				float posY = 0;
+				float posX = 0;
+				CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, flipH, flipV, angle, posX, posY);
+				Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+			}
 		}
 	}
 }

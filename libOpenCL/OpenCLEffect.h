@@ -16,6 +16,7 @@ namespace Regards
 {
 	namespace FiltreEffet
 	{
+		
 		class COpenCLEffect : public IFiltreEffet
 		{
 		public:

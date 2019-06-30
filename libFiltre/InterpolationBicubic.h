@@ -18,6 +18,7 @@ public:
 	void Execute(wxImage * In, CRegardsBitmap * & Out);
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out);
 	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const int &flipH, const int &flipV, const int &angle);
+	void Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle);
 
 protected:
 

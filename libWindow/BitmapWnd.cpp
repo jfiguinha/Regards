@@ -1331,7 +1331,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	}
 }
 
-//#define __OPENGLONLY__
+#define __OPENGLONLY__
 
 //-----------------------------------------------------------------
 //Dessin de l'image
@@ -1392,6 +1392,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 			filtreEffet = new CFiltreEffet(color, nullptr, source);
 
+			renderOpenGL->LoadingResource(scale_factor);
+
 
 			if (bitmapLoad && width > 0 && height > 0)
 			{
@@ -1402,7 +1404,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 				ApplyPreviewEffect();
 
 			CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
-			//bitmap->SaveToBmp("c:\\developpement\\test.bmp");
 
 			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 			if (glTexture != nullptr)
@@ -1422,9 +1423,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 			int x = (width - glTexture->GetWidth()) / 2;
 			int y = (height - glTexture->GetHeight()) / 2;
 			renderOpenGL->RenderToScreen(x, y, false);
-
-			//AfterRender();
+			AfterRender();
+			
 		}
+		
 		
 
 #else

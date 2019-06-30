@@ -131,7 +131,6 @@ CRenderBitmapInterfaceOpenGL::~CRenderBitmapInterfaceOpenGL()
 
 void CRenderBitmapInterfaceOpenGL::ShowArrowNext()
 {
-
 	int left = width - textureArrowLeft->GetWidth();
 	int top = (height - textureArrowRight->GetHeight()) / 2;
 
