@@ -1331,7 +1331,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	}
 }
 
-#define __OPENGLONLY__
+//#define __OPENGLONLY__
 
 //-----------------------------------------------------------------
 //Dessin de l'image
