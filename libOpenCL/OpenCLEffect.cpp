@@ -39,6 +39,11 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
     SetBitmap(bitmap);
 }
 
+int COpenCLEffect::GetSizeData()
+{
+	return sizeof(float) * 4;
+}
+
 int COpenCLEffect::Bm3d(const int & fSigma)
 {
 	int _width = 256;
@@ -162,7 +167,7 @@ cl_mem COpenCLEffect::LoadRegardsImage(uint8_t * data, const int &width, const i
 		paramHeight->SetValue(height);
 		vecParam.push_back(paramHeight);
 
-		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 		program->SetKeepOutput(true);
 		program->ExecuteProgram1D(programCL->GetProgram(), "LoadRegardsBitmap");
 		outputValue = program->GetOutput();
@@ -277,7 +282,7 @@ cl_mem COpenCLEffect::LoadCxImageAlpha(uint8_t * data, uint8_t * alpha, const in
 		parameffwidth->SetValue(effwidth);
 		vecParam.push_back(parameffwidth);
 
-		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 		program->SetKeepOutput(true);
 		if(RGB)
 			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImageAlphaRGB");
@@ -333,7 +338,7 @@ cl_mem COpenCLEffect::LoadCxImage(uint8_t * data, const int &width, const int &h
 		parameffwidth->SetValue(effwidth);
 		vecParam.push_back(parameffwidth);
 
-		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 		program->SetKeepOutput(true);
 		if(RGB)
 			program->ExecuteProgram1D(programCL->GetProgram(), "LoadCxImageRGB");
@@ -393,7 +398,7 @@ cl_mem COpenCLEffect::LoadWxImageAlpha(uint8_t * data, uint8_t * alpha, const in
 		parameffwidth->SetValue(effwidth);
 		vecParam.push_back(parameffwidth);
 
-		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 		program->SetKeepOutput(true);
 		program->ExecuteProgram1D(programCL->GetProgram(), "LoadWxImageAlpha");
 		outputValue = program->GetOutput();
@@ -447,7 +452,7 @@ cl_mem COpenCLEffect::LoadWxImage(uint8_t * data, const int &width, const int &h
 		parameffwidth->SetValue(effwidth);
 		vecParam.push_back(parameffwidth);
 
-		program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+		program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 		program->SetKeepOutput(true);
 		program->ExecuteProgram1D(programCL->GetProgram(), "LoadWxImage");
 		outputValue = program->GetOutput();

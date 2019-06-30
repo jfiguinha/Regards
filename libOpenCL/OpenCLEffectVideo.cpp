@@ -280,6 +280,12 @@ COpenCLProgram * COpenCLEffectVideo::GetProgram(const wxString &numProgram)
 	return nullptr;
 }
 
+int COpenCLEffectVideo::GetSizeData()
+{
+	return sizeof(float) * 4;
+}
+
+
 void COpenCLEffectVideo::InterpolationBicubic(const int &widthOutput, const int &heightOutput, const int &angle, const int &bicubic)
 {
 
@@ -316,7 +322,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int &widthOutput, const int 
 		paramAngle->SetValue(angle);
 		vecParam.push_back(paramAngle);
 
-		program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * sizeof(float) * 4);
+		program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * GetSizeData());
 		program->SetKeepOutput(true);
 		program->ExecuteProgram(programCL->GetProgram(), "BicubicRGB32");
 		cl_mem memvalue = program->GetOutput();
@@ -378,7 +384,7 @@ int COpenCLEffectVideo::SetAlphaValue(cl_mem cl_openglTexture, const int &width,
 		paramAlphaValue->SetValue(alphaValue);
 		vecParam.push_back(paramAlphaValue);
 
-		program->SetParameter(&vecParam, width, height, width * height * sizeof(float) * 4);
+		program->SetParameter(&vecParam, width, height, width * height * GetSizeData());
 		program->SetKeepOutput(true);
 		program->ExecuteProgram(programCL->GetProgram(), "SetAlphaValueFromOpenGLTexture");
 		cl_mem memvalue = program->GetOutput();
@@ -476,7 +482,7 @@ int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTextur
 		parambicubic->SetValue(bicubic);
 		vecParam.push_back(parambicubic);
 
-		program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * sizeof(float) * 4);
+		program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * GetSizeData());
 		program->SetKeepOutput(true);
 		program->ExecuteProgram(programCL->GetProgram(), "InterpolationFromOpenGLTexture");
 		cl_mem memvalue = program->GetOutput();
@@ -546,7 +552,7 @@ void COpenCLEffectVideo::SetRgbaBitmap(cl_mem cl_openglTexture, const int &width
 		vecParam.push_back(paramHeight);
 
 		program->SetKeepOutput(true);
-		program->SetParameter(&vecParam, width, height, width * height * sizeof(float) * 4);
+		program->SetParameter(&vecParam, width, height, width * height * GetSizeData());
 		program->ExecuteProgram(programCL->GetProgram(), "OpenGLTextureToBitmap");
 		cl_mem memvalue = program->GetOutput();
 		delete program;

@@ -52,6 +52,7 @@ namespace Regards
 			int GetThumbnailHeight();
 		protected:
 
+			int GetSizeData();
             CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
             void GetBitmap(CRegardsBitmap * bitmap, cl_mem input, const int &width, const int &height);
 			COpenCLProgram * GetProgram(const wxString &numProgram);

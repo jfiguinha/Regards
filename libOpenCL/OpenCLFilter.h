@@ -69,7 +69,7 @@ namespace Regards
 			void InsertBlockSize(cl_mem sourceData, cl_mem wienerData, const int & size, const int & marge, const int & width, const int & height, const int & x, const int & y);
 		protected:
 
-			
+			int GetSizeData();
 			cl_mem_flags  flag;
 			COpenCLContext * context;
 		};

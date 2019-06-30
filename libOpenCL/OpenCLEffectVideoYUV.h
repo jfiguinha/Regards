@@ -18,6 +18,9 @@ namespace Regards
             void DeleteData();
 
 		protected:
+
+			int GetSizeData();
+
 			int formatData;
 			//Bitmap Memory Buffer
 			COpenCLParameterByteArray * inputY;

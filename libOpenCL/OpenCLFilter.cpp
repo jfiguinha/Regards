@@ -259,7 +259,7 @@ cl_mem COpenCLFilter::InsertYValue(cl_mem inputData, cl_mem sourceData, int widt
 
 			try
 			{
-				program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+				program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram1D(programCL->GetProgram(), "InsertYValue");
 				outputValue = program->GetOutput();
@@ -319,7 +319,7 @@ cl_mem COpenCLFilter::Fusion(cl_mem inputData, cl_mem secondPictureData, const f
 
 			try
 			{
-				program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+				program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram1D(programCL->GetProgram(), "Fusion");
 				outputValue = program->GetOutput();
@@ -386,7 +386,7 @@ cl_mem COpenCLFilter::bilateral_filter(const int & radius, const int & preserve,
 			paramPreserve->SetLibelle("preserve");
 			vecParam.push_back(paramPreserve);
 
-			program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "bilateral_filter");
 			outputValue = program->GetOutput();
@@ -451,7 +451,7 @@ cl_mem COpenCLFilter::run2d(const int & FSIZE, const int & BSIZE,const float & S
 			paramsigmaP->SetLibelle("SIGMA");
 			vecParam.push_back(paramsigmaP);
 
-			program->SetParameter(&vecParam,  width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam,  width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "run2d");
 			outputValue = program->GetOutput();
@@ -518,7 +518,7 @@ cl_mem COpenCLFilter::bilat2(int fSize,  float sigmaX, float sigmaP, cl_mem inpu
 
 			try
 			{
-				program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+				program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 				program->SetKeepOutput(true);
 				program->ExecuteProgram(programCL->GetProgram(), "bilat2");
 				outputValue = program->GetOutput();
@@ -575,7 +575,7 @@ cl_mem COpenCLFilter::SharpenMasking(const float &sharpness, cl_mem inputData, i
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "SharpenMasking");
 			outputValue = program->GetOutput();
@@ -629,7 +629,7 @@ cl_mem COpenCLFilter::PhotoFiltre(const CRgbaquad &clValue, const int &intensity
 		
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "PhotoFiltre");
 			outputValue = program->GetOutput();
@@ -677,7 +677,7 @@ cl_mem COpenCLFilter::RGBFilter(const int &red, const int &green, const int &blu
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "RGBFiltre");
 			outputValue = program->GetOutput();
@@ -728,7 +728,7 @@ cl_mem COpenCLFilter::FiltreMosaic(cl_mem inputData, int width, int height)
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Mosaic");
 			outputValue = program->GetOutput();
@@ -784,7 +784,7 @@ cl_mem COpenCLFilter::Blur(const int &radius, cl_mem inputData, int width, int h
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Blur");
 			outputValue = program->GetOutput();
@@ -841,7 +841,7 @@ cl_mem COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cl
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -919,7 +919,7 @@ cl_mem COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, con
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "MotionBlur");
 			outputValue = program->GetOutput();
@@ -973,7 +973,7 @@ cl_mem COpenCLFilter::FiltreConvolution(const wxString &functionName, cl_mem inp
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1024,7 +1024,7 @@ cl_mem COpenCLFilter::ErodeDilate(const wxString &functionName, cl_mem inputData
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1070,7 +1070,7 @@ cl_mem COpenCLFilter::Posterize(const float &level, const float &gamma, cl_mem i
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Posterisation");
 			outputValue = program->GetOutput();
@@ -1116,7 +1116,7 @@ cl_mem COpenCLFilter::Solarize(const long &threshold, cl_mem inputData, int widt
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "Solarization");
 			outputValue = program->GetOutput();
@@ -1167,7 +1167,7 @@ cl_mem COpenCLFilter::Median(cl_mem inputData, int width, int height)
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Median");
 			outputValue = program->GetOutput();
@@ -1218,7 +1218,7 @@ cl_mem COpenCLFilter::Noise(cl_mem inputData, int width, int height)
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Noise");
 			outputValue = program->GetOutput();
@@ -1282,7 +1282,7 @@ cl_mem COpenCLFilter::Flip(const wxString &functionName, cl_mem inputData, int w
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1346,7 +1346,7 @@ cl_mem COpenCLFilter::Swirl(const float &radius, const float &angle, cl_mem inpu
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Swirl");
 			outputValue = program->GetOutput();
@@ -1399,7 +1399,7 @@ cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const doub
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), "LightAndContrast");
 			outputValue = program->GetOutput();
@@ -1423,6 +1423,11 @@ cl_mem COpenCLFilter::BrightnessAndContrast(const double &brightness, const doub
 		vecParam.clear();
 	}
 	return outputValue;
+}
+
+int COpenCLFilter::GetSizeData()
+{
+	return sizeof(float) * 4;
 }
 
 COpenCLProgram * COpenCLFilter::GetProgram(const wxString &numProgram)
@@ -1449,7 +1454,7 @@ cl_mem COpenCLFilter::ColorEffect(const wxString &functionName, cl_mem inputData
 
 		try
 		{
-			program->SetParameter(&vecParam, width, height, sizeof(float) * 4 * width * height);
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram1D(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1515,7 +1520,7 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 
 		try
 		{
-			program->SetParameter(&vecParam, widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
+			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1596,7 +1601,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 
 		try
 		{
-			program->SetParameter(&vecParam,  widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
+			program->SetParameter(&vecParam,  widthOut, heightOut, GetSizeData() * widthOut * heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
@@ -1694,7 +1699,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		try
 		{
 			program->SetKeepOutput(true);
-			program->SetParameter(&vecParam,  widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
+			program->SetParameter(&vecParam,  widthOut, heightOut, GetSizeData() * widthOut * heightOut);
 			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
 		}
@@ -1778,7 +1783,7 @@ cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightO
 
 		try
 		{
-			program->SetParameter(&vecParam, widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
+			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Interpolation");
 			outputValue = program->GetOutput();
@@ -1886,7 +1891,7 @@ cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightO
 		try
 		{
 			program->SetKeepOutput(true);
-			program->SetParameter(&vecParam, widthOut, heightOut, sizeof(float) * 4 * widthOut * heightOut);
+			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
 			program->ExecuteProgram(programCL->GetProgram(), "InterpolationZone");
 			outputValue = program->GetOutput();
 		}

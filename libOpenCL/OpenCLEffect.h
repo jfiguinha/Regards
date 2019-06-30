@@ -97,6 +97,7 @@ namespace Regards
 			cl_mem LoadWxImage(uint8_t * data, const int &width, const int &height, const int &effwidth);
 		protected:
 
+			int GetSizeData();
 			inline float Filter(const float &f);
 			cl_mem_flags  flag;
 			COpenCLContext * context;

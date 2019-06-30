@@ -121,6 +121,11 @@ void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t 
 	formatData = format;
 }
 
+int COpenCLEffectVideoYUV::GetSizeData()
+{
+	return sizeof(float) * 4;
+}
+
 void COpenCLEffectVideoYUV::InterpolationBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic)
 {
 	if(context != nullptr)
@@ -166,7 +171,7 @@ void COpenCLEffectVideoYUV::InterpolationBicubic(const int &widthOut, const int 
 
 			vecParam.push_back(paramLineSize);
 
-			program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * sizeof(float) * 4);
+			program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "BicubicYUVtoRegardsBitmap");
 			paramOutput->SetValue(program->GetOutput());
