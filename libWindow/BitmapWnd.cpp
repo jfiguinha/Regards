@@ -1331,6 +1331,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	}
 }
 
+//#define __OPENGLONLY__
 
 //-----------------------------------------------------------------
 //Dessin de l'image
@@ -1381,6 +1382,52 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
         }
     #endif
                
+
+#ifdef __OPENGLONLY__
+
+		if (source != nullptr)
+		{
+			if (filtreEffet != nullptr)
+				delete filtreEffet;
+
+			filtreEffet = new CFiltreEffet(color, nullptr, source);
+
+
+			if (bitmapLoad && width > 0 && height > 0)
+			{
+				GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+			}
+
+			if (NeedAfterRenderBitmap())
+				ApplyPreviewEffect();
+
+			CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
+			//bitmap->SaveToBmp("c:\\developpement\\test.bmp");
+
+			glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+			if (glTexture != nullptr)
+				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+			else
+			{
+				//Error
+				printf("CBitmapWnd GetDisplayTexture Error \n");
+			}
+			delete bitmap;
+
+			renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+		}
+
+		if (glTexture != nullptr)
+		{
+			int x = (width - glTexture->GetWidth()) / 2;
+			int y = (height - glTexture->GetHeight()) / 2;
+			renderOpenGL->RenderToScreen(x, y, false);
+
+			//AfterRender();
+		}
+		
+
+#else
         if (openCLEngine == nullptr)
         {
             openCLEngine = new COpenCLEngine();
@@ -1590,7 +1637,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
                     renderOpenGL->RenderToScreen(0,0, false);            
             }
         }
-    
+#endif    
+
 	this->SwapBuffers();
 
     printf("CBitmapWnd End OnPaint \n");
@@ -1608,7 +1656,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 #endif
 
    
-
 }
 
 void CBitmapWnd::RefreshWindow()

@@ -663,4 +663,98 @@ void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out)
 
 }
 
+void CInterpolation::CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY)
+{
+	int width = widthOut;
+	int height = heightOut;
 
+
+	float ratioX = (float)widthIn / (float)width;
+	float ratioY = (float)heightIn / (float)height;
+	if (angle == 90 || angle == 270)
+	{
+		ratioX = (float)widthIn / (float)height;
+		ratioY = (float)heightIn / (float)width;
+	}
+
+	posY = (float)y * ratioY;
+	posX = (float)x * ratioX;
+
+	if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+
+	if (angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
+}
+
+
+void CInterpolation::Execute(CRegardsBitmap * In, CRegardsBitmap * & Out, const int &flipH, const int &flipV, const int &angle)
+{
+	int width = Out->GetBitmapWidth();
+	int height = Out->GetBitmapHeight();
+
+	int widthIn = In->GetBitmapWidth();
+	int heightIn = In->GetBitmapHeight();
+
+	float ratioX = (float)widthIn / (float)width;
+	float ratioY = (float)heightIn / (float)height;
+
+#pragma omp parallel for
+	for (auto y = 0; y < height; y++)
+	{
+#pragma omp parallel for
+		for (auto x = 0; x < width; x++)
+		{
+			float posY = 0;
+			float posX = 0;
+			CInterpolation::CalculPosition(x, y, widthIn, heightIn, width, height, flipH, flipV, angle, posX, posY);
+			Out->SetColorValue(x, y, In->GetColorValue(posX, posY));
+		}
+	}
+}

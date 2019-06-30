@@ -184,8 +184,11 @@ GLTexture * CRenderOpenGL::GetDisplayTexture(const int &width, const int &height
 		textureDisplay = GLTexture::CreateTextureOutput(width, height);
 
 		glBindTexture( GL_TEXTURE_2D, textureDisplay->GetTextureID() );
-		cl_textureDisplay = clCreateFromGLTexture2D(context, CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, textureDisplay->GetTextureID(), &err);
-		Error::CheckError(err);
+		if (context != nullptr)
+		{
+			cl_textureDisplay = clCreateFromGLTexture2D(context, CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, textureDisplay->GetTextureID(), &err);
+			Error::CheckError(err);
+		}
 	}
 
 	return textureDisplay;

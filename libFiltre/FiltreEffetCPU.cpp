@@ -233,8 +233,10 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 		delete bitmapOut;
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	CInterpolationBicubic interpolation;
+	//CInterpolationBicubic interpolation;
+	CInterpolation interpolation;
 	interpolation.Execute(pBitmap, bitmapOut, flipH, flipV, angle);
+
 	/*
 	switch(method)
 	{
@@ -356,8 +358,9 @@ void CFiltreEffetCPU::Interpolation(const int &widthOut, const int &heightOut, c
 		delete bitmapOut;
 
 	bitmapOut = new CRegardsBitmap(widthOut, heightOut);
-	CInterpolationBicubic interpolation;
-	interpolation.Execute(pBitmap, bitmapOut, rc);//, flipH, flipV, angle);
+	//CInterpolationBicubic interpolation;
+	CInterpolation interpolation;
+	interpolation.Execute(pBitmap, bitmapOut, flipH, flipV, angle);
 	/*
 	switch(method)
 	{
