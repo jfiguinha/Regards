@@ -26,7 +26,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	wxInitAllImageHandlers();
 
 	//sqlResource.InsertText(L"IDR_OPENCL_BM3D", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opencl\\bm3d.cl");
-	sqlResource.InsertText(L"IDR_OPENCL_INTERPOLATION", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\interpolation.cl");
+	sqlResource.InsertText(L"IDR_OPENCL_INTERPOLATION_UCHAR", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\interpolation_short.cl");
 	//sqlResource.InsertText(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opengl\\video_shader.cg");
 
 	//sqlResource.InsertBitmap(L"IDB_FILTRE_BM3D", L"PNG", L"c:\\Regards\\resource\\res\\bitmap\\cameraman.png");
