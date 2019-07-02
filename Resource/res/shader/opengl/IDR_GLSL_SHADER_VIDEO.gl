@@ -1,0 +1,179 @@
+uniform sampler2D texUnit;
+uniform float fWidth;
+uniform float fHeight;
+uniform int effectenable;
+uniform int grayscale;
+uniform int sharpenMasking;
+uniform int tone;
+uniform int colorboost;
+uniform int denoise;
+uniform float sharpness;
+uniform float contrast;
+uniform float brightness;
+uniform float red;
+uniform float green;
+uniform float blue;
+uniform float exponent;
+
+vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
+{
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	vec2 resolution = vec2(texelSizeX, texelSizeY); 
+	return texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+}
+
+vec4 ContrastFilter(vec4 color,float contrast, float offset)
+{
+	float csupp = contrast * (offset - 256.0) + 128.0;
+	
+	float red = contrast * (color.r * 255.0) + csupp;
+	if (red < 0.0)
+		red = 0.0;
+	else if (red > 255.0)
+		red = 255.0;	
+		
+	float blue = contrast * (color.b * 255.0) + csupp;
+	if (blue < 0.0)
+		blue = 0.0;
+	else if (blue > 255.0)
+		blue = 255.0;	
+
+	float green = contrast * (color.g * 255.0) + csupp;
+	if (green < 0.0)
+		green = 0.0;
+	else if (green > 255.0)
+		green = 255.0;
+
+	return vec4(red / 255.0, green / 255.0, blue / 255.0, color.a);		
+	
+	
+}
+
+vec4 LightnessFilter(vec4 color)
+{
+	float nChange = (2.55 * brightness) / 255.0;
+	return vec4(color.r + nChange, color.g + nChange, color.b + nChange, color.a);
+}
+
+
+void main(void)
+{																   
+	//------------------------------------------------------------
+	//Variable													   
+	//------------------------------------------------------------
+	vec2 tex_coord = gl_TexCoord[0].st;
+	vec4 src_color = texture2D(texUnit, tex_coord).rgba;
+	
+	if(effectenable == 0)
+	{
+		gl_FragColor = src_color;
+		return;
+	}
+
+	if(sharpenMasking == 1)
+	{
+		vec4 sum;
+		float posX = gl_TexCoord[0].s;
+		float posY = gl_TexCoord[0].t;
+		sum =  TextureValue(posX, posY, -1.0, -1.0);
+		sum += TextureValue(posX, posY, 0.0, -1.0);
+		sum += TextureValue(posX, posY, 1.0, -1.0);
+		sum += TextureValue(posX, posY, -1.0, 0.0);
+		sum += src_color;
+		sum += TextureValue(posX, posY, 1.0, 0.0);
+		sum += TextureValue(posX, posY, -1.0, 1.0);
+		sum += TextureValue(posX, posY, 0.0, 1.0);
+		sum += TextureValue(posX, posY, 1.0, 1.0);
+		vec4 blur = sum / vec4(9.0,9.0,9.0,9.0);
+		src_color = src_color + (src_color - blur) * sharpness;		
+	}
+
+	if(denoise == 1)
+	{
+		vec4 center = src_color;
+		vec4 color = vec4(0.0);
+		float posX = gl_TexCoord[0].s;
+		float posY = gl_TexCoord[0].t;			
+		float total = 0.0;
+		for (float x = -4.0; x <= 4.0; x += 1.0) {
+			for (float y = -4.0; y <= 4.0; y += 1.0) {	
+				vec4 sample = TextureValue(posX, posY, x, y);
+				float weight = 1.0 - abs(dot(sample.rgb - center.rgb, vec3(0.25)));
+				weight = pow(weight, exponent);
+				color += sample * weight;
+				total += weight;
+			}
+		}
+		src_color = color / total;	
+	}		
+
+	if(tone == 1)
+	{
+		if (contrast == 0.0)
+		{
+			src_color = ContrastFilter(src_color, 1.0, 128.0);
+		}
+		else if (contrast > 0.0)
+		{
+			float offset = contrast;
+			offset /= 100.0;
+			offset = 1.0 + offset;
+			src_color = ContrastFilter(src_color, offset, 128.0);
+		}
+		else if (contrast < 0.0)
+		{
+			float offset = -contrast;
+			offset /= 100.0;
+			offset = 1.0 - offset;
+			src_color = ContrastFilter(src_color, offset, 128.0);
+		}
+	
+		src_color = LightnessFilter(src_color);
+	}
+
+	if(colorboost == 1)
+	{
+		float _localred = red / 255.0; 
+		float _localgreen = green / 255.0; 
+		float _localblue = blue / 255.0; 
+
+		_localred = src_color.r + _localred;
+		_localgreen = src_color.g + _localgreen;
+		_localblue = src_color.b + _localblue;
+
+		if (_localred > 1.0)
+			_localred = 1.0;
+
+		if(_localred < 0.0)
+			_localred = 0.0;
+
+		if (_localgreen > 1.0)
+			_localgreen = 1.0;
+
+		if(_localgreen < 0.0)
+			_localgreen = 0.0;
+
+		if (_localblue > 1.0)
+			_localblue = 1.0;
+
+		if(_localblue < 0.0)
+			_localblue = 0.0;
+
+		src_color = vec4(_localred, _localgreen, _localblue, src_color.a);
+	}
+
+
+
+	if(grayscale == 1)
+	{
+		float sum = src_color.r * 0.299 + src_color.b * 0.114 + src_color.g * 0.587;
+		src_color = vec4(sum, sum, sum, src_color.a);
+	}
+
+
+	gl_FragColor = src_color;
+
+}
+
+

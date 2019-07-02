@@ -6,6 +6,7 @@
 #include <fstream>
 #include <ImageLoadingFormat.h>
 #include "PictureData.h"
+#include <wx/textfile.h>
 using namespace std;
 using namespace Regards::Sqlite;
 
@@ -45,37 +46,76 @@ void CSqlResource::InsertBitmap(const wstring &idName, const wstring &mimeType, 
 	}
 }
 
-string CSqlResource::readFileBytes(const string &name)
+wxString CSqlResource::readFileBytes(const wxString &name)
 {
-	std::ifstream t(name);
-	std::string str;
-	t.seekg(0, std::ios::end);
-	str.reserve(t.tellg());
-	t.seekg(0, std::ios::beg);
-	str.assign((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-	t.close();
+	wxString        str;
+	// open the file
+	wxTextFile      tfile;
+	tfile.Open(name);
+
+	// read the first line
+	str.append(tfile.GetFirstLine());
+	
+
+	// read all lines one by one
+	// until the end of the file
+	while (!tfile.Eof())
+	{
+		str.Append("\n");
+		str.append(tfile.GetNextLine());
+	}
+
 	return str;
 }
 
-void CSqlResource::InsertText(const wstring &idName, const wstring &mimeType, const wstring &filename)
+wxString CSqlResource::GetText(const wxString& idName)
 {
-	string file;
-	file.assign(filename.begin(), filename.end());
-	string data = readFileBytes(file);
+	text = "";
+	typeResult = 2;
+	ExecuteRequest("SELECT idName, mimeType, size, data FROM TextResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
+
+void CSqlResource::InsertOpenGLShader(const wstring &idName, const wstring &mimeType, const wstring &filename)
+{
+	wxString data = readFileBytes(filename);
 	char * out = new char[data.size()];
 	int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
-	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO TextResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
+	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenglResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
 	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
 	
 	delete[] out;
 }
 
+void CSqlResource::InsertOpenCLFloat(const wstring& idName, const wstring& mimeType, const wstring& filename)
+{
+	wxString data = readFileBytes(filename);
+	char* out = new char[data.size()];
+	int taille = LZ4_compress(data.c_str(), out, data.size());
+	wchar_t _pwszRequeteSQL[512];
+	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenclFloatResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
+	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
+
+	delete[] out;
+}
+
+void CSqlResource::InsertOpenCLUchar(const wstring& idName, const wstring& mimeType, const wstring& filename)
+{
+	wxString data = readFileBytes(filename);
+	char* out = new char[data.size()];
+	int taille = LZ4_compress(data.c_str(), out, data.size());
+	wchar_t _pwszRequeteSQL[512];
+	swprintf(_pwszRequeteSQL, 512, L"INSERT INTO OpenclUcharResource (idName, mimeType, size, data) VALUES('%s', '%s', %d, ?)", idName.c_str(), mimeType.c_str(), data.size());
+	ExecuteInsertBlobData(_pwszRequeteSQL, 3, out, taille);
+
+	delete[] out;
+}
+
 void CSqlResource::InsertVector(const wstring &idName, const wstring &filename)
 {
-	string file;
-	file.assign(filename.begin(), filename.end());
-	string data = readFileBytes(file);
+	wxString data = readFileBytes(filename);
 	char * out = new char[data.size()];
 	int taille = LZ4_compress(data.c_str(), out, data.size());
 	wchar_t _pwszRequeteSQL[512];
@@ -100,15 +140,33 @@ CPictureData * CSqlResource::GetBitmap(const wxString &idName)
 	return memFile;
 }
 
-wxString CSqlResource::GetText(const wxString &idName)
+wxString CSqlResource::GetOpenGLShader(const wxString &idName)
 {
+	text = "";
 	typeResult = 2;
-	ExecuteRequest("SELECT idName, mimeType, size, data FROM TextResource WHERE idName = '" + idName + "'");
+	ExecuteRequest("SELECT idName, mimeType, size, data FROM OpenglResource WHERE idName = '" + idName + "'");
     return text;
+}
+
+wxString CSqlResource::GetOpenCLFloat(const wxString& idName)
+{
+	text = "";
+	typeResult = 2;
+	ExecuteRequest("SELECT idName, mimeType, size, data FROM OpenclFloatResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
+wxString CSqlResource::GetOpenCLUchar(const wxString& idName)
+{
+	text = "";
+	typeResult = 2;
+	ExecuteRequest("SELECT idName, mimeType, size, data FROM OpenclUcharResource WHERE idName = '" + idName + "'");
+	return text;
 }
 
 wxString  CSqlResource::GetVector(const wxString &idName)
 {
+	text = "";
     typeResult = 4;
     ExecuteRequest("SELECT idName, size, data FROM VectorResource WHERE idName = '" + idName + "'");
     return text;

@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #endif
 #include "OpenCLParameter.h"
+#include <RegardsFloatBitmap.h>
 #include <RegardsBitmap.h>
 #include <string>
 #include <vector>
@@ -25,7 +26,7 @@ namespace Regards
 		public:
 			COpenCLExecuteProgram(COpenCLContext * context, const cl_mem_flags &flag);
 			~COpenCLExecuteProgram();
-
+			void SetParameter(vector<COpenCLParameter*>* vecParam, CRegardsFloatBitmap* bitmapOut);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, CRegardsBitmap * bitmapOut);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, int width, int height, int sizeOutput);
 			void SetParameter(vector<COpenCLParameter *> * vecParam, int width, int height, void * dataPt = nullptr);

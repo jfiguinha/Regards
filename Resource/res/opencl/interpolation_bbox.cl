@@ -313,11 +313,17 @@ __kernel void Interpolation(__global float4 *output, const __global float4 *inpu
 
 	float ratioX = (float)widthIn / (float)width;
 	float ratioY = (float)heightIn / (float)height;
-	if (angle == 90 || angle == 270)
+
+	if (angle == 90)
 	{
 		ratioX = (float)widthIn / (float)height;
 		ratioY = (float)heightIn / (float)width;
 	}
+	else if(angle == 270)
+	{
+		ratioX = (float)widthIn / (float)height;
+		ratioY = (float)heightIn / (float)width;
+	}		
 
 	float posY = (float)y * ratioY;
 	float posX = (float)x * ratioX;
@@ -387,11 +393,16 @@ __kernel void InterpolationZone(__global float4 *output, const __global float4 *
 
 	float ratioX = (float)widthIn / bitmapWidth;
 	float ratioY = (float)heightIn / bitmapHeight;
-	if (angle == 90 || angle == 270)
+	if (angle == 90)
 	{
 		ratioX = (float)widthIn / (float)bitmapHeight;
 		ratioY = (float)heightIn / (float)bitmapWidth;
 	}
+	else if(angle == 270)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;
+	}	
 
 	float posX = (float)x * ratioX + left * ratioX;
 	float posY = (float)y * ratioY + top * ratioY;

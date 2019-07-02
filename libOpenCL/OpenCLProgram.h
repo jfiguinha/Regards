@@ -27,6 +27,8 @@ namespace Regards
 
 			const wxString GetProgramId();
 
+			const int GetDefaultType();
+
 
 		private:
 
@@ -37,6 +39,7 @@ namespace Regards
 			wxString buildOption;
 			wxString numProgramId;
 			cl_program program;
+			int typeData;
 			COpenCLContext * context;
             
             bool loadFromDatabase = false;

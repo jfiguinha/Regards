@@ -32,8 +32,8 @@ namespace Regards
 		public:
 			CSqlOpenCLKernel();
 			~CSqlOpenCLKernel();
-            bool InsertOpenCLKernel(const unsigned char * zBlob, const size_t &nBlob, const wxString &numProgram, const wxString &platformName, const int &numDevice);
-            COpenCLKernelData * GetOpenCLKernel(const wxString & numProgram, const wxString &platformName, const int &numDevice);
+            bool InsertOpenCLKernel(const unsigned char * zBlob, const size_t &nBlob, const wxString &numProgram, const wxString &platformName, const int &numDevice, const int &typeData);
+            COpenCLKernelData * GetOpenCLKernel(const wxString & numProgram, const wxString &platformName, const int &numDevice, const int& typeData);
             bool TestOpenCLKernel(const wxString & numProgram, const wxString &platformName, const int &numDevice);
             void EraseOpenCLKernelTable();
 

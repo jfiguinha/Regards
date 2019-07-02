@@ -11,7 +11,9 @@ public:
     CPictureData * LoadBitmapFromResource(const wxString &idName);
     static wxString LoadStringFromResource(const wxString &idName, const int &idLang);
 	static wxString LoadExifNameFromResource(const wxString &id);
-    static wxString GetShaderProgram(const wxString &idName);
+    static wxString GetOpenGLShaderProgram(const wxString &idName);
+	static wxString GetOpenCLFloatProgram(const wxString& idName);
+	static wxString GetOpenCLUcharProgram(const wxString& idName);
     static wxString GetVector(const wxString &idName);
 	static wxImage CreatePictureFromSVG(const wxString& idName, const int& buttonWidth, const int& buttonHeight);
     static int GetExtensionId(const wxString &extension);

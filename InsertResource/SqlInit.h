@@ -20,7 +20,7 @@ namespace Regards
 			{
 				CSqlLibResource * libResource = new CSqlLibResource(false, false);
 				wstring filename = L"C:\\developpement\\git\\Regards\\Regards\\Resources\\resource.db";
-				//wstring filename = L"C:\\Regards\\Regards\\Resources\\resource.db";
+				//wstring filename = L"C:\\Regards\\Regards\\Resource\\resource.db";
 				CSqlEngine::Initialize(filename,"ResourceDB",libResource);
 			}
 

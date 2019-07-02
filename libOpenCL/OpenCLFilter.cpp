@@ -1547,7 +1547,7 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 
 
 
-cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
+cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
 {
 	cl_mem outputValue = nullptr;
 	
@@ -1599,6 +1599,11 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		paramangle->SetValue(angle);
 		vecParam.push_back(paramangle);
 
+		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+		paramtype->SetLibelle("type");
+		paramtype->SetValue(method);
+		vecParam.push_back(paramtype);
+
 		try
 		{
 			program->SetParameter(&vecParam,  widthOut, heightOut, GetSizeData() * widthOut * heightOut);
@@ -1626,7 +1631,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 	return outputValue;
 }
 
-cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
+cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
 {
 	cl_mem outputValue = nullptr;
 	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
@@ -1696,6 +1701,11 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		paramangle->SetValue(angle);
 		vecParam.push_back(paramangle);
 
+		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+		paramtype->SetLibelle("type");
+		paramtype->SetValue(method);
+		vecParam.push_back(paramtype);
+
 		try
 		{
 			program->SetKeepOutput(true);
@@ -1713,198 +1723,6 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 	for (COpenCLParameter * parameter : vecParam)
 		{
 			if(!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
-	return outputValue;
-}
-
-
-cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightOut, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
-{
-	int filtre = 0;
-	cl_mem outputValue = nullptr;
-	COpenCLProgram* programCL = nullptr;
-	programCL = GetProgram("IDR_OPENCL_BBOXINTERPOLATION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter*> vecParam;
-		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
-		input->SetValue(inputData);
-		input->SetNoDelete(true);
-		input->SetLibelle("input");
-		vecParam.push_back(input);
-
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(width);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(height);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
-		paramWidthOut->SetLibelle("widthOut");
-		paramWidthOut->SetValue(widthOut);
-		vecParam.push_back(paramWidthOut);
-
-		COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
-		paramHeightOut->SetLibelle("heightOut");
-		paramHeightOut->SetValue(heightOut);
-		vecParam.push_back(paramHeightOut);
-
-		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
-		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(flipH);
-		vecParam.push_back(paramflipH);
-
-		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
-		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(flipV);
-		vecParam.push_back(paramflipV);
-
-		COpenCLParameterInt* paramangle = new COpenCLParameterInt();
-		paramangle->SetLibelle("angle");
-		paramangle->SetValue(angle);
-		vecParam.push_back(paramangle);
-
-		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
-		paramtype->SetLibelle("type");
-		paramtype->SetValue(method);
-		vecParam.push_back(paramtype);
-
-		try
-		{
-			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "Interpolation");
-			outputValue = program->GetOutput();
-		}
-		catch (...)
-		{
-			outputValue = nullptr;
-		}
-
-		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
-			{
-				delete parameter;
-				parameter = nullptr;
-			}
-		}
-		vecParam.clear();
-	}
-	return outputValue;
-}
-
-cl_mem COpenCLFilter::Interpolation_bbox(const int& widthOut, const int& heightOut, const wxRect& rc, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
-{
-	int filtre = 0;
-	cl_mem outputValue = nullptr;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		filtre = config->GetInterpolationType();
-
-	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_BBOXINTERPOLATION");
-	if (programCL != nullptr)
-	{
-		vector<COpenCLParameter*> vecParam;
-		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
-
-		COpenCLParameterClMem* input = new COpenCLParameterClMem(true);
-		input->SetValue(inputData);
-		input->SetLibelle("input");
-		input->SetNoDelete(true);
-		vecParam.push_back(input);
-
-		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
-		paramWidth->SetValue(width);
-		paramWidth->SetLibelle("width");
-		vecParam.push_back(paramWidth);
-
-		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
-		paramHeight->SetValue(height);
-		paramHeight->SetLibelle("height");
-		vecParam.push_back(paramHeight);
-
-		COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
-		paramWidthOut->SetLibelle("widthOut");
-		paramWidthOut->SetValue(widthOut);
-		vecParam.push_back(paramWidthOut);
-
-		COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
-		paramHeightOut->SetLibelle("heightOut");
-		paramHeightOut->SetValue(heightOut);
-		vecParam.push_back(paramHeightOut);
-
-		COpenCLParameterFloat* left = new COpenCLParameterFloat();
-		left->SetLibelle("left");
-		left->SetValue(rc.x);
-		vecParam.push_back(left);
-
-		COpenCLParameterFloat* top = new COpenCLParameterFloat();
-		top->SetLibelle("top");
-		top->SetValue(rc.y);
-		vecParam.push_back(top);
-
-		COpenCLParameterFloat* bitmapWidth = new COpenCLParameterFloat();
-		bitmapWidth->SetLibelle("bitmapWidth");
-		bitmapWidth->SetValue(rc.width);
-		vecParam.push_back(bitmapWidth);
-
-		COpenCLParameterFloat* bitmapHeight = new COpenCLParameterFloat();
-		bitmapHeight->SetLibelle("bitmapHeight");
-		bitmapHeight->SetValue(rc.height);
-		vecParam.push_back(bitmapHeight);
-
-		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
-		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(flipH);
-		vecParam.push_back(paramflipH);
-
-		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
-		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(flipV);
-		vecParam.push_back(paramflipV);
-
-		COpenCLParameterInt* paramangle = new COpenCLParameterInt();
-		paramangle->SetLibelle("angle");
-		paramangle->SetValue(angle);
-		vecParam.push_back(paramangle);
-
-		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
-		paramtype->SetLibelle("type");
-		paramtype->SetValue(filtre);
-		vecParam.push_back(paramtype);
-
-		try
-		{
-			program->SetKeepOutput(true);
-			program->SetParameter(&vecParam, widthOut, heightOut, GetSizeData() * widthOut * heightOut);
-			program->ExecuteProgram(programCL->GetProgram(), "InterpolationZone");
-			outputValue = program->GetOutput();
-		}
-		catch (...)
-		{
-			outputValue = nullptr;
-		}
-
-		delete program;
-
-		for (COpenCLParameter* parameter : vecParam)
-		{
-			if (!parameter->GetNoDelete())
 			{
 				delete parameter;
 				parameter = nullptr;

@@ -10,11 +10,14 @@
 using namespace Regards::OpenCL;
 using namespace Regards::Sqlite;
 
+
+
 COpenCLProgram::COpenCLProgram(COpenCLContext * context)
 {
 	program = 0;
 	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
 	this->context = context;
+	this->typeData = context->GetDefaultType();
 }
 
 COpenCLProgram::~COpenCLProgram()
@@ -42,7 +45,7 @@ bool COpenCLProgram::LoadProgramFromBinaries(const wxString &programId)
     if(sqlOpenCLKernel.TestOpenCLKernel(programId, platformName, indexDevice) && loadFromDatabase)
     {
         cl_int err;
-        COpenCLKernelData * outputData = sqlOpenCLKernel.GetOpenCLKernel(programId, platformName, indexDevice);
+        COpenCLKernelData * outputData = sqlOpenCLKernel.GetOpenCLKernel(programId, platformName, indexDevice, typeData);
         if(outputData != nullptr)
         {
             program = clCreateProgramWithBinary(context->GetContext(), context->GetNumberOfDevice(), context->GetSelectedDevice(), &outputData->program_size,
@@ -198,7 +201,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programId, const wxStr
                 write_file(filename, binaries_ptr[i], binaries_size[i]);
                 }
                  * */
-                sqlOpenCLKernel.InsertOpenCLKernel(binaries_ptr[indexDevice], binaries_size[indexDevice], programId, platformName, indexDevice);
+                sqlOpenCLKernel.InsertOpenCLKernel(binaries_ptr[indexDevice], binaries_size[indexDevice], programId, platformName, indexDevice, typeData);
             }
         }
         catch(...)
@@ -221,13 +224,22 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programId, const wxStr
 	return 0;
 }
 
+const int COpenCLProgram::GetDefaultType()
+{
+	return typeData;
+}
+
 
 void COpenCLProgram::SetProgramId(const wxString &programId)
 {
 	this->numProgramId = programId;
     if(!LoadProgramFromBinaries(programId))
     {
-        wxString programData = CLibResource::GetShaderProgram(programId);
+		wxString programData = "";
+		if(typeData == OPENCL_FLOAT)
+			programData = CLibResource::GetOpenCLFloatProgram(programId);
+		else if (typeData == OPENCL_UCHAR)
+			programData = CLibResource::GetOpenCLUcharProgram(programId);
         CreateAndBuildProgram(programId, programData, buildOption);
     }
 }

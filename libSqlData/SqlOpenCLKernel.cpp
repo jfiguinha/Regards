@@ -16,10 +16,10 @@ CSqlOpenCLKernel::~CSqlOpenCLKernel()
 {
 }
 
-COpenCLKernelData * CSqlOpenCLKernel::GetOpenCLKernel(const wxString & numProgram, const wxString &platformName, const int &numDevice)
+COpenCLKernelData * CSqlOpenCLKernel::GetOpenCLKernel(const wxString & numProgram, const wxString &platformName, const int &numDevice, const int& typeData)
 {
 	type = 1;
-	ExecuteRequest("SELECT openCLKernel FROM OPENCLKERNEL WHERE numProgram = '" + numProgram + "'  and platformName = '" + platformName + "' and numDevice = " + to_string(numDevice));
+	ExecuteRequest("SELECT openCLKernel FROM OPENCLKERNEL WHERE numProgram = '" + numProgram + "'  and platformName = '" + platformName + "' and numDevice = " + to_string(numDevice) + " and typeData = " + to_string(typeData));
 	return memData;
 }
 
@@ -35,9 +35,9 @@ void CSqlOpenCLKernel::EraseOpenCLKernelTable()
     ExecuteRequest("DELETE FROM OPENCLKERNEL");
 }
 
-bool CSqlOpenCLKernel::InsertOpenCLKernel(const unsigned char * zBlob, const size_t &nBlob, const wxString & numProgram, const wxString &platformName, const int &numDevice)
+bool CSqlOpenCLKernel::InsertOpenCLKernel(const unsigned char * zBlob, const size_t &nBlob, const wxString & numProgram, const wxString &platformName, const int &numDevice, const int &typeData)
 {
-	return ExecuteInsertBlobData("INSERT INTO OPENCLKERNEL (numProgram, platformName, numDevice, openCLKernel) VALUES('" + numProgram + "', '" + platformName + "'," + to_string(numDevice) + ",? )", 4, zBlob, nBlob);
+	return ExecuteInsertBlobData("INSERT INTO OPENCLKERNEL (numProgram, platformName, numDevice, typeData, openCLKernel) VALUES('" + numProgram + "', '" + platformName + "'," + to_string(numDevice) + "," + to_string(typeData) + ",? )", 4, zBlob, nBlob);
 }
 
 int CSqlOpenCLKernel::TraitementResult(CSqlResult * sqlResult)

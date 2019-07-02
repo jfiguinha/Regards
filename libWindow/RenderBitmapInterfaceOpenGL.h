@@ -25,7 +25,7 @@ namespace Regards
 			CRenderBitmapInterfaceOpenGL(wxGLCanvas *canvas);
 			virtual ~CRenderBitmapInterfaceOpenGL();
 
-			void ApplyPreviewEffect(const int &left, const int &top, const int &numEffect, CEffectParameter * effectParameter);
+			//void ApplyPreviewEffect(const int &left, const int &top, const int &numEffect, CEffectParameter * effectParameter);
             void LoadingResource(const double & scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
@@ -34,8 +34,8 @@ namespace Regards
 		private:
 
 			//Effect
-			void PhotoFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
-			void RGBFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
+			//void PhotoFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
+			//void RGBFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
 
 
 

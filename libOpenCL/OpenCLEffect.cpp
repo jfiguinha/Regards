@@ -10,6 +10,7 @@
 #include "OpenCLFilter.h"
 #include "utility.h"
 #include <ImageLoadingFormat.h>
+#define minmax
 #include <ximage.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
@@ -41,7 +42,10 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
 
 int COpenCLEffect::GetSizeData()
 {
-	return sizeof(float) * 4;
+	if(context->GetDefaultType() == OPENCL_FLOAT)
+		return sizeof(cl_float) * 4;
+
+	return sizeof(cl_uchar) * 4;
 }
 
 int COpenCLEffect::Bm3d(const int & fSigma)
@@ -147,7 +151,7 @@ cl_mem COpenCLEffect::LoadRegardsImage(uint8_t * data, const int &width, const i
 {
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_REGARDBITMAP");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -177,6 +181,51 @@ cl_mem COpenCLEffect::LoadRegardsImage(uint8_t * data, const int &width, const i
 		for (COpenCLParameter * parameter : vecParam)
 		{
 			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return outputValue;
+}
+
+
+cl_mem COpenCLEffect::LoadFloatImage(float * data, const int& width, const int& height)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLFilter openclFilter(context);
+	COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterFloatArray* dataImage = new COpenCLParameterFloatArray();
+		dataImage->SetValue(context->GetContext(), data, width * height * 4, flag);
+		vecParam.push_back(dataImage);
+
+		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+		paramWidth->SetLibelle("width");
+		paramWidth->SetValue(width);
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+		paramHeight->SetLibelle("height");
+		paramHeight->SetValue(height);
+		vecParam.push_back(paramHeight);
+
+		program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
+		program->SetKeepOutput(true);
+		program->ExecuteProgram1D(programCL->GetProgram(), "LoadFloatBitmap");
+		outputValue = program->GetOutput();
+
+		delete program;
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
 			{
 				delete parameter;
 				parameter = nullptr;
@@ -251,7 +300,7 @@ cl_mem COpenCLEffect::LoadCxImageAlpha(uint8_t * data, uint8_t * alpha, const in
 {
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -311,7 +360,7 @@ cl_mem COpenCLEffect::LoadCxImage(uint8_t * data, const int &width, const int &h
 {
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -367,7 +416,7 @@ cl_mem COpenCLEffect::LoadWxImageAlpha(uint8_t * data, uint8_t * alpha, const in
 {
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -425,7 +474,7 @@ cl_mem COpenCLEffect::LoadWxImage(uint8_t * data, const int &width, const int &h
 {
 	cl_mem outputValue = nullptr;
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_CXIMAGE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if(programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -468,17 +517,10 @@ cl_mem COpenCLEffect::LoadWxImage(uint8_t * data, const int &width, const int &h
 			}
 		}
 		vecParam.clear();
-
-		//SetOutputValue(outputValue,width,height);
 	}
 	return outputValue;
 }
-/*
-void COpenCLEffect::SetBitmap(CRegardsBitmap * & pBitmap)
-{
-	RefreshMemoryBitmap(pBitmap);
-}
-*/
+
 COpenCLEffect::~COpenCLEffect()
 {
 	if(paramOutput != nullptr)
@@ -576,7 +618,7 @@ CRegardsBitmap * COpenCLEffect::GetBitmap(cl_mem input, const int &width, const 
 	{
 		bitmap = new CRegardsBitmap(width, height);
 		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_REGARDBITMAP");
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if(programCL != nullptr)
 		{
 			vector<COpenCLParameter *> vecParam;
@@ -617,23 +659,71 @@ CRegardsBitmap * COpenCLEffect::GetBitmap(cl_mem input, const int &width, const 
 	return bitmap;
 }
 
+
+CRegardsFloatBitmap* COpenCLEffect::GetFloatBitmap(cl_mem input, const int& width, const int& height)
+{
+	CRegardsFloatBitmap* bitmap = nullptr;
+
+	if (input != nullptr)
+	{
+		bitmap = new CRegardsFloatBitmap(width, height);
+		COpenCLFilter openclFilter(context);
+		COpenCLProgram* programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter*> vecParam;
+			COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+			COpenCLParameterClMem* valueInput = new COpenCLParameterClMem();
+			valueInput->SetValue(input);
+			valueInput->SetNoDelete(true);
+			vecParam.push_back(valueInput);
+
+			COpenCLParameterInt* paramWidth = new COpenCLParameterInt();
+			paramWidth->SetLibelle("width");
+			paramWidth->SetValue(bitmap->GetWidth());
+			vecParam.push_back(paramWidth);
+
+			COpenCLParameterInt* paramHeight = new COpenCLParameterInt();
+			paramHeight->SetLibelle("height");
+			paramHeight->SetValue(bitmap->GetHeight());
+			vecParam.push_back(paramHeight);
+
+			program->SetParameter(&vecParam, bitmap);
+			program->ExecuteProgram1D(programCL->GetProgram(), "GetFloatBitmap");
+
+			delete program;
+
+
+			for (COpenCLParameter* parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+	return bitmap;
+}
+
 CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
 {
 	CRegardsFloatBitmap * bitmapOut = nullptr;
-	if(paramOutput != nullptr && !source)
+	if (paramOutput != nullptr && !source)
 	{
-		bitmapOut = new CRegardsFloatBitmap(widthOut, heightOut);
-		if(context != nullptr)
+		if (context != nullptr)
 		{
-			context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+			bitmapOut = GetFloatBitmap(paramOutput->GetValue(), widthOut, heightOut);
 		}
 	}
 	else
 	{
-		bitmapOut = new CRegardsFloatBitmap(width, height);
-		if(context != nullptr)
+		if (context != nullptr)
 		{
-			context->GetOutputData(input->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+			bitmapOut = GetFloatBitmap(input->GetValue(), width, height);
 		}
 	}
 	return bitmapOut;
@@ -644,20 +734,16 @@ CRegardsBitmap * COpenCLEffect::GetBitmap(const bool &source)
 	CRegardsBitmap * bitmapOut = nullptr;
 	if(paramOutput != nullptr && !source)
 	{
-		//bitmapOut = new CRegardsBitmap(widthOut, heightOut);
 		if(context != nullptr)
 		{
 			bitmapOut = GetBitmap(paramOutput->GetValue(), widthOut, heightOut);
-			//context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
 		}
 	}
 	else
 	{
-		//bitmapOut = new CRegardsBitmap(width, height);
 		if(context != nullptr)
 		{
 			bitmapOut = GetBitmap(input->GetValue(), width, height);
-			//context->GetOutputData(input->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
 		}
 	}
 	return bitmapOut;
@@ -674,7 +760,7 @@ wxImage COpenCLEffect::GetwxImage()
 	if(paramOutput != nullptr)
 	{
 		COpenCLFilter openclFilter(context);
-		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_WXWIDGET");
+		COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 		if(programCL != nullptr)
 		{
 			vector<COpenCLParameter *> vecParam;
@@ -720,7 +806,7 @@ wxImage COpenCLEffect::GetwxImage()
 int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 {
 	COpenCLFilter openclFilter(context);
-	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_TEXTURE");
+	COpenCLProgram * programCL = openclFilter.GetProgram("IDR_OPENCL_BITMAPCONVERSION");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -1717,12 +1803,7 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 	try
 	{
 		COpenCLFilter openclFilter(context);
-		if(filtre == 0)
-			output = openclFilter.Interpolation(widthOut, heightOut, "BicubicInterpolation", input->GetValue(), width, height, flipH, flipV, angle);
-		else if(filtre == NONE_FILTER)
-			output = openclFilter.Interpolation(widthOut, heightOut, "FastInterpolation", input->GetValue(), width, height, flipH, flipV, angle);
-		else
-			output = openclFilter.Interpolation_bbox(widthOut, heightOut, filtre, input->GetValue(), width, height, flipH, flipV, angle);
+		output = openclFilter.Interpolation(widthOut, heightOut, "Interpolation", filtre, input->GetValue(), width, height, flipH, flipV, angle);
 	}
 	catch(...)
 	{
@@ -1752,19 +1833,11 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 		filtre = config->GetInterpolationType();
 
 	cl_mem output = nullptr;
-	//COpenCLFilter openclFilter(context);
-	//cl_mem output = openclFilter.Interpolation(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
-	//cl_mem output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, method, input->GetValue(), width, height, flipH, flipV, angle);
 
 	try
 	{
 		COpenCLFilter openclFilter(context);
-		if (filtre == 0)
-			output = openclFilter.Interpolation(widthOut, heightOut, rc, "BicubicInterpolationZone", input->GetValue(), width, height, flipH, flipV, angle);
-		else if (filtre == NONE_FILTER)
-			output = openclFilter.Interpolation(widthOut, heightOut, rc, "FastInterpolationZone", input->GetValue(), width, height, flipH, flipV, angle);
-		else
-			output = openclFilter.Interpolation_bbox(widthOut, heightOut, rc, filtre, input->GetValue(), width, height, flipH, flipV, angle);
+		output = openclFilter.Interpolation(widthOut, heightOut, rc, "InterpolationZone", filtre, input->GetValue(), width, height, flipH, flipV, angle);
 	}
 	catch (...)
 	{
@@ -1779,13 +1852,3 @@ void COpenCLEffect::Interpolation(const int &widthOut, const int &heightOut, con
 
 }
 
-
-float COpenCLEffect::Filter(const float &f)
-{
-
-	return (f < -2.0 || f > 2.0) ? 0.0 : (
-		(f < -1.0) ? (2.0 + f)*(2.0 + f)*(2.0 + f) / 6.0 : (
-		(f < 0.0) ? (4.0 + f*f*(-6.0 - 3.0*f)) / 6.0 : (
-		(f < 1.0) ? (4.0 + f*f*(-6.0 + 3.0*f)) / 6.0 : (2.0 - f)*(2.0 - f)*(2.0 - f) / 6.0)));
-
-}

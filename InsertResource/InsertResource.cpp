@@ -4,6 +4,7 @@
 #include"header.h"
 #include"SqlInit.h"
 #include <SqlResource.h>
+#include <wx/textfile.h>
 using namespace Regards::Sqlite;
 
 
@@ -17,6 +18,17 @@ wxString to_string(const float & value)
 
 float value[256];
 
+void WriteToFile(const wxString &filename, const wstring &text)
+{
+	wxTextFile file(filename);
+	file.Create();
+
+	file.AddLine(text);
+
+	file.Write();
+	file.Close();
+}
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
@@ -25,8 +37,143 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	wxInitAllImageHandlers();
 
-	//sqlResource.InsertText(L"IDR_OPENCL_BM3D", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opencl\\bm3d.cl");
-	sqlResource.InsertText(L"IDR_OPENCL_INTERPOLATION_UCHAR", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\interpolation_short.cl");
+/*
+List des shaders 
+//IDR_GLSL_SHADER_PHOTOFILTRE
+//IDR_GLSL_SHADER_RGB
+IDR_GLSL_SHADER_VIDEO
+IDR_GLSL_ALPHA_SHADER
+
+IDR_OPENCL_BM3D
+IDR_OPENCL_TEXTURE
+IDR_OPENCL_CONVERTTOY
+IDR_OPENCL_RAW
+IDR_OPENCL_CONVOLUTION
+
+IDR_OPENCL_COLORCONVERSION
+IDR_OPENCL_FFMPEG
+IDR_OPENCL_FFMPEGDXVA2YUV420
+IDR_OPENCL_FFMPEGYUV420
+IDR_OPENCL_FUSION
+IDR_BILATERALFILTER_RAW
+IDR_OPENCL_SHARPENMASKING
+IDR_OPENCL_COLOR
+IDR_OPENCL_INTERPOLATION
+IDR_OPENCL_CONVOLUTION
+IDR_OPENCL_MOSAIC
+IDR_OPENCL_DILATEERODE
+IDR_OPENCL_MEDIAN
+IDR_OPENCL_NOISE
+IDR_OPENCL_FLIP
+IDR_OPENCL_SWIRL
+IDR_OPENCL_ROTATION
+*/
+
+	//sqlResource.GetText("")
+	/*
+	wstring text_shader = L"";
+	text_shader = sqlResource.GetText("IDR_GLSL_SHADER_VIDEO");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_GLSL_SHADER_VIDEO.gl", text_shader);
+	text_shader = sqlResource.GetText("IDR_GLSL_ALPHA_SHADER");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_GLSL_ALPHA_SHADER.gl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_BM3D");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_BM3D.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_CONVERTTOY");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_CONVERTTOY.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_RAW");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_RAW.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_COLORCONVERSION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_COLORCONVERSION.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_FFMPEG");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_FFMPEG.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_FFMPEGDXVA2YUV420");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_FFMPEGDXVA2YUV420.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_FFMPEGYUV420");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_FFMPEGYUV420.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_FUSION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_FUSION.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_BILATERALFILTER_RAW");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_BILATERALFILTER_RAW.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_SHARPENMASKING");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_SHARPENMASKING.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_COLOR");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_COLOR.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_INTERPOLATION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_INTERPOLATION.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_CONVOLUTION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_CONVOLUTION.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_MOSAIC");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_MOSAIC.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_DILATEERODE");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_DILATEERODE.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_MEDIAN");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_MEDIAN.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_NOISE");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_NOISE.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_FLIP");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_FLIP.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_SWIRL");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_SWIRL.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_ROTATION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_ROTATION.cl", text_shader);
+	text_shader = sqlResource.GetText("IDR_OPENCL_BITMAPCONVERSION");
+	WriteToFile("c:\\developpement\\git\\Regards\\Resource\\res\\IDR_OPENCL_BITMAPCONVERSION.cl", text_shader);
+	*/
+
+	
+	sqlResource.InsertOpenGLShader(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_SHADER_VIDEO.gl");
+	sqlResource.InsertOpenGLShader(L"IDR_GLSL_ALPHA_SHADER", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_ALPHA_SHADER.gl");
+
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BM3D", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BM3D.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVERTTOY", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVERTTOY.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_RAW.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_COLORCONVERSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_COLORCONVERSION.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FFMPEG", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FFMPEG.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FFMPEGDXVA2YUV420", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FFMPEGDXVA2YUV420.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FFMPEGYUV420", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FFMPEGYUV420.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FUSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FUSION.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_BILATERALFILTER_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_BILATERALFILTER_RAW.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SHARPENMASKING", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SHARPENMASKING.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_COLOR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_COLOR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_INTERPOLATION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_INTERPOLATION.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVOLUTION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVOLUTION.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_MOSAIC", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_MOSAIC.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_DILATEERODE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_DILATEERODE.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_MEDIAN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_MEDIAN.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_NOISE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_NOISE.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FLIP", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FLIP.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SWIRL", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SWIRL.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_ROTATION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_ROTATION.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BITMAPCONVERSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BITMAPCONVERSION.cl");
+
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BM3D", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BM3D.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_CONVERTTOY", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_CONVERTTOY.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_RAW.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_COLORCONVERSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_COLORCONVERSION.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_FFMPEG", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_FFMPEG.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_FFMPEGDXVA2YUV420", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_FFMPEGDXVA2YUV420.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_FFMPEGYUV420", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_FFMPEGYUV420.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_FUSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_FUSION.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_BILATERALFILTER_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_BILATERALFILTER_RAW.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SHARPENMASKING", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SHARPENMASKING.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_COLOR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_COLOR.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_INTERPOLATION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_INTERPOLATION.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_CONVOLUTION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_CONVOLUTION.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_MOSAIC", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_MOSAIC.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_DILATEERODE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_DILATEERODE.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_MEDIAN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_MEDIAN.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_NOISE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_NOISE.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_FLIP", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_FLIP.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SWIRL", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SWIRL.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_ROTATION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_ROTATION.cl");
+	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BITMAPCONVERSION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BITMAPCONVERSION.cl");
+	
+
+	//sqlResource.InsertText(L"IDR_OPENCL_BM3D", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\text\\bm3d.cl");
+	//sqlResource.InsertText(L"IDR_OPENCL_INTERPOLATION", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\text\\interpolation.cl");
+	//sqlResource.InsertText(L"IDR_OPENCL_BITMAPCONVERSION", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\bitmap_conversion.cl");
+	//sqlResource.InsertText(L"IDR_OPENCL_BBOXINTERPOLATION", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\interpolation_bbox.cl");
+	//sqlResource.InsertText(L"IDR_OPENCL_INTERPOLATION_UCHAR", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\opencl\\interpolation_short.cl");
 	//sqlResource.InsertText(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\Regards\\resource\\res\\opengl\\video_shader.cg");
 
 	//sqlResource.InsertBitmap(L"IDB_FILTRE_BM3D", L"PNG", L"c:\\Regards\\resource\\res\\bitmap\\cameraman.png");
@@ -333,7 +480,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	sqlResource.InsertBitmap(L"IDB_TITLEREGARDS",L"PNG",L"d:\\resource\\res\\bitmap\\title.png");*/
 	//return 0;
 	
-
+	/*
 	sqlResource.InsertText(L"IDR_GLSL_SHADER_BELL",L"GLSL_SHADER",L"d:\\resource\\res\\opengl\\pixel_shader_Bell.cg");
 	sqlResource.InsertText(L"IDR_GLSL_SHADER_BICUBIC",L"GLSL_SHADER",L"d:\\resource\\res\\opengl\\pixel_shader_BiCubic.cg");
 	sqlResource.InsertText(L"IDR_GLSL_SHADER_BILINEAR",L"GLSL_SHADER",L"d:\\resource\\res\\opengl\\pixel_shader_BiLinear.cg");
@@ -415,6 +562,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	//
 	// OPENCL
 	//
+	/*
 	sqlResource.InsertText(L"IDR_OPENCL_COLOR",L"GLSL_SHADER",L"d:\\resource\\res\\openCL\\color.cl");
 	sqlResource.InsertText(L"IDR_OPENCL_ROTATION",L"GLSL_SHADER",L"d:\\resource\\res\\openCL\\rotation.cl");
 	sqlResource.InsertText(L"IDR_OPENCL_FLIP",L"GLSL_SHADER",L"d:\\resource\\res\\openCL\\flip.cl");
@@ -566,6 +714,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	sqlResource.InsertLibelle(L"LBLCopyFinalMessage", L"Copy Files is finished.", 1);
 	sqlResource.InsertLibelle(L"LBLClose", L"Close", 1);
 	sqlResource.InsertLibelle(L"LBLGPSADRESS", L"http://www.geoplugin.net", 1);
+	*/
 	CSqlInit::KillSqlEngine();
 	return 0;
 }

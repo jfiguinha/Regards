@@ -85,6 +85,16 @@ void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter *> * vecParam, 
 	//this->bitmapOut = bitmapOut;
 }
 
+void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter*>* vecParam, CRegardsFloatBitmap* bitmapOut)
+{
+	this->vecParam = vecParam;
+	data = bitmapOut->GetData();
+	width = bitmapOut->GetWidth();
+	height = bitmapOut->GetHeight();
+	bitmapSize = (int)bitmapOut->GetSize();
+	//this->bitmapOut = bitmapOut;
+}
+
 void COpenCLExecuteProgram::SetParameter(vector<COpenCLParameter *> * vecParam, wxImage * imageOut)
 {
 	this->vecParam = vecParam;

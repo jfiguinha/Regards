@@ -7,6 +7,9 @@
 #include "OpenCLInfos.h"
 using namespace std;
 
+#define OPENCL_UCHAR 1
+#define OPENCL_FLOAT 2
+
 namespace Regards
 {
 	namespace OpenCL
@@ -68,6 +71,11 @@ namespace Regards
 			void GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag);
 		
 			COpenCLProgram * GetProgram(const wxString &numProgramId);
+
+			int GetDefaultType()
+			{
+				return OPENCL_FLOAT;
+			}
 
 		private:
 

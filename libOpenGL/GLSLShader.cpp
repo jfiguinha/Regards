@@ -93,7 +93,7 @@ bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
         return false;
     }
 
-	wxString dataProgram = CLibResource::GetShaderProgram(nProgramID_i);
+	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
 
 	int length = (int)dataProgram.size() + 1;
 	char * src = new char[length];
@@ -126,7 +126,7 @@ bool GLSLShader::CreateVertexProgram(const wxString & nProgramID_i)
 		return false;
 	}
 
-	wxString dataProgram = CLibResource::GetShaderProgram(nProgramID_i);
+	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
 
 	int length = (int)dataProgram.size() + 1;
 	char * data = new char[length];

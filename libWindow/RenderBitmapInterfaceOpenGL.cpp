@@ -162,6 +162,8 @@ void CRenderBitmapInterfaceOpenGL::ShowArrowPrevious()
 
 }
 
+/*
+
 void CRenderBitmapInterfaceOpenGL::PhotoFiltre(const int &left, const int &top, CEffectParameter * effectParameter)
 {
 
@@ -272,7 +274,6 @@ void CRenderBitmapInterfaceOpenGL::RGBFiltre(const int &left, const int &top, CE
 
 
 
-
 void  CRenderBitmapInterfaceOpenGL::ApplyPreviewEffect(const int &left, const int &top, const int &numEffect, CEffectParameter * effectParameter)
 {
 	
@@ -286,5 +287,5 @@ void  CRenderBitmapInterfaceOpenGL::ApplyPreviewEffect(const int &left, const in
 		break;
 	}
 }
-
+*/
 

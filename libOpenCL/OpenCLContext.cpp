@@ -58,7 +58,7 @@ COpenCLProgram * COpenCLContext::GetProgram(const wxString &numProgramId)
 	for (COpenCLProgram * programLocal : listProgram)
 	{
 		program = programLocal;
-		if (program->GetProgramId() == numProgramId)
+		if (program->GetProgramId() == numProgramId && program->GetDefaultType() == GetDefaultType())
 		{
 			findPreloadShader = true;
 			break;

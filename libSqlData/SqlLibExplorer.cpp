@@ -70,7 +70,7 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_PHOTO_GPS_TABLE "CREATE TABLE PHOTOSGPS (NumPhoto INT, FullPath NVARCHAR(255), NumFolderId INT)"
 #define SQL_DROP_PHOTO_GP_TABLE "DROP TABLE PHOTOSGPS"
 
-#define SQL_CREATE_OPENCLKERNEL_TABLE "CREATE TABLE OPENCLKERNEL (numProgram NVARCHAR(255), platformName NVARCHAR(255), numDevice INT, openCLKernel BLOB)"
+#define SQL_CREATE_OPENCLKERNEL_TABLE "CREATE TABLE OPENCLKERNEL (numProgram NVARCHAR(255), platformName NVARCHAR(255), numDevice INT, typeData INT, openCLKernel BLOB)"
 #define SQL_DROP_OPENCLKERNEL_TABLE "DROP TABLE OPENCLKERNEL"
 
 CSqlLibExplorer::CSqlLibExplorer(const bool &readOnly, const bool &load_inmemory)
@@ -210,6 +210,14 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.InsertVersion("2.16.0.0"); 
             hr = ExecuteSQLWithNoResult(SQL_CREATE_OPENCLKERNEL_TABLE);  
         }
+
+		if (sqlVersion.GetVersion() == "2.16.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.17.0.0");
+			hr = ExecuteSQLWithNoResult("DROP TABLE OPENCLKERNEL");
+			hr = ExecuteSQLWithNoResult(SQL_CREATE_OPENCLKERNEL_TABLE);
+		}
     }
     return hr;
 }
@@ -282,7 +290,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.16.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.17.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;

@@ -97,10 +97,26 @@ int CLibResource::GetExtensionId(const wxString &extension)
     return id;
 }
 
-wxString CLibResource::GetShaderProgram(const wxString &idName)
+wxString CLibResource::GetOpenGLShaderProgram(const wxString &idName)
 {
 	CSqlResource sqlResource;
-	wxString program = sqlResource.GetText(idName);
+	wxString program = sqlResource.GetOpenGLShader(idName);
+	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
+	return program;
+}
+
+wxString CLibResource::GetOpenCLFloatProgram(const wxString& idName)
+{
+	CSqlResource sqlResource;
+	wxString program = sqlResource.GetOpenCLFloat(idName);
+	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
+	return program;
+}
+
+wxString CLibResource::GetOpenCLUcharProgram(const wxString& idName)
+{
+	CSqlResource sqlResource;
+	wxString program = sqlResource.GetOpenCLUchar(idName);
 	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
 	return program;
 }

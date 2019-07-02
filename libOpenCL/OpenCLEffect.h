@@ -68,8 +68,7 @@ namespace Regards
 			int Noise();
 			int Median();
 			int Dilate();
-			CRegardsBitmap * GetBitmap(const bool &source);
-            CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
+
 			int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 			int Posterize(const float &level, const float &gamma);
 			int Solarize(const long &threshold);
@@ -95,16 +94,21 @@ namespace Regards
 			cl_mem LoadCxImage(uint8_t * data, const int &width, const int &height, const int &effwidth, const bool & RGB = 0);
 			cl_mem LoadWxImageAlpha(uint8_t * data, uint8_t * alpha, const int &width, const int &heighta, const int &effwidth);
 			cl_mem LoadWxImage(uint8_t * data, const int &width, const int &height, const int &effwidth);
+			cl_mem LoadFloatImage(float* data, const int& width, const int& height);
+			CRegardsBitmap* GetBitmap(const bool& source);
+			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
+
 		protected:
 
 			int GetSizeData();
-			inline float Filter(const float &f);
+
 			cl_mem_flags  flag;
 			COpenCLContext * context;
 			void SetOutputValue(cl_mem output, int widthOutput, int heightOutput);
 			void RefreshMemoryBitmap(CRegardsBitmap * bitmapOut);
 			void RefreshMemoryBitmap(cl_mem bitmapOut, const int & widthOutput, const int &  heightOutput);
 
+			CRegardsFloatBitmap* GetFloatBitmap(cl_mem input, const int& width, const int& height);
 			CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
 
 			//Bitmap Memory Buffer
