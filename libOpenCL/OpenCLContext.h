@@ -71,6 +71,7 @@ namespace Regards
 			void GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag);
 		
 			COpenCLProgram * GetProgram(const wxString &numProgramId);
+			COpenCLProgram * GetProgram(const wxString& numProgramId, const int &type);
 
 			int GetDefaultType()
 			{

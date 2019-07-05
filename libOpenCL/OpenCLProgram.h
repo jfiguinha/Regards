@@ -15,7 +15,7 @@ namespace Regards
 		{
 		public:
 
-			COpenCLProgram(COpenCLContext * context);
+			COpenCLProgram(COpenCLContext * context, const int& type);
 
 			~COpenCLProgram();
 

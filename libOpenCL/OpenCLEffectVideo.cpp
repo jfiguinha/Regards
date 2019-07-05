@@ -555,17 +555,15 @@ bool COpenCLEffectVideo::IsOk()
 COpenCLProgram * COpenCLEffectVideo::GetProgram(const wxString &numProgram)
 {
 	if (context != nullptr)
-		return context->GetProgram(numProgram);
+		return context->GetProgram(numProgram, OPENCL_FLOAT);
 	return nullptr;
 }
 
 
 int COpenCLEffectVideo::GetSizeData()
 {
-	if (context->GetDefaultType() == OPENCL_FLOAT)
-		return sizeof(cl_float) * 4;
-
-	return sizeof(cl_uint);
+	//For video is float if is shared context
+	return sizeof(cl_float) * 4;
 }
 
 

@@ -51,14 +51,14 @@ void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, cons
 	}
 }
 
-COpenCLProgram * COpenCLContext::GetProgram(const wxString &numProgramId)
+COpenCLProgram* COpenCLContext::GetProgram(const wxString& numProgramId, const int &type)
 {
 	bool findPreloadShader = false;
-	COpenCLProgram * program = nullptr;
-	for (COpenCLProgram * programLocal : listProgram)
+	COpenCLProgram* program = nullptr;
+	for (COpenCLProgram* programLocal : listProgram)
 	{
 		program = programLocal;
-		if (program->GetProgramId() == numProgramId && program->GetDefaultType() == GetDefaultType())
+		if (program->GetProgramId() == numProgramId && program->GetDefaultType() == type)
 		{
 			findPreloadShader = true;
 			break;
@@ -68,12 +68,17 @@ COpenCLProgram * COpenCLContext::GetProgram(const wxString &numProgramId)
 	//Ajout du program en pré chargement
 	if (!findPreloadShader)
 	{
-		program = new COpenCLProgram(this);
+		program = new COpenCLProgram(this, type);
 		program->SetProgramId(numProgramId);
 		listProgram.push_back(program);
 	}
 
 	return program;
+}
+
+COpenCLProgram * COpenCLContext::GetProgram(const wxString &numProgramId)
+{
+	return GetProgram(numProgramId, GetDefaultType());
 }
 
 COpenCLContext::~COpenCLContext()

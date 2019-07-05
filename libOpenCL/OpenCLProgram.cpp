@@ -12,12 +12,12 @@ using namespace Regards::Sqlite;
 
 
 
-COpenCLProgram::COpenCLProgram(COpenCLContext * context)
+COpenCLProgram::COpenCLProgram(COpenCLContext * context, const int &type)
 {
 	program = 0;
 	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
 	this->context = context;
-	this->typeData = context->GetDefaultType();
+	this->typeData = type;// context->GetDefaultType();
 }
 
 COpenCLProgram::~COpenCLProgram()
