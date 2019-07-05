@@ -191,3 +191,21 @@ void COpenCLParameterShortArray::Add(cl_kernel kernelHandle, int numArg)
 	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void *)&cl_buffer);
 	Error::CheckError(err);;
 }
+
+void COpenCLParameterUintArray::SetValue(cl_context context, unsigned int * value, int size, cl_mem_flags flag)
+{
+
+	cl_int err;
+	cl_buffer = clCreateBuffer(context, memory_flags | flag, size * sizeof(cl_uint), value, &err);
+	Error::CheckError(err);;
+	if (cl_buffer == (cl_mem)0)
+		throw Error("Failed to create Input Buffer!");
+}
+
+void COpenCLParameterUintArray::Add(cl_kernel kernelHandle, int numArg)
+{
+
+	cl_int err;
+	err = clSetKernelArg(kernelHandle, numArg, sizeof(cl_mem), (void*)& cl_buffer);
+	Error::CheckError(err);;
+}

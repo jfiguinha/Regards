@@ -44,6 +44,8 @@ GLTexture * CVideoControlInterface::RenderToTexture(CRegardsBitmap * bitmap)
     return glTexture;
 }
 
+
+
 GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
     muVideoEffect.lock();

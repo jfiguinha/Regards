@@ -1,3 +1,15 @@
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
+    return uiPackedPix;
+}
+
 //----------------------------------------------------
 // Conversion du NV12 vers du 32 bits
 //----------------------------------------------------
@@ -47,11 +59,9 @@ float4 GetColorFromYUV(const __global uchar *inputY, const __global uchar *input
 		color.y = (1.164 * (yComp - 16) - 0.391*(uComp-128) - 0.813*(vComp-128));
 		color.x = (1.164 * (yComp - 16) + 2.018*(uComp-128));
 		color.w = 255.0f;
-		
-		color = color / (float4)255.0f;
 
 		float4 minimal = 0.0;
-		float4 maximal = 1.0;
+		float4 maximal = 255.0;
 
 		return color = min(max(color,minimal),maximal);
 		
@@ -148,12 +158,13 @@ float4 ExecuteBicubicYUV(int x, int y, const __global uchar *inputY, const __glo
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__kernel void BicubicYUVtoRegardsBitmap(__global float4 *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int angle, int bicubic, int pitch) 
+__kernel void BicubicYUVtoRegardsBitmap(__global uint *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int angle, int bicubic, int pitch) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	int position = x + y * widthOut;
 
-	output[position]  = ExecuteBicubicYUV(x, y, inputY, inputU, inputV, widthIn, heightIn, widthOut, heightOut, angle, bicubic, pitch);
+	float4 color = ExecuteBicubicYUV(x, y, inputY, inputU, inputV, widthIn, heightIn, widthOut, heightOut, angle, bicubic, pitch);
+	output[position]  = rgbaFloat4ToUint(color,1.0f);
 } 
 

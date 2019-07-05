@@ -45,7 +45,7 @@ int COpenCLEffect::GetSizeData()
 	if(context->GetDefaultType() == OPENCL_FLOAT)
 		return sizeof(cl_float) * 4;
 
-	return sizeof(cl_uchar) * 4;
+	return sizeof(cl_uint);
 }
 
 int COpenCLEffect::Bm3d(const int & fSigma)
@@ -279,16 +279,33 @@ void COpenCLEffect::SetBitmap(CImageLoadingFormat * bitmap)
 		else if(format == TYPE_IMAGE_REGARDSIMAGE)
 		{
 			CRegardsBitmap * local = bitmap->GetRegardsBitmap(false);
-			outputValue = LoadRegardsImage(local->GetPtBitmap(), bitmap->GetWidth(), bitmap->GetHeight());
+			if (context->GetDefaultType() == OPENCL_UCHAR)
+			{
+				COpenCLParameterUintArray uintValue(true);
+				uintValue.SetNoDelete(true);
+				uintValue.SetValue(context->GetContext(), (unsigned int* )local->GetPtBitmap(), bitmap->GetWidth() * bitmap->GetHeight(), flag);
+				outputValue = uintValue.GetValue();
+			}
+			else
+			{
+				outputValue = LoadRegardsImage(local->GetPtBitmap(), bitmap->GetWidth(), bitmap->GetHeight());
+			}
 			RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
 		}
         else if(format == TYPE_IMAGE_REGARDSFLOATIMAGE)
         {
             CRegardsFloatBitmap * local = bitmap->GetFloatBitmap(false);
-            COpenCLParameterFloatArray floatValue(true);
-            floatValue.SetNoDelete(true);
-            floatValue.SetValue(context->GetContext(), local->GetData(), local->GetWidth() * 4 *  local->GetHeight(), flag);
-            outputValue = floatValue.GetValue();
+			if (context->GetDefaultType() == OPENCL_FLOAT)
+			{
+				COpenCLParameterFloatArray floatValue(true);
+				floatValue.SetNoDelete(true);
+				floatValue.SetValue(context->GetContext(), local->GetData(), local->GetWidth() * 4 * local->GetHeight(), flag);
+				outputValue = floatValue.GetValue();
+			}
+			else
+			{
+				outputValue = LoadFloatImage(local->GetData(), local->GetWidth(), local->GetHeight());
+			}
             RefreshMemoryBitmap(outputValue, bitmap->GetWidth(), bitmap->GetHeight());
         }
 	}
@@ -712,18 +729,40 @@ CRegardsFloatBitmap* COpenCLEffect::GetFloatBitmap(cl_mem input, const int& widt
 CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
 {
 	CRegardsFloatBitmap * bitmapOut = nullptr;
-	if (paramOutput != nullptr && !source)
+	if (context->GetDefaultType() == OPENCL_FLOAT)
 	{
-		if (context != nullptr)
+		if (paramOutput != nullptr && !source)
 		{
-			bitmapOut = GetFloatBitmap(paramOutput->GetValue(), widthOut, heightOut);
+			bitmapOut = new CRegardsFloatBitmap(widthOut, heightOut);
+			if (context != nullptr)
+			{
+				context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+			}
+		}
+		else
+		{
+			bitmapOut = new CRegardsFloatBitmap(width, height);
+			if (context != nullptr)
+			{
+				context->GetOutputData(input->GetValue(), bitmapOut->GetData(), bitmapOut->GetSize(), flag);
+			}
 		}
 	}
 	else
 	{
-		if (context != nullptr)
+		if (paramOutput != nullptr && !source)
 		{
-			bitmapOut = GetFloatBitmap(input->GetValue(), width, height);
+			if (context != nullptr)
+			{
+				bitmapOut = GetFloatBitmap(paramOutput->GetValue(), widthOut, heightOut);
+			}
+		}
+		else
+		{
+			if (context != nullptr)
+			{
+				bitmapOut = GetFloatBitmap(input->GetValue(), width, height);
+			}
 		}
 	}
 	return bitmapOut;
@@ -732,18 +771,41 @@ CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
 CRegardsBitmap * COpenCLEffect::GetBitmap(const bool &source)
 {
 	CRegardsBitmap * bitmapOut = nullptr;
-	if(paramOutput != nullptr && !source)
+	if (context->GetDefaultType() == OPENCL_UCHAR)
 	{
-		if(context != nullptr)
+		if (paramOutput != nullptr && !source)
 		{
-			bitmapOut = GetBitmap(paramOutput->GetValue(), widthOut, heightOut);
+			bitmapOut = new CRegardsBitmap(widthOut, heightOut);
+			if (context != nullptr)
+			{
+				context->GetOutputData(paramOutput->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
+			}
+		}
+		else
+		{
+			bitmapOut = new CRegardsBitmap(width, height);
+			if (context != nullptr)
+			{
+				context->GetOutputData(input->GetValue(), bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapSize(), flag);
+			}
 		}
 	}
 	else
 	{
-		if(context != nullptr)
+
+		if (paramOutput != nullptr && !source)
 		{
-			bitmapOut = GetBitmap(input->GetValue(), width, height);
+			if (context != nullptr)
+			{
+				bitmapOut = GetBitmap(paramOutput->GetValue(), widthOut, heightOut);
+			}
+		}
+		else
+		{
+			if (context != nullptr)
+			{
+				bitmapOut = GetBitmap(input->GetValue(), width, height);
+			}
 		}
 	}
 	return bitmapOut;

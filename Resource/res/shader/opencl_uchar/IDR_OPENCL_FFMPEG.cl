@@ -2,6 +2,30 @@
 // Conversion du 
 //----------------------------------------------------
 
+// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
+//*****************************************************************
+inline float4 rgbaUintToFloat4(uint c)
+{
+    float4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
+    return uiPackedPix;
+}
+
 float Cubic( float f )
 {
 	if (f < -2.0f)
@@ -28,14 +52,7 @@ float4 GetColorFromOpenGLTexture( __read_only image2d_t input, int x, int y, int
 	if(x < width && y < height && y >= 0 && x >= 0)	
 	{
 		float4 data = read_imagef(input, sampler, pos);
-		
-		int position = x + y * width;
-
-		float4 color;
-		color.x = data.x;
-		color.y = data.y;
-		color.z = data.z;
-		return color;
+		return data;
 	}
 	return 0.0f;
 }
@@ -58,7 +75,6 @@ float4 BiCubicFromOpenGLTexture(float x, float y, __read_only image2d_t input, i
 	
 	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
 
-	
 	float4 sum = GetColorFromOpenGLTexture(input, x - 1, y - 1, width, height) * (fy1 * fx1);
 	sum += GetColorFromOpenGLTexture(input, x , y - 1, width, height) * (fy1 * fx2);
 	sum += GetColorFromOpenGLTexture(input, x + 1, y - 1, width, height) * (fy1 * fx3);
@@ -128,60 +144,27 @@ float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__kernel void InterpolationFromOpenGLTexture(__global float4 *output, __read_only image2d_t input, int width, int height, int widthOut, int heightOut, int angle, int bicubic) 
+__kernel void InterpolationFromOpenGLTexture(__global uint *output, __read_only image2d_t input, int width, int height, int widthOut, int heightOut, int angle, int bicubic) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	int position = x + y * widthOut;
-
-	output[position] = ExecuteBicubicFromOpenGLTexture(x, y, input, width, height, widthOut, heightOut, angle, bicubic);
-
+	output[position] = rgbaFloat4ToUint(ExecuteBicubicFromOpenGLTexture(x, y, input, width, height, widthOut, heightOut, angle, bicubic),1.0f);
 } 
 
 //----------------------------------------------------
 //Change la valeur de la couche alpha
 //----------------------------------------------------
-__kernel void SetAlphaValueFromOpenGLTexture(__global float4 *output, __read_only image2d_t input, int width, int height, float alphaValue) 
+__kernel void SetAlphaValueFromOpenGLTexture(__global uint *output, __read_only image2d_t input, int width, int height, float alphaValue) 
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
 	int position = x + (height - y - 1) * width;
-	
-	
 	const int2 pos = {x,y};
 
 	float4 data = read_imagef(input, sampler, pos);
+	data.w = (alphaValue / 100.0f);
 
-	float4 color;
-	color.x = data.z;
-	color.y = data.y;
-	color.z = data.x;
-	color.w = (alphaValue / 100.0f);
-
-	output[position] = color;
+	output[position] = rgbaFloat4ToUint(data,1.0f);
 }
-
-
-//----------------------------------------------------
-//Change la valeur de la couche alpha
-//----------------------------------------------------
-__kernel void SetAlphaValue(__global float4 *output, const __global float4 * input, int width, int height, float alphaValue) 
-{
-    int x = get_global_id(0);
-	int y = get_global_id(1);
-
-	int position = x + y * width;
-
-
-	float4 data = input[position];
-
-	float4 color;
-	color.x = data.x;
-	color.y = data.y;
-	color.z = data.z;
-	color.w = (alphaValue / 100.0);
-
-	output[position] = color;
-}
-

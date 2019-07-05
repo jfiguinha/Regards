@@ -3,6 +3,31 @@
 #define FILTER_2PI 2.0f * 3.1415926535f
 #define FILTER_4PI 4.0f * 3.1415926535f
 
+// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
+//*****************************************************************
+float4 rgbaUintToFloat4(uint c)
+{
+    float4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+uint rgbaFloat4ToUint(float4 rgba, float fScale)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
+    return uiPackedPix;
+}
+
+
 float BilinearFilter( float x)
 {
 	return (x < 1.0f ? 1.0f - x : 0.0); 
@@ -256,17 +281,27 @@ float KernelFilter_selection( float f, int type)
 	}
 }
 
-float4 GetColorSrc(int x, int y, const __global float4 *input, int widthIn, int heightIn)
+float4 GetColorSrc(int x, int y, const __global uint *input, int widthIn, int heightIn)
+{
+	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
+	{
+		int position = x + y * widthIn;
+		return rgbaUintToFloat4(input[position]);
+	}
+	return (float4)0.0f;
+}
+
+uint GetColorSrc_short(int x, int y, const __global uint *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
 		int position = x + y * widthIn;
 		return input[position];
 	}
-	return (float4)0.0f;
+	return 0;
 }
 
-float4 KernelExecution(float x, float y, const __global float4 *input, int widthIn, int heightIn, int type)
+uint KernelExecution(float x, float y, const __global uint *input, int widthIn, int heightIn, int type)
 {
 	float4 nDenom = 0.0f;
 	int valueA = (int)x;
@@ -297,10 +332,10 @@ float4 KernelExecution(float x, float y, const __global float4 *input, int width
 	sum += GetColorSrc(x , y + 1, input, widthIn, heightIn) * (fy3 * fx2);
 	sum += GetColorSrc(x + 1, y + 1, input, widthIn, heightIn) * (fy3 * fx3);
 	
-    return (sum / nDenom);
+    return rgbaFloat4ToUint((sum / nDenom),1.0f);
 }
 
-float4 CalculInterpolation(const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y)
+uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y)
 {
 	float posY = (float)y * ratioY;
 	float posX = (float)x * ratioX;
@@ -359,14 +394,14 @@ float4 CalculInterpolation(const __global float4 *input, int widthIn, int height
 
 	
 	if(type == 12)
-		return GetColorSrc(posX, posY, input, widthIn, heightIn);
+		return GetColorSrc_short(posX, posY, input, widthIn, heightIn);
 	return KernelExecution(posX, posY, input, widthIn, heightIn, type);
 }
 
 //----------------------------------------------------------------------------
 //Interpolation
 //----------------------------------------------------------------------------
-__kernel void Interpolation(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type)
+__kernel void Interpolation(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type)
 {
 	int width = widthOut;
 	int height = heightOut;
@@ -391,7 +426,7 @@ __kernel void Interpolation(__global float4 *output, const __global float4 *inpu
 	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y);
 }
 
-__kernel void InterpolationZone(__global float4 *output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
+__kernel void InterpolationZone(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);

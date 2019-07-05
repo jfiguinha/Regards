@@ -74,7 +74,8 @@ namespace Regards
 
 			int GetDefaultType()
 			{
-				return OPENCL_FLOAT;
+				//Todo Modify to support change in parameter
+				return OPENCL_UCHAR;
 			}
 
 		private:

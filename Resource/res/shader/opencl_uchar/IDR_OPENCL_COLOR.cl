@@ -6,44 +6,92 @@ typedef struct
 	int alpha;
 }COLORData;
 
-//----------------------------------------------------
-//Filtre Niveau de gris
-//----------------------------------------------------
-__kernel void GrayLevel(__global float4 *output,const __global float4 *input)
+// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
+//*****************************************************************
+inline float4 rgbaUintToFloat4(uint c)
 {
-    int position = get_global_id(0);
-	float average = input[position].x * 0.299f + input[position].y * 0.587f + input[position].z * 0.114f;
-	output[position].x = average;
-	output[position].y = average;
-	output[position].z = average;
-	output[position].w = input[position].w;
+    float4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+inline uchar4 rgbaUintToUChar4(uint c)
+{
+    uchar4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
+    return uiPackedPix;
+}
+
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline  uint rgbaUChar4ToUint(uchar4 rgba)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w)) << 24);
+    return uiPackedPix;
 }
 
 //----------------------------------------------------
 //Filtre Niveau de gris
 //----------------------------------------------------
-__kernel void Negatif(__global float4 *output,const __global float4 *input)
+__kernel void GrayLevel(__global uint *output,const __global uint *input)
 {
     int position = get_global_id(0);
-	float4 diffValue = 1.0f;
-	output[position] = diffValue - input[position];
+	float4 colorInput = rgbaUintToFloat4(input[position]);
+	float4 colorOutput = (float4)(colorInput.x * 0.299f + colorInput.y * 0.587f + colorInput.z * 0.114f);
+	colorOutput.w = colorInput.w;
+	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
 }
 
 //----------------------------------------------------
 //Filtre Niveau de gris
 //----------------------------------------------------
-__kernel void NoirEtBlanc(__global float4 *output,const __global float4 *input)
+__kernel void Negatif(__global uint *output,const __global uint *input)
 {
     int position = get_global_id(0);
-	float sum = (input[position].x * 0.299) + (input[position].y * 0.587) + (input[position].z * 0.114);
-	if(sum > 0.5)
-		sum = 1.0;
+	float4 colorInput = rgbaUintToFloat4(input[position]);
+	float4 colorOutput = (float4)255.0f - colorInput;
+	colorOutput.w = colorInput.w;
+	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
+}
+
+//----------------------------------------------------
+//Filtre Niveau de gris
+//----------------------------------------------------
+__kernel void NoirEtBlanc(__global uint *output,const __global uint *input)
+{
+    int position = get_global_id(0);
+	float4 colorInput = rgbaUintToFloat4(input[position]);
+	float sum = (colorInput.x * 0.299) + (colorInput.y * 0.587) + (colorInput.z * 0.114);
+	if(sum > 128.0f)
+		sum = 255.0;
 	else
 		sum = 0.0;
-	output[position].x = sum;
-	output[position].y = sum;
-	output[position].z = sum;
-	output[position].w = input[position].w;
+	float4 colorOutput = (float4)sum;
+	colorOutput.w = colorInput.w;
+	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
 }
 
 //----------------------------------------------------
@@ -56,126 +104,124 @@ __kernel void NoirEtBlanc(__global float4 *output,const __global float4 *input)
 float4 NormalizeValue(float4 sum)
 {
 	float4 value;
-	value.x = max(min(sum.x, 1.0f), 0.0f);
-	value.y = max(min(sum.y, 1.0f), 0.0f);
-	value.z = max(min(sum.z, 1.0f), 0.0f);  
-	value.w = max(min(sum.w, 1.0f), 0.0f); 
+	value.x = max(min(sum.x, 255.0f), 0.0f);
+	value.y = max(min(sum.y, 255.0f), 0.0f);
+	value.z = max(min(sum.z, 255.0f), 0.0f);  
+	value.w = max(min(sum.w, 255.0f), 0.0f); 
 	return value;
 }
 
-__kernel void Sepia(__global float4 *output,const __global float4 *input)
+__kernel void Sepia(__global uint *output,const __global uint *input)
 {
 
 	int position = get_global_id(0);
+	float4 colorInput = rgbaUintToFloat4(input[position]);
 	float m_iDiff = 255.0f - 172.0f;
-	float4 value = input[position];	
-	float average = input[position].x * 0.299f + input[position].y * 0.587f + input[position].z * 0.114f;
 
-	float r = average * ((172.0f + m_iDiff) / 255.0f);
-	float g = average * ((122.0f + m_iDiff) / 255.0f);
-	float b = average * ((51.0f + m_iDiff) / 255.0f);
-	
-	output[position].x = b;
-	output[position].y = g;
-	output[position].z = r;	
-	output[position].w = input[position].w;
-	
-	output[position] = NormalizeValue(output[position]);
+	float average = colorInput.x * 0.299f + colorInput.y * 0.587f + colorInput.z * 0.114f;
 
+	float r = average * (172.0f + m_iDiff);
+	float g = average * (122.0f + m_iDiff);
+	float b = average * (51.0f + m_iDiff);
+	
+	float4 colorOutput = colorInput;
+	colorOutput.x = b;
+	colorOutput.y = g;
+	colorOutput.z = r;	
+	
+	
+	output[position] = rgbaFloat4ToUint(NormalizeValue(colorOutput), 1.0f);
 }
 
 //----------------------------------------------------
 //Filtre Photo Filtre
 //----------------------------------------------------
-__kernel void PhotoFiltre(__global float4 *output,const __global float4 *input, int intensity, const __global COLORData * color)
+__kernel void PhotoFiltre(__global uint *output,const __global uint *input, int intensity, const __global COLORData * color)
 {
     int position = get_global_id(0);
-	
+	float4 colorInput = rgbaUintToFloat4(input[position]);
 	float coeff = (float)intensity / 100.0f;
 	float diff = 1.0f - coeff;
 
-	float red = (float)(color->blue / 255.0f) * coeff + input[position].x * diff;
-	float green = (float)(color->green / 255.0f) * coeff + input[position].y * diff;
-	float blue = (float)(color->red / 255.0f) * coeff + input[position].z * diff;
+	float red = (float)(color->blue) * coeff + colorInput.x * diff;
+	float green = (float)(color->green) * coeff + colorInput.y * diff;
+	float blue = (float)(color->red) * coeff + colorInput.z * diff;
 	
-	output[position].x = red;
-	output[position].y = green;
-	output[position].z = blue;
-	output[position].w = input[position].w;
+	float4 colorOutput = colorInput;
+	colorOutput.x = red;
+	colorOutput.y = green;
+	colorOutput.z = blue;
+	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
 
 }
 
 //----------------------------------------------------
 //Filtre RGB Filtre
 //----------------------------------------------------
-__kernel void RGBFiltre(__global float4 *output,const __global float4 *input, const __global COLORData * color)
+__kernel void RGBFiltre(__global uint *output,const __global uint *input, const __global COLORData * color)
 {
     int position = get_global_id(0);
-	
-	float red = (color->blue / 255.0f) + input[position].x;
-	red = min(max(red ,0.0f), 1.0f);
-	
-	float green = (color->green/ 255.0f) + input[position].y;
-	green = min(max(green ,0.0f), 1.0f);
-	
-	float blue = (color->red / 255.0f) + input[position].z;
-	blue = min(max(blue ,0.0f), 1.0f);
-	
-	output[position].x = red;
-	output[position].y = green;
-	output[position].z = blue;
-	output[position].w = input[position].w;
+	float4 colorInput = rgbaUintToFloat4(input[position]);
+	float4 colorOutput = colorInput;
+	colorOutput.x = (color->blue) + colorInput.x;
+	colorOutput.y = (color->green) + colorInput.y;
+	colorOutput.z = (color->red) + colorInput.z;
+	output[position] = rgbaFloat4ToUint(NormalizeValue(colorOutput), 1.0f);
 }
 
 //----------------------------------------------------
 //Filtre Posterization
 //----------------------------------------------------
-__kernel void Posterisation(__global float4 *output,const __global float4 *input, int level)
+__kernel void Posterisation(__global uint *output,const __global uint *input, int level)
 {
     int position = get_global_id(0);
-	
+	uchar4 colorInput = rgbaUintToUChar4(input[position]);
+	uchar4 colorOutput = colorInput;
 	int _levels = max(2, min(16, level));
 	float _offset = (float)256 / (float)_levels;
 	
-	int red = (int)(input[position].x * 255.0f) / _offset;
-	int green = (int)(input[position].y * 255.0f) / _offset;
-	int blue =(int)(input[position].z * 255.0f) / _offset;
+	int red = colorInput.x / _offset;
+	int green = colorInput.y / _offset;
+	int blue = colorInput.z / _offset;
 	
-	output[position].x = (float)(red * _offset) / 255.0f;
-	output[position].y = (float)(green * _offset)/ 255.0f;
-	output[position].z = (float)(blue * _offset)/ 255.0f;
-	output[position].w = input[position].w;
+	colorOutput.x = (red * _offset);
+	colorOutput.y = (green * _offset);
+	colorOutput.z = (blue * _offset);
+
+	output[position] = rgbaUChar4ToUint(colorOutput);
 	
 }
 
 //----------------------------------------------------
 //Filtre Solarization
 //----------------------------------------------------
-__kernel void Solarization(__global float4 *output,const __global float4 *input, int threshold)
+__kernel void Solarization(__global uint *output,const __global uint *input, int threshold)
 {
     int position = get_global_id(0);
+	float4 colorInput = rgbaUintToFloat4(input[position]);
+	float4 colorOutput = colorInput;
 	
-	float red = input[position].x;
-	float green = input[position].y;
-	float blue = input[position].z;
-	float fthreshold = (float)threshold / 255.0f;
+	float red = colorInput.x;
+	float green = colorInput.y;
+	float blue = colorInput.z;
+	float fthreshold = (float)threshold;
 	
 	if (red > fthreshold)
-		output[position].x = 1.0f - red;
+		colorOutput.x = 255.0f - red;
 	else
-		output[position].x = red;
+		colorOutput.x = red;
 		
 	if (green > fthreshold)
-		output[position].y = 1.0f - green;
+		colorOutput.y = 255.0f - green;
 	else
-		output[position].y = green;
+		colorOutput.y = green;
 
 	if (blue > fthreshold)
-		output[position].z = 1.0f - blue;
+		colorOutput.z = 255.0f - blue;
 	else
-		output[position].z = blue;
+		colorOutput.z = blue;
 
-	output[position].w = input[position].w;
+	output[position] = rgbaFloat4ToUint(colorOutput, 1.0f);
 	
 }
 
@@ -206,13 +252,11 @@ int LightFilter(int color, float factor)
 	return max(min(returnValue,255),0);
 }
 
-__kernel void LightAndContrast(__global float4 *output,const __global float4 *input, float contrast, float light)
+__kernel void LightAndContrast(__global uint *output,const __global uint *input, float contrast, float light)
 {
     int position = get_global_id(0);
-	
-	float4 color;
-	float4 src_color = input[position];
-	src_color = (float4)255.0f * src_color;
+	float4 src_color = rgbaUintToFloat4(input[position]);
+	float4 color = src_color;
 	
 	int constrastValue = (int)contrast;
 	
@@ -244,8 +288,7 @@ __kernel void LightAndContrast(__global float4 *output,const __global float4 *in
 	color.x = LightFilter(color.x, light);
 	color.y = LightFilter(color.y, light);
 	color.z = LightFilter(color.z, light);	
-	color.w = src_color.w;
 	
-	output[position] = color / (float4)255.0f;
+	output[position] = rgbaFloat4ToUint(color, 1.0f);
 }
 

@@ -1618,7 +1618,7 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 
 		delete program;
 
-	for (COpenCLParameter * parameter : vecParam)
+		for (COpenCLParameter * parameter : vecParam)
 		{
 			if(!parameter->GetNoDelete())
 			{

@@ -270,5 +270,19 @@ namespace Regards
 			void Add(cl_kernel kernelHandle, int numArg);
 		};
 
+		class COpenCLParameterUintArray : public COpenCLParameter
+		{
+		public:
+			COpenCLParameterUintArray(const bool& noDeleteMem = false, cl_mem_flags memory_flags = CL_MEM_READ_ONLY) {
+				dataType = 13;
+				noDeleteClMem = noDeleteMem;
+				this->memory_flags = memory_flags;
+			};
+			~COpenCLParameterUintArray() {};
+
+			void SetValue(cl_context context, unsigned int * value, int size, cl_mem_flags flag);
+			void Add(cl_kernel kernelHandle, int numArg);
+		};
+
 	}
 }

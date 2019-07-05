@@ -80,15 +80,7 @@ COpenCLBm3D::~COpenCLBm3D()
 	}
 }
 
-void COpenCLBm3D::InitData(float * dataInput, int sizeInput, int width, int height)
-{
-	this->width = width;
-	this->height = height;
-	this->sizeoutput = sizeInput;
-	paramInput = new COpenCLParameterFloatArray();
-	((COpenCLParameterFloatArray *)paramInput)->SetLibelle("input");
-	((COpenCLParameterFloatArray *)paramInput)->SetValue(context->GetContext(), dataInput, sizeInput, flag);
-}
+
 
 void COpenCLBm3D::InitData(cl_mem dataInput, int sizeInput, int width, int height)
 {
@@ -190,44 +182,6 @@ cl_mem COpenCLBm3D::GetBasicImage()
 cl_mem COpenCLBm3D::GetWienerImage()
 {
 	return wienerPicture;
-}
-
-void COpenCLBm3D::GetBasicImage(float * dataOutput, int sizeOutput)
-{
-	if (basicPicture != nullptr)
-	{
-		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), basicPicture, CL_TRUE, 0, sizeOutput * sizeof(float), dataOutput, 0, nullptr, nullptr);
-		Error::CheckError(err);
-		err = clFinish(context->GetCommandQueue());
-		Error::CheckError(err);
-
-		if (basicPicture != nullptr)
-		{
-			cl_int err;
-			err = clReleaseMemObject(basicPicture);
-			Error::CheckError(err);
-			basicPicture = nullptr;
-		}
-	}
-}
-
-void COpenCLBm3D::GetWienerImage(float * dataOutput, int sizeOutput)
-{
-	if (wienerPicture != nullptr)
-	{
-		cl_int err = clEnqueueReadBuffer(context->GetCommandQueue(), wienerPicture, CL_TRUE, 0, sizeOutput * sizeof(float), dataOutput, 0, nullptr, nullptr);
-		Error::CheckError(err);
-		err = clFinish(context->GetCommandQueue());
-		Error::CheckError(err);
-
-		if (wienerPicture != nullptr)
-		{
-			cl_int err;
-			err = clReleaseMemObject(wienerPicture);
-			Error::CheckError(err);
-			wienerPicture = nullptr;
-		}
-	}
 }
 
 cl_mem COpenCLBm3D::ExecuteBasicFilter(const float &sigma, COpenCLParameterShortArray * similar_coords, COpenCLParameterUCharArray * block_counts)

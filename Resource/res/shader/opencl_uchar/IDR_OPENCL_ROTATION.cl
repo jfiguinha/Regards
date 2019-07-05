@@ -14,17 +14,17 @@ int CalculYPos(float x, float y, float angle)
 	return convert_int(x * sine + y * cosine);
 }
 
-float4 GetColorSrc(int x, int y, const __global float4 *input, int widthIn, int heightIn)
+uint GetColorSrc(int x, int y, const __global uint *input, int widthIn, int heightIn)
 {
 	if(x < widthIn && y < heightIn && y >= 0 && x >= 0)	
 	{
 		int position = x + y * widthIn;
 		return input[position];
 	}
-	return 0.0f;
+	return 0;
 }
 
-__kernel void Rotation270(__global float4 * output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
+__kernel void Rotation270(__global uint * output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -38,7 +38,7 @@ __kernel void Rotation270(__global float4 * output, const __global float4 *input
 	output[positionDest] = input[positionSrc];
 }
 
-__kernel void Rotation90(__global float4 * output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
+__kernel void Rotation90(__global uint * output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -52,7 +52,7 @@ __kernel void Rotation90(__global float4 * output, const __global float4 *input,
 	output[positionDest] = input[positionSrc];
 }
 
-__kernel void RotateFree(__global float4 * output, const __global float4 *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
+__kernel void RotateFree(__global uint * output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float angle)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);

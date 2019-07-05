@@ -201,7 +201,6 @@ void COpenCLEffectVideoNV12::InterpolationBicubic(const int &widthOut, const int
 		this->widthOut = widthOut;
 		this->heightOut = heightOut;
         
-        printf("InterpolationBicubicNV12ToRGB32 formatData : %d typeData : %d \n",formatData,typeData);
 		programCL = GetProgram("IDR_OPENCL_FFMPEGDXVA2YUV420");
 
 		if (programCL != nullptr)

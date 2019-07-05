@@ -28,10 +28,7 @@ namespace Regards
 
 			~COpenCLBm3D();
 
-			void InitData(float * dataInput, int sizeInput, int width, int height);
 			void ExecuteFilter(const float &sigma);
-			void GetBasicImage(float * dataOutput, int sizeOutput);
-			void GetWienerImage(float * dataOutput, int sizeOutput);
 			void InitData(cl_mem dataInput, int sizeInput, int width, int height);
 			cl_mem GetBasicImage();
 			cl_mem GetWienerImage();
@@ -53,6 +50,7 @@ namespace Regards
 			COpenCLParameter * paramInput;
 			cl_mem basicPicture;
 			cl_mem wienerPicture;
+			int opencl_type;
 		};
 
 	}

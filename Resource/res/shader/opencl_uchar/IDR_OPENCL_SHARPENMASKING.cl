@@ -18,47 +18,85 @@
 // Intel Corporation is the author of the Materials, and requests that all
 // problem reports or change requests be submitted to it directly
 
+// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
+//*****************************************************************
+inline float4 rgbaUintToFloat4(uint c)
+{
+    float4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+inline uchar4 rgbaUintToUChar4(uint c)
+{
+    uchar4 rgba;
+    rgba.x = c & 0xff;
+    rgba.y = (c >> 8) & 0xff;
+    rgba.z = (c >> 16) & 0xff;
+    rgba.w = (c >> 24) & 0xff;
+    return rgba;
+}
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline uint rgbaFloat4ToUint(float4 rgba, float fScale)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x * fScale);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y * fScale)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z * fScale)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w * fScale)) << 24);
+    return uiPackedPix;
+}
+
+
+// Inline device function to convert floating point rgba color to 32-bit unsigned integer
+//*****************************************************************
+inline uint rgbaUChar4ToUint(uchar4 rgba)
+{
+    unsigned int uiPackedPix = 0U;
+    uiPackedPix |= 0x000000FF & (unsigned int)(rgba.x);
+    uiPackedPix |= 0x0000FF00 & (((unsigned int)(rgba.y)) << 8);
+    uiPackedPix |= 0x00FF0000 & (((unsigned int)(rgba.z)) << 16);
+    uiPackedPix |= 0xFF000000 & (((unsigned int)(rgba.w)) << 24);
+    return uiPackedPix;
+}
+
+
 //---------------------------------------------------------------------
 //Limite les valeurs entre 0 et 255
 //---------------------------------------------------------------------
-float4 NormalizeValue(float4 sum)
+uint NormalizeValue(float4 sum)
 {
-	float4 value;
-	value.x = max(min(sum.x, 1.0f), 0.0f);
-	value.y = max(min(sum.y, 1.0f), 0.0f);
-	value.z = max(min(sum.z, 1.0f), 0.0f);  
-	value.w = max(min(sum.w, 1.0f), 0.0f); 
-	return value;
+	float4 value = sum;
+	value.x = max(min(sum.x, 255.0f), 0.0f);
+	value.y = max(min(sum.y, 255.0f), 0.0f);
+	value.z = max(min(sum.z, 255.0f), 0.0f);  
+	value.w = max(min(sum.w, 255.0f), 0.0f); 
+	return rgbaFloat4ToUint(value,1.0f);
 }
 
-float4 GetColorSrc(int x, int y, const __global float4 *input, int width, int height)
+float4 GetColorSrc(int x, int y, const __global uint *input, int width, int height)
 {
 	if(x < width && y < height && y >= 0 && x >= 0)	
 	{
 		int position = x + y * width;
-		return input[position];
+		return rgbaUintToFloat4(input[position]);
 	}
-	return 0.0f;
+	return (float4)0.0f;
 }
 
-float4 GetColorSrcwxImage(int x, int y, const __global float4 *input, int width, int height)
-{
-	if(x < width && y < height && y >= 0 && x >= 0)	
-	{
-		int position = (height - y - 1) * width + x;
-		return input[position];
-	}
-	return 0.0f;
-}
-
-__kernel void SharpenMasking( __global float4 *output, const __global float4 *input, int width, int height, float sharpness)
+__kernel void SharpenMasking( __global uint *output, const __global uint *input, int width, int height, float sharpness)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
 
 	float4 origin = GetColorSrc(x, y, input, width, height);
 
-	float4 color = 0.0;
+	float4 color = 0.0f;
 
 	for (int i = -1; i <= 1; i++)
 	{
@@ -68,13 +106,11 @@ __kernel void SharpenMasking( __global float4 *output, const __global float4 *in
 		}
 	}
 
-	color = color / (float4)9;
+	color = color / (float4)9.0f;
 	color = origin - color;
 	
-	float4 value = convert_float4(color) * sharpness;
-
-	origin = origin + value;
+	float4 value = origin + color * sharpness;
 
 	int position = x + y * width;
-	output[position] = NormalizeValue(origin);
+	output[position] = NormalizeValue(value);
 }
