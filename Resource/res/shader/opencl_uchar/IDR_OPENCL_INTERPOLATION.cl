@@ -335,10 +335,10 @@ uint KernelExecution(float x, float y, const __global uint *input, int widthIn, 
     return rgbaFloat4ToUint((sum / nDenom),1.0f);
 }
 
-uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y)
+uint CalculInterpolation(const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, int flipH, int flipV, int angle, int type, float ratioX, float ratioY, int x, int y, float left, float top)
 {
-	float posY = (float)y * ratioY;
-	float posX = (float)x * ratioX;
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
 
 	if (angle == 270)
 	{
@@ -423,7 +423,7 @@ __kernel void Interpolation(__global uint *output, const __global uint *input, i
 	}
 	
 	int position = x + y * widthOut;
-	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y);
+	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, 0, 0);
 }
 
 __kernel void InterpolationZone(__global uint *output, const __global uint *input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int type)
@@ -445,5 +445,5 @@ __kernel void InterpolationZone(__global uint *output, const __global uint *inpu
 	}
 
 	int position = x + y * widthOut;
-	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y);
+	output[position] = CalculInterpolation(input, widthIn, heightIn, widthOut, heightOut, flipH, flipV, angle, type, ratioX, ratioY, x, y, left, top);
 }

@@ -115,21 +115,16 @@ __kernel void Sepia(__global uint *output,const __global uint *input)
 {
 
 	int position = get_global_id(0);
-	float4 colorInput = rgbaUintToFloat4(input[position]);
-	float m_iDiff = 255.0f - 172.0f;
-
-	float average = colorInput.x * 0.299f + colorInput.y * 0.587f + colorInput.z * 0.114f;
-
-	float r = average * (172.0f + m_iDiff);
-	float g = average * (122.0f + m_iDiff);
-	float b = average * (51.0f + m_iDiff);
+	float4 color = rgbaUintToFloat4(input[position]);
+	float b = (0.393f * color.x) + (0.769f * color.y) + (0.189f * color.z);
+	float g = (0.349f * color.x) + (0.686f * color.y) + (0.168f * color.z);
+	float r = (0.272f * color.x) + (0.534f * color.y) + (0.131f * color.z);
 	
-	float4 colorOutput = colorInput;
-	colorOutput.x = b;
+	float4 colorOutput = color;
+	colorOutput.x = r;
 	colorOutput.y = g;
-	colorOutput.z = r;	
-	
-	
+	colorOutput.z = b;	
+		
 	output[position] = rgbaFloat4ToUint(NormalizeValue(colorOutput), 1.0f);
 }
 

@@ -63,7 +63,7 @@ float4 GetfColorSrc(int x, int y, const __global uint *input, int width, int hei
 	if(x < width && y < height && y >= 0 && x >= 0)	
 	{
 		int position = x + y * width;
-		return input[position];
+		return rgbaUintToFloat4(input[position]);
 	}
 	return (float4)0.0f;
 }
