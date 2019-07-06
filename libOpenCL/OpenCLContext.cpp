@@ -15,6 +15,14 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 using namespace Regards::OpenCL;
 
+int COpenCLContext::GetDefaultType()
+{
+	//Todo Modify to support change in parameter
+	if (sharedContextCompatible)
+		return OPENCL_FLOAT;
+	return OPENCL_UCHAR;
+}
+
 COpenCLContext::COpenCLContext(cl_platform_id platformId, cl_device_id deviceId, cl_device_type deviceType, const bool &opengl)
 {
     this->isOpenGL = opengl;

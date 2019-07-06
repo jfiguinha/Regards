@@ -73,11 +73,7 @@ namespace Regards
 			COpenCLProgram * GetProgram(const wxString &numProgramId);
 			COpenCLProgram * GetProgram(const wxString& numProgramId, const int &type);
 
-			int GetDefaultType()
-			{
-				//Todo Modify to support change in parameter
-				return OPENCL_UCHAR;
-			}
+			int GetDefaultType();
 
 		private:
 

@@ -356,6 +356,19 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice *> & listOfDevice, c
         cl_device_type type;   
         clGetDeviceInfo(devices[i], CL_DEVICE_TYPE, sizeof(type), &type, NULL );
         wxString deviceName = GetDeviceInfo(devices[i], CL_DEVICE_NAME);
+
+#ifdef __TEST_WITHOUTSHARINGOPENGL__
+
+		OpenCLDevice* device = new OpenCLDevice();
+		device->deviceIndex = i;
+		device->deviceName = deviceName;
+		device->platformId = platform;
+		device->deviceId = devices[i];
+		device->deviceType = type;
+		device->openGlSharing = 0;
+		listOfDevice.push_back(device);
+
+#else
         if(type == CL_DEVICE_TYPE_GPU)
         {
             wxString supportExt = GetDeviceInfo(devices[i], CL_DEVICE_EXTENSIONS);
@@ -372,8 +385,10 @@ void COpenCLDeviceList::GetListOfDevice(vector<OpenCLDevice *> & listOfDevice, c
         device->platformId = platform;
         device->deviceId = devices[i];
         device->deviceType = type;
-        device->openGlSharing = supported;
+		device->openGlSharing = supported;
         listOfDevice.push_back(device);
+
+#endif
         
         printf("Device found : %s \n", CConvertUtility::ConvertToUTF8(deviceName));
 	}
