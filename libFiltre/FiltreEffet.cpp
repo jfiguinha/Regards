@@ -139,11 +139,11 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 	height = bitmap->GetHeight();
     if(openCLContext != nullptr)
     {
-        if(OpenCLHasEnoughMemory())
-        {
+        //if(OpenCLHasEnoughMemory())
+        //{
             filtreEffet = new COpenCLEffect(backColor, openCLContext, bitmap);
             this->numLib = LIBOPENCL;
-        }
+        //}
     }
     
     if( this->numLib == LIBCPU)
@@ -154,12 +154,28 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 
 bool CFiltreEffet::OpenCLHasEnoughMemory()
 {
+	printf("OpenCLHasEnoughMemory \n");
     if(openCLContext != nullptr)
     {
         uint64_t memsizeMax = openCLContext->GetMaxMemoryAllocable();
-        if(memsizeMax > width * height * 4 * sizeof(float))
-            return true;
+        if (openCLContext->GetDefaultType() == OPENCL_UCHAR)
+        {
+			if(memsizeMax > width * height * sizeof(cl_uint))
+			{
+				printf("OpenCLHasEnoughMemory UCHAR return true \n");
+				return true;
+			}
+		}
+        else
+        {
+			if(memsizeMax > width * height * 4 * sizeof(float))
+			{
+				printf("OpenCLHasEnoughMemory CL_FLOAT return true \n");
+				return true;
+			}
+		}
     }
+    printf("OpenCLHasEnoughMemory return false \n");
     return false;
 }
 
