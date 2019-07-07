@@ -11,16 +11,6 @@ float4 GetColorSrc(int x, int y, const __global float4 *input, int width, int he
 	return (float4)0.0f;
 }
 
-float4 GetfColorSrc(int x, int y, const __global float4 *input, int width, int height)
-{
-	if(x < width && y < height && y >= 0 && x >= 0)	
-	{
-		int position = x + y * width;
-		return input[position];
-	}
-	return (float4)0.0f;
-}
-
 //---------------------------------------------------------------------
 //Limite les valeurs entre 0 et 1.0f
 //---------------------------------------------------------------------
@@ -34,6 +24,15 @@ float4 NormalizeValue(float4 sum)
 	return value;
 }
 
+void FinalizeData(__global float4 * output, const __global float4 *input, int position, float4 sum)
+{
+	float4 color = input[position];
+	float alpha = color.w;
+	color = NormalizeValue(sum);
+	color.w = alpha;
+	output[position] = color; 
+}
+
 //---------------------------------------------------------------------
 //Application du filtre Emboss
 //---------------------------------------------------------------------
@@ -45,7 +44,7 @@ __kernel void Emboss(__global float4 * output, const __global float4 *input, int
 	float4 sum = GetColorSrc(x + 1, y + 1, input, width, height) - GetColorSrc(x - 1, y - 1, input, width, height) + (float4)(127.0f / 255.0f);
  
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum); 
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -91,7 +90,7 @@ __kernel void Edge(__global float4 * output, const __global float4 *input, int w
 	sum = gx + gy;
 
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum); 
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -117,7 +116,7 @@ __kernel void Sharpen(__global float4 * output, const __global float4 *input, in
 	sum = sum / (float4)8.0f;
 
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum);  
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -141,7 +140,7 @@ __kernel void SharpenStrong(__global float4 * output, const __global float4 *inp
 	sum -= GetColorSrc(x + 1, y + 1, input, width, height);
 
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum);  
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -167,21 +166,9 @@ __kernel void Blur(__global float4 * output, const __global float4 *input, int w
 		}
 	}
 	sum = sum / (float4)count;
-	/*
-	int4 sum = GetColorSrc(x - 1, y - 1, input, width, height);
-	sum += GetColorSrc(x , y - 1, input, width, height);
-	sum += GetColorSrc(x + 1, y - 1, input, width, height);
-	sum += GetColorSrc(x - 1, y, input, width, height);
-	sum += GetColorSrc(x , y, input, width, height);
-	sum += GetColorSrc(x + 1, y, input, width, height);
-	sum += GetColorSrc(x - 1, y + 1, input, width, height);
-	sum += GetColorSrc(x , y + 1, input, width, height);
-	sum += GetColorSrc(x + 1, y + 1, input, width, height);
-	sum = sum / (int4)9;
-	*/
 	
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum);  
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -205,7 +192,7 @@ __kernel void Soften(__global float4 * output, const __global float4 *input, int
 	sum += GetColorSrc(x + 1, y + 1, input, width, height);
 	sum = sum / (float4)16.0f;
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum);  
+	FinalizeData(output, input, position, sum);  
 }
 
 //---------------------------------------------------------------------
@@ -230,7 +217,7 @@ __kernel void FastGaussianBlur(__global float4 * output, const __global float4 *
 
 	float4 sum = val/div;
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum); 
+	FinalizeData(output, input, position, sum);
 }
 
 //---------------------------------------------------------------------
@@ -252,7 +239,7 @@ __kernel void GaussianBlur(__global float4 * output, const __global float4 *inpu
 
 	sum = sum / (float4)256.0f;
 	int position = x + y * width;
-	output[position] = NormalizeValue(sum);  
+	FinalizeData(output, input, position, sum);  
 }
 
 //---------------------------------------------------------------------
@@ -271,8 +258,8 @@ __kernel void BoxBlurH(__global float4 * output, const __global float4 *input, i
 	}
 
 	sum = sum / (coeff + coeff + 1);
-	int positionPixel = x + y * width;
-	output[positionPixel] =  NormalizeValue(sum);  
+	int position = x + y * width;
+	FinalizeData(output, input, position, sum); 
 }
 
 __kernel void BoxBlurV(__global float4 * output, const __global float4 *input, int width, int height, int coeff)
@@ -288,8 +275,8 @@ __kernel void BoxBlurV(__global float4 * output, const __global float4 *input, i
 	}
 
 	sum = sum / (float4)(coeff + coeff + 1);
-	int positionPixel = x + y * width;
-	output[positionPixel] =  NormalizeValue(sum);  
+	int position = x + y * width;
+	FinalizeData(output, input, position, sum);  
 }
 
 //---------------------------------------------------------------------
@@ -310,6 +297,6 @@ __kernel void MotionBlur(__global float4 * output, const __global float4 *input,
 		float4 color = kernelMotion[i] * GetfColorSrc(u, v, input, width, height);
 		sum = sum + color;
 	}
-	int positionPixel = x + y * width;
-	output[positionPixel] =  NormalizeValue(sum);  
+	int position = x + y * width;
+	FinalizeData(output, input, position, sum);  
 }

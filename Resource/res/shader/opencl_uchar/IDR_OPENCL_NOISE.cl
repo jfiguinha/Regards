@@ -83,7 +83,7 @@ __kernel void Noise(__global uint *output, const __global uint *input, int width
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	float4 n = (float4)Noise2d(x, y);
-	float4 src_color = GetColorSrc(x, y, input, width, height) + n;
+	float4 src_color = GetColorSrc(x, y, input, width, height) + n * 255.0f;
 	int position = x + y * width;
 	float4 minimal = 0.0;
 	float4 maximal = 255.0;
