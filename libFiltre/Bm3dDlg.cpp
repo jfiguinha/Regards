@@ -36,6 +36,7 @@ CBm3dDlg::CBm3dDlg(wxWindow* parent, IMultiThreadFiltre * multiThreadProcess)
 	Connect(wxEVT_INIT_DIALOG,(wxObjectEventFunction)&CBm3dDlg::OnInit);
     Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CBm3dDlg::EndProcess));
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBm3dDlg::OnPaint));
+
 	//*)
     this->multiThreadProcess = multiThreadProcess;
 	this->SetBackgroundColour(wxColour(64, 64, 64));
