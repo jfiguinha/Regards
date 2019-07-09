@@ -806,6 +806,11 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 				if(rawDecoder->DecodePicture(rawParameter) == 0)
 				{	
 
+					int supportOpenCL = 0;
+					CRegardsConfigParam* config = CParamInit::getInstance();
+					if (config != nullptr)
+						supportOpenCL = config->GetIsOpenCLSupport();
+
                     printf("RenderBitmap ratio %f\n",  ratio);	
                     
                     CImageLoadingFormat * picture = rawDecoder->GetPicture();
@@ -815,8 +820,11 @@ wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)
 					if(filtreraw != nullptr)
                         delete filtreraw;
                     
-                    filtreraw = new CFiltreEffet(color, openclContext, picture);
-                    
+					if(supportOpenCL)
+						filtreraw = new CFiltreEffet(color, openclContext, picture);
+					else
+						filtreraw = new CFiltreEffet(color, nullptr, picture);
+
 					rawWidth = picture->GetWidth();
 					rawHeight = picture->GetHeight();
                     

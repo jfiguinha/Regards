@@ -755,6 +755,11 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
     std::clock_t start;
     start = std::clock();    
     
+	int supportOpenCL = 0;
+	muVideoEffect.lock();
+	supportOpenCL = videoEffectParameter.enableOpenCL;
+	muVideoEffect.unlock();
+
 
     int width = GetWindowWidth();
     int height = GetWindowHeight();
@@ -790,14 +795,15 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 		initStart = false;
 	}
 
-	
 	if(videoRenderStart)
 	{
-        if (isDXVA2Compatible && dxva2ToOpenGLWorking)
+
+
+        if (isDXVA2Compatible && dxva2ToOpenGLWorking && supportOpenCL)
             glTexture = RenderFromOpenGLTexture();
         else
         {
-            if(isDXVA2Compatible)
+            if(isDXVA2Compatible && supportOpenCL)
             {
                 if(openclEffectNV12->IsOk())
                 {
@@ -817,18 +823,14 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
         renderBitmapOpenGL->CreateScreenRender(GetWindowWidth(), GetWindowHeight(), CRgbaquad(0,0,0,0));
 
         if(glTexture != nullptr)
-        {
-            muVideoEffect.lock();
-            int enableopenCL = videoEffectParameter.enableOpenCL;
-            muVideoEffect.unlock();
-            
+        {           
             int inverted = 1;
             int x = (GetWindowWidth() - glTexture->GetWidth()) / 2;
             int y = (GetWindowHeight()  - glTexture->GetHeight()) / 2;
             if(openclContext->IsSharedContextCompatible())
                 inverted = 0;
                
-            if(!enableopenCL)
+            if(!supportOpenCL)
                 inverted = 1;
               
             if(isDXVA2Compatible)

@@ -16,7 +16,6 @@
 #include <RegardsFloatBitmap.h>
 #include <PiccanteFilter.h>
 #include <config_id.h>
-
 extern float value[256];
 
 using namespace Regards::FiltreEffet;
@@ -137,6 +136,7 @@ CFiltreEffet::CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLCo
 	filename = bitmap->GetFilename();
 	width = bitmap->GetWidth();
 	height = bitmap->GetHeight();
+
     if(openCLContext != nullptr)
     {
         //if(OpenCLHasEnoughMemory())

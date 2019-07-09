@@ -374,6 +374,11 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if (quitWindow)
         return;
 
+	int supportOpenCL = 0;
+	muVideoEffect.lock();
+	supportOpenCL = videoEffectParameter.enableOpenCL;
+	muVideoEffect.unlock();
+
 #ifdef WIN32
     renderBitmapOpenGL->SetCurrent(*this);
 #else
@@ -418,19 +423,14 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
         renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
 
         if(glTexture != nullptr)
-        {
-            
-            muVideoEffect.lock();
-            int enableopenCL = videoEffectParameter.enableOpenCL;
-            muVideoEffect.unlock();
-            
+        {          
             int inverted = 1;
             int x = (width - glTexture->GetWidth()) / 2;
             int y = (height  - glTexture->GetHeight()) / 2;
             if(openclContext->IsSharedContextCompatible())
                 inverted = 0;
                
-            if(!enableopenCL)
+            if(!supportOpenCL)
                 inverted = 1;
                 
             if(isffmpegDecode)

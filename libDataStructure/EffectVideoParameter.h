@@ -1,11 +1,18 @@
 #pragma once
 #include "EffectParameter.h"
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
 
 class CVideoEffectParameter : public CEffectParameter
 {
 public:
 	CVideoEffectParameter()
 	{
+		int supportOpenCL = 0;
+		CRegardsConfigParam* config = CParamInit::getInstance();
+		if (config != nullptr)
+			supportOpenCL = config->GetIsOpenCLSupport();
+
 		effectEnable = 0;
 		//Median value
 		bSize = 3;
@@ -38,7 +45,7 @@ public:
 		streamAudioUpdate = 0;
 		streamVideoUpdate = 0;
 		streamSubtitleUpdate = 0;
-        enableOpenCL = 1;
+        enableOpenCL = supportOpenCL;
 		denoiseEnable = 0;
 	};
 	~CVideoEffectParameter()

@@ -169,8 +169,9 @@ bool CVideoControlInterface::IsCPUContext()
 
 void CVideoControlInterface::SetFrameData(AVFrame * src_frame)
 {
+	int enableopenCL = 0;
     muVideoEffect.lock();
-    int enableopenCL = videoEffectParameter.enableOpenCL;
+    enableopenCL = videoEffectParameter.enableOpenCL;
     muVideoEffect.unlock();    
     
     bool isCPU = IsCPUContext();

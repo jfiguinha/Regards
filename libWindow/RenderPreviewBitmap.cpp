@@ -39,23 +39,21 @@ CRenderPreviewBitmap::~CRenderPreviewBitmap()
 
 void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, wxWindow * parent, COpenCLContext * openclContext)
 {
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
 
-
-    /*
-	if(bitmapScale != nullptr)
-		delete bitmapScale;
-
-	bitmapScale = nullptr;
-    
-	bitmapScale = newbitmap->GetRegardsBitmap();
-    */
     if(newbitmap != nullptr)
     {
         if(filtre != nullptr)
             delete filtre;
         pictureWidth = newbitmap->GetWidth();
         pictureHeight =newbitmap->GetHeight();
-        filtre = new CFiltreEffet(colorBackground, openclContext, newbitmap);       
+		if(supportOpenCL)
+			filtre = new CFiltreEffet(colorBackground, openclContext, newbitmap);       
+		else
+			filtre = new CFiltreEffet(colorBackground, nullptr, newbitmap);
     }
 
 	//filtre->SetBitmap(newbitmap, 0);

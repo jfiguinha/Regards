@@ -180,12 +180,7 @@ public:
 #ifdef USECURL
         curl_global_init(CURL_GLOBAL_ALL);
 #endif        
-        vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
-        if(listPlatform.size() == 0)
-        {
-			wxMessageBox(wxT("OpenCL device Required. Regards can't run."), wxT("Fatal Error"), wxOK | wxICON_ERROR);            
-            exit(0);
-        }
+
         
 #ifdef __WXGTK__
 		int result = XInitThreads();
@@ -439,7 +434,15 @@ bool MyApp::OnInit()
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
 
-    
+	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
+	if (listPlatform.size() == 0)
+	{
+		regardsParam->SetIsOpenCLSupport(false);
+	}
+	else
+	{
+		regardsParam->SetIsOpenCLSupport(true);
+	}
 
 #ifdef WIN32
 

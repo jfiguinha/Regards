@@ -28,6 +28,7 @@ class OpenCLDialog: public wxDialog
 		wxComboBox* cbOpenCLDevice;
 		wxComboBox* cbOpenCLPlatform;
         wxRadioBox* rbKernelInMemory;
+		wxRadioBox* rbSupportOpenCL;
 		//*)
 
 		bool IsOk();

@@ -76,6 +76,9 @@ public:
 	int GetNumLanguage();
 	void SetNumLanguage(const int &numLanguage);
 
+	bool GetIsOpenCLSupport();
+	void SetIsOpenCLSupport(const int& openCLSupport);
+
 protected:
 
 	void InitVideoToolbar();
@@ -139,5 +142,6 @@ protected:
     int nbGpsFileByMinute;
 
     int loadFromBinaries = 0;
+	int openCLSupport = 0;
 };
 
