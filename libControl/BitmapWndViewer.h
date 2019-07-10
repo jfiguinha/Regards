@@ -50,7 +50,7 @@ namespace Regards
 			wxImage RenderBitmap(wxDC * deviceContext);
 			void AfterDrawBitmap(wxDC * deviceContext);
 			void AfterRenderBitmap(wxDC * deviceContext);
-
+			CRegardsBitmap* RenderSpecialEffect();
 			bool NeedAfterRenderBitmap();
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);

@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="OpenCLDialog">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>340,350</size>
+		<size>340,280</size>
 		<object class="wxComboBox" name="ID_COMBOBOX2">
 			<pos>16,50</pos>
 			<size>248,30</size>
@@ -33,24 +33,13 @@
 			<pos>20,150</pos>
 			<size>300,70</size>
 		</object>	
-		<object class="wxRadioBox" name="ID_RBSUPPORTOPENCL">
-			<label>Support OpenCL</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<content>
-				<item>No</item>
-				<item>Yes</item>
-			</content>
-			<default>-1</default>
-			<pos>20,220</pos>
-			<size>300,70</size>
-		</object>		
 		<object class="wxButton" name="ID_BUTTON1">
 			<label>OK</label>
-			<pos>48,300</pos>
+			<pos>48,230</pos>
 		</object>
 		<object class="wxButton" name="ID_BUTTON2">
 			<label>Cancel</label>
-			<pos>200,300</pos>
+			<pos>200,230</pos>
 		</object>
 	</object>
 </resource>

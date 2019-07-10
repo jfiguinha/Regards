@@ -30,7 +30,6 @@ OpenCLDialog::OpenCLDialog(wxWindow* parent)
 	cbOpenCLDevice = (wxComboBox*)FindWindow(XRCID("ID_COMBOBOX3"));
 	deviceLabel = (wxStaticText*)FindWindow(XRCID("ID_STATICTEXT1"));
     rbKernelInMemory =  (wxRadioBox*)FindWindow(XRCID("ID_RBKERNELINMEMORY"));
-	rbSupportOpenCL = (wxRadioBox*)FindWindow(XRCID("ID_RBSUPPORTOPENCL"));
 	btnOk = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
 	BtnCancel = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
 
@@ -98,7 +97,6 @@ void OpenCLDialog::OnInit(wxInitDialogEvent& event)
 	}
     
     rbKernelInMemory->SetSelection(kernelInMemory);
-	rbSupportOpenCL->SetSelection(supportOpenCL);
 
 	OpenCLPlatform * openCLPlatformSelected = nullptr;
 	this->SetTitle("OpenCL Device Selection");
@@ -161,12 +159,10 @@ void OpenCLDialog::OnbtnOkClick(wxCommandEvent& event)
 {
 	isOk = true;
     int kernelInMemory = rbKernelInMemory->GetSelection();
-	int supportOpenCL = rbSupportOpenCL->GetSelection();
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
 	{ 
          config->SetOpenCLLoadFromBinaries(kernelInMemory);
-		 config->SetIsOpenCLSupport(supportOpenCL);
 	}
 	this->Close();
 }

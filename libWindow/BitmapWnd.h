@@ -26,32 +26,32 @@ namespace Regards
 		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface
 		{
 		public:
-			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID idMain, const CThemeBitmapWindow & theme);
+			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
 			virtual ~CBitmapWnd(void);
 
 			//Attribut
 			void SetZoom(bool active);
 			bool GetZoom();
-			void SetZoomPosition(const int &position);
+			void SetZoomPosition(const int& position);
 
 			int GetWidth();
 			int GetHeight();
 
-			wxWindow * GetWindow(){
+			wxWindow* GetWindow() {
 				return this;
 			}
-            
-            void UpdateScreenRatio();
-			void SetFilterInterpolation(const int &filter);
-            void SetIsBitmapThumbnail(const bool &isThumbnail);
-			void SetBitmap(CImageLoadingFormat * bitmap, const bool &copy = false);
-			void SetBitmapParameter(const bool &externBitmap, const bool &addToTexture);
-			CRegardsBitmap * GetBitmap(const bool &source);
-            CRegardsFloatBitmap * GetFloatBitmap(const bool &source);
-			void GetInfosBitmap(wxString &filename, int &widthPicture, int &heightPicture);
+
+			void UpdateScreenRatio();
+			void SetFilterInterpolation(const int& filter);
+			void SetIsBitmapThumbnail(const bool& isThumbnail);
+			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
+			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
+			CRegardsBitmap* GetBitmap(const bool& source);
+			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
+			void GetInfosBitmap(wxString& filename, int& widthPicture, int& heightPicture);
 
 			int GetPosRatio();
-			void SetRatioPos(const int &pos);
+			void SetRatioPos(const int& pos);
 
 			int GetBitmapWidth();
 			int GetBitmapHeight();
@@ -69,42 +69,42 @@ namespace Regards
 
 			void SetShrinkImage(bool active);
 			bool GetShrinkImage();
-			void ShrinkImage(const bool &redraw = true);
+			void ShrinkImage(const bool& redraw = true);
 
 			void SetInterpolation(int interpolation);
 			int GetInterpolation();
 
 			float GetRatio();
-	
-			void SetTool(const int &tool);
-			virtual void SetToolOption(const int &tool, const int &iKey){};
+
+			void SetTool(const int& tool);
+			virtual void SetToolOption(const int& tool, const int& iKey) {};
 			int GetTool();
 
-			void SetKey(const int &iKey);
-			virtual void SetKeyOption(const int &iKey){};
+			void SetKey(const int& iKey);
+			virtual void SetKeyOption(const int& iKey) {};
 			int GetKey();
 
-			void SetPosition(const int &left, const int &top);
+			void SetPosition(const int& left, const int& top);
 
-			void SetFullscreen(const bool &fullscreen);
+			void SetFullscreen(const bool& fullscreen);
 
-            void StopLoadingBitmap();
-            void StartLoadingBitmap();
-            
+			void StopLoadingBitmap();
+			void StartLoadingBitmap();
+
 		protected:
 
-			virtual void CreateContext(){};
-			virtual void ApplyPreviewEffect(){};
-			virtual void AfterRender(){};
-            int UpdateResized();
+			virtual void CreateContext() {};
+			virtual void ApplyPreviewEffect() {};
+			virtual void AfterRender() {};
+			int UpdateResized();
 			void Update();
-			virtual bool NeedAfterRenderBitmap(){ return false; };
-			void CalculScreenPosFromReal(const int &xReal, const int &yReal, int &xScreen, int &yScreen);
-			void CalculRealPosFromScreen(const int &xScreen, const int &yScreen, int &xReal, int &yReal);
-			float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight);
-            
-            void OnLoading(wxTimerEvent& event);
-			void OnMouseCaptureLost(wxMouseEvent& event){};
+			virtual bool NeedAfterRenderBitmap() { return false; };
+			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
+			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
+			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+
+			void OnLoading(wxTimerEvent& event);
+			void OnMouseCaptureLost(wxMouseEvent& event) {};
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
@@ -115,13 +115,14 @@ namespace Regards
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
-		    void OnEraseBackground(wxEraseEvent& event){};
-            
+			void OnEraseBackground(wxEraseEvent& event) {};
+
 #ifdef KeyPress
 #undef KeyPress
 #endif			
-            
-            void RefreshWindow();
+
+			void RefreshWindow();
+			virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
 			virtual void MouseClick(const int &xPos, const int &yPos);
 			virtual void MouseRelease(const int &xPos, const int &yPos);

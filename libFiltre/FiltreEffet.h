@@ -16,6 +16,7 @@ class CFiltreEffet
 public:
 	CFiltreEffet(const CRgbaquad &backColor, COpenCLContext * openCLContext, CImageLoadingFormat * bitmap);
 	virtual ~CFiltreEffet();
+	void SetPreviewMode(const bool& value);
 	void GetRgbaBitmap(void * cl_image);
 	//void SetBitmap(CRegardsBitmap * & pBitmap, int numLib);
 	void SetBitmap(CImageLoadingFormat * bitmap);

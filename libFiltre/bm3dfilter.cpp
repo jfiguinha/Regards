@@ -108,34 +108,11 @@ void CBm3DFilter::DecodeFrame(void * dataToDecode)
 		{
             int posLocal = (posY * size + posX);
 			int posPicture = bitmap->GetPosition(posX + x * size, posY + y * size);
-			//posPicture = ((posY + y * size) + (posX + x * size)) * chnls;
-            
-            //Conversion direct en YUV
-            //tmp[k + red  ] =  0.299f   * img[k + red] + 0.587f   * img[k + green] + 0.114f   * img[k + blue];
-            
-            //Y  =      (0.257 * R) + (0.504 * G) + (0.098 * B) + 16
             picture[posLocal] = 0.257f * value[data[posPicture + 2]] + 0.504f * value[data[posPicture + 1]] + 0.098f * value[data[posPicture]] + 16;
-            /*
-			for (int i = 0; i < chnls; i++)
-			{
-				int posLocal = (posY * size + posX) + i * size * size;
-				
-				//CRgbaquad color = bitmap->GetColorValue(posX + x * size, posY + y * size);
-                
-				picture[posLocal] = value[data[posPicture + i]];
-			}
-            */
+
 		}
 	}
 
-	//float fSigma = atof(argv[2]);
-
-
-	//if (save_image("img_test_lo.png", picture, size, size, chnls) != EXIT_SUCCESS)
-	//    return EXIT_FAILURE;
-	/*
-	exit(0);
-	*/
 	//! Denoising
 	if (run_bm3d(block->fSigma, picture, picturebasic, picturedenoised, size, size, chnls,
 		block->useSD_1, block->useSD_2, block->tau_2D_hard, block->tau_2D_wien, block->color_space, block->patch_size,
@@ -155,37 +132,14 @@ void CBm3DFilter::DecodeFrame(void * dataToDecode)
             float Y = picturedenoised[posLocal];
             float V =  (0.439 * data[posPicture + 2]) - (0.368 * data[posPicture + 1]) - (0.071 * data[posPicture]) + 128;
             float U = -(0.148 * data[posPicture + 2]) - (0.291 * data[posPicture + 1]) + (0.439 * data[posPicture]) + 128;
-            //float U =  0.492f * (value[data[posPicture]] - Y);
-            //float V =  0.877f * (value[data[posPicture + 2]] - Y);
-            //! Red   channel
-            
+           
             float B = 1.164 * (Y - 16) + 2.018 * (U - 128);
-
             float G = 1.164 * (Y - 16) - 0.813 * (V - 128) - 0.391 * (U - 128);
-
             float R = 1.164 * (Y - 16) + 1.596 * (V - 128);
             
             data[posPicture + 2] = R;//min(Y + 1.13983f * V, 255.0f); //R
-            //! Green channel
             data[posPicture + 1] = G;//min(Y - 0.39465f * U - 0.5806f * V, 255.0f); //G
-            //! Blue  channel
             data[posPicture] = B;//min(Y + 2.03211f * U, 255.0f); //B
-            
-            /*
-
-            
-            data[posPicture] = max(Y + 2.03211f * U, 255.0f); //B
-            data[posPicture + 1] = max(Y - 0.39465f * U - 0.58060f * V, 255.0f); //G
-            data[posPicture + 2] = max(Y + 2.03211f * U, 255.0f); //R
-            
-            /*
-			for (int i = 0; i < chnls; i++)
-			{
-				int posLocal = (posY * size + posX) + i * size * size;
-				
-				data[posPicture + i] = picturedenoised[posLocal];
-			}
-            */
 		}
 	}
     

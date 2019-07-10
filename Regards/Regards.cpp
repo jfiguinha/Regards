@@ -434,6 +434,7 @@ bool MyApp::OnInit()
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
 
+	/*
 	vector<OpenCLPlatform*> listPlatform = COpenCLPlatformList::GetPlatform();
 	if (listPlatform.size() == 0)
 	{
@@ -443,6 +444,8 @@ bool MyApp::OnInit()
 	{
 		regardsParam->SetIsOpenCLSupport(true);
 	}
+	*/
+	regardsParam->SetIsOpenCLSupport(false);
 
 #ifdef WIN32
 

@@ -91,21 +91,16 @@ int CFiltreEffetCPU::Bm3d(const int & fSigma)
 	if (bitmap != nullptr)
 	{
         //Copie
+		int nbProcess = thread::hardware_concurrency();
         CImageLoadingFormat imageLoadFormat(true);
         imageLoadFormat.SetPicture(bitmap);
         CRegardsBitmap * copyBitmap = imageLoadFormat.GetRegardsBitmap(true);
         CBm3DFilter * bm3dFilter = new CBm3DFilter(copyBitmap, value[fSigma]);
-
-        CBm3dDlg bm3dDlg(nullptr, bm3dFilter);
-        bm3dDlg.ShowModal();
+		bm3dFilter->DetermineData(nbProcess - 1);
+		bm3dFilter->ExecuteFilter();
+		delete bm3dFilter;
         
-        delete bm3dFilter;
-        
-        if(!bm3dDlg.IsProcessCancel())
-        {
-            memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
-        }
-        
+        memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());     
         delete copyBitmap;
 
         return 0; 
@@ -312,10 +307,16 @@ int CFiltreEffetCPU::HistogramEqualize()
 
 int CFiltreEffetCPU::LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity)
 {
-	if (pBitmap != nullptr)
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
 	{
 		CLensFlare * filtre = new CLensFlare();
-		filtre->LensFlare(pBitmap, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
+		filtre->LensFlare(bitmap, iPosX, iPosY, iPuissance, iType, iIntensity, iColor, iColorIntensity);
 		delete filtre;
 
 	}
@@ -386,17 +387,23 @@ int CFiltreEffetCPU::Posterize(const float &level, const float &gamma)
 //---------------------------------------------------------------------
 int CFiltreEffetCPU::CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity)
 {
-	if (pBitmap != nullptr)
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
 	{
 		CPerlinNoise * m_perlinNoise = new Regards::FiltreEffet::CPerlinNoise();
 		CRegardsBitmap localBitmap(250,250);
-		CRegardsBitmap * bitmapOut = new CRegardsBitmap(pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		CRegardsBitmap * _local = new CRegardsBitmap(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 		m_perlinNoise->Clouds(&localBitmap, color1, color2, amplitude / 100.0f, frequence / 100.0f, octave);
 		delete m_perlinNoise;
 		CInterpolationBicubic interpolation;
-		interpolation.Execute(&localBitmap, bitmapOut);
-		Fusion(bitmapOut, intensity / 100.0f);
-		delete bitmapOut;
+		interpolation.Execute(&localBitmap, _local);
+		Fusion(_local, intensity / 100.0f);
+		delete _local;
 	}
 	return 0;
 }
@@ -1006,9 +1013,15 @@ int CFiltreEffetCPU::Resize(const int &imageWidth, const int &imageHeight, const
 //----------------------------------------------------------------------------
 int CFiltreEffetCPU::Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage)
 {
-	if (pBitmap != nullptr)
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	if (bitmap != nullptr)
 	{
-		pBitmap->FusionBitmap(bitmapSecond, pourcentage);
+		bitmap->FusionBitmap(bitmapSecond, pourcentage);
 	}
 	return 0;
 }

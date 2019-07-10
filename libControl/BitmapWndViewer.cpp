@@ -214,7 +214,8 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 void CBitmapWndViewer::CreateContext()
 {
 	renderPreviewBitmap = new CRenderPreviewBitmap();
-	openclEffectVideo = new COpenCLEffectVideo(this->openclContext);
+	if(openclContext != nullptr)
+		openclEffectVideo = new COpenCLEffectVideo(this->openclContext);
 }
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
@@ -785,6 +786,130 @@ int CBitmapWndViewer::GetOrientation()
 	if(preview == IDM_DECODE_RAW)
 		return 4;
 	return orientation; 
+}
+
+CRegardsBitmap* CBitmapWndViewer::RenderSpecialEffect()
+{
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
+	CRegardsBitmap* bitmap = nullptr;
+	if (!isDiaporama)
+	{
+		if (preview == IDM_DECODE_RAW)
+		{
+			CDecodeRawParameter* rawParameter = (CDecodeRawParameter*)effectParameter;
+			if (rawParameter->update || rawDecoder == nullptr)
+			{
+				if (rawDecoder == nullptr)
+				{
+					rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(filename));
+				}
+
+				if (rawDecoder->DecodePicture(rawParameter) == 0)
+				{
+
+					int supportOpenCL = 0;
+					CRegardsConfigParam* config = CParamInit::getInstance();
+					if (config != nullptr)
+						supportOpenCL = config->GetIsOpenCLSupport();
+
+					CImageLoadingFormat* picture = rawDecoder->GetPicture();
+
+					CRgbaquad color;
+
+					if (filtreraw != nullptr)
+						delete filtreraw;
+
+					if (supportOpenCL)
+						filtreraw = new CFiltreEffet(color, openclContext, picture);
+					else
+						filtreraw = new CFiltreEffet(color, nullptr, picture);
+
+					rawWidth = picture->GetWidth();
+					rawHeight = picture->GetHeight();
+
+
+				}
+				rawParameter->update = false;
+			}
+
+			if (filtreraw != nullptr)
+			{
+				this->GenerateScreenBitmap(filtreraw, widthOutput, heightOutput);
+				bitmap = filtreraw->GetBitmap(false);
+			}
+		}
+		else if (preview == IDM_WAVE_EFFECT)
+		{
+			CImageLoadingFormat newbitmap;
+			newbitmap.SetPicture(filtreEffet->GetBitmap(false));
+			renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);
+
+			wxPoint pt;
+			m_cDessin->GetScreenPoint(pt);
+			if (pt.x == 0 && pt.y == 0)
+			{
+				pt.x = widthOutput / 4;
+				pt.y = heightOutput / 4;
+			}
+
+			CWaveEffectParameter* waveEffectParameter = (CWaveEffectParameter*)effectParameter;
+			if (pt.x != 0 && pt.y != 0)
+			{
+				int left = 0, top = 0;
+				if (width > widthOutput)
+					left = ((width - widthOutput) / 2);
+				else
+					left = 0;
+
+				if (height > heightOutput)
+					top = ((height - heightOutput) / 2);
+				else
+					top = 0;
+				short height = waveEffectParameter->height;
+				int radius = waveEffectParameter->radius;
+				int scale = waveEffectParameter->scale;
+				renderPreviewBitmap->WaveFilter(pt.x, pt.y, height, radius, scale, left, top);
+			}
+			bitmap = renderPreviewBitmap->GetRegardsBitmap();
+		}
+		else if (preview == IDM_FILTRELENSFLARE)
+		{
+			CImageLoadingFormat newbitmap;
+			newbitmap.SetPicture(filtreEffet->GetBitmap(false));
+			renderPreviewBitmap->SetNewBitmap(&newbitmap, this, nullptr);
+
+			wxPoint pt;
+			m_cDessin->GetScreenPoint(pt);
+			if (pt.x == 0 && pt.y == 0)
+			{
+				pt.x = widthOutput / 4;
+				pt.y = heightOutput / 4;
+			}
+
+			CLensFlareEffectParameter* lensFlareParameter = (CLensFlareEffectParameter*)effectParameter;
+			if (pt.x != 0 && pt.y != 0)
+			{
+				int left = 0, top = 0;
+				if (width > widthOutput)
+					left = ((width - widthOutput) / 2);
+				else
+					left = 0;
+
+				if (height > heightOutput)
+					top = ((height - heightOutput) / 2);
+				else
+					top = 0;
+				int puissance = (float)lensFlareParameter->size;
+				int brightness = (float)lensFlareParameter->brightness;
+				int radius = (float)lensFlareParameter->colorIntensity;
+				renderPreviewBitmap->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, left, top);
+			}
+			bitmap = renderPreviewBitmap->GetRegardsBitmap();
+
+		}
+	}
+	return bitmap;
 }
 
 wxImage CBitmapWndViewer::RenderBitmap(wxDC * deviceContext)

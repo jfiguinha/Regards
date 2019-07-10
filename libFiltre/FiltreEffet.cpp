@@ -119,6 +119,11 @@ wxImage CFiltreEffet::RenderEffectPreviewwxImage(const int &numEffect, CEffectPa
 	return wxImage();
 }
 
+void CFiltreEffet::SetPreviewMode(const bool& value)
+{
+	filtreEffet->SetPreviewMode(value);
+}
+
 int CFiltreEffet::RenderEffectPreview(const int &numEffect, CEffectParameter * effectParameter)
 {
 	filtreEffet->SetPreviewMode(true);

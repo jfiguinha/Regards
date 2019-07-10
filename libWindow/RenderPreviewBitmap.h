@@ -7,7 +7,7 @@
 #include <RGBAQuad.h>
 #include <OpenCLEngine.h>
 #include <DecodeRawParameter.h>
-
+class CRegardsBitmap;
 class CImageLoadingFormat;
 class CEffectParameter;
 class CFiltreEffet;
@@ -32,6 +32,7 @@ namespace Regards
 			void LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop);
 			wxImage GetRender();
             wxImage GetLastRender();
+			CRegardsBitmap * GetRegardsBitmap();
 		private:
 
 			int pictureWidth;

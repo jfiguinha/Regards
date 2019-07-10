@@ -1390,8 +1390,20 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		if (!supportOpenCL)
 		{
 
+			if (openCLEngine == nullptr)
+			{
+				openCLEngine = new COpenCLEngine();
+				openclContext = nullptr;
+
+				CreateContext();
+
+				renderOpenGL->LoadingResource(scale_factor);
+			}
+
 			if (source != nullptr)
 			{
+				CRegardsBitmap* bitmapSpecial = nullptr;
+
 				if (filtreEffet != nullptr)
 					delete filtreEffet;
 
@@ -1406,9 +1418,18 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 				}
 
 				if (NeedAfterRenderBitmap())
+				{
 					ApplyPreviewEffect();
+					bitmapSpecial = RenderSpecialEffect();
+				}
 
-				CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
+				
+				CRegardsBitmap* bitmap = nullptr;
+				
+				if (bitmapSpecial == nullptr)
+					bitmap = filtreEffet->GetBitmap(false);
+				else
+					bitmap = bitmapSpecial;
 
 				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 				if (glTexture != nullptr)

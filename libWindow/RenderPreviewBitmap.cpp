@@ -7,6 +7,7 @@
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <LoadingResource.h>
+#include <RegardsBitmap.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 using namespace Regards::Window;
@@ -57,6 +58,11 @@ void CRenderPreviewBitmap::SetNewBitmap(CImageLoadingFormat * newbitmap, wxWindo
     }
 
 	//filtre->SetBitmap(newbitmap, 0);
+}
+
+CRegardsBitmap * CRenderPreviewBitmap::GetRegardsBitmap()
+{
+	return filtre->GetBitmap(false);
 }
 
 wxImage CRenderPreviewBitmap::GetRender()

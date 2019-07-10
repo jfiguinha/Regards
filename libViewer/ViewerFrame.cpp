@@ -588,22 +588,36 @@ void CViewerFrame::OnConfiguration(wxCommandEvent& event)
 
 void CViewerFrame::ShowOpenCLConfiguration(const bool &showRestart)
 {
-	OpenCLDialog configFile(this);
-	configFile.ShowModal();
-	if (configFile.IsOk())
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	if (supportOpenCL)
 	{
-        wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart",1);//L"&Thumbnail";
-        wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations",1);//L"&Help";
-		CRegardsConfigParam * config = CParamInit::getInstance();
-		if (config != nullptr)
+
+		OpenCLDialog configFile(this);
+		configFile.ShowModal();
+		if (configFile.IsOk())
 		{
-			config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
-			config->SetOpenCLPlatformName(configFile.GetPlatformName());
+			wxString labelRestart = CLibResource::LoadStringFromResource(L"labelRestart", 1);//L"&Thumbnail";
+			wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
+			CRegardsConfigParam* config = CParamInit::getInstance();
+			if (config != nullptr)
+			{
+				config->SetOpenCLPlatformIndex(configFile.GetDeviceIndex());
+				config->SetOpenCLPlatformName(configFile.GetPlatformName());
+			}
+
+			if (showRestart)
+				wxMessageBox(labelRestart, labelInformations);
 		}
-        
-        if(showRestart)
-            wxMessageBox(labelRestart,labelInformations);
-	}    
+	}
+	else
+	{
+		wxString labelInformations = CLibResource::LoadStringFromResource(L"labelInformations", 1);//L"&Help";
+		wxMessageBox("OpenCL device Required", labelInformations);
+	}
 }
 
 void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
