@@ -508,6 +508,10 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {
 	switch(numFilter)
 	{   
+		case IDM_FILTER_KUWAHARA:
+		case IDM_HDR_DEBLURRING:
+		case IDM_BEST_EXPOSURE:
+		case IDM_FILTER_BILATERAL2DS:
 		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:

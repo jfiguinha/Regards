@@ -33,9 +33,19 @@ CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat
 
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 {
-    if(pBitmap != nullptr)
-        delete pBitmap;
-    pBitmap = bitmap->GetRegardsBitmap();   
+	if (preview)
+	{
+		if (bitmapOut != nullptr)
+			delete bitmapOut;
+		bitmapOut = bitmap->GetRegardsBitmap();
+	}
+	else
+	{
+		if (pBitmap != nullptr)
+			delete pBitmap;
+		pBitmap = bitmap->GetRegardsBitmap();
+	}
+
 }
 
 int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
@@ -56,8 +66,14 @@ int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
 
 CRegardsFloatBitmap * CFiltreEffetCPU::GetFloatBitmap(const bool &source)
 {
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
     CImageLoadingFormat imageLoading(false);
-    imageLoading.SetPicture(pBitmap);   
+    imageLoading.SetPicture(bitmap);
     return imageLoading.GetFloatBitmap(true);
 }
 

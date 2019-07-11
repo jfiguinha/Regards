@@ -555,7 +555,12 @@ bool CBitmapWndViewer::SetBitmapEffect(const int &effect, CEffectParameter * eff
             
 				default:
 					{
-						if(CFiltreData::IsOpenCLCompatible(effect))
+						int supportOpenCL = 0;
+						CRegardsConfigParam* config = CParamInit::getInstance();
+						if (config != nullptr)
+							supportOpenCL = config->GetIsOpenCLSupport();
+
+						if(CFiltreData::IsOpenCLCompatible(effect) && supportOpenCL)
 						{
 							filtreEffet->SetPreview(false);
 							filtreEffet->RenderEffect(effect, effectParameter);
