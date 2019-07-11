@@ -20,8 +20,8 @@ public:
 	static wxImage Execute(CRegardsBitmap * In, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle);
 	static const wxImage Execute(uint8_t * data, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle);
 
-	static inline void CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY);
-	static inline void CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY);
+	static void CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY);
+	static void CalculPosition(const int &x, const int &y, const int &widthIn, const int &heightIn, const int &widthOut, const int &heightOut, const wxRect &rectToShow, const int &flipH, const int &flipV, const int &angle, float &posX, float &posY);
 };
 
 
