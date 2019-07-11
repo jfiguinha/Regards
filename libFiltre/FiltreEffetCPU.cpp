@@ -17,7 +17,6 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
-#include "Bm3dDlg.h"
 //BM3D
 #include "bm3dfilter.h"
 
@@ -92,16 +91,12 @@ int CFiltreEffetCPU::Bm3d(const int & fSigma)
 	{
         //Copie
 		int nbProcess = thread::hardware_concurrency();
-        CImageLoadingFormat imageLoadFormat(true);
-        imageLoadFormat.SetPicture(bitmap);
-        CRegardsBitmap * copyBitmap = imageLoadFormat.GetRegardsBitmap(true);
-        CBm3DFilter * bm3dFilter = new CBm3DFilter(copyBitmap, value[fSigma]);
+        CBm3DFilter * bm3dFilter = new CBm3DFilter(bitmap, value[fSigma]);
 		bm3dFilter->DetermineData(nbProcess - 1);
 		bm3dFilter->ExecuteFilter();
+		CRegardsBitmap * copyBitmap = bm3dFilter->GetResult();
+		memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());
 		delete bm3dFilter;
-        
-        memcpy(bitmap->GetPtBitmap(), copyBitmap->GetPtBitmap(), copyBitmap->GetBitmapSize());     
-        delete copyBitmap;
 
         return 0; 
 	}

@@ -40,10 +40,10 @@ void CFiltre::Compute()
 		pBitsDest = new uint8_t[pictureSize];
 		pBitsSrc = pBitmap->GetPtBitmap();
 
-#pragma omp parallel for
+//#pragma omp parallel for
 		for (auto y = 0; y < bmHeight; y++)
 		{
-#pragma omp parallel for
+//#pragma omp parallel for
 			for (auto x = 0; x < bmWidth; x++)
 			{
 				PixelCompute(x, y, pBitsSrc, pBitsDest);
@@ -458,12 +458,13 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, uint8_t * & pB
 	int k = 0;
 	int start = -Ksize / 2;
 	int end = Ksize / 2;
-
+	int Kfactor = 0;
 
 	for (auto i = start; i <= end; i++)
 	{
 		for (auto j = start; j <= end; j++)
 		{
+			Kfactor += kernel[k];
 			int pos = GetPosition(x + j, y + i);
 			if (pos != -1)
 			{
@@ -472,6 +473,7 @@ void CMatrixConvolution::PixelCompute(const int &x, const int &y, uint8_t * & pB
 				blue += *(pBitsSrc + pos + 2) * kernel[k];
 			}
 			k++;
+			
 		}
 	}
 

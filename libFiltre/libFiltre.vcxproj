@@ -195,7 +195,6 @@
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="bm3d.h" />
-    <ClInclude Include="Bm3dDlg.h" />
     <ClInclude Include="bm3dEffectParameter.h" />
     <ClInclude Include="bm3dfilter.h" />
     <ClInclude Include="bm3dWindowFilter.h" />
@@ -243,7 +242,6 @@
     <ClInclude Include="MotionBlur.h" />
     <ClInclude Include="MotionBlurEffectParameter.h" />
     <ClInclude Include="MotionBlurFilter.h" />
-    <ClInclude Include="MultiThreadFiltre.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="NlmeansFilter.h" />
     <ClInclude Include="PerlinNoise.h" />
@@ -283,7 +281,6 @@
     <ClCompile Include="bilateralFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="bm3d.cpp" />
-    <ClCompile Include="Bm3dDlg.cpp" />
     <ClCompile Include="bm3dfilter.cpp" />
     <ClCompile Include="bm3dWindowFilter.cpp" />
     <ClCompile Include="BrightAndContrastFilter.cpp" />

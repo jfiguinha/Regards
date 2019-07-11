@@ -16,9 +16,6 @@
     <Filter Include="bm3d">
       <UniqueIdentifier>{aa91fbfd-a6c0-4ed0-8c1a-32fdf1734a1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dialog">
-      <UniqueIdentifier>{a420bf1b-db09-410c-8f21-6b276a4d2c92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Filter">
       <UniqueIdentifier>{fa946c5c-e182-4532-9539-79844f6bf274}</UniqueIdentifier>
     </Filter>
@@ -80,9 +77,6 @@
     </ClInclude>
     <ClInclude Include="utilities.h">
       <Filter>bm3d</Filter>
-    </ClInclude>
-    <ClInclude Include="Bm3dDlg.h">
-      <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="clahe.h">
       <Filter>Filter\include</Filter>
@@ -154,9 +148,6 @@
       <Filter>interface\include</Filter>
     </ClInclude>
     <ClInclude Include="IFiltreEffet.h">
-      <Filter>interface\include</Filter>
-    </ClInclude>
-    <ClInclude Include="MultiThreadFiltre.h">
       <Filter>interface\include</Filter>
     </ClInclude>
     <ClInclude Include="Interpolation.h">
@@ -343,9 +334,6 @@
     </ClCompile>
     <ClCompile Include="utilities.cpp">
       <Filter>bm3d</Filter>
-    </ClCompile>
-    <ClCompile Include="Bm3dDlg.cpp">
-      <Filter>Dialog</Filter>
     </ClCompile>
     <ClCompile Include="circle.cpp">
       <Filter>Filter\source</Filter>
