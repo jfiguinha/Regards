@@ -490,7 +490,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.20.0/" \
+	-e "s/VERSION/2.21.0/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -586,7 +586,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfreetype.6.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/pcre/lib/libpcre.1.dylib @executable_path/../Frameworks/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
-        <Command Enabled="yes">$(shell change_link.sh)</Command>		
+        <Command Enabled="yes">$(shell change_link.sh)</Command>
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
         <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
       </PostBuild>

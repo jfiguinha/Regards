@@ -1,5 +1,5 @@
 Package: RegardsViewer
-Version: 2.20.0
+Version: 2.21.0
 Architecture: amd64
 Depends: libwebkit2gtk-4.0-dev, freeglut3-dev, libva-dev, libsndio-dev, liblzma-dev, libxml2-dev, libcurl4-openssl-dev, libopenexr-dev, libasound-dev, libxv-dev, libxtst-dev, libglew-dev, libturbojpeg-dev, libsdl2-dev, libssh-dev
 Maintainer: Figuinha Jacques
