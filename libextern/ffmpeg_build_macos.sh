@@ -7,7 +7,7 @@ git clone https://aomedia.googlesource.com/aom
 cd aom
 mkdir build
 cd build
-cmake ../../aom -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../../aom -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 make install
 cd ..

@@ -22,6 +22,9 @@
 #include <iostream>
 #include <functional>
 #include <piccante.hpp>
+#if defined(__x86_64__) || defined(_M_AMD64)
+#include <xmmintrin.h> 
+#endif
 //#include <libPicture.h>
 
 
