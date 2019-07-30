@@ -26,10 +26,7 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Dialog">
-    <File Name="Bm3dDlg.h"/>
-    <File Name="Bm3dDlg.cpp"/>
-  </VirtualDirectory>
+  <VirtualDirectory Name="Dialog"/>
   <VirtualDirectory Name="bm3d">
     <File Name="bm3dfilter.h"/>
     <File Name="bm3dfilter.cpp"/>
@@ -177,7 +174,6 @@
       <File Name="FilterData.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="MultiThreadFiltre.h"/>
       <File Name="IFiltreEffet.h"/>
       <File Name="FiltreEffetCPU.h"/>
       <File Name="FiltreEffet.h"/>
@@ -207,6 +203,7 @@
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libDataStructure"/>
