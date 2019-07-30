@@ -23,7 +23,9 @@
 #include <functional>
 #include <piccante.hpp>
 //#include <libPicture.h>
-
+#if defined(__x86_64__) || defined(_M_AMD64)
+#include <xmmintrin.h>
+#endif
 
 float CPiccanteFilter::clamp ( float val, float minval, float maxval )
 {
