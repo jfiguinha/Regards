@@ -154,7 +154,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>USE_RENDER_CAIRO;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\libDatastructure;$(SolutionDir)\libExif;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)\libextern\cairo-1.4.10\msvc;$(SolutionDir)\libextern\cairo-1.4.10\include\cairo;$(SolutionDir)\libextern\cairo-1.4.10\include;$(SolutionDir)\otherlib\wxsvg\include\wxSVGXML;$(SolutionDir)\otherlib\wxsvg\include\wxSVG;$(SolutionDir)\otherlib\wxsvg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\libDatastructure;$(SolutionDir)\libExif;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;$(SolutionDir)\otherlib\wxsvg\include\wxSVGXML;$(SolutionDir)\otherlib\wxsvg\include\wxSVG;$(SolutionDir)\otherlib\wxsvg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
