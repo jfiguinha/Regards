@@ -23,7 +23,7 @@
 #include "SqlFindPhotos.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
-#include <FaceRecognition.h>
+#include <PictureRecognition.h>
 #include <SqlFacePhoto.h>
 #include <SqlFaceDescriptor.h>
 #include <SqlFindFacePhoto.h>

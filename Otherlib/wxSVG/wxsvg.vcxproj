@@ -105,11 +105,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>USE_RENDER_CAIRO;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\libDatastructure;$(SolutionDir)\libExif;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)\libextern\cairo-1.4.10\msvc;$(SolutionDir)\libextern\cairo-1.4.10\include\cairo;$(SolutionDir)\libextern\cairo-1.4.10\include;$(SolutionDir)\otherlib\wxsvg\include\wxSVGXML;$(SolutionDir)\otherlib\wxsvg\include\wxSVG;$(SolutionDir)\otherlib\wxsvg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\include;$(SolutionDir)\libDatastructure;$(SolutionDir)\libExif;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;$(SolutionDir)\otherlib\wxsvg\include\wxSVGXML;$(SolutionDir)\otherlib\wxsvg\include\wxSVG;$(SolutionDir)\otherlib\wxsvg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>

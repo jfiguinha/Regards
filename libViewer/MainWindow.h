@@ -9,7 +9,8 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 class CImageLoadingFormat;
-class CFaceLoadData;
+class CPictureCategorieLoadData;
+class CPictureCategorie;
 
 namespace Regards
 {
@@ -254,6 +255,8 @@ namespace Regards
 			bool sendMessageVideoStop;
 			bool loadPicture;
             bool checkVersion;
+			CPictureCategorieLoadData * categorieData;
+			CPictureCategorie * pictureCategorie;
 		};
 	}
 

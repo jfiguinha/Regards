@@ -2,7 +2,12 @@
 //
 #include "resource.h"
 /////////////////////////////////////////////////////////////////////////////
-// FranÃ§ais (France) resources
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+/////////////////////////////////////////////////////////////////////////////
+// Français (France) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
@@ -158,7 +163,65 @@ BEGIN
     END
 END
 
-#endif    // FranÃ§ais (France) resources
+#endif    // Français (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Anglais (Royaume-Uni) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PROGRESS DIALOG 0, 0, 184, 63
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Progress"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,127,43,50,14
+    LTEXT           "Reading data from the scanner....",IDC_MESSAGE,7,7,170,8
+    CONTROL         "1",IDC_PROGRESS_BAR,"msctls_progress32",WS_BORDER,7,22,170,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE
+BEGIN
+
+
+
+IDS_WAIT "Wait..."
+IDS_STATUS_TRANSFER_FROM_DEVICE "Reading data from the device (%d%% complete)"
+IDS_STATUS_PROCESSING_DATA "Processing data (%d%% complete)"
+IDS_STATUS_TRANSFER_TO_CLIENT "Transferring data (%d%% complete)"
+IDS_ERROR_GET_IMAGE_DLG "Unable to retrieve image from device. Verify the device is properly connected and try again."
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_PROGRESS, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Anglais (Royaume-Uni) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

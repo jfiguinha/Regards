@@ -115,11 +115,11 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libextern\libjpeg-turbo-1.5.1;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>..\otherlib\wxia\include;..\otherlib\wxia\wia;$(SolutionDir)libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;..\FaceRecognition;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource;..\libextern\libjpeg-turbo-1.5.1</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -203,11 +203,16 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="AnimationToolbar.h" />
+    <ClInclude Include="bmpviewer.h" />
     <ClInclude Include="CategoryFolderWindow.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
+    <ClInclude Include="gutter.h" />
+    <ClInclude Include="ImageWindow.h" />
+    <ClInclude Include="pdfframe.h" />
     <ClInclude Include="PictureElement.h" />
+    <ClInclude Include="ScannerFrame.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="FiltreEffect.h" />
@@ -253,9 +258,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AnimationToolbar.cpp" />
+    <ClCompile Include="bmpviewer.cpp" />
     <ClCompile Include="CategoryFolderWindow.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
+    <ClCompile Include="gutter.cpp" />
+    <ClCompile Include="ImageWindow.cpp" />
+    <ClCompile Include="pdfframe.cpp" />
+    <ClCompile Include="ScannerFrame.cpp" />
     <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="FiltreEffect.cpp" />
@@ -293,6 +303,10 @@
     <ClCompile Include="ViewerParamInit.cpp" />
     <ClCompile Include="ViewerTheme.cpp" />
     <ClCompile Include="ViewerThemeInit.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gtk-zoom-in.xpm" />
+    <None Include="gtk-zoom-out.xpm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

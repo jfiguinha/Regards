@@ -35,6 +35,7 @@
 #include "FaceInfosUpdate.h"
 #include "CheckVersion.h"
 #include <wx/mimetype.h>
+#include <PictureRecognition.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Viewer;
@@ -168,7 +169,20 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	updateFolder = true;
 	processIdle = true;
+
+#ifdef WIN32
+	//Face Data Preload
+
+	wxString model = CFileUtility::GetResourcesFolderPath() + "\\resnet34_1000_imagenet_classifier.dnn";
+
+#else
+	wxString model = CFileUtility::GetResourcesFolderPath() + "/resnet34_1000_imagenet_classifier.dnn";
+
+#endif
 	
+	categorieData = new CPictureCategorieLoadData();
+	pictureCategorie = new CPictureCategorie();
+	categorieData->LoadData((const char*)model.mb_str(wxConvUTF8));
 }
 
 void CMainWindow::UpdateThumbnailMessage(wxCommandEvent& event)
@@ -646,6 +660,20 @@ void CMainWindow::ProcessIdle()
 			}
 			else
 				firstFileToShow = imageList->GetFilePath(numElement, isValid);
+
+#ifdef __CATEGORY_FOUND__
+
+			std::vector<string> labels;
+			void * copyData = categorieData->GetCopyData();
+			std::vector<int> listCategorie = pictureCategorie->GetCategorieFromPicture(firstFileToShow, copyData);
+			for (int i : listCategorie)
+			{
+				char label[255];
+				pictureCategorie->GetLabel(i, label, 255, copyData);
+				labels.push_back(label);
+			}
+			categorieData->DeleteCopy(copyData);
+#endif
 
 			if (isValid)
 			{

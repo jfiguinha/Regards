@@ -36,6 +36,10 @@ using namespace Regards::OpenCL;
 #include <SDL_audio.h> 
 #endif
 
+#ifdef __WXMSW__
+#include <gdiplus.h>
+#endif
+
 #if not defined(WIN32) && defined(LIBBPG)
 #include <dlfcn.h>
 #endif
@@ -278,7 +282,9 @@ private:
 	MyFrameIntro * frameStart;
 	CViewerFrame * frameViewer;
 	wxString fileToOpen;
-
+#ifdef __WXMSW__
+	ULONG_PTR m_gdiplusToken;   // class member
+#endif
 };
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -374,7 +380,15 @@ int MyApp::Close()
 	CWindowMain::listMainWindow.clear();
     
     CLibPicture::Uninitx265Decoder();
-    
+
+#ifdef __WXMSW__
+	
+
+	CoUninitialize();
+
+#endif
+
+
 #if not defined(WIN32) && defined(LIBBPG)
     CLibPicture::UnloadBpgDll();
 #endif
@@ -400,6 +414,26 @@ bool MyApp::OnInit()
 	sqlite3_initialize();
 
 	wxInitAllImageHandlers();
+
+#ifdef __WXMSW__
+
+	// Initialize the COM library 
+	
+	//HRESULT hr = CoInitialize(NULL);
+
+	///////////////////////////////////////////////////////////////////
+	// Initialize common controls this is for the progress bar control
+	//
+	INITCOMMONCONTROLSEX iccex;
+
+	iccex.dwSize = sizeof(iccex);
+	iccex.dwICC = ICC_BAR_CLASSES;
+
+	InitCommonControlsEx(&iccex);
+
+	
+	
+#endif
 
 	wxSocketBase::Initialize();
 

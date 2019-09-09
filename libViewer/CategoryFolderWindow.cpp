@@ -15,7 +15,7 @@
 #include <SQLRemoveData.h>
 #include <SqlPhotos.h>
 #include <FolderCatalog.h>
-#include <FaceRecognition.h>
+#include <PictureRecognition.h>
 #include <libPicture.h>
 #include <FileUtility.h>
 #include <ImageLoadingFormat.h>

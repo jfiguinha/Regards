@@ -24,6 +24,7 @@
 #include <OpenCLDialog.h>
 #include <InterpolationFilterSelect.h>
 #include <FilterData.h>
+#include "ScannerFrame.h"
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -53,6 +54,7 @@ enum
 	ID_VIDEO = 1018,
 	ID_AUDIO = 1019,
 	ID_SUBTITLE = 1020,
+	WXSCAN_PAGE,
 	WXPRINT_PAGE_SETUP,
 	WXPRINT_PAGE_SETUP_PS,
 #ifdef __WXMAC__
@@ -254,6 +256,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//menuFace->Append(ID_FACEPERTINENCE, "&Face Pertinence", "Face Pertinence");
 
 	//menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
+	menuFile->Append(WXSCAN_PAGE, wxT("&Scan Page"), wxT("Scan Page"));
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
@@ -732,6 +735,17 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 	}
 }
 
+void CViewerFrame::OnScanPage(wxCommandEvent& WXUNUSED(event))
+{
+	// create the main application window
+	CScannerFrame *frame = new CScannerFrame(_("wxIA Image Acquistion Test Program"),
+		wxPoint(-1, -1), wxSize(450, 340));
+
+	// and show it (the frames, unlike simple controls, are not shown when
+	// created initially)
+	frame->Show(TRUE);
+}
+
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 {
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
@@ -788,6 +802,7 @@ EVT_MENU(ID_FACEPERTINENCE, CViewerFrame::OnFacePertinence)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
+EVT_MENU(WXSCAN_PAGE, CViewerFrame::OnScanPage)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
 #ifdef __WXMAC__

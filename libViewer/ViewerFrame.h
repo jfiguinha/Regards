@@ -52,6 +52,7 @@ namespace Regards
 			void OnInterpolationFilter(wxCommandEvent& event);
 			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
+			void OnScanPage(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
             void OnFileSystemModified(wxFileSystemWatcherEvent& event);

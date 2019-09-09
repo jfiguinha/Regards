@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by regards.rc
+// fichier Include Microsoft Visual C++.
+// Utilisé par regards.rc
 //
 #define wxUSE_NO_MANIFEST               0
 #define SW_HIDE                         0
@@ -964,8 +964,11 @@
 #define EM_SETTABSTOPS                  0x00CB
 #define EM_SETPASSWORDCHAR              0x00CC
 #define EM_EMPTYUNDOBUFFER              0x00CD
+#define IDD_PROGRESS                    205
 #define EM_GETFIRSTVISIBLELINE          0x00CE
+#define IDC_PROGRESS_BAR                206
 #define EM_SETREADONLY                  0x00CF
+#define IDC_MESSAGE                     207
 #define EM_SETWORDBREAKPROC             0x00D0
 #define EM_GETWORDBREAKPROC             0x00D1
 #define EM_GETPASSWORDCHAR              0x00D2
@@ -1559,6 +1562,30 @@
 #define PWR_FAIL                        -1
 #define UNICODE_NOCHAR                  0xFFFF
 #define HTTRANSPARENT                   -1
+
+
+#define IDR_MENU                        201
+#define ID_FILE_FROM_SCANNER            202
+#define ID_FILE_EXIT                    203
+#define ID_HELP_ABOUT                   204
+#define IDD_PROGRESS                    205
+#define IDC_PROGRESS_BAR                206
+#define IDC_MESSAGE                     207
+#define ID_FILE_SAVE                    208
+#define IDD_ABOUT                       209
+#define IDD_MESSAGE                     210
+#define Image1                          211
+#define ICO1                            212
+#define IDS_WAIT                        304
+#define IDS_STATUS_TRANSFER_FROM_DEVICE 305
+#define IDS_STATUS_PROCESSING_DATA      306
+#define IDS_STATUS_TRANSFER_TO_CLIENT   307
+#define IDS_ERROR_GET_IMAGE_DLG         308
+
+
+#define COUNTOF(x) ( sizeof(x) / sizeof(*x) )
+
+#define DEFAULT_STRING_SIZE 256
 
 // Next default values for new objects
 // 

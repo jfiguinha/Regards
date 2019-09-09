@@ -55,6 +55,15 @@
     <Filter Include="CheckVersion">
       <UniqueIdentifier>{add6f705-e73b-4a7d-ba64-2bfa4a4cc137}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scanner">
+      <UniqueIdentifier>{75ae06fd-2162-43ee-8a35-99931e2a02c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PDF">
+      <UniqueIdentifier>{a35e70e8-e6d5-4d9b-ba29-713a0b66973c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -189,6 +198,21 @@
     <ClInclude Include="CheckVersion.h">
       <Filter>CheckVersion</Filter>
     </ClInclude>
+    <ClInclude Include="ImageWindow.h">
+      <Filter>Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerFrame.h">
+      <Filter>Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="bmpviewer.h">
+      <Filter>PDF</Filter>
+    </ClInclude>
+    <ClInclude Include="gutter.h">
+      <Filter>PDF</Filter>
+    </ClInclude>
+    <ClInclude Include="pdfframe.h">
+      <Filter>PDF</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -317,5 +341,28 @@
     <ClCompile Include="ToolbarPhoto.cpp">
       <Filter>Toolbar\source</Filter>
     </ClCompile>
+    <ClCompile Include="ImageWindow.cpp">
+      <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerFrame.cpp">
+      <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="bmpviewer.cpp">
+      <Filter>PDF</Filter>
+    </ClCompile>
+    <ClCompile Include="gutter.cpp">
+      <Filter>PDF</Filter>
+    </ClCompile>
+    <ClCompile Include="pdfframe.cpp">
+      <Filter>PDF</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gtk-zoom-in.xpm">
+      <Filter>Resource</Filter>
+    </None>
+    <None Include="gtk-zoom-out.xpm">
+      <Filter>Resource</Filter>
+    </None>
   </ItemGroup>
 </Project>
