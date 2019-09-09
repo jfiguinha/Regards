@@ -1,5 +1,4 @@
 #include "FaceDetector.h"
-#include "utils.h"
 #include "base64.h"
 using namespace dlib;
 
@@ -12,26 +11,14 @@ std::vector<matrix<rgb_pixel>> jitter_image(
 )
 {
 	// All this function does is make 100 copies of img, all slightly jittered by being
-	// zoomed, rotated, and translated a little bit differently.
-	thread_local random_cropper cropper;
-	cropper.set_chip_dims(150, 150);
-	cropper.set_randomly_flip(true);
-	cropper.set_max_object_size(0.99999);
-	cropper.set_background_crops_fraction(0);
-	cropper.set_min_object_size(0.97);
-	cropper.set_translate_amount(0.02);
-	cropper.set_max_rotation_degrees(3);
+	// zoomed, rotated, and translated a little bit differently. They are also randomly
+	// mirrored left to right.
+	thread_local dlib::rand rnd;
 
-	std::vector<mmod_rect> raw_boxes(1), ignored_crop_boxes;
-	raw_boxes[0] = shrink_rect(get_rect(img), 3);
 	std::vector<matrix<rgb_pixel>> crops;
+	for (int i = 0; i < 100; ++i)
+		crops.push_back(jitter_image(img, rnd));
 
-	matrix<rgb_pixel> temp;
-	for (auto i = 0; i < 100; ++i)
-	{
-		cropper(img, raw_boxes, temp, ignored_crop_boxes);
-		crops.push_back(move(temp));
-	}
 	return crops;
 }
 
@@ -52,7 +39,7 @@ int CFaceDetector::DetectFace(array2d<rgb_pixel> & img, const int &quality, CFac
 	// find faces in the image we will need a face detector:
 	frontal_face_detector detector = get_frontal_face_detector();
 
-	pyramid_up(img);
+	//pyramid_up(img);
 
 	// Now tell the face detector to give us a list of bounding boxes
 	// around all the faces it can find in the image.
@@ -111,44 +98,6 @@ int CFaceDetector::DetectFace(array2d<rgb_pixel> & img, const int &quality, CFac
 
 	return faces.size();
 }
-
-int CFaceDetector::LoadPictureFromJpegBuffer(const unsigned char * data, const int &size, const int &quality, CFaceData * faceData)
-{
-	
-	face_pertinence.clear();
-
-	array2d<rgb_pixel> img;
-	load_jpeg(img, data, size);
-
-	return DetectFace(img, quality, faceData);
-}
-
-int CFaceDetector::LoadPicture(const char * filename, const int &quality, CFaceData * faceData)
-{
-	// The first thing we are going to do is load all our models.  First, since we need to
-	// find faces in the image we will need a face detector:
-	frontal_face_detector detector = get_frontal_face_detector();
-	face_pertinence.clear();
-
-	array2d<rgb_pixel> img;
-	load_image(img, filename);
-
-	return DetectFace(img, quality, faceData);
-}
-
-int CFaceDetector::LoadPicture(uint8_t * data, const int &width, const int &height, const int &size, const int &quality, CFaceData * faceData)
-{
-	// The first thing we are going to do is load all our models.  First, since we need to
-	// find faces in the image we will need a face detector:
-	frontal_face_detector detector = get_frontal_face_detector();
-
-	face_pertinence.clear();
-	array2d<rgb_pixel> img;
-	copy_to_dlib_24bit_image(data, img, width, height);
-
-	return DetectFace(img, quality, faceData);
-}
-
 
 
 float CFaceDetector::IsCompatibleFace(std::string const& dataface1, std::string const& dataface2)

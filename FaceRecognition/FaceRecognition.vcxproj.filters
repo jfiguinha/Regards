@@ -24,12 +24,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FaceRecognition.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FaceDetector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -42,44 +36,50 @@
     <ClInclude Include="base64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jchuff.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jchuff.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jconfig.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jconfig.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdct.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdct.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdhuff.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdhuff.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jerror.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jerror.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jinclude.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jinclude.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jmemsys.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jmemsys.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jmorecfg.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jmorecfg.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jpegint.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jpegint.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jpeglib.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jpeglib.h">
       <Filter>dlib\jpeglib</Filter>
     </ClInclude>
-    <ClInclude Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jversion.h">
+    <ClInclude Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jversion.h">
       <Filter>dlib\jpeglib</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadPicture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureRecognition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureCategorieData.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FaceRecognition.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,145 +92,159 @@
     <ClCompile Include="base64.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcapimin.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcapimin.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcapistd.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcapistd.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jccoefct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jccoefct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jccolor.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jccolor.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcdctmgr.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcdctmgr.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jchuff.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jchuff.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcinit.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcinit.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcmainct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcmainct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcmarker.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcmarker.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcmaster.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcmaster.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcomapi.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcomapi.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcparam.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcparam.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcphuff.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcphuff.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcprepct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcprepct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jcsample.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jcsample.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdapimin.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdapimin.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdapistd.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdapistd.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdatadst.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdatadst.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdatasrc.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdatasrc.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdcoefct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdcoefct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdcolor.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdcolor.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jddctmgr.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jddctmgr.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdhuff.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdhuff.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdinput.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdinput.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdmainct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdmainct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdmarker.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdmarker.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdmaster.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdmaster.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdmerge.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdmerge.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdphuff.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdphuff.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdpostct.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdpostct.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jdsample.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jdsample.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jerror.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jerror.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jfdctflt.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jfdctflt.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jfdctfst.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jfdctfst.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jfdctint.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jfdctint.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jidctflt.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jidctflt.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jidctfst.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jidctfst.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jidctint.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jidctint.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jidctred.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jidctred.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jmemmgr.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jmemmgr.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jmemnobs.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jmemnobs.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jquant1.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jquant1.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jquant2.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jquant2.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\external\libjpeg\jutils.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\external\libjpeg\jutils.cpp">
       <Filter>dlib\jpeglib</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.7\dlib\all\source.cpp">
+    <ClCompile Include="..\libextern\dlib-19.17\dlib\all\source.cpp">
       <Filter>dlib\all</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadPicture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureRecognition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureCategorieData.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\libextern\dlib-19.7\dlib\external\libjpeg\README">
+    <None Include="..\libextern\dlib-19.17\dlib\external\libjpeg\README">
       <Filter>dlib\jpeglib</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt">
+      <Filter>dlib\jpeglib</Filter>
+    </Text>
   </ItemGroup>
 </Project>
