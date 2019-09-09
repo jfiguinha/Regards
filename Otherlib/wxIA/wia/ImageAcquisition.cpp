@@ -256,18 +256,21 @@ WiaGetImage(
 	// Initialize the local root item variable with the supplied value.
 	// If no value is supplied, display the device selection common dialog.
 
-	CComPtr<IWiaItem> pItemRoot = pSuppliedItemRoot;
+	ComPtr<IWiaItem> pItemRoot = pSuppliedItemRoot;
 
 	if (pItemRoot == NULL)
 	{
 		// Initialize the device manager pointer with the supplied value
 		// If no value is supplied, connect to the local device manager
 
-		CComPtr<IWiaDevMgr> pWiaDevMgr = pSuppliedWiaDevMgr;
+		ComPtr<IWiaDevMgr> pWiaDevMgr = pSuppliedWiaDevMgr;
 
 		if (pWiaDevMgr == NULL)
 		{
-			hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
+			//hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
+			hr = CoCreateInstance(
+				CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
+				IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
 			if (FAILED(hr))
 			{
@@ -317,7 +320,9 @@ WiaGetImage(
 
 		// Get the property storage interface pointer for the root item
 
-		CComQIPtr<IWiaPropertyStorage> pWiaRootPropertyStorage(pItemRoot);
+		//ComQIPtr<IWiaPropertyStorage> pWiaRootPropertyStorage(pItemRoot);
+		IWiaPropertyStorage *pWiaRootPropertyStorage = NULL;
+		HRESULT hr = pItemRoot->QueryInterface(IID_IWiaPropertyStorage, (void**)&pWiaRootPropertyStorage);
 
 		if (pWiaRootPropertyStorage == NULL)
 		{
@@ -378,12 +383,15 @@ WiaGetImage(
 				PropVariantClear(&varPages);
 			}
 		}
+
+		pWiaRootPropertyStorage->Release();
+		pWiaRootPropertyStorage = NULL;
 	}
 
 	// If a status callback function is not supplied, use the default.
 	// The default displays a simple dialog with a progress bar and cancel button.
 
-	CComPtr<CProgressDlg> pProgressDlg;
+	ComPtr<CProgressDlg> pProgressDlg;
 
 	if (pfnProgressCallback == NULL)
 	{
@@ -396,7 +404,7 @@ WiaGetImage(
 
 	// Create the data callback interface
 
-	CComPtr<CDataCallback> pDataCallback = new CDataCallback(
+	ComPtr<CDataCallback> pDataCallback = new CDataCallback(
 		pfnProgressCallback,
 		pProgressCallbackParam,
 		plCount,
@@ -413,15 +421,16 @@ WiaGetImage(
 	for (int i = 0; i < ppIWiaItem.Count(); ++i)
 	{
 		// Get the interface pointers
-
-		CComQIPtr<IWiaPropertyStorage> pWiaPropertyStorage(ppIWiaItem[i]);
+		IWiaDataTransfer	*pIWiaDataTransfer = NULL;
+		IWiaPropertyStorage *pWiaPropertyStorage = NULL;
+		HRESULT hr = ppIWiaItem[i]->QueryInterface(IID_IWiaPropertyStorage, (void**)&pWiaPropertyStorage);
 
 		if (pWiaPropertyStorage == NULL)
 		{
 			return E_NOINTERFACE;
 		}
 
-		CComQIPtr<IWiaDataTransfer> pIWiaDataTransfer(ppIWiaItem[i]);
+		hr = ppIWiaItem[i]->QueryInterface(IID_IWiaDataTransfer, (void**)&pIWiaDataTransfer);
 
 		if (pIWiaDataTransfer == NULL)
 		{
@@ -549,6 +558,12 @@ WiaGetImage(
 			&WiaDataTransferInfo,
 			pDataCallback
 		);
+
+		pWiaPropertyStorage->Release();
+		pWiaPropertyStorage = NULL;
+
+		pIWiaDataTransfer->Release();
+		pIWiaDataTransfer = NULL;
 
 		if (FAILED(hr) || hr == S_FALSE)
 		{

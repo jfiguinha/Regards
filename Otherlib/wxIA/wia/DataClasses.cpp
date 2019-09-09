@@ -12,8 +12,11 @@ DataClasses::DataClasses()
 	HRESULT hr;
 	if (pWiaDevMgr == NULL)
 	{
+		hr = CoCreateInstance(
+			CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
+			IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
-		hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
+		//hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
 
 		if (FAILED(hr))
 		{
@@ -55,12 +58,15 @@ HRESULT DataClasses::WiaGetNumDevices(
 
 	// Create a connection to the local WIA device manager
 
-	CComPtr<IWiaDevMgr> pWiaDevMgr = pSuppliedWiaDevMgr;
+	ComPtr<IWiaDevMgr> pWiaDevMgr = pSuppliedWiaDevMgr;
 
 	if (pWiaDevMgr == NULL)
 	{
 
-		hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
+		//hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
+		hr = CoCreateInstance(
+			CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
+			IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
 		if (FAILED(hr))
 		{
@@ -70,7 +76,7 @@ HRESULT DataClasses::WiaGetNumDevices(
 
 	// Get a list of all the WIA devices on the system
 
-	CComPtr<IEnumWIA_DEV_INFO> pIEnumWIA_DEV_INFO;
+	ComPtr<IEnumWIA_DEV_INFO> pIEnumWIA_DEV_INFO;
 
 	hr = pWiaDevMgr->EnumDeviceInfo(
 		0,
@@ -571,7 +577,7 @@ HRESULT CDataCallback::StoreBuffer()
 
 	// Reset the current buffer
 
-	m_pStream.Release();
+	m_pStream->Release();
 
 	m_nDataSize = 0;
 

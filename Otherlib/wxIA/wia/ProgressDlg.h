@@ -6,7 +6,6 @@
 #include <commctrl.h>
 #include <shellapi.h>
 #include <objbase.h>
-#include <atlbase.h>
 #include "DataClasses.h"
 
 

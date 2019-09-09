@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <Wia.h>
 #include <Sti.h>
-#include <atlbase.h>
+#include "comptr.h"
 
 
 typedef HRESULT(CALLBACK *PFNPROGRESSCALLBACK)(
@@ -48,13 +48,13 @@ public:
 private:
 	LONG               m_cRef;
 	ULONG              m_nNumDevices;
-	CComPtr<IUnknown>  m_pConnectEventObject;
-	CComPtr<IUnknown>  m_pDisconnectEventObject;
+	ComPtr<IUnknown>  m_pConnectEventObject;
+	ComPtr<IUnknown>  m_pDisconnectEventObject;
 	HRESULT WiaGetNumDevices(
 		IWiaDevMgr *pSuppliedWiaDevMgr,
 		ULONG      *pulNumDevices
 	);
-	CComPtr<IWiaDevMgr> pWiaDevMgr;
+	ComPtr<IWiaDevMgr> pWiaDevMgr;
 };
 
 
@@ -106,7 +106,7 @@ private:
 	BOOL              m_bBMP;
 	LONG              m_nHeaderSize;
 	LONG              m_nDataSize;
-	CComPtr<IStream>  m_pStream;
+	ComPtr<IStream>  m_pStream;
 
 	PFNPROGRESSCALLBACK  m_pfnProgressCallback;
 	PVOID                m_pProgressCallbackParam;
