@@ -1,6 +1,6 @@
 @echo off
-if "%VS150COMNTOOLS%" == "" (
-  msg "%username%" "Visual Studio 15 not detected"
+if "%VS160COMNTOOLS%" == "" (
+  msg "%username%" "Visual Studio 16 not detected"
   exit 1
 )
 if not exist x265.sln (

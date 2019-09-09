@@ -1,0 +1,11 @@
+prefix=/devel/target/312aebde086c6b8e9a17e0a5e66d415a
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/libpng14
+
+Name: libpng
+Description: Loads and saves PNG files
+Version: 1.4.12
+Libs: -L${libdir} -lpng14
+Libs.private: -lz 
+Cflags: -I${includedir}

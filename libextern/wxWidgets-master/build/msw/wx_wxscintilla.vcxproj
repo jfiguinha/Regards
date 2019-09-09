@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>wxscintilla</ProjectName>
     <ProjectGuid>{74827EBD-93DC-5110-BA95-3F2AB029B6B0}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="wx_config.props" />

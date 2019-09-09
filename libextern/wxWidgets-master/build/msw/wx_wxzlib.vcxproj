@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>wxzlib</ProjectName>
     <ProjectGuid>{8B867186-A0B5-5479-B824-E176EDD27C40}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="wx_config.props" />

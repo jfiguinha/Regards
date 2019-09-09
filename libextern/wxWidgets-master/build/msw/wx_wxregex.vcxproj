@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>wxregex</ProjectName>
     <ProjectGuid>{56A4B526-BB81-5D01-AAA9-16D23BBB169D}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="wx_config.props" />

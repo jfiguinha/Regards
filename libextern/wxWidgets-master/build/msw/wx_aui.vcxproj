@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>aui</ProjectName>
     <ProjectGuid>{A16D3832-0F42-57CE-8F48-50E06649ADE8}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="wx_config.props" />

@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>webview</ProjectName>
     <ProjectGuid>{A8E8442A-078A-5FC5-B495-8D71BA77EE6E}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="wx_config.props" />

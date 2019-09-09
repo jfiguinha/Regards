@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DC01E715-30F7-3F07-A7E7-693DE0B32630}</ProjectGuid>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>poppler</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">poppler.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">poppler</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\..\freetype-dev_2.4.4-1_win64\include\freetype2;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\libjpeg;..\..\zlib;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;QT_NO_DEBUG;USE_OPENJPEG2;HAVE_CONFIG_H=1;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..;..\fofi;..\goo;..\poppler;.\;.\poppler;..\thirdparty\include;..\thirdparty\include\freetype2;..\thirdparty\include\openjpeg-2.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule ../CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -S../poppler_windows-master -B../poppler_windows-master/build --check-stamp-file CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.15\Modules\FindFreetype.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPNG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindTIFF.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\MacroAddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestBigEndian.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestEndianess.c.in;..\ConfigureChecks.cmake;.\CMakeFiles\3.15.3\CMakeCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeCXXCompiler.cmake;.\CMakeFiles\3.15.3\CMakeRCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeSystem.cmake;.\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_FCNTL_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_INTTYPES_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_MEMORY_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STDLIB_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRING_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_MMAN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_STAT_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c;.\CMakeFiles\CheckTypeSize\CMAKE_SIZEOF_UNSIGNED_SHORT.c;..\cmake\modules\CheckFileOffsetBits.c;..\cmake\modules\CheckFileOffsetBits.cmake;..\cmake\modules\FindCairo.cmake;..\cmake\modules\FindGLIB.cmake;..\cmake\modules\FindIconv.cmake;..\cmake\modules\FindLCMS.cmake;..\cmake\modules\FindLCMS2.cmake;..\cmake\modules\FindLIBOPENJPEG2.cmake;..\cmake\modules\FindNSS3.cmake;..\cmake\modules\FindQt4.cmake;..\cmake\modules\MacroBoolTo01.cmake;..\cmake\modules\MacroEnsureVersion.cmake;..\cmake\modules\MacroOptionalFindPackage.cmake;..\cmake\modules\MacroPushRequiredVars.cmake;..\cmake\modules\PopplerDefaults.cmake;..\cmake\modules\PopplerMacros.cmake;..\config.h.cmake;..\poppler\poppler-config.h.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule ../CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -S../ -B../build --check-stamp-file ../build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.15\Modules\FindFreetype.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPNG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindTIFF.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\MacroAddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestBigEndian.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestEndianess.c.in;..\ConfigureChecks.cmake;.\CMakeFiles\3.15.3\CMakeCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeCXXCompiler.cmake;.\CMakeFiles\3.15.3\CMakeRCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeSystem.cmake;.\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_FCNTL_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_INTTYPES_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_MEMORY_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STDLIB_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRING_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_MMAN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_STAT_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c;.\CMakeFiles\CheckTypeSize\CMAKE_SIZEOF_UNSIGNED_SHORT.c;..\cmake\modules\CheckFileOffsetBits.c;..\cmake\modules\CheckFileOffsetBits.cmake;..\cmake\modules\FindCairo.cmake;..\cmake\modules\FindGLIB.cmake;..\cmake\modules\FindIconv.cmake;..\cmake\modules\FindLCMS.cmake;..\cmake\modules\FindLCMS2.cmake;..\cmake\modules\FindLIBOPENJPEG2.cmake;..\cmake\modules\FindNSS3.cmake;..\cmake\modules\FindQt4.cmake;..\cmake\modules\MacroBoolTo01.cmake;..\cmake\modules\MacroEnsureVersion.cmake;..\cmake\modules\MacroOptionalFindPackage.cmake;..\cmake\modules\MacroPushRequiredVars.cmake;..\cmake\modules\PopplerDefaults.cmake;..\cmake\modules\PopplerMacros.cmake;..\config.h.cmake;..\poppler\poppler-config.h.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C../CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -S../ -B../build --check-stamp-file ../build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.15\Modules\FindFreetype.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPNG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindTIFF.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\MacroAddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestBigEndian.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestEndianess.c.in;..\ConfigureChecks.cmake;.\CMakeFiles\3.15.3\CMakeCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeCXXCompiler.cmake;.\CMakeFiles\3.15.3\CMakeRCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeSystem.cmake;.\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_FCNTL_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_INTTYPES_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_MEMORY_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STDLIB_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRING_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_MMAN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_STAT_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c;.\CMakeFiles\CheckTypeSize\CMAKE_SIZEOF_UNSIGNED_SHORT.c;..\cmake\modules\CheckFileOffsetBits.c;..\cmake\modules\CheckFileOffsetBits.cmake;..\cmake\modules\FindCairo.cmake;..\cmake\modules\FindGLIB.cmake;..\cmake\modules\FindIconv.cmake;..\cmake\modules\FindLCMS.cmake;..\cmake\modules\FindLCMS2.cmake;..\cmake\modules\FindLIBOPENJPEG2.cmake;..\cmake\modules\FindNSS3.cmake;..\cmake\modules\FindQt4.cmake;..\cmake\modules\MacroBoolTo01.cmake;..\cmake\modules\MacroEnsureVersion.cmake;..\cmake\modules\MacroOptionalFindPackage.cmake;..\cmake\modules\MacroPushRequiredVars.cmake;..\cmake\modules\PopplerDefaults.cmake;..\cmake\modules\PopplerMacros.cmake;..\config.h.cmake;..\poppler\poppler-config.h.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule ../CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -S../ -B../build --check-stamp-file ../build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCCompilerABI.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXCompilerABI.cpp;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeCompilerIdDetection.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeConfigurableFile.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompileFeatures.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerABI.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineCompilerId.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeDetermineSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeFindBinUtils.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitIncludeInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeParseImplicitLinkInfo.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCCompiler.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystem.cmake.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCXXCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestCompilerCommon.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CMakeTestRCCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.c;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.c.in;C:\Program Files\CMake\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ADSP-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMCC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\ARMClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\AppleClang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Borland-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Bruce-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Clang-DetermineCompilerInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Comeau-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Compaq-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Cray-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Embarcadero-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Fujitsu-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GHS-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\GNU-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\HP-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IAR-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-C-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\IBMCPP-CXX-DetermineVersionInternal.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Intel-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\MSVC-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\NVIDIA-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\OpenWatcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PGI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\PathScale-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SCO-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SDCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\SunPro-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TI-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\TinyCC-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\VisualAge-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\Watcom-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XL-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\XLClang-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-C-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Compiler\zOS-CXX-DetermineCompiler.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\CompilerId\VS-10.vcxproj.in;C:\Program Files\CMake\share\cmake-3.15\Modules\FindFreetype.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindJPEG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPNG.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindTIFF.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Internal\FeatureTesting.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\MacroAddFileDependencies.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-Determine-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestBigEndian.cmake;C:\Program Files\CMake\share\cmake-3.15\Modules\TestEndianess.c.in;..\ConfigureChecks.cmake;.\CMakeFiles\3.15.3\CMakeCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeCXXCompiler.cmake;.\CMakeFiles\3.15.3\CMakeRCCompiler.cmake;.\CMakeFiles\3.15.3\CMakeSystem.cmake;.\CMakeFiles\CheckIncludeFiles\HAVE_DLFCN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_FCNTL_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_INTTYPES_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_MEMORY_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STDLIB_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRINGS_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_STRING_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_MMAN_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_SYS_STAT_H.c;.\CMakeFiles\CheckIncludeFiles\HAVE_UNISTD_H.c;.\CMakeFiles\CheckTypeSize\CMAKE_SIZEOF_UNSIGNED_SHORT.c;..\cmake\modules\CheckFileOffsetBits.c;..\cmake\modules\CheckFileOffsetBits.cmake;..\cmake\modules\FindCairo.cmake;..\cmake\modules\FindGLIB.cmake;..\cmake\modules\FindIconv.cmake;..\cmake\modules\FindLCMS.cmake;..\cmake\modules\FindLCMS2.cmake;..\cmake\modules\FindLIBOPENJPEG2.cmake;..\cmake\modules\FindNSS3.cmake;..\cmake\modules\FindQt4.cmake;..\cmake\modules\MacroBoolTo01.cmake;..\cmake\modules\MacroEnsureVersion.cmake;..\cmake\modules\MacroOptionalFindPackage.cmake;..\cmake\modules\MacroPushRequiredVars.cmake;..\cmake\modules\PopplerDefaults.cmake;..\cmake\modules\PopplerMacros.cmake;..\config.h.cmake;..\poppler\poppler-config.h.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\goo\gfile.cc" />
+    <ClCompile Include="..\goo\gmempp.cc" />
+    <ClCompile Include="..\goo\GooHash.cc" />
+    <ClCompile Include="..\goo\GooList.cc" />
+    <ClCompile Include="..\goo\GooTimer.cc" />
+    <ClCompile Include="..\goo\GooString.cc" />
+    <ClCompile Include="..\goo\gmem.cc" />
+    <ClCompile Include="..\goo\FixedPoint.cc" />
+    <ClCompile Include="..\goo\NetPBMWriter.cc" />
+    <ClCompile Include="..\goo\PNGWriter.cc" />
+    <ClCompile Include="..\goo\TiffWriter.cc" />
+    <ClCompile Include="..\goo\JpegWriter.cc" />
+    <ClCompile Include="..\goo\ImgWriter.cc" />
+    <ClCompile Include="..\goo\gstrtod.cc" />
+    <ClCompile Include="..\goo\grandom.cc" />
+    <ClCompile Include="..\goo\glibc.cc" />
+    <ClCompile Include="..\fofi\FoFiBase.cc" />
+    <ClCompile Include="..\fofi\FoFiEncodings.cc" />
+    <ClCompile Include="..\fofi\FoFiTrueType.cc" />
+    <ClCompile Include="..\fofi\FoFiType1.cc" />
+    <ClCompile Include="..\fofi\FoFiType1C.cc" />
+    <ClCompile Include="..\fofi\FoFiIdentifier.cc" />
+    <ClCompile Include="..\poppler\Annot.cc" />
+    <ClCompile Include="..\poppler\Array.cc" />
+    <ClCompile Include="..\poppler\BuiltinFont.cc" />
+    <ClCompile Include="..\poppler\BuiltinFontTables.cc" />
+    <ClCompile Include="..\poppler\CachedFile.cc" />
+    <ClCompile Include="..\poppler\Catalog.cc" />
+    <ClCompile Include="..\poppler\CharCodeToUnicode.cc" />
+    <ClCompile Include="..\poppler\CMap.cc" />
+    <ClCompile Include="..\poppler\DateInfo.cc" />
+    <ClCompile Include="..\poppler\Decrypt.cc" />
+    <ClCompile Include="..\poppler\Dict.cc" />
+    <ClCompile Include="..\poppler\Error.cc" />
+    <ClCompile Include="..\poppler\FileSpec.cc" />
+    <ClCompile Include="..\poppler\FontEncodingTables.cc" />
+    <ClCompile Include="..\poppler\Form.cc" />
+    <ClCompile Include="..\poppler\FontInfo.cc" />
+    <ClCompile Include="..\poppler\Function.cc" />
+    <ClCompile Include="..\poppler\Gfx.cc" />
+    <ClCompile Include="..\poppler\GfxFont.cc" />
+    <ClCompile Include="..\poppler\GfxState.cc" />
+    <ClCompile Include="..\poppler\GlobalParams.cc" />
+    <ClCompile Include="..\poppler\Hints.cc" />
+    <ClCompile Include="..\poppler\JArithmeticDecoder.cc" />
+    <ClCompile Include="..\poppler\JBIG2Stream.cc" />
+    <ClCompile Include="..\poppler\Lexer.cc" />
+    <ClCompile Include="..\poppler\Link.cc" />
+    <ClCompile Include="..\poppler\Linearization.cc" />
+    <ClCompile Include="..\poppler\LocalPDFDocBuilder.cc" />
+    <ClCompile Include="..\poppler\MarkedContentOutputDev.cc" />
+    <ClCompile Include="..\poppler\NameToCharCode.cc" />
+    <ClCompile Include="..\poppler\Object.cc" />
+    <ClCompile Include="..\poppler\OptionalContent.cc" />
+    <ClCompile Include="..\poppler\Outline.cc" />
+    <ClCompile Include="..\poppler\OutputDev.cc" />
+    <ClCompile Include="..\poppler\Page.cc" />
+    <ClCompile Include="..\poppler\PageTransition.cc" />
+    <ClCompile Include="..\poppler\Parser.cc" />
+    <ClCompile Include="..\poppler\PDFDoc.cc" />
+    <ClCompile Include="..\poppler\PDFDocEncoding.cc" />
+    <ClCompile Include="..\poppler\PDFDocFactory.cc" />
+    <ClCompile Include="..\poppler\PopplerCache.cc" />
+    <ClCompile Include="..\poppler\ProfileData.cc" />
+    <ClCompile Include="..\poppler\PreScanOutputDev.cc" />
+    <ClCompile Include="..\poppler\PSTokenizer.cc" />
+    <ClCompile Include="..\poppler\SignatureInfo.cc" />
+    <ClCompile Include="..\poppler\Stream.cc" />
+    <ClCompile Include="..\poppler\StructTreeRoot.cc" />
+    <ClCompile Include="..\poppler\StructElement.cc" />
+    <ClCompile Include="..\poppler\strtok_r.cpp" />
+    <ClCompile Include="..\poppler\UnicodeMap.cc" />
+    <ClCompile Include="..\poppler\UnicodeTypeTable.cc" />
+    <ClCompile Include="..\poppler\UTF.cc" />
+    <ClCompile Include="..\poppler\XRef.cc" />
+    <ClCompile Include="..\poppler\PSOutputDev.cc" />
+    <ClCompile Include="..\poppler\TextOutputDev.cc" />
+    <ClCompile Include="..\poppler\PageLabelInfo.cc" />
+    <ClCompile Include="..\poppler\SecurityHandler.cc" />
+    <ClCompile Include="..\poppler\StdinCachedFile.cc" />
+    <ClCompile Include="..\poppler\StdinPDFDocBuilder.cc" />
+    <ClCompile Include="..\poppler\Sound.cc" />
+    <ClCompile Include="..\poppler\ViewerPreferences.cc" />
+    <ClCompile Include="..\poppler\XpdfPluginAPI.cc" />
+    <ClCompile Include="..\poppler\Movie.cc" />
+    <ClCompile Include="..\poppler\Rendition.cc" />
+    <ClCompile Include="..\poppler\SplashOutputDev.cc" />
+    <ClCompile Include="..\splash\Splash.cc" />
+    <ClCompile Include="..\splash\SplashBitmap.cc" />
+    <ClCompile Include="..\splash\SplashClip.cc" />
+    <ClCompile Include="..\splash\SplashFTFont.cc" />
+    <ClCompile Include="..\splash\SplashFTFontEngine.cc" />
+    <ClCompile Include="..\splash\SplashFTFontFile.cc" />
+    <ClCompile Include="..\splash\SplashFont.cc" />
+    <ClCompile Include="..\splash\SplashFontEngine.cc" />
+    <ClCompile Include="..\splash\SplashFontFile.cc" />
+    <ClCompile Include="..\splash\SplashFontFileID.cc" />
+    <ClCompile Include="..\splash\SplashPath.cc" />
+    <ClCompile Include="..\splash\SplashPattern.cc" />
+    <ClCompile Include="..\splash\SplashScreen.cc" />
+    <ClCompile Include="..\splash\SplashState.cc" />
+    <ClCompile Include="..\splash\SplashT1Font.cc" />
+    <ClCompile Include="..\splash\SplashT1FontEngine.cc" />
+    <ClCompile Include="..\splash\SplashT1FontFile.cc" />
+    <ClCompile Include="..\splash\SplashXPath.cc" />
+    <ClCompile Include="..\splash\SplashXPathScanner.cc" />
+    <ClCompile Include="..\poppler\DCTStream.cc" />
+    <ClCompile Include="..\poppler\FlateEncoder.cc" />
+    <ClCompile Include="..\poppler\JPEG2000Stream.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ZERO_CHECK.vcxproj">
+      <Project>{464fdf10-d171-3e65-a25b-df3b7ae9d2ed}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

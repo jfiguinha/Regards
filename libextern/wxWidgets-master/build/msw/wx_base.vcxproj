@@ -37,7 +37,7 @@
   <PropertyGroup Label="Globals">
     <ProjectName>base</ProjectName>
     <ProjectGuid>{3FCC50C2-81E9-5DB2-B8D8-2129427568B1}</ProjectGuid>
-    <WindowsTargetPlatformVersion>7.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="wx_config.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

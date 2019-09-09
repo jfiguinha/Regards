@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\cpp\poppler-document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-embedded-file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-page.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-page-renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-page-transition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-private.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-toc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\cpp\poppler-version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{29DB5009-203B-3797-A88B-163329DA05E5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tete">
+      <UniqueIdentifier>{807655dc-113f-4601-b25d-bee20c07519d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\cpp\poppler-document.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-document-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-embedded-file.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-embedded-file-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-font.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-global.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-image.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-image-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-page.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-page-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-page-renderer.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-page-transition.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-rectangle.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-toc.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-toc-private.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\cpp\poppler-version.h">
+      <Filter>Fichiers d%27en-tete</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
