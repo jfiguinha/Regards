@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{47aff626-85e9-4b16-a6ac-49f1bed77549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wia">
+      <UniqueIdentifier>{95c51cbb-9ae4-4300-af36-de65c1b5c4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wia\header">
+      <UniqueIdentifier>{b9010641-b656-4f2a-85ee-cccd621e08de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wia\source">
+      <UniqueIdentifier>{be04c935-6cdb-4866-b5d0-4f5271fee5e3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\wx\ia\ia.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\iasane.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\iasanedlg.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\iatwainmsw.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\sane.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\twain.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\twainbase.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="include\wx\ia\twainmsw.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="wia\DataClasses.h">
+      <Filter>wia\header</Filter>
+    </ClInclude>
+    <ClInclude Include="wia\ImageAcquisition.h">
+      <Filter>wia\header</Filter>
+    </ClInclude>
+    <ClInclude Include="wia\ProgressDlg.h">
+      <Filter>wia\header</Filter>
+    </ClInclude>
+    <ClInclude Include="wia\bitmapUtilities.h">
+      <Filter>wia\header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ia\ia.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\iasane.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\iasanedlg.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\iatwainmsw.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\sane.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\twainbase.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ia\twainmsw.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="wia\DataClasses.cpp">
+      <Filter>wia\source</Filter>
+    </ClCompile>
+    <ClCompile Include="wia\ImageAcquisition.cpp">
+      <Filter>wia\source</Filter>
+    </ClCompile>
+    <ClCompile Include="wia\ProgressDlg.cpp">
+      <Filter>wia\source</Filter>
+    </ClCompile>
+    <ClCompile Include="wia\bitmapUtilities.cpp">
+      <Filter>wia\source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
