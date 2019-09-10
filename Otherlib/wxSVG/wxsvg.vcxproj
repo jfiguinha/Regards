@@ -194,10 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\header.h" />
-    <ClInclude Include="cairo\SVGCanvasCairo.h" />
-    <ClInclude Include="cairo\SVGCanvasImageCairo.h" />
-    <ClInclude Include="cairo\SVGCanvasPathCairo.h" />
-    <ClInclude Include="cairo\SVGCanvasTextCairo.h" />
     <ClInclude Include="include\wxSVGXML\svgxml.h" />
     <ClInclude Include="include\wxSVGXML\svgxmlhelpr.h" />
     <ClInclude Include="include\wxSVG\Animated.h" />

@@ -15,7 +15,10 @@ public:
 	void SetZoomFactor(double factor) { m_zoomFactor = factor; DoSetScrollbars(); }
 	double GetZoomFactor() { return m_zoomFactor; }
 
+
 private:
+	void SetZoom(float factor);
+	//void SetBestFitZoom();
 	void DoSetScrollbars(bool refresh = TRUE);
 
 	// event handlers (these functions should _not_ be virtual)

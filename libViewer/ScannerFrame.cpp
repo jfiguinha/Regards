@@ -10,7 +10,10 @@
 #define USE_WIA_INTERFACE
 
 #endif
-
+#include <poppler-page-renderer.h>
+#include <wx/filedlg.h>
+#include <poppler-document.h>
+#include <poppler-page.h>
 #include "ImageWindow.h"
 #include "ScannerFrame.h"
 #include <wx/image.h>
@@ -24,6 +27,7 @@
 enum
 {
 	// menu items
+	ID_OPENIMAGE,
 	ID_ACQUIREIMAGE,
 	ID_ACQUIREIMAGES,
 	ID_ACQUIREIMAGENOUI,
@@ -45,6 +49,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 {
 	// create a menu bar
 	wxMenu *menuFile = new wxMenu;
+	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 #ifdef USE_WIA_INTERFACE
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #else
@@ -91,6 +96,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	// dynamically connect all event handles
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
+	Connect(ID_OPENIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOpenImage));
 #ifdef USE_WIA_INTERFACE
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 #else
@@ -117,6 +123,86 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 		wxIAManager::Get().GetDefaultProvider()->SetEvtHandler(this);
 #endif
 #endif
+}
+
+// Resolution to use for rasterization, in DPI
+#define RESOLUTION_DPI  300
+
+void CScannerFrame::OnOpenImage(wxCommandEvent& event)
+{
+	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+			"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	wxString filePath = openFileDialog.GetPath();
+
+	poppler::document * doc1 = poppler::document::load_from_file(filePath.ToStdString());
+	if (!doc1)
+	{
+		//fprintf(stderr, "Error opening %s: %s\n", filePath.c_str(), err->message);
+		return;
+	}
+	int nbPage = doc1->pages();
+	
+	for (int i = 0; i < nbPage; i++)
+	{
+		poppler::page * pageToRender = doc1->create_page(i);
+		poppler::page_renderer popplerRenderer;
+		popplerRenderer.set_render_hint(poppler::page_renderer::text_antialiasing);
+		poppler::image myimage = popplerRenderer.render_page(pageToRender, RESOLUTION_DPI, RESOLUTION_DPI);
+		cout << "created image of  " << myimage.width() << "x" << myimage.height() << "\n";
+		int w = myimage.width();
+		int h = myimage.height();
+		wxImage imageToShow(w, h);
+		if (myimage.format() == poppler::image::format_rgb24)
+		{
+			int pointer = 0;
+			char * data = myimage.data();
+			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
+			for (UINT y = 0; y < h; y++)
+			{
+				for (UINT x = 0; x < w; x++)
+				{
+					imgRGB[pointer + 2] = *data++;  // R
+					imgRGB[pointer + 1] = *data++;   // G
+					imgRGB[pointer + 0] = *data++;   // B
+					pointer += 3;
+				}
+			}
+			//Mat(myimage.height(), myimage.width(), CV_8UC3, myimage.data()).copyTo(cvimg);
+		}
+		else if (myimage.format() == poppler::image::format_argb32) {
+			imageToShow.InitAlpha();
+			int pointer = 0;
+			char * data = myimage.data();
+			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
+			unsigned char *imgAlpha = imageToShow.GetAlpha(); // destination alpha buffer
+			for (UINT y = 0; y < h; y++)
+			{
+				for (UINT x = 0; x < w; x++)
+				{
+					imgRGB[pointer + 2] = *data++;  // R
+					imgRGB[pointer + 1] = *data++;   // G
+					imgRGB[pointer + 0] = *data++;   // B
+					pointer += 3;
+					if (imgAlpha)
+						*imgAlpha++ = *data++;
+				}
+			}
+		}
+		else {
+			cerr << "PDF format no good\n";
+		}
+
+
+		m_imageWin->SetImage(imageToShow);
+		delete pageToRender;
+		break;
+	}
+
+	delete doc1;
+
 }
 
 // event handlers

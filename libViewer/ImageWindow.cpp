@@ -23,6 +23,7 @@ ImageWindow::ImageWindow(wxWindow *parent, wxWindowID id, const wxImage &image,
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(ImageWindow::OnEraseBackground));
 }
 
+
 void ImageWindow::DoSetScrollbars(bool refresh)
 {
 	int x, y;
@@ -43,7 +44,10 @@ void ImageWindow::SetImage(const wxImage &image)
 	if (image.Ok())
 		m_bitmap = wxBitmap(image);
 
-	DoSetScrollbars(TRUE);
+	float scale_x = float(GetSize().x) / float(m_bitmap.GetWidth());
+	float scale_y = float(GetSize().y) / float(m_bitmap.GetHeight());
+
+	SetZoomFactor(std::min(scale_x, scale_y));
 }
 
 void ImageWindow::OnEraseBackground(wxEraseEvent& event)

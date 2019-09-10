@@ -33,18 +33,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cairo\SVGCanvasCairo.h">
-      <Filter>Fichiers sources\cairo</Filter>
-    </ClInclude>
-    <ClInclude Include="cairo\SVGCanvasImageCairo.h">
-      <Filter>Fichiers sources\cairo</Filter>
-    </ClInclude>
-    <ClInclude Include="cairo\SVGCanvasPathCairo.h">
-      <Filter>Fichiers sources\cairo</Filter>
-    </ClInclude>
-    <ClInclude Include="cairo\SVGCanvasTextCairo.h">
-      <Filter>Fichiers sources\cairo</Filter>
-    </ClInclude>
     <ClInclude Include="include\wxSVG\Animated.h">
       <Filter>Fichiers d%27en-tête\wxSVG</Filter>
     </ClInclude>
