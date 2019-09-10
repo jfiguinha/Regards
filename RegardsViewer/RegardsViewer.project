@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="RegardsViewer_Windows" InternalType="GUI" Version="10.0.0">
-  <VirtualDirectory Name="Resource">
-    <File Name="regards.rc"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -72,12 +69,11 @@
     <Project Name="libMediaInfo"/>
     <Project Name="libJbig"/>
     <Project Name="libPsd"/>
-    <Project Name="FaceRecognition"/>
     <Project Name="libbpg"/>
     <Project Name="libavutil"/>
     <Project Name="libavcodec"/>
     <Project Name="libRegardsBpg_windows"/>
-    <Project Name="FaceRecognition_windows"/>
+    <Project Name="wxIA"/>
   </Dependencies>
   <Dependencies Name="Debug">
     <Project Name="include"/>
@@ -118,6 +114,7 @@
     <Project Name="libbpg"/>
     <Project Name="libavutil"/>
     <Project Name="libRegardsBpg_windows"/>
+    <Project Name="wxIA"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -338,6 +335,7 @@
         <Library Value="VideoThumbnail"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
+        <Library Value="wxia"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -380,6 +378,7 @@
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
+        <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
@@ -415,7 +414,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgraphite2.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_3.dll ./Debug</Command>
@@ -517,6 +515,7 @@
         <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libPsd/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
+        <LibraryPath Value="../Otherlib/wxIA/Release"/>
         <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
       </Linker>
@@ -551,7 +550,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgraphite2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_3.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_3.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_3.dll ./Release</Command>
@@ -561,7 +559,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_3.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libintl-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblzma-5.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnghttp2-14.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libp11-kit-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpcre-1.dll ./Release</Command>

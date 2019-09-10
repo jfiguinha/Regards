@@ -1,3 +1,4 @@
+#pragma once
 //{{NO_DEPENDENCIES}}
 // fichier Include Microsoft Visual C++.
 // Utilisé par regards.rc

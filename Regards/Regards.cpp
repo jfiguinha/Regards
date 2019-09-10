@@ -424,12 +424,12 @@ bool MyApp::OnInit()
 	///////////////////////////////////////////////////////////////////
 	// Initialize common controls this is for the progress bar control
 	//
-	INITCOMMONCONTROLSEX iccex;
+	//INITCOMMONCONTROLSEX iccex;
 
-	iccex.dwSize = sizeof(iccex);
-	iccex.dwICC = ICC_BAR_CLASSES;
+	//iccex.dwSize = sizeof(iccex);
+	//iccex.dwICC = ICC_BAR_CLASSES;
 
-	InitCommonControlsEx(&iccex);
+	//InitCommonControlsEx(&iccex);
 
 	
 	

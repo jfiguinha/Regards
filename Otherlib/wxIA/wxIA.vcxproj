@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>USE_IA_EVENTS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;USE_IA_EVENTS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)\RegardsViewer;$(SolutionDir)\libUtility;$(SolutionDir)\otherlib\wxia\include;$(SolutionDir)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -142,7 +142,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)\RegardsViewer;$(SolutionDir)\libUtility;$(SolutionDir)\otherlib\wxia\include;$(SolutionDir)\include;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -165,6 +165,7 @@
     <ClInclude Include="include\wx\ia\twainbase.h" />
     <ClInclude Include="include\wx\ia\twainmsw.h" />
     <ClInclude Include="wia\bitmapUtilities.h" />
+    <ClInclude Include="wia\comptr.h" />
     <ClInclude Include="wia\DataClasses.h" />
     <ClInclude Include="wia\ImageAcquisition.h" />
     <ClInclude Include="wia\ProgressDlg.h" />

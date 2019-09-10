@@ -66,6 +66,9 @@
     <ClInclude Include="wia\bitmapUtilities.h">
       <Filter>wia\header</Filter>
     </ClInclude>
+    <ClInclude Include="wia\comptr.h">
+      <Filter>wia\header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ia\ia.cpp">

@@ -300,7 +300,7 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 		m_imageWin->SetImage(GdiplusImageTowxImage(&m_Image));
 	}
 
-	delete gdiplus;
+	//delete gdiplus;
 }
 
 
