@@ -883,7 +883,6 @@ infodir
 docdir
 oldincludedir
 includedir
-runstatedir
 localstatedir
 sharedstatedir
 sysconfdir
@@ -1042,7 +1041,6 @@ datadir='${datarootdir}'
 sysconfdir='${prefix}/etc'
 sharedstatedir='${prefix}/com'
 localstatedir='${prefix}/var'
-runstatedir='${localstatedir}/run'
 includedir='${prefix}/include'
 oldincludedir='/usr/include'
 docdir='${datarootdir}/doc/${PACKAGE_TARNAME}'
@@ -1295,15 +1293,6 @@ do
   | -silent | --silent | --silen | --sile | --sil)
     silent=yes ;;
 
-  -runstatedir | --runstatedir | --runstatedi | --runstated \
-  | --runstate | --runstat | --runsta | --runst | --runs \
-  | --run | --ru | --r)
-    ac_prev=runstatedir ;;
-  -runstatedir=* | --runstatedir=* | --runstatedi=* | --runstated=* \
-  | --runstate=* | --runstat=* | --runsta=* | --runst=* | --runs=* \
-  | --run=* | --ru=* | --r=*)
-    runstatedir=$ac_optarg ;;
-
   -sbindir | --sbindir | --sbindi | --sbind | --sbin | --sbi | --sb)
     ac_prev=sbindir ;;
   -sbindir=* | --sbindir=* | --sbindi=* | --sbind=* | --sbin=* \
@@ -1441,7 +1430,7 @@ fi
 for ac_var in	exec_prefix prefix bindir sbindir libexecdir datarootdir \
 		datadir sysconfdir sharedstatedir localstatedir includedir \
 		oldincludedir docdir infodir htmldir dvidir pdfdir psdir \
-		libdir localedir mandir runstatedir
+		libdir localedir mandir
 do
   eval ac_val=\$$ac_var
   # Remove trailing slashes.
@@ -1594,7 +1583,6 @@ Fine tuning of the installation directories:
   --sysconfdir=DIR        read-only single-machine data [PREFIX/etc]
   --sharedstatedir=DIR    modifiable architecture-independent data [PREFIX/com]
   --localstatedir=DIR     modifiable single-machine data [PREFIX/var]
-  --runstatedir=DIR       modifiable per-process data [LOCALSTATEDIR/run]
   --libdir=DIR            object code libraries [EPREFIX/lib]
   --includedir=DIR        C header files [PREFIX/include]
   --oldincludedir=DIR     C header files for non-gcc [/usr/include]
@@ -1699,7 +1687,7 @@ Optional Packages:
                           provide on AIX, [default=aix].
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot[=DIR]    Search for dependent libraries within DIR (or the
-                          compiler's sysroot if not specified).
+                          compiler's sysroot if not specified).
   --with-x                use the X Window System
   --with-font-configuration=fontconfig|win32
                           Select font configuration backend
@@ -20122,8 +20110,8 @@ if test x$enable_libopenjpeg = xopenjpeg1 || test x$enable_libopenjpeg = xauto; 
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBOPENJPEG" >&5
-$as_echo_n "checking for LIBOPENJPEG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libopenjpeg" >&5
+$as_echo_n "checking for libopenjpeg... " >&6; }
 
 if test -n "$LIBOPENJPEG_CFLAGS"; then
     pkg_cv_LIBOPENJPEG_CFLAGS="$LIBOPENJPEG_CFLAGS"
@@ -20163,7 +20151,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -20237,7 +20225,7 @@ fi
 done
 
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for opj_cio_open in -lopenjpeg" >&5
 $as_echo_n "checking for opj_cio_open in -lopenjpeg... " >&6; }
@@ -20309,8 +20297,8 @@ if test x$openjpeg1 = xno; then
   if test x$enable_libopenjpeg = xopenjpeg2 || test x$enable_libopenjpeg = xauto; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBOPENJPEG" >&5
-$as_echo_n "checking for LIBOPENJPEG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libopenjp2" >&5
+$as_echo_n "checking for libopenjp2... " >&6; }
 
 if test -n "$LIBOPENJPEG_CFLAGS"; then
     pkg_cv_LIBOPENJPEG_CFLAGS="$LIBOPENJPEG_CFLAGS"
@@ -20350,7 +20338,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -20368,7 +20356,7 @@ fi
 
 	openjpeg2=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	openjpeg2=no
 else
@@ -20447,8 +20435,8 @@ fi
 if test x$enable_libnss != xno; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for NSS3" >&5
-$as_echo_n "checking for NSS3... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for nss" >&5
+$as_echo_n "checking for nss... " >&6; }
 
 if test -n "$NSS3_CFLAGS"; then
     pkg_cv_NSS3_CFLAGS="$NSS3_CFLAGS"
@@ -20488,7 +20476,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -20506,7 +20494,7 @@ fi
 
 	enable_nss="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_nss="no"
 else
@@ -20786,7 +20774,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -20832,7 +20820,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -20856,7 +20844,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -20901,7 +20889,7 @@ else
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -20925,7 +20913,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     We can't simply define LARGE_OFF_T to be 9223372036854775807,
     since some C++ compilers masquerading as C compilers
     incorrectly reject 9223372036854775807.  */
-#define LARGE_OFF_T ((((off_t) 1 << 31) << 31) - 1 + (((off_t) 1 << 31) << 31))
+#define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
   int off_t_is_large[(LARGE_OFF_T % 2147483629 == 721
 		       && LARGE_OFF_T % 2147483647 == 1)
 		      ? 1 : -1];
@@ -21258,8 +21246,8 @@ fi
 if test x$enable_libcurl = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBCURL" >&5
-$as_echo_n "checking for LIBCURL... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libcurl" >&5
+$as_echo_n "checking for libcurl... " >&6; }
 
 if test -n "$LIBCURL_CFLAGS"; then
     pkg_cv_LIBCURL_CFLAGS="$LIBCURL_CFLAGS"
@@ -21299,7 +21287,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -21326,7 +21314,7 @@ Alternatively, you may set the environment variables LIBCURL_CFLAGS
 and LIBCURL_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -21645,8 +21633,8 @@ fi
 if test x$enable_libpng != xno; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LIBPNG" >&5
-$as_echo_n "checking for LIBPNG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libpng" >&5
+$as_echo_n "checking for libpng... " >&6; }
 
 if test -n "$LIBPNG_CFLAGS"; then
     pkg_cv_LIBPNG_CFLAGS="$LIBPNG_CFLAGS"
@@ -21686,7 +21674,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -21704,7 +21692,7 @@ fi
 
 	enable_libpng="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_libpng="no"
 else
@@ -21734,8 +21722,8 @@ fi
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FREETYPE" >&5
-$as_echo_n "checking for FREETYPE... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for freetype2" >&5
+$as_echo_n "checking for freetype2... " >&6; }
 
 if test -n "$FREETYPE_CFLAGS"; then
     pkg_cv_FREETYPE_CFLAGS="$FREETYPE_CFLAGS"
@@ -21775,7 +21763,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -21793,7 +21781,7 @@ fi
 
 	freetype_pkgconfig=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	freetype_pkgconfig=no
 else
@@ -21906,8 +21894,8 @@ $as_echo "#define WITH_FONTCONFIGURATION_FONTCONFIG 1" >>confdefs.h
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for FONTCONFIG" >&5
-$as_echo_n "checking for FONTCONFIG... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for fontconfig >= 2.0.0" >&5
+$as_echo_n "checking for fontconfig >= 2.0.0... " >&6; }
 
 if test -n "$FONTCONFIG_CFLAGS"; then
     pkg_cv_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
@@ -21947,7 +21935,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -21974,7 +21962,7 @@ Alternatively, you may set the environment variables FONTCONFIG_CFLAGS
 and FONTCONFIG_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -22045,8 +22033,8 @@ use_cairo=""
 if test x$enable_cairo_output = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for CAIRO" >&5
-$as_echo_n "checking for CAIRO... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CAIRO_DEPS" >&5
+$as_echo_n "checking for $CAIRO_DEPS... " >&6; }
 
 if test -n "$CAIRO_CFLAGS"; then
     pkg_cv_CAIRO_CFLAGS="$CAIRO_CFLAGS"
@@ -22086,7 +22074,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -22113,7 +22101,7 @@ Alternatively, you may set the environment variables CAIRO_CFLAGS
 and CAIRO_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -22137,8 +22125,8 @@ fi
 elif test x$enable_cairo_output = xtry; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for CAIRO" >&5
-$as_echo_n "checking for CAIRO... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CAIRO_DEPS" >&5
+$as_echo_n "checking for $CAIRO_DEPS... " >&6; }
 
 if test -n "$CAIRO_CFLAGS"; then
     pkg_cv_CAIRO_CFLAGS="$CAIRO_CFLAGS"
@@ -22178,7 +22166,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -22197,7 +22185,7 @@ fi
 	enable_cairo_output="no"
 		     use_cairo="no (requires cairo >= $CAIRO_VERSION)"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_cairo_output="no"
 		     use_cairo="no (requires cairo >= $CAIRO_VERSION)"
@@ -22254,8 +22242,8 @@ fi
 
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for PDFTOCAIRO" >&5
-$as_echo_n "checking for PDFTOCAIRO... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $PDFTOCAIRO_DEPS" >&5
+$as_echo_n "checking for $PDFTOCAIRO_DEPS... " >&6; }
 
 if test -n "$PDFTOCAIRO_CFLAGS"; then
     pkg_cv_PDFTOCAIRO_CFLAGS="$PDFTOCAIRO_CFLAGS"
@@ -22295,7 +22283,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -22322,7 +22310,7 @@ Alternatively, you may set the environment variables PDFTOCAIRO_CFLAGS
 and PDFTOCAIRO_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -22388,8 +22376,8 @@ fi
   if test x$enable_poppler_glib = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_GLIB" >&5
-$as_echo_n "checking for POPPLER_GLIB... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION" >&5
+$as_echo_n "checking for glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION... " >&6; }
 
 if test -n "$POPPLER_GLIB_CFLAGS"; then
     pkg_cv_POPPLER_GLIB_CFLAGS="$POPPLER_GLIB_CFLAGS"
@@ -22429,7 +22417,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -22456,7 +22444,7 @@ Alternatively, you may set the environment variables POPPLER_GLIB_CFLAGS
 and POPPLER_GLIB_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -22480,8 +22468,8 @@ fi
   elif test x$enable_poppler_glib = xtry; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_GLIB" >&5
-$as_echo_n "checking for POPPLER_GLIB... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION" >&5
+$as_echo_n "checking for glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION... " >&6; }
 
 if test -n "$POPPLER_GLIB_CFLAGS"; then
     pkg_cv_POPPLER_GLIB_CFLAGS="$POPPLER_GLIB_CFLAGS"
@@ -22521,7 +22509,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -22540,7 +22528,7 @@ fi
 	enable_poppler_glib="no"
                       use_glib="no (requires glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION)"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_poppler_glib="no"
                       use_glib="no (requires glib-2.0 >= $GLIB_REQUIRED gobject-2.0 >= $GLIB_REQUIRED gio-2.0 >= $GLIB_REQUIRED cairo >= $CAIRO_VERSION)"
@@ -22947,8 +22935,8 @@ $as_echo "$enable_gtk_doc" >&6; }
     if test "x$PACKAGE_NAME" != "xglib"; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTKDOC_DEPS" >&5
-$as_echo_n "checking for GTKDOC_DEPS... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for glib-2.0 >= 2.10.0 gobject-2.0  >= 2.10.0" >&5
+$as_echo_n "checking for glib-2.0 >= 2.10.0 gobject-2.0  >= 2.10.0... " >&6; }
 
 if test -n "$GTKDOC_DEPS_CFLAGS"; then
     pkg_cv_GTKDOC_DEPS_CFLAGS="$GTKDOC_DEPS_CFLAGS"
@@ -22988,7 +22976,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23006,7 +22994,7 @@ fi
 
 	:
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	:
 else
@@ -23103,8 +23091,8 @@ fi
 if test x$enable_poppler_qt4 = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT4" >&5
-$as_echo_n "checking for POPPLER_QT4... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QtCore >= 4.7.0 QtGui >= 4.7.0 QtXml >= 4.7.0" >&5
+$as_echo_n "checking for QtCore >= 4.7.0 QtGui >= 4.7.0 QtXml >= 4.7.0... " >&6; }
 
 if test -n "$POPPLER_QT4_CFLAGS"; then
     pkg_cv_POPPLER_QT4_CFLAGS="$POPPLER_QT4_CFLAGS"
@@ -23144,7 +23132,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23171,7 +23159,7 @@ Alternatively, you may set the environment variables POPPLER_QT4_CFLAGS
 and POPPLER_QT4_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -23194,8 +23182,8 @@ $as_echo "yes" >&6; }
 fi
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT4_TEST" >&5
-$as_echo_n "checking for POPPLER_QT4_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QtTest >= 4.7.0" >&5
+$as_echo_n "checking for QtTest >= 4.7.0... " >&6; }
 
 if test -n "$POPPLER_QT4_TEST_CFLAGS"; then
     pkg_cv_POPPLER_QT4_TEST_CFLAGS="$POPPLER_QT4_TEST_CFLAGS"
@@ -23235,7 +23223,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23262,7 +23250,7 @@ Alternatively, you may set the environment variables POPPLER_QT4_TEST_CFLAGS
 and POPPLER_QT4_TEST_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -23286,8 +23274,8 @@ fi
 elif test x$enable_poppler_qt4 = xtry; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT4" >&5
-$as_echo_n "checking for POPPLER_QT4... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QtCore >= 4.7.0 QtGui >= 4.7.0 QtXml >= 4.7.0" >&5
+$as_echo_n "checking for QtCore >= 4.7.0 QtGui >= 4.7.0 QtXml >= 4.7.0... " >&6; }
 
 if test -n "$POPPLER_QT4_CFLAGS"; then
     pkg_cv_POPPLER_QT4_CFLAGS="$POPPLER_QT4_CFLAGS"
@@ -23327,7 +23315,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23345,7 +23333,7 @@ fi
 
 	enable_poppler_qt4="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_poppler_qt4="no"
 else
@@ -23358,8 +23346,8 @@ fi
   if test x$enable_poppler_qt4 = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT4_TEST" >&5
-$as_echo_n "checking for POPPLER_QT4_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QtTest >= 4.7.0" >&5
+$as_echo_n "checking for QtTest >= 4.7.0... " >&6; }
 
 if test -n "$POPPLER_QT4_TEST_CFLAGS"; then
     pkg_cv_POPPLER_QT4_TEST_CFLAGS="$POPPLER_QT4_TEST_CFLAGS"
@@ -23399,7 +23387,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23417,7 +23405,7 @@ fi
 
 	enable_poppler_qt4="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_poppler_qt4="no"
 else
@@ -23664,8 +23652,8 @@ fi
 if test x$enable_poppler_qt5 = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT5" >&5
-$as_echo_n "checking for POPPLER_QT5... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Qt5Core >= 5.0.0 Qt5Gui >= 5.0.0 Qt5Xml >= 5.0.0 Qt5Widgets >= 5.0.0" >&5
+$as_echo_n "checking for Qt5Core >= 5.0.0 Qt5Gui >= 5.0.0 Qt5Xml >= 5.0.0 Qt5Widgets >= 5.0.0... " >&6; }
 
 if test -n "$POPPLER_QT5_CFLAGS"; then
     pkg_cv_POPPLER_QT5_CFLAGS="$POPPLER_QT5_CFLAGS"
@@ -23705,7 +23693,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23732,7 +23720,7 @@ Alternatively, you may set the environment variables POPPLER_QT5_CFLAGS
 and POPPLER_QT5_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -23755,8 +23743,8 @@ $as_echo "yes" >&6; }
 fi
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT5_TEST" >&5
-$as_echo_n "checking for POPPLER_QT5_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Qt5Test >= 5.0.0 " >&5
+$as_echo_n "checking for Qt5Test >= 5.0.0 ... " >&6; }
 
 if test -n "$POPPLER_QT5_TEST_CFLAGS"; then
     pkg_cv_POPPLER_QT5_TEST_CFLAGS="$POPPLER_QT5_TEST_CFLAGS"
@@ -23796,7 +23784,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23823,7 +23811,7 @@ Alternatively, you may set the environment variables POPPLER_QT5_TEST_CFLAGS
 and POPPLER_QT5_TEST_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -23847,8 +23835,8 @@ fi
 elif test x$enable_poppler_qt5 = xtry; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT5" >&5
-$as_echo_n "checking for POPPLER_QT5... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Qt5Core >= 5.0.0 Qt5Gui >= 5.0.0 Qt5Xml >= 5.0.0 Qt5Widgets >= 5.0.0" >&5
+$as_echo_n "checking for Qt5Core >= 5.0.0 Qt5Gui >= 5.0.0 Qt5Xml >= 5.0.0 Qt5Widgets >= 5.0.0... " >&6; }
 
 if test -n "$POPPLER_QT5_CFLAGS"; then
     pkg_cv_POPPLER_QT5_CFLAGS="$POPPLER_QT5_CFLAGS"
@@ -23888,7 +23876,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23906,7 +23894,7 @@ fi
 
 	enable_poppler_qt5="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_poppler_qt5="no"
 else
@@ -23919,8 +23907,8 @@ fi
   if test x$enable_poppler_qt5 = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for POPPLER_QT5_TEST" >&5
-$as_echo_n "checking for POPPLER_QT5_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Qt5Test >= 5.0.0" >&5
+$as_echo_n "checking for Qt5Test >= 5.0.0... " >&6; }
 
 if test -n "$POPPLER_QT5_TEST_CFLAGS"; then
     pkg_cv_POPPLER_QT5_TEST_CFLAGS="$POPPLER_QT5_TEST_CFLAGS"
@@ -23960,7 +23948,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -23978,7 +23966,7 @@ fi
 
 	enable_poppler_qt5="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_poppler_qt5="no"
 else
@@ -25150,8 +25138,8 @@ fi
 if test x$enable_gtk_test = xyes; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTK_TEST" >&5
-$as_echo_n "checking for GTK_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $GTK_TEST_DEPS" >&5
+$as_echo_n "checking for $GTK_TEST_DEPS... " >&6; }
 
 if test -n "$GTK_TEST_CFLAGS"; then
     pkg_cv_GTK_TEST_CFLAGS="$GTK_TEST_CFLAGS"
@@ -25191,7 +25179,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25218,7 +25206,7 @@ Alternatively, you may set the environment variables GTK_TEST_CFLAGS
 and GTK_TEST_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details." "$LINENO" 5
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -25242,8 +25230,8 @@ fi
 elif test x$enable_gtk_test = xtry; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for GTK_TEST" >&5
-$as_echo_n "checking for GTK_TEST... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $GTK_TEST_DEPS" >&5
+$as_echo_n "checking for $GTK_TEST_DEPS... " >&6; }
 
 if test -n "$GTK_TEST_CFLAGS"; then
     pkg_cv_GTK_TEST_CFLAGS="$GTK_TEST_CFLAGS"
@@ -25283,7 +25271,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25301,7 +25289,7 @@ fi
 
 	enable_gtk_test="no"
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	enable_gtk_test="no"
 else
@@ -25356,8 +25344,8 @@ fi
 if test x$enable_cms = xauto; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2" >&5
+$as_echo_n "checking for lcms2... " >&6; }
 
 if test -n "$LCMS_CFLAGS"; then
     pkg_cv_LCMS_CFLAGS="$LCMS_CFLAGS"
@@ -25397,7 +25385,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25415,7 +25403,7 @@ fi
 
 	lcms2=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	lcms2=no
 else
@@ -25428,8 +25416,8 @@ fi
   if test x$lcms2 = xno; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms" >&5
+$as_echo_n "checking for lcms... " >&6; }
 
 if test -n "$LCMS_CFLAGS"; then
     pkg_cv_LCMS_CFLAGS="$LCMS_CFLAGS"
@@ -25469,7 +25457,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25487,7 +25475,7 @@ fi
 
 	lcms1=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	lcms1=no
 else
@@ -25501,8 +25489,8 @@ fi
 elif test x$enable_cms = xlcms1; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms" >&5
+$as_echo_n "checking for lcms... " >&6; }
 
 if test -n "$LCMS_CFLAGS"; then
     pkg_cv_LCMS_CFLAGS="$LCMS_CFLAGS"
@@ -25542,7 +25530,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25560,7 +25548,7 @@ fi
 
 	lcms1=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	lcms1=no
 else
@@ -25573,8 +25561,8 @@ fi
 elif test x$enable_cms = xlcms2; then
 
 pkg_failed=no
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for LCMS" >&5
-$as_echo_n "checking for LCMS... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for lcms2" >&5
+$as_echo_n "checking for lcms2... " >&6; }
 
 if test -n "$LCMS_CFLAGS"; then
     pkg_cv_LCMS_CFLAGS="$LCMS_CFLAGS"
@@ -25614,7 +25602,7 @@ fi
 
 
 if test $pkg_failed = yes; then
-   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -25632,7 +25620,7 @@ fi
 
 	lcms2=no
 elif test $pkg_failed = untried; then
-     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 	lcms2=no
 else
@@ -25826,7 +25814,7 @@ POPPLER_MICRO_VERSION=0
 POPPLER_VERSION=0.45.0
 
 
-ac_config_files="$ac_config_files Makefile goo/Makefile fofi/Makefile splash/Makefile poppler/Makefile utils/Makefile glib/Makefile glib/poppler-features.h glib/reference/Makefile glib/reference/version.xml glib/demo/Makefile test/Makefile qt4/Makefile qt4/src/Makefile qt4/tests/Makefile qt4/demos/Makefile qt5/Makefile qt5/src/Makefile qt5/tests/Makefile qt5/demos/Makefile cpp/Makefile cpp/poppler-version.h cpp/tests/Makefile poppler.pc poppler-uninstalled.pc poppler-cairo.pc poppler-cairo-uninstalled.pc poppler-splash.pc poppler-splash-uninstalled.pc poppler-glib.pc poppler-glib-uninstalled.pc poppler-qt4.pc poppler-qt4-uninstalled.pc poppler-qt5.pc poppler-qt5-uninstalled.pc poppler-cpp.pc poppler-cpp-uninstalled.pc"
+ac_config_files="$ac_config_files  Makefile goo/Makefile fofi/Makefile splash/Makefile poppler/Makefile utils/Makefile glib/Makefile glib/poppler-features.h glib/reference/Makefile glib/reference/version.xml glib/demo/Makefile test/Makefile qt4/Makefile qt4/src/Makefile qt4/tests/Makefile qt4/demos/Makefile qt5/Makefile qt5/src/Makefile qt5/tests/Makefile qt5/demos/Makefile cpp/Makefile cpp/poppler-version.h cpp/tests/Makefile poppler.pc poppler-uninstalled.pc poppler-cairo.pc poppler-cairo-uninstalled.pc poppler-splash.pc poppler-splash-uninstalled.pc poppler-glib.pc poppler-glib-uninstalled.pc poppler-qt4.pc poppler-qt4-uninstalled.pc poppler-qt5.pc poppler-qt5-uninstalled.pc poppler-cpp.pc poppler-cpp-uninstalled.pc"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -27065,42 +27053,43 @@ do
     "poppler/poppler-config.h") CONFIG_HEADERS="$CONFIG_HEADERS poppler/poppler-config.h" ;;
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
-    "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "goo/Makefile") CONFIG_FILES="$CONFIG_FILES goo/Makefile" ;;
-    "fofi/Makefile") CONFIG_FILES="$CONFIG_FILES fofi/Makefile" ;;
-    "splash/Makefile") CONFIG_FILES="$CONFIG_FILES splash/Makefile" ;;
-    "poppler/Makefile") CONFIG_FILES="$CONFIG_FILES poppler/Makefile" ;;
-    "utils/Makefile") CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
-    "glib/Makefile") CONFIG_FILES="$CONFIG_FILES glib/Makefile" ;;
-    "glib/poppler-features.h") CONFIG_FILES="$CONFIG_FILES glib/poppler-features.h" ;;
-    "glib/reference/Makefile") CONFIG_FILES="$CONFIG_FILES glib/reference/Makefile" ;;
-    "glib/reference/version.xml") CONFIG_FILES="$CONFIG_FILES glib/reference/version.xml" ;;
-    "glib/demo/Makefile") CONFIG_FILES="$CONFIG_FILES glib/demo/Makefile" ;;
-    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
-    "qt4/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/Makefile" ;;
-    "qt4/src/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/src/Makefile" ;;
-    "qt4/tests/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/tests/Makefile" ;;
-    "qt4/demos/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/demos/Makefile" ;;
-    "qt5/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/Makefile" ;;
-    "qt5/src/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/src/Makefile" ;;
-    "qt5/tests/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/tests/Makefile" ;;
-    "qt5/demos/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/demos/Makefile" ;;
-    "cpp/Makefile") CONFIG_FILES="$CONFIG_FILES cpp/Makefile" ;;
-    "cpp/poppler-version.h") CONFIG_FILES="$CONFIG_FILES cpp/poppler-version.h" ;;
-    "cpp/tests/Makefile") CONFIG_FILES="$CONFIG_FILES cpp/tests/Makefile" ;;
-    "poppler.pc") CONFIG_FILES="$CONFIG_FILES poppler.pc" ;;
-    "poppler-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-uninstalled.pc" ;;
-    "poppler-cairo.pc") CONFIG_FILES="$CONFIG_FILES poppler-cairo.pc" ;;
-    "poppler-cairo-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-cairo-uninstalled.pc" ;;
-    "poppler-splash.pc") CONFIG_FILES="$CONFIG_FILES poppler-splash.pc" ;;
-    "poppler-splash-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-splash-uninstalled.pc" ;;
-    "poppler-glib.pc") CONFIG_FILES="$CONFIG_FILES poppler-glib.pc" ;;
-    "poppler-glib-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-glib-uninstalled.pc" ;;
-    "poppler-qt4.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt4.pc" ;;
-    "poppler-qt4-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt4-uninstalled.pc" ;;
-    "poppler-qt5.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt5.pc" ;;
-    "poppler-qt5-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt5-uninstalled.pc" ;;
-    "poppler-cpp.pc") CONFIG_FILES="$CONFIG_FILES poppler-cpp.pc" ;;
+    "") CONFIG_FILES="$CONFIG_FILES " ;;
+    "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "goo/Makefile") CONFIG_FILES="$CONFIG_FILES goo/Makefile" ;;
+    "fofi/Makefile") CONFIG_FILES="$CONFIG_FILES fofi/Makefile" ;;
+    "splash/Makefile") CONFIG_FILES="$CONFIG_FILES splash/Makefile" ;;
+    "poppler/Makefile") CONFIG_FILES="$CONFIG_FILES poppler/Makefile" ;;
+    "utils/Makefile") CONFIG_FILES="$CONFIG_FILES utils/Makefile" ;;
+    "glib/Makefile") CONFIG_FILES="$CONFIG_FILES glib/Makefile" ;;
+    "glib/poppler-features.h") CONFIG_FILES="$CONFIG_FILES glib/poppler-features.h" ;;
+    "glib/reference/Makefile") CONFIG_FILES="$CONFIG_FILES glib/reference/Makefile" ;;
+    "glib/reference/version.xml") CONFIG_FILES="$CONFIG_FILES glib/reference/version.xml" ;;
+    "glib/demo/Makefile") CONFIG_FILES="$CONFIG_FILES glib/demo/Makefile" ;;
+    "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+    "qt4/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/Makefile" ;;
+    "qt4/src/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/src/Makefile" ;;
+    "qt4/tests/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/tests/Makefile" ;;
+    "qt4/demos/Makefile") CONFIG_FILES="$CONFIG_FILES qt4/demos/Makefile" ;;
+    "qt5/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/Makefile" ;;
+    "qt5/src/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/src/Makefile" ;;
+    "qt5/tests/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/tests/Makefile" ;;
+    "qt5/demos/Makefile") CONFIG_FILES="$CONFIG_FILES qt5/demos/Makefile" ;;
+    "cpp/Makefile") CONFIG_FILES="$CONFIG_FILES cpp/Makefile" ;;
+    "cpp/poppler-version.h") CONFIG_FILES="$CONFIG_FILES cpp/poppler-version.h" ;;
+    "cpp/tests/Makefile") CONFIG_FILES="$CONFIG_FILES cpp/tests/Makefile" ;;
+    "poppler.pc") CONFIG_FILES="$CONFIG_FILES poppler.pc" ;;
+    "poppler-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-uninstalled.pc" ;;
+    "poppler-cairo.pc") CONFIG_FILES="$CONFIG_FILES poppler-cairo.pc" ;;
+    "poppler-cairo-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-cairo-uninstalled.pc" ;;
+    "poppler-splash.pc") CONFIG_FILES="$CONFIG_FILES poppler-splash.pc" ;;
+    "poppler-splash-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-splash-uninstalled.pc" ;;
+    "poppler-glib.pc") CONFIG_FILES="$CONFIG_FILES poppler-glib.pc" ;;
+    "poppler-glib-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-glib-uninstalled.pc" ;;
+    "poppler-qt4.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt4.pc" ;;
+    "poppler-qt4-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt4-uninstalled.pc" ;;
+    "poppler-qt5.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt5.pc" ;;
+    "poppler-qt5-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-qt5-uninstalled.pc" ;;
+    "poppler-cpp.pc") CONFIG_FILES="$CONFIG_FILES poppler-cpp.pc" ;;
     "poppler-cpp-uninstalled.pc") CONFIG_FILES="$CONFIG_FILES poppler-cpp-uninstalled.pc" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
@@ -28064,7 +28053,7 @@ shlibpath_overrides_runpath=$shlibpath_overrides_runpath
 libname_spec=$lt_libname_spec
 
 # List of archive names.  First name is the real one, the rest are links.
-# The last name is the one that the linker finds with -lNAME
+# The last name is the one that the linker finds with -lNAME.
 library_names_spec=$lt_library_names_spec
 
 # The coded name of the library, if different from the real name.
@@ -28183,7 +28172,7 @@ allow_undefined_flag=$lt_allow_undefined_flag
 no_undefined_flag=$lt_no_undefined_flag
 
 # Flag to hardcode \$libdir into a binary during linking.
-# This must work even if \$libdir does not exist
+# This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec
 
 # Whether we need a single "-rpath" flag with a separated argument.
@@ -28425,7 +28414,7 @@ allow_undefined_flag=$lt_allow_undefined_flag_CXX
 no_undefined_flag=$lt_no_undefined_flag_CXX
 
 # Flag to hardcode \$libdir into a binary during linking.
-# This must work even if \$libdir does not exist
+# This must work even if \$libdir does not exist.
 hardcode_libdir_flag_spec=$lt_hardcode_libdir_flag_spec_CXX
 
 # Whether we need a single "-rpath" flag with a separated argument.

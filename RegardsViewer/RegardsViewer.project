@@ -187,6 +187,8 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
+        <LibraryPath Value="../libextern/poppler_windows-master/poppler/.libs"/>
+        <LibraryPath Value="../libextern/poppler_windows-master/cpp/.libs"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -336,6 +338,8 @@
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
         <Library Value="wxia"/>
+        <Library Value="poppler"/>
+        <Library Value="poppler-cpp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

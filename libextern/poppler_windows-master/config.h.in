@@ -201,7 +201,7 @@
 /* Defines the poppler version */
 #undef POPPLER_VERSION
 
-/* Define to necessary symbol if this constant uses a non-standard name on
+/* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 

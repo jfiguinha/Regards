@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="10.0.0">
+  <VirtualDirectory Name="Scan">
+    <File Name="ScannerFrame.h"/>
+    <File Name="ScannerFrame.cpp"/>
+    <File Name="ImageWindow.h"/>
+    <File Name="ImageWindow.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -187,6 +193,8 @@
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
+        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>

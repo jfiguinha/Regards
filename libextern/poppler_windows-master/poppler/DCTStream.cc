@@ -25,7 +25,7 @@ static void str_init_source(j_decompress_ptr cinfo)
 {
 }
 
-static int str_fill_input_buffer(j_decompress_ptr cinfo)
+static boolean str_fill_input_buffer(j_decompress_ptr cinfo)
 {
   int c;
   struct str_src_mgr * src = (struct str_src_mgr *)cinfo->src;
