@@ -166,6 +166,8 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../Otherlib/wxIA/WIA"/>
+        <IncludePath Value="../Otherlib/wxIA/include"/>
         <IncludePath Value="../libWindow"/>
         <IncludePath Value="../libPrint"/>
         <IncludePath Value="../libPicture"/>
