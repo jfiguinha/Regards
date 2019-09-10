@@ -423,7 +423,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libintl-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblzma-5.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-6.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnghttp2-14.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libp11-kit-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpcre-1.dll ./Debug</Command>
@@ -447,7 +446,7 @@
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Debug/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Debug/libRegardsBpg.dll ./Debug/libRegardsBpg.dll</Command>
-        <Command Enabled="yes">cp ../FaceRecognition_windows/Debug/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
+        <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
