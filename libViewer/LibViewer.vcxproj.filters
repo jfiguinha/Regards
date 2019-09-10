@@ -58,9 +58,6 @@
     <Filter Include="Scanner">
       <UniqueIdentifier>{75ae06fd-2162-43ee-8a35-99931e2a02c8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PDF">
-      <UniqueIdentifier>{a35e70e8-e6d5-4d9b-ba29-713a0b66973c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
     </Filter>
@@ -204,15 +201,6 @@
     <ClInclude Include="ScannerFrame.h">
       <Filter>Scanner</Filter>
     </ClInclude>
-    <ClInclude Include="bmpviewer.h">
-      <Filter>PDF</Filter>
-    </ClInclude>
-    <ClInclude Include="gutter.h">
-      <Filter>PDF</Filter>
-    </ClInclude>
-    <ClInclude Include="pdfframe.h">
-      <Filter>PDF</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -346,15 +334,6 @@
     </ClCompile>
     <ClCompile Include="ScannerFrame.cpp">
       <Filter>Scanner</Filter>
-    </ClCompile>
-    <ClCompile Include="bmpviewer.cpp">
-      <Filter>PDF</Filter>
-    </ClCompile>
-    <ClCompile Include="gutter.cpp">
-      <Filter>PDF</Filter>
-    </ClCompile>
-    <ClCompile Include="pdfframe.cpp">
-      <Filter>PDF</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

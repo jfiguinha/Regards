@@ -203,14 +203,11 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="AnimationToolbar.h" />
-    <ClInclude Include="bmpviewer.h" />
     <ClInclude Include="CategoryFolderWindow.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
-    <ClInclude Include="gutter.h" />
     <ClInclude Include="ImageWindow.h" />
-    <ClInclude Include="pdfframe.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ScannerFrame.h" />
     <ClInclude Include="ViewerWindow.h" />
@@ -258,13 +255,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AnimationToolbar.cpp" />
-    <ClCompile Include="bmpviewer.cpp" />
     <ClCompile Include="CategoryFolderWindow.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
-    <ClCompile Include="gutter.cpp" />
     <ClCompile Include="ImageWindow.cpp" />
-    <ClCompile Include="pdfframe.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
     <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
