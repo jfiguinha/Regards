@@ -47,6 +47,7 @@
   <VirtualDirectory Name="wxWidgetComponent">
     <Project Name="wxCheckTree" Path="wxCheckTree/wxCheckTree.project" Active="No"/>
     <Project Name="wxSVG" Path="Otherlib/wxSVG/wxSVG.project" Active="No"/>
+    <Project Name="wxIA" Path="Otherlib/wxIA/wxIA.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Window">
     <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
@@ -133,6 +134,7 @@
       <Project Name="libavcodec" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
       <Project Name="RawSpeed" ConfigName="Debug"/>
+      <Project Name="wxIA" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -194,6 +196,7 @@
       <Project Name="libavcodec" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
       <Project Name="RawSpeed" ConfigName="Release"/>
+      <Project Name="wxIA" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
