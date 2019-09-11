@@ -47,7 +47,7 @@
   <VirtualDirectory Name="wxWidgetComponent">
     <Project Name="wxCheckTree" Path="wxCheckTree/wxCheckTree.project" Active="No"/>
     <Project Name="wxSVG" Path="Otherlib/wxSVG/wxSVG.project" Active="No"/>
-    <Project Name="wxIA" Path="Otherlib/wxIA/wxIA.project" Active="Yes"/>
+    <Project Name="wxIA" Path="Otherlib/wxIA/wxIA.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Window">
     <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
@@ -74,7 +74,7 @@
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="no">
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
@@ -136,7 +136,7 @@
       <Project Name="RawSpeed" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="yes">
+    <WorkspaceConfiguration Name="Release" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>

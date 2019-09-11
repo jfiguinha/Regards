@@ -454,6 +454,13 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp ../libextern/poppler_windows-master/poppler/.libs/libpoppler-62.dll ./Debug/libpoppler-62.dll</Command>
+        <Command Enabled="yes">cp ../libextern/poppler_windows-master/cpp/.libs/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjpeg-5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -589,6 +596,13 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp ../libextern/poppler_windows-master/poppler/.libs/libpoppler-62.dll ./Release/libpoppler-62.dll</Command>
+        <Command Enabled="yes">cp ../libextern/poppler_windows-master/cpp/.libs/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjpeg-5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Release</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">"C:\Program Files (x86)\NSIS\makensis.exe" ./package/install_modern.nsi</Command>
       </PostBuild>
