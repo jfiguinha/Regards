@@ -25,7 +25,11 @@ static void str_init_source(j_decompress_ptr cinfo)
 {
 }
 
+#if defined (_MSC_VER)
+static int str_fill_input_buffer(j_decompress_ptr cinfo)
+#else
 static boolean str_fill_input_buffer(j_decompress_ptr cinfo)
+#endif
 {
   int c;
   struct str_src_mgr * src = (struct str_src_mgr *)cinfo->src;

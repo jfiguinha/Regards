@@ -253,6 +253,7 @@ WiaGetImage(
 	*plCount = 0;
 	*pppStream = NULL;
 
+
 	// Initialize the local root item variable with the supplied value.
 	// If no value is supplied, display the device selection common dialog.
 
@@ -294,6 +295,8 @@ WiaGetImage(
 		}
 	}
 
+	wxSleep(1);
+
 	// Display the image selection common dialog 
 
 	CComPtrArray<IWiaItem> ppIWiaItem;
@@ -311,6 +314,7 @@ WiaGetImage(
 		return hr;
 	}
 
+	wxSleep(1);
 	// For ADF scanners, the common dialog explicitly sets the page count to one.
 	// So in order to transfer multiple images, set the page count to ALL_PAGES
 	// if the WIA_DEVICE_DIALOG_SINGLE_IMAGE flag is not specified, 
@@ -402,6 +406,7 @@ WiaGetImage(
 		pProgressCallbackParam = (CProgressDlg *)pProgressDlg;
 	}
 
+	wxSleep(1);
 	// Create the data callback interface
 
 	ComPtr<CDataCallback> pDataCallback = new CDataCallback(
@@ -416,6 +421,7 @@ WiaGetImage(
 		return E_OUTOFMEMORY;
 	}
 
+	wxSleep(1);
 	// Start the transfer of the selected items
 
 	for (int i = 0; i < ppIWiaItem.Count(); ++i)
