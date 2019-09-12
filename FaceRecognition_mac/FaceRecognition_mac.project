@@ -8,10 +8,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../FaceRecognition/FaceRecognition.cpp"/>
+    <File Name="../FaceRecognition/PictureRecognition.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="../FaceRecognition/FaceRecognition.h"/>
+    <File Name="../FaceRecognition/PictureRecognition.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug">
     <Project Name="FaceRecognition"/>
@@ -22,7 +22,7 @@
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fpermissive;-fPIC" C_Options=";-Wall;" Assembler="">
-        <IncludePath Value="../libextern/dlib-19.7"/>
+        <IncludePath Value="../libextern/dlib-19.17"/>
         <IncludePath Value="../FaceRecognition"/>
         <Preprocessor Value="DLIB_JPEG_SUPPORT"/>
         <Preprocessor Value="DLIB_NO_GUI_SUPPORT"/>

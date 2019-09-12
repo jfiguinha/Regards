@@ -122,7 +122,7 @@ public:
 	~CPictureCategorie(void);
 	std::vector<int> GetCategorieFromPicture(const char * filename, void * pictureData);
 	std::vector<string> GetLabelCategorieFromPicture(const char * filename, void * pictureData);
-
+    void GetLabel(const int &numLabel, char * labelOut, int size, void * pictureData);
 private:
 	void * pictureDetector;
 };
@@ -135,7 +135,8 @@ public:
 	~CPictureCategorieLoadData(void);
 	bool LoadData(const char * descriptor);
 	void * GetPictureCategorieData();
-
+    void * GetCopyData();
+    void DeleteCopy(void * copyData);
 private:
 	void * pictureData;
 };

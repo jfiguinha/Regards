@@ -57,7 +57,7 @@
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="FaceRecognition">
-    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="No"/>
+    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="Yes"/>
     <Project Name="FaceRecognition" Path="FaceRecognition/FaceRecognition.project" Active="No"/>
     <Project Name="FaceRecognition_mac" Path="FaceRecognition_mac/FaceRecognition_mac.project" Active="No"/>
     <Project Name="FaceRecognition_windows" Path="FaceRecognition_windows/FaceRecognition_windows.project" Active="No"/>
@@ -135,8 +135,9 @@
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
       <Project Name="RawSpeed" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
+      <Project Name="wxIA" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="no">
+    <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>
@@ -196,6 +197,7 @@
       <Project Name="libavcodec" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
       <Project Name="RawSpeed" ConfigName="Release"/>
+      <Project Name="wxIA" ConfigName="Release"/>
       <Project Name="wxIA" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
