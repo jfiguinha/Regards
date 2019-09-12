@@ -8,7 +8,8 @@
 #include <shobjidl.h>
 #include <wx/graphics.h>
 #define USE_WIA_INTERFACE
-
+#else
+#define USE_IA_EVENTS
 #endif
 #include <poppler-page-renderer.h>
 #include <wx/filedlg.h>
@@ -55,16 +56,12 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 #else
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 	menuFile->Append(ID_ACQUIREIMAGENOUI, _("Acquire Image (no ui)..."), _("Acquire an image without user interface"));
-#ifdef USE_IA_EVENTS
-	menuFile->Append(ID_ACQUIREIMAGES, _("Acquire Images..."), _("Acquire multiple images"));
-	menuFile->Append(ID_ACQUIREIMAGESNOUI, _("Acquire Images (no ui)..."), _("Acquire multiple images without user interface"));
 #endif
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
 #ifdef USE_IA_EVENTS
 	menuFile->AppendSeparator();
 	menuFile->AppendCheckItem(ID_PROMPTONGETIMAGE, _("Prompt on wxEVT_IA_GETIMAGE event"), _("Display prompt after acquiring an image"));
 	menuFile->Check(ID_PROMPTONGETIMAGE, TRUE);
-#endif
 #endif
 	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT, _("E&xit\tAlt-X"), _("Quit this program"));
@@ -77,13 +74,13 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	wxMenu *helpMenu = new wxMenu;
 	helpMenu->Append(wxID_ABOUT, _("&About...\tF1"), _("Show about dialog"));
 
-	// now append the freshly created menu to the menu bar…
+	// now append the freshly created menu to the menu barÂ…
 	wxMenuBar *menuBar = new wxMenuBar();
 	menuBar->Append(menuFile, _("&File"));
 	menuBar->Append(menuView, _("&View"));
 	menuBar->Append(helpMenu, _("&Help"));
 
-	// … and attach this menu bar to the frame
+	// Â… and attach this menu bar to the frame
 	SetMenuBar(menuBar);
 
 	// create a status bar just for fun (by default with 1 pane only)
@@ -102,15 +99,11 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 #else
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_ACQUIREIMAGENOUI, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
-#ifdef USE_IA_EVENTS
-	Connect(ID_ACQUIREIMAGES, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImages));
-	Connect(ID_ACQUIREIMAGESNOUI, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImages));
 #endif
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
 #ifdef USE_IA_EVENTS
 	Connect(wxEVT_IA_GETIMAGE, wxIAEventHandler(CScannerFrame::OnGetImage));
 	Connect(wxEVT_IA_UPDATE, wxIAEventHandler(CScannerFrame::OnUpdateStatus));
-#endif
 #endif
 
 	Connect(ID_ZOOMIN, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnZoomIn));
@@ -160,9 +153,9 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 			int pointer = 0;
 			char * data = myimage.data();
 			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
-			for (UINT y = 0; y < h; y++)
+			for (int y = 0; y < h; y++)
 			{
-				for (UINT x = 0; x < w; x++)
+				for (int x = 0; x < w; x++)
 				{
 					imgRGB[pointer + 2] = *data++;  // R
 					imgRGB[pointer + 1] = *data++;   // G
@@ -178,9 +171,9 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 			char * data = myimage.data();
 			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
 			unsigned char *imgAlpha = imageToShow.GetAlpha(); // destination alpha buffer
-			for (UINT y = 0; y < h; y++)
+			for (int y = 0; y < h; y++)
 			{
-				for (UINT x = 0; x < w; x++)
+				for (int x = 0; x < w; x++)
 				{
 					imgRGB[pointer + 2] = *data++;  // R
 					imgRGB[pointer + 1] = *data++;   // G
