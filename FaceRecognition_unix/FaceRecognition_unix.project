@@ -8,10 +8,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="../FaceRecognition/FaceRecognition.cpp"/>
+    <File Name="../FaceRecognition/PictureRecognition.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="../FaceRecognition/FaceRecognition.h"/>
+    <File Name="../FaceRecognition/PictureRecognition.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug">
     <Project Name="FaceRecognition"/>
@@ -22,12 +22,11 @@
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fpermissive;-fPIC" C_Options=";-Wall;" Assembler="">
-        <IncludePath Value="../libextern/dlib-19.7"/>
+        <IncludePath Value="../libextern/dlib-19.17"/>
         <IncludePath Value="../FaceRecognition"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
-        <LibraryPath Value="../FaceRecognition/Release"/>
         <Library Value="FaceRecognition"/>
       </Linker>
       <ResourceCompiler Options=""/>
@@ -36,7 +35,9 @@
       <Compiler Options="-g;-O0;-Wall;" C_Options="-g;-O0;-Wall;" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="../FaceRecognition/Debug"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/libFaceRecognition.so" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
@@ -75,7 +76,9 @@
       <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="-s" Required="yes"/>
+      <Linker Options="-s" Required="yes">
+        <LibraryPath Value="../FaceRecognition/Release"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/libFaceRecognition.so" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>

@@ -117,6 +117,7 @@
     <Project Name="FaceRecognition"/>
     <Project Name="FaceRecognition_unix"/>
     <Project Name="libRegardsBpg_unix"/>
+    <Project Name="wxIA"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -301,6 +302,10 @@
         <Library Value="vpx"/>
         <Library Value="theoraenc"/>
         <Library Value="theoradec"/>
+        <Library Value="wxIA"/>
+        <Library Value="poppler"/>
+        <Library Value="poppler-cpp"/>
+        <Library Value="sane"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -346,6 +351,7 @@
         <LibraryPath Value="../FaceRecognition_unix/Debug"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
+        <LibraryPath Value="../Otherlib/wxIA/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
