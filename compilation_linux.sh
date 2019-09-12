@@ -30,6 +30,7 @@ sudo apt install libva-dev
 sudo apt install libwebp-dev
 sudo apt install libpoppler-dev
 sudo apt install libpoppler-cpp-dev
+sudo apt install libsane-dev
 #sudo apt install ocl-icd-opencl-dev
 
 #Get AMD SDK
