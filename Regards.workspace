@@ -48,6 +48,8 @@
     <Project Name="wxCheckTree" Path="wxCheckTree/wxCheckTree.project" Active="No"/>
     <Project Name="wxSVG" Path="Otherlib/wxSVG/wxSVG.project" Active="No"/>
     <Project Name="wxIA" Path="Otherlib/wxIA/wxIA.project" Active="No"/>
+    <Project Name="wxiscan" Path="Otherlib/wxiscan/wxiscan.project"/>
+    <Project Name="wxPDFDoc" Path="Otherlib/wxPDFDoc/wxPDFDoc.project"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Window">
     <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
@@ -57,14 +59,14 @@
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="FaceRecognition">
-    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="Yes"/>
+    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="No"/>
     <Project Name="FaceRecognition" Path="FaceRecognition/FaceRecognition.project" Active="No"/>
     <Project Name="FaceRecognition_mac" Path="FaceRecognition_mac/FaceRecognition_mac.project" Active="No"/>
     <Project Name="FaceRecognition_windows" Path="FaceRecognition_windows/FaceRecognition_windows.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -136,6 +138,8 @@
       <Project Name="RawSpeed" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
+      <Project Name="wxiscan" ConfigName="Debug"/>
+      <Project Name="wxPDFDoc" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -199,6 +203,8 @@
       <Project Name="RawSpeed" ConfigName="Release"/>
       <Project Name="wxIA" ConfigName="Release"/>
       <Project Name="wxIA" ConfigName="Release"/>
+      <Project Name="wxiscan" ConfigName="Release"/>
+      <Project Name="wxPDFDoc" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
