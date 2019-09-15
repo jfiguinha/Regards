@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="wxPDFDoc" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="include"/>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="src/pdfxml.cpp"/>
+    <File Name="src/pdfutility.cpp"/>
+    <File Name="src/pdftemplate.cpp"/>
+    <File Name="src/pdfrijndael.cpp"/>
+    <File Name="src/pdfprint.cpp"/>
+    <File Name="src/pdfpattern.cpp"/>
+    <File Name="src/pdfparser.cpp"/>
+    <File Name="src/pdfocg.cpp"/>
+    <File Name="src/pdfobjects.cpp"/>
+    <File Name="src/pdflayer.cpp"/>
+    <File Name="src/pdfkernel.cpp"/>
+    <File Name="src/pdfimage.cpp"/>
+    <File Name="src/pdfgraphics.cpp"/>
+    <File Name="src/pdfgradient.cpp"/>
+    <File Name="src/pdfform.cpp"/>
+    <File Name="src/pdffontvolt.cpp"/>
+    <File Name="src/pdffontsubsettruetype.cpp"/>
+    <File Name="src/pdffontsubsetcff.cpp"/>
+    <File Name="src/pdffontparsertype1.cpp"/>
+    <File Name="src/pdffontparsertruetype.cpp"/>
+    <File Name="src/pdffontparser.cpp"/>
+    <File Name="src/pdffontmanager.cpp"/>
+    <File Name="src/pdffontextended.cpp"/>
+    <File Name="src/pdffontdetails.cpp"/>
+    <File Name="src/pdffontdescription.cpp"/>
+    <File Name="src/pdffontdatatype1.cpp"/>
+    <File Name="src/pdffontdatatype0.cpp"/>
+    <File Name="src/pdffontdatatruetype.cpp"/>
+    <File Name="src/pdffontdataopentype.cpp"/>
+    <File Name="src/pdffontdatacore.cpp"/>
+    <File Name="src/pdffontdata.cpp"/>
+    <File Name="src/pdffont.cpp"/>
+    <File Name="src/pdfencrypt.cpp"/>
+    <File Name="src/pdfencoding.cpp"/>
+    <File Name="src/pdfdocument.cpp"/>
+    <File Name="src/pdfdecode.cpp"/>
+    <File Name="src/pdfdc.cpp"/>
+    <File Name="src/pdfcolour.cpp"/>
+    <File Name="src/pdfcffindex.cpp"/>
+    <File Name="src/pdfcffdecoder.cpp"/>
+    <File Name="src/pdfbarcode.cpp"/>
+    <File Name="src/pdfannotation.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-fopenmp;-Wall;-std=gnu++11;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-Wno-narrowing;-fpermissive" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../../include"/>
+        <IncludePath Value="include"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="../../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall;$(shell wx-config --cxxflags --debug=no --unicode=yes);" C_Options="-O2;-Wall;$(shell wx-config --cxxflags --debug=no --unicode=yes);" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options=";$(shell wx-config --libs --debug=no --unicode=yes)" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
