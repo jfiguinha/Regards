@@ -8,4 +8,6 @@ public:
 	virtual void ShowAbout() = 0;
 	virtual void HideAbout() = 0;
 	virtual int Close() = 0;
+    virtual wxString GetImageFilter() = 0;
+    virtual wxString GetAppName() = 0;
 };
