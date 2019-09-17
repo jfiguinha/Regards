@@ -9,7 +9,7 @@
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <SqlThumbnailVideo.h>
-
+#include <picture_id.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 
@@ -299,9 +299,20 @@ void CThumbnailVideo::SetVideoThumbnail(const wxString &videoFile, vector<CImage
 			//thumbnailData->SetStorage(nullptr);
 			thumbnailData->SetNumPhotoId(j);
 			thumbnailData->SetNumElement(j);
-			thumbnailData->SetTypeElement(TYPEVIDEO);
-			thumbnailData->SetPercent(thumbnail->percent);
-			thumbnailData->SetTimePosition(thumbnail->timePosition);
+            CLibPicture libPicture;
+            int iFormat = libPicture.TestImageFormat(videoFile);
+            if(iFormat == TIFF || iFormat == PDF)     
+            {
+                thumbnailData->SetTypeElement(TYPEPHOTO);
+                wxString filename = "Page " + to_string(j) + "/" + to_string(pictureThumbnail->size());
+                thumbnailData->SetFilename(filename);
+            }
+            else
+            {
+                thumbnailData->SetTypeElement(TYPEVIDEO);
+                thumbnailData->SetPercent(thumbnail->percent);
+                thumbnailData->SetTimePosition(thumbnail->timePosition);
+            }
 			thumbnailData->SetBitmap(thumbnail->image);
 
 			CIcone * pBitmapIcone = new CIcone(nullptr);

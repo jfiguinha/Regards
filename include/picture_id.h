@@ -12,7 +12,6 @@
 #define JPEG2000 11
 #define PCD 12
 #define PSD 13
-#define PDF 14
 #define PGX 15
 #define MNG 16
 #define PPM 17
@@ -32,6 +31,7 @@
 #define JBIG 27
 #define EXR 28
 #define HDR 29
+#define PDF 30
 
 #define AVI 101
 #define MOV 102

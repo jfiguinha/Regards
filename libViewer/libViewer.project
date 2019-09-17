@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="10.0.0">
-  <VirtualDirectory Name="Scan">
-    <File Name="ScannerFrame.h"/>
-    <File Name="ScannerFrame.cpp"/>
-    <File Name="ImageWindow.h"/>
-    <File Name="ImageWindow.cpp"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -32,6 +26,12 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Scan">
+    <File Name="ScannerFrame.h"/>
+    <File Name="ScannerFrame.cpp"/>
+    <File Name="ImageWindow.h"/>
+    <File Name="ImageWindow.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="CheckVersion">
     <File Name="CheckVersion.h"/>
     <File Name="CheckVersion.cpp"/>
@@ -146,8 +146,6 @@
     <File Name="ViewerParam.cpp"/>
     <File Name="ViewerParamInit.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall" Assembler="">
@@ -195,11 +193,13 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
+        <IncludePath Value="../Otherlib/wxiscan"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
         <Preprocessor Value="USECURL"/>
+        <Preprocessor Value="__WXPDFDOC__"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -283,4 +283,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
