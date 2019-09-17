@@ -121,7 +121,7 @@ namespace Regards
 
 			void OnRefreshData(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
-			void LoadAnimationBitmap(const int &numFrame);
+			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 			void OnSize(wxSizeEvent& event);
             void AnimationSetPosition(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
@@ -153,6 +153,8 @@ namespace Regards
 			bool isFullscreen;
 			bool processLoadPicture;
 			wxString filename;
+            int oldAnimationPosition = -1;
+            wxString oldFilename = L"";
 			int width;
 			int height;
 

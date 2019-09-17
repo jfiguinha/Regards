@@ -25,6 +25,7 @@
 #include <InterpolationFilterSelect.h>
 #include <FilterData.h>
 #include "ScannerFrame.h"
+#include <wx/app.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -738,12 +739,24 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 void CViewerFrame::OnScanPage(wxCommandEvent& WXUNUSED(event))
 {
 	// create the main application window
-	CScannerFrame *frame = new CScannerFrame(_("wxIA Image Acquistion Test Program"),
+	CScannerFrame *scanFrame = new CScannerFrame(_("wxIA Image Acquistion Test Program"),
 		wxPoint(-1, -1), wxSize(450, 340));
+    
+    /*
+    wxIScanFrame * scanFrame = new wxIScanFrame(this, mainInterface);
+    if( scanFrame == NULL )
+    {
+        ::wxLogFatalError( _( "Failed to create main window." ) );
 
+        // Program termination.
+        return;
+    }
+     * */
+    scanFrame->Show();
+    //scanFrame->RestoreSashSettings();
 	// and show it (the frames, unlike simple controls, are not shown when
 	// created initially)
-	frame->Show(TRUE);
+    //wxApp::SetTopWindow( scanFrame );
 }
 
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))

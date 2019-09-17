@@ -121,69 +121,8 @@ bool MyApp::OnInit()
 
 	sqlite3_initialize();
 
-	//wxInitAllImageHandlers();
-   // Install image handlers.
-    AddImageHandler( new wxBMPHandler );
-#if wxUSE_LIBPNG
-    AddImageHandler( new wxPNGHandler );
-#endif
-#if wxUSE_LIBJPEG
-    AddImageHandler( new wxJPEGHandler );
-#endif
-#if wxUSE_LIBTIFF
-    AddImageHandler( new wxTIFFHandler );
-#endif
-#if wxUSE_GIF
-    AddImageHandler( new wxGIFHandler );
-#endif
-#if wxUSE_PCX
-    AddImageHandler( new wxPCXHandler );
-#endif
-#if wxUSE_PNM
-    AddImageHandler( new wxPNMHandler );
-#endif
-#if wxUSE_XPM
-    AddImageHandler( new wxXPMHandler );
-#endif
-#if wxUSE_ICO_CUR
-    AddImageHandler( new wxICOHandler );
-    AddImageHandler( new wxCURHandler );
-    AddImageHandler( new wxANIHandler );
-#endif
-#if wxUSE_PDF
-    AddImageHandler( new wxPDFHandler );
-#endif    
-    
-    /*
-	wxArrayString files;
+	wxInitAllImageHandlers();
 
-	wxDir::GetAllFiles("/home/figuinha/developpement/git/Regards/Otherlib/wxiscan", &files, wxEmptyString, wxDIR_FILES);
-
-	for (wxString file : files)
-	{    
-        wxString str;
-        wxString output = file;
-        wxTextFile      tfile;
-        wxTextFile      tfile_out;
-        tfile.Open(file);
-        output.Replace("wxiscan","wxiscan_new");
-        tfile_out.Open(output);
-        // read the first line
-        str = tfile.GetFirstLine();
-        output = str.SubString(6,str.size());
-        tfile_out.AddLine(output);
-        while(!tfile.Eof())
-        {
-            str = tfile.GetNextLine();
-            output = str.SubString(6,str.size());
-            tfile_out.AddLine(output);
-        }
-        
-        tfile_out.Write();
-        tfile_out.Close();
-    }
-    
-    exit(0);*/
     
 #ifdef __WXMSW__
 

@@ -28,7 +28,7 @@ public:
 	bool TestIsPicture(const wxString & szFileName);
     bool TestIsAnimation(const wxString & szFileName);
 	int GetPictureDimensions(const  wxString & fileName, int & width, int & height, int & rotation);
-	CImageLoadingFormat * LoadPicture(const  wxString & szFileName,const bool &isThumbnail = false);
+	CImageLoadingFormat * LoadPicture(const  wxString & szFileName, const bool &isThumbnail = false, const int &numPicture = 0);
 	int SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap);
 	int GetMetadata(const wxString &filename, uint8_t * & data, long & size);
 	//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
@@ -69,6 +69,7 @@ public:
     
 private:
 
+    void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height);
 	uint8_t * readfile(const wxString & fileName, size_t&size);
 	void writefile(const wxString & fileName, uint8_t * data, size_t & size);
 	//-----------------------------------------------------------------------------

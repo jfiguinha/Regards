@@ -3,6 +3,7 @@
 //
 #include "libPicture.h"
 #include <RegardsBitmap.h>
+#include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
 #include "CPCD.h"
 #include <ImageVideoThumbnail.h>
@@ -34,7 +35,7 @@
 #if defined(LIBRAW)
 #include "raw.h"
 #endif
-
+#include <wx/wxpoppler.h>
 
 
 #include <ximage.h>
@@ -203,6 +204,9 @@ bool CLibPicture::TestIsAnimation(const wxString & szFileName)
 	case ANI:
 		returnValue = true;
 		break;
+	case PDF:
+        returnValue = true;
+		break;        
 	case TIFF:
 		{
 			CxImage * image = new CxImage(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("tif"));
@@ -822,25 +826,6 @@ CRegardsBitmap * CLibPicture::ConvertwxImageToRegardsBitmap(const wxImage & imag
         wxString error = _image->GetLastError();
         if (error == "")
             bitmap = ConvertCXImageToRegardsBitmap(_image);
-        
-        
-		/*
-        bitmap = new CRegardsBitmap(image.GetWidth(), image.GetHeight());
-        unsigned char *rgb   = image.GetData();
-        unsigned char *alpha = image.GetAlpha();
-        uint8_t *result = bitmap->GetPtBitmap();//(unsigned char *) malloc(image.GetWidth() * image.GetHeight() * 4);
-
-        for (unsigned int h = 0; h < image.GetHeight(); h++) 
-          for (unsigned int w = 0; w < image.GetWidth(); w++) {
-             *result++ = *rgb++;   // copy red value
-             *result++ = *rgb++;   // copy green value
-             *result++ = *rgb++;   // copy blue value
-             if(alpha != nullptr)
-                *result++ = *alpha++; // copy alpha channel
-             else
-                *result++ = 0;
-        }
-        */
     }
 
     return bitmap;
@@ -1006,6 +991,90 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxStrin
 	return listThumbnail;
 }
 
+void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height)
+{
+    wxPoppler poppler;
+    wxImage image;
+    wxBitmapType bitmapTypeWxWidget;
+    
+    
+    
+     int m_ani_images = 0;
+    //wxBitmap * my_horse_ani = nullptr;
+    if(bitmapType == PDF)
+    {
+        poppler.Open(szFileName);
+        m_ani_images = poppler.GetPageCount();
+        poppler.SetDpi(75);
+    }
+    else
+    {
+        if(bitmapType == TIFF)
+            bitmapTypeWxWidget = wxBITMAP_TYPE_TIFF;
+        else
+            bitmapTypeWxWidget = wxBITMAP_TYPE_ANI;
+            
+        m_ani_images = wxImage::GetImageCount(szFileName, bitmapTypeWxWidget);
+    }
+    if (m_ani_images == 0)
+    {
+        wxLogError(wxT("No ANI-format images found"));
+    }
+
+    for (auto i = 0; i < m_ani_images; i++)
+    {
+        bool returnValue = false;
+        image.Destroy();
+        if(bitmapType == PDF)
+        {
+            returnValue = poppler.SelectPage(i);
+            if(returnValue)
+                returnValue = poppler.RenderPage();
+                
+            if(returnValue)
+                image = poppler.GetImage();
+        }
+        else
+        {
+            returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
+        }
+            
+        
+        if (!returnValue)
+        {
+            wxString tmp = wxT("Can't load image number ");
+            tmp << i;
+            wxLogError(tmp);
+        }
+        else
+        {
+            
+            //wxMemoryDC memdc;
+            int bx, by, bw, bh;
+
+            float scale_x = float(width) / float(image.GetWidth());
+            float scale_y = float(height) / float(image.GetHeight());
+            
+            double m_zoomFactor = min(scale_x, scale_y);
+            bw = (int)(image.GetWidth() * m_zoomFactor);
+            bh = (int)(image.GetHeight() * m_zoomFactor);
+            wxImage bitmapResize = image.ResampleBicubic(bw, bh);            
+            CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
+            //CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
+            CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+            imageVideoThumbnail->image = new CImageLoadingFormat();
+            imageVideoThumbnail->image->SetFilename(szFileName);
+            imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+            delete bitmap;
+            imageVideoThumbnail->rotation = 0;
+            imageVideoThumbnail->delay = 4;
+            imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
+            imageVideoThumbnail->timePosition = i;
+            listThumbnail->push_back(imageVideoThumbnail);
+        }
+    }  
+}
+
 void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail)
 {
 	int iFormat = TestImageFormat(szFileName);
@@ -1053,81 +1122,10 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 			}
 			break;
 #endif
+            case TIFF:
+            case PDF:
 			case ANI:
-				{
-                    wxImage image;
-					//wxBitmap * my_horse_ani = nullptr;
-					int m_ani_images = wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_ANI);
-					if (m_ani_images == 0)
-					{
-						wxLogError(wxT("No ANI-format images found"));
-					}
-	
-					for (auto i = 0; i < m_ani_images; i++)
-					{
-						image.Destroy();
-						if (!image.LoadFile(szFileName, wxBITMAP_TYPE_ANI, i))
-						{
-							wxString tmp = wxT("Can't load image number ");
-							tmp << i;
-							wxLogError(tmp);
-						}
-						else
-						{
-							CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(image);
-							bitmap->SetFilename(szFileName);
-							CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
-							imageVideoThumbnail->image = new CImageLoadingFormat();
-							imageVideoThumbnail->image->SetFilename(szFileName);
-							imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
-							delete bitmap;
-							imageVideoThumbnail->rotation = 0;
-							imageVideoThumbnail->delay = 4;
-							imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
-							imageVideoThumbnail->timePosition = i;
-							listThumbnail->push_back(imageVideoThumbnail);
-						}
-					}
-				}
-				break;
-
-			case TIFF:
-				{
-					wxImage image;
-					//wxBitmap * my_horse_ani = nullptr;
-					int m_ani_images = wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_TIFF);
-					if (m_ani_images == 0)
-					{
-						wxLogError(wxT("No ANI-format images found"));
-					}
-
-					for (auto i = 0; i < m_ani_images; i++)
-					{
-						image.Destroy();
-						if (!image.LoadFile(szFileName, wxBITMAP_TYPE_TIFF, i))
-						{
-							wxString tmp = wxT("Can't load image number ");
-							tmp << i;
-							wxLogError(tmp);
-						}
-						else
-						{
-							CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(image);
-                            bitmap->SetFilename(szFileName);
-							CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
-							imageVideoThumbnail->image = new CImageLoadingFormat();
-							imageVideoThumbnail->image->SetFilename(szFileName);
-							imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
-							delete bitmap;
-							imageVideoThumbnail->rotation = 0;
-							imageVideoThumbnail->delay = 4;
-							imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
-							imageVideoThumbnail->timePosition = i;
-							listThumbnail->push_back(imageVideoThumbnail);
-						}
-					}
-
-				}
+                LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail);
 				break;
 
 			case GIF:
@@ -1154,41 +1152,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 							listThumbnail->push_back(imageVideoThumbnail);
 						}
 					}
-					delete _cxImage;
-                    /*
-					wxImage image;
-					//wxBitmap * my_horse_ani = nullptr;
-					int m_ani_images = wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_GIF);
-					if (m_ani_images == 0)
-					{
-						wxLogError(wxT("No ANI-format images found"));
-					}
-
-					for (auto i = 0; i < m_ani_images; i++)
-					{
-						image.Destroy();
-						if (!image.LoadFile(szFileName, wxBITMAP_TYPE_GIF, i))
-						{
-							wxString tmp = wxT("Can't load image number ");
-							tmp << i;
-							wxLogError(tmp);
-						}
-						else
-						{
-							CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(image);
-							bitmap->SetFilename(szFileName);
-							CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
-							imageVideoThumbnail->image = new CImageLoadingFormat();
-							imageVideoThumbnail->image->SetFilename(szFileName);
-							imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
-							delete bitmap;
-							imageVideoThumbnail->rotation = 0;
-							imageVideoThumbnail->delay = 4;
-							imageVideoThumbnail->percent = i / m_ani_images;
-							imageVideoThumbnail->timePosition = i;
-							listThumbnail->push_back(imageVideoThumbnail);
-						}
-					}      */              
+					delete _cxImage;              
 					
 				}
 				break;
@@ -1445,7 +1409,7 @@ float CLibPicture::CalculPictureRatio(const int &pictureWidth, const int &pictur
 //------------------------------------------------------------------------------
 //Chargement d'une image par son nom
 //------------------------------------------------------------------------------
-CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const bool &isThumbnail)
+CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const bool &isThumbnail, const int &numPicture)
 {
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD tickCount = GetTickCount();
@@ -1900,11 +1864,41 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			bitmap->SetPicture(_cxImage);
 			}
 			break;
+            
+        case PDF:
+			{
+                bool value = false;
+                wxPoppler poppler;
+                value = poppler.Open(fileName);
+                if(value)
+                    value = poppler.SelectPage(numPicture);
+                    
+                if(value)
+                    value = poppler.SetDpi(300);
+                    
+                if(value)
+                    value = poppler.RenderPage();
+                    
+                if(value)
+                {
+                    wxImage * image = new wxImage(poppler.GetImage());
+                    bitmap->SetPicture(image);
+                }
+			}
+			break;
+
+        case ANI:
+			{
+				wxImage * image = new wxImage();
+				image->LoadFile(fileName, wxBITMAP_TYPE_ANI, numPicture);
+				bitmap->SetPicture(image);
+			}
+			break;        
 
 		case TIFF:
 			{
 				wxImage * image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_TIFF);
+				image->LoadFile(fileName, wxBITMAP_TYPE_TIFF, numPicture);
 				bitmap->SetPicture(image);
 			}
 			break;
@@ -1920,7 +1914,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
         case GIF:
 			{
 				CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"));
-				bitmap->SetPicture(_cxImage);
+                if (_cxImage->GetNumFrames() > 1)
+                {
+                    CxImage * frame = _cxImage->GetFrame(numPicture);
+                    bitmap->SetPicture(frame);                    
+                }
+                else
+                    bitmap->SetPicture(_cxImage);
 			}
      		break;
             
@@ -2263,6 +2263,20 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 	case TIFF:
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tif"), true);
 		break;
+            
+    case PDF:
+        {
+            wxPoppler poppler;
+            poppler.Open(fileName);
+            poppler.SetDpi(300);
+            poppler.SelectPage(0);
+            poppler.RenderPage();
+            imageWx = poppler.GetImage();
+            typeImage = TYPE_IMAGE_WXIMAGE;
+            
+        }
+        //imageWx.LoadFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF); typeImage = TYPE_IMAGE_WXIMAGE;
+        break;            
             
     case IFF:
         imageWx.LoadFile(fileName, wxBITMAP_TYPE_IFF); typeImage = TYPE_IMAGE_WXIMAGE;

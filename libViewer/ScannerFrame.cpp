@@ -8,18 +8,14 @@
 #include <shobjidl.h>
 #include <wx/graphics.h>
 #define USE_WIA_INTERFACE
-#else
-#define USE_IA_EVENTS
 #endif
-#include <poppler-page-renderer.h>
 #include <wx/filedlg.h>
-#include <poppler-document.h>
-#include <poppler-page.h>
 #include "ImageWindow.h"
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>
 
+#include <wx/wxsanedlg.h>
 
 #define MAX_ZOOM	10.0
 #define MIN_ZOOM	0.1
@@ -48,15 +44,12 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	long style) :
 	wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
-	// create a menu bar
+
+    scanSane = new wxScanSane();	
+    // create a menu bar
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
-#ifdef USE_WIA_INTERFACE
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
-#else
-	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
-	menuFile->Append(ID_ACQUIREIMAGENOUI, _("Acquire Image (no ui)..."), _("Acquire an image without user interface"));
-#endif
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
 #ifdef USE_IA_EVENTS
 	menuFile->AppendSeparator();
@@ -80,7 +73,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	menuBar->Append(menuView, _("&View"));
 	menuBar->Append(helpMenu, _("&Help"));
 
-	//  and attach this menu bar to the frame
+	//and attach this menu bar to the frame
 	SetMenuBar(menuBar);
 
 	// create a status bar just for fun (by default with 1 pane only)
@@ -93,109 +86,23 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	// dynamically connect all event handles
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
-	Connect(ID_OPENIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOpenImage));
-#ifdef USE_WIA_INTERFACE
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
-#else
-	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
-	Connect(ID_ACQUIREIMAGENOUI, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
-#endif
+#ifndef USE_WIA_INTERFACE    
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
-#ifdef USE_IA_EVENTS
-	Connect(wxEVT_IA_GETIMAGE, wxIAEventHandler(CScannerFrame::OnGetImage));
-	Connect(wxEVT_IA_UPDATE, wxIAEventHandler(CScannerFrame::OnUpdateStatus));
 #endif
-
 	Connect(ID_ZOOMIN, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnZoomIn));
 	Connect(ID_ZOOMOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnZoomOut));
-	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
-
-#ifndef USE_WIA_INTERFACE
-#ifdef USE_IA_EVENTS
-	if (wxIAManager::Get().GetDefaultProvider())
-		wxIAManager::Get().GetDefaultProvider()->SetEvtHandler(this);
-#endif
-#endif
+    Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
+    
+    
 }
 
-// Resolution to use for rasterization, in DPI
-#define RESOLUTION_DPI  300
-
-void CScannerFrame::OnOpenImage(wxCommandEvent& event)
+CScannerFrame::~CScannerFrame()
 {
-	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-			"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea...
-
-	wxString filePath = openFileDialog.GetPath();
-
-	poppler::document * doc1 = poppler::document::load_from_file(filePath.ToStdString());
-	if (!doc1)
-	{
-		//fprintf(stderr, "Error opening %s: %s\n", filePath.c_str(), err->message);
-		return;
-	}
-	int nbPage = doc1->pages();
-	
-	for (int i = 0; i < nbPage; i++)
-	{
-		poppler::page * pageToRender = doc1->create_page(i);
-		poppler::page_renderer popplerRenderer;
-		popplerRenderer.set_render_hint(poppler::page_renderer::text_antialiasing);
-		poppler::image myimage = popplerRenderer.render_page(pageToRender, RESOLUTION_DPI, RESOLUTION_DPI);
-		cout << "created image of  " << myimage.width() << "x" << myimage.height() << "\n";
-		int w = myimage.width();
-		int h = myimage.height();
-		wxImage imageToShow(w, h);
-		if (myimage.format() == poppler::image::format_rgb24)
-		{
-			int pointer = 0;
-			char * data = myimage.data();
-			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
-			for (int y = 0; y < h; y++)
-			{
-				for (int x = 0; x < w; x++)
-				{
-					imgRGB[pointer + 2] = *data++;  // R
-					imgRGB[pointer + 1] = *data++;   // G
-					imgRGB[pointer + 0] = *data++;   // B
-					pointer += 3;
-				}
-			}
-			//Mat(myimage.height(), myimage.width(), CV_8UC3, myimage.data()).copyTo(cvimg);
-		}
-		else if (myimage.format() == poppler::image::format_argb32) {
-			imageToShow.InitAlpha();
-			int pointer = 0;
-			char * data = myimage.data();
-			unsigned char *imgRGB = imageToShow.GetData();    // destination RGB buffer
-			unsigned char *imgAlpha = imageToShow.GetAlpha(); // destination alpha buffer
-			for (int y = 0; y < h; y++)
-			{
-				for (int x = 0; x < w; x++)
-				{
-					imgRGB[pointer + 2] = *data++;  // R
-					imgRGB[pointer + 1] = *data++;   // G
-					imgRGB[pointer + 0] = *data++;   // B
-					pointer += 3;
-					if (imgAlpha)
-						*imgAlpha++ = *data++;
-				}
-			}
-		}
-		else {
-			cerr << "PDF format no good\n";
-		}
-
-
-		m_imageWin->SetImage(imageToShow);
-		delete pageToRender;
-		break;
-	}
-
-	delete doc1;
-
+#ifndef USE_WIA_INTERFACE
+    if(scanSane != nullptr)
+        delete scanSane;
+#endif
 }
 
 // event handlers
@@ -217,74 +124,19 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 #ifndef USE_WIA_INTERFACE
 void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
 {
-	wxIAProvider *provider = wxIAManager::Get().GetDefaultProvider();
-	if (!provider)
-		return;
 
-	wxIAReturnCode rc = provider->SelectSource();
-	if (rc != wxIA_RC_SUCCESS)
-	{
-		wxLogError(wxIAManager::Get().GetReturnCodeDesc(rc));
-		return;
-	}
-
-	wxIASourceInfo source = provider->GetSelSourceInfo();
-
-	wxString msg = wxString::Format(_("Name: %s\nModel: %s\nVendor: %s\nType: %d"),
-		source.GetName(), source.GetModel(),
-		source.GetVendor(), source.GetType());
-
-	wxMessageBox(msg, _("Selected Source Information"), wxOK, this);
+    scanSane->SelectSource("", true, this);
 }
 
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
-	wxIAProvider *provider = wxIAManager::Get().GetDefaultProvider();
-
-	if (!provider || !provider->IsSourceSelected())
-		return;
-	wxIAUIMode uiMode;
-	wxIAReturnCode rc;
-
-	if (event.GetId() == ID_ACQUIREIMAGE)
-		uiMode = wxIA_UIMODE_NORMAL;
-	else
-		uiMode = wxIA_UIMODE_NONE;
-
-	m_imageCount = 1;
-
-	rc = provider->AcquireImage(uiMode, this);
-
-#ifndef USE_IA_EVENTS
-	if (rc == wxIA_RC_SUCCESS)
-		m_imageWin->SetImage(provider->GetImage());
-#endif
-	if (rc != wxIA_RC_SUCCESS)
-		wxLogError(wxIAManager::Get().GetReturnCodeDesc(rc));
+    wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
+    if (d.ShowModal() == wxID_OK)
+    {
+        m_imageWin->SetImage(d.GetImage());
+    }
 }
 
-#ifdef USE_IA_EVENTS
-void CScannerFrame::OnAcquireImages(wxCommandEvent& event)
-{
-	wxIAProvider *provider = wxIAManager::Get().GetDefaultProvider();
-
-	if (!provider || !provider->IsSourceSelected())
-		return;
-
-	m_imageCount = wxGetNumberFromUser(_("Enter number of images to acquire"),
-		_("Count:"), _("Acquire Images"), 1, 0, 10, this);
-	if (m_imageCount <= 0)
-		return;
-
-	wxIAUIMode uiMode = event.GetId() == ID_ACQUIREIMAGES ?
-		wxIA_UIMODE_NORMAL : wxIA_UIMODE_NONE;
-
-	wxIAReturnCode rc = provider->AcquireImages(m_imageCount, uiMode, this);
-	if (rc != wxIA_RC_SUCCESS)
-		wxLogError(wxIAManager::Get().GetReturnCodeDesc(rc));
-
-}
-#endif
 #else
 
 wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd)
@@ -384,22 +236,17 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 
 
 #endif
+
 void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	switch (event.GetId())
 	{
 #ifndef USE_WIA_INTERFACE
 	case ID_ACQUIREIMAGE:
-	case ID_ACQUIREIMAGENOUI:
-#ifdef USE_IA_EVENTS
-	case ID_ACQUIREIMAGES:
-	case ID_ACQUIREIMAGESNOUI:
-#endif
-		event.Enable(wxIAManager::Get().GetDefaultProvider() &&
-			wxIAManager::Get().GetDefaultProvider()->IsSourceSelected());
-		break;
-	case ID_SELECTSOURCE:
-		event.Enable(wxIAManager::Get().GetDefaultProvider());
+        if(scanSane != nullptr)
+            event.Enable(scanSane->IsSourceSelected());
+        else
+            event.Enable(false);
 		break;
 #endif
 	case ID_ZOOMIN:
@@ -411,25 +258,6 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 		break;
 	}
 }
-#ifndef USE_WIA_INTERFACE
-#ifdef USE_IA_EVENTS
-void CScannerFrame::OnGetImage(wxIAEvent& event)
-{
-	m_imageCount--;
-	m_imageWin->SetImage(event.GetProvider()->GetImage());
-
-	if (GetMenuBar()->IsChecked(ID_PROMPTONGETIMAGE) &&
-		m_imageCount && wxMessageBox(_("Got image, continue?"), _("Acquire Image"), wxYES_NO, this) != wxYES)
-		event.Abort(TRUE);
-}
-
-void CScannerFrame::OnUpdateStatus(wxIAEvent& event)
-{
-	SetStatusText(wxString::Format(_("%s %d of %d"), event.GetText(),
-		event.GetQuantum(), event.GetSpan()));
-}
-#endif
-#endif
 
 void CScannerFrame::OnZoomIn(wxCommandEvent& WXUNUSED(event))
 {

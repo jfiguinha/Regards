@@ -14,6 +14,7 @@
 #include <window_id.h>
 #include <ParamInit.h>
 #include <StatusText.h>
+#include <picture_id.h>
 #include "PictureElement.h"
 #include "ThumbnailMessage.h"
 
@@ -32,6 +33,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 	filename = L"";
 	width = 0;
 	height = 0;
+
 	isDiaporama = false;
     showToolbar = true;
 	checkValidity = false;
@@ -157,7 +159,7 @@ void CViewerWindow::OnTimerAnimation(wxTimerEvent& event)
 {
     printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
 	SetVideoPosition(animationPosition);
-	LoadAnimationBitmap(animationPosition);
+	LoadAnimationBitmap(filename, animationPosition);
 	animationPosition++;
 	if (animationPosition < listThumbnail.size())
 	{
@@ -204,7 +206,7 @@ void CViewerWindow::AnimationPictureNext()
 	if (animationPosition >= listThumbnail.size())
 		animationPosition = listThumbnail.size() - 1;
 	SetVideoPosition(animationPosition);
-	LoadAnimationBitmap(animationPosition);
+	LoadAnimationBitmap(filename, animationPosition);
 }
 
 void CViewerWindow::AnimationPicturePrevious()
@@ -213,7 +215,7 @@ void CViewerWindow::AnimationPicturePrevious()
 	if (animationPosition < 0)
 		animationPosition = 0;
 	SetVideoPosition(animationPosition);
-	LoadAnimationBitmap(animationPosition);
+	LoadAnimationBitmap(filename, animationPosition);
 }
 
 CViewerWindow::~CViewerWindow()
@@ -352,7 +354,7 @@ void CViewerWindow::SetPosition(const long &timePosition)
 	else
 	{
 		animationPosition = timePosition;
-		LoadAnimationBitmap(timePosition);
+		LoadAnimationBitmap(filename, timePosition);
 	}
 }
 
@@ -511,7 +513,7 @@ void CViewerWindow::AnimationSetPosition(wxCommandEvent& event)
 void CViewerWindow::StartAnimation()
 {
 	animationPosition = 0;
-    LoadAnimationBitmap(0);
+    LoadAnimationBitmap(filename, 0);
 	animationTimer->Start(DELAY_ANIMATION, wxTIMER_ONE_SHOT);
 
 
@@ -536,38 +538,53 @@ void CViewerWindow::StopLoadingPicture()
 	}
 }
 
-void CViewerWindow::LoadAnimationBitmap(const int &numFrame)
+void CViewerWindow::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
 {
+    if(numFrame == oldAnimationPosition && filename == oldFilename)
+        return;
+        
+    oldFilename = filename;
+    oldAnimationPosition = numFrame;
+    
 	printf("CViewerWindow::LoadAnimationBitmap %d \n", numFrame);
 	if (numFrame < listThumbnail.size() && numFrame >= 0)
 	{
-		CImageVideoThumbnail * thumbnail = listThumbnail.at(numFrame);
-		if (thumbnail != nullptr)
-		{
-			CImageLoadingFormat * image = thumbnail->image;
-			if (image != nullptr)
-			{
-				CImageLoadingFormat * bitmap = new CImageLoadingFormat();
-				switch (thumbnail->image->GetFormat())
-				{
-				case TYPE_IMAGE_CXIMAGE:
-					bitmap->SetPicture(image->GetCxImage());
-					break;
-				case TYPE_IMAGE_WXIMAGE:
-					bitmap->SetPicture(image->GetwxImage());
-					break;
-				case TYPE_IMAGE_REGARDSIMAGE:
-					bitmap->SetPicture(image->GetRegardsBitmap());
-					break;
-				case TYPE_IMAGE_REGARDSJPEGIMAGE:
-					bitmap->SetPicture(image->GetwxImage());
-					break;
-				}
-				bitmap->SetFilename(thumbnail->image->GetFilename());
-				previewInfosWnd->SetBitmap(bitmap, false, true);
-			}
-
-		}
+        CLibPicture libPicture;
+        int iFormat = libPicture.TestImageFormat(filename);
+        if(iFormat == TIFF || iFormat == PDF)
+        {
+            CImageLoadingFormat * image = libPicture.LoadPicture(filename, false, numFrame);
+            previewInfosWnd->SetBitmap(image, false, true);
+        }
+        else
+        {
+            CImageVideoThumbnail * thumbnail = listThumbnail.at(numFrame);
+            if (thumbnail != nullptr)
+            {
+                CImageLoadingFormat * image = thumbnail->image;
+                if (image != nullptr)
+                {
+                    CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+                    switch (thumbnail->image->GetFormat())
+                    {
+                    case TYPE_IMAGE_CXIMAGE:
+                        bitmap->SetPicture(image->GetCxImage());
+                        break;
+                    case TYPE_IMAGE_WXIMAGE:
+                        bitmap->SetPicture(image->GetwxImage());
+                        break;
+                    case TYPE_IMAGE_REGARDSIMAGE:
+                        bitmap->SetPicture(image->GetRegardsBitmap());
+                        break;
+                    case TYPE_IMAGE_REGARDSJPEGIMAGE:
+                        bitmap->SetPicture(image->GetwxImage());
+                        break;
+                    }
+                    bitmap->SetFilename(thumbnail->image->GetFilename());
+                    previewInfosWnd->SetBitmap(bitmap, false, true);
+                }
+            }
+        }
 	}
    // RedrawBarPos();
 }
@@ -580,7 +597,8 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
     isVideo = false;
 	isAnimation = true;
 	isPicture = false;
-
+    oldAnimationPosition = -1;
+    oldFilename = L"";
 	if (listThumbnail.size() > 0)
 	{
 		for (int j = 0; j < listThumbnail.size(); j++)
@@ -606,7 +624,7 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
 		animationPosition = 0;
         
 	}  
-    LoadAnimationBitmap(0);
+    LoadAnimationBitmap(filename, 0);
 	if(refresh)
 		RedrawBarPos();
 
