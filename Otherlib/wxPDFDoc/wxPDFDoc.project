@@ -1,11 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="wxPDFDoc" Version="10.0.0" InternalType="Library">
+  <VirtualDirectory Name="wxPoppler">
+    <File Name="include/wx/wxpoppler.h"/>
+    <File Name="src/wxpoppler.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00010001N0005Debug000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="include"/>
+  <VirtualDirectory Name="include">
+    <File Name="include/wx/pdfxml.h"/>
+    <File Name="include/wx/pdfutility.h"/>
+    <File Name="include/wx/pdftemplate.h"/>
+    <File Name="include/wx/pdfspotcolour.h"/>
+    <File Name="include/wx/pdfshape.h"/>
+    <File Name="include/wx/pdfrijndael.h"/>
+    <File Name="include/wx/pdfproperties.h"/>
+    <File Name="include/wx/pdfprint.h"/>
+    <File Name="include/wx/pdfpattern.h"/>
+    <File Name="include/wx/pdfparser.h"/>
+    <File Name="include/wx/pdfobjects.h"/>
+    <File Name="include/wx/pdflinks.h"/>
+    <File Name="include/wx/pdflinestyle.h"/>
+    <File Name="include/wx/pdflayer.h"/>
+    <File Name="include/wx/pdfinfo.h"/>
+    <File Name="include/wx/pdfimage.h"/>
+    <File Name="include/wx/pdfgraphics.h"/>
+    <File Name="include/wx/pdfgradient.h"/>
+    <File Name="include/wx/pdfform.h"/>
+    <File Name="include/wx/pdffontvolt.h"/>
+    <File Name="include/wx/pdffontsubsettruetype.h"/>
+    <File Name="include/wx/pdffontsubsetcff.h"/>
+    <File Name="include/wx/pdffontparsertype1.h"/>
+    <File Name="include/wx/pdffontparsertruetype.h"/>
+    <File Name="include/wx/pdffontparser.h"/>
+    <File Name="include/wx/pdffontmanager.h"/>
+    <File Name="include/wx/pdffontmacosx.h"/>
+    <File Name="include/wx/pdffontextended.h"/>
+    <File Name="include/wx/pdffontdetails.h"/>
+    <File Name="include/wx/pdffontdescription.h"/>
+    <File Name="include/wx/pdffontdatatype1.h"/>
+    <File Name="include/wx/pdffontdatatype0.h"/>
+    <File Name="include/wx/pdffontdatatruetype.h"/>
+    <File Name="include/wx/pdffontdataopentype.h"/>
+    <File Name="include/wx/pdffontdatacore.h"/>
+    <File Name="include/wx/pdffontdata.h"/>
+    <File Name="include/wx/pdffont.h"/>
+    <File Name="include/wx/pdfencrypt.h"/>
+    <File Name="include/wx/pdfencoding.h"/>
+    <File Name="include/wx/pdfdoc_version.h"/>
+    <File Name="include/wx/pdfdocument.h"/>
+    <File Name="include/wx/pdfdocdef.h"/>
+    <File Name="include/wx/pdfdoc.h"/>
+    <File Name="include/wx/pdfdc29.h"/>
+    <File Name="include/wx/pdfdc28.h"/>
+    <File Name="include/wx/pdfdc.h"/>
+    <File Name="include/wx/pdfcorefontdata.h"/>
+    <File Name="include/wx/pdfcoonspatchmesh.h"/>
+    <File Name="include/wx/pdfcolour.h"/>
+    <File Name="include/wx/pdfcjkfontdata.h"/>
+    <File Name="include/wx/pdfcffindex.h"/>
+    <File Name="include/wx/pdfcffdecoder.h"/>
+    <File Name="include/wx/pdfbookmark.h"/>
+    <File Name="include/wx/pdfbarcode.h"/>
+    <File Name="include/wx/pdfarraytypes.h"/>
+    <File Name="include/wx/pdfarraydouble.h"/>
+    <File Name="include/wx/pdfannotation.h"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -58,6 +120,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../../include"/>
         <IncludePath Value="include"/>
+        <IncludePath Value="../../libextern/poppler_windows-master/cpp"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -144,4 +207,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
