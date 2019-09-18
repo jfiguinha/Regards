@@ -73,6 +73,9 @@
         <IncludePath Value="../libextern/heif-master/srcs/api/reader"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/common"/>
         <IncludePath Value="../libextern/libde265-master"/>
+        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
+        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
+        <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="EXIV2"/>
         <Preprocessor Value="FFMPEG"/>

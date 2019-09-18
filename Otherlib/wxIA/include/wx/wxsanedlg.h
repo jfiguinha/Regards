@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #pragma once
+#ifdef __WXSCANSANE__
 
 class wxScanSane;
 #include "wx/dynarray.h"
@@ -77,3 +78,5 @@ protected:
 
 private:
 };
+
+#endif

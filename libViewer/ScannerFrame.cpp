@@ -14,8 +14,9 @@
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>
-
+#ifdef __WXSCANSANE__
 #include <wx/wxsanedlg.h>
+#endif
 
 #define MAX_ZOOM	10.0
 #define MIN_ZOOM	0.1
@@ -44,8 +45,9 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	long style) :
 	wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
-
+#ifdef __WXSCANSANE__
     scanSane = new wxScanSane();	
+#endif
     // create a menu bar
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
@@ -99,7 +101,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 
 CScannerFrame::~CScannerFrame()
 {
-#ifndef USE_WIA_INTERFACE
+#ifdef __WXSCANSANE__
     if(scanSane != nullptr)
         delete scanSane;
 #endif

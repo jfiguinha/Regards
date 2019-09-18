@@ -1,5 +1,7 @@
 #pragma once
+#ifndef USE_WIA_INTERFACE  
 #include <wx/wxscan.h>
+#endif
 class ImageWindow;
 
 // Define a new frame type: this is going to be our main frame
@@ -26,8 +28,9 @@ private:
 	void OnZoomOut(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
     
-    
+#ifdef __WXSCANSANE__
     wxScanSane * scanSane;
+#endif
 	ImageWindow *m_imageWin;
 	int m_imageCount;
 };
