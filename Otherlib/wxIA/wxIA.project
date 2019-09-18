@@ -50,29 +50,21 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="src/ia/twainmsw.cpp"/>
-    <File Name="src/ia/twainbase.cpp"/>
-    <File Name="src/ia/sane.cpp"/>
-    <File Name="src/ia/iatwainmsw.cpp"/>
-    <File Name="src/ia/iasanedlg.cpp"/>
-    <File Name="src/ia/iasane.cpp"/>
-    <File Name="src/ia/ia.cpp"/>
+    <File Name="src/wx/wxscan.cpp"/>
+    <File Name="src/wx/wxsanedlg.cpp"/>
+    <File Name="src/wx/wxImagePanel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="include/wx/ia/ia.h"/>
-    <File Name="include/wx/ia/iasane.h"/>
-    <File Name="include/wx/ia/iasanedlg.h"/>
-    <File Name="include/wx/ia/iatwainmsw.h"/>
-    <File Name="include/wx/ia/sane.h"/>
-    <File Name="include/wx/ia/twain.h"/>
-    <File Name="include/wx/ia/twainbase.h"/>
-    <File Name="include/wx/ia/twainmsw.h"/>
+    <File Name="include/Scanner.h"/>
+    <File Name="include/wx/wxscan.h"/>
+    <File Name="include/wx/wxsanedlg.h"/>
+    <File Name="include/wx/wxImagePanel.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;-std=gnu++11;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-Wno-narrowing;-fpermissive" C_Options=";-Wall;" Assembler="">
-        <IncludePath Value="../wxIA/include"/>
-        <IncludePath Value="../wxIA/include/wxIA"/>
+        <IncludePath Value="include"/>
+        <IncludePath Value="include/wx"/>
         <IncludePath Value="../../include"/>
         <IncludePath Value="../../libUtility"/>
         <IncludePath Value="../../RegardsViewer"/>

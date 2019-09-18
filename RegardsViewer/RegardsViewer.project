@@ -156,6 +156,7 @@
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../Regards"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="FFMPEG"/>
@@ -338,6 +339,7 @@
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
         <Library Value="wxia"/>
+        <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
       </Linker>
@@ -386,6 +388,7 @@
         <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
+        <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -528,6 +531,7 @@
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
         <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
+        <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
