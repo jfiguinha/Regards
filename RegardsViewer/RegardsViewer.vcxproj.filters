@@ -27,6 +27,9 @@
     <ClInclude Include="..\Regards\SqlInit.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="..\Regards\Regards.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Configuration.xrc">

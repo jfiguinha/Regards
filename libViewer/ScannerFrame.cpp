@@ -45,7 +45,9 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
 
+#if __WXSCANSANE__  
     scanSane = new wxScanSane();	
+#endif
     // create a menu bar
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
@@ -67,7 +69,8 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	wxMenu *helpMenu = new wxMenu;
 	helpMenu->Append(wxID_ABOUT, _("&About...\tF1"), _("Show about dialog"));
 
-	// now append the freshly created menu to the menu bar
+	// now append the freshly created menu to the menu bar
+
 	wxMenuBar *menuBar = new wxMenuBar();
 	menuBar->Append(menuFile, _("&File"));
 	menuBar->Append(menuView, _("&View"));
@@ -99,7 +102,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 
 CScannerFrame::~CScannerFrame()
 {
-#ifndef USE_WIA_INTERFACE
+#if __WXSCANSANE__  
     if(scanSane != nullptr)
         delete scanSane;
 #endif

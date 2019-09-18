@@ -128,7 +128,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -202,7 +202,7 @@ XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -262,6 +262,7 @@ XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="..\Regards\Regards.h" />
     <ClInclude Include="..\Regards\SqlInit.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -438,6 +439,9 @@ XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\wxIA\wxIA.vcxproj">
       <Project>{d83ea5f5-d8b4-4632-aa26-dfb31490af96}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\wxPDFDoc\wxPDFDoc.vcxproj">
+      <Project>{3d1770b4-abf8-49b1-a17a-4e31d18906f2}</Project>
     </ProjectReference>
     <ProjectReference Include="..\otherlib\wxsvg\wxsvg.vcxproj">
       <Project>{58ac16a3-2d52-4737-8b04-9bff91429228}</Project>

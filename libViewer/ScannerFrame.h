@@ -26,8 +26,9 @@ private:
 	void OnZoomOut(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
     
-    
+#if __WXSCANSANE__  
     wxScanSane * scanSane;
+#endif
 	ImageWindow *m_imageWin;
 	int m_imageCount;
 };

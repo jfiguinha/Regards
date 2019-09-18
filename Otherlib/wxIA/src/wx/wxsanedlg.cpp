@@ -14,7 +14,7 @@
 
 #include <header.h>
 
-#ifdef __WXGTK__
+#if __WXSCANSANE__
 
 #include <wx/log.h>
 #include <wx/notebook.h>
