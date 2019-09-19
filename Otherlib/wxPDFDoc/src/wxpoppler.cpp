@@ -11,7 +11,7 @@
 #include <wx/filename.h>
 #include <wx/filesys.h>
 #include <wx/wxpoppler.h>
-#if wxUSE_PDF
+#ifdef wxUSE_PDF
 #   include <wx/mstream.h>
 #   include <wx/pdfdoc.h>
 #endif // wxUSE_PDF
@@ -174,7 +174,7 @@ bool wxPoppler::RenderPage()
 
 
 
-#if wxUSE_PDF
+#ifdef wxUSE_PDF
 /////////////////////////////////////////////////////////////////////////////
 //  Class wxPDFHandler
 //

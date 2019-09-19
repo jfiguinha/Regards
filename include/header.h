@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #endif
 
+#define wxUSE_PDF
 //#define WX_PRECOMP
 
 #include <thread>

@@ -559,13 +559,8 @@ void CThumbnail::LoadPicture(void * param)
     if(threadLoadingBitmap == nullptr)
         return;
         
-
-    
-	//CThumbnail * thumbnail = threadLoadingBitmap->thumbnail;
 	if(libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
 	{
-        //threadLoadingBitmap->bitmapIcone = libPicture.LoadVideoThumbnail(threadLoadingBitmap->filename, threadLoadingBitmap->percent, threadLoadingBitmap->timePosition);
-
         vector<CImageVideoThumbnail *> listVideo;
         libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo);
         
@@ -577,7 +572,7 @@ void CThumbnail::LoadPicture(void * param)
             for(int i = 0;i < listVideo.size();i++)
             {
                 CImageVideoThumbnail * bitmap = listVideo[i];
-                wxString filename = bitmap->image->GetFilename();
+				wxString filename = threadLoadingBitmap->filename;// bitmap->image->GetFilename();
                 int compressMethod = 0;
                 unsigned long outputsize = 0;
                 bitmap->image->ConvertToRGB24(true);
@@ -598,12 +593,15 @@ void CThumbnail::LoadPicture(void * param)
         }
 	}
 	else
+	{
 		threadLoadingBitmap->bitmapIcone = libPicture.LoadThumbnail(threadLoadingBitmap->filename);
-    
+
+	}
+
+
 	wxCommandEvent * event = new wxCommandEvent(EVENT_ICONEUPDATE);
 	event->SetClientData(threadLoadingBitmap);
 	wxQueueEvent(threadLoadingBitmap->thumbnail, event);
-
 }
 
 void CThumbnail::OnMouseMove(wxMouseEvent& event)

@@ -61,6 +61,8 @@ namespace Regards
 			CViewerWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
 			~CViewerWindow();
 
+
+
 			void SetListeFile(PhotosVector* photoVector);
 
 			bool IsPanelThumbnailVisible();
@@ -80,6 +82,7 @@ namespace Regards
 			void AnimationPicturePrevious();
 
 			void UpdateScreenRatio();
+			void SetPosition(const long& timePosition);
 
 		private:
 
@@ -98,7 +101,7 @@ namespace Regards
 			void SetNormalMode();
 
 			void SetVideoPosition(const int64_t& videoTime);
-			void SetPosition(const long& timePosition);
+			
 
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
@@ -125,10 +128,12 @@ namespace Regards
 			void OnSize(wxSizeEvent& event);
             void AnimationSetPosition(wxCommandEvent& event);
 			void SetVideoPos(wxCommandEvent& event);
+			//bool GetAnimationThumbnail(const wxString &filename);
 
 			void RedrawBarPos();
 			wxRect GetWindowRect();
-			vector<CImageVideoThumbnail *> listThumbnail;
+			//vector<CImageVideoThumbnail *> listThumbnail;
+			int nbThumbnail;
 			
 			//Thumbnail Video
 			CPanelWithClickToolbar * panelVideo;
@@ -162,6 +167,7 @@ namespace Regards
             bool showToolbar;
 			wxTimer * animationTimer;
 			int animationPosition;
+			vector<CImageVideoThumbnail *> videoThumbnail;
 		};
 
 

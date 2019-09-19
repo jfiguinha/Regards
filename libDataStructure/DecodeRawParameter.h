@@ -40,7 +40,7 @@ public:
 		exp_correc = false; 
 		wf_debanding = 0; 
 		adjust_maximum_thr =  0.75;
-		use_fuji_rotate = -1;
+		use_fuji_rotate = false;
 		green_matching = 0;
 		dcb_iterations = -1;
 		dcb_enhance_fl = 0;
@@ -54,9 +54,9 @@ public:
 		linenoise = 0.0;
 		cfa_clean = 0; 
        // lclean = 0,01;
-		cclean = 0.01;
+		cclean = 0.01f;
 		cfa_green = 0;
-		green_thresh = 0.01;
+		green_thresh = 0.01f;
 		exp_correc = 0; 
 		exp_shift = 1.0;
 		exp_preser = 0.0;

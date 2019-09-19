@@ -285,6 +285,8 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
 
 			if (pThumbnailData->GetTypeElement() == TYPEPHOTO)
 				libelle = CFileUtility::GetFileName(pThumbnailData->GetFilename().c_str());
+			else if (pThumbnailData->GetTypeElement() == TYPEMULTIPAGE)
+				libelle = pThumbnailData->GetLibelle();
 			else
 				libelle = pThumbnailData->GetFilename();
 

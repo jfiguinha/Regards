@@ -17,6 +17,7 @@
 #include <picture_id.h>
 #include "PictureElement.h"
 #include "ThumbnailMessage.h"
+#include <SqlThumbnailVideo.h>
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -160,18 +161,26 @@ void CViewerWindow::OnTimerAnimation(wxTimerEvent& event)
     printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
 	SetVideoPosition(animationPosition);
 	LoadAnimationBitmap(filename, animationPosition);
+	uint32_t delay = 0;
 	animationPosition++;
-	if (animationPosition < listThumbnail.size())
+	if (animationPosition < nbThumbnail)
 	{
-		CImageVideoThumbnail * thumbnail = listThumbnail[animationPosition];
-		if (thumbnail != nullptr)
+		CLibPicture libPicture;
+		CImageLoadingFormat * image = nullptr;
+		int iFormat = libPicture.TestImageFormat(filename);
+		if (iFormat != TIFF && iFormat != PDF)
 		{
-			//if (thumbnail->delay <= 0)
-			thumbnail->delay = DELAY_ANIMATION;
-                
-            printf("CViewerWindow::OnTimerAnimation Start delay %d \n", thumbnail->delay);
-			animationTimer->Start(thumbnail->delay, wxTIMER_ONE_SHOT);
+			CImageVideoThumbnail * video = videoThumbnail.at(animationPosition);
+			delay = video->delay;
+			//image = video->image;
 		}
+		else
+		{
+			//image = libPicture.LoadPicture(filename, false, animationPosition);
+			delay = libPicture.GetFrameDelay(filename);
+		}
+        printf("CViewerWindow::OnTimerAnimation Start delay %d \n", delay);
+		animationTimer->Start(delay, wxTIMER_ONE_SHOT);
 	}
 	else
 	{
@@ -203,8 +212,8 @@ void CViewerWindow::OnRefreshData(wxCommandEvent& event)
 void CViewerWindow::AnimationPictureNext()
 {
 	animationPosition++;
-	if (animationPosition >= listThumbnail.size())
-		animationPosition = listThumbnail.size() - 1;
+	if (animationPosition >= nbThumbnail)
+		animationPosition = nbThumbnail - 1;
 	SetVideoPosition(animationPosition);
 	LoadAnimationBitmap(filename, animationPosition);
 }
@@ -220,15 +229,16 @@ void CViewerWindow::AnimationPicturePrevious()
 
 CViewerWindow::~CViewerWindow()
 {
-	if (listThumbnail.size() > 0)
+	if (videoThumbnail.size() > 0)
 	{
-		for (int j = 0; j < listThumbnail.size(); j++)
+		for (int i = 0; i < videoThumbnail.size(); i++)
 		{
-			CImageVideoThumbnail * thumbnail = listThumbnail[j];
-			if (thumbnail != nullptr)
-				delete thumbnail;
+			CImageVideoThumbnail * imageVideo = videoThumbnail.at(i);
+			delete imageVideo;
 		}
 	}
+
+	videoThumbnail.clear();
 
 	if (animationTimer->IsRunning())
 		animationTimer->Stop();
@@ -477,7 +487,7 @@ void CViewerWindow::SetVideo(const wxString &path)
 	if (thumbnailVideo->GetFilename() != filename)
 	{
 		thumbnailVideo->SetFilename(filename);
-		thumbnailVideo->SetVideoFile(filename);
+		thumbnailVideo->SetFile(filename);
 	}
 
     if (previewInfosWnd != nullptr)
@@ -547,51 +557,29 @@ void CViewerWindow::LoadAnimationBitmap(const wxString &filename, const int &num
     oldAnimationPosition = numFrame;
     
 	printf("CViewerWindow::LoadAnimationBitmap %d \n", numFrame);
-	if (numFrame < listThumbnail.size() && numFrame >= 0)
+	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
+		CImageLoadingFormat * image = nullptr;
         CLibPicture libPicture;
-        int iFormat = libPicture.TestImageFormat(filename);
-        if(iFormat == TIFF || iFormat == PDF)
-        {
-            CImageLoadingFormat * image = libPicture.LoadPicture(filename, false, numFrame);
-            previewInfosWnd->SetBitmap(image, false, true);
-        }
-        else
-        {
-            CImageVideoThumbnail * thumbnail = listThumbnail.at(numFrame);
-            if (thumbnail != nullptr)
-            {
-                CImageLoadingFormat * image = thumbnail->image;
-                if (image != nullptr)
-                {
-                    CImageLoadingFormat * bitmap = new CImageLoadingFormat();
-                    switch (thumbnail->image->GetFormat())
-                    {
-                    case TYPE_IMAGE_CXIMAGE:
-                        bitmap->SetPicture(image->GetCxImage());
-                        break;
-                    case TYPE_IMAGE_WXIMAGE:
-                        bitmap->SetPicture(image->GetwxImage());
-                        break;
-                    case TYPE_IMAGE_REGARDSIMAGE:
-                        bitmap->SetPicture(image->GetRegardsBitmap());
-                        break;
-                    case TYPE_IMAGE_REGARDSJPEGIMAGE:
-                        bitmap->SetPicture(image->GetwxImage());
-                        break;
-                    }
-                    bitmap->SetFilename(thumbnail->image->GetFilename());
-                    previewInfosWnd->SetBitmap(bitmap, false, true);
-                }
-            }
-        }
+		int iFormat = libPicture.TestImageFormat(filename);
+		if (iFormat != TIFF && iFormat != PDF)
+		{
+			CImageVideoThumbnail * video = videoThumbnail.at(numFrame);
+			image = video->image;
+		}
+		else
+		{
+			image = libPicture.LoadPicture(filename, false, numFrame);
+		}
+		previewInfosWnd->SetBitmap(image, false, true);
 	}
-   // RedrawBarPos();
 }
+
 
 bool CViewerWindow::SetAnimation(const wxString &filename)
 {
 	StopAnimation();
+	CLibPicture libPicture;
 	bool refresh = isAnimation ? false : true;
     bool result = false;      
     isVideo = false;
@@ -599,25 +587,28 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
 	isPicture = false;
     oldAnimationPosition = -1;
     oldFilename = L"";
-	if (listThumbnail.size() > 0)
-	{
-		for (int j = 0; j < listThumbnail.size(); j++)
-		{
-			CImageVideoThumbnail * thumbnail = listThumbnail[j];
-			if (thumbnail != nullptr)
-				delete thumbnail;
-		}
-	}
-
-
-	CLibPicture libPicture;
-	listThumbnail = libPicture.LoadAllVideoThumbnail(filename);
+	int iFormat = libPicture.TestImageFormat(filename);
+	nbThumbnail = libPicture.GetNbImage(filename);
 	if (thumbnailVideo->GetFilename() != filename)
 	{
 		thumbnailVideo->SetFilename(filename);
-		if (listThumbnail.size() > 0)
-			thumbnailVideo->SetVideoThumbnail(filename, &listThumbnail);
+		if (nbThumbnail > 0)
+			thumbnailVideo->SetFile(filename, nbThumbnail);
 	}
+
+	if (videoThumbnail.size() > 0)
+	{
+		for (int i = 0; i < videoThumbnail.size(); i++)
+		{
+			CImageVideoThumbnail * imageVideo = videoThumbnail.at(i);
+			delete imageVideo;
+		}
+	}
+
+	videoThumbnail.clear();
+
+	if(iFormat != TIFF && iFormat != PDF)
+		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail);
     
 	if (previewInfosWnd != nullptr)
 	{

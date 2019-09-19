@@ -479,6 +479,164 @@ END:
 	return listPicture;
 }
 
+
+uint32_t CHeic::GetDelay(const string &filename)
+{
+	uint32_t delay = 0;
+	auto* reader = Reader::Create();
+	Array<uint32_t> itemIds;
+
+	// Input file available from https://github.com/nokiatech/heif_conformance
+	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	{
+		de265_error err = de265_error::DE265_OK;
+		de265_decoder_context * decoderContext = de265_new_decoder();
+		FileInformation info;
+		if (reader->getFileInformation(info) != ErrorCode::OK)
+		{
+			goto END;
+		}
+
+		if (info.trackInformation.size > 0)
+		{
+			// Print information for every track read
+			for (const auto& trackProperties : info.trackInformation)
+			{
+				const auto sequenceId = trackProperties.trackId;
+				Array<TimestampIDPair> timestamps;
+				reader->getItemTimestamps(sequenceId, timestamps);
+				//cout << "Sample timestamps:" << endl;
+				for (const auto& timestamp : timestamps)
+				{
+					delay = timestamp.timeStamp;
+					break;
+					//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+				}
+			}
+		}
+	}
+	else
+	{
+
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
+	}
+END:
+
+	Reader::Destroy(reader);
+
+
+
+	return delay;
+}
+
+CRegardsBitmap * CHeic::GetPicture(const string &filename, bool &isMasterSequence, int &delay,const int &numPicture)
+{
+	CRegardsBitmap * bitmapSrc = nullptr;
+	auto* reader = Reader::Create();
+	Array<uint32_t> itemIds;
+
+	// Input file available from https://github.com/nokiatech/heif_conformance
+	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
+	{
+		de265_error err = de265_error::DE265_OK;
+		de265_decoder_context * decoderContext = de265_new_decoder();
+		FileInformation info;
+		if (reader->getFileInformation(info) != ErrorCode::OK)
+		{
+			goto END;
+		}
+
+		if (info.trackInformation.size > 0)
+		{
+			// Print information for every track read
+			for (const auto& trackProperties : info.trackInformation)
+			{
+				const auto sequenceId = trackProperties.trackId;
+				//cout << "Track ID " << sequenceId << endl;  // Context ID corresponds to the track ID
+
+				if (trackProperties.features & TrackFeatureEnum::IsMasterImageSequence)
+				{
+					isMasterSequence = true;
+					//cout << "This is a master image sequence." << endl;
+				}
+
+				if (trackProperties.features & TrackFeatureEnum::IsThumbnailImageSequence)
+				{
+					// Assume there is only one type track reference, so check reference type and master track ID(s) from
+					// the first one.
+					isMasterSequence = false;
+					const auto tref = trackProperties.referenceTrackIds[0];
+					//cout << "Track reference type is '" << tref.type.value << "'" << endl;
+					//cout << "This is a thumbnail track for track ID ";
+					for (const auto masterTrackId : tref.trackIds)
+					{
+						//cout << masterTrackId << endl;
+					}
+				}
+
+				Array<TimestampIDPair> timestamps;
+				reader->getItemTimestamps(sequenceId, timestamps);
+				//cout << "Sample timestamps:" << endl;
+				for (const auto& timestamp : timestamps)
+				{
+					delay = timestamp.timeStamp;
+					break;
+					//cout << " Timestamp=" << timestamp.timeStamp << "ms, sample ID=" << timestamp.itemId << endl;
+				}
+
+				int i = 0;
+				for (const auto& sampleProperties : trackProperties.sampleProperties)
+				{
+					// A sample might have decoding dependencies. The simplest way to handle this is just to always ask and
+					// decode all dependencies.
+					Array<SequenceImageId> itemsToDecode;
+					reader->getDecodeDependencies(sequenceId, sampleProperties.sampleId, itemsToDecode);
+					for (auto dependencyId : itemsToDecode)
+					{
+						if (i == numPicture)
+						{
+							uint64_t size = 1024 * 1024;
+							uint8_t* sampleData = new uint8_t[size];
+							reader->getItemDataWithDecoderParameters(sequenceId, dependencyId, sampleData, size);
+
+							//err = de265_push_data(decoderContext, sampleData, size, 0, NULL);
+							bitmapSrc = DecodeFrame(sampleData, size);
+							if (bitmapSrc != nullptr)
+							{
+								bitmapSrc->SetFilename(filename);
+							}
+
+							delete[] sampleData;
+							break;
+						}
+						i++;
+					}
+					// Store or show the image...
+					if (i == numPicture)
+						break;
+				}
+
+			}
+		}
+	}
+	else
+	{
+
+		cout << "Can't find input file: " << filename << ". "
+			<< "Please download it from https://github.com/nokiatech/heif_conformance "
+			<< "and place it in same directory with the executable." << endl;
+	}
+END:
+
+	Reader::Destroy(reader);
+
+
+
+	return bitmapSrc;
+}
+
 int CHeic::GetNbFrame(const string &filename)
 {
 	int nbId = 0;

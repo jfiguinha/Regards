@@ -2,26 +2,6 @@
 #include "ThumbnailHorizontal.h"
 #include <ImageVideoThumbnail.h>
 
-class CThreadVideoData
-{
-public:
-
-	CThreadVideoData()
-	{
-		myThread = nullptr;
-	}
-
-	~CThreadVideoData()
-	{
-	}
-
-	vector<CImageVideoThumbnail *> videoThumbnail;
-	wxString videoFilename;
-    thread * myThread;
-	wxWindow * window;
-};
-
-
 namespace Regards
 {
 	namespace Control
@@ -31,20 +11,19 @@ namespace Regards
 		public:
 			CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailVideo(void);
-
-			void SetVideoThumbnail(const wxString &videoFile, vector<CImageVideoThumbnail *> * pictureThumbnail);
-			void SetVideoFile(const wxString &videoFile);
+			void SetFile(const wxString &videoFile, const int &size = 20);
 			void SetVideoPosition(const int64_t &videoPos);
 
 		private:
-			static void LoadVideoThumbnail(CThreadVideoData * videoData);
-			void UpdateVideoThumbnail(wxCommandEvent& event);
+
+			void OnTimerProcess(wxTimerEvent& event);
+			virtual void ProcessThumbnailIdle();
 			int FindNumItem(const int &videoPos);
-			void InitWithDefaultPicture(const wxString & szFileName);
-			void StartThreadVideoLoading(const wxString &videoFile);
+			void InitWithDefaultPicture(const wxString & szFileName, const int &size = 20);
 			int numItemSelected;
+			bool process_end;
+			wxTimer * processTimer;
 			wxString videoFilename;
-			bool isThreadStart;
 		};
 	}
 }

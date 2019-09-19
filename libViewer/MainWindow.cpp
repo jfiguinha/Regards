@@ -1045,10 +1045,10 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 {
     TRACE();
 	long timePosition = event.GetExtraLong();
-	if (centralWnd != nullptr)
+	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
+	if (viewerWindow != nullptr)
 	{
-		//int64_t pos = event.GetExtraLong();
-		centralWnd->SetPosition(timePosition);
+		viewerWindow->SetPosition(timePosition);
 	}
 }
 

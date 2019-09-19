@@ -927,7 +927,7 @@ CImageLoadingFormat * CLibPicture::LoadVideoThumbnail(const  wxString & szFileNa
 	return bitmap;
 }
 
-vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxString & szFileName)
+vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size)
 {
 #ifdef WIN32
 
@@ -950,13 +950,14 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 	CThumbnailVideo video;
 	int movieDuration = video.GetMovieDuration(szFileName) / 1000000;
 	int pourcentage = (int)((float)movieDuration / (float)100);
-	for (auto i = 0; i < 100; i += 5)
+	for (auto i = 0; i < size; i++)
 	{
+		float percent = ((float)i / (float)size) * 100.0f;
 		CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
 		//CRegardsBitmap * picture = nullptr;
 		int timePosition = 0;	
 		cxVideo->rotation = rotation;
-		cxVideo->percent = i;
+		cxVideo->percent = percent;
 
 	#ifdef WIN32
 			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\loading.png";
@@ -969,7 +970,7 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 		picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
 		cxVideo->image = new CImageLoadingFormat();
 		cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap());
-		cxVideo->timePosition = pourcentage * i;
+		cxVideo->timePosition = pourcentage * percent;
 		cxVideo->image->SetFilename(szFileName);
 		cxVideo->image->SetOrientation(rotation);
 		delete picture;
@@ -998,7 +999,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
     wxBitmapType bitmapTypeWxWidget;
     
     
-    
+	bool needresize = true;
      int m_ani_images = 0;
     //wxBitmap * my_horse_ani = nullptr;
     if(bitmapType == PDF)
@@ -1011,8 +1012,11 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
     {
         if(bitmapType == TIFF)
             bitmapTypeWxWidget = wxBITMAP_TYPE_TIFF;
-        else
-            bitmapTypeWxWidget = wxBITMAP_TYPE_ANI;
+		else
+		{
+			bitmapTypeWxWidget = wxBITMAP_TYPE_ANI;
+			needresize = false;
+		}
             
         m_ani_images = wxImage::GetImageCount(szFileName, bitmapTypeWxWidget);
     }
@@ -1048,23 +1052,29 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
         }
         else
         {
-            
+			CRegardsBitmap * bitmap = nullptr;
             //wxMemoryDC memdc;
-            int bx, by, bw, bh;
+			if (needresize)
+			{
+				int bx, by, bw, bh;
 
-            float scale_x = float(width) / float(image.GetWidth());
-            float scale_y = float(height) / float(image.GetHeight());
-            
-            double m_zoomFactor = min(scale_x, scale_y);
-            bw = (int)(image.GetWidth() * m_zoomFactor);
-            bh = (int)(image.GetHeight() * m_zoomFactor);
-            wxImage bitmapResize = image.ResampleBicubic(bw, bh);            
-            CRegardsBitmap * bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
+				float scale_x = float(width) / float(image.GetWidth());
+				float scale_y = float(height) / float(image.GetHeight());
+
+				double m_zoomFactor = min(scale_x, scale_y);
+				bw = (int)(image.GetWidth() * m_zoomFactor);
+				bh = (int)(image.GetHeight() * m_zoomFactor);
+				wxImage bitmapResize = image.ResampleBicubic(bw, bh);
+				bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
+			}
+			else
+				bitmap = ConvertwxImageToRegardsBitmap(image);
+			//bitmap->SetFilename(szFileName);
             //CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
             CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
             imageVideoThumbnail->image = new CImageLoadingFormat();
-            imageVideoThumbnail->image->SetFilename(szFileName);
             imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+			imageVideoThumbnail->image->SetFilename(szFileName);
             delete bitmap;
             imageVideoThumbnail->rotation = 0;
             imageVideoThumbnail->delay = 4;
@@ -1073,6 +1083,105 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
             listThumbnail->push_back(imageVideoThumbnail);
         }
     }  
+}
+
+int CLibPicture::GetNbImage(const  wxString & szFileName)
+{
+	int iFormat = TestImageFormat(szFileName);
+
+	switch (iFormat)
+	{
+#ifdef LIBHEIC
+		case HEIC:
+		{
+			return CHeic::GetNbFrame(szFileName.ToStdString());
+		}
+		break;
+#endif
+
+		case PDF:
+		{
+			wxPoppler poppler;
+			poppler.Open(szFileName);
+			return poppler.GetPageCount();
+		}
+		break;
+
+		case TIFF:
+		{
+			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_TIFF);
+		}
+		break;
+
+		case GIF:
+		{
+			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_GIF);
+		}
+		break;
+		
+		case ANI:
+			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_ANI);
+			break;
+
+		case MPG2:
+		case MPEG:
+		case AVCHD:
+		case WINREC:
+		case AVI:
+		case MP4:
+		case WEBM:
+		case MKV:
+		case Y4M:
+		case WMV:
+		case AV1:
+		case MOV:
+		{
+			return 20;
+			break;
+		}
+	}
+
+	return 1;
+}
+
+CImageLoadingFormat * CLibPicture::LoadThumbnailFromRawPicture(const wxString & szFilename, const int &width, const int &height, int &returnValue)
+{
+	CImageLoadingFormat * image = CRaw::GetThumbnail(szFilename);
+	if (image == nullptr)
+	{
+		return nullptr;
+	}
+
+	return image;
+}
+
+uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
+{
+	uint32_t delay = 10;
+	int iFormat = TestImageFormat(szFileName);
+	switch (iFormat)
+	{
+	#ifdef LIBHEIC
+		case HEIC:
+		{
+			return CHeic::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
+		}
+		break;
+	#endif
+
+		case GIF:
+		{
+
+			CxImage * _cxImage = new CxImage();
+			_cxImage->SetRetreiveAllFrames(true);
+			_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("gif"));
+			delay = _cxImage->GetFrameDelay();
+			delete _cxImage;
+
+		}
+		break;
+	}
+	return delay;
 }
 
 void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail)
@@ -1183,26 +1292,10 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
     }
     catch (...)
 	{
-		vector<CImageVideoThumbnail *> listVideo = LoadDefaultVideoThumbnail(szFileName);
-		for (CImageVideoThumbnail * cxVideo : listVideo)
-		{
-			listThumbnail->push_back(cxVideo);
-		}
 	}
 
 }
-#ifdef LIBRAW	
-CImageLoadingFormat * CLibPicture::LoadThumbnailFromRawPicture(const wxString & szFilename, const int &width, const int &height, int &returnValue)
-{
-	CImageLoadingFormat * image = CRaw::GetThumbnail(szFilename);
-	if (image == nullptr)
-	{
-		return nullptr;
-	}
 
-	return image;
-}
-#endif
 
 int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & size)
 {
@@ -1435,13 +1528,26 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 		case HEIC:
 			{
 				CRegardsBitmap * picture = nullptr;
-				if (isThumbnail)
+
+				if (numPicture == 0)
 				{
-					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					
+					if (isThumbnail)
+					{
+						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					}
+					else
+						picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+
 				}
 				else
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-		
+				{
+					int delay = 4;
+					bool isMaster;
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay, numPicture);
+				}
+
+
 				if (picture != nullptr)
 				{
 					CMetadataExiv2 metadata(fileName);
@@ -1913,7 +2019,9 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
                 
         case GIF:
 			{
-				CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"));
+				CxImage * _cxImage = new CxImage();
+				_cxImage->SetRetreiveAllFrames(true);
+				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"));
                 if (_cxImage->GetNumFrames() > 1)
                 {
                     CxImage * frame = _cxImage->GetFrame(numPicture);

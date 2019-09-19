@@ -22,7 +22,8 @@ public:
 
     void DefineSVGSize(const int &width, const int &height);
     bool HasThumbnail(const wxString &filename);
-    
+	int GetNbImage(const  wxString & szFileName);
+	uint32_t GetFrameDelay(const  wxString & szFileName);
 	int TestImageFormat(const wxString & szFileName);
 	bool TestIsVideo(const wxString & szFileName);
 	bool TestIsPicture(const wxString & szFileName);
@@ -32,7 +33,7 @@ public:
 	int SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap);
 	int GetMetadata(const wxString &filename, uint8_t * & data, long & size);
 	//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
-	vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName);
+	vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size);
 	CImageLoadingFormat * LoadThumbnail(const  wxString & szFileName, const bool &fromExifOnly = false);
 	vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName);
 	CImageLoadingFormat * LoadVideoThumbnail(const  wxString & szFileName, const int &percent, int &timePosition);

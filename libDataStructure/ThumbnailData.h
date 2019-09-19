@@ -13,6 +13,7 @@ class CRegardsBitmap;
 #define TYPEFOLDER 5
 #define TYPEVIDEO 6
 #define TYPEFACE 7
+#define TYPEMULTIPAGE 8
 #define SQLITE 1
 
 class CImageLoadingFormat;
@@ -95,6 +96,16 @@ public:
         this->numFrame = numFrame;
     }
 
+	virtual wxString GetLibelle()
+	{
+		return libelle;
+	}
+
+	virtual void SetLibelle(const wxString &libelle)
+	{
+		this->libelle = libelle;
+	}
+
 protected:
 
 	virtual bool TestBitmap()
@@ -117,7 +128,7 @@ protected:
 	int percent;
 	bool isProcess;
     int numFrame = 0;
-
+	wxString libelle;
 };
 
 /*

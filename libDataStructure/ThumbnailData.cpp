@@ -18,6 +18,7 @@ CThumbnailData::CThumbnailData(const wxString & filename)
 	numCatalog = 0;
 
 	this->filename = filename;
+	libelle = filename;
 	numElement = 0;
 	libelleTimePosition = "";
 	numPhotoId = -1;
