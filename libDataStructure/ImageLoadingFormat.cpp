@@ -271,7 +271,7 @@ void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap * image)
 	{
 		format = TYPE_IMAGE_REGARDSJPEGIMAGE;
 		_jpegImage = new CRegardsJpegPicture(image->GetPtBitmap(), image->GetBitmapWidth(), image->GetBitmapHeight());
-		//filename = image->GetFilename();
+		filename = image->GetFilename();
 	}
 }
 

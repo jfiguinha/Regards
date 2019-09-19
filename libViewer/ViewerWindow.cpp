@@ -564,8 +564,32 @@ void CViewerWindow::LoadAnimationBitmap(const wxString &filename, const int &num
 		int iFormat = libPicture.TestImageFormat(filename);
 		if (iFormat != TIFF && iFormat != PDF)
 		{
-			CImageVideoThumbnail * video = videoThumbnail.at(numFrame);
-			image = video->image;
+			CImageVideoThumbnail * thumbnail = videoThumbnail.at(numFrame);
+			if (thumbnail != nullptr)
+			{
+				CImageLoadingFormat * image = thumbnail->image;
+				if (image != nullptr)
+				{
+					CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+					switch (thumbnail->image->GetFormat())
+					{
+					case TYPE_IMAGE_CXIMAGE:
+						bitmap->SetPicture(image->GetCxImage());
+						break;
+					case TYPE_IMAGE_WXIMAGE:
+						bitmap->SetPicture(image->GetwxImage());
+						break;
+					case TYPE_IMAGE_REGARDSIMAGE:
+						bitmap->SetPicture(image->GetRegardsBitmap());
+						break;
+					case TYPE_IMAGE_REGARDSJPEGIMAGE:
+						bitmap->SetPicture(image->GetwxImage());
+						break;
+					}
+					bitmap->SetFilename(thumbnail->image->GetFilename());
+					previewInfosWnd->SetBitmap(bitmap, false, true);
+				}
+			}
 		}
 		else
 		{
