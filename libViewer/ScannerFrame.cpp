@@ -10,7 +10,7 @@
 #define USE_WIA_INTERFACE
 #endif
 #include <wx/filedlg.h>
-#include "ImageWindow.h"
+
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>
@@ -83,18 +83,17 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	CreateStatusBar(1);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(m_imageWin = new ImageWindow(this, wxID_ANY), 1, wxEXPAND);
+	sizer->Add(m_imagePDF = new CViewerPDF(this, wxID_ANY), 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
+	Connect(ID_OPENIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOpenImage));
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 #ifndef USE_WIA_INTERFACE    
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
 #endif
-	Connect(ID_ZOOMIN, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnZoomIn));
-	Connect(ID_ZOOMOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnZoomOut));
     Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
     
     
@@ -106,6 +105,19 @@ CScannerFrame::~CScannerFrame()
     if(scanSane != nullptr)
         delete scanSane;
 #endif
+
+	if (m_imagePDF != nullptr)
+		delete m_imagePDF;
+}
+
+void CScannerFrame::OnOpenImage(wxCommandEvent& event)
+{
+	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+			"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea..
+
+	m_imagePDF->LoadFile(openFileDialog.GetPath());
 }
 
 // event handlers
@@ -231,7 +243,7 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 	if (ppStream.Count() != 0)
 	{
 		Gdiplus::Image m_Image(*ppStream);
-		m_imageWin->SetImage(GdiplusImageTowxImage(&m_Image));
+		m_imagePDF->SetImage(GdiplusImageTowxImage(&m_Image));
 	}
 
 	//delete gdiplus;
@@ -252,24 +264,5 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
             event.Enable(false);
 		break;
 #endif
-	case ID_ZOOMIN:
-		event.Enable(m_imageWin->GetZoomFactor() < MAX_ZOOM);
-		break;
-
-	case ID_ZOOMOUT:
-		event.Enable(m_imageWin->GetZoomFactor() > MIN_ZOOM);
-		break;
 	}
-}
-
-void CScannerFrame::OnZoomIn(wxCommandEvent& WXUNUSED(event))
-{
-	if (m_imageWin->GetZoomFactor() < MAX_ZOOM)
-		m_imageWin->SetZoomFactor(m_imageWin->GetZoomFactor() * 2.0);
-}
-
-void CScannerFrame::OnZoomOut(wxCommandEvent& WXUNUSED(event))
-{
-	if (m_imageWin->GetZoomFactor() > MIN_ZOOM)
-		m_imageWin->SetZoomFactor(m_imageWin->GetZoomFactor() / 2.0);
 }

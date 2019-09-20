@@ -210,6 +210,7 @@
     <ClInclude Include="ImageWindow.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ScannerFrame.h" />
+    <ClInclude Include="viewerPDF.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="FiltreEffect.h" />
@@ -260,6 +261,7 @@
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="ImageWindow.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
+    <ClCompile Include="viewerPDF.cpp" />
     <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="FiltreEffect.cpp" />

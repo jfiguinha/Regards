@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/wxscan.h>
-class ImageWindow;
+#include "viewerPDF.h"
+using namespace Regards::Viewer;
 
 // Define a new frame type: this is going to be our main frame
 class CScannerFrame : public wxFrame
@@ -22,13 +23,12 @@ private:
 #else
 	void OnSelectSource(wxCommandEvent& event);
 #endif
-	void OnZoomIn(wxCommandEvent& event);
-	void OnZoomOut(wxCommandEvent& event);
+	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
     
 #if __WXSCANSANE__  
     wxScanSane * scanSane;
 #endif
-	ImageWindow *m_imageWin;
+	CViewerPDF * m_imagePDF;
 	int m_imageCount;
 };

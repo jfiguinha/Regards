@@ -984,15 +984,17 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
 //--------------------------------------------------------------------------------------------
 //Obtention d'un thumbnail à partir des informations exif
 //--------------------------------------------------------------------------------------------
-vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName)
+/*
+vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg)
 {
 	int iFormat = TestImageFormat(szFileName);
 	vector<CImageVideoThumbnail *> listThumbnail;
-	LoadAllVideoThumbnail(szFileName, &listThumbnail);
+	LoadAllVideoThumbnail(szFileName, &listThumbnail, compressJpeg);
 	return listThumbnail;
 }
+*/
 
-void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height)
+void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg)
 {
     wxPoppler poppler;
     wxImage image;
@@ -1073,7 +1075,10 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
             //CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
             CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
             imageVideoThumbnail->image = new CImageLoadingFormat();
-            imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+			if(compressJpeg)
+				imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+			else
+				imageVideoThumbnail->image->SetPicture(bitmap);
 			imageVideoThumbnail->image->SetFilename(szFileName);
             delete bitmap;
             imageVideoThumbnail->rotation = 0;
@@ -1184,7 +1189,7 @@ uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
 	return delay;
 }
 
-void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail)
+void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg)
 {
 	int iFormat = TestImageFormat(szFileName);
 #ifdef WIN32
@@ -1219,7 +1224,10 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 					CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
 					imageVideoThumbnail->image = new CImageLoadingFormat();
 					imageVideoThumbnail->image->SetFilename(szFileName);
-					imageVideoThumbnail->image->SetPicturToJpeg(listPicture.at(i));
+					if (compressJpeg)
+						imageVideoThumbnail->image->SetPicturToJpeg(listPicture.at(i));
+					else
+						imageVideoThumbnail->image->SetPicture(listPicture.at(i));
 					delete listPicture.at(i);
 					imageVideoThumbnail->rotation = 0;
 					imageVideoThumbnail->delay = delay;
@@ -1234,7 +1242,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
             case TIFF:
             case PDF:
 			case ANI:
-                LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail);
+                LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail, compressJpeg);
 				break;
 
 			case GIF:
@@ -1253,7 +1261,10 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
                             _local->SetFilename(szFileName);
 							imageVideoThumbnail->image = new CImageLoadingFormat();
 							imageVideoThumbnail->image->SetFilename(szFileName);
-							imageVideoThumbnail->image->SetPicture(_local);
+							if(compressJpeg)
+								imageVideoThumbnail->image->SetPicturToJpeg(_local);
+							else
+								imageVideoThumbnail->image->SetPicture(_local);
 							imageVideoThumbnail->rotation = 0;
 							imageVideoThumbnail->delay = _cxImage->GetFrameDelay();
 							imageVideoThumbnail->percent = ((float)i / (float)_cxImage->GetNumFrames()) * 100.0f;
@@ -1281,7 +1292,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 			{
 				CThumbnailVideo video;	               
                 //CConvertUtility::ConvertToStdString
-				vector<CImageVideoThumbnail *> listVideo = video.GetVideoListFrame(szFileName, widthThumbnail, heightThumbnail);
+				vector<CImageVideoThumbnail *> listVideo = video.GetVideoListFrame(szFileName, widthThumbnail, heightThumbnail, compressJpeg);
 				for (CImageVideoThumbnail * cxVideo : listVideo)
 				{
 					listThumbnail->push_back(cxVideo);

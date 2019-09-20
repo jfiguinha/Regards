@@ -129,7 +129,7 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 		thumbnailPicture->SetNoVScroll(true);
 		panelPicture->SetWindow(scrollPictureWindow);
 	}
-
+	
 	Connect(VIDEO_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerWindow::SetVideoPos));
 	Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CViewerWindow::OnTimerAnimation), nullptr, this);
     Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerWindow::AnimationSetPosition));
@@ -632,7 +632,7 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
 	videoThumbnail.clear();
 
 	if(iFormat != TIFF && iFormat != PDF)
-		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail);
+		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail, false);
     
 	if (previewInfosWnd != nullptr)
 	{

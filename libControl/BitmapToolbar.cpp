@@ -20,12 +20,12 @@ void CBitmapToolbar::SetBitmapDisplayPt(Regards::Control::CBitmapWndViewer * bit
 }
 */
 
-CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
+CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewerId, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	themeToolbar = theme;
 	slide = nullptr;
-	
+	this->parentId = viewerId;
 
 	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
 	wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL",1);//"Emai";
@@ -97,7 +97,7 @@ void CBitmapToolbar::ZoomPos(const int &position)
 
 void CBitmapToolbar::ZoomOn()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
 	if (bitmapWindow != nullptr)
 	{
 		bitmapWindow->ZoomOn();
@@ -110,7 +110,7 @@ void CBitmapToolbar::ZoomOn()
 
 void CBitmapToolbar::ChangeZoomInPos()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
     if (slide != nullptr && bitmapWindow != nullptr)
     {
         int dwPos = bitmapWindow->GetPosRatio();
@@ -123,7 +123,7 @@ void CBitmapToolbar::ChangeZoomInPos()
 
 void CBitmapToolbar::ChangeZoomOutPos()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
     if (slide != nullptr && bitmapWindow != nullptr)
     {
         int dwPos = bitmapWindow->GetPosRatio();
@@ -137,7 +137,7 @@ void CBitmapToolbar::ChangeZoomOutPos()
 
 void CBitmapToolbar::ZoomOut()
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
 	if (bitmapWindow != nullptr)
 		bitmapWindow->ZoomOut();
 
@@ -194,7 +194,7 @@ void CBitmapToolbar::HideSaveButton()
 
 void CBitmapToolbar::SlidePosChange(const int &position, const wxString &key)
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
 	if(bitmapWindow != nullptr)
 		bitmapWindow->SetZoomPosition(position);
 }
@@ -202,7 +202,7 @@ void CBitmapToolbar::SlidePosChange(const int &position, const wxString &key)
 
 void CBitmapToolbar::EventManager(const int &id)
 {
-	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);
 	if (bitmapWindow != nullptr)
 	{
 		switch (id)

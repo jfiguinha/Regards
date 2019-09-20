@@ -112,7 +112,7 @@ int64_t CThumbnailVideo::GetMovieDuration(const wxString & fileName)
 	return VideoThumbnailer::GetMovieDuration(path);
 }
 
-vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail)
+vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString & fileName,const int &widthThumbnail,const int &heightThumbnail, const bool &compressJpeg)
 {
 	
 	int     thumbnailSize = 0;
@@ -166,7 +166,10 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 				picture = nullptr;
 			}
 			cxVideo->timePosition = timePosition;
-			cxVideo->image->SetPicturToJpeg(picture);
+			if(compressJpeg)
+				cxVideo->image->SetPicturToJpeg(picture);
+			else
+				cxVideo->image->SetPicture(picture);
 			delete picture;
 			cxVideo->image->SetFilename(fileName);
 			cxVideo->image->SetOrientation(rotation);

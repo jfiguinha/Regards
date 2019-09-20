@@ -201,6 +201,9 @@
     <ClInclude Include="ScannerFrame.h">
       <Filter>Scanner</Filter>
     </ClInclude>
+    <ClInclude Include="viewerPDF.h">
+      <Filter>Scanner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -333,6 +336,9 @@
       <Filter>Scanner</Filter>
     </ClCompile>
     <ClCompile Include="ScannerFrame.cpp">
+      <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="viewerPDF.cpp">
       <Filter>Scanner</Filter>
     </ClCompile>
   </ItemGroup>

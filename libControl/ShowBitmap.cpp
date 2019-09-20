@@ -77,13 +77,13 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
 
-	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, themeToolbar, false);
+	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false);
 	pictureToolbar->SetTabValue(value);
 
 	if (config != nullptr)
 		config->GetBitmapWindowTheme(&themeBitmap);
 
-	bitmapWindow = new CBitmapWndViewer(scrollbar, BITMAPWINDOWVIEWERID, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
+	bitmapWindow = new CBitmapWndViewer(scrollbar, bitmapViewerId, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
 	
     loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
 	//pictureToolbar->SetBitmapDisplayPt(bitmapWindow);

@@ -35,7 +35,9 @@ public:
 	//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
 	vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size);
 	CImageLoadingFormat * LoadThumbnail(const  wxString & szFileName, const bool &fromExifOnly = false);
-	vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName);
+	//vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg);
+	void LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg);
+
 	CImageLoadingFormat * LoadVideoThumbnail(const  wxString & szFileName, const int &percent, int &timePosition);
 
 	//CRegardsBitmap * LoadThumbnailFromBuffer(uint8_t * data, size_t size, const char * ext, const int &orientation);
@@ -48,7 +50,7 @@ public:
 	//-----------------------------------------------------------------------
 	CxImage * ConvertwxImageToCxImage(const wxImage & image);
 	CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image);
-	CRegardsBitmap * ConvertCXImageToScaleRegardsBitmap(CxImage * image, const int &width, const int &height);
+	//CRegardsBitmap * ConvertCXImageToScaleRegardsBitmap(CxImage * image, const int &width, const int &height);
 	CxImage * ConvertRegardsBitmapToCXImage(CRegardsBitmap * bitmap);
 	CRegardsBitmap * ConvertCXImageToRegardsBitmap(CxImage * image, const int &orientation);
 	CRegardsBitmap * ConvertwxImageToRegardsBitmap(const wxImage & image);
@@ -56,7 +58,7 @@ public:
 	CRegardsBitmap * ConvertCXImageToScaleRegardsBitmapCRgbaquad(CxImage * image, const int &width, const int &height);
 	wxImage * ConvertRegardsBitmapToWXImage(CRegardsBitmap * image, const bool &loadAlpha = false);
 	static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
-	void LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail);
+	
     static void Initx265Decoder();
     static void Uninitx265Decoder();    
     
@@ -70,7 +72,7 @@ public:
     
 private:
 
-    void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height);
+    void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg);
 	uint8_t * readfile(const wxString & fileName, size_t&size);
 	void writefile(const wxString & fileName, uint8_t * data, size_t & size);
 	//-----------------------------------------------------------------------------
