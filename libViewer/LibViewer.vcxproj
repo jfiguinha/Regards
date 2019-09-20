@@ -207,9 +207,9 @@
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
-    <ClInclude Include="ImageWindow.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ScannerFrame.h" />
+    <ClInclude Include="ThumbnailMultiPage.h" />
     <ClInclude Include="viewerPDF.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
@@ -259,8 +259,8 @@
     <ClCompile Include="CategoryFolderWindow.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
-    <ClCompile Include="ImageWindow.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
+    <ClCompile Include="ThumbnailMultiPage.cpp" />
     <ClCompile Include="viewerPDF.cpp" />
     <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />

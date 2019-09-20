@@ -172,7 +172,8 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 		// because this way we can retrieve also alpha channel data.
 		// Alternative way by retrieving bitmap handle with Bitmap::GetHBITMAP
 		// (to pass it to wxBitmap) doesn't preserve real alpha channel data.
-
+		Gdiplus::REAL hdpi = img->GetHorizontalResolution();
+		Gdiplus::REAL vdpi = img->GetVerticalResolution();
 
 	
 		// Set up wxImage buffer for alpha channel values
@@ -205,6 +206,11 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 		}
 		bmp->UnlockBits(&bitmapData);
 
+
+		image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+		image.SetOption(wxIMAGE_OPTION_RESOLUTIONX, hdpi);
+		image.SetOption(wxIMAGE_OPTION_RESOLUTIONY, vdpi);
+		image.SetOption(wxIMAGE_OPTION_RESOLUTION, hdpi);
 	}
 	catch (...) {
 		// this might happen if img->GetPixelFormat() is something exotic

@@ -61,6 +61,9 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scanner\Thumbnail">
+      <UniqueIdentifier>{6a31b84e-c8e1-44d5-a106-3085a8ea8333}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -195,14 +198,14 @@
     <ClInclude Include="CheckVersion.h">
       <Filter>CheckVersion</Filter>
     </ClInclude>
-    <ClInclude Include="ImageWindow.h">
-      <Filter>Scanner</Filter>
-    </ClInclude>
     <ClInclude Include="ScannerFrame.h">
       <Filter>Scanner</Filter>
     </ClInclude>
     <ClInclude Include="viewerPDF.h">
       <Filter>Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailMultiPage.h">
+      <Filter>Scanner\Thumbnail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,14 +335,14 @@
     <ClCompile Include="ToolbarPhoto.cpp">
       <Filter>Toolbar\source</Filter>
     </ClCompile>
-    <ClCompile Include="ImageWindow.cpp">
-      <Filter>Scanner</Filter>
-    </ClCompile>
     <ClCompile Include="ScannerFrame.cpp">
       <Filter>Scanner</Filter>
     </ClCompile>
     <ClCompile Include="viewerPDF.cpp">
       <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailMultiPage.cpp">
+      <Filter>Scanner\Thumbnail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

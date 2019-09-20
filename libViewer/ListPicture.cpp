@@ -217,9 +217,8 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 
 			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(&picture);
-			CRegardsBitmap * regardsBmp = imageLoad->GetRegardsBitmap();
-			CSavePicture::SavePicture(this, regardsBmp, "photoindex.png");
-			delete regardsBmp;
+			CSavePicture::SavePicture(this, imageLoad, "photoindex.png");
+			delete imageLoad;
 		}
 	}
 	else

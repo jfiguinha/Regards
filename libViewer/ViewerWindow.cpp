@@ -632,7 +632,7 @@ bool CViewerWindow::SetAnimation(const wxString &filename)
 	videoThumbnail.clear();
 
 	if(iFormat != TIFF && iFormat != PDF)
-		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail, false);
+		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail, false, false);
     
 	if (previewInfosWnd != nullptr)
 	{
