@@ -255,6 +255,11 @@ wxString CImageLoadingFormat::GetFilename()
 	return filename;
 }
 
+int CImageLoadingFormat::GetResolution()
+{
+	return resolution;
+}
+
 void CImageLoadingFormat::SetOrientation(const int &orientation)
 {
 	this->orientation = orientation;

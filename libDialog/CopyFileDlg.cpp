@@ -614,6 +614,9 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 			case PPM:
 				file.append(".ppm");
 				break;
+			case PDF:
+				file.append(".pdf");
+				break;
 			}
 
 			//Sauvegarde de l'image
@@ -622,9 +625,7 @@ void CopyFileDlg::ExportFile(const wxString & filename, CThumbnailData * data)
 			{
 				if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)	
 				{
-					CRegardsBitmap * bitmapregards = bitmap->GetRegardsBitmap();
-					libPicture.SavePicture(file, bitmapregards, optionPicture, qualityPicture);
-					delete bitmapregards;
+					libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
 				}
 				delete bitmap;
 			}

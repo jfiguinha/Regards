@@ -18,7 +18,7 @@ CSavePicture::~CSavePicture()
 {
 }
 
-void CSavePicture::SavePicture(wxWindow * window, CRegardsBitmap * bitmap, const wxString &filename)
+void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, const wxString &filename)
 {
 	CLibPicture libPicture;
 	//CRegardsBitmap * bitmap = GetBitmap(true);
@@ -115,7 +115,7 @@ void CSavePicture::SavePicture(wxWindow * window, CRegardsBitmap * bitmap, const
 			libPicture.SavePicture(file, bitmap);
 
 #else
-			szFilter = "Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files ICO (*.ICO)|*.ico|Files CUR (*.CUR)|*.cur|Files ANI (*.ANI)|*.ani";
+			szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files ICO (*.ICO)|*.ico|Files CUR (*.CUR)|*.cur|Files ANI (*.ANI)|*.ani";
 
 
 			wxFileDialog saveFileDialog(window, filename, "", "",

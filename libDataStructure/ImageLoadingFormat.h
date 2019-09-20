@@ -36,7 +36,7 @@ public:
 	int GetOrientation();
 	wxString GetFilename();
 	int GetFormat();
-
+	int GetResolution();
 	void SetOrientation(const int &orientation);
 	void SetFilename(const wxString &filename);
 
@@ -65,4 +65,5 @@ protected:
 	bool convertToRGB24;
 	bool memoryDelete;
 	bool convertToBGR;
+	int resolution = 300;
 };

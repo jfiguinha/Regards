@@ -291,9 +291,11 @@ void CBitmapWndViewer::AfterSetBitmap()
 void CBitmapWndViewer::SavePicture()
 {
 	CRegardsBitmap * bitmap = GetBitmap(true);
-	CSavePicture::SavePicture(this, bitmap, filename);
-	if (bitmap != nullptr)
-		delete bitmap;
+	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
+	imageLoading->SetPicture(bitmap);
+	CSavePicture::SavePicture(this, imageLoading, filename);
+	if (imageLoading != nullptr)
+		delete imageLoading;
 }
 
 void CBitmapWndViewer::DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top)

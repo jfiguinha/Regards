@@ -10,6 +10,9 @@
 /////////////////////////////////////////////////////////////////////////////
 #include <header.h>
 #include <Regards.h>
+#ifdef wxUSE_PDF
+#include <wx/wxpoppler.h>
+#endif
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -123,6 +126,9 @@ bool MyApp::OnInit()
 
 	wxInitAllImageHandlers();
 
+#ifdef wxUSE_PDF
+	    AddImageHandler(new wxPDFHandler);
+#endif
     
 #ifdef __WXMSW__
 

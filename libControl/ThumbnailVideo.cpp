@@ -280,11 +280,12 @@ void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
 {
 	if(videoFilename != videoFile)
 	{
+		threadDataProcess = true;
 		process_end = false;
 		InitScrollingPos();
 		InitWithDefaultPicture(videoFile, size);
 		videoFilename = videoFile;	
-		//processTimer->Start(500);
+		processTimer->Start(500);
         Refresh();
 	}
 

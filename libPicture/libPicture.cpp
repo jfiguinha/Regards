@@ -513,13 +513,18 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 
+	case PDF:
+	{
+		returnValue = 1;
+	}
+	break;
 
 	}
 
 	return returnValue;
 }
 
-int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap, const int &option, const int &quality)
+int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap, const int &option, const int &quality)
 {
 	int iFormat = 0;
 
@@ -531,7 +536,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 	case BMP:
 	{
 		//iReturn = CBmp::SaveBMP(bitmap, fileName);
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("bmp"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -543,23 +548,25 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case WEBP:
 	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
 		float quality_factor = quality;
 		uint8_t * output = nullptr;
 
-		bitmap->VertFlipBuf();
+		regards->VertFlipBuf();
 
-		size_t size = WebPEncodeBGRA(bitmap->GetPtBitmap(),
-										   bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetWidthSize(),
+		size_t size = WebPEncodeBGRA(regards->GetPtBitmap(),
+			regards->GetBitmapWidth(), regards->GetBitmapHeight(), regards->GetWidthSize(),
 										   quality_factor, &output);
 		writefile(fileName, output, size);
 
 		free(output);
+		delete regards;
 		break;
 	}
 
 	case TGA:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tga"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -571,7 +578,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case PCX:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pcx"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -583,7 +590,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case MNG:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("mng"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -595,7 +602,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case TIFF:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->SetCodecOption(option, CXIMAGE_FORMAT_TIF);
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("tif"));
 
@@ -609,7 +616,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case PNG:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->SetCodecOption(option, CXIMAGE_FORMAT_PNG);
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("png"));
 		delete image;
@@ -618,7 +625,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case GIF:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->SetCodecOption(option, CXIMAGE_FORMAT_GIF);
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"));
 
@@ -632,12 +639,12 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 #ifdef LIBBPG
 	case BPG:
 	{
-		int width = bitmap->GetBitmapWidth();
-		int height = bitmap->GetBitmapHeight();
+		int width = bitmap->GetWidth();
+		int height = bitmap->GetHeight();
 		int lossless_mode = option;
 		int compress_level = quality;
 
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		//image->SetCodecOption(option, CXIMAGE_FORMAT_PNG);
 		
 
@@ -666,7 +673,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case JPEG:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
 		image->SetJpegQualityF((float)quality);
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
@@ -681,7 +688,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case PNM:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -693,7 +700,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case JPC:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpc"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -705,7 +712,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case JPEG2000:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->SetJpegQualityF((float)quality);
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jp2"));
 		wxString error = image->GetLastError();
@@ -719,7 +726,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 
 	case PPM:
 	{
-		CxImage * image = ConvertRegardsBitmapToCXImage(bitmap);
+		CxImage * image = bitmap->GetCxImage();
 		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
 		wxString error = image->GetLastError();
 		if (error != "")
@@ -730,9 +737,21 @@ int CLibPicture::SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap
 	}
 	break;
 
+	case PDF:
+		{
+			wxImage * image = bitmap->GetwxImage();
+			image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+			image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, bitmap->GetResolution());
+			image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, bitmap->GetResolution());
+			image->SetOption(wxIMAGE_OPTION_RESOLUTION, bitmap->GetResolution());
+			image->SaveFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF);
+			delete image;
+		}
+		break;
+
 	case XPM:
 	{
-		wxImage * image = ConvertRegardsBitmapToWXImage(bitmap);
+		wxImage * image = bitmap->GetwxImage();
 		image->SaveFile(fileName, wxBITMAP_TYPE_XPM);
 		delete image;
 	}
@@ -774,7 +793,7 @@ bool CLibPicture::TestIsExifCompatible(const wxString &filename)
 //-----------------------------------------------------------------------------
 //Sauvegarde
 //-----------------------------------------------------------------------------
-int CLibPicture::SavePicture(const wxString & fileName, CRegardsBitmap * bitmap)
+int CLibPicture::SavePicture(const wxString & fileName, CImageLoadingFormat * bitmap)
 {
     wxString wxfileName;
     int iFormat = 0;
@@ -788,7 +807,7 @@ int CLibPicture::SavePicture(const wxString & fileName, CRegardsBitmap * bitmap)
 	if (SavePictureOption(iFormat, option, quality) == 1)
 	{
 		if(!TestIsExifCompatible(fileName))
-			bitmap->RotateExif(bitmap->GetOrientation());
+			bitmap->ApplyExifOrientation(bitmap->GetOrientation());
 
 		SavePicture(wxfileName, bitmap, option, quality);
 	}
@@ -994,7 +1013,7 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxStrin
 }
 */
 
-void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg)
+void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail)
 {
     wxPoppler poppler;
     wxImage image;
@@ -1015,10 +1034,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
         if(bitmapType == TIFF)
             bitmapTypeWxWidget = wxBITMAP_TYPE_TIFF;
 		else
-		{
 			bitmapTypeWxWidget = wxBITMAP_TYPE_ANI;
-			needresize = false;
-		}
             
         m_ani_images = wxImage::GetImageCount(szFileName, bitmapTypeWxWidget);
     }
@@ -1056,7 +1072,7 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
         {
 			CRegardsBitmap * bitmap = nullptr;
             //wxMemoryDC memdc;
-			if (needresize)
+			if (isThumbnail)
 			{
 				int bx, by, bw, bh;
 
@@ -1189,7 +1205,7 @@ uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
 	return delay;
 }
 
-void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg)
+void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg, const bool &isThumbnail)
 {
 	int iFormat = TestImageFormat(szFileName);
 #ifdef WIN32
@@ -1242,7 +1258,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
             case TIFF:
             case PDF:
 			case ANI:
-                LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail, compressJpeg);
+                LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail, compressJpeg, isThumbnail);
 				break;
 
 			case GIF:

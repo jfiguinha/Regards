@@ -30,20 +30,20 @@ public:
     bool TestIsAnimation(const wxString & szFileName);
 	int GetPictureDimensions(const  wxString & fileName, int & width, int & height, int & rotation);
 	CImageLoadingFormat * LoadPicture(const  wxString & szFileName, const bool &isThumbnail = false, const int &numPicture = 0);
-	int SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap);
+	int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap);
 	int GetMetadata(const wxString &filename, uint8_t * & data, long & size);
 	//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
 	vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size);
 	CImageLoadingFormat * LoadThumbnail(const  wxString & szFileName, const bool &fromExifOnly = false);
 	//vector<CImageVideoThumbnail *> LoadAllVideoThumbnail(const  wxString & szFileName, const bool &compressJpeg);
-	void LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg);
+	void LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg, const bool &isThumbnail);
 
 	CImageLoadingFormat * LoadVideoThumbnail(const  wxString & szFileName, const int &percent, int &timePosition);
 
 	//CRegardsBitmap * LoadThumbnailFromBuffer(uint8_t * data, size_t size, const char * ext, const int &orientation);
 	bool TestIsExifCompatible(const wxString &filename);
 	int SavePictureOption(const int &format, int &option, int &quality);
-	int SavePicture(const  wxString & fileName, CRegardsBitmap * bitmap,const int &option, const int &quality);
+	int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap,const int &option, const int &quality);
 
 	//-----------------------------------------------------------------------
 	//Fonction de conversion
@@ -72,7 +72,7 @@ public:
     
 private:
 
-    void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg);
+    void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail);
 	uint8_t * readfile(const wxString & fileName, size_t&size);
 	void writefile(const wxString & fileName, uint8_t * data, size_t & size);
 	//-----------------------------------------------------------------------------
