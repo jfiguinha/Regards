@@ -64,6 +64,9 @@
     <Filter Include="Scanner\Thumbnail">
       <UniqueIdentifier>{6a31b84e-c8e1-44d5-a106-3085a8ea8333}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scanner\Toolbar">
+      <UniqueIdentifier>{cb692ec5-44f0-4e5a-8ff0-8f2cc10e433d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -207,6 +210,9 @@
     <ClInclude Include="ThumbnailMultiPage.h">
       <Filter>Scanner\Thumbnail</Filter>
     </ClInclude>
+    <ClInclude Include="ToolbarPDF.h">
+      <Filter>Scanner\Toolbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -343,6 +349,9 @@
     </ClCompile>
     <ClCompile Include="ThumbnailMultiPage.cpp">
       <Filter>Scanner\Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarPDF.cpp">
+      <Filter>Scanner\Toolbar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

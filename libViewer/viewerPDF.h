@@ -4,6 +4,7 @@
 #include <WindowMain.h>
 #include <PanelWithClickToolbar.h>
 #include "PreviewInfosWnd.h"
+#include "ToolbarPDF.h"
 #include "ThumbnailMultiPage.h"
 #include "ThumbnailViewerPicture.h"
 #include "EffectVideoParameter.h"
@@ -64,6 +65,9 @@ namespace Regards
 			CPanelWithClickToolbar * panelVideo;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailMultiPage * thumbnailVideo;
+
+			//Toolbar
+			CToolbarPDF * toolbarPDF;
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
 			CShowBitmap * showBitmapWindow;

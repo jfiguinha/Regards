@@ -43,6 +43,15 @@ CViewerPDF::CViewerPDF(wxWindow* parent, wxWindowID id)
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
+	if (viewerTheme != nullptr)
+	{
+		CThemeToolbar theme;
+		viewerTheme->GetMainToolbarTheme(&theme);
+		toolbarPDF = new CToolbarPDF(this, wxID_ANY, theme, false);
+		toolbarPDF->Show(true);
+	}
+
+
 	//----------------------------------------------------------------------------------------
 	//Panel Thumbnail Video
 	//----------------------------------------------------------------------------------------
@@ -114,7 +123,7 @@ CViewerPDF::~CViewerPDF()
 {
 	pageThumbnail.clear();
 
-
+	delete(toolbarPDF);
 	delete(thumbnailVideo);
 	delete(scrollVideoWindow);
 	delete(panelVideo);
@@ -226,6 +235,10 @@ void CViewerPDF::RedrawBarPos()
 	//wxRect rc = GetWindowRect();
 	int bottomHeight = 0;
 	int topHeight = 0;
+
+	toolbarPDF->SetSize(0, 0, width, toolbarPDF->GetNavigatorHeight());
+	toolbarPDF->Refresh();
+
 	if (!isFullscreen && !panelVideo->IsShown())
 	{
 		panelVideo->Show();
@@ -236,9 +249,9 @@ void CViewerPDF::RedrawBarPos()
 	if (panelVideo->IsShown())
 	{
 		int iconeHeight = panelVideo->GetHeight();
-		panelVideo->SetSize(0, 0, width, iconeHeight);
+		panelVideo->SetSize(0, toolbarPDF->GetNavigatorHeight(), width, iconeHeight);
 		panelVideo->Refresh();
-		topHeight += iconeHeight;
+		topHeight += iconeHeight + toolbarPDF->GetNavigatorHeight();
 	}
 
 

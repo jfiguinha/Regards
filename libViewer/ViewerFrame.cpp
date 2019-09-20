@@ -739,7 +739,7 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 void CViewerFrame::OnScanPage(wxCommandEvent& WXUNUSED(event))
 {
 	// create the main application window
-	CScannerFrame *scanFrame = new CScannerFrame(_("wxIA Image Acquistion Test Program"),
+	CScannerFrame *scanFrame = new CScannerFrame(_("Regards Image Acquistion and PDF Management"),
 		wxPoint(-1, -1), wxSize(450, 340));
     
     /*
