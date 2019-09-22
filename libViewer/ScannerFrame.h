@@ -13,11 +13,15 @@ public:
 
     ~CScannerFrame();
 
+
+
 private:
 	// event handlers (these functions should _not_ be virtual)
 	void OnQuit(wxCommandEvent& event);
+	void OnPrint(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
+	void PrintPreview(CImageLoadingFormat * imageToPrint);
 #ifdef USE_WIA_INTERFACE
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #else

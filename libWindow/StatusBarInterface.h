@@ -1,5 +1,5 @@
 #pragma once
-class CRegardsBitmap;
+class CImageLoadingFormat;
 
 
 class IStatusBarInterface
@@ -11,7 +11,7 @@ public:
 	virtual void SetWindowTitle(const wxString &libelle) = 0;
     virtual void SetFullscreen(){};
 	virtual void SetScreen(){};
-	virtual void PrintPreview(CRegardsBitmap * imageToPrint){};
+	virtual void PrintPreview(CImageLoadingFormat * imageToPrint){};
 	virtual void Exit() = 0;
 	virtual void ShowViewer(){};
 	virtual bool AddFSEntry(const wxString& dirPath) { return true; };

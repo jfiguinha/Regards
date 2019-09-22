@@ -6,7 +6,7 @@
 #include <MainInterface.h>
 using namespace Regards::Introduction;
 
-class CRegardsBitmap;
+class CImageLoadingFormat;
 
 namespace Regards
 {
@@ -28,7 +28,7 @@ namespace Regards
 			void SetWindowTitle(const wxString &libelle);
 			void SetFullscreen();
 			void SetScreen();
-			void PrintPreview(CRegardsBitmap * imageToPrint);
+			void PrintPreview(CImageLoadingFormat * imageToPrint);
 			void Exit();
 			void ShowViewer(){};
             void OpenFile(const wxString &filename);
@@ -38,6 +38,7 @@ namespace Regards
             bool RemoveFSEntry(const wxString& dirPath);
             
 		private:
+			void OnPrint(wxCommandEvent& event);
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
             void OnIconSizeMore(wxCommandEvent& event);
@@ -56,12 +57,13 @@ namespace Regards
 			void OnPageSetup(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
             void OnFileSystemModified(wxFileSystemWatcherEvent& event);
-            
+			
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif
 
 			wxDECLARE_EVENT_TABLE();
+
 
 			IMainInterface * mainInterface;
 			CViewerParam * viewerParam;
@@ -78,7 +80,7 @@ namespace Regards
 			wxTimer * loadPictureTimer;
 			wxString filenameTimer;
 			int nbTime;
-			CRegardsBitmap * picture;
+			CImageLoadingFormat * picture;
             wxFileSystemWatcher * m_watcher;
 		};
 	}

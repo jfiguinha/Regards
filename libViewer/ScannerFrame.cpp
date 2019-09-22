@@ -1,5 +1,6 @@
 #include <header.h>
-
+#include <BitmapPrintout.h>
+#include <PrintEngine.h>
 #ifdef __WXMSW__
 #include <ImageAcquisition.h>
 #include <GdiPlusPixelFormats.h>
@@ -10,12 +11,15 @@
 #define USE_WIA_INTERFACE
 #endif
 #include <wx/filedlg.h>
-
+#include <PrintEngine.h>
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>
-
+#include <LibResource.h>
 #include <wx/wxsanedlg.h>
+#include <libPicture.h>
+
+using namespace Regards::Print;
 
 #define MAX_ZOOM	10.0
 #define MIN_ZOOM	0.1
@@ -30,6 +34,7 @@ enum
 	ID_ACQUIREIMAGENOUI,
 	ID_ACQUIREIMAGESNOUI,
 	ID_SELECTSOURCE,
+	ID_PRINT,
 	ID_ZOOMIN,
 	ID_ZOOMOUT,
 	ID_PROMPTONGETIMAGE
@@ -52,18 +57,16 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
+#if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
-#ifdef USE_IA_EVENTS
 	menuFile->AppendSeparator();
 	menuFile->AppendCheckItem(ID_PROMPTONGETIMAGE, _("Prompt on wxEVT_IA_GETIMAGE event"), _("Display prompt after acquiring an image"));
 	menuFile->Check(ID_PROMPTONGETIMAGE, TRUE);
 #endif
 	menuFile->AppendSeparator();
+	menuFile->Append(ID_PRINT, _("&Print PDF..."), _("Print PDF"));
+	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT, _("E&xit\tAlt-X"), _("Quit this program"));
-
-	wxMenu *menuView = new wxMenu;
-	menuView->Append(ID_ZOOMIN, _("Zoom &In"), _("Zoom in"));
-	menuView->Append(ID_ZOOMOUT, _("Zoom &Out"), _("Zoom out"));
 
 	// the "About" item should be in the help menu
 	wxMenu *helpMenu = new wxMenu;
@@ -73,7 +76,6 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 
 	wxMenuBar *menuBar = new wxMenuBar();
 	menuBar->Append(menuFile, _("&File"));
-	menuBar->Append(menuView, _("&View"));
 	menuBar->Append(helpMenu, _("&Help"));
 
 	//and attach this menu bar to the frame
@@ -91,10 +93,12 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
-#ifndef USE_WIA_INTERFACE    
+	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
+#if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
+	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
 #endif
-    Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
+    
     
     
 }
@@ -108,6 +112,36 @@ CScannerFrame::~CScannerFrame()
 
 	if (m_imagePDF != nullptr)
 		delete m_imagePDF;
+}
+
+void CScannerFrame::OnPrint(wxCommandEvent& event)
+{
+	CLibPicture libPicture;
+	wxString filename = m_imagePDF->GetFilename();
+	CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+	if(image != nullptr)
+		PrintPreview(image);
+}
+
+
+void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
+{
+	// Pass two printout objects: for preview, and possible printing.
+	wxPrintData * g_printData = CPrintEngine::GetPrintData();
+	wxPrintDialogData printDialogData(*g_printData);
+
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(imageToPrint), &printDialogData);
+	if (!preview->IsOk())
+	{
+		delete preview;
+		wxLogError(wxT("There was a problem previewing.\nPerhaps your current printer is not set correctly?"));
+		return;
+	}
+	wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
+	wxPreviewFrame * frame = new wxPreviewFrame(preview, this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
+	frame->Centre(wxBOTH);
+	frame->InitializeWithModality(wxPreviewFrame_AppModal);
+	frame->Show();
 }
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)

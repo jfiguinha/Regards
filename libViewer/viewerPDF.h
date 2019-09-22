@@ -41,6 +41,10 @@ namespace Regards
 			void LoadFile(const wxString &filename);
 			void SetImage(const wxImage &imageFile);
 
+			CImageLoadingFormat * GetImage();
+
+			wxString GetFilename();
+
 		private:
 			
 			bool GetProcessEnd();

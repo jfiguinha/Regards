@@ -119,6 +119,18 @@ void CViewerPDF::AnimationPicturePrevious()
 	LoadAnimationBitmap(filename, animationPosition);
 }
 
+wxString CViewerPDF::GetFilename()
+{
+	return filename;
+}
+
+CImageLoadingFormat * CViewerPDF::GetImage()
+{
+	CLibPicture libPicture;
+	CImageLoadingFormat * image = libPicture.LoadPicture(filename, 0);
+	return image;
+}
+
 CViewerPDF::~CViewerPDF()
 {
 	pageThumbnail.clear();

@@ -181,6 +181,8 @@ namespace Regards
 			bool GetProcessEnd();
 			void OnAddFolder(wxCommandEvent& event);
 
+			wxString GetFilename();
+
 		private:
 
 			void OnUpdateInfos(wxCommandEvent& event);

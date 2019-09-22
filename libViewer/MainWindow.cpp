@@ -185,6 +185,11 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	categorieData->LoadData((const char*)model.mb_str(wxConvUTF8));
 }
 
+wxString CMainWindow::GetFilename()
+{
+	return filename;
+}
+
 void CMainWindow::UpdateThumbnailMessage(wxCommandEvent& event)
 {
 	TRACE();
@@ -267,9 +272,15 @@ void CMainWindow::StopAnimation(wxCommandEvent& event)
 
 void CMainWindow::PrintPreview(wxCommandEvent& event)
 {
+	
 	CRegardsBitmap * bitmap = (CRegardsBitmap *)event.GetClientData();
+	
 	if (bitmap != nullptr)
-		statusBarViewer->PrintPreview(bitmap);
+	{
+		CImageLoadingFormat * imageToPrint = new CImageLoadingFormat();
+		imageToPrint->SetPicture(bitmap);
+		statusBarViewer->PrintPreview(imageToPrint);
+	}
 }
 
 void CMainWindow::RefreshCriteriaPictureList(wxCommandEvent& event)

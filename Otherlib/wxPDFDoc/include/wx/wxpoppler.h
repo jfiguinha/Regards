@@ -51,7 +51,8 @@ class wxPoppler
     virtual int  GetPageCount()
     {
         if(m_pPdfDocument != nullptr)
-        return m_pPdfDocument->pages();
+			return m_pPdfDocument->pages();
+		return 0;
     }
 
     /// \brief Select the given page number to render by a consecutive call to RenderPage().

@@ -176,46 +176,10 @@ bool CLibPicture::TestIsVideo(const wxString & szFileName)
 bool CLibPicture::TestIsAnimation(const wxString & szFileName)
 {
 	bool returnValue = false;
-	int numExt = 0;
-	wxFileName fichier(szFileName);
-	wxString extension = fichier.GetExt();
-    
-    //const char * szfichier = CConvertUtility::ConvertFromwxString(szFileName);
-	numExt = TestExtension(extension.Lower());
-	switch (numExt)
-	{
-#ifdef LIBHEIC
-	case HEIC:
-	{
-		int nbFrame = CHeic::GetNbFrame(CConvertUtility::ConvertToStdString(szFileName));
-		if (nbFrame > 1)
-			returnValue = true;
-	}
-	break;
-#endif
-	case GIF:
-		{
-			CxImage * image = new CxImage(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("gif"));
-			if (image->GetNumFrames() > 1)
-				returnValue = true;
-			delete image;	
-		}
-		break;
-	case ANI:
+	int nbFrame = this->GetNbImage(szFileName);
+	if (nbFrame > 1)
 		returnValue = true;
-		break;
-	case PDF:
-        returnValue = true;
-		break;        
-	case TIFF:
-		{
-			CxImage * image = new CxImage(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("tif"));
-			if (image->GetNumFrames() > 1)
-				returnValue = true;
-			delete image;
-		}
-		break;
-	}
+
     return returnValue;
 }
 
@@ -1015,52 +979,51 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadAllVideoThumbnail(const  wxStrin
 
 void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail)
 {
-    wxPoppler poppler;
+	wxPoppler poppler;
     wxImage image;
     wxBitmapType bitmapTypeWxWidget;
     
-    
+	int iFormat = TestImageFormat(szFileName);
 	bool needresize = true;
-     int m_ani_images = 0;
-    //wxBitmap * my_horse_ani = nullptr;
-    if(bitmapType == PDF)
-    {
-        poppler.Open(szFileName);
-        m_ani_images = poppler.GetPageCount();
-        poppler.SetDpi(75);
-    }
-    else
-    {
-        if(bitmapType == TIFF)
-            bitmapTypeWxWidget = wxBITMAP_TYPE_TIFF;
+    int m_ani_images = 0;
+	if (bitmapType == PDF)
+	{
+		poppler.Open(szFileName);
+		m_ani_images = poppler.GetPageCount();
+		poppler.SetDpi(75);
+	}
+	else
+	{
+		if (bitmapType == TIFF)
+			bitmapTypeWxWidget = wxBITMAP_TYPE_TIFF;
 		else
 			bitmapTypeWxWidget = wxBITMAP_TYPE_ANI;
-            
-        m_ani_images = wxImage::GetImageCount(szFileName, bitmapTypeWxWidget);
-    }
-    if (m_ani_images == 0)
-    {
-        wxLogError(wxT("No ANI-format images found"));
-    }
+
+		m_ani_images = wxImage::GetImageCount(szFileName, bitmapTypeWxWidget);
+	}
+	if (m_ani_images == 0)
+	{
+		wxLogError(wxT("No ANI-format images found"));
+	}
 
     for (auto i = 0; i < m_ani_images; i++)
     {
         bool returnValue = false;
         image.Destroy();
-        if(bitmapType == PDF)
-        {
-            returnValue = poppler.SelectPage(i);
-            if(returnValue)
-                returnValue = poppler.RenderPage();
-                
-            if(returnValue)
-                image = poppler.GetImage();
-        }
-        else
-        {
-            returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
-        }
-            
+		if (bitmapType == PDF)
+		{
+			returnValue = poppler.SelectPage(i);
+			if (returnValue)
+				returnValue = poppler.RenderPage();
+
+			if (returnValue)
+				image = poppler.GetImage();
+		}
+		else
+		{
+			returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
+		}
+           
         
         if (!returnValue)
         {
@@ -1126,23 +1089,15 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 			poppler.Open(szFileName);
 			return poppler.GetPageCount();
 		}
-		break;
-
+		case PNG:
 		case TIFF:
-		{
-			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_TIFF);
-		}
-		break;
-
 		case GIF:
-		{
-			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_GIF);
-		}
-		break;
-		
 		case ANI:
-			return wxImage::GetImageCount(szFileName, wxBITMAP_TYPE_ANI);
+		{
+			wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
+			return wxImage::GetImageCount(szFileName, bitmapType);
 			break;
+		}
 
 		case MPG2:
 		case MPEG:
@@ -1255,12 +1210,15 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 			}
 			break;
 #endif
+			
+			case PNG:
             case TIFF:
             case PDF:
 			case ANI:
                 LoadwxImageThumbnail(szFileName, listThumbnail, iFormat, widthThumbnail, heightThumbnail, compressJpeg, isThumbnail);
 				break;
 
+			
 			case GIF:
 				{
                     
@@ -1997,52 +1955,40 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			bitmap->SetPicture(_cxImage);
 			}
 			break;
-            
-        case PDF:
-			{
-                bool value = false;
-                wxPoppler poppler;
-                value = poppler.Open(fileName);
-                if(value)
-                    value = poppler.SelectPage(numPicture);
-                    
-                if(value)
-                    value = poppler.SetDpi(300);
-                    
-                if(value)
-                    value = poppler.RenderPage();
-                    
-                if(value)
-                {
-                    wxImage * image = new wxImage(poppler.GetImage());
-                    bitmap->SetPicture(image);
-                }
-			}
-			break;
 
+		case PDF:
+		{
+			bool value = false;
+			wxPoppler poppler;
+			value = poppler.Open(fileName);
+			if (value)
+				value = poppler.SelectPage(numPicture);
+
+			if (value)
+				value = poppler.SetDpi(300);
+
+			if (value)
+				value = poppler.RenderPage();
+
+			if (value)
+			{
+				wxImage * image = new wxImage(poppler.GetImage());
+				bitmap->SetPicture(image);
+			}
+		}
+		break;
+
+           
+		case PNG:
+		case TIFF:
         case ANI:
 			{
 				wxImage * image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_ANI, numPicture);
+				wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
+				image->LoadFile(fileName, bitmapType, numPicture);
 				bitmap->SetPicture(image);
 			}
 			break;        
-
-		case TIFF:
-			{
-				wxImage * image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_TIFF, numPicture);
-				bitmap->SetPicture(image);
-			}
-			break;
-
-		case PNG:
-			{
-				wxImage * image = new wxImage();
-				image->LoadFile(fileName, wxBITMAP_TYPE_PNG);
-				bitmap->SetPicture(image);
-			}
-			break;
                 
         case GIF:
 			{
@@ -2408,7 +2354,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
             poppler.RenderPage();
             imageWx = poppler.GetImage();
             typeImage = TYPE_IMAGE_WXIMAGE;
-            
         }
         //imageWx.LoadFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF); typeImage = TYPE_IMAGE_WXIMAGE;
         break;            

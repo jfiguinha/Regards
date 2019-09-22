@@ -19,6 +19,8 @@
 
 using namespace std;
 
+class CImageLoadingFormat;
+
 namespace Regards
 {
 	namespace Control
@@ -28,7 +30,7 @@ namespace Regards
 		class CBitmapPrintout: public wxPrintout
 		{
 		public:
-			CBitmapPrintout(CRegardsBitmap * image, const wxString &title = wxT("My picture"))
+			CBitmapPrintout(CImageLoadingFormat * image, const wxString &title = wxT("My picture"))
 				: wxPrintout(title) {
 				m_picture = image;
 			}
@@ -41,13 +43,15 @@ namespace Regards
 			virtual bool OnBeginDocument(int startPage, int endPage);
 			virtual void GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo);
 
-			void DrawPicture();
+			void DrawPicture(const int & pageNum);
 
 			// Writes a header on a page. Margin units are in millimetres.
 			bool WritePageHeader(wxPrintout *printout, wxDC *dc, const wxString& text, float mmToLogical);
 
 		private:
-			CRegardsBitmap * m_picture;
+
+			
+			CImageLoadingFormat * m_picture;
 		};
 		
 	}

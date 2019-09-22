@@ -26,6 +26,7 @@
 #include <FilterData.h>
 #include "ScannerFrame.h"
 #include <wx/app.h>
+#include <libPicture.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -256,13 +257,15 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//wxMenu *menuFace = new wxMenu;
 	//menuFace->Append(ID_FACEPERTINENCE, "&Face Pertinence", "Face Pertinence");
 
-	//menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
+	
 	menuFile->Append(WXSCAN_PAGE, wxT("&Scan Page"), wxT("Scan Page"));
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
 #endif
 	//menuFile->Append(wxID_PREVIEW, wxT("Print Pre&view"), wxT("Preview"));
+	menuFile->AppendSeparator();
+	menuFile->Append(wxID_PRINT, wxT("&Print..."), wxT("Print"));
 	menuFile->AppendSeparator();
 	menuFile->Append(wxID_EXIT);
 	wxMenu *menuHelp = new wxMenu;
@@ -279,6 +282,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	SetLabel(wxT("Regards Viewer"));
 	//Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
+	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	
     if (folderList.size() == 0)
@@ -310,6 +314,15 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     
     mainInterface->HideAbout();
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
+}
+
+void CViewerFrame::OnPrint(wxCommandEvent& event)
+{
+	CLibPicture libPicture;
+	wxString filename = mainWindow->GetFilename();
+	CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+	if (image != nullptr)
+		PrintPreview(image);
 }
 
 bool CViewerFrame::RemoveFSEntry(const wxString& dirPath)
@@ -686,7 +699,7 @@ void CViewerFrame::OnHello(wxCommandEvent& event)
 }
 
 
-void CViewerFrame::PrintPreview(CRegardsBitmap * imageToPrint)
+void CViewerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 {
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();

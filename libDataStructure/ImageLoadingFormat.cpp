@@ -9,7 +9,7 @@
 #include <InterpolationFloatBicubic.h>
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
-
+#include <wx/filename.h>
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;
@@ -760,6 +760,20 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 			}
 			break;
 	}
+}
+
+CImageLoadingFormat * CImageLoadingFormat::GetPage(const int &numPage)
+{
+	CLibPicture libPicture;
+	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename, false, numPage);
+	return imageLoading;
+}
+
+int CImageLoadingFormat::GetNbPage()
+{
+	CLibPicture libPicture;
+	int nbPage = libPicture.GetNbImage(filename);
+	return nbPage;
 }
 
 int CImageLoadingFormat::Resize(const int &pictureWidth, const int &pictureHeight, const int &method)

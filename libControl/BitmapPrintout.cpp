@@ -1,5 +1,6 @@
 #include <header.h>
 #include "BitmapPrintout.h"
+#include <ImageLoadingFormat.h>
 #include <LoadingResource.h>
 #include <PrintEngine.h>
 using namespace Regards::Control;
@@ -13,17 +14,19 @@ CBitmapPrintout::~CBitmapPrintout()
 {
 
 }
+
 CBitmapPrintout::CBitmapPrintout()
 {
 	m_picture = nullptr;
 }
+
 
 bool CBitmapPrintout::OnPrintPage(int page)
 {
 	wxDC *dc = GetDC();
 	if (dc)
 	{
-		DrawPicture();
+		DrawPicture(page);
 
 		// Draw page numbers at top left corner of printable area, sized so that
 		// screen size of text matches paper size.
@@ -48,17 +51,20 @@ bool CBitmapPrintout::OnBeginDocument(int startPage, int endPage)
 void CBitmapPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
 {
 	*minPage = 1;
-	*maxPage = 1;
+	*maxPage = m_picture->GetNbPage();
 	*selPageFrom = 1;
-	*selPageTo = 1;
+	*selPageTo = m_picture->GetNbPage();
 }
 
 bool CBitmapPrintout::HasPage(int pageNum)
 {
-	return (pageNum == 1);
+	if (pageNum <= m_picture->GetNbPage())
+		return true;
+
+	return false;
 }
 
-void CBitmapPrintout::DrawPicture()
+void CBitmapPrintout::DrawPicture(const int & pageNum)
 {
 	// You might use THIS code if you were scaling graphics of known size to fit
 	// on the page. The commented-out code illustrates different ways of scaling
@@ -66,8 +72,10 @@ void CBitmapPrintout::DrawPicture()
 
 	// We know the graphic is 230x350. If we didn't know this, we'd need to
 	// calculate it.
-	wxCoord maxX = m_picture->GetBitmapWidth();
-	wxCoord maxY = m_picture->GetBitmapHeight();
+	CImageLoadingFormat * image = m_picture->GetPage(pageNum - 1);
+
+	wxCoord maxX = image->GetWidth();
+	wxCoord maxY = image->GetHeight();
 	wxPageSetupDialogData * g_pageSetupData = CPrintEngine::GetPageSetupDialogData();
 
 	// This sets the user scale and origin of the DC so that the image fits
@@ -133,7 +141,10 @@ void CBitmapPrintout::DrawPicture()
 
 
 	wxDC * dc = GetDC();
-	dc->DrawBitmap(CLoadingResource::ConvertTowxImageRGB(m_picture), 0, 0);
+	wxImage * _local = image->GetwxImage();
+	dc->DrawBitmap(*_local, 0, 0);
+	delete _local;
+	delete image;
 }
 
 
