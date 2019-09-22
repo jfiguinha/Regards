@@ -27,6 +27,8 @@
 #include "ScannerFrame.h"
 #include <wx/app.h>
 #include <libPicture.h>
+#include <FaceDetection.h>
+#include <CategoryDetection.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -51,7 +53,7 @@ enum
 	ID_ERASEDATABASE = 7,
 	ID_THUMBNAILRIGHT = 8,
 	ID_THUMBNAILBOTTOM = 9,
-	ID_FACEPERTINENCE = 10,
+	ID_FACEDETECTION = 10,
 	ID_INTERPOLATIONFILTER = 11,
 	ID_VIDEO = 1018,
 	ID_AUDIO = 1019,
@@ -254,8 +256,8 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
 
 
-	//wxMenu *menuFace = new wxMenu;
-	//menuFace->Append(ID_FACEPERTINENCE, "&Face Pertinence", "Face Pertinence");
+	wxMenu *menuFace = new wxMenu;
+	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
 
 	
 	menuFile->Append(WXSCAN_PAGE, wxT("&Scan Page"), wxT("Scan Page"));
@@ -274,6 +276,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuParameter, labelParameter);
+	menuBar->Append(menuFace, "Face");
     menuBar->Append(menuSizeIcon, labelSizeIcon);
 
 	menuBar->Append(menuHelp, labelHelp);
@@ -749,6 +752,34 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 	}
 }
 
+void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
+{
+	CCategoryDetectionDlg catergoryDetection(this);
+	catergoryDetection.ShowModal();
+
+	/*
+	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+	if (listFace != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
+		listFace->GetEventHandler()->AddPendingEvent(evt);
+	}
+	*/
+}
+
+void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
+{
+	CFaceDetectionDlg faceDetection(this);
+	faceDetection.ShowModal();
+
+	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
+	if (listFace != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
+		listFace->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 void CViewerFrame::OnScanPage(wxCommandEvent& WXUNUSED(event))
 {
 	// create the main application window
@@ -824,7 +855,7 @@ EVT_MENU(ID_Configuration, CViewerFrame::OnConfiguration)
 EVT_MENU(ID_OpenCL, CViewerFrame::OnOpenCLConfiguration)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
-EVT_MENU(ID_FACEPERTINENCE, CViewerFrame::OnFacePertinence)
+EVT_MENU(ID_FACEDETECTION, CViewerFrame::OnFaceDetection)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)

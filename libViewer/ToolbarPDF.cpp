@@ -76,8 +76,8 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_QUITTER:
 	{
-		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
+		wxWindow* central = this->GetParent()->GetParent();
+		wxCommandEvent* event = new wxCommandEvent(wxID_EXIT);
 		wxQueueEvent(central, event);
 	}
 	break;

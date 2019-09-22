@@ -55,6 +55,8 @@ namespace Regards
 			void OnExit(wxCommandEvent& event);
 			void OnScanPage(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
+			void OnFaceDetection(wxCommandEvent& event);
+			void OnCategoryDetection(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
             void OnFileSystemModified(wxFileSystemWatcherEvent& event);
 			

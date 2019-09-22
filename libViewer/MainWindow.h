@@ -257,8 +257,7 @@ namespace Regards
 			bool sendMessageVideoStop;
 			bool loadPicture;
             bool checkVersion;
-			CPictureCategorieLoadData * categorieData;
-			CPictureCategorie * pictureCategorie;
+
 		};
 	}
 

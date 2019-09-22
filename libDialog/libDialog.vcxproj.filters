@@ -49,6 +49,12 @@
     <Filter Include="InterpolationFiltre">
       <UniqueIdentifier>{ffcf16eb-5edf-45a1-a29d-3be4c4de4ce6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FaceDetection">
+      <UniqueIdentifier>{9dd571d4-cbc0-4fdc-815b-35cf85ba4de2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CategoryDetection">
+      <UniqueIdentifier>{bedd0e2d-2cbf-4206-b226-1642be6a55c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -108,6 +114,12 @@
     <ClCompile Include="InterpolationFilterSelect.cpp">
       <Filter>InterpolationFiltre</Filter>
     </ClCompile>
+    <ClCompile Include="FaceDetection.cpp">
+      <Filter>FaceDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="CategoryDetection.cpp">
+      <Filter>CategoryDetection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CopyFileDlg.h">
@@ -166,6 +178,12 @@
     </ClInclude>
     <ClInclude Include="InterpolationFilterSelect.h">
       <Filter>InterpolationFiltre</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceDetection.h">
+      <Filter>FaceDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="CategoryDetection.h">
+      <Filter>CategoryDetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

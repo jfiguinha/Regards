@@ -197,6 +197,8 @@ bool MyApp::OnInit()
 #ifdef WIN32
 
     wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage());
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CategoryDetection.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\FaceDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ConfigRegards.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CopyFileDlg.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\OpenCLDialog.xrc");
@@ -216,6 +218,8 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\bm3d.xrc");
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CategoryDetection.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/FaceDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ConfigRegards.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CopyFileDlg.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/OpenCLDialog.xrc");

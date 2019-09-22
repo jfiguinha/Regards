@@ -26,20 +26,12 @@ namespace Regards
 			int GetThumbnailHeight();
 
 		private:
-
-			void ProcessIdle();
-			void OnRefreshProcess(wxCommandEvent& event);
-			void OnFacePhotoAdd(wxCommandEvent& event);
-			void OnAddFacePhoto(wxCommandEvent& event);
-			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
 			void ThumbnailRefresh(wxCommandEvent& event);
 			void ThumbnailMove(wxCommandEvent& event);
 			void Resize();
-			bool GetProcessEnd();
-			static void FacialRecognition(void * param);
 
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
@@ -47,9 +39,8 @@ namespace Regards
 			//CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			CThumbnailFace * thumbnailFace;
 			bool update;
-			int nbProcessFacePhoto;
 			bool updateFaceList;
-			CFaceLoadData * faceData;
+
 		};
 	}
 }
