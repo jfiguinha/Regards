@@ -118,6 +118,8 @@ void CViewerPDF::OnSave(wxCommandEvent& event)
 
 	wxString newfilename = saveFileDialog.GetPath();
 	wxCopyFile(filename, newfilename);
+
+	LoadFile(newfilename);
 }
 
 void CViewerPDF::OnOpenFile(wxCommandEvent& event)
