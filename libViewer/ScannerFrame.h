@@ -1,6 +1,9 @@
 #pragma once
 #include <wx/wxscan.h>
 #include "viewerPDF.h"
+#ifdef __WXMSW__
+#include <gdiplus.h>
+#endif
 using namespace Regards::Viewer;
 
 // IDs for the controls and the menu commands
@@ -32,6 +35,8 @@ public:
 
 	void PrintPreview(CImageLoadingFormat * imageToPrint);
 
+	void ScanPage();
+
 private:
 	// event handlers (these functions should _not_ be virtual)
 	void OnQuit(wxCommandEvent& event);
@@ -39,9 +44,10 @@ private:
 	void OnAbout(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
 	
-#ifdef USE_WIA_INTERFACE
+#ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
-#else
+#endif
+#ifdef __WXSCANSANE__ 
 	void OnSelectSource(wxCommandEvent& event);
 #endif
 	void OnOpenImage(wxCommandEvent& event);

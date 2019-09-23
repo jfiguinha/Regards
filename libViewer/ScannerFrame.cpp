@@ -152,24 +152,13 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 	wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
 }
 
-#ifndef USE_WIA_INTERFACE
+#ifdef __WXSCANSANE__ 
 void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
 {
-
     scanSane->SelectSource("", true, this);
 }
-
-void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
-{
-    wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
-    if (d.ShowModal() == wxID_OK)
-    {
-        m_imageWin->SetImage(d.GetImage());
-    }
-}
-
-#else
-
+#endif
+#ifdef __WXMSW__
 wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd)
 {
 	const UINT w = img->GetWidth();
@@ -234,9 +223,23 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 	}
 	return image;
 }
-
+#endif
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
+	ScanPage();
+}
+
+
+
+void CScannerFrame::ScanPage()
+{
+#if __WXSCANSANE__  
+	wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
+	if (d.ShowModal() == wxID_OK)
+	{
+		m_imageWin->SetImage(d.GetImage());
+	}
+#else
 	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
 	gdiplus->CreateContext(this);
 	CComPtrArray<IStream> ppStream;
@@ -269,16 +272,14 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 	}
 
 	//delete gdiplus;
-}
-
-
 #endif
+}
 
 void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	switch (event.GetId())
 	{
-#ifndef USE_WIA_INTERFACE
+#ifdef __WXSCANSANE__  
 	case ID_ACQUIREIMAGE:
         if(scanSane != nullptr)
             event.Enable(scanSane->IsSourceSelected());

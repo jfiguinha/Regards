@@ -103,13 +103,31 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
 	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CViewerPDF::OnOpenFile));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
+	Connect(wxEVENT_SCANNER, wxCommandEventHandler(CViewerPDF::OnScan));
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CViewerPDF::OnPrint));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CViewerPDF::OnExit));
+	Connect(wxEVENT_SAVE, wxCommandEventHandler(CViewerPDF::OnSave));
+}
+
+void CViewerPDF::OnSave(wxCommandEvent& event)
+{
+	wxFileDialog saveFileDialog(this, _("Save PDF file"), "", "",
+			"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	wxString newfilename = saveFileDialog.GetPath();
+	wxCopyFile(filename, newfilename);
 }
 
 void CViewerPDF::OnOpenFile(wxCommandEvent& event)
 {
 	this->LoadFile();
+}
+
+void CViewerPDF::OnScan(wxCommandEvent& event)
+{
+	frame->ScanPage();
 }
 
 void CViewerPDF::OnPrint(wxCommandEvent& event)
@@ -335,6 +353,18 @@ void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFra
 		image = libPicture.LoadPicture(filename, false, numFrame);
 		showBitmapWindow->SetBitmap(image, false);
 	}
+}
+
+void CViewerPDF::ImageSuivante()
+{
+	if (oldAnimationPosition <  (nbThumbnail - 1))
+		LoadAnimationBitmap(filename, oldAnimationPosition + 1);
+}
+
+void CViewerPDF::ImagePrecedente()
+{
+	if(oldAnimationPosition > 0)
+		LoadAnimationBitmap(filename, oldAnimationPosition - 1);
 }
 
 void CViewerPDF::SetImage(const wxImage &imageFile)

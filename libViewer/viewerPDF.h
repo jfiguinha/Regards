@@ -56,19 +56,21 @@ namespace Regards
 
 			void ClosePane(const int& id) {};
 			void RefreshPane(const int& id) {};
-		
+			void OnSave(wxCommandEvent& event);
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
 			void Resize();
 			void LoadFile(const wxString &filename);
 			void OnOpenFile(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
+			void OnScan(wxCommandEvent& event);
 			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 			void OnSize(wxSizeEvent& event);
 			void AnimationSetPosition(wxCommandEvent& event);
 			void OnPrint(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
-
+			void ImageSuivante();
+			void ImagePrecedente();
 			void RedrawBarPos();
 			wxRect GetWindowRect();
 			int nbThumbnail;
