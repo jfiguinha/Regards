@@ -1,8 +1,8 @@
 // InsertResource.cpp : définit le point d'entrée pour l'application console.
 //
 
-#include"header.h"
-#include"SqlInit.h"
+#include "header.h"
+#include "SqlInit.h"
 #include <SqlResource.h>
 #include <wx/textfile.h>
 using namespace Regards::Sqlite;
@@ -36,6 +36,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	CSqlResource sqlResource;
 
 	wxInitAllImageHandlers();
+
+	sqlResource.InsertVector(L"IDB_SCANNER", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\scanner.svg");
 
 /*
 List des shaders 
@@ -121,7 +123,7 @@ IDR_OPENCL_ROTATION
 	/*
 	sqlResource.InsertOpenGLShader(L"IDR_GLSL_SHADER_VIDEO", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_SHADER_VIDEO.gl");
 	sqlResource.InsertOpenGLShader(L"IDR_GLSL_ALPHA_SHADER", L"GLSL_SHADER", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opengl\\IDR_GLSL_ALPHA_SHADER.gl");
-	*/
+	
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BM3D", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BM3D.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVERTTOY", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVERTTOY.cl");
 	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_RAW", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_RAW.cl");

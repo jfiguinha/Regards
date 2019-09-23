@@ -144,7 +144,6 @@ void CViewerFrame::OpenFile(const wxString &fileToOpen)
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE)
 {
-	picture = nullptr;
 	fullscreen = false;
 	onExit = false;
 	mainWindowWaiting = nullptr;
@@ -323,9 +322,12 @@ void CViewerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;
 	wxString filename = mainWindow->GetFilename();
-	CImageLoadingFormat * image = libPicture.LoadPicture(filename);
-	if (image != nullptr)
-		PrintPreview(image);
+	if (filename != "")
+	{
+		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+		if (image != nullptr)
+			PrintPreview(image);
+	}
 }
 
 bool CViewerFrame::RemoveFSEntry(const wxString& dirPath)
@@ -528,9 +530,6 @@ void CViewerFrame::SetWindowTitle(const wxString &libelle)
 
 CViewerFrame::~CViewerFrame()
 {
-	if(picture != nullptr)
-		delete picture;
-
 	if (exitTimer->IsRunning())
 		exitTimer->Stop();
 
@@ -701,6 +700,30 @@ void CViewerFrame::OnHello(wxCommandEvent& event)
 	wxLogMessage("Hello world from wxWidgets!");
 }
 
+void CViewerFrame::PrintImagePreview(CRegardsBitmap * imageToPrint)
+{
+	// Pass two printout objects: for preview, and possible printing.
+	wxPrintData * g_printData = CPrintEngine::GetPrintData();
+	wxPrintDialogData printDialogData(*g_printData);
+
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), 0, &printDialogData);
+	if (!preview->IsOk())
+	{
+		delete preview;
+		wxLogError(wxT("There was a problem previewing.\nPerhaps your current printer is not set correctly?"));
+		return;
+	}
+
+	wxString picture_print_label = CLibResource::LoadStringFromResource(L"PicturePrintPreview", 1);
+	wxPreviewFrame *frame =
+		new wxPreviewFrame(preview, this, picture_print_label, wxPoint(100, 100), wxSize(600, 650));
+	frame->Centre(wxBOTH);
+	frame->InitializeWithModality(m_previewModality);
+	frame->Show();
+
+	//delete imageToPrint;
+}
+
 
 void CViewerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 {
@@ -708,11 +731,7 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
 
-	if(picture != nullptr)
-		delete picture;
-
-	this->picture = imageToPrint;
-	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(picture), new CBitmapPrintout(picture), &printDialogData);
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), 0, &printDialogData);
 	if (!preview->IsOk())
 	{
 		delete preview;
@@ -726,6 +745,8 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 	frame->Centre(wxBOTH);
 	frame->InitializeWithModality(m_previewModality);
 	frame->Show();
+
+	//delete imageToPrint;
 }
 
 void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
@@ -770,6 +791,7 @@ void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
 void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
 {
 	CFaceDetectionDlg faceDetection(this);
+	faceDetection.Start();
 	faceDetection.ShowModal();
 
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);

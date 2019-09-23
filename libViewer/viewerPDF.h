@@ -14,14 +14,19 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 class CImageLoadingFormat;
+class CScannerFrame;
+
+
 namespace Regards
 {
 	namespace Viewer
 	{
-		class CViewerPDF : public CWindowMain, public CPaneInterface, public CBitmapInterface
+		
+
+		class CViewerPDF : public CWindowMain, public CBitmapInterface
 		{
 		public:
-			CViewerPDF(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
+			CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID idCTreeWithScrollbarInterface);
 			~CViewerPDF();
 
 			bool IsPanelInfosVisible();
@@ -38,7 +43,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetPosition(const long& timePosition);
 
-			void LoadFile(const wxString &filename);
+			void LoadFile();
 			void SetImage(const wxImage &imageFile);
 
 			CImageLoadingFormat * GetImage();
@@ -55,11 +60,14 @@ namespace Regards
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
 			void Resize();
-
+			void LoadFile(const wxString &filename);
+			void OnOpenFile(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
 			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 			void OnSize(wxSizeEvent& event);
 			void AnimationSetPosition(wxCommandEvent& event);
+			void OnPrint(wxCommandEvent& event);
+			void OnExit(wxCommandEvent& event);
 
 			void RedrawBarPos();
 			wxRect GetWindowRect();
@@ -88,6 +96,8 @@ namespace Regards
 			bool showToolbar;
 			int animationPosition;
 			vector<CImageVideoThumbnail *> pageThumbnail;
+
+			CScannerFrame * frame = nullptr;
 		};
 
 

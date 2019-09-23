@@ -280,7 +280,7 @@ void CCategoryDetectionDlg::CategoryRecognition(void * param)
 
 	if (path->mainWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
+		wxCommandEvent evt(wxEVENT_CATEGORYADD);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
@@ -304,6 +304,10 @@ void CCategoryDetectionDlg::OnCategoryAdd(wxCommandEvent& event)
 	nbProcessFacePhoto--;
 }
 
+void CCategoryDetectionDlg::SetStart()
+{
+	start = true;
+}
 
 void CCategoryDetectionDlg::OnIdle(wxIdleEvent& evt)
 {

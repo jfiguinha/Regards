@@ -24,21 +24,6 @@ using namespace Regards::Print;
 #define MAX_ZOOM	10.0
 #define MIN_ZOOM	0.1
 
-// IDs for the controls and the menu commands
-enum
-{
-	// menu items
-	ID_OPENIMAGE,
-	ID_ACQUIREIMAGE,
-	ID_ACQUIREIMAGES,
-	ID_ACQUIREIMAGENOUI,
-	ID_ACQUIREIMAGESNOUI,
-	ID_SELECTSOURCE,
-	ID_PRINT,
-	ID_ZOOMIN,
-	ID_ZOOMOUT,
-	ID_PROMPTONGETIMAGE
-};
 
 // ----------------------------------------------------------------------------
 // main frame
@@ -85,7 +70,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 	CreateStatusBar(1);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(m_imagePDF = new CViewerPDF(this, wxID_ANY), 1, wxEXPAND);
+	sizer->Add(m_imagePDF = new CViewerPDF(this, this, PDFWINDOWID), 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
@@ -146,12 +131,9 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 {
-	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-			"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea..
 
-	m_imagePDF->LoadFile(openFileDialog.GetPath());
+
+	m_imagePDF->LoadFile();
 }
 
 // event handlers

@@ -18,6 +18,7 @@
 #include "PictureElement.h"
 #include "ThumbnailMessage.h"
 #include <SqlThumbnailVideo.h>
+#include "ScannerFrame.h"
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -25,9 +26,10 @@ using namespace Regards::Viewer;
 #define PANE_VIDEOTHUMBNAIL 2
 #define DELAY_ANIMATION 20
 
-CViewerPDF::CViewerPDF(wxWindow* parent, wxWindowID id)
+CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	: CWindowMain("PDFWindow", parent, id)
 {
+	this->frame = frame;
 	showBitmapWindow = nullptr;
 	viewerParam = nullptr;
 	isFullscreen = false;
@@ -99,7 +101,25 @@ CViewerPDF::CViewerPDF(wxWindow* parent, wxWindowID id)
 
 	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
+	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CViewerPDF::OnOpenFile));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
+	Connect(wxEVENT_PRINT, wxCommandEventHandler(CViewerPDF::OnPrint));
+	Connect(wxEVT_EXIT, wxCommandEventHandler(CViewerPDF::OnExit));
+}
+
+void CViewerPDF::OnOpenFile(wxCommandEvent& event)
+{
+	this->LoadFile();
+}
+
+void CViewerPDF::OnPrint(wxCommandEvent& event)
+{
+	frame->PrintPreview(GetImage());
+}
+
+void CViewerPDF::OnExit(wxCommandEvent& event)
+{
+	frame->Close();
 }
 
 void CViewerPDF::AnimationPictureNext()
@@ -345,6 +365,7 @@ void CViewerPDF::SetImage(const wxImage &imageFile)
 
 void CViewerPDF::LoadFile(const wxString &filename)
 {
+
 	CLibPicture libPicture;
 	bool result = false;
 	oldAnimationPosition = -1;
@@ -366,6 +387,17 @@ void CViewerPDF::LoadFile(const wxString &filename)
 
 	//nbThumbnail = page.size();
 	LoadAnimationBitmap(filename, 0);
+}
+
+void CViewerPDF::LoadFile()
+{
+	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+		"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea..
+
+	LoadFile(openFileDialog.GetPath());
+
 }
 
 void CViewerPDF::FullscreenMode()

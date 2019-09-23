@@ -3,6 +3,23 @@
 #include "viewerPDF.h"
 using namespace Regards::Viewer;
 
+// IDs for the controls and the menu commands
+enum
+{
+	// menu items
+	ID_OPENIMAGE,
+	ID_ACQUIREIMAGE,
+	ID_ACQUIREIMAGES,
+	ID_ACQUIREIMAGENOUI,
+	ID_ACQUIREIMAGESNOUI,
+	ID_SELECTSOURCE,
+	ID_PRINT,
+	ID_ZOOMIN,
+	ID_ZOOMOUT,
+	ID_PROMPTONGETIMAGE
+};
+
+
 // Define a new frame type: this is going to be our main frame
 class CScannerFrame : public wxFrame
 {
@@ -13,7 +30,7 @@ public:
 
     ~CScannerFrame();
 
-
+	void PrintPreview(CImageLoadingFormat * imageToPrint);
 
 private:
 	// event handlers (these functions should _not_ be virtual)
@@ -21,7 +38,7 @@ private:
 	void OnPrint(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
-	void PrintPreview(CImageLoadingFormat * imageToPrint);
+	
 #ifdef USE_WIA_INTERFACE
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #else

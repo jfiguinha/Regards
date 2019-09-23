@@ -12,7 +12,12 @@ using namespace Regards::Print;
 
 CBitmapPrintout::~CBitmapPrintout()
 {
-
+	
+	if(m_bitmap != nullptr)
+		delete(m_bitmap);	
+	if(m_picture != nullptr)
+		delete(m_picture);
+	
 }
 
 CBitmapPrintout::CBitmapPrintout()
@@ -50,17 +55,34 @@ bool CBitmapPrintout::OnBeginDocument(int startPage, int endPage)
 
 void CBitmapPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
 {
-	*minPage = 1;
-	*maxPage = m_picture->GetNbPage();
-	*selPageFrom = 1;
-	*selPageTo = m_picture->GetNbPage();
+	if (typeImage == 1)
+	{
+		*minPage = 1;
+		*maxPage = m_picture->GetNbPage();
+		*selPageFrom = 1;
+		*selPageTo = m_picture->GetNbPage();
+	}
+	else if(typeImage == 2)
+	{
+		*minPage = 1;
+		*maxPage = 1;
+		*selPageFrom = 1;
+		*selPageTo = 1;
+	}
 }
 
 bool CBitmapPrintout::HasPage(int pageNum)
 {
-	if (pageNum <= m_picture->GetNbPage())
-		return true;
-
+	if (typeImage == 1)
+	{
+		if (pageNum <= m_picture->GetNbPage())
+			return true;
+	}
+	else if (typeImage == 2)
+	{
+		if (pageNum <= 1)
+			return true;
+	}
 	return false;
 }
 
@@ -72,24 +94,21 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 
 	// We know the graphic is 230x350. If we didn't know this, we'd need to
 	// calculate it.
-	CImageLoadingFormat * image = m_picture->GetPage(pageNum - 1);
+	CImageLoadingFormat * image = nullptr;
+
+	if (typeImage == 1)
+	{
+		image = m_picture->GetPage(pageNum - 1);
+	}
+	else if(typeImage == 2)
+	{
+		image = new CImageLoadingFormat(false);
+		image->SetPicture(m_bitmap);
+	}
 
 	wxCoord maxX = image->GetWidth();
 	wxCoord maxY = image->GetHeight();
 	wxPageSetupDialogData * g_pageSetupData = CPrintEngine::GetPageSetupDialogData();
-
-	// This sets the user scale and origin of the DC so that the image fits
-	// within the paper rectangle (but the edges could be cut off by printers
-	// that can't print to the edges of the paper -- which is most of them. Use
-	// this if your image already has its own margins.
-	//    FitThisSizeToPaper(wxSize(maxX, maxY));
-	//    wxRect fitRect = GetLogicalPaperRect();
-
-	// This sets the user scale and origin of the DC so that the image fits
-	// within the page rectangle, which is the printable area on Mac and MSW
-	// and is the entire page on other platforms.
-	//    FitThisSizeToPage(wxSize(maxX, maxY));
-	//    wxRect fitRect = GetLogicalPageRect();
 
 	// This sets the user scale and origin of the DC so that the image fits
 	// within the page margins as specified by g_PageSetupData, which you can
@@ -100,45 +119,11 @@ void CBitmapPrintout::DrawPicture(const int & pageNum)
 	FitThisSizeToPageMargins(wxSize(maxX, maxY), *g_pageSetupData);
 	wxRect fitRect = GetLogicalPageMarginsRect(*g_pageSetupData);
 
-	// This sets the user scale and origin of the DC so that the image appears
-	// on the paper at the same size that it appears on screen (i.e., 10-point
-	// type on screen is 10-point on the printed page) and is positioned in the
-	// top left corner of the page rectangle (just as the screen image appears
-	// in the top left corner of the window).
-	//    MapScreenSizeToPage();
-	//    wxRect fitRect = GetLogicalPageRect();
-
-	// You could also map the screen image to the entire paper at the same size
-	// as it appears on screen.
-	//    MapScreenSizeToPaper();
-	//    wxRect fitRect = GetLogicalPaperRect();
-
-	// You might also wish to do you own scaling in order to draw objects at
-	// full native device resolution. In this case, you should do the following.
-	// Note that you can use the GetLogicalXXXRect() commands to obtain the
-	// appropriate rect to scale to.
-	//    MapScreenSizeToDevice();
-	//    wxRect fitRect = GetLogicalPageRect();
-
-	// Each of the preceding Fit or Map routines positions the origin so that
-	// the drawn image is positioned at the top left corner of the reference
-	// rectangle. You can easily center or right- or bottom-justify the image as
-	// follows.
-
 	// This offsets the image so that it is centered within the reference
 	// rectangle defined above.
 	wxCoord xoff = (fitRect.width - maxX) / 2;
 	wxCoord yoff = (fitRect.height - maxY) / 2;
 	OffsetLogicalOrigin(xoff, yoff);
-
-	// This offsets the image so that it is positioned at the bottom right of
-	// the reference rectangle defined above.
-	//    wxCoord xoff = (fitRect.width - maxX);
-	//    wxCoord yoff = (fitRect.height - maxY);
-	//    OffsetLogicalOrigin(xoff, yoff);
-
-	//wxGetApp().Draw(*GetDC());
-
 
 	wxDC * dc = GetDC();
 	wxImage * _local = image->GetwxImage();

@@ -29,6 +29,7 @@ namespace Regards
 			void SetFullscreen();
 			void SetScreen();
 			void PrintPreview(CImageLoadingFormat * imageToPrint);
+			void PrintImagePreview(CRegardsBitmap * imageToPrint);
 			void Exit();
 			void ShowViewer(){};
             void OpenFile(const wxString &filename);
@@ -82,7 +83,7 @@ namespace Regards
 			wxTimer * loadPictureTimer;
 			wxString filenameTimer;
 			int nbTime;
-			CImageLoadingFormat * picture;
+			//CImageLoadingFormat * picture;
             wxFileSystemWatcher * m_watcher;
 		};
 	}

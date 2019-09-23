@@ -20,6 +20,7 @@
 using namespace std;
 
 class CImageLoadingFormat;
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -33,6 +34,15 @@ namespace Regards
 			CBitmapPrintout(CImageLoadingFormat * image, const wxString &title = wxT("My picture"))
 				: wxPrintout(title) {
 				m_picture = image;
+				typeImage = 1;
+				m_bitmap = nullptr;
+			}
+
+			CBitmapPrintout(CRegardsBitmap * image, const wxString &title = wxT("My picture"))
+				: wxPrintout(title) {
+				m_bitmap = image;
+				typeImage = 2;
+				m_picture = nullptr;
 			}
 
 			CBitmapPrintout();
@@ -50,7 +60,8 @@ namespace Regards
 
 		private:
 
-			
+			int typeImage;
+			CRegardsBitmap * m_bitmap;
 			CImageLoadingFormat * m_picture;
 		};
 		

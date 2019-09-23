@@ -207,17 +207,10 @@ CFaceDetectionDlg::~CFaceDetectionDlg()
 		delete faceData;
 }
 
-void CFaceDetectionDlg::SetMode(const int &mode)
-{
-	this->mode = mode;
-}
-
 void CFaceDetectionDlg::Start()
 {
 	start = true;
 }
-
-
 
 void CFaceDetectionDlg::OnSize(wxSizeEvent& evt)
 {

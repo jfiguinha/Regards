@@ -143,7 +143,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_PRINTPICTURE, wxCommandEventHandler(CMainWindow::PrintPreview));
 	Connect(wxEVENT_UPDATEMESSAGETHUMBNAIL, wxCommandEventHandler(CMainWindow::UpdateThumbnailMessage));
 	Connect(wxEVENT_UPDATEMESSAGECRITERIA, wxCommandEventHandler(CMainWindow::UpdateCriteriaMessage));
-	
+	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
@@ -171,6 +171,20 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	processIdle = true;
 
 
+}
+
+void CMainWindow::OnPrint(wxCommandEvent& event)
+{
+	CLibPicture libPicture;
+	wxString filename = GetFilename();
+	if (filename != "")
+	{
+		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+		if (image != nullptr)
+		{
+			statusBarViewer->PrintPreview(image);
+		}
+	}
 }
 
 wxString CMainWindow::GetFilename()
@@ -265,9 +279,7 @@ void CMainWindow::PrintPreview(wxCommandEvent& event)
 	
 	if (bitmap != nullptr)
 	{
-		CImageLoadingFormat * imageToPrint = new CImageLoadingFormat();
-		imageToPrint->SetPicture(bitmap);
-		statusBarViewer->PrintPreview(imageToPrint);
+		statusBarViewer->PrintImagePreview(bitmap);
 	}
 }
 

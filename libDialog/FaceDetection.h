@@ -25,7 +25,6 @@ class CFaceDetectionDlg : public wxDialog
 
 		CFaceDetectionDlg(wxWindow* parent);
 		virtual ~CFaceDetectionDlg();
-		void SetMode(const int &mode);
 		void Start();
 
 		//(*Declarations(CopyFileDlg)

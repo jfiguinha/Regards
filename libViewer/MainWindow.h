@@ -205,6 +205,7 @@ namespace Regards
 			void StartDiaporamaMessage(wxCommandEvent& event);
 			void OnRemoveFolder(wxCommandEvent& event);
 			void OnTimerDiaporama(wxTimerEvent& event);
+			void OnPrint(wxCommandEvent& event);
 			//void OnTimerRefresh(wxTimerEvent& event);
 			void OnPictureClick(wxCommandEvent& event);
 			void Md5Checking(wxCommandEvent& event);

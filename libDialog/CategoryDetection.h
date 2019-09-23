@@ -25,7 +25,7 @@ class CCategoryDetectionDlg : public wxDialog
 
 		CCategoryDetectionDlg(wxWindow* parent);
 		virtual ~CCategoryDetectionDlg();
-
+		void SetStart();
 		//(*Declarations(CopyFileDlg)
 		wxStaticText* StaticText2;
 		wxButton* btOK;
