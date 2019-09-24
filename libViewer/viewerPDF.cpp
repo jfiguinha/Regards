@@ -19,6 +19,7 @@
 #include "ThumbnailMessage.h"
 #include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
+#include "SelectPage.h"
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -107,6 +108,24 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CViewerPDF::OnPrint));
 	Connect(wxEVT_EXIT, wxCommandEventHandler(CViewerPDF::OnExit));
 	Connect(wxEVENT_SAVE, wxCommandEventHandler(CViewerPDF::OnSave));
+	Connect(wxEVENT_ADDPAGE, wxCommandEventHandler(CViewerPDF::OnAddPage));
+	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CViewerPDF::OnDeletePage));
+	
+}
+
+void CViewerPDF::OnDeletePage(wxCommandEvent& event)
+{
+	CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
+	if (selectFile.ShowModal() == wxID_OK)
+	{
+		vector<int> listPage = selectFile.GetSelectItem();
+	}
+
+}
+
+void CViewerPDF::OnAddPage(wxCommandEvent& event)
+{
+
 }
 
 void CViewerPDF::OnSave(wxCommandEvent& event)

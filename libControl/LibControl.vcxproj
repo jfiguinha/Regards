@@ -212,6 +212,7 @@
     <ClInclude Include="ThumbnailEffect.h" />
     <ClInclude Include="ThumbnailHorizontal.h" />
     <ClInclude Include="ThumbnailVertical.h" />
+    <ClInclude Include="ThumbnailVerticalListFile.h" />
     <ClInclude Include="ThumbnailVideo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -233,6 +234,7 @@
     <ClCompile Include="ThumbnailEffect.cpp" />
     <ClCompile Include="ThumbnailHorizontal.cpp" />
     <ClCompile Include="ThumbnailVertical.cpp" />
+    <ClCompile Include="ThumbnailVerticalListFile.cpp" />
     <ClCompile Include="ThumbnailVideo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

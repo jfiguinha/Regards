@@ -53,7 +53,8 @@ namespace Regards
 		private:
 			
 			bool GetProcessEnd();
-
+			void OnAddPage(wxCommandEvent& event);
+			void OnDeletePage(wxCommandEvent& event);
 			void ClosePane(const int& id) {};
 			void RefreshPane(const int& id) {};
 			void OnSave(wxCommandEvent& event);

@@ -115,7 +115,7 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
 
-	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(imageToPrint), &printDialogData);
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), 0, &printDialogData);
 	if (!preview->IsOk())
 	{
 		delete preview;

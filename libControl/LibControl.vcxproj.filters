@@ -120,6 +120,9 @@
     <ClInclude Include="..\include\header.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailVerticalListFile.h">
+      <Filter>Thumbnail\Vertical</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InfosFile.cpp">
@@ -166,6 +169,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVerticalListFile.cpp">
+      <Filter>Thumbnail\Vertical</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -67,6 +67,9 @@
     <Filter Include="Scanner\Toolbar">
       <UniqueIdentifier>{cb692ec5-44f0-4e5a-8ff0-8f2cc10e433d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scanner\Dialog">
+      <UniqueIdentifier>{a8605b95-492c-4257-ada7-0134ff1ed761}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -213,6 +216,15 @@
     <ClInclude Include="ToolbarPDF.h">
       <Filter>Scanner\Toolbar</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailFileSelection.h">
+      <Filter>Scanner\Thumbnail</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectPage.h">
+      <Filter>Scanner\Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationToolbar.h">
+      <Filter>Scanner\Toolbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -351,6 +363,15 @@
       <Filter>Scanner\Thumbnail</Filter>
     </ClCompile>
     <ClCompile Include="ToolbarPDF.cpp">
+      <Filter>Scanner\Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFileSelection.cpp">
+      <Filter>Scanner\Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectPage.cpp">
+      <Filter>Scanner\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidationToolbar.cpp">
       <Filter>Scanner\Toolbar</Filter>
     </ClCompile>
   </ItemGroup>

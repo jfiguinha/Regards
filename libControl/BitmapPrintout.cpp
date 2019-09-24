@@ -17,6 +17,9 @@ CBitmapPrintout::~CBitmapPrintout()
 		delete(m_bitmap);	
 	if(m_picture != nullptr)
 		delete(m_picture);
+
+	m_bitmap = nullptr;
+	m_picture = nullptr;
 	
 }
 
