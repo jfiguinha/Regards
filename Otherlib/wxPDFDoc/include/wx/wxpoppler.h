@@ -37,6 +37,8 @@ class wxPoppler
     ///
     /// \return                     Returns true on success and false otherwise.
     virtual bool Open( const wxString& strFileName );
+
+	virtual bool DeletePage(const int &numPage);
     
     /// \brief Opens a PDF file in memory.
     ///

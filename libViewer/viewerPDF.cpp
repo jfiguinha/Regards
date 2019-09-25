@@ -119,6 +119,7 @@ void CViewerPDF::OnDeletePage(wxCommandEvent& event)
 	if (selectFile.ShowModal() == wxID_OK)
 	{
 		vector<int> listPage = selectFile.GetSelectItem();
+
 	}
 
 }
