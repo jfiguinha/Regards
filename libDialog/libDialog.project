@@ -29,6 +29,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="SaveFileFormat.cpp"/>
+    <File Name="FaceDetection.cpp"/>
+    <File Name="CategoryDetection.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="CompressionOption.cpp"/>
     <File Name="ConfigRegards.cpp"/>
@@ -48,6 +51,10 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="SaveFromCFunction.h"/>
+    <File Name="SaveFileFormat.h"/>
+    <File Name="FaceDetection.h"/>
+    <File Name="CategoryDetection.h"/>
     <File Name="InterpolationFilterSelect.h"/>
     <File Name="CompressionOption.h"/>
     <File Name="ConfigRegards.h"/>
@@ -90,6 +97,7 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../FaceRecognition"/>
         <Preprocessor Value="EXIV2"/>
       </Compiler>
       <Linker Options="">

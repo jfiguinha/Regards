@@ -72,6 +72,11 @@ CIcone * CThumbnailVertical::FindElement(const int &xPos, const int &yPos)
 
 }
 
+wxString CThumbnailVertical::GetWaitingMessage()
+{
+	return "Window CThumbnailVertical waiting : " + to_string(this->GetId()) + " - NbProcess Waiting : " + to_string(nbProcess);
+}
+
 void CThumbnailVertical::SetNoVScroll(const bool &noVscroll)
 {
 	this->noVscroll = noVscroll;

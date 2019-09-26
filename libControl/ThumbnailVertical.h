@@ -16,7 +16,8 @@ namespace Regards
 			CThumbnailVertical(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailVertical(void);
 			void SetNoVScroll(const bool &noVscroll);
-            
+            wxString GetWaitingMessage();
+             
 		protected:
 
 			virtual void RenderIcone(wxDC * dc);
