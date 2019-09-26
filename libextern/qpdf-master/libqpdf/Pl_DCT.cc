@@ -13,10 +13,6 @@
 # error "qpdf does not support libjpeg built with BITS_IN_JSAMPLE != 8"
 #endif
 
-#ifdef _WIN32
-#define boolean int
-#endif
-
 struct qpdf_jpeg_error_mgr
 {
     struct jpeg_error_mgr pub;
@@ -167,8 +163,8 @@ struct dct_pipeline_dest
 static void
 init_pipeline_destination(j_compress_ptr)
 {
-
 }
+
 static boolean
 empty_pipeline_output_buffer(j_compress_ptr cinfo)
 {
