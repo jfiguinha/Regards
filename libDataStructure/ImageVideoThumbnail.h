@@ -50,8 +50,11 @@ public:
 	};
 	~CImageVideoThumbnail()
 	{
-		if(image != nullptr)
-			delete image;
+		if (memoryDelete)
+		{
+			if (image != nullptr)
+				delete image;
+		}
 	};
     
     CImageLoadingFormat * image;
@@ -59,5 +62,6 @@ public:
 	uint32_t delay;
     int percent;
     int timePosition;
+	bool memoryDelete = true;
 };
 #endif

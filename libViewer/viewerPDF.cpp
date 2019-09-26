@@ -20,6 +20,11 @@
 #include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
 #include "SelectPage.h"
+#include <qpdf/QPDF.hh>
+#include <qpdf/QPDFPageDocumentHelper.hh>
+#include <qpdf/QPDFWriter.hh>
+#include <qpdf/QUtil.hh>
+#include <qpdf/QIntC.hh>
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -113,20 +118,181 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	
 }
 
+void CViewerPDF::ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage)
+{
+	wxString file = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+#else
+	wxString tempFolder = documentPath + "/temp";
+#endif
+	if (!wxMkDir(tempFolder)) {
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		file = tempFolder + "\\add.pdf";
+#else
+		file = tempFolder + "/add.pdf";
+#endif
+
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+	}
+
+	QPDF oldpdf;
+	oldpdf.processFile(filename.ToStdString().c_str());
+
+	QPDF inpdf;
+	inpdf.processFile(fileToAdd.ToStdString().c_str());
+
+	std::string outfile = file.ToStdString();
+	QPDF outpdf;
+	outpdf.emptyPDF();
+
+	std::vector<QPDFPageObjectHelper> oldpages = QPDFPageDocumentHelper(oldpdf).getAllPages();
+	int oldpageno_len = oldpages.size();
+
+	int i = 0;
+	//std::vector<QPDFPageObjectHelper>::iterator iter = oldpages.begin();
+	for (; i <= oldAnimationPosition;i++)
+	{
+		auto object = oldpages.at(i);
+		QPDFPageObjectHelper& page(object);
+		QPDFPageDocumentHelper(outpdf).addPage(page, false);
+	}
+
+
+
+
+	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+	int pageno_len = pages.size();
+	int pageno = 0;
+
+
+	for (std::vector<QPDFPageObjectHelper>::iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
+	{
+		bool find = false;
+		for (int i : listPage)
+		{
+			if (i == pageno)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (find)
+		{
+			QPDFPageObjectHelper& page(*newiter);
+			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+		}
+
+		pageno++;
+	}
+
+	//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
+	for (;i < oldpageno_len; i++)
+	{
+		auto object = oldpages.at(i);
+		QPDFPageObjectHelper& page(object);
+		QPDFPageDocumentHelper(outpdf).addPage(page, false);
+	}
+
+	QPDFWriter outpdfw(outpdf, outfile.c_str());
+	outpdfw.write();
+}
+
+void CViewerPDF::process(const vector<int> & listPage)
+{
+	wxString file = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+#else
+	wxString tempFolder = documentPath + "/temp";
+#endif
+	if (!wxMkDir(tempFolder)) {
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		file = tempFolder + "\\delete.pdf";
+#else
+		file = tempFolder + "/delete.pdf";
+#endif
+
+		if(wxFileExists(file))
+			wxRemoveFile(file);
+
+	}
+
+	QPDF inpdf;
+	inpdf.processFile(filename.ToStdString().c_str());
+	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+	int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
+	int pageno = 0;
+
+	std::string outfile = file.ToStdString();
+	QPDF outpdf;
+	outpdf.emptyPDF();
+
+
+	for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
+	{
+		bool find = false;
+		for (int i : listPage)
+		{
+			if (i == pageno)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (!find)
+		{
+			QPDFPageObjectHelper& page(*iter);
+			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+		}
+
+		pageno++;
+	}
+
+	QPDFWriter outpdfw(outpdf, outfile.c_str());
+	outpdfw.write();
+}
+
 void CViewerPDF::OnDeletePage(wxCommandEvent& event)
 {
 	CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
 	if (selectFile.ShowModal() == wxID_OK)
 	{
 		vector<int> listPage = selectFile.GetSelectItem();
-
+		process(listPage);
 	}
 
 }
 
 void CViewerPDF::OnAddPage(wxCommandEvent& event)
 {
+	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+		"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea..
 
+	wxString fileToadd = openFileDialog.GetPath();
+
+	CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
+	if (selectFile.ShowModal() == wxID_OK)
+	{
+		vector<int> listPage = selectFile.GetSelectItem();
+		ProcessAddFile(fileToadd, listPage);
+	}
 }
 
 void CViewerPDF::OnSave(wxCommandEvent& event)
@@ -423,6 +589,7 @@ void CViewerPDF::LoadFile(const wxString &filename)
 	oldAnimationPosition = -1;
 	oldFilename = L"";
 	this->filename = filename;
+
 	pageThumbnail.clear();
 
 	libPicture.LoadAllVideoThumbnail(filename, &pageThumbnail, true, true);

@@ -185,7 +185,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 
 	if (typeLocal == SHOW_ALL)
 	{
-		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
+		wxString libellePhoto = "Select Page";// CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
 		AddSeparatorBar(libellePhoto, i);
 	}
 

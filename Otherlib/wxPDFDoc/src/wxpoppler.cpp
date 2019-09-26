@@ -54,11 +54,6 @@ wxPoppler::~wxPoppler()
     }
 }
 
-bool wxPoppler::DeletePage(const int &numPage)
-{
-	poppler::document * m_pPdfDocumentnew = poppler::document::load_from_file("temp.pdf");
-	m_pPdfDocumentnew->
-}
 
 // Opens a PDF stream from file or memory depending on the parameterization.
 //

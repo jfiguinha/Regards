@@ -431,6 +431,9 @@ XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x
     <ProjectReference Include="..\otherlib\libpsd\libpsd.vcxproj">
       <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libqpdf\libqpdf.vcxproj">
+      <Project>{dbd40226-66c0-4381-8bc7-7b34f3485856}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\otherlib\RawSpeed\RawSpeed.vcxproj">
       <Project>{482a0abf-1ae3-4ee4-815a-428880dae0c6}</Project>
     </ProjectReference>

@@ -16,6 +16,7 @@ public:
     
 	CImageLoadingFormat(const bool &memoryDelete = true);
 	~CImageLoadingFormat();
+	void SetMemoryDelete(const bool &memoryDelete);
 	void DestroyJpegData(uint8_t * data, const int & compressMethod);
 	void SaveToJpeg(const wxString &filename);
 	

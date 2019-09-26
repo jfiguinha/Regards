@@ -19,6 +19,11 @@ using namespace Regards::exiv2;
 
 extern float value[256];
 
+void CImageLoadingFormat::SetMemoryDelete(const bool &memoryDelete)
+{
+	this->memoryDelete = memoryDelete;
+}
+
 CImageLoadingFormat::CImageLoadingFormat(const bool &memoryDelete)
 {
 	_image = nullptr;

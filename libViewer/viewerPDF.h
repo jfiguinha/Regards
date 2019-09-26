@@ -52,6 +52,7 @@ namespace Regards
 
 		private:
 			
+			void process(const vector<int> & listPage);
 			bool GetProcessEnd();
 			void OnAddPage(wxCommandEvent& event);
 			void OnDeletePage(wxCommandEvent& event);
@@ -75,6 +76,7 @@ namespace Regards
 			void RedrawBarPos();
 			wxRect GetWindowRect();
 			int nbThumbnail;
+			void ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage);
 
 			//Thumbnail Video
 			CPanelWithClickToolbar * panelVideo;
