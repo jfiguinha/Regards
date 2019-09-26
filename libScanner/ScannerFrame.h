@@ -48,6 +48,8 @@ public:
 
 	wxImage ScanPage();
 
+	void OnClose();
+
 private:
 	// event handlers (these functions should _not_ be virtual)
 	void OnQuit(wxCommandEvent& event);

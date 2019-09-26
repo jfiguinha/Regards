@@ -243,7 +243,7 @@ bool RegardsPDFApp::OnInit()
      
     //wxXmlResource::Get()->LoadAllFiles("rc");
 	
-	frameStart = new MyFrameIntro("Welcome to Regards PDF", wxPoint(50, 50), wxSize(450, 340), this);
+	frameStart = new MyFrameIntro("Welcome to Regards PDF", "Regards PDF", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);
 	frameStart->Show(true);
   

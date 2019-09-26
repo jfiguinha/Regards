@@ -9,7 +9,7 @@ namespace Regards
 		class MyFrameIntro : public wxFrame
 		{
 		public:
-			MyFrameIntro(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface);
+			MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface);
 			~MyFrameIntro();
 			
 		private:

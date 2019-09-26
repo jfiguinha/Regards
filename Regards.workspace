@@ -56,6 +56,7 @@
     <Project Name="libWindow" Path="libWindow/libWindow.project" Active="No"/>
     <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project" Active="No"/>
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
+    <Project Name="libScanner" Path="libScanner/libScanner.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="FaceRecognition">
     <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="No"/>
@@ -72,10 +73,13 @@
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
-    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="Yes"/>
+    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="RegardsScanner">
+    <Project Name="RegardsScanner" Path="RegardsScanner/RegardsScanner.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
@@ -138,8 +142,10 @@
       <Project Name="wxIA" ConfigName="Debug"/>
       <Project Name="wxIA" ConfigName="Debug"/>
       <Project Name="wxPDFDoc" ConfigName="Debug"/>
+      <Project Name="libScanner" ConfigName="Debug"/>
+      <Project Name="RegardsScanner" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="no">
+    <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>
@@ -202,6 +208,8 @@
       <Project Name="wxIA" ConfigName="Release"/>
       <Project Name="wxIA" ConfigName="Release"/>
       <Project Name="wxPDFDoc" ConfigName="Release"/>
+      <Project Name="libScanner" ConfigName="Release"/>
+      <Project Name="RegardsScanner" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

@@ -154,8 +154,15 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
 	// TRUE is to force the frame to close
-	Close(TRUE);
 	mainInterface->Close();
+	//Close(TRUE);
+	
+}
+
+void CScannerFrame::OnClose()
+{
+	mainInterface->Close();
+	//Close(TRUE);
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))

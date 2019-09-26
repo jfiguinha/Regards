@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libScanner" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Toolbar">
+    <File Name="ValidationToolbar.h"/>
+    <File Name="ValidationToolbar.cpp"/>
+    <File Name="ToolbarPDF.h"/>
+    <File Name="ToolbarPDF.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Thumbnail">
+    <File Name="ThumbnailMultiPage.h"/>
+    <File Name="ThumbnailMultiPage.cpp"/>
+    <File Name="ThumbnailFileSelection.h"/>
+    <File Name="ThumbnailFileSelection.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Theme">
+    <File Name="ScannerThemeInit.h"/>
+    <File Name="ScannerThemeInit.cpp"/>
+    <File Name="ScannerTheme.h"/>
+    <File Name="ScannerTheme.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="SeparationBar">
+    <File Name="InfosSeparationBarExplorer.h"/>
+    <File Name="InfosSeparationBarExplorer.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Parameter">
+    <File Name="ScannerParamInit.h"/>
+    <File Name="ScannerParamInit.cpp"/>
+    <File Name="ScannerParam.h"/>
+    <File Name="ScannerParam.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Dialog">
+    <File Name="SelectPage.h"/>
+    <File Name="SelectPage.cpp"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="viewerPDF.cpp"/>
+    <File Name="ScannerFrame.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="viewerPDF.h"/>
+    <File Name="ScannerFrame.h"/>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options="" Assembler="">
+        <IncludePath Value="../wxCheckTree"/>
+        <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="."/>
+        <IncludePath Value="../libSqlite"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libFiltreInterface"/>
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../libDataStructure"/>
+        <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libRenderBitmap"/>
+        <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libSqlite"/>
+        <IncludePath Value="../libFiltre"/>
+        <IncludePath Value="../include"/>
+        <IncludePath Value="../libDataStructure"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../Otherlib/wxIA/WIA"/>
+        <IncludePath Value="../Otherlib/wxIA/include"/>
+        <IncludePath Value="../libWindow"/>
+        <IncludePath Value="../libPrint"/>
+        <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libControl"/>
+        <IncludePath Value="../libIntro"/>
+        <IncludePath Value="../libDialog"/>
+        <IncludePath Value="../libWindowMain"/>
+        <IncludePath Value="../libVideoFFMpeg"/>
+        <IncludePath Value="../libOpenCL"/>
+        <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libVideoThumbnail"/>
+        <IncludePath Value="../FaceRecognition"/>
+        <IncludePath Value="../libCompress"/>
+        <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
+        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
+        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
+        <IncludePath Value="../Otherlib/wxIA/include"/>
+        <Preprocessor Value="VIEWER"/>
+        <Preprocessor Value="FFMPEG"/>
+        <Preprocessor Value="OPENGL"/>
+        <Preprocessor Value="WEBVIEWER"/>
+        <Preprocessor Value="USECURL"/>
+        <Preprocessor Value="__WXPDFDOC__"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="" C_Options="" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/lib$(ProjectName).a" IntermediateDirectory="./Release" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

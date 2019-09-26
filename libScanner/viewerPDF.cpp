@@ -360,7 +360,7 @@ void CViewerPDF::OnPrint(wxCommandEvent& event)
 
 void CViewerPDF::OnExit(wxCommandEvent& event)
 {
-	frame->Close();
+	frame->OnClose();
 }
 
 void CViewerPDF::AnimationPictureNext()

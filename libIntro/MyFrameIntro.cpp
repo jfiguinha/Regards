@@ -11,7 +11,7 @@ using namespace Regards::Introduction;
 #endif
 #endif
 
-MyFrameIntro::MyFrameIntro(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface)
+MyFrameIntro::MyFrameIntro(const wxString& title, const wxString& appTitle, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size,   wxSYSTEM_MENU | wxCAPTION | wxCLOSE_BOX | wxCLIP_CHILDREN)
 {
 
@@ -36,7 +36,7 @@ MyFrameIntro::MyFrameIntro(const wxString& title, const wxPoint& pos, const wxSi
 		introTheme->GetAboutTexteTheme(&themeIntro);
 
 		titleIntro = new CTitleIntro(this, wxID_ANY, themeIntro);
-		titleIntro->SetTitle(L"REGARDS V2");
+		titleIntro->SetTitle(appTitle);
 
 
 		delete introTheme;
