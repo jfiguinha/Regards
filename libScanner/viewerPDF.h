@@ -3,19 +3,24 @@
 #include <Photos.h>
 #include <WindowMain.h>
 #include <PanelWithClickToolbar.h>
-#include "PreviewInfosWnd.h"
 #include "ToolbarPDF.h"
-#include "ThumbnailMultiPage.h"
-#include "ThumbnailViewerPicture.h"
-#include "EffectVideoParameter.h"
-#include "ViewerParam.h"
-#include "ImageList.h"
+#include <BitmapInterface.h>
 using namespace std;
 using namespace Regards::Window;
+
+namespace Regards
+{
+	namespace Control
+	{
+		class CShowBitmap;
+		class CThumbnailMultiPage;
+	}
+}
+
 using namespace Regards::Control;
 class CImageLoadingFormat;
 class CScannerFrame;
-
+class CImageVideoThumbnail;
 
 namespace Regards
 {
@@ -44,7 +49,7 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 
 			void LoadFile();
-			wxString SetImage(const wxImage &imageFile);
+			wxString SetImage(wxImage imageFile);
 			void LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 
@@ -88,8 +93,6 @@ namespace Regards
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
 			CShowBitmap * showBitmapWindow;
-
-			CViewerParam * viewerParam;
 			bool checkValidity;
 			bool isFullscreen;
 			wxString filename;

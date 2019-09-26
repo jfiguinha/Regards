@@ -24,7 +24,6 @@
 #include <OpenCLDialog.h>
 #include <InterpolationFilterSelect.h>
 #include <FilterData.h>
-#include "ScannerFrame.h"
 #include <wx/app.h>
 #include <libPicture.h>
 #include <FaceDetection.h>
@@ -257,9 +256,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	wxMenu *menuFace = new wxMenu;
 	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
-
-	
-	menuFile->Append(WXSCAN_PAGE, wxT("&Scan Page"), wxT("Scan Page"));
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
@@ -802,29 +798,6 @@ void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
 	}
 }
 
-void CViewerFrame::OnScanPage(wxCommandEvent& WXUNUSED(event))
-{
-	// create the main application window
-	CScannerFrame *scanFrame = new CScannerFrame(_("Regards Image Acquistion and PDF Management"),
-		wxPoint(-1, -1), wxSize(450, 340));
-    
-    /*
-    wxIScanFrame * scanFrame = new wxIScanFrame(this, mainInterface);
-    if( scanFrame == NULL )
-    {
-        ::wxLogFatalError( _( "Failed to create main window." ) );
-
-        // Program termination.
-        return;
-    }
-     * */
-    scanFrame->Show();
-    //scanFrame->RestoreSashSettings();
-	// and show it (the frames, unlike simple controls, are not shown when
-	// created initially)
-    //wxApp::SetTopWindow( scanFrame );
-}
-
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 {
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
@@ -881,7 +854,6 @@ EVT_MENU(ID_FACEDETECTION, CViewerFrame::OnFaceDetection)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
-EVT_MENU(WXSCAN_PAGE, CViewerFrame::OnScanPage)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
 #ifdef __WXMAC__

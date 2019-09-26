@@ -1,10 +1,21 @@
 #pragma once
-#include <wx/wxscan.h>
+//#include <wx/wxscan.h>
 #include "viewerPDF.h"
 #ifdef __WXMSW__
 #include <gdiplus.h>
 #endif
+#include <MainInterface.h>
 using namespace Regards::Viewer;
+
+namespace Regards
+{
+	namespace Viewer
+	{
+		class CScannerParam;
+		class CScannerTheme;
+	}
+}
+
 
 // IDs for the controls and the menu commands
 enum
@@ -28,14 +39,14 @@ class CScannerFrame : public wxFrame
 {
 public:
 	// ctor(s)
-	CScannerFrame(const wxString &title, const wxPoint &pos, const wxSize &size,
+	CScannerFrame(const wxString &title, IMainInterface * mainInterface, const wxPoint &pos, const wxSize &size,
 		long style = wxDEFAULT_FRAME_STYLE);
 
     ~CScannerFrame();
 
 	void PrintPreview(CImageLoadingFormat * imageToPrint);
 
-	const wxImage & ScanPage();
+	wxImage ScanPage();
 
 private:
 	// event handlers (these functions should _not_ be virtual)
@@ -53,9 +64,13 @@ private:
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
     
+	CScannerParam * viewerParam;
+	CScannerTheme * viewerTheme;
+
 #if __WXSCANSANE__  
     wxScanSane * scanSane;
 #endif
 	CViewerPDF * m_imagePDF;
 	int m_imageCount;
+	IMainInterface * mainInterface;
 };

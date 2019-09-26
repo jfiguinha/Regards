@@ -54,7 +54,6 @@ namespace Regards
 			void OnInterpolationFilter(wxCommandEvent& event);
 			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
-			void OnScanPage(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
 			void OnFaceDetection(wxCommandEvent& event);
 			void OnCategoryDetection(wxCommandEvent& event);

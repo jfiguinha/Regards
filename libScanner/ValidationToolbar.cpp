@@ -1,7 +1,5 @@
 #include <header.h>
 #include "ValidationToolbar.h"
-#include "PreviewWnd.h"
-#include "PanelInfosWnd.h"
 #include <LibResource.h>
 #include <window_id.h>
 using namespace Regards::Viewer;

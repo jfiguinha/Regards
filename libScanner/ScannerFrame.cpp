@@ -18,7 +18,10 @@
 #include <LibResource.h>
 #include <wx/wxsanedlg.h>
 #include <libPicture.h>
-
+#include "ScannerParam.h"
+#include "ScannerParamInit.h"
+#include "ScannerTheme.h"
+#include "ScannerThemeInit.h"
 using namespace Regards::Print;
 
 #define MAX_ZOOM	10.0
@@ -30,10 +33,20 @@ using namespace Regards::Print;
 // ----------------------------------------------------------------------------
 
 // frame constructor
-CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wxSize &size,
+CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterface, const wxPoint &pos, const wxSize &size,
 	long style) :
 	wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
+
+	SetIcon(wxICON(sample));
+
+	this->mainInterface = mainInterface;
+
+	viewerParam = new CScannerParam();
+	CScannerParamInit::Initialize(viewerParam);
+
+	viewerTheme = new CScannerTheme();
+	CScannerThemeInit::Initialize(viewerTheme);
 
 #if __WXSCANSANE__  
     scanSane = new wxScanSane();	
@@ -85,7 +98,7 @@ CScannerFrame::CScannerFrame(const wxString &title, const wxPoint &pos, const wx
 #endif
     
     
-    
+	mainInterface->HideAbout();
 }
 
 CScannerFrame::~CScannerFrame()
@@ -142,14 +155,12 @@ void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
 	// TRUE is to force the frame to close
 	Close(TRUE);
+	mainInterface->Close();
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	wxString msg = _("wxIA Image Acquisition Test Program.\n"
-		"Written by Derry Bryson");
-
-	wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
+	mainInterface->ShowAbout();
 }
 
 #ifdef __WXSCANSANE__ 
@@ -232,14 +243,14 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 
 
 
-const wxImage & CScannerFrame::ScanPage()
+wxImage CScannerFrame::ScanPage()
 {
 	wxImage image;
 #if __WXSCANSANE__  
 	wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
 	if (d.ShowModal() == wxID_OK)
 	{
-		return d.GetImage();
+		image = d.GetImage();
 	}
 #else
 	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
@@ -270,7 +281,7 @@ const wxImage & CScannerFrame::ScanPage()
 	if (ppStream.Count() != 0)
 	{
 		Gdiplus::Image m_Image(*ppStream);
-		return GdiplusImageTowxImage(&m_Image);
+		image = GdiplusImageTowxImage(&m_Image);
 	}
 
 	//delete gdiplus;

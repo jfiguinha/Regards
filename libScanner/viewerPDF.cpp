@@ -1,22 +1,23 @@
 #include <header.h>
 #include "ViewerPDF.h"
 #include <wx/choicdlg.h> 
-#include "ThumbnailViewerVideo.h"
-#include "ViewerParam.h"
-#include "ViewerParamInit.h"
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>
 #include <FileUtility.h>
 #include <LibResource.h>
-#include "ViewerTheme.h"
+#include "ScannerTheme.h"
+#include "ScannerThemeInit.h"
+#include "ScannerParam.h"
+#include "ScannerParamInit.h"
 #include <libPicture.h>
 #include <ShowVideo.h>
-#include "ViewerThemeInit.h"
+#include <ShowBitmap.h>
+#include "ThumbnailMultiPage.h"
 #include <window_id.h>
 #include <ParamInit.h>
 #include <StatusText.h>
 #include <picture_id.h>
-#include "PictureElement.h"
+//#include "PictureElement.h"
 #include "ThumbnailMessage.h"
 #include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
@@ -39,7 +40,6 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 {
 	this->frame = frame;
 	showBitmapWindow = nullptr;
-	viewerParam = nullptr;
 	isFullscreen = false;
 	filename = L"";
 	width = 0;
@@ -48,8 +48,8 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	showToolbar = true;
 	checkValidity = false;
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
+	CScannerParam * config = CScannerParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
@@ -69,8 +69,6 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	{
 		bool checkValidity = true;
 		bool isPanelVisible = true;
-		CViewerTheme* viewerTheme = CViewerThemeInit::getInstance();
-		CViewerParam* config = CViewerParamInit::getInstance();
 		if (config != nullptr)
 		{
 			config->GetShowVideoThumbnail(isPanelVisible);
@@ -102,7 +100,6 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	//----------------------------------------------------------------------------------------
 	if (viewerTheme != nullptr)
 	{
-		CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 		showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, MAINVIEWERWINDOWID, this, viewerTheme);
 	}
 
@@ -593,7 +590,7 @@ void CViewerPDF::ImagePrecedente()
 		LoadAnimationBitmap(filename, oldAnimationPosition - 1);
 }
 
-wxString CViewerPDF::SetImage(const wxImage &imageFile)
+wxString CViewerPDF::SetImage(wxImage imageFile)
 {
 	wxString file;
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();

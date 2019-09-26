@@ -13,21 +13,108 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Dialog">
+      <UniqueIdentifier>{541c3590-335a-4467-98d2-987f2f7cdf04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail">
+      <UniqueIdentifier>{2d7d419a-6ae3-4f05-bd55-f0e535d727b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Toolbar">
+      <UniqueIdentifier>{48be0afb-5d41-42d2-b063-6dc3bcaf35c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="header">
+      <UniqueIdentifier>{f60f1c79-2798-4a8f-b0c2-828ea6bd1b92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Theme">
+      <UniqueIdentifier>{0423ea1e-1424-4033-9bb4-e214b8897047}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Parameter">
+      <UniqueIdentifier>{ea5827cf-4058-48c8-b092-b0dc2454a4d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SeparationBar">
+      <UniqueIdentifier>{dc28e3ac-f401-4f01-b0df-7f996efe0e5a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScannerSane.cc">
+    <ClCompile Include="SelectPage.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarPDF.cpp">
+      <Filter>Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidationToolbar.cpp">
+      <Filter>Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFileSelection.cpp">
+      <Filter>Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailMultiPage.cpp">
+      <Filter>Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerFrame.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ScannerTwain.cc">
+    <ClCompile Include="viewerPDF.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\include\header.cpp">
+      <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerTheme.cpp">
+      <Filter>Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerThemeInit.cpp">
+      <Filter>Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerParam.cpp">
+      <Filter>Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerParamInit.cpp">
+      <Filter>Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="InfosSeparationBarExplorer.cpp">
+      <Filter>SeparationBar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ScannerSane.hh">
+    <ClInclude Include="SelectPage.h">
+      <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarPDF.h">
+      <Filter>Toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationToolbar.h">
+      <Filter>Toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFileSelection.h">
+      <Filter>Thumbnail</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailMultiPage.h">
+      <Filter>Thumbnail</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerFrame.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ScannerTwain.hh">
+    <ClInclude Include="viewerPDF.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\header.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerTheme.h">
+      <Filter>Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerThemeInit.h">
+      <Filter>Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerParam.h">
+      <Filter>Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerParamInit.h">
+      <Filter>Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="InfosSeparationBarExplorer.h">
+      <Filter>SeparationBar</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

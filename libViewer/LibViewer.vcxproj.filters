@@ -55,20 +55,8 @@
     <Filter Include="CheckVersion">
       <UniqueIdentifier>{add6f705-e73b-4a7d-ba64-2bfa4a4cc137}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scanner">
-      <UniqueIdentifier>{75ae06fd-2162-43ee-8a35-99931e2a02c8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource">
       <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scanner\Thumbnail">
-      <UniqueIdentifier>{6a31b84e-c8e1-44d5-a106-3085a8ea8333}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scanner\Toolbar">
-      <UniqueIdentifier>{cb692ec5-44f0-4e5a-8ff0-8f2cc10e433d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scanner\Dialog">
-      <UniqueIdentifier>{a8605b95-492c-4257-ada7-0134ff1ed761}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -204,27 +192,6 @@
     <ClInclude Include="CheckVersion.h">
       <Filter>CheckVersion</Filter>
     </ClInclude>
-    <ClInclude Include="ScannerFrame.h">
-      <Filter>Scanner</Filter>
-    </ClInclude>
-    <ClInclude Include="viewerPDF.h">
-      <Filter>Scanner</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailMultiPage.h">
-      <Filter>Scanner\Thumbnail</Filter>
-    </ClInclude>
-    <ClInclude Include="ToolbarPDF.h">
-      <Filter>Scanner\Toolbar</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailFileSelection.h">
-      <Filter>Scanner\Thumbnail</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectPage.h">
-      <Filter>Scanner\Dialog</Filter>
-    </ClInclude>
-    <ClInclude Include="ValidationToolbar.h">
-      <Filter>Scanner\Toolbar</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -352,27 +319,6 @@
     </ClCompile>
     <ClCompile Include="ToolbarPhoto.cpp">
       <Filter>Toolbar\source</Filter>
-    </ClCompile>
-    <ClCompile Include="ScannerFrame.cpp">
-      <Filter>Scanner</Filter>
-    </ClCompile>
-    <ClCompile Include="viewerPDF.cpp">
-      <Filter>Scanner</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailMultiPage.cpp">
-      <Filter>Scanner\Thumbnail</Filter>
-    </ClCompile>
-    <ClCompile Include="ToolbarPDF.cpp">
-      <Filter>Scanner\Toolbar</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailFileSelection.cpp">
-      <Filter>Scanner\Thumbnail</Filter>
-    </ClCompile>
-    <ClCompile Include="SelectPage.cpp">
-      <Filter>Scanner\Dialog</Filter>
-    </ClCompile>
-    <ClCompile Include="ValidationToolbar.cpp">
-      <Filter>Scanner\Toolbar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,9 @@
 #include <header.h>
 #include "SelectPage.h"
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
-#include "ViewerParam.h"
-#include "ViewerParamInit.h"
+#include "ScannerTheme.h"
+#include "ScannerThemeInit.h"
+#include "ScannerParam.h"
+#include "ScannerParamInit.h"
 
 CSelectFileDlg::CSelectFileDlg(wxWindow *parent, wxWindowID id,
 	const wxString &filename,
@@ -12,11 +12,11 @@ CSelectFileDlg::CSelectFileDlg(wxWindow *parent, wxWindowID id,
 	wxDialog(parent, id, title, pos, size, style)
 {
 	bool checkValidity = false;
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CScannerParam * config = CScannerParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
