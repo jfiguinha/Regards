@@ -35,7 +35,7 @@ public:
 
 	void PrintPreview(CImageLoadingFormat * imageToPrint);
 
-	void ScanPage();
+	const wxImage & ScanPage();
 
 private:
 	// event handlers (these functions should _not_ be virtual)

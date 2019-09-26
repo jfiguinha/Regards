@@ -1,5 +1,6 @@
 #include <header.h>
 #include "ViewerPDF.h"
+#include <wx/choicdlg.h> 
 #include "ThumbnailViewerVideo.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
@@ -31,6 +32,7 @@ using namespace Regards::Viewer;
 #define PANE_PICTURETHUMBNAIL 1
 #define PANE_VIDEOTHUMBNAIL 2
 #define DELAY_ANIMATION 20
+#define DEMO
 
 CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	: CWindowMain("PDFWindow", parent, id)
@@ -204,6 +206,13 @@ void CViewerPDF::ProcessAddFile(const wxString &fileToAdd, const vector<int> & l
 
 	QPDFWriter outpdfw(outpdf, outfile.c_str());
 	outpdfw.write();
+
+#ifndef DEMO
+	if (wxFileExists(filename))
+		wxRemoveFile(filename);
+
+	wxCopyFile(file, filename);
+#endif
 }
 
 void CViewerPDF::process(const vector<int> & listPage)
@@ -265,6 +274,13 @@ void CViewerPDF::process(const vector<int> & listPage)
 
 	QPDFWriter outpdfw(outpdf, outfile.c_str());
 	outpdfw.write();
+
+#ifndef DEMO
+	if (wxFileExists(filename))
+		wxRemoveFile(filename);
+
+	wxCopyFile(file, filename);
+#endif
 }
 
 void CViewerPDF::OnDeletePage(wxCommandEvent& event)
@@ -275,24 +291,46 @@ void CViewerPDF::OnDeletePage(wxCommandEvent& event)
 		vector<int> listPage = selectFile.GetSelectItem();
 		process(listPage);
 	}
-
+	LoadFile(filename);
 }
 
 void CViewerPDF::OnAddPage(wxCommandEvent& event)
 {
-	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-		"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea..
+	wxArrayString list;
+	list.push_back("Scan");
+	list.push_back("File");
 
-	wxString fileToadd = openFileDialog.GetPath();
+	int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
 
-	CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
-	if (selectFile.ShowModal() == wxID_OK)
+	if (numSelect != -1)
 	{
-		vector<int> listPage = selectFile.GetSelectItem();
-		ProcessAddFile(fileToadd, listPage);
+		if (numSelect == 0)
+		{
+			vector<int> listPage;
+			listPage.push_back(0);
+			wxImage image = frame->ScanPage();
+			wxString file = SetImage(image);
+			ProcessAddFile(file, listPage);
+		}
+		else
+		{
+			wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+				"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+			if (openFileDialog.ShowModal() == wxID_CANCEL)
+				return;     // the user changed idea..
+
+			wxString fileToadd = openFileDialog.GetPath();
+
+			CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
+			if (selectFile.ShowModal() == wxID_OK)
+			{
+				vector<int> listPage = selectFile.GetSelectItem();
+				ProcessAddFile(fileToadd, listPage);
+			}
+		}
+		LoadFile(filename);
 	}
+	
 }
 
 void CViewerPDF::OnSave(wxCommandEvent& event)
@@ -315,7 +353,7 @@ void CViewerPDF::OnOpenFile(wxCommandEvent& event)
 
 void CViewerPDF::OnScan(wxCommandEvent& event)
 {
-	frame->ScanPage();
+	wxImage image = frame->ScanPage();
 }
 
 void CViewerPDF::OnPrint(wxCommandEvent& event)
@@ -555,8 +593,9 @@ void CViewerPDF::ImagePrecedente()
 		LoadAnimationBitmap(filename, oldAnimationPosition - 1);
 }
 
-void CViewerPDF::SetImage(const wxImage &imageFile)
+wxString CViewerPDF::SetImage(const wxImage &imageFile)
 {
+	wxString file;
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
@@ -569,16 +608,18 @@ void CViewerPDF::SetImage(const wxImage &imageFile)
 	else
 	{
 #ifdef WIN32
-		wxString file = tempFolder + "\\temp.pdf";
+		file = tempFolder + "\\temp.pdf";
 #else
-		wxString file = tempFolder + "/temp.pdf";
+		file = tempFolder + "/temp.pdf";
 #endif
-		wxRemoveFile(file);
+
+		if(wxFileExists(file))
+			wxRemoveFile(file);
 
 		//wxImage * imageTemp = new wxImage(imageFile);
 		imageFile.SaveFile(file);
-		LoadFile(file);
 	}
+	return file;
 }
 
 void CViewerPDF::LoadFile(const wxString &filename)

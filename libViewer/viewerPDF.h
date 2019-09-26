@@ -44,8 +44,8 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 
 			void LoadFile();
-			void SetImage(const wxImage &imageFile);
-
+			wxString SetImage(const wxImage &imageFile);
+			void LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 
 			wxString GetFilename();
@@ -62,7 +62,7 @@ namespace Regards
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
 			void Resize();
-			void LoadFile(const wxString &filename);
+			
 			void OnOpenFile(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
 			void OnScan(wxCommandEvent& event);

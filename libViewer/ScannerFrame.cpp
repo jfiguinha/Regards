@@ -226,18 +226,20 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 #endif
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
-	ScanPage();
+	wxString file = m_imagePDF->SetImage(ScanPage());
+	m_imagePDF->LoadFile(file);
 }
 
 
 
-void CScannerFrame::ScanPage()
+const wxImage & CScannerFrame::ScanPage()
 {
+	wxImage image;
 #if __WXSCANSANE__  
 	wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
 	if (d.ShowModal() == wxID_OK)
 	{
-		m_imageWin->SetImage(d.GetImage());
+		return d.GetImage();
 	}
 #else
 	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
@@ -268,11 +270,12 @@ void CScannerFrame::ScanPage()
 	if (ppStream.Count() != 0)
 	{
 		Gdiplus::Image m_Image(*ppStream);
-		m_imagePDF->SetImage(GdiplusImageTowxImage(&m_Image));
+		return GdiplusImageTowxImage(&m_Image);
 	}
 
 	//delete gdiplus;
 #endif
+	return image;
 }
 
 void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
