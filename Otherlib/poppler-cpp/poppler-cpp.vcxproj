@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>..\libpoppler;$(SolutionDir)\libExtern\libiconv\include;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\;$(SolutionDir)libextern\poppler_windows-master\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\poppler_windows-master\goo;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\Debug;$(SolutionDir)libExtern\wxWidgets-master\lib\vc_x64_lib;$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(SolutionDir)libExtern\freetype-dev_2.4.4-1_win64\lib;$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)x64\Debug;$(SolutionDir)libExtern\wxWidgets-master\lib\vc_x64_lib;$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,13 +94,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;poppler_cpp_EXPORTS;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-2.10.0\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-2.10.0\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4703;4267;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxtiff.lib;libiconv-static.lib;poppler.lib;freetype.lib;libjpeg.lib;zlib.lib;openjp2.lib;gdi32.lib;libpng.lib;kernel32.lib;user32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>wxtiff.lib;libiconv-static.lib;libjpeg.lib;zlib.lib;openjp2.lib;gdi32.lib;libpng.lib;kernel32.lib;user32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -172,6 +172,9 @@
     <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\cpp\poppler-version.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\libextern\freetype-2.10.0\builds\windows\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libpoppler\libpoppler.vcxproj">
       <Project>{fff433e3-4638-4949-8fc1-e28734b85002}</Project>
     </ProjectReference>

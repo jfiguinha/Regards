@@ -52,9 +52,8 @@ int CThumbnailMultiPage::FindNumItem(const int &videoPos)
 			CThumbnailData * data = icone->GetData();
 			if (data != nullptr)
 			{
-				if (data->GetTimePosition() > videoPos)
+				if (data->GetTimePosition() == videoPos)
 				{
-					numItem--;
 					break;
 				}
 			}

@@ -116,9 +116,12 @@ void CScannerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;
 	wxString filename = m_imagePDF->GetFilename();
-	CImageLoadingFormat * image = libPicture.LoadPicture(filename);
-	if(image != nullptr)
-		PrintPreview(image);
+	if (filename != "")
+	{
+		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+		if (image != nullptr)
+			PrintPreview(image);
+	}
 }
 
 

@@ -282,65 +282,93 @@ void CViewerPDF::process(const vector<int> & listPage)
 
 void CViewerPDF::OnDeletePage(wxCommandEvent& event)
 {
-	CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
-	if (selectFile.ShowModal() == wxID_OK)
+	if (filename != "")
 	{
-		vector<int> listPage = selectFile.GetSelectItem();
-		process(listPage);
+		CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			vector<int> listPage = selectFile.GetSelectItem();
+			process(listPage);
+			LoadFile(filename);
+		}
+		
 	}
-	LoadFile(filename);
+	else
+	{
+		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+	}
 }
 
 void CViewerPDF::OnAddPage(wxCommandEvent& event)
 {
-	wxArrayString list;
-	list.push_back("Scan");
-	list.push_back("File");
-
-	int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
-
-	if (numSelect != -1)
+	if (filename != "")
 	{
-		if (numSelect == 0)
-		{
-			vector<int> listPage;
-			listPage.push_back(0);
-			wxImage image = frame->ScanPage();
-			wxString file = SetImage(image);
-			ProcessAddFile(file, listPage);
-		}
-		else
-		{
-			wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-				"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-			if (openFileDialog.ShowModal() == wxID_CANCEL)
-				return;     // the user changed idea..
+		wxArrayString list;
+		list.push_back("Scan");
+		list.push_back("File");
+		bool isOk = false;
+		int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
 
-			wxString fileToadd = openFileDialog.GetPath();
-
-			CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
-			if (selectFile.ShowModal() == wxID_OK)
+		if (numSelect != -1)
+		{
+			if (numSelect == 0)
 			{
-				vector<int> listPage = selectFile.GetSelectItem();
-				ProcessAddFile(fileToadd, listPage);
+				vector<int> listPage;
+				listPage.push_back(0);
+				wxImage image = frame->ScanPage();
+				if (image.IsOk())
+				{
+					wxString file = SetImage(image);
+					ProcessAddFile(file, listPage);
+					isOk = true;
+				}
 			}
+			else
+			{
+				wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
+					"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+				if (openFileDialog.ShowModal() == wxID_CANCEL)
+					return;     // the user changed idea..
+
+				wxString fileToadd = openFileDialog.GetPath();
+
+				CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
+				if (selectFile.ShowModal() == wxID_OK)
+				{
+					vector<int> listPage = selectFile.GetSelectItem();
+					ProcessAddFile(fileToadd, listPage);
+					isOk = true;
+				}
+			}
+			if (isOk)
+				LoadFile(filename);
 		}
-		LoadFile(filename);
+	}
+	else
+	{
+		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
 	}
 	
 }
 
 void CViewerPDF::OnSave(wxCommandEvent& event)
 {
-	wxFileDialog saveFileDialog(this, _("Save PDF file"), "", "",
+	if (filename != "")
+	{
+		wxFileDialog saveFileDialog(this, _("Save PDF file"), "", "",
 			"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	if (saveFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea...
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;     // the user changed idea...
 
-	wxString newfilename = saveFileDialog.GetPath();
-	wxCopyFile(filename, newfilename);
+		wxString newfilename = saveFileDialog.GetPath();
+		wxCopyFile(filename, newfilename);
 
-	LoadFile(newfilename);
+		LoadFile(newfilename);
+	}
+	else
+	{
+		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+	}
 }
 
 void CViewerPDF::OnOpenFile(wxCommandEvent& event)
@@ -355,7 +383,16 @@ void CViewerPDF::OnScan(wxCommandEvent& event)
 
 void CViewerPDF::OnPrint(wxCommandEvent& event)
 {
-	frame->PrintPreview(GetImage());
+	if (filename != "")
+	{
+		frame->PrintPreview(GetImage());
+	}
+	else
+	{
+	wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+	}
+
+	
 }
 
 void CViewerPDF::OnExit(wxCommandEvent& event)
@@ -580,14 +617,20 @@ void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFra
 
 void CViewerPDF::ImageSuivante()
 {
-	if (oldAnimationPosition <  (nbThumbnail - 1))
-		LoadAnimationBitmap(filename, oldAnimationPosition + 1);
+	if (oldAnimationPosition < (nbThumbnail - 1))
+	{
+		thumbnailVideo->SetVideoPosition(oldAnimationPosition + 1);
+		SetPosition(oldAnimationPosition + 1);
+	}
 }
 
 void CViewerPDF::ImagePrecedente()
 {
-	if(oldAnimationPosition > 0)
-		LoadAnimationBitmap(filename, oldAnimationPosition - 1);
+	if (oldAnimationPosition > 0)
+	{
+		thumbnailVideo->SetVideoPosition(oldAnimationPosition - 1);
+		SetPosition(oldAnimationPosition - 1);
+	}
 }
 
 wxString CViewerPDF::SetImage(wxImage imageFile)

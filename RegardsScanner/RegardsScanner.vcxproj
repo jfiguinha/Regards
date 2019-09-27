@@ -103,12 +103,6 @@
     <ProjectReference Include="..\libextern\MediaInfo_DLL_GNU_FromSource\ZenLib\Project\MSVC2015\Library\ZenLib.vcxproj">
       <Project>{0da1da7d-f393-4e7c-a7ce-cb5c6a67bc94}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\poppler_windows-master\build\cpp\poppler-cpp.vcxproj">
-      <Project>{611baa48-177c-30b8-8660-f8723d481485}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libextern\poppler_windows-master\build\poppler.vcxproj">
-      <Project>{1db8b267-2fd1-34d0-987d-d128b1a6aa72}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libextern\SDL2-2.0.5\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
@@ -186,6 +180,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libqpdf\libqpdf.vcxproj">
       <Project>{dbd40226-66c0-4381-8bc7-7b34f3485856}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\poppler-cpp\poppler-cpp.vcxproj">
+      <Project>{a38f6ad2-4b8e-411d-aa0b-2a09c81cec7f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\RawSpeed\RawSpeed.vcxproj">
       <Project>{482a0abf-1ae3-4ee4-815a-428880dae0c6}</Project>

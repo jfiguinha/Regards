@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-2.10.0\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4703;4267;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-2.10.0\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4703;4267;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>

@@ -106,6 +106,8 @@ int RegardsPDFApp::Close()
 #ifdef FFMPEG
     av_lockmgr_register(nullptr);
 #endif
+
+
 	return 0;
 }
 
