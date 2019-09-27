@@ -19,6 +19,10 @@
 
 #ifdef ENABLE_LIBJPEG
 
+#ifdef WIN32
+#define boolean int
+#endif
+
 extern "C" {
 #include <jpeglib.h>
 }
