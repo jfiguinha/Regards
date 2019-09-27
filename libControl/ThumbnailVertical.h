@@ -1,7 +1,7 @@
 #pragma once
 #include "Thumbnail.h"
 #include <Photos.h>
-#include <Catalog.h>
+#include <PhotoCatalog.h>
 #include <Criteria.h>
 #include <PhotoCategorie.h>
 using namespace Regards::Window;

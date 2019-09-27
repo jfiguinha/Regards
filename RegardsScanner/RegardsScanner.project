@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="RegardsScanner" Version="10.0.0" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="include">
     <File Name="../Regards/SqlInit.h"/>
     <File Name="../Regards/RegardsPDF.h"/>
     <File Name="resource.h"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00010001N0005Debug000000000000]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -17,10 +17,8 @@
   </VirtualDirectory>
   <Dependencies Name="Debug">
     <Project Name="libFiltre"/>
-    <Project Name="FaceRecognition"/>
     <Project Name="libDialog"/>
     <Project Name="libWindowMain"/>
-    <Project Name="libViewer"/>
     <Project Name="libTheme"/>
     <Project Name="libEmail"/>
     <Project Name="libPsd"/>
@@ -56,6 +54,47 @@
     <Project Name="wxSVG"/>
     <Project Name="libControl"/>
     <Project Name="wxPDFDoc"/>
+    <Project Name="libRegardsBpg_windows"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libDialog"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libTheme"/>
+    <Project Name="libEmail"/>
+    <Project Name="libPsd"/>
+    <Project Name="libCompress"/>
+    <Project Name="libResource"/>
+    <Project Name="libScanner"/>
+    <Project Name="libPrint"/>
+    <Project Name="libIntro"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libJbig"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libPicture"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libavutil"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="CxImage"/>
+    <Project Name="wxIA"/>
+    <Project Name="libUtility"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libWindow"/>
+    <Project Name="libExif"/>
+    <Project Name="libSqlite"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libControl"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -98,6 +137,8 @@
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Regards"/>
+        <IncludePath Value="../libScanner"/>
+        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="FFMPEG"/>

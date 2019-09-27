@@ -29,9 +29,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="PhotoCatalog.cpp"/>
     <File Name="ThumbnailDataSQL.cpp"/>
     <File Name="RegardsJpegPicture.cpp"/>
-    <File Name="Catalog.cpp"/>
     <File Name="Country.cpp"/>
     <File Name="Criteria.cpp"/>
     <File Name="FolderCatalog.cpp"/>
@@ -52,11 +52,11 @@
     <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="PhotoCatalog.h"/>
     <File Name="ThumbnailMessage.h"/>
     <File Name="ThumbnailDataSQL.h"/>
     <File Name="StatusText.h"/>
     <File Name="RegardsJpegPicture.h"/>
-    <File Name="Catalog.h"/>
     <File Name="Country.h"/>
     <File Name="Criteria.h"/>
     <File Name="FolderCatalog.h"/>

@@ -23,7 +23,7 @@ int CSqlFindCatalog::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
-		CCatalog _catalog;
+		CPhotoCatalog _catalog;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 

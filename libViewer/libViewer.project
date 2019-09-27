@@ -26,12 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Scan">
-    <File Name="ScannerFrame.h"/>
-    <File Name="ScannerFrame.cpp"/>
-    <File Name="ImageWindow.h"/>
-    <File Name="ImageWindow.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="CheckVersion">
     <File Name="CheckVersion.h"/>
     <File Name="CheckVersion.cpp"/>
@@ -193,8 +187,6 @@
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
-        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="FFMPEG"/>

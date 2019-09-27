@@ -4,7 +4,6 @@
 #include <Criteria.h>
 #include <SqlPhotoCategorie.h>
 #include <SqlFindCriteria.h>
-#include <SqlFindCatalog.h>
 #include <SqlFindPhotos.h>
 #include <SqlCatalog.h>
 #include "TreeDataCategory.h"
@@ -25,6 +24,7 @@
 #include <FileGeolocation.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
+#include <SqlFindCatalog.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 
@@ -110,7 +110,7 @@ void CCategoryWnd::Init()
 
 	sqlCatalog.GetCatalog(&catalogVector);
 
-	for (CCatalog catalog : catalogVector)
+	for (CPhotoCatalog catalog : catalogVector)
 	{
 		CTreeDataCategory * treeData = new CTreeDataCategory();
 		numCatalog = catalog.GetNumCatalog();

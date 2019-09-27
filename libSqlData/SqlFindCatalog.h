@@ -1,5 +1,5 @@
 #pragma once
-#include <Catalog.h>
+#include <PhotoCatalog.h>
 #include "SqlExecuteRequest.h"
 #include "SqlResult.h"
 
