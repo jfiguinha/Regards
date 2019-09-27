@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="10.0.0">
+  <VirtualDirectory Name="Thumbnail">
+    <VirtualDirectory Name="include">
+      <File Name="ThumbnailVideo.h"/>
+      <File Name="ThumbnailVerticalListFile.h"/>
+      <File Name="ThumbnailVertical.h"/>
+      <File Name="ThumbnailHorizontal.h"/>
+      <File Name="ThumbnailEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="src">
+      <File Name="ThumbnailVideo.cpp"/>
+      <File Name="ThumbnailVerticalListFile.cpp"/>
+      <File Name="ThumbnailVertical.cpp"/>
+      <File Name="ThumbnailHorizontal.cpp"/>
+      <File Name="ThumbnailEffect.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -35,10 +51,6 @@
     <File Name="InfosFile.cpp"/>
     <File Name="InfosSeparationBarEffect.cpp"/>
     <File Name="ShowBitmap.cpp"/>
-    <File Name="ThumbnailEffect.cpp"/>
-    <File Name="ThumbnailHorizontal.cpp"/>
-    <File Name="ThumbnailVertical.cpp"/>
-    <File Name="ThumbnailVideo.cpp"/>
     <File Name="CriteriaTree.cpp"/>
     <File Name="CriteriaTreeWnd.cpp"/>
     <File Name="InfosFileWnd.cpp"/>
@@ -57,10 +69,6 @@
     <File Name="InfosSeparationBarEffect.h"/>
     <File Name="ShowBitmap.h"/>
     <File Name="SplitterWithPanel.h"/>
-    <File Name="ThumbnailEffect.h"/>
-    <File Name="ThumbnailHorizontal.h"/>
-    <File Name="ThumbnailVertical.h"/>
-    <File Name="ThumbnailVideo.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>

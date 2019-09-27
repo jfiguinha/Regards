@@ -116,6 +116,8 @@
     <Project Name="libavutil"/>
     <Project Name="libRegardsBpg_windows"/>
     <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -189,13 +191,14 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/poppler/.libs"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/cpp/.libs"/>
+        <LibraryPath Value="../libextern/poppler_windows-master/build"/>
+        <LibraryPath Value="../libextern/poppler_windows-master/build/cpp"/>
         <Library Value="Viewer"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
         <Library Value="Control"/>
+        <Library Value="Viewer"/>
         <Library Value="Email"/>
         <Library Value="Exif_regards"/>
         <Library Value="Picture"/>
@@ -458,11 +461,18 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/poppler/.libs/libpoppler-62.dll ./Debug/libpoppler-62.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/cpp/.libs/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-89.dll ./Debug/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf21.dll ./Debug/qpdf21.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjpeg-5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nss3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/smime3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nssutil3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplc4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
       </PostBuild>
@@ -601,8 +611,8 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/poppler/.libs/libpoppler-62.dll ./Release/libpoppler-62.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/cpp/.libs/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-91.dll ./Release/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjpeg-5.dll ./Release</Command>

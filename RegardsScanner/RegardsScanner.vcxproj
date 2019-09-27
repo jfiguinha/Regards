@@ -314,7 +314,6 @@ XCOPY /Y "$(SolutionDir)\libextern\cairo-dev_1.10.2-1_win64\bin\libcairo-gobject
 XCOPY /Y "$(SolutionDir)\libextern\cairo-dev_1.10.2-1_win64\bin\libcairo-script-interpreter-2.dll"  "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\fontconfig-dev_2.8.0-2_win64\bin\libfontconfig-1.dll"  "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\openjpeg-v2.3.1-windows-x64\bin\openjp2.dll"  "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\freetype-dev_2.4.4-1_win64\bin\libfreetype-6.dll"  "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\libfreetype-6.dll"  "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\libexpat-1.dll"  "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\libpng14-14.dll"  "$(SolutionDir)\x64\Debug"

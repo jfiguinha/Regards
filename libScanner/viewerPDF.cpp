@@ -26,7 +26,7 @@
 #include <qpdf/QPDFPageDocumentHelper.hh>
 #include <qpdf/QPDFWriter.hh>
 #include <qpdf/QUtil.hh>
-#include <qpdf/QIntC.hh>
+//#include <qpdf/QIntC.hh>
 
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -240,7 +240,7 @@ void CViewerPDF::process(const vector<int> & listPage)
 	QPDF inpdf;
 	inpdf.processFile(filename.ToStdString().c_str());
 	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
-	int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
+	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
 	int pageno = 0;
 
 	std::string outfile = file.ToStdString();
