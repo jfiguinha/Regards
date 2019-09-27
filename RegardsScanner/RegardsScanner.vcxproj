@@ -104,10 +104,10 @@
       <Project>{0da1da7d-f393-4e7c-a7ce-cb5c6a67bc94}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\poppler_windows-master\build\cpp\poppler-cpp.vcxproj">
-      <Project>{fbe46c1a-7e70-316a-b392-998d3c7bcf93}</Project>
+      <Project>{611baa48-177c-30b8-8660-f8723d481485}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\poppler_windows-master\build\poppler.vcxproj">
-      <Project>{dc01e715-30f7-3f07-a7e7-693de0b32630}</Project>
+      <Project>{1db8b267-2fd1-34d0-987d-d128b1a6aa72}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\SDL2-2.0.5\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>

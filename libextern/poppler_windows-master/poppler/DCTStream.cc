@@ -16,6 +16,9 @@
 //========================================================================
 
 #include "DCTStream.h"
+#ifdef WIN32
+#define boolean int
+#endif
 
 static void str_init_source(j_decompress_ptr cinfo)
 {
