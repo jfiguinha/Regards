@@ -1,0 +1,387 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DC01E715-30F7-3F07-A7E7-693DE0B32630}</ProjectGuid>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>poppler</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">poppler.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">poppler</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">poppler.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">poppler</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">poppler.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">poppler</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>.\;..\;..\poppler;..\goo;poppler;..\..\zlib;..\..\libjpeg;..\..\freetype-dev_2.4.4-1_win64\include;..\..\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;..\..\libpng;..\..\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="MinSizeRel";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"MinSizeRel\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="RelWithDebInfo";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"RelWithDebInfo\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\poppler_windows-master;C:\developpement\git\Regards\libextern\poppler_windows-master\fofi;C:\developpement\git\Regards\libextern\poppler_windows-master\goo;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\build;C:\developpement\git\Regards\libextern\poppler_windows-master\build\poppler;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\include\openjpeg-2.0;C:\msys64\mingw64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\poppler_windows-master\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/poppler_windows-master/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+C:\msys64\mingw64\bin\cmake.exe -SC:/developpement/git/Regards/libextern/poppler_windows-master -BC:/developpement/git/Regards/libextern/poppler_windows-master/build --check-stamp-file C:/developpement/git/Regards/libextern/poppler_windows-master/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\ConfigureChecks.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCXXCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeRCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeSystem.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\CheckFileOffsetBits.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindCairo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGLIB.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGObjectIntrospection.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGTK.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindIconv.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindLCMS2.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindNSS3.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroBoolTo01.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroEnsureVersion.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroOptionalFindPackage.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerDefaults.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerMacros.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cairo.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cpp.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-glib.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-splash.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\poppler-config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGConfig.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets-relwithdebinfo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakePushCheckState.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindBoost.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindCURL.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindFreetype.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindJPEG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPNG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindTIFF.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindZLIB.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\TestBigEndian.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/poppler_windows-master/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+C:\msys64\mingw64\bin\cmake.exe -SC:/developpement/git/Regards/libextern/poppler_windows-master -BC:/developpement/git/Regards/libextern/poppler_windows-master/build --check-stamp-file C:/developpement/git/Regards/libextern/poppler_windows-master/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\ConfigureChecks.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCXXCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeRCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeSystem.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\CheckFileOffsetBits.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindCairo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGLIB.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGObjectIntrospection.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGTK.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindIconv.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindLCMS2.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindNSS3.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroBoolTo01.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroEnsureVersion.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroOptionalFindPackage.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerDefaults.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerMacros.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cairo.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cpp.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-glib.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-splash.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\poppler-config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGConfig.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets-relwithdebinfo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakePushCheckState.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindBoost.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindCURL.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindFreetype.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindJPEG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPNG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindTIFF.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindZLIB.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\TestBigEndian.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/poppler_windows-master/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+C:\msys64\mingw64\bin\cmake.exe -SC:/developpement/git/Regards/libextern/poppler_windows-master -BC:/developpement/git/Regards/libextern/poppler_windows-master/build --check-stamp-file C:/developpement/git/Regards/libextern/poppler_windows-master/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\ConfigureChecks.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCXXCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeRCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeSystem.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\CheckFileOffsetBits.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindCairo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGLIB.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGObjectIntrospection.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGTK.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindIconv.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindLCMS2.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindNSS3.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroBoolTo01.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroEnsureVersion.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroOptionalFindPackage.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerDefaults.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerMacros.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cairo.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cpp.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-glib.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-splash.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\poppler-config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGConfig.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets-relwithdebinfo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakePushCheckState.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindBoost.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindCURL.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindFreetype.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindJPEG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPNG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindTIFF.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindZLIB.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\TestBigEndian.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/poppler_windows-master/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+C:\msys64\mingw64\bin\cmake.exe -SC:/developpement/git/Regards/libextern/poppler_windows-master -BC:/developpement/git/Regards/libextern/poppler_windows-master/build --check-stamp-file C:/developpement/git/Regards/libextern/poppler_windows-master/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\ConfigureChecks.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeCXXCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeRCCompiler.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\3.15.2\CMakeSystem.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\CheckFileOffsetBits.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindCairo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGLIB.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGObjectIntrospection.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindGTK.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindIconv.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindLCMS2.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\FindNSS3.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroBoolTo01.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroEnsureVersion.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\MacroOptionalFindPackage.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerDefaults.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\cmake\modules\PopplerMacros.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cairo.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-cpp.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-glib.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler-splash.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler.pc.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\poppler-config.h.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGConfig.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets-relwithdebinfo.cmake;C:\developpement\git\Regards\libextern\poppler_windows-master\thirdparty\lib\openjpeg-2.0\OpenJPEGTargets.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCXXInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeCommonLanguageInclude.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeGenericSystem.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeInitializeConfigs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeLanguageInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakePushCheckState.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeRCInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInformation.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CMakeSystemSpecificInitialize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckCXXSourceCompiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckFunctionExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFile.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFileCXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckIncludeFiles.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckLibraryExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckSymbolExists.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\CheckTypeSize.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Compiler\MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindBoost.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindCURL.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindFreetype.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindJPEG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPNG.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageHandleStandardArgs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPackageMessage.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindPkgConfig.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindTIFF.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\FindZLIB.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\GNUInstallDirs.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-C.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC-CXX.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows-MSVC.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\Windows.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\Platform\WindowsPaths.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\SelectLibraryConfigurations.cmake;C:\msys64\mingw64\share\cmake-3.15\Modules\TestBigEndian.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\poppler_windows-master\build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\gbase64.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\gbasename.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\gfile.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\GooTimer.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\GooString.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\NetPBMWriter.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\PNGWriter.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\TiffWriter.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\JpegWriter.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\ImgWriter.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\gstrtod.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\grandom.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\glibc.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\goo\glibc_strtok_r.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiBase.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiEncodings.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiTrueType.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiType1.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiType1C.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\fofi\FoFiIdentifier.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Annot.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Array.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\BuiltinFont.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\BuiltinFontTables.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\CachedFile.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Catalog.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\CharCodeToUnicode.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\CMap.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\DateInfo.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Decrypt.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Dict.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Error.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\FileSpec.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\FontEncodingTables.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Form.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\FontInfo.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Function.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Gfx.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\GfxFont.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\GfxState.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\GlobalParams.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Hints.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\JArithmeticDecoder.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\JBIG2Stream.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Lexer.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Link.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Linearization.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\LocalPDFDocBuilder.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\MarkedContentOutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\NameToCharCode.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Object.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\OptionalContent.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Outline.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\OutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Page.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PageTransition.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Parser.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PDFDoc.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PDFDocEncoding.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PDFDocFactory.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\ProfileData.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PreScanOutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PSTokenizer.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\SignatureInfo.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Stream.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\StructTreeRoot.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\StructElement.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\UnicodeMap.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\UnicodeMapFuncs.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\UnicodeTypeTable.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\UTF.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\XRef.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PSOutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\TextOutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\PageLabelInfo.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\SecurityHandler.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\StdinCachedFile.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\StdinPDFDocBuilder.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Sound.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\ViewerPreferences.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Movie.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\Rendition.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\CertificateInfo.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\SplashOutputDev.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\Splash.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashBitmap.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashClip.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFTFont.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFTFontEngine.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFTFontFile.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFont.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFontEngine.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFontFile.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashFontFileID.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashPath.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashPattern.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashScreen.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashState.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashXPath.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\splash\SplashXPathScanner.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\DCTStream.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\FlateEncoder.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\poppler\JPEG2000Stream.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\developpement\git\Regards\libextern\poppler_windows-master\build\ZERO_CHECK.vcxproj">
+      <Project>{68335262-3713-34CF-96F7-205B33FBB1C3}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

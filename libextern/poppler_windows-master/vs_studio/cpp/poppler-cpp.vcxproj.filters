@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-destination.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-embedded-file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-font.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-page.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-page-renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-page-transition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-private.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-rectangle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-toc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\poppler-version.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\poppler_windows-master\cpp\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CF5A644E-843A-37AE-898E-375B38DD9F75}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
