@@ -715,7 +715,7 @@ void Gfx::go(bool topLevel) {
   Object args[maxArgs];
   int numArgs, i;
   int lastAbortCheck;
-
+  int j = 0;
   // scan a sequence of objects
   pushStateGuard();
   updateLevel = 1; // make sure even empty pages trigger a call to dump()
@@ -724,6 +724,9 @@ void Gfx::go(bool topLevel) {
   obj = parser->getObj();
   while (!obj.isEOF()) {
     commandAborted = false;
+	j++;
+	char buffer[10];
+	itoa(j, buffer, 10);
 
     // got a command - execute it
     if (obj.isCmd()) {
