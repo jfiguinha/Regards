@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\gbase64.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\gbasename.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\gfile.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\GooTimer.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\GooString.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\NetPBMWriter.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\PNGWriter.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\TiffWriter.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\JpegWriter.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\ImgWriter.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\gstrtod.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\grandom.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\glibc.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\goo\glibc_strtok_r.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiBase.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiEncodings.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiTrueType.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiType1.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiType1C.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\fofi\FoFiIdentifier.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Annot.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Array.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\BuiltinFont.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\BuiltinFontTables.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\CachedFile.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Catalog.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\CharCodeToUnicode.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\CMap.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\DateInfo.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Decrypt.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Dict.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Error.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\FileSpec.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\FontEncodingTables.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Form.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\FontInfo.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Function.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Gfx.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\GfxFont.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\GfxState.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\GlobalParams.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Hints.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\JArithmeticDecoder.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\JBIG2Stream.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Lexer.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Link.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Linearization.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\LocalPDFDocBuilder.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\MarkedContentOutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\NameToCharCode.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Object.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\OptionalContent.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Outline.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\OutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Page.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PageTransition.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Parser.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PDFDoc.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PDFDocEncoding.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PDFDocFactory.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\ProfileData.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PreScanOutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PSTokenizer.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\SignatureInfo.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Stream.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\StructTreeRoot.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\StructElement.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\UnicodeMap.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\UnicodeMapFuncs.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\UnicodeTypeTable.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\UTF.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\XRef.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PSOutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\TextOutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\PageLabelInfo.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\SecurityHandler.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\StdinCachedFile.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\StdinPDFDocBuilder.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Sound.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\ViewerPreferences.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Movie.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\Rendition.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\CertificateInfo.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\SplashOutputDev.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\Splash.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashBitmap.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashClip.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFTFont.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFTFontEngine.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFTFontFile.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFont.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFontEngine.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFontFile.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashFontFileID.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashPath.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashPattern.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashScreen.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashState.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashXPath.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\splash\SplashXPathScanner.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\DCTStream.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\FlateEncoder.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SolutionDir)libextern\poppler_windows-master\poppler\JPEG2000Stream.cc">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
