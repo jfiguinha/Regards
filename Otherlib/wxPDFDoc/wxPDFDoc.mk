@@ -37,7 +37,7 @@ PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/msys64/mingw64/bin/windres.exe
-LinkOptions            :=   $(shell wx-config --libs --debug=no --unicode=yes)
+LinkOptions            :=  
 IncludePath            := $(IncludeSwitch)/mingw64/include/OpenEXR $(IncludeSwitch)/mingw64/include/poppler $(IncludeSwitch)/mingw64/include/poppler/cpp $(IncludeSwitch)/mingw64/include/qpdf $(IncludeSwitch)/mingw64/x86_64-w64-mingw32/include/gdiplus  $(IncludeSwitch). $(IncludeSwitch)../../include $(IncludeSwitch)include $(IncludeSwitch)../../libextern/poppler_windows-master/cpp $(IncludeSwitch). 
 IncludePCH             :=  -include ../../include/Release/header.h 
 RcIncludePath          := 
