@@ -27,6 +27,7 @@
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\Regards\RegardsPDF.cpp" />
   </ItemGroup>
@@ -66,6 +67,9 @@
     </ProjectReference>
     <ProjectReference Include="..\libextern\exiv2-0.26\xmpsdk\xmpsdk.vcxproj">
       <Project>{09877cf4-83b6-44fe-a2e2-629aa5c8093e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\libextern\freetype-2.10.0\builds\windows\vc2010\freetype.vcxproj">
+      <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libextern\glew-2.1.0\libglew.vcxproj">
       <Project>{703de35d-15a1-445c-94a2-6b7fb4d7232c}</Project>
@@ -175,6 +179,9 @@
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libpoppler\libpoppler.vcxproj">
+      <Project>{fff433e3-4638-4949-8fc1-e28734b85002}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\otherlib\libpsd\libpsd.vcxproj">
       <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
     </ProjectReference>
@@ -260,7 +267,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
     <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -271,7 +278,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64\;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
     <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -289,7 +296,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>openjp2.lib;cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Debug\Resources"
@@ -355,15 +362,16 @@ XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>..\libextern\poppler_windows-master\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libScanner;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite;..\Otherlib\wxPDFDoc\include;..\libextern\poppler_windows-master\cpp</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>openjp2.lib;cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Release\Resources"
@@ -380,11 +388,7 @@ XCOPY /Y "$(SolutionDir)\libextern\cairo-dev_1.10.2-1_win64\bin\libcairo-2.dll" 
 XCOPY /Y "$(SolutionDir)\libextern\cairo-dev_1.10.2-1_win64\bin\libcairo-gobject-2.dll"  "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\cairo-dev_1.10.2-1_win64\bin\libcairo-script-interpreter-2.dll"  "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\fontconfig-dev_2.8.0-2_win64\bin\libfontconfig-1.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\openjpeg-v2.3.1-windows-x64\bin\openjp2.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\freetype-dev_2.4.4-1_win64\bin\libfreetype-6.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\libexpat-1.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\libpng14-14.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\windows_lib\bin\zlib1.dll"  "$(SolutionDir)\x64\Release"</Command>
+XCOPY /Y "$(SolutionDir)\libextern\openjpeg-v2.3.1-windows-x64\bin\openjp2.dll"  "$(SolutionDir)\x64\Release"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

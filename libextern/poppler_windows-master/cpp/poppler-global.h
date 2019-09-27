@@ -22,6 +22,9 @@
 #ifndef POPPLER_GLOBAL_H
 #define POPPLER_GLOBAL_H
 
+#define POPPLER_CPP_EXPORT 
+
+/*/
 #if defined(_WIN32)
 #  define LIB_EXPORT __declspec(dllexport)
 #  define LIB_IMPORT __declspec(dllimport)
@@ -30,12 +33,13 @@
 #  define LIB_IMPORT
 #endif
 
+
 #if defined(poppler_cpp_EXPORTS)
 #  define POPPLER_CPP_EXPORT LIB_EXPORT
 #else
 #  define POPPLER_CPP_EXPORT LIB_IMPORT
 #endif
-
+*/
 #include <iosfwd>
 #include <string>
 #include <vector>
