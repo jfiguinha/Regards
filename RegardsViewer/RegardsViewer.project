@@ -642,8 +642,8 @@
     <Project Name="libavcodec"/>
     <Project Name="libRegardsBpg_windows"/>
     <Project Name="wxIA"/>
-    <Project Name="FaceRecognition_windows"/>
     <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_windows"/>
     <Project Name="wxPDFDoc"/>
   </Dependencies>
 </CodeLite_Project>

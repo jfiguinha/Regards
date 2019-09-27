@@ -8,16 +8,17 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="base64.cpp"/>
+    <File Name="../libextern/dlib-19.17/dlib/all/source.cpp"/>
     <File Name="PictureCategorieData.cpp"/>
     <File Name="LoadPicture.cpp"/>
-    <File Name="base64.cpp"/>
     <File Name="FaceData.cpp"/>
     <File Name="FaceDetector.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="base64.h"/>
     <File Name="PictureCategorieData.h"/>
     <File Name="LoadPicture.h"/>
-    <File Name="base64.h"/>
     <File Name="FaceData.h"/>
     <File Name="FaceDetector.h"/>
     <File Name="utils.h"/>

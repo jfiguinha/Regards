@@ -2,5 +2,6 @@
 -IC:\developpement\git\Regards\include
 -IC:\developpement\git\Regards\Otherlib\wxPDFDoc\include
 -IC:\developpement\git\Regards\libextern\poppler_windows-master\cpp
+-DNDEBUG
 -target
 x86_64-pc-windows-gnu

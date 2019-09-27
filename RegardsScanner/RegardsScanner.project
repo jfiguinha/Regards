@@ -170,8 +170,6 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/poppler/.libs"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/cpp/.libs"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -476,7 +474,50 @@
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="../libPrint/Release"/>
+        <LibraryPath Value="../CxImage/Release"/>
+        <LibraryPath Value="../libOpenGL/Release"/>
+        <LibraryPath Value="../libMediaInfo/Release"/>
+        <LibraryPath Value="../wxCheckTree/Release"/>
+        <LibraryPath Value="../libSqlite/Release"/>
+        <LibraryPath Value="../libViewer/Release"/>
+        <LibraryPath Value="../libExplorer/Release"/>
+        <LibraryPath Value="../libIntro/Release"/>
+        <LibraryPath Value="../libSqlEngine/Release"/>
+        <LibraryPath Value="../libResource/Release"/>
+        <LibraryPath Value="../libCompress/Release"/>
+        <LibraryPath Value="../libDialog/Release"/>
+        <LibraryPath Value="../libDataStructure/Release"/>
+        <LibraryPath Value="../libPicture/Release"/>
+        <LibraryPath Value="../libUtility/Release"/>
+        <LibraryPath Value="../libGeolocalisation/Release"/>
+        <LibraryPath Value="../libSqlData/Release"/>
+        <LibraryPath Value="../libVideoThumbnail/Release"/>
+        <LibraryPath Value="../Otherlib/RawSpeed/Release"/>
+        <LibraryPath Value="../libFiltre/Release"/>
+        <LibraryPath Value="../libFiltreInterface/Release"/>
+        <LibraryPath Value="../libWindow/Release"/>
+        <LibraryPath Value="../libControl/Release"/>
+        <LibraryPath Value="../libTheme/Release"/>
+        <LibraryPath Value="../libParameter/Release"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
+        <LibraryPath Value="../libRenderBitmap/Release"/>
+        <LibraryPath Value="../libOpenCL/Release"/>
+        <LibraryPath Value="../libVideoFFMpeg/Release"/>
+        <LibraryPath Value="../libEmail/Release"/>
+        <LibraryPath Value="../libExif/Release"/>
+        <LibraryPath Value="../libPiccante/Release"/>
+        <LibraryPath Value="../libWindowMain/Release"/>
+        <LibraryPath Value="../Otherlib/wxSVG/Release"/>
+        <LibraryPath Value="../Otherlib/libPsd/Release"/>
+        <LibraryPath Value="../Otherlib/libJbig/Release"/>
+        <LibraryPath Value="../Otherlib/wxIA/Release"/>
+        <LibraryPath Value="../FaceRecognition_windows/Release"/>
+        <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
+        <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
+        <LibraryPath Value="../libScanner/Release"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
