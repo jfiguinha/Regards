@@ -199,7 +199,6 @@
     <ClInclude Include="BitmapYUV.h" />
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BrightAndContrastEffectParameter.h" />
-    <ClInclude Include="Catalog.h" />
     <ClInclude Include="ClaheEffectParameter.h" />
     <ClInclude Include="CloudsEffectParameter.h" />
     <ClInclude Include="Country.h" />
@@ -226,6 +225,7 @@
     <ClInclude Include="MotionBlurEffectParameter.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
+    <ClInclude Include="PhotoCatalog.h" />
     <ClInclude Include="PhotoCategorie.h" />
     <ClInclude Include="PhotoCriteria.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
@@ -265,12 +265,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Catalog.cpp" />
     <ClCompile Include="Country.cpp" />
     <ClCompile Include="Criteria.cpp" />
     <ClCompile Include="FolderCatalog.cpp" />
     <ClCompile Include="GeoPluginValue.cpp" />
     <ClCompile Include="ImageLoadingFormat.cpp" />
+    <ClCompile Include="PhotoCatalog.cpp" />
     <ClCompile Include="PhotoCategorie.cpp" />
     <ClCompile Include="PhotoCriteria.cpp" />
     <ClCompile Include="PhotoGps.cpp" />
