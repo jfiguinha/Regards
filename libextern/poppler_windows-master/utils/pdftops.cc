@@ -16,14 +16,15 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2006 Kristian Høgsberg <krh@redhat.com>
-// Copyright (C) 2007-2008, 2010, 2015 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2007-2008, 2010, 2015, 2017, 2018 Albert Astals Cid <aacid@kde.org>
 // Copyright (C) 2009 Till Kamppeter <till.kamppeter@gmail.com>
 // Copyright (C) 2009 Sanjoy Mahajan <sanjoy@mit.edu>
-// Copyright (C) 2009, 2011, 2012, 2014, 2015 William Bader <williambader@hotmail.com>
+// Copyright (C) 2009, 2011, 2012, 2014-2016 William Bader <williambader@hotmail.com>
 // Copyright (C) 2010 Hib Eris <hib@hiberis.nl>
 // Copyright (C) 2012 Thomas Freitag <Thomas.Freitag@alfa.de>
 // Copyright (C) 2013 Suzuki Toshiya <mpsuzuki@hiroshima-u.ac.jp>
-// Copyright (C) 2014 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2014, 2017 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -51,8 +52,9 @@
 #include "PDFDocFactory.h"
 #include "PSOutputDev.h"
 #include "Error.h"
+#include "Win32Console.h"
 
-static GBool setPSPaperSize(char *size, int &psPaperWidth, int &psPaperHeight) {
+static bool setPSPaperSize(char *size, int &psPaperWidth, int &psPaperHeight) {
   if (!strcmp(size, "match")) {
     psPaperWidth = psPaperHeight = -1;
   } else if (!strcmp(size, "letter")) {
@@ -68,52 +70,51 @@ static GBool setPSPaperSize(char *size, int &psPaperWidth, int &psPaperHeight) {
     psPaperWidth = 842;
     psPaperHeight = 1190;
   } else {
-    return gFalse;
+    return false;
   }
-  return gTrue;
+  return true;
 }
 
 
 static int firstPage = 1;
 static int lastPage = 0;
-static GBool level1 = gFalse;
-static GBool level1Sep = gFalse;
-static GBool level2 = gFalse;
-static GBool level2Sep = gFalse;
-static GBool level3 = gFalse;
-static GBool level3Sep = gFalse;
-static GBool origPageSizes = gFalse;
-static GBool doEPS = gFalse;
-static GBool doForm = gFalse;
-#if OPI_SUPPORT
-static GBool doOPI = gFalse;
+static bool level1 = false;
+static bool level1Sep = false;
+static bool level2 = false;
+static bool level2Sep = false;
+static bool level3 = false;
+static bool level3Sep = false;
+static bool origPageSizes = false;
+static bool doEPS = false;
+static bool doForm = false;
+#ifdef OPI_SUPPORT
+static bool doOPI = false;
 #endif
 static int splashResolution = 0;
-static GBool psBinary = gFalse;
-static GBool noEmbedT1Fonts = gFalse;
-static GBool noEmbedTTFonts = gFalse;
-static GBool noEmbedCIDPSFonts = gFalse;
-static GBool noEmbedCIDTTFonts = gFalse;
-static GBool fontPassthrough = gFalse;
-static GBool optimizeColorSpace = gFalse;
+static bool psBinary = false;
+static bool noEmbedT1Fonts = false;
+static bool noEmbedTTFonts = false;
+static bool noEmbedCIDPSFonts = false;
+static bool noEmbedCIDTTFonts = false;
+static bool fontPassthrough = false;
+static bool optimizeColorSpace = false;
+static bool passLevel1CustomColor = false;
 static char rasterAntialiasStr[16] = "";
-static GBool preload = gFalse;
+static bool preload = false;
 static char paperSize[15] = "";
 static int paperWidth = -1;
 static int paperHeight = -1;
-static GBool noCrop = gFalse;
-static GBool expand = gFalse;
-static GBool noShrink = gFalse;
-static GBool noCenter = gFalse;
-static GBool duplex = gFalse;
+static bool noCrop = false;
+static bool expand = false;
+static bool noShrink = false;
+static bool noCenter = false;
+static bool duplex = false;
 static char ownerPassword[33] = "\001";
 static char userPassword[33] = "\001";
-static GBool quiet = gFalse;
-static GBool printVersion = gFalse;
-static GBool printHelp = gFalse;
-#if SPLASH_CMYK
-static GBool overprint = gFalse;
-#endif
+static bool quiet = false;
+static bool printVersion = false;
+static bool printHelp = false;
+static bool overprint = false;
 
 static const ArgDesc argDesc[] = {
   {"-f",          argInt,      &firstPage,      0,
@@ -138,7 +139,7 @@ static const ArgDesc argDesc[] = {
    "generate Encapsulated PostScript (EPS)"},
   {"-form",       argFlag,     &doForm,         0,
    "generate a PostScript form"},
-#if OPI_SUPPORT
+#ifdef OPI_SUPPORT
   {"-opi",        argFlag,     &doOPI,          0,
    "generate OPI comments"},
 #endif
@@ -160,6 +161,8 @@ static const ArgDesc argDesc[] = {
    "enable anti-aliasing on rasterization: yes, no"},
   {"-optimizecolorspace",  argFlag,        &optimizeColorSpace,0,
    "convert gray RGB images to gray color space"},
+  {"-passlevel1customcolor", argFlag,      &passLevel1CustomColor, 0,
+   "pass custom color in level1sep"},
   {"-preload",    argFlag,     &preload,        0,
    "preload images and forms"},
   {"-paper",      argString,   paperSize,       sizeof(paperSize),
@@ -182,10 +185,8 @@ static const ArgDesc argDesc[] = {
    "owner password (for encrypted files)"},
   {"-upw",        argString,   userPassword,    sizeof(userPassword),
    "user password (for encrypted files)"},
-#if SPLASH_CMYK
   {"-overprint",argFlag,   &overprint,      0,
    "enable overprint"},
-#endif
   {"-q",          argFlag,     &quiet,          0,
    "don't print any messages or errors"},
   {"-v",          argFlag,     &printVersion,   0,
@@ -198,7 +199,7 @@ static const ArgDesc argDesc[] = {
    "print usage information"},
   {"-?",          argFlag,     &printHelp,      0,
    "print usage information"},
-  {NULL}
+  {}
 };
 
 int main(int argc, char *argv[]) {
@@ -209,12 +210,12 @@ int main(int argc, char *argv[]) {
   PSOutMode mode;
   GooString *ownerPW, *userPW;
   PSOutputDev *psOut;
-  GBool ok;
-  char *p;
+  bool ok;
   int exitCode;
-  GBool rasterAntialias = gFalse;
+  bool rasterAntialias = false;
   std::vector<int> pages;
 
+  Win32Console win32Console(&argc, &argv);
   exitCode = 99;
 
   // parse args
@@ -283,19 +284,14 @@ int main(int argc, char *argv[]) {
       goto err0;
     }
   }
-#if SPLASH_CMYK
   if (overprint) {
-    globalParams->setOverprintPreview(gTrue);
+    globalParams->setOverprintPreview(true);
   }
-#endif  
   if (expand) {
-    globalParams->setPSExpandSmaller(gTrue);
+    globalParams->setPSExpandSmaller(true);
   }
   if (noShrink) {
-    globalParams->setPSShrinkLarger(gFalse);
-  }
-  if (noCenter) {
-    globalParams->setPSCenter(gFalse);
+    globalParams->setPSShrinkLarger(false);
   }
   if (level1 || level1Sep || level2 || level2Sep || level3 || level3Sep) {
     globalParams->setPSLevel(level);
@@ -308,12 +304,12 @@ int main(int argc, char *argv[]) {
   if (ownerPassword[0] != '\001') {
     ownerPW = new GooString(ownerPassword);
   } else {
-    ownerPW = NULL;
+    ownerPW = nullptr;
   }
   if (userPassword[0] != '\001') {
     userPW = new GooString(userPassword);
   } else {
-    userPW = NULL;
+    userPW = nullptr;
   }
   if (fileName->cmp("-") == 0) {
       delete fileName;
@@ -346,12 +342,12 @@ int main(int argc, char *argv[]) {
   if (argc == 3) {
     psFileName = new GooString(argv[2]);
   } else if (fileName->cmp("fd://0") == 0) {
-    error(errCommandLine, -1, "You have to provide an output filename when reading form stdin.");
+    error(errCommandLine, -1, "You have to provide an output filename when reading from stdin.");
     goto err1;
   } else {
-    p = fileName->getCString() + fileName->getLength() - 4;
+    const char *p = fileName->c_str() + fileName->getLength() - 4;
     if (!strcmp(p, ".pdf") || !strcmp(p, ".PDF")) {
-      psFileName = new GooString(fileName->getCString(),
+      psFileName = new GooString(fileName->c_str(),
 			       fileName->getLength() - 4);
     } else {
       psFileName = fileName->copy();
@@ -384,12 +380,15 @@ int main(int argc, char *argv[]) {
   }
 
   // write PostScript file
-  psOut = new PSOutputDev(psFileName->getCString(), doc,
-			  NULL, pages, mode,
+  psOut = new PSOutputDev(psFileName->c_str(), doc,
+			  nullptr, pages, mode,
 			  paperWidth,
 			  paperHeight,
                           noCrop,
 			  duplex);
+  if (noCenter) {
+    psOut->setPSCenter(false);
+  }
 
   if (rasterAntialiasStr[0]) {
     if (!GlobalParams::parseYesNo2(rasterAntialiasStr, &rasterAntialias)) {
@@ -407,7 +406,8 @@ int main(int argc, char *argv[]) {
   psOut->setFontPassthrough(fontPassthrough);
   psOut->setPreloadImagesForms(preload);
   psOut->setOptimizeColorSpace(optimizeColorSpace);
-#if OPI_SUPPORT
+  psOut->setPassLevel1CustomColor(passLevel1CustomColor);
+#ifdef OPI_SUPPORT
   psOut->setGenerateOPI(doOPI);
 #endif
   psOut->setUseBinary(psBinary);
@@ -416,7 +416,7 @@ int main(int argc, char *argv[]) {
   if (psOut->isOk()) {
     for (int i = firstPage; i <= lastPage; ++i) {
       doc->displayPage(psOut, i, 72, 72,
-			0, noCrop, !noCrop, gTrue);
+			0, noCrop, !noCrop, true);
     }
   } else {
     delete psOut;
@@ -435,10 +435,6 @@ int main(int argc, char *argv[]) {
   delete fileName;
  err0:
   delete globalParams;
-
-  // check for memory leaks
-  Object::memCheck(stderr);
-  gMemReport(stderr);
 
   return exitCode;
 }

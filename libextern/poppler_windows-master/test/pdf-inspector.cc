@@ -3,17 +3,13 @@
 // pdf-inspector.cc
 //
 // Copyright 2005 Jonathan Blandford <jrb@redhat.com>
+// Copyright 2018 Adam Reichold <adam.reichold@t-online.de>
 //
 //========================================================================
 
 #include <config.h>
 
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
-
 #include <goo/gmem.h>
-#include <goo/GooHash.h>
 #include <goo/GooTimer.h>
 #include <splash/SplashTypes.h>
 #include <splash/SplashBitmap.h>
@@ -69,7 +65,7 @@ private:
 PdfInspector::PdfInspector(void)
 {
   GtkWidget *widget;
-  GError* error = NULL;
+  GError* error = nullptr;
   
   builder = gtk_builder_new ();
 
@@ -129,12 +125,12 @@ PdfInspector::PdfInspector(void)
       column = gtk_tree_view_get_column (GTK_TREE_VIEW (widget), i);
       gtk_tree_view_column_set_sort_column_id (column, i);
     }
-  doc = NULL;
+  doc = nullptr;
   output = new CairoOutputDev();
-  output->setPrinting (gFalse);
+  output->setPrinting (false);
 
   // set up initial widgets
-  load (NULL);
+  load (nullptr);
 }
     
 void
@@ -165,7 +161,7 @@ PdfInspector::on_selection_changed (GtkTreeSelection *selection, PdfInspector *i
   size_t i;
   GtkTreeModel *model;
   GtkTreeIter iter;
-  gchar *op = NULL;
+  gchar *op = nullptr;
 
   label = GTK_WIDGET (gtk_builder_get_object (inspector->builder, "description_label"));
   gtk_label_set_markup (GTK_LABEL (label), "<i>No Description</i>");
@@ -178,7 +174,7 @@ PdfInspector::on_selection_changed (GtkTreeSelection *selection, PdfInspector *i
 
     }
 
-  if (op == NULL)
+  if (op == nullptr)
     return;
 
   for (i = 0; i < G_N_ELEMENTS (op_mapping); i++)
@@ -214,10 +210,6 @@ PdfInspector::on_analyze_clicked (GtkWidget *widget, PdfInspector *inspector)
 void
 PdfInspector::analyze_page (int page)
 {
-  GooHashIter *iter;
-  GooHash *hash;
-  GooString *key;
-  void *p;
   GtkWidget *label;
   char *text;
   cairo_t *cr;
@@ -236,8 +228,8 @@ PdfInspector::analyze_page (int page)
   cairo_surface_destroy (surface);
   output->setCairo (cr);
   cairo_destroy (cr);
-  doc->displayPage (output, page + 1, 72, 72, 0, gFalse, gTrue, gFalse);
-  output->setCairo (NULL);
+  doc->displayPage (output, page + 1, 72, 72, 0, false, true, false);
+  output->setCairo (nullptr);
 
   // Total time;
   text = g_strdup_printf ("%g", timer.getElapsed ());
@@ -245,24 +237,21 @@ PdfInspector::analyze_page (int page)
   g_free (text);
 
   // Individual times;
-  hash = output->endProfile ();
-  hash->startIter(&iter);
-  while (hash->getNext(&iter, &key, &p))
+  auto hash = output->endProfile ();
+  for (const auto& kvp : *hash)
     {
       GtkTreeIter tree_iter;
-      ProfileData *data_p = (ProfileData *) p;
+      const auto* const data_p = &kvp.second;
 
       gtk_list_store_append (GTK_LIST_STORE (model), &tree_iter);
       gtk_list_store_set (GTK_LIST_STORE (model), &tree_iter,
-			  OP_STRING, key->getCString(),
+			  OP_STRING, kvp.first.c_str (),
 			  OP_COUNT, data_p->getCount (),
 			  OP_TOTAL, data_p->getTotal (),
 			  OP_MIN, data_p->getMin (),
 			  OP_MAX, data_p->getMax (),
 			  -1);
     }
-  hash->killIter(&iter);
-  deleteGooHash (hash, ProfileData);
 }
  
 void
@@ -273,10 +262,10 @@ PdfInspector::load(const char *file_name)
   GtkWidget *label;
 
   // kill the old PDF file
-  if (doc != NULL)
+  if (doc != nullptr)
     {
       delete doc;
-      doc = NULL;
+      doc = nullptr;
     }
 
   // load the new file
@@ -285,14 +274,14 @@ PdfInspector::load(const char *file_name)
       GooString *filename_g;
 
       filename_g = new GooString (file_name);
-      doc = new PDFDoc(filename_g, 0, 0);
+      doc = new PDFDoc(filename_g, nullptr, nullptr);
     }
   
   if (doc && !doc->isOk())
     {
       this->error_dialog ("Failed to load file.");
       delete doc;
-      doc = NULL;
+      doc = nullptr;
     }
 
   spin = GTK_WIDGET (gtk_builder_get_object (builder, "pdf_spin"));
@@ -339,7 +328,7 @@ PdfInspector::run()
 int
 main (int argc, char *argv [])
 {
-  const char *file_name = NULL;
+  const char *file_name = nullptr;
   PdfInspector *inspector;
   
   gtk_init (&argc, &argv);

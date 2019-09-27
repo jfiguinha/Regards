@@ -1,9 +1,15 @@
 /* poppler-annotation.cc: qt interface to poppler
- * Copyright (C) 2006, 2009, 2012-2015 Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2006, 2009, 2012-2015, 2018, 2019 Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2006, 2008, 2010 Pino Toscano <pino@kde.org>
  * Copyright (C) 2012, Guillermo A. Amaral B. <gamaral@kde.org>
  * Copyright (C) 2012-2014 Fabio D'Urso <fabiodurso@hotmail.it>
  * Copyright (C) 2012, 2015, Tobias Koenig <tobias.koenig@kdab.com>
+ * Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+ * Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+ * Copyright (C) 2018 Intevation GmbH <intevation@intevation.de>
+ * Copyright (C) 2018 Dileep Sankhla <sankhla.dileep96@gmail.com>
+ * Copyright (C) 2018, 2019 Tobias Deiminger <haxtibal@posteo.de>
+ * Copyright (C) 2018 Carlos Garcia Campos <carlosgc@gnome.org>
  * Adapting code from
  *   Copyright (C) 2004 by Enrico Ros <eros.kde@email.it>
  *
@@ -59,10 +65,10 @@ Annotation * AnnotationUtils::createAnnotation( const QDomElement & annElement )
 {
     // safety check on annotation element
     if ( !annElement.hasAttribute( QStringLiteral("type") ) )
-        return 0;
+        return nullptr;
 
     // build annotation of given type
-    Annotation * annotation = 0;
+    Annotation * annotation = nullptr;
     int typeNumber = annElement.attribute( QStringLiteral("type") ).toInt();
     switch ( typeNumber )
     {
@@ -124,8 +130,8 @@ QDomElement AnnotationUtils::findChildElement( const QDomNode & parentNode,
 //BEGIN Annotation implementation
 AnnotationPrivate::AnnotationPrivate()
     : flags( 0 ), revisionScope ( Annotation::Root ),
-    revisionType ( Annotation::None ), pdfAnnot ( 0 ), pdfPage ( 0 ),
-    parentDoc ( 0 )
+    revisionType ( Annotation::None ), pdfAnnot ( nullptr ), pdfPage ( nullptr ),
+    parentDoc ( nullptr )
 {
 }
 
@@ -206,8 +212,8 @@ void AnnotationPrivate::fillNormalizationMTX(double MTX[6], int pageRotation) co
     Q_ASSERT ( pdfPage );
 
     // build a normalized transform matrix for this page at 100% scale
-    GfxState * gfxState = new GfxState( 72.0, 72.0, pdfPage->getCropBox(), pageRotation, gTrue );
-    double * gfxCTM = gfxState->getCTM();
+    GfxState * gfxState = new GfxState( 72.0, 72.0, pdfPage->getCropBox(), pageRotation, true );
+    const double * gfxCTM = gfxState->getCTM();
 
     double w = pdfPage->getCropWidth();
     double h = pdfPage->getCropHeight();
@@ -306,7 +312,7 @@ QRectF AnnotationPrivate::fromPdfRectangle(const PDFRectangle &r) const
 // the transformation produced by fillTransformationMTX, but we can't use
 // fillTransformationMTX here because it relies on the native annotation
 // object's boundary rect to be already set up.
-PDFRectangle AnnotationPrivate::boundaryToPdfRectangle(const QRectF &r, int flags) const
+PDFRectangle AnnotationPrivate::boundaryToPdfRectangle(const QRectF &r, int rFlags) const
 {
     Q_ASSERT ( pdfPage );
 
@@ -333,7 +339,7 @@ PDFRectangle AnnotationPrivate::boundaryToPdfRectangle(const QRectF &r, int flag
         br_y = swp;
     }
 
-    const int rotationFixUp = ( flags & Annotation::FixedRotation ) ? pageRotate : 0;
+    const int rotationFixUp = ( rFlags & Annotation::FixedRotation ) ? pageRotate : 0;
     const double width = br_x - tl_x;
     const double height = br_y - tl_y;
 
@@ -350,20 +356,20 @@ PDFRectangle AnnotationPrivate::boundaryToPdfRectangle(const QRectF &r, int flag
 AnnotPath * AnnotationPrivate::toAnnotPath(const QLinkedList<QPointF> &list) const
 {
     const int count = list.size();
-    AnnotCoord **ac = (AnnotCoord **) gmallocn(count, sizeof(AnnotCoord*));
+    std::vector<AnnotCoord> ac;
+    ac.reserve(count);
 
     double MTX[6];
     fillTransformationMTX(MTX);
 
-    int pos = 0;
     foreach (const QPointF &p, list)
     {
         double x, y;
         XPDFReader::invTransform( MTX, p, x, y );
-        ac[pos++] = new AnnotCoord(x, y);
+	ac.emplace_back(x, y);
     }
 
-    return new AnnotPath(ac, count);
+    return new AnnotPath(std::move(ac));
 }
 
 QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentData *doc, const QSet<Annotation::SubType> &subtypes, int parentID)
@@ -391,13 +397,13 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
 
     // Create Annotation objects and tie to their native Annot
     QList<Annotation*> res;
-    for ( uint j = 0; j < numAnnotations; j++ )
+    for ( uint k = 0; k < numAnnotations; k++ )
     {
         // get the j-th annotation
-        Annot * ann = annots->getAnnot( j );
+        Annot * ann = annots->getAnnot( k );
         if ( !ann )
         {
-            error(errInternal, -1, "Annot {0:ud} is null", j);
+            error(errInternal, -1, "Annot {0:ud} is null", k);
             continue;
         }
 
@@ -406,14 +412,14 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
         if (!markupann)
         {
             // Assume it's a root annotation, and skip if user didn't request it
-            if (parentID != 0)
+            if (parentID != -1)
                 continue;
         }
         else if (markupann->getInReplyToID() != parentID)
             continue;
 
         /* Create Annotation of the right subclass */
-        Annotation * annotation = 0;
+        Annotation * annotation = nullptr;
         Annot::AnnotSubtype subType = ann->getType();
 
         switch ( subType )
@@ -502,7 +508,7 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
                 FileAttachmentAnnotation * f = new FileAttachmentAnnotation();
                 annotation = f;
                 // -> fileIcon
-                f->setFileIconName( QString::fromLatin1( attachann->getName()->getCString() ) );
+                f->setFileIconName( QString::fromLatin1( attachann->getName()->c_str() ) );
                 // -> embeddedFile
                 FileSpec *filespec = new FileSpec( attachann->getFile() );
                 f->setEmbeddedFile( new EmbeddedFile( *new EmbeddedFileData( filespec ) ) );
@@ -517,7 +523,7 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
                 annotation = s;
 
                 // -> soundIcon
-                s->setSoundIconName( QString::fromLatin1( soundann->getName()->getCString() ) );
+                s->setSoundIconName( QString::fromLatin1( soundann->getName()->c_str() ) );
                 // -> sound
                 s->setSound( new SoundObject( soundann->getSound() ) );
                 break;
@@ -534,9 +540,9 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
                 MovieObject *movie = new MovieObject( movieann );
                 m->setMovie( movie );
                 // -> movieTitle
-                GooString * movietitle = movieann->getTitle();
+                const GooString * movietitle = movieann->getTitle();
                 if ( movietitle )
-                    m->setMovieTitle( QString::fromLatin1( movietitle->getCString() ) );
+                    m->setMovieTitle( QString::fromLatin1( movietitle->c_str() ) );
                 break;
             }
             case Annot::typeScreen:
@@ -544,7 +550,8 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
                 if (!wantScreenAnnotations)
                     continue;
                 AnnotScreen * screenann = static_cast< AnnotScreen * >( ann );
-                if (!screenann->getAction())
+                // TODO Support other link types than Link::Rendition in ScreenAnnotation
+                if (!screenann->getAction() || screenann->getAction()->getKind() != actionRendition)
                   continue;
                 ScreenAnnotation * s = new ScreenAnnotation();
                 annotation = s;
@@ -554,7 +561,7 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
                 s->setAction( static_cast<Poppler::LinkRendition *>(popplerLink) );
 
                 // -> screenTitle
-                GooString * screentitle = screenann->getTitle();
+                const GooString * screentitle = screenann->getTitle();
                 if ( screentitle )
                     s->setScreenTitle( UnicodeParsedString( screentitle ) );
                 break;
@@ -760,10 +767,9 @@ QList<Annotation*> AnnotationPrivate::findAnnotations(::Page *pdfPage, DocumentD
 
 Ref AnnotationPrivate::pdfObjectReference() const
 {
-    if (pdfAnnot == 0)
+    if (pdfAnnot == nullptr)
     {
-        const Ref invalid_ref = { -1, -1 };
-        return invalid_ref;
+        return Ref::INVALID();
     }
 
     return pdfAnnot->getRef();
@@ -772,30 +778,17 @@ Ref AnnotationPrivate::pdfObjectReference() const
 Link* AnnotationPrivate::additionalAction( Annotation::AdditionalActionType type ) const
 {
     if ( pdfAnnot->getType() != Annot::typeScreen && pdfAnnot->getType() != Annot::typeWidget )
-        return 0;
+        return nullptr;
 
-    Annot::AdditionalActionsType actionType = Annot::actionCursorEntering;
-    switch ( type )
-    {
-        case Annotation::CursorEnteringAction: actionType = Annot::actionCursorEntering; break;
-        case Annotation::CursorLeavingAction: actionType = Annot::actionCursorLeaving; break;
-        case Annotation::MousePressedAction: actionType = Annot::actionMousePressed; break;
-        case Annotation::MouseReleasedAction: actionType = Annot::actionMouseReleased; break;
-        case Annotation::FocusInAction: actionType = Annot::actionFocusIn; break;
-        case Annotation::FocusOutAction: actionType = Annot::actionFocusOut; break;
-        case Annotation::PageOpeningAction: actionType = Annot::actionPageOpening; break;
-        case Annotation::PageClosingAction: actionType = Annot::actionPageClosing; break;
-        case Annotation::PageVisibleAction: actionType = Annot::actionPageVisible; break;
-        case Annotation::PageInvisibleAction: actionType = Annot::actionPageInvisible; break;
-    }
+    const Annot::AdditionalActionsType actionType = toPopplerAdditionalActionType(type);
 
-    ::LinkAction *linkAction = 0;
+    ::LinkAction *linkAction = nullptr;
     if ( pdfAnnot->getType() == Annot::typeScreen )
         linkAction = static_cast<AnnotScreen*>( pdfAnnot )->getAdditionalAction( actionType );
     else
         linkAction = static_cast<AnnotWidget*>( pdfAnnot )->getAdditionalAction( actionType );
 
-    Link *link = 0;
+    Link *link = nullptr;
 
     if ( linkAction )
         link = PageData::convertLinkActionToLink( linkAction, parentDoc, QRectF() );
@@ -805,7 +798,7 @@ Link* AnnotationPrivate::additionalAction( Annotation::AdditionalActionType type
 
 void AnnotationPrivate::addAnnotationToPage(::Page *pdfPage, DocumentData *doc, const Annotation * ann)
 {
-    if (ann->d_ptr->pdfAnnot != 0)
+    if (ann->d_ptr->pdfAnnot != nullptr)
     {
         error(errIO, -1, "Annotation is already tied");
         return;
@@ -820,7 +813,7 @@ void AnnotationPrivate::addAnnotationToPage(::Page *pdfPage, DocumentData *doc, 
 
 void AnnotationPrivate::removeAnnotationFromPage(::Page *pdfPage, const Annotation * ann)
 {
-    if (ann->d_ptr->pdfAnnot == 0)
+    if (ann->d_ptr->pdfAnnot == nullptr)
     {
         error(errIO, -1, "Annotation is not tied");
         return;
@@ -1422,7 +1415,7 @@ QDateTime Annotation::modificationDate() const
         return d->modDate;
 
     if ( d->pdfAnnot->getModified() )
-        return convertDate( d->pdfAnnot->getModified()->getCString() );
+        return convertDate( d->pdfAnnot->getModified()->c_str() );
     else
         return QDateTime();
 }
@@ -1458,7 +1451,7 @@ QDateTime Annotation::creationDate() const
     const AnnotMarkup *markupann = dynamic_cast<const AnnotMarkup*>(d->pdfAnnot);
 
     if (markupann && markupann->getDate())
-        return convertDate( markupann->getDate()->getCString() );
+        return convertDate( markupann->getDate()->c_str() );
 
     return modificationDate();
 }
@@ -1623,7 +1616,7 @@ Annotation::Style Annotation::style() const
             border_effect = static_cast<AnnotGeometry*>(d->pdfAnnot)->getBorderEffect();
             break;
         default:
-            border_effect = 0;
+            border_effect = nullptr;
     }
     if (border_effect)
     {
@@ -1650,11 +1643,11 @@ void Annotation::setStyle( const Annotation::Style& style )
     if (markupann)
         markupann->setOpacity( style.opacity() );
 
-    AnnotBorderArray * border = new AnnotBorderArray();
+    auto border = std::make_unique<AnnotBorderArray>();
     border->setWidth( style.width() );
     border->setHorizontalCorner( style.xCorners() );
     border->setVerticalCorner( style.yCorners() );
-    d->pdfAnnot->setBorder(border);
+    d->pdfAnnot->setBorder(std::move(border));
 }
 
 Annotation::Popup Annotation::popup() const
@@ -1665,7 +1658,7 @@ Annotation::Popup Annotation::popup() const
         return d->popup;
 
     Popup w;
-    AnnotPopup *popup = 0;
+    AnnotPopup *popup = nullptr;
     int flags = -1; // Not initialized
 
     const AnnotMarkup *markupann = dynamic_cast<const AnnotMarkup*>(d->pdfAnnot);
@@ -1747,7 +1740,7 @@ Annotation::RevScope Annotation::revisionScope() const
 
     const AnnotMarkup *markupann = dynamic_cast<const AnnotMarkup*>(d->pdfAnnot);
 
-    if (markupann && markupann->getInReplyToID() != 0)
+    if (markupann && markupann->isInReplyTo())
     {
         switch (markupann->getReplyTo())
         {
@@ -1770,7 +1763,7 @@ Annotation::RevType Annotation::revisionType() const
 
     const AnnotText *textann = dynamic_cast<const AnnotText*>(d->pdfAnnot);
 
-    if (textann && textann->getInReplyToID() != 0)
+    if (textann && textann->isInReplyTo())
     {
         switch (textann->getState())
         {
@@ -1823,19 +1816,19 @@ class TextAnnotationPrivate : public AnnotationPrivate
 {
     public:
         TextAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
+        void setDefaultAppearanceToNative();
+        std::unique_ptr<DefaultAppearance> getDefaultAppearanceFromNative() const;
 
         // data fields
         TextAnnotation::TextType textType;
         QString textIcon;
         QFont textFont;
+        QColor textColor;
         int inplaceAlign; // 0:left, 1:center, 2:right
         QVector<QPointF> inplaceCallout;
         TextAnnotation::InplaceIntent inplaceIntent;
-
-        // Helper
-        static GooString * toAppearanceString(const QFont &font);
 };
 
 TextAnnotationPrivate::TextAnnotationPrivate()
@@ -1848,13 +1841,6 @@ TextAnnotationPrivate::TextAnnotationPrivate()
 Annotation * TextAnnotationPrivate::makeAlias()
 {
     return new TextAnnotation(*this);
-}
-
-GooString * TextAnnotationPrivate::toAppearanceString(const QFont &font)
-{
-    GooString * s = GooString::format("/Invalid_font {0:d} Tf", font.pointSize());
-    // TODO: Font family, style (bold, italic, ...) and pointSize as float
-    return s;
 }
 
 Annot* TextAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
@@ -1870,13 +1856,12 @@ Annot* TextAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *
     PDFRectangle rect = boundaryToPdfRectangle(boundary, flags);
     if (textType == TextAnnotation::Linked)
     {
-        pdfAnnot = new AnnotText(destPage->getDoc(), &rect);
+        pdfAnnot = new AnnotText{ destPage->getDoc(), &rect };
     }
     else
     {
-        GooString * da = toAppearanceString(textFont);
-        pdfAnnot = new AnnotFreeText(destPage->getDoc(), &rect, da);
-        delete da;
+        DefaultAppearance da{ { objName, "Invalid_font" }, static_cast<double>( textFont.pointSize() ), std::unique_ptr<AnnotColor>{ convertQColor( textColor ) } };
+        pdfAnnot = new AnnotFreeText{ destPage->getDoc(), &rect, da };
     }
 
     // Set properties
@@ -1891,6 +1876,29 @@ Annot* TextAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *
     inplaceCallout.clear(); // Free up memory
 
     return pdfAnnot;
+}
+
+void TextAnnotationPrivate::setDefaultAppearanceToNative()
+{
+    if ( pdfAnnot && pdfAnnot->getType() == Annot::typeFreeText )
+    {
+        AnnotFreeText * ftextann = static_cast<AnnotFreeText*>( pdfAnnot );
+        DefaultAppearance da{ { objName, "Invalid_font" }, static_cast<double>( textFont.pointSize() ), std::unique_ptr<AnnotColor>{ convertQColor( textColor ) } };
+        ftextann->setDefaultAppearance( da );
+    }
+}
+
+std::unique_ptr<DefaultAppearance> TextAnnotationPrivate::getDefaultAppearanceFromNative() const
+{
+    if ( pdfAnnot && pdfAnnot->getType() == Annot::typeFreeText )
+    {
+        AnnotFreeText * ftextann = static_cast<AnnotFreeText*>( pdfAnnot );
+        return ftextann->getDefaultAppearance();
+    }
+    else
+    {
+        return {};
+    }
 }
 
 TextAnnotation::TextAnnotation( TextAnnotation::TextType type )
@@ -1925,6 +1933,11 @@ TextAnnotation::TextAnnotation( const QDomNode & node )
             QFont font;
             font.fromString( e.attribute( QStringLiteral("font") ) );
             setTextFont(font);
+            if ( e.hasAttribute( QStringLiteral("fontColor") ) )
+            {
+                const QColor color = QColor(e.attribute( QStringLiteral("fontColor") ) );
+                setTextColor(color);
+            }
         }
         if ( e.hasAttribute( QStringLiteral("align") ) )
             setInplaceAlign(e.attribute( QStringLiteral("align") ).toInt());
@@ -1984,6 +1997,7 @@ void TextAnnotation::store( QDomNode & node, QDomDocument & document ) const
         textElement.setAttribute( QStringLiteral("intent"), (int)inplaceIntent() );
 
     textElement.setAttribute( QStringLiteral("font"), textFont().toString() );
+    textElement.setAttribute( QStringLiteral("fontColor"), textColor().name() );
 
     // Sub-Node-1 - escapedText
     if ( !contents().isEmpty() )
@@ -2047,7 +2061,7 @@ QString TextAnnotation::textIcon() const
     if (d->pdfAnnot->getType() == Annot::typeText)
     {
         const AnnotText * textann = static_cast<const AnnotText*>(d->pdfAnnot);
-        return QString::fromLatin1( textann->getIcon()->getCString() );
+        return QString::fromLatin1( textann->getIcon()->c_str() );
     }
 
     return QString();
@@ -2076,46 +2090,54 @@ QFont TextAnnotation::textFont() const
 {
     Q_D( const TextAnnotation );
 
-    if (!d->pdfAnnot)
+    if ( !d->pdfAnnot )
         return d->textFont;
 
-    QFont font;
-
-    if (d->pdfAnnot->getType() == Annot::typeFreeText)
+    double fontSize { AnnotFreeText::undefinedFontPtSize };
+    if ( d->pdfAnnot->getType() == Annot::typeFreeText )
     {
-        const AnnotFreeText * ftextann = static_cast<const AnnotFreeText*>(d->pdfAnnot);
-        const GooString * da = ftextann->getAppearanceString();
-        if (da)
+        std::unique_ptr<DefaultAppearance> da{ d->getDefaultAppearanceFromNative() };
+        if ( da && da->getFontPtSize() > 0 )
         {
-            // At the moment, only font size is parsed
-            QString style = QString::fromLatin1( da->getCString() );
-            QRegExp rx(QStringLiteral("(\\d+)(\\.\\d*)? Tf"));
-            if (rx.indexIn(style) != -1)
-                font.setPointSize( rx.cap(1).toInt() );
-            // TODO: Other properties
+            fontSize = da->getFontPtSize();
         }
     }
 
+    QFont font;
+    font.setPointSizeF( fontSize );
     return font;
 }
 
 void TextAnnotation::setTextFont( const QFont &font )
 {
     Q_D( TextAnnotation );
+    d->textFont = font;
+    d->textColor = Qt::black;
 
-    if (!d->pdfAnnot)
+    d->setDefaultAppearanceToNative();
+}
+
+QColor TextAnnotation::textColor() const
+{
+    Q_D( const TextAnnotation );
+
+    if ( !d->pdfAnnot )
+        return d->textColor;
+
+    if ( std::unique_ptr<DefaultAppearance> da{ d->getDefaultAppearanceFromNative() } )
     {
-        d->textFont = font;
-        return;
+        return convertAnnotColor( da->getFontColor() );
     }
 
-    if (d->pdfAnnot->getType() != Annot::typeFreeText)
-        return;
+    return {};
+}
 
-    AnnotFreeText * ftextann = static_cast<AnnotFreeText*>(d->pdfAnnot);
-    GooString * da = TextAnnotationPrivate::toAppearanceString(font);
-    ftextann->setAppearanceString(da);
-    delete da;
+void TextAnnotation::setTextColor( const QColor &color )
+{
+    Q_D( TextAnnotation );
+    d->textColor = color;
+
+    d->setDefaultAppearanceToNative();
 }
 
 int TextAnnotation::inplaceAlign() const
@@ -2205,7 +2227,7 @@ void TextAnnotation::setCalloutPoints( const QVector<QPointF> &points )
 
     if (count == 0)
     {
-        ftextann->setCalloutLine(0);
+        ftextann->setCalloutLine(nullptr);
         return;
     }
 
@@ -2276,8 +2298,8 @@ class LineAnnotationPrivate : public AnnotationPrivate
 {
     public:
         LineAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields (note uses border for rendering style)
         QLinkedList<QPointF> linePoints;
@@ -2708,17 +2730,17 @@ void LineAnnotation::setLineInnerColor( const QColor &color )
         return;
     }
 
-    AnnotColor * c = convertQColor(color);
+    auto c = convertQColor(color);
 
     if (d->pdfAnnot->getType() == Annot::typeLine)
     {
         AnnotLine *lineann = static_cast<AnnotLine*>(d->pdfAnnot);
-        lineann->setInteriorColor(c);
+        lineann->setInteriorColor(std::move(c));
     }
     else
     {
         AnnotPolygon *polyann = static_cast<AnnotPolygon*>(d->pdfAnnot);
-        polyann->setInteriorColor(c);
+        polyann->setInteriorColor(std::move(c));
     }
 }
 
@@ -2882,8 +2904,8 @@ class GeomAnnotationPrivate : public AnnotationPrivate
 {
     public:
         GeomAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields (note uses border for rendering style)
         GeomAnnotation::GeomType geomType;
@@ -3044,8 +3066,8 @@ class HighlightAnnotationPrivate : public AnnotationPrivate
 {
     public:
         HighlightAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         HighlightAnnotation::HighlightType highlightType;
@@ -3119,9 +3141,7 @@ QList< HighlightAnnotation::Quad > HighlightAnnotationPrivate::fromQuadrilateral
 AnnotQuadrilaterals * HighlightAnnotationPrivate::toQuadrilaterals(const QList< HighlightAnnotation::Quad > &quads) const
 {
     const int count = quads.size();
-    AnnotQuadrilaterals::AnnotQuadrilateral **ac =
-        (AnnotQuadrilaterals::AnnotQuadrilateral**)
-            gmallocn( count, sizeof(AnnotQuadrilaterals::AnnotQuadrilateral*) );
+    auto ac = std::make_unique<AnnotQuadrilaterals::AnnotQuadrilateral[]>(count);
 
     double MTX[6];
     fillTransformationMTX(MTX);
@@ -3135,10 +3155,10 @@ AnnotQuadrilaterals * HighlightAnnotationPrivate::toQuadrilaterals(const QList< 
         // Swap points 3 and 4 (see HighlightAnnotationPrivate::fromQuadrilaterals)
         XPDFReader::invTransform( MTX, q.points[3], x3, y3 );
         XPDFReader::invTransform( MTX, q.points[2], x4, y4 );
-        ac[pos++] = new AnnotQuadrilaterals::AnnotQuadrilateral(x1, y1, x2, y2, x3, y3, x4, y4);
+        ac[pos++] = AnnotQuadrilaterals::AnnotQuadrilateral(x1, y1, x2, y2, x3, y3, x4, y4);
     }
 
-    return new AnnotQuadrilaterals(ac, count);
+    return new AnnotQuadrilaterals(std::move(ac), count);
 }
 
 Annot* HighlightAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
@@ -3333,8 +3353,8 @@ class StampAnnotationPrivate : public AnnotationPrivate
 {
     public:
         StampAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         QString stampIconName;
@@ -3433,7 +3453,7 @@ QString StampAnnotation::stampIconName() const
         return d->stampIconName;
 
     const AnnotStamp * stampann = static_cast<const AnnotStamp*>(d->pdfAnnot);
-    return QString::fromLatin1( stampann->getIcon()->getCString() );
+    return QString::fromLatin1( stampann->getIcon()->c_str() );
 }
 
 void StampAnnotation::setStampIconName( const QString &name )
@@ -3457,14 +3477,14 @@ class InkAnnotationPrivate : public AnnotationPrivate
 {
     public:
         InkAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         QList< QLinkedList<QPointF> > inkPaths;
 
         // helper
-        AnnotPath **toAnnotPaths(const QList< QLinkedList<QPointF> > &inkPaths);
+        AnnotPath **toAnnotPaths(const QList< QLinkedList<QPointF> > &paths);
 };
 
 InkAnnotationPrivate::InkAnnotationPrivate()
@@ -3478,12 +3498,12 @@ Annotation * InkAnnotationPrivate::makeAlias()
 }
 
 // Note: Caller is required to delete array elements and the array itself after use
-AnnotPath **InkAnnotationPrivate::toAnnotPaths(const QList< QLinkedList<QPointF> > &inkPaths)
+AnnotPath **InkAnnotationPrivate::toAnnotPaths(const QList< QLinkedList<QPointF> > &paths)
 {
-    const int pathsNumber = inkPaths.size();
+    const int pathsNumber = paths.size();
     AnnotPath **res = new AnnotPath*[pathsNumber];
     for (int i = 0; i < pathsNumber; ++i)
-        res[i] = toAnnotPath( inkPaths[i] );
+        res[i] = toAnnotPath( paths[i] );
     return res;
 }
 
@@ -3672,8 +3692,8 @@ class LinkAnnotationPrivate : public AnnotationPrivate
     public:
         LinkAnnotationPrivate();
         ~LinkAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         Link * linkDestination;
@@ -3682,7 +3702,7 @@ class LinkAnnotationPrivate : public AnnotationPrivate
 };
 
 LinkAnnotationPrivate::LinkAnnotationPrivate()
-    : AnnotationPrivate(), linkDestination( 0 ), linkHLMode( LinkAnnotation::Invert )
+    : AnnotationPrivate(), linkDestination( nullptr ), linkHLMode( LinkAnnotation::Invert )
 {
 }
 
@@ -3698,7 +3718,7 @@ Annotation * LinkAnnotationPrivate::makeAlias()
 
 Annot* LinkAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 LinkAnnotation::LinkAnnotation()
@@ -3798,13 +3818,10 @@ LinkAnnotation::LinkAnnotation( const QDomNode & node )
                         setLinkDestination(action);
                     }
                 }
-#if 0
-                else if ( type == "Movie" )
+                else
                 {
-                    Poppler::LinkMovie * movie = new Poppler::LinkMovie( QRect() );
-                    setLinkDestination(movie);
+                    qWarning("Loading annotations of type %s from DOM nodes is not yet implemented.", type.toLocal8Bit().constData());
                 }
-#endif
             }
         }
 
@@ -3933,7 +3950,22 @@ void LinkAnnotation::store( QDomNode & node, QDomDocument & document ) const
             }
             case Poppler::Link::Sound:
             {
-                // FIXME: implement me
+                hyperlinkElement.setAttribute( QStringLiteral("type"), QStringLiteral("Sound") );
+                break;
+            }
+            case Poppler::Link::JavaScript:
+            {
+                hyperlinkElement.setAttribute( QStringLiteral("type"), QStringLiteral("JavaScript") );
+                break;
+            }
+            case Poppler::Link::OCGState:
+            {
+                hyperlinkElement.setAttribute( QStringLiteral("type"), QStringLiteral("OCGState") );
+                break;
+            }
+            case Poppler::Link::Hide:
+            {
+                hyperlinkElement.setAttribute( QStringLiteral("type"), QStringLiteral("Hide") );
                 break;
             }
             case Poppler::Link::None:
@@ -3981,7 +4013,7 @@ QPointF LinkAnnotation::linkRegionPoint( int id ) const
     return d->linkRegion[id];
 }
 
-void LinkAnnotation::setLinkRegionPoint( int id, const QPointF &point )
+void LinkAnnotation::setLinkRegionPoint( int id, const QPointF &point ) // clazy:exclude=function-args-by-value
 {
     if ( id < 0 || id >= 4 )
         return;
@@ -3995,8 +4027,8 @@ class CaretAnnotationPrivate : public AnnotationPrivate
 {
     public:
         CaretAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         CaretAnnotation::CaretSymbol symbol;
@@ -4139,8 +4171,8 @@ class FileAttachmentAnnotationPrivate : public AnnotationPrivate
     public:
         FileAttachmentAnnotationPrivate();
         ~FileAttachmentAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         QString icon;
@@ -4148,7 +4180,7 @@ class FileAttachmentAnnotationPrivate : public AnnotationPrivate
 };
 
 FileAttachmentAnnotationPrivate::FileAttachmentAnnotationPrivate()
-    : AnnotationPrivate(), icon( QStringLiteral("PushPin") ), embfile( 0 )
+    : AnnotationPrivate(), icon( QStringLiteral("PushPin") ), embfile( nullptr )
 {
 }
 
@@ -4164,7 +4196,7 @@ Annotation * FileAttachmentAnnotationPrivate::makeAlias()
 
 Annot* FileAttachmentAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 FileAttachmentAnnotation::FileAttachmentAnnotation()
@@ -4243,8 +4275,8 @@ class SoundAnnotationPrivate : public AnnotationPrivate
     public:
         SoundAnnotationPrivate();
         ~SoundAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         QString icon;
@@ -4252,7 +4284,7 @@ class SoundAnnotationPrivate : public AnnotationPrivate
 };
 
 SoundAnnotationPrivate::SoundAnnotationPrivate()
-    : AnnotationPrivate(), icon( QStringLiteral("Speaker") ), sound( 0 )
+    : AnnotationPrivate(), icon( QStringLiteral("Speaker") ), sound( nullptr )
 {
 }
 
@@ -4268,7 +4300,7 @@ Annotation * SoundAnnotationPrivate::makeAlias()
 
 Annot* SoundAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 SoundAnnotation::SoundAnnotation()
@@ -4347,8 +4379,8 @@ class MovieAnnotationPrivate : public AnnotationPrivate
     public:
         MovieAnnotationPrivate();
         ~MovieAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         MovieObject *movie;
@@ -4356,7 +4388,7 @@ class MovieAnnotationPrivate : public AnnotationPrivate
 };
 
 MovieAnnotationPrivate::MovieAnnotationPrivate()
-    : AnnotationPrivate(), movie( 0 )
+    : AnnotationPrivate(), movie( nullptr )
 {
 }
 
@@ -4372,7 +4404,7 @@ Annotation * MovieAnnotationPrivate::makeAlias()
 
 Annot* MovieAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 MovieAnnotation::MovieAnnotation()
@@ -4451,8 +4483,8 @@ class ScreenAnnotationPrivate : public AnnotationPrivate
     public:
         ScreenAnnotationPrivate();
         ~ScreenAnnotationPrivate();
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 
         // data fields
         LinkRendition *action;
@@ -4460,7 +4492,7 @@ class ScreenAnnotationPrivate : public AnnotationPrivate
 };
 
 ScreenAnnotationPrivate::ScreenAnnotationPrivate()
-    : AnnotationPrivate(), action( 0 )
+    : AnnotationPrivate(), action( nullptr )
 {
 }
 
@@ -4480,7 +4512,7 @@ Annotation * ScreenAnnotationPrivate::makeAlias()
 
 Annot* ScreenAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 ScreenAnnotation::ScreenAnnotation()
@@ -4541,8 +4573,8 @@ Link* ScreenAnnotation::additionalAction( AdditionalActionType type ) const
 class WidgetAnnotationPrivate : public AnnotationPrivate
 {
     public:
-        Annotation * makeAlias();
-        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc);
+        Annotation * makeAlias() override;
+        Annot* createNativeAnnot(::Page *destPage, DocumentData *doc) override;
 };
 
 Annotation * WidgetAnnotationPrivate::makeAlias()
@@ -4552,7 +4584,7 @@ Annotation * WidgetAnnotationPrivate::makeAlias()
 
 Annot* WidgetAnnotationPrivate::createNativeAnnot(::Page *destPage, DocumentData *doc)
 {
-    return 0; // Not implemented
+    return nullptr; // Not implemented
 }
 
 WidgetAnnotation::WidgetAnnotation(WidgetAnnotationPrivate &dd)
@@ -4622,7 +4654,7 @@ class RichMediaAnnotation::Instance::Private
 {
     public:
         Private()
-            : params( 0 )
+            : params( nullptr )
         {
         }
 
@@ -4630,6 +4662,9 @@ class RichMediaAnnotation::Instance::Private
         {
             delete params;
         }
+
+        Private(const Private &) = delete;
+        Private& operator=(const Private &) = delete;
 
         RichMediaAnnotation::Instance::Type type;
         RichMediaAnnotation::Params *params;
@@ -4675,6 +4710,9 @@ class RichMediaAnnotation::Configuration::Private
             qDeleteAll( instances );
             instances.clear();
         }
+
+        Private(const Private &) = delete;
+        Private& operator=(const Private &) = delete;
 
         RichMediaAnnotation::Configuration::Type type;
         QString name;
@@ -4728,7 +4766,7 @@ class RichMediaAnnotation::Asset::Private
 {
     public:
         Private()
-            : embeddedFile( 0 )
+            : embeddedFile( nullptr )
         {
         }
 
@@ -4736,6 +4774,9 @@ class RichMediaAnnotation::Asset::Private
         {
             delete embeddedFile;
         }
+
+        Private(const Private &) = delete;
+        Private& operator=(const Private &) = delete;
 
         QString name;
         EmbeddedFile *embeddedFile;
@@ -4784,6 +4825,9 @@ class RichMediaAnnotation::Content::Private
             qDeleteAll( assets );
             assets.clear();
         }
+
+        Private(const Private &) = delete;
+        Private& operator=(const Private &) = delete;
 
         QList< RichMediaAnnotation::Configuration* > configurations;
         QList< RichMediaAnnotation::Asset* > assets;
@@ -4891,7 +4935,7 @@ class RichMediaAnnotation::Settings::Private : public QSharedData
 {
     public:
         Private()
-            : activation( 0 ), deactivation( 0 )
+            : activation( nullptr ), deactivation( nullptr )
         {
         }
 
@@ -4935,7 +4979,7 @@ class RichMediaAnnotationPrivate : public AnnotationPrivate
 {
     public:
         RichMediaAnnotationPrivate()
-            : settings( 0 ), content( 0 )
+            : settings( nullptr ), content( nullptr )
         {
         }
 
@@ -4945,17 +4989,17 @@ class RichMediaAnnotationPrivate : public AnnotationPrivate
             delete content;
         }
 
-        Annotation * makeAlias()
+        Annotation * makeAlias() override
         {
             return new RichMediaAnnotation( *this );
         }
 
-        Annot* createNativeAnnot( ::Page *destPage, DocumentData *doc )
+        Annot* createNativeAnnot( ::Page *destPage, DocumentData *doc ) override
         {
             Q_UNUSED( destPage );
             Q_UNUSED( doc );
 
-            return 0;
+            return nullptr;
         }
 
         RichMediaAnnotation::Settings *settings;
@@ -5040,7 +5084,7 @@ RichMediaAnnotation::Content* RichMediaAnnotation::content() const
 
 
 //BEGIN utility annotation functions
-QColor convertAnnotColor( AnnotColor *color )
+QColor convertAnnotColor( const AnnotColor *color )
 {
     if ( !color )
         return QColor();
@@ -5065,12 +5109,23 @@ QColor convertAnnotColor( AnnotColor *color )
     return newcolor;
 }
 
-AnnotColor* convertQColor( const QColor &c )
+std::unique_ptr<AnnotColor> convertQColor( const QColor &c )
 {
-    if (!c.isValid() || c.alpha() == 0)
-        return new AnnotColor(); // Transparent
-    else
-        return new AnnotColor(c.redF(), c.greenF(), c.blueF());
+    if ( c.alpha() == 0 )
+        return {}; // Transparent
+
+    switch ( c.spec() )
+    {
+        case QColor::Rgb:
+        case QColor::Hsl:
+        case QColor::Hsv:
+            return std::make_unique<AnnotColor>( c.redF(), c.greenF(), c.blueF() );
+        case QColor::Cmyk:
+            return std::make_unique<AnnotColor>( c.cyanF(), c.magentaF(), c.yellowF(), c.blackF() );
+        case QColor::Invalid:
+        default:
+            return {};
+    }
 }
 //END utility annotation functions
 

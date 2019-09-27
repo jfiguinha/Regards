@@ -4,14 +4,27 @@
 //
 //========================================================================
 
-#include <config.h>
+//========================================================================
+//
+// Modified under the Poppler project - http://poppler.freedesktop.org
+//
+// All changes made under the Poppler project to this file are licensed
+// under GPL version 2 or later
+//
+// Copyright (C) 2018 Stefan Brüns <stefan.bruens@rwth-aachen.de>
+// Copyright (C) 2018 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+//
+// To see a description of the changes please see the Changelog file that
+// came with your tarball or type make ChangeLog if you are building from git
+//
+//========================================================================
 
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
+#include <config.h>
 
 #include <string.h>
 #include "goo/gmem.h"
+#include "goo/GooLikely.h"
 #include "SplashErrorCodes.h"
 #include "SplashPath.h"
 
@@ -31,11 +44,11 @@
 //    [curSubpath < length - 1]
 
 SplashPath::SplashPath() {
-  pts = NULL;
-  flags = NULL;
+  pts = nullptr;
+  flags = nullptr;
   length = size = 0;
   curSubpath = 0;
-  hints = NULL;
+  hints = nullptr;
   hintsLength = hintsSize = 0;
 }
 
@@ -43,23 +56,44 @@ SplashPath::SplashPath(SplashPath *path) {
   length = path->length;
   size = path->size;
   pts = (SplashPathPoint *)gmallocn(size, sizeof(SplashPathPoint));
-  flags = (Guchar *)gmallocn(size, sizeof(Guchar));
+  flags = (unsigned char *)gmallocn(size, sizeof(unsigned char));
   memcpy(pts, path->pts, length * sizeof(SplashPathPoint));
-  memcpy(flags, path->flags, length * sizeof(Guchar));
+  memcpy(flags, path->flags, length * sizeof(unsigned char));
   curSubpath = path->curSubpath;
   if (path->hints) {
     hintsLength = hintsSize = path->hintsLength;
     hints = (SplashPathHint *)gmallocn(hintsSize, sizeof(SplashPathHint));
     memcpy(hints, path->hints, hintsLength * sizeof(SplashPathHint));
   } else {
-    hints = NULL;
+    hints = nullptr;
   }
+}
+
+SplashPath::SplashPath(SplashPath&& path) {
+  length = path.length;
+  size = path.size;
+  pts = path.pts;
+  flags = path.flags;
+  curSubpath = path.curSubpath;
+
+  hints = path.hints;
+  hintsLength = hintsSize = path.hintsLength;
+
+  path.pts = nullptr;
+  path.flags = nullptr;
+  path.length = path.size = 0;
+  path.hints = nullptr;
+  path.hintsLength = path.hintsSize = 0;
 }
 
 SplashPath::~SplashPath() {
   gfree(pts);
   gfree(flags);
   gfree(hints);
+}
+
+void  SplashPath::reserve(int nPts) {
+  grow(nPts - size);
 }
 
 // Add space for <nPts> more points.
@@ -71,16 +105,22 @@ void SplashPath::grow(int nPts) {
     while (size < length + nPts) {
       size *= 2;
     }
-    pts = (SplashPathPoint *)greallocn(pts, size, sizeof(SplashPathPoint));
-    flags = (Guchar *)greallocn(flags, size, sizeof(Guchar));
+    pts = (SplashPathPoint *)greallocn_checkoverflow(pts, size, sizeof(SplashPathPoint));
+    flags = (unsigned char *)greallocn_checkoverflow(flags, size, sizeof(unsigned char));
+    if (unlikely(!pts || !flags)) {
+      length = size = curSubpath = 0;
+    }
   }
 }
 
 void SplashPath::append(SplashPath *path) {
   int i;
 
-  curSubpath = length + path->curSubpath;
   grow(path->length);
+  if (unlikely(size == 0))
+    return;
+
+  curSubpath = length + path->curSubpath;
   for (i = 0; i < path->length; ++i) {
     pts[length] = path->pts[i];
     flags[length] = path->flags[i];
@@ -93,6 +133,8 @@ SplashError SplashPath::moveTo(SplashCoord x, SplashCoord y) {
     return splashErrBogusPath;
   }
   grow(1);
+  if (unlikely(size == 0))
+    return splashErrBogusPath;
   pts[length].x = x;
   pts[length].y = y;
   flags[length] = splashPathFirst | splashPathLast;
@@ -106,6 +148,8 @@ SplashError SplashPath::lineTo(SplashCoord x, SplashCoord y) {
   }
   flags[length-1] &= ~splashPathLast;
   grow(1);
+  if (unlikely(size == 0))
+    return splashErrBogusPath;
   pts[length].x = x;
   pts[length].y = y;
   flags[length] = splashPathLast;
@@ -121,6 +165,8 @@ SplashError SplashPath::curveTo(SplashCoord x1, SplashCoord y1,
   }
   flags[length-1] &= ~splashPathLast;
   grow(3);
+  if (unlikely(size == 0))
+    return splashErrBogusPath;
   pts[length].x = x1;
   pts[length].y = y1;
   flags[length] = splashPathCurve;
@@ -136,7 +182,7 @@ SplashError SplashPath::curveTo(SplashCoord x1, SplashCoord y1,
   return splashOk;
 }
 
-SplashError SplashPath::close(GBool force) {
+SplashError SplashPath::close(bool force) {
   if (noCurrentPoint()) {
     return splashErrNoCurPt;
   }
@@ -175,11 +221,11 @@ void SplashPath::offset(SplashCoord dx, SplashCoord dy) {
   }
 }
 
-GBool SplashPath::getCurPt(SplashCoord *x, SplashCoord *y) {
+bool SplashPath::getCurPt(SplashCoord *x, SplashCoord *y) {
   if (noCurrentPoint()) {
-    return gFalse;
+    return false;
   }
   *x = pts[length - 1].x;
   *y = pts[length - 1].y;
-  return gTrue;
+  return true;
 }

@@ -18,10 +18,11 @@
 
 class SillyThread : public QThread
 {
+    Q_OBJECT
 public:
-    SillyThread(Poppler::Document* document, QObject* parent = 0);
+    SillyThread(Poppler::Document* document, QObject* parent = nullptr);
 
-    void run();
+    void run() override;
 
 private:
     Poppler::Document* m_document;
@@ -31,10 +32,11 @@ private:
 
 class CrazyThread : public QThread
 {
+    Q_OBJECT
 public:
-    CrazyThread(uint seed, Poppler::Document* document, QMutex* annotationMutex, QObject* parent = 0);
+    CrazyThread(uint seed, Poppler::Document* document, QMutex* annotationMutex, QObject* parent = nullptr);
 
-    void run();
+    void run() override;
 
 private:
     uint m_seed;
@@ -47,7 +49,7 @@ static Poppler::Page* loadPage(Poppler::Document* document, int index)
 {
     Poppler::Page* page = document->page(index);
 
-    if(page == 0)
+    if(page == nullptr)
     {
         qDebug() << "!Document::page";
         
@@ -114,11 +116,11 @@ void CrazyThread::run()
 
             PagePointer page(loadRandomPage(m_document));
 
-            page->search("c", Poppler::Page::CaseInsensitive);
-            page->search("r", Poppler::Page::CaseSensitive);
-            page->search("a", Poppler::Page::CaseInsensitive);
-            page->search("z", Poppler::Page::CaseSensitive);
-            page->search("y", Poppler::Page::CaseInsensitive);
+            page->search(QStringLiteral("c"), Poppler::Page::IgnoreCase);
+            page->search(QStringLiteral("r"));
+            page->search(QStringLiteral("a"), Poppler::Page::IgnoreCase);
+            page->search(QStringLiteral("z"));
+            page->search(QStringLiteral("y"), Poppler::Page::IgnoreCase);
         }
 
         if(qrand() % 2 == 0)
@@ -169,7 +171,7 @@ void CrazyThread::run()
 
             PagePointer page(loadRandomPage(m_document));
 
-            Poppler::Annotation* annotation = 0;
+            Poppler::Annotation* annotation = nullptr;
 
             switch(qrand() % 3)
             {
@@ -186,7 +188,7 @@ void CrazyThread::run()
             }
 
             annotation->setBoundary(QRectF(0.0, 0.0, 0.5, 0.5));
-            annotation->setContents("crazy");
+            annotation->setContents(QStringLiteral("crazy"));
 
             page->addAnnotation(annotation);
 
@@ -208,8 +210,8 @@ void CrazyThread::run()
                     qDebug() << "modify annotation...";
 
                     annotations.at(qrand() % annotations.size())->setBoundary(QRectF(0.5, 0.5, 0.25, 0.25));
-                    annotations.at(qrand() % annotations.size())->setAuthor("foo");
-                    annotations.at(qrand() % annotations.size())->setContents("bar");
+                    annotations.at(qrand() % annotations.size())->setAuthor(QStringLiteral("foo"));
+                    annotations.at(qrand() % annotations.size())->setContents(QStringLiteral("bar"));
                     annotations.at(qrand() % annotations.size())->setCreationDate(QDateTime::currentDateTime());
                     annotations.at(qrand() % annotations.size())->setModificationDate(QDateTime::currentDateTime());
                 }
@@ -271,14 +273,14 @@ int main(int argc, char** argv)
     const int sillyCount = atoi(argv[2]);
     const int crazyCount = atoi(argv[3]);
     
-    qsrand(time(0));
+    qsrand(time(nullptr));
 
     for(int argi = 4; argi < argc; ++argi)
     {
         const QString file = QFile::decodeName(argv[argi]);
         Poppler::Document* document = Poppler::Document::load(file);
 
-        if(document == 0)
+        if(document == nullptr)
         {
             qDebug() << "Could not load" << file;            
             continue;
@@ -307,3 +309,5 @@ int main(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
+
+#include "stress-threads-qt5.moc"

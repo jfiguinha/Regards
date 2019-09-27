@@ -28,14 +28,14 @@ class EmbeddedFilesDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    EmbeddedFilesDock(QWidget *parent = 0);
+    EmbeddedFilesDock(QWidget *parent = nullptr);
     ~EmbeddedFilesDock();
 
-    virtual void documentLoaded();
-    /*virtual*/ void documentClosed();
+    void documentLoaded() override;
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private:
     QTableWidget *m_table;

@@ -28,12 +28,12 @@ class AbstractInfoDock : public QDockWidget, public DocumentObserver
     Q_OBJECT
 
 public:
-    AbstractInfoDock(QWidget *parent = 0);
+    AbstractInfoDock(QWidget *parent = nullptr);
     ~AbstractInfoDock();
 
-    /*virtual*/ void documentLoaded();
-    /*virtual*/ void documentClosed();
-    /*virtual*/ void pageChanged(int page);
+    void documentLoaded() override;
+    void documentClosed() override;
+    void pageChanged(int page) override;
 
 protected:
     virtual void fillInfo() = 0;

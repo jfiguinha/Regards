@@ -1,6 +1,7 @@
 /* PageTransition.cc
  * Copyright (C) 2005, Net Integration Technologies, Inc.
  * Copyright (C) 2015, Arseniy Lartsev <arseniy@alumni.chalmers.se>
+ * Copyright (C) 2018 Albert Astals Cid <aacid@kde.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +42,12 @@ class PageTransitionData
         delete pt;
     }
 
+    PageTransitionData& operator=(const PageTransitionData &) = delete;
+
     ::PageTransition *pt;
 };
 
-PageTransition::PageTransition(const PageTransitionParams &params)
+PageTransition::PageTransition(const PageTransitionParams &params) // clazy:exclude=function-args-by-value
 {
   data = new PageTransitionData(params.dictObj);
 }
@@ -57,6 +60,16 @@ PageTransition::PageTransition(const PageTransition &pt)
 PageTransition::~PageTransition()
 {
   delete data;
+}
+
+PageTransition& PageTransition::operator=(const PageTransition &other)
+{
+  if ( this != &other ) {
+    delete data;
+    data = new PageTransitionData(*other.data);
+  }
+
+  return *this;
 }
 
 PageTransition::Type PageTransition::type() const

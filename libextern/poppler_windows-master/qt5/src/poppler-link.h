@@ -1,9 +1,10 @@
 /* poppler-link.h: qt interface to poppler
- * Copyright (C) 2006, 2013, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2006, 2013, 2016, 2018, Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2007-2008, 2010, Pino Toscano <pino@kde.org>
  * Copyright (C) 2010, 2012, Guillermo Amaral <gamaral@kdab.com>
  * Copyright (C) 2012, Tobias Koenig <tokoe@kdab.com>
  * Copyright (C) 2013, Anthony Granger <grangeranthony@gmail.com>
+ * Copyright (C) 2018 Intevation GmbH <intevation@intevation.de>
  * Adapting code from
  *   Copyright (C) 2004 by Enrico Ros <eros.kde@email.it>
  *
@@ -28,10 +29,13 @@
 #include <QtCore/QString>
 #include <QtCore/QRectF>
 #include <QtCore/QSharedDataPointer>
+#include <QtCore/QVector>
 #include "poppler-export.h"
 
 struct Ref;
 class MediaRendition;
+class MovieAnnotation;
+class ScreenAnnotation;
 
 namespace Poppler {
 
@@ -46,6 +50,8 @@ class LinkMoviePrivate;
 class LinkDestinationData;
 class LinkDestinationPrivate;
 class LinkRenditionPrivate;
+class LinkOCGStatePrivate;
+class LinkHidePrivate;
 class MediaRendition;
 class SoundObject;
 
@@ -68,9 +74,9 @@ class POPPLER_QT5_EXPORT LinkDestination
 		{
 			/**
 			 * The new viewport is specified in terms of:
-			 * - possibile new left coordinate (see isChangeLeft() )
-			 * - possibile new top coordinate (see isChangeTop() )
-			 * - possibile new zoom level (see isChangeZoom() )
+			 * - possible new left coordinate (see isChangeLeft() )
+			 * - possible new top coordinate (see isChangeTop() )
+			 * - possible new zoom level (see isChangeZoom() )
 			 */
 			destXYZ = 1,
 			destFit = 2,
@@ -171,6 +177,8 @@ class POPPLER_QT5_EXPORT LinkDestination
  */
 class POPPLER_QT5_EXPORT Link
 {
+	friend class OptContentModel;
+
 	public:
 		/// \cond PRIVATE
 		Link( const QRectF &linkArea );
@@ -191,7 +199,9 @@ class POPPLER_QT5_EXPORT Link
 		    Sound,    ///< A link representing a sound to be played
 		    Movie,    ///< An action to be executed on a movie
 		    Rendition,    ///< A rendition link \since 0.20
-		    JavaScript    ///< A JavaScript code to be interpreted \since 0.10
+		    JavaScript,   ///< A JavaScript code to be interpreted \since 0.10
+		    OCGState,      ///< An Optional Content Group state change \since 0.50
+		    Hide,     ///< An action to hide a field \since 0.64
 		};
 
 		/**
@@ -211,7 +221,14 @@ class POPPLER_QT5_EXPORT Link
 		 * a general action. The area is given in 0..1 range
 		 */
 		QRectF linkArea() const;
-		
+
+		/**
+		 * Get the next links to be activated / executed after this link.
+		 *
+		 * \since 0.64
+		 */
+		QVector<Link *> nextLinks() const;
+
 	protected:
 		/// \cond PRIVATE
 		Link( LinkPrivate &dd );
@@ -242,6 +259,7 @@ class POPPLER_QT5_EXPORT LinkGoto : public Link
 		 * \param extFileName if not empty, the file name to be open
 		 * \param destination the destination to be reached
 		 */
+		// TODO Next ABI break, make extFileName const &
 		LinkGoto( const QRectF &linkArea, QString extFileName, const LinkDestination & destination );
 		/**
 		 * Destructor.
@@ -263,7 +281,7 @@ class POPPLER_QT5_EXPORT LinkGoto : public Link
 		 * The destination to reach.
 		 */
 		LinkDestination destination() const;
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 	private:
 		Q_DECLARE_PRIVATE( LinkGoto )
@@ -302,7 +320,7 @@ class POPPLER_QT5_EXPORT LinkExecute : public Link
 		 * Destructor.
 		 */
 		~LinkExecute();
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 	private:
 		Q_DECLARE_PRIVATE( LinkExecute )
@@ -336,7 +354,7 @@ class POPPLER_QT5_EXPORT LinkBrowse : public Link
 		 * Destructor.
 		 */
 		~LinkBrowse();
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 	private:
 		Q_DECLARE_PRIVATE( LinkBrowse )
@@ -387,7 +405,7 @@ class POPPLER_QT5_EXPORT LinkAction : public Link
 		 * Destructor.
 		 */
 		~LinkAction();
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 	private:
 		Q_DECLARE_PRIVATE( LinkAction )
@@ -407,9 +425,9 @@ class POPPLER_QT5_EXPORT LinkSound : public Link
 		/**
 		 * Destructor.
 		 */
-		virtual ~LinkSound();
+		~LinkSound();
 
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 		/**
 		 * The volume to be used when playing the sound.
@@ -478,14 +496,15 @@ class POPPLER_QT5_EXPORT LinkRendition : public Link
 		 * \param annotationReference the object reference of the screen annotation associated with this rendition action
 		 * \since 0.22
 		 */
+		// TODO Next ABI break, remove & from annotationReference
 		LinkRendition( const QRectF &linkArea, ::MediaRendition *rendition, int operation, const QString &script, const Ref &annotationReference );
 
 		/**
 		 * Destructor.
 		 */
-		virtual ~LinkRendition();
+		~LinkRendition();
 
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 		/**
 		 * Returns the media rendition object if the redition provides one, @c 0 otherwise
@@ -536,9 +555,9 @@ class POPPLER_QT5_EXPORT LinkJavaScript : public Link
 		/**
 		 * Destructor.
 		 */
-		virtual ~LinkJavaScript();
+		~LinkJavaScript();
 
-		LinkType linkType() const;
+		LinkType linkType() const override;
 
 		/**
 		 * The JS code
@@ -577,12 +596,13 @@ class POPPLER_QT5_EXPORT LinkMovie : public Link
 		 *
 		 * Note: This constructor is supposed to be used by Poppler::Page only.
 		 */
+		// TODO Next ABI break, remove & from annotationReference
 		LinkMovie( const QRectF &linkArea, Operation operation, const QString &annotationTitle, const Ref &annotationReference );
 		/**
 		 * Destructor.
 		 */
 		~LinkMovie();
-		LinkType linkType() const;
+		LinkType linkType() const override;
 		/**
 		 * Returns the operation to be performed on the movie.
 		 */
@@ -595,6 +615,64 @@ class POPPLER_QT5_EXPORT LinkMovie : public Link
 	private:
 		Q_DECLARE_PRIVATE( LinkMovie )
 		Q_DISABLE_COPY( LinkMovie )
+};
+
+/**
+ * OCGState: an optional content group state change.
+ *
+ * \since 0.50
+ */
+class POPPLER_QT5_EXPORT LinkOCGState : public Link
+{
+	public:
+		/**
+		 * Create a new OCGState link. This is only used by Poppler::Page.
+		 */
+		LinkOCGState( LinkOCGStatePrivate *ocgp );
+		/**
+		 * Destructor.
+		 */
+		~LinkOCGState();
+
+		LinkType linkType() const override;
+
+	private:
+		Q_DECLARE_PRIVATE( LinkOCGState )
+		Q_DISABLE_COPY( LinkOCGState )
+};
+
+/**
+ * Hide: an action to show / hide a field.
+ *
+ * \since 0.64
+ */
+class POPPLER_QT5_EXPORT LinkHide: public Link
+{
+	public:
+		/**
+		 * Create a new Hide link. This is only used by Poppler::Page.
+		 */
+		LinkHide( LinkHidePrivate *lhidep );
+		/**
+		 * Destructor.
+		 */
+		~LinkHide();
+
+		LinkType linkType() const override;
+
+		/**
+		 * The fully qualified target names of the action.
+		 */
+		QVector< QString > targets() const;
+
+		/**
+		 * Should this action change the visibility of the target to true.
+		 */
+		bool isShowAction() const;
+
+	private:
+		Q_DECLARE_PRIVATE( LinkHide )
+		Q_DISABLE_COPY( LinkHide )
 };
 
 }

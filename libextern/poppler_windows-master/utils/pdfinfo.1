@@ -74,6 +74,8 @@ PDF version
 .RS
 metadata (only if requested)
 .RE
+.PP
+The options \-listenc, \-meta, \-js, \-struct, and \-struct-text only print the requested information. The 'Info' dictionary and related data listed above is not printed. At most one of these five options may be used.
 .SH OPTIONS
 .TP
 .BI \-f " number"
@@ -110,6 +112,10 @@ Prints dates in ISO-8601 format (including the time zone).
 .TP
 .B \-rawdates
 Prints the raw (undecoded) date strings, directly from the PDF file.
+.TP
+.B \-dests
+Print a list of all named destinations. If a page range is specified using "\-f" and "\-l", only
+destinations in the page range are listed.
 .TP
 .BI \-enc " encoding-name"
 Sets the encoding to use for text output. This defaults to "UTF-8".

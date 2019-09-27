@@ -15,14 +15,14 @@
 #include "goo/GooString.h"
 #include "utils/parseargs.h"
 
-static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc);
-static GBool compareObjects(Object *objA, Object *objB);
+static bool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc);
+static bool compareObjects(const Object *objA, const Object *objB);
 
 static char ownerPassword[33] = "\001";
 static char userPassword[33] = "\001";
-static GBool forceIncremental = gFalse;
-static GBool checkOutput = gFalse;
-static GBool printHelp = gFalse;
+static bool forceIncremental = false;
+static bool checkOutput = false;
+static bool printHelp = false;
 
 static const ArgDesc argDesc[] = {
   {"-opw",    argString,   ownerPassword,    sizeof(ownerPassword),
@@ -41,21 +41,21 @@ static const ArgDesc argDesc[] = {
    "print usage information"},
   {"-?",      argFlag,     &printHelp,       0,
    "print usage information"},
-  {NULL}
+  { }
 };
 
 int main (int argc, char *argv[])
 {
-  PDFDoc *doc = NULL;
-  PDFDoc *docOut = NULL;
-  GooString *inputName = NULL;
-  GooString *outputName = NULL;
-  GooString *ownerPW = NULL;
-  GooString *userPW = NULL;
+  PDFDoc *doc = nullptr;
+  PDFDoc *docOut = nullptr;
+  GooString *inputName = nullptr;
+  GooString *outputName = nullptr;
+  GooString *ownerPW = nullptr;
+  GooString *userPW = nullptr;
   int res = 0;
 
   // parse args
-  GBool ok = parseArgs(argDesc, &argc, argv);
+  bool ok = parseArgs(argDesc, &argc, argv);
   if (!ok || (argc < 3) || printHelp) {
     printUsage(argv[0], "INPUT-FILE OUTPUT-FILE", argDesc);
     if (!printHelp) {
@@ -113,37 +113,34 @@ done:
   return res;
 }
 
-static GBool compareDictionaries(Dict *dictA, Dict *dictB)
+static bool compareDictionaries(Dict *dictA, Dict *dictB)
 {
   const int length = dictA->getLength();
   if (dictB->getLength() != length)
-    return gFalse;
+    return false;
 
   /* Check that every key in dictA is contained in dictB.
    * Since keys are unique and we've already checked that dictA and dictB
    * contain the same number of entries, we don't need to check that every key
    * in dictB is also contained in dictA */
   for (int i = 0; i < length; ++i) {
-    Object valA, valB;
     const char *key = dictA->getKey(i);
-    dictA->getValNF(i, &valA);
-    dictB->lookupNF(key, &valB);
+    const Object &valA = dictA->getValNF(i);
+    const Object &valB = dictB->lookupNF(key);
     if (!compareObjects(&valA, &valB))
-      return gFalse;
-    valA.free();
-    valB.free();
+      return false;
   }
 
-  return gTrue;
+  return true;
 }
 
-static GBool compareObjects(Object *objA, Object *objB)
+static bool compareObjects(const Object *objA, const Object *objB)
 {
   switch (objA->getType()) {
     case objBool:
     {
       if (objB->getType() != objBool) {
-        return gFalse;
+        return false;
       } else {
         return (objA->getBool() == objB->getBool());
       }
@@ -153,7 +150,7 @@ static GBool compareObjects(Object *objA, Object *objB)
     case objReal:
     {
       if (!objB->isNum()) {
-        return gFalse;
+        return false;
       } else {
         // Fuzzy comparison
         const double diff = objA->getNum() - objB->getNum();
@@ -163,17 +160,17 @@ static GBool compareObjects(Object *objA, Object *objB)
     case objString:
     {
       if (objB->getType() != objString) {
-        return gFalse;
+        return false;
       } else {
-        GooString *strA = objA->getString();
-        GooString *strB = objB->getString();
+        const GooString *strA = objA->getString();
+        const GooString *strB = objB->getString();
         return (strA->cmp(strB) == 0);
       }
     }
     case objName:
     {
       if (objB->getType() != objName) {
-        return gFalse;
+        return false;
       } else {
         GooString nameA(objA->getName());
         GooString nameB(objB->getName());
@@ -183,40 +180,37 @@ static GBool compareObjects(Object *objA, Object *objB)
     case objNull:
     {
       if (objB->getType() != objNull) {
-        return gFalse;
+        return false;
       } else {
-        return gTrue;
+        return true;
       }
     }
     case objArray:
     {
       if (objB->getType() != objArray) {
-        return gFalse;
+        return false;
       } else {
         Array *arrayA = objA->getArray();
         Array *arrayB = objB->getArray();
         const int length = arrayA->getLength();
         if (arrayB->getLength() != length) {
-          return gFalse;
+          return false;
         } else {
           for (int i = 0; i < length; ++i) {
-            Object elemA, elemB;
-            arrayA->getNF(i, &elemA);
-            arrayB->getNF(i, &elemB);
+            const Object &elemA = arrayA->getNF(i);
+            const Object &elemB = arrayB->getNF(i);
             if (!compareObjects(&elemA, &elemB)) {
-              return gFalse;
+              return false;
             }
-            elemA.free();
-            elemB.free();
           }
-          return gTrue;
+          return true;
         }
       }
     }
     case objDict:
     {
       if (objB->getType() != objDict) {
-        return gFalse;
+        return false;
       } else {
         Dict *dictA = objA->getDict();
         Dict *dictB = objB->getDict();
@@ -226,12 +220,12 @@ static GBool compareObjects(Object *objA, Object *objB)
     case objStream:
     {
       if (objB->getType() != objStream) {
-        return gFalse;
+        return false;
       } else {
         Stream *streamA = objA->getStream();
         Stream *streamB = objB->getStream();
         if (!compareDictionaries(streamA->getDict(), streamB->getDict())) {
-          return gFalse;
+          return false;
         } else {
           int c;
           streamA->reset();
@@ -240,35 +234,35 @@ static GBool compareObjects(Object *objA, Object *objB)
           {
             c = streamA->getChar();
             if (c != streamB->getChar()) {
-              return gFalse;
+              return false;
             }
           } while (c != EOF);
-          return gTrue;
+          return true;
         }
       }
-      return gTrue;
+      return true;
     }
     case objRef:
     {
       if (objB->getType() != objRef) {
-        return gFalse;
+        return false;
       } else {
-        Ref refA = objA->getRef();
-        Ref refB = objB->getRef();
-        return (refA.num == refB.num) && (refA.gen == refB.gen);
+        const Ref refA = objA->getRef();
+        const Ref refB = objB->getRef();
+        return refA == refB;
       }
     }
     default:
     {
       fprintf(stderr, "compareObjects failed: unexpected object type %u\n", objA->getType());
-      return gFalse;
+      return false;
     }
   }
 }
 
-static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
+static bool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
 {
-  GBool result = gTrue;
+  bool result = true;
   XRef *origXRef = origDoc->getXRef();
   XRef *newXRef = newDoc->getXRef();
 
@@ -283,13 +277,13 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
     // In case of incremental update, expect a new entry to be appended to store the new XRef stream
     if (origNumObjects+1 != newNumObjects) {
       fprintf(stderr, "XRef table: Unexpected number of entries (%d+1 != %d)\n", origNumObjects, newNumObjects);
-      result = gFalse;
+      result = false;
     }
   } else {
     // In all other cases the number of entries must be the same
     if (origNumObjects != newNumObjects) {
       fprintf(stderr, "XRef table: Different number of entries (%d != %d)\n", origNumObjects, newNumObjects);
-      result = gFalse;
+      result = false;
     }
   }
 
@@ -305,7 +299,7 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
     if (!forceIncremental && origXRef->getEntry(i)->getFlag(XRefEntry::DontRewrite)) {
       if (newType != xrefEntryFree || origGenNum+1 != newGenNum) {
         fprintf(stderr, "XRef entry %u: DontRewrite entry was not freed correctly\n", i);
-        result = gFalse;
+        result = false;
       }
       continue; // There's nothing left to check for this entry
     }
@@ -316,13 +310,13 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
     if (i != 0) {
       if (origGenNum != newGenNum) {
         fprintf(stderr, "XRef entry %u: generation numbers differ (%d != %d)\n", i, origGenNum, newGenNum);
-        result = gFalse;
+        result = false;
         continue;
       }
     } else {
       if (newGenNum != 65535) {
         fprintf(stderr, "XRef entry %u: generation number was expected to be 65535 (%d != 65535)\n", i, newGenNum);
-        result = gFalse;
+        result = false;
         continue;
       }
     }
@@ -330,7 +324,7 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
     // Compare object flags. A failure shows that there's some error in XRef::scanSpecialFlags()
     if (origXRef->getEntry(i)->flags != newXRef->getEntry(i)->flags) {
       fprintf(stderr, "XRef entry %u: flags detected by scanSpecialFlags differ (%d != %d)\n", i, origXRef->getEntry(i)->flags, newXRef->getEntry(i)->flags);
-      result = gFalse;
+      result = false;
     }
 
     // Check that either both are free or both are in use
@@ -338,7 +332,7 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
       const char *origStatus = (origType == xrefEntryFree) ? "free" : "in use";
       const char *newStatus = (newType == xrefEntryFree) ? "free" : "in use";
       fprintf(stderr, "XRef entry %u: usage status differs (%s != %s)\n", i, origStatus, newStatus);
-      result = gFalse;
+      result = false;
       continue;
     }
 
@@ -348,15 +342,12 @@ static GBool compareDocuments(PDFDoc *origDoc, PDFDoc *newDoc)
     }
 
     // Compare contents
-    Object origObj, newObj;
-    origXRef->fetch(i, origGenNum, &origObj);
-    newXRef->fetch(i, newGenNum, &newObj);
+    Object origObj = origXRef->fetch(i, origGenNum);
+    Object newObj = newXRef->fetch(i, newGenNum);
     if (!compareObjects(&origObj, &newObj)) {
       fprintf(stderr, "XRef entry %u: contents differ\n", i);
-      result = gFalse;
+      result = false;
     }
-    origObj.free();
-    newObj.free();
   }
 
   return result;

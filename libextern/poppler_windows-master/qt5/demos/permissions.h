@@ -28,13 +28,13 @@ class PermissionsDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    PermissionsDock(QWidget *parent = 0);
+    PermissionsDock(QWidget *parent = nullptr);
     ~PermissionsDock();
 
-    /*virtual*/ void documentClosed();
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private:
     QListWidget *m_table;

@@ -1,5 +1,7 @@
 /*
  * Copyright (C) 2009-2010, Pino Toscano <pino@kde.org>
+ * Copyright (C) 2016 Jakub Alba <jakubalba@gmail.com>
+ * Copyright (C) 2019, Masamichi Hosoda <trueroad@trueroad.jp>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +24,12 @@
 #include "poppler-global.h"
 #include "poppler-font.h"
 
+#include <map>
+
 namespace poppler
 {
 
+class destination;
 class document_private;
 class embedded_file;
 class page;
@@ -61,8 +66,32 @@ public:
     page_layout_enum page_layout() const;
     void get_pdf_version(int *major, int *minor) const;
     std::vector<std::string> info_keys() const;
+
     ustring info_key(const std::string &key) const;
+    bool set_info_key(const std::string &key, const ustring &val);
+
     time_type info_date(const std::string &key) const;
+    bool set_info_date(const std::string &key, time_type val);
+
+    ustring get_title() const;
+    bool set_title(const ustring &title);
+    ustring get_author() const;
+    bool set_author(const ustring &author);
+    ustring get_subject() const;
+    bool set_subject(const ustring &subject);
+    ustring get_keywords() const;
+    bool set_keywords(const ustring &keywords);
+    ustring get_creator() const;
+    bool set_creator(const ustring &creator);
+    ustring get_producer() const;
+    bool set_producer(const ustring &producer);
+    time_type get_creation_date() const;
+    bool set_creation_date(time_type creation_date);
+    time_type get_modification_date() const;
+    bool set_modification_date(time_type mod_date);
+
+    bool remove_info();
+
     bool is_encrypted() const;
     bool is_linearized() const;
     bool has_permission(permission_enum which) const;
@@ -80,6 +109,13 @@ public:
 
     bool has_embedded_files() const;
     std::vector<embedded_file *> embedded_files() const;
+
+    // Named destinations are bytestrings, not string.
+    // So we use std::string instead of ustring.
+    std::map<std::string, destination> create_destination_map() const;
+
+    bool save(const std::string &filename) const;
+    bool save_a_copy(const std::string &filename) const;
 
     static document* load_from_file(const std::string &file_name,
                                     const std::string &owner_password = std::string(),

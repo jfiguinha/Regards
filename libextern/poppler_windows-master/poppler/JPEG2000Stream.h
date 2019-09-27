@@ -18,7 +18,6 @@
 #define JPEG2000STREAM_H
 
 #include "config.h"
-#include "goo/gtypes.h"
 #include "Object.h"
 #include "Stream.h"
 
@@ -28,18 +27,18 @@ class JPXStream: public FilterStream {
 public:
 
   JPXStream(Stream *strA);
-  virtual ~JPXStream();
-  virtual StreamKind getKind() { return strJPX; }
-  virtual void reset();
-  virtual void close();
-  virtual Goffset getPos();
-  virtual int getChar();
-  virtual int lookChar();
-  virtual GooString *getPSFilter(int psLevel, const char *indent);
-  virtual GBool isBinary(GBool last = gTrue);
-  virtual void getImageParams(int *bitsPerComponent, StreamColorSpaceMode *csMode);
+  ~JPXStream();
+  StreamKind getKind() override { return strJPX; }
+  void reset() override;
+  void close() override;
+  Goffset getPos() override;
+  int getChar() override;
+  int lookChar() override;
+  GooString *getPSFilter(int psLevel, const char *indent) override;
+  bool isBinary(bool last = true) override;
+  void getImageParams(int *bitsPerComponent, StreamColorSpaceMode *csMode) override;
 
-  int readStream(int nChars, Guchar *buffer) {
+  int readStream(int nChars, unsigned char *buffer) {
     return str->doGetChars(nChars, buffer);
   }
 private:
@@ -48,8 +47,8 @@ private:
   JPXStreamPrivate *priv;
 
   void init();
-  virtual GBool hasGetChars() { return true; }
-  virtual int getChars(int nChars, Guchar *buffer);
+  bool hasGetChars() override { return true; }
+  int getChars(int nChars, unsigned char *buffer) override;
 };
 
 #endif

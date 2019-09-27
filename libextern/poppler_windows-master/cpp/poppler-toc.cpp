@@ -1,5 +1,7 @@
-/*
+  /*
  * Copyright (C) 2009-2010, Pino Toscano <pino@kde.org>
+ * Copyright (C) 2018, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2019, Oliver Sander <oliver.sander@tu-dresden.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +18,14 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ \file poppler-toc.h
+ */
 #include "poppler-toc.h"
 
 #include "poppler-toc-private.h"
 #include "poppler-private.h"
 
-#include "GooList.h"
 #include "Outline.h"
 
 using namespace poppler;
@@ -37,12 +41,12 @@ toc_private::~toc_private()
 toc* toc_private::load_from_outline(Outline *outline)
 {
     if (!outline) {
-        return 0;
+        return nullptr;
     }
 
-    GooList *items = outline->getItems();
-    if (!items || items->getLength() < 1) {
-        return 0;
+    const std::vector<OutlineItem*> *items = outline->getItems();
+    if (!items || items->size() < 1) {
+        return nullptr;
     }
 
     toc *newtoc = new toc();
@@ -62,7 +66,7 @@ toc_item_private::~toc_item_private()
     delete_all(children);
 }
 
-void toc_item_private::load(OutlineItem *item)
+void toc_item_private::load(const OutlineItem *item)
 {
     const Unicode *title_unicode = item->getTitle();
     const int title_length = item->getTitleLength();
@@ -70,19 +74,19 @@ void toc_item_private::load(OutlineItem *item)
     is_open = item->isOpen();
 }
 
-void toc_item_private::load_children(GooList *items)
+void toc_item_private::load_children(const std::vector<OutlineItem*> *items)
 {
-    const int num_items = items->getLength();
+    const int num_items = items->size();
     children.resize(num_items);
     for (int i = 0; i < num_items; ++i) {
-        OutlineItem *item = (OutlineItem *)items->get(i);
+        OutlineItem *item = (*items)[i];
 
         toc_item *new_item = new toc_item();
         new_item->d->load(item);
         children[i] = new_item;
 
         item->open();
-        GooList *item_children = item->getKids();
+        const std::vector<OutlineItem*> *item_children = item->getKids();
         if (item_children) {
             new_item->d->load_children(item_children);
         }
@@ -116,7 +120,7 @@ toc::~toc()
 
  This item is special, it has no title nor actions, it is open and its children
  are the effective root items of the TOC. This is provided as a convenience
- when iterating throught the TOC.
+ when iterating through the TOC.
 
  \returns the root "item"
  */

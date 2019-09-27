@@ -74,9 +74,9 @@ poppler_action_layer_free (PopplerActionLayer *action_layer)
 		return;
 
 	if (action_layer->layers) {
-		g_list_foreach (action_layer->layers, (GFunc)g_object_unref, NULL);
+		g_list_foreach (action_layer->layers, (GFunc)g_object_unref, nullptr);
 		g_list_free (action_layer->layers);
-		action_layer->layers = NULL;
+		action_layer->layers = nullptr;
 	}
 
 	g_slice_free (PopplerActionLayer, action_layer);
@@ -88,7 +88,7 @@ poppler_action_layer_copy (PopplerActionLayer *action_layer)
 	PopplerActionLayer *retval = g_slice_dup (PopplerActionLayer, action_layer);
 
 	retval->layers = g_list_copy (action_layer->layers);
-	g_list_foreach (action_layer->layers, (GFunc)g_object_ref, NULL);
+	g_list_foreach (action_layer->layers, (GFunc)g_object_ref, nullptr);
 
 	return retval;
 }
@@ -104,7 +104,7 @@ POPPLER_DEFINE_BOXED_TYPE (PopplerAction, poppler_action, poppler_action_copy, p
 void
 poppler_action_free (PopplerAction *action)
 {
-	if (action == NULL)
+	if (action == nullptr)
 		return;
 
 	/* Action specific stuff */
@@ -136,7 +136,7 @@ poppler_action_free (PopplerAction *action)
 		break;
 	case POPPLER_ACTION_OCG_STATE:
 		if (action->ocg_state.state_list) {
-			g_list_foreach (action->ocg_state.state_list, (GFunc)poppler_action_layer_free, NULL);
+			g_list_foreach (action->ocg_state.state_list, (GFunc)poppler_action_layer_free, nullptr);
 			g_list_free (action->ocg_state.state_list);
 		}
 		break;
@@ -165,12 +165,12 @@ poppler_action_copy (PopplerAction *action)
 {
 	PopplerAction *new_action;
 
-	g_return_val_if_fail (action != NULL, NULL);
+	g_return_val_if_fail (action != nullptr, NULL);
 
 	/* Do a straight copy of the memory */
 	new_action = g_slice_dup (PopplerAction, action);
 
-	if (action->any.title != NULL)
+	if (action->any.title != nullptr)
 		new_action->any.title = g_strdup (action->any.title);
 
 	switch (action->type) {
@@ -207,7 +207,7 @@ poppler_action_copy (PopplerAction *action)
 	case POPPLER_ACTION_OCG_STATE:
 		if (action->ocg_state.state_list) {
 			GList *l;
-			GList *new_list = NULL;
+			GList *new_list = nullptr;
 
 			for (l = action->ocg_state.state_list; l; l = g_list_next (l)) {
 				PopplerActionLayer *alayer = (PopplerActionLayer *)l->data;
@@ -229,15 +229,16 @@ poppler_action_copy (PopplerAction *action)
 	return new_action;
 }
 
+static
 PopplerDest *
 dest_new_goto (PopplerDocument *document,
-	       LinkDest        *link_dest)
+	       const LinkDest        *link_dest)
 {
 	PopplerDest *dest;
 
 	dest = g_slice_new0 (PopplerDest);
 
-	if (link_dest == NULL) {
+	if (link_dest == nullptr) {
 		dest->type = POPPLER_DEST_UNKNOWN;
 		return dest;
 	}
@@ -273,8 +274,8 @@ dest_new_goto (PopplerDocument *document,
 
 	if (link_dest->isPageRef ()) {
 		if (document) {
-			Ref page_ref = link_dest->getPageRef ();
-			dest->page_num = document->doc->findPage (page_ref.num, page_ref.gen);
+			const Ref page_ref = link_dest->getPageRef ();
+			dest->page_num = document->doc->findPage (page_ref);
 		} else {
 			/* FIXME: We don't keep areound the page_ref for the
 			 * remote doc, so we can't look this up.  Guess that
@@ -316,19 +317,22 @@ dest_new_goto (PopplerDocument *document,
 }
 
 static PopplerDest *
-dest_new_named (GooString *named_dest)
+dest_new_named (const GooString *named_dest)
 {
 	PopplerDest *dest;
 
 	dest = g_slice_new0 (PopplerDest);
 
-	if (named_dest == NULL) {
+	if (named_dest == nullptr) {
 		dest->type = POPPLER_DEST_UNKNOWN;
 		return dest;
 	}
 
+	const std::string& str = named_dest->toStr ();
+
 	dest->type = POPPLER_DEST_NAMED;
-	dest->named_dest = g_strdup (named_dest->getCString ());
+	dest->named_dest = poppler_named_dest_from_bytestring((const guint8*)str.data (),
+							      str.size ());
 
 	return dest;
 }
@@ -336,39 +340,39 @@ dest_new_named (GooString *named_dest)
 static void
 build_goto_dest (PopplerDocument *document,
 		 PopplerAction   *action,
-		 LinkGoTo        *link)
+		 const LinkGoTo        *link)
 {
-	LinkDest *link_dest;
-	GooString *named_dest;
+	const LinkDest *link_dest;
+	const GooString *named_dest;
 
 	/* Return if it isn't OK */
 	if (! link->isOk ()) {
-		action->goto_dest.dest = dest_new_goto (NULL, NULL);
+		action->goto_dest.dest = dest_new_goto (nullptr, nullptr);
 		return;
 	}
 	
 	link_dest = link->getDest ();
 	named_dest = link->getNamedDest ();
 
-	if (link_dest != NULL) {
+	if (link_dest != nullptr) {
 		action->goto_dest.dest = dest_new_goto (document, link_dest);
-	} else if (named_dest != NULL) {
+	} else if (named_dest != nullptr) {
 		action->goto_dest.dest = dest_new_named (named_dest);
 	} else {
-		action->goto_dest.dest = dest_new_goto (document, NULL);
+		action->goto_dest.dest = dest_new_goto (document, nullptr);
 	}
 }
 
 static void
 build_goto_remote (PopplerAction *action,
-		   LinkGoToR     *link)
+		   const LinkGoToR     *link)
 {
-	LinkDest *link_dest;
-	GooString *named_dest;
+	const LinkDest *link_dest;
+	const GooString *named_dest;
 	
 	/* Return if it isn't OK */
 	if (! link->isOk ()) {
-		action->goto_remote.dest = dest_new_goto (NULL, NULL);
+		action->goto_remote.dest = dest_new_goto (nullptr, nullptr);
 		return;
 	}
 
@@ -377,116 +381,111 @@ build_goto_remote (PopplerAction *action,
 	link_dest = link->getDest ();
 	named_dest = link->getNamedDest ();
 	
-	if (link_dest != NULL) {
-		action->goto_remote.dest = dest_new_goto (NULL, link_dest);
-	} else if (named_dest != NULL) {
+	if (link_dest != nullptr) {
+		action->goto_remote.dest = dest_new_goto (nullptr, link_dest);
+	} else if (named_dest != nullptr) {
 		action->goto_remote.dest = dest_new_named (named_dest);
 	} else {
-		action->goto_remote.dest = dest_new_goto (NULL, NULL);
+		action->goto_remote.dest = dest_new_goto (nullptr, nullptr);
 	}
 }
 
 static void
 build_launch (PopplerAction *action,
-	      LinkLaunch    *link)
+	      const LinkLaunch    *link)
 {
 	if (link->getFileName()) {
-		action->launch.file_name = g_strdup (link->getFileName()->getCString ());
+		action->launch.file_name = g_strdup (link->getFileName()->c_str ());
 	}
 	if (link->getParams()) {
-		action->launch.params = g_strdup (link->getParams()->getCString ());
+		action->launch.params = g_strdup (link->getParams()->c_str ());
 	}
 }
 
 static void
 build_uri (PopplerAction *action,
-	   LinkURI       *link)
+	   const LinkURI       *link)
 {
-	gchar *uri;
+	const gchar *uri;
 
-	uri = link->getURI()->getCString ();
-	if (uri != NULL)
+	uri = link->getURI()->c_str ();
+	if (uri != nullptr)
 		action->uri.uri = g_strdup (uri);
 }
 
 static void
 build_named (PopplerAction *action,
-	     LinkNamed     *link)
+	     const LinkNamed     *link)
 {
-	gchar *name;
+	const gchar *name;
 
-	name = link->getName ()->getCString ();
-	if (name != NULL)
+	name = link->getName ()->c_str ();
+	if (name != nullptr)
 		action->named.named_dest = g_strdup (name);
 }
 
 static AnnotMovie *
 find_annot_movie_for_action (PopplerDocument *document,
-			     LinkMovie       *link)
+			     const LinkMovie       *link)
 {
-  AnnotMovie *annot = NULL;
+  AnnotMovie *annot = nullptr;
   XRef *xref = document->doc->getXRef ();
   Object annotObj;
 
   if (link->hasAnnotRef ()) {
-    Ref *ref = link->getAnnotRef ();
+    const Ref *ref = link->getAnnotRef ();
 
-    xref->fetch (ref->num, ref->gen, &annotObj);
+    annotObj = xref->fetch (*ref);
   } else if (link->hasAnnotTitle ()) {
-    Object annots;
-    GooString *title = link->getAnnotTitle ();
+    const GooString *title = link->getAnnotTitle ();
     int i;
 
     for (i = 1; i <= document->doc->getNumPages (); ++i) {
       Page *p = document->doc->getPage (i);
       if (!p) continue;
 
-      if (p->getAnnots (&annots)->isArray ()) {
+      Object annots = p->getAnnotsObject ();
+      if (annots.isArray ()) {
         int j;
-	GBool found = gFalse;
+	bool found = false;
 
 	for (j = 0; j < annots.arrayGetLength () && !found; ++j) {
-          if (annots.arrayGet(j, &annotObj)->isDict()) {
-	    Object obj1;
-
-	    if (!annotObj.dictLookup ("Subtype", &obj1)->isName ("Movie")) {
-	      obj1.free ();
+          annotObj = annots.arrayGet(j);
+          if (annotObj.isDict()) {
+	    Object obj1 = annotObj.dictLookup ("Subtype");
+	    if (!obj1.isName ("Movie")) {
 	      continue;
 	    }
-	    obj1.free ();
 
-	    if (annotObj.dictLookup ("T", &obj1)->isString()) {
-	      GooString *t = obj1.getString ();
+	    obj1 = annotObj.dictLookup ("T");
+	    if (obj1.isString()) {
+	      const GooString *t = obj1.getString ();
 
 	      if (title->cmp(t) == 0)
-	        found = gTrue;
+	        found = true;
 	    }
-	    obj1.free ();
 	  }
 	  if (!found)
-	    annotObj.free ();
+	    annotObj.setToNull ();
 	}
 	if (found) {
-	  annots.free ();
 	  break;
 	} else {
-          annotObj.free ();
+          annotObj.setToNull ();
 	}
       }
-      annots.free ();
     }
   }
 
   if (annotObj.isDict ()) {
     Object tmp;
 
-    annot = new AnnotMovie (document->doc, annotObj.getDict(), &tmp);
+    annot = new AnnotMovie (document->doc, std::move(annotObj), &tmp);
     if (!annot->isOk ()) {
       delete annot;
-      annot = NULL;
+      annot = nullptr;
     }
   }
-  annotObj.free ();
 
   return annot;
 }
@@ -494,7 +493,7 @@ find_annot_movie_for_action (PopplerDocument *document,
 static void
 build_movie (PopplerDocument *document,
 	     PopplerAction   *action,
-	     LinkMovie       *link)
+	     const LinkMovie       *link)
 {
 	AnnotMovie *annot;
 
@@ -523,9 +522,9 @@ build_movie (PopplerDocument *document,
 
 static void
 build_javascript (PopplerAction *action,
-		  LinkJavaScript *link)
+		  const LinkJavaScript *link)
 {
-	GooString *script;
+	const GooString *script;
 
 	script = link->getScript();
 	if (script)
@@ -535,7 +534,7 @@ build_javascript (PopplerAction *action,
 
 static void
 build_rendition (PopplerAction *action,
-		 LinkRendition *link)
+		 const LinkRendition *link)
 {
 	action->rendition.op = link->getOperation();
 	if (link->hasRenditionObject())
@@ -555,10 +554,10 @@ get_layer_for_ref (PopplerDocument *document,
 		Layer *layer = (Layer *)l->data;
 
 		if (layer->oc) {
-			Ref ocgRef = layer->oc->getRef();
+			const Ref ocgRef = layer->oc->getRef();
 
-			if (ref->num == ocgRef.num && ref->gen == ocgRef.gen) {
-				GList *rb_group = NULL;
+			if (*ref == ocgRef) {
+				GList *rb_group = nullptr;
 
 				if (preserve_rb)
 					rb_group = _poppler_document_get_layer_rbgroup (document, layer);
@@ -573,27 +572,26 @@ get_layer_for_ref (PopplerDocument *document,
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 static void
 build_ocg_state (PopplerDocument *document,
 		 PopplerAction   *action,
-		 LinkOCGState    *ocg_state)
+		 const LinkOCGState    *ocg_state)
 {
-	GooList *st_list = ocg_state->getStateList();
-	GBool    preserve_rb = ocg_state->getPreserveRB();
-	gint     i, j;
-	GList   *layer_state = NULL;
+	const std::vector<LinkOCGState::StateList*> *st_list = ocg_state->getStateList();
+	bool    preserve_rb = ocg_state->getPreserveRB();
+	GList   *layer_state = nullptr;
 
 	if (!document->layers) {
 		if (!_poppler_document_get_layers (document))
 			return;
 	}
 
-	for (i = 0; i < st_list->getLength(); ++i) {
-		LinkOCGState::StateList *list = (LinkOCGState::StateList *)st_list->get(i);
-		PopplerActionLayer *action_layer = g_new0 (PopplerActionLayer, 1);
+	for (std::size_t i = 0; i < st_list->size(); ++i) {
+		LinkOCGState::StateList *list = (*st_list)[i];
+		PopplerActionLayer *action_layer = g_slice_new0 (PopplerActionLayer);
 
 		switch (list->st) {
 		case LinkOCGState::On:
@@ -607,8 +605,8 @@ build_ocg_state (PopplerDocument *document,
 			break;
 		}
 
-		for (j = 0; j < list->list->getLength(); ++j) {
-			Ref *ref = (Ref *)list->list->get(j);
+		for (std::size_t j = 0; j < list->list->size(); ++j) {
+			Ref *ref = (*list->list)[j];
 			PopplerLayer *layer = get_layer_for_ref (document, document->layers, ref, preserve_rb);
 
 			action_layer->layers = g_list_prepend (action_layer->layers, layer);
@@ -622,7 +620,7 @@ build_ocg_state (PopplerDocument *document,
 
 PopplerAction *
 _poppler_action_new (PopplerDocument *document,
-		     LinkAction      *link,
+		     const LinkAction      *link,
 		     const gchar     *title)
 {
 	PopplerAction *action;
@@ -632,7 +630,7 @@ _poppler_action_new (PopplerDocument *document,
 	if (title)
 		action->any.title = g_strdup (title);
 
-	if (link == NULL) {
+	if (link == nullptr) {
 		action->type = POPPLER_ACTION_NONE;
 		return action;
 	}
@@ -640,39 +638,39 @@ _poppler_action_new (PopplerDocument *document,
 	switch (link->getKind ()) {
 	case actionGoTo:
 		action->type = POPPLER_ACTION_GOTO_DEST;
-		build_goto_dest (document, action, dynamic_cast <LinkGoTo *> (link));
+		build_goto_dest (document, action, dynamic_cast <const LinkGoTo *> (link));
 		break;
 	case actionGoToR:
 		action->type = POPPLER_ACTION_GOTO_REMOTE;
-		build_goto_remote (action, dynamic_cast <LinkGoToR *> (link));
+		build_goto_remote (action, dynamic_cast <const LinkGoToR *> (link));
 		break;
 	case actionLaunch:
 		action->type = POPPLER_ACTION_LAUNCH;
-		build_launch (action, dynamic_cast <LinkLaunch *> (link));
+		build_launch (action, dynamic_cast <const LinkLaunch *> (link));
 		break;
 	case actionURI:
 		action->type = POPPLER_ACTION_URI;
-		build_uri (action, dynamic_cast <LinkURI *> (link));
+		build_uri (action, dynamic_cast <const LinkURI *> (link));
 		break;
 	case actionNamed:
 		action->type = POPPLER_ACTION_NAMED;
-		build_named (action, dynamic_cast <LinkNamed *> (link));
+		build_named (action, dynamic_cast <const LinkNamed *> (link));
 		break;
 	case actionMovie:
 		action->type = POPPLER_ACTION_MOVIE;
-		build_movie (document, action, dynamic_cast<LinkMovie*> (link));
+		build_movie (document, action, dynamic_cast<const LinkMovie*> (link));
 		break;
 	case actionRendition:
 		action->type = POPPLER_ACTION_RENDITION;
-		build_rendition (action, dynamic_cast<LinkRendition*> (link));
+		build_rendition (action, dynamic_cast<const LinkRendition*> (link));
 		break;
 	case actionOCGState:
 		action->type = POPPLER_ACTION_OCG_STATE;
-		build_ocg_state (document, action, dynamic_cast<LinkOCGState*> (link));
+		build_ocg_state (document, action, dynamic_cast<const LinkOCGState*> (link));
 		break;
 	case actionJavaScript:
 		action->type = POPPLER_ACTION_JAVASCRIPT;
-		build_javascript (action, dynamic_cast<LinkJavaScript*> (link));
+		build_javascript (action, dynamic_cast<const LinkJavaScript*> (link));
 		break;
 	case actionUnknown:
 	default:

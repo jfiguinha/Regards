@@ -5,6 +5,8 @@
 class TestMetaData: public QObject
 {
     Q_OBJECT
+public:
+    TestMetaData(QObject *parent = nullptr) : QObject(parent) { }
 private slots:
     void checkStrings_data();
     void checkStrings();
@@ -85,8 +87,8 @@ void TestMetaData::checkStringKeys()
     QVERIFY( doc );
 
     QStringList keyList;
-    keyList << "Title" << "Author" << "Creator" << "Keywords" << "CreationDate";
-    keyList << "Producer" << "ModDate" << "Custom1" << "Custom2";
+    keyList << QStringLiteral("Title") << QStringLiteral("Author") << QStringLiteral("Creator") << QStringLiteral("Keywords") << QStringLiteral("CreationDate");
+    keyList << QStringLiteral("Producer") << QStringLiteral("ModDate") << QStringLiteral("Custom1") << QStringLiteral("Custom2");
     keyList.sort();
     QStringList keysInDoc = doc->infoKeys();
     keysInDoc.sort();
@@ -147,8 +149,8 @@ void TestMetaData::checkDate()
 
     doc = Poppler::Document::load(TESTDATADIR "/unittestcases/truetype.pdf");
     QVERIFY( doc );
-    QCOMPARE( doc->date("ModDate"), QDateTime(QDate(2005, 12, 5), QTime(9,44,46), Qt::UTC ) );
-    QCOMPARE( doc->date("CreationDate"), QDateTime(QDate(2005, 8, 13), QTime(1,12,11), Qt::UTC ) );
+    QCOMPARE( doc->date(QStringLiteral("ModDate")), QDateTime(QDate(2005, 12, 5), QTime(9,44,46), Qt::UTC ) );
+    QCOMPARE( doc->date(QStringLiteral("CreationDate")), QDateTime(QDate(2005, 8, 13), QTime(1,12,11), Qt::UTC ) );
 
     delete doc;
 }
@@ -232,18 +234,18 @@ void TestMetaData::checkPdfId()
 
     {
     // no IDs wanted, just existance check
-    QVERIFY( doc->getPdfId( 0, 0 ) );
+    QVERIFY( doc->getPdfId( nullptr, nullptr ) );
     }
     {
     // only permanent ID
     QByteArray permanentId;
-    QVERIFY( doc->getPdfId( &permanentId, 0 ) );
+    QVERIFY( doc->getPdfId( &permanentId, nullptr ) );
     QCOMPARE( permanentId.toUpper(), referencePermanentId );
     }
     {
     // only update ID
     QByteArray updateId;
-    QVERIFY( doc->getPdfId( 0, &updateId ) );
+    QVERIFY( doc->getPdfId( nullptr, &updateId ) );
     QCOMPARE( updateId.toUpper(), referenceUpdateId );
     }
     {
@@ -264,11 +266,11 @@ void TestMetaData::checkNoPdfId()
     doc = Poppler::Document::load(TESTDATADIR "/unittestcases/WithActualText.pdf");
     QVERIFY( doc );
 
-    QVERIFY( !doc->getPdfId( 0, 0 ) );
+    QVERIFY( !doc->getPdfId( nullptr, nullptr ) );
 
     delete doc;
 }
 
-QTEST_MAIN(TestMetaData)
+QTEST_GUILESS_MAIN(TestMetaData)
 #include "check_metadata.moc"
 

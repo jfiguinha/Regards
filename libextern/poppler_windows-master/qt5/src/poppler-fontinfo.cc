@@ -4,6 +4,9 @@
  * Copyright (C) 2005, Brad Hards <bradh@frogmouth.net>
  * Copyright (C) 2005-2008, 2015, Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2008, 2009, Pino Toscano <pino@kde.org>
+ * Copyright (C) 2018, Adam Reichold <adam.reichold@t-online.de>
+ * Copyright (C) 2019, Oliver Sander <oliver.sander@tu-dresden.de>
+ * Copyright (C) 2019, Jan Grulich <jgrulich@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +51,11 @@ FontInfo::~FontInfo()
 QString FontInfo::name() const
 {
 	return m_data->fontName;
+}
+
+QString FontInfo::substituteName() const
+{
+	return m_data->fontSubstituteName;
 }
 
 QString FontInfo::file() const
@@ -126,14 +134,18 @@ QList<FontInfo> FontIterator::next()
 	++d->currentPage;
 
 	QList<FontInfo> fonts;
-	GooList *items = d->fontInfoScanner.scan( 1 );
+	std::vector<::FontInfo*> *items = d->fontInfoScanner.scan( 1 );
 	if ( !items )
 		return fonts;
-	fonts.reserve( items->getLength() );
-	for ( int i = 0; i < items->getLength(); ++i ) {
-		fonts.append( FontInfo( FontInfoData( ( ::FontInfo* )items->get( i ) ) ) );
+	fonts.reserve( items->size() );
+	for ( std::size_t i = 0; i < items->size(); ++i ) {
+		fonts.append( FontInfo( FontInfoData( (*items)[ i ] ) ) );
 	}
-	deleteGooList( items, ::FontInfo );
+	for ( auto entry : *items ) {
+		delete entry;
+	}
+	delete items;
+
 	return fonts;
 }
 

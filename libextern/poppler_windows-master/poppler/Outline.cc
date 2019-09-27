@@ -14,8 +14,13 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2005 Marco Pesenti Gritti <mpg@redhat.com>
-// Copyright (C) 2008 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2008, 2016-2019 Albert Astals Cid <aacid@kde.org>
 // Copyright (C) 2009 Nick Jones <nick.jones@network-box.com>
+// Copyright (C) 2016 Jason Crain <jason@aquaticape.us>
+// Copyright (C) 2017 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+// Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+// Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -24,101 +29,76 @@
 
 #include <config.h>
 
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
-
-#include <algorithm>
-using std::min;
-using std::max;
-
-
-
 #include "goo/gmem.h"
 #include "goo/GooString.h"
-#include "goo/GooList.h"
 #include "XRef.h"
 #include "Link.h"
 #include "PDFDocEncoding.h"
 #include "Outline.h"
+#include "UTF.h"
 
 //------------------------------------------------------------------------
 
-Outline::Outline(Object *outlineObj, XRef *xref) {
-  Object first, last;
-
-  items = NULL;
+Outline::Outline(const Object *outlineObj, XRef *xref) {
+  items = nullptr;
   if (!outlineObj->isDict()) {
     return;
   }
-  items = OutlineItem::readItemList(outlineObj->dictLookupNF("First", &first),
-				    outlineObj->dictLookupNF("Last", &last),
-				    xref);
-  first.free();
-  last.free();
+  const Object &first = outlineObj->dictLookupNF("First");
+  items = OutlineItem::readItemList(nullptr, &first, xref);
 }
 
 Outline::~Outline() {
   if (items) {
-    deleteGooList(items, OutlineItem);
+    for (auto entry : *items) {
+      delete entry;
+    }
+    delete items;
   }
 }
 
 //------------------------------------------------------------------------
 
-OutlineItem::OutlineItem(Dict *dict, XRef *xrefA) {
+OutlineItem::OutlineItem(const Dict *dict, int refNumA, OutlineItem *parentA, XRef *xrefA) {
   Object obj1;
-  GooString *s;
-  int i;
 
+  refNum = refNumA;
+  parent = parentA;
   xref = xrefA;
-  title = NULL;
-  action = NULL;
-  kids = NULL;
+  title = nullptr;
+  action = nullptr;
+  kids = nullptr;
 
-  if (dict->lookup("Title", &obj1)->isString()) {
-    s = obj1.getString();
-    if ((s->getChar(0) & 0xff) == 0xfe &&
-	(s->getChar(1) & 0xff) == 0xff) {
-      titleLen = (s->getLength() - 2) / 2;
-      title = (Unicode *)gmallocn(titleLen, sizeof(Unicode));
-      for (i = 0; i < titleLen; ++i) {
-	title[i] = ((s->getChar(2 + 2*i) & 0xff) << 8) |
-	           (s->getChar(3 + 2*i) & 0xff);
-      }
-    } else {
-      titleLen = s->getLength();
-      title = (Unicode *)gmallocn(titleLen, sizeof(Unicode));
-      for (i = 0; i < titleLen; ++i) {
-	title[i] = pdfDocEncoding[s->getChar(i) & 0xff];
-      }
-    }
+
+  obj1 = dict->lookup("Title");
+  if (obj1.isString()) {
+    const GooString *s = obj1.getString();
+    titleLen = TextStringToUCS4(s, &title);
   } else {
     titleLen = 0;
   }
-  obj1.free();
 
-  if (!dict->lookup("Dest", &obj1)->isNull()) {
+  obj1 = dict->lookup("Dest");
+  if (!obj1.isNull()) {
     action = LinkAction::parseDest(&obj1);
   } else {
-      obj1.free();
-    if (!dict->lookup("A", &obj1)->isNull()) {
-        action = LinkAction::parseAction(&obj1);
-  }
-  }
-  obj1.free();
-
-  dict->lookupNF("First", &firstRef);
-  dict->lookupNF("Last", &lastRef);
-  dict->lookupNF("Next", &nextRef);
-
-  startsOpen = gFalse;
-  if (dict->lookup("Count", &obj1)->isInt()) {
-    if (obj1.getInt() > 0) {
-      startsOpen = gTrue;
+    obj1 = dict->lookup("A");
+    if (!obj1.isNull()) {
+      action = LinkAction::parseAction(&obj1);
     }
   }
-  obj1.free();
+
+  firstRef = dict->lookupNF("First").copy();
+  lastRef = dict->lookupNF("Last").copy();
+  nextRef = dict->lookupNF("Next").copy();
+
+  startsOpen = false;
+  obj1 = dict->lookup("Count");
+  if (obj1.isInt()) {
+    if (obj1.getInt() > 0) {
+      startsOpen = true;
+    }
+  }
 }
 
 OutlineItem::~OutlineItem() {
@@ -129,52 +109,40 @@ OutlineItem::~OutlineItem() {
   if (action) {
     delete action;
   }
-  firstRef.free();
-  lastRef.free();
-  nextRef.free();
 }
 
-GooList *OutlineItem::readItemList(Object *firstItemRef, Object *lastItemRef,
-				 XRef *xrefA) {
-  GooList *items;
-  char* alreadyRead;
-  OutlineItem *item;
-  Object obj;
-  Object *p;
+std::vector<OutlineItem*> *OutlineItem::readItemList(OutlineItem *parent, const Object *firstItemRef, XRef *xrefA) {
+  auto items = new std::vector<OutlineItem*>();
 
-  if (!lastItemRef->isRef())
-    return NULL;
-
-  items = new GooList();
-
-  alreadyRead = (char *)gmalloc(xrefA->getNumObjects());
+  char* alreadyRead = (char *)gmalloc(xrefA->getNumObjects());
   memset(alreadyRead, 0, xrefA->getNumObjects());
 
-  p = firstItemRef;
+  OutlineItem *parentO = parent;
+  while (parentO) {
+    alreadyRead[parentO->refNum] = 1;
+    parentO = parentO->parent;
+  }
+
+  const Object *p = firstItemRef;
   while (p->isRef() && 
 	 (p->getRefNum() >= 0) && 
-         (p->getRefNum() < xrefA->getNumObjects()) && 
+         (p->getRefNum() < xrefA->getNumObjects()) &&
          !alreadyRead[p->getRefNum()]) {
-    if (!p->fetch(xrefA, &obj)->isDict()) {
-      obj.free();
+    Object obj = p->fetch(xrefA);
+    if (!obj.isDict()) {
       break;
     }
     alreadyRead[p->getRefNum()] = 1;
-    item = new OutlineItem(obj.getDict(), xrefA);
-    obj.free();
-    items->append(item);
-    if (p->getRef().num == lastItemRef->getRef().num &&
-	p->getRef().gen == lastItemRef->getRef().gen) {
-      break;
-    }
+    OutlineItem *item = new OutlineItem(obj.getDict(), p->getRefNum(), parent, xrefA);
+    items->push_back(item);
     p = &item->nextRef;
   }
 
   gfree(alreadyRead);
 
-  if (!items->getLength()) {
+  if (items->empty()) {
     delete items;
-    items = NULL;
+    items = nullptr;
   }
 
   return items;
@@ -182,13 +150,16 @@ GooList *OutlineItem::readItemList(Object *firstItemRef, Object *lastItemRef,
 
 void OutlineItem::open() {
   if (!kids) {
-    kids = readItemList(&firstRef, &lastRef, xref);
+    kids = readItemList(this, &firstRef, xref);
   }
 }
 
 void OutlineItem::close() {
   if (kids) {
-    deleteGooList(kids, OutlineItem);
-    kids = NULL;
+    for (auto entry : *kids) {
+      delete entry;
+    }
+    delete kids;
+    kids = nullptr;
   }
 }

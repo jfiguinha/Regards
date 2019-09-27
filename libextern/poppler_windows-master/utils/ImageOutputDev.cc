@@ -13,16 +13,18 @@
 // All changes made under the Poppler project to this file are licensed
 // under GPL version 2 or later
 //
-// Copyright (C) 2005, 2007, 2011 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2005, 2007, 2011, 2018, 2019 Albert Astals Cid <aacid@kde.org>
 // Copyright (C) 2006 Rainer Keller <class321@gmx.de>
 // Copyright (C) 2008 Timothy Lee <timothy.lee@siriushk.com>
 // Copyright (C) 2008 Vasile Gaburici <gaburici@cs.umd.edu>
 // Copyright (C) 2009 Carlos Garcia Campos <carlosgc@gnome.org>
 // Copyright (C) 2009 William Bader <williambader@hotmail.com>
 // Copyright (C) 2010 Jakob Voss <jakob.voss@gbv.de>
-// Copyright (C) 2012, 2013 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2012, 2013, 2017, 2018 Adrian Johnson <ajohnson@redneon.com>
 // Copyright (C) 2013 Thomas Fischer <fischer@unix-ag.uni-kl.de>
 // Copyright (C) 2013 Hib Eris <hib@hiberis.nl>
+// Copyright (C) 2017 Caolán McNamara <caolanm@redhat.com>
+// Copyright (C) 2018 Andreas Gruenbacher <agruenba@redhat.com>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -31,10 +33,6 @@
 
 #include "config.h"
 #include <poppler-config.h>
-
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,22 +50,22 @@
 #include "JBIG2Stream.h"
 #include "ImageOutputDev.h"
 
-ImageOutputDev::ImageOutputDev(char *fileRootA, GBool pageNamesA, GBool listImagesA) {
+ImageOutputDev::ImageOutputDev(char *fileRootA, bool pageNamesA, bool listImagesA) {
   listImages = listImagesA;
   if (!listImages) {
     fileRoot = copyString(fileRootA);
     fileName = (char *)gmalloc(strlen(fileRoot) + 45);
   }
-  outputPNG = gFalse;
-  outputTiff = gFalse;
-  dumpJPEG =  gFalse;
-  dumpJP2 = gFalse;
-  dumpJBIG2 = gFalse;
-  dumpCCITT = gFalse;
+  outputPNG = false;
+  outputTiff = false;
+  dumpJPEG =  false;
+  dumpJP2 = false;
+  dumpJBIG2 = false;
+  dumpCCITT = false;
   pageNames = pageNamesA;
   imgNum = 0;
   pageNum = 0;
-  ok = gTrue;
+  ok = true;
   if (listImages) {
     printf("page   num  type   width height color comp bpc  enc interp  object ID x-ppi y-ppi size ratio\n");
     printf("--------------------------------------------------------------------------------------------\n");
@@ -121,7 +119,7 @@ static void printNumber(double d)
 void ImageOutputDev::listImage(GfxState *state, Object *ref, Stream *str,
 			       int width, int height,
 			       GfxImageColorMap *colorMap,
-			       GBool interpolate, GBool inlineImg,
+			       bool interpolate, bool inlineImg,
 			       ImageType imageType) {
   const char *type;
   const char *colorspace;
@@ -230,7 +228,7 @@ void ImageOutputDev::listImage(GfxState *state, Object *ref, Stream *str,
     printf("[none]     ");
   }
 
-  double *mat = state->getCTM();
+  const double *mat = state->getCTM();
   double width2 = mat[0] + mat[2];
   double height2 = mat[1] + mat[3];
   double xppi = fabs(width*72.0/width2) + 0.5;
@@ -245,7 +243,9 @@ void ImageOutputDev::listImage(GfxState *state, Object *ref, Stream *str,
     printf("%5.0f ", yppi);
 
   Goffset embedSize = -1;
-  if (!inlineImg)
+  if (inlineImg)
+    embedSize = getInlineImageLength(str, width, height, colorMap);
+  else
     embedSize = str->getBaseStream()->getLength();
 
   long long imageSize = 0;
@@ -288,6 +288,40 @@ void ImageOutputDev::listImage(GfxState *state, Object *ref, Stream *str,
     printf("   - \n");
 
   ++imgNum;
+
+}
+
+long ImageOutputDev::getInlineImageLength(Stream *str, int width, int height,
+                                          GfxImageColorMap *colorMap) {
+  long len;
+
+  if (colorMap) {
+    ImageStream *imgStr = new ImageStream(str, width, colorMap->getNumPixelComps(),
+                                          colorMap->getBits());
+    imgStr->reset();
+    for (int y = 0; y < height; y++)
+      imgStr->getLine();
+
+    imgStr->close();
+    delete imgStr;
+  } else {
+    str->reset();
+    for (int y = 0; y < height; y++) {
+      int size = (width + 7)/8;
+      for (int x = 0; x < size; x++)
+        str->getChar();
+    }
+  }
+
+  EmbedStream *embedStr = (EmbedStream *) (str->getBaseStream());
+  embedStr->rewind();
+  len = 0;
+  while (embedStr->getChar() != EOF)
+    len++;
+
+  embedStr->restore();
+
+  return len;
 }
 
 void ImageOutputDev::writeRawImage(Stream *str, const char *ext) {
@@ -316,27 +350,29 @@ void ImageOutputDev::writeRawImage(Stream *str, const char *ext) {
 
 void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const char *ext,
                                     Stream *str, int width, int height, GfxImageColorMap *colorMap) {
-  FILE *f;
-  ImageStream *imgStr = NULL;
+  FILE *f = nullptr; /* squelch bogus compiler warning */
+  ImageStream *imgStr = nullptr;
   unsigned char *row;
   unsigned char *rowp;
-  Guchar *p;
+  unsigned char *p;
   GfxRGB rgb;
   GfxCMYK cmyk;
   GfxGray gray;
-  Guchar zero = 0;
+  unsigned char zero[gfxColorMaxComps];
   int invert_bits;
 
-  setFilename(ext);
-  ++imgNum;
-  if (!(f = fopen(fileName, "wb"))) {
-    error(errIO, -1, "Couldn't open image file '{0:s}'", fileName);
-    return;
-  }
+  if (writer) {
+    setFilename(ext);
+    ++imgNum;
+    if (!(f = fopen(fileName, "wb"))) {
+      error(errIO, -1, "Couldn't open image file '{0:s}'", fileName);
+      return;
+    }
 
-  if (!writer->init(f, width, height, 72, 72)) {
-    error(errIO, -1, "Error writing '{0:s}'", fileName);
-    return;
+    if (!writer->init(f, width, height, 72, 72)) {
+      error(errIO, -1, "Error writing '{0:s}'", fileName);
+      return;
+    }
   }
 
   if (format != imgMonochrome) {
@@ -349,7 +385,11 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
     str->reset();
   }
 
-  row = (unsigned char *) gmallocn(width, sizeof(unsigned int));
+  int pixelSize = sizeof(unsigned int);
+  if (format == imgRGB48)
+    pixelSize = 2*sizeof(unsigned int);
+
+  row = (unsigned char *) gmallocn(width, pixelSize);
 
   // PDF masks use 0 = draw current color, 1 = leave unchanged.
   // We invert this to provide the standard interpretation of alpha
@@ -357,7 +397,8 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
   // the mask we leave the data unchanged.
   invert_bits = 0xff;
   if (colorMap) {
-    colorMap->getGray(&zero, &gray);
+    memset(zero, 0, sizeof(zero));
+    colorMap->getGray(zero, &gray);
     if (colToByte(gray) == 0)
       invert_bits = 0x00;
   }
@@ -381,8 +422,30 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
           *rowp++ = 0;
         }
       }
-      writer->writeRow(&row);
+      if (writer)
+	writer->writeRow(&row);
       break;
+
+    case imgRGB48: {
+      p = imgStr->getLine();
+      unsigned short *rowp16 = reinterpret_cast<unsigned short*>(row);
+      for (int x = 0; x < width; ++x) {
+	if (p) {
+	  colorMap->getRGB(p, &rgb);
+	  *rowp16++ = colToShort(rgb.r);
+	  *rowp16++ = colToShort(rgb.g);
+	  *rowp16++ = colToShort(rgb.b);
+	  p += colorMap->getNumPixelComps();
+	} else {
+	  *rowp16++ = 0;
+	    *rowp16++ = 0;
+	    *rowp16++ = 0;
+	}
+      }
+      if (writer)
+	writer->writeRow(&row);
+      break;
+    }
 
     case imgCMYK:
       p = imgStr->getLine();
@@ -402,7 +465,8 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
           *rowp++ = 0;
         }
       }
-      writer->writeRow(&row);
+      if (writer)
+	writer->writeRow(&row);
       break;
 
     case imgGray:
@@ -417,14 +481,16 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
           *rowp++ = 0;
         }
       }
-      writer->writeRow(&row);
+      if (writer)
+	writer->writeRow(&row);
       break;
 
     case imgMonochrome:
       int size = (width + 7)/8;
       for (int x = 0; x < size; x++)
         row[x] = str->getChar() ^ invert_bits;
-      writer->writeRow(&row);
+      if (writer)
+	writer->writeRow(&row);
       break;
     }
   }
@@ -435,20 +501,27 @@ void ImageOutputDev::writeImageFile(ImgWriter *writer, ImageFormat format, const
     delete imgStr;
   }
   str->close();
-  writer->close();
-  fclose(f);
+  if (writer) {
+    writer->close();
+    fclose(f);
+  }
 }
 
 void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
 				int width, int height,
-				GfxImageColorMap *colorMap, GBool inlineImg) {
+				GfxImageColorMap *colorMap, bool inlineImg) {
   ImageFormat format;
+  EmbedStream *embedStr;
 
-  if (dumpJPEG && str->getKind() == strDCT &&
-      (colorMap->getNumPixelComps() == 1 ||
-       colorMap->getNumPixelComps() == 3) &&
-      !inlineImg) {
+  if (inlineImg) {
+      embedStr = (EmbedStream *) (str->getBaseStream());
+      // Record the stream. This determines the size.
+      getInlineImageLength(str, width, height, colorMap);
+      // Reading the stream again will return EOF at end of recording.
+      embedStr->rewind();
+  }
 
+  if (dumpJPEG && str->getKind() == strDCT) {
     // dump JPEG file
     writeRawImage(str, "jpg");
 
@@ -463,24 +536,24 @@ void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
     if (globals->isStream()) {
       FILE *f;
       int c;
-      Stream *str = globals->getStream();
+      Stream *globalsStr = globals->getStream();
 
       setFilename("jb2g");
       if (!(f = fopen(fileName, "wb"))) {
         error(errIO, -1, "Couldn't open image file '{0:s}'", fileName);
         return;
       }
-      str->reset();
-      while ((c = str->getChar()) != EOF)
+      globalsStr->reset();
+      while ((c = globalsStr->getChar()) != EOF)
         fputc(c, f);
-      str->close();
+      globalsStr->close();
       fclose(f);
     }
 
     // dump JBIG2 embedded file
     writeRawImage(str, "jb2e");
 
-  } else if (dumpCCITT && str->getKind() == strCCITTFax && !inlineImg) {
+  } else if (dumpCCITT && str->getKind() == strCCITTFax) {
     // write CCITT parameters
     CCITTFaxStream *ccittStr = static_cast<CCITTFaxStream *>(str);
     FILE *f;
@@ -519,10 +592,9 @@ void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
                             (colorMap->getColorSpace()->getMode() == csDeviceCMYK ||
                              (colorMap->getColorSpace()->getMode() == csICCBased &&
                               colorMap->getNumPixelComps() == 4)))) {
-
     // output in PNG format
 
-#if ENABLE_LIBPNG
+#ifdef ENABLE_LIBPNG
     ImgWriter *writer;
 
     if (!colorMap || (colorMap->getNumPixelComps() == 1 && colorMap->getBits() == 1)) {
@@ -532,18 +604,25 @@ void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
                colorMap->getColorSpace()->getMode() == csCalGray) {
       writer = new PNGWriter(PNGWriter::GRAY);
       format = imgGray;
+    } else if ((colorMap->getColorSpace()->getMode() == csDeviceRGB ||
+		colorMap->getColorSpace()->getMode() == csCalRGB ||
+		(colorMap->getColorSpace()->getMode() == csICCBased && colorMap->getNumPixelComps() == 3)) &&
+	       colorMap->getBits() > 8) {
+      writer = new PNGWriter(PNGWriter::RGB48);
+      format = imgRGB48;
     } else {
       writer = new PNGWriter(PNGWriter::RGB);
       format = imgRGB;
     }
 
     writeImageFile(writer, format, "png", str, width, height, colorMap);
-#endif
 
+    delete writer;
+#endif
   } else if (outputTiff) {
     // output in TIFF format
 
-#if ENABLE_LIBTIFF
+#ifdef ENABLE_LIBTIFF
     ImgWriter *writer;
 
     if (!colorMap || (colorMap->getNumPixelComps() == 1 && colorMap->getBits() == 1)) {
@@ -557,14 +636,21 @@ void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
                (colorMap->getColorSpace()->getMode() == csICCBased && colorMap->getNumPixelComps() == 4)) {
       writer = new TiffWriter(TiffWriter::CMYK);
       format = imgCMYK;
+    } else if ((colorMap->getColorSpace()->getMode() == csDeviceRGB ||
+		colorMap->getColorSpace()->getMode() == csCalRGB ||
+		(colorMap->getColorSpace()->getMode() == csICCBased && colorMap->getNumPixelComps() == 3)) &&
+	       colorMap->getBits() > 8) {
+      writer = new TiffWriter(TiffWriter::RGB48);
+      format = imgRGB48;
     } else {
       writer = new TiffWriter(TiffWriter::RGB);
       format = imgRGB;
     }
 
     writeImageFile(writer, format, "tif", str, width, height, colorMap);
-#endif
 
+    delete writer;
+#endif
   } else {
     // output in PPM/PBM format
     ImgWriter *writer;
@@ -583,30 +669,33 @@ void ImageOutputDev::writeImage(GfxState *state, Object *ref, Stream *str,
 
     delete writer;
   }
+
+  if (inlineImg)
+      embedStr->restore();
 }
 
-GBool ImageOutputDev::tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *cat, Object *str,
-				  double *pmat, int paintType, int tilingType, Dict *resDict,
-				  double *mat, double *bbox,
+bool ImageOutputDev::tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *cat, Object *str,
+				  const double *pmat, int paintType, int tilingType, Dict *resDict,
+				  const double *mat, const double *bbox,
 				  int x0, int y0, int x1, int y1,
 				  double xStep, double yStep) {
-  return gTrue;
+  return true;
   // do nothing -- this avoids the potentially slow loop in Gfx.cc
 }
 
 void ImageOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
-				   int width, int height, GBool invert,
-				   GBool interpolate, GBool inlineImg) {
+				   int width, int height, bool invert,
+				   bool interpolate, bool inlineImg) {
   if (listImages)
-    listImage(state, ref, str, width, height, NULL, interpolate, inlineImg, imgStencil);
+    listImage(state, ref, str, width, height, nullptr, interpolate, inlineImg, imgStencil);
   else
-    writeImage(state, ref, str, width, height, NULL, inlineImg);
+    writeImage(state, ref, str, width, height, nullptr, inlineImg);
 }
 
 void ImageOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
 			       int width, int height,
 			       GfxImageColorMap *colorMap,
-			       GBool interpolate, int *maskColors, GBool inlineImg) {
+			       bool interpolate, int *maskColors, bool inlineImg) {
   if (listImages)
     listImage(state, ref, str, width, height, colorMap, interpolate, inlineImg, imgImage);
   else
@@ -615,27 +704,27 @@ void ImageOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
 
 void ImageOutputDev::drawMaskedImage(
   GfxState *state, Object *ref, Stream *str,
-  int width, int height, GfxImageColorMap *colorMap, GBool interpolate,
-  Stream *maskStr, int maskWidth, int maskHeight, GBool maskInvert, GBool maskInterpolate) {
+  int width, int height, GfxImageColorMap *colorMap, bool interpolate,
+  Stream *maskStr, int maskWidth, int maskHeight, bool maskInvert, bool maskInterpolate) {
   if (listImages) {
-    listImage(state, ref, str, width, height, colorMap, interpolate, gFalse, imgImage);
-    listImage(state, ref, str, maskWidth, maskHeight, NULL, maskInterpolate, gFalse, imgMask);
+    listImage(state, ref, str, width, height, colorMap, interpolate, false, imgImage);
+    listImage(state, ref, str, maskWidth, maskHeight, nullptr, maskInterpolate, false, imgMask);
   } else {
-    writeImage(state, ref, str, width, height, colorMap, gFalse);
-    writeImage(state, ref, maskStr, maskWidth, maskHeight, NULL, gFalse);
+    writeImage(state, ref, str, width, height, colorMap, false);
+    writeImage(state, ref, maskStr, maskWidth, maskHeight, nullptr, false);
   }
 }
 
 void ImageOutputDev::drawSoftMaskedImage(
   GfxState *state, Object *ref, Stream *str,
-  int width, int height, GfxImageColorMap *colorMap, GBool interpolate,
+  int width, int height, GfxImageColorMap *colorMap, bool interpolate,
   Stream *maskStr, int maskWidth, int maskHeight,
-  GfxImageColorMap *maskColorMap, GBool maskInterpolate) {
+  GfxImageColorMap *maskColorMap, bool maskInterpolate) {
   if (listImages) {
-    listImage(state, ref, str, width, height, colorMap, interpolate, gFalse, imgImage);
-    listImage(state, ref, maskStr, maskWidth, maskHeight, maskColorMap, maskInterpolate, gFalse, imgSmask);
+    listImage(state, ref, str, width, height, colorMap, interpolate, false, imgImage);
+    listImage(state, ref, maskStr, maskWidth, maskHeight, maskColorMap, maskInterpolate, false, imgSmask);
   } else {
-    writeImage(state, ref, str, width, height, colorMap, gFalse);
-    writeImage(state, ref, maskStr, maskWidth, maskHeight, maskColorMap, gFalse);
+    writeImage(state, ref, str, width, height, colorMap, false);
+    writeImage(state, ref, maskStr, maskWidth, maskHeight, maskColorMap, false);
   }
 }

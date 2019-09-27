@@ -28,14 +28,14 @@ class OptContentDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    OptContentDock(QWidget *parent = 0);
+    OptContentDock(QWidget *parent = nullptr);
     ~OptContentDock();
 
-    /*virtual*/ void documentLoaded();
-    /*virtual*/ void documentClosed();
+    void documentLoaded() override;
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private Q_SLOTS:
     void reloadImage();

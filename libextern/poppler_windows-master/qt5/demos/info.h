@@ -28,13 +28,13 @@ class InfoDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    InfoDock(QWidget *parent = 0);
+    InfoDock(QWidget *parent = nullptr);
     ~InfoDock();
 
-    /*virtual*/ void documentClosed();
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private:
     QTableWidget *m_table;

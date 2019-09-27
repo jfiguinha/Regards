@@ -36,10 +36,10 @@ class PdfViewer : public QMainWindow
     friend class DocumentObserver;
 
 public:
-    PdfViewer();
+    PdfViewer(QWidget *parent = nullptr);
     ~PdfViewer();
 
-    /*virtual*/ QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     void loadDocument(const QString &file);
     void closeDocument();

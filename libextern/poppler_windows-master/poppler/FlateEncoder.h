@@ -3,6 +3,7 @@
 // FlateEncoder.h
 //
 // Copyright (C) 2016, William Bader <williambader@hotmail.com>
+// Copyright (C) 2018 Albert Astals Cid <aacid@kde.org>
 //
 // This file is under the GPLv2 or later license
 //
@@ -10,10 +11,6 @@
 
 #ifndef FLATEENCODE_H
 #define FLATEENCODE_H
-
-#ifdef USE_GCC_PRAGMAS
-#pragma interface
-#endif
 
 #include "poppler-config.h"
 #include <stdio.h>
@@ -44,30 +41,30 @@ class FlateEncoder: public FilterStream {
 public:
 
   FlateEncoder(Stream *strA);
-  virtual ~FlateEncoder();
-  virtual StreamKind getKind() { return strWeird; }
-  virtual void reset();
-  virtual int getChar()
+  ~FlateEncoder();
+  StreamKind getKind() override { return strWeird; }
+  void reset() override;
+  int getChar() override
     { return (outBufPtr >= outBufEnd && !fillBuf()) ? EOF : (*outBufPtr++ & 0xff); }
-  virtual int lookChar()
+  int lookChar() override
     { return (outBufPtr >= outBufEnd && !fillBuf()) ? EOF : (*outBufPtr & 0xff); }
-  virtual GooString *getPSFilter(int psLevel, const char *indent) { return NULL; }
-  virtual GBool isBinary(GBool last = gTrue) { return gTrue; }
-  virtual GBool isEncoder() { return gTrue; }
+  GooString *getPSFilter(int psLevel, const char *indent) override { return nullptr; }
+  bool isBinary(bool last = true) override { return true; }
+  bool isEncoder() override { return true; }
 
 private:
 
   static const int inBufSize = 16384;
   static const int outBufSize = inBufSize;
-  Guchar inBuf[ inBufSize ];
-  Guchar outBuf[ outBufSize ];
-  Guchar *outBufPtr;
-  Guchar *outBufEnd;
-  GBool inBufEof;
-  GBool outBufEof;
+  unsigned char inBuf[ inBufSize ];
+  unsigned char outBuf[ outBufSize ];
+  unsigned char *outBufPtr;
+  unsigned char *outBufEnd;
+  bool inBufEof;
+  bool outBufEof;
   z_stream zlib_stream;
 
-  GBool fillBuf();
+  bool fillBuf();
 };
 
 #endif

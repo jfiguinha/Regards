@@ -2,6 +2,8 @@
  *
  * Copyright (C) 2007, Brad Hards <bradh@kde.org>
  * Copyright (C) 2008, Pino Toscano <pino@kde.org>
+ * Copyright (C) 2016, 2018, 2019, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2017, Hubert Figuière <hub@figuiere.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +62,7 @@ namespace Poppler
 
     QString name() const { return m_name; }
     ItemState state() const { return m_stateBackup; }
-    bool setState(ItemState state, QSet<OptContentItem *> &changedItems);
+    void setState(ItemState state, bool obeyRadioGroups, QSet<OptContentItem *> &changedItems);
 
     QList<OptContentItem*> childList() { return m_children; }
 
@@ -74,6 +76,8 @@ namespace Poppler
     bool isEnabled() const { return m_enabled; }
 
     QSet<OptContentItem*> recurseListChildren(bool includeMe = false) const;
+
+    OptionalContentGroup *group() const { return m_group; }
 
     private:
     OptionalContentGroup *m_group;
@@ -92,6 +96,9 @@ namespace Poppler
     OptContentModelPrivate( OptContentModel *qq, OCGs *optContent );
     ~OptContentModelPrivate();
 
+    OptContentModelPrivate(const OptContentModelPrivate &) = delete;
+    OptContentModelPrivate& operator=(const OptContentModelPrivate &) = delete;
+
     void parseRBGroupsArray( Array *rBGroupArray );
     OptContentItem *nodeFromIndex(const QModelIndex &index, bool canBeNull = false) const;
     QModelIndex indexFromItem(OptContentItem *node, int column) const;
@@ -109,6 +116,7 @@ namespace Poppler
     OptContentModel *q;
 
     QMap<QString, OptContentItem*> m_optContentItems;
+    QList<OptContentItem*> m_headerOptContentItems;
     QList<RadioButtonGroup*> m_rbgroups;
     OptContentItem *m_rootNode;
 

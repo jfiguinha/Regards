@@ -168,7 +168,7 @@ pgd_selections_update_cursor (PgdSelectionsDemo *demo,
 	demo->cursor = cursor_type;
 
 	gdk_window_set_cursor (window, cursor);
-	gdk_flush ();
+	gdk_display_flush (gtk_widget_get_display (demo->darea));
 	if (cursor)
 		g_object_unref (cursor);
 }
@@ -337,7 +337,7 @@ pgd_selections_drawing_area_realize (GtkWidget         *area,
 
         gtk_style_context_get_color (style_context, GTK_STATE_FLAG_SELECTED, &rgba);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (demo->fg_color_button), &rgba);
-        gtk_style_context_get_background_color (style_context, GTK_STATE_FLAG_SELECTED, &rgba);
+	gtk_style_context_get (style_context, GTK_STATE_FLAG_SELECTED, "background-color", &rgba, NULL);
 	gtk_color_chooser_set_rgba (GTK_COLOR_CHOOSER (demo->bg_color_button), &rgba);
 }
 

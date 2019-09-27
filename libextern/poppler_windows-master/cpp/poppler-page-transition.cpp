@@ -17,6 +17,9 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ \file poppler-page-transition.h
+ */
 #include "poppler-page-transition.h"
 
 #include "PageTransition.h"
@@ -45,7 +48,7 @@ public:
 /**
  \enum poppler::page_transition::type_enum
 
- The possibe types of a %page transition.
+ The possible types of a %page transition.
 */
 
 /**

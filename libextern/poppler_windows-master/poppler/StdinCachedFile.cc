@@ -10,11 +10,6 @@
 //
 //========================================================================
 
-#include <algorithm>
-using std::min;
-using std::max;
-
-
 #include <config.h>
 
 #include "StdinCachedFile.h"
@@ -34,7 +29,7 @@ size_t StdinCacheLoader::init(GooString *dummy, CachedFile *cachedFile)
   setmode(fileno(stdin), O_BINARY);
 #endif
 
-  CachedFileWriter writer = CachedFileWriter (cachedFile, NULL);
+  CachedFileWriter writer = CachedFileWriter (cachedFile, nullptr);
   do {
     read = fread(buf, 1, CachedFileChunkSize, stdin);
     (writer.write) (buf, CachedFileChunkSize);

@@ -8,6 +8,9 @@ Q_DECLARE_METATYPE(QTime)
 class TestDateConv: public QObject
 {
     Q_OBJECT
+public:
+    TestDateConv(QObject *parent = nullptr) : QObject(parent) {}
+
 private slots:
     void initTestCase();
     void checkDates_data();
@@ -102,7 +105,7 @@ void TestDateConv::checkDates()
     QFETCH(QDate, day);
     QFETCH(QTime, time);
 
-    QCOMPARE( Poppler::convertDate(input.data()), QDateTime(day, time, Qt::UTC) );
+    QCOMPARE( Poppler::convertDate(input.constData()), QDateTime(day, time, Qt::UTC) );
 }
 
 void TestDateConv::checkInvalidDates_data()
@@ -134,9 +137,9 @@ void TestDateConv::checkInvalidDates()
 {
     QFETCH(QByteArray, input);
 
-    QCOMPARE(Poppler::convertDate(input.data()), QDateTime());
+    QCOMPARE(Poppler::convertDate(input.constData()), QDateTime());
 }
 
-QTEST_MAIN(TestDateConv)
+QTEST_GUILESS_MAIN(TestDateConv)
 
 #include "check_dateConversion.moc"

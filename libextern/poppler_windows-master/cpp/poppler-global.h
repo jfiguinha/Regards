@@ -2,6 +2,7 @@
  * Copyright (C) 2009-2010, Pino Toscano <pino@kde.org>
  * Copyright (C) 2010, Patrick Spendrin <ps_ml@gmx.de>
  * Copyright (C) 2014, Hans-Peter Deifel <hpdeifel@gmx.de>
+ * Copyright (C) 2018, Adam Reichold <adam.reichold@t-online.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +107,8 @@ private:
 POPPLER_CPP_EXPORT time_type convert_date(const std::string &date);
 
 POPPLER_CPP_EXPORT std::ostream& operator<<(std::ostream& stream, const byte_array &array);
+
+POPPLER_CPP_EXPORT bool set_data_dir(const std::string &new_data_dir);
 
 typedef void(*debug_func)(const std::string &, void *);
 

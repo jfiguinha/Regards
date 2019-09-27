@@ -20,7 +20,8 @@
 #include "config.h"
 
 #include <errno.h>
-#include <glib/gstdio.h>
+
+#include <goo/gfile.h>
 
 #include "poppler-media.h"
 #include "poppler-private.h"
@@ -40,7 +41,7 @@ struct _PopplerMedia
   gchar  *filename;
 
   gchar  *mime_type;
-  Stream *stream;
+  Object stream;
 };
 
 struct _PopplerMediaClass
@@ -48,7 +49,7 @@ struct _PopplerMediaClass
   GObjectClass parent_class;
 };
 
-G_DEFINE_TYPE (PopplerMedia, poppler_media, G_TYPE_OBJECT);
+G_DEFINE_TYPE (PopplerMedia, poppler_media, G_TYPE_OBJECT)
 
 static void
 poppler_media_finalize (GObject *object)
@@ -57,18 +58,15 @@ poppler_media_finalize (GObject *object)
 
   if (media->filename) {
     g_free (media->filename);
-    media->filename = NULL;
+    media->filename = nullptr;
   }
 
   if (media->mime_type) {
     g_free (media->mime_type);
-    media->mime_type = NULL;
+    media->mime_type = nullptr;
   }
 
-  if (media->stream) {
-    media->stream->decRef();
-    media->stream = NULL;
-  }
+  media->stream = Object();
 
   G_OBJECT_CLASS (poppler_media_parent_class)->finalize (object);
 }
@@ -87,23 +85,23 @@ poppler_media_init (PopplerMedia *media)
 }
 
 PopplerMedia *
-_poppler_media_new (MediaRendition *poppler_media)
+_poppler_media_new (const MediaRendition *poppler_media)
 {
   PopplerMedia *media;
 
-  g_assert (poppler_media != NULL);
+  g_assert (poppler_media != nullptr);
 
-  media = POPPLER_MEDIA (g_object_new (POPPLER_TYPE_MEDIA, NULL));
+  media = POPPLER_MEDIA (g_object_new (POPPLER_TYPE_MEDIA, nullptr));
 
   if (poppler_media->getIsEmbedded()) {
-    GooString* mime_type;
+    const GooString* mime_type;
 
-    media->stream = poppler_media->getEmbbededStream();
+    media->stream = poppler_media->getEmbbededStreamObject()->copy();
     mime_type = poppler_media->getContentType();
     if (mime_type)
-      media->mime_type = g_strdup (mime_type->getCString());
+      media->mime_type = g_strdup (mime_type->c_str());
   } else {
-    media->filename = g_strdup (poppler_media->getFileName()->getCString());
+    media->filename = g_strdup (poppler_media->getFileName()->c_str());
   }
 
   return media;
@@ -124,7 +122,7 @@ const gchar *
 poppler_media_get_filename (PopplerMedia *poppler_media)
 {
   g_return_val_if_fail (POPPLER_IS_MEDIA (poppler_media), NULL);
-  g_return_val_if_fail (poppler_media->stream == NULL, NULL);
+  g_return_val_if_fail (!poppler_media->stream.isStream(), NULL);
 
   return poppler_media->filename;
 }
@@ -147,7 +145,7 @@ poppler_media_is_embedded (PopplerMedia *poppler_media)
 {
   g_return_val_if_fail (POPPLER_IS_MEDIA (poppler_media), FALSE);
 
-  return poppler_media->stream != NULL;
+  return poppler_media->stream.isStream();
 }
 
 /**
@@ -215,11 +213,11 @@ poppler_media_save (PopplerMedia *poppler_media,
   FILE *f;
 
   g_return_val_if_fail (POPPLER_IS_MEDIA (poppler_media), FALSE);
-  g_return_val_if_fail (poppler_media->stream != NULL, FALSE);
+  g_return_val_if_fail (poppler_media->stream.isStream(), FALSE);
 
-  f = g_fopen (filename, "wb");
+  f = openFile (filename, "wb");
 
-  if (f == NULL)
+  if (f == nullptr)
     {
       gchar *display_name = g_filename_display_name (filename);
       g_set_error (error,
@@ -281,9 +279,9 @@ poppler_media_save_to_callback (PopplerMedia        *poppler_media,
   gboolean eof_reached = FALSE;
 
   g_return_val_if_fail (POPPLER_IS_MEDIA (poppler_media), FALSE);
-  g_return_val_if_fail (poppler_media->stream != NULL, FALSE);
+  g_return_val_if_fail (poppler_media->stream.isStream(), FALSE);
 
-  stream = poppler_media->stream;
+  stream = poppler_media->stream.getStream();
   stream->reset();
 
   do

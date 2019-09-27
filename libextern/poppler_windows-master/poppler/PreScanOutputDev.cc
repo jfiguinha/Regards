@@ -14,7 +14,7 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2009 Carlos Garcia Campos <carlosgc@gnome.org>
-// Copyright (C) 2010, 2011 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2010, 2011, 2018 Albert Astals Cid <aacid@kde.org>
 // Copyright (C) 2011, 2014 William Bader <williambader@hotmail.com>
 // Copyright (C) 2011, 2013 Thomas Freitag <Thomas.Freitag@alfa.de>
 // Copyright (C) 2011 Adrian Johnson <ajohnson@redneon.com>
@@ -25,16 +25,6 @@
 //========================================================================
 
 #include <config.h>
-
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
-
-#include <algorithm>
-using std::min;
-using std::max;
-
-
 
 #include <math.h>
 #include "GlobalParams.h"
@@ -73,7 +63,7 @@ void PreScanOutputDev::stroke(GfxState *state) {
 	state->getStrokeOpacity(), state->getBlendMode());
   state->getLineDash(&dash, &dashLen, &dashStart);
   if (dashLen != 0) {
-    gdi = gFalse;
+    gdi = false;
   }
 }
 
@@ -87,13 +77,13 @@ void PreScanOutputDev::eoFill(GfxState *state) {
 	state->getFillOpacity(), state->getBlendMode());
 }
 
-GBool PreScanOutputDev::tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *catalog, Object *str,
-					  double *pmat, int paintType, int /*tilingType*/, Dict *resDict,
-					double *mat, double *bbox,
+bool PreScanOutputDev::tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *catalog, Object *str,
+					  const double *pmat, int paintType, int /*tilingType*/, Dict *resDict,
+					const double *mat, const double *bbox,
 					int x0, int y0, int x1, int y1,
 					double xStep, double yStep) {
   if (paintType == 1) {
-    GBool tilingNeeded = (x1 - x0 != 1 || y1 - y0 != 1);
+    bool tilingNeeded = (x1 - x0 != 1 || y1 - y0 != 1);
     if (tilingNeeded) {
         inTilingPatternFill++;
     }
@@ -105,47 +95,47 @@ GBool PreScanOutputDev::tilingPatternFill(GfxState *state, Gfx *gfx, Catalog *ca
     check(state->getFillColorSpace(), state->getFillColor(),
 	  state->getFillOpacity(), state->getBlendMode());
   }
-  return gTrue;
+  return true;
 }
 
-GBool PreScanOutputDev::functionShadedFill(GfxState *state,
+bool PreScanOutputDev::functionShadedFill(GfxState *state,
 					   GfxFunctionShading *shading) {
   if (shading->getColorSpace()->getMode() != csDeviceGray &&
       shading->getColorSpace()->getMode() != csCalGray) {
-    gray = gFalse;
+    gray = false;
   }
-  mono = gFalse;
+  mono = false;
   if (state->getFillOpacity() != 1 ||
       state->getBlendMode() != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
-  return gTrue;
+  return true;
 }
 
-GBool PreScanOutputDev::axialShadedFill(GfxState *state, GfxAxialShading *shading, double /*tMin*/, double /*tMax*/) {
+bool PreScanOutputDev::axialShadedFill(GfxState *state, GfxAxialShading *shading, double /*tMin*/, double /*tMax*/) {
   if (shading->getColorSpace()->getMode() != csDeviceGray &&
       shading->getColorSpace()->getMode() != csCalGray) {
-    gray = gFalse;
+    gray = false;
   }
-  mono = gFalse;
+  mono = false;
   if (state->getFillOpacity() != 1 ||
       state->getBlendMode() != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
-  return gTrue;
+  return true;
 }
 
-GBool PreScanOutputDev::radialShadedFill(GfxState *state, GfxRadialShading *shading, double /*sMin*/, double /*sMax*/) {
+bool PreScanOutputDev::radialShadedFill(GfxState *state, GfxRadialShading *shading, double /*sMin*/, double /*sMax*/) {
   if (shading->getColorSpace()->getMode() != csDeviceGray &&
       shading->getColorSpace()->getMode() != csCalGray) {
-    gray = gFalse;
+    gray = false;
   }
-  mono = gFalse;
+  mono = false;
   if (state->getFillOpacity() != 1 ||
       state->getBlendMode() != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
-  return gTrue;
+  return true;
 }
 
 void PreScanOutputDev::clip(GfxState * /*state*/) {
@@ -159,9 +149,8 @@ void PreScanOutputDev::eoClip(GfxState * /*state*/) {
 
 void PreScanOutputDev::beginStringOp(GfxState *state) {
   int render;
-  GfxFont *font;
   double m11, m12, m21, m22;
-  GBool simpleTTF;
+  bool simpleTTF;
 
   render = state->getRender();
   if (!(render & 1)) {
@@ -173,7 +162,7 @@ void PreScanOutputDev::beginStringOp(GfxState *state) {
 	  state->getStrokeOpacity(), state->getBlendMode());
   }
 
-  font = state->getFont();
+  const GfxFont *font = state->getFont();
   state->getFontTransMat(&m11, &m12, &m21, &m22);
   //~ this should check for external fonts that are non-TrueType
   simpleTTF = fabs(m11 + m22) < 0.01 &&
@@ -187,34 +176,34 @@ void PreScanOutputDev::beginStringOp(GfxState *state) {
     //~ need to create a FoFiTrueType object, and check for a Unicode cmap
   }
   if (state->getRender() != 0 || !simpleTTF) {
-    gdi = gFalse;
+    gdi = false;
   }
 }
 
 void PreScanOutputDev::endStringOp(GfxState * /*state*/) {
 }
 
-GBool PreScanOutputDev::beginType3Char(GfxState * /*state*/, double /*x*/, double /*y*/,
+bool PreScanOutputDev::beginType3Char(GfxState * /*state*/, double /*x*/, double /*y*/,
 				       double /*dx*/, double /*dy*/,
 				       CharCode /*code*/, Unicode * /*u*/, int /*uLen*/) {
   // return false so all Type 3 chars get rendered (no caching)
-  return gFalse;
+  return false;
 }
 
 void PreScanOutputDev::endType3Char(GfxState * /*state*/) {
 }
 
 void PreScanOutputDev::drawImageMask(GfxState *state, Object * /*ref*/, Stream *str,
-				     int width, int height, GBool /*invert*/,
-				     GBool /*interpolate*/, GBool inlineImg) {
+				     int width, int height, bool /*invert*/,
+				     bool /*interpolate*/, bool inlineImg) {
   int i, j;
 
   check(state->getFillColorSpace(), state->getFillColor(),
 	state->getFillOpacity(), state->getBlendMode());
-  gdi = gFalse;
+  gdi = false;
   if ((level == psLevel1 || level == psLevel1Sep) &&
       (state->getFillColorSpace()->getMode() == csPattern || inTilingPatternFill > 0)) {
-    patternImgMask = gTrue;
+    patternImgMask = true;
   }
 
   if (inlineImg) {
@@ -229,7 +218,7 @@ void PreScanOutputDev::drawImageMask(GfxState *state, Object * /*ref*/, Stream *
 void PreScanOutputDev::drawImage(GfxState *state, Object * /*ref*/, Stream *str,
 				 int width, int height,
 				 GfxImageColorMap *colorMap,
-				 GBool /*interpolate*/, int * /*maskColors*/, GBool inlineImg) {
+				 bool /*interpolate*/, int * /*maskColors*/, bool inlineImg) {
   GfxColorSpace *colorSpace;
   int i, j;
 
@@ -240,20 +229,20 @@ void PreScanOutputDev::drawImage(GfxState *state, Object * /*ref*/, Stream *str,
   if (colorSpace->getMode() == csDeviceGray ||
       colorSpace->getMode() == csCalGray) {
     if (colorMap->getBits() > 1) {
-      mono = gFalse;
+      mono = false;
     }
   } else {
-    gray = gFalse;
-    mono = gFalse;
+    gray = false;
+    mono = false;
   }
   if (state->getFillOpacity() != 1 ||
       state->getBlendMode() != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
-  gdi = gFalse;
+  gdi = false;
   if ((level == psLevel1 || level == psLevel1Sep) &&
       inTilingPatternFill > 0) {
-    patternImgMask = gTrue;
+    patternImgMask = true;
   }
 
   if (inlineImg) {
@@ -270,10 +259,10 @@ void PreScanOutputDev::drawMaskedImage(GfxState *state, Object * /*ref*/,
 				       Stream * /*str*/,
 				       int /*width*/, int /*height*/,
 				       GfxImageColorMap *colorMap,
-				       GBool /*interpolate*/,
+				       bool /*interpolate*/,
 				       Stream * /*maskStr*/,
 				       int /*maskWidth*/, int /*maskHeight*/,
-				       GBool /*maskInvert*/, GBool /*maskInterpolate*/) {
+				       bool /*maskInvert*/, bool /*maskInterpolate*/) {
   GfxColorSpace *colorSpace;
 
   colorSpace = colorMap->getColorSpace();
@@ -283,28 +272,28 @@ void PreScanOutputDev::drawMaskedImage(GfxState *state, Object * /*ref*/,
   if (colorSpace->getMode() == csDeviceGray ||
       colorSpace->getMode() == csCalGray) {
     if (colorMap->getBits() > 1) {
-      mono = gFalse;
+      mono = false;
     }
   } else {
-    gray = gFalse;
-    mono = gFalse;
+    gray = false;
+    mono = false;
   }
   if (state->getFillOpacity() != 1 ||
       state->getBlendMode() != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
-  gdi = gFalse;
+  gdi = false;
 }
 
 void PreScanOutputDev::drawSoftMaskedImage(GfxState * /*state*/, Object * /*ref*/,
 					   Stream * /*str*/,
 					   int /*width*/, int /*height*/,
 					   GfxImageColorMap *colorMap,
-					   GBool /*interpolate*/,
+					   bool /*interpolate*/,
 					   Stream * /*maskStr*/,
 					   int /*maskWidth*/, int /*maskHeight*/,
 					   GfxImageColorMap * /*maskColorMap*/,
-					   GBool /*maskInterpolate*/) {
+					   bool /*maskInterpolate*/) {
   GfxColorSpace *colorSpace;
 
   colorSpace = colorMap->getColorSpace();
@@ -313,63 +302,63 @@ void PreScanOutputDev::drawSoftMaskedImage(GfxState * /*state*/, Object * /*ref*
   }
   if (colorSpace->getMode() != csDeviceGray &&
       colorSpace->getMode() != csCalGray) {
-    gray = gFalse;
+    gray = false;
   }
-  mono = gFalse;
-  transparency = gTrue;
-  gdi = gFalse;
+  mono = false;
+  transparency = true;
+  gdi = false;
 }
 
 void PreScanOutputDev::beginTransparencyGroup(
-			   GfxState * /*state*/, double * /*bbox*/,
+			   GfxState * /*state*/, const double * /*bbox*/,
 			   GfxColorSpace * /*blendingColorSpace*/,
-			   GBool /*isolated*/, GBool /*knockout*/,
-			   GBool /*forSoftMask*/) {
-  gdi = gFalse;
+			   bool /*isolated*/, bool /*knockout*/,
+			   bool /*forSoftMask*/) {
+  gdi = false;
 }
 
-void PreScanOutputDev::paintTransparencyGroup(GfxState *state, double * /*bbox*/)
+void PreScanOutputDev::paintTransparencyGroup(GfxState *state, const double * /*bbox*/)
 {
   check(state->getFillColorSpace(), state->getFillColor(),
         state->getFillOpacity(), state->getBlendMode());
 }
 
-void PreScanOutputDev::setSoftMask(GfxState * /*state*/, double * /*bbox*/, GBool /*alpha*/,
+void PreScanOutputDev::setSoftMask(GfxState * /*state*/, const double * /*bbox*/, bool /*alpha*/,
 			   Function * /*transferFunc*/, GfxColor * /*backdropColor*/)
 {
-  transparency = gTrue;
+  transparency = true;
 }
 
-void PreScanOutputDev::check(GfxColorSpace *colorSpace, GfxColor *color,
+void PreScanOutputDev::check(GfxColorSpace *colorSpace, const GfxColor *color,
 			     double opacity, GfxBlendMode blendMode) {
   GfxRGB rgb;
 
   if (colorSpace->getMode() == csPattern) {
-    mono = gFalse;
-    gray = gFalse;
-    gdi = gFalse;
+    mono = false;
+    gray = false;
+    gdi = false;
   } else {
     colorSpace->getRGB(color, &rgb);
     if (rgb.r != rgb.g || rgb.g != rgb.b || rgb.b != rgb.r) {
-      mono = gFalse;
-      gray = gFalse;
+      mono = false;
+      gray = false;
     } else if (!((rgb.r == 0 && rgb.g == 0 && rgb.b == 0) ||
 		 (rgb.r == gfxColorComp1 &&
 		  rgb.g == gfxColorComp1 &&
 		  rgb.b == gfxColorComp1))) {
-      mono = gFalse;
+      mono = false;
     }
   }
   if (opacity != 1 || blendMode != gfxBlendNormal) {
-    transparency = gTrue;
+    transparency = true;
   }
 }
 
 void PreScanOutputDev::clearStats() {
-  mono = gTrue;
-  gray = gTrue;
-  transparency = gFalse;
-  gdi = gTrue;
-  patternImgMask = gFalse;
+  mono = true;
+  gray = true;
+  transparency = false;
+  gdi = true;
+  patternImgMask = false;
   inTilingPatternFill = 0;
 }

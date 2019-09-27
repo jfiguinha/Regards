@@ -1,7 +1,7 @@
 /* poppler-private.h: qt interface to poppler
  * Copyright (C) 2005, Net Integration Technologies, Inc.
  * Copyright (C) 2005, 2008, Brad Hards <bradh@frogmouth.net>
- * Copyright (C) 2006-2009, 2011, 2012 by Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2006-2009, 2011, 2012, 2017-2019 by Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2007-2009, 2011, 2014 by Pino Toscano <pino@kde.org>
  * Copyright (C) 2011 Andreas Hartmetz <ahartmetz@gmail.com>
  * Copyright (C) 2011 Hib Eris <hib@hiberis.nl>
@@ -9,6 +9,13 @@
  * Copyright (C) 2013 Anthony Granger <grangeranthony@gmail.com>
  * Copyright (C) 2014 Bogdan Cristea <cristeab@gmail.com>
  * Copyright (C) 2014 Aki Koskinen <freedesktop@akikoskinen.info>
+ * Copyright (C) 2016 Jakub Alba <jakubalba@gmail.com>
+ * Copyright (C) 2017 Christoph Cullmann <cullmann@kde.org>
+ * Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+ * Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+ * Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
+ * Copyright (C) 2019 João Netto <joaonetto901@gmail.com>
+ * Copyright (C) 2019 Jan Grulich <jgrulich@redhat.com>
  * Inspired on code by
  * Copyright (C) 2004 by Albert Astals Cid <tsdgeos@terra.es>
  * Copyright (C) 2004 by Enrico Ros <eros.kde@email.it>
@@ -32,12 +39,14 @@
 #define _POPPLER_PRIVATE_H_
 
 #include <QtCore/QFile>
+#include <QtCore/QMutex>
 #include <QtCore/QPointer>
 #include <QtCore/QVector>
 
 #include <config.h>
 #include <GfxState.h>
 #include <GlobalParams.h>
+#include <Form.h>
 #include <PDFDoc.h>
 #include <FontInfo.h>
 #include <OutputDev.h>
@@ -51,30 +60,35 @@
 
 class LinkDest;
 class FormWidget;
+class OutlineItem;
 
 namespace Poppler {
 
     /* borrowed from kpdf */
-    QString unicodeToQString(Unicode* u, int len);
+    POPPLER_QT5_EXPORT QString unicodeToQString(const Unicode* u, int len);
 
-    QString UnicodeParsedString(GooString *s1);
+    POPPLER_QT5_EXPORT QString UnicodeParsedString(const GooString *s1);
 
-    GooString *QStringToUnicodeGooString(const QString &s);
+    POPPLER_QT5_EXPORT GooString *QStringToUnicodeGooString(const QString &s);
 
-    GooString *QStringToGooString(const QString &s);
+    POPPLER_QT5_EXPORT GooString *QStringToGooString(const QString &s);
+
+    GooString *QDateTimeToUnicodeGooString(const QDateTime &dt);
 
     void qt5ErrorFunction(int pos, char *msg, va_list args);
+
+    Annot::AdditionalActionsType toPopplerAdditionalActionType(Annotation::AdditionalActionType type);
 
     class LinkDestinationData
     {
         public:
-            LinkDestinationData( LinkDest *l, GooString *nd, Poppler::DocumentData *pdfdoc, bool external )
+            LinkDestinationData( const LinkDest *l, const GooString *nd, Poppler::DocumentData *pdfdoc, bool external )
              : ld(l), namedDest(nd), doc(pdfdoc), externalDest(external)
             {
             }
 
-            LinkDest *ld;
-            GooString *namedDest;
+            const LinkDest *ld;
+            const GooString *namedDest;
             Poppler::DocumentData *doc;
             bool externalDest;
     };
@@ -89,7 +103,7 @@ namespace Poppler {
 #ifdef _WIN32
 		doc = new PDFDoc((wchar_t *)filePath.utf16(), filePath.length(), ownerPassword, userPassword);
 #else
-		GooString *fileName = new GooString(QFile::encodeName(filePath));
+		GooString *fileName = new GooString(QFile::encodeName(filePath).constData());
 		doc = new PDFDoc(fileName, ownerPassword, userPassword);
 #endif
 
@@ -99,10 +113,8 @@ namespace Poppler {
 	
 	DocumentData(const QByteArray &data, GooString *ownerPassword, GooString *userPassword)
 	    {
-		Object obj;
 		fileContents = data;
-		obj.initNull();
-		MemStream *str = new MemStream((char*)fileContents.data(), 0, fileContents.length(), &obj);
+		MemStream *str = new MemStream((char*)fileContents.data(), 0, fileContents.length(), Object(objNull));
 		init();
 		doc = new PDFDoc(str, ownerPassword, userPassword);
 		delete ownerPassword;
@@ -112,8 +124,11 @@ namespace Poppler {
 	void init();
 	
 	~DocumentData();
+
+	DocumentData(const DocumentData &) = delete;
+	DocumentData& operator=(const DocumentData &) = delete;
 	
-	void addTocChildren( QDomDocument * docSyn, QDomNode * parent, GooList * items );
+	void addTocChildren( QDomDocument * docSyn, QDomNode * parent, const std::vector<::OutlineItem*> * items );
 	
 	void setPaperColor(const QColor &color)
 	{
@@ -144,6 +159,7 @@ namespace Poppler {
 	QColor paperColor;
 	int m_hints;
 	static int count;
+	static QMutex mutex;
     };
 
     class FontInfoData
@@ -156,27 +172,22 @@ namespace Poppler {
 			type = FontInfo::unknown;
 		}
 		
-		FontInfoData( const FontInfoData &fid )
-		{
-			fontName = fid.fontName;
-			fontFile = fid.fontFile;
-			isEmbedded = fid.isEmbedded;
-			isSubset = fid.isSubset;
-			type = fid.type;
-			embRef = fid.embRef;
-		}
-		
 		FontInfoData( ::FontInfo* fi )
 		{
-			if (fi->getName()) fontName = fi->getName()->getCString();
-			if (fi->getFile()) fontFile = fi->getFile()->getCString();
+			if (fi->getName()) fontName = fi->getName()->c_str();
+			if (fi->getFile()) fontFile = fi->getFile()->c_str();
+			if (fi->getSubstituteName()) fontSubstituteName = fi->getSubstituteName()->c_str();
 			isEmbedded = fi->getEmbedded();
 			isSubset = fi->getSubset();
 			type = (Poppler::FontInfo::Type)fi->getType();
 			embRef = fi->getEmbRef();
 		}
 
+		FontInfoData( const FontInfoData &fid ) = default;
+		FontInfoData& operator=(const FontInfoData &) = default;
+
 		QString fontName;
+		QString fontSubstituteName;
 		QString fontFile;
 		bool isEmbedded : 1;
 		bool isSubset : 1;
@@ -207,7 +218,7 @@ namespace Poppler {
     {
 	public:
 		TextBoxData()
-		  : nextWord(0), hasSpaceAfter(false)
+		  : nextWord(nullptr), hasSpaceAfter(false)
 		{
 		}
 
@@ -230,6 +241,15 @@ namespace Poppler {
 		::Page *page;
 		::FormWidget *fm;
 		QRectF box;
+		static POPPLER_QT5_EXPORT ::FormWidget *getFormWidget( const FormField *f );
+    };
+    
+    class FormFieldIcon;
+    class FormFieldIconData
+    {
+    public:
+    	static POPPLER_QT5_EXPORT FormFieldIconData *getData( const FormFieldIcon &f );
+    	Dict *icon;
     };
 
 }

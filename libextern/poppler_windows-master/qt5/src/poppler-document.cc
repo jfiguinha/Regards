@@ -1,14 +1,19 @@
 /* poppler-document.cc: qt interface to poppler
  * Copyright (C) 2005, Net Integration Technologies, Inc.
  * Copyright (C) 2005, 2008, Brad Hards <bradh@frogmouth.net>
- * Copyright (C) 2005-2010, 2012, 2013, 2015, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2005-2010, 2012, 2013, 2015, 2017-2019, Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2006-2010, Pino Toscano <pino@kde.org>
  * Copyright (C) 2010, 2011 Hib Eris <hib@hiberis.nl>
  * Copyright (C) 2012 Koji Otani <sho@bbr.jp>
  * Copyright (C) 2012, 2013 Thomas Freitag <Thomas.Freitag@alfa.de>
  * Copyright (C) 2012 Fabio D'Urso <fabiodurso@hotmail.it>
- * Copyright (C) 2014 Adam Reichold <adamreichold@myopera.com>
+ * Copyright (C) 2014, 2018 Adam Reichold <adam.reichold@t-online.de>
  * Copyright (C) 2015 William Bader <williambader@hotmail.com>
+ * Copyright (C) 2016 Jakub Alba <jakubalba@gmail.com>
+ * Copyright (C) 2017 Adrian Johnson <ajohnson@redneon.com>
+ * Copyright (C) 2017 Suzuki Toshiya <mpsuzuki@hiroshima-u.ac.jp>
+ * Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+ * Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,18 +49,16 @@
 
 #include "poppler-private.h"
 #include "poppler-page-private.h"
+#include "poppler-outline-private.h"
 
 #if defined(USE_CMS)
-#if defined(USE_LCMS1)
-#include <lcms.h>
-#else
 #include <lcms2.h>
-#endif
 #endif
 
 namespace Poppler {
 
   int DocumentData::count = 0;
+  QMutex DocumentData::mutex;
 
   Document *Document::load(const QString &filePath, const QByteArray &ownerPassword,
 			   const QByteArray &userPassword)
@@ -95,7 +98,7 @@ namespace Poppler {
 	{
 		delete doc;
 	}
-	return NULL;
+	return nullptr;
     }
 
     Document::Document(DocumentData *dataA)
@@ -111,9 +114,9 @@ namespace Poppler {
     Page *Document::page(int index) const
     {
 	Page *page = new Page(m_doc, index);
-	if (page->m_page->page == NULL) {
+	if (page->m_page->page == nullptr) {
 	  delete page;
-	  return NULL;
+	  return nullptr;
 	}
 
 	return page;
@@ -242,12 +245,10 @@ namespace Poppler {
 	QByteArray result;
 	if (fi.isEmbedded())
 	{
-		Object refObj, strObj;
 		XRef *xref = m_doc->doc->getXRef()->copy();
 
-		refObj.initRef(fi.m_data->embRef.num, fi.m_data->embRef.gen);
-		refObj.fetch(xref, &strObj);
-		refObj.free();
+		Object refObj(fi.m_data->embRef);
+		Object strObj = refObj.fetch(xref);
 		if (strObj.isStream())
 		{
 			int c;
@@ -258,57 +259,173 @@ namespace Poppler {
 			}
 			strObj.streamClose();
 		}
-		strObj.free();
 		delete xref;
 	}
 	return result;
     }
 
-    /* borrowed from kpdf */
     QString Document::info( const QString & type ) const
     {
-	// [Albert] Code adapted from pdfinfo.cc on xpdf
-	Object info;
-	if ( m_doc->locked )
+	if (m_doc->locked) {
 	    return QString();
-
-	QScopedPointer<XRef> xref(m_doc->doc->getXRef()->copy());
-	if (!xref)
-		return QString();
-	xref->getDocInfo(&info);
-	if ( !info.isDict() )
-	    return QString();
-
-	QString result;
-	Object obj;
-	GooString *s1;
-	Dict *infoDict = info.getDict();
-
-	if ( infoDict->lookup( type.toLatin1().data(), &obj )->isString() )
-	{
-	    s1 = obj.getString();
-	    result = UnicodeParsedString(s1);
-	    obj.free();
-	    info.free();
-	    return result;
 	}
-	obj.free();
-	info.free();
-	return QString();
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoStringEntry(type.toLatin1().constData()));
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setInfo( const QString & key, const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	GooString *goo = QStringToUnicodeGooString(val);
+	m_doc->doc->setDocInfoStringEntry(key.toLatin1().constData(), goo);
+	return true;
+    }
+
+    QString Document::title() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoTitle());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setTitle( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoTitle(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    QString Document::author() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoAuthor());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setAuthor( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoAuthor(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    QString Document::subject() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoSubject());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setSubject( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoSubject(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    QString Document::keywords() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoKeywords());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setKeywords( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoKeywords(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    QString Document::creator() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoCreator());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setCreator( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoCreator(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    QString Document::producer() const
+    {
+	if (m_doc->locked) {
+	    return QString();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoProducer());
+	return UnicodeParsedString(goo.data());
+    }
+
+    bool Document::setProducer( const QString & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoProducer(QStringToUnicodeGooString(val));
+	return true;
+    }
+
+    bool Document::removeInfo()
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->removeDocInfo();
+	return true;
     }
 
     QStringList Document::infoKeys() const
     {
 	QStringList keys;
 
-	Object info;
 	if ( m_doc->locked )
 	    return QStringList();
 
 	QScopedPointer<XRef> xref(m_doc->doc->getXRef()->copy());
 	if (!xref)
 		return QStringList();
-	xref->getDocInfo(&info);
+	Object info = xref->getDocInfo();
 	if ( !info.isDict() )
 	    return QStringList();
 
@@ -319,39 +436,70 @@ namespace Poppler {
 	    keys.append( QString::fromLatin1(infoDict->getKey(i)) );
 	}
 
-	info.free();
 	return keys;
     }
 
-    /* borrowed from kpdf */
     QDateTime Document::date( const QString & type ) const
     {
-	// [Albert] Code adapted from pdfinfo.cc on xpdf
-	if ( m_doc->locked )
-	    return QDateTime();
-
-	Object info;
-	QScopedPointer<XRef> xref(m_doc->doc->getXRef()->copy());
-	if (!xref)
-		return QDateTime();
-	xref->getDocInfo(&info);
-	if ( !info.isDict() ) {
-	    info.free();
+	if (m_doc->locked) {
 	    return QDateTime();
 	}
 
-	Object obj;
-	Dict *infoDict = info.getDict();
-	QDateTime result;
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoStringEntry(type.toLatin1().constData()));
+	QString str = UnicodeParsedString(goo.data());
+	return Poppler::convertDate(str.toLatin1().constData());
+    }
 
-	if ( infoDict->lookup( type.toLatin1().data(), &obj )->isString() )
-	{
-	    char *aux = obj.getString()->getCString();
-	    result = Poppler::convertDate(aux);
+    bool Document::setDate( const QString & key, const QDateTime & val )
+    {
+	if (m_doc->locked) {
+	    return false;
 	}
-	obj.free();
-	info.free();
-	return result;
+
+	m_doc->doc->setDocInfoStringEntry(key.toLatin1().constData(), QDateTimeToUnicodeGooString(val));
+	return true;
+    }
+
+    QDateTime Document::creationDate() const
+    {
+	if (m_doc->locked) {
+	    return QDateTime();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoCreatDate());
+	QString str = UnicodeParsedString(goo.data());
+	return Poppler::convertDate(str.toLatin1().constData());
+    }
+
+    bool Document::setCreationDate( const QDateTime & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoCreatDate(QDateTimeToUnicodeGooString(val));
+	return true;
+    }
+
+    QDateTime Document::modificationDate() const
+    {
+	if (m_doc->locked) {
+	    return QDateTime();
+	}
+
+	QScopedPointer<GooString> goo(m_doc->doc->getDocInfoModDate());
+	QString str = UnicodeParsedString(goo.data());
+	return Poppler::convertDate(str.toLatin1().constData());
+    }
+
+    bool Document::setModificationDate( const QDateTime & val )
+    {
+	if (m_doc->locked) {
+	    return false;
+	}
+
+	m_doc->doc->setDocInfoModDate(QDateTimeToUnicodeGooString(val));
+	return true;
     }
 
     bool Document::isEncrypted() const
@@ -422,8 +570,12 @@ namespace Poppler {
 	GooString label_g(label.toLatin1().data());
 	int index;
 
-	if (!m_doc->doc->getCatalog()->labelToIndex (&label_g, &index))
-	    return NULL;
+	if (!m_doc->doc->getCatalog()->labelToIndex (&label_g, &index)) {
+	    std::unique_ptr<GooString> label_ug(QStringToUnicodeGooString(label));
+	    if (!m_doc->doc->getCatalog()->labelToIndex (label_ug.get(), &index)) {
+	        return nullptr;
+	    }
+	}
 
 	return page(index);
     }
@@ -437,23 +589,38 @@ namespace Poppler {
     {
         Outline * outline = m_doc->doc->getOutline();
         if ( !outline )
-            return NULL;
+            return nullptr;
 
-        GooList * items = outline->getItems();
-        if ( !items || items->getLength() < 1 )
-            return NULL;
+        const std::vector<::OutlineItem*> * items = outline->getItems();
+        if ( !items || items->size() < 1 )
+            return nullptr;
 
         QDomDocument *toc = new QDomDocument();
-        if ( items->getLength() > 0 )
+        if ( items->size() > 0 )
            m_doc->addTocChildren( toc, toc, items );
 
         return toc;
     }
 
+    QVector<OutlineItem> Document::outline() const
+    {
+      QVector<OutlineItem> result;
+
+      if (::Outline *outline = m_doc->doc->getOutline()) {
+	if (const std::vector<::OutlineItem*> *items = outline->getItems()) {
+	  for (void *item : *items) {
+	    result.push_back(OutlineItem{new OutlineItemData{static_cast<::OutlineItem *>(item), m_doc}});
+	  }
+	}
+      }
+
+      return result;
+    }
+
     LinkDestination *Document::linkDestination( const QString &name )
     {
         GooString * namedDest = QStringToGooString( name );
-        LinkDestinationData ldd(NULL, namedDest, m_doc, false);
+        LinkDestinationData ldd(nullptr, namedDest, m_doc, false);
         LinkDestination *ld = new LinkDestination(ldd);
         delete namedDest;
         return ld;
@@ -489,7 +656,7 @@ namespace Poppler {
 #if defined(USE_CMS)
         return (void*)GfxColorSpace::getRGBProfile();
 #else
-        return NULL;
+        return nullptr;
 #endif
     }
 
@@ -498,7 +665,7 @@ namespace Poppler {
 #if defined(USE_CMS)
        return (void*)GfxColorSpace::getDisplayProfile();
 #else
-       return NULL;
+       return nullptr;
 #endif
     }
 
@@ -582,7 +749,7 @@ namespace Poppler {
     OptContentModel *Document::optionalContentModel()
     {
         if (m_doc->m_optContentModel.isNull()) {
-	    m_doc->m_optContentModel = new OptContentModel(m_doc->doc->getOptContentConfig(), 0);
+	    m_doc->m_optContentModel = new OptContentModel(m_doc->doc->getOptContentConfig(), nullptr);
 	}
         return (OptContentModel *)m_doc->m_optContentModel;
     }
@@ -607,13 +774,13 @@ namespace Poppler {
         GooString gooPermanentId;
         GooString gooUpdateId;
 
-        if (!m_doc->doc->getID(permanentId ? &gooPermanentId : 0, updateId ? &gooUpdateId : 0))
+        if (!m_doc->doc->getID(permanentId ? &gooPermanentId : nullptr, updateId ? &gooUpdateId : nullptr))
             return false;
 
         if (permanentId)
-            *permanentId = gooPermanentId.getCString();
+            *permanentId = gooPermanentId.c_str();
         if (updateId)
-            *updateId = gooUpdateId.getCString();
+            *updateId = gooUpdateId.c_str();
 
         return true;
     }
@@ -633,7 +800,23 @@ namespace Poppler {
         return Document::NoForm; // make gcc happy
     }
 
-    QDateTime convertDate( char *dateString )
+    QVector<int> Document::formCalculateOrder() const
+    {
+        QVector<int> result;
+
+        Form *form = m_doc->doc->getCatalog()->getForm();
+        const std::vector<Ref> &calculateOrder = form->getCalculateOrder();
+        for (uint i = 0; i < calculateOrder.size(); ++i) {
+            FormWidget *w = form->findWidgetByRef(calculateOrder[i]);
+            if (w) {
+                result << w->getID();
+            }
+        }
+
+        return result;
+    }
+
+    QDateTime convertDate( const char *dateString )
     {
         int year, mon, day, hour, min, sec, tzHours, tzMins;
         char tz;
@@ -664,6 +847,12 @@ namespace Poppler {
         return QDateTime();
     }
 
+    QDateTime convertDate( char *dateString )
+    {
+        return convertDate( (const char *) dateString );
+    }
+
+
     bool isCmsAvailable()
     {
 #if defined(USE_CMS)
@@ -674,11 +863,7 @@ namespace Poppler {
     }
 
     bool isOverprintPreviewAvailable() {
-#if SPLASH_CMYK
         return true;
-#else
-        return false;
-#endif
    }
 
 }

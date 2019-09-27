@@ -5,6 +5,8 @@
 class TestPermissions: public QObject
 {
     Q_OBJECT
+public:
+    TestPermissions(QObject *parent = nullptr) : QObject(parent) { }
 private slots:
     void permissions1();
 };
@@ -39,6 +41,6 @@ void TestPermissions::permissions1()
     delete doc;
 }
 
-QTEST_MAIN(TestPermissions)
+QTEST_GUILESS_MAIN(TestPermissions)
 #include "check_permissions.moc"
 

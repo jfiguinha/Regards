@@ -14,10 +14,12 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2006 Dominic Lachowicz <cinamod@hotmail.com>
-// Copyright (C) 2007-2008, 2010 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2007-2008, 2010, 2018 Albert Astals Cid <aacid@kde.org>
 // Copyright (C) 2010 Hib Eris <hib@hiberis.nl>
-// Copyright (C) 2012 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2012, 2017 Adrian Johnson <ajohnson@redneon.com>
 // Copyright (C) 2013 Suzuki Toshiya <mpsuzuki@hiroshima-u.ac.jp>
+// Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+// Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -39,6 +41,7 @@
 #include "PDFDoc.h"
 #include "PDFDocFactory.h"
 #include "FontInfo.h"
+#include "Win32Console.h"
 
 static const char *fontTypeNames[] = {
   "unknown",
@@ -57,11 +60,11 @@ static const char *fontTypeNames[] = {
 
 static int firstPage = 1;
 static int lastPage = 0;
-static GBool showSubst = gFalse;
+static bool showSubst = false;
 static char ownerPassword[33] = "\001";
 static char userPassword[33] = "\001";
-static GBool printVersion = gFalse;
-static GBool printHelp = gFalse;
+static bool printVersion = false;
+static bool printHelp = false;
 
 static const ArgDesc argDesc[] = {
   {"-f",      argInt,      &firstPage,     0,
@@ -84,16 +87,17 @@ static const ArgDesc argDesc[] = {
    "print usage information"},
   {"-?",      argFlag,     &printHelp,     0,
    "print usage information"},
-  {NULL}
+  {}
 };
 
 int main(int argc, char *argv[]) {
   PDFDoc *doc;
   GooString *fileName;
   GooString *ownerPW, *userPW;
-  GBool ok;
+  bool ok;
   int exitCode;
 
+  Win32Console win32Console(&argc, &argv);
   exitCode = 99;
 
   // parse args
@@ -118,12 +122,12 @@ int main(int argc, char *argv[]) {
   if (ownerPassword[0] != '\001') {
     ownerPW = new GooString(ownerPassword);
   } else {
-    ownerPW = NULL;
+    ownerPW = nullptr;
   }
   if (userPassword[0] != '\001') {
     userPW = new GooString(userPassword);
   } else {
-    userPW = NULL;
+    userPW = nullptr;
   }
   if (fileName->cmp("-") == 0) {
       delete fileName;
@@ -161,18 +165,18 @@ int main(int argc, char *argv[]) {
   // get the fonts
   {
     FontInfoScanner scanner(doc, firstPage - 1);
-    GooList *fonts = scanner.scan(lastPage - firstPage + 1);
+    std::vector<FontInfo*> *fonts = scanner.scan(lastPage - firstPage + 1);
 
     if (showSubst) {
       // print the font substitutions
       printf("name                                 object ID substitute font                      substitute font file\n");
       printf("------------------------------------ --------- ------------------------------------ ------------------------------------\n");
       if (fonts) {
-        for (int i = 0; i < fonts->getLength(); ++i) {
-          FontInfo *font = (FontInfo *)fonts->get(i);
+        for (std::size_t i = 0; i < fonts->size(); ++i) {
+          FontInfo *font = (*fonts)[i];
           if (font->getFile()) {
             printf("%-36s",
-                   font->getName() ? font->getName()->getCString() : "[none]");
+                   font->getName() ? font->getName()->c_str() : "[none]");
             const Ref fontRef = font->getRef();
             if (fontRef.gen >= 100000) {
               printf(" [none]");
@@ -180,8 +184,8 @@ int main(int argc, char *argv[]) {
               printf(" %6d %2d", fontRef.num, fontRef.gen);
             }
             printf(" %-36s %s\n",
-                   font->getSubstituteName() ? font->getSubstituteName()->getCString() : "[none]",
-                   font->getFile()->getCString());
+                   font->getSubstituteName() ? font->getSubstituteName()->c_str() : "[none]",
+                   font->getFile()->c_str());
           }
           delete font;
         }
@@ -192,12 +196,12 @@ int main(int argc, char *argv[]) {
       printf("name                                 type              encoding         emb sub uni object ID\n");
       printf("------------------------------------ ----------------- ---------------- --- --- --- ---------\n");
       if (fonts) {
-        for (int i = 0; i < fonts->getLength(); ++i) {
-          FontInfo *font = (FontInfo *)fonts->get(i);
+        for (std::size_t i = 0; i < fonts->size(); ++i) {
+          FontInfo *font = (*fonts)[i];
           printf("%-36s %-17s %-16s %-3s %-3s %-3s",
-                 font->getName() ? font->getName()->getCString() : "[none]",
+                 font->getName() ? font->getName()->c_str() : "[none]",
                  fontTypeNames[font->getType()],
-                 font->getEncoding()->getCString(),
+                 font->getEncoding()->c_str(),
                  font->getEmbedded() ? "yes" : "no",
                  font->getSubset() ? "yes" : "no",
                  font->getToUnicode() ? "yes" : "no");
@@ -220,10 +224,6 @@ int main(int argc, char *argv[]) {
   delete doc;
   delete globalParams;
  err0:
-
-  // check for memory leaks
-  Object::memCheck(stderr);
-  gMemReport(stderr);
 
   return exitCode;
 }

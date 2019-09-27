@@ -32,12 +32,12 @@ class NavigationToolBar : public QToolBar, public DocumentObserver
     Q_OBJECT
 
 public:
-    NavigationToolBar(QWidget *parent = 0);
+    NavigationToolBar(QWidget *parent = nullptr);
     ~NavigationToolBar();
 
-    /*virtual*/ void documentLoaded();
-    /*virtual*/ void documentClosed();
-    /*virtual*/ void pageChanged(int page);
+    void documentLoaded() override;
+    void documentClosed() override;
+    void pageChanged(int page) override;
 
 Q_SIGNALS:
     void zoomChanged(qreal value);

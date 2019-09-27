@@ -5,6 +5,8 @@
 class TestPageLayout: public QObject
 {
     Q_OBJECT
+public:
+    TestPageLayout(QObject *parent = nullptr) : QObject(parent) { }
 private slots:
     void checkNone();
     void checkSingle();
@@ -44,6 +46,6 @@ void TestPageLayout::checkFacing()
     delete doc;
 }
 
-QTEST_MAIN(TestPageLayout)
+QTEST_GUILESS_MAIN(TestPageLayout)
 #include "check_pagelayout.moc"
 

@@ -28,13 +28,13 @@ class MetadataDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    MetadataDock(QWidget *parent = 0);
+    MetadataDock(QWidget *parent = nullptr);
     ~MetadataDock();
 
-    /*virtual*/ void documentClosed();
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private:
     QTextEdit *m_edit;

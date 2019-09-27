@@ -32,7 +32,7 @@ pgd_table_add_property_with_custom_widget (GtkGrid     *table,
 	GtkWidget *label;
 
 	label = gtk_label_new (NULL);
-	g_object_set (G_OBJECT (label), "xalign", 0.0, NULL);
+	g_object_set (G_OBJECT (label), "xalign", 0.0, "yalign", 0.0, NULL);
 	gtk_label_set_markup (GTK_LABEL (label), markup);
 	gtk_grid_attach (GTK_GRID (table), label, 0, *row, 1, 1);
 	gtk_widget_show (label);
@@ -151,8 +151,6 @@ pgd_action_view_add_destination (GtkWidget   *action_view,
 		pgd_table_add_property (table, "<b>Zoom:</b>", str, row);
 		g_free (str);
 	} else {
-		pgd_table_add_property (table, "<b>Named Dest:</b>", dest->named_dest, row);
-
 		if (document && !remote) {
 			PopplerDest *new_dest;
 
@@ -274,8 +272,16 @@ pgd_action_view_play_rendition (GtkWidget    *button,
 		uri = g_file_get_uri (file);
 		g_object_unref (file);
 		if (uri) {
+#if GTK_CHECK_VERSION(3, 22, 0)
+			GtkWidget *toplevel;
+
+			toplevel = gtk_widget_get_toplevel (button);
+			gtk_show_uri_on_window (gtk_widget_is_toplevel (toplevel) ? GTK_WINDOW (toplevel) : NULL,
+						uri, GDK_CURRENT_TIME, NULL);
+#else
 			gtk_show_uri (gtk_widget_get_screen (button),
 				      uri, GDK_CURRENT_TIME, NULL);
+#endif
 			g_free (uri);
 		}
 	}
@@ -480,17 +486,16 @@ pgd_action_view_set_action (GtkWidget     *action_view,
 gchar *
 pgd_format_date (time_t utime)
 {
-	time_t time = (time_t) utime;
-	char s[256];
-	const char *fmt_hack = "%c";
-	size_t len;
-	struct tm t;
-	if (time == 0 || !localtime_r (&time, &t)) return NULL;
-	len = strftime (s, sizeof (s), fmt_hack, &t);
+	GDateTime *dt = NULL;
+	gchar *s = NULL;
 
-	if (len == 0 || s[0] == '\0') return NULL;
+	if (utime == 0) return NULL;
+	dt = g_date_time_new_from_unix_local (utime);
+	if (dt == NULL) return NULL;
+	s = g_date_time_format (dt, "%c");
+	g_date_time_unref (dt);
 
-	return g_locale_to_utf8 (s, -1, NULL, NULL, NULL);
+	return s;
 }
 
 GtkWidget *
@@ -537,8 +542,16 @@ pgd_movie_view_play_movie (GtkWidget    *button,
 	uri = g_file_get_uri (file);
 	g_object_unref (file);
 	if (uri) {
+#if GTK_CHECK_VERSION(3, 22, 0)
+		GtkWidget *toplevel;
+
+		toplevel = gtk_widget_get_toplevel (button);
+		gtk_show_uri_on_window (gtk_widget_is_toplevel (toplevel) ? GTK_WINDOW (toplevel) : NULL,
+		uri, GDK_CURRENT_TIME, NULL);
+#else
 		gtk_show_uri (gtk_widget_get_screen (button),
 			      uri, GDK_CURRENT_TIME, NULL);
+#endif
 		g_free (uri);
 	}
 }
@@ -549,6 +562,7 @@ pgd_movie_view_set_movie (GtkWidget    *movie_view,
 {
 	GtkWidget  *table;
 	GtkWidget  *button;
+        GEnumValue *enum_value;
 	gint        row = 0;
 
 	table = gtk_bin_get_child (GTK_BIN (movie_view));
@@ -575,6 +589,14 @@ pgd_movie_view_set_movie (GtkWidget    *movie_view,
 	pgd_table_add_property (GTK_GRID (table), "<b>Filename:</b>", poppler_movie_get_filename (movie), &row);
 	pgd_table_add_property (GTK_GRID (table), "<b>Need Poster:</b>", poppler_movie_need_poster (movie) ? "Yes" : "No", &row);
 	pgd_table_add_property (GTK_GRID (table), "<b>Show Controls:</b>", poppler_movie_show_controls (movie) ? "Yes" : "No", &row);
+        enum_value = g_enum_get_value ((GEnumClass *) g_type_class_ref (POPPLER_TYPE_MOVIE_PLAY_MODE), poppler_movie_get_play_mode (movie));
+        pgd_table_add_property (GTK_GRID (table), "<b>Play Mode:</b>", enum_value->value_name, &row);
+	pgd_table_add_property (GTK_GRID (table), "<b>Synchronous Play:</b>", poppler_movie_is_synchronous (movie) ? "Yes" : "No", &row);
+	pgd_table_add_property (GTK_GRID (table), "<b>Volume:</b>", g_strdup_printf("%g", poppler_movie_get_volume (movie)), &row);
+	pgd_table_add_property (GTK_GRID (table), "<b>Rate:</b>", g_strdup_printf("%g", poppler_movie_get_rate (movie)), &row);
+        pgd_table_add_property (GTK_GRID (table), "<b>Start:</b>", g_strdup_printf("%g s", poppler_movie_get_start (movie)/1e9), &row);
+        pgd_table_add_property (GTK_GRID (table), "<b>Duration:</b>", g_strdup_printf("%g s", poppler_movie_get_duration (movie)/1e9), &row);
+	pgd_table_add_property (GTK_GRID (table), "<b>Rotation Angle:</b>", g_strdup_printf("%u", poppler_movie_get_rotation_angle (movie)), &row);
 
 	button = gtk_button_new_with_mnemonic ("_Play");
 	g_signal_connect (button, "clicked",

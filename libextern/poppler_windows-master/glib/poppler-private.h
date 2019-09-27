@@ -71,6 +71,10 @@ struct _PopplerFormField
   PopplerDocument *document;
   FormWidget *widget;
   PopplerAction *action;
+  PopplerAction *field_modified_action;
+  PopplerAction *format_field_action;
+  PopplerAction *validate_field_action;
+  PopplerAction *calculate_field_action;
 };
 
 struct _PopplerAnnot
@@ -102,7 +106,7 @@ struct _PopplerStructureElement
   /*< private >*/
   GObject parent_instance;
   PopplerDocument *document;
-  StructElement *elem;
+  const StructElement *elem;
 };
 
 GList         *_poppler_document_get_layers (PopplerDocument *document);
@@ -112,7 +116,7 @@ PopplerPage   *_poppler_page_new   (PopplerDocument *document,
 				    Page            *page,
 				    int              index);
 PopplerAction *_poppler_action_new (PopplerDocument *document,
-				    LinkAction      *link,
+				    const LinkAction      *link,
 				    const gchar     *title);
 PopplerLayer  *_poppler_layer_new (PopplerDocument  *document,
 				   Layer            *layer,
@@ -122,8 +126,8 @@ PopplerDest   *_poppler_dest_new_goto (PopplerDocument *document,
 PopplerFormField *_poppler_form_field_new (PopplerDocument *document,
 					   FormWidget      *field);
 PopplerAttachment *_poppler_attachment_new (FileSpec *file);
-PopplerMovie      *_poppler_movie_new (Movie *movie);
-PopplerMedia      *_poppler_media_new (MediaRendition *media);
+PopplerMovie      *_poppler_movie_new (const Movie *movie);
+PopplerMedia      *_poppler_media_new (const MediaRendition *media);
 PopplerAnnot      *_poppler_annot_new           (Annot *annot);
 PopplerAnnot      *_poppler_annot_text_new      (Annot *annot);
 PopplerAnnot      *_poppler_annot_free_text_new (Annot *annot);
@@ -135,8 +139,8 @@ PopplerAnnot      *_poppler_annot_line_new (Annot *annot);
 PopplerAnnot      *_poppler_annot_circle_new (Annot *annot);
 PopplerAnnot      *_poppler_annot_square_new (Annot *annot);
 
-char *_poppler_goo_string_to_utf8(GooString *s);
-gboolean _poppler_convert_pdf_date_to_gtime (GooString *date,
+char *_poppler_goo_string_to_utf8(const GooString *s);
+gboolean _poppler_convert_pdf_date_to_gtime (const GooString *date,
 					     time_t    *gdate);
 
 /*

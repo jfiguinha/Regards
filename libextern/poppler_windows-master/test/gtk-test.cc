@@ -1,9 +1,5 @@
 #include <config.h>
 
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
-
 #include <goo/gmem.h>
 #include <splash/SplashTypes.h>
 #include <splash/SplashBitmap.h>
@@ -21,19 +17,19 @@
 #include <gtk/gtk.h>
 #include <math.h>
 
-static int page = 0;
+static int requested_page = 0;
 static gboolean cairo_output = FALSE;
 static gboolean splash_output = FALSE;
-static const char **file_arguments = NULL;
+static const char **file_arguments = nullptr;
 static const GOptionEntry options[] = {
-  { "cairo", 'c', 0, G_OPTION_ARG_NONE, &cairo_output, "Cairo Output Device", NULL},
-  { "splash", 's', 0, G_OPTION_ARG_NONE, &splash_output, "Splash Output Device", NULL},
-  { "page", 'p', 0, G_OPTION_ARG_INT, &page, "Page number", "PAGE" },
-  { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &file_arguments, NULL, "PDF-FILES…" },
-  { NULL }
+  { "cairo", 'c', 0, G_OPTION_ARG_NONE, &cairo_output, "Cairo Output Device", nullptr},
+  { "splash", 's', 0, G_OPTION_ARG_NONE, &splash_output, "Splash Output Device", nullptr},
+  { "page", 'p', 0, G_OPTION_ARG_INT, &requested_page, "Page number", "PAGE" },
+  { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_FILENAME_ARRAY, &file_arguments, nullptr, "PDF-FILES…" },
+  { }
 };
 
-static GList *view_list = NULL;
+static GList *view_list = nullptr;
 
 //------------------------------------------------------------------------
 
@@ -55,13 +51,13 @@ public:
   //----- initialization and control
 
   // End a page.
-  virtual void endPage();
+  void endPage() override;
 
   // Dump page contents to display.
-  virtual void dump();
+  void dump() override;
 
   //----- update text state
-  virtual void updateFont(GfxState *state);
+  void updateFont(GfxState *state) override;
 
   //----- special access
 
@@ -104,7 +100,7 @@ typedef struct
 GDKSplashOutputDev::GDKSplashOutputDev(GdkScreen *screen,
                                        void (*redrawCbkA)(void *data),
                                        void *redrawCbkDataA, SplashColor sc):
-  SplashOutputDev(splashModeRGB8, 4, gFalse, sc),
+  SplashOutputDev(splashModeRGB8, 4, false, sc),
   incrementalUpdate (1)
 {
   redrawCbk = redrawCbkA;
@@ -115,8 +111,8 @@ GDKSplashOutputDev::~GDKSplashOutputDev() {
 }
 
 void GDKSplashOutputDev::clear() {
-  startDoc(NULL);
-  startPage(0, NULL, NULL);
+  startDoc(nullptr);
+  startPage(0, nullptr, nullptr);
 }
 
 void GDKSplashOutputDev::endPage() {
@@ -147,7 +143,7 @@ void GDKSplashOutputDev::redraw(int srcX, int srcY,
   pixbuf = gdk_pixbuf_new_from_data (getBitmap()->getDataPtr() + srcY * gdk_rowstride + srcX * 3,
                                      GDK_COLORSPACE_RGB, FALSE, 8,
                                      width, height, gdk_rowstride,
-                                     NULL, NULL);
+                                     nullptr, nullptr);
 
   gdk_cairo_set_source_pixbuf (cr, pixbuf, 0, 0);
   cairo_paint (cr);
@@ -222,7 +218,7 @@ view_set_page (View *view, int page)
     cairo_destroy (cr);
     g_object_unref (poppler_page);
   } else {
-    view->doc->doc->displayPage (view->out, page + 1, 72, 72, 0, gFalse, gTrue, gTrue);
+    view->doc->doc->displayPage (view->out, page + 1, 72, 72, 0, false, true, true);
     w = view->out->getBitmapWidth();
     h = view->out->getBitmapHeight();
   }
@@ -302,7 +298,7 @@ view_new (PopplerDocument *doc)
   vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
 
   view->drawing_area = gtk_drawing_area_new ();
-  sw = gtk_scrolled_window_new (NULL, NULL);
+  sw = gtk_scrolled_window_new (nullptr, nullptr);
   gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw),
                                   GTK_POLICY_AUTOMATIC,
                                   GTK_POLICY_AUTOMATIC);
@@ -366,9 +362,9 @@ main (int argc, char *argv [])
     return -1;
   }
 
-  ctx = g_option_context_new (NULL);
+  ctx = g_option_context_new (nullptr);
   g_option_context_add_main_entries (ctx, options, "main");
-  g_option_context_parse (ctx, &argc, &argv, NULL);
+  g_option_context_parse (ctx, &argc, &argv, nullptr);
   g_option_context_free (ctx);
 
   gtk_init (&argc, &argv);
@@ -379,10 +375,10 @@ main (int argc, char *argv [])
     View            *view;
     GFile           *file;
     PopplerDocument *doc;
-    GError          *error = NULL;
+    GError          *error = nullptr;
 
     file = g_file_new_for_commandline_arg (file_arguments[i]);
-    doc = poppler_document_new_from_gfile (file, NULL, NULL, &error);
+    doc = poppler_document_new_from_gfile (file, nullptr, nullptr, &error);
     if (!doc) {
       gchar *uri;
 
@@ -398,7 +394,7 @@ main (int argc, char *argv [])
 
     view = view_new (doc);
     view_list = g_list_prepend (view_list, view);
-    view_set_page (view, CLAMP (page, 0, poppler_document_get_n_pages (doc) - 1));
+    view_set_page (view, CLAMP (requested_page, 0, poppler_document_get_n_pages (doc) - 1));
   }
 
   gtk_main ();

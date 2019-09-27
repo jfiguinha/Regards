@@ -6,8 +6,12 @@
 //
 // Copyright 2015 André Guerreiro <aguerreiro1985@gmail.com>
 // Copyright 2015 André Esser <bepandre@hotmail.com>
-// Copyright 2015 Albert Astals Cid <aacid@kde.org>
+// Copyright 2015, 2017-2019 Albert Astals Cid <aacid@kde.org>
 // Copyright 2016 Markus Kilås <digital@markuspage.com>
+// Copyright 2017, 2019 Hans-Ulrich Jüttner <huj@froreich-bioscientia.de>
+// Copyright 2017, 2019 Adrian Johnson <ajohnson@redneon.com>
+// Copyright 2018 Chinmoy Ranjan Pradhan <chinmoyrp65@protonmail.com>
+// Copyright 2019 Alexey Pavlov <alexpux@gmail.com>
 //
 //========================================================================
 
@@ -18,18 +22,24 @@
 #include <stddef.h>
 #include <string.h>
 #include <time.h>
+#include <hasht.h>
+#include <fstream>
 #include "parseargs.h"
 #include "Object.h"
 #include "Array.h"
+#include "goo/gbasename.h"
 #include "Page.h"
 #include "PDFDoc.h"
 #include "PDFDocFactory.h"
 #include "Error.h"
 #include "GlobalParams.h"
+#include "SignatureHandler.h"
 #include "SignatureInfo.h"
+#include "Win32Console.h"
+#include "numberofcharacters.h"
+#include <libgen.h>
 
-
-const char * getReadableSigState(SignatureValidationStatus sig_vs)
+static const char * getReadableSigState(SignatureValidationStatus sig_vs)
 {
   switch(sig_vs) {
     case SIGNATURE_VALID:
@@ -52,7 +62,7 @@ const char * getReadableSigState(SignatureValidationStatus sig_vs)
   }
 }
 
-const char * getReadableCertState(CertificateValidationStatus cert_vs)
+static const char * getReadableCertState(CertificateValidationStatus cert_vs)
 {
   switch(cert_vs) {
     case CERTIFICATE_TRUSTED:
@@ -78,20 +88,48 @@ const char * getReadableCertState(CertificateValidationStatus cert_vs)
   }
 }
 
-char *getReadableTime(time_t unix_time)
+static char *getReadableTime(time_t unix_time)
 {
   char * time_str = (char *) gmalloc(64);
   strftime(time_str, 64, "%b %d %Y %H:%M:%S", localtime(&unix_time));
   return time_str;
 }
 
-static GBool printVersion = gFalse;
-static GBool printHelp = gFalse;
-static GBool dontVerifyCert = gFalse;
+static void dumpSignature(int sig_num, int sigCount, FormWidgetSignature *sig_widget, const char *filename)
+{
+    const GooString *signature = sig_widget->getSignature();
+    if (!signature) {
+        printf("Cannot dump signature #%d\n", sig_num);
+        return;
+    }
+
+    const int sigCountLength = numberOfCharacters(sigCount);
+    // We want format to be {0:s}.sig{1:Xd} where X is sigCountLength
+    // since { is the magic character to replace things we need to put it twice where
+    // we don't want it to be replaced
+    GooString *format = GooString::format("{{0:s}}.sig{{1:{0:d}d}}", sigCountLength);
+    GooString *path = GooString::format(format->c_str(), gbasename(filename).c_str(), sig_num);
+    printf("Signature #%d (%u bytes) => %s\n", sig_num, signature->getLength(), path->c_str());
+    std::ofstream outfile(path->c_str(), std::ofstream::binary);
+    outfile.write(signature->c_str(), signature->getLength());
+    outfile.close();
+    delete format;
+    delete path;
+}
+
+static GooString nssDir;
+static bool printVersion = false;
+static bool printHelp = false;
+static bool dontVerifyCert = false;
+static bool dumpSignatures = false;
 
 static const ArgDesc argDesc[] = {
+  {"-nssdir", argGooString, &nssDir,     0,
+   "path to directory of libnss3 database"},
   {"-nocert", argFlag,     &dontVerifyCert,     0,
    "don't perform certificate validation"},
+  {"-dump",   argFlag,     &dumpSignatures,     0,
+   "dump all signatures into current directory"},
 
   {"-v",      argFlag,     &printVersion,  0,
    "print copyright and version info"},
@@ -101,22 +139,23 @@ static const ArgDesc argDesc[] = {
    "print usage information"},
   {"-?",      argFlag,     &printHelp,     0,
    "print usage information"},
-  {NULL}
+  {}
 };
 
 
 int main(int argc, char *argv[])
 {
-  PDFDoc *doc = NULL;
+  PDFDoc *doc = nullptr;
   unsigned int sigCount;
-  GooString * fileName = NULL;
-  SignatureInfo *sig_info = NULL;
-  char *time_str = NULL;
+  GooString * fileName = nullptr;
+  SignatureInfo *sig_info = nullptr;
+  char *time_str = nullptr;
   std::vector<FormWidgetSignature*> sig_widgets;
   globalParams = new GlobalParams();
 
+  Win32Console win32Console(&argc, &argv);
   int exitCode = 99;
-  GBool ok;
+  bool ok;
 
   ok = parseArgs(argDesc, &argc, argv);
 
@@ -134,8 +173,10 @@ int main(int argc, char *argv[])
 
   fileName = new GooString(argv[argc - 1]);
 
+  SignatureHandler::setNSSDir(nssDir);
+
   // open PDF file
-  doc = PDFDocFactory().createPDFDoc(*fileName, NULL, NULL);
+  doc = PDFDocFactory().createPDFDoc(*fileName, nullptr, nullptr);
 
   if (!doc->isOk()) {
     exitCode = 1;
@@ -146,18 +187,83 @@ int main(int argc, char *argv[])
   sigCount = sig_widgets.size();
 
   if (sigCount >= 1) {
-    printf("Digital Signature Info of: %s\n", fileName->getCString());
+    if (dumpSignatures) {
+      printf("Dumping Signatures: %u\n", sigCount);
+      for (unsigned int i = 0; i < sigCount; i++) {
+        dumpSignature(i, sigCount, sig_widgets.at(i), fileName->c_str());
+      }
+      goto end;
+    } else {
+      printf("Digital Signature Info of: %s\n", fileName->c_str());
+    }
   } else {
-    printf("File '%s' does not contain any signatures\n", fileName->getCString());
+    printf("File '%s' does not contain any signatures\n", fileName->c_str());
     exitCode = 2;
     goto end;
   }
 
   for (unsigned int i = 0; i < sigCount; i++) {
-    sig_info = sig_widgets.at(i)->validateSignature(!dontVerifyCert, false);
+    sig_info = sig_widgets.at(i)->validateSignature(!dontVerifyCert, false, -1 /* now */);
     printf("Signature #%u:\n", i+1);
     printf("  - Signer Certificate Common Name: %s\n", sig_info->getSignerName());
+    printf("  - Signer full Distinguished Name: %s\n", sig_info->getSubjectDN());
     printf("  - Signing Time: %s\n", time_str = getReadableTime(sig_info->getSigningTime()));
+    printf("  - Signing Hash Algorithm: ");
+    switch (sig_info->getHashAlgorithm())
+    {
+      case HASH_AlgMD2:
+        printf("MD2\n");
+        break;
+      case HASH_AlgMD5:
+        printf("MD5\n");
+        break;
+      case HASH_AlgSHA1:
+        printf("SHA1\n");
+        break;
+      case HASH_AlgSHA256:
+        printf("SHA-256\n");
+        break;
+      case HASH_AlgSHA384:
+        printf("SHA-384\n");
+        break;
+      case HASH_AlgSHA512:
+        printf("SHA-512\n");
+        break;
+      case HASH_AlgSHA224:
+        printf("SHA-224\n");
+        break;
+      default:
+        printf("unknown\n");
+    }
+    printf("  - Signature Type: ");
+    switch (sig_widgets.at(i)->signatureType())
+    {
+      case adbe_pkcs7_sha1:
+        printf("adbe.pkcs7.sha1\n");
+        break;
+      case adbe_pkcs7_detached:
+        printf("adbe.pkcs7.detached\n");
+        break;
+      case ETSI_CAdES_detached:
+        printf("ETSI.CAdES.detached\n");
+        break;
+      default:
+        printf("unknown\n");
+    }
+    std::vector<Goffset> ranges = sig_widgets.at(i)->getSignedRangeBounds();
+    if (ranges.size() == 4)
+    {
+      printf("  - Signed Ranges: [%lld - %lld], [%lld - %lld]\n",
+             ranges[0], ranges[1], ranges[2], ranges[3]);
+      Goffset checked_file_size;
+      GooString* signature = sig_widgets.at(i)->getCheckedSignature(&checked_file_size);
+      if (signature && checked_file_size == ranges[3]) {
+        printf("  - Total document signed\n");
+      } else {
+        printf("  - Not total document signed\n");
+      }
+      delete signature;
+    }
     printf("  - Signature Validation: %s\n", getReadableSigState(sig_info->getSignatureValStatus()));
     gfree(time_str);
     if (sig_info->getSignatureValStatus() != SIGNATURE_VALID || dontVerifyCert) {
@@ -169,9 +275,9 @@ int main(int argc, char *argv[])
   exitCode = 0;
 
 end:
-  delete globalParams;
   delete fileName;
   delete doc;
+  delete globalParams;
 
   return exitCode;
 }

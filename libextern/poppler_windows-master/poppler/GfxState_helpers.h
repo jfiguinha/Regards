@@ -13,12 +13,16 @@
 // All changes made under the Poppler project to this file are licensed
 // under GPL version 2 or later
 //
-// Copyright (C) 2009, 2011 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2009, 2011, 2018, 2019 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
 //
 //========================================================================
+
+#ifndef GFXSTATE_HELPERS_H
+#define GFXSTATE_HELPERS_H
 
 #include "GfxState.h"
 
@@ -30,7 +34,7 @@ static inline double clip01(double x) {
   return (x < 0) ? 0 : (x > 1) ? 1 : x;
 }
 
-static inline void cmykToRGBMatrixMultiplication(const double &c, const double &m, const double &y, const double &k, const double &c1, const double &m1, const double &y1, const double &k1, double &r, double &g, double &b)
+static inline void cmykToRGBMatrixMultiplication(const double c, const double m, const double y, const double k, const double c1, const double m1, const double y1, const double k1, double &r, double &g, double &b)
 {
   double x;
   // this is a matrix multiplication, unrolled for performance
@@ -80,3 +84,5 @@ static inline void cmykToRGBMatrixMultiplication(const double &c, const double &
   g += 0.2119 * x;
   b += 0.2235 * x;
 }
+
+#endif

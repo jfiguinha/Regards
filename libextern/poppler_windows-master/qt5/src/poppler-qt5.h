@@ -1,7 +1,7 @@
 /* poppler-qt.h: qt interface to poppler
  * Copyright (C) 2005, Net Integration Technologies, Inc.
  * Copyright (C) 2005, 2007, Brad Hards <bradh@frogmouth.net>
- * Copyright (C) 2005-2015, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2005-2015, 2017-2019, Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2005, Stefan Kebekus <stefan.kebekus@math.uni-koeln.de>
  * Copyright (C) 2006-2011, Pino Toscano <pino@kde.org>
  * Copyright (C) 2009 Shawn Rutledge <shawn.t.rutledge@gmail.com>
@@ -12,9 +12,14 @@
  * Copyright (C) 2012, Guillermo A. Amaral B. <gamaral@kde.org>
  * Copyright (C) 2012, Fabio D'Urso <fabiodurso@hotmail.it>
  * Copyright (C) 2012, Tobias Koenig <tobias.koenig@kdab.com>
- * Copyright (C) 2012, 2014, 2015 Adam Reichold <adamreichold@myopera.com>
+ * Copyright (C) 2012, 2014, 2015, 2018, 2019 Adam Reichold <adamreichold@myopera.com>
  * Copyright (C) 2012, 2013 Thomas Freitag <Thomas.Freitag@alfa.de>
  * Copyright (C) 2013 Anthony Granger <grangeranthony@gmail.com>
+ * Copyright (C) 2016 Jakub Alba <jakubalba@gmail.com>
+ * Copyright (C) 2017 Oliver Sander <oliver.sander@tu-dresden.de>
+ * Copyright (C) 2017, 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+ * Copyright (C) 2018 Nelson Benítez León <nbenitezl@gmail.com>
+ * Copyright (C) 2019 Jan Grulich <jgrulich@redhat.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +70,8 @@ namespace Poppler {
 
     class PDFConverter;
     class PSConverter;
+
+    struct OutlineItemData;
 
     /**
 	Debug/error function.
@@ -199,9 +206,15 @@ namespace Poppler {
 	~FontInfo();
 
 	/**
-	   The name of the font. Can be QString::null if the font has no name
+	   The name of the font. Can be a null QString if the font has no name
 	*/
 	QString name() const;
+
+	/**
+	   The name of the substitute font. Can be a null QString if the font has no substitute font
+	   @since 0.80
+	*/
+	QString substituteName() const;
 
 	/**
 	   The path of the font file used to represent this font on this system,
@@ -439,6 +452,7 @@ delete it;
            \since 0.16
         */
         enum PainterFlag {
+            NoPainterFlags = 0x00000000, ///< \since 0.63
             /**
                Do not save/restore the caller-owned painter.
 
@@ -490,6 +504,153 @@ delete it;
         */
 	QImage renderToImage(double xres=72.0, double yres=72.0, int x=-1, int y=-1, int w=-1, int h=-1, Rotation rotate = Rotate0) const;
 
+	/**
+	    Partial Update renderToImage callback.
+
+	    This function type is used for doing partial rendering updates;
+	    the first parameter is the image as rendered up to now, the second is the unaltered
+	    closure argument which was passed to the renderToImage call.
+
+	    \since 0.62
+	*/
+	typedef void (*RenderToImagePartialUpdateFunc)(const QImage & /*image*/, const QVariant & /*closure*/);
+
+	/**
+	    Partial Update query renderToImage callback.
+
+	    This function type is used for query if the partial rendering update should happen;
+	    the parameter is the unaltered closure argument which was passed to the renderToImage call.
+
+	    \since 0.62
+	*/
+	typedef bool (*ShouldRenderToImagePartialQueryFunc)(const QVariant & /*closure*/);
+
+	/**
+	   Render the page to a QImage using the current
+	   \link Document::renderBackend() Document renderer\endlink.
+
+	   If \p x = \p y = \p w = \p h = -1, the method will automatically
+           compute the size of the image from the horizontal and vertical
+           resolutions specified in \p xres and \p yres. Otherwise, the
+           method renders only a part of the page, specified by the
+           parameters (\p x, \p y, \p w, \p h) in pixel coordinates. The returned
+           QImage then has size (\p w, \p h), independent of the page
+           size.
+
+	   \param x specifies the left x-coordinate of the box, in
+	   pixels.
+
+	   \param y specifies the top y-coordinate of the box, in
+	   pixels.
+
+	   \param w specifies the width of the box, in pixels.
+
+	   \param h specifies the height of the box, in pixels.
+
+	   \param xres horizontal resolution of the graphics device,
+	   in dots per inch
+
+	   \param yres vertical resolution of the graphics device, in
+	   dots per inch
+
+	   \param rotate how to rotate the page
+
+	   \param partialUpdateCallback callback that will be called to
+	   report a partial rendering update
+
+	   \param shouldDoPartialUpdateCallback callback that will be called
+	   to ask if a partial rendering update is wanted. This exists
+	   because doing a partial rendering update needs to copy the image
+	   buffer so if it is not wanted it is better skipped early.
+
+	   \param closure opaque structure that will be passed
+	   back to partialUpdateCallback and shouldDoPartialUpdateCallback.
+
+	   \warning The parameter (\p x, \p y, \p w, \p h) are not
+	   well-tested. Unusual or meaningless parameters may lead to
+	   rather unexpected results.
+
+	   \returns a QImage of the page, or a null image on failure.
+
+	   \since 0.62
+        */
+        QImage renderToImage(double xres, double yres,
+                             int x, int y, int w, int h, Rotation rotate,
+                             RenderToImagePartialUpdateFunc partialUpdateCallback,
+                             ShouldRenderToImagePartialQueryFunc shouldDoPartialUpdateCallback,
+                             const QVariant &closure
+                            ) const;
+
+	/**
+	    Abort query function callback.
+
+	    This function type is used for query if the current rendering/text extraction should be cancelled.
+
+	    \since 0.63
+	*/
+	typedef bool (*ShouldAbortQueryFunc)(const QVariant & /*closure*/);
+
+		/**
+	   Render the page to a QImage using the current
+	   \link Document::renderBackend() Document renderer\endlink.
+
+	   If \p x = \p y = \p w = \p h = -1, the method will automatically
+           compute the size of the image from the horizontal and vertical
+           resolutions specified in \p xres and \p yres. Otherwise, the
+           method renders only a part of the page, specified by the
+           parameters (\p x, \p y, \p w, \p h) in pixel coordinates. The returned
+           QImage then has size (\p w, \p h), independent of the page
+           size.
+
+	   \param x specifies the left x-coordinate of the box, in
+	   pixels.
+
+	   \param y specifies the top y-coordinate of the box, in
+	   pixels.
+
+	   \param w specifies the width of the box, in pixels.
+
+	   \param h specifies the height of the box, in pixels.
+
+	   \param xres horizontal resolution of the graphics device,
+	   in dots per inch
+
+	   \param yres vertical resolution of the graphics device, in
+	   dots per inch
+
+	   \param rotate how to rotate the page
+
+	   \param partialUpdateCallback callback that will be called to
+	   report a partial rendering update
+
+	   \param shouldDoPartialUpdateCallback callback that will be called
+	   to ask if a partial rendering update is wanted. This exists
+	   because doing a partial rendering update needs to copy the image
+	   buffer so if it is not wanted it is better skipped early.
+
+	   \param shouldAbortRenderCallback callback that will be called
+	   to ask if the rendering should be cancelled.
+
+	   \param closure opaque structure that will be passed
+	   back to partialUpdateCallback, shouldDoPartialUpdateCallback
+	   and shouldAbortRenderCallback.
+
+	   \warning The parameter (\p x, \p y, \p w, \p h) are not
+	   well-tested. Unusual or meaningless parameters may lead to
+	   rather unexpected results.
+
+	   \returns a QImage of the page, or a null image on failure.
+
+	   \since 0.63
+        */
+        QImage renderToImage(double xres, double yres,
+                             int x, int y, int w, int h, Rotation rotate,
+                             RenderToImagePartialUpdateFunc partialUpdateCallback,
+                             ShouldRenderToImagePartialQueryFunc shouldDoPartialUpdateCallback,
+                             ShouldAbortQueryFunc shouldAbortRenderCallback,
+                             const QVariant &closure
+                            ) const;
+
         /**
            Render the page to the specified QPainter using the current
            \link Document::renderBackend() Document renderer\endlink.
@@ -533,7 +694,7 @@ delete it;
            \since 0.16
         */
         bool renderToPainter(QPainter* painter, double xres=72.0, double yres=72.0, int x=-1, int y=-1, int w=-1, int h=-1,
-                             Rotation rotate = Rotate0, PainterFlags flags = 0) const;
+                             Rotation rotate = Rotate0, PainterFlags flags = NoPainterFlags) const;
 
 	/**
 	   Get the page thumbnail if it exists.
@@ -586,8 +747,12 @@ delete it;
         */
         enum SearchFlag
         {
+            NoSearchFlags = 0x00000000, ///< since 0.63
             IgnoreCase = 0x00000001,    ///< Case differences are ignored
-            WholeWords = 0x00000002    ///< Only whole words are matched
+            WholeWords = 0x00000002,    ///< Only whole words are matched
+            IgnoreDiacritics = 0x00000004    ///< Diacritic differences (eg. accents, umlauts, diaeresis) are ignored. \since 0.73
+                                             ///< This option will have no effect if the search term contains characters which
+                                             ///< are not pure ascii.
         };
         Q_DECLARE_FLAGS( SearchFlags, SearchFlag )
 	
@@ -616,7 +781,7 @@ delete it;
 
            \since 0.31
         **/
-        bool search(const QString &text, double &rectLeft, double &rectTop, double &rectRight, double &rectBottom, SearchDirection direction, SearchFlags flags = 0, Rotation rotate = Rotate0) const;
+        bool search(const QString &text, double &rectLeft, double &rectTop, double &rectRight, double &rectBottom, SearchDirection direction, SearchFlags flags = NoSearchFlags, Rotation rotate = Rotate0) const;
 
 	/**
 	   Returns a list of all occurrences of the specified text on the page.
@@ -642,7 +807,7 @@ delete it;
 
            \since 0.31
         **/
-        QList<QRectF> search(const QString &text, SearchFlags flags = 0, Rotation rotate = Rotate0) const;
+        QList<QRectF> search(const QString &text, SearchFlags flags = NoSearchFlags, Rotation rotate = Rotate0) const;
 
 	/**
 	   Returns a list of text of the page
@@ -661,6 +826,32 @@ delete it;
 	   \warning This method is not tested with Asian scripts
 	*/
 	QList<TextBox*> textList(Rotation rotate = Rotate0) const;
+
+	/**
+	   Returns a list of text of the page
+
+	   This method returns a QList of TextBoxes that contain all
+	   the text of the page, with roughly one text word of text
+	   per TextBox item.
+
+	   For text written in western languages (left-to-right and
+	   up-to-down), the QList contains the text in the proper
+	   order.
+
+	   \param shouldAbortExtractionCallback callback that will be called
+	   to ask if the text extraction should be cancelled.
+
+	   \param closure opaque structure that will be passed
+	   back to shouldAbortExtractionCallback.
+
+	   \note The caller owns the text boxes and they should
+	         be deleted when no longer required.
+
+	   \warning This method is not tested with Asian scripts
+
+	   // \since 0.63
+	*/
+	QList<TextBox*> textList(Rotation rotate, ShouldAbortQueryFunc shouldAbortExtractionCallback, const QVariant &closure) const;
 
 	/**
 	   \return The dimensions (cropbox) of the page, in points (i.e. 1/72th of an inch)
@@ -782,11 +973,95 @@ delete it;
 	**/
 	QString label() const;
 	
+	/**
+	   Returns the index of the page.
+
+	 \since 0.70
+	**/
+	int index() const;
+
     private:
 	Q_DISABLE_COPY(Page)
 
 	Page(DocumentData *doc, int index);
 	PageData *m_page;
+    };
+
+    /**
+       \brief Item in the outline of a PDF document
+
+       Represents an item in the outline of PDF document, i.e. a name, an internal or external link and a set of child items.
+
+       \since 0.74
+    **/
+    class POPPLER_QT5_EXPORT OutlineItem {
+      friend class Document;
+    public:
+      /**
+	 Constructs a null item, i.e. one that does not represent a valid item in the outline of some PDF document.
+      **/
+      OutlineItem();
+      ~OutlineItem();
+
+      OutlineItem(const OutlineItem &other);
+      OutlineItem &operator=(const OutlineItem &other);
+
+      OutlineItem(OutlineItem &&other);
+      OutlineItem &operator=(OutlineItem &&other);
+
+      /**
+	 Indicates whether an item is null, i.e. whether it does not represent a valid item in the outline of some PDF document.
+      **/
+      bool isNull() const;
+
+      /**
+	 The name of the item which should be displayed to the user.
+      **/
+      QString name() const;
+
+      /**
+	 Indicates whether the item should initially be display in an expanded or collapsed state.
+      **/
+      bool isOpen() const;
+
+      /**
+	 The destination referred to by this item.
+
+	 \returns a shared pointer to an immutable link destination
+      **/
+      QSharedPointer<const LinkDestination> destination() const;
+
+      /**
+	 The external file name of the document to which the \see destination refers
+
+	 \returns a string with the external file name or an empty string if there is none
+       */
+      QString externalFileName() const;
+
+      /**
+	 The URI to which the item links
+
+	 \returns a string with the URI which this item links or an empty string if there is none
+      **/
+      QString uri() const;
+
+      /**
+	 Determines if this item has any child items
+
+	 \returns true if there are any child items
+      **/
+      bool hasChildren() const;
+
+      /**
+	 Gets the child items of this item
+
+	 \returns a vector outline items, empty if there are none
+      **/
+      QVector<OutlineItem> children() const;
+
+    private:
+      OutlineItem(OutlineItemData *data);
+      OutlineItemData *m_data;
     };
 
 /**
@@ -798,7 +1073,7 @@ delete it;
    \section ownership Ownership of the returned objects
 
    All the functions that returns class pointers create new object, and the
-   responsability of those is given to the callee.
+   responsibility of those is given to the callee.
 
    The only exception is \link Poppler::Page::transition() Page::transition()\endlink.
 
@@ -836,7 +1111,7 @@ delete it;
 
    To know whether the %Poppler version you are using has support for color
    management, you can query Poppler::isCmsAvailable(). In case it is not
-   avilable, all the color management-related functions will either do nothing
+   available, all the color management-related functions will either do nothing
    or return null.
 */
     class POPPLER_QT5_EXPORT Document {
@@ -892,7 +1167,8 @@ delete it;
 	    OverprintPreview = 0x00000010,  ///< Overprint preview \since 0.22
 	    ThinLineSolid = 0x00000020,     ///< Enhance thin lines solid \since 0.24
 	    ThinLineShape = 0x00000040,     ///< Enhance thin lines shape. Wins over ThinLineSolid \since 0.24
-	    IgnorePaperColor = 0x00000080   ///< Do not compose with the paper color \since 0.35
+	    IgnorePaperColor = 0x00000080,  ///< Do not compose with the paper color \since 0.35
+	    HideAnnotations = 0x00000100    ///< Do not render annotations \since 0.60
 	};
 	Q_DECLARE_FLAGS( RenderHints, RenderHint )
 
@@ -912,6 +1188,8 @@ delete it;
 
 	  \param outputProfileA is a \c cmsHPROFILE of the LCMS library.
 
+	  \note This should be called before any rendering happens and only once during the lifetime of the current process.
+
 	   \since 0.12
 	*/
 	void setColorDisplayProfile(void *outputProfileA);
@@ -919,6 +1197,8 @@ delete it;
 	  Set a color display profile for the current document.
 
 	  \param name is the name of the display profile to set.
+
+	  \note This should be called before any rendering happens.
 
 	   \since 0.12
 	*/
@@ -1072,6 +1352,37 @@ QDateTime modified = m_doc->date("ModDate");
 	QDateTime date( const QString & data ) const;
 
 	/**
+	   Set the Info dict date entry specified by \param key to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setDate( const QString & key, const QDateTime & val );
+
+	/**
+	   The date of the creation of the document
+	*/
+	QDateTime creationDate() const;
+
+	/**
+	   Set the creation date of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setCreationDate( const QDateTime & val );
+
+	/**
+	   The date of the last change in the document
+	*/
+	QDateTime modificationDate() const;
+
+	/**
+	   Set the modification date of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setModificationDate( const QDateTime & val );
+
+	/**
 	   Get specified information associated with the document
 
 	   You would use this method with something like:
@@ -1088,6 +1399,92 @@ QString subject = m_doc->info("Subject");
 	   \sa infoKeys() to get a list of the available keys
 	*/
 	QString info( const QString & data ) const;
+
+	/**
+	   Set the value of the document's Info dictionary entry specified by \param key to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setInfo( const QString & key, const QString & val );
+
+	/**
+	   The title of the document
+	*/
+	QString title() const;
+
+	/**
+	   Set the title of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setTitle( const QString & val );
+
+	/**
+	   The author of the document
+	*/
+	QString author() const;
+
+	/**
+	   Set the author of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setAuthor( const QString & val );
+
+	/**
+	   The subject of the document
+	*/
+	QString subject() const;
+
+	/**
+	   Set the subject of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setSubject( const QString & val );
+
+	/**
+	   The keywords of the document
+	*/
+	QString keywords() const;
+
+	/**
+	   Set the keywords of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setKeywords( const QString & val );
+
+	/**
+	   The creator of the document
+	*/
+	QString creator() const;
+
+	/**
+	   Set the creator of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setCreator( const QString & val );
+
+	/**
+	   The producer of the document
+	*/
+	QString producer() const;
+
+	/**
+	   Set the producer of the document to \param val
+
+	   \returns true on success, false on failure
+	*/
+	bool setProducer( const QString & val );
+
+	/**
+	   Remove the document's Info dictionary
+
+	   \returns true on success, false on failure
+	*/
+	bool removeInfo();
 
 	/**
 	   Obtain a list of the available string information keys.
@@ -1239,7 +1636,7 @@ QString subject = m_doc->info("Subject");
 	/**
 	  Gets the table of contents (TOC) of the Document.
 	
-	  The caller is responsable for the returned object.
+	  The caller is responsible for the returned object.
 	
 	  In the tree the tag name is the 'screen' name of the entry. A tag can have
 	  attributes. Here follows the list of tag attributes with meaning:
@@ -1260,6 +1657,15 @@ QString subject = m_doc->info("Subject");
 	  \returns the TOC, or NULL if the Document does not have one
 	*/
 	QDomDocument *toc() const;
+
+	/**
+	   Gets the outline of the document
+
+	   \returns a vector of outline items, empty if there are none
+
+	   \since 0.74
+	**/
+	QVector<OutlineItem> outline() const;
 	
 	/**
 	   Tries to resolve the named destination \p name.
@@ -1403,6 +1809,13 @@ QString subject = m_doc->info("Subject");
 	   \since 0.22
 	*/
 	FormType formType() const;
+
+	/**
+	   Returns the calculate order for forms (using their id)
+
+	   \since 0.53
+	*/
+	QVector<int> formCalculateOrder() const;
 
 	/**
 	   Destructor.
@@ -1607,7 +2020,7 @@ height = dummy.height();
              */
             void setPageConvertedCallback(void (* callback)(int page, void *payload), void *payload);
 
-            bool convert();
+            bool convert() override;
 
         private:
             Q_DECLARE_PRIVATE(PSConverter)
@@ -1636,7 +2049,7 @@ height = dummy.height();
             /**
               Destructor.
             */
-            virtual ~PDFConverter();
+            ~PDFConverter();
 
             /**
               Sets the options for the PDF export.
@@ -1647,7 +2060,7 @@ height = dummy.height();
              */
             PDFOptions pdfOptions() const;
 
-            bool convert();
+            bool convert() override;
 
         private:
             Q_DECLARE_PRIVATE(PDFConverter)
@@ -1659,7 +2072,14 @@ height = dummy.height();
     /**
        Conversion from PDF date string format to QDateTime
     */
-    POPPLER_QT5_EXPORT QDateTime convertDate( char *dateString );
+    POPPLER_QT5_EXPORT Q_DECL_DEPRECATED QDateTime convertDate( char *dateString );
+
+    /**
+       Conversion from PDF date string format to QDateTime
+
+       \since 0.64
+    */
+    POPPLER_QT5_EXPORT QDateTime convertDate( const char *dateString );
 
     /**
        Whether the color management functions are available.

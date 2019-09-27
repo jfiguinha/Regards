@@ -11,7 +11,8 @@
 // All changes made under the Poppler project to this file are licensed
 // under GPL version 2 or later
 //
-// Copyright (C) 2007-2008 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2007-2008, 2018 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2018 Oliver Sander <oliver.sander@tu-dresden.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -21,11 +22,6 @@
 #ifndef SPLASHFONT_H
 #define SPLASHFONT_H
 
-#ifdef USE_GCC_PRAGMAS
-#pragma interface
-#endif
-
-#include "goo/gtypes.h"
 #include "SplashTypes.h"
 #include "SplashClip.h"
 
@@ -51,7 +47,7 @@ class SplashFont {
 public:
 
   SplashFont(SplashFontFile *fontFileA, SplashCoord *matA,
-	     SplashCoord *textMatA, GBool aaA);
+	     const SplashCoord *textMatA, bool aaA);
 
   // This must be called after the constructor, so that the subclass
   // constructor has a chance to compute the bbox.
@@ -59,11 +55,14 @@ public:
 
   virtual ~SplashFont();
 
+  SplashFont(const SplashFont &) = delete;
+  SplashFont& operator=(const SplashFont &) = delete;
+
   SplashFontFile *getFontFile() { return fontFile; }
 
   // Return true if <this> matches the specified font file and matrix.
-  GBool matches(SplashFontFile *fontFileA, SplashCoord *matA,
-		SplashCoord *textMatA) {
+  bool matches(SplashFontFile *fontFileA, SplashCoord *matA,
+		const SplashCoord *textMatA) const {
     return fontFileA == fontFile &&
            matA[0] == mat[0] && matA[1] == mat[1] &&
            matA[2] == mat[2] && matA[3] == mat[3] &&
@@ -78,12 +77,12 @@ public:
   // splashFontFraction = 1 << splashFontFractionBits.  Subclasses
   // should override this to zero out xFrac and/or yFrac if they don't
   // support fractional coordinates.
-  virtual GBool getGlyph(int c, int xFrac, int yFrac,
+  virtual bool getGlyph(int c, int xFrac, int yFrac,
 			 SplashGlyphBitmap *bitmap, int x0, int y0, SplashClip *clip, SplashClipResult *clipRes);
 
   // Rasterize a glyph.  The <xFrac> and <yFrac> values are the same
   // as described for getGlyph.
-  virtual GBool makeGlyph(int c, int xFrac, int yFrac,
+  virtual bool makeGlyph(int c, int xFrac, int yFrac,
 			  SplashGlyphBitmap *bitmap, int x0, int y0, SplashClip *clip, SplashClipResult *clipRes) = 0;
 
   // Return the path for a glyph.
@@ -107,9 +106,9 @@ protected:
 				//   (text space -> device space)
   SplashCoord textMat[4];	// text transform matrix
 				//   (text space -> user space)
-  GBool aa;			// anti-aliasing
+  bool aa;			// anti-aliasing
   int xMin, yMin, xMax, yMax;	// glyph bounding box
-  Guchar *cache;		// glyph bitmap cache
+  unsigned char *cache;		// glyph bitmap cache
   SplashFontCacheTag *		// cache tags
     cacheTags;
   int glyphW, glyphH;		// size of glyph bitmaps

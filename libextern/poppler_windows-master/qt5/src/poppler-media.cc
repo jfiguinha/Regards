@@ -1,6 +1,6 @@
 /* poppler-media.cc: qt interface to poppler
  * Copyright (C) 2012 Guillermo A. Amaral B. <gamaral@kde.org>
- * Copyright (C) 2013 Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2013, 2018 Albert Astals Cid <aacid@kde.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ class MediaRenditionPrivate
 {
 public:
 
-  MediaRenditionPrivate(::MediaRendition *rendition)
-  : rendition(rendition)
+  MediaRenditionPrivate(::MediaRendition *renditionA)
+  : rendition(renditionA)
   {
   }
   
@@ -43,6 +43,9 @@ public:
   {
     delete rendition;
   }
+
+  MediaRenditionPrivate(const MediaRenditionPrivate &) = delete;
+  MediaRenditionPrivate& operator=(const MediaRenditionPrivate &) = delete;
 
   ::MediaRendition *rendition;
 };
@@ -99,7 +102,7 @@ MediaRendition::data() const
     return QByteArray();
 
   QBuffer buffer;
-  Guchar data[BUFFER_MAX];
+  unsigned char data[BUFFER_MAX];
   int bread;
 
   buffer.open(QIODevice::WriteOnly);
@@ -151,7 +154,7 @@ QSize
 MediaRendition::size() const
 {
   Q_D( const MediaRendition );
-  MediaParameters *mp = 0;
+  const MediaParameters *mp = nullptr;
 
   if (d->rendition->getBEParameters())
     mp = d->rendition->getBEParameters();

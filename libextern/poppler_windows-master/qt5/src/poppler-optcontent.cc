@@ -3,7 +3,11 @@
  * Copyright (C) 2007, Brad Hards <bradh@kde.org>
  * Copyright (C) 2008, 2014, Pino Toscano <pino@kde.org>
  * Copyright (C) 2008, Carlos Garcia Campos <carlosgc@gnome.org>
- * Copyright (C) 2015, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2015-2019, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2017, Hubert Figuière <hub@figuiere.net>
+ * Copyright (C) 2018 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>. Work sponsored by the LiMux project of the city of Munich
+ * Copyright (C) 2018 Adam Reichold <adam.reichold@t-online.de>
+ * Copyright (C) 2019 Oliver Sander <oliver.sander@tu-dresden.de>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,11 +29,13 @@
 #include "poppler-optcontent-private.h"
 
 #include "poppler-private.h"
+#include "poppler-link-private.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QtAlgorithms>
 
 #include "poppler/OptionalContent.h"
+#include "poppler/Link.h"
 
 namespace Poppler
 {
@@ -38,8 +44,7 @@ namespace Poppler
   {
     itemsInGroup.reserve(rbarray->getLength());
     for (int i = 0; i < rbarray->getLength(); ++i) {
-      Object ref;
-      rbarray->getNF( i, &ref );
+      const Object &ref = rbarray->getNF( i );
       if ( ! ref.isRef() ) {
 	qDebug() << "expected ref, but got:" << ref.getType();
       }
@@ -63,7 +68,7 @@ namespace Poppler
       OptContentItem *thisItem = itemsInGroup.at(i);
       if (thisItem != itemToSetOn) {
         QSet<OptContentItem *> newChangedItems;
-        thisItem->setState(OptContentItem::Off, newChangedItems);
+        thisItem->setState(OptContentItem::Off, false /*obeyRadioGroups*/, newChangedItems);
         changedItems += newChangedItems;
       }
     }
@@ -75,7 +80,7 @@ namespace Poppler
   OptContentItem::OptContentItem( OptionalContentGroup *group )
   {
     m_group = group;
-    m_parent = 0;
+    m_parent = nullptr;
     m_name = UnicodeParsedString( group->getName() );
     if ( group->getState() == OptionalContentGroup::On ) {
       m_state = OptContentItem::On;
@@ -88,16 +93,16 @@ namespace Poppler
 
   OptContentItem::OptContentItem( const QString &label )
   {
-    m_parent = 0;
+    m_parent = nullptr;
     m_name = label;
-    m_group = 0;
+    m_group = nullptr;
     m_state = OptContentItem::HeadingOnly;
     m_stateBackup = m_state;
     m_enabled = true;
   }
 
   OptContentItem::OptContentItem() :
-    m_parent( 0 ), m_enabled(true)
+    m_parent( nullptr ), m_enabled(true)
   {
   }
 
@@ -111,31 +116,35 @@ namespace Poppler
   }
 
 
-  bool OptContentItem::setState(ItemState state, QSet<OptContentItem *> &changedItems)
+  void OptContentItem::setState(ItemState state, bool obeyRadioGroups, QSet<OptContentItem *> &changedItems)
   {
+    if (state == m_state)
+        return;
+
     m_state = state;
     m_stateBackup = m_state;
     changedItems.insert(this);
     QSet<OptContentItem *> empty;
     Q_FOREACH (OptContentItem *child, m_children) {
       ItemState oldState = child->m_stateBackup;
-      child->setState(state == OptContentItem::On ? child->m_stateBackup : OptContentItem::Off, empty);
+      child->setState(state == OptContentItem::On ? child->m_stateBackup : OptContentItem::Off, true /*obeyRadioGroups*/, empty);
       child->m_enabled = state == OptContentItem::On;
       child->m_stateBackup = oldState;
     }
     if (!m_group) {
-      return false;
+      return;
     }
     if ( state == OptContentItem::On ) {
       m_group->setState( OptionalContentGroup::On );
-      for (int i = 0; i < m_rbGroups.size(); ++i) {
-	RadioButtonGroup *rbgroup = m_rbGroups.at(i);
-        changedItems += rbgroup->setItemOn( this );
+      if (obeyRadioGroups) {
+	for (int i = 0; i < m_rbGroups.size(); ++i) {
+	  RadioButtonGroup *rbgroup = m_rbGroups.at(i);
+	  changedItems += rbgroup->setItemOn( this );
+	}
       }
     } else if ( state == OptContentItem::Off ) {
       m_group->setState( OptionalContentGroup::Off );
     }
-    return true;
   }
 
   void OptContentItem::addChild( OptContentItem *child )
@@ -160,15 +169,14 @@ namespace Poppler
     : q(qq)
   {
     m_rootNode = new OptContentItem();
-    GooList *ocgs = optContent->getOCGs();
+    const auto &ocgs = optContent->getOCGs();
 
-    for (int i = 0; i < ocgs->getLength(); ++i) {
-      OptionalContentGroup *ocg = static_cast<OptionalContentGroup*>(ocgs->get(i));
-      OptContentItem *node = new OptContentItem( ocg );
-      m_optContentItems.insert( QString::number(ocg->getRef().num), node);
+    for (const auto& ocg : ocgs) {
+      OptContentItem *node = new OptContentItem( ocg.second.get() );
+      m_optContentItems.insert( QString::number( ocg.first.num ), node );
     }
 
-    if ( optContent->getOrderArray() == 0 ) {
+    if ( optContent->getOrderArray() == nullptr ) {
       // no Order array, so drop them all at the top level
       QMapIterator<QString, OptContentItem*> i(m_optContentItems);
       while ( i.hasNext() ) {
@@ -186,6 +194,7 @@ namespace Poppler
   {
     qDeleteAll( m_optContentItems );
     qDeleteAll( m_rbgroups );
+    qDeleteAll( m_headerOptContentItems );
     delete m_rootNode;
   }
 
@@ -193,13 +202,11 @@ namespace Poppler
   {
     OptContentItem *lastItem = parentNode;
     for (int i = 0; i < orderArray->getLength(); ++i) {
-      Object orderItem;
-      orderArray->get(i, &orderItem);
+      Object orderItem = orderArray->get(i);
       if ( orderItem.isDict() ) {
-	Object item;
-	orderArray->getNF(i, &item);
+	const Object &item = orderArray->getNF(i);
 	if (item.isRef() ) {
-          OptContentItem *ocItem = m_optContentItems.value(QString::number(item.getRefNum()), 0);
+          OptContentItem *ocItem = m_optContentItems.value(QString::number(item.getRefNum()));
 	  if (ocItem) {
 	    addChild( parentNode, ocItem );
 	    lastItem = ocItem;
@@ -207,19 +214,18 @@ namespace Poppler
             qDebug() << "could not find group for object" << item.getRefNum();
 	  }
 	}
-	item.free();
       } else if ( (orderItem.isArray()) && (orderItem.arrayGetLength() > 0) ) {
 	parseOrderArray(lastItem, orderItem.getArray());
       } else if ( orderItem.isString() ) {
-	GooString *label = orderItem.getString();
+	const GooString *label = orderItem.getString();
 	OptContentItem *header = new OptContentItem ( UnicodeParsedString ( label ) );
+	m_headerOptContentItems.append( header );
 	addChild( parentNode, header );
 	parentNode = header;
 	lastItem = header;
       } else {
 	qDebug() << "something unexpected";
       }	
-      orderItem.free();
     }
   }
 
@@ -230,8 +236,7 @@ namespace Poppler
     }
     // This is an array of array(s)
     for (int i = 0; i < rBGroupArray->getLength(); ++i) {
-      Object rbObj;
-      rBGroupArray->get(i, &rbObj);
+      Object rbObj = rBGroupArray->get(i);
       if ( ! rbObj.isArray() ) {
 	qDebug() << "expected inner array, got:" << rbObj.getType();
 	return;
@@ -239,7 +244,6 @@ namespace Poppler
       Array *rbarray = rbObj.getArray();
       RadioButtonGroup *rbg = new RadioButtonGroup( this, rbarray );
       m_rbgroups.append( rbg );
-      rbObj.free();
     }
   }
 
@@ -354,36 +358,20 @@ namespace Poppler
       case Qt::CheckStateRole:
       {
         const bool newvalue = value.toBool();
-        if (newvalue) {
-          if (node->state() != OptContentItem::On) {
-            QSet<OptContentItem *> changedItems;
-            node->setState(OptContentItem::On, changedItems);
-            changedItems += node->recurseListChildren(false);
-            QModelIndexList indexes;
-            Q_FOREACH (OptContentItem *item, changedItems) {
-              indexes.append(d->indexFromItem(item, 0));
-            }
-            qStableSort(indexes);
-            Q_FOREACH (const QModelIndex &changedIndex, indexes) {
-              emit dataChanged(changedIndex, changedIndex);
-            }
-            return true;
+        QSet<OptContentItem *> changedItems;
+        node->setState(newvalue ? OptContentItem::On : OptContentItem::Off, true /*obeyRadioGroups*/, changedItems);
+
+        if (!changedItems.isEmpty()) {
+          changedItems += node->recurseListChildren(false);
+          QModelIndexList indexes;
+          Q_FOREACH (OptContentItem *item, changedItems) {
+            indexes.append(d->indexFromItem(item, 0));
           }
-        } else {
-          if (node->state() != OptContentItem::Off) {
-            QSet<OptContentItem *> changedItems;
-            node->setState(OptContentItem::Off, changedItems);
-            changedItems += node->recurseListChildren(false);
-            QModelIndexList indexes;
-            Q_FOREACH (OptContentItem *item, changedItems) {
-              indexes.append(d->indexFromItem(item, 0));
-            }
-            qStableSort(indexes);
-            Q_FOREACH (const QModelIndex &changedIndex, indexes) {
-              emit dataChanged(changedIndex, changedIndex);
-            }
-            return true;
+          std::stable_sort(indexes.begin(), indexes.end());
+          Q_FOREACH (const QModelIndex &changedIndex, indexes) {
+            emit dataChanged(changedIndex, changedIndex);
           }
+          return true;
         }
         break;
       }
@@ -407,6 +395,49 @@ namespace Poppler
     return QAbstractItemModel::headerData( section, orientation, role );
   }
 
+  void OptContentModel::applyLink( LinkOCGState *link )
+  {
+    ::LinkOCGState *popplerLinkOCGState = static_cast<LinkOCGStatePrivate*>(link->d_ptr)->popplerLinkOCGState;
+
+    QSet<OptContentItem *> changedItems;
+
+    const std::vector<::LinkOCGState::StateList*> *statesList = popplerLinkOCGState->getStateList();
+    for (std::size_t i = 0; i < statesList->size(); ++i) {
+        ::LinkOCGState::StateList *stateList = (*statesList)[i];
+
+        std::vector<Ref*> *refsList = stateList->list;
+        for (std::size_t j = 0; j < refsList->size(); ++j) {
+            Ref *ref = (*refsList)[j];
+            OptContentItem *item = d->itemFromRef(QString::number(ref->num));
+
+            if (stateList->st == ::LinkOCGState::On) {
+              item->setState(OptContentItem::On, popplerLinkOCGState->getPreserveRB(), changedItems);
+            } else if (stateList->st == ::LinkOCGState::Off) {
+              item->setState(OptContentItem::Off, popplerLinkOCGState->getPreserveRB(), changedItems);
+            } else {
+              OptContentItem::ItemState newState = item->state() == OptContentItem::On ? OptContentItem::Off : OptContentItem::On;
+              item->setState(newState, popplerLinkOCGState->getPreserveRB(), changedItems);
+            }
+        }
+    }
+
+    if (!changedItems.isEmpty()) {
+      QSet<OptContentItem *> aux;
+      Q_FOREACH (OptContentItem *item, aux) {
+        changedItems += item->recurseListChildren(false);
+      }
+
+      QModelIndexList indexes;
+      Q_FOREACH (OptContentItem *item, changedItems) {
+        indexes.append(d->indexFromItem(item, 0));
+      }
+      std::stable_sort(indexes.begin(), indexes.end());
+      Q_FOREACH (const QModelIndex &changedIndex, indexes) {
+        emit dataChanged(changedIndex, changedIndex);
+      }
+    }
+  }
+
   void OptContentModelPrivate::addChild( OptContentItem *parent, OptContentItem *child )
   {
     parent->addChild( child );
@@ -414,7 +445,7 @@ namespace Poppler
 
   OptContentItem* OptContentModelPrivate::itemFromRef( const QString &ref ) const
   {
-    return m_optContentItems.value(ref, 0);
+    return m_optContentItems.value(ref);
   }
 
   OptContentItem* OptContentModelPrivate::nodeFromIndex(const QModelIndex &index, bool canBeNull) const
@@ -422,9 +453,8 @@ namespace Poppler
     if (index.isValid()) {
       return static_cast<OptContentItem *>(index.internalPointer());
     } else {
-      return canBeNull ? 0 : m_rootNode;
+      return canBeNull ? nullptr : m_rootNode;
     }
   }
 }
 
-#include "poppler-optcontent.moc"

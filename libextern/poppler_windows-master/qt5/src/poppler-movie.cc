@@ -1,6 +1,6 @@
 /* poppler-sound.cc: qt interface to poppler
  * Copyright (C) 2008, 2010, Pino Toscano <pino@kde.org>
- * Copyright (C) 2008, Albert Astals Cid <aacid@kde.org>
+ * Copyright (C) 2008, 2018, Albert Astals Cid <aacid@kde.org>
  * Copyright (C) 2010, Carlos Garcia Campos <carlosgc@gnome.org>
  * Copyright (C) 2012, Tobias Koenig <tobias.koenig@kdab.com>
  *
@@ -34,7 +34,7 @@ class MovieData
 {
 public:
 	MovieData()
-	  : m_movieObj( 0 )
+	  : m_movieObj( nullptr )
 	{
 	}
 
@@ -42,6 +42,9 @@ public:
 	{
 		delete m_movieObj;
 	}
+
+	MovieData(const MovieData &) = delete;
+	MovieData& operator=(const MovieData &) = delete;
 
 	Movie *m_movieObj;
 	QSize m_size;
@@ -57,7 +60,7 @@ MovieObject::MovieObject( AnnotMovie *ann )
 	m_movieData->m_movieObj = ann->getMovie()->copy();
 	//TODO: copy poster image
 
-	MovieActivationParameters *mp = m_movieData->m_movieObj->getActivationParameters();
+	const MovieActivationParameters *mp = m_movieData->m_movieObj->getActivationParameters();
 	int width, height;
 	m_movieData->m_movieObj->getFloatingWindowSize(&width, &height);
 	m_movieData->m_size = QSize(width, height);
@@ -73,8 +76,8 @@ MovieObject::~MovieObject()
 
 QString MovieObject::url() const
 {
-	GooString * goo = m_movieData->m_movieObj->getFileName();
-	return goo ? QString( goo->getCString() ) : QString();
+	const GooString * goo = m_movieData->m_movieObj->getFileName();
+	return goo ? QString( goo->c_str() ) : QString();
 }
 
 QSize MovieObject::size() const
@@ -99,7 +102,7 @@ MovieObject::PlayMode MovieObject::playMode() const
 
 bool MovieObject::showPosterImage() const
 {
-	return (m_movieData->m_movieObj->getShowPoster() == gTrue);
+	return (m_movieData->m_movieObj->getShowPoster() == true);
 }
 
 QImage MovieObject::posterImage() const

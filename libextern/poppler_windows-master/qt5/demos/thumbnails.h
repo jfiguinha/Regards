@@ -30,13 +30,13 @@ class ThumbnailsDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    ThumbnailsDock(QWidget *parent = 0);
+    ThumbnailsDock(QWidget *parent = nullptr);
     ~ThumbnailsDock();
 
-    /*virtual*/ void documentClosed();
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private Q_SLOTS:
     void slotItemActivated(QListWidgetItem *item);

@@ -18,15 +18,17 @@
 // Copyright (C) 2009 Michael K. Johnson <a1237@danlj.org>
 // Copyright (C) 2009 Shen Liang <shenzhuxi@gmail.com>
 // Copyright (C) 2009 Stefan Thomas <thomas@eload24.com>
-// Copyright (C) 2009-2011, 2015 Albert Astals Cid <aacid@kde.org>
-// Copyright (C) 2010, 2012 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2009-2011, 2015, 2018 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2010, 2012, 2017 Adrian Johnson <ajohnson@redneon.com>
 // Copyright (C) 2010 Hib Eris <hib@hiberis.nl>
 // Copyright (C) 2010 Jonathan Liu <net147@gmail.com>
 // Copyright (C) 2010 William Bader <williambader@hotmail.com>
 // Copyright (C) 2011-2013 Thomas Freitag <Thomas.Freitag@alfa.de>
-// Copyright (C) 2013, 2015 Adam Reichold <adamreichold@myopera.com>
+// Copyright (C) 2013, 2015, 2018 Adam Reichold <adamreichold@myopera.com>
 // Copyright (C) 2013 Suzuki Toshiya <mpsuzuki@hiroshima-u.ac.jp>
 // Copyright (C) 2015 William Bader <williambader@hotmail.com>
+// Copyright (C) 2018 Martin Packman <gzlist@googlemail.com>
+// Copyright (C) 2019 Yves-Gaël Chény <gitlab@r0b0t.fr>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -51,6 +53,8 @@
 #include "splash/SplashBitmap.h"
 #include "splash/Splash.h"
 #include "SplashOutputDev.h"
+#include "Win32Console.h"
+#include "numberofcharacters.h"
 
 // Uncomment to build pdftoppm with pthreads
 // You may also have to change the buildsystem to
@@ -66,35 +70,39 @@
 
 static int firstPage = 1;
 static int lastPage = 0;
-static GBool printOnlyOdd = gFalse;
-static GBool printOnlyEven = gFalse;
-static GBool singleFile = gFalse;
+static bool printOnlyOdd = false;
+static bool printOnlyEven = false;
+static bool singleFile = false;
 static double resolution = 0.0;
 static double x_resolution = 150.0;
 static double y_resolution = 150.0;
 static int scaleTo = 0;
 static int x_scaleTo = 0;
 static int y_scaleTo = 0;
-static int x = 0;
-static int y = 0;
-static int w = 0;
-static int h = 0;
+static int param_x = 0;
+static int param_y = 0;
+static int param_w = 0;
+static int param_h = 0;
 static int sz = 0;
-static GBool useCropBox = gFalse;
-static GBool mono = gFalse;
-static GBool gray = gFalse;
-static GBool png = gFalse;
-static GBool jpeg = gFalse;
-static GBool jpegcmyk = gFalse;
-static GBool tiff = gFalse;
-#if SPLASH_CMYK
-static GBool overprint = gFalse;
-#endif
+static bool useCropBox = false;
+static bool mono = false;
+static bool gray = false;
+static char sep[2] = "-";
+static bool forceNum = false;
+static bool png = false;
+static bool jpeg = false;
+static bool jpegcmyk = false;
+static bool tiff = false;
+static GooString jpegOpt;
+static int jpegQuality = -1;
+static bool jpegProgressive = false;
+static bool jpegOptimize = false;
+static bool overprint = false;
 static char enableFreeTypeStr[16] = "";
 static char antialiasStr[16] = "";
 static char vectorAntialiasStr[16] = "";
-static GBool fontAntialias = gTrue;
-static GBool vectorAntialias = gTrue;
+static bool fontAntialias = true;
+static bool vectorAntialias = true;
 static char ownerPassword[33] = "";
 static char userPassword[33] = "";
 static char TiffCompressionStr[16] = "";
@@ -103,9 +111,9 @@ static SplashThinLineMode thinLineMode = splashThinLineDefault;
 #ifdef UTILS_USE_PTHREADS
 static int numberOfJobs = 1;
 #endif // UTILS_USE_PTHREADS
-static GBool quiet = gFalse;
-static GBool printVersion = gFalse;
-static GBool printHelp = gFalse;
+static bool quiet = false;
+static bool printVersion = false;
+static bool printHelp = false;
 
 static const ArgDesc argDesc[] = {
   {"-f",      argInt,      &firstPage,     0,
@@ -132,13 +140,13 @@ static const ArgDesc argDesc[] = {
   {"-scale-to-y",      argInt,       &y_scaleTo,    0,
    "scales each page vertically to fit in scale-to-y pixels"},
 
-  {"-x",      argInt,      &x,             0,
+  {"-x",      argInt,      &param_x,             0,
    "x-coordinate of the crop area top left corner"},
-  {"-y",      argInt,      &y,             0,
+  {"-y",      argInt,      &param_y,             0,
    "y-coordinate of the crop area top left corner"},
-  {"-W",      argInt,      &w,             0,
+  {"-W",      argInt,      &param_w,             0,
    "width of crop area in pixels (default is 0)"},
-  {"-H",      argInt,      &h,             0,
+  {"-H",      argInt,      &param_h,             0,
    "height of crop area in pixels (default is 0)"},
   {"-sz",     argInt,      &sz,            0,
    "size of crop square in pixels (sets W and H)"},
@@ -149,32 +157,32 @@ static const ArgDesc argDesc[] = {
    "generate a monochrome PBM file"},
   {"-gray",   argFlag,     &gray,          0,
    "generate a grayscale PGM file"},
-#if ENABLE_LIBPNG
+  {"-sep",   argString,      sep, sizeof(sep),
+    "single character separator between name and page number, default - "},
+  {"-forcenum",   argFlag,      &forceNum, 0,
+	"force page number even if there is only one page "},
+#ifdef ENABLE_LIBPNG
   {"-png",    argFlag,     &png,           0,
    "generate a PNG file"},
 #endif
-#if ENABLE_LIBJPEG
+#ifdef ENABLE_LIBJPEG
   {"-jpeg",   argFlag,     &jpeg,           0,
    "generate a JPEG file"},
-#if SPLASH_CMYK
   {"-jpegcmyk",argFlag,    &jpegcmyk,       0,
    "generate a CMYK JPEG file"},
+  {"-jpegopt",  argGooString, &jpegOpt,    0,
+   "jpeg options, with format <opt1>=<val1>[,<optN>=<valN>]*"},
 #endif
-#endif
-#if SPLASH_CMYK
   {"-overprint",argFlag,   &overprint,      0,
    "enable overprint"},
-#endif
-#if ENABLE_LIBTIFF
+#ifdef ENABLE_LIBTIFF
   {"-tiff",    argFlag,     &tiff,           0,
    "generate a TIFF file"},
   {"-tiffcompression", argString, TiffCompressionStr, sizeof(TiffCompressionStr),
    "set TIFF compression: none, packbits, jpeg, lzw, deflate"},
 #endif
-#if HAVE_FREETYPE_FREETYPE_H | HAVE_FREETYPE_H
   {"-freetype",   argString,      enableFreeTypeStr, sizeof(enableFreeTypeStr),
    "enable FreeType font rasterizer: yes, no"},
-#endif
   {"-thinlinemode", argString, thinLineModeStr, sizeof(thinLineModeStr),
    "set thin line mode: none, solid, shape. Default: none"},
   
@@ -205,8 +213,68 @@ static const ArgDesc argDesc[] = {
    "print usage information"},
   {"-?",      argFlag,     &printHelp,     0,
    "print usage information"},
-  {NULL}
+  {}
 };
+
+static bool parseJpegOptions()
+{
+  //jpegOpt format is: <opt1>=<val1>,<opt2>=<val2>,...
+  const char *nextOpt = jpegOpt.c_str();
+  while (nextOpt && *nextOpt)
+  {
+    const char *comma = strchr(nextOpt, ',');
+    GooString opt;
+    if (comma) {
+      opt.Set(nextOpt, comma - nextOpt);
+      nextOpt = comma + 1;
+    } else {
+      opt.Set(nextOpt);
+      nextOpt = nullptr;
+    }
+    //here opt is "<optN>=<valN> "
+    const char *equal = strchr(opt.c_str(), '=');
+    if (!equal) {
+      fprintf(stderr, "Unknown jpeg option \"%s\"\n", opt.c_str());
+      return false;
+    }
+    int iequal = equal - opt.c_str();
+    GooString value(&opt, iequal + 1, opt.getLength() - iequal - 1);
+    opt.del(iequal, opt.getLength() - iequal);
+    //here opt is "<optN>" and value is "<valN>"
+
+    if (opt.cmp("quality") == 0) {
+      if (!isInt(value.c_str())) {
+	fprintf(stderr, "Invalid jpeg quality\n");
+	return false;
+      }
+      jpegQuality = atoi(value.c_str());
+      if (jpegQuality < 0 || jpegQuality > 100) {
+	fprintf(stderr, "jpeg quality must be between 0 and 100\n");
+	return false;
+      }
+    } else if (opt.cmp("progressive") == 0) {
+      jpegProgressive = false;
+      if (value.cmp("y") == 0) {
+	jpegProgressive = true;
+      } else if (value.cmp("n") != 0) {
+	fprintf(stderr, "jpeg progressive option must be \"y\" or \"n\"\n");
+	return false;
+      }
+    } else if (opt.cmp("optimize") == 0 || opt.cmp("optimise") == 0) {
+      jpegOptimize = false;
+      if (value.cmp("y") == 0) {
+	jpegOptimize = true;
+      } else if (value.cmp("n") != 0) {
+	fprintf(stderr, "jpeg optimize option must be \"y\" or \"n\"\n");
+	return false;
+      }
+    } else {
+      fprintf(stderr, "Unknown jpeg option \"%s\"\n", opt.c_str());
+      return false;
+    }
+  }
+  return true;
+}
 
 static void savePageSlice(PDFDoc *doc,
                    SplashOutputDev *splashOut, 
@@ -220,21 +288,27 @@ static void savePageSlice(PDFDoc *doc,
   doc->displayPageSlice(splashOut, 
     pg, x_resolution, y_resolution, 
     0,
-    !useCropBox, gFalse, gFalse,
+    !useCropBox, false, false,
     x, y, w, h
   );
 
   SplashBitmap *bitmap = splashOut->getBitmap();
-  
-  if (ppmFile != NULL) {
+
+  SplashBitmap::WriteImgParams params;
+  params.jpegQuality = jpegQuality;
+  params.jpegProgressive = jpegProgressive;
+  params.jpegOptimize = jpegOptimize;
+  params.tiffCompression.Set(TiffCompressionStr);
+
+  if (ppmFile != nullptr) {
     if (png) {
       bitmap->writeImgFile(splashFormatPng, ppmFile, x_resolution, y_resolution);
     } else if (jpeg) {
-      bitmap->writeImgFile(splashFormatJpeg, ppmFile, x_resolution, y_resolution);
+      bitmap->writeImgFile(splashFormatJpeg, ppmFile, x_resolution, y_resolution, &params);
     } else if (jpegcmyk) {
-      bitmap->writeImgFile(splashFormatJpegCMYK, ppmFile, x_resolution, y_resolution);
+      bitmap->writeImgFile(splashFormatJpegCMYK, ppmFile, x_resolution, y_resolution, &params);
     } else if (tiff) {
-      bitmap->writeImgFile(splashFormatTiff, ppmFile, x_resolution, y_resolution, TiffCompressionStr);
+      bitmap->writeImgFile(splashFormatTiff, ppmFile, x_resolution, y_resolution, &params);
     } else {
       bitmap->writePNMFile(ppmFile);
     }
@@ -246,9 +320,9 @@ static void savePageSlice(PDFDoc *doc,
     if (png) {
       bitmap->writeImgFile(splashFormatPng, stdout, x_resolution, y_resolution);
     } else if (jpeg) {
-      bitmap->writeImgFile(splashFormatJpeg, stdout, x_resolution, y_resolution);
+      bitmap->writeImgFile(splashFormatJpeg, stdout, x_resolution, y_resolution, &params);
     } else if (tiff) {
-      bitmap->writeImgFile(splashFormatTiff, stdout, x_resolution, y_resolution, TiffCompressionStr);
+      bitmap->writeImgFile(splashFormatTiff, stdout, x_resolution, y_resolution, &params);
     } else {
       bitmap->writePNMFile(stdout);
     }
@@ -288,10 +362,8 @@ static void processPageJobs() {
     // process the job    
     SplashOutputDev *splashOut = new SplashOutputDev(mono ? splashModeMono1 :
                   gray ? splashModeMono8 :
-#if SPLASH_CMYK
         			    (jpegcmyk || overprint) ? splashModeDeviceN8 :
-#endif
-		              splashModeRGB8, 4, gFalse, *pageJob.paperColor, gTrue, thinLineMode);
+		              splashModeRGB8, 4, false, *pageJob.paperColor, true, thinLineMode);
     splashOut->setFontAntialias(fontAntialias);
     splashOut->setVectorAntialias(vectorAntialias);
     splashOut->startDoc(pageJob.doc);
@@ -305,22 +377,10 @@ static void processPageJobs() {
 
 #endif // UTILS_USE_PTHREADS
 
-static int numberOfCharacters(unsigned int n)
-{
-  int charNum = 0;
-  while (n >= 10)
-  {
-    n = n / 10;
-    charNum++;
-  }
-  charNum++;
-  return charNum;
-}
-
 int main(int argc, char *argv[]) {
   PDFDoc *doc;
-  GooString *fileName = NULL;
-  char *ppmRoot = NULL;
+  GooString *fileName = nullptr;
+  char *ppmRoot = nullptr;
   char *ppmFile;
   GooString *ownerPW, *userPW;
   SplashColor paperColor;
@@ -329,17 +389,18 @@ int main(int argc, char *argv[]) {
 #else
   pthread_t* jobs;
 #endif // UTILS_USE_PTHREADS
-  GBool ok;
+  bool ok;
   int exitCode;
   int pg, pg_num_len;
   double pg_w, pg_h, tmp;
 
+  Win32Console win32Console(&argc, &argv);
   exitCode = 99;
 
   // parse args
   ok = parseArgs(argDesc, &argc, argv);
   if (mono && gray) {
-    ok = gFalse;
+    ok = false;
   }
   if ( resolution != 0.0 &&
        (x_resolution == 150.0 ||
@@ -372,6 +433,12 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  if (jpegOpt.getLength() > 0) {
+    if (!jpeg)
+      fprintf(stderr, "Warning: -jpegopt only valid with jpeg output.\n");
+    parseJpegOptions();
+  }
+
   // read config file
   globalParams = new GlobalParams();
   if (enableFreeTypeStr[0]) {
@@ -396,15 +463,15 @@ int main(int argc, char *argv[]) {
   if (ownerPassword[0]) {
     ownerPW = new GooString(ownerPassword);
   } else {
-    ownerPW = NULL;
+    ownerPW = nullptr;
   }
   if (userPassword[0]) {
     userPW = new GooString(userPassword);
   } else {
-    userPW = NULL;
+    userPW = nullptr;
   }
 
-  if (fileName == NULL) {
+  if (fileName == nullptr) {
     fileName = new GooString("fd://0");
   }
   if (fileName->cmp("-") == 0) {
@@ -449,14 +516,11 @@ int main(int argc, char *argv[]) {
   }
 
   // write PPM files
-#if SPLASH_CMYK
   if (jpegcmyk || overprint) {
-    globalParams->setOverprintPreview(gTrue);
+    globalParams->setOverprintPreview(true);
     for (int cp = 0; cp < SPOT_NCOMPS+4; cp++)
       paperColor[cp] = 0;
-  } else 
-#endif
-  {
+  } else {
     paperColor[0] = 255;
     paperColor[1] = 255;
     paperColor[2] = 255;
@@ -466,11 +530,9 @@ int main(int argc, char *argv[]) {
 
   splashOut = new SplashOutputDev(mono ? splashModeMono1 :
 				    gray ? splashModeMono8 :
-#if SPLASH_CMYK
 				    (jpegcmyk || overprint) ? splashModeDeviceN8 :
-#endif
 				             splashModeRGB8, 4,
-				  gFalse, paperColor, gTrue, thinLineMode);
+				  false, paperColor, true, thinLineMode);
 
 
 
@@ -480,7 +542,7 @@ int main(int argc, char *argv[]) {
   
 #endif // UTILS_USE_PTHREADS
   
-  if (sz != 0) w = h = sz;
+  if (sz != 0) param_w = param_h = sz;
   pg_num_len = numberOfCharacters(doc->getNumPages());
   for (pg = firstPage; pg <= lastPage; ++pg) {
     if (printOnlyEven && pg % 2 == 0) continue;
@@ -515,21 +577,21 @@ int main(int argc, char *argv[]) {
       pg_w = pg_h;
       pg_h = tmp;
     }
-    if (ppmRoot != NULL) {
+    if (ppmRoot != nullptr) {
       const char *ext = png ? "png" : (jpeg || jpegcmyk) ? "jpg" : tiff ? "tif" : mono ? "pbm" : gray ? "pgm" : "ppm";
-      if (singleFile) {
+      if (singleFile && !forceNum ) {
         ppmFile = new char[strlen(ppmRoot) + 1 + strlen(ext) + 1];
         sprintf(ppmFile, "%s.%s", ppmRoot, ext);
       } else {
         ppmFile = new char[strlen(ppmRoot) + 1 + pg_num_len + 1 + strlen(ext) + 1];
-        sprintf(ppmFile, "%s-%0*d.%s", ppmRoot, pg_num_len, pg, ext);
+        sprintf(ppmFile, "%s%s%0*d.%s", ppmRoot, sep, pg_num_len, pg, ext);
       }
     } else {
-      ppmFile = NULL;
+      ppmFile = nullptr;
     }
 #ifndef UTILS_USE_PTHREADS
     // process job in main thread
-    savePageSlice(doc, splashOut, pg, x, y, w, h, pg_w, pg_h, ppmFile);
+    savePageSlice(doc, splashOut, pg, param_x, param_y, param_w, param_h, pg_w, pg_h, ppmFile);
     
     delete[] ppmFile;
 #else
@@ -582,10 +644,6 @@ int main(int argc, char *argv[]) {
   delete doc;
   delete globalParams;
  err0:
-
-  // check for memory leaks
-  Object::memCheck(stderr);
-  gMemReport(stderr);
 
   return exitCode;
 }

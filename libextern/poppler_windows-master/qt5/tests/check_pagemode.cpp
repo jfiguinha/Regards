@@ -5,6 +5,8 @@
 class TestPageMode: public QObject
 {
     Q_OBJECT
+public:
+    TestPageMode(QObject *parent = nullptr) : QObject(parent) { }
 private slots:
     void checkNone();
     void checkFullScreen();
@@ -68,6 +70,6 @@ void TestPageMode::checkOC()
     delete doc;
 }
 
-QTEST_MAIN(TestPageMode)
+QTEST_GUILESS_MAIN(TestPageMode)
 #include "check_pagemode.moc"
 

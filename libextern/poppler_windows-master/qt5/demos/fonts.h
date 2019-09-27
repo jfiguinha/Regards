@@ -28,13 +28,13 @@ class FontsDock : public AbstractInfoDock
     Q_OBJECT
 
 public:
-    FontsDock(QWidget *parent = 0);
+    FontsDock(QWidget *parent = nullptr);
     ~FontsDock();
 
-    /*virtual*/ void documentClosed();
+    void documentClosed() override;
 
 protected:
-    /*virtual*/ void fillInfo();
+    void fillInfo() override;
 
 private:
     QTableWidget *m_table;

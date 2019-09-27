@@ -12,6 +12,7 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2007-2008, 2010, 2014 Albert Astals Cid <aacid@kde.org>
+// Copyright (C) 2018 Oliver Sander <oliver.sander@tu-dresden.de>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -19,15 +20,6 @@
 //========================================================================
 
 #include <config.h>
-
-#ifdef USE_GCC_PRAGMAS
-#pragma implementation
-#endif
-
-#include <algorithm>
-using std::min;
-using std::max;
-
 
 #include <limits.h>
 #include <string.h>
@@ -51,7 +43,7 @@ struct SplashFontCacheTag {
 //------------------------------------------------------------------------
 
 SplashFont::SplashFont(SplashFontFile *fontFileA, SplashCoord *matA,
-		       SplashCoord *textMatA, GBool aaA) {
+		       const SplashCoord *textMatA, bool aaA) {
   fontFile = fontFileA;
   fontFile->incRefCnt();
   mat[0] = matA[0];
@@ -64,8 +56,8 @@ SplashFont::SplashFont(SplashFontFile *fontFileA, SplashCoord *matA,
   textMat[3] = textMatA[3];
   aa = aaA;
 
-  cache = NULL;
-  cacheTags = NULL;
+  cache = nullptr;
+  cacheTags = nullptr;
 
   xMin = yMin = xMax = yMax = 0;
 }
@@ -102,8 +94,8 @@ void SplashFont::initCache() {
   } else {
     cacheSets = 1;
   }
-  cache = (Guchar *)gmallocn_checkoverflow(cacheSets* cacheAssoc, glyphSize);
-  if (cache != NULL) {
+  cache = (unsigned char *)gmallocn_checkoverflow(cacheSets* cacheAssoc, glyphSize);
+  if (cache != nullptr) {
     cacheTags = (SplashFontCacheTag *)gmallocn(cacheSets * cacheAssoc,
 					     sizeof(SplashFontCacheTag));
     for (i = 0; i < cacheSets * cacheAssoc; ++i) {
@@ -124,11 +116,11 @@ SplashFont::~SplashFont() {
   }
 }
 
-GBool SplashFont::getGlyph(int c, int xFrac, int yFrac,
+bool SplashFont::getGlyph(int c, int xFrac, int yFrac,
 			   SplashGlyphBitmap *bitmap, int x0, int y0, SplashClip *clip, SplashClipResult *clipRes) {
   SplashGlyphBitmap bitmap2;
   int size;
-  Guchar *p;
+  unsigned char *p;
   int i, j, k;
 
   // no fractional coordinates for large glyphs or non-anti-aliased
@@ -158,34 +150,34 @@ GBool SplashFont::getGlyph(int c, int xFrac, int yFrac,
       cacheTags[i+j].mru = 0x80000000;
       bitmap->aa = aa;
       bitmap->data = cache + (i+j) * glyphSize;
-      bitmap->freeData = gFalse;
+      bitmap->freeData = false;
 
       *clipRes = clip->testRect(x0 - bitmap->x,
                                 y0 - bitmap->y,
                                 x0 - bitmap->x + bitmap->w - 1,
                                 y0 - bitmap->y + bitmap->h - 1);
 
-      return gTrue;
+      return true;
     }
   }
 
   // generate the glyph bitmap
   if (!makeGlyph(c, xFrac, yFrac, &bitmap2, x0, y0, clip, clipRes)) {
-    return gFalse;
+    return false;
   }
 
   if (*clipRes == splashClipAllOutside)
   {
-    bitmap->freeData = gFalse;
+    bitmap->freeData = false;
     if (bitmap2.freeData) gfree(bitmap2.data);
-    return gTrue;
+    return true;
   }
 
   // if the glyph doesn't fit in the bounding box, return a temporary
   // uncached bitmap
   if (bitmap2.w > glyphW || bitmap2.h > glyphH) {
     *bitmap = bitmap2;
-    return gTrue;
+    return true;
   }
 
   // insert glyph pixmap in cache
@@ -194,7 +186,7 @@ GBool SplashFont::getGlyph(int c, int xFrac, int yFrac,
   } else {
     size = ((bitmap2.w + 7) >> 3) * bitmap2.h;
   }
-  p = NULL; // make gcc happy
+  p = nullptr; // make gcc happy
   if (cacheAssoc == 0)
   {
     // we had problems on the malloc of the cache, so ignore it
@@ -220,10 +212,10 @@ GBool SplashFont::getGlyph(int c, int xFrac, int yFrac,
     }
     *bitmap = bitmap2;
     bitmap->data = p;
-    bitmap->freeData = gFalse;
+    bitmap->freeData = false;
     if (bitmap2.freeData) {
       gfree(bitmap2.data);
     }
   }
-  return gTrue;
+  return true;
 }

@@ -28,7 +28,7 @@
 
 #include "HtmlLinks.h"
 
-extern GBool xml;
+extern bool xml;
 
 HtmlLink::HtmlLink(const HtmlLink& x){
   Xmin=x.Xmin;
@@ -61,21 +61,21 @@ HtmlLink::~HtmlLink(){
  delete dest;
 }
 
-GBool HtmlLink::isEqualDest(const HtmlLink& x) const{
-  return (!strcmp(dest->getCString(), x.dest->getCString()));
+bool HtmlLink::isEqualDest(const HtmlLink& x) const{
+  return (!strcmp(dest->c_str(), x.dest->c_str()));
 }
 
-GBool HtmlLink::inLink(double xmin,double ymin,double xmax,double ymax) const {
+bool HtmlLink::inLink(double xmin,double ymin,double xmax,double ymax) const {
   double y=(ymin+ymax)/2;
-  if (y>Ymax) return gFalse;
+  if (y>Ymax) return false;
   return (y>Ymin)&&(xmin<Xmax)&&(xmax>Xmin);
  }
   
 static GooString* EscapeSpecialChars( GooString* s )
 {
-    GooString* tmp = NULL;
+    GooString* tmp = nullptr;
     for( int i = 0, j = 0; i < s->getLength(); i++, j++ ){
-        const char *replace = NULL;
+        const char *replace = nullptr;
         switch ( s->getChar(i) ){
 	        case '"': replace = "&quot;";  break;
 	        case '&': replace = "&amp;";  break;
@@ -124,10 +124,10 @@ HtmlLinks::HtmlLinks(){
 
 HtmlLinks::~HtmlLinks(){
   delete accu;
-  accu=NULL; 
+  accu=nullptr; 
 }
 
-GBool HtmlLinks::inLink(double xmin,double ymin,double xmax,double ymax,int& p)const {
+bool HtmlLinks::inLink(double xmin,double ymin,double xmax,double ymax,int& p)const {
   
   for(std::vector<HtmlLink>::iterator i=accu->begin();i!=accu->end();++i){
     if (i->inLink(xmin,ymin,xmax,ymax)) {

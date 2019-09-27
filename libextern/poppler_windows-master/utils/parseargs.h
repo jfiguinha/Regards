@@ -13,7 +13,7 @@
  All changes made under the Poppler project to this file are licensed
  under GPL version 2 or later
 
- Copyright (C) 2008 Albert Astals Cid <aacid@kde.org>
+ Copyright (C) 2008, 2018 Albert Astals Cid <aacid@kde.org>
  Copyright (C) 2011 Adrian Johnson <ajohnson@redneon.com>
 
  To see a description of the changes please see the Changelog file that
@@ -28,14 +28,12 @@
 extern "C" {
 #endif
 
-#include "goo/gtypes.h"
-
 /*
  * Argument kinds.
  */
 typedef enum {
   argFlag,			/* flag (present / not-present) */
-				/*   [val: GBool *]             */
+				/*   [val: bool *]             */
   argInt,			/* integer arg    */
 				/*   [val: int *] */
   argFP,			/* floating point arg */
@@ -66,9 +64,9 @@ typedef struct {
 /*
  * Parse command line.  Removes all args which are found in the arg
  * descriptor list <args>.  Stops parsing if "--" is found (and removes
- * it).  Returns gFalse if there was an error.
+ * it).  Returns false if there was an error.
  */
-extern GBool parseArgs(const ArgDesc *args, int *argc, char *argv[]);
+extern bool parseArgs(const ArgDesc *args, int *argc, char *argv[]);
 
 /*
  * Print usage message, based on arg descriptor list.
@@ -78,8 +76,8 @@ extern void printUsage(const char *program, const char *otherArgs, const ArgDesc
 /*
  * Check if a string is a valid integer or floating point number.
  */
-extern GBool isInt(char *s);
-extern GBool isFP(char *s);
+extern bool isInt(const char *s);
+extern bool isFP(const char *s);
 
 #ifdef __cplusplus
 }

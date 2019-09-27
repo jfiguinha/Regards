@@ -5,13 +5,10 @@
 // This file is licensed under the GPLv2 or later
 //
 // Copyright 2011 Pino Toscano <pino@kde.org>
+// Copyright 2017 Albert Astals Cid <aacid@kde.org>
+// Copyright 2019 Marek Kasik <mkasik@redhat.com>
 //
 //========================================================================
-
-#include <algorithm>
-using std::min;
-using std::max;
-
 
 #include <config.h>
 
@@ -24,39 +21,38 @@ ViewerPreferences::ViewerPreferences(Dict *prefDict)
 {
   init();
 
-  Object obj;
-
-  if (prefDict->lookup("HideToolbar", &obj)->isBool()) {
+  Object obj = prefDict->lookup("HideToolbar");
+  if (obj.isBool()) {
     hideToolbar = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("HideMenubar", &obj)->isBool()) {
+  obj = prefDict->lookup("HideMenubar");
+  if (obj.isBool()) {
     hideMenubar = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("HideWindowUI", &obj)->isBool()) {
+  obj = prefDict->lookup("HideWindowUI");
+  if (obj.isBool()) {
     hideWindowUI = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("FitWindow", &obj)->isBool()) {
+  obj = prefDict->lookup("FitWindow");
+  if (obj.isBool()) {
     fitWindow = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("CenterWindow", &obj)->isBool()) {
+  obj = prefDict->lookup("CenterWindow");
+  if (obj.isBool()) {
     centerWindow = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("DisplayDocTitle", &obj)->isBool()) {
+  obj = prefDict->lookup("DisplayDocTitle");
+  if (obj.isBool()) {
     displayDocTitle = obj.getBool();
   }
-  obj.free();
 
-  if (prefDict->lookup("NonFullScreenPageMode", &obj)->isName()) {
+  obj = prefDict->lookup("NonFullScreenPageMode");
+  if (obj.isName()) {
     const char *mode = obj.getName();
     if (!strcmp(mode, "UseNone")) {
       nonFullScreenPageMode = nfpmUseNone;
@@ -68,9 +64,9 @@ ViewerPreferences::ViewerPreferences(Dict *prefDict)
       nonFullScreenPageMode = nfpmUseOC;
     }
   }
-  obj.free();
 
-  if (prefDict->lookup("Direction", &obj)->isName()) {
+  obj = prefDict->lookup("Direction");
+  if (obj.isName()) {
     const char *dir = obj.getName();
     if (!strcmp(dir, "L2R")) {
       direction = directionL2R;
@@ -78,9 +74,9 @@ ViewerPreferences::ViewerPreferences(Dict *prefDict)
       direction = directionR2L;
     }
   }
-  obj.free();
 
-  if (prefDict->lookup("PrintScaling", &obj)->isName()) {
+  obj = prefDict->lookup("PrintScaling");
+  if (obj.isName()) {
     const char *ps = obj.getName();
     if (!strcmp(ps, "None")) {
       printScaling = printScalingNone;
@@ -88,9 +84,9 @@ ViewerPreferences::ViewerPreferences(Dict *prefDict)
       printScaling = printScalingAppDefault;
     }
   }
-  obj.free();
 
-  if (prefDict->lookup("Duplex", &obj)->isName()) {
+  obj = prefDict->lookup("Duplex");
+  if (obj.isName()) {
     const char *d = obj.getName();
     if (!strcmp(d, "Simplex")) {
       duplex = duplexSimplex;
@@ -100,7 +96,42 @@ ViewerPreferences::ViewerPreferences(Dict *prefDict)
       duplex = duplexDuplexFlipLongEdge;
     }
   }
-  obj.free();
+
+  obj = prefDict->lookup("PickTrayByPDFSize");
+  if (obj.isBool()) {
+    pickTrayByPDFSize = obj.getBool();
+  }
+
+  obj = prefDict->lookup("NumCopies");
+  if (obj.isInt()) {
+    numCopies = obj.getInt();
+    if (numCopies < 2)
+      numCopies = 1;
+  }
+
+  obj = prefDict->lookup("PrintPageRange");
+  if (obj.isArray()) {
+    Array *range = obj.getArray();
+    int length = range->getLength();
+    int pageNumber1, pageNumber2;
+
+    if (length % 2 == 1)
+      length--;
+
+    for (int i = 0; i < length; i += 2) {
+      Object obj2 = range->get(i);
+      Object obj3 = range->get(i + 1);
+
+      if (obj2.isInt() && (pageNumber1 = obj2.getInt()) >= 1 &&
+          obj3.isInt() && (pageNumber2 = obj3.getInt()) >= 1 &&
+          pageNumber1 < pageNumber2) {
+        printPageRange.push_back(std::pair<int, int>(pageNumber1, pageNumber2));
+      } else {
+        printPageRange.clear();
+        break;
+      }
+    }
+  }
 }
 
 ViewerPreferences::~ViewerPreferences()
@@ -109,14 +140,16 @@ ViewerPreferences::~ViewerPreferences()
 
 void ViewerPreferences::init()
 {
-  hideToolbar = gFalse;
-  hideMenubar = gFalse;
-  hideWindowUI = gFalse;
-  fitWindow = gFalse;
-  centerWindow = gFalse;
-  displayDocTitle = gFalse;
+  hideToolbar = false;
+  hideMenubar = false;
+  hideWindowUI = false;
+  fitWindow = false;
+  centerWindow = false;
+  displayDocTitle = false;
   nonFullScreenPageMode = nfpmUseNone;
   direction = directionL2R;
   printScaling = printScalingAppDefault;
   duplex = duplexNone;
+  pickTrayByPDFSize = false;
+  numCopies = 1;
 }
