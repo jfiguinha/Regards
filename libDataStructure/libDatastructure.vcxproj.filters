@@ -33,9 +33,6 @@
     <ClInclude Include="BrightAndContrastEffectParameter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Catalog.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ClaheEffectParameter.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -216,11 +213,11 @@
     <ClInclude Include="ThumbnailMessage.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="PhotoCatalog.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Catalog.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Country.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -285,6 +282,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailDataSQL.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCatalog.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

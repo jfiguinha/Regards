@@ -184,6 +184,11 @@ DWORD WINAPI CProgressDlg::ThreadProc(PVOID pParameter)
 	return (DWORD)nResult;
 }
 
+HWND CProgressDlg::GetDlgWindow()
+{
+	return m_hDlg;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //
 // CProgressDlg::DialogProc

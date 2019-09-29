@@ -247,8 +247,12 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 #endif
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
-	wxString file = m_imagePDF->SetImage(ScanPage());
-	m_imagePDF->LoadFile(file);
+	wxImage image = ScanPage();
+	if (image.IsOk())
+	{
+		wxString file = m_imagePDF->SetImage(image);
+		m_imagePDF->LoadFile(file);
+	}
 }
 
 
