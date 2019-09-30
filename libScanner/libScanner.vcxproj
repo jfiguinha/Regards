@@ -24,13 +24,17 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="BitmapViewerInfosWnd.cpp" />
+    <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
+    <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
     <ClCompile Include="ScannerTheme.cpp" />
     <ClCompile Include="ScannerThemeInit.cpp" />
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
+    <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="ScannerParam.cpp" />
@@ -39,13 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="BitmapViewerInfosWnd.h" />
+    <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
+    <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="ScannerFrame.h" />
     <ClInclude Include="ScannerTheme.h" />
     <ClInclude Include="ScannerThemeInit.h" />
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
+    <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
     <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="ScannerParam.h" />

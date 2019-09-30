@@ -5,6 +5,7 @@
 #include <gdiplus.h>
 #endif
 #include <MainInterface.h>
+
 using namespace Regards::Viewer;
 
 namespace Regards
@@ -13,6 +14,7 @@ namespace Regards
 	{
 		class CScannerParam;
 		class CScannerTheme;
+		class CCentralWindow;
 	}
 }
 
@@ -56,7 +58,8 @@ private:
 	void OnPrint(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
-	
+
+
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
@@ -72,7 +75,9 @@ private:
 #if __WXSCANSANE__  
     wxScanSane * scanSane;
 #endif
-	CViewerPDF * m_imagePDF;
+
+	//Toolbar
+	CCentralWindow * centralWindow;
 	int m_imageCount;
 	IMainInterface * mainInterface;
 };

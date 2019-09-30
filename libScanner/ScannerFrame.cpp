@@ -22,6 +22,7 @@
 #include "ScannerParamInit.h"
 #include "ScannerTheme.h"
 #include "ScannerThemeInit.h"
+#include "CentralWindow.h"
 using namespace Regards::Print;
 
 #define MAX_ZOOM	10.0
@@ -83,7 +84,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	CreateStatusBar(1);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(m_imagePDF = new CViewerPDF(this, this, PDFWINDOWID), 1, wxEXPAND);
+	sizer->Add(centralWindow = new CCentralWindow(this, CENTRALVIEWERWINDOWID, this), 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
@@ -108,14 +109,14 @@ CScannerFrame::~CScannerFrame()
         delete scanSane;
 #endif
 
-	if (m_imagePDF != nullptr)
-		delete m_imagePDF;
+	if (centralWindow != nullptr)
+		delete centralWindow;
 }
 
 void CScannerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;
-	wxString filename = m_imagePDF->GetFilename();
+	wxString filename = centralWindow->GetFilename();
 	if (filename != "")
 	{
 		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
@@ -147,9 +148,7 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 {
-
-
-	m_imagePDF->LoadFile();
+	centralWindow->LoadFile();
 }
 
 // event handlers
@@ -250,8 +249,8 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 	wxImage image = ScanPage();
 	if (image.IsOk())
 	{
-		wxString file = m_imagePDF->SetImage(image);
-		m_imagePDF->LoadFile(file);
+		wxString file = centralWindow->SetImage(image);
+		centralWindow->LoadFile(file);
 	}
 }
 
@@ -294,8 +293,11 @@ wxImage CScannerFrame::ScanPage()
 
 	if (ppStream.Count() != 0)
 	{
-		Gdiplus::Image m_Image(*ppStream);
-		image = GdiplusImageTowxImage(&m_Image);
+		//for (int i = 0; i < ppStream.Count(); i++)
+		//{
+			Gdiplus::Image m_Image(*ppStream);
+			image = GdiplusImageTowxImage(&m_Image);
+		//}
 	}
 
 	//delete gdiplus;
@@ -309,10 +311,10 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 	{
 #ifdef __WXSCANSANE__  
 	case ID_ACQUIREIMAGE:
-        if(scanSane != nullptr)
-            event.Enable(scanSane->IsSourceSelected());
-        else
-            event.Enable(false);
+		if (scanSane != nullptr)
+			event.Enable(scanSane->IsSourceSelected());
+		else
+			event.Enable(false);
 		break;
 #endif
 	}

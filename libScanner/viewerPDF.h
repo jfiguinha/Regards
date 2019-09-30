@@ -34,62 +34,47 @@ namespace Regards
 			CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID idCTreeWithScrollbarInterface);
 			~CViewerPDF();
 
-			bool IsPanelInfosVisible();
-
-			void ShowToolbar();
-			void HideToolbar();
-			
-			void FullscreenMode();
-			void ScreenMode();
-
 			void AnimationPictureNext();
 			void AnimationPicturePrevious();
 
 			void UpdateScreenRatio();
 			void SetPosition(const long& timePosition);
 
-			void LoadFile();
 			wxString SetImage(wxImage imageFile);
 			void LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
-
 			wxString GetFilename();
+			int GetAnimationPosition();
 
 		private:
 			
-			void process(const vector<int> & listPage);
 			bool GetProcessEnd();
-			void OnAddPage(wxCommandEvent& event);
-			void OnDeletePage(wxCommandEvent& event);
 			void ClosePane(const int& id) {};
-			void RefreshPane(const int& id) {};
-			void OnSave(wxCommandEvent& event);
+			void RefreshPane(const int& id) {};	
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
 			void Resize();
-			
-			void OnOpenFile(wxCommandEvent& event);
 			void OnResize(wxCommandEvent& event);
-			void OnScan(wxCommandEvent& event);
+
+
+
+
 			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 			void OnSize(wxSizeEvent& event);
 			void AnimationSetPosition(wxCommandEvent& event);
-			void OnPrint(wxCommandEvent& event);
-			void OnExit(wxCommandEvent& event);
+
 			void ImageSuivante();
 			void ImagePrecedente();
 			void RedrawBarPos();
 			wxRect GetWindowRect();
 			int nbThumbnail;
-			void ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage);
 
 			//Thumbnail Video
 			CPanelWithClickToolbar * panelVideo;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailMultiPage * thumbnailVideo;
 
-			//Toolbar
-			CToolbarPDF * toolbarPDF;
+
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
 			CShowBitmap * showBitmapWindow;

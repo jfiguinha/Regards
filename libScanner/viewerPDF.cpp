@@ -3,7 +3,7 @@
 #include <wx/choicdlg.h> 
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>
-#include <FileUtility.h>
+
 #include <LibResource.h>
 #include "ScannerTheme.h"
 #include "ScannerThemeInit.h"
@@ -21,11 +21,8 @@
 #include "ThumbnailMessage.h"
 #include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
-#include "SelectPage.h"
-#include <qpdf/QPDF.hh>
-#include <qpdf/QPDFPageDocumentHelper.hh>
-#include <qpdf/QPDFWriter.hh>
-#include <qpdf/QUtil.hh>
+#include <FileUtility.h>
+
 //#include <qpdf/QIntC.hh>
 
 using namespace Regards::Window;
@@ -52,15 +49,6 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	CScannerParam * config = CScannerParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
-
-	if (viewerTheme != nullptr)
-	{
-		CThemeToolbar theme;
-		viewerTheme->GetMainToolbarTheme(&theme);
-		toolbarPDF = new CToolbarPDF(this, wxID_ANY, theme, false);
-		toolbarPDF->Show(true);
-	}
-
 
 	//----------------------------------------------------------------------------------------
 	//Panel Thumbnail Video
@@ -106,299 +94,10 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 
 	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
-	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CViewerPDF::OnOpenFile));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
-	Connect(wxEVENT_SCANNER, wxCommandEventHandler(CViewerPDF::OnScan));
-	Connect(wxEVENT_PRINT, wxCommandEventHandler(CViewerPDF::OnPrint));
-	Connect(wxEVT_EXIT, wxCommandEventHandler(CViewerPDF::OnExit));
-	Connect(wxEVENT_SAVE, wxCommandEventHandler(CViewerPDF::OnSave));
-	Connect(wxEVENT_ADDPAGE, wxCommandEventHandler(CViewerPDF::OnAddPage));
-	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CViewerPDF::OnDeletePage));
 	
 }
 
-void CViewerPDF::ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage)
-{
-	wxString file = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
-	if (!wxMkDir(tempFolder)) {
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\add.pdf";
-#else
-		file = tempFolder + "/add.pdf";
-#endif
-
-		if (wxFileExists(file))
-			wxRemoveFile(file);
-
-	}
-
-	QPDF oldpdf;
-	oldpdf.processFile(filename.ToStdString().c_str());
-
-	QPDF inpdf;
-	inpdf.processFile(fileToAdd.ToStdString().c_str());
-
-	std::string outfile = file.ToStdString();
-	QPDF outpdf;
-	outpdf.emptyPDF();
-
-	std::vector<QPDFPageObjectHelper> oldpages = QPDFPageDocumentHelper(oldpdf).getAllPages();
-	int oldpageno_len = oldpages.size();
-
-	int i = 0;
-	//std::vector<QPDFPageObjectHelper>::iterator iter = oldpages.begin();
-	for (; i <= oldAnimationPosition;i++)
-	{
-		auto object = oldpages.at(i);
-		QPDFPageObjectHelper& page(object);
-		QPDFPageDocumentHelper(outpdf).addPage(page, false);
-	}
-
-
-
-
-	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
-	int pageno_len = pages.size();
-	int pageno = 0;
-
-
-	for (std::vector<QPDFPageObjectHelper>::iterator newiter = pages.begin(); newiter != pages.end(); ++newiter)
-	{
-		bool find = false;
-		for (int i : listPage)
-		{
-			if (i == pageno)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (find)
-		{
-			QPDFPageObjectHelper& page(*newiter);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
-		}
-
-		pageno++;
-	}
-
-	//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
-	for (;i < oldpageno_len; i++)
-	{
-		auto object = oldpages.at(i);
-		QPDFPageObjectHelper& page(object);
-		QPDFPageDocumentHelper(outpdf).addPage(page, false);
-	}
-
-	QPDFWriter outpdfw(outpdf, outfile.c_str());
-	outpdfw.write();
-
-#ifndef DEMO
-	if (wxFileExists(filename))
-		wxRemoveFile(filename);
-
-	wxCopyFile(file, filename);
-#endif
-}
-
-void CViewerPDF::process(const vector<int> & listPage)
-{
-	wxString file = "";
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-#else
-	wxString tempFolder = documentPath + "/temp";
-#endif
-	if (!wxMkDir(tempFolder)) {
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\delete.pdf";
-#else
-		file = tempFolder + "/delete.pdf";
-#endif
-
-		if(wxFileExists(file))
-			wxRemoveFile(file);
-
-	}
-
-	QPDF inpdf;
-	inpdf.processFile(filename.ToStdString().c_str());
-	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
-	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
-	int pageno = 0;
-
-	std::string outfile = file.ToStdString();
-	QPDF outpdf;
-	outpdf.emptyPDF();
-
-
-	for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
-	{
-		bool find = false;
-		for (int i : listPage)
-		{
-			if (i == pageno)
-			{
-				find = true;
-				break;
-			}
-		}
-
-		if (!find)
-		{
-			QPDFPageObjectHelper& page(*iter);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
-		}
-
-		pageno++;
-	}
-
-	QPDFWriter outpdfw(outpdf, outfile.c_str());
-	outpdfw.write();
-
-#ifndef DEMO
-	if (wxFileExists(filename))
-		wxRemoveFile(filename);
-
-	wxCopyFile(file, filename);
-#endif
-}
-
-void CViewerPDF::OnDeletePage(wxCommandEvent& event)
-{
-	if (filename != "")
-	{
-		CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Delete"));
-		if (selectFile.ShowModal() == wxID_OK)
-		{
-			vector<int> listPage = selectFile.GetSelectItem();
-			process(listPage);
-			LoadFile(filename);
-		}
-		
-	}
-	else
-	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
-	}
-}
-
-void CViewerPDF::OnAddPage(wxCommandEvent& event)
-{
-	if (filename != "")
-	{
-		wxArrayString list;
-		list.push_back("Scan");
-		list.push_back("File");
-		bool isOk = false;
-		int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
-
-		if (numSelect != -1)
-		{
-			if (numSelect == 0)
-			{
-				vector<int> listPage;
-				listPage.push_back(0);
-				wxImage image = frame->ScanPage();
-				if (image.IsOk())
-				{
-					wxString file = SetImage(image);
-					ProcessAddFile(file, listPage);
-					isOk = true;
-				}
-			}
-			else
-			{
-				wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-					"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-				if (openFileDialog.ShowModal() == wxID_CANCEL)
-					return;     // the user changed idea..
-
-				wxString fileToadd = openFileDialog.GetPath();
-
-				CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
-				if (selectFile.ShowModal() == wxID_OK)
-				{
-					vector<int> listPage = selectFile.GetSelectItem();
-					ProcessAddFile(fileToadd, listPage);
-					isOk = true;
-				}
-			}
-			if (isOk)
-				LoadFile(filename);
-		}
-	}
-	else
-	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
-	}
-	
-}
-
-void CViewerPDF::OnSave(wxCommandEvent& event)
-{
-	if (filename != "")
-	{
-		wxFileDialog saveFileDialog(this, _("Save PDF file"), "", "",
-			"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;     // the user changed idea...
-
-		wxString newfilename = saveFileDialog.GetPath();
-		wxCopyFile(filename, newfilename);
-
-		LoadFile(newfilename);
-	}
-	else
-	{
-		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
-	}
-}
-
-void CViewerPDF::OnOpenFile(wxCommandEvent& event)
-{
-	this->LoadFile();
-}
-
-void CViewerPDF::OnScan(wxCommandEvent& event)
-{
-	wxImage image = frame->ScanPage();
-}
-
-void CViewerPDF::OnPrint(wxCommandEvent& event)
-{
-	if (filename != "")
-	{
-		frame->PrintPreview(GetImage());
-	}
-	else
-	{
-	wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
-	}
-
-	
-}
-
-void CViewerPDF::OnExit(wxCommandEvent& event)
-{
-	frame->OnClose();
-}
 
 void CViewerPDF::AnimationPictureNext()
 {
@@ -433,57 +132,14 @@ CViewerPDF::~CViewerPDF()
 {
 	pageThumbnail.clear();
 
-	delete(toolbarPDF);
+	
 	delete(thumbnailVideo);
 	delete(scrollVideoWindow);
 	delete(panelVideo);
 	delete(showBitmapWindow);
 }
 
-void CViewerPDF::HideToolbar()
-{
-	showToolbar = false;
-	if (showBitmapWindow != nullptr)
-	{
-		if (isFullscreen)
-		{
-			panelVideo->HidePanel(false);
-		}
-		//previewInfosWnd->HideToolbar();
 
-		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_HIDETOOLBAR);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-
-		this->RedrawBarPos();
-	}
-}
-
-void CViewerPDF::ShowToolbar()
-{
-	showToolbar = true;
-	if (showBitmapWindow != nullptr)
-	{
-		if (isFullscreen)
-		{
-			panelVideo->ShowPanel();
-		}
-
-		//previewThumbnailSplitter->ShowToolbar();
-
-		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWTOOLBAR);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-
-		this->RedrawBarPos();
-	}
-}
 
 void CViewerPDF::HidePanel()
 {
@@ -546,9 +202,6 @@ void CViewerPDF::RedrawBarPos()
 	int bottomHeight = 0;
 	int topHeight = 0;
 
-	toolbarPDF->SetSize(0, 0, width, toolbarPDF->GetNavigatorHeight());
-	toolbarPDF->Refresh();
-
 	if (!isFullscreen && !panelVideo->IsShown())
 	{
 		panelVideo->Show();
@@ -559,9 +212,9 @@ void CViewerPDF::RedrawBarPos()
 	if (panelVideo->IsShown())
 	{
 		int iconeHeight = panelVideo->GetHeight();
-		panelVideo->SetSize(0, toolbarPDF->GetNavigatorHeight(), width, iconeHeight);
+		panelVideo->SetSize(0, 0, width, iconeHeight);
 		panelVideo->Refresh();
-		topHeight += iconeHeight + toolbarPDF->GetNavigatorHeight();
+		topHeight += iconeHeight;
 	}
 
 
@@ -689,36 +342,11 @@ void CViewerPDF::LoadFile(const wxString &filename)
 	LoadAnimationBitmap(filename, 0);
 }
 
-void CViewerPDF::LoadFile()
+int CViewerPDF::GetAnimationPosition()
 {
-	wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-		"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-	if (openFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea..
-
-	LoadFile(openFileDialog.GetPath());
-
+	return oldAnimationPosition;
 }
 
-void CViewerPDF::FullscreenMode()
-{
-	isFullscreen = true;
-	//showBitmapWindow->FullscreenMode();
-	RedrawBarPos();
-}
-
-void CViewerPDF::ScreenMode()
-{
-	isFullscreen = false;
-	//showBitmapWindow->ScreenMode();
-	RedrawBarPos();
-}
-
-bool CViewerPDF::IsPanelInfosVisible()
-{
-
-	return false;
-}
 
 bool CViewerPDF::GetProcessEnd()
 {
