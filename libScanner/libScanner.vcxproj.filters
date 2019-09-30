@@ -93,6 +93,9 @@
     <ClCompile Include="CentralWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="ThumbnailSelection.cpp">
+      <Filter>Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -145,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="CentralWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailSelection.h">
+      <Filter>Dialog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

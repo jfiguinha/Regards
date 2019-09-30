@@ -21,6 +21,7 @@ using namespace Regards::Viewer;
 #define IDM_SAVE 159
 #define IDM_ADDPAGE 160
 #define IDM_DELETEPAGE 161
+#define IDM_EXTRACT 162
 
 CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent, id, theme, vertical)
@@ -34,6 +35,7 @@ CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & 
 	wxString lblAddPages = CLibResource::LoadStringFromResource(L"LBLADDPAGE", 1);
 	wxString lblDeletePages = CLibResource::LoadStringFromResource(L"LBLDELETEPAGES", 1);
 	wxString lblSave = CLibResource::LoadStringFromResource(L"LBLSAVE", 1);
+	wxString lblExtract = CLibResource::LoadStringFromResource(L"LBLEXTRACT", 1);
 
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
 	screen->SetButtonResourceId(L"IDB_FOLDER");
@@ -70,6 +72,12 @@ CToolbarPDF::CToolbarPDF(wxWindow* parent, wxWindowID id, const CThemeToolbar & 
 	print->SetLibelle(lblPrint);
 	print->SetCommandId(IDM_PRINT);
 	navElement.push_back(print);
+
+	CToolbarButton * extract = new CToolbarButton(themeToolbar.button);
+	extract->SetButtonResourceId(L"IDB_EXTRACT");
+	extract->SetLibelle(lblExtract);
+	extract->SetCommandId(IDM_EXTRACT);
+	navElement.push_back(extract);
 
 
 	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
@@ -134,6 +142,14 @@ void CToolbarPDF::EventManager(const int &id)
 	{
 		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_PRINT);
+		wxQueueEvent(central, event);
+	}
+	break;
+
+	case IDM_EXTRACT:
+	{
+		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXTRACT);
 		wxQueueEvent(central, event);
 	}
 	break;

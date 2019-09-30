@@ -49,8 +49,34 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	Connect(wxEVENT_SAVE, wxCommandEventHandler(CCentralWindow::OnSave));
 	Connect(wxEVENT_ADDPAGE, wxCommandEventHandler(CCentralWindow::OnAddPage));
 	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CCentralWindow::OnDeletePage));
+	Connect(wxEVENT_EXTRACT, wxCommandEventHandler(CCentralWindow::OnExtractPage));
 }
 
+void CCentralWindow::OnExtractPage(wxCommandEvent& event)
+{
+	if (filename != "")
+	{
+		CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Extract"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			vector<int> listPage = selectFile.GetSelectItem();
+			wxString fileExtract = ProcessExtractFile(listPage);
+
+			wxFileDialog saveFileDialog(this, _("Save Extract PDF page"), "", "",
+				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+			if (saveFileDialog.ShowModal() == wxID_CANCEL)
+				return;     // the user changed idea...
+
+			wxString newfilename = saveFileDialog.GetPath();
+			wxCopyFile(fileExtract, newfilename);
+		}
+
+	}
+	else
+	{
+		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
+	}
+}
 
 void CCentralWindow::OnDeletePage(wxCommandEvent& event)
 {
@@ -178,7 +204,8 @@ void CCentralWindow::LoadFile()
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea..
 
-	LoadFile(openFileDialog.GetPath());
+	filename = openFileDialog.GetPath();
+	LoadFile(filename);
 }
 
 wxString CCentralWindow::SetImage(wxImage imageFile)
@@ -402,4 +429,69 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 
 	wxCopyFile(file, filename);
 #endif
+}
+
+
+
+wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
+{
+	wxString file = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+#else
+	wxString tempFolder = documentPath + "/temp";
+#endif
+	if (!wxMkDir(tempFolder)) {
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		file = tempFolder + "\\extract.pdf";
+#else
+		file = tempFolder + "/extract.pdf";
+#endif
+
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+	}
+
+	QPDF inpdf;
+	inpdf.processFile(filename.ToStdString().c_str());
+	std::vector<QPDFPageObjectHelper> pages = QPDFPageDocumentHelper(inpdf).getAllPages();
+	//int pageno_len = QIntC::to_int(QUtil::uint_to_string(pages.size()).length());
+	int pageno = 0;
+
+	std::string outfile = file.ToStdString();
+	QPDF outpdf;
+	outpdf.emptyPDF();
+
+
+	for (std::vector<QPDFPageObjectHelper>::iterator iter = pages.begin(); iter != pages.end(); ++iter)
+	{
+		bool find = false;
+		for (int i : listPage)
+		{
+			if (i == pageno)
+			{
+				find = true;
+				break;
+			}
+		}
+
+		if (find)
+		{
+			QPDFPageObjectHelper& page(*iter);
+			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+		}
+
+		pageno++;
+	}
+
+	QPDFWriter outpdfw(outpdf, outfile.c_str());
+	outpdfw.write();
+
+	return file;
 }

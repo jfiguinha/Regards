@@ -34,6 +34,7 @@
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
+    <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
+    <ClInclude Include="ThumbnailSelection.h" />
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
     <ClInclude Include="ValidationToolbar.h" />

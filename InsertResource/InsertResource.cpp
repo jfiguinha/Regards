@@ -37,7 +37,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	wxInitAllImageHandlers();
 
-	sqlResource.InsertVector(L"IDB_SCANNER", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\scanner.svg");
+	sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
 
 /*
 List des shaders 
