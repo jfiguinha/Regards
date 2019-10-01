@@ -24,6 +24,7 @@ enum
 {
 	// menu items
 	ID_OPENIMAGE,
+	ID_EXPORT,
 	ID_ACQUIREIMAGE,
 	ID_ACQUIREIMAGES,
 	ID_ACQUIREIMAGENOUI,
@@ -57,6 +58,7 @@ private:
 	void OnQuit(wxCommandEvent& event);
 	void OnPrint(wxCommandEvent& event);
 	void OnAbout(wxCommandEvent& event);
+	void OnExport(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
 
 

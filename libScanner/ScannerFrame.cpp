@@ -1,6 +1,7 @@
 #include <header.h>
 #include <BitmapPrintout.h>
 #include <PrintEngine.h>
+#include <SavePicture.h>
 #ifdef __WXMSW__
 #include <ImageAcquisition.h>
 #include <GdiPlusPixelFormats.h>
@@ -55,12 +56,10 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
     // create a menu bar
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
+	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
-	menuFile->AppendSeparator();
-	menuFile->AppendCheckItem(ID_PROMPTONGETIMAGE, _("Prompt on wxEVT_IA_GETIMAGE event"), _("Display prompt after acquiring an image"));
-	menuFile->Check(ID_PROMPTONGETIMAGE, TRUE);
 #endif
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_PRINT, _("&Print PDF..."), _("Print PDF"));
@@ -91,6 +90,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_OPENIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOpenImage));
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
+	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExport));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 #if __WXSCANSANE__  
@@ -111,6 +111,15 @@ CScannerFrame::~CScannerFrame()
 
 	if (centralWindow != nullptr)
 		delete centralWindow;
+}
+
+void CScannerFrame::OnExport(wxCommandEvent& event)
+{
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+		CSavePicture::SavePicture(this, filename);
+	}
 }
 
 void CScannerFrame::OnPrint(wxCommandEvent& event)

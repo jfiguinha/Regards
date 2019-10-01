@@ -31,6 +31,7 @@ public:
 	int GetPictureDimensions(const  wxString & fileName, int & width, int & height, int & rotation);
 	CImageLoadingFormat * LoadPicture(const  wxString & szFileName, const bool &isThumbnail = false, const int &numPicture = 0);
 	int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap);
+	int SavePicture(const wxString & fileNameIn, const wxString & fileNameOut);
 	int GetMetadata(const wxString &filename, uint8_t * & data, long & size);
 	//CRegardsBitmap * LoadThumbnailOnlyFromPicture(const  wxString & fileName, int &returnValue);
 	vector<CImageVideoThumbnail *> LoadDefaultVideoThumbnail(const  wxString & szFileName, const int &size);
