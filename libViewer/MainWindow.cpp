@@ -26,7 +26,6 @@
 #include <SqlInsertFile.h>
 #include <ExportFile.h>
 #include <SqlFindCriteria.h>
-#include <CopyFileDlg.h>
 #include <ShowVideo.h>
 #include <StatusText.h>
 #include "PictureElement.h"

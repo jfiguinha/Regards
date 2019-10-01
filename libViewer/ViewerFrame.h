@@ -39,6 +39,7 @@ namespace Regards
             bool RemoveFSEntry(const wxString& dirPath);
             
 		private:
+			void OnExport(wxCommandEvent& event);
 			void OnPrint(wxCommandEvent& event);
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
