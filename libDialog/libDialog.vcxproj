@@ -202,7 +202,6 @@
     <ClCompile Include="ChangeLabel.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
     <ClCompile Include="ConfigRegards.cpp" />
-    <ClCompile Include="CopyFileDlg.cpp" />
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="FaceDetection.cpp" />
     <ClCompile Include="GifOption.cpp" />
@@ -224,7 +223,6 @@
     <ClInclude Include="ChangeLabel.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="ConfigRegards.h" />
-    <ClInclude Include="CopyFileDlg.h" />
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="FaceDetection.h" />
     <ClInclude Include="GifOption.h" />
