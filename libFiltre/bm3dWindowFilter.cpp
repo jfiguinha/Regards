@@ -34,6 +34,7 @@ void CBm3dWindowFilter::Filter(CEffectParameter * effectParameter, CRegardsBitma
 {
     CBm3dEffectParameter * bm3dEffectParameter = (CBm3dEffectParameter *)effectParameter;
     
+	this->source = source;
     vector<int> elementSigma;
     for (auto i = 1; i < 100; i++)
         elementSigma.push_back(i);

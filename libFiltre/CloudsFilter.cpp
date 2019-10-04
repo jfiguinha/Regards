@@ -34,6 +34,8 @@ void CCloudsFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * 
 {
     CCloudsEffectParameter * cloudsEffectParameter = (CCloudsEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementFreq;
     for (auto i = 0; i < 101; i++)
         elementFreq.push_back(i);

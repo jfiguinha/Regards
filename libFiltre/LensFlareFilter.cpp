@@ -12,7 +12,8 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <ImageLoadingFormat.h>
+#include <FiltreEffet.h>
 using namespace Regards::Viewer;
 
 CLensFlareFilter::CLensFlareFilter()
@@ -36,7 +37,9 @@ int CLensFlareFilter::GetTypeFilter()
 void CLensFlareFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-    
+ 
+	this->source = source;
+
     vector<int> elementIntensity;
     for (auto i = 0; i < 101; i++)
         elementIntensity.push_back(i);

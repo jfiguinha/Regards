@@ -26,6 +26,7 @@ enum
 	ID_OPENIMAGE,
 	ID_EXPORT,
 	ID_ACQUIREIMAGE,
+	ID_OCR,
 	ID_ACQUIREIMAGES,
 	ID_ACQUIREIMAGENOUI,
 	ID_ACQUIREIMAGESNOUI,
@@ -60,7 +61,7 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
-
+	void OnOCR(wxCommandEvent& event);
 
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);

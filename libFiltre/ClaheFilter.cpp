@@ -36,6 +36,8 @@ void CClaheFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * s
 {
     CClaheEffectParameter * claheEffectParameter = (CClaheEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 1; i < 300; i++)
         elementColor.push_back(i);

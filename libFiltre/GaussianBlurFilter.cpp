@@ -27,6 +27,8 @@ void CGaussianBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBit
 {
 	CGaussianBlurEffectParameter * gaussianBlurEffectParameter = (CGaussianBlurEffectParameter *)effectParameter;
 
+	this->source = source;
+
 	vector<int> elementColor;
 	for (auto i = 0; i < 255; i++)
 		elementColor.push_back(i);

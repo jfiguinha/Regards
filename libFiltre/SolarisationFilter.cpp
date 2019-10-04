@@ -34,6 +34,8 @@ void CSolarisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBit
 {
     CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);

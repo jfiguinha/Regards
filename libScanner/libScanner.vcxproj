@@ -114,10 +114,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\tesseract-4.1.0\include;$(SolutionDir)libextern\leptonica-1.78.0\include;$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\tesseract-4.1.0\src;$(SolutionDir)libextern\leptonica-1.78.0\src;$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -129,6 +129,7 @@
       <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -1,5 +1,7 @@
 #include <header.h>
 #include "ViewerPDF.h"
+#include <tesseract/baseapi.h>
+#include <leptonica/allheaders.h>
 #include <wx/choicdlg.h> 
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>
@@ -98,6 +100,47 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	
 }
 
+
+void CViewerPDF::OcrPage()
+{
+	char *outText;
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	resourcePath = resourcePath + "\\tesseract";
+	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+	// Initialize tesseract-ocr with English, without specifying tessdata path
+	if (api->Init(resourcePath, "fra")) {
+		fprintf(stderr, "Could not initialize tesseract.\n");
+		exit(1);
+	}
+
+	
+	CRegardsBitmap * bitmap = showBitmapWindow->GetBitmap(true);
+
+	// Open input image with leptonica library
+	//Pix *image = pixRead("/usr/src/tesseract/testing/phototest.tif");
+	api->SetImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(),
+		4, 4 * bitmap->GetBitmapWidth());
+
+	Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
+	printf("Found %d textline image components.\n", boxes->n);
+	for (int i = 0; i < boxes->n; i++) {
+		BOX* box = boxaGetBox(boxes, i, L_CLONE);
+		api->SetRectangle(box->x, box->y, box->w, box->h);
+		char* ocrResult = api->GetUTF8Text();
+		int conf = api->MeanTextConf();
+		fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s",
+			i, box->x, box->y, box->w, box->h, conf, ocrResult);
+	}
+
+	// Get OCR result
+	outText = api->GetUTF8Text();
+	printf("OCR output:\n%s", outText);
+
+	// Destroy used object and release memory
+	api->End();
+	delete[] outText;
+
+}
 
 void CViewerPDF::AnimationPictureNext()
 {

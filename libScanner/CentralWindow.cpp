@@ -52,6 +52,14 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	Connect(wxEVENT_EXTRACT, wxCommandEventHandler(CCentralWindow::OnExtractPage));
 }
 
+void CCentralWindow::OcrPage()
+{
+	if (filename != "")
+	{
+		previewWindow->OcrPage();
+	}
+}
+
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
 	if (filename != "")

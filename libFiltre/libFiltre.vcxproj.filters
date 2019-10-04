@@ -321,6 +321,9 @@
     <ClInclude Include="..\include\header.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="MouseUpdate.h">
+      <Filter>window\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">

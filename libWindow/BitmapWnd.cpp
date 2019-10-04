@@ -514,6 +514,11 @@ bool CBitmapWnd::GetShowScroll()
 	return showScroll;
 }
 
+wxString CBitmapWnd::GetFilename()
+{
+	return filename;
+}
+
 //-----------------------------------------------------------------
 //Définition de la méthode d'interpolation
 //-----------------------------------------------------------------
@@ -564,6 +569,38 @@ void CBitmapWnd::SetIsBitmapThumbnail(const bool &isThumbnail)
 {
     TRACE();
     this->isThumbnail = isThumbnail;
+}
+
+void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
+{
+	TRACE();
+	printf("CBitmapWnd::SetBitmap \n");
+	//this->SetFocus();
+	if (bitmapIn != nullptr)
+	{
+		if (bitmapIn->IsOk())
+		{
+			bitmapLoad = true;
+			filename = bitmapIn->GetFilename();
+			bitmapUpdate = true;
+			isOpenGL = true;
+
+			printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
+			muBitmap.lock();
+			if (source != nullptr)
+			{
+				delete source;
+				printf("CBitmapWnd::SetBitmap   delete source\n");
+				source = nullptr;
+			}
+
+			source = bitmapIn;
+			//source = nullptr;
+			muBitmap.unlock();
+			RefreshWindow();
+
+		}
+	}
 }
 
 //-----------------------------------------------------------------
@@ -1417,19 +1454,20 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 					GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 				}
 
+				/*
 				if (NeedAfterRenderBitmap())
 				{
 					ApplyPreviewEffect();
 					bitmapSpecial = RenderSpecialEffect();
 				}
-
+				*/
 				
 				CRegardsBitmap* bitmap = nullptr;
 				
-				if (bitmapSpecial == nullptr)
+				//if (bitmapSpecial == nullptr)
 					bitmap = filtreEffet->GetBitmap(false);
-				else
-					bitmap = bitmapSpecial;
+				//else
+				//	bitmap = bitmapSpecial;
 
 				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
 				if (glTexture != nullptr)
@@ -1507,8 +1545,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 						{
 							return;
 						}
-						if (NeedAfterRenderBitmap())
-							ApplyPreviewEffect();
+						
+						//if (NeedAfterRenderBitmap())
+						//	ApplyPreviewEffect();
+						
 
 						try
 						{
@@ -1529,10 +1569,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 					}
 					else //not shared compatibility
 					{
-						printf("CBitmapWnd Is Not SharedContextCompatible \n");
+						//printf("CBitmapWnd Is Not SharedContextCompatible \n");
 
-						if (NeedAfterRenderBitmap())
-							ApplyPreviewEffect();
+						//if (NeedAfterRenderBitmap())
+						//	ApplyPreviewEffect();
 
 
 						CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
@@ -1585,7 +1625,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 					int left = 0, top = 0;
 
-
+					/*
 					if (NeedAfterRenderBitmap())
 					{
 						render = RenderBitmap(&dc);
@@ -1595,6 +1635,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 						GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 						render = filtreEffet->GetwxImage();
 					}
+					*/
+
+					GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+					render = filtreEffet->GetwxImage();
 
 					if (render.IsOk())
 					{

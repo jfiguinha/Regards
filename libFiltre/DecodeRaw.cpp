@@ -4,8 +4,9 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
+#include <BitmapWndViewer.h>
 #include <Metadata.h>
-
+#include <ConvertUtility.h>
 using namespace Regards::Viewer;
 
 CDecodeRaw::CDecodeRaw()
@@ -63,11 +64,14 @@ CDecodeRaw::CDecodeRaw()
 	libellewf_deband_tresholdGreen= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdGreen",1);//"Effect.Banding suppression.Green";
 	libellewf_deband_tresholdBlue= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdBlue",1);//"Effect.Banding suppression.Blue";
 	libellewf_deband_tresholdOther= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdOther",1);//"Effect.Banding suppression.Other";
+
+	rawDecoder = nullptr;
 }
 
 CDecodeRaw::~CDecodeRaw()
 {
-    
+	if (rawDecoder != nullptr)
+		delete rawDecoder;
 }
 
 int CDecodeRaw::GetTypeFilter()
@@ -86,6 +90,11 @@ void CDecodeRaw::AddMetadataElement(vector<CMetadata> & element, wxString value,
 void CDecodeRaw::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CDecodeRawParameter * decodeParameter = (CDecodeRawParameter *)effectParameter;
+
+	if (rawDecoder != nullptr)
+		delete rawDecoder;
+
+	rawDecoder = new CDecodeRawPicture(CConvertUtility::ConvertToStdString(source->GetFilename()));
     
     vector<int> elementColor;
     for (auto i = 0; i < 10; i++)
@@ -433,4 +442,23 @@ void CDecodeRaw::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEle
 	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
 		int value = valueInt->GetValue();decodeParameter->wf_deband_tresholdOther= value;}
 	decodeParameter->update = true;
+}
+
+CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter, CBitmapWndViewer * bitmapViewer)
+{
+	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
+		return nullptr;
+
+	CImageLoadingFormat * imageLoad = nullptr;
+	wxString filename = bitmapViewer->GetFilename();
+
+	CDecodeRawParameter * rawParameter = (CDecodeRawParameter *)effectParameter;
+
+	if (rawDecoder->DecodePicture(rawParameter) == 0)
+	{
+		imageLoad = rawDecoder->GetPicture();
+
+	}
+
+	return imageLoad;
 }

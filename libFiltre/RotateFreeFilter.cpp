@@ -26,6 +26,8 @@ void CRotateFreeFilter::Filter(CEffectParameter * effectParameter, CRegardsBitma
 {   
     CFreeRotateEffectParameter * freeRotateEffectParameter = (CFreeRotateEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 361; i++)
         elementColor.push_back(i);

@@ -12,7 +12,9 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
+#include <BitmapWndViewer.h>
 using namespace Regards::Viewer;
 
 CWaveFilter::CWaveFilter()
@@ -36,7 +38,9 @@ int CWaveFilter::GetTypeFilter()
 void CWaveFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CWaveEffectParameter * waveParameter = (CWaveEffectParameter *)effectParameter;
-    
+	
+	this->source = source;
+
     vector<int> elementIntensity;
     for (int i = 0; i < 40; i++)
         elementIntensity.push_back(i);
@@ -73,4 +77,30 @@ void CWaveFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
     {
 		waveParameter->scale = value;
     }
+}
+
+CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+{
+	if (bitmapViewer == nullptr || effectParameter == nullptr || source == nullptr)
+		return nullptr;
+
+	CImageLoadingFormat * imageLoad = nullptr;
+	CWaveEffectParameter * waveEffectParameter = (CWaveEffectParameter *)effectParameter;
+
+	CImageLoadingFormat image;
+	image.SetPicture(source);
+	CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+	wxPoint pt = bitmapViewer->GetMousePosition();
+	//m_cDessin->GetPoint(pt);
+	
+	short height = waveEffectParameter->height;
+	int radius = waveEffectParameter->radius;
+	int scale = waveEffectParameter->scale;
+	filtre->WaveFilter(pt.x, pt.y, height, radius, scale);
+
+	imageLoad = new CImageLoadingFormat();
+	imageLoad->SetPicture(filtre->GetBitmap(true));
+	delete filtre;
+
+	return imageLoad;
 }

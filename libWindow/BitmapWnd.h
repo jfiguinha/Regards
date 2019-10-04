@@ -33,6 +33,7 @@ namespace Regards
 			void SetZoom(bool active);
 			bool GetZoom();
 			void SetZoomPosition(const int& position);
+			wxString GetFilename();
 
 			int GetWidth();
 			int GetHeight();
@@ -44,6 +45,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetFilterInterpolation(const int& filter);
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
+			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
 			CRegardsBitmap* GetBitmap(const bool& source);
@@ -88,22 +90,22 @@ namespace Regards
 
 			void SetFullscreen(const bool& fullscreen);
 
-			void StopLoadingBitmap();
-			void StartLoadingBitmap();
+			//void StopLoadingBitmap();
+			//void StartLoadingBitmap();
 
 		protected:
 
 			virtual void CreateContext() {};
-			virtual void ApplyPreviewEffect() {};
+			//virtual void ApplyPreviewEffect() {};
 			virtual void AfterRender() {};
 			int UpdateResized();
 			void Update();
-			virtual bool NeedAfterRenderBitmap() { return false; };
+			//virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
 			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
 
-			void OnLoading(wxTimerEvent& event);
+			//void OnLoading(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event) {};
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
@@ -122,7 +124,7 @@ namespace Regards
 #endif			
 
 			void RefreshWindow();
-			virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
+			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
 			virtual void MouseClick(const int &xPos, const int &yPos);
 			virtual void MouseRelease(const int &xPos, const int &yPos);

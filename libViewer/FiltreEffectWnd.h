@@ -10,6 +10,7 @@
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
 
+class CImageLoadingFormat;
 
 namespace Regards
 {
@@ -25,10 +26,15 @@ namespace Regards
             ~CFiltreEffectScrollWnd(void);
             void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos, const wxString &filename, const int & isVideo);
             void OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd);
+			void OnFiltreCancel();
             CFiltreEffect * GetFiltreEffect();
 			int GetNumFiltre();
+
         private:
-            
+
+			void OnUpdateFilter(wxCommandEvent& event);
+
+			//CImageLoadingFormat * SetBitmapEffect(const int &effect, CEffectParameter * effectParameter, CRegardsBitmap * bitmap);
 			CRegardsBitmap * bitmap;
             CEffectParameter * effectParameter;
             CFiltreEffect * filtreEffectOld;

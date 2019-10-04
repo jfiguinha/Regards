@@ -381,7 +381,7 @@ void CPanelInfosWnd::ShowFiltre(const wxString &title)
 {
 	HideAllWindow();
 	infosToolbar->SetEffectParameterPush();
-	filtreEffectWnd->Show(true);	
+	filtreEffectWnd->Show(true);
 	if(windowVisible == WM_EFFECT)
 	{
 		infosToolbar->SetEffectParameterActif(title);	

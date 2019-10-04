@@ -57,6 +57,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
+	menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
@@ -93,6 +94,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExport));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
+	Connect(ID_OCR, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOCR));
+	
 #if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
@@ -111,6 +114,15 @@ CScannerFrame::~CScannerFrame()
 
 	if (centralWindow != nullptr)
 		delete centralWindow;
+}
+
+void CScannerFrame::OnOCR(wxCommandEvent& event)
+{
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+		centralWindow->OcrPage();
+	}
 }
 
 void CScannerFrame::OnExport(wxCommandEvent& event)

@@ -24,7 +24,7 @@ namespace Regards
 			bool IsPanelInfosVisible();
 			void ResizeWindow();
             void UpdateScreenRatio();
-
+			void OcrPage();
 			int GetAnimationPosition();
 			wxString SetImage(wxImage imageFile);
 			void LoadFile(const wxString &filename);

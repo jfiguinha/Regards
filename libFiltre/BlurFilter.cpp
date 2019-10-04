@@ -34,6 +34,8 @@ void CBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * so
 {
     CBlurEffectParameter * blurEffectParameter = (CBlurEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (int i = 1; i < 100; i++)
         elementColor.push_back(i);

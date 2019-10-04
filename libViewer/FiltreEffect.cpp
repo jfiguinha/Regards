@@ -3,6 +3,7 @@
 #include <ConvertUtility.h>
 #include <TreeDataEffect.h>
 #include <FilterData.h>
+#include <BitmapWndViewer.h>
 #include <LibResource.h>
 #include <RegardsBitmap.h>
 #include <FilterData.h>
@@ -11,13 +12,14 @@
 #define TAILLEMAX 1024
 using namespace Regards::Viewer;
 
-CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl)
+CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo)
 {
 	filtre = 0;
 	widthPosition = 0;
 	filterEffect = nullptr;
 	source = nullptr;
 	index = 0;
+	this->isVideo = isVideo;
 
 	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
 	if (viewerTheme)
@@ -36,6 +38,11 @@ CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlIn
 
 CFiltreEffect::~CFiltreEffect(void)
 {
+	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+
+	if (bitmapViewer != nullptr)
+		bitmapViewer->RemoveListener();
+
     if(filterEffect != nullptr)
         delete filterEffect;
 }
@@ -47,6 +54,8 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, CTreeElementValue * po
 
 void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre)
 {
+	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
 	this->source = source;
@@ -66,6 +75,10 @@ void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * so
         else
             filterEffect->Filter(effectParameter, filename, this);
     }
+
+	if(bitmapViewer != nullptr)
+		bitmapViewer->SetListener(filterEffect);
+
 	CreateElement();
 }
 
@@ -76,13 +89,35 @@ void CFiltreEffect::UpdateScreenRatio()
 }
 
 
+void CFiltreEffect::UpdateMousePosition()
+{
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+	if (bitmapWindow != nullptr)
+	{
+		CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
+		bitmapWindow->UpdateBitmap(imageLoad);
+	}
+}
+
 void CFiltreEffect::SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key)
 {
     if(filterEffect != nullptr)
         filterEffect->FilterChangeParam(effectParameter, value, key);
     
+	if (!isVideo)
+	{
+		CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+		if (bitmapWindow != nullptr)
+		{
+			CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
+			bitmapWindow->UpdateBitmap(imageLoad);
+		}
+	}
+
 	if (bitmapViewer != nullptr)
+	{
 		bitmapViewer->UpdateFiltre(effectParameter);
+	}
 
 	eventControl->UpdateElement(treeElement);
 }

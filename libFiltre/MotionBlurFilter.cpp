@@ -36,6 +36,8 @@ void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitma
 {
     CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementAngle;
     for (auto i = 0; i < 361; i++)
         elementAngle.push_back(i);

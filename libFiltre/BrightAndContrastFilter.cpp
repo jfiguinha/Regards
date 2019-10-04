@@ -34,7 +34,9 @@ int CBrightAndContrastFilter::GetTypeFilter()
 void CBrightAndContrastFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CBrightAndContrastEffectParameter * BrightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
-    
+	
+	this->source = source;
+
     vector<int> elementColor;
     for (int i = -100; i < 101; i++)
         elementColor.push_back(i);

@@ -35,6 +35,8 @@ void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBi
 {
     CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);
