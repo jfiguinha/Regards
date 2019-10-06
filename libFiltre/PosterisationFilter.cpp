@@ -28,7 +28,7 @@ CPosterisationFilter::~CPosterisationFilter()
 
 int CPosterisationFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return ID_AJUSTEMENT_POSTERISATION;
 }
 
 void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

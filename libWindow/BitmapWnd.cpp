@@ -42,7 +42,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 //	: CWindowMain(parent, id)
 : CWindowOpenGLMain("CBitmapWnd", parent, id)
 {
-	isOpenGL = true;
 	glTexture = nullptr;
 	renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
 #ifdef WIN32
@@ -326,6 +325,16 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 	}
 }
 
+int CBitmapWnd::GetHPos()
+{
+	return posLargeur;
+}
+
+int CBitmapWnd::GetVPos()
+{
+	return posHauteur;
+}
+
 //-----------------------------------------------------------------
 //Zoom +
 //-----------------------------------------------------------------
@@ -583,7 +592,6 @@ void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
 			bitmapLoad = true;
 			filename = bitmapIn->GetFilename();
 			bitmapUpdate = true;
-			isOpenGL = true;
 
 			printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
 			muBitmap.lock();
@@ -621,7 +629,6 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 			flipVertical = 0;
 			flipHorizontal = 0;
 			angle = 0;
-			isOpenGL = true;
             
             printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
             muBitmap.lock();
@@ -1368,7 +1375,172 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	}
 }
 
-//#define __OPENGLONLY__
+void CBitmapWnd::RenderToScreenWithOpenCLSupport()
+{
+	CRgbaquad color;
+
+#ifdef __WXGTK__
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	if (width == 0 || height == 0)
+		return;
+
+	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+
+	if (openCLEngine == nullptr)
+	{
+		openCLEngine = new COpenCLEngine();
+		if (openCLEngine != nullptr)
+			openclContext = openCLEngine->GetInstance();
+
+		CreateContext();
+
+		renderOpenGL->LoadingResource(scale_factor);
+	}
+
+	muBitmap.lock();
+
+	if (openCLEngine != nullptr && source != nullptr)
+	{
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+
+		filtreEffet = new CFiltreEffet(color, openclContext, source);
+	}
+
+
+	muBitmap.unlock();
+
+	bool update = false;
+	UpdateScrollBar(update);
+
+	if (bitmapLoad && width > 0 && height > 0)
+	{
+		int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+		int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+
+		if (widthOutput < 0 || heightOutput < 0)
+			return;
+
+		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+		ApplyPreviewEffect();
+
+		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
+		{
+			printf("CBitmapWnd IsSharedContextCompatible \n");
+
+			try
+			{
+				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
+			}
+			catch (...)
+			{
+				return;
+			}
+
+			try
+			{
+				cl_int err;
+				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
+				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+				Error::CheckError(err);
+				filtreEffet->GetRgbaBitmap(cl_image);
+				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+				Error::CheckError(err);
+				err = clFlush(openclContext->GetCommandQueue());
+				Error::CheckError(err);
+			}
+			catch (...)
+			{
+
+			}
+		}
+		else
+		{
+			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
+			if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
+				bitmap->VertFlipBuf();
+
+			glTexture = renderOpenGL->GetDisplayTexture();
+
+			if (glTexture != nullptr)
+				glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+			else
+				printf("CBitmapWnd GetDisplayTexture Error \n");
+			delete bitmap;
+		}
+	}
+
+	renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+
+	if (glTexture != nullptr)
+	{
+		int x = (width - glTexture->GetWidth()) / 2;
+		int y = (height - glTexture->GetHeight()) / 2;
+		if (openclContext->IsSharedContextCompatible())
+			renderOpenGL->RenderToScreen(x, y, true);
+		else
+			renderOpenGL->RenderToScreen(x, y, false);
+	}
+	
+}
+
+void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
+{
+	CRgbaquad color;
+
+#ifdef __WXGTK__
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	if (width == 0 || height == 0)
+		return;
+
+	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+
+	if (source != nullptr && bitmapLoad)
+	{
+		CRegardsBitmap* bitmapSpecial = nullptr;
+
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+
+		filtreEffet = new CFiltreEffet(color, nullptr, source);
+
+		renderOpenGL->LoadingResource(scale_factor);
+
+		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+		ApplyPreviewEffect();
+
+		CRegardsBitmap* bitmap = nullptr;
+		bitmap = filtreEffet->GetBitmap(false);
+
+		glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
+		if (glTexture != nullptr)
+			glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
+		else
+			printf("CBitmapWnd GetDisplayTexture Error \n");
+		delete bitmap;
+
+		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+	}
+
+	if (glTexture != nullptr)
+	{
+		int x = (width - glTexture->GetWidth()) / 2;
+		int y = (height - glTexture->GetHeight()) / 2;
+		renderOpenGL->RenderToScreen(x, y, false);
+	}
+}
 
 //-----------------------------------------------------------------
 //Dessin de l'image
@@ -1376,7 +1548,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
     TRACE();
-    CRgbaquad color;
+
 
         
     #if defined(WIN32) && defined(_DEBUG)
@@ -1394,20 +1566,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
         }
     #endif
 
-    #ifdef __WXGTK__
-        double scale_factor = GetContentScaleFactor();
-    #else
-        double scale_factor = 1.0f;
-    #endif 
 
-        if (width == 0 || height == 0)
-            return;
-            
-        int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-        int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
-
-        if (widthOutput <0 || heightOutput < 0)
-            return;
             
     #ifdef WIN32
         renderOpenGL->SetCurrent(*this);
@@ -1419,297 +1578,17 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
         }
     #endif
                
-		int supportOpenCL = 0;
-		CRegardsConfigParam* config = CParamInit::getInstance();
-		if (config != nullptr)
-			supportOpenCL = config->GetIsOpenCLSupport();
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
 
-		if (!supportOpenCL)
-		{
+	if (!supportOpenCL)
+		RenderToScreenWithoutOpenCLSupport();
+	else
+		RenderToScreenWithOpenCLSupport();
 
-			if (openCLEngine == nullptr)
-			{
-				openCLEngine = new COpenCLEngine();
-				openclContext = nullptr;
-
-				CreateContext();
-
-				renderOpenGL->LoadingResource(scale_factor);
-			}
-
-			if (source != nullptr)
-			{
-				CRegardsBitmap* bitmapSpecial = nullptr;
-
-				if (filtreEffet != nullptr)
-					delete filtreEffet;
-
-				filtreEffet = new CFiltreEffet(color, nullptr, source);
-
-				renderOpenGL->LoadingResource(scale_factor);
-
-
-				if (bitmapLoad && width > 0 && height > 0)
-				{
-					GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-				}
-
-				/*
-				if (NeedAfterRenderBitmap())
-				{
-					ApplyPreviewEffect();
-					bitmapSpecial = RenderSpecialEffect();
-				}
-				*/
-				
-				CRegardsBitmap* bitmap = nullptr;
-				
-				//if (bitmapSpecial == nullptr)
-					bitmap = filtreEffet->GetBitmap(false);
-				//else
-				//	bitmap = bitmapSpecial;
-
-				glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, nullptr);
-				if (glTexture != nullptr)
-					glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-				else
-				{
-					//Error
-					printf("CBitmapWnd GetDisplayTexture Error \n");
-				}
-				delete bitmap;
-
-				renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-			}
-
-			if (glTexture != nullptr)
-			{
-				int x = (width - glTexture->GetWidth()) / 2;
-				int y = (height - glTexture->GetHeight()) / 2;
-				renderOpenGL->RenderToScreen(x, y, false);
-				AfterRender();
-
-			}
-
-		}
-		else
-		{
-			if (openCLEngine == nullptr)
-			{
-				openCLEngine = new COpenCLEngine();
-				if (openCLEngine != nullptr)
-					openclContext = openCLEngine->GetInstance();
-
-				CreateContext();
-
-				renderOpenGL->LoadingResource(scale_factor);
-			}
-
-			muBitmap.lock();
-
-			if (openCLEngine != nullptr && source != nullptr)
-			{
-				if (filtreEffet != nullptr)
-					delete filtreEffet;
-
-				filtreEffet = new CFiltreEffet(color, openclContext, source);
-			}
-
-
-			muBitmap.unlock();
-
-			bool update = false;
-			UpdateScrollBar(update);
-
-			if (isOpenGL)
-			{
-				if (bitmapLoad && width > 0 && height > 0)
-				{
-					int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-					int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
-
-					if (widthOutput < 0 || heightOutput < 0)
-						return;
-
-					GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-
-					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-					{
-						printf("CBitmapWnd IsSharedContextCompatible \n");
-
-						try
-						{
-							glTexture = renderOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
-						}
-						catch (...)
-						{
-							return;
-						}
-						
-						//if (NeedAfterRenderBitmap())
-						//	ApplyPreviewEffect();
-						
-
-						try
-						{
-							cl_int err;
-							cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
-							err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-							Error::CheckError(err);
-							filtreEffet->GetRgbaBitmap(cl_image);
-							err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-							Error::CheckError(err);
-							err = clFlush(openclContext->GetCommandQueue());
-							Error::CheckError(err);
-						}
-						catch (...)
-						{
-
-						}
-					}
-					else //not shared compatibility
-					{
-						//printf("CBitmapWnd Is Not SharedContextCompatible \n");
-
-						//if (NeedAfterRenderBitmap())
-						//	ApplyPreviewEffect();
-
-
-						CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
-						if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
-							bitmap->VertFlipBuf();
-
-						glTexture = renderOpenGL->GetDisplayTexture();
-
-						if (glTexture != nullptr)
-							glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-						else
-							printf("CBitmapWnd GetDisplayTexture Error \n");
-						delete bitmap;
-
-					}
-
-				}
-
-				renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-
-				if (glTexture != nullptr)
-				{
-					int x = (width - glTexture->GetWidth()) / 2;
-					int y = (height - glTexture->GetHeight()) / 2;
-					if (openclContext->IsSharedContextCompatible())
-						renderOpenGL->RenderToScreen(x, y, true);
-					else
-						renderOpenGL->RenderToScreen(x, y, false);
-				}
-				AfterRender();
-
-			}
-			else if (bitmapLoad)
-			{
-
-				//CFiltreEffet _filtreEffet(color, openclContext);
-				int widthOutput = int(GetBitmapWidthWithRatio());
-				int heightOutput = int(GetBitmapHeightWithRatio());
-
-				wxBitmap test_bitmap(width, height);
-				wxMemoryDC dc;
-				dc.SelectObject(test_bitmap);
-				wxRect rc(0, 0, width, height);
-				CWindowMain::FillRect(&dc, rc, themeBitmap.colorBack);
-
-
-				if (bitmapLoad && width > 0 && height > 0)
-				{
-					wxImage render;
-
-					int left = 0, top = 0;
-
-					/*
-					if (NeedAfterRenderBitmap())
-					{
-						render = RenderBitmap(&dc);
-					}
-					else
-					{
-						GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-						render = filtreEffet->GetwxImage();
-					}
-					*/
-
-					GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
-					render = filtreEffet->GetwxImage();
-
-					if (render.IsOk())
-					{
-						left = (width - render.GetWidth()) / 2;
-						top = (height - render.GetHeight()) / 2;
-						dc.DrawBitmap(render, left, top);
-						AfterRenderBitmap(&dc);
-						AfterDrawBitmap(&dc);
-					}
-				}
-
-				//Import render bitmap into texture and show it
-
-				dc.SelectObject(wxNullBitmap);
-				CImageLoadingFormat imageLoadingFormat(false);
-				wxImage renderImage = test_bitmap.ConvertToImage();
-				imageLoadingFormat.SetPicture(&renderImage);
-				CFiltreEffet _filtreEffet(color, openclContext, &imageLoadingFormat);
-
-				if (openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
-				{
-					printf("CBitmapWnd Is SharedContextCompatible \n");
-					glTexture = renderOpenGL->GetDisplayTexture(width, height, openclContext->GetContext());
-
-					try
-					{
-						cl_int err;
-						cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
-						err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-						Error::CheckError(err);
-						_filtreEffet.GetRgbaBitmap(cl_image);
-						err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-						Error::CheckError(err);
-						err = clFlush(openclContext->GetCommandQueue());
-						Error::CheckError(err);
-					}
-					catch (...)
-					{
-
-					}
-				}
-				else
-				{
-					printf("CBitmapWnd Is Not SharedContextCompatible \n");
-
-					CRegardsBitmap* bitmap = imageLoadingFormat.GetRegardsBitmap(true);
-
-					if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
-						bitmap->VertFlipBuf();
-
-					glTexture = renderOpenGL->GetDisplayTexture();
-					if (glTexture != nullptr)
-						glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
-					else
-					{
-						//Error
-						printf("CBitmapWnd GetDisplayTexture Error \n");
-					}
-					delete bitmap;
-				}
-				renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
-
-				if (glTexture != nullptr)
-				{
-					if (openclContext->IsSharedContextCompatible() && _filtreEffet.GetLib() == LIBOPENCL)
-						renderOpenGL->RenderToScreen(0, 0, true);
-					else
-						renderOpenGL->RenderToScreen(0, 0, false);
-				}
-			}
-		}
+	AfterRender();
 
 	this->SwapBuffers();
 

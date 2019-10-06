@@ -90,17 +90,20 @@ namespace Regards
 
 			void SetFullscreen(const bool& fullscreen);
 
+			int GetHPos();
+			int GetVPos();
+
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
 
 		protected:
 
 			virtual void CreateContext() {};
-			//virtual void ApplyPreviewEffect() {};
+			virtual void ApplyPreviewEffect() {};
 			virtual void AfterRender() {};
 			int UpdateResized();
 			void Update();
-			//virtual bool NeedAfterRenderBitmap() { return false; };
+			virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
 			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
@@ -122,7 +125,8 @@ namespace Regards
 #ifdef KeyPress
 #undef KeyPress
 #endif			
-
+			void RenderToScreenWithOpenCLSupport();
+			void RenderToScreenWithoutOpenCLSupport();
 			void RefreshWindow();
 			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
@@ -204,7 +208,7 @@ namespace Regards
 			int filterInterpolation;
 			CRenderBitmapInterfaceOpenGL * renderOpenGL;
 			GLTexture * glTexture;
-			bool isOpenGL;
+			//bool isOpenGL;
 
 			int orientation;
 			int flipVertical;

@@ -27,7 +27,7 @@ CSolarisationFilter::~CSolarisationFilter()
 
 int CSolarisationFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_AJUSTEMENT_SOLARISATION;
 }
 
 void CSolarisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

@@ -22,8 +22,11 @@ namespace Regards
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-
+			void ApplyPreviewEffect(CEffectParameter * effectParameter, CFiltreEffet * filtreEffet, CDraw * dessing);
         private:
+
+			void LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop);
+
             wxString libelleEffectIntensity;
             wxString libelleEffectLightness;
             wxString libelleEffectRadius;

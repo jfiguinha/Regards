@@ -1819,8 +1819,16 @@ int COpenCLEffect::GaussianBlur(const int &r, const int &boxSize)
 			cl_mem output = nullptr;
 
 			COpenCLFilter openclFilter(context);
-			_width = widthOut;
-			_height = heightOut;
+			if (paramOutput != nullptr)
+			{
+				_width = widthOut;
+				_height = heightOut;
+			}
+			else
+			{
+				_width = width;
+				_height = height;
+			}
 			if(preview && paramOutput != nullptr)
 				output = paramOutput->GetValue();
 			else

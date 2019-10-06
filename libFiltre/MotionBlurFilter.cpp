@@ -29,7 +29,7 @@ CMotionBlurFilter::~CMotionBlurFilter()
 
 int CMotionBlurFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_FILTRE_MOTIONBLUR;
 }
 
 void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

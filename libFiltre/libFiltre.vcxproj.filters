@@ -61,6 +61,12 @@
     <Filter Include="window\raw">
       <UniqueIdentifier>{20cdafc4-6ef1-4561-9730-ec161dd3a160}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Drawing">
+      <UniqueIdentifier>{4a61ca38-8a3f-447a-92fe-31482df8721d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="window\Drawing">
+      <UniqueIdentifier>{01302cae-ea1e-4f01-bbd4-ba8a5dc27d55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -324,6 +330,9 @@
     <ClInclude Include="MouseUpdate.h">
       <Filter>window\main</Filter>
     </ClInclude>
+    <ClInclude Include="CropFilter.h">
+      <Filter>window\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -487,6 +496,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CropFilter.cpp">
+      <Filter>window\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

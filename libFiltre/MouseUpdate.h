@@ -5,6 +5,15 @@
 
 class CRegardsBitmap;
 class CImageLoadingFormat;
+class CFiltreEffet;
+
+namespace Regards
+{
+	namespace FiltreEffet
+	{
+		class CDraw;
+	}
+}
 
 namespace Regards
 {
@@ -15,9 +24,11 @@ namespace Regards
 }
 
 using namespace Regards::Control;
+using namespace Regards::FiltreEffet;
 
 class IMouseUpdate
 {
 public:
-	virtual CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer) = 0;
+	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * dessing) = 0;
+	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing) = 0;
 };

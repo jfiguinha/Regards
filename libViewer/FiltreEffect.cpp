@@ -40,8 +40,8 @@ CFiltreEffect::~CFiltreEffect(void)
 {
 	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
 
-	if (bitmapViewer != nullptr)
-		bitmapViewer->RemoveListener();
+	//if (bitmapViewer != nullptr)
+	//	bitmapViewer->RemoveListener();
 
     if(filterEffect != nullptr)
         delete filterEffect;
@@ -76,7 +76,7 @@ void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * so
             filterEffect->Filter(effectParameter, filename, this);
     }
 
-	if(bitmapViewer != nullptr)
+	if(bitmapViewer != nullptr && CFiltreData::NeedPreview(filtre))
 		bitmapViewer->SetListener(filterEffect);
 
 	CreateElement();
@@ -104,21 +104,10 @@ void CFiltreEffect::SlidePosChange(CTreeElement * treeElement, const int &positi
     if(filterEffect != nullptr)
         filterEffect->FilterChangeParam(effectParameter, value, key);
     
-	if (!isVideo)
-	{
-		CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
-		if (bitmapWindow != nullptr)
-		{
-			CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
-			bitmapWindow->UpdateBitmap(imageLoad);
-		}
-	}
-
 	if (bitmapViewer != nullptr)
 	{
 		bitmapViewer->UpdateFiltre(effectParameter);
 	}
-
 	eventControl->UpdateElement(treeElement);
 }
 

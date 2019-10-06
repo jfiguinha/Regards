@@ -57,6 +57,7 @@
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
 #include "BestExposureFilter.h"
+#include "CropFilter.h"
 using namespace Regards::Viewer;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
@@ -478,6 +479,11 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		filterEffect = new CAudioVideoFilter();
 		//filterEffect->Filter(effectParameter, filename, this);
 		break;
+
+	case IDM_CROP:
+		filterEffect = new CCropFilter();
+		//filterEffect->Filter(effectParameter, filename, this);
+		break;
 	}  
     return filterEffect;
 }
@@ -556,6 +562,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 {
     switch(numFilter)
     {
+		
 		case IDM_CROP:
 		case IDM_REDEYE:
         case IDM_FILTER_BM3D:
@@ -579,6 +586,14 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 		case IDM_FILTRE_FLOU:
         case IDM_AJUSTEMENT_SOLARISATION:
             return true;
+		/*
+		case IDM_FILTRELENSFLARE:
+		case IDM_FILTRE_SWIRL:
+		case IDM_WAVE_EFFECT:
+		case IDM_CROP:
+		case IDM_REDEYE:
+			return true;
+		*/
     }
     
     return false;
@@ -726,6 +741,9 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 		case IDM_FILTRE_FLOUGAUSSIEN:
 			return new CGaussianBlurEffectParameter();
 			break;
+
+		default:
+			return new CEffectParameter();
     }
     return nullptr;
 }
@@ -914,6 +932,9 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 		}
 		break;
 
+		default:
+			return new CEffectParameter();
+
     }
     return nullptr;
 }
@@ -924,8 +945,6 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
     {
         case IDM_CROP:
         case IDM_REDEYE:
-            return 1;
-
         case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:

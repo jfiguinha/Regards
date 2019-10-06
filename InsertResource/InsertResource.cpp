@@ -37,7 +37,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	wxInitAllImageHandlers();
 
-	sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
+	//sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVOLUTION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVOLUTION.cl");
 
 /*
 List des shaders 

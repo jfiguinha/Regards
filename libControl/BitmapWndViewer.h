@@ -35,13 +35,10 @@ namespace Regards
 			void StopTransition();
 			void SetBitmapPreviewEffect(const int &effect);
 			COpenCLContext * GetOpenCLContext();
-			//void SetBitmapPreviewEffect(const int &effect, CEffectParameter * effectParameter);
-			//bool SetBitmapEffect(const int &effect, CEffectParameter * effectParameter = nullptr);
             bool NeedAfterDrawBitmap();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void UpdateFiltre(CEffectParameter * effectParameter);
-			//void ApplyEffect(const int &effect);
 			void OnFiltreOk();
 			void OnFiltreCancel();
 			CRgbaquad GetBackColor();
@@ -52,17 +49,9 @@ namespace Regards
 			wxPoint GetMousePosition();
 
 		private:
-
-			//void ApplyPreviewEffect();
+			virtual void ApplyPreviewEffect();
+			wxBitmap GenerateFiltreDessinBitmap();
 			void AfterRender();
-			//void CreateContext();
-			void ShowArrowNext(wxDC * deviceContext);
-			void ShowArrowPrevious(wxDC * deviceContext);
-			//wxImage RenderBitmap(wxDC * deviceContext);
-			void AfterDrawBitmap(wxDC * deviceContext);
-			void AfterRenderBitmap(wxDC * deviceContext);
-			//CRegardsBitmap* RenderSpecialEffect();
-			//bool NeedAfterRenderBitmap();
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
 			
