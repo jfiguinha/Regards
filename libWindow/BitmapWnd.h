@@ -135,10 +135,7 @@ namespace Regards
 			virtual void MouseMove(const int &xPos, const int &yPos) {};
 
 			virtual void AfterSetBitmap(){};
-			virtual wxImage RenderBitmap(wxDC * deviceContext){ return wxImage();};
-			virtual void AfterDrawBitmap(wxDC * deviceContext){};
-			virtual void AfterRenderBitmap(wxDC * deviceContext){};
-			virtual bool NeedAfterDrawBitmap();
+
 			void GenerateScreenBitmap(CFiltreEffet * filtre, int &widthOutput, int &heightOutput);
 			void GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical);
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
@@ -223,6 +220,9 @@ namespace Regards
             bool updateContext = true;
 
             bool updateFilter = false;
+
+			int xPosImage = 0;
+			int yPosImage = 0;
 		};
 	}
 }

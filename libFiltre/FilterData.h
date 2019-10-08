@@ -101,6 +101,9 @@ public:
     static CFilterWindowParam * CreateEffectPointer(const int &numFilter);
     static CEffectParameter * GetEffectPointer(const int &numItem);
     static int GetTypeEffect(const int &numFilter);
+	static bool SupportMouseClick(const int &numFilter);
+	static void SetCursor(const int &numFilter);
+	static bool SupportMouseSelection(const int &numFilter);
     static bool NeedPreview(const int &numFilter);
     static bool NeedOriginalPreview(const int &numFilter);
     static bool IsOpenCLPreviewCompatible(const int &numFilter);

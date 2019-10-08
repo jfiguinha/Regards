@@ -38,11 +38,6 @@ CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlIn
 
 CFiltreEffect::~CFiltreEffect(void)
 {
-	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
-
-	//if (bitmapViewer != nullptr)
-	//	bitmapViewer->RemoveListener();
-
     if(filterEffect != nullptr)
         delete filterEffect;
 }
@@ -78,6 +73,11 @@ void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * so
 
 	if(bitmapViewer != nullptr && CFiltreData::NeedPreview(filtre))
 		bitmapViewer->SetListener(filterEffect);
+
+	if (bitmapViewer != nullptr)
+	{
+		bitmapViewer->UpdateFiltre(effectParameter);
+	}
 
 	CreateElement();
 }

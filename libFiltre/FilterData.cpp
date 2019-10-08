@@ -558,6 +558,46 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 	return true;
 }
 
+bool CFiltreData::SupportMouseSelection(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_REDEYE:
+		return true;
+		break;
+	}
+	return false;
+}
+
+void CFiltreData::SetCursor(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_REDEYE:
+		::wxSetCursor(wxCursor(wxCURSOR_CROSS));
+		break;
+
+	default:
+		::wxSetCursor(wxCursor(wxCURSOR_ARROW));
+	}
+}
+
+bool CFiltreData::SupportMouseClick(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_WAVE_EFFECT:
+	case IDM_REDEYE:
+	case IDM_FILTRELENSFLARE:
+		return true;
+		break;
+	}
+	return false;
+}
+
 bool CFiltreData::NeedPreview(const int &numFilter)
 {
     switch(numFilter)

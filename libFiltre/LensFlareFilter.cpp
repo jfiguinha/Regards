@@ -15,6 +15,7 @@
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <Draw.h>
+#include <BitmapWndViewer.h>
 using namespace Regards::Viewer;
 
 CLensFlareFilter::CLensFlareFilter()
@@ -32,7 +33,7 @@ CLensFlareFilter::~CLensFlareFilter()
 
 int CLensFlareFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_FILTRELENSFLARE;
 }
 
 void CLensFlareFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
@@ -85,7 +86,7 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
 }
 
 
-void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
+void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
 
@@ -102,37 +103,50 @@ void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, CF
 	CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
 	if (pt.x != 0 && pt.y != 0)
 	{
-		int left = 0, top = 0;
-		if (source->GetBitmapWidth() > widthOutput)
-			left = ((source->GetBitmapWidth() - widthOutput) / 2);
-		else
-			left = 0;
-
-		if (source->GetBitmapHeight() > heightOutput)
-			top = ((source->GetBitmapHeight() - heightOutput) / 2);
-		else
-			top = 0;
+		CImageLoadingFormat image;
+		image.SetPicture(bitmapOut);
+		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 		int puissance = (float)lensFlareParameter->size;
 		int brightness = (float)lensFlareParameter->brightness;
 		int radius = (float)lensFlareParameter->colorIntensity;
-		LensFlare(filtreEffet, pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, left, top);
+		LensFlare(filtre, pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, 0, 0);
 
-		if (m_cDessin != nullptr)
-		{
-			wxImage image = filtreEffet->GetwxImage();
-			wxBitmap bitmap = wxBitmap(image);
-			wxMemoryDC dc;
-			dc.SelectObject(bitmap);
-			wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
-			wxImage render = filtreEffet->GetwxImage();
-			m_cDessin->Dessiner(&dc, 0, 0, 0, wxColour(30, 30, 30), wxColour(30, 30, 30), wxColour(255, 255, 255), 2);
-			dc.SelectObject(wxNullBitmap);
-			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
-			wxImage * local_image = new wxImage(bitmap.ConvertToImage());
-			imageLoad->SetPicture(local_image);
-			filtreEffet->SetBitmap(imageLoad);
-		}
+		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
+
+		filtreEffet->SetPreview(true);
+
+		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete filtre;
 	}
+}
+
+CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+{
+	CImageLoadingFormat * imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		CImageLoadingFormat image;
+		image.SetPicture(source);
+		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+
+		wxPoint pt;
+		bitmapViewer->GetDessinPt()->GetPoint(pt);
+		CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+		float puissance = (float)lensFlareParameter->size;
+		float brightness = (float)lensFlareParameter->brightness;
+		float colorIntensity = (float)lensFlareParameter->colorIntensity;
+		puissance = ((float)(source->GetBitmapWidth() / 4) * ((float)puissance / 100.0f));
+		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
 }
 
 void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop)
@@ -140,3 +154,11 @@ void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, c
 	int puissance = (int)((float)(source->GetBitmapWidth() / 4) * ((float)iPuissance / 100.0f));
 	filtreEffet->LensFlare(iPosX - posLeft, iPosY - posTop, puissance, iType, iIntensity, iColor, iColorIntensity);
 }
+
+
+void CLensFlareFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+{
+	if (m_cDessin != nullptr)
+		m_cDessin->Dessiner(dc, 0, 0, 1, wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+}
+

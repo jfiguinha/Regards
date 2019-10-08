@@ -30,7 +30,7 @@ CImageLoadingFormat * CFilterWindowParam::ApplyMouseMoveEffect(CEffectParameter 
 
 void CFilterWindowParam::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
 {
-	m_cDessin->Dessiner(dc, bitmapViewer->GetHPos(), bitmapViewer->GetVPos(), bitmapViewer->GetRatio(), wxColour(30, 30, 30), wxColour(30, 30, 30), wxColour(255, 255, 255), 2);
+	m_cDessin->Dessiner(dc, 0, 0, 1, wxColour(30, 30, 30), wxColour(30, 30, 30), wxColour(255, 255, 255), 2);
 }
 
 void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
@@ -77,6 +77,23 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 	else
 	{
 		filtreEffet->SetPreview(true);
+
+		CRegardsBitmap * bitmap = GetBitmap(true);
+		if (bitmap != nullptr)
+		{
+			CImageLoadingFormat image;
+			image.SetPicture(bitmap);
+			CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
+			filtre->RenderEffect(effect, effectParameter);
+
+			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+			imageLoad->SetPicture(filtre->GetBitmap(true));
+			imageLoad->SetOrientation(orientation);
+			SetBitmap(imageLoad, true);
+
+			delete filtre;
+		}
+
 		filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
 	}
 }

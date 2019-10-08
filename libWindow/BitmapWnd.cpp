@@ -1277,12 +1277,6 @@ void CBitmapWnd::Update()
     }
 }
 
-bool CBitmapWnd::NeedAfterDrawBitmap()
-{
-    TRACE();
-	return false;
-}
-
 void CBitmapWnd::UpdateScreenRatio()
 {
     TRACE();
@@ -1486,6 +1480,9 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			renderOpenGL->RenderToScreen(x, y, true);
 		else
 			renderOpenGL->RenderToScreen(x, y, false);
+
+		xPosImage = x;
+		yPosImage = y;
 	}
 	
 }
@@ -1539,6 +1536,9 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 		int x = (width - glTexture->GetWidth()) / 2;
 		int y = (height - glTexture->GetHeight()) / 2;
 		renderOpenGL->RenderToScreen(x, y, false);
+
+		xPosImage = x;
+		yPosImage = y;
 	}
 }
 

@@ -35,7 +35,6 @@ namespace Regards
 			void StopTransition();
 			void SetBitmapPreviewEffect(const int &effect);
 			COpenCLContext * GetOpenCLContext();
-            bool NeedAfterDrawBitmap();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void UpdateFiltre(CEffectParameter * effectParameter);
@@ -50,7 +49,6 @@ namespace Regards
 
 		private:
 			virtual void ApplyPreviewEffect();
-			wxBitmap GenerateFiltreDessinBitmap();
 			void AfterRender();
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);

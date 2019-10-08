@@ -38,7 +38,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	wxInitAllImageHandlers();
 
 	//sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
-	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_CONVOLUTION", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_CONVOLUTION.cl");
+	/*
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BLUR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_BOXBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_BOXBLUR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_EDGE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_EDGE.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_EMBOSS", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_EMBOSS.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_FASTGAUSSIANBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_FASTGAUSSIANBLUR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_GAUSSIANBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_GAUSSIANBLUR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_MOTIONBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_MOTIONBLUR.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SHARPEN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SHARPEN.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SHARPENSTRONG", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SHARPENSTRONG.cl");
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_SOFTEN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_SOFTEN.cl");
+	*/
+	sqlResource.InsertOpenCLFloat(L"IDR_OPENCL_MOTIONBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_float\\IDR_OPENCL_MOTIONBLUR.cl");
 
 /*
 List des shaders 
