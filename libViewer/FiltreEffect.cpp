@@ -99,6 +99,16 @@ void CFiltreEffect::UpdateMousePosition()
 	}
 }
 
+CImageLoadingFormat * CFiltreEffect::ApplyEffect()
+{
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+
+	if (filterEffect != nullptr)
+		return filterEffect->ApplyEffect(effectParameter, bitmapWindow);
+
+	return nullptr;
+}
+
 void CFiltreEffect::SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key)
 {
     if(filterEffect != nullptr)

@@ -56,6 +56,7 @@
 #include "VideoFilter.h"
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
+#include "RedEyeFilter.h"
 #include "BestExposureFilter.h"
 #include "CropFilter.h"
 using namespace Regards::Viewer;
@@ -477,6 +478,11 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 
 	case IDM_FILTRE_AUDIOVIDEO:
 		filterEffect = new CAudioVideoFilter();
+		//filterEffect->Filter(effectParameter, filename, this);
+		break;
+
+	case IDM_REDEYE:
+		filterEffect = new CRedEyeFilter();
 		//filterEffect->Filter(effectParameter, filename, this);
 		break;
 

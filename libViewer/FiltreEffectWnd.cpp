@@ -83,13 +83,22 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 void CFiltreEffectScrollWnd::OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd)
 {
 	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
-	if (bitmapViewer != nullptr)
-	{
-		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
-		historyEffectWnd->AddModification(bitmap, CFiltreData::GetFilterLabel(numFiltre));
 
-		if (bitmap != nullptr)
-			delete bitmap;
+	if (filtreEffectOld != nullptr && bitmapViewer != nullptr)
+	{
+		CImageLoadingFormat * imageLoad = filtreEffectOld->ApplyEffect();
+		CRegardsBitmap * bitmapOut = imageLoad->GetRegardsBitmap(true);
+		historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numFiltre));
+		delete bitmapOut;
+
+		if (imageLoad != nullptr)
+			bitmapViewer->SetBitmap(imageLoad, true);
+
+		//CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+		//historyEffectWnd->AddModification(bitmap, CFiltreData::GetFilterLabel(numFiltre));
+
+		//if (bitmap != nullptr)
+		//	delete bitmap;
 	}
 
 	if (bitmapViewer != nullptr && CFiltreData::NeedPreview(numFiltre))
@@ -170,64 +179,6 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 
 					default:
 						{
-							/*
-							CImageLoadingFormat * imageLoad = nullptr;
-							if (CFiltreData::IsPiccanteCompatible(numItem))
-							{
-								CRegardsFloatBitmap * bitmap = bitmapViewer->GetFloatBitmap(true);
-								switch (numItem)
-								{
-								case IDM_BEST_EXPOSURE:
-									CPiccanteFilter::BestExposure(bitmap);
-									break;
-								case IDM_FILTER_KUWAHARA:
-									CPiccanteFilter::FilterKuwahara(bitmap);
-									break;
-								case IDM_FILTER_BILATERAL2DS:
-									CPiccanteFilter::FilterBilateral2DS(bitmap);
-									break;
-								}
-								CImageLoadingFormat imageLoadFormat(true);
-								imageLoad = new CImageLoadingFormat();
-								imageLoad->SetPicture(bitmap);
-								imageLoad->SetOrientation(bitmapViewer->GetOrientation());
-							}
-							else if (CFiltreData::IsOpenCLCompatible(numItem))
-							{
-								CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
-								if (bitmap != nullptr)
-								{
-									CImageLoadingFormat image;
-									image.SetPicture(bitmap);
-									CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), bitmapViewer->GetOpenCLContext(), &image);
-									filtre->RenderEffect(numItem, effectParameter);
-									imageLoad = new CImageLoadingFormat();
-									CRegardsBitmap * bitmapOut = filtre->GetBitmap(true);
-									historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numItem));
-									imageLoad->SetPicture(bitmapOut);
-									imageLoad->SetOrientation(bitmapViewer->GetOrientation());
-
-									delete filtre;
-								}
-							}
-							else
-							{
-								CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
-								if (bitmap != nullptr)
-								{
-									CImageLoadingFormat image;
-									image.SetPicture(bitmap);
-									CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
-									filtre->RenderEffect(numItem, effectParameter);
-
-									imageLoad = new CImageLoadingFormat();
-									imageLoad->SetPicture(filtre->GetBitmap(true));
-									imageLoad->SetOrientation(bitmapViewer->GetOrientation());
-
-									delete filtre;
-								}
-							}
-							*/
 							CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, numItem);
 							CRegardsBitmap * bitmapOut = imageLoad->GetRegardsBitmap(true);
 							historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numItem));

@@ -333,6 +333,9 @@
     <ClInclude Include="CropFilter.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="RedEyeFilter.h">
+      <Filter>window\Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -498,6 +501,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CropFilter.cpp">
+      <Filter>window\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="RedEyeFilter.cpp">
       <Filter>window\Drawing</Filter>
     </ClCompile>
   </ItemGroup>
