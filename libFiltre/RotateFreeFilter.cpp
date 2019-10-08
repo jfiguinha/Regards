@@ -19,7 +19,7 @@ CRotateFreeFilter::~CRotateFreeFilter()
 
 int CRotateFreeFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_ROTATE_FREE;
 }
 
 void CRotateFreeFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)

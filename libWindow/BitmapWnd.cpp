@@ -1422,7 +1422,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-		ApplyPreviewEffect();
+		ApplyPreviewEffect(widthOutput, heightOutput);
 
 		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 		{
@@ -1516,7 +1516,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
-		ApplyPreviewEffect();
+		ApplyPreviewEffect(widthOutput, heightOutput);
 
 		CRegardsBitmap* bitmap = nullptr;
 		bitmap = filtreEffet->GetBitmap(false);

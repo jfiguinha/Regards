@@ -69,7 +69,8 @@ public:
     virtual CRegardsFloatBitmap * GetFloatBitmap(const bool &source) = 0;
 	virtual int RedEye(const wxRect& rSelectionBox) = 0;
     virtual void SetBitmap(CImageLoadingFormat * bitmap) = 0;
-
+	virtual int GetWidth() = 0;
+	virtual int GetHeight() = 0;
 protected:
 	//CRegardsBitmap * pBitmap;
 	CRgbaquad backColor;

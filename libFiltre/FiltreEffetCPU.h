@@ -58,7 +58,8 @@ public:
 	int Solarize(const long &threshold);
 	int Fusion(CRegardsBitmap * bitmapSecond, const float &pourcentage);
 	int LensFlare(const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity);
-
+	virtual int GetWidth();
+	virtual int GetHeight();
 	static wxImage GetwxImage(CRegardsBitmap * bitmap);
 
 private:

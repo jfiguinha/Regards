@@ -24,20 +24,12 @@ namespace Regards
 
 			CRenderBitmapInterfaceOpenGL(wxGLCanvas *canvas);
 			virtual ~CRenderBitmapInterfaceOpenGL();
-
-			//void ApplyPreviewEffect(const int &left, const int &top, const int &numEffect, CEffectParameter * effectParameter);
             void LoadingResource(const double & scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
 			void ShowTransitionBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const float &alphaValue);
 
 		private:
-
-			//Effect
-			//void PhotoFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
-			//void RGBFiltre(const int &left, const int &top, CEffectParameter * effectParameter);
-
-
 
 			GLTexture * textureArrowRight;
 			GLTexture * textureArrowLeft;

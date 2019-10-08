@@ -86,12 +86,9 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
 }
 
 
-void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
+void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
-
-	int widthOutput = bitmapOut->GetBitmapWidth();
-	int heightOutput = bitmapOut->GetBitmapHeight();
 	wxPoint pt;
 	m_cDessin->GetScreenPoint(pt);
 	if (pt.x == 0 && pt.y == 0)

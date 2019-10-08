@@ -1023,8 +1023,6 @@ wxString CFiltreData::GetFilterLabel(const int &numFilter)
     return "";
 }
 
-
-
 void CFiltreData::InitFilterListLabel()
 {
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTRE_SOFTEN, "LBLfilterSoften"));

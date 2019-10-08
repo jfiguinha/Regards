@@ -31,6 +31,34 @@ CFiltreEffetCPU::CFiltreEffetCPU(const CRgbaquad &backColor, CImageLoadingFormat
 	pBitmap = bitmap->GetRegardsBitmap();
 }
 
+int CFiltreEffetCPU::GetWidth()
+{
+	if (preview)
+	{
+		if (bitmapOut != nullptr)
+			return bitmapOut->GetBitmapWidth();
+	}
+	else
+	{
+		if (pBitmap != nullptr)
+			return pBitmap->GetBitmapWidth();
+	}
+}
+
+int CFiltreEffetCPU::GetHeight()
+{
+	if (preview)
+	{
+		if (bitmapOut != nullptr)
+			return bitmapOut->GetBitmapHeight();
+	}
+	else
+	{
+		if (pBitmap != nullptr)
+			return pBitmap->GetBitmapHeight();
+	}
+}
+
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	if (preview)

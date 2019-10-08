@@ -48,7 +48,7 @@ namespace Regards
 			wxPoint GetMousePosition();
 
 		private:
-			virtual void ApplyPreviewEffect();
+			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 			void AfterRender();
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);

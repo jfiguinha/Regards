@@ -170,6 +170,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 
 					default:
 						{
+							/*
 							CImageLoadingFormat * imageLoad = nullptr;
 							if (CFiltreData::IsPiccanteCompatible(numItem))
 							{
@@ -226,6 +227,11 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 									delete filtre;
 								}
 							}
+							*/
+							CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, numItem);
+							CRegardsBitmap * bitmapOut = imageLoad->GetRegardsBitmap(true);
+							historyEffectWnd->AddModification(bitmapOut, CFiltreData::GetFilterLabel(numItem));
+							delete bitmapOut;
 
 							if(imageLoad != nullptr)
 								bitmapViewer->SetBitmap(imageLoad, true);

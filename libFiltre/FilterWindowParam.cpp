@@ -52,11 +52,12 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, Re
 	}
 }
 
-void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing)
+void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
 {
 	if (CFiltreData::IsPiccanteCompatible(GetTypeFilter()))
 	{
-		CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
+		filtreEffet->SetPreview(true);
+		CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(false);
 		switch (GetTypeFilter())
 		{
 		case IDM_BEST_EXPOSURE:
@@ -77,30 +78,90 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 	else
 	{
 		filtreEffet->SetPreview(true);
+		if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()))
+			filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
+		else
+		{
+			CRegardsBitmap * bitmap = filtreEffet->GetBitmap(false);
+			if (bitmap != nullptr)
+			{
+				CImageLoadingFormat image;
+				image.SetPicture(bitmap);
+				CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+				filtre->RenderEffect(GetTypeFilter(), effectParameter);
+				CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+				imageLoad->SetPicture(filtre->GetBitmap(true));
+				filtreEffet->SetBitmap(imageLoad);
+				delete filtre;
+			}
+		}
 
-		CRegardsBitmap * bitmap = GetBitmap(true);
+		widthOutput = filtreEffet->GetWidth();
+		heightOutput = filtreEffet->GetHeight();
+	}
+}
+
+CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, int numFiltre)
+{
+	CImageLoadingFormat * imageLoad = nullptr;
+	if (CFiltreData::IsPiccanteCompatible(numFiltre))
+	{
+		CRegardsFloatBitmap * bitmap = bitmapViewer->GetFloatBitmap(true);
+		switch (numFiltre)
+		{
+		case IDM_BEST_EXPOSURE:
+			CPiccanteFilter::BestExposure(bitmap);
+			break;
+		case IDM_FILTER_KUWAHARA:
+			CPiccanteFilter::FilterKuwahara(bitmap);
+			break;
+		case IDM_FILTER_BILATERAL2DS:
+			CPiccanteFilter::FilterBilateral2DS(bitmap);
+			break;
+		}
+		CImageLoadingFormat imageLoadFormat(true);
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(bitmap);
+		imageLoad->SetOrientation(bitmapViewer->GetOrientation());
+	}
+	else if (CFiltreData::IsOpenCLCompatible(numFiltre))
+	{
+		CFiltreEffet * filtre = bitmapViewer->GetFiltreEffet();
+		if (filtre != nullptr)
+		{
+			filtre->SetPreview(false);
+			filtre->RenderEffect(numFiltre, effectParameter);
+			imageLoad = new CImageLoadingFormat();
+			CRegardsBitmap * bitmapOut = filtre->GetBitmap(true);
+			imageLoad->SetPicture(bitmapOut);
+			imageLoad->SetOrientation(bitmapViewer->GetOrientation());
+		}
+	}
+	else
+	{
+		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
 		if (bitmap != nullptr)
 		{
 			CImageLoadingFormat image;
 			image.SetPicture(bitmap);
-			CFiltreEffet * filtre = new CFiltreEffet(backColor, nullptr, &image);
-			filtre->RenderEffect(effect, effectParameter);
+			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+			filtre->RenderEffect(numFiltre, effectParameter);
 
-			CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
-			imageLoad->SetOrientation(orientation);
-			SetBitmap(imageLoad, true);
+			imageLoad->SetOrientation(bitmapViewer->GetOrientation());
 
 			delete filtre;
 		}
-
-		filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
 	}
+
+	return imageLoad;
 }
 
 CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectParameter, CBitmapWndViewer * bitmapViewer)
 {
-	CImageLoadingFormat * imageLoad = nullptr;
+	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetTypeFilter());
+	/*
 	if (source != nullptr)
 	{
 		if (CFiltreData::IsPiccanteCompatible(GetTypeFilter()))
@@ -140,9 +201,7 @@ CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectP
 			imageLoad->SetOrientation(bitmapViewer->GetOrientation());
 			delete filtre;
 		}
-
-
 	}
-
+	*/
 	return imageLoad;
 }

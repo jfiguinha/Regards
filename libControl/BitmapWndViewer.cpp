@@ -367,10 +367,10 @@ void CBitmapWndViewer::Resize()
 	}
 }
 
-void CBitmapWndViewer::ApplyPreviewEffect()
+void CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)
 {
 	if(preview > 1 && mouseUpdate != nullptr)
-		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet, m_cDessin);
+		mouseUpdate->ApplyPreviewEffect(effectParameter, this, filtreEffet, m_cDessin, widthOutput, heightOutput);
 }
 
 void CBitmapWndViewer::OnFiltreOk()

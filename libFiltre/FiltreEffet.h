@@ -87,6 +87,7 @@ public:
 	};
 
     int GetWidth();
+	int GetHeight();
 
 private:
 

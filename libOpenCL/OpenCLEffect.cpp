@@ -1153,6 +1153,30 @@ int COpenCLEffect::Negatif()
 	return 0;
 }
 
+int COpenCLEffect::GetWidth()
+{
+	if (preview)
+	{
+		return widthOut;
+	}
+	else
+	{
+		return width;
+	}
+}
+
+int COpenCLEffect::GetHeight()
+{
+	if (preview && paramOutput != nullptr)
+	{
+		return heightOut;
+	}
+	else
+	{
+		return height;
+	}
+}
+
 int COpenCLEffect::Sepia()
 {
 	int _width = 0;
