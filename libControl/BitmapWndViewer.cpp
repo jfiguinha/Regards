@@ -456,10 +456,13 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 #endif 
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
+		int hpos = GetHPos();
+		int vpos = GetVPos();
+
 		invertColor = true;
 		mouseBlock = true;
 		CaptureMouse();
-		m_cDessin->InitPoint(xPos - xPosImage, yPos - yPosImage, 0, 0, 1);
+		m_cDessin->InitPoint(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
 	}
 	else if (fixArrow)
 	{
@@ -609,16 +612,21 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 {
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
+		int hpos = GetHPos();
+		int vpos = GetVPos();
+
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
 		{
-			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, 0, 0, 1);
+
+
+			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}
 		else if(CFiltreData::SupportMouseSelection(toolOption))
 		{
-			m_cDessin->Selection(xPos - xPosImage, yPos - yPosImage, 0, 0, 1);
+			m_cDessin->Selection(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}

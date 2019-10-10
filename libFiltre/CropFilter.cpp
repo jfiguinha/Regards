@@ -43,12 +43,7 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 	if (source != nullptr)
 	{
 		source->RotateExif(source->GetOrientation());
-		rcZoom.x = (float)rcZoom.x / bitmapViewer->GetRatio();
-		rcZoom.y = ((float)rcZoom.y / bitmapViewer->GetRatio());
 
-
-		rcZoom.width = (float)rcZoom.width / bitmapViewer->GetRatio();
-		rcZoom.height = (float)rcZoom.height / bitmapViewer->GetRatio();
 		source->VertFlipBuf();
 
 		CRegardsBitmap * bitmapOut = source->CropBitmap(rcZoom.x, rcZoom.y, rcZoom.width, rcZoom.height);
@@ -71,8 +66,11 @@ CImageLoadingFormat * CCropFilter::ApplyMouseMoveEffect(CEffectParameter * effec
 
 void CCropFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
 {
+	int hpos = bitmapViewer->GetHPos();
+	int vpos = bitmapViewer->GetVPos();
+
 	if (m_cDessin != nullptr)
-		m_cDessin->Dessiner(dc, 0, 0, 1, wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
 }
 
 void CCropFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)

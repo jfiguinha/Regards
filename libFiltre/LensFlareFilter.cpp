@@ -155,7 +155,10 @@ void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, c
 
 void CLensFlareFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
 {
+	int hpos = bitmapViewer->GetHPos();
+	int vpos = bitmapViewer->GetVPos();
+
 	if (m_cDessin != nullptr)
-		m_cDessin->Dessiner(dc, 0, 0, 1, wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
 }
 
