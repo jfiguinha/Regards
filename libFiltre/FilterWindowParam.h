@@ -40,6 +40,8 @@ public:
 	static CImageLoadingFormat * RenderEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, int numFiltre);
 
 protected:
+
+	static void RotateExif(const int & orientation, CFiltreEffet * filtre);
 	virtual void Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin);
 	virtual void DrawingToPicture(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin);
 	CRegardsBitmap * source;

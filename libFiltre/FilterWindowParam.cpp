@@ -102,9 +102,52 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 	}
 }
 
+void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filtre)
+{
+	switch (orientation)
+	{
+	case 1:// top left side
+		break;
+	case 2:// top right side
+		filtre->FlipHorizontal();
+		break;
+	case 3:// bottom right side
+		filtre->FlipHorizontal();
+		filtre->FlipVertical();
+		break;
+	case 4:// bottom left side
+		filtre->FlipVertical();
+		break;
+	case 5://left side top
+		filtre->Rotate90();
+		filtre->FlipVertical();
+		filtre->FlipHorizontal();
+		break;
+	case 6:// right side top
+		filtre->Rotate90();
+		filtre->FlipVertical();
+		break;
+	case 7:// right side bottom
+		filtre->Rotate90();
+		break;
+	case 8:// left side bottom
+		filtre->Rotate90();
+		filtre->FlipHorizontal();
+		break;
+	}
+}
+
 CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, int numFiltre)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
+
+	CFiltreEffet * filtre = bitmapViewer->GetFiltreEffet();
+	if (filtre != nullptr)
+	{
+		filtre->SetPreview(false);
+		RotateExif(bitmapViewer->GetOrientation(), filtre);
+	}
+
 	if (CFiltreData::IsPiccanteCompatible(numFiltre))
 	{
 		CRegardsFloatBitmap * bitmap = bitmapViewer->GetFloatBitmap(true);
@@ -127,15 +170,13 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 	}
 	else if (CFiltreData::IsOpenCLCompatible(numFiltre))
 	{
-		CFiltreEffet * filtre = bitmapViewer->GetFiltreEffet();
 		if (filtre != nullptr)
 		{
-			filtre->SetPreview(false);
 			filtre->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			CRegardsBitmap * bitmapOut = filtre->GetBitmap(true);
 			imageLoad->SetPicture(bitmapOut);
-			imageLoad->SetOrientation(bitmapViewer->GetOrientation());
+			imageLoad->SetOrientation(0);
 		}
 	}
 	else
@@ -144,12 +185,13 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 		if (bitmap != nullptr)
 		{
 			CImageLoadingFormat image;
+			bitmap->RotateExif(bitmapViewer->GetOrientation());
 			image.SetPicture(bitmap);
 			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 			filtre->RenderEffect(numFiltre, effectParameter);
 			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
-			imageLoad->SetOrientation(bitmapViewer->GetOrientation());
+			imageLoad->SetOrientation(0);
 
 			delete filtre;
 		}

@@ -1322,12 +1322,6 @@ void CBitmapWnd::UpdateScreenRatio()
 void CBitmapWnd::GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical)
 {
     TRACE();
-	/*
-	int localAngle = angle;
-	int localflipHorizontal = flipHorizontal;
-	int localflipVertical = flipVertical;
-	*/
-    //bool ret = true;
     switch (GetOrientation())
     {
         case 1:// top left side
@@ -1363,7 +1357,6 @@ void CBitmapWnd::GenerateExifPosition(int & localAngle, int & localflipHorizonta
     }
 
 	localAngle = localAngle % 360;
-	//localAngle = 360 - localAngle;
 }
 
 
