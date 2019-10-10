@@ -181,10 +181,7 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
 	filtreraw = nullptr;
-	//cl_nextPicture = nullptr;
 	pictureNext = nullptr;
-	//openclEffectVideo = nullptr;
-	afterEffectParameter = nullptr;
 	mouseUpdate = nullptr;
 	etape = 0;
 	preview = 0;
@@ -197,13 +194,11 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
     LoadingResource();
 	etape = 0;
 	fixArrow = true;
-	//numEffect = 1;
 	nextPicture = nullptr;
 	startTransition = false;
 	this->bitmapInterface = bitmapInterface;
 	oldMouse.x = 0;
 	oldMouse.y = 0;
-	//effectParameter = nullptr;
 	m_cDessin = nullptr;
 	afterEffect = nullptr;
 	transitionTimer = new wxTimer(this, TIMER_TRANSITION);
@@ -242,9 +237,6 @@ CBitmapWndViewer::~CBitmapWndViewer()
 
 	if (afterEffect != nullptr)
 		delete afterEffect;
-
-	if (afterEffectParameter != nullptr)
-		delete afterEffectParameter;
 }
 
 void CBitmapWndViewer::AfterSetBitmap()
@@ -416,11 +408,8 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 			if (afterEffect != nullptr)
 				delete afterEffect;
 
-			if (afterEffectParameter != nullptr)
-				delete afterEffectParameter;
-
 			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
-			afterEffectParameter = CFiltreData::GetEffectPointer(IDM_AFTEREFFECT_START + numEffect);
+
 			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
 				startTransition = true;
@@ -562,7 +551,7 @@ void CBitmapWndViewer::AfterRender()
 		{
 			wxRect out;
 			//Génération de la texture
-			if (renderOpenGL != nullptr)
+			if (renderOpenGL != nullptr && afterEffect != nullptr)
 			{
 				//cl_int err;
 				if (pictureNext == nullptr)
@@ -570,11 +559,11 @@ void CBitmapWndViewer::AfterRender()
 
 				if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 				{
-					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, afterEffectParameter, this, out);
+					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);
 				}
 				else
 				{
-					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, afterEffectParameter, this, out);
+					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
 					if (pictureNext->GetHeight() != bitmapOut->GetBitmapHeight() || pictureNext->GetWidth() != bitmapOut->GetBitmapWidth())
 						pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 					else
@@ -582,12 +571,12 @@ void CBitmapWndViewer::AfterRender()
 					glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 					delete bitmapOut;
 				}
-			
+				if (renderOpenGL != nullptr)
+					renderOpenGL->ShowSecondBitmap(pictureNext, out.width, out.height, out.x, out.y);
 			}
 
 
-			if (renderOpenGL != nullptr)
-				renderOpenGL->ShowSecondBitmap(pictureNext, out.width, out.height, out.x, out.y);
+
 		}
 	}
 

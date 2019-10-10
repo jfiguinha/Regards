@@ -12,6 +12,7 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
+#include <RegardsBitmap.h>
 #include <PiccanteFilter.h>
 CFilterWindowParam::CFilterWindowParam()
 {
@@ -146,7 +147,6 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 			image.SetPicture(bitmap);
 			CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 			filtre->RenderEffect(numFiltre, effectParameter);
-
 			imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(filtre->GetBitmap(true));
 			imageLoad->SetOrientation(bitmapViewer->GetOrientation());

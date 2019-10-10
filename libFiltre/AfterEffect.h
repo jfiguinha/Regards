@@ -27,6 +27,6 @@ class IAfterEffect
 {
 public:
 	virtual int GetTypeFilter() = 0;
-	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, CEffectParameter * effectParameter, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
-	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, CEffectParameter * effectParameter, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
+	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
+	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
 };

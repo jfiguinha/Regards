@@ -87,9 +87,7 @@ namespace Regards
 			//Preview Parameter
 			int preview;
 			CEffectParameter * effectParameter;
-
 			IAfterEffect * afterEffect;
-			CEffectParameter * afterEffectParameter;
 
 			wxPoint oldMouse;
 
