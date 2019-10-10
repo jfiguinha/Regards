@@ -1,0 +1,156 @@
+#include <header.h>
+//
+//  BrightAndContrastFilter.cpp
+//  Regards.libViewer
+//
+//  Created by figuinha jacques on 12/04/2016.
+//  Copyright © 2016 figuinha jacques. All rights reserved.
+//
+
+#include "BitmapFusionFilter.h"
+#include "BitmapFusionEffectParameter.h"
+#include <RegardsBitmap.h>
+#include <LibResource.h>
+#include <FilterData.h>
+#include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
+#include <BitmapWndViewer.h>
+#include <InterpolationBicubic.h>
+#include <utility.h>
+#include <OpenCLEffectVideo.h>
+#include <GLTexture.h>
+using namespace Regards::Viewer;
+
+CBitmapFusionFilter::CBitmapFusionFilter()
+{
+	bitmapTemp = nullptr;
+	bitmapOutCopy = nullptr;
+	openclEffectVideo = nullptr;
+	cl_nextPicture = nullptr;
+}
+
+CBitmapFusionFilter::~CBitmapFusionFilter()
+{
+	if(bitmapTemp != nullptr)
+		delete bitmapTemp;
+
+	if (bitmapOutCopy != nullptr)
+		delete bitmapOutCopy;
+
+	if (openclEffectVideo != nullptr)
+		delete openclEffectVideo;
+
+	if (cl_nextPicture != nullptr)
+	{
+		clReleaseMemObject(cl_nextPicture);
+	}
+}
+
+int CBitmapFusionFilter::GetTypeFilter()
+{
+	return IDM_AFTEREFFECT_FUSION;
+}
+
+
+
+
+CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, CEffectParameter * effectParameter, CBitmapWndViewer * bmpViewer, wxRect &rcOut)
+{
+	CRegardsBitmap * bitmapOut = nullptr;
+	CBitmapFusionEffectParameter * fusionParameter = (CBitmapFusionEffectParameter *)effectParameter;
+
+	if (fusionParameter->etape == 0)
+	{
+		bitmapTemp = nextPicture->GetRegardsBitmap(true);
+		int orientation = nextPicture->GetOrientation();
+		bitmapTemp->RotateExif(orientation);
+	}
+
+	float newRatio = bmpViewer->CalculPictureRatio(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight());
+	int widthOutput = bitmapTemp->GetBitmapWidth() * newRatio;
+	int heightOutput = bitmapTemp->GetBitmapHeight() * newRatio;
+
+	if (bitmapOutCopy != nullptr)
+	{
+		if (bitmapOutCopy->GetBitmapWidth() != widthOutput || bitmapOutCopy->GetBitmapHeight() != heightOutput)
+		{
+			bitmapOut  = new CRegardsBitmap(widthOutput, heightOutput);
+			CInterpolationBicubic interpolation;
+			interpolation.Execute(bitmapTemp, bitmapOut);
+		}
+		else
+		{
+			bitmapOut = new CRegardsBitmap();
+			*bitmapOut = *bitmapOutCopy;
+		}
+	}
+
+	bitmapOut->SetAlphaValue(fusionParameter->etape);
+
+	rcOut.width = widthOutput;
+	rcOut.height = heightOutput;
+	rcOut.x = (bmpViewer->GetWidth() - widthOutput) / 2;
+	rcOut.y = (bmpViewer->GetHeight() - heightOutput) / 2;
+	
+	return bitmapOut;
+
+}
+
+void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, CEffectParameter * effectParameter, CBitmapWndViewer * bmpViewer, wxRect &rcOut)
+{
+	cl_int err;
+	CBitmapFusionEffectParameter * fusionParameter = (CBitmapFusionEffectParameter *)effectParameter;
+	if (bmpViewer->GetOpenCLContext() != nullptr)
+	{
+		if (openclEffectVideo == nullptr)
+			openclEffectVideo = new COpenCLEffectVideo(bmpViewer->GetOpenCLContext());
+
+		if (fusionParameter->etape == 0)
+		{
+			CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
+			int orientation = nextPicture->GetOrientation();
+			bitmapTemp->RotateExif(orientation);
+			width = bitmapTemp->GetBitmapWidth();
+			height = bitmapTemp->GetBitmapHeight();
+			glPicture->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
+			glBindTexture(GL_TEXTURE_2D, glPicture->GetTextureID());
+			cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, glPicture->GetTextureID(), &err);
+			delete bitmapTemp;
+
+
+		}
+
+
+
+		try
+		{
+			cl_int err;
+
+			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+			Error::CheckError(err);
+			openclEffectVideo->SetAlphaValue(cl_nextPicture, glPicture->GetWidth(), glPicture->GetHeight(), fusionParameter->etape);
+			err = clEnqueueReleaseGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+			Error::CheckError(err);
+			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+			Error::CheckError(err);
+			openclEffectVideo->GetRgbaBitmap(cl_nextPicture);
+			err = clEnqueueReleaseGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
+			Error::CheckError(err);
+			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
+			Error::CheckError(err);
+		}
+		catch (...)
+		{
+
+		}
+
+		float newRatio = bmpViewer->CalculPictureRatio(width, height);
+		rcOut.width = width * newRatio;
+		rcOut.height =height * newRatio;
+		rcOut.x = (bmpViewer->GetWidth() - rcOut.width) / 2;
+		rcOut.y = (bmpViewer->GetHeight() - rcOut.height) / 2;
+	}
+}
