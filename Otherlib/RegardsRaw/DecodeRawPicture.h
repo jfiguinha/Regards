@@ -10,11 +10,9 @@ class CDecodeRawPicture
 public:
 	CDecodeRawPicture(const string & fileName);
 	~CDecodeRawPicture();
-	int DecodePicture(CDecodeRawParameter * decodeRawParameter);
-	CImageLoadingFormat * GetPicture();
+	CImageLoadingFormat * DecodePicture(CDecodeRawParameter * decodeRawParameter);
 
 private:
-	CImageLoadingFormat * imageLoadingFormat;
 	LibRaw * rawProcessor;
 	int result;
 	unsigned char *buffer;

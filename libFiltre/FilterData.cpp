@@ -59,6 +59,10 @@
 #include "RedEyeFilter.h"
 #include "BestExposureFilter.h"
 #include "CropFilter.h"
+#include <Crop.h>
+#include <Selection.h>
+#include <BitmapFusionFilter.h>
+#include <BitmapFusionEffectParameter.h>
 using namespace Regards::Viewer;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
@@ -502,6 +506,37 @@ CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int
     return labelFilter;
 }
 
+void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
+{
+	if (filter != nullptr)
+		delete filter;
+}
+
+IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_AFTEREFFECT_FUSION:
+		return new CBitmapFusionFilter();
+		break;
+	}
+	return nullptr;
+}
+
+CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_REDEYE:
+	case IDM_CROP:
+		return new CCrop();
+	case IDM_WAVE_EFFECT:
+	case IDM_FILTRELENSFLARE:
+		return new CSelection();
+	}
+	return nullptr;
+}
+
 bool CFiltreData::IsPiccanteCompatible(const int &numFilter)
 {
  	switch(numFilter)
@@ -787,6 +822,9 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 		case IDM_FILTRE_FLOUGAUSSIEN:
 			return new CGaussianBlurEffectParameter();
 			break;
+
+		case IDM_AFTEREFFECT_FUSION:
+			return new CBitmapFusionEffectParameter();
 
 		default:
 			return new CEffectParameter();

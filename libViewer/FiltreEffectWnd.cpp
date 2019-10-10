@@ -66,7 +66,7 @@ CFiltreEffectScrollWnd::~CFiltreEffectScrollWnd(void)
 
 void CFiltreEffectScrollWnd::OnFiltreCancel()
 {
-	/*
+	
 	CImageLoadingFormat * imageLoad = new CImageLoadingFormat(false);
 	imageLoad->SetPicture(bitmap);
 	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
@@ -74,10 +74,11 @@ void CFiltreEffectScrollWnd::OnFiltreCancel()
 	{
 		bitmapViewer->SetBitmap(imageLoad);
 	}
-	*/
+	/*
 	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
 	if (bitmapViewer != nullptr && CFiltreData::NeedPreview(numFiltre))
 		bitmapViewer->RemoveListener();
+	*/
 }
 
 void CFiltreEffectScrollWnd::OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd)

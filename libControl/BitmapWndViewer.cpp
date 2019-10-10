@@ -12,6 +12,7 @@
 #include <ImageLoadingFormat.h>
 #include <LibResource.h>
 #include <MetadataExiv2.h>
+#include <Interpolation.h>
 //#include "MySmtpListener.h"
 #include <LoadingResource.h>
 #include <libPicture.h>
@@ -180,16 +181,13 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
 	filtreraw = nullptr;
-	cl_nextPicture = nullptr;
+	//cl_nextPicture = nullptr;
 	pictureNext = nullptr;
-	openclEffectVideo = nullptr;
+	//openclEffectVideo = nullptr;
+	afterEffectParameter = nullptr;
 	mouseUpdate = nullptr;
 	etape = 0;
-	//Preview Parameter
 	preview = 0;
-	//renderPreviewBitmap = nullptr;
-	//rawDecoder = nullptr;
-	//Thread Parameter
 	m_bTransition = false;
 	isDiaporama = false;
 	isInUse = false;
@@ -207,10 +205,9 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	oldMouse.y = 0;
 	//effectParameter = nullptr;
 	m_cDessin = nullptr;
+	afterEffect = nullptr;
 	transitionTimer = new wxTimer(this, TIMER_TRANSITION);
 	Connect(TIMER_TRANSITION, wxEVT_TIMER, wxTimerEventHandler(CBitmapWndViewer::OnTransition), nullptr, this);
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CBitmapWndViewer::onIdle));
-
 }
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
@@ -233,28 +230,21 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 	}
 }
 
-void CBitmapWndViewer::onIdle(wxIdleEvent& evt)
-{
-	/*
-	if (preview == IDM_CROP || preview == IDM_REDEYE || preview == IDM_FILTRELENSFLARE)
-	{
-		wxWindowDC windDC(this);
-		AfterDrawBitmap(&windDC);
-	}
-	*/
-}
-
 CBitmapWndViewer::~CBitmapWndViewer()
 {
 	if (transitionTimer->IsRunning())
 		transitionTimer->Stop();
 
-	delete(openclEffectVideo);
+	//delete(openclEffectVideo);
 	delete(transitionTimer);
 	delete(m_cDessin);
 	delete(pictureNext);
-	if(filtreraw != nullptr)
-		delete filtreraw;
+
+	if (afterEffect != nullptr)
+		delete afterEffect;
+
+	if (afterEffectParameter != nullptr)
+		delete afterEffectParameter;
 }
 
 void CBitmapWndViewer::AfterSetBitmap()
@@ -323,39 +313,20 @@ void CBitmapWndViewer::SetDessinRatio()
 void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 {
 	preview = effect;
-
-	switch (preview)
-	{
-	case IDM_REDEYE:
-	case IDM_CROP:
-		{
-			isInUse = true;
-			delete(m_cDessin);
-			m_cDessin = new CCrop();
-			SetDessinRatio();
-			wxSetCursor(wxCursor(wxCURSOR_CROSS));
-			isInUse = false;
-			SetTool(preview);
-		}
-		break;
-	case IDM_WAVE_EFFECT:
-	case IDM_FILTRELENSFLARE:
-	{
-		isInUse = true;
+	isInUse = true;
+	if(m_cDessin != nullptr)
 		delete(m_cDessin);
-		m_cDessin = new CSelection();
+
+	m_cDessin = CFiltreData::GetDrawingPt(effect);
+	if (m_cDessin != nullptr)
+	{
 		SetDessinRatio();
 		wxSetCursor(wxCursor(wxCURSOR_CROSS));
 		isInUse = false;
 		SetTool(preview);
 	}
-	break;
-	default:
+	else
 		toolOption = MOVEPICTURE;
-		break;
-	}
-
-	//Refresh();
 }
 
 void CBitmapWndViewer::Resize()
@@ -442,15 +413,21 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	default:
 		{
+			if (afterEffect != nullptr)
+				delete afterEffect;
 
+			if (afterEffectParameter != nullptr)
+				delete afterEffectParameter;
 
+			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
+			afterEffectParameter = CFiltreData::GetEffectPointer(IDM_AFTEREFFECT_START + numEffect);
 			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
 				startTransition = true;
 				m_bTransition = true;
 				nextPicture = bmpSecond;
 				etape = 0;
-				renderNext.Destroy();
+				//renderNext.Destroy();
 				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			}
 			else
@@ -459,8 +436,6 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 				m_bTransition = false;
 				SetBitmap(bmpSecond, false);
 				startTransition = false;
-				//bitmapInterface->TransitionEnd();
-
 			}
 		}
 		break;
@@ -552,8 +527,8 @@ int CBitmapWndViewer::GetRawBitmapHeight()
 
 int CBitmapWndViewer::GetOrientation()
 {
-	if(preview == IDM_DECODE_RAW)
-		return 4;
+	//if(preview == IDM_DECODE_RAW)
+	//	return 4;
 	return orientation; 
 }
 
@@ -583,106 +558,36 @@ void CBitmapWndViewer::AfterRender()
 			}
 		}
 
-
-		switch (numEffect)
+		if (numEffect != 0)
 		{
-		case 1:
-			if(renderOpenGL != nullptr)
+			wxRect out;
+			//Génération de la texture
+			if (renderOpenGL != nullptr)
 			{
-				cl_int err;
-                //int width = 0;
-               // int height = 0;
-
-				if(pictureNext == nullptr)
+				//cl_int err;
+				if (pictureNext == nullptr)
 					pictureNext = new GLTexture();
 
-				if (nextPicture != nullptr && etape == 0)
+				if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 				{
-                    if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
-                    {
-                        if(cl_nextPicture != nullptr)
-                        {
-                            err = clReleaseMemObject(cl_nextPicture);
-                            Error::CheckError(err);
-                        }
-
-                        CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
-
-                        //CMetadataExiv2 metadata(nextPicture->GetFilename());
-                        int orientation = nextPicture->GetOrientation();
-                        bitmapTemp->RotateExif(orientation);                        
-                        pictureNext->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
-                        glBindTexture( GL_TEXTURE_2D, pictureNext->GetTextureID() );  
-                        //cl_nextPicture = clCreateFromGLTexture2D(openclContext->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, pictureNext->GetTextureID(), &err);
-                        cl_nextPicture = clCreateFromGLTexture(openclContext->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, pictureNext->GetTextureID(), &err);
-                        delete bitmapTemp;
-                    } 
-                    else
-                    {
-                        //CRgbaquad color;
-                        //COpenCLEffect openclEffect(color, openclContext);
-                        CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
-                        int orientation = nextPicture->GetOrientation();
-                        bitmapTemp->RotateExif(orientation);
-                        bitmapTemp->SetAlphaValue(etape);
-                        pictureNext->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
-                        glBindTexture( GL_TEXTURE_2D, pictureNext->GetTextureID() ); 
-                        delete bitmapTemp;
-                    }
+					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, afterEffectParameter, this, out);
 				}
-				else if(nextPicture != nullptr && etape > 0)
+				else
 				{
-                     if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
-                    {
-                        cl_int err ;
-                        err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-                        Error::CheckError(err);
-                        openclEffectVideo->SetAlphaValue(cl_nextPicture, pictureNext->GetWidth(), pictureNext->GetHeight(), etape);
-                        err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-                        Error::CheckError(err);
-                        err = clFlush(openclContext->GetCommandQueue());
-                        Error::CheckError(err);
-                    }
+					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, afterEffectParameter, this, out);
+					if (pictureNext->GetHeight() != bitmapOut->GetBitmapHeight() || pictureNext->GetWidth() != bitmapOut->GetBitmapWidth())
+						pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+					else
+						pictureNext->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+					glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
+					delete bitmapOut;
 				}
-
-				if (nextPicture != nullptr && pictureNext != nullptr && etape > 0)
-				{
-
-                    if(openclContext->IsSharedContextCompatible()  && filtreEffet->GetLib() == LIBOPENCL)
-                    {
-                        try
-                        {
-                            cl_int err;
-                            err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-                            Error::CheckError(err);
-                            openclEffectVideo->GetRgbaBitmap(cl_nextPicture);
-                            err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-                            Error::CheckError(err);
-                            err = clFlush(openclContext->GetCommandQueue());
-                            Error::CheckError(err);
-                        }
-                        catch(...)
-                        {
-
-                        }
-                    }
-
-
-					float newRatio = CalculPictureRatio(pictureNext->GetWidth(), pictureNext->GetHeight());
-
-					int widthOutput = pictureNext->GetWidth() * newRatio;
-					int heightOutput = pictureNext->GetHeight() * newRatio;
-					int left = (width - widthOutput) / 2;
-					int top = (height - heightOutput) / 2;		
-
-					renderOpenGL->ShowTransitionBitmap(pictureNext, widthOutput, heightOutput, left, top, etape);
-				}
+			
 			}
-			break;
 
-		default:
-			break;
 
+			if (renderOpenGL != nullptr)
+				renderOpenGL->ShowSecondBitmap(pictureNext, out.width, out.height, out.x, out.y);
 		}
 	}
 

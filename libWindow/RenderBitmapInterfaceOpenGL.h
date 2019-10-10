@@ -27,7 +27,7 @@ namespace Regards
             void LoadingResource(const double & scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
-			void ShowTransitionBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const float &alphaValue);
+			void ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top);
 
 		private:
 

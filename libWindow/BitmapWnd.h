@@ -45,7 +45,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetFilterInterpolation(const int& filter);
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
-			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
+			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll = false);
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
 			CRegardsBitmap* GetBitmap(const bool& source);
@@ -93,6 +93,8 @@ namespace Regards
 			int GetHPos();
 			int GetVPos();
 
+			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
 
@@ -106,7 +108,7 @@ namespace Regards
 			virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
-			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+			
 
 			//void OnLoading(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event) {};
@@ -121,7 +123,7 @@ namespace Regards
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
 			void OnEraseBackground(wxEraseEvent& event) {};
-
+			void OnUpdateBitmap(wxCommandEvent& event);
 #ifdef KeyPress
 #undef KeyPress
 #endif			

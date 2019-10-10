@@ -6,6 +6,7 @@
 #include <FiltreUpdate.h>
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideo.h>
+#include <AfterEffect.h>
 using namespace Regards::OpenCL;
 class CDecodeRawPicture;
 class CEffectParameter;
@@ -70,7 +71,6 @@ namespace Regards
 
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
-			void onIdle(wxIdleEvent& evt);
 			
             void LoadingResource();
             
@@ -79,9 +79,6 @@ namespace Regards
 			CImageLoadingFormat * nextPicture;
 			wxImage arrowPrevious;
 			wxImage arrowNext;
-			wxImage renderNext;
-			wxImage renderPreview;
-			vector<wxImage> vecLoadingBitmap;
 			bool startTransition;
 			int etape;
 			bool fixArrow;
@@ -90,8 +87,9 @@ namespace Regards
 			//Preview Parameter
 			int preview;
 			CEffectParameter * effectParameter;
-			//CRenderPreviewBitmap * renderPreviewBitmap;
-			//CDecodeRawPicture * rawDecoder;
+
+			IAfterEffect * afterEffect;
+			CEffectParameter * afterEffectParameter;
 
 			wxPoint oldMouse;
 
@@ -103,14 +101,10 @@ namespace Regards
 			bool invertColor;
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
-			//CRegardsBitmap * rawBitmap;
-			COpenCLEffectVideo * openclEffectVideo;
 			GLTexture * pictureNext;
-			cl_mem cl_nextPicture;
 			CFiltreEffet * filtreraw;
 			IMouseUpdate * mouseUpdate;
-			//int rawWidth;
-			//int rawHeight;
+
 		};
 	}
 }

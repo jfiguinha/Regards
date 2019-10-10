@@ -67,7 +67,7 @@ void CRenderBitmapInterfaceOpenGL::LoadingResource(const double & scale_factor)
 	}
 }
 
-void CRenderBitmapInterfaceOpenGL::ShowTransitionBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const float &alphaValue)
+void CRenderBitmapInterfaceOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top)
 {
 	textureTransition->Enable();
 	glEnable (GL_BLEND);

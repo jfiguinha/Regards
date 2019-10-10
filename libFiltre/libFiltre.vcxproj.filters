@@ -336,6 +336,15 @@
     <ClInclude Include="RedEyeFilter.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapFusionEffectParameter.h">
+      <Filter>window\datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapFusionFilter.h">
+      <Filter>window\picture</Filter>
+    </ClInclude>
+    <ClInclude Include="AfterEffect.h">
+      <Filter>window\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -505,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="RedEyeFilter.cpp">
       <Filter>window\Drawing</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapFusionFilter.cpp">
+      <Filter>window\picture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,6 +7,8 @@
 #include <BitmapWndViewer.h>
 #include <Metadata.h>
 #include <ConvertUtility.h>
+#include <FiltreEffet.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Viewer;
 
 CDecodeRaw::CDecodeRaw()
@@ -64,7 +66,7 @@ CDecodeRaw::CDecodeRaw()
 	libellewf_deband_tresholdGreen= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdGreen",1);//"Effect.Banding suppression.Green";
 	libellewf_deband_tresholdBlue= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdBlue",1);//"Effect.Banding suppression.Blue";
 	libellewf_deband_tresholdOther= CLibResource::LoadStringFromResource(L"LBLwf_deband_tresholdOther",1);//"Effect.Banding suppression.Other";
-
+	firstUpdate = true;
 	rawDecoder = nullptr;
 }
 
@@ -90,6 +92,9 @@ void CDecodeRaw::AddMetadataElement(vector<CMetadata> & element, wxString value,
 void CDecodeRaw::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CDecodeRawParameter * decodeParameter = (CDecodeRawParameter *)effectParameter;
+
+	if (source != nullptr)
+		orientation = source->GetOrientation();
 
 	if (rawDecoder != nullptr)
 		delete rawDecoder;
@@ -449,16 +454,43 @@ CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter
 	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
 		return nullptr;
 
-	CImageLoadingFormat * imageLoad = nullptr;
+	CDecodeRawParameter * rawParameter = (CDecodeRawParameter *)effectParameter;
+
+	return rawDecoder->DecodePicture(rawParameter);
+}
+
+void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+{
+	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
+		return;
+
 	wxString filename = bitmapViewer->GetFilename();
 
 	CDecodeRawParameter * rawParameter = (CDecodeRawParameter *)effectParameter;
 
-	if (rawDecoder->DecodePicture(rawParameter) == 0)
+	if (rawParameter->update)
 	{
-		imageLoad = rawDecoder->GetPicture();
-
+		CImageLoadingFormat * imageLoad = rawDecoder->DecodePicture(rawParameter);
+		if (imageLoad != nullptr)
+		{
+			imageLoad->SetOrientation(4);
+			if (firstUpdate)
+			{
+				bitmapViewer->UpdateBitmap(imageLoad, true);
+				firstUpdate = false;
+			}
+			else
+			{
+				bitmapViewer->UpdateBitmap(imageLoad);
+			}
+			//int orientation = bitmapViewer->GetOrientation();
+			//imageLoad->ApplyExifOrientation(orientation);
+			//imageLoad->SetOrientation(4);
+			//wxCommandEvent eventChange(wxEVENT_UPDATEBITMAP);
+			//eventChange.SetClientData(imageLoad);
+			//bitmapViewer->GetEventHandler()->AddPendingEvent(eventChange);
+		}
+		rawParameter->update = false;
 	}
 
-	return imageLoad;
 }

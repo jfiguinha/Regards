@@ -88,7 +88,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CBitmapWnd::OnKeyDown));
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd::OnMouseCaptureLost));
-
+	Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CBitmapWnd::OnUpdateBitmap));
 	bitmapwidth = 0;
 	bitmapheight = 0;
 	bitmapUpdate = false;
@@ -97,6 +97,13 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	filterInterpolation = CUBICFILTER;
+}
+
+void CBitmapWnd::OnUpdateBitmap(wxCommandEvent& event)
+{
+	CImageLoadingFormat * picture = (CImageLoadingFormat *)event.GetClientData();
+	if (picture != nullptr)
+		UpdateBitmap(picture);
 }
 
 void CBitmapWnd::SetFilterInterpolation(const int &filter)
@@ -580,7 +587,7 @@ void CBitmapWnd::SetIsBitmapThumbnail(const bool &isThumbnail)
     this->isThumbnail = isThumbnail;
 }
 
-void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
+void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& updateAll)
 {
 	TRACE();
 	printf("CBitmapWnd::SetBitmap \n");
@@ -589,22 +596,51 @@ void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& copy)
 	{
 		if (bitmapIn->IsOk())
 		{
-			bitmapLoad = true;
-			filename = bitmapIn->GetFilename();
-			bitmapUpdate = true;
-
-			printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
-			muBitmap.lock();
-			if (source != nullptr)
+			if (updateAll)
 			{
-				delete source;
-				printf("CBitmapWnd::SetBitmap   delete source\n");
-				source = nullptr;
-			}
+				bitmapLoad = true;
+				bitmapUpdate = true;
+				flipVertical = 0;
+				flipHorizontal = 0;
+				angle = 0;
 
-			source = bitmapIn;
-			//source = nullptr;
-			muBitmap.unlock();
+				printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
+				muBitmap.lock();
+				if (source != nullptr)
+				{
+					delete source;
+					printf("CBitmapWnd::SetBitmap   delete source\n");
+					source = nullptr;
+				}
+
+				source = bitmapIn;
+				//source = nullptr;
+				muBitmap.unlock();
+				printf("CBitmapWnd::SetBitmap  muBitmap.unlock()\n");
+				bitmapwidth = bitmapIn->GetWidth();
+				bitmapheight = bitmapIn->GetHeight();
+				orientation = bitmapIn->GetOrientation();
+				ShrinkImage(false);
+			}
+			else
+			{
+
+				bitmapLoad = true;
+				filename = bitmapIn->GetFilename();
+				bitmapUpdate = true;
+
+				printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
+				muBitmap.lock();
+				if (source != nullptr)
+				{
+					delete source;
+					printf("CBitmapWnd::SetBitmap   delete source\n");
+					source = nullptr;
+				}
+
+				source = bitmapIn;
+				muBitmap.unlock();
+			}
 			RefreshWindow();
 
 		}

@@ -186,12 +186,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="AfterEffect.h" />
     <ClInclude Include="AudioVideoFilter.h" />
     <ClInclude Include="BestExposureEffectParameter.h" />
     <ClInclude Include="BestExposureFilter.h" />
     <ClInclude Include="BilateralEffectParameter.h" />
     <ClInclude Include="bilateralFilter.h" />
     <ClInclude Include="BitmapEffectParameter.h" />
+    <ClInclude Include="BitmapFusionEffectParameter.h" />
+    <ClInclude Include="BitmapFusionFilter.h" />
     <ClInclude Include="BlurEffectParameter.h" />
     <ClInclude Include="BlurFilter.h" />
     <ClInclude Include="bm3d.h" />
@@ -282,6 +285,7 @@
     <ClCompile Include="AudioVideoFilter.cpp" />
     <ClCompile Include="BestExposureFilter.cpp" />
     <ClCompile Include="bilateralFilter.cpp" />
+    <ClCompile Include="BitmapFusionFilter.cpp" />
     <ClCompile Include="BlurFilter.cpp" />
     <ClCompile Include="bm3d.cpp" />
     <ClCompile Include="bm3dfilter.cpp" />

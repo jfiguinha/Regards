@@ -270,6 +270,7 @@ void CImageLoadingFormat::SetOrientation(const int &orientation)
 	this->orientation = orientation;
 }
 
+
 void CImageLoadingFormat::SetFilename(const wxString &filename)
 {
 	this->filename = wxString(filename);
@@ -697,6 +698,7 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 	if(!IsOk())
 		return;
 
+	/*
 	int exifOrientation = 0;
 	CLibPicture libPicture;
 	if(libPicture.TestIsExifCompatible(filename))
@@ -704,19 +706,20 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 		CMetadataExiv2 metadata(filename);
 		exifOrientation = metadata.GetOrientation();
 	}
+	*/
 	switch(format)
 	{
 		case TYPE_IMAGE_CXIMAGE:
 			{
                 printf("TYPE_IMAGE_CXIMAGE Exif Method : %d \n", exifMethod);
-				_cxImage->RotateExif(exifOrientation);
+				_cxImage->RotateExif(exifMethod);
 			}
 			break;
 
 		case TYPE_IMAGE_WXIMAGE:
 			{
                 printf("TYPE_IMAGE_WXIMAGE Exif Method : %d \n", exifMethod);
-				switch (exifOrientation)
+				switch (exifMethod)
 				{
 					case 1:// top left side
 						break;
@@ -761,7 +764,7 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 				//if(exifMethod == 0)
 				//	_image->RotateRawExif(exifOrientation);
 				//else
-					_image->RotateExif(exifOrientation);
+					_image->RotateExif(exifMethod);
 			}
 			break;
 	}

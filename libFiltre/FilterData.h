@@ -8,6 +8,7 @@
 
 #pragma once
 #include <FilterWindowParam.h>
+#include <AfterEffect.h>
 class CFiltreEffet;
 class CEffectParameter;
 
@@ -66,6 +67,9 @@ class CEffectParameter;
 #define IDM_HDR_DEBLURRING 45
 #define FILTER_END 44
 
+#define IDM_AFTEREFFECT_START 300
+#define IDM_AFTEREFFECT_FUSION 301
+
 #define IDM_DECODE_RAW 100
 #define IDM_FILTRE_VIDEO 200
 #define IDM_FILTRE_AUDIOVIDEO 201
@@ -111,6 +115,9 @@ public:
     static bool IsPiccanteCompatible(const int &numFilter);
     static bool OnFiltreOk(const int &numFiltre);
     static int TypeApplyFilter(const int &numFiltre);
+	static CDraw * GetDrawingPt(const int &numFilter);
+	static IAfterEffect * AfterEffectPt(const int &numFilter);
+	static void DeleteAfterEffectPt(IAfterEffect * filter);
     static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
 private:
     

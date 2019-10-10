@@ -11,7 +11,6 @@ CDecodeRawPicture::CDecodeRawPicture(const string & fileName)
 	rawProcessor = new LibRaw();
 	result = 0;
 	result = rawProcessor->open_file(fileName.c_str());
-	imageLoadingFormat = nullptr;
 	if(result == LIBRAW_SUCCESS)
 	{
 		// step two: positioning libraw_internal_data.unpacker_data.data_offset
@@ -27,19 +26,10 @@ CDecodeRawPicture::~CDecodeRawPicture()
 		rawProcessor->recycle();
 		delete rawProcessor;
 	}
-
-	if(imageLoadingFormat != nullptr)
-		delete imageLoadingFormat;
-	imageLoadingFormat = nullptr;
 }
 
-CImageLoadingFormat * CDecodeRawPicture::GetPicture()
-{
 
-	return imageLoadingFormat;
-}
-
-int CDecodeRawPicture::DecodePicture(CDecodeRawParameter * decodeRawParameter)
+CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * decodeRawParameter)
 {
 
 
@@ -113,15 +103,10 @@ int CDecodeRawPicture::DecodePicture(CDecodeRawParameter * decodeRawParameter)
 	int height = 0;
 
 
-	
+	CImageLoadingFormat * imageLoadingFormat = nullptr;
 	CxImage * image = new CxImage();
 	if(result == 0)
 	{
-
-		if(imageLoadingFormat != nullptr)
-			delete imageLoadingFormat;
-		imageLoadingFormat = nullptr;
-
 		imageLoadingFormat = new CImageLoadingFormat();
 		int raw_color, raw_bitsize;
 		rawProcessor->get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
@@ -135,5 +120,5 @@ int CDecodeRawPicture::DecodePicture(CDecodeRawParameter * decodeRawParameter)
 		imageLoadingFormat->SetPicture(image);
 	}
 
-	return result;
+	return imageLoadingFormat;
 }
