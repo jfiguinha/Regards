@@ -52,8 +52,8 @@ public:
 	bool IsOk();
 	void ConvertToRGB24(const bool &convert);
 	void ConvertToBGR(const bool &convert);
-	void ApplyExifOrientation(const int &exifMethod = 0);
-
+	void ApplyExifOrientation(const int &exifMethod);
+	void ApplyExifOrientation();
 protected:
 
 

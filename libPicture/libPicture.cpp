@@ -1449,25 +1449,21 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
         {
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
-			orientation = pictureMetadata.GetOrientation();
 			imageLoading = LoadPicture(fileName, true);
 			if(imageLoading != nullptr && imageLoading->IsOk())
 			{
-				imageLoading->SetOrientation(orientation);
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
 				imageLoading->ApplyExifOrientation();
 			}
         }
         else if(memFile != nullptr)
         {
-			orientation = pictureMetadata.GetOrientation();
 			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
 			if(image->GetWidth() > 0 && image->GetHeight() > 0)
 			{
 				imageLoading = new CImageLoadingFormat();
 				imageLoading->SetFilename(fileName);
 				imageLoading->SetPicture(image);
-				imageLoading->SetOrientation(orientation);
 				if(imageLoading->IsOk())
 				{
 					//imageLoading->ConvertToBGR(true);
@@ -1480,7 +1476,6 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 				imageLoading = LoadPicture(fileName, true);
 				if(imageLoading != nullptr && imageLoading->IsOk())
 				{
-					imageLoading->SetOrientation(orientation);
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
 					imageLoading->ApplyExifOrientation();
 				}

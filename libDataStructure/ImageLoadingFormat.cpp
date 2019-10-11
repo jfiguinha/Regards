@@ -693,12 +693,12 @@ bool CImageLoadingFormat::IsOk()
 	return false;
 }
 
-void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
+void CImageLoadingFormat::ApplyExifOrientation()
 {
 	if(!IsOk())
 		return;
 
-	/*
+	
 	int exifOrientation = 0;
 	CLibPicture libPicture;
 	if(libPicture.TestIsExifCompatible(filename))
@@ -706,67 +706,76 @@ void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
 		CMetadataExiv2 metadata(filename);
 		exifOrientation = metadata.GetOrientation();
 	}
-	*/
-	switch(format)
+	
+	ApplyExifOrientation(exifOrientation);
+}
+
+
+void CImageLoadingFormat::ApplyExifOrientation(const int &exifMethod)
+{
+	if (!IsOk())
+		return;
+
+	switch (format)
 	{
-		case TYPE_IMAGE_CXIMAGE:
-			{
-                printf("TYPE_IMAGE_CXIMAGE Exif Method : %d \n", exifMethod);
-				_cxImage->RotateExif(exifMethod);
-			}
-			break;
+	case TYPE_IMAGE_CXIMAGE:
+	{
+		printf("TYPE_IMAGE_CXIMAGE Exif Method : %d \n", exifMethod);
+		_cxImage->RotateExif(exifMethod);
+	}
+	break;
 
-		case TYPE_IMAGE_WXIMAGE:
-			{
-                printf("TYPE_IMAGE_WXIMAGE Exif Method : %d \n", exifMethod);
-				switch (exifMethod)
-				{
-					case 1:// top left side
-						break;
-					case 2:// top right side
-						break;
-					case 3:// bottom right side
-						{
-							wxImage image = _wxImage->Rotate180();
-							delete _wxImage;
-							_wxImage = new wxImage(image);
-						}
-						break;
-					case 4:// bottom left side
-						break;
-					case 5://left side top
-						break;
-					case 6:// right side top
-						{
-							wxImage image = _wxImage->Rotate180();
-							image = image.Rotate90();
-							delete _wxImage;
-							_wxImage = new wxImage(image);
-						}
-						break;
-					case 7:// right side bottom
-						break;
-					case 8:// left side bottom
-						{
-							wxImage image = image.Rotate90();
-							delete _wxImage;
-							_wxImage = new wxImage(image);
-						}
-						break;
-				}
-			}
+	case TYPE_IMAGE_WXIMAGE:
+	{
+		printf("TYPE_IMAGE_WXIMAGE Exif Method : %d \n", exifMethod);
+		switch (exifMethod)
+		{
+		case 1:// top left side
 			break;
+		case 2:// top right side
+			break;
+		case 3:// bottom right side
+		{
+			wxImage image = _wxImage->Rotate180();
+			delete _wxImage;
+			_wxImage = new wxImage(image);
+		}
+		break;
+		case 4:// bottom left side
+			break;
+		case 5://left side top
+			break;
+		case 6:// right side top
+		{
+			wxImage image = _wxImage->Rotate180();
+			image = image.Rotate90();
+			delete _wxImage;
+			_wxImage = new wxImage(image);
+		}
+		break;
+		case 7:// right side bottom
+			break;
+		case 8:// left side bottom
+		{
+			wxImage image = image.Rotate90();
+			delete _wxImage;
+			_wxImage = new wxImage(image);
+		}
+		break;
+		}
+	}
+	break;
 
-		case TYPE_IMAGE_REGARDSIMAGE:
-			{	
-                
-                printf("TYPE_IMAGE_REGARDSIMAGE Exif Method : %d \n", exifMethod);
-				//if(exifMethod == 0)
-				//	_image->RotateRawExif(exifOrientation);
-				//else
-					_image->RotateExif(exifMethod);
-			}
-			break;
+	case TYPE_IMAGE_REGARDSIMAGE:
+	{
+
+		printf("TYPE_IMAGE_REGARDSIMAGE Exif Method : %d \n", exifMethod);
+		//if(exifMethod == 0)
+		//	_image->RotateRawExif(exifOrientation);
+		//else
+		_image->RotateExif(exifMethod);
+	}
+	break;
 	}
 }
 
