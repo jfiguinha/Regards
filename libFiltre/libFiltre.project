@@ -80,13 +80,22 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="window">
+    <VirtualDirectory Name="drawing">
+      <File Name="RedEyeFilter.h"/>
+      <File Name="RedEyeFilter.cpp"/>
+      <File Name="CropFilter.h"/>
+      <File Name="CropFilter.cpp"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="main">
+      <File Name="BitmapDisplay.h"/>
+      <File Name="AfterEffect.h"/>
       <File Name="FiltreUpdate.h"/>
       <File Name="FiltreEffectInterface.h"/>
       <File Name="FilterWindowParam.h"/>
       <File Name="FilterWindowParam.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="data structure">
+      <File Name="BitmapFusionEffectParameter.h"/>
       <File Name="bm3dEffectParameter.h"/>
       <File Name="BestExposureEffectParameter.h"/>
       <File Name="KuwaharaEffectParameter.h"/>
@@ -124,6 +133,8 @@
       <File Name="AudioVideoFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="picture">
+      <File Name="BitmapFusionFilter.h"/>
+      <File Name="BitmapFusionFilter.cpp"/>
       <File Name="bm3dWindowFilter.h"/>
       <File Name="bm3dWindowFilter.cpp"/>
       <File Name="KuwaharaFilter.h"/>
@@ -203,6 +214,7 @@
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libVideoThumbnail"/>
