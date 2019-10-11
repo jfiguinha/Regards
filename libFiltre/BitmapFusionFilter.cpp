@@ -82,9 +82,10 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 			bitmapOut = new CRegardsBitmap();
 			*bitmapOut = *bitmapOutCopy;
 		}
+		bitmapOut->SetAlphaValue(etape);
 	}
 
-	bitmapOut->SetAlphaValue(etape);
+	
 
 	rcOut.width = widthOutput;
 	rcOut.height = heightOutput;
