@@ -97,6 +97,7 @@ namespace Regards
 
 			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
 
+			COpenCLContext * GetOpenCLContext();
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
 

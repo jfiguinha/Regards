@@ -82,8 +82,20 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 			bitmapOut = new CRegardsBitmap();
 			*bitmapOut = *bitmapOutCopy;
 		}
-		bitmapOut->SetAlphaValue(etape);
+		
 	}
+	else
+	{
+		bitmapOutCopy = new CRegardsBitmap(widthOutput, heightOutput);
+		CInterpolationBicubic interpolation;
+		interpolation.Execute(bitmapTemp, bitmapOutCopy);
+
+		bitmapOut = new CRegardsBitmap();
+		*bitmapOut = *bitmapOutCopy;
+	}
+
+	if (bitmapOut != nullptr)
+		bitmapOut->SetAlphaValue(etape);
 
 	
 

@@ -172,15 +172,10 @@ void CBitmapWndViewer::LoadingResource()
 
 }
 
-COpenCLContext * CBitmapWndViewer::GetOpenCLContext()
-{
-	return openclContext;
-}
-
 CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface)
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
-	filtreraw = nullptr;
+	//filtreraw = nullptr;
 	pictureNext = nullptr;
 	mouseUpdate = nullptr;
 	etape = 0;
@@ -500,12 +495,6 @@ int CBitmapWndViewer::IsSupportOpenCL()
 
 	return supportOpenCL;
 }
-
-CFiltreEffet * CBitmapWndViewer::GetFiltreEffet()
-{
-	return filtreEffet;
-}
-
 
 int CBitmapWndViewer::GetRawBitmapWidth()
 {

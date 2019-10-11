@@ -36,7 +36,6 @@ namespace Regards
 			void FixArrowNavigation(const bool &fix);
 			void StopTransition();
 			void SetBitmapPreviewEffect(const int &effect);
-			COpenCLContext * GetOpenCLContext();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void UpdateFiltre(CEffectParameter * effectParameter);
@@ -44,7 +43,6 @@ namespace Regards
 			void OnFiltreCancel();
 			CRgbaquad GetBackColor();
 			int GetOrientation();
-			CFiltreEffet * GetFiltreEffet();
 			CDraw * GetDessinPt();
 			int IsSupportOpenCL();
 			wxPoint GetMousePosition();
@@ -101,7 +99,6 @@ namespace Regards
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
 			GLTexture * pictureNext;
-			CFiltreEffet * filtreraw;
 			IMouseUpdate * mouseUpdate;
 
 		};

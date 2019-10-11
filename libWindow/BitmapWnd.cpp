@@ -123,6 +123,11 @@ void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorScreen;
 }
 
+COpenCLContext * CBitmapWnd::GetOpenCLContext()
+{
+	return openclContext;
+}
+
 CFiltreEffet * CBitmapWnd::GetFiltreEffet()
 {
 	return filtreEffet;
