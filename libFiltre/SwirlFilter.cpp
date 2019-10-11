@@ -54,6 +54,8 @@ void CSwirlFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 {
     CSwirlEffectParameter * swirlEffectParameter = (CSwirlEffectParameter *)effectParameter;
     
+	this->source = source;
+
 	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
     int value = valueInt->GetValue();
     //Video Parameter

@@ -295,7 +295,7 @@ WiaGetImage(
 		}
 	}
 
-	wxSleep(1);
+	//wxSleep(1);
 
 	// Display the image selection common dialog 
 
@@ -314,7 +314,7 @@ WiaGetImage(
 		return hr;
 	}
 
-	wxSleep(1);
+	//wxSleep(1);
 	// For ADF scanners, the common dialog explicitly sets the page count to one.
 	// So in order to transfer multiple images, set the page count to ALL_PAGES
 	// if the WIA_DEVICE_DIALOG_SINGLE_IMAGE flag is not specified, 
@@ -394,7 +394,6 @@ WiaGetImage(
 
 	// If a status callback function is not supplied, use the default.
 	// The default displays a simple dialog with a progress bar and cancel button.
-
 	ComPtr<CProgressDlg> pProgressDlg;
 
 	if (pfnProgressCallback == NULL)
@@ -406,7 +405,8 @@ WiaGetImage(
 		pProgressCallbackParam = (CProgressDlg *)pProgressDlg;
 	}
 
-	wxSleep(1);
+	//wxSleep(2);
+
 	// Create the data callback interface
 
 	ComPtr<CDataCallback> pDataCallback = new CDataCallback(
@@ -421,7 +421,8 @@ WiaGetImage(
 		return E_OUTOFMEMORY;
 	}
 
-	wxSleep(1);
+	//wxSleep(2);
+	//wxSleep(1);
 	// Start the transfer of the selected items
 
 	for (int i = 0; i < ppIWiaItem.Count(); ++i)
@@ -559,11 +560,26 @@ WiaGetImage(
 		WiaDataTransferInfo.bDoubleBuffer = TRUE;
 
 		// Start the transfer
+		bool tryagain = false;
+		int nbTime = 0;
+		do
+		{
+			hr = pIWiaDataTransfer->idtGetBandedData(
+				&WiaDataTransferInfo,
+				pDataCallback
+			);
+			if (hr == WIA_ERROR_BUSY)
+			{
+				tryagain = true;
+				nbTime++;
+				wxSleep(1);
+			}
+		} while (tryagain && nbTime < 5);
 
-		hr = pIWiaDataTransfer->idtGetBandedData(
-			&WiaDataTransferInfo,
-			pDataCallback
-		);
+		if (FAILED(hr))
+		{
+			printf("failed \n");
+		}
 
 		pWiaPropertyStorage->Release();
 		pWiaPropertyStorage = NULL;

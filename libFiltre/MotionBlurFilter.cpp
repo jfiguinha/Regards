@@ -29,13 +29,15 @@ CMotionBlurFilter::~CMotionBlurFilter()
 
 int CMotionBlurFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_FILTRE_MOTIONBLUR;
 }
 
 void CMotionBlurFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementAngle;
     for (auto i = 0; i < 361; i++)
         elementAngle.push_back(i);

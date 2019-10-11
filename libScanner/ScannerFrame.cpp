@@ -1,6 +1,7 @@
 #include <header.h>
 #include <BitmapPrintout.h>
 #include <PrintEngine.h>
+#include <SavePicture.h>
 #ifdef __WXMSW__
 #include <ImageAcquisition.h>
 #include <GdiPlusPixelFormats.h>
@@ -22,6 +23,7 @@
 #include "ScannerParamInit.h"
 #include "ScannerTheme.h"
 #include "ScannerThemeInit.h"
+#include "CentralWindow.h"
 using namespace Regards::Print;
 
 #define MAX_ZOOM	10.0
@@ -54,12 +56,11 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
     // create a menu bar
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
+	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
+	menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
-	menuFile->AppendSeparator();
-	menuFile->AppendCheckItem(ID_PROMPTONGETIMAGE, _("Prompt on wxEVT_IA_GETIMAGE event"), _("Display prompt after acquiring an image"));
-	menuFile->Check(ID_PROMPTONGETIMAGE, TRUE);
 #endif
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_PRINT, _("&Print PDF..."), _("Print PDF"));
@@ -83,15 +84,18 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	CreateStatusBar(1);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(m_imagePDF = new CViewerPDF(this, this, PDFWINDOWID), 1, wxEXPAND);
+	sizer->Add(centralWindow = new CCentralWindow(this, CENTRALVIEWERWINDOWID, this), 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
 	Connect(ID_OPENIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOpenImage));
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
+	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExport));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
+	Connect(ID_OCR, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOCR));
+	
 #if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
@@ -108,14 +112,32 @@ CScannerFrame::~CScannerFrame()
         delete scanSane;
 #endif
 
-	if (m_imagePDF != nullptr)
-		delete m_imagePDF;
+	if (centralWindow != nullptr)
+		delete centralWindow;
+}
+
+void CScannerFrame::OnOCR(wxCommandEvent& event)
+{
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+		centralWindow->OcrPage();
+	}
+}
+
+void CScannerFrame::OnExport(wxCommandEvent& event)
+{
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+		CSavePicture::SavePicture(this, filename);
+	}
 }
 
 void CScannerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;
-	wxString filename = m_imagePDF->GetFilename();
+	wxString filename = centralWindow->GetFilename();
 	if (filename != "")
 	{
 		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
@@ -147,9 +169,7 @@ void CScannerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 
 void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 {
-
-
-	m_imagePDF->LoadFile();
+	centralWindow->LoadFile();
 }
 
 // event handlers
@@ -247,8 +267,12 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 #endif
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
-	wxString file = m_imagePDF->SetImage(ScanPage());
-	m_imagePDF->LoadFile(file);
+	wxImage image = ScanPage();
+	if (image.IsOk())
+	{
+		wxString file = centralWindow->SetImage(image);
+		centralWindow->LoadFile(file);
+	}
 }
 
 
@@ -290,8 +314,11 @@ wxImage CScannerFrame::ScanPage()
 
 	if (ppStream.Count() != 0)
 	{
-		Gdiplus::Image m_Image(*ppStream);
-		image = GdiplusImageTowxImage(&m_Image);
+		//for (int i = 0; i < ppStream.Count(); i++)
+		//{
+			Gdiplus::Image m_Image(*ppStream);
+			image = GdiplusImageTowxImage(&m_Image);
+		//}
 	}
 
 	//delete gdiplus;
@@ -305,10 +332,10 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 	{
 #ifdef __WXSCANSANE__  
 	case ID_ACQUIREIMAGE:
-        if(scanSane != nullptr)
-            event.Enable(scanSane->IsSourceSelected());
-        else
-            event.Enable(false);
+		if (scanSane != nullptr)
+			event.Enable(scanSane->IsSourceSelected());
+		else
+			event.Enable(false);
 		break;
 #endif
 	}

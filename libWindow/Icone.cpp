@@ -50,6 +50,59 @@ int CIcone::GetHeight()
     return height;
 }
 
+CIcone& CIcone::operator=(const CIcone& other)
+{
+	// check for self-assignment
+	if (&other == this)
+		return *this;
+
+	//---------------------------------------------------
+	//Theme
+	//---------------------------------------------------
+	//other.themeIcone = this->themeIcone;
+
+	//---------------------------------------------------
+	//Variable
+	//---------------------------------------------------
+	//int interpolationMethod;
+	deleteData = true;
+	pThumbnailData = new CThumbnailData(other.pThumbnailData->GetFilename());
+	*pThumbnailData = *other.pThumbnailData;
+	themeIcone = other.themeIcone;
+	bitmapCheckOn = other.bitmapCheckOn;
+	bitmapCheckOff = other.bitmapCheckOff;
+	useBackgroundColor = other.useBackgroundColor;
+	photoVector = other.photoVector;
+	checkOnVector = other.checkOnVector;
+	checkOffVector = other.checkOffVector;
+	backgroundColor = other.backgroundColor;
+	
+	tempImageVector = other.tempImageVector;
+	pictureLoad = other.pictureLoad;
+	showSelected = other.showSelected;
+	isChecked = other.isChecked;
+	isSelected = other.isSelected;
+	photoDefault = other.photoDefault;
+	posXThumbnail = other.posXThumbnail;
+	posYThumbnail = other.posYThumbnail;
+	numElement = other.numElement;
+	x = other.x;
+	y = other.y;
+
+	thumbnailIconeCache = other.thumbnailIconeCache;
+	filename = other.filename;
+	state = other.state;
+	numLib = other.numLib;
+	width = other.width;
+	height = other.height;
+	showLoading = other.showLoading;
+	pictureLoading = other.pictureLoading;
+	transparent = other.transparent;
+	eraseBitmap = other.eraseBitmap;
+	bitmapLocal = other.bitmapLocal;
+	return *this;
+}
+
 bool CIcone::operator == (const CIcone &n2)
 {
 	int left = x;
@@ -136,7 +189,7 @@ wxImage CIcone::LoadImageResource(const wxString & resourceName)
 	delete data;
 	return bitmap;
 }
-CIcone::CIcone(COpenCLContext * openclContext)
+CIcone::CIcone()
 {
 	deleteData = true;
 	pThumbnailData = nullptr;
@@ -150,7 +203,6 @@ CIcone::CIcone(COpenCLContext * openclContext)
 	width = 0;
 	height = 0;
 	showLoading = false;
-	this->openclContext = openclContext;
 	pictureLoad = false;
 	posXThumbnail = 0;
 	posYThumbnail = 0;
@@ -546,6 +598,14 @@ CThumbnailData * CIcone::GetData()
 {
 	return pThumbnailData;
 }
+
+CThumbnailData * CIcone::GetCopyData()
+{
+	CThumbnailData * data = new CThumbnailData(pThumbnailData->GetFilename());
+	*data = *pThumbnailData;
+	return data;
+}
+
 
 bool CIcone::DataNeedToBeDelete()
 {

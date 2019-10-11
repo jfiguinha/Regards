@@ -98,6 +98,9 @@ namespace Regards
 			CRegardsBitmap* GetBitmap(const bool& source);
 			CRegardsFloatBitmap* GetFloatBitmap(const bool& source);
 
+			virtual int GetWidth();
+			virtual int GetHeight();
+
 		protected:
 
 			int GetSizeData();

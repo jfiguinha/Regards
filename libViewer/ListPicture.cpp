@@ -11,7 +11,6 @@
 #include "ImageList.h"
 #include <window_id.h>
 #include <picture_id.h>
-#include <CopyFileDlg.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>
 #include <wx/dir.h>
@@ -24,6 +23,21 @@
 #include <IndexGenerator.h>
 #include <ThumbnailDataSQL.h>
 #include <SavePicture.h>
+#include <wx/progdlg.h>
+#include <SqlFindCriteria.h>
+#include <SqlCriteria.h>
+#include <SqlGps.h>
+#include <SqlPhotoCriteria.h>
+#include <SqlPhotos.h>
+
+#ifdef EXIV2
+#include <MetadataExiv2.h>
+using namespace Regards::exiv2;
+#elif defined(WIN32)
+#include <SetMetadataGps.h>
+#include <SetMetadataDate.h>
+#endif
+
 wxDEFINE_EVENT(EVENT_REFRESHVIEWER, wxCommandEvent);
 
 using namespace Regards::Sqlite;
@@ -199,7 +213,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				CThumbnailData * data = listItem[i];
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
-				CIcone * pBitmapIcone = new CIcone(nullptr);
+				CIcone * pBitmapIcone = new CIcone();
 				pBitmapIcone->SetNumElement(data->GetNumElement());
 				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);
@@ -229,6 +243,77 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 	}
 }
 
+
+void  CListPicture::GeolocalizeFile(const wxString & filename, const float &latitude, const float &longitude, const wxString &lat, const wxString &lng, const wxString &geoInfos)
+{
+	CLibPicture libPicture;
+	if (libPicture.TestIsExifCompatible(filename))
+	{
+#if defined(EXIV2)
+		wxString wlatitudeRef = "";
+		wxString wlongitudeRef = "";
+		wxString wlongitude = to_string(abs(longitude));
+		wxString wlatitude = to_string(abs(latitude));
+
+		if (latitude < 0)
+			wlatitudeRef = "S";
+		else
+			wlatitudeRef = "N";
+
+		if (longitude < 0)
+			wlongitudeRef = "W";
+		else
+			wlongitudeRef = "E";
+
+		CMetadataExiv2 metadataExiv2(filename);
+		metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+
+#elif defined(__APPLE__)
+		CAppleReadExif appleReadExif;
+		appleReadExif.WriteGps(filename, latitude, longitude);
+#elif defined(WIN32)
+
+		wxString wlatitudeRef = "";
+		wxString wlongitudeRef = "";
+		wxString wlongitude = to_string(abs(longitude));
+		wxString wlatitude = to_string(abs(latitude));
+
+		if (latitude < 0)
+			wlatitudeRef = "S";
+		else
+			wlatitudeRef = "N";
+
+		if (longitude < 0)
+			wlongitudeRef = "W";
+		else
+			wlongitudeRef = "E";
+
+		CSetMetadataGps metadata(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+		metadata.SetMetadata(filename);
+
+#endif
+	}
+
+	CSqlPhotos sqlPhotos;
+	int numPhotoId = sqlPhotos.GetPhotoId(filename);
+
+	bool isNew = false;
+	CSqlCriteria sqlCriteria;
+	CSqlGps sqlGps;
+	CSqlPhotoCriteria sqlPhotoCriteria;
+
+	int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(numPhotoId, 1);
+
+	int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 1, geoInfos, isNew);
+	sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
+	if (oldCriteriaId != -1 && numCriteriaId != oldCriteriaId)
+		sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteriaId);
+
+	sqlGps.DeleteGps(filename);
+	sqlGps.InsertGps(filename, lat, lng);
+}
+
+
 void CListPicture::GeolocalizeFile(wxCommandEvent& event)
 {
     vector<CThumbnailData *> listItem;
@@ -245,14 +330,28 @@ void CListPicture::GeolocalizeFile(wxCommandEvent& event)
             wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLGeoModifMessage", 1);
             wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLGeoModifFinalMessage", 1);
             wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+
+			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+			for (int i = 0; i < listItem.size(); i++)
+			{
+				int j = i + 1;
+				CThumbnailData * data = listItem.at(i);
+				wxString filename = data->GetFilename();
+				wxString message = text + to_string(j) + "/" + to_string(listItem.size());
+				GeolocalizeFile(filename, mapSelect.GetLatitudeNumber(), mapSelect.GetLongitudeNumber(), mapSelect.GetLatitude(), mapSelect.GetLongitude(), infoGpsLocalisation);
+				if (false == dialog.Update(i, message))
+					break;
+			}
+
+			/*
             CopyFileDlg copyFile(this);
-            
 			copyFile.SetSelectItem(&listItem);
             copyFile.SetMode(3);
             copyFile.SetNewGeoInfos(mapSelect.GetLatitudeNumber(), mapSelect.GetLongitudeNumber(), mapSelect.GetLatitude(), mapSelect.GetLongitude(), infoGpsLocalisation);
             copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
             copyFile.Start();
             copyFile.ShowModal();
+			*/
         }
     }
 	else
@@ -262,6 +361,37 @@ void CListPicture::GeolocalizeFile(wxCommandEvent& event)
 		wxMessageBox(noItemSelected, geolocalizeFile, wxICON_INFORMATION);
 	}
 }
+
+
+void CListPicture::ChangeDateFile(const wxString & filename, const wxDateTime &newDate, const wxString &selectDate)
+{
+	CLibPicture libPicture;
+	if (libPicture.TestIsExifCompatible(filename))
+	{
+#if defined(EXIV2)
+		CMetadataExiv2 metadataExiv2(filename);
+		metadataExiv2.SetDateTime(selectDate);
+#elif defined(__APPLE__)
+		appleReadExif.WriteDateTime(filename, newDate);
+#elif defined(WIN32)
+		CSetMetadataDate metadata(newDate.FormatDate());
+		metadata.SetMetadata(filename);
+#endif
+	}
+	bool isNew = false;
+	CSqlCriteria sqlCriteria;
+	CSqlPhotoCriteria sqlPhotoCriteria;
+	CSqlPhotos sqlPhotos;
+
+	int numPhotoId = sqlPhotos.GetPhotoId(filename);
+	int oldCriteriaId = sqlCriteria.GetCriteriaIdByCategorie(numPhotoId, 3);
+
+	int numCriteriaId = sqlCriteria.GetOrInsertCriteriaId(1, 3, selectDate, isNew);
+	sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, numCriteriaId);
+	if (oldCriteriaId != -1 && numCriteriaId != oldCriteriaId)
+		sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteriaId);
+}
+
 
 void CListPicture::ChangeDateFile(wxCommandEvent& event)
 {
@@ -278,14 +408,28 @@ void CListPicture::ChangeDateFile(wxCommandEvent& event)
             wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLDateModifMessage", 1);
             wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLDateModifFinalMessage", 1);
             wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+
+			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+			for (int i = 0; i < listItem.size(); i++)
+			{
+				int j = i + 1;
+				CThumbnailData * data = listItem.at(i);
+				wxString filename = data->GetFilename();
+				wxString message = text + to_string(j) + "/" + to_string(listItem.size());
+				ChangeDateFile(filename, calendarSelect.GetSelectDate(), calendarSelect.GetSelectStringDate());
+				if (false == dialog.Update(i, message))
+					break;
+			}
+
+			/*
             CopyFileDlg copyFile(this);
-            
             copyFile.SetSelectItem(&listItem);
             copyFile.SetMode(4);
             copyFile.SetNewDate(calendarSelect.GetSelectDate(), calendarSelect.GetSelectStringDate());
             copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
             copyFile.Start();
             copyFile.ShowModal();
+			*/
         }
     }
 	else
@@ -293,6 +437,374 @@ void CListPicture::ChangeDateFile(wxCommandEvent& event)
         wxString noItemSelected = CLibResource::LoadStringFromResource(L"NoItemSelected",1);
         wxString changeDateInfos = CLibResource::LoadStringFromResource(L"ChangeDateInfos",1);
 		wxMessageBox(noItemSelected, changeDateInfos, wxICON_INFORMATION);
+	}
+}
+
+
+wxString CListPicture::GenerateFileName(const InfoExportFile & infoFile, const wxString &dateFile, const wxString &gpsFile)
+{
+	wxString libelle = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+	wxString filename;
+	if (infoFile.priority == 0)
+	{
+		if (infoFile.dateInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(dateFile, '.');
+			if (intValue.size() == 3)
+			{
+				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					filename.append(intValue[0]);
+				}
+				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					filename.append("_" + intValue[1]);
+				}
+				if (infoFile.dateInfoSelection == 3)
+				{
+					filename.append("_" + intValue[2]);
+				}
+			}
+		}
+
+		if (infoFile.geoInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(gpsFile, '.');
+			if (intValue.size() > 3)
+			{
+				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					filename.append("_" + intValue[1]);
+				}
+				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					filename.append("_" + intValue[2]);
+				}
+				if (infoFile.geoInfoSelection == 3)
+				{
+					filename.append("_" + intValue[3]);
+				}
+			}
+			else if (gpsFile == libelle)
+			{
+				filename.append("_" + libelle);
+			}
+		}
+	}
+	else
+	{
+		if (infoFile.geoInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(gpsFile, '.');
+			if (intValue.size() > 3)
+			{
+				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					filename.append(intValue[1]);
+				}
+				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					filename.append("_" + intValue[2]);
+				}
+				if (infoFile.geoInfoSelection == 3)
+				{
+					filename.append("_" + intValue[3]);
+				}
+			}
+			else if (gpsFile == libelle)
+			{
+				filename.append(libelle);
+			}
+		}
+
+		if (infoFile.dateInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(dateFile, '.');
+			if (intValue.size() == 3)
+			{
+				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					filename.append("_" + intValue[0]);
+				}
+				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					filename.append("_" + intValue[1]);
+				}
+				if (infoFile.dateInfoSelection == 3)
+				{
+					filename.append("_" + intValue[2]);
+				}
+			}
+
+		}
+
+
+	}
+
+	return filename;
+
+}
+
+void CListPicture::CreateFolder(const wxString &newFolder)
+{
+	if (!wxDir::Exists(newFolder))
+		wxDir::Make(newFolder);
+}
+
+wxString CListPicture::CreateExportFolder(const InfoExportFile & infoFile, const wxString &folderDestination, const wxString &dateFile, const wxString &gpsFile)
+{
+
+	wxString separatorFolder = "\\";
+	wxString libelle = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+	wxString folderComplete = folderDestination;
+
+#if __APPLE__
+	separatorFolder = "/";
+#else
+	separatorFolder = "\\";
+#endif
+
+	if (infoFile.priority == 0)
+	{
+		if (infoFile.dateInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(dateFile, '.');
+			if (intValue.size() == 3)
+			{
+				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[0]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[1]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[2]);
+					CreateFolder(folderComplete);
+				}
+			}
+		}
+
+		if (infoFile.geoInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(gpsFile, '.');
+			if (intValue.size() > 3)
+			{
+				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[1]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[2]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[3]);
+					CreateFolder(folderComplete);
+				}
+			}
+			else if (gpsFile == libelle)
+			{
+				folderComplete.append(separatorFolder + libelle);
+				CreateFolder(folderComplete);
+			}
+		}
+	}
+	else
+	{
+		if (infoFile.geoInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(gpsFile, '.');
+			if (intValue.size() > 3)
+			{
+				if (infoFile.geoInfoSelection == 1 || infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[1]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.geoInfoSelection == 2 || infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[2]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.geoInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[3]);
+					CreateFolder(folderComplete);
+				}
+			}
+			else if (gpsFile == libelle)
+			{
+				folderComplete.append(separatorFolder + libelle);
+				CreateFolder(folderComplete);
+			}
+		}
+
+		if (infoFile.dateInfoSelection != 0)
+		{
+			vector<wxString> intValue = CConvertUtility::split(dateFile, '.');
+			if (intValue.size() == 3)
+			{
+				if (infoFile.dateInfoSelection == 1 || infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[0]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.dateInfoSelection == 2 || infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[1]);
+					CreateFolder(folderComplete);
+				}
+				if (infoFile.dateInfoSelection == 3)
+				{
+					folderComplete.append(separatorFolder + intValue[2]);
+					CreateFolder(folderComplete);
+				}
+			}
+		}
+	}
+	return folderComplete;
+}
+
+void CListPicture::ExportFile(const wxString & filename, CThumbnailData * data, InfoExportFile infoFile, wxString destinationFolder, int optionPicture, int qualityPicture)
+{
+	CLibPicture libPicture;
+	wxString file;
+	CSqlFindCriteria sqlFindCriteria;
+	wxString criteriaDate = "";
+	wxString criteriaGps = "";
+	CriteriaVector m_criteriaVector;
+	sqlFindCriteria.SearchCriteria(&m_criteriaVector, data->GetNumPhotoId());
+
+	for (CCriteria criteria : m_criteriaVector)
+	{
+		if (criteria.GetCategorieId() == 1)
+			criteriaGps = criteria.GetLibelle();
+		else if (criteria.GetCategorieId() == 3)
+			criteriaDate = criteria.GetLibelle();
+	}
+
+	if (infoFile.changeFilename)
+		file = GenerateFileName(infoFile, criteriaDate, criteriaGps);
+	else
+		file = CFileUtility::GetFileName(filename);
+
+	wxString outputFolder = CreateExportFolder(infoFile, destinationFolder, criteriaDate, criteriaGps);
+
+
+	if (infoFile.outputFormat == 0)
+	{
+		wxString newFile = outputFolder;
+
+#if defined(WIN32)
+		newFile += "\\" + file;
+
+#else
+		newFile += "/" + file;
+#endif
+
+		if (infoFile.changeFilename)
+		{
+			wxArrayString array;
+			wxDir::GetAllFiles(outputFolder, &array);
+			newFile.append("_" + to_string(array.GetCount()) + "." + CFileUtility::GetFileExtension(filename));
+		}
+		wxCopyFile(filename, newFile, true);
+	}
+	else
+	{
+		if (!libPicture.TestIsVideo(filename) && !libPicture.TestIsAnimation(filename))
+		{
+			if (!infoFile.changeFilename)
+			{
+				wxString extension = CFileUtility::GetFileExtension(filename);
+				size_t index = file.find(extension) - 1;
+				file = file.SubString(0, index);
+			}
+			else
+			{
+				wxArrayString array;
+				wxDir::GetAllFiles(outputFolder, &array);
+#if defined(WIN32)
+				file = outputFolder + "\\" + file;
+#else
+				file = outputFolder + "/" + file;
+#endif
+				file.append("_" + to_string(array.GetCount()));
+			}
+
+
+			switch (infoFile.outputFormat)
+			{
+			case TIFF:
+				file.append(".tif");
+				break;
+			case PNG:
+				file.append(".png");
+				break;
+			case GIF:
+				file.append(".gif");
+				break;
+			case JPEG:
+				file.append(".jpg");
+				break;
+			case BMP:
+				//BMP
+				file.append(".bmp");
+				break;
+			case TGA:
+				file.append(".tga");
+				//TGA
+				break;
+			case PCX:
+				//PCX
+				file.append(".pcx");
+				break;
+			case MNG:
+				//MNG
+				file.append(".mng");
+				break;
+			case PNM:
+				//PNM
+				file.append(".pnm");
+				break;
+			case JPC:
+				file.append(".jpc");
+				break;
+			case JPEG2000:
+				file.append(".jp2");
+				break;
+			case PPM:
+				file.append(".ppm");
+				break;
+			case PDF:
+				file.append(".pdf");
+				break;
+			}
+
+			//Sauvegarde de l'image
+			CImageLoadingFormat * bitmap = libPicture.LoadPicture(filename);
+			if (bitmap != nullptr && bitmap->IsOk())
+			{
+				if (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)
+				{
+					libPicture.SavePicture(file, bitmap, optionPicture, qualityPicture);
+				}
+				delete bitmap;
+			}
+		}
+		else
+		{
+			file.append("." + CFileUtility::GetFileExtension(filename));
+			wxCopyFile(filename, file, true);
+		}
 	}
 }
 
@@ -311,6 +823,9 @@ void CListPicture::ExportFile(wxCommandEvent& event)
 
 			if (dlg.ShowModal() == wxID_OK)
 			{
+				int optionPicture;
+				int qualityPicture;
+				CLibPicture libPicture;
 				wxString folderPath = dlg.GetPath();
 				CSqlFindCriteria sqlFindCriteria;
 				InfoExportFile infoFile = exportFile.GetInfoExportFile();
@@ -371,8 +886,27 @@ void CListPicture::ExportFile(wxCommandEvent& event)
 				wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLExportMessage", 1);
 				wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLExportFinalMessage", 1);
 				wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
-				CopyFileDlg copyFile(this);
 
+
+				if (infoFile.outputFormat != 0)
+				{
+					libPicture.SavePictureOption(infoFile.outputFormat, optionPicture, qualityPicture);
+				}
+
+				wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+				for (int i = 0; i < listItem.size(); i++)
+				{
+					int j = i + 1;
+					CThumbnailData * data = listItem.at(i);
+					wxString filename = data->GetFilename();
+					wxString message = text + to_string(j) + "/" + to_string(listItem.size());
+					ExportFile(filename, data, infoFile, folderPath, optionPicture, qualityPicture);
+					if (false == dialog.Update(i, message))
+						break;
+				}
+
+				/*
+				CopyFileDlg copyFile(this);
 				copyFile.SetSelectItem(&listItem);
 				copyFile.SetMode(2);
 				copyFile.SetDestinationFolder(folderPath);
@@ -380,6 +914,7 @@ void CListPicture::ExportFile(wxCommandEvent& event)
 				copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
 				copyFile.Start();
 				copyFile.ShowModal();
+				*/
 			}
 		}
 	}
@@ -403,14 +938,27 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 		wxString deleteMessage = CLibResource::LoadStringFromResource(L"LBLDeleteMessage", 1);
 		wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLDeleteFinalMessage", 1);
 		wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
-		CopyFileDlg copyFile(this);
 
+		wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+		for (int i = 0; i < listItem.size(); i++)
+		{
+			int j = i + 1;
+			CThumbnailData * data = listItem.at(i);
+			wxString filename = data->GetFilename();
+			wxString message = text + to_string(j) + "/" + to_string(listItem.size());
+			wxRemoveFile(filename);
+			if (false == dialog.Update(i, message))
+				break;
+		}
+
+		/*
+		CopyFileDlg copyFile(this);
 		copyFile.SetSelectItem(&listItem);
 		copyFile.SetMode(0);
 		copyFile.SetLibelle(caption, text, deleteMessage, deleteFinalMessage, informations);
         copyFile.Start();
 		copyFile.ShowModal();
-
+		*/
 		//Mise à jour du répertoire des fichiers
 		CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 		if (mainWindow != nullptr)
@@ -454,6 +1002,30 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 		if (dlg.ShowModal() == wxID_OK)
 		{
 			wxString folderPath = dlg.GetPath();
+			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+			for (int i = 0; i < listItem.size(); i++)
+			{
+				int j = i + 1;
+				CThumbnailData * data = listItem.at(i);
+				wxString filename = data->GetFilename();
+				wxString message = text + to_string(j) + "/" + to_string(listItem.size());
+
+				wxString file = CFileUtility::GetFileName(filename);
+				wxString newFile = folderPath;
+
+#ifdef WIN32
+				newFile += "\\" + file;
+#else
+				newFile += "/" + file;
+#endif
+				wxCopyFile(filename, newFile, true);
+
+				//wxRemoveFile(filename);
+				if (false == dialog.Update(i, message))
+					break;
+			}
+
+			/*
 			CopyFileDlg copyFile(this);
 			copyFile.SetSelectItem(&listItem);
 			copyFile.SetMode(1);
@@ -461,6 +1033,7 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 			copyFile.SetDestinationFolder(folderPath);
 			copyFile.Start();
 			copyFile.ShowModal();
+			*/
 		}
 	}
 	else

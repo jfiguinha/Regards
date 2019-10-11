@@ -29,13 +29,15 @@ CColorBalanceFilter::~CColorBalanceFilter()
 
 int CColorBalanceFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_COLOR_BALANCE;
 }
 
 void CColorBalanceFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = -255; i < 256; i++)
         elementColor.push_back(i);

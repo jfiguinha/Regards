@@ -58,7 +58,8 @@ class CFaceDetectionDlg : public wxDialog
 		int nbProcessFacePhoto;
 		bool pushCloseButton;
 
-
+		int nbFile = 0;
+		int position = 0;
 		CFaceLoadData * faceData;
 
 		DECLARE_EVENT_TABLE()

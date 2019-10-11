@@ -16,9 +16,6 @@
     <Filter Include="Configuration">
       <UniqueIdentifier>{948e2cd0-2003-4dc5-a5a0-6ede8766feca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Process">
-      <UniqueIdentifier>{dbe85cab-6224-4bbc-a6d9-b35c67a9e668}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Picture Save Option">
       <UniqueIdentifier>{a3933aee-cede-4ba9-b8be-64c2331cf5cb}</UniqueIdentifier>
     </Filter>
@@ -60,9 +57,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CopyFileDlg.cpp">
-      <Filter>Process</Filter>
-    </ClCompile>
     <ClCompile Include="ConfigRegards.cpp">
       <Filter>Configuration</Filter>
     </ClCompile>
@@ -122,9 +116,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CopyFileDlg.h">
-      <Filter>Process</Filter>
-    </ClInclude>
     <ClInclude Include="wx_pch.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>

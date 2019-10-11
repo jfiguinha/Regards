@@ -30,13 +30,15 @@ CPhotoFiltreFilter::~CPhotoFiltreFilter()
 
 int CPhotoFiltreFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return ID_AJUSTEMENT_PHOTOFILTRE;
 }
 
 void CPhotoFiltreFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);

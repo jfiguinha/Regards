@@ -8,6 +8,7 @@
 #include "ScrollInterface.h"
 #include "RenderBitmapInterfaceOpenGL.h"
 #include "SliderInterface.h"
+#include <BitmapDisplay.h>
 using namespace std;
 using namespace Regards::OpenCL;
 
@@ -23,7 +24,7 @@ namespace Regards
 {
 	namespace Window
 	{
-		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface
+		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface, public IBitmapDisplay
 		{
 		public:
 			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
@@ -33,9 +34,11 @@ namespace Regards
 			void SetZoom(bool active);
 			bool GetZoom();
 			void SetZoomPosition(const int& position);
+			wxString GetFilename();
 
 			int GetWidth();
 			int GetHeight();
+			virtual CFiltreEffet * GetFiltreEffet();
 
 			wxWindow* GetWindow() {
 				return this;
@@ -44,6 +47,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetFilterInterpolation(const int& filter);
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
+			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll);
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
 			CRegardsBitmap* GetBitmap(const bool& source);
@@ -88,22 +92,27 @@ namespace Regards
 
 			void SetFullscreen(const bool& fullscreen);
 
-			void StopLoadingBitmap();
-			void StartLoadingBitmap();
+			int GetHPos();
+			int GetVPos();
+
+			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+
+			COpenCLContext * GetOpenCLContext();
+			//void StopLoadingBitmap();
+			//void StartLoadingBitmap();
 
 		protected:
 
-			virtual void CreateContext() {};
-			virtual void ApplyPreviewEffect() {};
+			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput) {};
 			virtual void AfterRender() {};
 			int UpdateResized();
 			void Update();
 			virtual bool NeedAfterRenderBitmap() { return false; };
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
-			float CalculPictureRatio(const int& pictureWidth, const int& pictureHeight);
+			
 
-			void OnLoading(wxTimerEvent& event);
+			//void OnLoading(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event) {};
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);
@@ -116,23 +125,21 @@ namespace Regards
 			void OnKeyDown(wxKeyEvent& event);
 			void OnKeyUp(wxKeyEvent& event);
 			void OnEraseBackground(wxEraseEvent& event) {};
-
+			void OnUpdateBitmap(wxCommandEvent& event);
 #ifdef KeyPress
 #undef KeyPress
 #endif			
-
+			void RenderToScreenWithOpenCLSupport();
+			void RenderToScreenWithoutOpenCLSupport();
 			void RefreshWindow();
-			virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
+			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
 			virtual void MouseClick(const int &xPos, const int &yPos);
 			virtual void MouseRelease(const int &xPos, const int &yPos);
 			virtual void MouseMove(const int &xPos, const int &yPos) {};
 
 			virtual void AfterSetBitmap(){};
-			virtual wxImage RenderBitmap(wxDC * deviceContext){ return wxImage();};
-			virtual void AfterDrawBitmap(wxDC * deviceContext){};
-			virtual void AfterRenderBitmap(wxDC * deviceContext){};
-			virtual bool NeedAfterDrawBitmap();
+
 			void GenerateScreenBitmap(CFiltreEffet * filtre, int &widthOutput, int &heightOutput);
 			void GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical);
 			void TestMaxPosition(); //Test si les limites sont atteintes ou non
@@ -202,7 +209,7 @@ namespace Regards
 			int filterInterpolation;
 			CRenderBitmapInterfaceOpenGL * renderOpenGL;
 			GLTexture * glTexture;
-			bool isOpenGL;
+			//bool isOpenGL;
 
 			int orientation;
 			int flipVertical;
@@ -217,6 +224,9 @@ namespace Regards
             bool updateContext = true;
 
             bool updateFilter = false;
+
+			int xPosImage = 0;
+			int yPosImage = 0;
 		};
 	}
 }

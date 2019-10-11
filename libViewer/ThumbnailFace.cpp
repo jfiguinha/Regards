@@ -132,7 +132,7 @@ void CThumbnailFace::AddSeparatorBar(const wxString &libelle, const CFaceName & 
 		thumbnailData->SetNumPhotoId(numFace.numPhoto);
 		thumbnailData->SetNumElement(nbElement++);
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);

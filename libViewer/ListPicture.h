@@ -5,6 +5,7 @@
 #include "ThumbnailToolBarZoom.h"
 #include <WindowMain.h>
 #include "ImageList.h"
+#include <ExportFile.h>
 using namespace Regards::Window;
 
 namespace Regards
@@ -39,7 +40,14 @@ namespace Regards
 			CThumbnailToolBar * thumbToolbar;
 			CThumbnailToolBarZoom * thumbToolbarZoom;
 			CThumbnailFolder * thumbnailFolder;
-			
+
+			void GeolocalizeFile(const wxString & filename, const float &latitude, const float &longitude, const wxString &lat, const wxString &lng, const wxString &geoInfos);
+			void ChangeDateFile(const wxString & filename, const wxDateTime &newDate, const wxString &selectDate);
+			void ExportFile(const wxString & filename, CThumbnailData * data, InfoExportFile infoFile, wxString destinationFolder, int optionPicture, int qualityPicture);
+			wxString GenerateFileName(const InfoExportFile & infoFile, const wxString &dateFile, const wxString &gpsFile);
+			wxString CreateExportFolder(const InfoExportFile & infoFile, const wxString &folderDestination, const wxString &dateFile, const wxString &gpsFile);
+			void CreateFolder(const wxString &newFolder);
+
 			int typeAffichage;
 			bool showToolbar;
 		};

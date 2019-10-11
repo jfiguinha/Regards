@@ -36,6 +36,8 @@ void CNlmeansFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap *
 {
     CNlmeansEffectParameter * nlmeansEffectParameter = (CNlmeansEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 1; i < 100; i++)
         elementColor.push_back(i);

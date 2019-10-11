@@ -12,7 +12,10 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <ImageLoadingFormat.h>
+#include <FiltreEffet.h>
+#include <Draw.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CLensFlareFilter::CLensFlareFilter()
@@ -30,13 +33,15 @@ CLensFlareFilter::~CLensFlareFilter()
 
 int CLensFlareFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_FILTRELENSFLARE;
 }
 
 void CLensFlareFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
-    
+ 
+	this->source = source;
+
     vector<int> elementIntensity;
     for (auto i = 0; i < 101; i++)
         elementIntensity.push_back(i);
@@ -79,3 +84,82 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
         lensFlareParameter->color = value;
     }
 }
+
+
+void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+{
+	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
+	wxPoint pt;
+	m_cDessin->GetScreenPoint(pt);
+	if (pt.x == 0 && pt.y == 0)
+	{
+		pt.x = widthOutput / 4;
+		pt.y = bitmapOut->GetBitmapHeight() / 4;
+	}
+
+	CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+	if (pt.x != 0 && pt.y != 0)
+	{
+		CImageLoadingFormat image;
+		image.SetPicture(bitmapOut);
+		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+		int puissance = (float)lensFlareParameter->size;
+		int brightness = (float)lensFlareParameter->brightness;
+		int radius = (float)lensFlareParameter->colorIntensity;
+		LensFlare(filtre, pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, radius, 0, 0);
+
+		DrawingToPicture(effectParameter, bitmapViewer, filtre, m_cDessin);
+
+		filtreEffet->SetPreview(true);
+
+		CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		filtreEffet->SetBitmap(imageLoad);
+
+		delete filtre;
+	}
+}
+
+CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
+{
+	CImageLoadingFormat * imageLoad = nullptr;
+	if (effectParameter != nullptr && source != nullptr)
+	{
+		source->RotateExif(source->GetOrientation());
+		CImageLoadingFormat image;
+		image.SetPicture(source);
+		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
+
+		wxPoint pt;
+		bitmapViewer->GetDessinPt()->GetPoint(pt);
+		CLensFlareEffectParameter * lensFlareParameter = (CLensFlareEffectParameter *)effectParameter;
+		float puissance = (float)lensFlareParameter->size;
+		float brightness = (float)lensFlareParameter->brightness;
+		float colorIntensity = (float)lensFlareParameter->colorIntensity;
+		puissance = ((float)(source->GetBitmapWidth() / 4) * ((float)puissance / 100.0f));
+		filtre->LensFlare(pt.x, pt.y, puissance, 0, brightness, lensFlareParameter->color, colorIntensity);
+
+		imageLoad = new CImageLoadingFormat();
+		imageLoad->SetPicture(filtre->GetBitmap(true));
+		delete filtre;
+	}
+
+	return imageLoad;
+}
+
+void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, const int &iPosY, const int &iPuissance, const int &iType, const int &iIntensity, const int &iColor, const int &iColorIntensity, const int &posLeft, const int &posTop)
+{
+	int puissance = (int)((float)(source->GetBitmapWidth() / 4) * ((float)iPuissance / 100.0f));
+	filtreEffet->LensFlare(iPosX - posLeft, iPosY - posTop, puissance, iType, iIntensity, iColor, iColorIntensity);
+}
+
+
+void CLensFlareFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
+{
+	int hpos = bitmapViewer->GetHPos();
+	int vpos = bitmapViewer->GetVPos();
+
+	if (m_cDessin != nullptr)
+		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
+}
+

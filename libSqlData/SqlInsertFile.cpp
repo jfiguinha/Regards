@@ -182,12 +182,12 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 	CLibPicture libPicture;
-	//BeginTransaction();
+	
 	int i = 0;
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
-
+	BeginTransaction();
 	for (wxString file : files)
 	{
 		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
@@ -200,11 +200,12 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 			i++;
 		}
 	}
+	CommitTransection();
 	return i;
 
 	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
 	
-	//CommitTransection();
+	//
 }
 
 bool CSqlInsertFile::RemovePhotos(const int &idFolder)

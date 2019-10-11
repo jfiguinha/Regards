@@ -1,6 +1,6 @@
 #pragma once
 #include "FilterWindowParam.h"
-
+#include <DecodeRawPicture.h>
 class CMetadata;
 
 namespace Regards
@@ -16,11 +16,13 @@ namespace Regards
 			void Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface){};
             void Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface);
             void FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key);
-            
+			CImageLoadingFormat * ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer);
+
         private:
 
 			void AddMetadataElement(vector<CMetadata> & element, wxString value, int key);
-
+			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput);
+			int orientation = 0;
             wxString libellebright;
             wxString libellehighlight;
 			wxString libellethreshold;
@@ -73,6 +75,8 @@ namespace Regards
 			wxString libellewf_deband_tresholdGreen;
 			wxString libellewf_deband_tresholdBlue;
 			wxString libellewf_deband_tresholdOther;
+			bool firstUpdate;
+			CDecodeRawPicture * rawDecoder;
 		};
 	}
 }

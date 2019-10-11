@@ -15,7 +15,7 @@ using namespace Regards::Sqlite;
 COpenCLProgram::COpenCLProgram(COpenCLContext * context, const int &type)
 {
 	program = 0;
-	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
+	buildOption = "";// "-cl-mad-enable -cl-unsafe-math-optimizations";
 	this->context = context;
 	this->typeData = type;// context->GetDefaultType();
 }
@@ -92,6 +92,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programId, const wxStr
 	Error::CheckError(err);
 
 	err = clBuildProgram(program, context->GetNumberOfDevice(), context->GetSelectedDevice(), buildOption.c_str(), 0, 0);
+	Error::CheckError(err);
 
 	if (err == CL_BUILD_PROGRAM_FAILURE)
 	{
@@ -219,7 +220,7 @@ int COpenCLProgram::CreateAndBuildProgram(const wxString &programId, const wxStr
         free(binaries_size);
     }
 
-	Error::CheckError(err);
+	
 
 	return 0;
 }

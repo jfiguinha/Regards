@@ -755,7 +755,7 @@ cl_mem COpenCLFilter::FiltreMosaic(cl_mem inputData, int width, int height)
 cl_mem COpenCLFilter::Blur(const int &radius, cl_mem inputData, int width, int height)
 {
 	cl_mem outputValue = nullptr;
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_CONVOLUTION");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_BLUR");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -812,7 +812,7 @@ cl_mem COpenCLFilter::Blur(const int &radius, cl_mem inputData, int width, int h
 cl_mem COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cl_mem inputData, int width, int height, bool noDeleteData)
 {
 	cl_mem outputValue = nullptr;
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_CONVOLUTION");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_BOXBLUR");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -868,7 +868,7 @@ cl_mem COpenCLFilter::BoxBlur(const int &coeff, const wxString &functionName, cl
 cl_mem COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, const vector<wxPoint> & offsets, const int &size, cl_mem inputData, int width, int height)
 {
 	cl_mem outputValue = nullptr;
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_CONVOLUTION");
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_MOTIONBLUR");
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;
@@ -946,10 +946,10 @@ cl_mem COpenCLFilter::MotionBlurCompute(const vector<double> & kernelMotion, con
 	return outputValue;
 }
 
-cl_mem COpenCLFilter::FiltreConvolution(const wxString &functionName, cl_mem inputData, int width, int height)
+cl_mem COpenCLFilter::FiltreConvolution(const wxString &programName, const wxString &functionName, cl_mem inputData, int width, int height)
 {
 	cl_mem outputValue = nullptr;
-	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_CONVOLUTION");
+	COpenCLProgram * programCL = GetProgram(programName);
 	if (programCL != nullptr)
 	{
 		vector<COpenCLParameter *> vecParam;

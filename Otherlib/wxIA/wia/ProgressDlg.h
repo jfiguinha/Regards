@@ -26,6 +26,7 @@ public:
 	VOID SetTitle(PCTSTR pszTitle);
 	VOID SetMessage(PCTSTR pszMessage);
 	VOID SetPercent(UINT nPercent);
+	HWND GetDlgWindow();
 
 private:
 	static DWORD WINAPI ThreadProc(PVOID pParameter);

@@ -6,8 +6,6 @@
 using namespace Regards::OpenCL;
 
 class CImageLoadingFormat;
-class CDecodeRawParameter;
-class CDecodeRaw;
 class CRegardsFloatBitmap;
 class CRegardsBitmap;
 
@@ -87,6 +85,7 @@ public:
 	};
 
     int GetWidth();
+	int GetHeight();
 
 private:
 

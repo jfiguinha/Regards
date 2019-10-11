@@ -27,13 +27,15 @@ CSolarisationFilter::~CSolarisationFilter()
 
 int CSolarisationFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_AJUSTEMENT_SOLARISATION;
 }
 
 void CSolarisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);

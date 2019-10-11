@@ -200,7 +200,7 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 		image.SetPicture(pBitmap, true);
 		thumbnailData->SetBitmap(&image);
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -227,7 +227,7 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 		image.SetPicture(pBitmap, true);
 		thumbnailData->SetBitmap(&image);
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -341,7 +341,7 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 					break;
 			}
 			thumbnailData->SetNumPhotoId(numEffect);
-			CIcone * pBitmapIcone = new CIcone(nullptr);
+			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

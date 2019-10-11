@@ -115,7 +115,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
-    <LibraryPath>$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\lib;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\lib\x64;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Publication|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -148,7 +148,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>FaceRecognition.lib;dllbpg.lib;glut64.lib;D3d9.lib;opengl32.lib;sdl2.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;libxml2.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;cairo.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexud.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>openjp2.lib;FaceRecognition.lib;dllbpg.lib;glut64.lib;D3d9.lib;opengl32.lib;sdl2.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;libxml2.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;cairo.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexud.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -220,7 +220,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>false</OptimizeReferences>
-      <AdditionalDependencies>cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>openjp2.lib;cairo.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;libfftw3f-3.lib;freeglut.lib;D3d9.lib;opengl32.lib;swscale.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31u.lib;wxbase31u_net.lib;wxbase31u_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpeg.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31u_core.lib;wxmsw31u_adv.lib;wxmsw31u_html.lib;wxmsw31u_gl.lib;wxmsw31u_xrc.lib;wxmsw31u_qa.lib;wxmsw31u_aui.lib;wxmsw31u_media.lib;wxmsw31u_ribbon.lib;wxmsw31u_stc.lib;wxmsw31u_propgrid.lib;wxmsw31u_richtext.lib;wxmsw31u_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -432,6 +432,9 @@
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libpoppler\libpoppler.vcxproj">
+      <Project>{fff433e3-4638-4949-8fc1-e28734b85002}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\otherlib\libpsd\libpsd.vcxproj">
       <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
     </ProjectReference>
@@ -449,6 +452,9 @@
     </ProjectReference>
     <ProjectReference Include="..\otherlib\mng\mng.vcxproj">
       <Project>{40a69f40-063e-43fd-8543-455495d8733e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Otherlib\poppler-cpp\poppler-cpp.vcxproj">
+      <Project>{a38f6ad2-4b8e-411d-aa0b-2a09c81cec7f}</Project>
     </ProjectReference>
     <ProjectReference Include="..\otherlib\RawSpeed\RawSpeed.vcxproj">
       <Project>{482a0abf-1ae3-4ee4-815a-428880dae0c6}</Project>

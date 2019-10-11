@@ -426,13 +426,22 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     // Read image from scanner.
     SANE_Int nScannedBytes;
     SANE_Byte *pScanBufferPtr= pScanBuffer;
+	SANE_Word total_bytes = 0;
+	wxProgressDialog dialog("Scanning Progress", "Receive data", nImageBufferSize, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     do
     {
+
         m_SaneStatus= ::sane_read( hSaneHandle, pScanBufferPtr, nImageBufferSize, &nScannedBytes );
         pScanBufferPtr += nScannedBytes * sizeof( SANE_Byte );
+		total_bytes += (SANE_Word)len;
+		if (false == dialog.Update(total_bytes, "Receive data"))
+			break;
+
     } while( ( m_SaneStatus != SANE_STATUS_EOF ) && ( m_SaneStatus == SANE_STATUS_GOOD ) ) ;
-    if( ( m_SaneStatus !=  SANE_STATUS_EOF ) )
+    
+	
+	if( ( m_SaneStatus !=  SANE_STATUS_EOF ) )
     {
         // Log, clean up, and signal error.
         wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )

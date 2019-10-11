@@ -28,13 +28,15 @@ CPosterisationFilter::~CPosterisationFilter()
 
 int CPosterisationFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return ID_AJUSTEMENT_POSTERISATION;
 }
 
 void CPosterisationFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {
     CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 256; i++)
         elementColor.push_back(i);

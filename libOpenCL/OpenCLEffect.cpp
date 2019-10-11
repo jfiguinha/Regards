@@ -1153,6 +1153,30 @@ int COpenCLEffect::Negatif()
 	return 0;
 }
 
+int COpenCLEffect::GetWidth()
+{
+	if (preview)
+	{
+		return widthOut;
+	}
+	else
+	{
+		return width;
+	}
+}
+
+int COpenCLEffect::GetHeight()
+{
+	if (preview && paramOutput != nullptr)
+	{
+		return heightOut;
+	}
+	else
+	{
+		return height;
+	}
+}
+
 int COpenCLEffect::Sepia()
 {
 	int _width = 0;
@@ -1532,13 +1556,13 @@ int COpenCLEffect::Soften()
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.FiltreConvolution("Soften",paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften",paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.FiltreConvolution("Soften", input->GetValue(), width, height);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SOFTEN", "Soften", input->GetValue(), width, height);
 		}
 		SetOutputValue(output,_width,_height);
 	}
@@ -1653,13 +1677,13 @@ int COpenCLEffect::Emboss()
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.FiltreConvolution("Emboss", paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_EMBOSS","Emboss", paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.FiltreConvolution("Emboss",  input->GetValue(), width, height);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_EMBOSS", "Emboss",  input->GetValue(), width, height);
 		}
 		SetOutputValue(output,_width,_height);
 	}
@@ -1679,13 +1703,13 @@ int COpenCLEffect::SharpenStrong()
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.FiltreConvolution("SharpenStrong", paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.FiltreConvolution("SharpenStrong", input->GetValue(),  width, height);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SHARPENSTRONG", "SharpenStrong", input->GetValue(),  width, height);
 		}
 		SetOutputValue(output,_width,_height);
 	}
@@ -1705,13 +1729,13 @@ int COpenCLEffect::Sharpen()
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.FiltreConvolution("Sharpen", paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen", paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.FiltreConvolution("Sharpen",  input->GetValue(), width, height);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_SHARPEN", "Sharpen",  input->GetValue(), width, height);
 		}
 		SetOutputValue(output,_width,_height);
 	}
@@ -1731,13 +1755,13 @@ int COpenCLEffect::FiltreEdge()
 		{
 			_width = widthOut;
 			_height = heightOut;
-			output = openclFilter.FiltreConvolution("Edge", paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_EDGE", "Edge", paramOutput->GetValue(), widthOut, heightOut);
 		}
 		else
 		{
 			_width = width;
 			_height = height;
-			output = openclFilter.FiltreConvolution("Edge",  input->GetValue(), width, height);
+			output = openclFilter.FiltreConvolution("IDR_OPENCL_EDGE", "Edge",  input->GetValue(), width, height);
 		}
 		SetOutputValue(output,_width,_height);
 	}
@@ -1819,8 +1843,16 @@ int COpenCLEffect::GaussianBlur(const int &r, const int &boxSize)
 			cl_mem output = nullptr;
 
 			COpenCLFilter openclFilter(context);
-			_width = widthOut;
-			_height = heightOut;
+			if (paramOutput != nullptr)
+			{
+				_width = widthOut;
+				_height = heightOut;
+			}
+			else
+			{
+				_width = width;
+				_height = height;
+			}
 			if(preview && paramOutput != nullptr)
 				output = paramOutput->GetValue();
 			else

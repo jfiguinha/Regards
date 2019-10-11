@@ -56,7 +56,13 @@
 #include "VideoFilter.h"
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
+#include "RedEyeFilter.h"
 #include "BestExposureFilter.h"
+#include "CropFilter.h"
+#include <Crop.h>
+#include <Selection.h>
+#include <BitmapFusionFilter.h>
+#include <BitmapFusionEffectParameter.h>
 using namespace Regards::Viewer;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
@@ -478,6 +484,16 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		filterEffect = new CAudioVideoFilter();
 		//filterEffect->Filter(effectParameter, filename, this);
 		break;
+
+	case IDM_REDEYE:
+		filterEffect = new CRedEyeFilter();
+		//filterEffect->Filter(effectParameter, filename, this);
+		break;
+
+	case IDM_CROP:
+		filterEffect = new CCropFilter();
+		//filterEffect->Filter(effectParameter, filename, this);
+		break;
 	}  
     return filterEffect;
 }
@@ -488,6 +504,37 @@ CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int
     labelFilter.label = CLibResource::LoadStringFromResource(numResource,1);
     labelFilter.filter = filter;
     return labelFilter;
+}
+
+void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
+{
+	if (filter != nullptr)
+		delete filter;
+}
+
+IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_AFTEREFFECT_FUSION:
+		return new CBitmapFusionFilter();
+		break;
+	}
+	return nullptr;
+}
+
+CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_REDEYE:
+	case IDM_CROP:
+		return new CCrop();
+	case IDM_WAVE_EFFECT:
+	case IDM_FILTRELENSFLARE:
+		return new CSelection();
+	}
+	return nullptr;
 }
 
 bool CFiltreData::IsPiccanteCompatible(const int &numFilter)
@@ -552,10 +599,51 @@ bool CFiltreData::IsOpenCLPreviewCompatible(const int &numFilter)
 	return true;
 }
 
+bool CFiltreData::SupportMouseSelection(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_REDEYE:
+		return true;
+		break;
+	}
+	return false;
+}
+
+void CFiltreData::SetCursor(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_REDEYE:
+		::wxSetCursor(wxCursor(wxCURSOR_CROSS));
+		break;
+
+	default:
+		::wxSetCursor(wxCursor(wxCURSOR_ARROW));
+	}
+}
+
+bool CFiltreData::SupportMouseClick(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_CROP:
+	case IDM_WAVE_EFFECT:
+	case IDM_REDEYE:
+	case IDM_FILTRELENSFLARE:
+		return true;
+		break;
+	}
+	return false;
+}
+
 bool CFiltreData::NeedPreview(const int &numFilter)
 {
     switch(numFilter)
     {
+		
 		case IDM_CROP:
 		case IDM_REDEYE:
         case IDM_FILTER_BM3D:
@@ -579,6 +667,14 @@ bool CFiltreData::NeedPreview(const int &numFilter)
 		case IDM_FILTRE_FLOU:
         case IDM_AJUSTEMENT_SOLARISATION:
             return true;
+		/*
+		case IDM_FILTRELENSFLARE:
+		case IDM_FILTRE_SWIRL:
+		case IDM_WAVE_EFFECT:
+		case IDM_CROP:
+		case IDM_REDEYE:
+			return true;
+		*/
     }
     
     return false;
@@ -726,6 +822,12 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 		case IDM_FILTRE_FLOUGAUSSIEN:
 			return new CGaussianBlurEffectParameter();
 			break;
+
+		case IDM_AFTEREFFECT_FUSION:
+			return new CBitmapFusionEffectParameter();
+
+		default:
+			return new CEffectParameter();
     }
     return nullptr;
 }
@@ -914,6 +1016,9 @@ CEffectParameter * CFiltreData::GetDefaultEffectParameter(const int &numFilter)
 		}
 		break;
 
+		default:
+			return new CEffectParameter();
+
     }
     return nullptr;
 }
@@ -924,8 +1029,6 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
     {
         case IDM_CROP:
         case IDM_REDEYE:
-            return 1;
-
         case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:
@@ -963,8 +1066,6 @@ wxString CFiltreData::GetFilterLabel(const int &numFilter)
     }
     return "";
 }
-
-
 
 void CFiltreData::InitFilterListLabel()
 {

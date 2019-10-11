@@ -60,7 +60,12 @@ int CFiltreEffet::FilterBilateral2DS(const float & sigma_s, const float & sigma_
 
 int CFiltreEffet::GetWidth()
 {
-    return width;
+    return filtreEffet->GetWidth();
+}
+
+int CFiltreEffet::GetHeight()
+{
+	return filtreEffet->GetHeight();
 }
 
 int CFiltreEffet::FilterKuwahara(const int &kernelSize)
@@ -628,7 +633,7 @@ int CFiltreEffet::RotateFree(const double &angle)
 {
 	int widthOut;
 	int heightOut;
-	CalculNewSize(width, height, angle, widthOut, heightOut);
+	CalculNewSize(filtreEffet->GetWidth(), filtreEffet->GetHeight(), angle, widthOut, heightOut);
 	return filtreEffet->RotateFree(angle, widthOut, heightOut);
 }
 

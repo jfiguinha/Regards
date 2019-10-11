@@ -19,13 +19,15 @@ CRotateFreeFilter::~CRotateFreeFilter()
 
 int CRotateFreeFilter::GetTypeFilter()
 {
-    return IDM_FILTRE_SWIRL;
+    return IDM_ROTATE_FREE;
 }
 
 void CRotateFreeFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * source, IFiltreEffectInterface * filtreInterface)
 {   
     CFreeRotateEffectParameter * freeRotateEffectParameter = (CFreeRotateEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<int> elementColor;
     for (auto i = 0; i < 361; i++)
         elementColor.push_back(i);

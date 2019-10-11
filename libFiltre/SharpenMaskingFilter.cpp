@@ -24,6 +24,8 @@ void CSharpenMaskingFilter::Filter(CEffectParameter * effectParameter, CRegardsB
 {
 	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
 
+	this->source = source;
+
 	vector<int> elementFreq;
 	for (auto i = 0; i < 100; i++)
 		elementFreq.push_back(i);

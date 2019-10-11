@@ -14,6 +14,8 @@
 #include <picture_id.h>
 #include <PiccanteFilter.h>
 #include <LibResource.h>
+#include <wx/filename.h>
+#include <wx/progdlg.h>
 #ifdef LIBHEIC
 #include <Heic.h>
 #endif
@@ -779,6 +781,70 @@ int CLibPicture::SavePicture(const wxString & fileName, CImageLoadingFormat * bi
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+//Sauvegarde
+//-----------------------------------------------------------------------------
+int CLibPicture::SavePicture(const wxString & fileNameIn, const wxString & fileNameOut)
+{
+	int option = 0;
+	int quality = 0;
+	int iFormat = TestImageFormat(fileNameOut);
+	if (SavePictureOption(iFormat, option, quality) == 1)
+	{
+		int nbPicture = GetNbImage(fileNameIn);
+		wxString msg = "in progress";
+		wxProgressDialog dialog("Export File", "Checking...", nbPicture, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+		int updatesize = 0;
+		dialog.Update(updatesize, msg);
+		
+		for (int i = 0; i < nbPicture; i++)
+		{
+			int j = i + 1;
+			wxString filenameOutput = "";
+			CImageLoadingFormat * picture = LoadPicture(fileNameIn, false, i);
+			if (!TestIsExifCompatible(fileNameOut))
+				picture->ApplyExifOrientation(picture->GetOrientation());
+
+			wxString message = "In progress : " + to_string(j) + "/" + to_string(nbPicture);
+			if (false == dialog.Update(i, message))
+			{
+				break;
+			}
+			if (nbPicture > 1)
+			{
+				
+				wxFileName filename(fileNameOut);
+				filenameOutput = filename.GetPathWithSep() +  filename.GetName() + "_page_" + to_string(j) + "." + filename.GetExt();
+			}
+			else
+			{
+				filenameOutput = fileNameOut;
+			}
+			SavePicture(filenameOutput, picture, option, quality);
+		}
+	}
+	
+
+	/*
+	wxString wxfileName;
+
+	wxfileName = fileName;
+
+	int option = 0;
+	int quality = 0;
+
+	if (SavePictureOption(iFormat, option, quality) == 1)
+	{
+		if (!TestIsExifCompatible(fileName))
+			bitmap->ApplyExifOrientation(bitmap->GetOrientation());
+
+		SavePicture(wxfileName, bitmap, option, quality);
+	}
+	*/
+	return 0;
+}
+
 CxImage * CLibPicture::ConvertwxImageToCxImage(const wxImage & image)
 {
     CxImage * _image = nullptr;
@@ -1383,7 +1449,6 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
         {
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
-			orientation = pictureMetadata.GetOrientation();
 			imageLoading = LoadPicture(fileName, true);
 			if(imageLoading != nullptr && imageLoading->IsOk())
 			{
@@ -1393,7 +1458,6 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
         }
         else if(memFile != nullptr)
         {
-			orientation = pictureMetadata.GetOrientation();
 			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName(CConvertUtility::ConvertToUTF8(extension)));
 			if(image->GetWidth() > 0 && image->GetHeight() > 0)
 			{

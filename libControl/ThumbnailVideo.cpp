@@ -163,7 +163,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 			thumbnailData->SetBitmap(thumbnail->image);
 
-			CIcone * pBitmapIcone = new CIcone(nullptr);
+			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(i);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
@@ -206,7 +206,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 			thumbnailData->SetBitmap(thumbnail->image);
 			if (typeElement == TYPEMULTIPAGE)
 				thumbnailData->SetLibelle("Page : " + to_string(j+1) + "/" + to_string(size));
-			CIcone * pBitmapIcone = new CIcone(nullptr);
+			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(j);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

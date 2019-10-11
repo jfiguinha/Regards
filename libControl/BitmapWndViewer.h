@@ -6,9 +6,12 @@
 #include <FiltreUpdate.h>
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideo.h>
+#include <AfterEffect.h>
+
 using namespace Regards::OpenCL;
 class CDecodeRawPicture;
 class CEffectParameter;
+class IMouseUpdate;
 class CImageLoadingFormat;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
@@ -24,6 +27,8 @@ namespace Regards
 			CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface);
 			~CBitmapWndViewer();
 			CEffectParameter * GetParameter();
+			void SetListener(IMouseUpdate * mouseUpdate);
+			void RemoveListener();
 			void SendEmail();
 			void SavePicture();
 			void PrintPicture();
@@ -31,27 +36,20 @@ namespace Regards
 			void FixArrowNavigation(const bool &fix);
 			void StopTransition();
 			void SetBitmapPreviewEffect(const int &effect);
-			void SetBitmapPreviewEffect(const int &effect, CEffectParameter * effectParameter);
-			bool SetBitmapEffect(const int &effect, CEffectParameter * effectParameter = nullptr);
-            bool NeedAfterDrawBitmap();
 			void SetDiaporamaMode();
 			void SetNormalMode();
 			void UpdateFiltre(CEffectParameter * effectParameter);
-			void ApplyEffect(const int &effect);
 			void OnFiltreOk();
 			void OnFiltreCancel();
-		private:
+			CRgbaquad GetBackColor();
+			int GetOrientation();
+			CDraw * GetDessinPt();
+			int IsSupportOpenCL();
+			wxPoint GetMousePosition();
 
-			void ApplyPreviewEffect();
+		private:
+			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 			void AfterRender();
-			void CreateContext();
-			void ShowArrowNext(wxDC * deviceContext);
-			void ShowArrowPrevious(wxDC * deviceContext);
-			wxImage RenderBitmap(wxDC * deviceContext);
-			void AfterDrawBitmap(wxDC * deviceContext);
-			void AfterRenderBitmap(wxDC * deviceContext);
-			CRegardsBitmap* RenderSpecialEffect();
-			bool NeedAfterRenderBitmap();
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
 			
@@ -67,12 +65,11 @@ namespace Regards
 			void MouseRelease(const int &xPos, const int &yPos);
 			int GetRawBitmapWidth();
 			int GetRawBitmapHeight();
-			int GetOrientation();
+			//int GetOrientation();
 			void AfterSetBitmap();
 
 			void EndTransition();
 			void OnTransition(wxTimerEvent& event);
-			void onIdle(wxIdleEvent& evt);
 			
             void LoadingResource();
             
@@ -81,9 +78,6 @@ namespace Regards
 			CImageLoadingFormat * nextPicture;
 			wxImage arrowPrevious;
 			wxImage arrowNext;
-			wxImage renderNext;
-			wxImage renderPreview;
-			vector<wxImage> vecLoadingBitmap;
 			bool startTransition;
 			int etape;
 			bool fixArrow;
@@ -92,8 +86,7 @@ namespace Regards
 			//Preview Parameter
 			int preview;
 			CEffectParameter * effectParameter;
-			CRenderPreviewBitmap * renderPreviewBitmap;
-			CDecodeRawPicture * rawDecoder;
+			IAfterEffect * afterEffect;
 
 			wxPoint oldMouse;
 
@@ -105,13 +98,9 @@ namespace Regards
 			bool invertColor;
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
-			//CRegardsBitmap * rawBitmap;
-			COpenCLEffectVideo * openclEffectVideo;
 			GLTexture * pictureNext;
-			cl_mem cl_nextPicture;
-			CFiltreEffet * filtreraw;
-			int rawWidth;
-			int rawHeight;
+			IMouseUpdate * mouseUpdate;
+
 		};
 	}
 }

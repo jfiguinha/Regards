@@ -24,13 +24,18 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="BitmapViewerInfosWnd.cpp" />
+    <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
+    <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
     <ClCompile Include="ScannerTheme.cpp" />
     <ClCompile Include="ScannerThemeInit.cpp" />
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
+    <ClCompile Include="ThumbnailSelection.cpp" />
+    <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="ScannerParam.cpp" />
@@ -39,13 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="BitmapViewerInfosWnd.h" />
+    <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
+    <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="ScannerFrame.h" />
     <ClInclude Include="ScannerTheme.h" />
     <ClInclude Include="ScannerThemeInit.h" />
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
+    <ClInclude Include="ThumbnailSelection.h" />
+    <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
     <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="ScannerParam.h" />
@@ -104,10 +114,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\tesseract-4.1.0\include;$(SolutionDir)libextern\leptonica-1.78.0\include;$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\tesseract-4.1.0\include;$(SolutionDir)libextern\leptonica-1.78.0\include;$(SolutionDir)\libExtern\freeglut\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\FaceRecognition;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -119,6 +129,7 @@
       <PreprocessorDefinitions>CAIRO_HAS_PDF_SURFACE;USE_IA_EVENTS;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

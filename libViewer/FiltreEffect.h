@@ -21,13 +21,13 @@ namespace Regards
 		{
 		public:
 
-			CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl);
+			CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo);
 			~CFiltreEffect(void);
 			virtual void Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre);
 			virtual void SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key);
-
+			virtual CImageLoadingFormat * ApplyEffect();
             void UpdateScreenRatio();
-
+			void UpdateMousePosition();
             void AddTreeInfos(const wxString &exifKey, CTreeElementValue * position, void * value, const int & typeValue = 1, const int &type = TYPE_SLIDE);
             
 		protected:
@@ -60,6 +60,8 @@ namespace Regards
             
             tree<CTreeData *>::iterator top;
             tree<CTreeData *>::iterator child;
+
+			bool isVideo = false;
             int index;
 		};
 	}

@@ -26,6 +26,8 @@ void CBestExposureFilter::Filter(CEffectParameter * effectParameter, CRegardsBit
 {
     CBestExposureEffectParameter * bestExposureEffectParameter = (CBestExposureEffectParameter *)effectParameter;
     
+	this->source = source;
+
     vector<float> elementColor;
     for (float i = 0.0; i < 10.0; i+=0.1)
         elementColor.push_back(i);

@@ -124,7 +124,7 @@ void CThumbnailFolder::AddSeparatorBar(const wxString &libelle, PhotosVector * p
 		thumbnailData->SetNumPhotoId(photo.GetId());
 		thumbnailData->SetNumElement(nbElement++);
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
@@ -518,7 +518,7 @@ void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
 		thumbnailData->SetNumElement(i);
 
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

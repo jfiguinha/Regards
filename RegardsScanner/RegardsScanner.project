@@ -170,8 +170,6 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/poppler/.libs"/>
-        <LibraryPath Value="../libextern/poppler_windows-master/cpp/.libs"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
@@ -324,6 +322,7 @@
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
+        <Library Value="qpdf"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -441,14 +440,20 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/poppler/.libs/libpoppler-62.dll ./Debug/libpoppler-62.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler_windows-master/cpp/.libs/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-89.dll ./Debug/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf21.dll ./Debug/qpdf21.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjpeg-5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nss3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/smime3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nssutil3.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplc4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
-        <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -472,11 +477,54 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="" Required="yes"/>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="../libPrint/Release"/>
+        <LibraryPath Value="../CxImage/Release"/>
+        <LibraryPath Value="../libOpenGL/Release"/>
+        <LibraryPath Value="../libMediaInfo/Release"/>
+        <LibraryPath Value="../wxCheckTree/Release"/>
+        <LibraryPath Value="../libSqlite/Release"/>
+        <LibraryPath Value="../libViewer/Release"/>
+        <LibraryPath Value="../libExplorer/Release"/>
+        <LibraryPath Value="../libIntro/Release"/>
+        <LibraryPath Value="../libSqlEngine/Release"/>
+        <LibraryPath Value="../libResource/Release"/>
+        <LibraryPath Value="../libCompress/Release"/>
+        <LibraryPath Value="../libDialog/Release"/>
+        <LibraryPath Value="../libDataStructure/Release"/>
+        <LibraryPath Value="../libPicture/Release"/>
+        <LibraryPath Value="../libUtility/Release"/>
+        <LibraryPath Value="../libGeolocalisation/Release"/>
+        <LibraryPath Value="../libSqlData/Release"/>
+        <LibraryPath Value="../libVideoThumbnail/Release"/>
+        <LibraryPath Value="../Otherlib/RawSpeed/Release"/>
+        <LibraryPath Value="../libFiltre/Release"/>
+        <LibraryPath Value="../libFiltreInterface/Release"/>
+        <LibraryPath Value="../libWindow/Release"/>
+        <LibraryPath Value="../libControl/Release"/>
+        <LibraryPath Value="../libTheme/Release"/>
+        <LibraryPath Value="../libParameter/Release"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
+        <LibraryPath Value="../libRenderBitmap/Release"/>
+        <LibraryPath Value="../libOpenCL/Release"/>
+        <LibraryPath Value="../libVideoFFMpeg/Release"/>
+        <LibraryPath Value="../libEmail/Release"/>
+        <LibraryPath Value="../libExif/Release"/>
+        <LibraryPath Value="../libPiccante/Release"/>
+        <LibraryPath Value="../libWindowMain/Release"/>
+        <LibraryPath Value="../Otherlib/wxSVG/Release"/>
+        <LibraryPath Value="../Otherlib/libPsd/Release"/>
+        <LibraryPath Value="../Otherlib/libJbig/Release"/>
+        <LibraryPath Value="../Otherlib/wxIA/Release"/>
+        <LibraryPath Value="../FaceRecognition_windows/Release"/>
+        <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
+        <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
+        <LibraryPath Value="../libScanner/Release"/>
+      </Linker>
       <ResourceCompiler Options="" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
@@ -489,7 +537,74 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild/>
-      <PostBuild/>
+      <PostBuild>
+        <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbz2-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcairo-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcurl-4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexpat-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libffi-6.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfontconfig-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeglut.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreetype-6.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgcc_s_seh-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libglib-2.0-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgmp-10.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgomp-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgraphite2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImfUtil-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmThread-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libintl-8.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblzma-5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnghttp2-14.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libp11-kit-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpcre-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpixman-1-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpng16-16.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssh2-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libstdc++-6.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtasn1-6.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libunistring-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwinpthread-1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/zlib1.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlidec.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpsl-5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlicommon.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libidn2-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfftw3f-3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg-0.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
+        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
+        <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
+        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
+        <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
+        <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-89.dll ./Release/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf21.dll ./Release/qpdf21.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nss3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/smime3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nssutil3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplc4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Release</Command>
+      </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
         <CleanCommand/>

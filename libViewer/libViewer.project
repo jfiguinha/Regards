@@ -145,6 +145,7 @@
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall" Assembler="">
+        <IncludePath Value="../libExif"/>
         <IncludePath Value="../wxCheckTree"/>
         <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="."/>
@@ -188,6 +189,7 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
+        <Preprocessor Value="EXIV2"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>

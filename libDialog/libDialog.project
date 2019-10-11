@@ -35,7 +35,6 @@
     <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="CompressionOption.cpp"/>
     <File Name="ConfigRegards.cpp"/>
-    <File Name="CopyFileDlg.cpp"/>
     <File Name="ExportFile.cpp"/>
     <File Name="GifOption.cpp"/>
     <File Name="JpegOption.cpp"/>
@@ -58,7 +57,6 @@
     <File Name="InterpolationFilterSelect.h"/>
     <File Name="CompressionOption.h"/>
     <File Name="ConfigRegards.h"/>
-    <File Name="CopyFileDlg.h"/>
     <File Name="ExportFile.h"/>
     <File Name="GifOption.h"/>
     <File Name="JpegOption.h"/>
