@@ -120,8 +120,6 @@ void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
 
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
 	int i = 0;
 	int x = 0;
 	int y = 0;

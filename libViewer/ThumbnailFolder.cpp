@@ -394,10 +394,6 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
-
-
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
@@ -503,8 +499,6 @@ void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
 
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
 	int i = 0;
 	int x = 0;
 	int y = 0;

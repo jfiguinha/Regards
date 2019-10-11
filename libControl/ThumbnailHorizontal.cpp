@@ -41,8 +41,6 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     InitScrollingPos();
     EraseThumbnailList();
 
-    numSelect = nullptr;
-    numActif = nullptr;
     int i = 0;
     int x = 0;
     int y = 0;

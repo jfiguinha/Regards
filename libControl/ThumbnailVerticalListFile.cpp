@@ -30,8 +30,6 @@ void CThumbnailVerticalListFile::SetListeFile(const vector<wxString> & files)
 	InitScrollingPos();
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
 	int i = 0;
 	int x = 0;
 	int y = 0;
@@ -97,8 +95,6 @@ void CThumbnailVerticalListFile::SetListeFile(const wxArrayString & listFile, co
     InitScrollingPos();
     EraseThumbnailList();
     CreateOrLoadStorageFile();
-    numActif = nullptr;
-    numSelect = nullptr;
 
     int i = 0;
     int x = 0;
@@ -160,10 +156,13 @@ void CThumbnailVerticalListFile::SetListeFile(const PhotosVector & photoVector, 
     {
         InitScrollingPos();
         EraseThumbnailList();
+
+		loadingIcone = nullptr;
+		numSelect = nullptr;
+		numActif = nullptr;
     }
 
 
-    numActif = nullptr;
 
     int i = 0;
     int x = 0;

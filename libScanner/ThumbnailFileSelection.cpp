@@ -167,10 +167,6 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
-
-
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
@@ -245,8 +241,6 @@ void CThumbnailFileSelection::SetListeFile()
 
 	EraseThumbnailList();
 
-	numSelect = nullptr;
-	numActif = nullptr;
 	int i = 0;
 	int x = 0;
 	int y = 0;

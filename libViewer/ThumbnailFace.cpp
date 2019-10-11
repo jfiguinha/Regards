@@ -227,13 +227,7 @@ void CThumbnailFace::Init()
 			numPhotoIdActif = data->GetNumPhotoId();
 	}
 
-
-	//InitScrollingPos();
-
 	EraseThumbnailList();
-
-	numSelect = nullptr;
-	numActif = nullptr;
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
 	{

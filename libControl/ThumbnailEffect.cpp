@@ -178,8 +178,6 @@ void CThumbnailEffect::SetFile(const wxString &filename)
 	listSeparator.clear();
 
 	isAllProcess = false;
-	numSelect = nullptr;
-	numActif = nullptr;
 
 	CLibPicture picture;
 	int format = picture.TestImageFormat(filename);

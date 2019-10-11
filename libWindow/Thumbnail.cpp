@@ -273,6 +273,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
     oldPosHauteur = 0;    
 	nbProcess = 0;
 	numActif = nullptr;
+	loadingIcone = nullptr;
 	numSelect = nullptr;
 	threadDataProcess = false;
 	allThreadEnd = true;
@@ -392,6 +393,10 @@ void CThumbnail::EraseThumbnailList()
 {
     TRACE();
     iconeList->EraseThumbnailList();
+
+	numSelect = nullptr;
+	numActif = nullptr;
+	loadingIcone = nullptr;
 }
 
 void CThumbnail::SetIconeSize(const int &width, const int &height)
