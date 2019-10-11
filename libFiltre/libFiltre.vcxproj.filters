@@ -345,6 +345,9 @@
     <ClInclude Include="AfterEffect.h">
       <Filter>window\main</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapDisplay.h">
+      <Filter>window\main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">

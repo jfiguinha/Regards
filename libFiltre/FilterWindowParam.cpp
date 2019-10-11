@@ -8,12 +8,13 @@
 //
 
 #include "FilterWindowParam.h"
-#include <BitmapWndViewer.h>
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <RegardsBitmap.h>
 #include <PiccanteFilter.h>
+#include <Draw.h>
+#include <BitmapDisplay.h>
 CFilterWindowParam::CFilterWindowParam()
 {
     
@@ -24,17 +25,17 @@ CFilterWindowParam::~CFilterWindowParam()
     
 }
 
-CImageLoadingFormat * CFilterWindowParam::ApplyMouseMoveEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * dessing)
+CImageLoadingFormat * CFilterWindowParam::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing)
 {
 	return nullptr;
 }
 
-void CFilterWindowParam::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+void CFilterWindowParam::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
 	m_cDessin->Dessiner(dc, 0, 0, 1, wxColour(30, 30, 30), wxColour(30, 30, 30), wxColour(255, 255, 255), 2);
 }
 
-void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
+void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin)
 {
 	if (m_cDessin != nullptr)
 	{
@@ -53,7 +54,7 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, Re
 	}
 }
 
-void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
+void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
 {
 	if (CFiltreData::IsPiccanteCompatible(GetTypeFilter()))
 	{
@@ -137,7 +138,7 @@ void CFilterWindowParam::RotateExif(const int & orientation, CFiltreEffet * filt
 	}
 }
 
-CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, int numFiltre)
+CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, int numFiltre)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
 
@@ -200,7 +201,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 	return imageLoad;
 }
 
-CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectParameter, CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetTypeFilter());
 	return imageLoad;

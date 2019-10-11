@@ -14,7 +14,8 @@
 #include <FilterData.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
-#include <BitmapWndViewer.h>
+#include <BitmapDisplay.h>
+#include <Draw.h>
 using namespace Regards::Viewer;
 
 CWaveFilter::CWaveFilter()
@@ -78,7 +79,7 @@ void CWaveFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEl
 		waveParameter->scale = value;
     }
 }
-void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
 
@@ -114,12 +115,13 @@ void CWaveFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards
 }
 
 
-CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
 	if (effectParameter != nullptr && source != nullptr)
 	{
 		CImageLoadingFormat image;
+		source->RotateExif(source->GetOrientation());
 		image.SetPicture(source);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
 
@@ -141,7 +143,7 @@ CImageLoadingFormat * CWaveFilter::ApplyEffect(CEffectParameter * effectParamete
 }
 
 
-void CWaveFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+void CWaveFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();

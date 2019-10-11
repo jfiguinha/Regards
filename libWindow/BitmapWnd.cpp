@@ -103,7 +103,7 @@ void CBitmapWnd::OnUpdateBitmap(wxCommandEvent& event)
 {
 	CImageLoadingFormat * picture = (CImageLoadingFormat *)event.GetClientData();
 	if (picture != nullptr)
-		UpdateBitmap(picture);
+		UpdateBitmap(picture, false);
 }
 
 void CBitmapWnd::SetFilterInterpolation(const int &filter)
@@ -121,6 +121,11 @@ void CBitmapWnd::SetFullscreen(const bool &fullscreen)
 		themeBitmap.colorBack = themeBitmap.colorFullscreen;
 	else
 		themeBitmap.colorBack = themeBitmap.colorScreen;
+}
+
+CFiltreEffet * CBitmapWnd::GetFiltreEffet()
+{
+	return filtreEffet;
 }
 
 int CBitmapWnd::GetWidth()

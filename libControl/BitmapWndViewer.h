@@ -7,6 +7,7 @@
 #include <OpenCLContext.h>
 #include <OpenCLEffectVideo.h>
 #include <AfterEffect.h>
+
 using namespace Regards::OpenCL;
 class CDecodeRawPicture;
 class CEffectParameter;

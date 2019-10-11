@@ -3,14 +3,7 @@
 class CRegardsBitmap;
 class CImageLoadingFormat;
 class CEffectParameter;
-
-namespace Regards
-{
-	namespace Control
-	{
-		class CBitmapWndViewer;
-	}
-}
+class IBitmapDisplay;
 
 namespace Regards
 {
@@ -21,12 +14,11 @@ namespace Regards
 }
 
 using namespace Regards::OpenGL;
-using namespace Regards::Control;
 
 class IAfterEffect
 {
 public:
 	virtual int GetTypeFilter() = 0;
-	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
-	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut) = 0;
+	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
+	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
 };

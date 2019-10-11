@@ -142,7 +142,7 @@ void CBitmapWndViewer::SetNormalMode()
 
 void CBitmapWndViewer::PrintPicture()
 {
-	CRegardsBitmap * bitmap = GetBitmap(true);
+	CRegardsBitmap * bitmap = CBitmapWnd::GetBitmap(true);
 	wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
@@ -249,7 +249,7 @@ void CBitmapWndViewer::AfterSetBitmap()
 
 void CBitmapWndViewer::SavePicture()
 {
-	CRegardsBitmap * bitmap = GetBitmap(true);
+	CRegardsBitmap * bitmap = CBitmapWnd::GetBitmap(true);
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
 	imageLoading->SetPicture(bitmap);
 	CSavePicture::SavePicture(this, imageLoading, filename);
@@ -456,13 +456,13 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 #endif 
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
-		int hpos = GetHPos();
-		int vpos = GetVPos();
+		int hpos = CBitmapWnd::GetHPos();
+		int vpos = CBitmapWnd::GetVPos();
 
 		invertColor = true;
 		mouseBlock = true;
 		CaptureMouse();
-		m_cDessin->InitPoint(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
+		m_cDessin->InitPoint(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
 	}
 	else if (fixArrow)
 	{
@@ -612,21 +612,21 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 {
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
-		int hpos = GetHPos();
-		int vpos = GetVPos();
+		int hpos = CBitmapWnd::GetHPos();
+		int vpos = CBitmapWnd::GetVPos();
 
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
 		{
 
 
-			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
+			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}
 		else if(CFiltreData::SupportMouseSelection(toolOption))
 		{
-			m_cDessin->Selection(xPos - xPosImage, yPos - yPosImage, hpos, vpos, GetRatio());
+			m_cDessin->Selection(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
 			this->Refresh();
 		}

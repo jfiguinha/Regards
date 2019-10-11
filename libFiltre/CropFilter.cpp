@@ -7,7 +7,7 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <ImageLoadingFormat.h>
-#include <BitmapWndViewer.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CCropFilter::CCropFilter()
@@ -35,7 +35,7 @@ void CCropFilter::FilterChangeParam(CEffectParameter * effectParameter, CTreeEle
 
 }
 
-CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
 	wxRect rcZoom;
@@ -57,14 +57,14 @@ CImageLoadingFormat * CCropFilter::ApplyEffect(CEffectParameter * effectParamete
 	return imageLoad;
 }
 
-CImageLoadingFormat * CCropFilter::ApplyMouseMoveEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * dessin)
+CImageLoadingFormat * CCropFilter::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
 {
 
 
 	return nullptr;
 }
 
-void CCropFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+void CCropFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();
@@ -73,7 +73,7 @@ void CCropFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * 
 		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
 }
 
-void CCropFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CCropFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	DrawingToPicture(effectParameter, bitmapViewer, filtreEffet, m_cDessin);
 }

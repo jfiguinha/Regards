@@ -7,7 +7,7 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <ImageLoadingFormat.h>
-#include <BitmapWndViewer.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CRedEyeFilter::CRedEyeFilter()
@@ -35,7 +35,7 @@ void CRedEyeFilter::FilterChangeParam(CEffectParameter * effectParameter, CTreeE
 
 }
 
-CImageLoadingFormat * CRedEyeFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CRedEyeFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
 	wxRect rcZoom;
@@ -60,12 +60,12 @@ CImageLoadingFormat * CRedEyeFilter::ApplyEffect(CEffectParameter * effectParame
 	return imageLoad;
 }
 
-CImageLoadingFormat * CRedEyeFilter::ApplyMouseMoveEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * dessin)
+CImageLoadingFormat * CRedEyeFilter::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
 {
 	return nullptr;
 }
 
-void CRedEyeFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+void CRedEyeFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();
@@ -74,7 +74,7 @@ void CRedEyeFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer 
 		m_cDessin->Dessiner(dc, hpos, vpos, bitmapViewer->GetRatio(), wxColour(0, 0, 0), wxColour(0, 0, 0), wxColour(0, 0, 0), 2);
 }
 
-void CRedEyeFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CRedEyeFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	DrawingToPicture(effectParameter, bitmapViewer, filtreEffet, m_cDessin);
 }

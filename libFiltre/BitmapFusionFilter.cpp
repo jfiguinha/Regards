@@ -14,11 +14,11 @@
 #include <FilterData.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
-#include <BitmapWndViewer.h>
 #include <InterpolationBicubic.h>
 #include <utility.h>
 #include <OpenCLEffectVideo.h>
 #include <GLTexture.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CBitmapFusionFilter::CBitmapFusionFilter()
@@ -54,7 +54,7 @@ int CBitmapFusionFilter::GetTypeFilter()
 
 
 
-CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut)
+CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	CRegardsBitmap * bitmapOut = nullptr;
 
@@ -95,7 +95,7 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 
 }
 
-void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, CBitmapWndViewer * bmpViewer, wxRect &rcOut)
+void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	cl_int err;
 	if (bmpViewer->GetOpenCLContext() != nullptr)

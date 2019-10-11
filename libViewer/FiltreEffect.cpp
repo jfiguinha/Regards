@@ -9,9 +9,10 @@
 #include <FilterData.h>
 #include "ViewerTheme.h"
 #include "ViewerThemeInit.h"
+#include <BitmapWndViewer.h>
 #define TAILLEMAX 1024
 using namespace Regards::Viewer;
-
+using namespace Regards::Control;
 CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo)
 {
 	filtre = 0;
@@ -95,7 +96,7 @@ void CFiltreEffect::UpdateMousePosition()
 	if (bitmapWindow != nullptr)
 	{
 		CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
-		bitmapWindow->UpdateBitmap(imageLoad);
+		bitmapWindow->UpdateBitmap(imageLoad, false);
 	}
 }
 
@@ -104,8 +105,9 @@ CImageLoadingFormat * CFiltreEffect::ApplyEffect()
 	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
 
 	if (filterEffect != nullptr)
+	{
 		return filterEffect->ApplyEffect(effectParameter, bitmapWindow);
-
+	}
 	return nullptr;
 }
 

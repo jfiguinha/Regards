@@ -15,7 +15,7 @@
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <Draw.h>
-#include <BitmapWndViewer.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CLensFlareFilter::CLensFlareFilter()
@@ -86,7 +86,7 @@ void CLensFlareFilter::FilterChangeParam(CEffectParameter * effectParameter,  CT
 }
 
 
-void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	CRegardsBitmap * bitmapOut = filtreEffet->GetBitmap(false);
 	wxPoint pt;
@@ -120,11 +120,12 @@ void CLensFlareFilter::ApplyPreviewEffect(CEffectParameter * effectParameter, Re
 	}
 }
 
-CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CLensFlareFilter::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	CImageLoadingFormat * imageLoad = nullptr;
 	if (effectParameter != nullptr && source != nullptr)
 	{
+		source->RotateExif(source->GetOrientation());
 		CImageLoadingFormat image;
 		image.SetPicture(source);
 		CFiltreEffet * filtre = new CFiltreEffet(bitmapViewer->GetBackColor(), nullptr, &image);
@@ -153,7 +154,7 @@ void CLensFlareFilter::LensFlare(CFiltreEffet * filtreEffet, const int &iPosX, c
 }
 
 
-void CLensFlareFilter::Drawing(wxMemoryDC * dc, Regards::Control::CBitmapWndViewer * bitmapViewer, CDraw * m_cDessin)
+void CLensFlareFilter::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
 {
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();

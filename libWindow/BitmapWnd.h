@@ -8,6 +8,7 @@
 #include "ScrollInterface.h"
 #include "RenderBitmapInterfaceOpenGL.h"
 #include "SliderInterface.h"
+#include <BitmapDisplay.h>
 using namespace std;
 using namespace Regards::OpenCL;
 
@@ -23,7 +24,7 @@ namespace Regards
 {
 	namespace Window
 	{
-		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface
+		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface, public IBitmapDisplay
 		{
 		public:
 			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
@@ -37,6 +38,7 @@ namespace Regards
 
 			int GetWidth();
 			int GetHeight();
+			virtual CFiltreEffet * GetFiltreEffet();
 
 			wxWindow* GetWindow() {
 				return this;
@@ -45,7 +47,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetFilterInterpolation(const int& filter);
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
-			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll = false);
+			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll);
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
 			void SetBitmapParameter(const bool& externBitmap, const bool& addToTexture);
 			CRegardsBitmap* GetBitmap(const bool& source);

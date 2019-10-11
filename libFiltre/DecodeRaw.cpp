@@ -4,11 +4,11 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-#include <BitmapWndViewer.h>
 #include <Metadata.h>
 #include <ConvertUtility.h>
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
+#include <BitmapDisplay.h>
 using namespace Regards::Viewer;
 
 CDecodeRaw::CDecodeRaw()
@@ -449,7 +449,7 @@ void CDecodeRaw::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEle
 	decodeParameter->update = true;
 }
 
-CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter, CBitmapWndViewer * bitmapViewer)
+CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer)
 {
 	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
 		return nullptr;
@@ -459,7 +459,7 @@ CImageLoadingFormat * CDecodeRaw::ApplyEffect(CEffectParameter * effectParameter
 	return rawDecoder->DecodePicture(rawParameter);
 }
 
-void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards::Control::CBitmapWndViewer * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
+void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin, int & widthOutput, int & heightOutput)
 {
 	if (effectParameter == nullptr || bitmapViewer == nullptr || rawDecoder == nullptr)
 		return;
@@ -481,7 +481,7 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, Regards:
 			}
 			else
 			{
-				bitmapViewer->UpdateBitmap(imageLoad);
+				bitmapViewer->UpdateBitmap(imageLoad, false);
 			}
 			//int orientation = bitmapViewer->GetOrientation();
 			//imageLoad->ApplyExifOrientation(orientation);
