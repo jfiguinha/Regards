@@ -103,7 +103,6 @@ namespace Regards
 
 		protected:
 
-			virtual void CreateContext() {};
 			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput) {};
 			virtual void AfterRender() {};
 			int UpdateResized();

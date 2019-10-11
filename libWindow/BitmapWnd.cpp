@@ -1430,8 +1430,6 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		if (openCLEngine != nullptr)
 			openclContext = openCLEngine->GetInstance();
 
-		CreateContext();
-
 		renderOpenGL->LoadingResource(scale_factor);
 	}
 

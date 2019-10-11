@@ -1453,6 +1453,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 			imageLoading = LoadPicture(fileName, true);
 			if(imageLoading != nullptr && imageLoading->IsOk())
 			{
+				imageLoading->SetOrientation(orientation);
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
 				imageLoading->ApplyExifOrientation();
 			}
@@ -1466,6 +1467,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 				imageLoading = new CImageLoadingFormat();
 				imageLoading->SetFilename(fileName);
 				imageLoading->SetPicture(image);
+				imageLoading->SetOrientation(orientation);
 				if(imageLoading->IsOk())
 				{
 					//imageLoading->ConvertToBGR(true);
@@ -1478,6 +1480,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 				imageLoading = LoadPicture(fileName, true);
 				if(imageLoading != nullptr && imageLoading->IsOk())
 				{
+					imageLoading->SetOrientation(orientation);
 					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
 					imageLoading->ApplyExifOrientation();
 				}
