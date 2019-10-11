@@ -381,6 +381,7 @@ void CFaceDetectionDlg::FacialRecognition(void * param)
 	if (path->mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
+		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
@@ -436,6 +437,7 @@ void CFaceDetectionDlg::FindCompatibility(CFaceDescriptor * faceDescriptor)
 
 void CFaceDetectionDlg::OnFacePhotoAdd(wxCommandEvent& event)
 {
+
 	CThreadFace * path = (CThreadFace *)event.GetClientData();
 	if (path->thread != nullptr)
 	{
@@ -447,7 +449,11 @@ void CFaceDetectionDlg::OnFacePhotoAdd(wxCommandEvent& event)
 	if (path != nullptr)
 		delete path;
 
+	int pos = (int)(((float)position / (float)nbFile) * 100.0f);
+ 	Gauge1->SetValue(pos);
+
 	nbProcessFacePhoto--;
+	position++;
 }
 
 
@@ -460,6 +466,8 @@ void CFaceDetectionDlg::OnIdle(wxIdleEvent& evt)
 
 	CSqlFacePhoto facePhoto;
 	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
+	if (nbFile == 0)
+		nbFile = listPhoto.size();
 
 	//Recherche Nb Fichier non traité pour le visage
 	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0 && !pushCloseButton)
