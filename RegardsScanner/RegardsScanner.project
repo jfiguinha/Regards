@@ -442,7 +442,7 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-89.dll ./Debug/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-91.dll ./Debug/libpoppler-91.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf21.dll ./Debug/qpdf21.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
@@ -592,7 +592,7 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-89.dll ./Release/libpoppler-89.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-91.dll ./Release/libpoppler-91.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf21.dll ./Release/qpdf21.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
