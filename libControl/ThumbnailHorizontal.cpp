@@ -57,7 +57,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
         thumbnailData->SetNumElement(i);
 
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
         pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
         pBitmapIcone->SetData(thumbnailData);
         pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

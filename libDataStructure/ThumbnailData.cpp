@@ -24,6 +24,29 @@ CThumbnailData::CThumbnailData(const wxString & filename)
 	numPhotoId = -1;
 }
 
+CThumbnailData& CThumbnailData::operator=(const CThumbnailData& other)
+{
+	timePosition = other.timePosition;
+	percent = other.percent;
+	pictureLoad = other.pictureLoad;
+	pictureLoading = other.pictureLoading;
+	isProcess = other.isProcess;
+	typeElement = other.typeElement;
+	folder = other.folder;
+	key = other.key;
+	numCategorie = other.numCategorie;
+	numParent = other.numParent;
+	numCatalog = other.numCatalog;
+
+	filename = other.filename;
+	libelle = other.libelle;
+	numElement = other.numElement;
+	libelleTimePosition = other.libelleTimePosition;
+	numPhotoId = other.numPhotoId;
+
+	return *this;
+}
+
 void CThumbnailData::SetFilename(const wxString &filename)
 {
 	this->filename = filename;

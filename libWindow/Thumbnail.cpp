@@ -718,7 +718,9 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 		numSelect = pBitmapIcone;
 		pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
         //
-        OnPictureClick(pBitmapIcone->GetData());
+		CThumbnailData * data = pBitmapIcone->GetCopyData();
+        OnPictureClick(data);
+		delete data;
         pBitmapIcone->SetSelected(true);
 	}
 	else

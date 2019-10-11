@@ -213,7 +213,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 				CThumbnailData * data = listItem[i];
 				int x = (i % nbPictureLine) * width;
 				int y = (i / nbPictureLine) * height + heightLibelle;
-				CIcone * pBitmapIcone = new CIcone(nullptr);
+				CIcone * pBitmapIcone = new CIcone();
 				pBitmapIcone->SetNumElement(data->GetNumElement());
 				pBitmapIcone->SetData(data);
 				pBitmapIcone->SetBackgroundColor(color);

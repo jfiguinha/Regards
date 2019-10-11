@@ -24,7 +24,7 @@ public:
 
 	CThumbnailData(const wxString & filename);
 	virtual ~CThumbnailData(void);
-
+	CThumbnailData& operator=(const CThumbnailData& other);
 	virtual int GetType()
 	{
 		return 0;

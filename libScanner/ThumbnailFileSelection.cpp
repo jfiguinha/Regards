@@ -125,7 +125,7 @@ void CThumbnailFileSelection::AddSeparatorBar(const wxString &libelle, int &nbEl
 		thumbnailData->SetTimePosition(thumbnail->timePosition);
 		thumbnailData->SetBitmap(thumbnail->image);
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(i);
 		pBitmapIcone->ShowSelectButton(true);
 		pBitmapIcone->SetData(thumbnailData);
@@ -268,7 +268,7 @@ void CThumbnailFileSelection::SetListeFile()
 		thumbnailData->SetBitmap(thumbnail->image);
 
 
-		CIcone * pBitmapIcone = new CIcone(nullptr);
+		CIcone * pBitmapIcone = new CIcone();
 		pBitmapIcone->SetNumElement(thumbnailData->GetNumElement());
 		pBitmapIcone->SetData(thumbnailData);
 		pBitmapIcone->SetTheme(themeThumbnail.themeIcone);

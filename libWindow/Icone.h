@@ -21,7 +21,7 @@ namespace Regards
 		class CIcone
 		{
 		public:
-			CIcone(COpenCLContext * openclContext);
+			CIcone();
 			~CIcone(void);
             
             void StartLoadingPicture();
@@ -34,12 +34,13 @@ namespace Regards
 				showSelected = show;
 			};
 
+			CIcone& operator=(const CIcone& other);
 			inline bool operator== (const CIcone &n1);
 
 			void SetData(CThumbnailData * thumbnailData, const bool &deleteData = true);
 			CThumbnailData * GetData();
 			bool DataNeedToBeDelete();
-
+			CThumbnailData * GetCopyData();
 			void SetTheme(CThemeIcone theme);
 
 			//------------------------------------------
@@ -146,7 +147,7 @@ namespace Regards
             bool showLoading;
             wxImage pictureLoading;
             wxImage transparent;
-			COpenCLContext * openclContext;
+			//COpenCLContext * openclContext;
 
 			bool eraseBitmap = true;
 			wxBitmap bitmapLocal;

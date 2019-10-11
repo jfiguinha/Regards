@@ -154,7 +154,7 @@ void CThumbnailMultiPage::InitWithDefaultPicture(const wxString &filename, vecto
 			thumbnailData->SetTimePosition(thumbnail->timePosition);
 			thumbnailData->SetBitmap(thumbnail->image);
 
-			CIcone * pBitmapIcone = new CIcone(nullptr);
+			CIcone * pBitmapIcone = new CIcone();
 			pBitmapIcone->SetNumElement(i);
 			pBitmapIcone->SetData(thumbnailData);
 			pBitmapIcone->SetTheme(themeThumbnail.themeIcone);
