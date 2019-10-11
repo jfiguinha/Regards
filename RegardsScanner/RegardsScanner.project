@@ -323,6 +323,8 @@
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
         <Library Value="qpdf"/>
+        <Library Value="tesseract"/>
+        <Library Value="lept"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
