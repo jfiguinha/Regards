@@ -76,7 +76,7 @@
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsScanner">
-    <Project Name="RegardsScanner" Path="RegardsScanner/RegardsScanner.project" Active="No"/>
+    <Project Name="RegardsScanner" Path="RegardsScanner/RegardsScanner.project" Active="Yes"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">

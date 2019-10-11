@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libScanner" Version="10.0.0" InternalType="Library">
+  <VirtualDirectory Name="Panel">
+    <File Name="PanelInfosWnd.h"/>
+    <File Name="PanelInfosWnd.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Splitter">
+    <File Name="BitmapViewerInfosWnd.h"/>
+    <File Name="BitmapViewerInfosWnd.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Toolbar">
+    <File Name="ToolbarInfos.h"/>
+    <File Name="ToolbarInfos.cpp"/>
     <File Name="ValidationToolbar.h"/>
     <File Name="ValidationToolbar.cpp"/>
     <File Name="ToolbarPDF.h"/>
@@ -34,16 +44,20 @@
     <File Name="ScannerParam.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Dialog">
+    <File Name="ThumbnailSelection.h"/>
+    <File Name="ThumbnailSelection.cpp"/>
     <File Name="SelectPage.h"/>
     <File Name="SelectPage.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="CentralWindow.cpp"/>
     <File Name="viewerPDF.cpp"/>
     <File Name="ScannerFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="CentralWindow.h"/>
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
   </VirtualDirectory>
