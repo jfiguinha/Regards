@@ -26,7 +26,7 @@ using namespace Regards::OpenCL;
 class IBitmapDisplay
 {
 public:
-    virtual ~IBitmapDisplay() = 0;
+    virtual ~IBitmapDisplay(){};
 	virtual COpenCLContext * GetOpenCLContext() = 0;
 	virtual int GetHPos() = 0;
 	virtual int GetVPos() = 0;

@@ -4,7 +4,7 @@
 //  Regards.libViewer
 //
 //  Created by figuinha jacques on 12/04/2016.
-//  Copyright © 2016 figuinha jacques. All rights reserved.
+//  Copyright Â© 2016 figuinha jacques. All rights reserved.
 //
 
 #include "BitmapFusionFilter.h"

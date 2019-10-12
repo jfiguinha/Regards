@@ -18,7 +18,7 @@ using namespace Regards::OpenGL;
 class IAfterEffect
 {
 public:
-    virtual ~IAfterEffect() = 0;
+    virtual ~IAfterEffect(){};
 	virtual int GetTypeFilter() = 0;
 	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
 	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
