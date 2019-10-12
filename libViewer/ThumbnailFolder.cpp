@@ -368,13 +368,14 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	//Sauvegarde de l'état
 	//---------------------------------
 
-	int numPhotoIdActif = 0;
-	int numPhotoIdSelect = 0;
+	//int numPhotoIdActif = 0;
+	//int numPhotoIdSelect = 0;
 
 	vector<CThumbnailData *> listSelectItem;
 
 	GetSelectItem(listSelectItem);
 
+	/*
 	if (numSelect != nullptr)
 	{
 		CThumbnailData * data = numSelect->GetData();
@@ -388,7 +389,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 		if (data != nullptr)
 			numPhotoIdActif = data->GetNumPhotoId();
 	}
-
+	*/
 
 	//InitScrollingPos();
 
@@ -449,23 +450,7 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 		}
 	}
 
-	if (numPhotoIdSelect > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdSelect);
-		if (icone != nullptr)
-		{
-			icone->SetSelected(true);
-		}
-	}
-
-	if (numPhotoIdActif > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdActif);
-		if (icone != nullptr)
-		{
-			icone->SetActive(true);
-		}
-	}
+	AfterSetList();
 
 	thumbnailPos = 0;
 
@@ -490,6 +475,8 @@ void CThumbnailFolder::Init(PhotosVector * photoVector, const int &typeAffichage
 		else
 			InitTypeAffichage(photoVector, typeAffichage);
 	}
+
+	
 	processIdle = true;	
 }
 
@@ -524,6 +511,8 @@ void CThumbnailFolder::SetListeFile(PhotosVector * photoVector)
 		i++;
 
 	}
+
+	AfterSetList();
 
 	threadDataProcess = true;
 	widthThumbnail = 0;

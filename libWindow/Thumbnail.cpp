@@ -266,6 +266,8 @@ void CThumbnail::ZoomPosition(const int &position)
 CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CWindowMain("CThumbnail",parent, id)
 {
+	selectFilename = "";
+	actifFilename = "";
 	controlWidth = 0;
 	controlHeight = 0;
 	thumbnailPos = 0;
@@ -389,9 +391,50 @@ int CThumbnail::GetIconeWidth()
 	return themeThumbnail.themeIcone.GetWidth();
 }
 
+void CThumbnail::AfterSetList()
+{
+	for (int i = 0; i < iconeList->GetNbElement(); i++)
+	{
+		CIcone * icone = iconeList->GetElement(i);
+		if (icone != nullptr)
+		{
+			CThumbnailData * data = icone->GetData();
+			if (selectFilename == data->GetFilename())
+			{
+				numSelect = icone;
+				icone->SetSelected(true);
+			}
+			if (actifFilename == data->GetFilename())
+			{
+				numActif = icone;
+				icone->SetActive(true);
+			}
+
+			if (numSelect != nullptr && numActif != nullptr)
+				break;
+		}
+	}
+}
+
 void CThumbnail::EraseThumbnailList()
 {
     TRACE();
+
+	if (numSelect != nullptr)
+	{
+		CThumbnailData * data = numSelect->GetData();
+		if(data != nullptr)
+			selectFilename = data->GetFilename();
+	}
+
+	if (numActif != nullptr)
+	{
+		CThumbnailData * data = numActif->GetData();
+		if (data != nullptr)
+			actifFilename = data->GetFilename();
+	}
+
+
     iconeList->EraseThumbnailList();
 
 	numSelect = nullptr;
