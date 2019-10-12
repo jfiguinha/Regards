@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ImportGroup Label="PropertySheets"/>
+    <PropertyGroup>
+    </PropertyGroup>
+    <ItemDefinitionGroup>
+		  <ClCompile>
+			  <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+			  <PreprocessorDefinitions>HAS_LIBTHRIFT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		  </ClCompile>
+	  </ItemDefinitionGroup>
+	  <ItemDefinitionGroup Label="Win32 and vc141 and Debug" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v141')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Configuration)' == 'Debug'">
+		  <Link>
+			  <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)lib\Win32\static\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalDependencies>libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		  </Link>
+    </ItemDefinitionGroup>
+	  <ItemDefinitionGroup Label="Win32 and vc141 and Release" Condition="'$(Platform)' == 'Win32' And ( $(PlatformToolset.IndexOf('v141')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Configuration)' == 'Release'">
+		  <Link>
+			  <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)lib\Win32\static\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalDependencies>libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		  </Link>
+    </ItemDefinitionGroup>
+	  <ItemDefinitionGroup Label="x64 and vc141 and Debug" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v141')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Configuration)' == 'Debug'">
+		  <Link>
+			  <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)lib\x64\static\Debug\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalDependencies>libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		  </Link>
+    </ItemDefinitionGroup>
+	  <ItemDefinitionGroup Label="x64 and vc141 and Release" Condition="'$(Platform)' == 'x64' And ( $(PlatformToolset.IndexOf('v141')) &gt; -1 Or '$(PlatformToolset)' == 'WindowsKernelModeDriver8.0' Or '$(PlatformToolset)' == 'WindowsApplicationForDrivers8.0' Or '$(PlatformToolset)' == 'WindowsUserModeDriver8.0' ) And '$(Configuration)' == 'Release'">
+		  <Link>
+			  <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)lib\x64\static\Release\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalDependencies>libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+		  </Link>
+    </ItemDefinitionGroup>
+</Project>
