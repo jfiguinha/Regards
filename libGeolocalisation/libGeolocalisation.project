@@ -54,8 +54,6 @@
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libMediaInfo"/>
-        <Preprocessor Value="EXIV2"/>
-        <Preprocessor Value="USECURL"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -189,13 +189,9 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
-        <Preprocessor Value="EXIV2"/>
         <Preprocessor Value="VIEWER"/>
-        <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
-        <Preprocessor Value="USECURL"/>
-        <Preprocessor Value="__WXPDFDOC__"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

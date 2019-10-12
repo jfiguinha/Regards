@@ -113,9 +113,6 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <Preprocessor Value="TURBOJPEG"/>
-        <Preprocessor Value="FFMPEG"/>
-        <Preprocessor Value="WX_PRECOMP"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

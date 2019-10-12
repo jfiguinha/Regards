@@ -98,6 +98,14 @@ CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const wxString & fileName, int &
 	return image;
 }
 
+CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const wxString & fileName, const int & thumbnailWidth, const int & thumbnailHeight, int &rotation, int percent)
+{
+	int timePosition = 0;
+	CRegardsBitmap * image = GetVideoFrame(fileName, rotation, percent, timePosition, thumbnailWidth, thumbnailHeight);
+
+	return image;
+}
+
 CRegardsBitmap * CThumbnailVideo::GetVideoFrame(const wxString & fileName, const int & thumbnailWidth, const int & thumbnailHeight, int &rotation)
 {
 	int timePosition = 0;

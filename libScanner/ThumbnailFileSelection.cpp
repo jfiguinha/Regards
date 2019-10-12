@@ -145,26 +145,6 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 	//Sauvegarde de l'état
 	//---------------------------------
 
-	int numPhotoIdActif = 0;
-	int numPhotoIdSelect = 0;
-
-	if (numSelect != nullptr)
-	{
-		CThumbnailData * data = numSelect->GetData();
-		if (data != nullptr)
-			numPhotoIdSelect = data->GetNumPhotoId();
-	}
-
-	if (numActif != nullptr)
-	{
-		CThumbnailData * data = numActif->GetData();
-		if (data != nullptr)
-			numPhotoIdActif = data->GetNumPhotoId();
-	}
-
-
-	//InitScrollingPos();
-
 	EraseThumbnailList();
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
@@ -189,24 +169,7 @@ void CThumbnailFileSelection::InitTypeAffichage(const int &typeAffichage)
 
 	SetNbFiles(i);
 
-
-	if (numPhotoIdSelect > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdSelect);
-		if (icone != nullptr)
-		{
-			icone->SetSelected(true);
-		}
-	}
-
-	if (numPhotoIdActif > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdActif);
-		if (icone != nullptr)
-		{
-			icone->SetActive(true);
-		}
-	}
+	AfterSetList();
 
 	thumbnailPos = 0;
 
@@ -274,7 +237,7 @@ void CThumbnailFileSelection::SetListeFile()
 		i++;
 
 	}
-
+	AfterSetList();
 	threadDataProcess = true;
 	widthThumbnail = 0;
 	heightThumbnail = 0;

@@ -210,23 +210,6 @@ void CThumbnailFace::Init()
 	//Sauvegarde de l'état
 	//---------------------------------
 
-	int numPhotoIdActif = 0;
-	int numPhotoIdSelect = 0;
-
-	if (numSelect != nullptr)
-	{
-		CThumbnailData * data = numSelect->GetData();
-		if (data != nullptr)
-			numPhotoIdSelect = data->GetNumPhotoId();
-	}
-
-	if (numActif != nullptr)
-	{
-		CThumbnailData * data = numActif->GetData();
-		if (data != nullptr)
-			numPhotoIdActif = data->GetNumPhotoId();
-	}
-
 	EraseThumbnailList();
 
 	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
@@ -248,23 +231,7 @@ void CThumbnailFace::Init()
 
 	SetNbFiles(nbElement);
 
-	if (numPhotoIdSelect > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdSelect);
-		if (icone != nullptr)
-		{
-			icone->SetSelected(true);
-		}
-	}
-
-	if (numPhotoIdActif > 0)
-	{
-		CIcone * icone = FindIcone(numPhotoIdActif);
-		if (icone != nullptr)
-		{
-			icone->SetActive(true);
-		}
-	}
+	AfterSetList();
 
 	thumbnailPos = 0;
 

@@ -75,7 +75,6 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="YUV"/>
         <Preprocessor Value="OPENCL"/>

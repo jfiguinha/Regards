@@ -146,6 +146,8 @@ void CThumbnailViewerPicture::SetListeFile(PhotosVector * photoVector)
 
 	}
 
+	AfterSetList();
+
 	threadDataProcess = true;
 	widthThumbnail = 0;
 	heightThumbnail = 0;

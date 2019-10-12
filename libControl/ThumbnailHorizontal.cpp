@@ -72,7 +72,7 @@ void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
     }
 
 	threadDataProcess = true;
-
+	AfterSetList();
 	Refresh();
 }
 

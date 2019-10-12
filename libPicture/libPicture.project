@@ -77,9 +77,6 @@
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <Preprocessor Value="LIBRAW"/>
-        <Preprocessor Value="EXIV2"/>
-        <Preprocessor Value="FFMPEG"/>
-        <Preprocessor Value="TURBOJPEG"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>

@@ -86,6 +86,7 @@ namespace Regards
 			virtual void OnPictureClick(CThumbnailData * data) = 0;
 			void InitScrollingPos();
 			virtual void EraseThumbnailList();
+			virtual void AfterSetList();
 			void RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur);
 
             void OnRefreshIcone(wxTimerEvent& event);
@@ -155,6 +156,9 @@ namespace Regards
             wxBitmap bitmapMemory;
             int oldPosLargeur;
             int oldPosHauteur;
+
+			wxString selectFilename;
+			wxString actifFilename;
 		};
 	}
 }
