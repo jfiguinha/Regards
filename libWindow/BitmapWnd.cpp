@@ -1542,7 +1542,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 	if (source != nullptr && bitmapLoad)
 	{
-		CRegardsBitmap* bitmapSpecial = nullptr;
+		//CRegardsBitmap* bitmapSpecial = nullptr;
 
 		if (filtreEffet != nullptr)
 			delete filtreEffet;

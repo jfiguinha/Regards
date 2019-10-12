@@ -1195,7 +1195,7 @@ void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 void CMainWindow::ImageSuivante()
 {
     TRACE();
-    clock_t tStart = clock();
+    //clock_t tStart = clock();
     
 	numElement++;
 	if (numElement >= imageList->GetNbElement())
