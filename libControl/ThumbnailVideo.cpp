@@ -150,7 +150,13 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 		for (int i = 0; i < nbResult; i++)
 		{
 			CImageVideoThumbnail * thumbnail = sqlThumbnailVideo.GetPictureThumbnail(szFileName, i);
-
+			if (thumbnail == nullptr)
+			{
+				thumbnail = new CImageVideoThumbnail();
+				thumbnail->percent = ((float)i / (float)nbResult) * 100.0f;
+				thumbnail->timePosition = i;
+				thumbnail->image = libPicture.LoadPicture(szFileName, true, i);
+			}
 			float percent = ((float)i / (float)size) * 100.0f;
 			CThumbnailDataStorage * thumbnailData = new CThumbnailDataStorage(szFileName);
 			//thumbnailData->SetStorage(nullptr);
@@ -243,6 +249,7 @@ void CThumbnailVideo::ProcessThumbnailIdle()
 {
 	if (videoFilename != "")
 	{
+		CLibPicture libPicture;
 		CSqlThumbnailVideo sqlThumbnailVideo;
 		int nbResult = sqlThumbnailVideo.GetNbThumbnail(videoFilename);
 		if (nbResult > 0)
@@ -250,6 +257,13 @@ void CThumbnailVideo::ProcessThumbnailIdle()
 			for (int i = 0; i < nbResult; i++)
 			{
 				CImageVideoThumbnail * thumbnail = sqlThumbnailVideo.GetPictureThumbnail(videoFilename, i);
+				if (thumbnail == nullptr)
+				{
+					thumbnail = new CImageVideoThumbnail();
+					thumbnail->percent = ((float)i / (float)nbResult) * 100.0f;
+					thumbnail->timePosition = i;
+					thumbnail->image = libPicture.LoadPicture(videoFilename, true, i);
+				}
 				CIcone * pBitmapIcone = iconeList->GetElement(i);
 				if (pBitmapIcone != nullptr)
 				{

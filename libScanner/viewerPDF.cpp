@@ -103,6 +103,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 
 void CViewerPDF::OcrPage()
 {
+
 	char *outText;
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	resourcePath = resourcePath + "\\tesseract";

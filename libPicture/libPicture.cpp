@@ -2159,7 +2159,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			{
 				int orientation = 0;
 				CThumbnailVideo video;
-				bitmap->SetPicture(video.GetVideoFrame(fileName, 0, 0, orientation));
+				int percent = ((float)numPicture / (float)20) * 100.0f;
+				bitmap->SetPicture(video.GetVideoFrame(fileName, 0, 0, orientation, percent));
 				bitmap->SetOrientation(orientation);
 				bitmap->SetFilename(fileName);
 			}
