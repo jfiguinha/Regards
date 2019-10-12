@@ -160,10 +160,8 @@
         <IncludePath Value="../libVideoFFMpeg"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
-        <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
-        <Preprocessor Value="USECURL"/>
       </Compiler>
       <Linker Options="$(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-headerpad_max_install_names;-framework IOKit;-framework Carbon;-framework Cocoa;-framework AudioToolbox;-framework System;-framework OpenCL;-framework CoreAudio;-framework CoreVideo;-framework AudioUnit;-framework AVKit;-framework ForceFeedback;-framework WebKit;-framework security;-framework VideoToolbox;-framework AVFoundation;-framework VideoDecodeAcceleration;-framework CoreMedia;-framework CoreImage;-framework OpenGL;-framework GLUT">
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>

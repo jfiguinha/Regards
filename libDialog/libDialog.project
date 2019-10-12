@@ -96,7 +96,6 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../FaceRecognition"/>
-        <Preprocessor Value="EXIV2"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

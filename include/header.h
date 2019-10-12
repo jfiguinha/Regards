@@ -5,6 +5,10 @@
 #endif
 
 #define wxUSE_PDF
+#define TURBOJPEG
+#define EXIV2
+#define FFMPEG
+#define USECURL
 //#define WX_PRECOMP
 
 #include <thread>

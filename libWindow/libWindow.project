@@ -163,7 +163,6 @@
         <IncludePath Value="../libExif"/>
         <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <Preprocessor Value="FFMPEG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

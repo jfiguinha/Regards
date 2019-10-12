@@ -109,9 +109,6 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
-        <Preprocessor Value="FFMPEG"/>
-        <Preprocessor Value="TURBOJPEG"/>
-        <Preprocessor Value="EXIV2"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

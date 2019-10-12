@@ -66,7 +66,6 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
         <Preprocessor Value="LATEST_GREATEST_FFMPEG"/>
-        <Preprocessor Value="FFMPEG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

@@ -111,8 +111,6 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <Preprocessor Value="EXIV2"/>
-        <Preprocessor Value="FFMPEG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

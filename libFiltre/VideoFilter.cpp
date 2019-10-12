@@ -13,7 +13,6 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <Metadata.h>
-#include <ShowVideo.h>
 #include <videostream.h>
 using namespace Regards::Viewer;
 using namespace Regards::Video;

@@ -108,11 +108,8 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
         <Preprocessor Value="VIEWER"/>
-        <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
-        <Preprocessor Value="USECURL"/>
-        <Preprocessor Value="__WXPDFDOC__"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

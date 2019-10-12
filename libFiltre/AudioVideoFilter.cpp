@@ -12,7 +12,6 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <Metadata.h>
-#include <ShowVideo.h>
 #include <videostream.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Viewer;
