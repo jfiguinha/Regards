@@ -19,9 +19,7 @@ public:
 private:
 
 	bool TestBitmap();
-	uint8_t * data;
-	unsigned long size;
-	int format;
-	int compressMethod;
+	wxImage * localbitmap;
+
 };
 

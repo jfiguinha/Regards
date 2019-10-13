@@ -720,7 +720,7 @@ void CListPicture::ExportFile(const wxString & filename, CThumbnailData * data, 
 	}
 	else
 	{
-		if (!libPicture.TestIsVideo(filename) && !libPicture.TestIsAnimation(filename))
+		if (!libPicture.TestIsVideo(filename) && !libPicture.TestIsAnimation(filename) && !libPicture.TestIsPDF(filename))
 		{
 			if (!infoFile.changeFilename)
 			{

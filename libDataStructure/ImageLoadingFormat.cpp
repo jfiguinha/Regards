@@ -546,6 +546,7 @@ uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &comp
 		{
 			outputsize = _jpegImage->GetSize();
 			data = new uint8_t[outputsize];
+			compressMethod = 0;
 			memcpy(data, _jpegImage->GetData(), outputsize);
 			return data;
 		}
@@ -578,6 +579,7 @@ uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &comp
 			_wxImage->SaveFile(outputStream, wxBITMAP_TYPE_JPEG);
 			outputsize = outputStream.GetSize();
 			data = new uint8_t[outputsize];
+			compressMethod = 0;
 			outputStream.CopyTo(data, outputStream.GetSize());
 		}
 		break;

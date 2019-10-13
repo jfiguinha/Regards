@@ -34,7 +34,7 @@ bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVide
 	type = 2;
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo " + to_string(numVideo));
+	ExecuteRequest("SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo = " + to_string(numVideo));
 	/*
     if (!find)
 	{

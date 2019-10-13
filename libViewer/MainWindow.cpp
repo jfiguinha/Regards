@@ -618,8 +618,8 @@ void CMainWindow::ProcessIdle()
 			sqlFindPhotos.SearchPhotos(requestSql);
 			sqlFindPhotos.SearchPhotosByTypeAffichage(&pictures, typeAffichage, NUMCATALOGID);
 
-			if (imageList->GetNbElement() == 0)
-				sqlFindPhotos.SearchPhotos(&pictures);
+			//if (imageList->GetNbElement() == 0)
+			//	sqlFindPhotos.SearchPhotos(&pictures);
 		}
 		else
 			sqlFindPhotos.SearchPhotos(&pictures);

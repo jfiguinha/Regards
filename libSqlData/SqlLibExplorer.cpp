@@ -199,7 +199,7 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
             CLibPicture libPicture;
             for(CPhotos photo : photosVector)
             {
-                if(libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
+                if(libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
                     sqlThumbnail.DeleteThumbnail(photo.GetId());
             } 
         }

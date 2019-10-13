@@ -607,7 +607,7 @@ void CThumbnail::LoadPicture(void * param)
     if(threadLoadingBitmap == nullptr)
         return;
         
-	if(libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
+	if(libPicture.TestIsVideo(threadLoadingBitmap->filename) || libPicture.TestIsPDF(threadLoadingBitmap->filename) || libPicture.TestIsAnimation(threadLoadingBitmap->filename))
 	{
         vector<CImageVideoThumbnail *> listVideo;
         libPicture.LoadAllVideoThumbnail(threadLoadingBitmap->filename, &listVideo, true, true);
@@ -1045,8 +1045,7 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
                     pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
                     
 				pThumbnailData->SetIsProcess(false);
-                pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone);
-                    
+                pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone); 
                 pThumbnailData->SetIsLoading(false);
                     
                 icone->DestroyCache();

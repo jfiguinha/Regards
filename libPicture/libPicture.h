@@ -26,6 +26,7 @@ public:
 	uint32_t GetFrameDelay(const  wxString & szFileName);
 	int TestImageFormat(const wxString & szFileName);
 	bool TestIsVideo(const wxString & szFileName);
+	bool TestIsPDF(const wxString & szFileName);
 	bool TestIsPicture(const wxString & szFileName);
     bool TestIsAnimation(const wxString & szFileName);
 	int GetPictureDimensions(const  wxString & fileName, int & width, int & height, int & rotation);

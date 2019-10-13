@@ -152,6 +152,10 @@ int CSqlExecuteRequest::ExecuteRequest(const wxString &requestSQL)
                 _sqlLib->unlock();
                 return nbResult;
             }
+			else
+			{
+				throw("Erreur SQL");
+			}
             _sqlLib->unlock();
         }
 	}
