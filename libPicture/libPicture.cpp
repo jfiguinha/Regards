@@ -1167,15 +1167,30 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 			poppler.Open(szFileName);
 			return poppler.GetPageCount();
 		}
-		case PNG:
+		
+        
 		case TIFF:
-		case GIF:
 		case ANI:
 		{
 			wxBitmapType bitmapType = wxBITMAP_TYPE_ANY;
 			return wxImage::GetImageCount(szFileName, bitmapType);
 			break;
 		}
+        
+        case PNG:
+        case GIF:
+        {
+            wxFileName fichier(szFileName);
+            wxString extension = fichier.GetExt();            
+            
+            CxImage * _cxImage = new CxImage();	 
+            _cxImage->SetRetreiveAllFrames(true);
+            _cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName(extension.c_str()));
+            int nbFrame = _cxImage->GetNumFrames();
+            delete _cxImage;
+            return nbFrame;
+            break;
+        }
 
 		case MPG2:
 		case MPEG:
@@ -1289,7 +1304,7 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 			break;
 #endif
 			
-			case PNG:
+			
             case TIFF:
             case PDF:
 			case ANI:
@@ -1297,12 +1312,15 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 				break;
 
 			
+            case PNG:
 			case GIF:
 				{
                     
+                    wxFileName fichier(szFileName);
+                    wxString extension = fichier.GetExt();  
 					CxImage * _cxImage = new CxImage();	 
 					_cxImage->SetRetreiveAllFrames(true);
-					_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName("gif"));
+					_cxImage->Load(CConvertUtility::ConvertToUTF8(szFileName), CxImage::GetTypeIdFromName(extension.c_str()));
 					if (_cxImage->GetNumFrames() > 1)
 					{
 						for (auto i = 0; i < _cxImage->GetNumFrames(); i++)
@@ -2055,7 +2073,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 		break;
 
            
-		case PNG:
+		
 		case TIFF:
         case ANI:
 			{
@@ -2065,12 +2083,16 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				bitmap->SetPicture(image);
 			}
 			break;        
-                
+               
+        case PNG: 
         case GIF:
 			{
+                wxFileName fichier(fileName);
+                wxString extension = fichier.GetExt();                  
+                
 				CxImage * _cxImage = new CxImage();
 				_cxImage->SetRetreiveAllFrames(true);
-				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("gif"));
+				_cxImage->Load(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName(extension.c_str()));
                 if (_cxImage->GetNumFrames() > 1)
                 {
                     CxImage * frame = _cxImage->GetFrame(numPicture);
