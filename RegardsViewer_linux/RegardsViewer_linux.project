@@ -308,6 +308,7 @@
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
+        <Library Value="fontconfig"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
