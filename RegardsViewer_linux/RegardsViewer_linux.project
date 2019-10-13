@@ -355,6 +355,7 @@
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
+        <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
