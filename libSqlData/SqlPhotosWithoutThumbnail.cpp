@@ -34,7 +34,7 @@ void CSqlPhotosWithoutThumbnail::UpdateVideoList()
     CSqlThumbnailVideo sqlThumbnailVideo;
     for(CPhotos photo : photosVector)
     {
-        if(libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
+        if(libPicture.TestIsVideo(photo.GetPath()) || libPicture.TestIsPDF(photo.GetPath()) || libPicture.TestIsAnimation(photo.GetPath()))
         {
             if(sqlThumbnailVideo.GetNbThumbnail(photo.GetPath()) == 0)
             {

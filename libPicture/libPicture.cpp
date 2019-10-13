@@ -163,6 +163,18 @@ bool CLibPicture::TestIsPicture(const wxString & szFileName)
     return false;
 }
 
+bool CLibPicture::TestIsPDF(const wxString & szFileName)
+{
+	int numExt = 0;
+	wxFileName fichier(szFileName.c_str());
+	wxString extension = fichier.GetExt();
+
+	numExt = TestExtension(extension.Lower());
+	if (numExt == PDF)
+		return true;
+	return false;
+}
+
 bool CLibPicture::TestIsVideo(const wxString & szFileName)
 {
 	int numExt = 0;

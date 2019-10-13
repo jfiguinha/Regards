@@ -18,7 +18,7 @@ CThumbnailDataSQL::CThumbnailDataSQL(const wxString & filename, const bool &test
 	: CThumbnailData(filename)
 {
 	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(filename) || libPicture.TestIsAnimation(filename))
+	if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
 	{
 		isVideo = true;
 	}
