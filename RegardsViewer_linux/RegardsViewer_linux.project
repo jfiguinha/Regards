@@ -163,6 +163,8 @@
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../Regards"/>
+        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -300,10 +302,8 @@
         <Library Value="vpx"/>
         <Library Value="theoraenc"/>
         <Library Value="theoradec"/>
-        <Library Value="wxIA"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
-        <Library Value="sane"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

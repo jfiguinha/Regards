@@ -12,7 +12,7 @@
 #include <header.h>
 #include <wx/wxscan.h>
 #include <map>
-
+#include <wx/progdlg.h>
 #if defined( __UNIX_LIKE__ )
 
 #include <sane/saneopts.h>
@@ -434,7 +434,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 
         m_SaneStatus= ::sane_read( hSaneHandle, pScanBufferPtr, nImageBufferSize, &nScannedBytes );
         pScanBufferPtr += nScannedBytes * sizeof( SANE_Byte );
-		total_bytes += (SANE_Word)len;
+		total_bytes += (SANE_Word)nScannedBytes;
 		if (false == dialog.Update(total_bytes, "Receive data"))
 			break;
 

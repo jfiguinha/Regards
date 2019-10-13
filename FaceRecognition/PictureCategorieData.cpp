@@ -61,7 +61,11 @@ CPictureCategorieData::~CPictureCategorieData()
 void CPictureCategorieData::GetLabel(const int &numLabel, char * labelOut, int size)
 {
 	string label = labels[numLabel];
+#ifdef WIN32
 	strcpy_s(labelOut, size, label.c_str());
+#else
+    strcpy(labelOut, label.c_str());
+#endif 
 }
 
 int CPictureCategorieData::LoadPredictor(const std::string & file_name)
