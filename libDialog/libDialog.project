@@ -96,6 +96,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../FaceRecognition"/>
+        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

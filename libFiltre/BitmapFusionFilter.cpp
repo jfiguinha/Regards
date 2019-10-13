@@ -19,6 +19,9 @@
 #include <OpenCLEffectVideo.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
+#ifdef __APPLE__
+#include <opencl/cl_gl.h>
+#endif
 using namespace Regards::Viewer;
 
 CBitmapFusionFilter::CBitmapFusionFilter()

@@ -220,6 +220,7 @@
         <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/piccante-master/include"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libUtility"/>

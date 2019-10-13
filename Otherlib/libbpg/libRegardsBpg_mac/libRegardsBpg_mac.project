@@ -36,7 +36,7 @@
         <IncludePath Value="../libbpg"/>
         <IncludePath Value="../../../libextern/x265_2.5/source"/>
         <IncludePath Value="../../../libextern/x265_2.5/build/msys/8bit"/>
-        <IncludePath Value="../../../libextern/dlib-19.7/dlib/external/libpng"/>
+        <IncludePath Value="../../../libextern/dlib-19.17/dlib/external/libpng"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
         <Preprocessor Value="HAVE_AV_CONFIG_H"/>
