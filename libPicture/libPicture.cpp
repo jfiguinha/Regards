@@ -1664,7 +1664,7 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 		height = FreeImage_GetHeight(dibRgba);
 		//if this somehow one of these failed (they shouldn't), return failure
 		if ((bits == 0) || (width == 0) || (height == 0))
-			return false;
+			return bitmap;
 
 		bitmap = new CRegardsBitmap();
 		bitmap->SetBitmap(bits, width, height);
@@ -1700,14 +1700,14 @@ CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
 		fif = FreeImage_GetFIFFromFilename(filename);
 	//if still unkown, return failure
 	if (fif == FIF_UNKNOWN)
-		return false;
+		return bitmap;
 
 	//check that the plugin has reading capabilities and load the file
 	if (FreeImage_FIFSupportsReading(fif))
 		dib = FreeImage_Load(fif, filename);
 	//if the image failed to load, return failure
 	if (!dib)
-		return false;
+		return bitmap;
 
 	dibRgba = FreeImage_ConvertTo32Bits(dib);
 
@@ -1718,7 +1718,7 @@ CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
 	height = FreeImage_GetHeight(dibRgba);
 	//if this somehow one of these failed (they shouldn't), return failure
 	if ((bits == 0) || (width == 0) || (height == 0))
-		return false;
+		return bitmap;
 
 	bitmap = new CRegardsBitmap();
 	bitmap->SetBitmap(bits, width, height);
