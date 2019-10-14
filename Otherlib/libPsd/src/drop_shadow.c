@@ -170,7 +170,8 @@ psd_status psd_get_layer_drop_shadow2(psd_context * context, psd_layer_effects_d
 				}
 				else
 				{
-					psd_assert(0);
+					//psd_assert(0);
+					return psd_status_unkown_error;
 				}
 				break;
 				

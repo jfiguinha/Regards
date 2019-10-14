@@ -258,10 +258,20 @@ psd_status psd_get_layer_effects2(psd_context * context, psd_layer_record * laye
 			case 'DrSh':
 				// Descriptor
 				psd_assert(type == 'Objc');
-				psd_get_layer_drop_shadow2(context, &data->drop_shadow);
-				data->fill[psd_layer_effects_type_drop_shadow] = psd_true;
-				data->valid[psd_layer_effects_type_drop_shadow] = psd_true;
-				data->effects_count ++;
+				if (psd_get_layer_drop_shadow2(context, &data->drop_shadow) == psd_status_done)
+				{
+					data->fill[psd_layer_effects_type_drop_shadow] = psd_true;
+					data->valid[psd_layer_effects_type_drop_shadow] = psd_true;
+					data->effects_count++;
+				}
+				else
+				{
+					free(data);
+					layer->layer_info_data[layer->layer_info_count - 1] = NULL;
+					data = NULL;
+					psd_stream_get_object_null(type, context);
+					return psd_status_invalid_layer_effects;
+				}
 				break;
 
 			// inner shadow

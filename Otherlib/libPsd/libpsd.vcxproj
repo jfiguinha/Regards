@@ -286,7 +286,7 @@
       <EnableMatrixMultiplyLibraryCall>Yes</EnableMatrixMultiplyLibraryCall>
       <UseProcessorExtensions>None</UseProcessorExtensions>
       <FloatingPointExpressionEvaluation>Default</FloatingPointExpressionEvaluation>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../libextern/libiconv/include;../../libextern/libxml2/include;../../libextern/libexif-master;include</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -355,7 +355,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <OpenMPSupport>true</OpenMPSupport>
       <UseIntelOptimizedHeaders>true</UseIntelOptimizedHeaders>
-      <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../libextern/libiconv/include;../../libextern/libxml2/include;../../libextern/libexif-master;include</AdditionalIncludeDirectories>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
