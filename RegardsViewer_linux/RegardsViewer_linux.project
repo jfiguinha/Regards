@@ -246,6 +246,7 @@
         <Library Value="expat"/>
         <Library Value="Jbig"/>
         <Library Value="Psd"/>
+        <Library Value="xml2"/>
         <Library Value="jasper"/>
         <Library Value="mng"/>
         <Library Value="turbojpeg"/>
