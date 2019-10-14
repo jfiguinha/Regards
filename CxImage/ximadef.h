@@ -2,7 +2,7 @@
 #define __ximadefs_h
 
 #include "ximacfg.h"
-#include <FreeImage.h>
+
 
 #if /*defined(_AFXDLL)||*/defined(_USRDLL)
  #define DLL_EXP __declspec(dllexport)
@@ -143,18 +143,18 @@ typedef struct tagPOINT
 	int32_t  y;
 } POINT;
 
-/*
+#ifndef __FREEIMAGE__
 typedef struct tagRGBQUAD {
 	uint8_t    rgbBlue;
 	uint8_t    rgbGreen;
 	uint8_t    rgbRed;
 	uint8_t    rgbReserved;
 } RGBQUAD;
-*/
+#endif
 
 #pragma pack(1)
 
-/*
+#ifndef __FREEIMAGE__
 typedef struct tagBITMAPINFOHEADER{
 	uint32_t   biSize;
 	int32_t    biWidth;
@@ -168,7 +168,7 @@ typedef struct tagBITMAPINFOHEADER{
 	uint32_t   biClrUsed;
 	uint32_t   biClrImportant;
 } BITMAPINFOHEADER;
-*/
+#endif
 
 typedef struct tagBITMAPFILEHEADER {
 	uint16_t   bfType;
@@ -186,13 +186,14 @@ typedef struct tagBITMAPCOREHEADER {
 	uint16_t   bcBitCount;
 } BITMAPCOREHEADER;
 
-/*
+#ifndef __FREEIMAGE__
 typedef struct tagRGBTRIPLE {
 	uint8_t    rgbtBlue;
 	uint8_t    rgbtGreen;
 	uint8_t    rgbtRed;
 } RGBTRIPLE;
-*/
+#endif
+
 #pragma pack()
 
 #define BI_RGB        0L
