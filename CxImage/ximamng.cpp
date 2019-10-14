@@ -319,7 +319,8 @@ bool CxImageMNG::Decode(CxFile *hFile)
         if (strcmp(message,"")) 
             strncpy(info.szLastError,message,255);  
 
-        return false;	}
+        return false;
+	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////

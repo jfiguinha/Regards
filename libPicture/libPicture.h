@@ -74,6 +74,9 @@ public:
     
 private:
 
+	CRegardsBitmap * LoadFromFreeImage(const char* filename);
+	CRegardsBitmap * LoadThumbnailFromFreeImage(const char* filename);
+	bool PictureDimensionFreeImage(const char* filename, int &width, int &height);
     void LoadwxImageThumbnail(const wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const int & bitmapType, const int &width, const int &height, const bool &compressJpeg, const bool & isThumbnail);
 	uint8_t * readfile(const wxString & fileName, size_t&size);
 	void writefile(const wxString & fileName, uint8_t * data, size_t & size);

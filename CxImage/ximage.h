@@ -832,7 +832,8 @@ public:
 	uint8_t*			pAlpha; //alpha channel
 	CxImage**			ppLayers; //generic layers
 	CxImage**			ppFrames;
-	bool				isbgr;					
+	bool				isbgr;	
+	char				message[1024];//memory for message error
 //@}
 };
 

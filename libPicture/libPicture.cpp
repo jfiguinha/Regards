@@ -5,7 +5,6 @@
 #include <RegardsBitmap.h>
 #include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
-#include "CPCD.h"
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <webp/decode.h>
@@ -16,6 +15,7 @@
 #include <LibResource.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
+#include <FreeImage.h>
 #ifdef LIBHEIC
 #include <Heic.h>
 #endif
@@ -1479,11 +1479,19 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
         {
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
-			imageLoading = LoadPicture(fileName, true);
-			if(imageLoading != nullptr && imageLoading->IsOk())
+			CRegardsBitmap * thumbnail = LoadThumbnailFromFreeImage(fileName);
+			if (thumbnail == nullptr)
 			{
-				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-				imageLoading->ApplyExifOrientation();
+				imageLoading = LoadPicture(fileName, true);
+				if (imageLoading != nullptr && imageLoading->IsOk())
+				{
+					imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
+					imageLoading->ApplyExifOrientation();
+				}
+			}
+			else
+			{
+				imageLoading->SetPicture(thumbnail);
 			}
         }
         else if(memFile != nullptr)
@@ -1576,6 +1584,150 @@ float CLibPicture::CalculPictureRatio(const int &pictureWidth, const int &pictur
 	}
 
 	return newRatio;
+}
+
+bool CLibPicture::PictureDimensionFreeImage(const char* filename, int &width, int &height)
+{
+	//image format
+	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+	//pointer to the image, once loaded
+	FIBITMAP *dib(0);
+
+	//check the file signature and deduce its format
+	fif = FreeImage_GetFileType(filename, 0);
+	//if still unknown, try to guess the file format from the file extension
+	if (fif == FIF_UNKNOWN)
+		fif = FreeImage_GetFIFFromFilename(filename);
+	//if still unkown, return failure
+	if (fif == FIF_UNKNOWN)
+		return false;
+
+	//check that the plugin has reading capabilities and load the file
+	if (FreeImage_FIFSupportsReading(fif))
+		dib = FreeImage_Load(fif, filename);
+	//if the image failed to load, return failure
+	if (!dib)
+		return false;
+
+	//get the image width and height
+	width = FreeImage_GetWidth(dib);
+	height = FreeImage_GetHeight(dib);
+
+
+	//Free FreeImage's copy of the data
+	FreeImage_Unload(dib);
+
+	return true;
+}
+
+CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
+{
+	CRegardsBitmap * bitmap = nullptr;
+	//image format
+	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+	//pointer to the image, once loaded
+	FIBITMAP *dib(0);
+	FIBITMAP *dibRgba(0);
+	//pointer to the image data
+	BYTE* bits(0);
+	//image width and height
+	unsigned int width(0), height(0);
+
+
+	//check the file signature and deduce its format
+	fif = FreeImage_GetFileType(filename, 0);
+	//if still unknown, try to guess the file format from the file extension
+	if (fif == FIF_UNKNOWN)
+		fif = FreeImage_GetFIFFromFilename(filename);
+	//if still unkown, return failure
+	if (fif == FIF_UNKNOWN)
+		return bitmap;
+
+	//check that the plugin has reading capabilities and load the file
+	if (FreeImage_FIFSupportsReading(fif))
+		dib = FreeImage_Load(fif, filename);
+	//if the image failed to load, return failure
+	if (!dib)
+		return bitmap;
+
+	// check for a possible embedded thumbnail
+	if (FreeImage_GetThumbnail(dib))
+	{
+		// thumbnail is present
+		FIBITMAP *thumbnail = FreeImage_GetThumbnail(dib);		dibRgba = FreeImage_ConvertTo32Bits(thumbnail);
+		
+
+		//retrieve the image data
+		bits = FreeImage_GetBits(dibRgba);
+		//get the image width and height
+		width = FreeImage_GetWidth(dibRgba);
+		height = FreeImage_GetHeight(dibRgba);
+		//if this somehow one of these failed (they shouldn't), return failure
+		if ((bits == 0) || (width == 0) || (height == 0))
+			return false;
+
+		bitmap = new CRegardsBitmap();
+		bitmap->SetBitmap(bits, width, height);
+		bitmap->SetFilename(filename);
+		FreeImage_Unload(dibRgba);
+		FreeImage_Unload(thumbnail);
+	}
+	   
+	//Free FreeImage's copy of the data
+	//FreeImage_Unload(dib);
+	
+	//return success
+	return bitmap;
+}
+
+CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
+{
+	CRegardsBitmap * bitmap = nullptr;
+	//image format
+	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+	//pointer to the image, once loaded
+	FIBITMAP *dib(0);
+	FIBITMAP *dibRgba(0);
+	//pointer to the image data
+	BYTE* bits(0);
+	//image width and height
+	unsigned int width(0), height(0);
+
+	//check the file signature and deduce its format
+	fif = FreeImage_GetFileType(filename, 0);
+	//if still unknown, try to guess the file format from the file extension
+	if (fif == FIF_UNKNOWN)
+		fif = FreeImage_GetFIFFromFilename(filename);
+	//if still unkown, return failure
+	if (fif == FIF_UNKNOWN)
+		return false;
+
+	//check that the plugin has reading capabilities and load the file
+	if (FreeImage_FIFSupportsReading(fif))
+		dib = FreeImage_Load(fif, filename);
+	//if the image failed to load, return failure
+	if (!dib)
+		return false;
+
+	dibRgba = FreeImage_ConvertTo32Bits(dib);
+
+	//retrieve the image data
+	bits = FreeImage_GetBits(dibRgba);
+	//get the image width and height
+	width = FreeImage_GetWidth(dibRgba);
+	height = FreeImage_GetHeight(dibRgba);
+	//if this somehow one of these failed (they shouldn't), return failure
+	if ((bits == 0) || (width == 0) || (height == 0))
+		return false;
+
+	bitmap = new CRegardsBitmap();
+	bitmap->SetBitmap(bits, width, height);
+	bitmap->SetFilename(filename);
+	//Free FreeImage's copy of the data
+	FreeImage_Unload(dib);
+	FreeImage_Unload(dibRgba);
+	//return success
+	return bitmap;
 }
 
 //------------------------------------------------------------------------------
@@ -2133,30 +2285,17 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			break;
 
 		case PCD:
-		{
-			CCPCD * pPCD = new CCPCD();
-			/*
-			if(isThumbnail)
-			{
-				CRegardsBitmap * _bitmap = pPCD->readPCD(CConvertUtility::ConvertToStdString(fileName), true);
-				_bitmap->SetFilename(fileName);
-				bitmap->SetPicture(_bitmap);
-			}
-			else
-			{*/
-				CRegardsBitmap * _bitmap = pPCD->readPCD(CConvertUtility::ConvertToStdString(fileName), false);
-				_bitmap->SetFilename(fileName);
-				bitmap->SetPicture(_bitmap);
-			//}
-			//bitmap->SetFilename(fileName);
-			delete pPCD;
-		}
-		break;
-
+		case MNG:
 		case PSD:
 			{
-			CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"));
-			bitmap->SetPicture(_cxImage);
+				//CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"));
+				//bitmap->SetPicture(_cxImage);
+				CRegardsBitmap * _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(fileName));
+				if (_bitmap != nullptr)
+				{
+					_bitmap->SetFilename(fileName);
+					bitmap->SetPicture(_bitmap);
+				}
 			}
 			break;
 		case PGX:
@@ -2165,12 +2304,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			bitmap->SetPicture(_cxImage);
 			}
 			break;
-		case MNG:
-			{
-			CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("mng"));
-			bitmap->SetPicture(_cxImage);
-			}
-			break;
+
         case JPC:
 			{
 				CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpc"));
@@ -2500,21 +2634,13 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		break;
 
 	case PCD:
-		{
-			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			CCPCD * pPCD = new CCPCD();
-			pPCD->GetJDimensions(CConvertUtility::ConvertToStdString(fileName), width, height);
-			delete pPCD;
-		}
-		break;
+	case MNG:
 	case PSD:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"), true);
+		//image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"), true);
+		PictureDimensionFreeImage(CConvertUtility::ConvertToUTF8(fileName), width, height);
 		break;
 	case PGX:
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pgx"), true);
-		break;
-	case MNG:
-		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("mng"), true);
 		break;
            
     case SVG:

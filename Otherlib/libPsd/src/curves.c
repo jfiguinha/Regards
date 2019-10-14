@@ -62,6 +62,8 @@ psd_status psd_get_layer_curves(psd_context * context, psd_layer_record * layer,
 	layer->layer_type = psd_layer_type_curves;
 
 	data = (psd_layer_curves *)psd_malloc(sizeof(psd_layer_curves));
+	data->curve = NULL;
+	data->curve_count = 0;
 	if(data == NULL)
 		return psd_status_malloc_failed;
 	memset(data, 0, sizeof(psd_layer_curves));

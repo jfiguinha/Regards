@@ -772,7 +772,7 @@ namespace MyPSD
 					if (bAlpha) pDst[3] = pSrc[1];
 				}
 				
-				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true);
+				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true, false, false);
 
 				delete [] pRGBA;
 			}
@@ -795,13 +795,13 @@ namespace MyPSD
 					pDst[0] = colour_mode_data.ColourData[nIndex + 2 * 256];
 				}
 
-				m_image.CreateFromArray(pRGB, header_info.nWidth, header_info.nHeight, 24, header_info.nWidth * 3, true);
+				m_image.CreateFromArray(pRGB, header_info.nWidth, header_info.nHeight, 24, header_info.nWidth * 3, true, false, false);
 				delete [] pRGB;
 			}
 			break;
 		case 3:	// RGB
 			{
-				m_image.CreateFromArray(pData, header_info.nWidth, header_info.nHeight, header_info.nChannels == 3 ? 24 : 32, header_info.nWidth * header_info.nChannels, true);
+				m_image.CreateFromArray(pData, header_info.nWidth, header_info.nHeight, header_info.nChannels == 3 ? 24 : 32, header_info.nWidth * header_info.nChannels, true, false, false);
 				m_image.SwapRGB2BGR();
 			}
 			break;
@@ -831,7 +831,7 @@ namespace MyPSD
 					if (bAlpha) pDst[3] = pSrc[4];
 				}
 
-				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true);
+				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true, false, false);
 
 				delete [] pRGBA;
 			}
@@ -862,7 +862,7 @@ namespace MyPSD
 					pDst[0] = nBlue; pDst[1] = nGreen; pDst[2] = nRed;
 				}
 
-				m_image.CreateFromArray(pRGB, header_info.nWidth, header_info.nHeight, 24, header_info.nWidth * 3, true);
+				m_image.CreateFromArray(pRGB, header_info.nWidth, header_info.nHeight, 24, header_info.nWidth * 3, true, false, false);
 
 				delete [] pRGB;
 			}
@@ -894,7 +894,7 @@ namespace MyPSD
 					if (bAlpha) pDst[3] = pSrc[3];
 				}
 
-				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true);
+				m_image.CreateFromArray(pRGBA, header_info.nWidth, header_info.nHeight, bAlpha ? 32 : 24, header_info.nWidth * (bAlpha ? 4 : 3), true, false, false);
 
 				delete [] pRGBA;
 			}

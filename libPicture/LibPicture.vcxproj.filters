@@ -21,9 +21,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPCD.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ScaleThumbnail.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -47,9 +44,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CPCD.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="ScaleThumbnail.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>

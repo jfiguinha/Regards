@@ -18,6 +18,7 @@ void * psd_realloc(void * block, psd_int size)
 void psd_free(void * block)
 {
 	free(block);
+	block = NULL;
 }
 
 void psd_freeif(void * block)
