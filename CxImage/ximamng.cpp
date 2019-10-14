@@ -202,11 +202,16 @@ bool CxImageMNG::Decode(CxFile *hFile)
 {
 	if (hFile == NULL) return false;
 
-	cx_try
+	try
 	{
 		// set up the mng decoder for our stream
 		hmng = mng_initialize(&mnginfo, (mng_memalloc)mymngalloc, (mng_memfree)mymngfree, MNG_NULL);
-		if (hmng == NULL) cx_throw("could not initialize libmng");			
+		if (hmng == NULL) 
+        {
+            throw("could not initialize libmng");			
+            //printf("could not initialize libmng");
+           // goto ERROR;              
+        }
 
 		// set the file we want to play
 		mnginfo.file = hFile;
@@ -215,7 +220,7 @@ bool CxImageMNG::Decode(CxFile *hFile)
 		mng_set_srgb(hmng, MNG_TRUE );
 		// Set white as background color:
 		uint16_t Red,Green,Blue;
-		Red = Green = Blue = (255 << 8) + 255;
+		Red = Green = Blue = 0;//(255 << 8) + 255;
 		mng_set_bgcolor(hmng, Red, Green, Blue );
 		// If PNG Background is available, use it:
 		mng_set_usebkgd(hmng, MNG_TRUE );
@@ -237,10 +242,17 @@ bool CxImageMNG::Decode(CxFile *hFile)
 
 		if (retval != MNG_NOERROR && retval != MNG_NEEDTIMERWAIT){
 			mng_store_error(hmng,retval,0,0);
-			if (hmng->zErrortext){
-				cx_throw(hmng->zErrortext);
-			} else {
-				cx_throw("Error in MNG file");
+			if (hmng->zErrortext)
+            {
+                //printf(hmng->zErrortext);
+                //goto ERROR;                
+				throw(hmng->zErrortext);
+			} 
+            else 
+            {
+                //printf("Error in MNG file");
+               // goto ERROR;                 
+				throw("Error in MNG file");
 			}
 		}
 
@@ -271,7 +283,11 @@ bool CxImageMNG::Decode(CxFile *hFile)
 			// select the frame
 			if (info.nFrame>=0 && info.nFrame<info.nNumFrames){
 				for (int32_t n=0;n<info.nFrame;n++) mng_display_resume(hmng);
-			} else cx_throw("Error: frame not present in MNG file");
+			} 
+            else 
+            {
+                throw("Error: frame not present in MNG file"); 
+            }
 		}
 
 		if (mnginfo.nBkgndIndex >= 0){
@@ -291,13 +307,19 @@ bool CxImageMNG::Decode(CxFile *hFile)
 				memcpy(AlphaGetPointer(),mnginfo.alpha,mnginfo.width * mnginfo.height);
 			}
 #endif
-		} else cx_throw("CxImageMNG::Decode cannot create image");
+		} 
+        else 
+        {
+            throw("CxImageMNG::Decode cannot create image");          
+        }
+           // 
+    }
+    catch(...)
+    {
+        if (strcmp(message,"")) 
+            strncpy(info.szLastError,message,255);  
 
-
-	} cx_catch {
-		if (strcmp(message,"")) strncpy(info.szLastError,message,255);
-		return false;
-	}
+        return false;	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
