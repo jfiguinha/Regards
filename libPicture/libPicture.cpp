@@ -2,20 +2,25 @@
 // DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
 #include "libPicture.h"
+#define __FREEIMAGE__
+#include <FreeImage.h>
+
+#include <ximage.h>
+#include <xfile.h>
+#include <xiofile.h>
+
 #include <RegardsBitmap.h>
 #include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
 #include <ImageVideoThumbnail.h>
 #include <ImageLoadingFormat.h>
-#include <webp/decode.h>
-#include <webp/encode.h>
 #include <ConvertUtility.h>
 #include <picture_id.h>
 #include <PiccanteFilter.h>
 #include <LibResource.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
-#include <FreeImage.h>
+
 #ifdef LIBHEIC
 #include <Heic.h>
 #endif
@@ -26,8 +31,7 @@
 #include <dlfcn.h>
 #endif
 #endif
-#include <ImfRgbaFile.h>
-#include <ImfArray.h>
+
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
 #endif
@@ -40,9 +44,6 @@
 #include <wx/wxpoppler.h>
 
 
-#include <ximage.h>
-#include <xfile.h>
-#include <xiofile.h>
 
 #include "ScaleThumbnail.h"
 
@@ -70,14 +71,6 @@ using namespace Regards::exiv2;
 #include <CompressionOption.h>
 
 #include <wxSVG/SVGDocument.h>
-
-#if defined(__MINGW32__) || defined(__WXMAC__)
-using namespace Imf_2_3;
-using namespace Imath_2_3;
-#else
-using namespace Imf_2_2;
-using namespace Imath_2_2;
-#endif
 
 #define TYPE_IMAGE_CXIMAGE 0
 #define TYPE_IMAGE_WXIMAGE 1
@@ -123,13 +116,20 @@ void CLibPicture::UnloadBpgDll()
 
 #endif
 
+FREE_IMAGE_FORMAT ImageFormat(const char* filename)
+{
+	//check the file signature and deduce its format
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(filename, 0);
+	//if still unknown, try to guess the file format from the file extension
+	if (fif == FIF_UNKNOWN)
+		fif = FreeImage_GetFIFFromFilename(filename);
+    return fif;
+}
+
 CLibPicture::CLibPicture()
 {
 	svgWidth = 1024;
 	svgHeight = 1024;
-    
-
-    
 }
 
 CLibPicture::~CLibPicture()
@@ -154,8 +154,11 @@ void CLibPicture::Uninitx265Decoder()
 bool CLibPicture::TestIsPicture(const wxString & szFileName)
 {
     int numExt = 0;
-    wxFileName fichier(szFileName.c_str());
+    wxFileName fichier(szFileName);
     wxString extension = fichier.GetExt();
+    
+    if(ImageFormat(CConvertUtility::ConvertToUTF8(szFileName)) != FIF_UNKNOWN)
+        return true;
     
     numExt = TestExtension(extension.Lower());
     if (numExt < 100 && numExt != ANI && numExt != 0)
@@ -213,8 +216,10 @@ int CLibPicture::TestImageFormat(const wxString & szFileName)
 		if (extension.size() < 3)
             return 0;
 
-
-		return TestExtension(extension.Lower());
+        FREE_IMAGE_FORMAT fif = ImageFormat(CConvertUtility::ConvertToUTF8(szFileName));
+		numExt = TestExtension(extension.Lower());
+        if(numExt == 0 && fif != FIF_UNKNOWN)
+            numExt = fif + 1000;
 	}
 	return numExt;
 }
@@ -526,6 +531,15 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 	case WEBP:
 	{
+#ifdef __FREEIMAGE__
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		float quality_factor = quality;
+        int pitch = ((((8 * regards->GetBitmapWidth()) + 31) / 32) * 4);
+        FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE); 
+        FreeImage_Save(FIF_WEBP, Image, fileName, quality_factor);
+        FreeImage_Unload(Image);
+		delete regards;
+#else
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
 		float quality_factor = quality;
 		uint8_t * output = nullptr;
@@ -539,6 +553,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 		free(output);
 		delete regards;
+#endif
 		break;
 	}
 
@@ -1588,6 +1603,7 @@ float CLibPicture::CalculPictureRatio(const int &pictureWidth, const int &pictur
 
 bool CLibPicture::PictureDimensionFreeImage(const char* filename, int &width, int &height)
 {
+#ifdef __FREEIMAGE__
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -1616,13 +1632,16 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int &width, in
 
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
-
+#endif
 	return true;
 }
+
+
 
 CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 {
 	CRegardsBitmap * bitmap = nullptr;
+#ifdef __FREEIMAGE__
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -1674,7 +1693,7 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 	   
 	//Free FreeImage's copy of the data
 	FreeImage_Unload(dib);
-	
+#endif
 	//return success
 	return bitmap;
 }
@@ -1682,6 +1701,7 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
 {
 	CRegardsBitmap * bitmap = nullptr;
+#ifdef __FREEIMAGE__
 	//image format
 	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
 	//pointer to the image, once loaded
@@ -1726,6 +1746,7 @@ CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
 	FreeImage_Unload(dib);
 	FreeImage_Unload(dibRgba);
 	//return success
+#endif
 	return bitmap;
 }
 
@@ -1794,105 +1815,6 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
                CPiccanteFilter::LoadPicture(fileName, isThumbnail,bitmap);
             }
             break; 
-
-        case EXR:
-        {
-            if(isThumbnail)
-            {
-                CRegardsBitmap * picture = nullptr;
-                Array2D<Rgba> pixels;
-                RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-                Box2i dw = file.dataWindow();
-                int width = dw.max.x - dw.min.x + 1;
-                int height = dw.max.y - dw.min.y + 1;  
-                pixels.resizeErase (height, width);
-                file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-                file.readPixels(dw.min.y, dw.max.y);  
-
-                if(width > 0 && height > 0)
-                {
-                    picture = new CRegardsBitmap(width, height);
-                    int k = 0;
-                    uint8_t * data = picture->GetPtBitmap();
-                    for (int i = 0; i < height; i++)
-                    {
-                        for (int j = 0; j < width; j++, k+=4)
-                        {
-                            float rvalue = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-                            float gvalue = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-                            float bvalue = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-                            float avalue = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-                            
-                            data[k] = (int)(bvalue * 255.0);
-                            data[k+1] = (int)(gvalue * 255.0);
-                            data[k+2] = (int)(rvalue * 255.0);
-                            data[k+3] = (int)(avalue * 255.0);
-                            /*
-                            int rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f) * 255;
-                            float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-                            float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-                            color.red(rvalue);
-                            color.green(gvalue);
-                            color.blue(bvalue);
-                            blank_image.pixelColor(j, i, color);*/
-                        }
-                    }
-                    picture->VertFlipBuf();
-                    bitmap->SetPicture(picture);
-                    bitmap->SetFilename(fileName);                
-                }
-            }
-            else
-            {
-                CRegardsFloatBitmap * picture = nullptr;
-                Array2D<Rgba> pixels;
-                RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-                Box2i dw = file.dataWindow();
-                int width = dw.max.x - dw.min.x + 1;
-                int height = dw.max.y - dw.min.y + 1;  
-                pixels.resizeErase (height, width);
-                file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
-                file.readPixels(dw.min.y, dw.max.y);  
-
-                if(width > 0 && height > 0)
-                {
-                    picture = new CRegardsFloatBitmap(width, height);
-                    int k = 0;
-                    float * data = picture->GetData();
-                    for (int i = height - 1; i >= 0; i--)
-                    {
-                        for (int j = 0; j < width; j++, k+=4)
-                        {
-                            data[k] = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-                            data[k+1] = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-                            data[k+2] = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-                            data[k+3] = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
-                        }
-                    }
-                    bitmap->SetPicture(picture);
-                    bitmap->SetFilename(fileName);                
-                }
-            }
-        }
-        break;
-
-		case WEBP:
-			{
-				size_t data_size;
-				uint8_t* _compressedImage = readfile(fileName, data_size);
-				if(_compressedImage != nullptr && data_size > 0)
-				{
-					CRegardsBitmap * picture = new CRegardsBitmap();
-					int width = 0, height = 0;
-					uint8_t * data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
-					picture->SetBitmap(data, width, height, true, false);
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-                    delete[] _compressedImage;
-				}
-				
-			}
-			break;
 
 		case PPM:
 			{
@@ -2283,6 +2205,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			}
 			break;
 
+        case EXR:
+        case WEBP:
 		case PCD:
 		case MNG:
 		case PSD:
@@ -2332,6 +2256,15 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				bitmap->SetFilename(fileName);
 			}
 			break;
+            
+        default:
+            CRegardsBitmap * _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(fileName));
+            if (_bitmap != nullptr)
+            {
+                _bitmap->SetFilename(fileName);
+                bitmap->SetPicture(_bitmap);
+            }
+            break;
         }
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -2514,14 +2447,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	switch (iFormat)
 	{
-    case EXR:
-        {
-            RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
-            Box2i dw = file.dataWindow();
-            width = dw.max.x - dw.min.x + 1;
-            height = dw.max.y - dw.min.y + 1;
-        }
-        break;
         
     case HDR:
         {
@@ -2529,19 +2454,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
         }
         break;        
 
-	case WEBP:
-		{
-			typeImage = TYPE_IMAGE_REGARDSIMAGE;
-			int result = 0;
-			size_t data_size;
-			uint8_t* data = readfile(fileName, data_size);
-			if(data != nullptr && data_size > 0)
-			{
-				result = WebPGetInfo(data, data_size, &width, &height);
-				delete[] data;
-			}
-			break;
-		}
             
 	case JPEG:
 #ifdef TURBOJPEG
@@ -2632,6 +2544,8 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
 		break;
 
+    case EXR:
+    case WEBP:
 	case PCD:
 	case MNG:
 	case PSD:
@@ -2701,6 +2615,10 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		}
 		break;
 #endif
+
+    default:
+		PictureDimensionFreeImage(CConvertUtility::ConvertToUTF8(fileName), width, height);
+		break;
 	}
 
 	 

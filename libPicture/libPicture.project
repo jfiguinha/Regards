@@ -29,14 +29,12 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="CPCD.cpp"/>
     <File Name="libPicture.cpp"/>
     <File Name="ScaleThumbnail.cpp"/>
     <File Name="raw.cpp"/>
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="CPCD.h"/>
     <File Name="libPicture.h"/>
     <File Name="ScaleThumbnail.h"/>
     <File Name="raw.h"/>
