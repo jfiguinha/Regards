@@ -4,7 +4,6 @@ echo $NBPROC
 
 #decompression
 pacman -S unzip
-tar xf libmng-2.0.3.tar.gz
 unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
@@ -53,12 +52,6 @@ chmod +x configure
 ./configure
 make -j$NBPROC
 cd .. 
-
-#Compile libmng-2.0.3
-cd libmng-2.0.3 
-./configure CFLAGS="-I../libjpeg"
-make -j$NBPROC CFLAGS="-I../libjpeg -DNEED_BOOLEAN"
-cd ..
 
 #Compile libwebp-0.6.0
 cd libwebp-0.6.0

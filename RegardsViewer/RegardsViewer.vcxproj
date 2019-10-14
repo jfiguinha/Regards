@@ -321,9 +321,6 @@ XCOPY /Y "$(SolutionDir)\libextern\openjpeg-v2.3.1-windows-x64\bin\openjp2.dll" 
     <ProjectReference Include="..\libextern\libiconv\build-VS2015\libiconv-static\libiconv-static.vcxproj">
       <Project>{46cafe4a-b5bd-4422-acc6-117d4ad041e2}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\libmng-2.0.3\mng.vcxproj">
-      <Project>{40a69f40-063e-43fd-8543-455495d8733e}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libextern\libpng\libpng.vcxproj">
       <Project>{8f06c044-d73a-4f6b-a611-b320c1252cc2}</Project>
     </ProjectReference>
@@ -416,9 +413,6 @@ XCOPY /Y "$(SolutionDir)\libextern\openjpeg-v2.3.1-windows-x64\bin\openjp2.dll" 
     </ProjectReference>
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\otherlib\libpsd\libpsd.vcxproj">
-      <Project>{0debb3cc-712b-4ac1-84df-e2d9d7d5f859}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Otherlib\libqpdf\libqpdf.vcxproj">
       <Project>{dbd40226-66c0-4381-8bc7-7b34f3485856}</Project>

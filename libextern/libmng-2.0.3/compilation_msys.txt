@@ -1,3 +1,0 @@
-./configure CLFAGS="-I../libjpeg -DNEED_BOOLEAN"
-make CLFAGS="-I../libjpeg -DNEED_BOOLEAN"
-
