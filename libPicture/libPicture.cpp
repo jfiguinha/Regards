@@ -1670,11 +1670,10 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 		bitmap->SetBitmap(bits, width, height);
 		bitmap->SetFilename(filename);
 		FreeImage_Unload(dibRgba);
-		FreeImage_Unload(thumbnail);
 	}
 	   
 	//Free FreeImage's copy of the data
-	//FreeImage_Unload(dib);
+	FreeImage_Unload(dib);
 	
 	//return success
 	return bitmap;
