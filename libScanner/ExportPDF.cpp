@@ -571,7 +571,7 @@ int CExportPDF::ExportPDFToTXT(wxString pdfFile, wxString fileout)
 	GooString *textFileName;
 	GooString *ownerPW, *userPW;
 	TextOutputDev *textOut;
-	FILE *f;
+	FILE *f = nullptr;
 	UnicodeMap *uMap;
 	Object info;
 	bool ok = true;
