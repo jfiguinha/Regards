@@ -67,7 +67,6 @@
     <Project Name="wxCheckTree"/>
     <Project Name="wxSVG"/>
     <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
     <Project Name="libavcodec"/>
@@ -112,7 +111,6 @@
     <Project Name="libOpenGL"/>
     <Project Name="libMediaInfo"/>
     <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
     <Project Name="libbpg"/>
     <Project Name="libavutil"/>
     <Project Name="libavcodec"/>
@@ -282,7 +280,6 @@
         <Library Value="expat"/>
         <Library Value="jasper"/>
         <Library Value="Jbig"/>
-        <Library Value="mng"/>
         <Library Value="gomp"/>
         <Library Value="avformat"/>
         <Library Value="avcodec"/>
@@ -295,7 +292,6 @@
         <Library Value="swscale"/>
         <Library Value="postproc"/>
         <Library Value="glib-2.0"/>
-        <Library Value="Psd"/>
         <Library Value="turbojpeg"/>
         <Library Value="wxjpeg-3.1"/>
         <Library Value="wxpng-3.1"/>
@@ -348,6 +344,7 @@
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
+        <Library Value="FreeImage"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -464,10 +461,17 @@
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-91.dll ./Debug/libpoppler-91.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug/libjxrglue.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Debug/libraw-19.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Debug/libwebp-7.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Debug/libwebpmux-3.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Debug/libfreeimage-3.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Debug/libjpegxr.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Debug/libpoppler-cpp-0.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf26.dll ./Debug/qpdf26.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Debug/libjasper-4.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/nss3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/smime3.dll ./Debug</Command>
@@ -607,13 +611,20 @@
         <Command Enabled="yes">cp ../libextern/libjpeg-turbo-1.5.1/.libs/libturbojpeg-0.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp ../libextern/libexif-master/libexif/.libs/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Release/libfreeimage-3.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release/libjxrglue.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Release/libraw-19.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release/libwebp-7.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Release/libwebpmux-3.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-91.dll ./Release/libpoppler-91.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Release/libjpegxr.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf26.dll ./Release/qpdf26.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>

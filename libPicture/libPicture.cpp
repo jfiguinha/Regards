@@ -1673,7 +1673,8 @@ CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
 	if (FreeImage_GetThumbnail(dib))
 	{
 		// thumbnail is present
-		FIBITMAP *thumbnail = FreeImage_GetThumbnail(dib);		dibRgba = FreeImage_ConvertTo32Bits(thumbnail);
+		FIBITMAP *thumbnail = FreeImage_GetThumbnail(dib);
+		dibRgba = FreeImage_ConvertTo32Bits(thumbnail);
 		
 
 		//retrieve the image data
