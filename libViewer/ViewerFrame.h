@@ -90,7 +90,8 @@ namespace Regards
 			void OnCategoryDetection(wxCommandEvent& event);
 			void ShowOpenCLConfiguration(const bool &showRestart);
             void OnFileSystemModified(wxFileSystemWatcherEvent& event);
-			
+			void HideScanner(wxCommandEvent& event);
+
 #ifdef __WXMAC__
 			void OnPageMargins(wxCommandEvent& event);
 #endif

@@ -265,7 +265,6 @@ public:
 		{
 			frameStart->Show(true);
 			frameStart->Raise();
-
 		}
 
 	}

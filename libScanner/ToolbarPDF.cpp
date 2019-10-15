@@ -107,7 +107,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_SAVE:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_SAVE);
 		wxQueueEvent(central, event);
 	}
@@ -115,7 +115,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_ADDPAGE:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_ADDPAGE);
 		wxQueueEvent(central, event);
 	}
@@ -123,7 +123,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_DELETEPAGE:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_DELETEPAGE);
 		wxQueueEvent(central, event);
 	}
@@ -131,7 +131,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_SCANNER:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_SCANNER);
 		wxQueueEvent(central, event);
 	}
@@ -140,7 +140,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_PRINT:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_PRINT);
 		wxQueueEvent(central, event);
 	}
@@ -148,7 +148,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_EXTRACT:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_EXTRACT);
 		wxQueueEvent(central, event);
 	}
@@ -156,7 +156,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_QUITTER:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVT_EXIT);
 		wxQueueEvent(central, event);
 	}

@@ -126,7 +126,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	onExit = false;
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
-
+	frameScanner = nullptr;
 	viewerParam = new CViewerParam();
 	CViewerParamInit::Initialize(viewerParam);
 
@@ -134,6 +134,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	CViewerThemeInit::Initialize(viewerTheme);
 
 	this->mainInterface = mainInterface;
+	this->mainInterface->parent = this;
 
 	FolderCatalogVector folderList;
 	CSqlFindFolderCatalog folderCatalog;
@@ -261,6 +262,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	SetLabel(wxT("Regards Viewer"));
 	//Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerFrame::OnSize));
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
+	Connect(wxEVENT_CLOSESCANNER, wxCommandEventHandler(CViewerFrame::HideScanner));
 	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExport));
 	Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
@@ -299,9 +301,26 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 void CViewerFrame::OnScanner(wxCommandEvent& event)
 {
-	frameScanner = new CScannerFrame("Regards PDF", nullptr, wxPoint(50, 50), wxSize(1200, 800));
-	frameScanner->Centre(wxBOTH);
-	frameScanner->Show(true);
+	if (frameScanner != nullptr)
+	{
+		frameScanner->Show(true);
+		frameScanner->Raise();
+	}
+	else
+	{
+		frameScanner = new CScannerFrame("Regards PDF", mainInterface, wxPoint(50, 50), wxSize(1200, 800));
+		frameScanner->Centre(wxBOTH);
+		frameScanner->Show(true);
+	}
+}
+
+void CViewerFrame::HideScanner(wxCommandEvent& event)
+{
+	if (frameScanner != nullptr)
+	{
+		frameScanner->Show(false);
+		
+	}
 }
 
 void CViewerFrame::OnExport(wxCommandEvent& event)

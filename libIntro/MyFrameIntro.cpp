@@ -81,8 +81,6 @@ void MyFrameIntro::OnClose(wxCloseEvent& event)
 {
 	if (mainInterface != nullptr)
 		mainInterface->HideAbout();
-	else
-		this->Close();
 	return;
 }
 

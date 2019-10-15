@@ -115,7 +115,7 @@ static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Introduction;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 #include <GL/glew.h>
 #if defined(_WIN32)

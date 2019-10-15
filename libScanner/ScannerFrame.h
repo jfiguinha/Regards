@@ -57,6 +57,8 @@ public:
 	void OnClose();
 
 private:
+
+	void Exit();
 	// event handlers (these functions should _not_ be virtual)
 	void OnQuit(wxCommandEvent& event);
 	void OnPrint(wxCommandEvent& event);

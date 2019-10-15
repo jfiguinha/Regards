@@ -36,7 +36,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 		toolbarPDF->Show(true);
 	}
 
-	previewWindow = new CBitmapViewerInfosWnd(this, PREVIEWINFOWND, frame, theme, false);
+	previewWindow = new CBitmapViewerInfosWnd(this, SCANNER_PREVIEWINFOWND, frame, theme, false);
 	previewWindow->Show(true);
 
 	this->frame = frame;

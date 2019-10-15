@@ -86,7 +86,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	CreateStatusBar(1);
 
 	wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(centralWindow = new CCentralWindow(this, CENTRALVIEWERWINDOWID, this), 1, wxEXPAND);
+	sizer->Add(centralWindow = new CCentralWindow(this, SCANNER_CENTRALVIEWERWINDOWID, this), 1, wxEXPAND);
 	SetSizer(sizer);
 
 	// dynamically connect all event handles
@@ -97,14 +97,14 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 	Connect(ID_OCR, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOCR));
-	
+	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
 #if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
-	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
+	
 #endif
     
-	if(mainInterface != nullptr)
-		mainInterface->HideAbout();
+	//if(mainInterface != nullptr)
+	//	mainInterface->HideAbout();
 }
 
 CScannerFrame::~CScannerFrame()
@@ -178,33 +178,40 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 
 void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-	// TRUE is to force the frame to close
+	if (mainInterface != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
+		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	else
+	{
+		Exit();
+	}
+}
+
+void CScannerFrame::Exit()
+{
 	if (mainInterface != nullptr)
 		mainInterface->Close();
-	else
-		Close(TRUE);
-	
 }
 
 void CScannerFrame::OnClose()
 {
-	// TRUE is to force the frame to close
 	if (mainInterface != nullptr)
-		mainInterface->Close();
+	{
+		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
+		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 	else
-		Close(TRUE);
+	{
+		Exit();
+	}
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	if(mainInterface != nullptr)
 		mainInterface->ShowAbout();
-	else
-	{
-		MyFrameIntro * frameStart = new MyFrameIntro("Welcome to Regards PDF", "Regards PDF", wxPoint(50, 50), wxSize(450, 340), nullptr);
-		frameStart->Centre(wxBOTH);
-		frameStart->Show(true);
-	}
 }
 
 #ifdef __WXSCANSANE__ 
