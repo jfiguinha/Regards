@@ -19,7 +19,6 @@
     <Project Name="libPicture" Path="libPicture/libPicture.project" Active="No"/>
     <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
     <Project Name="libJbig" Path="Otherlib/libJbig/libJbig.project" Active="No"/>
-    <Project Name="libPsd" Path="Otherlib/libPsd/libPsd.project" Active="No"/>
     <VirtualDirectory Name="libbpg">
       <Project Name="libavutil" Path="Otherlib/libbpg/libavutil/libavutil.project" Active="No"/>
       <Project Name="libbpg" Path="Otherlib/libbpg/libbpg/libbpg.project" Active="No"/>
