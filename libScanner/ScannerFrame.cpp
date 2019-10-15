@@ -59,7 +59,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
-	menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
+	//menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
