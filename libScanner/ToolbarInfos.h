@@ -18,6 +18,8 @@ namespace Regards
 			~CToolbarInfos();
 			void SetInfosActif();
             void SetInfosPush();
+			void SetOcrPush();
+			void SetOcrActif();
 		private:
 
 			virtual void Resize();
@@ -25,7 +27,7 @@ namespace Regards
 
 			CToolbarInterface * toolbarInterface;
 			CToolbarTexte * infos;
-
+			CToolbarTexte * ocrText;
 		};
 
 

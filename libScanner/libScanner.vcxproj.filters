@@ -43,6 +43,9 @@
     <Filter Include="Export">
       <UniqueIdentifier>{20fa4472-19c0-44e8-88c3-0ddc865b34e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OCR">
+      <UniqueIdentifier>{4013c5a1-85b2-4a89-9c87-d8062721cc45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SelectPage.cpp">
@@ -114,6 +117,9 @@
     <ClCompile Include="ExportPDF.cpp">
       <Filter>Export</Filter>
     </ClCompile>
+    <ClCompile Include="OcrWnd.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -172,6 +178,9 @@
     </ClInclude>
     <ClInclude Include="ExportPDF.h">
       <Filter>Export</Filter>
+    </ClInclude>
+    <ClInclude Include="OcrWnd.h">
+      <Filter>OCR</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

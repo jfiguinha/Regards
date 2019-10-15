@@ -11,6 +11,7 @@
 #include <LibResource.h>
 #include <ImageLoadingFormat.h>
 #include <FilterData.h>
+#include "OcrWnd.h"
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -47,14 +48,22 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
         viewerTheme->GetTreeTheme(&theme);
         
         infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
+		ocrWnd = new COcrWnd(this, wxID_ANY);
 
-		infosFileWnd->Show(false);
+		infosFileWnd->Show(true);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
         tabInfosFile->window = infosFileWnd;
         tabInfosFile->windowMain = infosFileWnd;
         tabInfosFile->windowName = WM_INFOS;
         listWindow.push_back(tabInfosFile);
+
+		CTabWindowData * tabOcr = new CTabWindowData();
+		tabOcr->window = ocrWnd;
+		tabOcr->windowMain = ocrWnd;
+		tabOcr->windowName = WM_OCR;
+		listWindow.push_back(tabOcr);
+
 	}   
 	
 	if (viewerTheme != nullptr)
@@ -77,6 +86,7 @@ wxString CPanelInfosWnd::GetFilename()
 CPanelInfosWnd::~CPanelInfosWnd()
 {
 	delete(infosFileWnd);  
+	delete(ocrWnd);
 	delete(infosToolbar);
 }
 
@@ -102,6 +112,11 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_INFOS:
 			InfosUpdate();
             infosToolbar->SetInfosPush();
+			break;
+
+		case WM_OCR:
+			//InfosUpdate();
+			infosToolbar->SetOcrPush();
 			break;
 		}
 	}

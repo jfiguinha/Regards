@@ -21,6 +21,7 @@ namespace Regards
 {
 	namespace Scanner
 	{
+		class COcrWnd;
         class CInfoEffectWnd;
         class CFiltreEffectScrollWnd;
         class CThumbnailViewerEffectWnd;
@@ -41,7 +42,7 @@ namespace Regards
             
 			CInfosFileWnd * infosFileWnd;
 			CToolbarInfos * infosToolbar;
-
+			COcrWnd * ocrWnd;
 			wxString filename;
             wxString url;
 	

@@ -32,6 +32,7 @@
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ExportPDF.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
+    <ClCompile Include="OcrWnd.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
     <ClCompile Include="ScannerTheme.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="BitmapViewerInfosWnd.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ExportPDF.h" />
+    <ClInclude Include="OcrWnd.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="ScannerFrame.h" />

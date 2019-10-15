@@ -12,13 +12,16 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	this->toolbarInterface = toolbarInterface;
     saveLastPush = true;
 	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS",1);// L"Infos";
-
+	wxString ocr_label = "OCR";
 	infos = new CToolbarTexte(themeToolbar.texte);
 	infos->SetCommandId(WM_INFOS);
 	infos->SetLibelle(infos_label);
 	navElement.push_back(infos);
 
-
+	ocrText = new CToolbarTexte(themeToolbar.texte);
+	ocrText->SetCommandId(WM_OCR);
+	ocrText->SetLibelle(ocr_label);
+	navElement.push_back(ocrText);
 }
 
 CToolbarInfos::~CToolbarInfos()
@@ -28,6 +31,17 @@ CToolbarInfos::~CToolbarInfos()
 void CToolbarInfos::SetInfosPush()
 {
     infos->SetPush(true);
+}
+
+void CToolbarInfos::SetOcrPush()
+{
+	ocrText->SetPush(true);
+}
+
+void CToolbarInfos::SetOcrActif()
+{
+	ocrText->SetVisible(true);
+	toolbarInterface->ClickShowButton(WM_OCR);
 }
 
 void CToolbarInfos::SetInfosActif()
