@@ -5,7 +5,7 @@ using namespace std;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CScannerTheme : public CThemeParam
 		{

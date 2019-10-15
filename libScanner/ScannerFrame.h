@@ -6,17 +6,19 @@
 #endif
 #include <MainInterface.h>
 
-using namespace Regards::Viewer;
+
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CScannerParam;
 		class CScannerTheme;
 		class CCentralWindow;
 	}
 }
+
+using namespace Regards::Scanner;
 
 
 // IDs for the controls and the menu commands
@@ -72,15 +74,15 @@ private:
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
     
-	CScannerParam * viewerParam;
-	CScannerTheme * viewerTheme;
+	Regards::Scanner::CScannerParam * viewerParam;
+	Regards::Scanner::CScannerTheme * viewerTheme;
 
 #if __WXSCANSANE__  
     wxScanSane * scanSane;
 #endif
 
 	//Toolbar
-	CCentralWindow * centralWindow;
+	Regards::Scanner::CCentralWindow * centralWindow;
 	int m_imageCount;
 	IMainInterface * mainInterface;
 };

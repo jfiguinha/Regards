@@ -4,7 +4,7 @@ using namespace Regards::Window;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CInfosSeparationBarExplorer : public CInfosSeparationBar
 		{

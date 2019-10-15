@@ -4,14 +4,43 @@
 #include <wx/fswatcher.h>
 #include <MyFrameIntro.h>
 #include <MainInterface.h>
+
 using namespace Regards::Introduction;
 
 class CImageLoadingFormat;
+class CScannerFrame;
 
 namespace Regards
 {
 	namespace Viewer
 	{
+		// constants:
+		enum
+		{
+			ID_Hello = 1,
+			ID_Folder = 2,
+			ID_Configuration = 3,
+			ID_OpenCL = 4,
+			ID_SIZEICONLESS = 5,
+			ID_SIZEICONMORE = 6,
+			ID_ERASEDATABASE = 7,
+			ID_THUMBNAILRIGHT = 8,
+			ID_THUMBNAILBOTTOM = 9,
+			ID_FACEDETECTION = 10,
+			ID_INTERPOLATIONFILTER = 11,
+			ID_EXPORT = 12,
+			ID_SCANNER = 13,
+			ID_VIDEO = 1018,
+			ID_AUDIO = 1019,
+			ID_SUBTITLE = 1020,
+			WXSCAN_PAGE,
+			WXPRINT_PAGE_SETUP,
+			WXPRINT_PAGE_SETUP_PS,
+#ifdef __WXMAC__
+			WXPRINT_PAGE_MARGINS,
+#endif
+		};
+
 		class CMainWindow;
 		class CWaitingWindow;
 		class CViewerParam;
@@ -54,6 +83,7 @@ namespace Regards
 			void OnEraseDatabase(wxCommandEvent& event);
 			void OnInterpolationFilter(wxCommandEvent& event);
 			void OnOpenCLConfiguration(wxCommandEvent& event);
+			void OnScanner(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnPageSetup(wxCommandEvent& event);
 			void OnFaceDetection(wxCommandEvent& event);
@@ -83,6 +113,7 @@ namespace Regards
 			wxTimer * loadPictureTimer;
 			wxString filenameTimer;
 			int nbTime;
+			CScannerFrame * frameScanner;
 			//CImageLoadingFormat * picture;
             wxFileSystemWatcher * m_watcher;
 		};

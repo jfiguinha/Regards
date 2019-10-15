@@ -2,7 +2,7 @@
 #include "ValidationToolbar.h"
 #include <LibResource.h>
 #include <window_id.h>
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 #define WM_OK 1
 #define WM_CANCEL 2

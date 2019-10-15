@@ -6,7 +6,7 @@ class CRegardsBitmap;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CToolbarPDF : public CToolbarWindow
 		{

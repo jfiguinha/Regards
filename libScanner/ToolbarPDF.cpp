@@ -7,7 +7,7 @@
 #include "ScannerFrame.h"
 
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 
 //

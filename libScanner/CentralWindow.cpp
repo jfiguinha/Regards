@@ -14,7 +14,7 @@
 #include "SelectPage.h"
 #include <FileUtility.h>
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame)
 	: CWindowMain("CentralWindow", parent, id)

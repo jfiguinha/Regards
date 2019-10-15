@@ -24,8 +24,10 @@
 #include "ScannerTheme.h"
 #include "ScannerThemeInit.h"
 #include "CentralWindow.h"
+#include <MyFrameIntro.h>
 using namespace Regards::Print;
-
+using namespace Regards::Introduction;
+using namespace Regards::Scanner;
 #define MAX_ZOOM	10.0
 #define MIN_ZOOM	0.1
 
@@ -101,8 +103,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
 #endif
     
-    
-	mainInterface->HideAbout();
+	if(mainInterface != nullptr)
+		mainInterface->HideAbout();
 }
 
 CScannerFrame::~CScannerFrame()
@@ -177,20 +179,32 @@ void CScannerFrame::OnOpenImage(wxCommandEvent& event)
 void CScannerFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
 	// TRUE is to force the frame to close
-	mainInterface->Close();
-	//Close(TRUE);
+	if (mainInterface != nullptr)
+		mainInterface->Close();
+	else
+		Close(TRUE);
 	
 }
 
 void CScannerFrame::OnClose()
 {
-	mainInterface->Close();
-	//Close(TRUE);
+	// TRUE is to force the frame to close
+	if (mainInterface != nullptr)
+		mainInterface->Close();
+	else
+		Close(TRUE);
 }
 
 void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	mainInterface->ShowAbout();
+	if(mainInterface != nullptr)
+		mainInterface->ShowAbout();
+	else
+	{
+		MyFrameIntro * frameStart = new MyFrameIntro("Welcome to Regards PDF", "Regards PDF", wxPoint(50, 50), wxSize(450, 340), nullptr);
+		frameStart->Centre(wxBOTH);
+		frameStart->Show(true);
+	}
 }
 
 #ifdef __WXSCANSANE__ 
@@ -338,5 +352,18 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 			event.Enable(false);
 		break;
 #endif
+
+	case ID_EXPORT:
+	case ID_ACQUIREIMAGE:
+	case ID_OCR:
+	case ID_PRINT:
+	{
+		wxString filename = centralWindow->GetFilename();
+		if (filename != "")
+			event.Enable(true);
+		else
+			event.Enable(false);
+		break;
+	}
 	}
 }

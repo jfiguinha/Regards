@@ -9,10 +9,8 @@ class CImageVideoThumbnail;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
-		
-
 		class CThumbnailFileSelection : public CThumbnailVertical
 		{
 		public:

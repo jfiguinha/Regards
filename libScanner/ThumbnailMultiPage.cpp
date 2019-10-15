@@ -11,6 +11,7 @@
 #include <SqlThumbnailVideo.h>
 #include <picture_id.h>
 using namespace Regards::Control;
+using namespace Regards::Scanner;
 using namespace Regards::Window;
 
 #define wxTIMER_PROCESS 1001

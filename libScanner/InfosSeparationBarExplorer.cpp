@@ -6,7 +6,7 @@
 #include <wx/sstream.h>
 #include <LibResource.h>
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 
 CInfosSeparationBarExplorer::~CInfosSeparationBarExplorer(void)

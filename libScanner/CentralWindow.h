@@ -9,7 +9,7 @@ class CImageLoadingFormat;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CToolbarPDF;
 		class CBitmapViewerInfosWnd;

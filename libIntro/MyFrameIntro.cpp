@@ -62,7 +62,8 @@ void MyFrameIntro::OnSize(wxSizeEvent& event)
 
 void MyFrameIntro::OnTimeShowViewer(wxTimerEvent& event)
 {
-	mainInterface->ShowViewer();
+	if(mainInterface != nullptr)
+		mainInterface->ShowViewer();
 }
 
 MyFrameIntro::~MyFrameIntro()
@@ -78,7 +79,10 @@ MyFrameIntro::~MyFrameIntro()
 
 void MyFrameIntro::OnClose(wxCloseEvent& event)
 {
-	mainInterface->HideAbout();
+	if (mainInterface != nullptr)
+		mainInterface->HideAbout();
+	else
+		this->Close();
 	return;
 }
 

@@ -14,7 +14,7 @@
 #include <window_id.h>
 #include <Gps.h>
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3

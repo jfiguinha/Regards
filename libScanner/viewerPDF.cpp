@@ -28,7 +28,7 @@
 //#include <qpdf/QIntC.hh>
 
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 #define PANE_PICTURETHUMBNAIL 1
 #define PANE_VIDEOTHUMBNAIL 2
 #define DELAY_ANIMATION 20

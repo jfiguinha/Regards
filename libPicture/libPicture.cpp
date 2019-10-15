@@ -534,7 +534,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 #ifdef __FREEIMAGE__
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
 		float quality_factor = quality;
-        int pitch = ((((8 * regards->GetBitmapWidth()) + 31) / 32) * 4);
+        int pitch = regards->GetBitmapWidth() * 4;
         FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE); 
         FreeImage_Save(FIF_WEBP, Image, fileName, quality_factor);
         FreeImage_Unload(Image);

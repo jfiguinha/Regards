@@ -3,7 +3,7 @@
 #include "ValidationToolbar.h"
 #include "ThumbnailSelection.h"
 
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 class CSelectFileDlg : public wxDialog
 {

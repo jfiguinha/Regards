@@ -7,7 +7,7 @@
 #endif
 #include <ConvertUtility.h>
 using namespace rapidxml;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 CScannerTheme::CScannerTheme()
 {

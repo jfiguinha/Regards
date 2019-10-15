@@ -2,7 +2,7 @@
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CScannerParam;
 

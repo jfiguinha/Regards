@@ -2,7 +2,7 @@
 #include "ScannerThemeInit.h"
 #include "ScannerTheme.h"
 #include <wx/stdpaths.h>
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 CScannerTheme * CScannerThemeInit::_singleton = nullptr;
 

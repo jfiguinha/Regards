@@ -13,7 +13,7 @@ namespace Regards
 	namespace Control
 	{
 		class CShowBitmap;
-		class CThumbnailMultiPage;
+		
 	}
 }
 
@@ -24,9 +24,10 @@ class CImageVideoThumbnail;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		
+		class CThumbnailMultiPage;
 
 		class CViewerPDF : public CWindowMain, public CBitmapInterface
 		{

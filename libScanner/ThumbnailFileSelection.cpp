@@ -9,7 +9,7 @@
 #include <ScrollbarVerticalWnd.h>
 #include <ScrollbarWnd.h>
 #include <ImageVideoThumbnail.h>
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 
 

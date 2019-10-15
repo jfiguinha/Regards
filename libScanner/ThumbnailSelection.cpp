@@ -6,8 +6,7 @@
 #include "ScannerParamInit.h"
 #include <ScrollbarWnd.h>
 using namespace Regards::Window;
-using namespace Regards::Viewer;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 CThumbnailSelection::CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename)
 	: CWindowMain("ThumbnailSelection", parent, id)

@@ -29,6 +29,7 @@
 #include <FaceDetection.h>
 #include <CategoryDetection.h>
 #include <SavePicture.h>
+#include <ScannerFrame.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -41,31 +42,7 @@ using namespace Regards::Sqlite;
 #endif
 
 
-// constants:
-enum
-{
-	ID_Hello = 1,
-	ID_Folder = 2,
-	ID_Configuration = 3,
-	ID_OpenCL = 4,
-	ID_SIZEICONLESS = 5,
-	ID_SIZEICONMORE = 6,
-	ID_ERASEDATABASE = 7,
-	ID_THUMBNAILRIGHT = 8,
-	ID_THUMBNAILBOTTOM = 9,
-	ID_FACEDETECTION = 10,
-	ID_INTERPOLATIONFILTER = 11,
-	ID_EXPORT = 12,
-	ID_VIDEO = 1018,
-	ID_AUDIO = 1019,
-	ID_SUBTITLE = 1020,
-	WXSCAN_PAGE,
-	WXPRINT_PAGE_SETUP,
-	WXPRINT_PAGE_SETUP_PS,
-#ifdef __WXMAC__
-	WXPRINT_PAGE_MARGINS,
-#endif
-};
+
 
 #include <ctype.h>
 #include "wx/metafile.h"
@@ -258,6 +235,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	wxMenu *menuFace = new wxMenu;
 	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
+	menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
@@ -285,6 +263,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxEVT_CLOSE_WINDOW, wxCloseEventHandler(CViewerFrame::OnClose));
 	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExport));
+	Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	
     if (folderList.size() == 0)
@@ -316,6 +295,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     
     mainInterface->HideAbout();
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
+}
+
+void CViewerFrame::OnScanner(wxCommandEvent& event)
+{
+	frameScanner = new CScannerFrame("Regards PDF", nullptr, wxPoint(50, 50), wxSize(1200, 800));
+	frameScanner->Centre(wxBOTH);
+	frameScanner->Show(true);
 }
 
 void CViewerFrame::OnExport(wxCommandEvent& event)

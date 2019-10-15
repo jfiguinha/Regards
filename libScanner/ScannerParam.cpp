@@ -4,7 +4,7 @@
 #include <rapidxml_print.hpp>
 #include <ConvertUtility.h>
 using namespace rapidxml;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 
 #define POSITION_PREVIEW_FACE 300

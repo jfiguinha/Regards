@@ -9,7 +9,7 @@ class CScannerFrame;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CViewerPDF;
 		class CPanelInfosWnd;

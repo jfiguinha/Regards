@@ -8,7 +8,7 @@ using namespace Regards::Window;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 
 		class CToolbarInfos : public CToolbarWindow

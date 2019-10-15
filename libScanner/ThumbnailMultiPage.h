@@ -2,11 +2,12 @@
 #include "ThumbnailHorizontal.h"
 #include <ImageVideoThumbnail.h>
 
+
 namespace Regards
 {
-	namespace Control
+	namespace Scanner
 	{
-		class CThumbnailMultiPage : public CThumbnailHorizontal
+		class CThumbnailMultiPage : public Regards::Control::CThumbnailHorizontal
 		{
 		public:
 			CThumbnailMultiPage(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);

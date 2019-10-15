@@ -2,7 +2,7 @@
 #include "ScannerParamInit.h"
 #include "ScannerParam.h"
 #include <wx/stdpaths.h>
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 
 CScannerParam * CScannerParamInit::_singleton = nullptr;
 

@@ -13,7 +13,7 @@
 #include <FilterData.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+using namespace Regards::Scanner;
 using namespace Regards::Control;
 #define WM_UPDATEINFOS 1
 

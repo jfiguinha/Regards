@@ -19,7 +19,7 @@ class CImageLoadingFormat;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
         class CInfoEffectWnd;
         class CFiltreEffectScrollWnd;

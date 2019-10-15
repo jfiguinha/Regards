@@ -6,7 +6,7 @@ using namespace std;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Scanner
 	{
 		class CScannerParam : public CConfigParam
 		{
