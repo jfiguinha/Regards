@@ -49,7 +49,7 @@
 // came with your tarball or type make ChangeLog if you are building from git
 //
 //========================================================================
-
+#include <header.h>
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,7 +106,7 @@ static inline bool IS_CLOSER(float x, float y, float z) { return fabs((x)-(y)) <
 extern bool complexMode;
 extern bool singleHtml;
 extern bool dataUrls;
-extern bool ignore;
+extern bool localignore;
 extern bool printCommands;
 extern bool printHtml;
 extern bool noframes;
@@ -883,7 +883,7 @@ void HtmlPage::dumpComplex(FILE *file, int page, const std::vector<std::string>&
   fprintf(pageFile,"<div id=\"page%d-div\" style=\"position:relative;width:%dpx;height:%dpx;\">\n",
       page, pageWidth, pageHeight);
 
-  if(!ignore && (size_t) (page - firstPage) < backgroundImages.size())
+  if(!localignore && (size_t) (page - firstPage) < backgroundImages.size())
   {
     fprintf(pageFile,
       "<img width=\"%d\" height=\"%d\" src=\"%s\" alt=\"background image\"/>\n",
@@ -1487,7 +1487,7 @@ void HtmlOutputDev::drawImageMask(GfxState *state, Object *ref, Stream *str,
 				  int width, int height, bool invert,
 				  bool interpolate, bool inlineImg) {
 
-  if (ignore||(complexMode && !xml)) {
+  if (localignore ||(complexMode && !xml)) {
     OutputDev::drawImageMask(state, ref, str, width, height, invert, interpolate, inlineImg);
     return;
   }
@@ -1509,7 +1509,7 @@ void HtmlOutputDev::drawImage(GfxState *state, Object *ref, Stream *str,
 			      int width, int height, GfxImageColorMap *colorMap,
 			      bool interpolate, int *maskColors, bool inlineImg) {
 
-  if (ignore||(complexMode && !xml)) {
+  if (localignore ||(complexMode && !xml)) {
     OutputDev::drawImage(state, ref, str, width, height, colorMap, interpolate,
 			 maskColors, inlineImg);
     return;

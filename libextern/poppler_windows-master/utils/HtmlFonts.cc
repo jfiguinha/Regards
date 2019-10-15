@@ -35,7 +35,7 @@
 // came with your tarball or type make ChangeLog if you are building from git
 //
 //========================================================================
-
+#include <header.h>
 #include "HtmlFonts.h"
 #include "HtmlUtils.h"
 #include "GlobalParams.h"

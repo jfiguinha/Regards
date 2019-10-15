@@ -25,7 +25,7 @@
 // came with your tarball or type make ChangeLog if you are building from git
 //
 //========================================================================
-
+#include <header.h>
 #include "HtmlLinks.h"
 
 extern bool xml;

@@ -13,7 +13,7 @@
 // Copyright (C) 2018, 2019 Greg Knight <lyngvi@gmail.com>
 //
 //========================================================================
-
+#include <header.h>
 #include "InMemoryFile.h"
 
 #include <string.h>
