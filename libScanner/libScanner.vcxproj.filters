@@ -40,6 +40,9 @@
     <Filter Include="Panel">
       <UniqueIdentifier>{5c0fea45-d8f9-4bf3-8291-d43d79e2c65d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Export">
+      <UniqueIdentifier>{20fa4472-19c0-44e8-88c3-0ddc865b34e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SelectPage.cpp">
@@ -96,6 +99,21 @@
     <ClCompile Include="ThumbnailSelection.cpp">
       <Filter>Dialog</Filter>
     </ClCompile>
+    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlFonts.cc">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlLinks.cc">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlOutputDev.cc">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libextern\poppler_windows-master\utils\InMemoryFile.cc">
+      <Filter>Export</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportPDF.cpp">
+      <Filter>Export</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -151,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="ThumbnailSelection.h">
       <Filter>Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportPDF.h">
+      <Filter>Export</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

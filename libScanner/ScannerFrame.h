@@ -27,6 +27,8 @@ enum
 	// menu items
 	ID_OPENIMAGE,
 	ID_EXPORT,
+	ID_EXPORTHTML,
+	ID_EXPORTTXT,
 	ID_ACQUIREIMAGE,
 	ID_OCR,
 	ID_ACQUIREIMAGES,
@@ -66,7 +68,8 @@ private:
 	void OnExport(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
 	void OnOCR(wxCommandEvent& event);
-
+	void OnExportText(wxCommandEvent& event);
+	void OnExportHTML(wxCommandEvent& event);
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif

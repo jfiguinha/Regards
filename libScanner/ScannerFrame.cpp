@@ -25,6 +25,7 @@
 #include "ScannerThemeInit.h"
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
+#include "ExportPDF.h"
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -59,6 +60,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	wxMenu *menuFile = new wxMenu;
 	menuFile->Append(ID_OPENIMAGE, _("&Open PDF..."), _("Open a pdf file"));
 	menuFile->Append(ID_EXPORT, _("&Export PDF..."), _("Export PDF"));
+	menuFile->Append(ID_EXPORTHTML, _("&Export PDF to HTML ..."), _("Export PDF to HTML"));
+	menuFile->Append(ID_EXPORTTXT, _("&Export PDF to TEXT ..."), _("Export PDF to TEXT"));
 	//menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
 #if __WXSCANSANE__  
@@ -94,6 +97,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExport));
+	Connect(ID_EXPORTHTML, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportHTML));
+	Connect(ID_EXPORTTXT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportText));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 	Connect(ID_OCR, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOCR));
@@ -124,6 +129,46 @@ void CScannerFrame::OnOCR(wxCommandEvent& event)
 	if (filename != "")
 	{
 		centralWindow->OcrPage();
+	}
+}
+
+void CScannerFrame::OnExportText(wxCommandEvent& event)
+{
+	wxString szFilter = "Files TEXT(*.txt) | *.txt";
+
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+
+		wxFileDialog saveFileDialog(this, filename, "", "",
+			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;
+
+		
+		wxString file = saveFileDialog.GetPath();
+		CExportPDF::ExportPDFToTXT(filename, file);
+	}
+}
+
+void CScannerFrame::OnExportHTML(wxCommandEvent& event)
+{
+	wxString szFilter = "Files HTML(*.HTML) | *.html";
+
+	wxString filename = centralWindow->GetFilename();
+	if (filename != "")
+	{
+
+		wxFileDialog saveFileDialog(this, filename, "", "",
+			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+		if (saveFileDialog.ShowModal() == wxID_CANCEL)
+			return;
+
+
+		wxString file = saveFileDialog.GetPath();
+		CExportPDF::ExportPDFToHTML(filename, file);
 	}
 }
 
@@ -360,6 +405,8 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 		break;
 #endif
 
+	case ID_EXPORTHTML:
+	case ID_EXPORTTXT:
 	case ID_EXPORT:
 	case ID_ACQUIREIMAGE:
 	case ID_OCR:
