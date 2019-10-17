@@ -23,6 +23,8 @@ namespace Regards
 		private:
 			void OnOcr(wxCommandEvent& event);
 			wxPanel * CreateListTesseract(wxWindow * parent);
+			void tesseract_preprocess(string source_file, string out_file);
+			wxString GetTempFile(wxString filename);
 
 			vector<wxString> listFile;
 			wxChoice *choice;

@@ -12,9 +12,9 @@
 #include <wx/dirdlg.h>
 #include <ConfigRegards.h>
 #include "ViewerParamInit.h"
-#include "ViewerThemeInit.h"
+#include "MainThemeInit.h"
 #include "ViewerParam.h"
-#include "ViewerTheme.h"
+#include "MainTheme.h"
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <FileUtility.h>
@@ -127,11 +127,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	mainWindowWaiting = nullptr;
 	SetIcon(wxICON(sample));
 	frameScanner = nullptr;
-	viewerParam = new CViewerParam();
-	CViewerParamInit::Initialize(viewerParam);
+	viewerParam = new CMainParam();
+	CMainParamInit::Initialize(viewerParam);
 
-	viewerTheme = new CViewerTheme();
-	CViewerThemeInit::Initialize(viewerTheme);
+	viewerTheme = new CMainTheme();
+	CMainThemeInit::Initialize(viewerTheme);
 
 	this->mainInterface = mainInterface;
 	this->mainInterface->parent = this;
@@ -181,7 +181,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	if (folderChange)
 	{
-		CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+		CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 		wxString sqlRequest = viewerParam->GetLastSqlRequest();
 
 		CSqlFindPhotos sqlFindPhotos;
@@ -438,7 +438,7 @@ void CViewerFrame::Exit()
 	}
 	else
 	{
-        CViewerThemeInit::SaveTheme();
+        CMainThemeInit::SaveTheme();
 		mainInterface->Close();
 		onExit = true;
 
@@ -831,7 +831,7 @@ void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 
 void CViewerFrame::OnFacePertinence(wxCommandEvent& event)
 {
-	CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	double pertinence = 0.0;
 	if(viewerParam != nullptr)
 	{

@@ -4,24 +4,24 @@
 #include <wx/stdpaths.h>
 using namespace Regards::Scanner;
 
-CScannerParam * CScannerParamInit::_singleton = nullptr;
+CMainParam * CMainParamInit::_singleton = nullptr;
 
-CScannerParamInit::CScannerParamInit()
+CMainParamInit::CMainParamInit()
 {
 }
 
 
-CScannerParamInit::~CScannerParamInit()
+CMainParamInit::~CMainParamInit()
 {
 }
 
 
-CScannerParam * CScannerParamInit::getInstance()
+CMainParam * CMainParamInit::getInstance()
 {
 	return _singleton;
 }
 
-void CScannerParamInit::Initialize(CScannerParam * param)
+void CMainParamInit::Initialize(CMainParam * param)
 {
 	if (nullptr == _singleton)
 	{

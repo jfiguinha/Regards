@@ -25,12 +25,6 @@
     <Filter Include="header">
       <UniqueIdentifier>{f60f1c79-2798-4a8f-b0c2-828ea6bd1b92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Theme">
-      <UniqueIdentifier>{0423ea1e-1424-4033-9bb4-e214b8897047}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Parameter">
-      <UniqueIdentifier>{ea5827cf-4058-48c8-b092-b0dc2454a4d1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SeparationBar">
       <UniqueIdentifier>{dc28e3ac-f401-4f01-b0df-7f996efe0e5a}</UniqueIdentifier>
     </Filter>
@@ -71,18 +65,6 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
-    </ClCompile>
-    <ClCompile Include="ScannerTheme.cpp">
-      <Filter>Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="ScannerThemeInit.cpp">
-      <Filter>Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="ScannerParam.cpp">
-      <Filter>Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="ScannerParamInit.cpp">
-      <Filter>Parameter</Filter>
     </ClCompile>
     <ClCompile Include="InfosSeparationBarExplorer.cpp">
       <Filter>SeparationBar</Filter>
@@ -145,18 +127,6 @@
     </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
-    </ClInclude>
-    <ClInclude Include="ScannerTheme.h">
-      <Filter>Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="ScannerThemeInit.h">
-      <Filter>Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="ScannerParam.h">
-      <Filter>Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="ScannerParamInit.h">
-      <Filter>Parameter</Filter>
     </ClInclude>
     <ClInclude Include="InfosSeparationBarExplorer.h">
       <Filter>SeparationBar</Filter>

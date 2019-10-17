@@ -2,8 +2,8 @@
 #include "CentralWindow.h"
 #include "ToolbarPDF.h"
 #include "BitmapViewerInfosWnd.h"
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <ConfigParam.h>
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
@@ -14,15 +14,17 @@
 #include "SelectPage.h"
 #include <FileUtility.h>
 using namespace Regards::Window;
-using namespace Regards::Scanner;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame)
 	: CWindowMain("CentralWindow", parent, id)
 {
-	//CScannerTheme * viewerTheme = new CScannerTheme();
+	//CMainTheme * viewerTheme = new CMainTheme();
 
-
-	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
+#ifdef __SCANNER_PROGRAM__
+	Regards::Scanner::CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+#else
+	Regards::Viewer::CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+#endif
 	CThemeSplitter theme;
 	viewerTheme->GetSplitterTheme(&theme);
 	CThemeToolbar themeClickInfosToolbar;

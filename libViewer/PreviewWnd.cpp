@@ -7,8 +7,8 @@
 #include <libPicture.h>
 #include <window_id.h>
 #include "ViewerParam.h"
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
 using namespace Regards::Control;
 using namespace Regards::Viewer;
@@ -33,7 +33,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 	fullscreen = false;
 	isDiaporama = false;
 	animationToolbar = nullptr;
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 	
 	if (viewerTheme != nullptr)
 	{

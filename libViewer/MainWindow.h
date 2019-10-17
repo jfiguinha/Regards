@@ -243,7 +243,7 @@ namespace Regards
 			int numElement;
 			wxString firstFileToShow;
 			bool showToolbar;
-			CViewerParam * viewerParam;
+			CMainParam * viewerParam;
             bool multithread;
             bool needToReload;
 			int typeAffichage;

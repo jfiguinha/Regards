@@ -45,7 +45,7 @@ CCategoryWnd::CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeEl
 	rowWidth.push_back(0);
 	yPos = 0;
 	MonthName = CConvertUtility::split(CLibResource::LoadStringFromResource(L"LBLMONTHNAME",1), ',');
-	config = (CViewerParam *)CViewerParamInit::getInstance();
+	config = (CMainParam *)CMainParamInit::getInstance();
 	this->windowMain = windowMain;
 }
 
@@ -455,7 +455,7 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 
 wxString CCategoryWnd::GetSqlRequest()
 {
-	CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
     vector<int> listFolder;
 	vector<int> listFace;
 	vector<int> listFolderNotSelected;
@@ -521,7 +521,7 @@ void CCategoryWnd::UpdateSQLSearchCriteria()
     sqlRequest = GetSqlRequest();
     sqlFindPhotos.SearchPhotos(sqlRequest);
     
-    CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+    CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
     viewerParam->SetLastSqlRequest(sqlRequest);
 
 	if (windowMain != nullptr)

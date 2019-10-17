@@ -99,7 +99,7 @@ void CToolbarPDF::EventManager(const int &id)
 
 	case IDM_WINDOWSEARCH:
 	{
-		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxWindow* central = this->FindWindowById(SCANNER_CENTRALVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_OPENFILE);
 		wxQueueEvent(central, event);
 	}

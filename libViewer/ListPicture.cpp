@@ -4,8 +4,8 @@
 #include <SQLRemoveData.h>
 #include <SqlFindCriteria.h>
 #include <ThumbnailData.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <LibResource.h>
 #include "MainWindow.h"
 #include "ImageList.h"
@@ -55,12 +55,12 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	showToolbar = true;
 
 	bool checkValidity = false;
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{
@@ -198,7 +198,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 			memdc.SetBackground(color);
 			memdc.Clear();
 
-			CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+			CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 			CThemeThumbnail themeThumbnail;
 			viewerTheme->GetThumbnailTheme(&themeThumbnail);
 

@@ -1,18 +1,18 @@
 #pragma once
-#include <ConfigParam.h>
+#include "ConfigParam.h"
 
 using namespace rapidxml;
 using namespace std;
 
 namespace Regards
 {
-	namespace Scanner
+	namespace Viewer
 	{
-		class CScannerParam : public CConfigParam
+		class CMainParam : public CConfigParam
 		{
 		public:
-			CScannerParam();
-			virtual ~CScannerParam();
+			CMainParam();
+			virtual ~CMainParam();
 
 			void SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant);
 			void SetPositionWindow(const wxRect &rc);

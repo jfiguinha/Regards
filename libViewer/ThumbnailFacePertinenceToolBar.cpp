@@ -102,7 +102,7 @@ void CThumbnailFacePertinenceToolBar::SlidePosChange(const int &position, const 
 
 void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 {
-	CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	if(viewerParam != nullptr)
 	{
 		viewerParam->SetPertinenceValue((double)(slide->GetPositionValue()) / 100.0f);

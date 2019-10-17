@@ -1,8 +1,8 @@
 #include <header.h>
 #include "PanelPhotoWnd.h"
 #include "ToolbarPhoto.h"
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <window_id.h>
 #include <config_id.h>
 #include "MainWindow.h"
@@ -23,7 +23,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
  
 
 	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{

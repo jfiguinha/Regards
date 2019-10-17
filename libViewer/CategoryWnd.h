@@ -73,7 +73,7 @@ namespace Regards
 			vector<wxString> MonthName;
 			int widthPosition;
 			vector<int> listPhoto;
-			CViewerParam * config;
+			CMainParam * config;
 			CWindowMain * windowMain;
 
 		};

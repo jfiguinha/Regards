@@ -1,5 +1,4 @@
 #include <header.h>
-#ifdef __SCANNER_PROGRAM__
 #include "ScannerTheme.h"
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
@@ -735,4 +734,3 @@ void CMainTheme::InitTheme()
 	InitThumbnailToolbarZoomTheme();
 	InitThumbnailToolbar();
 }
-#endif

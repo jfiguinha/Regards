@@ -5,21 +5,20 @@
 #include <gdiplus.h>
 #endif
 #include <MainInterface.h>
+#include <MainTheme.h>
+#include <MainThemeInit.h>
+#include <MainParam.h>
+#include <MainParamInit.h>
 
-
+using namespace Regards::Scanner;
 
 namespace Regards
 {
 	namespace Scanner
 	{
-		class CScannerParam;
-		class CScannerTheme;
 		class CCentralWindow;
 	}
 }
-
-using namespace Regards::Scanner;
-
 
 // IDs for the controls and the menu commands
 enum
@@ -78,9 +77,15 @@ private:
 #endif
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
-    
-	Regards::Scanner::CScannerParam * viewerParam;
-	Regards::Scanner::CScannerTheme * viewerTheme;
+   
+#ifdef __SCANNER_PROGRAM__
+	Regards::Scanner::CMainParam * viewerParam;
+	Regards::Scanner::CMainTheme * viewerTheme;
+#else
+	Regards::Viewer::CMainParam * viewerParam;
+	Regards::Viewer::CMainTheme * viewerTheme;
+#endif
+
 
 #if __WXSCANSANE__  
     wxScanSane * scanSane;

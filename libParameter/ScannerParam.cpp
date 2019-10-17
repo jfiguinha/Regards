@@ -9,7 +9,7 @@ using namespace Regards::Scanner;
 
 #define POSITION_PREVIEW_FACE 300
 
-CScannerParam::CScannerParam()
+CMainParam::CMainParam()
 {
 	sqlRequest = "";
 	showFolder = true;
@@ -37,134 +37,134 @@ CScannerParam::CScannerParam()
 	pertinence = 0.0;
 }
 
-wxString CScannerParam::GetLastSqlRequest()
+wxString CMainParam::GetLastSqlRequest()
 {
     return sqlRequest;
 }
 
-bool CScannerParam::GetCheckThumbnailValidity()
+bool CMainParam::GetCheckThumbnailValidity()
 {
 	return false;
 }
 
-void CScannerParam::SetLastSqlRequest(const wxString &sqlRequest)
+void CMainParam::SetLastSqlRequest(const wxString &sqlRequest)
 {
     this->sqlRequest = sqlRequest;
 }
 
-void CScannerParam::SetCheckIsUpdate(const bool &infos)
+void CMainParam::SetCheckIsUpdate(const bool &infos)
 {
 	check = infos;
 }
 
-void CScannerParam::GetCheckIsUpdate(bool &infos)
+void CMainParam::GetCheckIsUpdate(bool &infos)
 {
 	infos = check;
 }
 
 
-void CScannerParam::SetShowFolder(const bool &infos)
+void CMainParam::SetShowFolder(const bool &infos)
 {
 	showFolder = infos;
 }
 
-void CScannerParam::GetShowFolder(bool &infos)
+void CMainParam::GetShowFolder(bool &infos)
 {
 	infos = showFolder;
 }
 
-void CScannerParam::SetShowFace(const bool &infos)
+void CMainParam::SetShowFace(const bool &infos)
 {
 	showFace = infos;
 }
 
-void CScannerParam::GetShowFace(bool &infos)
+void CMainParam::GetShowFace(bool &infos)
 {
 	infos = showFace;
 }
 
-void CScannerParam::SetShowFilter(const bool &infos)
+void CMainParam::SetShowFilter(const bool &infos)
 {
 	showFilter = infos;
 }
 
-void CScannerParam::GetShowFilter(bool &infos)
+void CMainParam::GetShowFilter(bool &infos)
 {
 	infos = showFilter;
 }
 
-int CScannerParam::GetPositionCriteriaPreview()
+int CMainParam::GetPositionCriteriaPreview()
 {
 	return positionCriteriaPreview;
 }
 
-void CScannerParam::SetPositionCriteriaPreview(const int &pos)
+void CMainParam::SetPositionCriteriaPreview(const int &pos)
 {
 	positionCriteriaPreview = pos;
 }
 
-bool CScannerParam::IsThumbnailBottom()
+bool CMainParam::IsThumbnailBottom()
 {
 	return isThumbnailBottom;
 }
 
-void CScannerParam::SetThumbnailBottom(const bool &isBottom)
+void CMainParam::SetThumbnailBottom(const bool &isBottom)
 {
 	isThumbnailBottom = isBottom;
 }
 
-void CScannerParam::SetPositionPreviewThumbnail(const int &pos)
+void CMainParam::SetPositionPreviewThumbnail(const int &pos)
 {
 	positionPreviewThumbnail = pos;
 }
 
-int CScannerParam::GetPositionPreviewThumbnail()
+int CMainParam::GetPositionPreviewThumbnail()
 {
 	return positionPreviewThumbnail;
 }
 
-void CScannerParam::SetCatalogOpenTriangle(const wxString &state)
+void CMainParam::SetCatalogOpenTriangle(const wxString &state)
 {
 	criteriaTriangleList = state;
 }
 
-wxString CScannerParam::GetCatalogOpenTriangle()
+wxString CMainParam::GetCatalogOpenTriangle()
 {
 	wxString value;
 	value.append(criteriaTriangleList.begin(), criteriaTriangleList.end());
 	return value;
 }
 
-void CScannerParam::SetCatalogCriteria(const wxString &state)
+void CMainParam::SetCatalogCriteria(const wxString &state)
 {
 	criteriaList = state;
 }
 
-wxString CScannerParam::GetCatalogCriteria()
+wxString CMainParam::GetCatalogCriteria()
 {
 	wxString value;
 	value.append(criteriaList.begin(), criteriaList.end());
 	return value;
 }
 
-CScannerParam::~CScannerParam()
+CMainParam::~CMainParam()
 {
 	doc.clear();
 }
 
-void CScannerParam::SetCriteriaParameter(xml_node<>* section)
+void CMainParam::SetCriteriaParameter(xml_node<>* section)
 {
 	section->append_node(node("Value", criteriaList));
 	section->append_node(node("TriangleValue", criteriaTriangleList));
 }
 
 
-wxString CScannerParam::GetLastFolder()
+wxString CMainParam::GetLastFolder()
 {
 	return folder;
 }
 
-void CScannerParam::SetLastFolder(const wxString &folder)
+void CMainParam::SetLastFolder(const wxString &folder)
 {
 	this->folder = folder;
 }
@@ -172,7 +172,7 @@ void CScannerParam::SetLastFolder(const wxString &folder)
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SaveParameter()
+void CMainParam::SaveParameter()
 {
 	doc.clear();
 	// xml declaration
@@ -212,7 +212,7 @@ void CScannerParam::SaveParameter()
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SetDiaporamaParameter(xml_node<>* sectionDiaporama)
+void CMainParam::SetDiaporamaParameter(xml_node<>* sectionDiaporama)
 {
 	sectionDiaporama->append_node(node("Fullscreen", to_string(fullscreen)));
 	sectionDiaporama->append_node(node("Effect", to_string(numEffect)));
@@ -223,7 +223,7 @@ void CScannerParam::SetDiaporamaParameter(xml_node<>* sectionDiaporama)
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SetWindowParameter(xml_node<>* sectionWindow)
+void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 {
 	sectionWindow->append_node(node("Thumbnail", to_string(showThumbnail)));
 	sectionWindow->append_node(node("VideoThumbnail", to_string(showVideoThumbnail)));
@@ -245,7 +245,7 @@ void CScannerParam::SetWindowParameter(xml_node<>* sectionWindow)
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, const wxRect &rc)
+void CMainParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, const wxRect &rc)
 {
 	sectionWindowPosition->append_node(node("Left", to_string(rc.x)));
 	sectionWindowPosition->append_node(node("Right", to_string(rc.width)));
@@ -256,7 +256,7 @@ void CScannerParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SetPositionParameter(xml_node<>* sectionPosition)
+void CMainParam::SetPositionParameter(xml_node<>* sectionPosition)
 {
 	xml_node<>* sectionWindowPosition = node("Window");
 	SetWindowPositionParameter(sectionWindowPosition, positionRegardsViewer);
@@ -266,7 +266,7 @@ void CScannerParam::SetPositionParameter(xml_node<>* sectionPosition)
 //////////////////////////////////////////////////////////////////////////////////////////
 //Loading Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::LoadParameter()
+void CMainParam::LoadParameter()
 {
 	xml_node<> * root_node;
 	//long nodeSize = 0;
@@ -290,7 +290,7 @@ void CScannerParam::LoadParameter()
 }
 
 
-void CScannerParam::GetCriteriaParameter(xml_node<> * position_node)
+void CMainParam::GetCriteriaParameter(xml_node<> * position_node)
 {
 	xml_node<> * child_node = position_node->first_node("Value");
 	if (child_node != 0)
@@ -301,13 +301,13 @@ void CScannerParam::GetCriteriaParameter(xml_node<> * position_node)
 }
 
 
-void CScannerParam::GetPositionParameter(xml_node<> * position_node)
+void CMainParam::GetPositionParameter(xml_node<> * position_node)
 {
 	xml_node<> * child_node = position_node->first_node("Window");
 	positionRegardsViewer = GetWindowPositionParameter(child_node);
 }
 
-wxRect CScannerParam::GetWindowPositionParameter(xml_node<> * position_node)
+wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
@@ -347,7 +347,7 @@ wxRect CScannerParam::GetWindowPositionParameter(xml_node<> * position_node)
 	return rc;
 }
 
-void CScannerParam::GetWindowParameter(xml_node<> * window_node)
+void CMainParam::GetWindowParameter(xml_node<> * window_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
@@ -474,7 +474,7 @@ void CScannerParam::GetWindowParameter(xml_node<> * window_node)
 	
 }
 
-void CScannerParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
+void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 {
 	wxString value = "";
 	wxString nodeName = "";
@@ -512,12 +512,12 @@ void CScannerParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 
 }
 
-void CScannerParam::SetPertinenceValue(const double &value)
+void CMainParam::SetPertinenceValue(const double &value)
 {
 	pertinence = value;
 }
 
-double CScannerParam::GetPertinenceValue()
+double CMainParam::GetPertinenceValue()
 {
 	return pertinence;
 }
@@ -525,7 +525,7 @@ double CScannerParam::GetPertinenceValue()
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving Parameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CScannerParam::SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant)
+void CMainParam::SetOptionDiaporama(const bool &fullscreen, const  int &effect, const  int &delai, const  bool &enAvant)
 {
 	this->fullscreen = fullscreen;
 	this->numEffect = effect;
@@ -533,27 +533,27 @@ void CScannerParam::SetOptionDiaporama(const bool &fullscreen, const  int &effec
 	this->enAvant = enAvant;
 }
 
-void CScannerParam::SetPositionWindow(const wxRect &rc)
+void CMainParam::SetPositionWindow(const wxRect &rc)
 {
 	positionRegardsViewer = rc;
 }
 
-void CScannerParam::SetShowThumbnail(const bool &show)
+void CMainParam::SetShowThumbnail(const bool &show)
 {
 	showThumbnail = show;
 }
 
-void CScannerParam::SetShowVideoThumbnail(const bool &show)
+void CMainParam::SetShowVideoThumbnail(const bool &show)
 {
 	showVideoThumbnail = show;
 }
 
-void CScannerParam::SetShowInfos(const bool &infos)
+void CMainParam::SetShowInfos(const bool &infos)
 {
 	showInfos = infos;
 }
 
-void CScannerParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant)
+void CMainParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant)
 {
 	fullscreen = this->fullscreen;
 	effect = this->numEffect;
@@ -561,73 +561,73 @@ void CScannerParam::GetOptionDiaporama(bool &fullscreen, int &effect, int &delai
 	enAvant = this->enAvant;
 }
 
-int CScannerParam::GetDefaultPositionPreviewFace()
+int CMainParam::GetDefaultPositionPreviewFace()
 {
 	return POSITION_PREVIEW_FACE;
 }
 
-int CScannerParam::GetPositionPreviewFace()
+int CMainParam::GetPositionPreviewFace()
 {
 
 	return positionPreviewFace;
 }
 
-void CScannerParam::SetPositionPreviewFace(const int &pos)
+void CMainParam::SetPositionPreviewFace(const int &pos)
 {
 	positionPreviewFace = pos;
 }
 
-void CScannerParam::SetPositionCriteriaFolder(const int &pos)
+void CMainParam::SetPositionCriteriaFolder(const int &pos)
 {
 	positionFolderCriteria = pos;
 }
 
-int CScannerParam::GetPositionCriteriaFolder()
+int CMainParam::GetPositionCriteriaFolder()
 {
 	return positionFolderCriteria;
 }
 
-bool CScannerParam::GetFullscreenDiaporamaOption()
+bool CMainParam::GetFullscreenDiaporamaOption()
 {
 	return fullscreen;
 }
 
-bool CScannerParam::GetEnAvantDiaporamaOption()
+bool CMainParam::GetEnAvantDiaporamaOption()
 {
 	return enAvant;
 }
 
-int CScannerParam::GetDelaiDiaporamaOption()
+int CMainParam::GetDelaiDiaporamaOption()
 {
 	return delai;
 }
 
-void CScannerParam::GetPositionWindow(wxRect &rc)
+void CMainParam::GetPositionWindow(wxRect &rc)
 {
 	rc = positionRegardsViewer;
 }
 
-void CScannerParam::GetShowThumbnail(bool &show)
+void CMainParam::GetShowThumbnail(bool &show)
 {
 	show = showThumbnail;
 }
 
-void CScannerParam::GetShowVideoThumbnail(bool &show)
+void CMainParam::GetShowVideoThumbnail(bool &show)
 {
 	show = showVideoThumbnail;
 }
 
-void CScannerParam::GetShowInfos(bool &infos)
+void CMainParam::GetShowInfos(bool &infos)
 {
 	infos = showInfos;
 }
 
-void CScannerParam::GetPositionSplitter(int &position)
+void CMainParam::GetPositionSplitter(int &position)
 {
 	position = this->position;
 }
 
-void CScannerParam::SetPositionSplitter(const int &position)
+void CMainParam::SetPositionSplitter(const int &position)
 {
 	this->position = position;
 }

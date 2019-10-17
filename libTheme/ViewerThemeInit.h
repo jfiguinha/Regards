@@ -1,7 +1,8 @@
 #pragma once
+
 namespace Regards
 {
-	namespace Scanner
+	namespace Viewer
 	{
 		class CMainTheme;
 

@@ -20,7 +20,7 @@ CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowI
     thumbnailEffect = nullptr;
 	bool checkValidity = false;
     thumbnailEffectScroll = new CScrollbarWnd(this, wxID_ANY);
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 

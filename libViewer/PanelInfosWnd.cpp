@@ -3,8 +3,8 @@
 #include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include "RedEyeParameter.h"
 #include <Gps.h>
 #include <window_id.h>
@@ -55,7 +55,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
  
 
 	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
     
     wxString folder = CFileUtility::GetDocumentFolderPath();

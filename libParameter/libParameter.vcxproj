@@ -198,8 +198,14 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ConfigParam.h" />
+    <ClInclude Include="MainParam.h" />
+    <ClInclude Include="MainParamInit.h" />
     <ClInclude Include="ParamInit.h" />
     <ClInclude Include="RegardsConfigParam.h" />
+    <ClInclude Include="ScannerParam.h" />
+    <ClInclude Include="ScannerParamInit.h" />
+    <ClInclude Include="ViewerParam.h" />
+    <ClInclude Include="ViewerParamInit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -209,6 +215,10 @@
     <ClCompile Include="ConfigParam.cpp" />
     <ClCompile Include="ParamInit.cpp" />
     <ClCompile Include="RegardsConfigParam.cpp" />
+    <ClCompile Include="ScannerParam.cpp" />
+    <ClCompile Include="ScannerParamInit.cpp" />
+    <ClCompile Include="ViewerParam.cpp" />
+    <ClCompile Include="ViewerParamInit.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

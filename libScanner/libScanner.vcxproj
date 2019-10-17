@@ -35,8 +35,6 @@
     <ClCompile Include="OcrWnd.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
-    <ClCompile Include="ScannerTheme.cpp" />
-    <ClCompile Include="ScannerThemeInit.cpp" />
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
@@ -44,8 +42,6 @@
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
-    <ClCompile Include="ScannerParam.cpp" />
-    <ClCompile Include="ScannerParamInit.cpp" />
     <ClCompile Include="viewerPDF.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -57,8 +53,6 @@
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="ScannerFrame.h" />
-    <ClInclude Include="ScannerTheme.h" />
-    <ClInclude Include="ScannerThemeInit.h" />
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
@@ -66,8 +60,6 @@
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
     <ClInclude Include="ValidationToolbar.h" />
-    <ClInclude Include="ScannerParam.h" />
-    <ClInclude Include="ScannerParamInit.h" />
     <ClInclude Include="viewerPDF.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

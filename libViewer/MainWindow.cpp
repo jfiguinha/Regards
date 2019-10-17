@@ -8,8 +8,8 @@
 #include <PrintEngine.h>
 #include <libPicture.h>
 #include "ThemeParam.h"
-#include "ViewerThemeInit.h"
-#include "ViewerTheme.h"
+#include "MainThemeInit.h"
+#include "MainTheme.h"
 #include "SqlFindPhotos.h"
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
@@ -93,8 +93,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	sqlFindPhotos.SearchPhotos(&pictures);
     imageList->SetImageList(pictures);
     
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
-	viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolbar theme;
@@ -587,7 +587,7 @@ void CMainWindow::ProcessIdle()
 
 		if (folderChange || nbFile > 0)
 		{
-			CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+			CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 			wxString sqlRequest = viewerParam->GetLastSqlRequest();
 
 			CSqlFindPhotos sqlFindPhotos;
@@ -736,7 +736,7 @@ void CMainWindow::ProcessIdle()
             if (wxFileName::FileExists(photo.GetPath()))
             {
                 //Test si thumbnail valide
-                CViewerParam * config = CViewerParamInit::getInstance();
+                CMainParam * config = CMainParamInit::getInstance();
                 if (config != nullptr)
                 {
                     if (config->GetCheckThumbnailValidity() && nbProcessMD5 < nbProcesseur)

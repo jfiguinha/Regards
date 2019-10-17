@@ -7,8 +7,8 @@
 #include <ImageVideoThumbnail.h>
 
 #include <LibResource.h>
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 #include <libPicture.h>
@@ -47,8 +47,8 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	showToolbar = true;
 	checkValidity = false;
 
-	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
-	CScannerParam * config = CScannerParamInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 

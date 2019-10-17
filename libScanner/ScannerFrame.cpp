@@ -19,10 +19,6 @@
 #include <LibResource.h>
 #include <wx/wxsanedlg.h>
 #include <libPicture.h>
-#include "ScannerParam.h"
-#include "ScannerParamInit.h"
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
 #include "ExportPDF.h"
@@ -47,11 +43,11 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 
 	this->mainInterface = mainInterface;
 
-	viewerParam = new CScannerParam();
-	CScannerParamInit::Initialize(viewerParam);
+	viewerParam = new CMainParam();
+	CMainParamInit::Initialize(viewerParam);
 
-	viewerTheme = new CScannerTheme();
-	CScannerThemeInit::Initialize(viewerTheme);
+	viewerTheme = new CMainTheme();
+	CMainThemeInit::Initialize(viewerTheme);
 
 #if __WXSCANSANE__  
     scanSane = new wxScanSane();	

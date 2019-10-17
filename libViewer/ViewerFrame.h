@@ -43,8 +43,8 @@ namespace Regards
 
 		class CMainWindow;
 		class CWaitingWindow;
-		class CViewerParam;
-		class CViewerTheme;
+		class CMainParam;
+		class CMainTheme;
 
 		class CViewerFrame : public wxFrame, public IStatusBarInterface
 		{
@@ -100,8 +100,8 @@ namespace Regards
 
 
 			IMainInterface * mainInterface;
-			CViewerParam * viewerParam;
-			CViewerTheme * viewerTheme;
+			CMainParam * viewerParam;
+			CMainTheme * viewerTheme;
 			CMainWindow * mainWindow;
 			wxTimer * exitTimer;
 			CWaitingWindow * mainWindowWaiting;

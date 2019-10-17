@@ -7,8 +7,8 @@
 #include <LibResource.h>
 #include <RegardsBitmap.h>
 #include <FilterData.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <BitmapWndViewer.h>
 #define TAILLEMAX 1024
 using namespace Regards::Viewer;
@@ -22,7 +22,7 @@ CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlIn
 	index = 0;
 	this->isVideo = isVideo;
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 	if (viewerTheme)
 		viewerTheme->GetTreeTheme(&themeTree);
 	this->bitmapViewer = bitmapViewer;

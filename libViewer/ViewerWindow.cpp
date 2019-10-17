@@ -7,10 +7,10 @@
 #include <ImageVideoThumbnail.h>
 #include <FileUtility.h>
 #include <LibResource.h>
-#include "ViewerTheme.h"
+#include "MainTheme.h"
 #include <libPicture.h>
 #include <ShowVideo.h>
-#include "ViewerThemeInit.h"
+#include "MainThemeInit.h"
 #include <window_id.h>
 #include <ParamInit.h>
 #include <StatusText.h>
@@ -42,8 +42,8 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 	isPicture = false;
 	isVideo = false;
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
@@ -54,8 +54,8 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 	{
 		bool checkValidity = true;
 		bool isPanelVisible = true;
-		CViewerTheme* viewerTheme = CViewerThemeInit::getInstance();
-		CViewerParam* config = CViewerParamInit::getInstance();
+		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
 		{
 			config->GetShowVideoThumbnail(isPanelVisible);
@@ -102,8 +102,8 @@ CViewerWindow::CViewerWindow(wxWindow* parent, wxWindowID id)
 	{
 		bool checkValidity = false;
 		bool isPanelVisible = true;
-		CViewerTheme* viewerTheme = CViewerThemeInit::getInstance();
-		CViewerParam* config = CViewerParamInit::getInstance();
+		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
 		{
 			config->GetShowThumbnail(isPanelVisible);

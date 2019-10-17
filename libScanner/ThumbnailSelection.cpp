@@ -1,7 +1,7 @@
 #include <header.h>
 #include "ThumbnailSelection.h"
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 #include <ScrollbarWnd.h>
@@ -12,11 +12,11 @@ CThumbnailSelection::CThumbnailSelection(wxWindow* parent, wxWindowID id, wxStri
 	: CWindowMain("ThumbnailSelection", parent, id)
 {
 	bool checkValidity = false;
-	CScannerParam * config = CScannerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
-	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{

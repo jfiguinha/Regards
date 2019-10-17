@@ -1,5 +1,4 @@
-#include <header.h>
-#ifdef __SCANNER_PROGRAM__
+#include "header.h"
 #include "ScannerThemeInit.h"
 #include "ScannerTheme.h"
 #include <wx/stdpaths.h>
@@ -60,5 +59,3 @@ void CMainThemeInit::SaveTheme()
 		_singleton->SaveFile();
 	}
 }
-
-#endif

@@ -6,8 +6,8 @@
 #include "ViewerParam.h"
 #include <LibResource.h>
 #include "ParamInit.h"
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
 #include <Gps.h>
@@ -34,14 +34,14 @@ CPreviewInfosWnd::CPreviewInfosWnd(wxWindow* parent, wxWindowID id,
 	bool showInfos = true;
 	int positionBar = 0;
 
-	CViewerParam * viewerParam = CViewerParamInit::getInstance();
+	CMainParam * viewerParam = CMainParamInit::getInstance();
 	if (viewerParam != nullptr)
 	{
 		viewerParam->GetShowInfos(showInfos);
 		viewerParam->GetPositionSplitter(positionBar);
 	}
 
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
     
     wxString urlServer;
     CRegardsConfigParam * param = CParamInit::getInstance();
@@ -103,11 +103,11 @@ void CPreviewInfosWnd::UpdateScreenRatio()
 
 CPreviewInfosWnd::~CPreviewInfosWnd()
 {
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
 		bool showInfos = true;
-		CViewerParam * viewerParam = (CViewerParam *)config;
+		CMainParam * viewerParam = (CMainParam *)config;
 		viewerParam->GetShowInfos(showInfos);
 		if (showInfos)
 			viewerParam->SetPositionSplitter(posBar);

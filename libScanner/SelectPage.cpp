@@ -1,7 +1,7 @@
 #include <header.h>
 #include "SelectPage.h"
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include "ScannerParam.h"
 #include "ScannerParamInit.h"
 
@@ -12,7 +12,7 @@ CSelectFileDlg::CSelectFileDlg(wxWindow *parent, wxWindowID id,
 	wxDialog(parent, id, title, pos, size, style)
 {
 	bool checkValidity = false;
-	CScannerParam * config = CScannerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 

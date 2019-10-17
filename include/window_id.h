@@ -199,4 +199,4 @@
 #define WM_VIDEOEFFECT 1025
 #define WM_FOLDER 1026
 #define WM_FACELIST 1027
-
+#define WM_OCR 1028

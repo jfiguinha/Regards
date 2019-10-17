@@ -241,10 +241,6 @@
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPhoto.h" />
     <ClInclude Include="ViewerFrame.h" />
-    <ClInclude Include="ViewerParam.h" />
-    <ClInclude Include="ViewerParamInit.h" />
-    <ClInclude Include="ViewerTheme.h" />
-    <ClInclude Include="ViewerThemeInit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -289,10 +285,6 @@
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPhoto.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
-    <ClCompile Include="ViewerParam.cpp" />
-    <ClCompile Include="ViewerParamInit.cpp" />
-    <ClCompile Include="ViewerTheme.cpp" />
-    <ClCompile Include="ViewerThemeInit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-zoom-in.xpm" />

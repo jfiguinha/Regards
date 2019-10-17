@@ -6,8 +6,8 @@
 #include "ScannerParam.h"
 #include <LibResource.h>
 #include "ParamInit.h"
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include "PanelInfosWnd.h"
 #include "viewerPDF.h"
 #include <ImageLoadingFormat.h>
@@ -33,8 +33,8 @@ CBitmapViewerInfosWnd::CBitmapViewerInfosWnd(wxWindow* parent, wxWindowID id, CS
 	int positionBar = 0;
 
 
-	CScannerTheme * viewerTheme = CScannerThemeInit::getInstance();
-	CScannerParam * viewerParam = CScannerParamInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CMainParam * viewerParam = CMainParamInit::getInstance();
 	if (viewerParam != nullptr)
 	{
 		viewerParam->GetShowInfos(showInfos);
@@ -90,7 +90,7 @@ void CBitmapViewerInfosWnd::UpdateScreenRatio()
 
 CBitmapViewerInfosWnd::~CBitmapViewerInfosWnd()
 {
-	CScannerParam * config = CScannerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 	{
 		bool showInfos = true;

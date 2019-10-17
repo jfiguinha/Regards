@@ -150,7 +150,7 @@ namespace Regards
 
 			void OnTimerAnimation(wxTimerEvent& event);
 
-			CViewerParam * viewerParam;
+			CMainParam * viewerParam;
 			bool checkValidity;
 			bool isVideo;
 			bool isAnimation;

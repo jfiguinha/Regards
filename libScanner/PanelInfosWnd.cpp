@@ -3,8 +3,8 @@
 #include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
-#include "ScannerTheme.h"
-#include "ScannerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <window_id.h>
 #include <config_id.h>
 #include <FileUtility.h>
@@ -29,7 +29,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	windowVisible = WM_INFOS;
  
 	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CScannerTheme * viewerTheme = new CScannerTheme();
+	CMainTheme * viewerTheme = new CMainTheme();
 
     
     wxString folder = CFileUtility::GetDocumentFolderPath();

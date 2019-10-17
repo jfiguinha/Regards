@@ -3,8 +3,8 @@
 #include <ConfigParam.h>
 #include "ViewerParamInit.h"
 #include <LibResource.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
 #include <Gps.h>
@@ -22,8 +22,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	viewerconfig = nullptr;
 	fullscreen = false;
 
-	CViewerParam* config = CViewerParamInit::getInstance();
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainParam* config = CMainParamInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (imageList != nullptr)
 	{
@@ -80,7 +80,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	if (config != nullptr)
 	{
-		viewerconfig = (CViewerParam *)config;
+		viewerconfig = (CMainParam *)config;
 		this->posBar = viewerconfig->GetPositionCriteriaPreview();
         Refresh();
     }

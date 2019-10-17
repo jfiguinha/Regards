@@ -4,8 +4,8 @@
 #include "TreeElementTriangle.h"
 #include "ModificationManager.h"
 #include <ImageLoadingFormat.h>
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
@@ -13,7 +13,7 @@ using namespace Regards::Viewer;
 CInfoEffect::CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
 {
 	widthPosition = 0;
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 		viewerTheme->GetTreeTheme(&themeTree);

@@ -1,6 +1,5 @@
 #include <header.h>
-#ifdef __SCANNER_PROGRAM__
-#include "ScannerTheme.h"
+#include "ViewerTheme.h"
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 #ifndef __WXMSW__
@@ -8,7 +7,7 @@
 #endif
 #include <ConvertUtility.h>
 using namespace rapidxml;
-using namespace Regards::Scanner;
+using namespace Regards::Viewer;
 
 CMainTheme::CMainTheme()
 {
@@ -735,4 +734,3 @@ void CMainTheme::InitTheme()
 	InitThumbnailToolbarZoomTheme();
 	InitThumbnailToolbar();
 }
-#endif

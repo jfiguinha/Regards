@@ -46,7 +46,7 @@ namespace Regards
 			void ProcessIdle();
 
 			CCategoryWnd * catalogWndOld;
-			CViewerParam * explorerconfig ;
+			CMainParam * explorerconfig ;
 			int oldPos;
 			bool update ;
 			int numImageFace;

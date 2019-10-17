@@ -5,8 +5,8 @@
 #include <ParamInit.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
-#include "ViewerTheme.h"
-#include "ViewerThemeInit.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 #include <MoveFaceDialog.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -22,12 +22,12 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	thumbnailFace = nullptr;
 	update = true;
 	bool checkValidity = false;
-	CViewerParam * config = CViewerParamInit::getInstance();
+	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
 
 	
-	CViewerTheme * viewerTheme = CViewerThemeInit::getInstance();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	if (viewerTheme != nullptr)
 	{

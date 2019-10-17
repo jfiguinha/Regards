@@ -19,6 +19,15 @@
     <Filter Include="header">
       <UniqueIdentifier>{857bf104-fc30-4701-8d2c-87b12c811dac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Viewer">
+      <UniqueIdentifier>{515e45ed-77ee-405a-a32a-d915e1265d19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scanner">
+      <UniqueIdentifier>{fc03ea6a-058c-4462-9808-7f5090b097fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{0818fc64-cdc3-4d3e-8855-b1ad6d159301}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +45,24 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="ScannerParam.h">
+      <Filter>Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ScannerParamInit.h">
+      <Filter>Scanner</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerParam.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewerParamInit.h">
+      <Filter>Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="MainParam.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="MainParamInit.h">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ParamInit.cpp">
@@ -49,6 +76,18 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerParam.cpp">
+      <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ScannerParamInit.cpp">
+      <Filter>Scanner</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerParam.cpp">
+      <Filter>Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewerParamInit.cpp">
+      <Filter>Viewer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

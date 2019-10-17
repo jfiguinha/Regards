@@ -1,9 +1,8 @@
 #include <header.h>
-#ifdef __SCANNER_PROGRAM__
-#include "ScannerThemeInit.h"
-#include "ScannerTheme.h"
+#include "ViewerThemeInit.h"
+#include "ViewerTheme.h"
 #include <wx/stdpaths.h>
-using namespace Regards::Scanner;
+using namespace Regards::Viewer;
 
 CMainTheme * CMainThemeInit::_singleton = nullptr;
 
@@ -60,5 +59,3 @@ void CMainThemeInit::SaveTheme()
 		_singleton->SaveFile();
 	}
 }
-
-#endif

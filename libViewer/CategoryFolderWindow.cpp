@@ -132,7 +132,7 @@ CCategoryFolderWindow::~CCategoryFolderWindow()
 
 void CCategoryFolderWindow::InitSaveParameter()
 {
-    CViewerParam * config = (CViewerParam *)CViewerParamInit::getInstance();
+    CMainParam * config = (CMainParam *)CMainParamInit::getInstance();
     if(config != nullptr)
     {
         config->SetCatalogOpenTriangle("");

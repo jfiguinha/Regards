@@ -7,11 +7,11 @@ namespace Regards
 {
 	namespace Viewer
 	{
-		class CViewerTheme : public CThemeParam
+		class CMainTheme : public CThemeParam
 		{
 		public:
-			CViewerTheme();
-			virtual ~CViewerTheme();
+			CMainTheme();
+			virtual ~CMainTheme();
 
 			void GetInfosToolbarTheme(CThemeToolbar * theme);
 			void GetFiltreToolbarTheme(CThemeToolbar * theme);

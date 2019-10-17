@@ -42,7 +42,7 @@ namespace Regards
 			CPanelWithClickToolbar * panelSearch;
 			CPanelPhotoWnd * panelPhotoWnd;
 			
-			CViewerParam * viewerconfig;
+			CMainParam * viewerconfig;
 
 			//Viewer window
 			CViewerWindow * viewerWindow;

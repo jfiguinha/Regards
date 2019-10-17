@@ -198,7 +198,7 @@ void CThumbnailFace::SortSeparator(CInfosSeparationBar * infosSeparationBar)
 
 void CThumbnailFace::Init()
 {
-	CViewerParam * viewerParam = (CViewerParam *)CViewerParamInit::getInstance();
+	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	threadDataProcess = false;
 
 	double pertinence = 0.0;

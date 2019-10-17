@@ -16,12 +16,6 @@
     <Filter Include="DataStructure">
       <UniqueIdentifier>{e2cb9ba1-3193-4483-800d-92560dd6ee10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Parameter">
-      <UniqueIdentifier>{a9f25924-bf88-49ec-b7ec-3cfbb31bc038}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Theme">
-      <UniqueIdentifier>{9d022295-db73-4424-be51-8a331dcfc871}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Thumbnail">
       <UniqueIdentifier>{8316d9b0-597e-4992-a66a-4f1e28413885}</UniqueIdentifier>
     </Filter>
@@ -65,18 +59,6 @@
     </ClInclude>
     <ClInclude Include="ImageList.h">
       <Filter>DataStructure</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerParam.h">
-      <Filter>Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerParamInit.h">
-      <Filter>Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerTheme.h">
-      <Filter>Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerThemeInit.h">
-      <Filter>Theme</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailFace.h">
       <Filter>Thumbnail\include</Filter>
@@ -199,18 +181,6 @@
     </ClCompile>
     <ClCompile Include="ImageList.cpp">
       <Filter>DataStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerParam.cpp">
-      <Filter>Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerParamInit.cpp">
-      <Filter>Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerTheme.cpp">
-      <Filter>Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerThemeInit.cpp">
-      <Filter>Theme</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailFace.cpp">
       <Filter>Thumbnail\source</Filter>
