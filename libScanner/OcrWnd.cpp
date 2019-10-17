@@ -10,7 +10,7 @@
 #include <leptonica/allheaders.h>
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
-
+#include <directoryctrl.h>
 enum
 {
 	ID_BUT_OCR = 3000,
@@ -22,25 +22,9 @@ using namespace Regards::Control;
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
-	long treeStyle = wxTR_HAS_BUTTONS;
-
-	treeStyle |= wxTR_HIDE_ROOT;
-
-#ifdef __WXGTK20__
-	treeStyle |= wxTR_NO_LINES;
-#endif
-
-	//if (style & wxDIRCTRL_EDIT_LABELS)
-	//	treeStyle |= wxTR_EDIT_LABELS;
-
-	treeStyle |= wxTR_MULTIPLE;
-
-	//if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
-	//	treeStyle |= wxNO_BORDER;
-
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);
-	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), treeStyle);
+	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_MULTIPLE | wxNO_BORDER);
 	treeCtrl->SetBackgroundColour(themeTree.bgColorOne);
 	treeCtrl->SetForegroundColour(themeTree.bgColorBackground);
 	wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
@@ -58,7 +42,19 @@ COcrWnd::~COcrWnd()
 
 void COcrWnd::GenerateLayerBitmap()
 {
+	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
+	CRegardsBitmap * bitmap = showBitmap->GetBitmap(true);
+	CImageLoadingFormat loading;
+	loading.SetPicture(bitmap);
+	wxImage * image = loading.GetwxImage();
+	wxBitmap bmp = wxBitmap(*image);
+	wxMemoryDC memDC;
+	memDC.SelectObject(bmp);
+	for (BBoxText * bbox : listRect)
+		CDraw::DessinerRectangleVide(&memDC, 2, bbox->rect, wxColor(0, 0, 255, 0));
 
+	memDC.SelectObject(wxNullBitmap);
+	bmp.SaveFile(GetTempFile("screenshot.bmp"), wxBITMAP_TYPE_BMP);
 }
 
 void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
@@ -184,6 +180,10 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 				//wxTreeItemId childId = treeCtrl->AppendItem(rootId, bboxText.label);
 
 				wxTreeItemId id = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+
+				treeCtrl->MakeCheckable(id, true);
+				treeCtrl->EnableCheckBox(id, true);
+
 				bboxText->SetId(id);
 				listRect.push_back(bboxText);
 			}
@@ -204,7 +204,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		if (bitmap != nullptr)
 			delete bitmap;
 	}
-
+	GenerateLayerBitmap();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
