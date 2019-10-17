@@ -28,8 +28,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	height = 0;
 	windowVisible = WM_INFOS;
  
-	//CRegardsConfigParam * config = CParamInit::getInstance();
-	CMainTheme * viewerTheme = new CMainTheme();
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
     
     wxString folder = CFileUtility::GetDocumentFolderPath();

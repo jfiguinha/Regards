@@ -10,6 +10,7 @@
 #include <leptonica/allheaders.h>
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
+
 enum
 {
 	ID_BUT_OCR = 3000,
@@ -21,16 +22,69 @@ using namespace Regards::Control;
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
-	wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
-	hsizer->Add(CreateListTesseract(this), 1, wxEXPAND | wxALL, 5);
+	long treeStyle = wxTR_HAS_BUTTONS;
 
+	treeStyle |= wxTR_HIDE_ROOT;
+
+#ifdef __WXGTK20__
+	treeStyle |= wxTR_NO_LINES;
+#endif
+
+	//if (style & wxDIRCTRL_EDIT_LABELS)
+	//	treeStyle |= wxTR_EDIT_LABELS;
+
+	treeStyle |= wxTR_MULTIPLE;
+
+	//if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
+	//	treeStyle |= wxNO_BORDER;
+
+	CThemeTree themeTree;
+	listOcr = CreateListTesseract(this);
+	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), treeStyle);
+	treeCtrl->SetBackgroundColour(themeTree.bgColorOne);
+	treeCtrl->SetForegroundColour(themeTree.bgColorBackground);
+	wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
+	hsizer->Add(listOcr, 1, wxEXPAND | wxALL, 5);
+	hsizer->Add(treeCtrl, 2, wxEXPAND | wxALL, 5);
 
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
+	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
 }
 
 COcrWnd::~COcrWnd()
 {
 
+}
+
+void COcrWnd::GenerateLayerBitmap()
+{
+
+}
+
+void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
+{
+	// Allow calling GetPath() in multiple selection from OnSelFilter
+	if (treeCtrl->HasFlag(wxTR_MULTIPLE))
+	{
+		wxArrayTreeItemIds items;
+		treeCtrl->GetSelections(items);
+		if (items.size() > 0)
+		{
+			// return first string only
+			wxTreeItemId treeid = items[0];
+
+		}
+	}
+}
+
+void COcrWnd::Resize()
+{
+	int width = this->GetWidth() - 5;
+	int height = this->GetHeight();
+
+	int panelListOcrH = listOcr->GetMinHeight();
+	listOcr->SetSize(0, 0, width, panelListOcrH);
+	treeCtrl->SetSize(0, panelListOcrH, width, height - panelListOcrH);
 }
 
 wxString COcrWnd::GetTempFile(wxString filename)
@@ -90,6 +144,8 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			loadingformat.SetPicture(bitmap);
 			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
 
+			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
+
 			wxString preprocess = GetTempFile("preprocess.bmp");
 
 			tesseract_preprocess(tempFile.ToStdString(), preprocess.ToStdString());
@@ -111,22 +167,24 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			for (int i = 0; i < boxes->n; i++) {
 				BOX* box = boxaGetBox(boxes, i, L_CLONE);
 				api->SetRectangle(box->x, box->y, box->w, box->h);
-				BBoxText bboxText;
+				BBoxText * bboxText = new BBoxText();
 
-
+				
 				//char* ocrResult = api->GetUTF8Text();
 				//int conf = api->MeanTextConf();
 				//fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s",
 				//	i, box->x, box->y, box->w, box->h, conf, ocrResult);
+				bboxText->rect.x = box->x;
+				bboxText->rect.y = box->y;
+				bboxText->rect.width = box->w;
+				bboxText->rect.height = box->h;
+				bboxText->rect.x = box->x;
+				bboxText->confidence = api->MeanTextConf();
+				bboxText->label = api->GetUTF8Text();
+				//wxTreeItemId childId = treeCtrl->AppendItem(rootId, bboxText.label);
 
-				bboxText.rect.x = box->x;
-				bboxText.rect.y = box->y;
-				bboxText.rect.width = box->w;
-				bboxText.rect.height = box->h;
-				bboxText.rect.x = box->x;
-				bboxText.confidence = api->MeanTextConf();
-				bboxText.label = api->GetUTF8Text();
-
+				wxTreeItemId id = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+				bboxText->SetId(id);
 				listRect.push_back(bboxText);
 			}
 
@@ -186,9 +244,8 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
 	wxButton *defBut = new wxButton(panel, ID_BUT_OCR, _("&OCR"));
-	gsizer->Add(defBut, wxGBPosition(row + 1, 0), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
-	//choiceValue.id = choice->GetId();
-	//Connect(choice->GetId(), wxEVT_CHOICE, wxCommandEventHandler(wxScanSaneAcquireDialog::OnChoiceSelected));
+	gsizer->Add(defBut, wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+
 
 	panel->SetSizer(sizer);
 	sizer->SetSizeHints(panel);
@@ -210,7 +267,7 @@ void COcrWnd::tesseract_preprocess(string source_file, string out_file) {
 	BOOL perform_negate = TRUE;
 	l_float32 dark_bg_threshold = 0.5f; // From 0.0 to 1.0, with 0 being all white and 1 being all black 
 
-	int perform_scale = 1;
+	int perform_scale = 0;
 	l_float32 scale_factor = 3.5f;
 
 	int perform_unsharp_mask = 1;
