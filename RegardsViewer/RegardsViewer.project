@@ -194,6 +194,7 @@
         <LibraryPath Value="../libextern/poppler_windows-master/build"/>
         <LibraryPath Value="../libextern/poppler_windows-master/build/cpp"/>
         <Library Value="Viewer"/>
+        <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
@@ -345,6 +346,9 @@
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
         <Library Value="FreeImage"/>
+        <Library Value="qpdf"/>
+        <Library Value="tesseract"/>
+        <Library Value="lept"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -392,6 +396,7 @@
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
+        <LibraryPath Value="../libScanner/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -549,6 +554,7 @@
         <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
+        <LibraryPath Value="../libScanner/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
