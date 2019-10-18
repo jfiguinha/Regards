@@ -128,18 +128,6 @@
       <File Name="ThumbnailViewerVideo.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <VirtualDirectory Name="Theme">
-    <File Name="ViewerTheme.cpp"/>
-    <File Name="ViewerTheme.h"/>
-    <File Name="ViewerThemeInit.h"/>
-    <File Name="ViewerThemeInit.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="Parameter">
-    <File Name="ViewerParam.h"/>
-    <File Name="ViewerParamInit.h"/>
-    <File Name="ViewerParam.cpp"/>
-    <File Name="ViewerParamInit.cpp"/>
-  </VirtualDirectory>
   <Dependencies Name="Debug"/>
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">

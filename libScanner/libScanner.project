@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libScanner" Version="10.0.0" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="Export">
+    <File Name="../libextern/poppler_windows-master/utils/config.h"/>
+    <File Name="../libextern/poppler_windows-master/utils/InMemoryFile.cc"/>
+    <File Name="../libextern/poppler_windows-master/utils/ImageOutputDev.cc"/>
+    <File Name="../libextern/poppler_windows-master/utils/HtmlOutputDev.cc"/>
+    <File Name="../libextern/poppler_windows-master/utils/HtmlLinks.cc"/>
+    <File Name="../libextern/poppler_windows-master/utils/HtmlFonts.cc"/>
+    <File Name="ExportPDF.cpp"/>
+    <File Name="ExportPDF.h"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Panel">
     <File Name="PanelInfosWnd.h"/>
     <File Name="PanelInfosWnd.cpp"/>
@@ -8,11 +23,6 @@
     <File Name="BitmapViewerInfosWnd.h"/>
     <File Name="BitmapViewerInfosWnd.cpp"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="Toolbar">
     <File Name="ToolbarInfos.h"/>
     <File Name="ToolbarInfos.cpp"/>
@@ -27,21 +37,9 @@
     <File Name="ThumbnailFileSelection.h"/>
     <File Name="ThumbnailFileSelection.cpp"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="Theme">
-    <File Name="ScannerThemeInit.h"/>
-    <File Name="ScannerThemeInit.cpp"/>
-    <File Name="ScannerTheme.h"/>
-    <File Name="ScannerTheme.cpp"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="SeparationBar">
     <File Name="InfosSeparationBarExplorer.h"/>
     <File Name="InfosSeparationBarExplorer.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="Parameter">
-    <File Name="ScannerParamInit.h"/>
-    <File Name="ScannerParamInit.cpp"/>
-    <File Name="ScannerParam.h"/>
-    <File Name="ScannerParam.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Dialog">
     <File Name="ThumbnailSelection.h"/>
@@ -61,6 +59,8 @@
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options="" Assembler="">
@@ -107,6 +107,11 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
+        <IncludePath Value="../libextern/poppler_windows-master/utils"/>
+        <IncludePath Value="../libextern/poppler_windows-master/goo"/>
+        <IncludePath Value="../libextern/libpng"/>
+        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
+        <IncludePath Value="../libextern/poppler_windows-master"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
