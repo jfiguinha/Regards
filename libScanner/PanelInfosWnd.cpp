@@ -47,7 +47,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
         viewerTheme->GetTreeTheme(&theme);
         
         infosFileWnd = new CInfosFileWnd(this, wxID_ANY, themeScroll, theme);
-		ocrWnd = new COcrWnd(this, wxID_ANY);
+		ocrWnd = new COcrWnd(this, SCANNER_OCRPAGE);
 
 		infosFileWnd->Show(true);
         
@@ -98,6 +98,8 @@ void CPanelInfosWnd::SetFile(const wxString &filename)
 		infosToolbar->SetInfosActif();
 
 		LoadInfo();
+
+		ocrWnd->Init();
 	}
     
 }

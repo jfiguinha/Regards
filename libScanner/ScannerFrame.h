@@ -66,7 +66,7 @@ private:
 	void OnAbout(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
-	void OnOCR(wxCommandEvent& event);
+
 	void OnExportText(wxCommandEvent& event);
 	void OnExportHTML(wxCommandEvent& event);
 #ifdef __WXMSW__

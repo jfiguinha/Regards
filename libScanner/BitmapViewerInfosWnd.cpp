@@ -68,12 +68,6 @@ CBitmapViewerInfosWnd::CBitmapViewerInfosWnd(wxWindow* parent, wxWindowID id, CS
 }
 
 
-void CBitmapViewerInfosWnd::OcrPage()
-{
-	if (previewWindow != nullptr)
-		previewWindow->OcrPage();
-}
-
 void CBitmapViewerInfosWnd::OnResize(wxCommandEvent& event)
 {
 	RedrawBarPos();

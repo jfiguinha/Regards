@@ -97,7 +97,6 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_EXPORTTXT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportText));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
-	Connect(ID_OCR, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnOCR));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
 #if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
@@ -119,14 +118,7 @@ CScannerFrame::~CScannerFrame()
 		delete centralWindow;
 }
 
-void CScannerFrame::OnOCR(wxCommandEvent& event)
-{
-	wxString filename = centralWindow->GetFilename();
-	if (filename != "")
-	{
-		centralWindow->OcrPage();
-	}
-}
+
 
 void CScannerFrame::OnExportText(wxCommandEvent& event)
 {

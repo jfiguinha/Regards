@@ -7,70 +7,159 @@
 #include <wx/filename.h>
 #include <ShowBitmap.h>
 #include <tesseract/baseapi.h>
+#include <tesseract/renderer.h>
 #include <leptonica/allheaders.h>
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <directoryctrl.h>
+#include <FiltreEffet.h>
+#include <FilterData.h>
 enum
 {
 	ID_BUT_OCR = 3000,
+	ID_BUT_OCRPDF = ID_BUT_OCR + 1,
 	ID_BUT_PREVIEW,
 };
 
 using namespace Regards::Scanner;
 using namespace Regards::Control;
+
+
+
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
+	//bitmapBackground = nullptr;
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);
-	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_MULTIPLE | wxNO_BORDER);
+
+	long style = wxDIRCTRL_DEFAULT_STYLE;
+	long treeStyle = wxTR_HAS_BUTTONS;
+
+	treeStyle |= wxTR_HIDE_ROOT;
+
+#ifdef __WXGTK20__
+	treeStyle |= wxTR_NO_LINES;
+#endif
+
+	if (style & wxDIRCTRL_EDIT_LABELS)
+		treeStyle |= wxTR_EDIT_LABELS;
+
+	if (style & wxDIRCTRL_MULTIPLE)
+		treeStyle |= wxTR_MULTIPLE;
+
+	if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
+		treeStyle |= wxNO_BORDER;
+
+	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), treeStyle);
 	treeCtrl->SetBackgroundColour(themeTree.bgColorOne);
 	treeCtrl->SetForegroundColour(themeTree.bgColorBackground);
 	wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
 	hsizer->Add(listOcr, 1, wxEXPAND | wxALL, 5);
 	hsizer->Add(treeCtrl, 2, wxEXPAND | wxALL, 5);
 
+
+	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
+	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
 	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
+
+
+}
+
+void COcrWnd::Init()
+{
+	exportPdf->Enable(false);
+	treeCtrl->DeleteAllItems();
+	listRect.clear();
 }
 
 COcrWnd::~COcrWnd()
 {
 
+	CBitmapWndViewer * showBitmap = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	if (showBitmap != nullptr)
+	{
+		showBitmap->RemoveListener();
+	}
 }
 
-void COcrWnd::GenerateLayerBitmap()
+CImageLoadingFormat * COcrWnd::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
 {
-	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
-	CRegardsBitmap * bitmap = showBitmap->GetBitmap(true);
-	CImageLoadingFormat loading;
-	loading.SetPicture(bitmap);
-	wxImage * image = loading.GetwxImage();
-	wxBitmap bmp = wxBitmap(*image);
-	wxMemoryDC memDC;
-	memDC.SelectObject(bmp);
-	for (BBoxText * bbox : listRect)
-		CDraw::DessinerRectangleVide(&memDC, 2, bbox->rect, wxColor(0, 0, 255, 0));
+	return nullptr;
+}
 
-	memDC.SelectObject(wxNullBitmap);
-	bmp.SaveFile(GetTempFile("screenshot.bmp"), wxBITMAP_TYPE_BMP);
+float COcrWnd::XDrawingPosition(const float &m_lx, const long &m_lHScroll, const float &ratio)
+{
+	int x = (m_lx * ratio) - m_lHScroll;
+	return x;
+}
+
+float COcrWnd::YDrawingPosition(const float &m_ly, const long &m_lVScroll, const float &ratio)
+{
+	int y = (m_ly * ratio) - m_lVScroll;
+	return y;
+}
+
+void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin)
+{
+	int hpos = bitmapViewer->GetHPos();
+	int vpos = bitmapViewer->GetVPos();
+
+	for (BBoxText * bbox : listRect)
+	{
+		if (bbox->selected)
+		{
+			wxRect rcTemp;
+			rcTemp.x = XDrawingPosition(bbox->rect.x, hpos, bitmapViewer->GetRatio());
+			rcTemp.width = bbox->rect.width * bitmapViewer->GetRatio();
+			rcTemp.y = YDrawingPosition(bbox->rect.y, vpos, bitmapViewer->GetRatio());
+			rcTemp.height = bbox->rect.height * bitmapViewer->GetRatio();
+
+			CDraw::DessinerRectangleVide(dc, 2, rcTemp, wxColor(0, 0, 255, 0));
+		}
+	}
+}
+
+void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessin, int & widthOutput, int & heightOutput)
+{
+	wxImage image = filtreEffet->GetwxImage();
+	wxBitmap bitmap = wxBitmap(image);
+	wxMemoryDC dc;
+	dc.SelectObject(bitmap);
+	wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
+	wxImage render = filtreEffet->GetwxImage();
+	
+	Drawing(&dc, bitmapViewer, dessin);
+
+	dc.SelectObject(wxNullBitmap);
+	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+	wxImage * local_image = new wxImage(bitmap.ConvertToImage());
+	imageLoad->SetPicture(local_image);
+	filtreEffet->SetBitmap(imageLoad);
 }
 
 void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
 {
 	// Allow calling GetPath() in multiple selection from OnSelFilter
-	if (treeCtrl->HasFlag(wxTR_MULTIPLE))
+	//if (treeCtrl->HasFlag(wxTR_MULTIPLE))
+	//{
+	wxArrayTreeItemIds items;
+	treeCtrl->GetSelections(items);
+	for (int i = 0;i < items.size();i++)
 	{
-		wxArrayTreeItemIds items;
-		treeCtrl->GetSelections(items);
-		if (items.size() > 0)
-		{
-			// return first string only
-			wxTreeItemId treeid = items[0];
-
-		}
+		// return first string only
+		wxTreeItemId treeid = items[i];
+		BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeid);
+		if(bboxText != nullptr)
+			bboxText->selected = !bboxText->selected;
 	}
+	//}
+
+	//GenerateLayerBitmap();
+	CBitmapWndViewer * viewer = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	if (viewer != nullptr)
+		viewer->Refresh();
 }
 
 void COcrWnd::Resize()
@@ -83,7 +172,7 @@ void COcrWnd::Resize()
 	treeCtrl->SetSize(0, panelListOcrH, width, height - panelListOcrH);
 }
 
-wxString COcrWnd::GetTempFile(wxString filename)
+wxString COcrWnd::GetTempFile(wxString filename, const bool &removeFile)
 {
 	wxString file;
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
@@ -103,15 +192,66 @@ wxString COcrWnd::GetTempFile(wxString filename)
 		file = tempFolder + "/" + filename;
 #endif
 
-		if (wxFileExists(file))
-			wxRemoveFile(file);
+		if (removeFile)
+		{
+			if (wxFileExists(file))
+				wxRemoveFile(file);
+		}
 	}
 	return file;
 }
 
 
+void COcrWnd::OnOcrPDF(wxCommandEvent& event)
+{
+	int timeout_ms = 5000;
+	const char* retry_config = nullptr;
+	bool textonly = false;
+	int jpg_quality = 92;
+	wxString preprocess = GetTempFile("preprocess.bmp", false);
+
+	wxFileDialog saveFileDialog(this, _("Save to PDF page"), "", "",
+		"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	wxString newfilename = saveFileDialog.GetPath();
+
+	//Get select 
+	int i = choice->GetSelection();
+	wxString language = choice->GetStringSelection();
+
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	resourcePath = resourcePath + "\\tesseract";
+
+	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+	if (api->Init(resourcePath, language)) {
+		fprintf(stderr, "Could not initialize tesseract.\n");
+		exit(1);
+	}
+
+	tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(newfilename.ToStdString().c_str(), resourcePath, textonly);
+
+	bool succeed = api->ProcessPages(preprocess, retry_config, timeout_ms, renderer);
+	if (!succeed) {
+		fprintf(stderr, "Error during processing.\n");
+		return;
+	}
+	api->End();
+
+}
+
+
+
 void COcrWnd::OnOcr(wxCommandEvent& event)
 {
+	CBitmapWndViewer * viewer = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	if (viewer != nullptr)
+	{
+		viewer->SetListener(this);
+		viewer->SetBitmapPreviewEffect(IDM_OCR);
+	}
+
 	//Get select 
 	int i = choice->GetSelection();
 	wxString language = choice->GetStringSelection();
@@ -119,13 +259,12 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
 	if (showBitmap != nullptr)
 	{
-		CRegardsBitmap * bitmap = nullptr;
 		try
 		{
 			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 			resourcePath = resourcePath + "\\tesseract";
 
-			bitmap = showBitmap->GetBitmap(true);
+			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
 			tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 			// Initialize tesseract-ocr with English, without specifying tessdata path
@@ -137,7 +276,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			CLibPicture libPicture;
 			wxString tempFile = GetTempFile("temp.bmp");
 			CImageLoadingFormat loadingformat(false);
-			loadingformat.SetPicture(bitmap);
+			loadingformat.SetPicture(bitmapBackground);
 			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
 
 			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
@@ -165,11 +304,6 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 				api->SetRectangle(box->x, box->y, box->w, box->h);
 				BBoxText * bboxText = new BBoxText();
 
-				
-				//char* ocrResult = api->GetUTF8Text();
-				//int conf = api->MeanTextConf();
-				//fprintf(stdout, "Box[%d]: x=%d, y=%d, w=%d, h=%d, confidence: %d, text: %s",
-				//	i, box->x, box->y, box->w, box->h, conf, ocrResult);
 				bboxText->rect.x = box->x;
 				bboxText->rect.y = box->y;
 				bboxText->rect.width = box->w;
@@ -177,34 +311,41 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 				bboxText->rect.x = box->x;
 				bboxText->confidence = api->MeanTextConf();
 				bboxText->label = api->GetUTF8Text();
+				bboxText->selected = true;
 				//wxTreeItemId childId = treeCtrl->AppendItem(rootId, bboxText.label);
 
-				wxTreeItemId id = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+				wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
 
-				treeCtrl->MakeCheckable(id, true);
-				treeCtrl->EnableCheckBox(id, true);
 
-				bboxText->SetId(id);
+				treeCtrl->SetItemHasChildren(treeid);
+				treeCtrl->MakeCheckable(treeid, true);
+
+
+				bboxText->SetId(treeid);
 				listRect.push_back(bboxText);
 			}
 
 			// Get OCR result
-			char * outText = api->GetUTF8Text();
-			printf("OCR output:\n%s", outText);
+			//char * outText = api->GetUTF8Text();
+			//printf("OCR output:\n%s", outText);
 
 			// Destroy used object and release memory
 			api->End();
 
-			delete[] outText;
+			exportPdf->Enable(true);
+
+			//delete[] outText;
+
+			if (bitmapBackground != nullptr)
+				delete bitmapBackground;
 		}
 		catch (...)
 		{
 
 		}
-		if (bitmap != nullptr)
-			delete bitmap;
 	}
-	GenerateLayerBitmap();
+	//GenerateLayerBitmap();
+	viewer->Refresh();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
@@ -243,10 +384,10 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 	choice->SetSelection(0);
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
-	wxButton *defBut = new wxButton(panel, ID_BUT_OCR, _("&OCR"));
-	gsizer->Add(defBut, wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
-
-
+	exportPdf = new wxButton(panel, ID_BUT_OCRPDF, _("&Export To PDF"));
+	gsizer->Add(new wxButton(panel, ID_BUT_OCR, _("&OCR")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+	gsizer->Add(exportPdf, wxGBPosition(row, 3), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+	exportPdf->Enable(false);
 	panel->SetSizer(sizer);
 	sizer->SetSizeHints(panel);
 	return panel;
@@ -345,44 +486,3 @@ void COcrWnd::tesseract_preprocess(string source_file, string out_file) {
 	status = pixWriteImpliedFormat(out_file.c_str(), pixs, 0, 0);
 
 }
-
-/*
-string COcrWnd::tesseract_ocr(string preprocessed_file)
-{
-	char *outText;
-	Pix *image = pixRead(preprocessed_file.c_str());
-	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-
-
-	TCHAR CurDir[MAX_PATH];
-	GetCurrentDirectory(MAX_PATH, CurDir);
-
-	api->Init(CurDir, "eng");
-	api->SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
-	
-	api->SetImage(image);
-
-	outText = api->GetUTF8Text();
-
-	system("cls");
-
-	string out(outText);
-	return out;
-}
-
-
-void toClipboard(const std::string s) {
-	OpenClipboard(0);
-	EmptyClipboard();
-	HGLOBAL hg = GlobalAlloc(GMEM_MOVEABLE, s.size());
-	if (!hg) {
-		CloseClipboard();
-		return;
-	}
-	memcpy(GlobalLock(hg), s.c_str(), s.size());
-	GlobalUnlock(hg);
-	SetClipboardData(CF_TEXT, hg);
-	CloseClipboard();
-	GlobalFree(hg);
-}
-*/

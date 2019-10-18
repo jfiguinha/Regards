@@ -46,7 +46,6 @@ namespace Regards
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
 			int GetAnimationPosition();
-			void OcrPage();
 
 		private:
 			
