@@ -216,233 +216,240 @@ int CExportPDF::ExportPDFToHTML(wxString pdfFile, wxString fileout)
 	// read config file
 	globalParams = new GlobalParams();
 
-	if (errQuiet) {
-		globalParams->setErrQuiet(errQuiet);
-		printCommands = false; // I'm not 100% what is the difference between them
-	}
-
-	if (textEncName[0]) {
-		globalParams->setTextEncoding(textEncName);
-		if (!globalParams->getTextEncoding()) {
-			goto error;
+	try
+	{
+		if (errQuiet) {
+			globalParams->setErrQuiet(errQuiet);
+			printCommands = false; // I'm not 100% what is the difference between them
 		}
-	}
 
-	// convert from user-friendly percents into a coefficient
-	wordBreakThreshold /= 100.0;
-
-	// open PDF file
-	if (ownerPassword[0]) {
-		ownerPW = new GooString(ownerPassword);
-	}
-	else {
-		ownerPW = nullptr;
-	}
-	if (userPassword[0]) {
-		userPW = new GooString(userPassword);
-	}
-	else {
-		userPW = nullptr;
-	}
-
-	fileName = new GooString(pdfFile.ToStdString());
-
-	if (fileName->cmp("-") == 0) {
-		delete fileName;
-		fileName = new GooString("fd://0");
-	}
-
-	doc = PDFDocFactory().createPDFDoc(*fileName, ownerPW, userPW);
-
-	if (userPW) {
-		delete userPW;
-	}
-	if (ownerPW) {
-		delete ownerPW;
-	}
-	if (!doc->isOk()) {
-		goto error;
-	}
-
-	// check for copy permission
-	if (!doc->okToCopy()) {
-		if (!noDrm) {
-			error(errNotAllowed, -1, "Copying of text from this document is not allowed.");
-			goto error;
-		}
-		fprintf(stderr, "Document has copy-protection bit set.\n");
-	}
-
-	// construct text file name
-	GooString* tmp = new GooString(fileout.ToStdString());
-	if (!xml) {
-		if (tmp->getLength() >= 5) {
-			const char *p = tmp->c_str() + tmp->getLength() - 5;
-			if (!strcmp(p, ".html") || !strcmp(p, ".HTML")) {
-				htmlFileName = new GooString(tmp->c_str(), tmp->getLength() - 5);
+		if (textEncName[0]) {
+			globalParams->setTextEncoding(textEncName);
+			if (!globalParams->getTextEncoding()) {
+				throw("error");
 			}
 		}
-	}
-	else {
-		if (tmp->getLength() >= 4) {
-			const char *p = tmp->c_str() + tmp->getLength() - 4;
-			if (!strcmp(p, ".xml") || !strcmp(p, ".XML")) {
-				htmlFileName = new GooString(tmp->c_str(), tmp->getLength() - 4);
+
+		// convert from user-friendly percents into a coefficient
+		wordBreakThreshold /= 100.0;
+
+		// open PDF file
+		if (ownerPassword[0]) {
+			ownerPW = new GooString(ownerPassword);
+		}
+		else {
+			ownerPW = nullptr;
+		}
+		if (userPassword[0]) {
+			userPW = new GooString(userPassword);
+		}
+		else {
+			userPW = nullptr;
+		}
+
+		fileName = new GooString(pdfFile.ToStdString());
+
+		if (fileName->cmp("-") == 0) {
+			delete fileName;
+			fileName = new GooString("fd://0");
+		}
+
+		doc = PDFDocFactory().createPDFDoc(*fileName, ownerPW, userPW);
+
+		if (userPW) {
+			delete userPW;
+		}
+		if (ownerPW) {
+			delete ownerPW;
+		}
+		if (!doc->isOk()) {
+			throw("error");
+		}
+
+		// check for copy permission
+		if (!doc->okToCopy()) {
+			if (!noDrm) {
+				error(errNotAllowed, -1, "Copying of text from this document is not allowed.");
+				throw("error");
+			}
+			fprintf(stderr, "Document has copy-protection bit set.\n");
+		}
+
+		// construct text file name
+		GooString* tmp = new GooString(fileout.ToStdString());
+		if (!xml) {
+			if (tmp->getLength() >= 5) {
+				const char *p = tmp->c_str() + tmp->getLength() - 5;
+				if (!strcmp(p, ".html") || !strcmp(p, ".HTML")) {
+					htmlFileName = new GooString(tmp->c_str(), tmp->getLength() - 5);
+				}
 			}
 		}
-	}
-	if (!htmlFileName) {
-		htmlFileName = new GooString(tmp);
-	}
-	delete tmp;
+		else {
+			if (tmp->getLength() >= 4) {
+				const char *p = tmp->c_str() + tmp->getLength() - 4;
+				if (!strcmp(p, ".xml") || !strcmp(p, ".XML")) {
+					htmlFileName = new GooString(tmp->c_str(), tmp->getLength() - 4);
+				}
+			}
+		}
+		if (!htmlFileName) {
+			htmlFileName = new GooString(tmp);
+		}
+		delete tmp;
 
 
-	if (scale > 3.0) scale = 3.0;
-	if (scale < 0.5) scale = 0.5;
+		if (scale > 3.0) scale = 3.0;
+		if (scale < 0.5) scale = 0.5;
 
-	if (complexMode) {
-		//noframes=false;
-		stout = false;
-	}
+		if (complexMode) {
+			//noframes=false;
+			stout = false;
+		}
 
-	if (stout) {
-		noframes = true;
-		complexMode = false;
-	}
+		if (stout) {
+			noframes = true;
+			complexMode = false;
+		}
 
-	if (xml)
-	{
-		complexMode = true;
-		singleHtml = false;
-		noframes = true;
-		noMerge = true;
-	}
+		if (xml)
+		{
+			complexMode = true;
+			singleHtml = false;
+			noframes = true;
+			noMerge = true;
+		}
 
-	// get page range
-	if (firstPage < 1)
-		firstPage = 1;
-	if (lastPage < 1 || lastPage > doc->getNumPages())
-		lastPage = doc->getNumPages();
-	if (lastPage < firstPage) {
-		error(errCommandLine, -1,
-			"Wrong page range given: the first page ({0:d}) can not be after the last page ({1:d}).",
-			firstPage, lastPage);
-		goto error;
-	}
+		// get page range
+		if (firstPage < 1)
+			firstPage = 1;
+		if (lastPage < 1 || lastPage > doc->getNumPages())
+			lastPage = doc->getNumPages();
+		if (lastPage < firstPage) {
+			error(errCommandLine, -1,
+				"Wrong page range given: the first page ({0:d}) can not be after the last page ({1:d}).",
+				firstPage, lastPage);
+			throw(errCommandLine);
+		}
 
-	info = doc->getDocInfo();
-	if (info.isDict()) {
-		docTitle = getInfoString(info.getDict(), "Title");
-		author = getInfoString(info.getDict(), "Author");
-		keywords = getInfoString(info.getDict(), "Keywords");
-		subject = getInfoString(info.getDict(), "Subject");
-		date = getInfoDate(info.getDict(), "ModDate");
-		if (!date)
-			date = getInfoDate(info.getDict(), "CreationDate");
-	}
-	if (!docTitle) docTitle = new GooString(htmlFileName);
+		info = doc->getDocInfo();
+		if (info.isDict()) {
+			docTitle = getInfoString(info.getDict(), "Title");
+			author = getInfoString(info.getDict(), "Author");
+			keywords = getInfoString(info.getDict(), "Keywords");
+			subject = getInfoString(info.getDict(), "Subject");
+			date = getInfoDate(info.getDict(), "ModDate");
+			if (!date)
+				date = getInfoDate(info.getDict(), "CreationDate");
+		}
+		if (!docTitle) docTitle = new GooString(htmlFileName);
 
-	if (!singleHtml)
-		rawOrder = complexMode; // todo: figure out what exactly rawOrder do :)
-	else
-		rawOrder = singleHtml;
+		if (!singleHtml)
+			rawOrder = complexMode; // todo: figure out what exactly rawOrder do :)
+		else
+			rawOrder = singleHtml;
 
-	doOutline = doc->getOutline()->getItems() != nullptr;
-	// write text file
-	htmlOut = new HtmlOutputDev(doc->getCatalog(), htmlFileName->c_str(),
-		docTitle->c_str(),
-		author ? author->c_str() : nullptr,
-		keywords ? keywords->c_str() : nullptr,
-		subject ? subject->c_str() : nullptr,
-		date ? date->c_str() : nullptr,
-		rawOrder,
-		firstPage,
-		doOutline);
-	delete docTitle;
-	if (author)
-	{
-		delete author;
-	}
-	if (keywords)
-	{
-		delete keywords;
-	}
-	if (subject)
-	{
-		delete subject;
-	}
-	if (date)
-	{
-		delete date;
-	}
+		doOutline = doc->getOutline()->getItems() != nullptr;
+		// write text file
+		htmlOut = new HtmlOutputDev(doc->getCatalog(), htmlFileName->c_str(),
+			docTitle->c_str(),
+			author ? author->c_str() : nullptr,
+			keywords ? keywords->c_str() : nullptr,
+			subject ? subject->c_str() : nullptr,
+			date ? date->c_str() : nullptr,
+			rawOrder,
+			firstPage,
+			doOutline);
+		delete docTitle;
+		if (author)
+		{
+			delete author;
+		}
+		if (keywords)
+		{
+			delete keywords;
+		}
+		if (subject)
+		{
+			delete subject;
+		}
+		if (date)
+		{
+			delete date;
+		}
 
-	if ((complexMode || singleHtml) && !xml && !localignore) {
+		if ((complexMode || singleHtml) && !xml && !localignore) {
 #ifdef HAVE_SPLASH
-		GooString *imgFileName = nullptr;
-		// White paper color
-		SplashColor color;
-		color[0] = color[1] = color[2] = 255;
-		// If the user specified "jpg" use JPEG, otherwise PNG
-		SplashImageFileFormat format = strcmp(extension, "jpg") ?
-			splashFormatPng : splashFormatJpeg;
+			GooString *imgFileName = nullptr;
+			// White paper color
+			SplashColor color;
+			color[0] = color[1] = color[2] = 255;
+			// If the user specified "jpg" use JPEG, otherwise PNG
+			SplashImageFileFormat format = strcmp(extension, "jpg") ?
+				splashFormatPng : splashFormatJpeg;
 
-		splashOut = new SplashOutputDevNoText(splashModeRGB8, 4, false, color);
-		splashOut->startDoc(doc);
+			splashOut = new SplashOutputDevNoText(splashModeRGB8, 4, false, color);
+			splashOut->startDoc(doc);
 
-		for (int pg = firstPage; pg <= lastPage; ++pg) {
-			InMemoryFile imf;
-			doc->displayPage(splashOut, pg,
-				72 * scale, 72 * scale,
-				0, true, false, false);
-			SplashBitmap *bitmap = splashOut->getBitmap();
+			for (int pg = firstPage; pg <= lastPage; ++pg) {
+				InMemoryFile imf;
+				doc->displayPage(splashOut, pg,
+					72 * scale, 72 * scale,
+					0, true, false, false);
+				SplashBitmap *bitmap = splashOut->getBitmap();
 
-			imgFileName = GooString::format("{0:s}{1:03d}.{2:s}",
-				htmlFileName->c_str(), pg, extension);
-			auto f1 = dataUrls ? imf.open("wb") : fopen(imgFileName->c_str(), "wb");
-			if (!f1) {
-				fprintf(stderr, "Could not open %s\n", imgFileName->c_str());
+				imgFileName = GooString::format("{0:s}{1:03d}.{2:s}",
+					htmlFileName->c_str(), pg, extension);
+				auto f1 = dataUrls ? imf.open("wb") : fopen(imgFileName->c_str(), "wb");
+				if (!f1) {
+					fprintf(stderr, "Could not open %s\n", imgFileName->c_str());
+					delete imgFileName;
+					continue;
+				}
+				bitmap->writeImgFile(format, f1, 72 * scale, 72 * scale);
+				fclose(f1);
+				if (dataUrls) {
+					htmlOut->addBackgroundImage(
+						std::string((format == splashFormatJpeg) ? "data:image/jpeg;base64," : "data:image/png;base64,") +
+						gbase64Encode(imf.getBuffer())
+					);
+				}
+				else {
+					htmlOut->addBackgroundImage(gbasename(imgFileName->c_str()));
+				}
 				delete imgFileName;
-				continue;
 			}
-			bitmap->writeImgFile(format, f1, 72 * scale, 72 * scale);
-			fclose(f1);
-			if (dataUrls) {
-				htmlOut->addBackgroundImage(
-					std::string((format == splashFormatJpeg) ? "data:image/jpeg;base64," : "data:image/png;base64,") +
-					gbase64Encode(imf.getBuffer())
-				);
-			}
-			else {
-				htmlOut->addBackgroundImage(gbasename(imgFileName->c_str()));
-			}
-			delete imgFileName;
+
+			delete splashOut;
+#else
+			fprintf(stderr, "Your pdftohtml was built without splash backend support. It is needed for the option you want to use.\n");
+			delete htmlOut;
+			delete htmlFileName;
+			delete globalParams;
+			delete fileName;
+			delete doc;
+			return -1;
+#endif
 		}
 
-		delete splashOut;
-#else
-		fprintf(stderr, "Your pdftohtml was built without splash backend support. It is needed for the option you want to use.\n");
+		if (htmlOut->isOk())
+		{
+			doc->displayPages(htmlOut, firstPage, lastPage, 72 * scale, 72 * scale, 0,
+				true, false, false);
+			htmlOut->dumpDocOutline(doc);
+		}
+
 		delete htmlOut;
-		delete htmlFileName;
-		delete globalParams;
-		delete fileName;
-		delete doc;
-		return -1;
-#endif
-	}
 
-	if (htmlOut->isOk())
+
+		exit_status = EXIT_SUCCESS;
+	}
+	catch (...)
 	{
-		doc->displayPages(htmlOut, firstPage, lastPage, 72 * scale, 72 * scale, 0,
-			true, false, false);
-		htmlOut->dumpDocOutline(doc);
+
 	}
-
-	delete htmlOut;
-
-	exit_status = EXIT_SUCCESS;
 
 	// clean up
-error:
 	if (doc) delete doc;
 	delete fileName;
 	if (globalParams) delete globalParams;
