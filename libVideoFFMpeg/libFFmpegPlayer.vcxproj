@@ -106,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>OPENGL;GLEW_STATIC;DXVA2;OPENCL;YUV;_INFOS;FFMPEG;SDL2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/ffmpeg-4.1;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -168,7 +168,7 @@
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/ffmpeg-4.1;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;../libDataStructure;../libTheme;../libextern/glew-2.1.0/include;../libextern/libRapidXML;../libextern/SDL2-2.0.5/include;../libWindowMain;../libResource;../libParameter;../libFiltre;../libUtility;../include;../libFiltreInterface;../Otherlib/wxSVG/include;../libOpenCL;../libOpenGL</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>

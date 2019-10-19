@@ -86,8 +86,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
-    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libextern\fftw-3.3.8\lib;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
+    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
     <EmbedManifest>false</EmbedManifest>
     <TargetName>RegardsViewer</TargetName>
   </PropertyGroup>
@@ -100,8 +100,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\ffmpeg-4.1\lib\;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\</LibraryPath>
-    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libextern\ffmpeg-4.1;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\freeglut\lib\x64;$(SolutionDir)libextern\heif-master\build\lib\Release;$(SolutionDir)\libextern\fftw-3.3.8\lib;C:\Program Files (x86)\AMD APP SDK\3.0\lib\x86_64;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\lib\</LibraryPath>
+    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <TargetName>RegardsViewer</TargetName>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
   </PropertyGroup>
@@ -128,7 +128,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite;..\Otherlib\wxPDFDoc\include;..\libextern\poppler_windows-master\cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite;..\Otherlib\wxPDFDoc\include;..\libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -141,10 +141,8 @@
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Debug\Resources"
 mkdir -p "$(SolutionDir)\x64\Debug\Resources\1"
-XCOPY /Y  "$(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Debug\Resources"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Debug\Resources\1"
-XCOPY /Y "$(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  "$(SolutionDir)\x64\Debug"</Command>
@@ -231,10 +229,8 @@ XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll" 
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Release\Resources"
 mkdir -p "$(SolutionDir)\x64\Release\Resources\1"
-XCOPY /Y  "$(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll" "$(SolutionDir)\x64\Release"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Release\Resources"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Release\Resources\1"
-XCOPY /Y "$(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\bin\*.dll"  "$(SolutionDir)\x64\Release"</Command>
