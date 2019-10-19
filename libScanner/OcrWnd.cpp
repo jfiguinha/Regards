@@ -352,10 +352,6 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			exportPdf->Enable(true);
 
-			//delete[] outText;
-
-			if (bitmapBackground != nullptr)
-				delete bitmapBackground;
 		}
 		catch (...)
 		{
