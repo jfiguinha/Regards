@@ -1,0 +1,9 @@
+install vcpkg
+Readme file : https://github.com/Microsoft/vcpkg/blob/master/README.md
+git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+vcpkg install tesseract:x64-windows --recurse
+vcpkg install freeimage:x64-windows --recurse
+vcpkg install cairo:x64-windows --recurse
+vcpkg install libxml2:x64-windows --recurse
