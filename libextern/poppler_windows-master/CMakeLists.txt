@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
-SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/thirdparty )
+SET(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/../vcpkg/installed/x64-windows )
 
 include(PopplerDefaults)
 include(PopplerMacros)

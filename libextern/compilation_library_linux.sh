@@ -4,8 +4,6 @@ echo $NBPROC
 
 #decompression
 sudo apt install unzip
-tar xf libmng-2.0.3.tar.gz
-unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 #Compile exiv2-0.26 :
@@ -29,36 +27,11 @@ make -j$NBPROC
 cd ..
 cd ..
 
-#Compile jasper-1.900.1
-cd jasper-1.900.1
-./configure 
-make -j$NBPROC
-cd ..
-
 #Compile libde265-master
 cd libde265-master
 cmake ../libde265-master 
 make -j$NBPROC
 cd ..
-
-#Compile libjpeg-turbo-1.5.1
-cd libjpeg-turbo-1.5.1 
-chmod +x configure
-./configure
-make -j$NBPROC
-cd .. 
-
-#Compile libmng-2.0.3
-cd libmng-2.0.3 
-./configure CFLAGS="-I../libjpeg"
-make -j$NBPROC CFLAGS="-I../libjpeg -DNEED_BOOLEAN"
-cd ..
-
-#Compile libwebp-0.6.0
-cd libwebp-0.6.0
-cmake ../libwebp-0.6.0
-make -j$NBPROC
-cd .. 
 
 #Compile MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource

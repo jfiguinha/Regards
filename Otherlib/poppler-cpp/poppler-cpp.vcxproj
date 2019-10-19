@@ -83,8 +83,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\libpoppler;$(SolutionDir)\libExtern\libiconv\include;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\;$(SolutionDir)libextern\poppler_windows-master\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\poppler_windows-master\goo;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\Release;$(SolutionDir)libExtern\wxWidgets-master\lib\vc_x64_lib;$(SolutionDir)libExtern\openjpeg-v2.3.1-windows-x64\lib;$(SolutionDir)libExtern\freetype-dev_2.4.4-1_win64\lib;$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64)</LibraryPath>
+    <IncludePath>..\libpoppler;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\;$(SolutionDir)libextern\poppler_windows-master\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\poppler_windows-master\goo;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)x64\Release;$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-2.10.0\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-2.10.0\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4703;4267;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <DisableSpecificWarnings>4996;4703;4267;4244</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include;$(SolutionDir)libextern\openjpeg-v2.3.1-windows-x64\include\openjpeg-2.3;$(SolutionDir)libextern\libpng;$(SolutionDir)libextern\freetype-dev_2.4.4-1_win64\include\freetype2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;$(SolutionDir)libextern\zlib;$(SolutionDir)libextern\libjpeg;$(SolutionDir)libextern\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -1,7 +1,7 @@
 /* config.h.  Generated from config.h.cmake by cmake.  */
 
 /* Build against libcurl. */
-/* #undef ENABLE_LIBCURL */
+//#define ENABLE_LIBCURL 1
 
 /* Use libjpeg instead of builtin jpeg decoder. */
 #define ENABLE_LIBJPEG 1
@@ -10,7 +10,7 @@
 #define ENABLE_LIBOPENJPEG 1
 
 /* Build against libtiff. */
-/* #undef ENABLE_LIBTIFF */
+//#define ENABLE_LIBTIFF 1
 
 /* Build against libpng. */
 #define ENABLE_LIBPNG 1
@@ -74,7 +74,7 @@
 #define HAVE_ICONV 1
 
 /* Define to 1 if you have the `z' library (-lz). */
-/* #undef HAVE_LIBZ */
+#define HAVE_LIBZ 1
 
 /* Defines if localtime_r is available on your system */
 /* #undef HAVE_LOCALTIME_R */
@@ -124,7 +124,7 @@
 /* #undef WORDS_BIGENDIAN */
 
 /* Define as const if the declaration of iconv() needs const. */
-#define ICONV_CONST const
+#define ICONV_CONST 
 
 /* Generate OPI comments in PS output. */
 #define OPI_SUPPORT 1

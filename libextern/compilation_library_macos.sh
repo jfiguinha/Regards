@@ -3,8 +3,6 @@ NBPROC=$(sysctl -n hw.physicalcpu)
 echo $NBPROC
 
 #decompression
-tar xf libmng-2.0.3.tar.gz
-unzip jasper-1.900.1.zip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 
@@ -29,12 +27,6 @@ cd fftw-3.3.8
 make -j$NBPROC
 cd ..
 
-#Compile jasper-1.900.1
-cd jasper-1.900.1
-./configure 
-make -j$NBPROC
-cd ..
-
 #Compile glew-2.1.0
 cd glew-2.1.0
 chmod +x config/config.guess
@@ -46,26 +38,6 @@ cd libde265-master
 cmake ../libde265-master 
 make -j$NBPROC
 cd ..
-
-#Compile libjpeg-turbo-1.5.1
-cd libjpeg-turbo-1.5.1 
-chmod +x configure
-chmod +x simd/nasm_lt.sh
-./configure
-make -j$NBPROC
-cd .. 
-
-#Compile libmng-2.0.3
-cd libmng-2.0.3 
-./configure CFLAGS="-I../libjpeg"
-make -j$NBPROC CFLAGS="-I../libjpeg -DNEED_BOOLEAN"
-cd ..
-
-#Compile libwebp-0.6.0
-cd libwebp-0.6.0
-cmake ../libwebp-0.6.0
-make -j$NBPROC
-cd .. 
 
 #Compile MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/GNU/Library
