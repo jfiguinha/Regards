@@ -222,7 +222,7 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	wxString language = choice->GetStringSelection();
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	resourcePath = resourcePath + "\\tesseract";
+	resourcePath = resourcePath + "\\tesseractdata";
 
 	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 	if (api->Init(resourcePath, language)) {

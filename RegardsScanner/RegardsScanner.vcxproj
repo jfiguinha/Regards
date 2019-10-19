@@ -283,10 +283,8 @@
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Debug\Resources"
 mkdir -p "$(SolutionDir)\x64\Debug\Resources\1"
-XCOPY /Y  "$(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Debug\Resources"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Debug\Resources\1"
-XCOPY /Y "$(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Debug"
 XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  "$(SolutionDir)\x64\Debug"</Command>
@@ -348,10 +346,8 @@ XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll" 
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Release\Resources"
 mkdir -p "$(SolutionDir)\x64\Release\Resources\1"
-XCOPY /Y  "$(SolutionDir)\libextern\ffmpeg-4.1\bin\*.dll" "$(SolutionDir)\x64\Release"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Release\Resources"
 XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Release\Resources\1"
-XCOPY /Y "$(SolutionDir)\libextern\fftw-3.3.8\lib\libfftw3f-3.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Release"
 XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\bin\*.dll"  "$(SolutionDir)\x64\Release"</Command>
