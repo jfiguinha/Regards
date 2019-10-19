@@ -29,7 +29,7 @@ using namespace Regards::Control;
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
-	bitmapBackground = nullptr;
+	//bitmapBackground = nullptr;
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);
 
@@ -72,9 +72,6 @@ void COcrWnd::Init()
 	exportPdf->Enable(false);
 	treeCtrl->DeleteAllItems();
 	listRect.clear();
-
-	if (bitmapBackground != nullptr)
-		delete bitmapBackground;
 }
 
 COcrWnd::~COcrWnd()
@@ -85,10 +82,6 @@ COcrWnd::~COcrWnd()
 	{
 		showBitmap->RemoveListener();
 	}
-
-
-	if (bitmapBackground != nullptr)
-		delete bitmapBackground;
 }
 
 CImageLoadingFormat * COcrWnd::ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessin)
@@ -223,36 +216,28 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 		return;     // the user changed idea...
 
 	wxString newfilename = saveFileDialog.GetPath();
-	if (bitmapBackground != nullptr)
-	{
-		CLibPicture libPicture;
-		wxString tempFile = GetTempFile("temp.tif");
-		CImageLoadingFormat loadingformat(false);
-		loadingformat.SetPicture(bitmapBackground);
-		libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
 
-		//Get select 
-		int i = choice->GetSelection();
-		wxString language = choice->GetStringSelection();
+	//Get select 
+	int i = choice->GetSelection();
+	wxString language = choice->GetStringSelection();
 
-		wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-		resourcePath = resourcePath + "\\tesseract";
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	resourcePath = resourcePath + "\\tesseract";
 
-		tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-		if (api->Init(resourcePath, language)) {
-			fprintf(stderr, "Could not initialize tesseract.\n");
-			exit(1);
-		}
-
-		tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(tempFile.ToStdString().c_str(), api->GetDatapath(), textonly);
-
-		bool succeed = api->ProcessPages(preprocess, retry_config, timeout_ms, renderer);
-		if (!succeed) {
-			fprintf(stderr, "Error during processing.\n");
-			return;
-		}
-		api->End();
+	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+	if (api->Init(resourcePath, language)) {
+		fprintf(stderr, "Could not initialize tesseract.\n");
+		exit(1);
 	}
+
+	tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(newfilename.ToStdString().c_str(), api->GetDatapath(), textonly);
+
+	bool succeed = api->ProcessPages(preprocess, retry_config, timeout_ms, renderer);
+	if (!succeed) {
+		fprintf(stderr, "Error during processing.\n");
+		return;
+	}
+	api->End();
 
 }
 
@@ -279,10 +264,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 			resourcePath = resourcePath + "\\tesseract";
 
-			if (bitmapBackground != nullptr)
-				delete bitmapBackground;
-
-			bitmapBackground = showBitmap->GetBitmap(true);
+			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
 			tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 			// Initialize tesseract-ocr with English, without specifying tessdata path
@@ -352,6 +334,10 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			exportPdf->Enable(true);
 
+			//delete[] outText;
+
+			if (bitmapBackground != nullptr)
+				delete bitmapBackground;
 		}
 		catch (...)
 		{
