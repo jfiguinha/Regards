@@ -48,7 +48,7 @@ namespace Regards
 			wxChoice *choice;
 			vector<BBoxText *> listRect;
 			//wxBitmap bmpSelection;
-			//CRegardsBitmap * bitmapBackground;
+			CRegardsBitmap * bitmapBackground;
 		};
 	}
 }
