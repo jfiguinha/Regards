@@ -30,6 +30,7 @@
     <ClCompile Include="..\libextern\poppler_windows-master\utils\InMemoryFile.cc" />
     <ClCompile Include="BitmapViewerInfosWnd.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
+    <ClCompile Include="ExportOCr.cpp" />
     <ClCompile Include="ExportPDF.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="OcrWnd.cpp" />
@@ -48,6 +49,7 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="BitmapViewerInfosWnd.h" />
     <ClInclude Include="CentralWindow.h" />
+    <ClInclude Include="ExportOcr.h" />
     <ClInclude Include="ExportPDF.h" />
     <ClInclude Include="OcrWnd.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />

@@ -102,6 +102,9 @@
     <ClCompile Include="OcrWnd.cpp">
       <Filter>OCR</Filter>
     </ClCompile>
+    <ClCompile Include="ExportOCr.cpp">
+      <Filter>OCR</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -150,6 +153,9 @@
       <Filter>Export</Filter>
     </ClInclude>
     <ClInclude Include="OcrWnd.h">
+      <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportOcr.h">
       <Filter>OCR</Filter>
     </ClInclude>
   </ItemGroup>

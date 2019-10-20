@@ -14,6 +14,7 @@
 #include <directoryctrl.h>
 #include <FiltreEffet.h>
 #include <FilterData.h>
+#include "ExportOcr.h"
 enum
 {
 	ID_BUT_OCR = 3000,
@@ -208,6 +209,11 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	const char* retry_config = nullptr;
 	bool textonly = false;
 	int jpg_quality = 92;
+
+	//Get select 
+	int i = choice->GetSelection();
+	wxString language = choice->GetStringSelection();
+
 	wxString preprocess = GetTempFile("preprocess.bmp", false);
 
 	wxFileDialog saveFileDialog(this, _("Save to PDF page"), "", "",
@@ -217,28 +223,77 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 
 	wxString newfilename = saveFileDialog.GetPath();
 
-	//Get select 
-	int i = choice->GetSelection();
-	wxString language = choice->GetStringSelection();
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	resourcePath = resourcePath + "\\tesseractdata";
+	resourcePath = resourcePath + "\\tessdata";
+
+	i = 0;
+	char * args[8];
+	args[i++] = new char[255];
+	args[i] = new char[255];
+	strcpy(args[i++], preprocess);
+	args[i] = new char[255];
+	strcpy(args[i++], newfilename);
+	args[i] = new char[255];
+	strcpy(args[i++], "-l");
+	args[i] = new char[255];
+	strcpy(args[i++], language);
+	args[i] = new char[255];
+	strcpy(args[i++], "--tessdata-dir");
+	args[i] = new char[255]; 
+	strcpy(args[i++], resourcePath.ToStdString().c_str());
+	args[i] = new char[255];
+	strcpy(args[i++], "pdf");
+	wxString error = "";
+	int failed = CExportOcr::ExportOcr(8, args, error);
+	
+	for (int i = 0; i < 8; i++)
+		delete[] args[i];
+	
+	
+
+	/*
+
+
+	//wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+	//resourcePath = resourcePath + "\\tessdata";
+
+
 
 	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-	if (api->Init(resourcePath, language)) {
+	static GenericVector<STRING> vars_vec;
+	static GenericVector<STRING> vars_values;
+	tesseract::OcrEngineMode enginemode = tesseract::OEM_DEFAULT;
+	char * config[1];
+	config[0] = new char[255];
+	strcpy(config[0], "pdf");
+	const int init_failed = api->Init(resourcePath, language, enginemode, config, 1, &vars_vec, &vars_values, false);
+
+	//if (api->Init(resourcePath, language)) {
+	if(init_failed)
+	{
 		fprintf(stderr, "Could not initialize tesseract.\n");
 		exit(1);
 	}
 
-	tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(newfilename.ToStdString().c_str(), api->GetDatapath(), textonly);
 
+	tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(newfilename.ToStdString().c_str(), resourcePath, textonly);
+
+	api->SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
+
+	//Pix *image = pixRead(preprocess.ToStdString().c_str());
+
+	//bool succeed = api->ProcessPage(image, 0, "c:\\developpement\\page1_pdf", "pdf", 0, renderer);
 	bool succeed = api->ProcessPages(preprocess, retry_config, timeout_ms, renderer);
 	if (!succeed) {
 		fprintf(stderr, "Error during processing.\n");
-		return;
+		//return;
 	}
 	api->End();
 
+	//pixDestroy(&image);
+	delete renderer;
+	*/
 }
 
 
@@ -262,13 +317,12 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		try
 		{
 			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-			resourcePath = resourcePath + "\\tesseract";
+			resourcePath = resourcePath + "\\tessdata";
 
 			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
-			tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
 			// Initialize tesseract-ocr with English, without specifying tessdata path
-			if (api->Init(resourcePath, language)) {
+			if (CExportOcr::api.Init(resourcePath, language)) {
 				fprintf(stderr, "Could not initialize tesseract.\n");
 				throw("Could not initialize tesseract.\n");
 			}
@@ -288,20 +342,20 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			Pix *image = pixRead(preprocess.ToStdString().c_str());
 
 			//api->Init(CurDir, "eng");
-			api->SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
+			CExportOcr::api.SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
 
-			api->SetImage(image);
+			CExportOcr::api.SetImage(image);
 
 			// Open input image with leptonica library
 			//Pix *image = pixRead("/usr/src/tesseract/testing/phototest.tif");
-			//api->SetImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(),
+			//api.SetImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(),
 			//	4, 4 * bitmap->GetBitmapWidth());
 
-			Boxa* boxes = api->GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
+			Boxa* boxes = CExportOcr::api.GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
 			printf("Found %d textline image components.\n", boxes->n);
 			for (int i = 0; i < boxes->n; i++) {
 				BOX* box = boxaGetBox(boxes, i, L_CLONE);
-				api->SetRectangle(box->x, box->y, box->w, box->h);
+				CExportOcr::api.SetRectangle(box->x, box->y, box->w, box->h);
 				BBoxText * bboxText = new BBoxText();
 
 				bboxText->rect.x = box->x;
@@ -309,8 +363,8 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 				bboxText->rect.width = box->w;
 				bboxText->rect.height = box->h;
 				bboxText->rect.x = box->x;
-				bboxText->confidence = api->MeanTextConf();
-				bboxText->label = api->GetUTF8Text();
+				bboxText->confidence = CExportOcr::api.MeanTextConf();
+				bboxText->label = wxString::FromUTF8(CExportOcr::api.GetUTF8Text());
 				bboxText->selected = true;
 				//wxTreeItemId childId = treeCtrl->AppendItem(rootId, bboxText.label);
 
@@ -326,11 +380,11 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			}
 
 			// Get OCR result
-			//char * outText = api->GetUTF8Text();
+			//char * outText = api.GetUTF8Text();
 			//printf("OCR output:\n%s", outText);
 
 			// Destroy used object and release memory
-			api->End();
+			CExportOcr::api.End();
 
 			exportPdf->Enable(true);
 
@@ -368,11 +422,11 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 
 	choice = new wxChoice(panel, wxID_ANY);
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	resourcePath = resourcePath + "\\tesseract";
+	resourcePath = resourcePath + "\\tessdata";
 
 	wxArrayString files;
 
-	wxDir::GetAllFiles(resourcePath, &files, wxEmptyString, wxDIR_FILES);
+	wxDir::GetAllFiles(resourcePath, &files, _T("*.traineddata"), wxDIR_FILES);
 
 	for (wxString file : files)
 	{
