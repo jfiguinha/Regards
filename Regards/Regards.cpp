@@ -13,6 +13,7 @@
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
+#include <FreeImage.h>
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -92,6 +93,8 @@ int MyApp::Close()
     
     CLibPicture::Uninitx265Decoder();
 
+	FreeImage_DeInitialise();
+
 #ifdef __WXMSW__
 	
 
@@ -125,6 +128,8 @@ bool MyApp::OnInit()
 	sqlite3_initialize();
 
 	wxInitAllImageHandlers();
+
+	FreeImage_Initialise();
 
 #ifdef wxUSE_PDF
 	    AddImageHandler(new wxPDFHandler);
