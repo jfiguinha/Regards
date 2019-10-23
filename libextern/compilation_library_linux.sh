@@ -6,6 +6,9 @@ echo $NBPROC
 wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
 tar xf jasper-2.0.14.tar.gz
 
+wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
+tar xf poppler-0.81.0.tar.xz
+
 #decompression
 sudo apt install unzip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
@@ -17,6 +20,22 @@ cd build
 cmake ../
 make -j$NBPROC
 cd ..
+cd ..
+
+#Compile libpoppler
+cd poppler-0.81.0
+mkdir build
+cd build
+cmake ../
+make -j$NBPROC
+cd ..
+cd ..
+
+#Compile libpoppler
+cd qpdf-master
+chmod +x configure
+./configure
+make -j$NBPROC
 cd ..
 
 #Compile exiv2-0.26 :
