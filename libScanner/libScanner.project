@@ -6,6 +6,8 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Export">
+    <File Name="ExportOCr.cpp"/>
+    <File Name="ExportOcr.h"/>
     <File Name="../libextern/poppler-0.81.0/build/config.h"/>
     <File Name="../libextern/poppler-0.81.0/utils/InMemoryFile.cc"/>
     <File Name="../libextern/poppler-0.81.0/utils/ImageOutputDev.cc"/>
@@ -109,11 +111,11 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
         <IncludePath Value="../libextern/libpng"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
-        <IncludePath Value="../libextern/poppler-0.81.0"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/utils"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/"/>
         <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
         <IncludePath Value="../libextern/qpdf-master/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
