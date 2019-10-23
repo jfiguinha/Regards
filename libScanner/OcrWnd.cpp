@@ -28,25 +28,6 @@ enum
 using namespace Regards::Scanner;
 using namespace Regards::Control;
 
-void monitorProgress(ETEXT_DESC *monitor, int page);
-void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor);
-
-void monitorProgress(ETEXT_DESC *monitor, int page) 
-{
-	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
-
-	while (1) {
-		if (false == dialog.Update(monitor[page].progress, "Percent : "))
-			break;
-		if (monitor[page].progress == 100)
-			break;
-	}
-}
-
-void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor) {
-	api->Recognize(monitor);
-}
-
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
@@ -323,13 +304,14 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			CExportOcr::api.SetImage(image);
 
+			/*
 			int page = 0;
 
-			std::thread t1(ocrProcess, &CExportOcr::api, monitor);
-			std::thread t2(monitorProgress, monitor, page);
+			std::thread t1(CExportOcr::ocrProcess, &CExportOcr::api, monitor);
+			std::thread t2(CExportOcr::monitorProgress, monitor, page);
 			t1.join();
 			t2.join();
-
+			*/
 			// Open input image with leptonica library
 			//Pix *image = pixRead("/usr/src/tesseract/testing/phototest.tif");
 			//api.SetImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(),

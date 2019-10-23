@@ -18,6 +18,8 @@
 
 #include <header.h>
 #include "ExportOcr.h"
+#include <tesseract/ocrclass.h>
+#include <wx/progdlg.h>
 using namespace Regards::Scanner;
 tesseract::TessBaseAPI CExportOcr::api;
  // Include automatically generated configuration file if running autoconf
@@ -424,6 +426,21 @@ static void PreloadRenderers(
 	}
 }
 
+void CExportOcr::monitorProgress(ETEXT_DESC *monitor, int page)
+{
+	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+
+	while (1) {
+		if (false == dialog.Update(monitor[page].progress, "Percent : "))
+			break;
+		if (monitor[page].progress == 100)
+			break;
+	}
+}
+
+void CExportOcr::ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor) {
+	api->Recognize(monitor);
+}
 
 /**********************************************************************
  *  main()

@@ -11,6 +11,12 @@ namespace Regards
 				int argc, char** argv,
 				wxString &errorMessage);
 
+
+			static void monitorProgress(ETEXT_DESC *monitor, int page);
+			static void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor);
+
+
+
 			static tesseract::TessBaseAPI api;
 		};
 	}
