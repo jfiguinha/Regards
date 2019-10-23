@@ -22,6 +22,7 @@ pacman -S mingw-w64-x86_64-poppler
 pacman -S mingw-w64-x86_64-qpdf
 pacman -S mingw-w64-x86_64-tesseract-ocr
 pacman -S mingw-w64-x86_64-freeimage
+pacman -S mingw-w64-x86_64-libexif
 
 #install OpenCL SDK
 #wget https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases/download/1.0/OCL_SDK_Light_AMD.exe
