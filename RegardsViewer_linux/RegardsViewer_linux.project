@@ -120,6 +120,7 @@
     <Project Name="FaceRecognition_unix"/>
     <Project Name="wxIA"/>
     <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -167,13 +168,14 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
-        <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>
+        <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/.libs"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
         <LibraryPath Value="../libextern/exiv2-0.26/src/.libs"/>

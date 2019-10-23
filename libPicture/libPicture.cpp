@@ -2650,3 +2650,13 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 	
 	return 0;
 }
+
+void CLibPicture::InitFreeImage()
+{
+    FreeImage_Initialise();
+}
+
+void CLibPicture::UninitFreeImage()
+{
+    FreeImage_DeInitialise();
+}

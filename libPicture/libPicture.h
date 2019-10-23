@@ -64,6 +64,9 @@ public:
     static void Initx265Decoder();
     static void Uninitx265Decoder();    
     
+    static void InitFreeImage();
+    static void UninitFreeImage();     
+    
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
 #else
