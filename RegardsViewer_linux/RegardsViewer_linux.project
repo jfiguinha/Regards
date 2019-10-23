@@ -175,7 +175,7 @@
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="-Wl,-rpath,'$$ORIGIN' -Wl,-z,origin;-lexpat $(shell ../libextern/wxWidgets-master/wx-config   --libs --unicode=yes);-Wl,--allow-multiple-definition;-lwebkit2gtk-4.0;-ljavascriptcoregtk-4.0;-L$$HOME/ffmpeg_build/lib">
-        <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/.libs"/>
+        <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
         <LibraryPath Value="../libextern/exiv2-0.26/src/.libs"/>
@@ -194,7 +194,11 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/x265_2.5/build/linux/8bit"/>
         <LibraryPath Value="../libextern/aom/build"/>
+        <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <Library Value="Viewer"/>
+        <Library Value="tesseract"/>
+        <Library Value="lept"/>
+        <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
@@ -250,7 +254,6 @@
         <Library Value="Psd"/>
         <Library Value="xml2"/>
         <Library Value="jasper"/>
-        <Library Value="mng"/>
         <Library Value="turbojpeg"/>
         <Library Value="gomp"/>
         <Library Value="avformat"/>
@@ -312,6 +315,11 @@
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
         <Library Value="fontconfig"/>
+        <Library Value="freeimage"/>
+        <Library Value="sane"/>
+        <Library Value="qpdf"/>
+        <Library Value="tesseract"/>
+        <Library Value="lept"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -359,6 +367,7 @@
         <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
+        <LibraryPath Value="../libScanner/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -447,6 +456,7 @@
         <LibraryPath Value="../libPiccante/Release"/>
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
+        <LibraryPath Value="../libScanner/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
