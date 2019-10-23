@@ -6,8 +6,22 @@ echo $NBPROC
 wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
 tar xf jasper-2.0.14.tar.gz
 
+#get lib poppler
 wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
 tar xf poppler-0.81.0.tar.xz
+
+#get Tesseract
+wget https://github.com/tesseract-ocr/tesseract/archive/4.1.0.zip
+unzip 4.1.0.zip
+
+#compile tesseract
+cd tesseract-4.1.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+cd ..
+cd ..
 
 #decompression
 sudo apt install unzip
@@ -17,7 +31,7 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 cd jasper-2.0.14
 mkdir build
 cd build
-cmake ../
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 cd ..
 cd ..
@@ -26,12 +40,12 @@ cd ..
 cd poppler-0.81.0
 mkdir build
 cd build
-cmake ../
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 cd ..
 cd ..
 
-#Compile libpoppler
+#Compile qpdf
 cd qpdf-master
 chmod +x configure
 ./configure
