@@ -4,7 +4,7 @@ Description
 
 Regards is a modern photo viewer. 
 Support highDPI definition screen.
-Support reading Picture format : JPEG, GIF, PNG, PCX, TGA, TIFF, BMP, Kodak Photo-Cd, JPEG2000, Photoshop PSD, PPM, PGM, Camera Raw, SVG, WEBP, HEIC, EXR, HDR and BPG.
+Support reading Picture format :  BMP files, Dr. Halo CUT, DDS, EXR files, Raw Fax G3, GIF files, HDR files, ICO files, IFF, JBIG files, JNG files, JPEG/JIF files, JPEG-2000 File Format, JPEG-2000 codestream, JPEG-XR files, KOALA, Kodak PhotoCD, MNG, PCX, PBM/PGM/PPM files, PFM files, PNG files, Macintosh PICT, Photoshop PSD, RAW camera, Sun RAS, SGI, TARGA files, TIFF files, WBMP files, WebP files, XBM, XPM files, SVG AND HEIC.
 Support reading Video format (DXVA2 acceleration support) : mpeg4, avi, mkv, webp, y4m, quicktime and AVCHD.
 Support Exif and xmp file information.
 Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
@@ -14,7 +14,7 @@ OpenGL Picture display and OpenCL post Effect.
 
 Picture extension support :
 
-pgm, bmp, pcx, jpg, jpe, jpeg, jfif, jif, jfi, tif,	gif, png, tga, pcd, webp, bpg, jp2, jpc, j2c, pgx, ppm, psd, pdd, mng, jng, iff, xpm, ico, cur, ani, svg, nef, crw, cr2, dng, arw, erf, 3fr, dcr, raw, x3f, mef, raf, mrw, pef, sr2, orf, heic, hdr, exr;
+pgm, bmp, cut, dds, jxr, pcx, jpg, jpe, jpeg, jfif, jif, jfi, tif, gif, png, tga, pcd, webp, bpg, jp2, jpc, j2c, pgx, ppm, psd, pdd, mng, jng, iff, xpm, ico, cur, ani, svg, nef, crw, cr2, dng, arw, erf, 3fr, dcr, raw, x3f, mef, raf, mrw, pef, sr2, orf, heic, hdr, exr, wbmp, pict, ras, sgi and KOALA;
 
 Video extension support :
 
