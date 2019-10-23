@@ -52,11 +52,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="OcrWnd.cpp"/>
     <File Name="CentralWindow.cpp"/>
     <File Name="viewerPDF.cpp"/>
     <File Name="ScannerFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="OcrWnd.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
