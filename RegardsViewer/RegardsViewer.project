@@ -487,9 +487,12 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Debug</Command>
-        <Command Enabled="yes"/>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-7.dll ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -648,8 +651,12 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-7.dll ./Release</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">"C:\Program Files (x86)\NSIS\makensis.exe" ./package/install_modern.nsi</Command>
       </PostBuild>
