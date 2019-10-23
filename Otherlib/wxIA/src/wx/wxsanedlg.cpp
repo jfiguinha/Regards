@@ -13,6 +13,7 @@
 
 
 #include <header.h>
+#include <wx/wxscan.h>
 
 #if __WXSCANSANE__
 
@@ -22,7 +23,6 @@
 #include <wx/checkbox.h>
 #include <wx/slider.h>
 #include <wx/spinctrl.h>
-#include <wx/wxscan.h>
 #include <wx/wxsanedlg.h>
 #include <Scanner.h>
 

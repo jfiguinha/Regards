@@ -180,10 +180,12 @@ wxString COcrWnd::GetTempFile(wxString filename, const bool &removeFile)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
+    if (!wxMkDir(tempFolder)) {
 #else
 	wxString tempFolder = documentPath + "/temp";
+    if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
 #endif
-	if (!wxMkDir(tempFolder)) {
+	
 		// handle the error here
 	}
 	else
