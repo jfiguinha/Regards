@@ -1,5 +1,6 @@
 #include <header.h>
 #include "OcrWnd.h"
+#include <tesseract/ocrclass.h>
 #include <wx/combobox.h>
 #include <wx/gbsizer.h>
 #include <FileUtility.h>
@@ -9,11 +10,13 @@
 #include <tesseract/baseapi.h>
 #include <tesseract/renderer.h>
 #include <leptonica/allheaders.h>
+
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <directoryctrl.h>
 #include <FiltreEffet.h>
 #include <FilterData.h>
+#include <wx/progdlg.h>
 #include "ExportOcr.h"
 enum
 {
@@ -25,7 +28,24 @@ enum
 using namespace Regards::Scanner;
 using namespace Regards::Control;
 
+void monitorProgress(ETEXT_DESC *monitor, int page);
+void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor);
 
+void monitorProgress(ETEXT_DESC *monitor, int page) 
+{
+	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+
+	while (1) {
+		if (false == dialog.Update(monitor[page].progress, "Percent : "))
+			break;
+		if (monitor[page].progress == 100)
+			break;
+	}
+}
+
+void ocrProcess(tesseract::TessBaseAPI *api, ETEXT_DESC *monitor) {
+	api->Recognize(monitor);
+}
 
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
@@ -216,13 +236,13 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 
 	wxString preprocess = GetTempFile("preprocess.bmp", false);
 
-	wxFileDialog saveFileDialog(this, _("Save to PDF page"), "", "",
-		"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea...
 
 	wxString newfilename = saveFileDialog.GetPath();
-
+	wxFileName fullpath(newfilename);
+	wxString extension = fullpath.GetExt();
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 	resourcePath = resourcePath + "\\tessdata";
@@ -241,59 +261,14 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	args[i] = new char[255];
 	strcpy(args[i++], "--tessdata-dir");
 	args[i] = new char[255]; 
-	strcpy(args[i++], resourcePath.ToStdString().c_str());
+	strcpy(args[i++], resourcePath);
 	args[i] = new char[255];
-	strcpy(args[i++], "pdf");
+	strcpy(args[i++], extension);
 	wxString error = "";
 	int failed = CExportOcr::ExportOcr(8, args, error);
 	
 	for (int i = 0; i < 8; i++)
 		delete[] args[i];
-	
-	
-
-	/*
-
-
-	//wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-	//resourcePath = resourcePath + "\\tessdata";
-
-
-
-	tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-	static GenericVector<STRING> vars_vec;
-	static GenericVector<STRING> vars_values;
-	tesseract::OcrEngineMode enginemode = tesseract::OEM_DEFAULT;
-	char * config[1];
-	config[0] = new char[255];
-	strcpy(config[0], "pdf");
-	const int init_failed = api->Init(resourcePath, language, enginemode, config, 1, &vars_vec, &vars_values, false);
-
-	//if (api->Init(resourcePath, language)) {
-	if(init_failed)
-	{
-		fprintf(stderr, "Could not initialize tesseract.\n");
-		exit(1);
-	}
-
-
-	tesseract::TessPDFRenderer *renderer = new tesseract::TessPDFRenderer(newfilename.ToStdString().c_str(), resourcePath, textonly);
-
-	api->SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
-
-	//Pix *image = pixRead(preprocess.ToStdString().c_str());
-
-	//bool succeed = api->ProcessPage(image, 0, "c:\\developpement\\page1_pdf", "pdf", 0, renderer);
-	bool succeed = api->ProcessPages(preprocess, retry_config, timeout_ms, renderer);
-	if (!succeed) {
-		fprintf(stderr, "Error during processing.\n");
-		//return;
-	}
-	api->End();
-
-	//pixDestroy(&image);
-	delete renderer;
-	*/
 }
 
 
@@ -318,6 +293,8 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		{
 			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 			resourcePath = resourcePath + "\\tessdata";
+
+			ETEXT_DESC *monitor = new ETEXT_DESC();
 
 			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
@@ -345,6 +322,13 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			CExportOcr::api.SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
 
 			CExportOcr::api.SetImage(image);
+
+			int page = 0;
+
+			std::thread t1(ocrProcess, &CExportOcr::api, monitor);
+			std::thread t2(monitorProgress, monitor, page);
+			t1.join();
+			t2.join();
 
 			// Open input image with leptonica library
 			//Pix *image = pixRead("/usr/src/tesseract/testing/phototest.tif");
@@ -438,7 +422,7 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 	choice->SetSelection(0);
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
-	exportPdf = new wxButton(panel, ID_BUT_OCRPDF, _("&Export To PDF"));
+	exportPdf = new wxButton(panel, ID_BUT_OCRPDF, _("&Export To File ..."));
 	gsizer->Add(new wxButton(panel, ID_BUT_OCR, _("&OCR")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	gsizer->Add(exportPdf, wxGBPosition(row, 3), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	exportPdf->Enable(false);
