@@ -29,6 +29,14 @@ using namespace Regards::Scanner;
 #define MIN_ZOOM	0.1
 
 
+#ifndef wxHAS_IMAGES_IN_RESOURCES
+#ifdef __WXGTK__
+#include "../Resource/sample.xpm"
+#else
+#include "../../Resource/sample.xpm"
+#endif
+#endif
+
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
@@ -391,12 +399,14 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 		else
 			event.Enable(false);
 		break;
+#else
+    case ID_ACQUIREIMAGE:
 #endif
 
 	case ID_EXPORTHTML:
 	case ID_EXPORTTXT:
 	case ID_EXPORT:
-	case ID_ACQUIREIMAGE:
+	
 	case ID_OCR:
 	case ID_PRINT:
 	{

@@ -28,9 +28,11 @@ sudo apt install libexpat-dev
 sudo apt install liblzma-dev
 sudo apt install libva-dev
 sudo apt install libpoppler-dev
+sudo apt install libqpdf-dev
 sudo apt install libpoppler-cpp-dev
 sudo apt install libsane-dev
 sudo apt install libfreeimage-dev
+sudo apt install fftw3
 #sudo apt install ocl-icd-opencl-dev
 
 #Get AMD SDK

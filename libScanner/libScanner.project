@@ -6,12 +6,12 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Export">
-    <File Name="../libextern/poppler_windows-master/utils/config.h"/>
-    <File Name="../libextern/poppler_windows-master/utils/InMemoryFile.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/ImageOutputDev.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlOutputDev.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlLinks.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlFonts.cc"/>
+    <File Name="../libextern/poppler-0.81.0/build/config.h"/>
+    <File Name="../libextern/poppler-0.81.0/utils/InMemoryFile.cc"/>
+    <File Name="../libextern/poppler-0.81.0/utils/ImageOutputDev.cc"/>
+    <File Name="../libextern/poppler-0.81.0/utils/HtmlOutputDev.cc"/>
+    <File Name="../libextern/poppler-0.81.0/utils/HtmlLinks.cc"/>
+    <File Name="../libextern/poppler-0.81.0/utils/HtmlFonts.cc"/>
     <File Name="ExportPDF.cpp"/>
     <File Name="ExportPDF.h"/>
   </VirtualDirectory>
@@ -64,6 +64,8 @@
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
         <IncludePath Value="../wxCheckTree"/>
         <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="."/>
@@ -104,14 +106,15 @@
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
-        <IncludePath Value="../libextern/poppler_windows-master/utils"/>
-        <IncludePath Value="../libextern/poppler_windows-master/goo"/>
         <IncludePath Value="../libextern/libpng"/>
-        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
-        <IncludePath Value="../libextern/poppler_windows-master"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
+        <IncludePath Value="../libextern/poppler-0.81.0"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
+        <IncludePath Value="../libextern/qpdf-master/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>

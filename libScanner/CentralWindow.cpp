@@ -274,12 +274,14 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const vector<int>
 {
 	wxString file = "";
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+    
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
+    if (!wxMkDir(tempFolder)) {
 #else
 	wxString tempFolder = documentPath + "/temp";
+    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-	if (!wxMkDir(tempFolder)) {
 		// handle the error here
 	}
 	else
@@ -371,10 +373,11 @@ void CCentralWindow::ProcessFile(const vector<int> & listPage)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
+    if (!wxMkDir(tempFolder)) {
 #else
 	wxString tempFolder = documentPath + "/temp";
+    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-	if (!wxMkDir(tempFolder)) {
 		// handle the error here
 	}
 	else
@@ -441,10 +444,11 @@ wxString CCentralWindow::ProcessExtractFile(const vector<int> & listPage)
 	wxString documentPath = CFileUtility::GetDocumentFolderPath();
 #ifdef WIN32
 	wxString tempFolder = documentPath + "\\temp";
+    if (!wxMkDir(tempFolder)) {
 #else
 	wxString tempFolder = documentPath + "/temp";
+    if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
 #endif
-	if (!wxMkDir(tempFolder)) {
 		// handle the error here
 	}
 	else

@@ -1,8 +1,10 @@
 #pragma once
-//#include <wx/wxscan.h>
+
 #include "viewerPDF.h"
 #ifdef __WXMSW__
 #include <gdiplus.h>
+#else
+#include <wx/wxscan.h>
 #endif
 #include <MainInterface.h>
 #include <MainTheme.h>

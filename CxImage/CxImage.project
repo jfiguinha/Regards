@@ -97,11 +97,9 @@
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/jpeg"/>
-        <IncludePath Value="../libextern/libmng-2.0.3"/>
-        <IncludePath Value="../libextern/jasper-1.900.1/src/libjasper/include"/>
+        <IncludePath Value="../libextern/jasper-2.0.14/build/src/libjasper/include"/>
+        <IncludePath Value="../libextern/jasper-2.0.14/src/libjasper/include"/>
         <IncludePath Value="../Otherlib/libJbig"/>
-        <IncludePath Value="../Otherlib/libPsd"/>
-        <IncludePath Value="../Otherlib/libPsd/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

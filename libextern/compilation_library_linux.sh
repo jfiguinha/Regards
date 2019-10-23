@@ -2,9 +2,22 @@
 NBPROC=$(nproc)
 echo $NBPROC
 
+#Get libjasper
+wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+tar xf jasper-2.0.14.tar.gz
+
 #decompression
 sudo apt install unzip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
+
+#compile jasper
+cd jasper-2.0.14
+mkdir build
+cd build
+cmake ../
+make -j$NBPROC
+cd ..
+cd ..
 
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
