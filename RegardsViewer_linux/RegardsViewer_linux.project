@@ -196,8 +196,6 @@
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <Library Value="Viewer"/>
-        <Library Value="tesseract"/>
-        <Library Value="lept"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
