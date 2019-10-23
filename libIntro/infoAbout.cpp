@@ -149,8 +149,8 @@ void CInfoAbout::Init()
     
 	CTreeData * treelibWebp = new CTreeData();
 	treelibWebp->SetIsParent(false);
-	treelibWebp->SetKey("webp");
-	treelibWebp->SetValue("0.6");
+	treelibWebp->SetKey("FreeImage");
+	treelibWebp->SetValue("3.2");
 	tr.append_child(child, treelibWebp);   
 
 	CTreeData * treelib265 = new CTreeData();
@@ -197,8 +197,8 @@ void CInfoAbout::Init()
     
     CTreeData * treeOpenEXR = new CTreeData();
 	treeOpenEXR->SetIsParent(false);
-	treeOpenEXR->SetKey("OpenEXR");
-	treeOpenEXR->SetValue("2.3.0");
+	treeOpenEXR->SetKey("QPDF");
+	treeOpenEXR->SetValue("9.0.2");
 	tr.append_child(child, treeOpenEXR);     
 
     CTreeData * treewxSVG = new CTreeData();
