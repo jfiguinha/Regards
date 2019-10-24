@@ -13,6 +13,8 @@ brew install -v HOMEBREW_MAKE_JOBS=$NBPROC libexif
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC OpenEXR
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC glew
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC coreutils
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC sane-backends
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC leptonica
 
 #Install External Library
 cd libextern
