@@ -228,7 +228,12 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	wxString extension = fullpath.GetExt();
 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
 	resourcePath = resourcePath + "\\tessdata";
+#else
+	resourcePath = resourcePath + "/tessdata";
+#endif    
+	
 
 	i = 0;
 	char * args[8];
@@ -275,7 +280,11 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		try
 		{
 			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-			resourcePath = resourcePath + "\\tessdata";
+#ifdef WIN32
+	resourcePath = resourcePath + "\\tessdata";
+#else
+	resourcePath = resourcePath + "/tessdata";
+#endif    
 
 			ETEXT_DESC *monitor = new ETEXT_DESC();
 
@@ -390,7 +399,11 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 
 	choice = new wxChoice(panel, wxID_ANY);
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
 	resourcePath = resourcePath + "\\tessdata";
+#else
+	resourcePath = resourcePath + "/tessdata";
+#endif    
 
 	wxArrayString files;
 

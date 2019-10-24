@@ -20,6 +20,7 @@ mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
+sudo make install
 cd ..
 cd ..
 
@@ -33,6 +34,7 @@ mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
+sudo make install
 cd ..
 cd ..
 
@@ -42,6 +44,7 @@ mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
+sudo make install
 cd ..
 cd ..
 

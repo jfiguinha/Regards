@@ -343,11 +343,18 @@ wxImage CScannerFrame::ScanPage()
 {
 	wxImage image;
 #if __WXSCANSANE__  
-	wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
-	if (d.ShowModal() == wxID_OK)
-	{
-		image = d.GetImage();
-	}
+    if(scanSane->IsSourceSelected())
+    {
+        wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
+        if (d.ShowModal() == wxID_OK)
+        {
+            image = d.GetImage();
+        }
+    }
+    else
+    {
+        wxMessageBox("Informations","Please select a scanner source !");
+    }
 #else
 	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
 	gdiplus->CreateContext(this);
