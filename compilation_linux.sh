@@ -27,12 +27,10 @@ sudo apt install libssh-dev
 sudo apt install libexpat-dev
 sudo apt install liblzma-dev
 sudo apt install libva-dev
-sudo apt install libqpdf-dev
 sudo apt install libsane-dev
 sudo apt install libfreeimage-dev
 sudo apt install libopenjp2-7-dev
 sudo apt install libfftw3-dev
-sudo apt install libtesseract-dev
 #sudo apt install ocl-icd-opencl-dev
 
 #Get AMD SDK
