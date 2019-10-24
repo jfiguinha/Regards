@@ -34,49 +34,6 @@
   <VirtualDirectory Name="include">
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="wxIA"/>
-  </Dependencies>
   <Dependencies Name="Release">
     <Project Name="include"/>
     <Project Name="CxImage"/>
@@ -249,7 +206,6 @@
         <Library Value="exiv2"/>
         <Library Value="expat"/>
         <Library Value="Jbig"/>
-        <Library Value="Psd"/>
         <Library Value="xml2"/>
         <Library Value="jasper"/>
         <Library Value="turbojpeg"/>
@@ -510,4 +466,49 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="wxPDFDoc"/>
+  </Dependencies>
 </CodeLite_Project>
