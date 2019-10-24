@@ -15,7 +15,7 @@
 wxImagePanel::wxImagePanel(wxWindow* parent) :
 wxPanel(parent)
 {
-
+    Connect(wxEVT_PAINT, wxPaintEventHandler(wxImagePanel::paintEvent));
 }
 
 /*

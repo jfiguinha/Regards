@@ -12,6 +12,7 @@
 #include <ImageLoadingFormat.h>
 #include <FilterData.h>
 #include "OcrWnd.h"
+#include <wx/stdpaths.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -33,7 +34,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
     
     wxString folder = CFileUtility::GetDocumentFolderPath();
 #ifdef __APPLE__
-    
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     folder = stdp.GetDocumentsDir();
 #endif

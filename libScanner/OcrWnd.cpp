@@ -9,7 +9,6 @@
 #include <ShowBitmap.h>
 #include <tesseract/baseapi.h>
 #include <tesseract/renderer.h>
-#include <leptonica/allheaders.h>
 
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
@@ -18,6 +17,10 @@
 #include <FilterData.h>
 #include <wx/progdlg.h>
 #include "ExportOcr.h"
+#ifdef __APPLE__
+#undef fract1
+#endif
+#include <leptonica/allheaders.h>
 enum
 {
 	ID_BUT_OCR = 3000,
@@ -440,7 +443,7 @@ void COcrWnd::tesseract_preprocess(string source_file, string out_file) {
 	strcpy_s(preprocessed_file, tempPath);
 	*/
 
-	BOOL perform_negate = TRUE;
+	bool perform_negate = TRUE;
 	l_float32 dark_bg_threshold = 0.5f; // From 0.0 to 1.0, with 0 being all white and 1 being all black 
 
 	int perform_scale = 0;

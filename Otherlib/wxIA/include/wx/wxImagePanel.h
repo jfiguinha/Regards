@@ -30,11 +30,11 @@ private:
          void keyReleased(wxKeyEvent& event);
          */
         
-        DECLARE_EVENT_TABLE()
+        //DECLARE_EVENT_TABLE()
     };
 
 
-BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
+//BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
 // some useful events
 /*
  EVT_MOTION(wxImagePanel::mouseMoved)
@@ -48,6 +48,6 @@ BEGIN_EVENT_TABLE(wxImagePanel, wxPanel)
  */
 
 // catch paint events
-EVT_PAINT(wxImagePanel::paintEvent)
+//EVT_PAINT(wxImagePanel::paintEvent)
 
-END_EVENT_TABLE()
+//END_EVENT_TABLE()

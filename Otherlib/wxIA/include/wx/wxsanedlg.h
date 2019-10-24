@@ -15,7 +15,6 @@
 class wxScanSane;
 #include "wx/dynarray.h"
 #include "wx/splitter.h"
-#include "wxImagePanel.h"
 #include "Scanner.h"
 
 typedef struct
@@ -26,6 +25,8 @@ typedef struct
     SANE_String sane_string;
     SANE_Status sane_status;
 } SaneOptionValue;
+
+class wxImagePanel;
 
 WX_DEFINE_ARRAY(const SANE_Option_Descriptor*, SaneDescriptorArray);
 

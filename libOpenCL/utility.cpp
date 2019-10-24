@@ -119,7 +119,8 @@ using namespace std;
 			#ifdef WIN32
             OutputDebugString(message);
             #endif
-            throw Error(message);
+            printf(message);
+           // throw Error(message);
         }
     }
     

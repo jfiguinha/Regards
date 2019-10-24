@@ -24,7 +24,10 @@
 
 #include "ximage.h"
 
+
 #if CXIMAGE_SUPPORT_JPG
+
+typedef int wxjpeg_boolean;
 
 #define CXIMAGEJPG_SUPPORT_EXIF CXIMAGE_SUPPORT_EXIF
 

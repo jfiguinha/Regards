@@ -51,7 +51,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
 	config = nullptr;
-
+    updateContext = true;
     openCLEngine = nullptr;
 	filtreEffet = nullptr;
 	flipVertical = 0;
@@ -1605,7 +1605,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 
             
-    #ifdef WIN32
+    #if defined(WIN32) || defined(__APPLE__)
         renderOpenGL->SetCurrent(*this);
     #else
         if(updateContext)
@@ -1645,6 +1645,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
    
 }
+
 
 void CBitmapWnd::RefreshWindow()
 {

@@ -17,6 +17,7 @@
 
 #if __WXSCANSANE__
 
+#include "wxImagePanel.h"
 #include <wx/log.h>
 #include <wx/notebook.h>
 #include <wx/gbsizer.h>

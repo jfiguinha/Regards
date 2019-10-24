@@ -15,7 +15,8 @@ brew install -v HOMEBREW_MAKE_JOBS=$NBPROC glew
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC coreutils
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC sane-backends
 brew install -v HOMEBREW_MAKE_JOBS=$NBPROC leptonica
-
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC libjpeg-turbo
+brew install -v HOMEBREW_MAKE_JOBS=$NBPROC fftw
 #Install External Library
 cd libextern
 chmod +x compilation_library_macos.sh
