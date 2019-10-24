@@ -53,7 +53,7 @@ CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat
 {
     //int i = 1;
 	//int tempimg, row, col;
-	CxMemFile * memPicture;
+	CxMemFile * memPicture = nullptr;
 	// step one: Open file
 	LibRaw RawProcessor;
 	int  ret;//, output_thumbs = 0;

@@ -9,7 +9,7 @@ private:
         double m_zoomFactor;
         
     public:
-        wxImagePanel(wxFrame* parent);
+        wxImagePanel(wxWindow* parent);
         
         void SetImage(const wxImage &image);
         

@@ -12,7 +12,7 @@
  void wxImagePanel::keyReleased(wxKeyEvent& event) {}
  */
 
-wxImagePanel::wxImagePanel(wxFrame* parent) :
+wxImagePanel::wxImagePanel(wxWindow* parent) :
 wxPanel(parent)
 {
 
