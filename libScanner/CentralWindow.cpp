@@ -178,10 +178,10 @@ void CCentralWindow::OnOpenFile(wxCommandEvent& event)
 void CCentralWindow::OnScan(wxCommandEvent& event)
 {
 	
-	wxString pdfFile = frame->ScanPage();
-	if (pdfFile != "")
+	filename = frame->ScanPage();
+	if (filename != "")
 	{
-		LoadFile(pdfFile);
+		LoadFile(filename);
 	}    
 }
 
@@ -212,14 +212,6 @@ void CCentralWindow::LoadFile()
 
 	filename = openFileDialog.GetPath();
 	LoadFile(filename);
-}
-
-wxString CCentralWindow::SetImage(wxImage imageFile)
-{
-	if (previewWindow != nullptr)
-		return previewWindow->SetImage(imageFile);
-
-	return "";
 }
 
 void CCentralWindow::LoadFile(const wxString &filename)

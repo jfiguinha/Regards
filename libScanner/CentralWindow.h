@@ -21,7 +21,6 @@ namespace Regards
 			~CCentralWindow();
 
 			void LoadFile();
-			wxString SetImage(wxImage imageFile);
 			void LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
