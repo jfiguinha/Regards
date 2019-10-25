@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libAppleFunction" InternalType="Library" Version="10.0.0">
   <VirtualDirectory Name="Scanner">
+    <File Name="MyScan.mm"/>
+    <File Name="MyScanInterface.h"/>
+    <File Name="ScanView.cpp"/>
+    <File Name="ScanView.h"/>
     <File Name="NSImage+SCWExtension.h"/>
     <File Name="NSImage+SCWExtension.m"/>
     <File Name="SCWBundle.h"/>
@@ -41,6 +45,7 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libextern/apple/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

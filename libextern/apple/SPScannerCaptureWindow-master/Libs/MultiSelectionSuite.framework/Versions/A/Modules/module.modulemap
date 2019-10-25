@@ -1,0 +1,6 @@
+framework module MultiSelectionSuite {
+  umbrella header "MultiSelectionSuite.h"
+
+  export *
+  module * { export * }
+}

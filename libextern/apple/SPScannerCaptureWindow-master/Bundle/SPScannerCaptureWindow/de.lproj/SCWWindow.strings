@@ -1,0 +1,78 @@
+
+/* Class = "NSButtonCell"; title = "Close"; ObjectID = "1Nw-rq-52g"; */
+"1Nw-rq-52g.title" = "Schließen";
+
+/* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "1xP-DU-U3C"; */
+"1xP-DU-U3C.title" = "Item 2";
+
+/* Class = "NSTextFieldCell"; title = "Resolution"; ObjectID = "5v5-72-oeJ"; */
+"5v5-72-oeJ.title" = "Auflösung";
+
+/* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "6rd-z9-dBD"; */
+"6rd-z9-dBD.title" = "Item 3";
+
+/* Class = "NSTextFieldCell"; title = "Scanner"; ObjectID = "AaU-n7-SoU"; */
+"AaU-n7-SoU.title" = "Scanner";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "AxK-eE-eZR"; */
+"AxK-eE-eZR.title" = "Text Cell";
+
+/* Class = "NSPanel"; title = "Scanner Settings"; ObjectID = "Bdv-du-xhP"; */
+"Bdv-du-xhP.title" = "Scanner Einstellungen";
+
+/* Class = "NSButtonCell"; title = "As PDF"; ObjectID = "BkO-LE-PiT"; */
+"BkO-LE-PiT.title" = "Als PDF";
+
+/* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "E0E-Fh-ZFv"; */
+"E0E-Fh-ZFv.title" = "Item 3";
+
+/* Class = "NSButtonCell"; title = "Radio"; ObjectID = "Gja-vW-xq4"; */
+"Gja-vW-xq4.title" = "Radio";
+
+/* Class = "NSButtonCell"; title = "Black/White"; ObjectID = "KYG-IZ-Pgp"; */
+"KYG-IZ-Pgp.title" = "s/w";
+
+/* Class = "NSTextFieldCell"; title = "Table View Cell"; ObjectID = "Lgt-U8-CMs"; */
+"Lgt-U8-CMs.title" = "Table View Cell";
+
+/* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "O0k-w2-tph"; */
+"O0k-w2-tph.title" = "Item 2";
+
+/* Class = "NSButtonCell"; title = "Scan & Save"; ObjectID = "OeV-B7-ct7"; */
+"OeV-B7-ct7.title" = "Scannen";
+
+/* Class = "NSMenuItem"; title = "Item 1"; ObjectID = "Prh-kt-xpt"; */
+"Prh-kt-xpt.title" = "Item 1";
+
+/* Class = "NSWindow"; title = "Window"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Window";
+
+/* Class = "NSBox"; title = "Box"; ObjectID = "UwR-LH-3G3"; */
+"UwR-LH-3G3.title" = "Box";
+
+/* Class = "NSMenuItem"; title = "Item 3"; ObjectID = "VRN-fb-csU"; */
+"VRN-fb-csU.title" = "Item 3";
+
+/* Class = "NSButtonCell"; title = "Preview"; ObjectID = "aZy-J8-7dH"; */
+"aZy-J8-7dH.title" = "Vorschau";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "d42-L7-Q0u"; */
+"d42-L7-Q0u.title" = "Text Cell";
+
+/* Class = "NSButtonCell"; title = "Grayscale"; ObjectID = "dpA-HZ-dW9"; */
+"dpA-HZ-dW9.title" = "Graustufen";
+
+/* Class = "NSButtonCell"; title = "Improve Image"; ObjectID = "fHC-iZ-3KH"; */
+"fHC-iZ-3KH.title" = "Bild verbessern";
+
+/* Class = "NSButtonCell"; title = "Color"; ObjectID = "jZm-8I-1Hk"; */
+"jZm-8I-1Hk.title" = "Farbig";
+
+/* Class = "NSButtonCell"; title = "Setup"; ObjectID = "li0-Dz-yUp"; */
+"li0-Dz-yUp.title" = "Einstellungen";
+
+/* Class = "NSMenuItem"; title = "Item 2"; ObjectID = "oQF-SL-T1m"; */
+"oQF-SL-T1m.title" = "Item 2";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "t0r-Hx-eso"; */
+"t0r-Hx-eso.title" = "Abbruch";

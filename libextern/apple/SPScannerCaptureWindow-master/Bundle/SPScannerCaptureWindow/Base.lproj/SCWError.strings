@@ -1,0 +1,6 @@
+"1000" = "No scanner device has been selected";
+"1001" = "Partial scan not possible because scanner not a flatbed device";
+"1002" = "Scanner is busy or not ready";
+"1003" = "Scanner is not able to make overview scans";
+"1004" = "Scanning session has been closed";
+"1005" = "Scanner type is not supported yet";

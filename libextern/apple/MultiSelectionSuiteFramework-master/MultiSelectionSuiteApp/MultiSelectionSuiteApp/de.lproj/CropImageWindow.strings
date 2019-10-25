@@ -1,0 +1,9 @@
+
+/* Class = "NSWindow"; title = "Window"; ObjectID = "F0z-JX-Cv5"; */
+"F0z-JX-Cv5.title" = "Window";
+
+/* Class = "NSTextFieldCell"; title = "Hold ⌘ to add another selector. ⌘ + A to highlight all. ⌫ or ⌦ to delete highlighted selectors."; ObjectID = "JRj-H6-t4l"; */
+"JRj-H6-t4l.title" = "Halte ⌘ für eine weitere Auswahlbox. ⌘ + A um alle Boxen zu markieren. ⌫ oder ⌦ um markierte Boxen zu löschen.";
+
+/* Class = "NSButtonCell"; title = "Save"; ObjectID = "mKc-fU-U1a"; */
+"mKc-fU-U1a.title" = "Speichern";

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CropImageWindow">
+            <connections>
+                <outlet property="imageExtractor" destination="rri-bq-38L" id="NSP-vN-2Uh"/>
+                <outlet property="imageView" destination="RV7-GA-4PF" id="yrT-O7-0Vd"/>
+                <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <rect key="contentRect" x="196" y="240" width="800" height="600"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <value key="minSize" type="size" width="800" height="600"/>
+            <view key="contentView" id="se5-gp-TjO">
+                <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="RV7-GA-4PF">
+                        <rect key="frame" x="17" y="76" width="766" height="507"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="ACt-22-2Cv"/>
+                    </imageView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1Xs-AR-zR2">
+                        <rect key="frame" x="86" y="54" width="629" height="17"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="17" id="WQt-dA-QTe"/>
+                        </constraints>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Hold ⌘ to add another selector. ⌘ + A to highlight all. ⌫ or ⌦ to delete highlighted selectors." id="JRj-H6-t4l">
+                            <font key="font" metaFont="miniSystemBold"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="EhX-LX-1Jy">
+                        <rect key="frame" x="365" y="13" width="71" height="32"/>
+                        <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mKc-fU-U1a">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="saveImages:" target="-2" id="vs9-rO-eVx"/>
+                            <binding destination="rri-bq-38L" name="enabled" keyPath="self.readyForSave" id="GQG-zJ-AUp"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="1Xs-AR-zR2" firstAttribute="top" secondItem="RV7-GA-4PF" secondAttribute="bottom" constant="8" symbolic="YES" id="1oA-AL-j8j"/>
+                    <constraint firstItem="1Xs-AR-zR2" firstAttribute="centerX" secondItem="RV7-GA-4PF" secondAttribute="centerX" id="3KF-MQ-8XL"/>
+                    <constraint firstItem="RV7-GA-4PF" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="8Za-bw-ZUV"/>
+                    <constraint firstItem="EhX-LX-1Jy" firstAttribute="centerX" secondItem="1Xs-AR-zR2" secondAttribute="centerX" id="Cvm-oi-fIQ"/>
+                    <constraint firstItem="1Xs-AR-zR2" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="88" id="YqZ-lC-NCK"/>
+                    <constraint firstItem="RV7-GA-4PF" firstAttribute="leading" secondItem="se5-gp-TjO" secondAttribute="leading" constant="20" symbolic="YES" id="aFc-iE-Tec"/>
+                    <constraint firstAttribute="bottom" secondItem="EhX-LX-1Jy" secondAttribute="bottom" constant="20" symbolic="YES" id="al3-Ve-fJI"/>
+                    <constraint firstAttribute="trailing" secondItem="RV7-GA-4PF" secondAttribute="trailing" constant="20" symbolic="YES" id="jh0-FR-zPz"/>
+                    <constraint firstItem="EhX-LX-1Jy" firstAttribute="top" secondItem="1Xs-AR-zR2" secondAttribute="bottom" constant="13" id="wbV-2H-qaF"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
+            </connections>
+        </window>
+        <customObject id="bVU-O4-MgC" customClass="MSSCanvasController">
+            <connections>
+                <outlet property="contentExtractor" destination="rri-bq-38L" id="Q3X-Fc-do1"/>
+                <outlet property="contentView" destination="RV7-GA-4PF" id="BK3-gO-YAW"/>
+                <outlet property="view" destination="KKw-AC-bs0" id="Dwz-bX-ynv"/>
+            </connections>
+        </customObject>
+        <customObject id="rri-bq-38L" customClass="MSSImageExtractor">
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="string" keyPath="filePrefix" value="image"/>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="canvasController" destination="bVU-O4-MgC" id="5Kc-9t-SN3"/>
+                <outlet property="delegate" destination="-2" id="4PL-BY-Vhk"/>
+            </connections>
+        </customObject>
+        <customView id="KKw-AC-bs0" customClass="MSSCanvas">
+            <rect key="frame" x="0.0" y="0.0" width="163" height="96"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <connections>
+                <outlet property="delegate" destination="bVU-O4-MgC" id="r8i-px-TpP"/>
+            </connections>
+        </customView>
+    </objects>
+</document>

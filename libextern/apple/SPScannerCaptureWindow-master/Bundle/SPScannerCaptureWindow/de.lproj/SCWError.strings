@@ -1,0 +1,6 @@
+"1000" = "Es wurde kein Scanner ausgewählt";
+"1001" = "Ein Teilscan ist nicht möglich, da der Scanner kein Flachbrett Scanner ist";
+"1002" = "Der Scanner ist beschäftigt oder nicht bereit";
+"1003" = "Der Scanner kann keine Vorschauscans erstellen";
+"1004" = "Die Scanner Session wurde geschlossen";
+"1005" = "Dieser Scannertyp wird derzeit noch nicht unterstützt";

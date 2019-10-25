@@ -15,7 +15,7 @@ using namespace Regards::Sqlite;
 COpenCLProgram::COpenCLProgram(COpenCLContext * context, const int &type)
 {
 	program = 0;
-	buildOption = "";// "-cl-mad-enable -cl-unsafe-math-optimizations";
+	buildOption = "-cl-mad-enable -cl-unsafe-math-optimizations";
 	this->context = context;
 	this->typeData = type;// context->GetDefaultType();
 }

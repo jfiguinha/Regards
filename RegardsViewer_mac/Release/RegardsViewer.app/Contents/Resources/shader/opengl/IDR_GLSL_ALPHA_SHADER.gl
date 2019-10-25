@@ -1,0 +1,15 @@
+uniform sampler2D textureScreen;
+uniform float intensity;
+void main(void)
+{	
+	 //------------------------------------------------------------
+	 //Variable													   
+	 //------------------------------------------------------------
+	vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
+	
+	float alpha = intensity / 100.0;
+
+	gl_FragColor = vec4(src_color.r, src_color.g, src_color.b, alpha - src_color.a);
+}
+
+

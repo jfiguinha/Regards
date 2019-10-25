@@ -1,0 +1,459 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B08E65C1A6D6AEF00487406 /* CropImageWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B08E65E1A6D6AEF00487406 /* CropImageWindow.xib */; };
+		2B08E6611A6D6AF800487406 /* ZoomImageWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B08E6631A6D6AF800487406 /* ZoomImageWindow.xib */; };
+		2B08E67A1A6DBFD900487406 /* SPScannerCaptureWindow.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B08E6791A6DBFD900487406 /* SPScannerCaptureWindow.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2B1C2AF01A65E1E900EB881C /* CropImageWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1C2AEE1A65E1E900EB881C /* CropImageWindow.m */; };
+		2B1C2AF51A65E1FB00EB881C /* ZoomImageWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1C2AF31A65E1FB00EB881C /* ZoomImageWindow.m */; };
+		2B24827E1A5AE0EE000C1F7A /* CaptureWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B24827C1A5AE0EE000C1F7A /* CaptureWindow.m */; };
+		2B2482851A5AE1D2000C1F7A /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2482841A5AE1D2000C1F7A /* Quartz.framework */; };
+		2B2482871A5AE1FC000C1F7A /* animals.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 2B2482861A5AE1FC000C1F7A /* animals.jpg */; };
+		2B2482CB1A5B4656000C1F7A /* MultiSelectionSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B2482CA1A5B4656000C1F7A /* MultiSelectionSuite.framework */; };
+		2B7077C61A5AC3C000707A69 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7077C51A5AC3C000707A69 /* AppDelegate.m */; };
+		2B7077C81A5AC3C000707A69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7077C71A5AC3C000707A69 /* main.m */; };
+		2B7077CA1A5AC3C000707A69 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B7077C91A5AC3C000707A69 /* Images.xcassets */; };
+		2B9549161A5C0C5E00EB11A9 /* CaptureWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B9549141A5C0C5E00EB11A9 /* CaptureWindow.xib */; };
+		2B9549181A5C0DAE00EB11A9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B95491A1A5C0DAE00EB11A9 /* MainMenu.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B1C2AF71A65EBEB00EB881C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2B08E67A1A6DBFD900487406 /* SPScannerCaptureWindow.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2B08E6501A6D697C00487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2B08E6511A6D697C00487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CaptureWindow.xib; sourceTree = "<group>"; };
+		2B08E6531A6D698800487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		2B08E6551A6D698C00487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CaptureWindow.strings; sourceTree = "<group>"; };
+		2B08E65D1A6D6AEF00487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CropImageWindow.xib; sourceTree = "<group>"; };
+		2B08E6601A6D6AF200487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CropImageWindow.strings; sourceTree = "<group>"; };
+		2B08E6621A6D6AF800487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/ZoomImageWindow.xib; sourceTree = "<group>"; };
+		2B08E6651A6D6B5D00487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/ZoomImageWindow.strings; sourceTree = "<group>"; };
+		2B08E6791A6DBFD900487406 /* SPScannerCaptureWindow.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SPScannerCaptureWindow.bundle; path = Libs/SPScannerCaptureWindow.bundle; sourceTree = "<group>"; };
+		2B1C2AED1A65E1E900EB881C /* CropImageWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CropImageWindow.h; sourceTree = "<group>"; };
+		2B1C2AEE1A65E1E900EB881C /* CropImageWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CropImageWindow.m; sourceTree = "<group>"; };
+		2B1C2AF21A65E1FB00EB881C /* ZoomImageWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZoomImageWindow.h; sourceTree = "<group>"; };
+		2B1C2AF31A65E1FB00EB881C /* ZoomImageWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZoomImageWindow.m; sourceTree = "<group>"; };
+		2B1C2AF81A65EBFF00EB881C /* SPScannerCaptureWindow.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SPScannerCaptureWindow.bundle; path = "../../../../../../../Library/Developer/Xcode/DerivedData/SPScannerCaptureWindow-fcqkvrzpurajcdckqzbsffrhhfpq/Build/Products/Debug/SPScannerCaptureWindow.bundle"; sourceTree = "<group>"; };
+		2B1C2B001A65ED3200EB881C /* SPWindowBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPWindowBundle.h; sourceTree = "<group>"; };
+		2B24827B1A5AE0EE000C1F7A /* CaptureWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CaptureWindow.h; sourceTree = "<group>"; };
+		2B24827C1A5AE0EE000C1F7A /* CaptureWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CaptureWindow.m; sourceTree = "<group>"; };
+		2B2482841A5AE1D2000C1F7A /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		2B2482861A5AE1FC000C1F7A /* animals.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = animals.jpg; sourceTree = "<group>"; };
+		2B2482CA1A5B4656000C1F7A /* MultiSelectionSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultiSelectionSuite.framework; path = "../../../../../../Library/Developer/Xcode/DerivedData/MultiSelectionSuite-egxvbyyfhzsysaembhlgxpzaxisx/Build/Products/Debug/MultiSelectionSuite.framework"; sourceTree = "<group>"; };
+		2B7077BF1A5AC3C000707A69 /* MultiSelectionSuiteApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiSelectionSuiteApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B7077C31A5AC3C000707A69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B7077C41A5AC3C000707A69 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2B7077C51A5AC3C000707A69 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2B7077C71A5AC3C000707A69 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2B7077C91A5AC3C000707A69 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B7077BC1A5AC3C000707A69 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B2482CB1A5B4656000C1F7A /* MultiSelectionSuite.framework in Frameworks */,
+				2B2482851A5AE1D2000C1F7A /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B1C2AFA1A65EC1300EB881C /* Crop */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2AED1A65E1E900EB881C /* CropImageWindow.h */,
+				2B1C2AEE1A65E1E900EB881C /* CropImageWindow.m */,
+				2B08E65E1A6D6AEF00487406 /* CropImageWindow.xib */,
+			);
+			name = Crop;
+			sourceTree = "<group>";
+		};
+		2B1C2AFB1A65EC2000EB881C /* Zoom */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2AF21A65E1FB00EB881C /* ZoomImageWindow.h */,
+				2B1C2AF31A65E1FB00EB881C /* ZoomImageWindow.m */,
+				2B08E6631A6D6AF800487406 /* ZoomImageWindow.xib */,
+			);
+			name = Zoom;
+			sourceTree = "<group>";
+		};
+		2B1C2AFC1A65EC2600EB881C /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2B001A65ED3200EB881C /* SPWindowBundle.h */,
+				2B1C2AF81A65EBFF00EB881C /* SPScannerCaptureWindow.bundle */,
+			);
+			name = Scan;
+			sourceTree = "<group>";
+		};
+		2B7077B61A5AC3C000707A69 = {
+			isa = PBXGroup;
+			children = (
+				2B08E6791A6DBFD900487406 /* SPScannerCaptureWindow.bundle */,
+				2B2482CA1A5B4656000C1F7A /* MultiSelectionSuite.framework */,
+				2B2482841A5AE1D2000C1F7A /* Quartz.framework */,
+				2B7077C11A5AC3C000707A69 /* MultiSelectionSuiteApp */,
+				2B7077C01A5AC3C000707A69 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B7077C01A5AC3C000707A69 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B7077BF1A5AC3C000707A69 /* MultiSelectionSuiteApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B7077C11A5AC3C000707A69 /* MultiSelectionSuiteApp */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2AFC1A65EC2600EB881C /* Scan */,
+				2B1C2AFB1A65EC2000EB881C /* Zoom */,
+				2B1C2AFA1A65EC1300EB881C /* Crop */,
+				2B95491A1A5C0DAE00EB11A9 /* MainMenu.xib */,
+				2B9549141A5C0C5E00EB11A9 /* CaptureWindow.xib */,
+				2B24827B1A5AE0EE000C1F7A /* CaptureWindow.h */,
+				2B24827C1A5AE0EE000C1F7A /* CaptureWindow.m */,
+				2B7077C41A5AC3C000707A69 /* AppDelegate.h */,
+				2B7077C51A5AC3C000707A69 /* AppDelegate.m */,
+				2B7077C91A5AC3C000707A69 /* Images.xcassets */,
+				2B7077C21A5AC3C000707A69 /* Supporting Files */,
+			);
+			path = MultiSelectionSuiteApp;
+			sourceTree = "<group>";
+		};
+		2B7077C21A5AC3C000707A69 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B2482861A5AE1FC000C1F7A /* animals.jpg */,
+				2B7077C31A5AC3C000707A69 /* Info.plist */,
+				2B7077C71A5AC3C000707A69 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B7077BE1A5AC3C000707A69 /* MultiSelectionSuiteApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B7077DC1A5AC3C000707A69 /* Build configuration list for PBXNativeTarget "MultiSelectionSuiteApp" */;
+			buildPhases = (
+				2B7077BB1A5AC3C000707A69 /* Sources */,
+				2B7077BC1A5AC3C000707A69 /* Frameworks */,
+				2B7077BD1A5AC3C000707A69 /* Resources */,
+				2B1C2AF71A65EBEB00EB881C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MultiSelectionSuiteApp;
+			productName = MultiSelectionSuiteApp;
+			productReference = 2B7077BF1A5AC3C000707A69 /* MultiSelectionSuiteApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B7077B71A5AC3C000707A69 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1110;
+				ORGANIZATIONNAME = "Sascha Paulus";
+				TargetAttributes = {
+					2B7077BE1A5AC3C000707A69 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B7077BA1A5AC3C000707A69 /* Build configuration list for PBXProject "MultiSelectionSuiteApp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				de,
+				Base,
+			);
+			mainGroup = 2B7077B61A5AC3C000707A69;
+			productRefGroup = 2B7077C01A5AC3C000707A69 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B7077BE1A5AC3C000707A69 /* MultiSelectionSuiteApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B7077BD1A5AC3C000707A69 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B08E6611A6D6AF800487406 /* ZoomImageWindow.xib in Resources */,
+				2B7077CA1A5AC3C000707A69 /* Images.xcassets in Resources */,
+				2B9549181A5C0DAE00EB11A9 /* MainMenu.xib in Resources */,
+				2B9549161A5C0C5E00EB11A9 /* CaptureWindow.xib in Resources */,
+				2B08E65C1A6D6AEF00487406 /* CropImageWindow.xib in Resources */,
+				2B2482871A5AE1FC000C1F7A /* animals.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B7077BB1A5AC3C000707A69 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B7077C81A5AC3C000707A69 /* main.m in Sources */,
+				2B1C2AF51A65E1FB00EB881C /* ZoomImageWindow.m in Sources */,
+				2B7077C61A5AC3C000707A69 /* AppDelegate.m in Sources */,
+				2B24827E1A5AE0EE000C1F7A /* CaptureWindow.m in Sources */,
+				2B1C2AF01A65E1E900EB881C /* CropImageWindow.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2B08E65E1A6D6AEF00487406 /* CropImageWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E65D1A6D6AEF00487406 /* Base */,
+				2B08E6601A6D6AF200487406 /* de */,
+			);
+			name = CropImageWindow.xib;
+			sourceTree = "<group>";
+		};
+		2B08E6631A6D6AF800487406 /* ZoomImageWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E6621A6D6AF800487406 /* Base */,
+				2B08E6651A6D6B5D00487406 /* de */,
+			);
+			name = ZoomImageWindow.xib;
+			sourceTree = "<group>";
+		};
+		2B9549141A5C0C5E00EB11A9 /* CaptureWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E6511A6D697C00487406 /* Base */,
+				2B08E6551A6D698C00487406 /* de */,
+			);
+			name = CaptureWindow.xib;
+			sourceTree = "<group>";
+		};
+		2B95491A1A5C0DAE00EB11A9 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E6501A6D697C00487406 /* Base */,
+				2B08E6531A6D698800487406 /* de */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2B7077DA1A5AC3C000707A69 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2B7077DB1A5AC3C000707A69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2B7077DD1A5AC3C000707A69 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/sascha/Desktop,
+					"$(PROJECT_DIR)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/MultiSelectionSuite-daemarwshbwuqqaxicrxiitewggc/Build/Products/Debug",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/MultiSelectionSuite/MultiSelectionSuiteFramework/build/Debug,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/MultiSelectionSuite-egxvbyyfhzsysaembhlgxpzaxisx/Build/Products/Debug",
+				);
+				INFOPLIST_FILE = MultiSelectionSuiteApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.apps.mss;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2B7077DE1A5AC3C000707A69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/sascha/Desktop,
+					"$(PROJECT_DIR)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/MultiSelectionSuite-daemarwshbwuqqaxicrxiitewggc/Build/Products/Debug",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/MultiSelectionSuite/MultiSelectionSuiteFramework/build/Debug,
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/MultiSelectionSuite-egxvbyyfhzsysaembhlgxpzaxisx/Build/Products/Debug",
+				);
+				INFOPLIST_FILE = MultiSelectionSuiteApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.apps.mss;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B7077BA1A5AC3C000707A69 /* Build configuration list for PBXProject "MultiSelectionSuiteApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B7077DA1A5AC3C000707A69 /* Debug */,
+				2B7077DB1A5AC3C000707A69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B7077DC1A5AC3C000707A69 /* Build configuration list for PBXNativeTarget "MultiSelectionSuiteApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B7077DD1A5AC3C000707A69 /* Debug */,
+				2B7077DE1A5AC3C000707A69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B7077B71A5AC3C000707A69 /* Project object */;
+}

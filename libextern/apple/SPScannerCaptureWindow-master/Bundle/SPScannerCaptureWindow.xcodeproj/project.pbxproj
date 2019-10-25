@@ -1,0 +1,408 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B08E6361A6D64BC00487406 /* SCWWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B08E6381A6D64BC00487406 /* SCWWindow.xib */; };
+		2B08E6481A6D673500487406 /* SCWError.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2B08E64A1A6D673500487406 /* SCWError.strings */; };
+		2B08E6731A6D710000487406 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2B08E6751A6D710000487406 /* Localizable.strings */; };
+		2B1C2AE31A65DF3B00EB881C /* SCWController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1C2ADF1A65DF3B00EB881C /* SCWController.m */; };
+		2B1C2AE81A65DF7500EB881C /* SCWBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1C2AE71A65DF7500EB881C /* SCWBundle.m */; };
+		2B1C2AFF1A65EC9300EB881C /* SPWindowBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B1C2AFE1A65EC9300EB881C /* SPWindowBundle.m */; };
+		2B458F581A66DCAF00C129C7 /* NSImage+SCWExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B458F571A66DCAF00C129C7 /* NSImage+SCWExtension.m */; };
+		2B458F5E1A66E3F000C129C7 /* SCWScannedUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B458F5D1A66E3F000C129C7 /* SCWScannedUnit.m */; };
+		2BE229F71A6D45140055D1C8 /* SCWError.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE229F61A6D45140055D1C8 /* SCWError.m */; };
+		C4687A252363227A0093EA5C /* MultiSelectionSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3951B81A67BF450018E5B9 /* MultiSelectionSuite.framework */; };
+		C4687A262363227A0093EA5C /* MultiSelectionSuite.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3951B81A67BF450018E5B9 /* MultiSelectionSuite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B1C2AE91A65E06600EB881C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C4687A272363227A0093EA5C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C4687A262363227A0093EA5C /* MultiSelectionSuite.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2B08E63A1A6D64EB00487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/SCWWindow.xib; sourceTree = "<group>"; };
+		2B08E6451A6D66BA00487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SCWWindow.strings; sourceTree = "<group>"; };
+		2B08E6491A6D673500487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/SCWError.strings; sourceTree = "<group>"; };
+		2B08E64B1A6D673A00487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SCWError.strings; sourceTree = "<group>"; };
+		2B08E6741A6D710000487406 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2B08E6761A6D710200487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2B1C2ACE1A65DEC400EB881C /* SPScannerCaptureWindow.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SPScannerCaptureWindow.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B1C2AD21A65DEC400EB881C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B1C2ADE1A65DF3B00EB881C /* SCWController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWController.h; sourceTree = "<group>"; };
+		2B1C2ADF1A65DF3B00EB881C /* SCWController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWController.m; sourceTree = "<group>"; };
+		2B1C2AE61A65DF7500EB881C /* SCWBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWBundle.h; sourceTree = "<group>"; };
+		2B1C2AE71A65DF7500EB881C /* SCWBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWBundle.m; sourceTree = "<group>"; };
+		2B1C2AFD1A65EC9300EB881C /* SPWindowBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPWindowBundle.h; sourceTree = "<group>"; };
+		2B1C2AFE1A65EC9300EB881C /* SPWindowBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPWindowBundle.m; sourceTree = "<group>"; };
+		2B3951B81A67BF450018E5B9 /* MultiSelectionSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultiSelectionSuite.framework; path = ../Libs/MultiSelectionSuite.framework; sourceTree = "<group>"; };
+		2B458F561A66DCAE00C129C7 /* NSImage+SCWExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+SCWExtension.h"; sourceTree = "<group>"; };
+		2B458F571A66DCAF00C129C7 /* NSImage+SCWExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+SCWExtension.m"; sourceTree = "<group>"; };
+		2B458F5C1A66E3F000C129C7 /* SCWScannedUnit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWScannedUnit.h; sourceTree = "<group>"; };
+		2B458F5D1A66E3F000C129C7 /* SCWScannedUnit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWScannedUnit.m; sourceTree = "<group>"; };
+		2BE229F51A6D45140055D1C8 /* SCWError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SCWError.h; sourceTree = "<group>"; };
+		2BE229F61A6D45140055D1C8 /* SCWError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SCWError.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B1C2ACB1A65DEC400EB881C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C4687A252363227A0093EA5C /* MultiSelectionSuite.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B1C2AC51A65DEC400EB881C = {
+			isa = PBXGroup;
+			children = (
+				2B3951B81A67BF450018E5B9 /* MultiSelectionSuite.framework */,
+				2B1C2AD01A65DEC400EB881C /* SPScannerCaptureWindow */,
+				2B1C2ACF1A65DEC400EB881C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B1C2ACF1A65DEC400EB881C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2ACE1A65DEC400EB881C /* SPScannerCaptureWindow.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B1C2AD01A65DEC400EB881C /* SPScannerCaptureWindow */ = {
+			isa = PBXGroup;
+			children = (
+				2B458F5C1A66E3F000C129C7 /* SCWScannedUnit.h */,
+				2B458F5D1A66E3F000C129C7 /* SCWScannedUnit.m */,
+				2B1C2AD11A65DEC400EB881C /* Supporting Files */,
+				2B1C2ADE1A65DF3B00EB881C /* SCWController.h */,
+				2B1C2ADF1A65DF3B00EB881C /* SCWController.m */,
+				2B08E6381A6D64BC00487406 /* SCWWindow.xib */,
+				2B1C2AE61A65DF7500EB881C /* SCWBundle.h */,
+				2B1C2AE71A65DF7500EB881C /* SCWBundle.m */,
+				2B1C2AFD1A65EC9300EB881C /* SPWindowBundle.h */,
+				2B1C2AFE1A65EC9300EB881C /* SPWindowBundle.m */,
+				2B458F561A66DCAE00C129C7 /* NSImage+SCWExtension.h */,
+				2B458F571A66DCAF00C129C7 /* NSImage+SCWExtension.m */,
+				2BE229F51A6D45140055D1C8 /* SCWError.h */,
+				2BE229F61A6D45140055D1C8 /* SCWError.m */,
+				2B08E64A1A6D673500487406 /* SCWError.strings */,
+				2B08E6751A6D710000487406 /* Localizable.strings */,
+			);
+			path = SPScannerCaptureWindow;
+			sourceTree = "<group>";
+		};
+		2B1C2AD11A65DEC400EB881C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B1C2AD21A65DEC400EB881C /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B1C2ACD1A65DEC400EB881C /* SPScannerCaptureWindow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B1C2AD51A65DEC400EB881C /* Build configuration list for PBXNativeTarget "SPScannerCaptureWindow" */;
+			buildPhases = (
+				2B1C2ACA1A65DEC400EB881C /* Sources */,
+				2B1C2ACB1A65DEC400EB881C /* Frameworks */,
+				2B1C2ACC1A65DEC400EB881C /* Resources */,
+				2B1C2AE91A65E06600EB881C /* CopyFiles */,
+				C4687A272363227A0093EA5C /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SPScannerCaptureWindow;
+			productName = SPScannerCaptureWindow;
+			productReference = 2B1C2ACE1A65DEC400EB881C /* SPScannerCaptureWindow.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B1C2AC61A65DEC400EB881C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1110;
+				ORGANIZATIONNAME = "Sascha Paulus";
+				TargetAttributes = {
+					2B1C2ACD1A65DEC400EB881C = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B1C2AC91A65DEC400EB881C /* Build configuration list for PBXProject "SPScannerCaptureWindow" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				de,
+				en,
+			);
+			mainGroup = 2B1C2AC51A65DEC400EB881C;
+			productRefGroup = 2B1C2ACF1A65DEC400EB881C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B1C2ACD1A65DEC400EB881C /* SPScannerCaptureWindow */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B1C2ACC1A65DEC400EB881C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B08E6361A6D64BC00487406 /* SCWWindow.xib in Resources */,
+				2B08E6731A6D710000487406 /* Localizable.strings in Resources */,
+				2B08E6481A6D673500487406 /* SCWError.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B1C2ACA1A65DEC400EB881C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B1C2AE81A65DF7500EB881C /* SCWBundle.m in Sources */,
+				2B1C2AFF1A65EC9300EB881C /* SPWindowBundle.m in Sources */,
+				2B1C2AE31A65DF3B00EB881C /* SCWController.m in Sources */,
+				2BE229F71A6D45140055D1C8 /* SCWError.m in Sources */,
+				2B458F581A66DCAF00C129C7 /* NSImage+SCWExtension.m in Sources */,
+				2B458F5E1A66E3F000C129C7 /* SCWScannedUnit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2B08E6381A6D64BC00487406 /* SCWWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E63A1A6D64EB00487406 /* Base */,
+				2B08E6451A6D66BA00487406 /* de */,
+			);
+			name = SCWWindow.xib;
+			sourceTree = "<group>";
+		};
+		2B08E64A1A6D673500487406 /* SCWError.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E6491A6D673500487406 /* Base */,
+				2B08E64B1A6D673A00487406 /* de */,
+			);
+			name = SCWError.strings;
+			sourceTree = "<group>";
+		};
+		2B08E6751A6D710000487406 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B08E6741A6D710000487406 /* Base */,
+				2B08E6761A6D710200487406 /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2B1C2AD31A65DEC400EB881C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Users/jacques/developpement/git/Regards/libextern/apple/include;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2B1C2AD41A65DEC400EB881C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = /Users/jacques/developpement/git/Regards/libextern/apple/include;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2B1C2AD61A65DEC400EB881C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/SPScannerCaptureWindow/Libs,
+				);
+				INFOPLIST_FILE = SPScannerCaptureWindow/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.bundles.scw;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		2B1C2AD71A65DEC400EB881C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/SPScannerCaptureWindow/Libs,
+				);
+				INFOPLIST_FILE = SPScannerCaptureWindow/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.bundles.scw;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B1C2AC91A65DEC400EB881C /* Build configuration list for PBXProject "SPScannerCaptureWindow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B1C2AD31A65DEC400EB881C /* Debug */,
+				2B1C2AD41A65DEC400EB881C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B1C2AD51A65DEC400EB881C /* Build configuration list for PBXNativeTarget "SPScannerCaptureWindow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B1C2AD61A65DEC400EB881C /* Debug */,
+				2B1C2AD71A65DEC400EB881C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B1C2AC61A65DEC400EB881C /* Project object */;
+}

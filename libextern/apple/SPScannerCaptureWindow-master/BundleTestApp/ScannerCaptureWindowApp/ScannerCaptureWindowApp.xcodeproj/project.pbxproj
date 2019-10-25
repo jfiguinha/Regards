@@ -1,0 +1,359 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B39518D1A67B5E80018E5B9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B39518C1A67B5E80018E5B9 /* AppDelegate.m */; };
+		2B39518F1A67B5E80018E5B9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B39518E1A67B5E80018E5B9 /* main.m */; };
+		2B3951911A67B5E80018E5B9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B3951901A67B5E80018E5B9 /* Images.xcassets */; };
+		2B3951941A67B5E80018E5B9 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B3951921A67B5E80018E5B9 /* MainMenu.xib */; };
+		2B3951BD1A67BFD40018E5B9 /* MultiSelectionSuite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3951BC1A67BFD40018E5B9 /* MultiSelectionSuite.framework */; };
+		2B3951BE1A67C04F0018E5B9 /* MultiSelectionSuite.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3951BC1A67BFD40018E5B9 /* MultiSelectionSuite.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2B3951C41A67C2EC0018E5B9 /* SPScannerCaptureWindow.bundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2B3951C31A67C2EC0018E5B9 /* SPScannerCaptureWindow.bundle */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2B3951A91A67B8210018E5B9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2B3951BE1A67C04F0018E5B9 /* MultiSelectionSuite.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2B3951BF1A67C0A50018E5B9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2B3951C41A67C2EC0018E5B9 /* SPScannerCaptureWindow.bundle in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2B08E64D1A6D683E00487406 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		2B3951861A67B5E80018E5B9 /* ScannerCaptureWindowApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScannerCaptureWindowApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B39518A1A67B5E80018E5B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B39518B1A67B5E80018E5B9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2B39518C1A67B5E80018E5B9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2B39518E1A67B5E80018E5B9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2B3951901A67B5E80018E5B9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		2B3951931A67B5E80018E5B9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		2B3951AD1A67B8F80018E5B9 /* SPWindowBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SPWindowBundle.h; path = ../../../Bundle/SPScannerCaptureWindow/SPWindowBundle.h; sourceTree = "<group>"; };
+		2B3951BC1A67BFD40018E5B9 /* MultiSelectionSuite.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultiSelectionSuite.framework; path = ../../Libs/MultiSelectionSuite.framework; sourceTree = "<group>"; };
+		2B3951C31A67C2EC0018E5B9 /* SPScannerCaptureWindow.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = SPScannerCaptureWindow.bundle; path = ../../Build/Products/Debug/SPScannerCaptureWindow.bundle; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B3951831A67B5E80018E5B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B3951BD1A67BFD40018E5B9 /* MultiSelectionSuite.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B39517D1A67B5E80018E5B9 = {
+			isa = PBXGroup;
+			children = (
+				2B3951C31A67C2EC0018E5B9 /* SPScannerCaptureWindow.bundle */,
+				2B3951BC1A67BFD40018E5B9 /* MultiSelectionSuite.framework */,
+				2B3951881A67B5E80018E5B9 /* ScannerCaptureWindowApp */,
+				2B3951871A67B5E80018E5B9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B3951871A67B5E80018E5B9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B3951861A67B5E80018E5B9 /* ScannerCaptureWindowApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B3951881A67B5E80018E5B9 /* ScannerCaptureWindowApp */ = {
+			isa = PBXGroup;
+			children = (
+				2B3951AD1A67B8F80018E5B9 /* SPWindowBundle.h */,
+				2B39518B1A67B5E80018E5B9 /* AppDelegate.h */,
+				2B39518C1A67B5E80018E5B9 /* AppDelegate.m */,
+				2B3951901A67B5E80018E5B9 /* Images.xcassets */,
+				2B3951921A67B5E80018E5B9 /* MainMenu.xib */,
+				2B3951891A67B5E80018E5B9 /* Supporting Files */,
+			);
+			path = ScannerCaptureWindowApp;
+			sourceTree = "<group>";
+		};
+		2B3951891A67B5E80018E5B9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B39518A1A67B5E80018E5B9 /* Info.plist */,
+				2B39518E1A67B5E80018E5B9 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2B3951851A67B5E80018E5B9 /* ScannerCaptureWindowApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B3951A31A67B5E80018E5B9 /* Build configuration list for PBXNativeTarget "ScannerCaptureWindowApp" */;
+			buildPhases = (
+				2B3951821A67B5E80018E5B9 /* Sources */,
+				2B3951831A67B5E80018E5B9 /* Frameworks */,
+				2B3951841A67B5E80018E5B9 /* Resources */,
+				2B3951A91A67B8210018E5B9 /* CopyFiles */,
+				2B3951BF1A67C0A50018E5B9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ScannerCaptureWindowApp;
+			productName = ScannerCaptureWindowApp;
+			productReference = 2B3951861A67B5E80018E5B9 /* ScannerCaptureWindowApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B39517E1A67B5E80018E5B9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1110;
+				ORGANIZATIONNAME = "Sascha Paulus";
+				TargetAttributes = {
+					2B3951851A67B5E80018E5B9 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B3951811A67B5E80018E5B9 /* Build configuration list for PBXProject "ScannerCaptureWindowApp" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				de,
+			);
+			mainGroup = 2B39517D1A67B5E80018E5B9;
+			productRefGroup = 2B3951871A67B5E80018E5B9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B3951851A67B5E80018E5B9 /* ScannerCaptureWindowApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B3951841A67B5E80018E5B9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B3951911A67B5E80018E5B9 /* Images.xcassets in Resources */,
+				2B3951941A67B5E80018E5B9 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B3951821A67B5E80018E5B9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B39518F1A67B5E80018E5B9 /* main.m in Sources */,
+				2B39518D1A67B5E80018E5B9 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2B3951921A67B5E80018E5B9 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2B3951931A67B5E80018E5B9 /* Base */,
+				2B08E64D1A6D683E00487406 /* de */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2B3951A11A67B5E80018E5B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		2B3951A21A67B5E80018E5B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		2B3951A41A67B5E80018E5B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/SPScannerCaptureWindow/Libs,
+				);
+				INFOPLIST_FILE = ScannerCaptureWindowApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.apps.scw;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		2B3951A51A67B5E80018E5B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/sascha/DATEN/DEV/Mac/OpenSource/SPScannerCaptureWindow/Libs,
+				);
+				INFOPLIST_FILE = ScannerCaptureWindowApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.saschapaulus.apps.scw;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B3951811A67B5E80018E5B9 /* Build configuration list for PBXProject "ScannerCaptureWindowApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3951A11A67B5E80018E5B9 /* Debug */,
+				2B3951A21A67B5E80018E5B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B3951A31A67B5E80018E5B9 /* Build configuration list for PBXNativeTarget "ScannerCaptureWindowApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B3951A41A67B5E80018E5B9 /* Debug */,
+				2B3951A51A67B5E80018E5B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B39517E1A67B5E80018E5B9 /* Project object */;
+}

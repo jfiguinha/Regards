@@ -182,6 +182,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libpostproc"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
+        <LibraryPath Value="../libextern/apple/framework"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/aom/build"/>
@@ -562,7 +563,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.0.dylib @executable_path/../Frameworks/libtesseract.4.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-   <Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/llibzen.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/llibzen.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -584,8 +585,8 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/pcre/lib/libpcre.1.dylib @executable_path/../Frameworks/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
         <Command Enabled="yes">$(shell change_link.sh)</Command>
-        <Command Enabled="yes">#cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
-        <Command Enabled="yes">#hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
+        <Command Enabled="no">#cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
+        <Command Enabled="no">#hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

@@ -1,0 +1,18 @@
+
+/* Class = "NSMenuItem"; title = "ScannerCaptureWindowApp"; ObjectID = "1Xt-HY-uBw"; */
+"1Xt-HY-uBw.title" = "ScannerCaptureWindowApp";
+
+/* Class = "NSMenuItem"; title = "Quit ScannerCaptureWindowApp"; ObjectID = "4sb-4s-VLi"; */
+"4sb-4s-VLi.title" = "Schließen";
+
+/* Class = "NSMenu"; title = "Main Menu"; ObjectID = "AYu-sK-qS6"; */
+"AYu-sK-qS6.title" = "Hauptmenü";
+
+/* Class = "NSWindow"; title = "ScannerCaptureWindowApp"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "ScannerCaptureWindowApp";
+
+/* Class = "NSButtonCell"; title = "Open Scanner Window"; ObjectID = "noX-7D-3ZQ"; */
+"noX-7D-3ZQ.title" = "Öffne Scanner Fenster";
+
+/* Class = "NSMenu"; title = "ScannerCaptureWindowApp"; ObjectID = "uQy-DD-JDr"; */
+"uQy-DD-JDr.title" = "ScannerCaptureWindowApp";

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6250" systemVersion="14B25" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6250"/>
+        <plugIn identifier="com.apple.imagekit.ibplugin" version="6250"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="CaptureWindow">
+            <connections>
+                <outlet property="colorRadio" destination="52G-r1-ah9" id="tUY-pc-dUu"/>
+                <outlet property="deviceBrowser" destination="Frc-02-7hu" id="iOO-gg-dNd"/>
+                <outlet property="imageExtractor" destination="cPA-mB-Dis" id="Imp-d7-yh8"/>
+                <outlet property="imageView" destination="xed-2z-6x2" id="6nU-e8-wdC"/>
+                <outlet property="resolutionCombo" destination="9aS-IH-XK1" id="zen-r9-QAT"/>
+                <outlet property="scanExtractor" destination="5rx-jh-5IC" id="PO6-eP-iXv"/>
+                <outlet property="scanPreview" destination="Vuv-Le-JLA" id="9DO-XZ-M05"/>
+                <outlet property="scannerView" destination="8RI-Ms-YGr" id="cxx-is-WUG"/>
+                <outlet property="sourceView" destination="5Na-7Z-KPx" id="5TQ-5L-S72"/>
+                <outlet property="window" destination="KaV-u6-fmP" id="h3p-CD-jpg"/>
+                <outlet property="zoomHandleStyle" destination="Ioi-iw-7nY" id="ZRJ-TQ-9lg"/>
+                <outlet property="zoomSelectorStyle" destination="114-HG-S52" id="Nnw-h2-VBH"/>
+                <outlet property="zoomTargetView" destination="ZQ8-JA-Q7m" id="7Kx-pa-5Bd"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="KaV-u6-fmP" userLabel="Window">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <rect key="contentRect" x="334" y="136" width="800" height="600"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <value key="minSize" type="size" width="800" height="600"/>
+            <view key="contentView" id="mKc-c4-T8b">
+                <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <tabView translatesAutoresizingMaskIntoConstraints="NO" id="I1T-Na-LZk">
+                        <rect key="frame" x="13" y="83" width="781" height="511"/>
+                        <font key="font" metaFont="system"/>
+                        <tabViewItems>
+                            <tabViewItem label="Crop" identifier="1" id="5c3-FK-3s8">
+                                <view key="view" id="F2B-e7-45o">
+                                    <rect key="frame" x="10" y="33" width="761" height="465"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="nQr-V4-XWL">
+                                            <rect key="frame" x="320" y="9" width="120" height="32"/>
+                                            <buttonCell key="cell" type="push" title="Save Images" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0XR-hM-STN">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="saveImages:" target="-2" id="CfG-NO-OjM"/>
+                                                <binding destination="cPA-mB-Dis" name="enabled" keyPath="self.readyForSave" id="a2h-ei-NcB"/>
+                                            </connections>
+                                        </button>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xed-2z-6x2">
+                                            <rect key="frame" x="17" y="57" width="727" height="405"/>
+                                            <imageCell key="cell" selectable="YES" editable="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="THw-xE-ZdS"/>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="nQr-V4-XWL" secondAttribute="bottom" constant="16" id="AyH-Th-tSs"/>
+                                        <constraint firstItem="nQr-V4-XWL" firstAttribute="centerX" secondItem="xed-2z-6x2" secondAttribute="centerX" id="L07-ci-W8R"/>
+                                        <constraint firstItem="nQr-V4-XWL" firstAttribute="top" secondItem="xed-2z-6x2" secondAttribute="bottom" constant="20" symbolic="YES" id="eIE-AW-1Ut"/>
+                                        <constraint firstItem="xed-2z-6x2" firstAttribute="top" secondItem="F2B-e7-45o" secondAttribute="top" constant="3" id="edJ-1o-a3m"/>
+                                        <constraint firstAttribute="trailing" secondItem="xed-2z-6x2" secondAttribute="trailing" constant="17" id="ey5-C4-3h5"/>
+                                        <constraint firstItem="xed-2z-6x2" firstAttribute="leading" secondItem="F2B-e7-45o" secondAttribute="leading" constant="17" id="fBE-E7-agj"/>
+                                    </constraints>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Scan" identifier="2" id="igW-wh-7Dk">
+                                <view key="view" id="Q14-2t-BS4">
+                                    <rect key="frame" x="10" y="33" width="761" height="465"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <ikDeviceBrowserView displaysLocalCameras="NO" displaysNetworkScanners="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Frc-02-7hu">
+                                            <rect key="frame" x="17" y="310" width="239" height="152"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="152" id="mZh-8u-ryg"/>
+                                            </constraints>
+                                            <connections>
+                                                <outlet property="delegate" destination="-2" id="JIg-3J-kdo"/>
+                                            </connections>
+                                        </ikDeviceBrowserView>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9NH-1u-YCD">
+                                            <rect key="frame" x="547" y="19" width="83" height="23"/>
+                                            <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7qO-yU-TFW">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                                <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="cancelScan:" target="-2" id="dRu-Fh-WvG"/>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForCancel" id="yP3-nV-JSU"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="ten-D5-Vep">
+                                            <rect key="frame" x="630" y="19" width="120" height="23"/>
+                                            <buttonCell key="cell" type="push" title="Scan Images" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="jMI-2k-gjp">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="scanImages:" target="-2" id="zdG-YQ-rsj"/>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForSave" id="mVg-ev-WgK"/>
+                                            </connections>
+                                        </button>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TeH-oQ-QRu">
+                                            <rect key="frame" x="416" y="19" width="131" height="22"/>
+                                            <buttonCell key="cell" type="push" title="Overview scan" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="CRx-zO-Nbd">
+                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                                <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                            </buttonCell>
+                                            <connections>
+                                                <action selector="overviewScan:" target="-2" id="S8S-JI-JPJ"/>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForOverview" id="6rR-lN-0pV"/>
+                                            </connections>
+                                        </button>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8RI-Ms-YGr">
+                                            <rect key="frame" x="264" y="55" width="480" height="407"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="grayBezel" id="PRj-RR-rXa"/>
+                                        </imageView>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Vuv-Le-JLA">
+                                            <rect key="frame" x="9" y="55" width="248" height="184"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="Ww5-dy-seA"/>
+                                        </imageView>
+                                        <matrix verticalHuggingPriority="750" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="52G-r1-ah9">
+                                            <rect key="frame" x="17" y="244" width="111" height="58"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="111" id="qk7-Oi-QhH"/>
+                                            </constraints>
+                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            <size key="cellSize" width="97" height="18"/>
+                                            <size key="intercellSpacing" width="4" height="2"/>
+                                            <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="0m7-UT-MVy">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <cells>
+                                                <column>
+                                                    <buttonCell type="radio" title="Color" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" tag="2" inset="2" id="idX-07-7uf">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Grayscale" imagePosition="left" alignment="left" tag="1" inset="2" id="x2z-Cx-giK">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                    <buttonCell type="radio" title="Black/White" imagePosition="left" alignment="left" inset="2" id="LdG-cq-UjT">
+                                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                        <font key="font" metaFont="system"/>
+                                                    </buttonCell>
+                                                </column>
+                                            </cells>
+                                            <connections>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForSave" id="Gzt-rf-5IA"/>
+                                            </connections>
+                                        </matrix>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="HbR-cq-9Xi">
+                                            <rect key="frame" x="136" y="285" width="70" height="17"/>
+                                            <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Resolution" id="Jcv-pf-nLa">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                            <connections>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForSave" id="jKG-ST-JfW"/>
+                                            </connections>
+                                        </textField>
+                                        <comboBox verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9aS-IH-XK1">
+                                            <rect key="frame" x="136" y="259" width="121" height="26"/>
+                                            <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="t6m-jQ-d0b">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                <objectValues>
+                                                    <string>50</string>
+                                                    <string>100</string>
+                                                    <string>150</string>
+                                                    <string>300</string>
+                                                    <string>600</string>
+                                                </objectValues>
+                                            </comboBoxCell>
+                                            <connections>
+                                                <binding destination="5rx-jh-5IC" name="enabled" keyPath="self.readyForSave" id="0wB-Bh-Z8K"/>
+                                            </connections>
+                                        </comboBox>
+                                        <progressIndicator maxValue="100" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="xKg-9t-8i0">
+                                            <rect key="frame" x="136" y="243" width="118" height="20"/>
+                                            <connections>
+                                                <binding destination="5rx-jh-5IC" name="value" keyPath="self.selectedScanner.selectedFunctionalUnit.scanProgressPercentDone" id="F7D-0R-Rl0">
+                                                    <dictionary key="options">
+                                                        <bool key="NSConditionallySetsHidden" value="YES"/>
+                                                    </dictionary>
+                                                </binding>
+                                            </connections>
+                                        </progressIndicator>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="8RI-Ms-YGr" firstAttribute="top" secondItem="Q14-2t-BS4" secondAttribute="top" constant="6" id="5LN-pX-mVs"/>
+                                        <constraint firstItem="9NH-1u-YCD" firstAttribute="top" secondItem="8RI-Ms-YGr" secondAttribute="bottom" constant="20" symbolic="YES" id="7HQ-CH-eg4"/>
+                                        <constraint firstItem="Frc-02-7hu" firstAttribute="leading" secondItem="Q14-2t-BS4" secondAttribute="leading" constant="17" id="7xQ-C9-3IF"/>
+                                        <constraint firstItem="HbR-cq-9Xi" firstAttribute="leading" secondItem="52G-r1-ah9" secondAttribute="trailing" constant="10" id="8a0-4h-O8D"/>
+                                        <constraint firstAttribute="trailing" secondItem="ten-D5-Vep" secondAttribute="trailing" constant="17" id="9yA-U1-cQW"/>
+                                        <constraint firstItem="8RI-Ms-YGr" firstAttribute="bottom" secondItem="Vuv-Le-JLA" secondAttribute="bottom" id="BEO-4G-dCr"/>
+                                        <constraint firstItem="52G-r1-ah9" firstAttribute="top" secondItem="HbR-cq-9Xi" secondAttribute="top" id="BPw-Q4-XxS"/>
+                                        <constraint firstAttribute="bottom" secondItem="TeH-oQ-QRu" secondAttribute="bottom" constant="26" id="Bg1-Cc-Guw"/>
+                                        <constraint firstAttribute="bottom" secondItem="Vuv-Le-JLA" secondAttribute="bottom" constant="58" id="Ghq-pJ-nl2"/>
+                                        <constraint firstItem="9aS-IH-XK1" firstAttribute="trailing" secondItem="xKg-9t-8i0" secondAttribute="trailing" id="J1y-sv-EvS"/>
+                                        <constraint firstItem="9aS-IH-XK1" firstAttribute="centerY" secondItem="52G-r1-ah9" secondAttribute="centerY" id="Jpo-c5-PJN"/>
+                                        <constraint firstItem="Vuv-Le-JLA" firstAttribute="leading" secondItem="Q14-2t-BS4" secondAttribute="leading" constant="12" id="K0f-uk-NY3"/>
+                                        <constraint firstAttribute="trailing" secondItem="8RI-Ms-YGr" secondAttribute="trailing" constant="20" id="RYj-Nf-iPh"/>
+                                        <constraint firstItem="xKg-9t-8i0" firstAttribute="leading" secondItem="9aS-IH-XK1" secondAttribute="leading" id="S4J-s6-mfK"/>
+                                        <constraint firstItem="8RI-Ms-YGr" firstAttribute="leading" secondItem="9aS-IH-XK1" secondAttribute="trailing" constant="13" id="Z0I-33-bzy"/>
+                                        <constraint firstItem="xKg-9t-8i0" firstAttribute="trailing" secondItem="Vuv-Le-JLA" secondAttribute="trailing" id="aYb-bo-gX8"/>
+                                        <constraint firstItem="9NH-1u-YCD" firstAttribute="baseline" secondItem="TeH-oQ-QRu" secondAttribute="baseline" id="aas-sz-UTl"/>
+                                        <constraint firstItem="Frc-02-7hu" firstAttribute="top" secondItem="Q14-2t-BS4" secondAttribute="top" constant="3" id="bh4-s3-Qk6"/>
+                                        <constraint firstItem="TeH-oQ-QRu" firstAttribute="top" secondItem="8RI-Ms-YGr" secondAttribute="bottom" constant="21" id="cn8-PB-MES"/>
+                                        <constraint firstItem="8RI-Ms-YGr" firstAttribute="leading" secondItem="HbR-cq-9Xi" secondAttribute="trailing" constant="63" id="dH7-5d-maJ"/>
+                                        <constraint firstItem="ten-D5-Vep" firstAttribute="baseline" secondItem="9NH-1u-YCD" secondAttribute="baseline" id="ddy-ju-UGg"/>
+                                        <constraint firstItem="ten-D5-Vep" firstAttribute="top" secondItem="9NH-1u-YCD" secondAttribute="top" id="gQA-qW-xN1"/>
+                                        <constraint firstItem="52G-r1-ah9" firstAttribute="top" secondItem="Frc-02-7hu" secondAttribute="bottom" constant="8" symbolic="YES" id="isY-Tn-dma"/>
+                                        <constraint firstItem="Vuv-Le-JLA" firstAttribute="top" secondItem="52G-r1-ah9" secondAttribute="bottom" constant="8" symbolic="YES" id="k4e-pb-ssO"/>
+                                        <constraint firstItem="ten-D5-Vep" firstAttribute="leading" secondItem="9NH-1u-YCD" secondAttribute="trailing" constant="12" symbolic="YES" id="kkT-Ax-Tik"/>
+                                        <constraint firstItem="9NH-1u-YCD" firstAttribute="leading" secondItem="TeH-oQ-QRu" secondAttribute="trailing" constant="12" symbolic="YES" id="lS3-O0-Uny"/>
+                                        <constraint firstItem="8RI-Ms-YGr" firstAttribute="leading" secondItem="Frc-02-7hu" secondAttribute="trailing" constant="11" id="llC-9q-QQi"/>
+                                        <constraint firstItem="52G-r1-ah9" firstAttribute="leading" secondItem="Frc-02-7hu" secondAttribute="leading" id="lzy-0K-HQz"/>
+                                        <constraint firstItem="9aS-IH-XK1" firstAttribute="leading" secondItem="52G-r1-ah9" secondAttribute="trailing" constant="8" symbolic="YES" id="r4R-5c-OLC"/>
+                                        <constraint firstItem="Vuv-Le-JLA" firstAttribute="top" secondItem="xKg-9t-8i0" secondAttribute="bottom" constant="8" symbolic="YES" id="wlc-BA-vTh"/>
+                                    </constraints>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Zoom" identifier="" id="Wlv-aA-Dnx">
+                                <view key="view" id="ZMm-eI-3We">
+                                    <rect key="frame" x="10" y="33" width="761" height="465"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="TeK-oY-oWS">
+                                            <rect key="frame" x="17" y="11" width="727" height="451"/>
+                                            <subviews>
+                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Na-7Z-KPx">
+                                                    <rect key="frame" x="17" y="17" width="326" height="417"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="320" id="5B9-hy-ftB"/>
+                                                    </constraints>
+                                                    <imageCell key="cell" selectable="YES" editable="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" image="animals" id="Bie-yD-Oeo"/>
+                                                </imageView>
+                                                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ8-JA-Q7m">
+                                                    <rect key="frame" x="384" y="17" width="326" height="417"/>
+                                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="grayBezel" id="r9q-Ls-YSQ"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ZQ8-JA-Q7m" firstAttribute="top" secondItem="5Na-7Z-KPx" secondAttribute="top" id="5YN-hc-249"/>
+                                                <constraint firstAttribute="trailing" secondItem="ZQ8-JA-Q7m" secondAttribute="trailing" constant="20" symbolic="YES" id="Czi-1r-u1o"/>
+                                                <constraint firstItem="ZQ8-JA-Q7m" firstAttribute="leading" secondItem="5Na-7Z-KPx" secondAttribute="trailing" constant="47" id="Fjf-ft-l7L"/>
+                                                <constraint firstItem="5Na-7Z-KPx" firstAttribute="top" secondItem="TeK-oY-oWS" secondAttribute="top" constant="20" symbolic="YES" id="N0Q-70-rmZ"/>
+                                                <constraint firstItem="ZQ8-JA-Q7m" firstAttribute="bottom" secondItem="5Na-7Z-KPx" secondAttribute="bottom" id="Nsd-J5-59k"/>
+                                                <constraint firstAttribute="bottom" secondItem="5Na-7Z-KPx" secondAttribute="bottom" constant="20" symbolic="YES" id="bOU-k6-uZV"/>
+                                                <constraint firstItem="5Na-7Z-KPx" firstAttribute="leading" secondItem="TeK-oY-oWS" secondAttribute="leading" constant="20" symbolic="YES" id="jau-ZP-g33"/>
+                                            </constraints>
+                                        </customView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="TeK-oY-oWS" secondAttribute="trailing" constant="17" id="38j-8i-iAl"/>
+                                        <constraint firstItem="TeK-oY-oWS" firstAttribute="leading" secondItem="ZMm-eI-3We" secondAttribute="leading" constant="17" id="PBO-DI-4Ny"/>
+                                        <constraint firstAttribute="bottom" secondItem="TeK-oY-oWS" secondAttribute="bottom" constant="11" id="ebg-5Q-CQt"/>
+                                        <constraint firstItem="TeK-oY-oWS" firstAttribute="top" secondItem="ZMm-eI-3We" secondAttribute="top" constant="3" id="iMg-i7-CaX"/>
+                                    </constraints>
+                                </view>
+                            </tabViewItem>
+                        </tabViewItems>
+                    </tabView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="GuA-6g-9V7">
+                        <rect key="frame" x="89" y="21" width="629" height="17"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="center" title="Hold ⌘ to add another selector. ⌘ + A to highlight all. ⌫ or ⌦ to delete highlighted selectors." id="a2N-wY-l7h">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="I1T-Na-LZk" firstAttribute="leading" secondItem="mKc-c4-T8b" secondAttribute="leading" constant="20" symbolic="YES" id="7QJ-t2-CYF"/>
+                    <constraint firstItem="GuA-6g-9V7" firstAttribute="centerX" secondItem="I1T-Na-LZk" secondAttribute="centerX" id="932-KP-Iab"/>
+                    <constraint firstAttribute="bottom" secondItem="GuA-6g-9V7" secondAttribute="bottom" constant="21" id="Afl-sI-KR0"/>
+                    <constraint firstItem="I1T-Na-LZk" firstAttribute="top" secondItem="mKc-c4-T8b" secondAttribute="top" constant="12" symbolic="YES" id="J1P-Oo-zWs"/>
+                    <constraint firstItem="GuA-6g-9V7" firstAttribute="leading" secondItem="mKc-c4-T8b" secondAttribute="leading" constant="91" id="PEh-fc-TnZ"/>
+                    <constraint firstItem="GuA-6g-9V7" firstAttribute="top" secondItem="I1T-Na-LZk" secondAttribute="bottom" constant="55" id="ctv-1R-4iS"/>
+                    <constraint firstAttribute="trailing" secondItem="I1T-Na-LZk" secondAttribute="trailing" constant="13" id="k2d-Ac-wkb"/>
+                </constraints>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="gYz-OQ-l2j"/>
+            </connections>
+            <point key="canvasLocation" x="420" y="457"/>
+        </window>
+        <customObject id="qnE-eI-DUp" userLabel="Controller Image Canvas" customClass="MSSCanvasController">
+            <connections>
+                <outlet property="contentView" destination="xed-2z-6x2" id="e5H-7o-fE3"/>
+                <outlet property="eventSubscriber" destination="cPA-mB-Dis" id="ILY-Wi-O2r"/>
+                <outlet property="view" destination="wa3-iy-Exq" id="u1T-OZ-VhT"/>
+            </connections>
+        </customObject>
+        <customObject id="cPA-mB-Dis" userLabel="Extractor Image" customClass="MSSImageExtractor">
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="string" keyPath="filePrefix" value="image-"/>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="canvasController" destination="qnE-eI-DUp" id="nxx-Tt-pyi"/>
+                <outlet property="delegate" destination="-2" id="wEf-wz-xjS"/>
+            </connections>
+        </customObject>
+        <customObject id="rBS-Px-dvD" userLabel="Controller Scan Canvas" customClass="MSSCanvasController">
+            <connections>
+                <outlet property="contentView" destination="8RI-Ms-YGr" id="PYV-9O-hAZ"/>
+                <outlet property="eventSubscriber" destination="5rx-jh-5IC" id="hxM-xy-f4V"/>
+                <outlet property="view" destination="RAQ-7x-fIy" id="3Fw-Fc-QWH"/>
+            </connections>
+        </customObject>
+        <customObject id="5rx-jh-5IC" userLabel="Extractor Scan" customClass="MSSScanExtractor">
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="string" keyPath="filePrefix" value="scan-"/>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="canvasController" destination="rBS-Px-dvD" id="lwh-FX-Hke"/>
+                <outlet property="delegate" destination="-2" id="duj-qo-BO5"/>
+                <outlet property="scanProgress" destination="xKg-9t-8i0" id="wfe-Jq-mHb"/>
+            </connections>
+        </customObject>
+        <customObject id="114-HG-S52" customClass="MSSSelectorStyle">
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="color" keyPath="strokeColorSelected">
+                    <color key="value" name="textColor" catalog="System" colorSpace="catalog"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="strokeColorUnselected">
+                    <color key="value" name="alternateSelectedControlTextColor" catalog="System" colorSpace="catalog"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="number" keyPath="lineWidthSelected">
+                    <real key="value" value="5"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="number" keyPath="lineWidthUnselected">
+                    <real key="value" value="5"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="boolean" keyPath="lineDashedSelected" value="NO"/>
+            </userDefinedRuntimeAttributes>
+        </customObject>
+        <customObject id="Ioi-iw-7nY" customClass="MSSHandleStyle">
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="color" keyPath="fillColor">
+                    <color key="value" name="alternateSelectedControlTextColor" catalog="System" colorSpace="catalog"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="strokeColor">
+                    <color key="value" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+        </customObject>
+        <customView id="wa3-iy-Exq" userLabel="Image Canvas" customClass="MSSCanvas">
+            <rect key="frame" x="0.0" y="0.0" width="163" height="96"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <connections>
+                <outlet property="delegate" destination="qnE-eI-DUp" id="FD6-vP-j4A"/>
+            </connections>
+            <point key="canvasLocation" x="146.5" y="857"/>
+        </customView>
+        <customView id="RAQ-7x-fIy" userLabel="Scan Canvas" customClass="MSSCanvas">
+            <rect key="frame" x="0.0" y="0.0" width="163" height="96"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <connections>
+                <outlet property="delegate" destination="rBS-Px-dvD" id="IkP-Nc-3WR"/>
+            </connections>
+            <point key="canvasLocation" x="379.5" y="857"/>
+        </customView>
+    </objects>
+    <resources>
+        <image name="animals" width="3264" height="2448"/>
+    </resources>
+</document>

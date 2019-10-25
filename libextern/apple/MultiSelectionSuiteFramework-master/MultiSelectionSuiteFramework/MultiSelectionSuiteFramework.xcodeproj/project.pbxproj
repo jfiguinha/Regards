@@ -1,0 +1,457 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2B24829B1A5AFAF5000C1F7A /* MSSError.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2B70770C1A5ABE6C00707A69 /* MSSError.strings */; };
+		2B24829C1A5AFDA6000C1F7A /* BottomTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B7077051A5ABE6C00707A69 /* BottomTop@2x.png */; };
+		2B24829D1A5AFDA6000C1F7A /* TopBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B7077081A5ABE6C00707A69 /* TopBottom@2x.png */; };
+		2B7076D51A5ABE4200707A69 /* MultiSelectionSuite.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076D41A5ABE4200707A69 /* MultiSelectionSuite.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B70770F1A5ABE6C00707A69 /* MSSExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076EE1A5ABE6C00707A69 /* MSSExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077101A5ABE6C00707A69 /* MSSExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076EF1A5ABE6C00707A69 /* MSSExtractor.m */; };
+		2B7077111A5ABE6C00707A69 /* MSSImageExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076F01A5ABE6C00707A69 /* MSSImageExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077121A5ABE6C00707A69 /* MSSImageExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076F11A5ABE6C00707A69 /* MSSImageExtractor.m */; };
+		2B7077131A5ABE6C00707A69 /* MSSScanExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076F21A5ABE6C00707A69 /* MSSScanExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077141A5ABE6C00707A69 /* MSSScanExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076F31A5ABE6C00707A69 /* MSSScanExtractor.m */; };
+		2B7077151A5ABE6C00707A69 /* MSSZoomExtractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076F41A5ABE6C00707A69 /* MSSZoomExtractor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077161A5ABE6C00707A69 /* MSSZoomExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076F51A5ABE6C00707A69 /* MSSZoomExtractor.m */; };
+		2B7077171A5ABE6C00707A69 /* MSSCanvas.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076F71A5ABE6C00707A69 /* MSSCanvas.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077181A5ABE6C00707A69 /* MSSCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076F81A5ABE6C00707A69 /* MSSCanvas.m */; };
+		2B7077191A5ABE6C00707A69 /* MSSCanvasController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076F91A5ABE6C00707A69 /* MSSCanvasController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B70771A1A5ABE6C00707A69 /* MSSCanvasController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076FA1A5ABE6C00707A69 /* MSSCanvasController.m */; };
+		2B70771B1A5ABE6C00707A69 /* MSSHandle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076FB1A5ABE6C00707A69 /* MSSHandle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B70771C1A5ABE6C00707A69 /* MSSHandle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076FC1A5ABE6C00707A69 /* MSSHandle.m */; };
+		2B70771D1A5ABE6C00707A69 /* MSSHandleStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076FD1A5ABE6C00707A69 /* MSSHandleStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B70771E1A5ABE6C00707A69 /* MSSHandleStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7076FE1A5ABE6C00707A69 /* MSSHandleStyle.m */; };
+		2B70771F1A5ABE6C00707A69 /* MSSSelector.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7076FF1A5ABE6C00707A69 /* MSSSelector.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077201A5ABE6C00707A69 /* MSSSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7077001A5ABE6C00707A69 /* MSSSelector.m */; };
+		2B7077211A5ABE6C00707A69 /* MSSSelectorStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7077011A5ABE6C00707A69 /* MSSSelectorStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077221A5ABE6C00707A69 /* MSSSelectorStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7077021A5ABE6C00707A69 /* MSSSelectorStyle.m */; };
+		2B7077251A5ABE6C00707A69 /* NSimageView+MSSScaledImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7077061A5ABE6C00707A69 /* NSimageView+MSSScaledImage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077261A5ABE6C00707A69 /* NSimageView+MSSScaledImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B7077071A5ABE6C00707A69 /* NSimageView+MSSScaledImage.m */; };
+		2B7077281A5ABE6C00707A69 /* MSSError.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B70770A1A5ABE6C00707A69 /* MSSError.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B7077291A5ABE6C00707A69 /* MSSError.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B70770B1A5ABE6C00707A69 /* MSSError.m */; };
+		2B70772B1A5ABE6C00707A69 /* MSSPreferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B70770D1A5ABE6C00707A69 /* MSSPreferences.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2B70772C1A5ABE6C00707A69 /* MSSPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B70770E1A5ABE6C00707A69 /* MSSPreferences.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2B7076CF1A5ABE4200707A69 /* MultiSelectionSuiteFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MultiSelectionSuiteFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B7076D31A5ABE4200707A69 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2B7076D41A5ABE4200707A69 /* MultiSelectionSuite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultiSelectionSuite.h; sourceTree = "<group>"; };
+		2B7076EE1A5ABE6C00707A69 /* MSSExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSExtractor.h; sourceTree = "<group>"; };
+		2B7076EF1A5ABE6C00707A69 /* MSSExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSExtractor.m; sourceTree = "<group>"; };
+		2B7076F01A5ABE6C00707A69 /* MSSImageExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSImageExtractor.h; sourceTree = "<group>"; };
+		2B7076F11A5ABE6C00707A69 /* MSSImageExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSImageExtractor.m; sourceTree = "<group>"; };
+		2B7076F21A5ABE6C00707A69 /* MSSScanExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSScanExtractor.h; sourceTree = "<group>"; };
+		2B7076F31A5ABE6C00707A69 /* MSSScanExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSScanExtractor.m; sourceTree = "<group>"; };
+		2B7076F41A5ABE6C00707A69 /* MSSZoomExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSZoomExtractor.h; sourceTree = "<group>"; };
+		2B7076F51A5ABE6C00707A69 /* MSSZoomExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSZoomExtractor.m; sourceTree = "<group>"; };
+		2B7076F71A5ABE6C00707A69 /* MSSCanvas.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSCanvas.h; sourceTree = "<group>"; };
+		2B7076F81A5ABE6C00707A69 /* MSSCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSCanvas.m; sourceTree = "<group>"; };
+		2B7076F91A5ABE6C00707A69 /* MSSCanvasController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSCanvasController.h; sourceTree = "<group>"; };
+		2B7076FA1A5ABE6C00707A69 /* MSSCanvasController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSCanvasController.m; sourceTree = "<group>"; };
+		2B7076FB1A5ABE6C00707A69 /* MSSHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSHandle.h; sourceTree = "<group>"; };
+		2B7076FC1A5ABE6C00707A69 /* MSSHandle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSHandle.m; sourceTree = "<group>"; };
+		2B7076FD1A5ABE6C00707A69 /* MSSHandleStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSHandleStyle.h; sourceTree = "<group>"; };
+		2B7076FE1A5ABE6C00707A69 /* MSSHandleStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSHandleStyle.m; sourceTree = "<group>"; };
+		2B7076FF1A5ABE6C00707A69 /* MSSSelector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSSelector.h; sourceTree = "<group>"; };
+		2B7077001A5ABE6C00707A69 /* MSSSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSSelector.m; sourceTree = "<group>"; };
+		2B7077011A5ABE6C00707A69 /* MSSSelectorStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSSelectorStyle.h; sourceTree = "<group>"; };
+		2B7077021A5ABE6C00707A69 /* MSSSelectorStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSSelectorStyle.m; sourceTree = "<group>"; };
+		2B7077051A5ABE6C00707A69 /* BottomTop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "BottomTop@2x.png"; path = "Classes/Others/BottomTop@2x.png"; sourceTree = "<group>"; };
+		2B7077061A5ABE6C00707A69 /* NSimageView+MSSScaledImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSimageView+MSSScaledImage.h"; sourceTree = "<group>"; };
+		2B7077071A5ABE6C00707A69 /* NSimageView+MSSScaledImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSimageView+MSSScaledImage.m"; sourceTree = "<group>"; };
+		2B7077081A5ABE6C00707A69 /* TopBottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "TopBottom@2x.png"; path = "Classes/Others/TopBottom@2x.png"; sourceTree = "<group>"; };
+		2B70770A1A5ABE6C00707A69 /* MSSError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSError.h; sourceTree = "<group>"; };
+		2B70770B1A5ABE6C00707A69 /* MSSError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSError.m; sourceTree = "<group>"; };
+		2B70770C1A5ABE6C00707A69 /* MSSError.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = MSSError.strings; path = Classes/Preferences/MSSError.strings; sourceTree = "<group>"; };
+		2B70770D1A5ABE6C00707A69 /* MSSPreferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSSPreferences.h; sourceTree = "<group>"; };
+		2B70770E1A5ABE6C00707A69 /* MSSPreferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSSPreferences.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2B7076CB1A5ABE4200707A69 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2B7076C51A5ABE4200707A69 = {
+			isa = PBXGroup;
+			children = (
+				2B7076D11A5ABE4200707A69 /* MultiSelectionSuite */,
+				2B7076D01A5ABE4200707A69 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2B7076D01A5ABE4200707A69 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076CF1A5ABE4200707A69 /* MultiSelectionSuiteFramework.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2B7076D11A5ABE4200707A69 /* MultiSelectionSuite */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076EB1A5ABE6C00707A69 /* Classes */,
+				2B7076D41A5ABE4200707A69 /* MultiSelectionSuite.h */,
+				2B7076D21A5ABE4200707A69 /* Supporting Files */,
+			);
+			path = MultiSelectionSuite;
+			sourceTree = "<group>";
+		};
+		2B7076D21A5ABE4200707A69 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2B70770C1A5ABE6C00707A69 /* MSSError.strings */,
+				2B7077051A5ABE6C00707A69 /* BottomTop@2x.png */,
+				2B7077081A5ABE6C00707A69 /* TopBottom@2x.png */,
+				2B7076D31A5ABE4200707A69 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2B7076EB1A5ABE6C00707A69 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076EC1A5ABE6C00707A69 /* AddOns */,
+				2B7076F61A5ABE6C00707A69 /* Base */,
+				2B7077031A5ABE6C00707A69 /* Others */,
+				2B7077091A5ABE6C00707A69 /* Preferences */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		2B7076EC1A5ABE6C00707A69 /* AddOns */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076ED1A5ABE6C00707A69 /* Extractors */,
+			);
+			path = AddOns;
+			sourceTree = "<group>";
+		};
+		2B7076ED1A5ABE6C00707A69 /* Extractors */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076EE1A5ABE6C00707A69 /* MSSExtractor.h */,
+				2B7076EF1A5ABE6C00707A69 /* MSSExtractor.m */,
+				2B7076F01A5ABE6C00707A69 /* MSSImageExtractor.h */,
+				2B7076F11A5ABE6C00707A69 /* MSSImageExtractor.m */,
+				2B7076F21A5ABE6C00707A69 /* MSSScanExtractor.h */,
+				2B7076F31A5ABE6C00707A69 /* MSSScanExtractor.m */,
+				2B7076F41A5ABE6C00707A69 /* MSSZoomExtractor.h */,
+				2B7076F51A5ABE6C00707A69 /* MSSZoomExtractor.m */,
+			);
+			path = Extractors;
+			sourceTree = "<group>";
+		};
+		2B7076F61A5ABE6C00707A69 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				2B7076F71A5ABE6C00707A69 /* MSSCanvas.h */,
+				2B7076F81A5ABE6C00707A69 /* MSSCanvas.m */,
+				2B7076F91A5ABE6C00707A69 /* MSSCanvasController.h */,
+				2B7076FA1A5ABE6C00707A69 /* MSSCanvasController.m */,
+				2B7076FB1A5ABE6C00707A69 /* MSSHandle.h */,
+				2B7076FC1A5ABE6C00707A69 /* MSSHandle.m */,
+				2B7076FD1A5ABE6C00707A69 /* MSSHandleStyle.h */,
+				2B7076FE1A5ABE6C00707A69 /* MSSHandleStyle.m */,
+				2B7076FF1A5ABE6C00707A69 /* MSSSelector.h */,
+				2B7077001A5ABE6C00707A69 /* MSSSelector.m */,
+				2B7077011A5ABE6C00707A69 /* MSSSelectorStyle.h */,
+				2B7077021A5ABE6C00707A69 /* MSSSelectorStyle.m */,
+			);
+			path = Base;
+			sourceTree = "<group>";
+		};
+		2B7077031A5ABE6C00707A69 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				2B7077061A5ABE6C00707A69 /* NSimageView+MSSScaledImage.h */,
+				2B7077071A5ABE6C00707A69 /* NSimageView+MSSScaledImage.m */,
+			);
+			path = Others;
+			sourceTree = "<group>";
+		};
+		2B7077091A5ABE6C00707A69 /* Preferences */ = {
+			isa = PBXGroup;
+			children = (
+				2B70770A1A5ABE6C00707A69 /* MSSError.h */,
+				2B70770B1A5ABE6C00707A69 /* MSSError.m */,
+				2B70770D1A5ABE6C00707A69 /* MSSPreferences.h */,
+				2B70770E1A5ABE6C00707A69 /* MSSPreferences.m */,
+			);
+			path = Preferences;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2B7076CC1A5ABE4200707A69 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B70771B1A5ABE6C00707A69 /* MSSHandle.h in Headers */,
+				2B7077171A5ABE6C00707A69 /* MSSCanvas.h in Headers */,
+				2B70771D1A5ABE6C00707A69 /* MSSHandleStyle.h in Headers */,
+				2B7077281A5ABE6C00707A69 /* MSSError.h in Headers */,
+				2B7077131A5ABE6C00707A69 /* MSSScanExtractor.h in Headers */,
+				2B7076D51A5ABE4200707A69 /* MultiSelectionSuite.h in Headers */,
+				2B7077211A5ABE6C00707A69 /* MSSSelectorStyle.h in Headers */,
+				2B7077191A5ABE6C00707A69 /* MSSCanvasController.h in Headers */,
+				2B7077151A5ABE6C00707A69 /* MSSZoomExtractor.h in Headers */,
+				2B70771F1A5ABE6C00707A69 /* MSSSelector.h in Headers */,
+				2B70770F1A5ABE6C00707A69 /* MSSExtractor.h in Headers */,
+				2B7077251A5ABE6C00707A69 /* NSimageView+MSSScaledImage.h in Headers */,
+				2B7077111A5ABE6C00707A69 /* MSSImageExtractor.h in Headers */,
+				2B70772B1A5ABE6C00707A69 /* MSSPreferences.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		2B7076CE1A5ABE4200707A69 /* MultiSelectionSuiteFramework */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B7076E51A5ABE4200707A69 /* Build configuration list for PBXNativeTarget "MultiSelectionSuiteFramework" */;
+			buildPhases = (
+				2B7076CA1A5ABE4200707A69 /* Sources */,
+				2B7076CB1A5ABE4200707A69 /* Frameworks */,
+				2B7076CC1A5ABE4200707A69 /* Headers */,
+				2B7076CD1A5ABE4200707A69 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MultiSelectionSuiteFramework;
+			productName = MultiSelectionSuite;
+			productReference = 2B7076CF1A5ABE4200707A69 /* MultiSelectionSuiteFramework.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2B7076C61A5ABE4200707A69 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = "Sascha Paulus";
+				TargetAttributes = {
+					2B7076CE1A5ABE4200707A69 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+				};
+			};
+			buildConfigurationList = 2B7076C91A5ABE4200707A69 /* Build configuration list for PBXProject "MultiSelectionSuiteFramework" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2B7076C51A5ABE4200707A69;
+			productRefGroup = 2B7076D01A5ABE4200707A69 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2B7076CE1A5ABE4200707A69 /* MultiSelectionSuiteFramework */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2B7076CD1A5ABE4200707A69 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B24829C1A5AFDA6000C1F7A /* BottomTop@2x.png in Resources */,
+				2B24829D1A5AFDA6000C1F7A /* TopBottom@2x.png in Resources */,
+				2B24829B1A5AFAF5000C1F7A /* MSSError.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2B7076CA1A5ABE4200707A69 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2B70772C1A5ABE6C00707A69 /* MSSPreferences.m in Sources */,
+				2B7077121A5ABE6C00707A69 /* MSSImageExtractor.m in Sources */,
+				2B7077201A5ABE6C00707A69 /* MSSSelector.m in Sources */,
+				2B7077291A5ABE6C00707A69 /* MSSError.m in Sources */,
+				2B7077221A5ABE6C00707A69 /* MSSSelectorStyle.m in Sources */,
+				2B70771C1A5ABE6C00707A69 /* MSSHandle.m in Sources */,
+				2B70771A1A5ABE6C00707A69 /* MSSCanvasController.m in Sources */,
+				2B70771E1A5ABE6C00707A69 /* MSSHandleStyle.m in Sources */,
+				2B7077161A5ABE6C00707A69 /* MSSZoomExtractor.m in Sources */,
+				2B7077141A5ABE6C00707A69 /* MSSScanExtractor.m in Sources */,
+				2B7077261A5ABE6C00707A69 /* NSimageView+MSSScaledImage.m in Sources */,
+				2B7077101A5ABE6C00707A69 /* MSSExtractor.m in Sources */,
+				2B7077181A5ABE6C00707A69 /* MSSCanvas.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2B7076E31A5ABE4200707A69 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		2B7076E41A5ABE4200707A69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		2B7076E61A5ABE4200707A69 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = NO;
+				DEFINES_MODULE = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = NO;
+				DSTROOT = "/tmp/$(PROJECT_NAME).dst";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = MultiSelectionSuite/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = MultiSelectionSuiteFramework;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		2B7076E71A5ABE4200707A69 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = NO;
+				DEFINES_MODULE = YES;
+				DEPLOYMENT_LOCATION = YES;
+				DEPLOYMENT_POSTPROCESSING = NO;
+				DSTROOT = "/tmp/$(PROJECT_NAME).dst";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = MultiSelectionSuite/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = MultiSelectionSuiteFramework;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2B7076C91A5ABE4200707A69 /* Build configuration list for PBXProject "MultiSelectionSuiteFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B7076E31A5ABE4200707A69 /* Debug */,
+				2B7076E41A5ABE4200707A69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2B7076E51A5ABE4200707A69 /* Build configuration list for PBXNativeTarget "MultiSelectionSuiteFramework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B7076E61A5ABE4200707A69 /* Debug */,
+				2B7076E71A5ABE4200707A69 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2B7076C61A5ABE4200707A69 /* Project object */;
+}

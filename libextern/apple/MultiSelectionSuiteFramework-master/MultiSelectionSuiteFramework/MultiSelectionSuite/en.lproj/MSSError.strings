@@ -1,0 +1,6 @@
+"1000" = "No selector has been set";
+"1001" = "Delegate does not provide saving folder";
+"1002" = "The provided saving folder does not exists";
+"1003" = "The provided saving URL is no directory";
+"1004" = "Saving of one or more images has been failed";
+"1005" = "You use a not supported file type";

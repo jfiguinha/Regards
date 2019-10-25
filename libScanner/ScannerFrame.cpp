@@ -25,6 +25,7 @@
 #include <FileUtility.h>
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
+#include <ScanView.h>
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -261,7 +262,12 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 #ifdef __WXSCANSANE__ 
 void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
 {
+#ifdef __APPLE__
+    CScanView scanView;
+    scanView.ScanDocument();
+#else
     scanSane->SelectSource("", true, this);
+#endif
 }
 #endif
 #ifdef __WXMSW__

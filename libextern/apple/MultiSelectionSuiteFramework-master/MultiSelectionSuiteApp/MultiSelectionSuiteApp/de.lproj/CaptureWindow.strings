@@ -1,0 +1,9 @@
+
+/* Class = "NSButtonCell"; title = "Zoom Image"; ObjectID = "P77-cU-SBm"; */
+"P77-cU-SBm.title" = "Bild vergrößern";
+
+/* Class = "NSButtonCell"; title = "Scan"; ObjectID = "Vw1-me-1A6"; */
+"Vw1-me-1A6.title" = "Einscannen";
+
+/* Class = "NSButtonCell"; title = "Crop Image"; ObjectID = "y7c-44-Lgh"; */
+"y7c-44-Lgh.title" = "Bild zerschneiden";

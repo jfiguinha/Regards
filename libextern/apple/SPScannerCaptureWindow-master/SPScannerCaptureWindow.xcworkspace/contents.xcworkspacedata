@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:BundleTestApp/ScannerCaptureWindowApp/ScannerCaptureWindowApp.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Bundle/SPScannerCaptureWindow.xcodeproj">
+   </FileRef>
+</Workspace>
