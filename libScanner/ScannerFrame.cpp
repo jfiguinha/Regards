@@ -338,9 +338,9 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
         wxString tempFile = CFileUtility::GetTempFile("scanner.bmp");
         wxString pdfFile = CFileUtility::GetTempFile("scanner.pdf");
         image.SaveFile(tempFile, wxBITMAP_TYPE_BMP);
-        wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
-        COcrWnd::tesseract_preprocess(tempFile, preprocess);
-        COcrWnd::OcrToPDF(preprocess, pdfFile, "fra");
+        //wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
+       // COcrWnd::tesseract_preprocess(tempFile, preprocess);
+        COcrWnd::OcrToPDF(tempFile, pdfFile, "eng");
         wxRenameFile(pdfFile +".pdf",pdfFile, true);
 		centralWindow->LoadFile(pdfFile);
 	}
