@@ -115,10 +115,9 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 			{
 				vector<int> listPage;
 				listPage.push_back(0);
-				wxImage image = frame->ScanPage();
-				if (image.IsOk())
+				wxString file = frame->ScanPage();
+				if (file != "")
 				{
-					wxString file = SetImage(image);
 					ProcessAddFile(file, listPage, oldAnimationPosition);
 					isOk = true;
 				}
@@ -178,7 +177,12 @@ void CCentralWindow::OnOpenFile(wxCommandEvent& event)
 
 void CCentralWindow::OnScan(wxCommandEvent& event)
 {
-	wxImage image = frame->ScanPage();
+	
+	wxString pdfFile = frame->ScanPage();
+	if (pdfFile != "")
+	{
+		LoadFile(pdfFile);
+	}    
 }
 
 void CCentralWindow::OnPrint(wxCommandEvent& event)

@@ -26,6 +26,7 @@
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
 #include <ScanView.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -338,24 +339,18 @@ wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Colo
 #endif
 void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 {
-	wxImage image = ScanPage();
-	if (image.IsOk())
+	wxString pdfFile = ScanPage();
+	if (pdfFile != "")
 	{
-        wxString tempFile = CFileUtility::GetTempFile("scanner.tif");
-        //wxString pdfFile = CFileUtility::GetTempFile("scanner.pdf");
-        image.SaveFile(tempFile, wxBITMAP_TYPE_TIFF);
-        //wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
-       // COcrWnd::tesseract_preprocess(tempFile, preprocess);
-        //COcrWnd::OcrToPDF(tempFile, pdfFile, "eng");
-       // wxRenameFile(pdfFile +".pdf",pdfFile, true);
-		centralWindow->LoadFile(tempFile);
+		centralWindow->LoadFile(pdfFile);
 	}
 }
 
 
 
-wxImage CScannerFrame::ScanPage()
+wxString CScannerFrame::ScanPage()
 {
+    wxString pdfFile = "";
 	wxImage image;
 #if __WXSCANSANE__  
     if(scanSane->IsSourceSelected())
@@ -407,7 +402,17 @@ wxImage CScannerFrame::ScanPage()
 
 	//delete gdiplus;
 #endif
-	return image;
+
+	if (image.IsOk())
+	{
+        pdfFile = CFileUtility::GetTempFile("scanner.pdf");
+        CLibPicture picture;
+        CImageLoadingFormat imageLoadingFormat;
+        imageLoadingFormat.SetPicture(new wxImage(image));
+        picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
+	}
+
+	return pdfFile;
 }
 
 void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)

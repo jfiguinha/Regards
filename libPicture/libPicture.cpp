@@ -20,6 +20,7 @@
 #include <LibResource.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
+#include <wx/pdfdocument.h>
 
 #ifdef LIBHEIC
 #include <Heic.h>
@@ -737,8 +738,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 			image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, bitmap->GetResolution());
 			image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, bitmap->GetResolution());
 			image->SetOption(wxIMAGE_OPTION_RESOLUTION, bitmap->GetResolution());
-			image->SaveFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF);
-			delete image;
+            SaveToPDF( image, fileName);
 		}
 		break;
 
@@ -774,6 +774,53 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 	return 0;
 }
+
+bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName)
+{
+    if( poImage->HasOption( wxIMAGE_OPTION_RESOLUTIONUNIT ) )
+    {
+        int nResolutionUnit= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONUNIT );
+        int nResolution= 0;
+
+        // Get image resolution-
+        if(  poImage->HasOption( wxIMAGE_OPTION_RESOLUTION ) )
+        {
+            nResolution= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTION );
+        }
+        else if(  poImage->HasOption( wxIMAGE_OPTION_RESOLUTIONX ) && (  poImage->HasOption( wxIMAGE_OPTION_RESOLUTIONY ) ) )
+        {
+            int nResolutionX= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONX );
+            int nResolutionY= poImage->GetOptionInt( wxIMAGE_OPTION_RESOLUTIONY );
+
+            if( nResolutionX == nResolutionY )
+            {
+                nResolution= nResolutionX;
+            }
+        }
+        if( nResolution )
+        {
+        
+            // Save image in a temporary file.
+            wxString strTempFileName= wxFileName::CreateTempFileName( wxEmptyString );
+            poImage->SaveFile(strTempFileName, wxBITMAP_TYPE_TIFF);
+
+            // Create a PDF document, add a page, and put the image on it.
+            wxPdfDocument oPdfDocument;
+            oPdfDocument.AddPage( ( poImage->GetHeight() > poImage->GetWidth() ) ? wxPORTRAIT : wxLANDSCAPE );
+            oPdfDocument.SetImageScale( (double)nResolution * ( nResolutionUnit == wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0 ) / 72.0 );
+            oPdfDocument.Image( strTempFileName, 0 , 0, 0, 0, wxT( "image/tiff" ) );            
+            // Remove temporary file.
+            ::wxRemoveFile( strTempFileName );
+            oPdfDocument.Close();
+            oPdfDocument.SaveAsFile(fileName);
+			
+            return true;
+        }
+    }
+    // File saving not possible or not implemented.
+    return false;
+}
+
 
 bool CLibPicture::TestIsExifCompatible(const wxString &filename)
 {
@@ -2132,8 +2179,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			if (value)
 				value = poppler.SelectPage(numPicture);
 
-			if (value)
-				value = poppler.SetDpi(300);
+			//if (value)
+			//	value = poppler.SetDpi(300);
 
 			if (value)
 				value = poppler.RenderPage();
