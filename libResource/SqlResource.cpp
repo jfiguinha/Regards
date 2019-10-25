@@ -437,11 +437,13 @@ int CSqlResource::TraitementResultFilePath(CSqlResult * sqlResult)
 
 	// read the first line
 	text.append(tfile.GetFirstLine());
+	text.append("\n");
 	// read all lines one by one
 	// until the end of the file
 	while (!tfile.Eof())
 	{
 		text.append(tfile.GetNextLine());
+		text.append("\n");
 	}
 
 	return nbResult;
