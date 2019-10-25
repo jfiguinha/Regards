@@ -17,8 +17,7 @@ namespace Regards
 			CPictureData * GetBitmap(const wxString &idName);
 			wxString GetText(const wxString& idName);
 			wxString GetOpenGLShader(const wxString& idName);
-			wxString GetOpenCLFloat(const wxString& idName);
-			wxString GetOpenCLUchar(const wxString& idName);
+
             wxString GetVector(const wxString &idName);
 			wxString GetLibelle(const wxString &idName, const int &idLang);
 			wxString GetExifLibelle(const wxString &idName);
@@ -29,9 +28,12 @@ namespace Regards
 			void InsertOpenCLUchar(const wstring& idName, const wstring& mimeType, const wstring& filename);
 			void InsertLibelle(const wstring &idName, const wstring &libelle, const int &lang);
 			void InsertVector(const wstring &idName, const wstring &filename);
+			wxString GetOpenCLFloatFromFile(const wxString& idName);
+			wxString GetOpenCLUcharFromFile(const wxString& idName);
 
 		private:
-
+			wxString GetOpenCLFloat(const wxString& idName);
+			wxString GetOpenCLUchar(const wxString& idName);
 			wxString readFileBytes(const wxString & name);
 			int TraitementResultExif(CSqlResult * sqlResult);
             int TraitementResultVector(CSqlResult * sqlResult);
@@ -40,11 +42,13 @@ namespace Regards
 			int TraitementResultLibelle(CSqlResult * sqlResult);
             int TraitementResultExtension(CSqlResult * sqlResult);
 			int TraitementResult(CSqlResult * sqlResult);
+			int TraitementResultFilePath(CSqlResult * sqlResult);
 			int typeResult;
 			CPictureData * memFile;
 			wxString text;
 			wxString libelle;
             string test;
+			wxString defaultPathSearch;
             int id;
 		};
 	}

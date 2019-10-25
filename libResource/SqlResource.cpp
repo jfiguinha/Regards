@@ -7,6 +7,7 @@
 #include <ImageLoadingFormat.h>
 #include "PictureData.h"
 #include <wx/textfile.h>
+#include <FileUtility.h>
 using namespace std;
 using namespace Regards::Sqlite;
 
@@ -161,6 +162,34 @@ wxString CSqlResource::GetOpenCLUchar(const wxString& idName)
 	text = "";
 	typeResult = 2;
 	ExecuteRequest("SELECT idName, mimeType, size, data FROM OpenclUcharResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
+wxString CSqlResource::GetOpenCLFloatFromFile(const wxString& idName)
+{
+	text = "";
+	typeResult = 7;
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	defaultPathSearch = resourcePath + "\\shader\\opencl_float";
+#else
+	defaultPathSearch = resourcePath + "/shader/opencl_float";
+#endif
+	ExecuteRequest("SELECT FilePath FROM OpenclFloatResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
+wxString CSqlResource::GetOpenCLUcharFromFile(const wxString& idName)
+{
+	text = "";
+	typeResult = 7;
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	defaultPathSearch = resourcePath + "\\shader\\opencl_uchar";
+#else
+	defaultPathSearch = resourcePath + "/shader/opencl_uchar";
+#endif
+	ExecuteRequest("SELECT FilePath FROM OpenclUcharResource WHERE idName = '" + idName + "'");
 	return text;
 }
 
@@ -376,6 +405,48 @@ int CSqlResource::TraitementResultLibelle(CSqlResult * sqlResult)
 	return nbResult;
 }
 
+int CSqlResource::TraitementResultFilePath(CSqlResult * sqlResult)
+{
+	int nbResult = 0;
+	wxString idName;
+	int langid;
+	wxString filePath;
+	text = "";
+	while (sqlResult->Next())
+	{
+		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
+		{
+			switch (i)
+			{
+			case 0:
+#ifdef WIN32
+				filePath = defaultPathSearch + "\\" + sqlResult->ColumnDataText(i);
+#else
+				filePath = defaultPathSearch + "/" + sqlResult->ColumnDataText(i);
+#endif
+				break;
+			}
+		}
+		nbResult++;
+	}
+
+	//Read data from filepath
+	// open the file
+	wxTextFile      tfile;
+	tfile.Open(filePath);
+
+	// read the first line
+	text.append(tfile.GetFirstLine());
+	// read all lines one by one
+	// until the end of the file
+	while (!tfile.Eof())
+	{
+		text.append(tfile.GetNextLine());
+	}
+
+	return nbResult;
+}
+
 int CSqlResource::TraitementResultExif(CSqlResult * sqlResult)
 {
 	int nbResult = 0;
@@ -441,6 +512,10 @@ int CSqlResource::TraitementResult(CSqlResult * sqlResult)
     case 6:
   		nbResult = TraitementResultExtension(sqlResult);
 		break;  
+
+	case 7:
+		nbResult = TraitementResultFilePath(sqlResult);
+		break;
 	}
 
 	return nbResult;

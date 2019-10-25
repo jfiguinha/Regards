@@ -27,7 +27,7 @@ tesseract::TessBaseAPI CExportOcr::api;
 #include "config_auto.h"
 #endif
 //#include <tesseract/dict.h>
-#include <tesseract/simddetect.h>
+//#include <tesseract/simddetect.h>
 #include <cerrno>               // for errno
 #include <iostream>
 
@@ -523,7 +523,7 @@ int CExportOcr::ExportOcr(
 	//SetVariablesFromCLArgs(&api, argc, argv);
 
 	// SIMD settings might be overridden by config variable.
-	tesseract::SIMDDetect::Update();
+	//tesseract::SIMDDetect::Update();
 
 	try
 	{

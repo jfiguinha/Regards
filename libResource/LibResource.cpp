@@ -108,7 +108,7 @@ wxString CLibResource::GetOpenGLShaderProgram(const wxString &idName)
 wxString CLibResource::GetOpenCLFloatProgram(const wxString& idName)
 {
 	CSqlResource sqlResource;
-	wxString program = sqlResource.GetOpenCLFloat(idName);
+	wxString program = sqlResource.GetOpenCLFloatFromFile(idName);
 	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
 	return program;
 }
@@ -116,7 +116,7 @@ wxString CLibResource::GetOpenCLFloatProgram(const wxString& idName)
 wxString CLibResource::GetOpenCLUcharProgram(const wxString& idName)
 {
 	CSqlResource sqlResource;
-	wxString program = sqlResource.GetOpenCLUchar(idName);
+	wxString program = sqlResource.GetOpenCLUcharFromFile(idName);
 	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
 	return program;
 }
