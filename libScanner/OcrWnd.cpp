@@ -17,6 +17,7 @@
 #include <FilterData.h>
 #include <wx/progdlg.h>
 #include "ExportOcr.h"
+#include <wx/filefn.h>
 #ifdef __APPLE__
 #undef fract1
 #endif
@@ -214,6 +215,9 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 	
 	for (int i = 0; i < 8; i++)
 		delete[] args[i];   
+        
+    
+    wxRename(outputFile + "." + extension, outputFile);
 }
 
 void COcrWnd::OnOcrPDF(wxCommandEvent& event)
