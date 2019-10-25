@@ -216,6 +216,7 @@ void CCentralWindow::LoadFile()
 
 void CCentralWindow::LoadFile(const wxString &filename)
 {
+    this->filename = filename;
 	if (previewWindow != nullptr)
 		previewWindow->LoadFile(filename);
 }
