@@ -27,13 +27,15 @@ namespace Regards
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 			void Init();
+            void tesseract_preprocess(string source_file, string out_file);
+            void OcrToPDF(const wxString &bitmapFile, wxString outputFile);
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			wxPanel * CreateListTesseract(wxWindow * parent);
-			void tesseract_preprocess(string source_file, string out_file);
-			wxString GetTempFile(wxString filename, const bool &removeFile = true);
+			
+		
 			void Resize();
 			//void GenerateLayerBitmap();
 			void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);

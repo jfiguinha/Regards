@@ -13,6 +13,39 @@ CFileUtility::~CFileUtility(void)
 {
 }
 
+
+wxString CFileUtility::GetTempFile(wxString filename, const bool &removeFile)
+{
+	wxString file;
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+    if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+    if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
+#endif
+	
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		file = tempFolder + "\\" + filename;
+#else
+		file = tempFolder + "/" + filename;
+#endif
+
+		if (removeFile)
+		{
+			if (wxFileExists(file))
+				wxRemoveFile(file);
+		}
+	}
+	return file;
+}
+
+
 wxString CFileUtility::GetFileExtension(const wxString &szFilePath)
 {
 	wxFileName filename = wxFileName(szFilePath.c_str());

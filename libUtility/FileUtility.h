@@ -13,4 +13,5 @@ public:
     static wxString GetResourcesFolderPath();
 	static wxString GetFileTime(const wxString &szFileName);
 	static wxString GetDocumentFolderPath();
+    static wxString GetTempFile(wxString filename, const bool &removeFile = true);
 };

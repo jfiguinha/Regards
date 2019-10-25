@@ -177,59 +177,9 @@ void COcrWnd::Resize()
 	treeCtrl->SetSize(0, panelListOcrH, width, height - panelListOcrH);
 }
 
-wxString COcrWnd::GetTempFile(wxString filename, const bool &removeFile)
+void COcrWnd::OcrToPDF(const wxString &bitmapFile, wxString outputFile)
 {
-	wxString file;
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-    if (!wxMkDir(tempFolder)) {
-#else
-	wxString tempFolder = documentPath + "/temp";
-    if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
-#endif
-	
-		// handle the error here
-	}
-	else
-	{
-#ifdef WIN32
-		file = tempFolder + "\\" + filename;
-#else
-		file = tempFolder + "/" + filename;
-#endif
-
-		if (removeFile)
-		{
-			if (wxFileExists(file))
-				wxRemoveFile(file);
-		}
-	}
-	return file;
-}
-
-
-void COcrWnd::OnOcrPDF(wxCommandEvent& event)
-{
-	int timeout_ms = 5000;
-	const char* retry_config = nullptr;
-	bool textonly = false;
-	int jpg_quality = 92;
-
-	//Get select 
-	int i = choice->GetSelection();
-	wxString language = choice->GetStringSelection();
-
-	wxString preprocess = GetTempFile("preprocess.bmp", false);
-
-	wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-	if (saveFileDialog.ShowModal() == wxID_CANCEL)
-		return;     // the user changed idea...
-
-	wxString newfilename = saveFileDialog.GetPath();
-	wxFileName fullpath(newfilename);
-	wxString extension = fullpath.GetExt();
-
+ 
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 #ifdef WIN32
 	resourcePath = resourcePath + "\\tessdata";
@@ -237,14 +187,20 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	resourcePath = resourcePath + "/tessdata";
 #endif    
 	
-
+	wxFileName fullpath(outputFile);
+	wxString extension = fullpath.GetExt();    
+    
+	//Get select 
+	int i = choice->GetSelection();
+	wxString language = choice->GetStringSelection();
+    
 	i = 0;
 	char * args[8];
 	args[i++] = new char[255];
 	args[i] = new char[255];
-	strcpy(args[i++], preprocess);
+	strcpy(args[i++], bitmapFile);
 	args[i] = new char[255];
-	strcpy(args[i++], newfilename);
+	strcpy(args[i++], outputFile);
 	args[i] = new char[255];
 	strcpy(args[i++], "-l");
 	args[i] = new char[255];
@@ -259,7 +215,28 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	int failed = CExportOcr::ExportOcr(8, args, error);
 	
 	for (int i = 0; i < 8; i++)
-		delete[] args[i];
+		delete[] args[i];   
+}
+
+void COcrWnd::OnOcrPDF(wxCommandEvent& event)
+{
+	int timeout_ms = 5000;
+	const char* retry_config = nullptr;
+	bool textonly = false;
+	int jpg_quality = 92;
+
+
+
+	wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp", false);
+
+	wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (saveFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea...
+
+	wxString newfilename = saveFileDialog.GetPath();
+
+
+    OcrToPDF(preprocess, newfilename);
 }
 
 
@@ -300,14 +277,14 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 			}
 
 			CLibPicture libPicture;
-			wxString tempFile = GetTempFile("temp.bmp");
+			wxString tempFile = CFileUtility::GetTempFile("temp.bmp");
 			CImageLoadingFormat loadingformat(false);
 			loadingformat.SetPicture(bitmapBackground);
 			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
 
 			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
 
-			wxString preprocess = GetTempFile("preprocess.bmp");
+			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
 
 			tesseract_preprocess(tempFile.ToStdString(), preprocess.ToStdString());
 

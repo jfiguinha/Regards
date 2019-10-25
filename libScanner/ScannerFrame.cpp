@@ -22,6 +22,7 @@
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
 #include "ExportPDF.h"
+#include <FileUtility.h>
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -332,8 +333,10 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 	wxImage image = ScanPage();
 	if (image.IsOk())
 	{
-		wxString file = centralWindow->SetImage(image);
-		centralWindow->LoadFile(file);
+        wxString tempFile = CFileUtility::GetTempFile("scanner.bmp");
+        image.SaveFile(tempFile, wxBITMAP_TYPE_BMP);
+		//wxString file = centralWindow->SetImage(image);
+		centralWindow->LoadFile(tempFile);
 	}
 }
 
@@ -353,7 +356,7 @@ wxImage CScannerFrame::ScanPage()
     }
     else
     {
-        wxMessageBox("Informations","Please select a scanner source !");
+        wxMessageBox("Please select a scanner source !","Informations");
     }
 #else
 	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
