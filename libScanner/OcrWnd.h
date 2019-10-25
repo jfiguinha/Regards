@@ -27,8 +27,8 @@ namespace Regards
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 			void Init();
-            void tesseract_preprocess(string source_file, string out_file);
-            void OcrToPDF(const wxString &bitmapFile, wxString outputFile);
+            static void tesseract_preprocess(wxString source_file, wxString out_file);
+            static  void OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language);
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);

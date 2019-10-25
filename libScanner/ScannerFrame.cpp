@@ -23,6 +23,8 @@
 #include <MyFrameIntro.h>
 #include "ExportPDF.h"
 #include <FileUtility.h>
+#include "OcrWnd.h"
+#include <wx/filefn.h> 
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -334,9 +336,13 @@ void CScannerFrame::OnAcquireImage(wxCommandEvent& event)
 	if (image.IsOk())
 	{
         wxString tempFile = CFileUtility::GetTempFile("scanner.bmp");
+        wxString pdfFile = CFileUtility::GetTempFile("scanner.pdf");
         image.SaveFile(tempFile, wxBITMAP_TYPE_BMP);
-		//wxString file = centralWindow->SetImage(image);
-		centralWindow->LoadFile(tempFile);
+        wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
+        COcrWnd::tesseract_preprocess(tempFile, preprocess);
+        COcrWnd::OcrToPDF(preprocess, pdfFile, "fra");
+        wxRenameFile(pdfFile +".pdf",pdfFile, true);
+		centralWindow->LoadFile(pdfFile);
 	}
 }
 

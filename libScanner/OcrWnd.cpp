@@ -177,7 +177,7 @@ void COcrWnd::Resize()
 	treeCtrl->SetSize(0, panelListOcrH, width, height - panelListOcrH);
 }
 
-void COcrWnd::OcrToPDF(const wxString &bitmapFile, wxString outputFile)
+void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language)
 {
  
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
@@ -190,11 +190,9 @@ void COcrWnd::OcrToPDF(const wxString &bitmapFile, wxString outputFile)
 	wxFileName fullpath(outputFile);
 	wxString extension = fullpath.GetExt();    
     
-	//Get select 
-	int i = choice->GetSelection();
-	wxString language = choice->GetStringSelection();
+
     
-	i = 0;
+	int i = 0;
 	char * args[8];
 	args[i++] = new char[255];
 	args[i] = new char[255];
@@ -225,7 +223,9 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	bool textonly = false;
 	int jpg_quality = 92;
 
-
+	//Get select 
+	int i = choice->GetSelection();
+	wxString language = choice->GetStringSelection();
 
 	wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp", false);
 
@@ -236,7 +236,7 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 	wxString newfilename = saveFileDialog.GetPath();
 
 
-    OcrToPDF(preprocess, newfilename);
+    OcrToPDF(preprocess, newfilename, language);
 }
 
 
@@ -409,7 +409,7 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 }
 
 
-void COcrWnd::tesseract_preprocess(string source_file, string out_file) {
+void COcrWnd::tesseract_preprocess(wxString source_file, wxString out_file) {
 
 	/*
 	char tempPath[128];
