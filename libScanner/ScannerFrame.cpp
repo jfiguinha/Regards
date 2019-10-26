@@ -25,7 +25,9 @@
 #include <FileUtility.h>
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
+#ifdef __APPLE__
 #include <ScanView.h>
+#endif
 #include <ImageLoadingFormat.h>
 using namespace Regards::Print;
 using namespace Regards::Introduction;
@@ -406,10 +408,12 @@ wxString CScannerFrame::ScanPage()
 	if (image.IsOk())
 	{
         pdfFile = CFileUtility::GetTempFile("scanner.pdf");
+
         CLibPicture picture;
         CImageLoadingFormat imageLoadingFormat;
         imageLoadingFormat.SetPicture(new wxImage(image));
         picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
+
 	}
 
 	return pdfFile;
