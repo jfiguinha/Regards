@@ -122,6 +122,7 @@
         <IncludePath Value="."/>
         <IncludePath Value="../../include"/>
         <IncludePath Value="include"/>
+        <IncludePath Value="../../libextern/poppler-0.81.0/cpp"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

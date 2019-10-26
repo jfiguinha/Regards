@@ -26,6 +26,13 @@
 #include <cassert>
 #include <cerrno>
 #include <sys/stat.h>
+#include <wx/version.h> 
 using namespace std;
+
+/*  check if the current version is at least major.minor.release */
+#define wxCHECK_VERSION(major,minor,release) \
+    (wxMAJOR_VERSION > (major) || \
+    (wxMAJOR_VERSION == (major) && wxMINOR_VERSION > (minor)) || \
+    (wxMAJOR_VERSION == (major) && wxMINOR_VERSION == (minor) && wxRELEASE_NUMBER >= (release)))
 
 #define CL_TARGET_OPENCL_VERSION 120

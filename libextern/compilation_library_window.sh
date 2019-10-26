@@ -4,7 +4,14 @@ echo $NBPROC
 
 #decompression
 pacman -S unzip
-unzip jasper-1.900.1.zip
+#Get libjasper
+wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
+tar xf jasper-2.0.14.tar.gz
+
+#get lib poppler
+wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
+tar xf poppler-0.81.0.tar.xz
+
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 #Compile exiv2-0.26 :
