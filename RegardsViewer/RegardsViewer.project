@@ -123,7 +123,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
@@ -163,6 +163,9 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
+        <IncludePath Value="../libextern/wxWidgets-master/include"/>
+        <IncludePath Value="../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
