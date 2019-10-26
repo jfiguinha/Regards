@@ -428,6 +428,8 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 		break;
 #else
     case ID_ACQUIREIMAGE:
+		event.Enable(true);
+		break;
 #endif
 
 	case ID_EXPORTHTML:
