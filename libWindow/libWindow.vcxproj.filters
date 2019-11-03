@@ -180,6 +180,9 @@
     <ClInclude Include="TreeWithScrollbar.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="wxImagePanel.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -315,6 +318,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="TreeWithScrollbar.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="wxImagePanel.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

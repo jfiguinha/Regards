@@ -159,7 +159,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\header.h" />
     <ClInclude Include="include\Scanner.h" />
-    <ClInclude Include="include\wx\wxImagePanel.h" />
     <ClInclude Include="include\wx\wxsanedlg.h" />
     <ClInclude Include="include\wx\wxscan.h" />
     <ClInclude Include="wia\bitmapUtilities.h" />
@@ -172,7 +171,6 @@
     <ClCompile Include="..\..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\wx\wxImagePanel.cpp" />
     <ClCompile Include="src\wx\wxsanedlg.cpp" />
     <ClCompile Include="src\wx\wxscan.cpp" />
     <ClCompile Include="wia\bitmapUtilities.cpp" />

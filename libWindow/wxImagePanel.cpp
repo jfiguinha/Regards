@@ -1,5 +1,5 @@
 #include <header.h>
-#include <wxImagePanel.h>
+#include "wxImagePanel.h"
 // some useful events
 /*
  void wxImagePanel::mouseMoved(wxMouseEvent& event) {}
