@@ -114,8 +114,6 @@
     <File Name="src/pdfbarcode.cpp"/>
     <File Name="src/pdfannotation.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;-std=gnu++11;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-Wno-narrowing;-fpermissive" C_Options="" Assembler="">
@@ -209,4 +207,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

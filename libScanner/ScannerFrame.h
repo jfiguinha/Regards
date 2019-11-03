@@ -74,9 +74,11 @@ private:
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
+
 #ifdef __WXSCANSANE__ 
 	void OnSelectSource(wxCommandEvent& event);
 #endif
+
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
    

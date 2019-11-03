@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="wxImagePanel.cpp"/>
     <File Name="TreeWithScrollbar.cpp"/>
     <File Name="PanelWithClickToolbar.cpp"/>
     <File Name="ClickToolbar.cpp"/>
@@ -75,6 +76,7 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="wxImagePanel.h"/>
     <File Name="TreeWithScrollbar.h"/>
     <File Name="PanelWithClickToolbar.h"/>
     <File Name="ClickToolbar.h"/>
@@ -128,8 +130,6 @@
     <File Name="RenderBitmapInterfaceOpenGL.h"/>
     <File Name="IconeList.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall" Assembler="">
@@ -246,4 +246,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

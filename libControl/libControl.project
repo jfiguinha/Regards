@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="10.0.0">
-  <VirtualDirectory Name="Thumbnail">
-    <VirtualDirectory Name="include">
-      <File Name="ThumbnailVideo.h"/>
-      <File Name="ThumbnailVerticalListFile.h"/>
-      <File Name="ThumbnailVertical.h"/>
-      <File Name="ThumbnailHorizontal.h"/>
-      <File Name="ThumbnailEffect.h"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="src">
-      <File Name="ThumbnailVideo.cpp"/>
-      <File Name="ThumbnailVerticalListFile.cpp"/>
-      <File Name="ThumbnailVertical.cpp"/>
-      <File Name="ThumbnailHorizontal.cpp"/>
-      <File Name="ThumbnailEffect.cpp"/>
-    </VirtualDirectory>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -42,6 +26,22 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Thumbnail">
+    <VirtualDirectory Name="include">
+      <File Name="ThumbnailVideo.h"/>
+      <File Name="ThumbnailVerticalListFile.h"/>
+      <File Name="ThumbnailVertical.h"/>
+      <File Name="ThumbnailHorizontal.h"/>
+      <File Name="ThumbnailEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="src">
+      <File Name="ThumbnailVideo.cpp"/>
+      <File Name="ThumbnailVerticalListFile.cpp"/>
+      <File Name="ThumbnailVertical.cpp"/>
+      <File Name="ThumbnailHorizontal.cpp"/>
+      <File Name="ThumbnailEffect.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -70,8 +70,6 @@
     <File Name="ShowBitmap.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
@@ -194,4 +192,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

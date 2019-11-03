@@ -37,8 +37,6 @@
     <File Name="../../../libextern/dlib-19.17/dlib/external/libpng/pngwtran.c"/>
     <File Name="../../../libextern/dlib-19.17/dlib/external/libpng/pngwutil.c" ExcludeProjConfig=""/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="-std=c99;-Wall;-fPIC;-pthread" Assembler="">
@@ -135,4 +133,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

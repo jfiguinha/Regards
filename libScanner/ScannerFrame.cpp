@@ -113,11 +113,11 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
+#ifndef __APPLE__
 #if __WXSCANSANE__  
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
-	
 #endif
-    
+#endif
 	//if(mainInterface != nullptr)
 	//	mainInterface->HideAbout();
 }
@@ -265,12 +265,7 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 #ifdef __WXSCANSANE__ 
 void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
 {
-#ifdef __APPLE__
-    CScanView scanView;
-    scanView.ScanDocument();
-#else
     scanSane->SelectSource("", true, this);
-#endif
 }
 #endif
 #ifdef __WXMSW__
@@ -423,7 +418,12 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	switch (event.GetId())
 	{
-#ifdef __WXSCANSANE__  
+        /*
+#ifdef __APPLE__
+    case ID_ACQUIREIMAGE:
+		event.Enable(true);
+		break;*/
+#if defined(__WXSCANSANE__)  
 	case ID_ACQUIREIMAGE:
 		if (scanSane != nullptr)
 			event.Enable(scanSane->IsSourceSelected());

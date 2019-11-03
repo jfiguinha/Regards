@@ -14,10 +14,6 @@
   <VirtualDirectory Name="include">
     <File Name="../FaceRecognition/PictureRecognition.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release">
-    <Project Name="FaceRecognition"/>
-  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fpermissive;-fPIC" C_Options=";-Wall;" Assembler="">
@@ -129,4 +125,8 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release">
+    <Project Name="FaceRecognition"/>
+  </Dependencies>
 </CodeLite_Project>

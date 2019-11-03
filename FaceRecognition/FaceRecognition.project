@@ -81,8 +81,6 @@
     <File Name="../libextern/dlib-19.17/dlib/external/libjpeg/jversion.h"/>
     <File Name="../libextern/dlib-19.17/dlib/external/libjpeg/README"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fpermissive;-fPIC" C_Options="" Assembler="">
@@ -176,4 +174,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

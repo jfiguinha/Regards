@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libAppleFunction" InternalType="Library" Version="10.0.0">
-  <VirtualDirectory Name="Scanner">
-    <File Name="MyScan.mm"/>
-    <File Name="MyScanInterface.h"/>
-    <File Name="ScanView.cpp"/>
-    <File Name="ScanView.h"/>
-    <File Name="NSImage+SCWExtension.h"/>
-    <File Name="NSImage+SCWExtension.m"/>
-    <File Name="SCWBundle.h"/>
-    <File Name="SCWBundle.m"/>
-    <File Name="SCWController.h"/>
-    <File Name="SCWController.m"/>
-    <File Name="SCWError.h"/>
-    <File Name="SCWError.m"/>
-    <File Name="SCWScannedUnit.h"/>
-    <File Name="SCWScannedUnit.m"/>
-    <File Name="SPWindowBundle.h"/>
-    <File Name="SPWindowBundle.m"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Scanner">
+    <File Name="event_scanner.h"/>
+    <File Name="ScannerWindow.mm" ExcludeProjConfig=""/>
+    <File Name="ScannerWindow.h"/>
+    <File Name="ofxCameraKit.mm" ExcludeProjConfig=""/>
+    <File Name="ofxCameraKit.h" ExcludeProjConfig=""/>
+    <File Name="MyScan.mm"/>
+    <File Name="MyScanInterface.h"/>
+    <File Name="ScanView.cpp"/>
+    <File Name="ScanView.h"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -45,7 +38,11 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/apple/include"/>
+        <IncludePath Value="../Otherlib"/>
+        <IncludePath Value="../libWindow"/>
+        <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libDataStructure"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
