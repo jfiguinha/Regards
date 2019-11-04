@@ -14,9 +14,9 @@ float GaussianFilter( float x)
 {
 	if (fabs (x) > 1.25) 
 	{
-		return 0.0;
+		return (float)0.0;
 	}
-	return exp(-x * x / 2.0) / sqrt (FILTER_2PI); 
+	return (float)exp((float)(-x * x) / (float)2.0) / sqrt(FILTER_2PI); 
 }
 
 
@@ -67,7 +67,7 @@ float BlackmanFilter( float x)
 		return 0.0; 
 	}
 	float dN = 2.0 * 1.0f + 1.0; 
-	return 0.42 + 0.5 * cos(FILTER_2PI * x / ( dN - 1.0 )) + 0.08 * cos (FILTER_4PI * x / ( dN - 1.0 )); 
+	return 0.42 + 0.5 * (float)cos((float)(FILTER_2PI * x) / (float)( dN - 1.0 )) + (float)0.08 * (float)cos((float)(FILTER_4PI * x) / (float)( dN - 1.0 )); 
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,7 @@ float HanningFilter( float x )
 		return 0.0f; 
 	}
 
-	return(0.54f+0.46f*cos(FILTER_PI*x));
+	return(0.54f+0.46f*(float)cos((float)FILTER_PI*x));
 }
 		
 /////////////////////////////////////////////////////////////////////////////

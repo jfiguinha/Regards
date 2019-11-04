@@ -2405,7 +2405,6 @@ wxImage * CLibPicture::ConvertRegardsBitmapToWXImage(CRegardsBitmap * bitmap, co
 
 	if (data != nullptr)
 	{
-#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
 			posData = ((height - y) * widthSrcSize) - widthSrcSize;
