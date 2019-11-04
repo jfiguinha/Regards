@@ -143,6 +143,7 @@
       <Project Name="wxPDFDoc" ConfigName="Debug"/>
       <Project Name="libScanner" ConfigName="Debug"/>
       <Project Name="RegardsScanner" ConfigName="Debug"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -209,6 +210,7 @@
       <Project Name="wxPDFDoc" ConfigName="Release"/>
       <Project Name="libScanner" ConfigName="Release"/>
       <Project Name="RegardsScanner" ConfigName="Release"/>
+      <Project Name="RegardsViewer_mac" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

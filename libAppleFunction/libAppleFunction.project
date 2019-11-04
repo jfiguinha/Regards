@@ -6,6 +6,8 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Scanner">
+    <File Name="ofxScannerKit.mm"/>
+    <File Name="ofxScannerKit.h"/>
     <File Name="event_scanner.h"/>
     <File Name="ScannerWindow.mm" ExcludeProjConfig=""/>
     <File Name="ScannerWindow.h"/>
