@@ -10,7 +10,7 @@
 #include "event_scanner.h"
 #import <Cocoa/Cocoa.h>
 #import <ImageCaptureCore/ImageCaptureCore.h>
-#import <ImageKit/IKScannerView.h>
+
 
 static bool shouldRemoveDevice(ofxScannerDevice * d) {
     return d->bRemove;
@@ -18,7 +18,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 //--------------------------------------------------------------
 // Cocoa Interface
 //--------------------------------------------------------------
-@interface ScannerKit : NSObject <IKScannerDeviceViewDelegate, ICDeviceBrowserDelegate, ICScannerDeviceDelegate> {
+@interface ScannerKit : NSObject <ICDeviceBrowserDelegate, ICScannerDeviceDelegate> {
     ICDeviceBrowser *   mDeviceBrowser;
     NSMutableArray  *   mScanners;
 	NSString		*	downloadPath;
@@ -82,17 +82,51 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 //------------------------------------
 -(void) lookForScanners {
     
-    ICDeviceBrowser *mDeviceBrowser = [[ICDeviceBrowser alloc] init];
+    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];  
+	mScanners = [[NSMutableArray alloc] initWithCapacity:0];
+	
+    // Get an instance of ICDeviceBrowser
+    mDeviceBrowser = [[ICDeviceBrowser alloc] init];
+    
+    // Assign a delegate
     mDeviceBrowser.delegate = self;
-    mDeviceBrowser.browsedDeviceTypeMask = ICDeviceLocationTypeMaskLocal|ICDeviceLocationTypeMaskRemote|ICDeviceTypeMaskScanner;
-    [mDeviceBrowser start];
+    
+    // Look for Scanners in all available locations
+    mDeviceBrowser.browsedDeviceTypeMask = ICDeviceTypeMask(mDeviceBrowser.browsedDeviceTypeMask 
+    | ICDeviceTypeMaskScanner
+	| ICDeviceLocationTypeMaskLocal
+	| ICDeviceLocationTypeMaskShared
+	| ICDeviceLocationTypeMaskBonjour
+	| ICDeviceLocationTypeMaskBluetooth
+	| ICDeviceLocationTypeMaskRemote);
+    
+	// set the download path
+	NSString * resourcePath = [[NSBundle mainBundle] bundlePath];
+	if(camKitRef != NULL) {
+        NSString * folder = [[NSString alloc] initWithCString:camKitRef->downloadPath.c_str()];
+        downloadPath = [[NSString alloc] initWithFormat:@"%@/../data/%@/", resourcePath, folder];
+        [folder release];
+    }
+    else {
+        downloadPath = [[NSString alloc] initWithFormat:@"%@/../data/", resourcePath];
+    }
+    
+	
+	
+	// Start browsing for Scanners
+	[mDeviceBrowser start];
+    
+	
+	// clean up 
+	[pool release];
+	// [resourcePath release];
 }
 
 //------------------------------------
 // Load the icon image for the device and
 // store it in the c++ ofImage object
 //------------------------------------
--(void) loadIconImage:(ofxScannerDevice*)camera device:(ICDevice*)device {
+-(void) loadIconImage:(ofxScannerDevice*)Scanner device:(ICDevice*)device {
 	
 	//												
 	// thanks memo for this help
@@ -124,15 +158,15 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 		// You don't need the context at this point, so you need to release it to avoid memory leaks.
 		CGContextRelease(spriteContext);
         
-        camera->icon = wxImage(width, height);
+        Scanner->icon = wxImage(width, height);
         int pointer = 0;
         
         unsigned char * alpha = nullptr;
-        unsigned char *imgRGB = camera->icon.GetData();    // destination RGB buffer
+        unsigned char *imgRGB = Scanner->icon.GetData();    // destination RGB buffer
         if(bytesPerPixel == 4)
         {
             alpha = new uint8_t(width * height);
-            camera->icon.SetAlpha(alpha);
+            Scanner->icon.SetAlpha(alpha);
         }
         for (int y = 0; y < height; y++)
         {
@@ -166,6 +200,36 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
                 }
             }
         }
+		
+		// vertically flip
+		//	GLubyte *pixelsFlipped = (GLubyte *) malloc(width * height * bytesPerPixel);
+		//	int numBytesPerRow = width * bytesPerPixel;
+		//	for(int y=0; y<height; y++) {
+		//		memcpy(pixelsFlipped + (numBytesPerRow * y), pixels + (numBytesPerRow * (height - 1 - y)), numBytesPerRow);
+		//	}
+		//	outImage.setFromPixels(pixelsFlipped, width, height, OF_IMAGE_COLOR_ALPHA, true);
+		//	free(pixelsFlipped);
+		
+        //Copy image data to do
+        
+        /*
+		int ofImageMode;
+        
+		switch(bytesPerPixel) {
+			case 1:
+				ofImageMode = OF_IMAGE_GRAYSCALE;
+				break;
+			case 3: 
+				ofImageMode = OF_IMAGE_COLOR;
+				break;
+			case 4: 
+			default:
+				ofImageMode = OF_IMAGE_COLOR_ALPHA;
+            break;
+		}
+		
+		Scanner->icon.setFromPixels(pixels, width, height, ofImageMode, true);
+		*/
 		free(pixels);
 		
 	}
@@ -177,17 +241,50 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 - (void)deviceBrowser:(ICDeviceBrowser*)browser didAddDevice:(ICDevice*)addedDevice moreComing:(BOOL)moreComing {
     // NSLog( @"deviceBrowser:didAddDevice:moreComing: \n%@\n", addedDevice );
 	
-     if ( (addedDevice.type & ICDeviceTypeMaskScanner) == ICDeviceTypeScanner )
-	 {
+    if (addedDevice.type & ICDeviceTypeScanner ) {
         
-		 [scannerView setScannerDevice:(ICScannerDevice*)addedDevice];
+        addedDevice.delegate = self;
+		
+		// make a new Scanner
+        ofxScannerDevice * c = new ofxScannerDevice();
+		
+		// load the icon image
+		// I think that there is a leak here...
+		//[self loadIconImage:c device:addedDevice];
+		
+		// set the name and ICDevice pointer
+		c->name   = [[addedDevice name] UTF8String];
+		c->device = addedDevice; 
+        
+		// add to the Scanner kit vector
+		camKitRef->devices.push_back(c);
+		
+		// update the num of Scanners
+		//camKitRef->nScanners = camKitRef->Scanners.size();
+		printf("Scanner added: %s\n", c->name.c_str());
+		
+		
+		if(moreComing == false) 
+        {
+            wxCommandEvent event(EVENT_CK_ALL_CAMERAS_FOUND);
+            if(camKitRef->parent != nullptr)
+            {
+                event.SetClientData(camKitRef);
+                wxPostEvent(camKitRef->parent, event);
+            }
+                
+			// printf("all Scanners found tell the app about it!\n");
+            //static ofxDeviceEvent evt;
+            //evt.eventType = ofxScannerKit::CK_ALL_ScannerS_FOUND;
+			//ofNotifyEvent(camKitRef->deviceEvents, evt, camKitRef);
+            
+		}
+		
+		// This triggers KVO messages to AppController
+		// to add the new Scanner object to the Scanners array.
+		//[[self mutableArrayValueForKey:@"Scanners"] addObject:addedDevice];
     }
     
-}
-
-- (void)scannerDeviceDidBecomeAvailable:(ICScannerDevice*)scanner;
-{
-    [scanner requestOpenSession];
 }
 
 // -------------------------------------------- 
@@ -196,7 +293,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 - (void)deviceBrowser:(ICDeviceBrowser*)browser didRemoveDevice:(ICDevice*)device moreGoing:(BOOL)moreGoing; {
     
     if(camKitRef) {
-        // try and find the camera in the c++ class
+        // try and find the Scanner in the c++ class
         for(int i=0; i<camKitRef->devices.size(); i++) {
             if(camKitRef->devices[i]->device == device) {
                 
@@ -214,9 +311,9 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
                 }
                 
                // static ofxDeviceEvent evt;
-                //evt.eventType = ofxScannerKit::CK_CAMERA_REMOVED;
+                //evt.eventType = ofxScannerKit::CK_Scanner_REMOVED;
                 //ofNotifyEvent(camKitRef->deviceEvents, evt, camKitRef);
-                // printf("found the cam %p == %p\n", device, camKitRef->cameras[i].cam);	
+                // printf("found the cam %p == %p\n", device, camKitRef->Scanners[i].cam);	
             }
         }
         
@@ -226,9 +323,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
     }
     
 }
--(void)didRemoveDevice:(ICDevice*)removedDevice
-{
-    [removedDevice requestCloseSession];
+- (void)didRemoveDevice:(ICDevice*)removedDevice {
 }
 
 // -------------------------------------------- 
@@ -239,14 +334,14 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 }
 
 // --------------------------------------------  
-// Did open camera session
+// Did open Scanner session
 // and do we want to take a picture
 // -------------------------------------------- 
 - (void)device:(ICDevice*)device didOpenSessionWithError:(NSError*)error {
 	
 	// NSLog(@"Session Opened %@\n", [device name]);	
 	
-	// try and find the camera in the c++ class
+	// try and find the Scanner in the c++ class
 	for(int i=0; i<camKitRef->devices.size(); i++) {
 		
 		
@@ -263,14 +358,14 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 				camKitRef->devices[i]->bOpenThenTakePicture = false;
 			}
 			
-			// printf("found the cam %p == %p\n", device, camKitRef->cameras[i].cam);	
+			// printf("found the cam %p == %p\n", device, camKitRef->Scanners[i].cam);	
 		}
 	}
 	
 }
 
 // --------------------------------------------  
-// The camera session is now closed
+// The Scanner session is now closed
 // --------------------------------------------  
 - (void)device:(ICDevice*)device didCloseSessionWithError:(NSError*)error {
 	
@@ -280,106 +375,19 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 	
 }
 
-// -------------------------------------------- 
-// Photo done download from camera
-// -------------------------------------------- 
-- (void)didDownloadFile:(ICScannerFile*)file error:(NSError*)error options:(NSDictionary*)options contextInfo:(void*)contextInfo {
-    NSLog( @"didDownloadFile called with:\n" );
-    NSLog( @"  file:        %@\n", file );
-    NSLog( @"  error:       %@\n", error );
-    NSLog( @"  options:     %@\n", options );
-    NSLog( @"  contextInfo: %p\n", contextInfo );
-    
-    
-    /*
-     //[file.device requestDeleteFiles:file.device.mediaFiles];
-     Scanner * cam = [self getScannerFromICDevice:file.device];
-     cam->isBusy = false;
-     printf("--- [%s] File Done Downloading ---\n", cam->name.c_str());
-     
-     //NSLog( @"  file:        %@\n", [file parentFolder]);
-     //NSLog( @"  options:     %@\n", options );
-     
-     if(fileName != nil) {
-     cam->photos.push_back([fileName cString]);
-     }
-     */
-	NSString * fileName = file.name;
-	NSString * path = [[NSString alloc] initWithFormat:@"%@/%@", downloadPath, fileName];
-    
-    ofxPhotoDownloaded * photoDown = new ofxPhotoDownloaded();
-  	photoDown->photoPath = [path UTF8String];
-	photoDown->photoName = [fileName UTF8String];  
-    /*
-	static ofxDeviceEvent evt;
-	evt.eventType = ofxScannerKit::CK_PHOTO_DOWNLOADED;
-	evt.photoPath = [path UTF8String];
-	evt.photoName = [fileName UTF8String];
-	ofNotifyEvent(camKitRef->deviceEvents, evt, camKitRef);
-    */
-    wxCommandEvent event(EVENT_CK_PHOTO_DOWNLOADED);
-    if(camKitRef->parent != nullptr)
-    {
-        event.SetClientData(photoDown);
-        wxPostEvent(camKitRef->parent, event);
-    }
-	
-}
-
-
-// -------------------------------------------- 
-// Item added (like a photo)
-// -------------------------------------------- 
-- (void)cameraDevice:(ICScannerDevice*)camera didAddItem:(ICScannerItem*)item {
-	
-	if(downloadPath == NULL) return;
-	if(camKitRef == NULL)	 return;
-	//if(camKitRef->hackClose) {
-	//	printf("need to press open first ** Hack **\n");
-	//	return;
-	//}
-	
-	
-	//if([ICScannerFolder orientationOverridden] == NULL) return;
-	printf("---------- :: Add Item :: ----------\n");
-    
-	ICScannerFile * file = (ICScannerFile*)item;	
-    NSLog(@"UTI: %@", file.UTI);
-    if([file.UTI isEqualToString:@"public.folder"] == NO) {
-        NSMutableDictionary* options = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSURL fileURLWithPath:[downloadPath stringByExpandingTildeInPath]], ICDownloadsDirectoryURL, nil];
-        
-        //NSMutableDictionary* options = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSURL fileURLWithPath:[@"~/Desktop/temp/" stringByExpandingTildeInPath]], ICDownloadsDirectoryURL, nil];
-        [file.device requestDownloadFile:file options:options downloadDelegate:self didDownloadSelector:@selector(didDownloadFile:error:options:contextInfo:) contextInfo:NULL];
-        
-    }
-    //NSMutableDictionary* options = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSURL fileURLWithPath:[downloadPath stringByExpandingTildeInPath]], ICDownloadsDirectoryURL, nil];
-	//[options setObject:[NSNumber numberWithBool:YES] forKey:ICDeleteAfterSuccessfulDownload];
-	//[options setObject:[NSNumber numberWithBool:NO] forKey:@"orientationOverridden"];
-    
-    //	
-    //	[file.device requestDownloadFile:file
-    //							 options:options 
-    //					downloadDelegate:self 
-    //				 didDownloadSelector:@selector(didDownloadFile:error:options:contextInfo:) 
-    //						 contextInfo:NULL];
-    //    
-    //    [options release];
-    //	
-	
-}
 
 // -------------------------------------------- 
 - (void)deviceDidBecomeReady:(ICDevice*)device {
 	printf("---------- :: deviceDidBecomeReady :: ----------\n");
     if (device.type & ICDeviceTypeScanner ) {
         
-        ICScannerDevice * camera = (ICScannerDevice*)device;
-        NSLog(@"%@", camera);
+        ICScannerDevice * Scanner = (ICScannerDevice*)device;
+        NSLog(@"%@", Scanner);
         
-        ofxScannerDevice * device = [self getScannerFromICDevice:camera];
+        ofxScannerDevice * device = [self getScannerFromICDevice:Scanner];
         //static ofxDeviceEvent evt;
-        //evt.eventType = ofxScannerKit::CK_CAMERA_READY;
-        //evt.device    = [self getScannerFromICDevice:camera];
+        //evt.eventType = ofxScannerKit::CK_Scanner_READY;
+        //evt.device    = [self getScannerFromICDevice:Scanner];
         //ofNotifyEvent(camKitRef->deviceEvents, evt, camKitRef);
         
         wxCommandEvent event(EVENT_CK_CAMERA_READY);
@@ -392,13 +400,13 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 
         
         
-        if([[camera mediaFiles] count] > 0) {
+        if([[Scanner mediaFiles] count] > 0) {
             
-            //NSLog(@"%@", [camera mediaFiles]);
-            printf("--- There are %i photos on the camera ---\n", [[camera mediaFiles] count]);
+            //NSLog(@"%@", [Scanner mediaFiles]);
+            printf("--- There are %i photos on the Scanner ---\n", [[Scanner mediaFiles] count]);
 			// printf("--- deleting the photos ---\n");
             
-            [camera requestDeleteFiles:[camera mediaFiles]];
+            [Scanner requestDeleteFiles:[Scanner mediaFiles]];
             
             if(camKitRef != NULL) {
                 //camKitRef->status = "Deleting Photos"; 
@@ -439,7 +447,7 @@ void ofxScannerKit::setDownloadFolder(string path) {
 		if (camKit.downloadPath != nil) {
 			[[camKit downloadPath] release];
 			camKit.downloadPath = [[NSString alloc] initWithCString:downloadPath.c_str()];
-			printf("Download path set for camera kit\n");
+			printf("Download path set for Scanner kit\n");
 		}
 	}
 }
@@ -480,7 +488,7 @@ void ofxScannerDevice::takePicture() {
     
     if(device != NULL) {
 		if (isBusy) {
-			printf("--- %s camera is busy\n", name.c_str());
+			printf("--- %s Scanner is busy\n", name.c_str());
 			return;
 		}
 		if (isOpen == true && isBusy == false) {
@@ -490,7 +498,7 @@ void ofxScannerDevice::takePicture() {
 			[tempScanner requestTakePicture];
 		}
 		else {
-			printf("need to open camera frist\n");
+			printf("need to open Scanner frist\n");
 			bOpenThenTakePicture = true;
 			openDevice();
 		}

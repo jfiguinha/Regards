@@ -1,4 +1,4 @@
-Scanner//
+//
 //  Test.h
 //  Triangle
 //
