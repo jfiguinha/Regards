@@ -45,9 +45,6 @@
     <ClInclude Include="wia\comptr.h">
       <Filter>wia\header</Filter>
     </ClInclude>
-    <ClInclude Include="include\wx\wxImagePanel.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="include\wx\wxsanedlg.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
     </ClCompile>
     <ClCompile Include="wia\bitmapUtilities.cpp">
       <Filter>wia\source</Filter>
-    </ClCompile>
-    <ClCompile Include="src\wx\wxImagePanel.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="src\wx\wxsanedlg.cpp">
       <Filter>Fichiers sources</Filter>
