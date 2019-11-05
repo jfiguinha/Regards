@@ -15,7 +15,7 @@ namespace Regards
 			~CSqlInsertFile();
 			bool RemovePhotos(const int &idFolder);
 			void InsertPhotoFolderToRefresh(const wxString &folder);
-            void UpdateFolder(const vector<wxString> &listFile, const int &idFolder);
+            //void UpdateFolder(const vector<wxString> &listFile, const int &idFolder);
 			bool GetPhotoToAdd(vector<wxString> * listFile);
 			bool GetPhotoToRemove(vector<int> * listFile, const int &idFolder);
 			int ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile);

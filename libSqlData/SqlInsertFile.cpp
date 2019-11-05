@@ -2,6 +2,7 @@
 #include "SqlInsertFile.h"
 #include <libPicture.h>
 #include <wx/dir.h>
+#include <wx/progdlg.h>
 using namespace Regards::Sqlite;
 
 CSqlInsertFile::CSqlInsertFile()
@@ -63,7 +64,7 @@ int CSqlInsertFile::GetNbPhotos()
     ExecuteRequest("SELECT count(*) as nbphoto FROM PHOTOS where CriteriaInsert = 0");
     return numPhoto;
 }
-
+/*
 void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &idFolder)
 {
     BeginTransaction();
@@ -110,19 +111,30 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
     }
    
 }
-
+*/
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, const int &idFolder)
 {
 	BeginTransaction();
     CLibPicture libPicture;
+    wxProgressDialog dialog("Import File", "Checking...", listFile.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+    int updatesize = 0;
+    wxString msg = "in progress";
+    dialog.Update(updatesize, msg);    
+    
 	for (wxString filename : listFile)
 	{
+        updatesize++;
 		if (GetNumPhoto(filename) == 0)
-		{
+		{            
             int extensionId = libPicture.TestImageFormat(filename);
 			filename.Replace("'", "''");
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
+              
 		}
+        if (false == dialog.Update(updatesize, msg))
+        {
+            break;
+        }
 	}
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
