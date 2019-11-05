@@ -949,7 +949,7 @@ void CMainWindow::AddFolder(const wxString &folder)
 		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
 		//Insert la liste des photos dans la base de données.
 		CSqlInsertFile sqlInsertFile;
-		sqlInsertFile.ImportFileFromFolder(folder, idFolder, filename);
+		sqlInsertFile.AddFileFromFolder(folder, idFolder, filename);
 	}
     
     statusBarViewer->AddFSEntry(folder);

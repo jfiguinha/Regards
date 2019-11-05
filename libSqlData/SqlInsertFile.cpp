@@ -190,6 +190,45 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 	return (ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and FullPath not in(Select FullPath From PHOTOFOLDER)") != -1) ? true : false;
 }
 
+int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
+{
+	CLibPicture libPicture;
+
+	int i = 0;
+	wxArrayString files;
+
+	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+
+		wxProgressDialog dialog("Import File", "Checking...", files.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+		wxString msg = "in progress";
+		dialog.Update(files.size(), msg);
+
+
+	BeginTransaction();
+	for (wxString file : files)
+	{
+		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+		{
+			int extensionId = libPicture.TestImageFormat(file);
+			if (i == 0)
+				firstFile = file;
+			file.Replace("'", "''");
+			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+			i++;
+				if (false == dialog.Update(i, msg))
+				{
+					break;
+				}
+		}
+	}
+	CommitTransection();
+	return i;
+
+	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
+
+	//
+}
+
 
 int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
 {
@@ -200,10 +239,6 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
-	wxProgressDialog dialog("Import File", "Checking...", files.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
-	int updatesize = 0;
-	wxString msg = "in progress";
-	dialog.Update(updatesize, msg);
 
 	BeginTransaction();
 	for (wxString file : files)
@@ -216,11 +251,6 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 			file.Replace("'", "''");
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 			i++;
-
-			if (false == dialog.Update(i, msg))
-			{
-				break;
-			}
 		}
 	}
 	CommitTransection();
