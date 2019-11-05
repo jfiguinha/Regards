@@ -199,6 +199,12 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+
+	wxProgressDialog dialog("Import File", "Checking...", files.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+	int updatesize = 0;
+	wxString msg = "in progress";
+	dialog.Update(updatesize, msg);
+
 	BeginTransaction();
 	for (wxString file : files)
 	{
@@ -210,6 +216,11 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 			file.Replace("'", "''");
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 			i++;
+
+			if (false == dialog.Update(i, msg))
+			{
+				break;
+			}
 		}
 	}
 	CommitTransection();
