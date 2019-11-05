@@ -724,7 +724,7 @@ CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
     TRACE();
 	if(filtreEffet != nullptr && bitmapLoad)
 	{
-		CRegardsBitmap * bitmap =  filtreEffet->GetBitmap(source);
+		CRegardsBitmap * bitmap = this->source->GetRegardsBitmap(true);//filtreEffet->GetBitmap(source);
 		if (bitmap != nullptr)
 		{
 			bitmap->SetOrientation(orientation);
@@ -743,7 +743,7 @@ CRegardsFloatBitmap * CBitmapWnd::GetFloatBitmap(const bool &source)
     TRACE();
 	if(filtreEffet != nullptr && bitmapLoad)
 	{
-		CRegardsFloatBitmap * bitmap =  filtreEffet->GetFloatBitmap(source);
+		CRegardsFloatBitmap * bitmap = this->source->GetFloatBitmap(true);// filtreEffet->GetFloatBitmap(source);
 		return bitmap;
 	}
 	return nullptr;

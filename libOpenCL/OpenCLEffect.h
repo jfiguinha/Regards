@@ -114,6 +114,7 @@ namespace Regards
 			CRegardsFloatBitmap* GetFloatBitmap(cl_mem input, const int& width, const int& height);
 			CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
 
+			wxString filename;
 			//Bitmap Memory Buffer
 			bool dataIsOk ;
 			COpenCLParameter * input;

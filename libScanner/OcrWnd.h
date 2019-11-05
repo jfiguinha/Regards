@@ -16,6 +16,7 @@ namespace Regards
 			wxRect rect;
 			wxString label;
 			int confidence;
+			int numLigne;
 			bool selected;
 		};
 
@@ -34,7 +35,7 @@ namespace Regards
 			void OnOcrPDF(wxCommandEvent& event);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			wxPanel * CreateListTesseract(wxWindow * parent);
-			
+			void LoadOcrBoxFile(wxString boxfile);
 		
 			void Resize();
 			//void GenerateLayerBitmap();
@@ -46,6 +47,7 @@ namespace Regards
 			wxPanel * listOcr;
 			wxCheckTree * treeCtrl;
 			wxButton * exportPdf;
+			wxButton * ocrPdf;
 			vector<wxString> listFile;
 			wxChoice *choice;
 			vector<BBoxText *> listRect;

@@ -18,6 +18,7 @@
 #include <wx/progdlg.h>
 #include "ExportOcr.h"
 #include <wx/filefn.h>
+#include <ConvertUtility.h>
 #ifdef __APPLE__
 #undef fract1
 #endif
@@ -244,6 +245,108 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+//Loading Parameter
+//////////////////////////////////////////////////////////////////////////////////////////
+void COcrWnd::LoadOcrBoxFile(wxString boxfile)
+{
+	wxTreeItemId rootId = treeCtrl->AddRoot("Text");
+	xml_document<> doc;
+	// Read the xml file into a vector
+	//const char * fichier = CConvertUtility::ConvertFromwxString(filename);
+	ifstream theFile(boxfile.ToStdString());
+	vector<char> buffer((istreambuf_iterator<char>(theFile)), istreambuf_iterator<char>());
+	if (buffer.size() > 0)
+	{
+		buffer.push_back('\0');
+		// Parse the buffer using the xml file parsing library into doc 
+		doc.parse<0>(&buffer[0]);
+
+		xml_node<> * root_node;
+		//long nodeSize = 0;
+		root_node = doc.first_node("html");
+		xml_node<> * body_node = root_node->first_node("body");
+		if (body_node != 0)
+		{
+			int numLigne = 0;
+			xml_node<> * div_node = body_node->first_node("div");
+			if (div_node != 0)
+			{
+				xml_node<> * divchild_node = div_node->first_node("div");
+
+				if (divchild_node != 0)
+				{
+					do
+					{
+						xml_node<> * p_node = divchild_node->first_node("p");
+						if (p_node != 0)
+						{
+							xml_node<> * spanligne_node = p_node->first_node("span");
+							if (spanligne_node != 0)
+							{
+								xml_attribute<char> * libelle = spanligne_node->first_attribute("class");
+								if (libelle != 0)
+								{
+									string ocr_libelle = libelle->value();
+									if (ocr_libelle == "ocr_line")
+									{
+										BBoxText * bboxText = new BBoxText();
+										xml_attribute<> * libelleTitle = spanligne_node->first_attribute("title");
+										string value = libelleTitle->value();
+										vector<wxString> bboxVector = CConvertUtility::split(value, ';');
+										wxString bbox = bboxVector[0];
+										vector<wxString> coordonneeVector = CConvertUtility::split(bbox, ' ');
+										bboxText->rect.x = atoi(coordonneeVector[1]);
+										bboxText->rect.y = atoi(coordonneeVector[2]);
+										bboxText->rect.width = atoi(coordonneeVector[3]) - bboxText->rect.x;
+										bboxText->rect.height = atoi(coordonneeVector[4]) - bboxText->rect.y;
+										bboxText->selected = true;
+										wxString libelle;
+										xml_node<> * spanword_node = spanligne_node->first_node("span");
+										if (spanword_node != 0)
+										{
+											do
+											{
+												xml_attribute<char> * lblClass = spanword_node->first_attribute("class");
+												string class_libelle = lblClass->value();
+												wxString span_value = wxString::FromUTF8(spanword_node->value());
+												if (spanword_node != 0)
+													libelle.append(span_value);
+
+												spanword_node = spanword_node->next_sibling();
+												if (spanword_node != 0)
+													libelle.append(" ");
+											} while (spanword_node != 0);
+										}
+
+										bboxText->numLigne = numLigne;
+										bboxText->label = libelle;
+
+										if (libelle != "")
+										{
+											wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+											treeCtrl->SetItemHasChildren(treeid);
+											treeCtrl->MakeCheckable(treeid, true);
+											bboxText->SetId(treeid);
+											listRect.push_back(bboxText);
+											numLigne++;
+										}
+										else
+										{
+											delete bboxText;
+										}
+									}
+								}
+							}
+						}
+						divchild_node = divchild_node->next_sibling();
+					} while (divchild_node != 0);
+				}
+			}
+		}
+	}
+
+}
 
 void COcrWnd::OnOcr(wxCommandEvent& event)
 {
@@ -270,28 +373,35 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 	resourcePath = resourcePath + "/tessdata";
 #endif    
 
-			ETEXT_DESC *monitor = new ETEXT_DESC();
+			//ETEXT_DESC *monitor = new ETEXT_DESC();
 
 			CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
 
 			// Initialize tesseract-ocr with English, without specifying tessdata path
+			/*
 			if (CExportOcr::api.Init(resourcePath, language)) {
 				fprintf(stderr, "Could not initialize tesseract.\n");
 				throw("Could not initialize tesseract.\n");
 			}
-
+			*/
 			CLibPicture libPicture;
 			wxString tempFile = CFileUtility::GetTempFile("temp.bmp");
 			CImageLoadingFormat loadingformat(false);
 			loadingformat.SetPicture(bitmapBackground);
 			libPicture.SavePicture(tempFile, &loadingformat, 0, 0);
 
-			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
+			
 
 			wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp");
+			wxString outputFile = CFileUtility::GetTempFile("ocrfile.hocr");
 
 			tesseract_preprocess(tempFile.ToStdString(), preprocess.ToStdString());
 
+			OcrToPDF(preprocess, outputFile, language);
+
+			//outputFile.append(".hocr");
+			LoadOcrBoxFile(outputFile);
+			/*
 			Pix *image = pixRead(preprocess.ToStdString().c_str());
 
 			//api->Init(CurDir, "eng");
@@ -299,18 +409,6 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			CExportOcr::api.SetImage(image);
 
-			/*
-			int page = 0;
-
-			std::thread t1(CExportOcr::ocrProcess, &CExportOcr::api, monitor);
-			std::thread t2(CExportOcr::monitorProgress, monitor, page);
-			t1.join();
-			t2.join();
-			*/
-			// Open input image with leptonica library
-			//Pix *image = pixRead("/usr/src/tesseract/testing/phototest.tif");
-			//api.SetImage(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(),
-			//	4, 4 * bitmap->GetBitmapWidth());
 
 			Boxa* boxes = CExportOcr::api.GetComponentImages(tesseract::RIL_TEXTLINE, true, NULL, NULL);
 			printf("Found %d textline image components.\n", boxes->n);
@@ -339,15 +437,16 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 				bboxText->SetId(treeid);
 				listRect.push_back(bboxText);
 			}
-
+			
 			// Get OCR result
 			//char * outText = api.GetUTF8Text();
 			//printf("OCR output:\n%s", outText);
 
 			// Destroy used object and release memory
 			CExportOcr::api.End();
-
+			*/
 			exportPdf->Enable(true);
+			ocrPdf->Enable(false);
 
 			//delete[] outText;
 
@@ -404,9 +503,11 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
 	exportPdf = new wxButton(panel, ID_BUT_OCRPDF, _("&Export To File ..."));
-	gsizer->Add(new wxButton(panel, ID_BUT_OCR, _("&OCR")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+	ocrPdf = new wxButton(panel, ID_BUT_OCR, _("&OCR"));
+	gsizer->Add(ocrPdf, wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	gsizer->Add(exportPdf, wxGBPosition(row, 3), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	exportPdf->Enable(false);
+	ocrPdf->Enable(true);
 	panel->SetSizer(sizer);
 	sizer->SetSizeHints(panel);
 	return panel;
