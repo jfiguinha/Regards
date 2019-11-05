@@ -8,6 +8,7 @@
 
 #include "ofxScannerKit.h"
 #include "event_scanner.h"
+//#import <Quartz/Quartz.h>
 #import <Cocoa/Cocoa.h>
 #import <ImageCaptureCore/ImageCaptureCore.h>
 
@@ -18,7 +19,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 //--------------------------------------------------------------
 // Cocoa Interface
 //--------------------------------------------------------------
-@interface ScannerKit : NSObject <ICDeviceBrowserDelegate, ICScannerDeviceDelegate> {
+@interface ScannerKit : NSObject <ICScannerDeviceDelegate, ICDeviceBrowserDelegate> {
     ICDeviceBrowser *   mDeviceBrowser;
     NSMutableArray  *   mScanners;
 	NSString		*	downloadPath;
@@ -91,15 +92,8 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
     // Assign a delegate
     mDeviceBrowser.delegate = self;
     
-    // Look for Scanners in all available locations
-    mDeviceBrowser.browsedDeviceTypeMask = ICDeviceTypeMask(mDeviceBrowser.browsedDeviceTypeMask 
-    | ICDeviceTypeMaskScanner
-	| ICDeviceLocationTypeMaskLocal
-	| ICDeviceLocationTypeMaskShared
-	| ICDeviceLocationTypeMaskBonjour
-	| ICDeviceLocationTypeMaskBluetooth
-	| ICDeviceLocationTypeMaskRemote);
-    
+    mDeviceBrowser.browsedDeviceTypeMask = ICDeviceTypeMask(ICDeviceLocationTypeMaskLocal|ICDeviceLocationTypeMaskRemote|ICDeviceTypeMaskScanner);
+
 	// set the download path
 	NSString * resourcePath = [[NSBundle mainBundle] bundlePath];
 	if(camKitRef != NULL) {
@@ -112,7 +106,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
     }
     
 	
-	
+	printf("lookForScanners \n");
 	// Start browsing for Scanners
 	[mDeviceBrowser start];
     
@@ -120,6 +114,11 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 	// clean up 
 	[pool release];
 	// [resourcePath release];
+}
+
+- (void)scannerDeviceDidBecomeAvailable:(ICScannerDevice*)scanner;
+{
+    [scanner requestOpenSession];
 }
 
 //------------------------------------
@@ -235,13 +234,15 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 	}
 }
 
+
+
 // -------------------------------------------- 
 // a device was found and added
 // -------------------------------------------- 
 - (void)deviceBrowser:(ICDeviceBrowser*)browser didAddDevice:(ICDevice*)addedDevice moreComing:(BOOL)moreComing {
     // NSLog( @"deviceBrowser:didAddDevice:moreComing: \n%@\n", addedDevice );
-	
-    if (addedDevice.type & ICDeviceTypeScanner ) {
+	printf("deviceBrowser:didAddDevice:moreComing: \n");
+    if ( (addedDevice.type & ICDeviceTypeMaskScanner) == ICDeviceTypeScanner ) {
         
         addedDevice.delegate = self;
 		
@@ -398,7 +399,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
         }
         
 
-        
+/*
         
         if([[Scanner mediaFiles] count] > 0) {
             
@@ -413,7 +414,7 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
             }
             
         }
-        
+*/
         
         
         
@@ -434,6 +435,9 @@ ofxScannerKit::ofxScannerKit() {
 
 
 void ofxScannerKit::listScanners() {
+    
+    printf("ofxScannerKit::listScanners \n");
+    
     if(camKit == NULL) {
         camKit = [[ScannerKit alloc] init];
         [camKit setScannerKitRef:this];
@@ -467,6 +471,7 @@ void ofxScannerDevice::removeAllImages() {
 }
 
 void ofxScannerDevice::openDevice() {
+    printf("ofxScannerDevice::openDevice\n");
     if(device != NULL) {
 		ICScannerDevice * tempScanner = (ICScannerDevice*)device;
 		if(tempScanner != NULL && ![tempScanner hasOpenSession]) {
@@ -475,6 +480,7 @@ void ofxScannerDevice::openDevice() {
 	}
 }
 void ofxScannerDevice::closeDevice() {
+    printf("ofxScannerDevice::closeDevice\n");
     if(device != NULL) {
 		ICScannerDevice * tempScanner = (ICScannerDevice*)device;
 		[tempScanner requestCloseSession];
@@ -498,25 +504,96 @@ void ofxScannerDevice::takePicture() {
 			[tempScanner requestTakePicture];
 		}
 		else {
-			printf("need to open Scanner frist\n");
+			printf("need to open Scanner first\n");
 			bOpenThenTakePicture = true;
 			openDevice();
 		}
 	}
 }
+
 void ofxScannerDevice::enableTethering() {
     if(device != NULL) {
-		ICScannerDevice * tempScanner = (ICScannerDevice*)device;
-        [tempScanner requestEnableTethering];
+		//ICScannerDevice * tempScanner = (ICScannerDevice*)device;
+        //[tempScanner requestEnableTethering];
     }
 }
 void ofxScannerDevice::disableTethering() {
     if(device != NULL) {
-		ICScannerDevice * tempScanner = (ICScannerDevice*)device;
-        [tempScanner requestDisableTethering];
+		//ICScannerDevice * tempScanner = (ICScannerDevice*)device;
+        //[tempScanner requestDisableTethering];
     }
 }
 
+void ofxScannerDevice::StartOverviewScan() 
+{
+    printf("ofxScannerDevice::StartOverviewScan\n");
+    if(device != NULL) 
+    {
+        ICScannerDevice*          scanner = (ICScannerDevice*)device;
+        ICScannerFunctionalUnit*  fu      = scanner.selectedFunctionalUnit;
+        
+        if ( fu.canPerformOverviewScan && ( fu.scanInProgress == NO ) && ( fu.overviewScanInProgress == NO ) )
+        {
+            fu.overviewResolution = [fu.supportedResolutions indexGreaterThanOrEqualToIndex:72];
+            [scanner requestOverviewScan];
+            //[mProgressIndicator setHidden:NO];
+        }
+        else
+            [scanner cancelScan];
+    }
+}
+
+
+//------------------------------------------------------------------------------------------------------------ startOverviewScan
+
+void ofxScannerDevice::StartScan() 
+{
+    printf("ofxScannerDevice::StartScan\n");
+    if(device != NULL) 
+    {
+        ICScannerDevice*          scanner = (ICScannerDevice*)device;
+        ICScannerFunctionalUnit*  fu      = scanner.selectedFunctionalUnit;
+       
+        if ( ( fu.scanInProgress == NO ) && ( fu.overviewScanInProgress == NO ) )
+        {
+            if ( fu.type == ICScannerFunctionalUnitTypeDocumentFeeder )
+            {
+                ICScannerFunctionalUnitDocumentFeeder* dfu = (ICScannerFunctionalUnitDocumentFeeder*)fu;
+                
+                dfu.documentType  = ICScannerDocumentTypeUSLetter;
+            }
+            else
+            {
+                NSSize s;
+                
+                fu.measurementUnit  = ICScannerMeasurementUnitInches;
+                if ( fu.type == ICScannerFunctionalUnitTypeFlatbed )
+                    s = ((ICScannerFunctionalUnitFlatbed*)fu).physicalSize;
+                else if ( fu.type == ICScannerFunctionalUnitTypePositiveTransparency )
+                    s = ((ICScannerFunctionalUnitPositiveTransparency*)fu).physicalSize;
+                else
+                    s = ((ICScannerFunctionalUnitNegativeTransparency*)fu).physicalSize;
+                fu.scanArea         = NSMakeRect( 0.0, 0.0, s.width, s.height );
+            }
+            
+            fu.resolution                   = [fu.supportedResolutions indexGreaterThanOrEqualToIndex:100];
+            fu.bitDepth                     = ICScannerBitDepth8Bits;
+            fu.pixelDataType                = ICScannerPixelDataTypeRGB;
+            
+            scanner.transferMode            = ICScannerTransferModeFileBased;
+            //scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Pictures" stringByExpandingTildeInPath]];
+            scanner.downloadsDirectory      = [NSURL fileURLWithPath:[camKit.downloadPath stringByExpandingTildeInPath]];
+            scanner.documentName            = @"Scan";
+            scanner.documentUTI             = (id)kUTTypeJPEG;
+            
+            [scanner requestScan];
+            //[mProgressIndicator setHidden:NO];
+        }
+        else
+            [scanner cancelScan];
+    }
+
+}
 
 
 

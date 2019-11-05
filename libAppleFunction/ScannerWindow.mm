@@ -8,12 +8,21 @@
 enum
 {
     ID_BUT_SCAN = 3000,
+    ID_OPEN_SCAN = 3001,
     ID_BUT_PREVIEW,
 };
 
+ CScannerWindow::~CScannerWindow()
+ {
+     if(activeDevice != nullptr)
+         if(activeDevice->isOpen)
+            activeDevice->closeDevice();
+ }
 
-CScannerWindow::CScannerWindow(wxString name, wxWindow* parent, wxWindowID id)
-    : wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
+CScannerWindow::CScannerWindow(wxWindow *parent, wxWindowID id,
+    const wxString &title, const wxPoint &pos,
+    const wxSize &size, const long style) :
+    wxDialog(parent, id, title, pos, size, style)
 {
 	//ofSetVerticalSync(true);
 	wxString file;
@@ -30,10 +39,9 @@ CScannerWindow::CScannerWindow(wxString name, wxWindow* parent, wxWindowID id)
 	}
     
     activeDevice = NULL;
-    
-    camera.listCameras();
     camera.setDownloadFolder(tempFolder.ToStdString());
     camera.parent = this;
+    camera.listScanners();
     //ofAddListener(camera.deviceEvents, this, &testApp::deviceEvent);
     
     cout << "download path: " << camera.downloadPath << endl;
@@ -57,10 +65,47 @@ CScannerWindow::CScannerWindow(wxString name, wxWindow* parent, wxWindowID id)
     SetSizer(sizer);
     sizer->SetSizeHints(this);
     
+    Connect(ID_OPEN_SCAN, wxEVT_BUTTON, wxCommandEventHandler(CScannerWindow::OnOpenScanner));
+    Connect(ID_BUT_SCAN, wxEVT_BUTTON, wxCommandEventHandler(CScannerWindow::OnScan));
+    Connect(ID_BUT_PREVIEW, wxEVT_BUTTON, wxCommandEventHandler(CScannerWindow::OnPreview));
+    Connect(choice->GetId(), wxEVT_CHOICE, wxCommandEventHandler(CScannerWindow::OnSelectScanner), NULL, this);
     Connect(EVENT_CK_CAMERA_REMOVED, wxCommandEventHandler(CScannerWindow::OnCameraRemoved));
     Connect(EVENT_CK_CAMERA_READY, wxCommandEventHandler(CScannerWindow::OnCameraReady));
     Connect(EVENT_CK_PHOTO_DOWNLOADED, wxCommandEventHandler(CScannerWindow::OnPhotoDownloaded));
     Connect(EVENT_CK_ALL_CAMERAS_FOUND, wxCommandEventHandler(CScannerWindow::OnCameraFound));
+}
+
+void CScannerWindow::OnScan(wxCommandEvent& event)
+{
+    cout << "OnScan" << endl;
+    
+    if(activeDevice != nullptr)
+    {
+        if(!activeDevice->isOpen)
+            activeDevice->openDevice();
+            
+        activeDevice->StartScan();
+    }
+}
+    
+void CScannerWindow::OnPreview(wxCommandEvent& event)
+{
+    cout << "OnPreview" << endl;
+    
+    if(activeDevice != nullptr)
+    {
+        if(!activeDevice->isOpen)
+            activeDevice->openDevice();
+            
+        activeDevice->StartOverviewScan();
+    }
+}
+
+void CScannerWindow::OnSelectScanner(wxCommandEvent& event)
+{
+    cout << "OnSelectScanner" << endl;
+    int selection = choice->GetSelection();
+    activeDevice = camera.devices[selection];
 }
 
 wxPanel * CScannerWindow::MakeSettingsPanel(wxWindow *parent)
@@ -85,7 +130,7 @@ wxPanel * CScannerWindow::MakeSettingsPanel(wxWindow *parent)
 
 	choice->SetSelection(0);
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
-	gsizer->Add(new wxButton(panel, ID_BUT_SCAN, _("&Scan")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+	gsizer->Add(new wxButton(panel, ID_OPEN_SCAN, _("&Open")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	panel->SetSizer(sizer);
 	sizer->SetSizeHints(panel);
 	return panel;
@@ -104,7 +149,7 @@ wxPanel * CScannerWindow::MakePreviewPanel(wxWindow *parent)
 
 void CScannerWindow::OnCameraRemoved(wxCommandEvent& event)
 {
-    ofxCameraDevice * device = (ofxCameraDevice *)event.GetClientData();
+    ofxScannerDevice * device = (ofxScannerDevice *)event.GetClientData();
     if(device != nullptr)
     {
         if(activeDevice == device->device) {
@@ -117,7 +162,7 @@ void CScannerWindow::OnCameraRemoved(wxCommandEvent& event)
 
 void CScannerWindow::OnCameraReady(wxCommandEvent& event)
 {
-    ofxCameraDevice * device = (ofxCameraDevice *)event.GetClientData();
+    ofxScannerDevice * device = (ofxScannerDevice *)event.GetClientData();
     if(device != nullptr)
         device->enableTethering();
 }
@@ -150,6 +195,16 @@ void CScannerWindow::OnCameraFound(wxCommandEvent& event)
         //SimpleButton btn;
         //btn.set(0, 0, 30, 30);
         //buttons.push_back(btn);
+    }
+}
+
+void CScannerWindow::OnOpenScanner(wxCommandEvent& event)
+{
+    cout << "OnOpenScanner" << endl;
+    if(activeDevice != nullptr)
+    {
+        if(activeDevice->isOpen)
+            activeDevice->openDevice();
     }
 }
 

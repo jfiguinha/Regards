@@ -41,6 +41,8 @@ class ofxScannerDevice {
     void openDevice();
     void closeDevice();
     void removeAllImages();
+    void StartScan();
+    void StartOverviewScan();
 };
 
 class ofxPhotoDownloaded {

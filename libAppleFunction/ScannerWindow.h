@@ -4,16 +4,20 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include "ofxCameraKit.h"
+#include "ofxScannerKit.h"
 
 class wxImagePanel;
 
-class CScannerWindow : public wxWindow
+class CScannerWindow: public wxDialog
 {
 	
 public:
-    CScannerWindow(wxString name, wxWindow* parent, wxWindowID id);
-    
+    CScannerWindow(wxWindow *parent, wxWindowID id,
+        const wxString &title,
+        const wxPoint &pos = wxDefaultPosition,
+        const wxSize &size = wxSize(500, 400),
+        const long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+    ~CScannerWindow();
 	//void setup();
 	//void update();
 	//void draw();
@@ -23,7 +27,10 @@ public:
     void OnCameraReady(wxCommandEvent& event);
     void OnPhotoDownloaded(wxCommandEvent& event);
     void OnCameraFound(wxCommandEvent& event);
-    
+    void OnOpenScanner(wxCommandEvent& event);
+    void OnSelectScanner(wxCommandEvent& event);
+    void OnScan(wxCommandEvent& event);
+    void OnPreview(wxCommandEvent& event);
     //void OnSize(wxSizeEvent &event);
     //void OnPaint(wxPaintEvent &event);
     /*
@@ -44,8 +51,8 @@ private:
     wxPanel * MakeSettingsPanel(wxWindow *parent);
      wxPanel * MakePreviewPanel(wxWindow *parent);
     wxImagePanel * panelPreview;
-    ofxCameraKit          camera;
-    ofxCameraDevice *     activeDevice;
+    ofxScannerKit          camera;
+    ofxScannerDevice *     activeDevice;
     wxImage               latestImage;
     wxChoice *choice;
 };

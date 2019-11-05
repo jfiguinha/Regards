@@ -26,7 +26,7 @@
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
 #ifdef __APPLE__
-#include <ScanView.h>
+#include <ScannerWindow.h>
 #endif
 #include <ImageLoadingFormat.h>
 using namespace Regards::Print;
@@ -63,9 +63,10 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 
 	viewerTheme = new CMainTheme();
 	CMainThemeInit::Initialize(viewerTheme);
-
+#ifndef __APPLE__
 #if __WXSCANSANE__  
     scanSane = new wxScanSane();	
+#endif
 #endif
     // create a menu bar
 	wxMenu *menuFile = new wxMenu;
@@ -75,8 +76,10 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	menuFile->Append(ID_EXPORTTXT, _("&Export PDF to TEXT ..."), _("Export PDF to TEXT"));
 	//menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
+#ifndef __APPLE__
 #if __WXSCANSANE__  
 	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
+#endif
 #endif
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_PRINT, _("&Print PDF..."), _("Print PDF"));
@@ -124,11 +127,12 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 
 CScannerFrame::~CScannerFrame()
 {
+#ifndef __APPLE__
 #if __WXSCANSANE__  
     if(scanSane != nullptr)
         delete scanSane;
 #endif
-
+#endif
 	if (centralWindow != nullptr)
 		delete centralWindow;
 }
@@ -262,11 +266,13 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 		mainInterface->ShowAbout();
 }
 
+#ifndef __APPLE__
 #ifdef __WXSCANSANE__ 
 void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
 {
     scanSane->SelectSource("", true, this);
 }
+#endif
 #endif
 #ifdef __WXMSW__
 wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd)
@@ -349,6 +355,13 @@ wxString CScannerFrame::ScanPage()
 {
     wxString pdfFile = "";
 	wxImage image;
+#ifdef __APPLE__
+    CScannerWindow d(this, -1, _("Acquire"));
+    if (d.ShowModal() == wxID_OK)
+    {
+        //image = d.GetImage();
+    }
+#else
 #if __WXSCANSANE__  
     if(scanSane->IsSourceSelected())
     {
@@ -399,7 +412,7 @@ wxString CScannerFrame::ScanPage()
 
 	//delete gdiplus;
 #endif
-
+#endif
 	if (image.IsOk())
 	{
         pdfFile = CFileUtility::GetTempFile("scanner.pdf");
@@ -418,12 +431,11 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	switch (event.GetId())
 	{
-        /*
 #ifdef __APPLE__
     case ID_ACQUIREIMAGE:
 		event.Enable(true);
-		break;*/
-#if defined(__WXSCANSANE__)  
+		break;
+#elif defined(__WXSCANSANE__)
 	case ID_ACQUIREIMAGE:
 		if (scanSane != nullptr)
 			event.Enable(scanSane->IsSourceSelected());

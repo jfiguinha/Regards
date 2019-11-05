@@ -13,6 +13,7 @@
 #include <qpdf/QUtil.hh>
 #include "SelectPage.h"
 #include <FileUtility.h>
+
 using namespace Regards::Window;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame)

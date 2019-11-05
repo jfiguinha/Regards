@@ -75,10 +75,11 @@ private:
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
 
+#ifndef __APPLE__
 #ifdef __WXSCANSANE__ 
 	void OnSelectSource(wxCommandEvent& event);
 #endif
-
+#endif
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
    
@@ -90,9 +91,10 @@ private:
 	Regards::Viewer::CMainTheme * viewerTheme;
 #endif
 
-
+#ifndef __APPLE__
 #if __WXSCANSANE__  
     wxScanSane * scanSane;
+#endif
 #endif
 
 	//Toolbar
