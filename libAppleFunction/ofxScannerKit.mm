@@ -116,11 +116,6 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 	// [resourcePath release];
 }
 
-- (void)scannerDeviceDidBecomeAvailable:(ICScannerDevice*)scanner;
-{
-    [scanner requestOpenSession];
-}
-
 //------------------------------------
 // Load the icon image for the device and
 // store it in the c++ ofImage object
@@ -234,8 +229,181 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 	}
 }
 
+//------------------------------------------------------------------------------------------- deviceBrowser:deviceDidChangeName:
+
+- (void)deviceBrowser:(ICDeviceBrowser*)browser deviceDidChangeName:(ICDevice*)device;
+{
+    NSLog( @"deviceBrowser:\n%@\ndeviceDidChangeName: \n%@\n", browser, device );
+}
+
+//----------------------------------------------------------------------------------- deviceBrowser:deviceDidChangeSharingState:
+
+- (void)deviceBrowser:(ICDeviceBrowser*)browser deviceDidChangeSharingState:(ICDevice*)device;
+{
+    NSLog( @"deviceBrowser:\n%@\ndeviceDidChangeSharingState: \n%@\n", browser, device );
+}
+
+//--------------------------------------------------------------------------------- deviceBrowser:didReceiveButtonPressOnDevice:
+
+- (void)deviceBrowser:(ICDeviceBrowser*)browser requestsSelectDevice:(ICDevice*)device
+{
+    NSLog( @"deviceBrowser:\n%@\nrequestsSelectDevice: \n%@\n", browser, device );
+}
+
+#pragma mark -
+#pragma mark ICDevice & ICScannerDevice delegate methods
+//------------------------------------------------------------------------------------------------------------- didRemoveDevice:
+
+- (void)didRemoveDevice:(ICDevice*)removedDevice
+{
+    NSLog( @"didRemoveDevice: \n%@\n", removedDevice );
+   // [mScannersController removeObject:removedDevice];
+}
+//--------------------------------------------------------------------------------------------------------- deviceDidChangeName:
+
+- (void)deviceDidChangeName:(ICDevice*)device;
+{
+    NSLog( @"deviceDidChangeName: \n%@\n", device );
+}
+
+//------------------------------------------------------------------------------------------------- deviceDidChangeSharingState:
+
+- (void)deviceDidChangeSharingState:(ICDevice*)device
+{
+    NSLog( @"deviceDidChangeSharingState: \n%@\n", device );
+}
+
+//------------------------------------------------------------------------------------------ device:didReceiveStatusInformation:
+
+- (void)device:(ICDevice*)device didReceiveStatusInformation:(NSDictionary*)status
+{
+    NSLog( @"device: \n%@\ndidReceiveStatusInformation: \n%@\n", device, status );
+    
+    if ( [[status objectForKey:ICStatusNotificationKey] isEqualToString:ICScannerStatusWarmingUp] )
+    {
+        //[mProgressIndicator setDisplayedWhenStopped:YES];
+        //[mProgressIndicator setIndeterminate:YES];
+        //[mProgressIndicator startAnimation:NULL];
+        //[mStatusText setStringValue:[status objectForKey:ICLocalizedStatusNotificationKey]];
+    }
+    else if ( [[status objectForKey:ICStatusNotificationKey] isEqualToString:ICScannerStatusWarmUpDone] )
+    {
+        //[mStatusText setStringValue:@""];
+        //[mProgressIndicator stopAnimation:NULL];
+        //[mProgressIndicator setIndeterminate:NO];
+        //[mProgressIndicator setDisplayedWhenStopped:NO];
+    }
+}
+
+//---------------------------------------------------------------------------------------------------- device:didEncounterError:
+
+- (void)device:(ICDevice*)device didEncounterError:(NSError*)error
+{
+    NSLog( @"device: \n%@\ndidEncounterError: \n%@\n", device, error );
+    
+    /*
+    NSBeginAlertSheet(
+                  NULL,
+                  @"OK", 
+                  NULL, 
+                  NULL, 
+                  mWindow, 
+                  NULL, 
+                  NULL, 
+                  NULL, 
+                  NULL, 
+                  [error localizedDescription],
+                  NULL
+              );*/
+}
+
+//----------------------------------------------------------------------------------------- scannerDevice:didReceiveButtonPress:
+
+- (void)device:(ICDevice*)device didReceiveButtonPress:(NSString*)button
+{
+    NSLog( @"device: \n%@\ndidReceiveButtonPress: \n%@\n", device, button );
+}
+
+//--------------------------------------------------------------------------------------------- scannerDeviceDidBecomeAvailable:
+
+- (void)scannerDeviceDidBecomeAvailable:(ICScannerDevice*)scanner;
+{
+    NSLog( @"scannerDeviceDidBecomeAvailable: \n%@\n", scanner );
+    [scanner requestOpenSession];
+}
+
+//--------------------------------------------------------------------------------- scannerDevice:didSelectFunctionalUnit:error:
+
+- (void)scannerDevice:(ICScannerDevice*)scanner didSelectFunctionalUnit:(ICScannerFunctionalUnit*)functionalUnit error:(NSError*)error
+{
+    NSLog( @"scannerDevice:didSelectFunctionalUnit:error:contextInfo:\n" );
+    NSLog( @"  scanner:        %@:\n", scanner );
+    NSLog( @"  functionalUnit: %@:\n", functionalUnit );
+    NSLog( @"  error:          %@\n", error );
+}
+
+//--------------------------------------------------------------------------------------------- scannerDevice:didScanToURL:data:
+
+- (void)scannerDevice:(ICScannerDevice*)scanner didScanToURL:(NSURL*)url data:(NSData*)data
+{
+    NSLog( @"scannerDevice:didScanToURL:data: \n" );
+    NSLog( @"  scanner: %@", scanner );
+    NSLog( @"  url:     %@", url );
+    NSLog( @"  data:    %p\n", data );
+}
 
 
+#pragma mark -
+//------------------------------------------------------------------------------------------------------------ openCloseSession:
+
+
+
+/*
+//------------------------------------------------------------------------------------------------------------ startOverviewScan
+
+- (IBAction)startScan:(id)sender
+{
+    ICScannerDevice*          scanner = [self selectedScanner];
+    ICScannerFunctionalUnit*  fu      = scanner.selectedFunctionalUnit;
+   
+    if ( ( fu.scanInProgress == NO ) && ( fu.overviewScanInProgress == NO ) )
+    {
+        if ( fu.type == ICScannerFunctionalUnitTypeDocumentFeeder )
+        {
+            ICScannerFunctionalUnitDocumentFeeder* dfu = (ICScannerFunctionalUnitDocumentFeeder*)fu;
+            
+            dfu.documentType  = ICScannerDocumentTypeUSLetter;
+        }
+        else
+        {
+            NSSize s;
+            
+            fu.measurementUnit  = ICScannerMeasurementUnitInches;
+            if ( fu.type == ICScannerFunctionalUnitTypeFlatbed )
+                s = ((ICScannerFunctionalUnitFlatbed*)fu).physicalSize;
+            else if ( fu.type == ICScannerFunctionalUnitTypePositiveTransparency )
+                s = ((ICScannerFunctionalUnitPositiveTransparency*)fu).physicalSize;
+            else
+                s = ((ICScannerFunctionalUnitNegativeTransparency*)fu).physicalSize;
+            fu.scanArea         = NSMakeRect( 0.0, 0.0, s.width, s.height );
+        }
+        
+        fu.resolution                   = [fu.supportedResolutions indexGreaterThanOrEqualToIndex:100];
+        fu.bitDepth                     = ICScannerBitDepth8Bits;
+        fu.pixelDataType                = ICScannerPixelDataTypeRGB;
+        
+        scanner.transferMode            = ICScannerTransferModeFileBased;
+        scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Documents/Regards/temp/" stringByExpandingTildeInPath]];
+        scanner.documentName            = @"Scan";
+        scanner.documentUTI             = (id)kUTTypeJPEG;
+        
+        [scanner requestScan];
+        [mProgressIndicator setHidden:NO];
+    }
+    else
+        [scanner cancelScan];
+}
+*/
 // -------------------------------------------- 
 // a device was found and added
 // -------------------------------------------- 
@@ -324,14 +492,23 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
     }
     
 }
-- (void)didRemoveDevice:(ICDevice*)removedDevice {
+
+//------------------------------------------------------------------------------ scannerDevice:didCompleteOverviewScanWithError:
+
+- (void)scannerDevice:(ICScannerDevice*)scanner didCompleteOverviewScanWithError:(NSError*)error;
+{
+    NSLog( @"scannerDevice: \n%@\ndidCompleteOverviewScanWithError: \n%@\n", scanner, error );
+    //[mProgressIndicator setHidden:YES];
+     printf("didCompleteOverviewScanWithError \n");
 }
 
-// -------------------------------------------- 
-// Button Press
-// -------------------------------------------- 
-- (void)device:(ICDevice*)device didReceiveButtonPress:(NSString*)buttonType {
-	NSLog(@"Device: %@\n", buttonType);	
+//-------------------------------------------------------------------------------------- scannerDevice:didCompleteScanWithError:
+
+- (void)scannerDevice:(ICScannerDevice*)scanner didCompleteScanWithError:(NSError*)error;
+{
+    NSLog( @"scannerDevice: \n%@\ndidCompleteScanWithError: \n%@\n", scanner, error );
+    printf("didCompleteScanWithError \n");
+    //[mProgressIndicator setHidden:YES];
 }
 
 // --------------------------------------------  
@@ -341,7 +518,12 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 - (void)device:(ICDevice*)device didOpenSessionWithError:(NSError*)error {
 	
 	// NSLog(@"Session Opened %@\n", [device name]);	
-	
+    NSLog( @"device:didOpenSessionWithError: \n" );
+    NSLog( @"  device: %@\n", device );
+    NSLog( @"  error : %@\n", error );
+    
+    printf("Error didOpenSessionWithError : %s \n",[error UTF8String]);
+    
 	// try and find the Scanner in the c++ class
 	for(int i=0; i<camKitRef->devices.size(); i++) {
 		
@@ -354,11 +536,12 @@ static bool shouldRemoveDevice(ofxScannerDevice * d) {
 			camKitRef->devices[i]->isOpen = true;
 			camKitRef->devices[i]->isBusy = false;
 			
+            /*
 			if(camKitRef->devices[i]->bOpenThenTakePicture) {
 				camKitRef->devices[i]->takePicture();
 				camKitRef->devices[i]->bOpenThenTakePicture = false;
 			}
-			
+			*/
 			// printf("found the cam %p == %p\n", device, camKitRef->Scanners[i].cam);	
 		}
 	}
@@ -483,7 +666,8 @@ void ofxScannerDevice::closeDevice() {
     printf("ofxScannerDevice::closeDevice\n");
     if(device != NULL) {
 		ICScannerDevice * tempScanner = (ICScannerDevice*)device;
-		[tempScanner requestCloseSession];
+        if(tempScanner != NULL && [tempScanner hasOpenSession]) 
+            [tempScanner requestCloseSession];
 	}
 }
 void ofxScannerDevice::takePicture() {
@@ -581,8 +765,8 @@ void ofxScannerDevice::StartScan()
             fu.pixelDataType                = ICScannerPixelDataTypeRGB;
             
             scanner.transferMode            = ICScannerTransferModeFileBased;
-            //scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Pictures" stringByExpandingTildeInPath]];
-            scanner.downloadsDirectory      = [NSURL fileURLWithPath:[camKit.downloadPath stringByExpandingTildeInPath]];
+            scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Pictures" stringByExpandingTildeInPath]];
+            //scanner.downloadsDirectory      = [NSURL fileURLWithPath:[camKit.downloadPath stringByExpandingTildeInPath]];
             scanner.documentName            = @"Scan";
             scanner.documentUTI             = (id)kUTTypeJPEG;
             

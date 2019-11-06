@@ -50,14 +50,17 @@ CScannerWindow::CScannerWindow(wxWindow *parent, wxWindowID id,
     hsizer->Add(MakeSettingsPanel(this), 1, wxEXPAND | wxALL, 5);
     hsizer->Add(MakePreviewPanel(this), 1, wxEXPAND | wxALL, 5);
 
+    
     wxBoxSizer *bsizer = new wxBoxSizer(wxHORIZONTAL);
     bsizer->Add(10, 10, 1, wxEXPAND);
     wxButton *defBut;
+   // bsizer->Add(statusBox, 0, wxALIGN_RIGHT | wxALL, 5);
     bsizer->Add(defBut = new wxButton(this, ID_BUT_SCAN, _("&Scan")), 0, wxALIGN_RIGHT | wxALL, 5);
     defBut->SetDefault();
     bsizer->Add(new wxButton(this, ID_BUT_PREVIEW, _("&Preview")), 0, wxALIGN_RIGHT | wxALL, 5);
     bsizer->Add(new wxButton(this, wxID_CANCEL, _("Cancel")), 0, wxALIGN_RIGHT | wxALL, 5);
 
+    
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(hsizer, 1, wxEXPAND | wxALL, 5);
     sizer->Add(bsizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
@@ -115,12 +118,14 @@ wxPanel * CScannerWindow::MakeSettingsPanel(wxWindow *parent)
 
 	wxGridBagSizer *gsizer = NULL;
 
+   
 	wxStaticBox *sbox = new wxStaticBox(panel, wxID_ANY, wxString("List of Scanner : "));
 	wxStaticBoxSizer *sbsizer = new wxStaticBoxSizer(sbox, wxVERTICAL);
+    
 	gsizer = new wxGridBagSizer(5, 5);
-	sbsizer->Add(gsizer, 0, wxEXPAND | wxALL, 5);
+	//sbsizer->Add(gsizer, 0, wxEXPAND | wxALL, 5);
 	sizer->Add(sbsizer, 0, wxEXPAND | wxALL, 5);
-
+    
 	unsigned int row = gsizer->GetEffectiveRowsCount();
 
 	gsizer->Add(new wxStaticText(panel, wxID_ANY, wxString("Scanner") + _T(":")),
@@ -132,6 +137,12 @@ wxPanel * CScannerWindow::MakeSettingsPanel(wxWindow *parent)
 	gsizer->Add(choice, wxGBPosition(row, 1), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	gsizer->Add(new wxButton(panel, ID_OPEN_SCAN, _("&Open")), wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	panel->SetSizer(sizer);
+    statusBox= new wxStaticBox(panel, wxID_ANY, wxString("Status Scanner"));
+    
+    wxStaticBoxSizer *sbsizerStatus = new wxStaticBoxSizer(statusBox, wxVERTICAL);
+    
+    sizer->Add(gsizer, 0, wxEXPAND | wxALL, 5);
+    sizer->Add(sbsizerStatus, 0, wxEXPAND | wxALL, 5);
 	sizer->SetSizeHints(panel);
 	return panel;
 }
@@ -142,6 +153,7 @@ wxPanel * CScannerWindow::MakePreviewPanel(wxWindow *parent)
     wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
     
     panelPreview->SetSizer(sizer);
+    
     sizer->SetSizeHints(panelPreview);
 
     return panelPreview;

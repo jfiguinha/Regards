@@ -1,0 +1,1018 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment version="1090" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="205" id="206"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <menu title="MainMenu" systemMenu="main" id="29" userLabel="MainMenu">
+            <items>
+                <menuItem title="ScannerBrowser" id="56">
+                    <menu key="submenu" title="ScannerBrowser" systemMenu="apple" id="57">
+                        <items>
+                            <menuItem title="About ScannerBrowser" id="58">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="196">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Hide ScannerBrowser" keyEquivalent="h" id="134">
+                                <connections>
+                                    <action selector="hide:" target="-2" id="152"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Hide Others" keyEquivalent="h" id="145">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-2" id="146"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All" id="150">
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-2" id="153"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="149">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Quit ScannerBrowser" keyEquivalent="q" id="136">
+                                <connections>
+                                    <action selector="terminate:" target="-2" id="139"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Edit" id="163">
+                    <menu key="submenu" title="Edit" id="169">
+                        <items>
+                            <menuItem title="Undo" keyEquivalent="z" id="158">
+                                <connections>
+                                    <action selector="undo:" target="-1" id="180"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Redo" keyEquivalent="Z" id="173">
+                                <connections>
+                                    <action selector="redo:" target="-1" id="178"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="156">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Cut" keyEquivalent="x" id="160">
+                                <connections>
+                                    <action selector="cut:" target="-1" id="175"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Copy" keyEquivalent="c" id="157">
+                                <connections>
+                                    <action selector="copy:" target="-1" id="181"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Paste" keyEquivalent="v" id="171">
+                                <connections>
+                                    <action selector="paste:" target="-1" id="176"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Delete" id="164">
+                                <connections>
+                                    <action selector="delete:" target="-1" id="195"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Select All" keyEquivalent="a" id="172">
+                                <connections>
+                                    <action selector="selectAll:" target="-1" id="179"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Window" id="241">
+                    <menu key="submenu" title="Window" systemMenu="window" id="242">
+                        <items>
+                            <menuItem title="Minimize" keyEquivalent="m" id="246">
+                                <connections>
+                                    <action selector="performMiniaturize:" target="-1" id="247"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Zoom" id="244">
+                                <connections>
+                                    <action selector="performZoom:" target="-1" id="248"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="243">
+                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            </menuItem>
+                            <menuItem title="Bring All to Front" id="245">
+                                <connections>
+                                    <action selector="arrangeInFront:" target="-1" id="249"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Help" id="103">
+                    <menu key="submenu" title="Help" id="106">
+                        <items>
+                            <menuItem title="ScannerBrowser Help" keyEquivalent="?" id="111">
+                                <connections>
+                                    <action selector="showHelp:" target="-1" id="122"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+            </items>
+            <point key="canvasLocation" x="140" y="154"/>
+        </menu>
+        <customObject id="205" userLabel="AppController" customClass="AppController">
+            <connections>
+                <outlet property="mFunctionalUnitMenu" destination="638" id="650"/>
+                <outlet property="mProgressIndicator" destination="602" id="820"/>
+                <outlet property="mScannersController" destination="439" id="584"/>
+                <outlet property="mScannersTableView" destination="443" id="581"/>
+                <outlet property="mStatusText" destination="821" id="823"/>
+                <outlet property="mWindow" destination="21" id="819"/>
+                <outlet property="setupWindow" destination="RXM-tU-agt" id="C4D-9a-BFM"/>
+            </connections>
+        </customObject>
+        <window title="ScannerBrowser" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="21" userLabel="ScannerWindow">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="96" y="275" width="922" height="539"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <value key="minSize" type="size" width="922" height="539"/>
+            <view key="contentView" focusRingType="none" id="2">
+                <rect key="frame" x="0.0" y="0.0" width="922" height="539"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box focusRingType="none" fixedFrame="YES" boxType="custom" borderType="none" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="463">
+                        <rect key="frame" x="20" y="49" width="234" height="473"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
+                        <view key="contentView" ambiguous="YES" id="1df-rB-590">
+                            <rect key="frame" x="0.0" y="0.0" width="234" height="473"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="456">
+                                    <rect key="frame" x="2" y="454" width="232" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Scanners" id="457">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <scrollView focusRingType="none" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="52" horizontalPageScroll="10" verticalLineScroll="52" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="440">
+                                    <rect key="frame" x="1" y="9" width="233" height="437"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
+                                    <clipView key="contentView" ambiguous="YES" id="awS-F4-w51">
+                                        <rect key="frame" x="1" y="1" width="231" height="435"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <tableView focusRingType="none" verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="50" id="443">
+                                                <rect key="frame" x="0.0" y="0.0" width="231" height="435"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <size key="intercellSpacing" width="3" height="2"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                <tableColumns>
+                                                    <tableColumn width="50" minWidth="50" maxWidth="50" id="458">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                        </tableHeaderCell>
+                                                        <imageCell key="dataCell" controlSize="small" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="imageCell:460:image" id="460"/>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <connections>
+                                                            <binding destination="439" name="value" keyPath="arrangedObjects.icon" id="531">
+                                                                <dictionary key="options">
+                                                                    <integer key="NSAllowsEditingMultipleValuesSelection" value="0"/>
+                                                                    <integer key="NSConditionallySetsEnabled" value="0"/>
+                                                                    <string key="NSValueTransformerName">CGImageRefToNSImageTransformer</string>
+                                                                </dictionary>
+                                                            </binding>
+                                                        </connections>
+                                                    </tableColumn>
+                                                    <tableColumn editable="NO" width="175" minWidth="40" maxWidth="1000" id="445">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="448" customClass="VerticallyCenteredTextFieldCell">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES"/>
+                                                        <connections>
+                                                            <binding destination="439" name="value" keyPath="arrangedObjects.name" id="450"/>
+                                                        </connections>
+                                                    </tableColumn>
+                                                </tableColumns>
+                                            </tableView>
+                                        </subviews>
+                                    </clipView>
+                                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="442">
+                                        <rect key="frame" x="-100" y="-100" width="139" height="15"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="441">
+                                        <rect key="frame" x="217" y="1" width="15" height="430"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                </scrollView>
+                            </subviews>
+                        </view>
+                    </box>
+                    <imageView focusRingType="none" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="653">
+                        <rect key="frame" x="271" y="55" width="325" height="441"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" focusRingType="none" alignment="left" imageScaling="proportionallyDown" imageFrameStyle="groove" id="654"/>
+                        <connections>
+                            <binding destination="439" name="value" keyPath="selection.selectedFunctionalUnit.overviewImage" id="656">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">CGImageRefToNSImageTransformer</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </imageView>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="638">
+                        <rect key="frame" x="695" y="469" width="210" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="641" id="639">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <menu key="menu" title="OtherViews" id="640">
+                                <items>
+                                    <menuItem title="Item 1" state="on" id="641"/>
+                                    <menuItem title="Item 2" id="642"/>
+                                    <menuItem title="Item 3" id="643"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="439" name="enabled" keyPath="selection.selectedFunctionalUnit" id="784">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="enabled3" keyPath="selection.selectedFunctionalUnit.overviewScanInProgress" previousBinding="785" id="786">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="enabled2" keyPath="selection.selectedFunctionalUnit.scanInProgress" previousBinding="784" id="785">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </popUpButton>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="593">
+                        <rect key="frame" x="711" y="52" width="98" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Scan" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="594">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="startScan:" target="205" id="711"/>
+                            <binding destination="439" name="enabled2" keyPath="selection.selectedFunctionalUnit.canPerformOverviewScan" previousBinding="Ro1-6G-eJd" id="Iar-8C-FxD">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="enabled3" keyPath="selection.selectedFunctionalUnit.overviewScanInProgress" previousBinding="Iar-8C-FxD" id="mbU-VU-hPI">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="title" keyPath="selection.selectedFunctionalUnit.scanInProgress" id="757">
+                                <dictionary key="options">
+                                    <string key="NSNoSelectionPlaceholder">Scan</string>
+                                    <string key="NSNullPlaceholder">Scan</string>
+                                    <string key="NSValueTransformerName">ScanControlTitle</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="205" name="enabled" keyPath="self" id="Ro1-6G-eJd">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">OpenScanStatusValueTransformer</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <progressIndicator wantsLayer="YES" focusRingType="none" verticalHuggingPriority="750" fixedFrame="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="602">
+                        <rect key="frame" x="327" y="38" width="214" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <connections>
+                            <binding destination="439" name="value" keyPath="selection.selectedFunctionalUnit.scanProgressPercentDone" id="631"/>
+                        </connections>
+                    </progressIndicator>
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="724">
+                        <rect key="frame" x="615" y="473" width="76" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Scan Mode:" id="725">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="466">
+                        <rect key="frame" x="809" y="52" width="98" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Open" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="467">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="openCloseSession:" target="205" id="693"/>
+                            <binding destination="439" name="title" keyPath="selection.hasOpenSession" id="787">
+                                <dictionary key="options">
+                                    <string key="NSNoSelectionPlaceholder">Open</string>
+                                    <string key="NSNullPlaceholder">Open</string>
+                                    <string key="NSValueTransformerName">OpenControlTitle</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="enabled" keyPath="selection.self" id="692">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">NSIsNotNil</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" imageHugsTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="591">
+                        <rect key="frame" x="613" y="52" width="98" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <buttonCell key="cell" type="push" title="Overview" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="592">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <connections>
+                                <binding destination="205" name="enabled" keyPath="self" id="40H-4E-1ia">
+                                    <dictionary key="options">
+                                        <string key="NSValueTransformerName">OpenStatusValueTransformer</string>
+                                    </dictionary>
+                                </binding>
+                            </connections>
+                        </buttonCell>
+                        <connections>
+                            <action selector="startOverviewScan:" target="205" id="664"/>
+                            <binding destination="439" name="enabled2" keyPath="selection.selectedFunctionalUnit.canPerformOverviewScan" previousBinding="YP0-a3-DB3" id="xJt-Oo-xtM">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="title" keyPath="selection.selectedFunctionalUnit.overviewScanInProgress" id="758">
+                                <dictionary key="options">
+                                    <string key="NSNoSelectionPlaceholder">Overview</string>
+                                    <string key="NSNullPlaceholder">Overview</string>
+                                    <string key="NSValueTransformerName">OverviewControlTitle</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="439" name="enabled3" keyPath="selection.selectedFunctionalUnit.scanInProgress" previousBinding="xJt-Oo-xtM" id="kaj-ZQ-VGu">
+                                <dictionary key="options">
+                                    <integer key="NSMultipleValuesPlaceholder" value="-1"/>
+                                    <integer key="NSNoSelectionPlaceholder" value="-1"/>
+                                    <integer key="NSNotApplicablePlaceholder" value="-1"/>
+                                    <integer key="NSNullPlaceholder" value="-1"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                            <binding destination="205" name="enabled" keyPath="self" id="YP0-a3-DB3">
+                                <dictionary key="options">
+                                    <string key="NSValueTransformerName">OpenStatusValueTransformer</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" preferredMaxLayoutWidth="214" translatesAutoresizingMaskIntoConstraints="NO" id="821">
+                        <rect key="frame" x="325" y="9" width="218" height="27"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" focusRingType="none" alignment="center" id="822">
+                            <font key="font" metaFont="system" size="10"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="j2V-Jt-XXM">
+                        <rect key="frame" x="607" y="415" width="110" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Setup Scan" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ksc-ek-s79">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="openSetup:" target="205" id="Lpk-1F-I5R"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="205" id="207"/>
+            </connections>
+            <point key="canvasLocation" x="146" y="-210.5"/>
+        </window>
+        <arrayController id="439" userLabel="Scanners Controller">
+            <declaredKeys>
+                <string>name</string>
+                <mutableString>contents</mutableString>
+                <string>icon</string>
+                <string>hasOpenSession</string>
+                <string>mediaFiles</string>
+                <string>canTakePicture</string>
+                <string>canSyncClock</string>
+                <string>canDeleteOneFile</string>
+                <string>scanInProgress</string>
+                <string>selectedFunctionalUnit</string>
+                <string>scanProgressPercentDone</string>
+                <string>selectedFunctionalUnit.scanProgressPercentDone</string>
+                <string>selectedFunctionalUnit.scanInProgress</string>
+                <string>availableFunctionalUnitTypes</string>
+                <string>selectedFunctionalUnit.overviewImage</string>
+                <string>self</string>
+                <string>selectedFunctionalUnit.overviewScanInProgress</string>
+                <string>selectedFunctionalUnit.canDoOverviewScan</string>
+                <string>selectedFunctionalUnit.canPerformOverviewScan</string>
+                <string>selectedFunctionalUnit.state</string>
+            </declaredKeys>
+            <connections>
+                <binding destination="205" name="contentArray" keyPath="scanners" id="582"/>
+            </connections>
+        </arrayController>
+        <window title="Scanner Settings" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="RXM-tU-agt" userLabel="setupWindow" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" utility="YES"/>
+            <rect key="contentRect" x="1440" y="547" width="348" height="427"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
+            <view key="contentView" id="yhG-yq-wm6">
+                <rect key="frame" x="0.0" y="0.0" width="348" height="427"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <box autoresizesSubviews="NO" borderType="bezel" title="Box" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="vIi-8A-oKQ">
+                        <rect key="frame" x="17" y="16" width="314" height="393"/>
+                        <view key="contentView" id="uo7-kd-DtN">
+                            <rect key="frame" x="3" y="3" width="308" height="387"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="g7z-h8-3OB">
+                                    <rect key="frame" x="16" y="360" width="54" height="16"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Scanner" id="YoY-Hd-dST">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <matrix verticalHuggingPriority="751" allowsEmptySelection="NO" autorecalculatesCellSize="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Yf6-v1-Up6">
+                                    <rect key="frame" x="16" y="162" width="106" height="58"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="cellSize" width="106" height="18"/>
+                                    <size key="intercellSpacing" width="4" height="2"/>
+                                    <buttonCell key="prototype" type="radio" title="Radio" imagePosition="left" alignment="left" inset="2" id="XQU-db-euF">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <cells>
+                                        <column>
+                                            <buttonCell type="radio" title="Color" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" state="on" tag="2" inset="2" id="92q-Zl-52H">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Grayscale" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" tag="1" inset="2" id="LpO-Dn-1Yu">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <buttonCell type="radio" title="Black/White" imagePosition="left" alignment="left" scrollable="YES" lineBreakMode="clipping" inset="2" id="3Nx-Bv-zOL">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                        </column>
+                                    </cells>
+                                </matrix>
+                                <scrollView autohidesScrollers="YES" horizontalLineScroll="36" horizontalPageScroll="10" verticalLineScroll="36" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="780-mx-cf0">
+                                    <rect key="frame" x="16" y="11" width="276" height="129"/>
+                                    <clipView key="contentView" id="3gC-xo-n74">
+                                        <rect key="frame" x="1" y="0.0" width="274" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <subviews>
+                                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="34" rowSizeStyle="automatic" headerView="uiJ-GA-Wjd" viewBased="YES" id="f9x-HA-iPe">
+                                                <rect key="frame" x="0.0" y="0.0" width="274" height="103"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <size key="intercellSpacing" width="3" height="2"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
+                                                <tableColumns>
+                                                    <tableColumn identifier="NameColumn" width="158" minWidth="10" maxWidth="3.4028234663852886e+38" id="O17-N5-v8E">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="HgQ-LA-QzD">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <prototypeCellViews>
+                                                            <tableCellView identifier="NameColumnCell" id="tlt-Hd-j8a">
+                                                                <rect key="frame" x="1" y="1" width="158" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <subviews>
+                                                                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="PzK-0D-Fmb">
+                                                                        <rect key="frame" x="0.0" y="9" width="157" height="16"/>
+                                                                        <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Table View Cell" id="XSQ-fi-VWc">
+                                                                            <font key="font" metaFont="system"/>
+                                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                                                        </textFieldCell>
+                                                                        <connections>
+                                                                            <binding destination="tlt-Hd-j8a" name="value" keyPath="objectValue.humanReadableName" id="BWP-lo-XNi"/>
+                                                                        </connections>
+                                                                    </textField>
+                                                                </subviews>
+                                                                <constraints>
+                                                                    <constraint firstItem="PzK-0D-Fmb" firstAttribute="centerY" secondItem="tlt-Hd-j8a" secondAttribute="centerY" id="8JL-xJ-Ikm"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="PzK-0D-Fmb" secondAttribute="trailing" constant="3" id="Dq9-Sb-Nd1"/>
+                                                                    <constraint firstItem="PzK-0D-Fmb" firstAttribute="leading" secondItem="tlt-Hd-j8a" secondAttribute="leading" constant="2" id="Fo2-Wc-YnO"/>
+                                                                </constraints>
+                                                                <connections>
+                                                                    <outlet property="textField" destination="PzK-0D-Fmb" id="Zd2-SI-Vrk"/>
+                                                                </connections>
+                                                            </tableCellView>
+                                                        </prototypeCellViews>
+                                                    </tableColumn>
+                                                    <tableColumn identifier="ValueColumn" width="110" minWidth="10" maxWidth="3.4028234663852886e+38" id="Ui8-BT-7A6">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                            <font key="font" metaFont="message" size="11"/>
+                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
+                                                        </tableHeaderCell>
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" id="GSO-iE-xBd">
+                                                            <font key="font" metaFont="system"/>
+                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                        </textFieldCell>
+                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
+                                                        <prototypeCellViews>
+                                                            <tableCellView identifier="ValueColumnBoolean" id="paT-ky-QJF">
+                                                                <rect key="frame" x="162" y="1" width="110" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <subviews>
+                                                                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BVW-2d-XzX">
+                                                                        <rect key="frame" x="1" y="9" width="108" height="32"/>
+                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" alignment="center" state="on" inset="2" id="MCb-h1-oXX">
+                                                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                        </buttonCell>
+                                                                        <connections>
+                                                                            <binding destination="paT-ky-QJF" name="value" keyPath="objectValue.value" id="Ueo-pu-PLc"/>
+                                                                        </connections>
+                                                                    </button>
+                                                                </subviews>
+                                                            </tableCellView>
+                                                            <tableCellView identifier="ValueColumnEnum" id="UKi-8O-m7m">
+                                                                <rect key="frame" x="162" y="37" width="110" height="34"/>
+                                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                <subviews>
+                                                                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gEc-d8-XqW">
+                                                                        <rect key="frame" x="5" y="12" width="100" height="26"/>
+                                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                                                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="zQ8-a1-ext" id="xP5-v1-7KJ">
+                                                                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                            <font key="font" metaFont="system"/>
+                                                                            <menu key="menu" id="M2z-Nb-6QD">
+                                                                                <items>
+                                                                                    <menuItem state="on" id="zQ8-a1-ext"/>
+                                                                                    <menuItem title="Item 2" id="BHG-a7-UQ5"/>
+                                                                                    <menuItem title="Item 3" id="fWf-ox-fOO"/>
+                                                                                </items>
+                                                                            </menu>
+                                                                        </popUpButtonCell>
+                                                                        <connections>
+                                                                            <binding destination="UKi-8O-m7m" name="selectedIndex" keyPath="objectValue.currentValue" previousBinding="KaJ-wJ-RbV" id="qyk-SH-Fzh"/>
+                                                                            <binding destination="UKi-8O-m7m" name="content" keyPath="objectValue.menuItemLabels" id="B4D-Iv-eXJ"/>
+                                                                            <binding destination="UKi-8O-m7m" name="contentValues" keyPath="objectValue.menuItemLabels" previousBinding="B4D-Iv-eXJ" id="KaJ-wJ-RbV"/>
+                                                                        </connections>
+                                                                    </popUpButton>
+                                                                </subviews>
+                                                            </tableCellView>
+                                                        </prototypeCellViews>
+                                                    </tableColumn>
+                                                </tableColumns>
+                                            </tableView>
+                                        </subviews>
+                                    </clipView>
+                                    <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="efh-id-deb">
+                                        <rect key="frame" x="1" y="119" width="223" height="15"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                    <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="71g-4w-jxt">
+                                        <rect key="frame" x="224" y="17" width="15" height="102"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </scroller>
+                                    <tableHeaderView key="headerView" id="uiJ-GA-Wjd">
+                                        <rect key="frame" x="0.0" y="0.0" width="274" height="25"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                    </tableHeaderView>
+                                </scrollView>
+                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oDA-9w-fp1">
+                                    <rect key="frame" x="14" y="240" width="281" height="115"/>
+                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" id="hEN-UC-fQs">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <menu key="menu" id="jYP-AK-ayz">
+                                            <items>
+                                                <menuItem title="Item 1" id="Zkh-cA-G9h"/>
+                                                <menuItem title="Item 2" id="7GA-kp-ONW"/>
+                                                <menuItem title="Item 3" id="bcO-D6-bkH"/>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
+                                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OxM-vq-eRC">
+                                    <rect key="frame" x="197" y="161" width="98" height="25"/>
+                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="de3-VT-quF" id="MVZ-cC-ofY">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <menu key="menu" id="kuE-Ya-wkP">
+                                            <items>
+                                                <menuItem state="on" id="de3-VT-quF"/>
+                                                <menuItem title="Item 2" id="Pyi-S1-Dhu"/>
+                                                <menuItem title="Item 3" id="tEV-hK-61c"/>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                </popUpButton>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="s3s-uy-U0l">
+                                    <rect key="frame" x="196" y="187" width="68" height="16"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Resolution" id="Pa4-s8-AaW">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="oDA-9w-fp1" firstAttribute="top" secondItem="g7z-h8-3OB" secondAttribute="bottom" constant="6" id="282-2Q-S1b"/>
+                                <constraint firstItem="780-mx-cf0" firstAttribute="top" secondItem="OxM-vq-eRC" secondAttribute="bottom" constant="24" id="2VE-Lh-wq5"/>
+                                <constraint firstItem="OxM-vq-eRC" firstAttribute="top" secondItem="s3s-uy-U0l" secondAttribute="bottom" constant="2" id="2rd-gK-O2q"/>
+                                <constraint firstItem="g7z-h8-3OB" firstAttribute="top" secondItem="uo7-kd-DtN" secondAttribute="top" constant="11" id="3sB-wf-TyP"/>
+                                <constraint firstAttribute="trailing" secondItem="s3s-uy-U0l" secondAttribute="trailing" constant="46" id="7dO-oN-PDJ"/>
+                                <constraint firstItem="Yf6-v1-Up6" firstAttribute="top" secondItem="oDA-9w-fp1" secondAttribute="bottom" constant="23" id="C97-CV-K7e"/>
+                                <constraint firstItem="s3s-uy-U0l" firstAttribute="leading" secondItem="Yf6-v1-Up6" secondAttribute="trailing" constant="76" id="KbV-fv-NlJ"/>
+                                <constraint firstItem="780-mx-cf0" firstAttribute="top" secondItem="Yf6-v1-Up6" secondAttribute="bottom" constant="22" id="OLH-8a-wbj"/>
+                                <constraint firstAttribute="bottom" secondItem="780-mx-cf0" secondAttribute="bottom" constant="11" id="Q6m-1K-K6e"/>
+                                <constraint firstItem="Yf6-v1-Up6" firstAttribute="leading" secondItem="780-mx-cf0" secondAttribute="leading" id="So7-5Y-5cw"/>
+                                <constraint firstAttribute="trailing" secondItem="oDA-9w-fp1" secondAttribute="trailing" constant="16" id="bfc-Nh-AQn"/>
+                                <constraint firstItem="OxM-vq-eRC" firstAttribute="trailing" secondItem="780-mx-cf0" secondAttribute="trailing" id="h2F-jo-jVD"/>
+                                <constraint firstItem="oDA-9w-fp1" firstAttribute="leading" secondItem="uo7-kd-DtN" secondAttribute="leading" constant="16" id="iSb-sw-2Fd"/>
+                                <constraint firstItem="oDA-9w-fp1" firstAttribute="trailing" secondItem="OxM-vq-eRC" secondAttribute="trailing" id="oAf-pJ-eOC"/>
+                                <constraint firstItem="g7z-h8-3OB" firstAttribute="leading" secondItem="uo7-kd-DtN" secondAttribute="leading" constant="18" id="slO-2x-qgQ"/>
+                                <constraint firstItem="oDA-9w-fp1" firstAttribute="leading" secondItem="Yf6-v1-Up6" secondAttribute="leading" id="tkb-sA-GbS"/>
+                                <constraint firstItem="OxM-vq-eRC" firstAttribute="leading" secondItem="Yf6-v1-Up6" secondAttribute="trailing" constant="77" id="ts3-uh-vK1"/>
+                            </constraints>
+                        </view>
+                    </box>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="vIi-8A-oKQ" firstAttribute="top" secondItem="yhG-yq-wm6" secondAttribute="top" constant="20" symbolic="YES" id="00i-ur-cG9"/>
+                    <constraint firstItem="vIi-8A-oKQ" firstAttribute="leading" secondItem="yhG-yq-wm6" secondAttribute="leading" constant="20" symbolic="YES" id="JIx-3P-r5o"/>
+                    <constraint firstAttribute="trailing" secondItem="vIi-8A-oKQ" secondAttribute="trailing" constant="20" symbolic="YES" id="YQn-yw-8pd"/>
+                    <constraint firstAttribute="bottom" secondItem="vIi-8A-oKQ" secondAttribute="bottom" constant="20" symbolic="YES" id="Z6H-su-nt6"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="914" y="-197"/>
+        </window>
+    </objects>
+    <resources>
+        <image name="imageCell:460:image" width="50" height="50">
+            <mutableData key="keyedArchiveRepresentation">
+YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05T
+S2V5ZWRBcmNoaXZlctEICVRyb290gAGuCwwZGh8UJCgpMDM2PD9VJG51bGzWDQ4PEBESExQVFhcYVk5T
+U2l6ZV5OU1Jlc2l6aW5nTW9kZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVwc1dOU0NvbG9ygAIQAIAN
+EiDAAACAA4ALWHs1MCwgNTB90hsPHB5aTlMub2JqZWN0c6EdgASACtIbDyAjoiEigAWABoAJ0iUPJidf
+EBROU1RJRkZSZXByZXNlbnRhdGlvboAHgAhPEUKiTU0AKgAAJxgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAcEAcwSisTaAAAAAEAAAABAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAACAAAAAXhc
+OZCXZi/OAAAAFgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAQAAAAMJAwAgwpVT2JNWJ9cJAAA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAACAAAAAlA9JW7TlUbvnFQo3x0GAlUAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWqIRLw8B4
+N+mtYi3nQSMMkBkcH0grLi9lRk9Smzc5PX0AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAIUCQoOKxgd
+HkQtMjRfQERHgmFfVLXRpXP6wX5I+8l+R/2ab17+l6Gr/5mjrf+gqrX/d4WN6gAAABcAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAXDw8PKRoaHkArLzFfO0BHfFhg
+Y5pqdHm3fISKz42XnOaboav1pK63/6myvf+eqLT/w7We/9Wccf/IhF7/zYZb/6d2Wv+WmJ//n6Wr/5Sc
+pv+Hlp36BQoJPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAATCgoNKBcXG0ErLy9aQUdKeVldXphudXa0hI+S0JKb
+ouSeqq3zr7nC/7O8xv+yvMX/r7rD/6u1wP+lr7r/oquz/6Gpsv+gpq7/oqmw/5+foP/fvo7/3Ztj/92a
+YP/knWD/y4dU/8vBvP/V19n/lZyl/5ahq/8gJidmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAQAAAAUCgoKKRgbHD4sMDBbPT5DeVRcXpZyeH61goqNzZWdpOOqsLT2tL3F/rrC
+yf+7xc3/ucPM/7S+x/+xusP/rbbA/6iwuf+nr7b/rLS7/6+0uv+2ub3/wcPH/8rLzv/T1NX/3Nzd/+Xl
+5f/i4+X/2cu3//HIh//rs3H/665u/+ysa//ZlFf/xrGn/+Hj5f+dpKv/l6Kr/zQ+QZUAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAABMVFSdrcXSshI2Oz5unp+WlsLHyuMDF/8HJzv/BydD/vsjO/7zF
+zf+5wsn/s7vD/6+4v/+wt7//rbS7/7G3u/+7wMT/wsXJ/8vMz//X2Nr/4ODg/+Xl5f/r6ur/7+/v//Ly
+8v/y8vL/8vLx//Dw7//t7e7/7O3u/9nY2P/mz6T/7b94/+y4c//rsG3/66tq/+OaWf/An4z/4+Xl/6at
+s/+SnKb/VFpjwQAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGRkaT7zCxv/EztP/u8LJ/7S8
+w/+xub7/s7m9/7i8wv+6vcL/wcPH/8zP0P/T1dX/2tvc/+Tk5P/p6en/7+3t//Lw8P/09PP/9fX0/+fn
+6P/w8PD/9fX1//Dw8P/v8PH/5ebm/+zt7f/s7e3/5+fn/+3t7f/p6ez/1czB//LQkf/rvnX/67pz/+u1
+b//rrWr/6KFe/8GSdv/h4eL/uLzC/42Wof9mc3riAAAAGwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAA0pqis7rrCy/+zub//2trb/+Dh4f/m5uX/6unp//Du7f/v7+//7+/v//Dw8P/y8PH/7+/v/+/v
+7//v7+//7+/v/+/v7//w8vL/5OXl/7e4uf/d29z/9fX1/+/w8f/V1tf/09TV/9ra2//W19j/6enp/+Dg
+4v/hzqv/8cyB/+zBd//svXT/7Ldu/+uzav/rqmP/xYlh/9rX1v/Ex8n/ipKd/36HjvsGCAs5AAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACSUmZvhucDJ/7e7wf/w7u3/6+vr/+zr6//s7Oz/7Ozs/+3t
+7f/t7e3/6urq/+bm5v/u7u7/8PDw//Hv7//v7+//7u/w/+/v8P/39/f/u7q6/5J7fP+5t7f/8PP0/+vs
+6//m5ub/5ubm/93e3v/n6On/1dDL/+/Vmf/tyXv/7MV4/+zAdP/rum7/67Rp/+yxZv/MjVj/0MbE/9XZ
+2/+KkZr/iJOe/xkfIWYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFnl/f828w83/rLG4/+no
+6P/q6ur/6enp/+np6f/l5eX/5OTk/+Tk5P/l5eX/5OTk/+fn5//n5+f/8PDw//Dw8P/y8vL/8vLy//T0
+9P/p6ur/sZ+f/66Qkv+tqqr/8PLy//T09P/w8PH/8PDw/+bn6f/czbT/89WL/+3Ke//syHn/7MJ0/+y9
+b//st2v/7LRo/9aSU//Hta3/3+Dj/5GXoP+Ik6D/ND1AlAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAANY2pqt7/Jzv+iqrL/5eXl/+vr6//a2tr/4ODg/+Dg4P/m5ub/4uLi/+jo6P/n5+f/5eXm/+rq
+7P/y8vL/8vLy//Pz8//09PT/9PT0//j4+P/Ny8r/vpiY/7qYmf+opab/7/Lz//Hz8//w8vP/2tjX/+rU
+ov/y0YH/7c1+/+7Kev/sxnb/7MBx/+26bP/stmn/3p5U/8GjlP/l5+j/naOp/4WQm/9NVlm/AAAABgAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdPUlSgwsnQ/6Sttf/g4OD/7e3t/+Xl5f/V1dX/5eXl/+Li
+4v/m5ub/7u7u/+/v7//v7+//8PDw//Ly8v/z8/P/9PT0//T09P/39/f/7/Dw/+Di4/+zo6P/zaCg/7qM
+i/+koaH/8fT0/+3v8f/Zzb3/89qU/+/RgP/uzn//7cx7/+3Id//swnL/7Lxt/+y4af/nqFr/vZJ3/+Pk
+5f+vtLj/gIqW/2NxeOMAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjc9PobAxs7/o623/9bX
+2P/u7u7/6+vr/+fn5//v7e7/7Ozt/+/v7//v7+//7+/v//Ly8v/y8vL/8/Pz//T09P/09PT/8/Pz/97e
+3v/PuLn/1rS1/7mxsP+/paX/1Jua/76Skv+sqan/4eDi/+XTqP/z2In/8NOD//DRf//vzXz/7sl4/+3F
+dP/tv27/7bpq/+uyXv+/i2X/3drb/8LGyf98h5H/dXqG+AMFCToAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAABJSUlbrvDyf+hqrX/y8zP/+/v7//s7Oz/7u7u/+7u7v/v7+//7+/v/+3u7v/w8PD/8/Pz//Py
+8v/z8/P/9PT0//f39//U1NT/paKi/9uztv/0vL7/w6io/8K7uv/Gn53/16Cf/76dnv+4q6H/9N6d//HW
+hv/x1IT/8NKA//HNff/vynr/7sd1/+3Bb//su2r/7LZk/8eJU//Sy8n/0tTW/4CIkv9+iZb/GR4fYQAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQExNXtrzC/qSuuv/Fx8v/7+/v/+zs7P/u7u//7u7u/+/v
+7//t7u//7+/v//Ly8v/z8/P/9PP0//T09P/09PT/+fn5/7i4uP/BwMD/tLCy/42Agf+fmZn/6erq/8K1
+tP/LnZz/zI6Q/9Sxjf/03I7/8teJ//HWhv/x04L/8tB///DMev/vyXf/7sNx/+y+bP/tuGX/0I9N/8W1
+sP/g4eT/houU/36Jlf8sNDqQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUGnqK/3qrO//7u+
+wv/v7+//6Ojo/+Hg4f/p6en/7+/v/+/v8P/w8PH/8vLy//Pz8//09PT/9PT0//b29v/o6Oj/sbCx/7u7
+vP+cnaH/cHJ1/7W0tP/9/f3/3N7e/8Krq/+9iYT/79Sb/+/Sf//y2Ir/8tiH//HSgP/wzXr/8c59/+m+
+av/ksVv/6bRg/+uzX//bl0//vJ+T/+Tm6P+WnKL/eYWQ/0VRVrwAAAAEAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAALpmaoeist8L/rLG2/+/v7//h4eH/2NjY/+zs7P/s7e7/3+Dg//Dw8f/z8/P/8/Pz//T0
+9P/09PT/+vr7/7y7u/+vrKT/wMC+/5eZnv91dnj/6urq//j4+f/09fX/ube4/76iiv/545z/8daG/+vI
+df/nwW3/68Rs/9igVf/jtXj/4q5d/+KoU//twGz/7bxr/+OmVf+8lHz/5ebn/6essP91f4r/WGVr4AAA
+ABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfgoqM2LO8xv+nrbX/6urp/+Li4v/t7e3/7+/v/+3t
+7v/T09P/8PDx//f39//4+Pj/+vr7//n5+v/v8PH/sq2j/+PYsP/Du6H/jIWB/3Rzc/+hoaH/iomJ/3Jv
+b/9tZmP/z7V+//jfk//03ZD/7c18/+/NfP/y0Xz/xYxS/9emdv/yz3//679q/+y+av/tvWr/6rBb/7uG
+Yf/d3d//v8LF/3R8h/9sdH36AQMHNQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABNtc3bGtr7I/6Or
+s//m5ub/7u7v/+/v7//w8PD/8PLz/9DQ0P/c3N3/1dPR/8LCwf+ppqX/jouH/25oZf+roYX/49CV/8qy
+gP+Zh3j/fHNp/5iLff+ajYD/ppmN/8CpkP/025T/89eJ//Taj//z2Iz/8M1+/+zIdf+2hmT/1qV5//TY
+jP/uxnL/67tn/+6/a//stWD/wIVQ/9TQ0P/Q09X/dXyG/3WBjP8UFxxfAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAACldXXa+5wcr/maOr/+Dg4P/v7+//3t/f/9PU1f/T09T/o6Wl/4F6cv+Kgnb/joh7/6CV
+h/+un47/mYx+//Dhrf/x2JT/ybGP/6mflf/NvKn/2Max/8y2nv/ErJb/4ceY//jhl//03pT/8tWJ//HU
+h//wzHv/zZZT/7yejP/ToXr/9NOM//DJdf/su2j/7sBs/+66ZP/Nh0f/xLez/93f4P+Bh4//dYCM/ygx
+N4wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGPkVGlrrDyv+XoKv/2dna/+/v7//l5ub/5ubm/+7v
+7//a2tr/w7qt/+rgz//Zzb7/8OLR/9jKvP/AtZj//Oim/9zBhP+xn4r/wLSn/9rJtv/ayLX/3MOp/8uv
+kv/z3J7/9+CY//Xel//z2I//8c6C//LQf/+YZTz/tKuj/8Wcg//xy4P/7sRy/+q0Yv/tvWr/77pn/9aS
+R/+ymI7/4uTl/5CVm/90for/PkpQugAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIpLDF9ucDI/5ij
+r//R09T/8PDv/+/v7//v7+//7+/w/+Tk5P+2sar/8ODM/+zZv//048//vK2a/+faq//v15H/xqhy/66f
+j//azLv/28m1/9zHrv/WwKv/1ryV//njnP/13pX/9NmS//PYjv/11ov/059Y/4pqWv92eHr/uZ+U/+3C
+gP/xzHr/78Nw/+7Abf/uumf/4Z1N/7iRff/k5ef/qK2w/253gv9SXWffAAAAFgAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAABcYHWSyusH/l6Ku/8LDx//y8vH/7e3t/+7u7v/u7+//6+vs/7Ovq//q2L//89/H/+PU
+wv+7qoT/++ae/9i+fv+ylm7/rKKU/7+1qf+0q5//s6yj/6GVjP/lzJT/+eKc//bfmv/13pj/9d6X//re
+k/++i1T/dmlm/5aTjf+0pZ3/5bp9//XUgv/wyHT/78Fu/+66Z//oqFP/t4Rh/97e4P+7vsL/anV+/19t
+d/cBAwc1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABw0PT6Opr/qao7H/trm9//Ly8f/t7e3/7+/v/+7v
+7//w8vP/sK2p/9PEtP/Rw7X/oJOE/8i4g//aw37/spdo/5iNgv+/v77/0NLR/9zd3f/j5ej/2Mq4//nj
+oP/446H/+OKf//bgnP/34Jv/7sh8/7yTd/++u7r/sKSW/62dj//Yomz/9tWH//DIc//vwW7/7rpo/+yw
+W/+8ekn/0tDQ/8/S1f9weIH/cXuI/xUaG1wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6k5ui8Z6p
+tf+vtLr/7+/u/+3t7f/d3d7/z9HR/9TU1f+traz/tLS0/7/Awv+roYf/8N+k/97Eg/+ylnL/ycjE//r7
+/P/09fb/9PX2/+Ph5P/n0aL/++ej//njov/446D/9+Ce//njnP/Vol//w7Kn/+jp6f+1r6X/q5eD/8iR
+Xf/104X/8Mhz//HBbv/uuWf/77Ne/8N8P//Ivrz/3N/g/3mBif9weof/JTE1jAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAACeLi5Hkoqy4/6Gmrf/s6+v/7e3t/+fn5//n5+j/7+/v/9bW1v/s7O3/wsLC/9vO
+pf/346b/0bmH/6mYh//o6ev/8vLz/+/w8P/v8vT/2c7E//Xfnv/55qb/+eSj//njov/44qH/9tiP/7yL
+YP/Y1dT/6+3v/8/My/+5r6T/y5ht//TNg//vwnH/8cJv/++6Z//vs1//0YE+/72on//i5eX/jpOZ/2t2
+gv89Sk24AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAG3F6etGkr7v/lJmi/+fn5//t7e3/7e3t/+7u
+7v/t7u//5eXl/+Hh5P+0rqD/9eKn/+zTkf+1nXv/uraz//X19v/v7/D/7/Dx/+bm6f/hzKb//Oim//nn
+qf/55ab/+eOj//rlpP/jtnD/uZyL/+bn6P/n6On/5ufo/7m2sv++kXX/7sV7/+y3bP/vwW3/77pm/+6w
+X//bjkP/tZKB/+Pl5v+ip6z/Z3J8/09dY90AAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARW2BlvKiz
+vv+SmKT/4uLi/+3t7f/r6+z/7Ozs/+zs7v/s7O3/qqut/7esjv/z3Zr/3MiZ/6CSg//f39//8PLz/+7u
+7//v8PL/2dPP//HYnf/66av/+eeq//nlqP/55Kb/+uOe/8SRWf/Ow8D/6Onr/+Xn6P/m5+n/2t3e/6+Q
+f//lq2b/7Lpx//HAbP/vuWX/7q5f/+aZSP+yfGH/3N7g/7u9wf9mcXr/W2xz9wgICDMAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAhLUlSlq7S+/4yToP/Y2Nn/7+3t/+vr6//s7Oz/7e3t/+7v8P+nqKj/sa2l/7ms
+jv+ckYb/npiT/+nr7P/u7+//7e7v/+np7v/bya//++em//ror//56Kv/+eap//rnqf/wyoP/toxu/+Dg
+4f/m5+n/5ebn/+Tl5v/l6Or/1cTB/92iY//1z3//8cBs/++2ZP/trl3/6qFO/7V1R//U0tP/zM/Q/2t0
+fP9pdX//ExkaWwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzU7PIypsrz/h42c/8vMzv/w7u7/6urq/+vr
+6//u7u7/4OHh/8DAwf/l4t3/zL2v/3FqY/+jo6T/5ebm/+/t7//u7u//3NrZ/+rRnP/87K//+umw//no
+rf/556r//Omp/9ShX//BsKX/5+jq/+Xn6f/l5uj/5OXo/+Pl6f/a19v/2qdw//fSgf/xvmr/8LNi/+2u
+W//uplH/v282/8rAvv/c3uD/fYOM/2p2gv8oKTGIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACHiQkdKWw
+u/+Ij57/wsPI/+7u7f/p6en/6urq/+zs7P/R0dH/39/f/9LIvv+topn/wL++/+Xl5v/a2tv/6+zt/+nr
+7//Wyrn/+OOi//rrsv/66bH/+uiu//rorP/12pT/uIZb/9PQ0f/e3uL/1dPU/9HKxv/KwLr/ybak/8u0
+mv/crWz/9c17//K7aP/xtWH/7a5Z/+6jUv/HdTn/tKOb/8vNz/+Bho3/aXSA/zZFSrYAAAADAAAAAAAA
+AAAAAAAAAAAAAAAAAAATExVboqy0/4iPn/+2uLv/7u7t/+np6f/q6ur/6ejp/+Lj4//BwMD/qqej/8rK
+yv/i4+T/7e3u/+vs7P/r6+3/39/i/+HLnv/966r/+umx//rpr//66Kz/++mr/+zHgv+4kmz/yrGP/9e6
+jP/YuX//4sGC/+zIf//xy3//9c1///TJdv/wumr/665i/+aiWf/gllD/2otK/7xnMv9oT0j/YGlz/2Ru
+dv9rdX//UFpn3wAAABsAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAUWTnKD4iZGg/6Kmq//v7e3/6enp/+np
+6f/q6er/7u7u/7a2tv/Y2Nj/0NDQ/+np6v/p6er/6enq/+nr7v/VzMT/9NqZ//vpq//66Kz/+uis//nn
+qf/556j/+eOj//jfmP/63pT/+t6V//rYj//204v/8suC/+7Bev/quXL/5rFr/+KkZP/dnFz/2JVW/9OL
+Tf/RhEj/wm82/3RRQ/9xe4b/cHmF/2Fqdf5FT1jgAAAFKwAAAAEAAAAAAAAAAAAAAAAAAAAAAAAANYCN
+kOuLlaP/mp+m/+rq6f/o6Oj/6enp/+np6f/o6On/6enq/97e3//c3N3/6urr/+nq6//t7e7/5efq/9vH
+pP/75qD/+ueo//rmqP/55aj/+eSm//nhov/3357/9dub//XVlv/z0JD/8cuK/+7FhP/rwH7/6Lh3/+az
+cP/jqmn/4KFg/9yYWf/XkFH/0ohJ/814OP7Fdzb9bTMV8hojJLsMEhOZAAABfQAAAE4AAAAUAAAAAwAA
+AAAAAAAAAAAAAAAAAAAAAAAjdX+F24+Ypv+Sl5//5uXl/+jo6P/p6en/6+rq/+vr7P/w7u//7+3t/+vq
+6//m5ub/29vd/87Q0f+1srH/58mN//riof/54aL/+OCj//fgo//336H/9t2e//bYm//11Jb/89CS//HL
+i//vxYT/7L9+/+m4dv/nsm3/46ld/t+aVP3anlD80ZZH+s6KQfnChTz2unw487h4NfF1OhneAAAAWQAA
+AC4AAAAjAAAAFQAAAAgAAAACAAAAAAAAAAAAAAAAAAAAAAAAABVmb3LKk5yp/4GHkf/h4eH/6enp/+Dg
+4P/W1tf/x8fJ/7S1t/+mqa3/jpKX/4CEi/91fIT/ZG96/4x8bP/51pT/+dyc//jbnf/43Jz/+Nqb//fW
+mP/205T/9M+Q//LLif/wx33+7sN2/uu/df3ps2785rBk+t+uXPnZpVb31Z9Q9s6aRvTHkkLyxIs/8cWG
+Pe/Ahjzvwn857pdQJOwPAABYAAAADQAAAAkAAAAFAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADlBY
+WrWWoKz/eICM/4qNlP+Okpf/fIGJ/3R6gv9xeIL/bnaB/3N7h/94gY3/foiU/4ONmv97hJP/zax///nT
+j//40Y//9tGP//XQj//00Ib+8s6E/vDMhv3vyn787cN7++zGdvrqw3D56bls+OK5Zvferl/23a9b9d2o
+VPXbqFL22qFK99WYRfjTi0H5xns4+LduMvSmXSvrezsa1xAAAEoAAAAEAAAAAQAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAJO0RFnZejr/+Ah5X/eIKP/3yGk/+Ei5n/ho+c/4WPnf+Ci5j/eYGL/WVu
+e/RRWWTmO0hR1FVJPdvtyID+8MyB/O/Ng/zvzoT87ciF++3GhPvuyIH67ch9+u/IfPrwyHz58Md3+vHG
+dPrwum/86rFj/eGiVf3Zkkb7vXo49adkLeuNSyLcbTEWyVYgDrM7EAaXIwMBgBEAAGEDAAA9AAAAFwAA
+AAQAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUrLDGHnaaw/32Gk/9ufYb7Xmtt7UxW
+XN0yOkPHHigosAsQE5UAAAB+AAAAaAAAAFgAAABYgmg9wfPQhP7syID67cmD+vDIhfvz0oX89NKJ/fPO
+iP/xyYP/57p1/8+eXfvAh0n0nmgx5oNOI9VpMhfARhgKpzAMBI8ZAgB0BQAAXwAAAEwAAAA8AAAAMgAA
+ACkAAAAiAAAAGwAAABEAAAAIAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAA
+AEEVGiGUAwMIigAAAHIAAABeAAAATAAAAD0AAAA0AAAAKgAAACQAAAAgAAAAIhcPA1fXuH/x9tSP/+7J
+hf/mwIH/06xp+7SGUO+fcD/je08lzlotErc/GgieHwIAgw4AAG0AAABXAAAARgAAADgAAAAvAAAAJwAA
+ACEAAAAdAAAAGQAAABUAAAASAAAADgAAAAwAAAAIAAAABQAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAEAAAAEQAAACEAAAAkAAAAIAAAABsAAAAWAAAAEQAAAA4AAAALAAAACAAA
+AAkAAAAPMRkJYp5vQON2TifJUS4Sri8NA5UdAgB9AgAAZAAAAFEAAABBAAAANQAAACwAAAAlAAAAIAAA
+ABwAAAAYAAAAFAAAABEAAAAOAAAACwAAAAkAAAAGAAAABQAAAAMAAAACAAAAAgAAAAEAAAABAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAABwAAAAgAAAAGAAAABQAA
+AAMAAAACAAAAAQAAAAAAAAAAAAAAAwAAAA4AAAAjAAAAPwAAADwAAAAyAAAAKgAAACQAAAAfAAAAGwAA
+ABcAAAATAAAAEAAAAA0AAAAKAAAACAAAAAYAAAAFAAAAAwAAAAIAAAABAAAAAQAAAAEAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAABwAAAA8AAAAUAAAAFQAA
+ABIAAAAPAAAADAAAAAkAAAAIAAAABQAAAAQAAAADAAAAAgAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAACAAAABQAAAAYAAAAGAAAABAAAAAMAAAACAAAAAQAAAAEAAAABAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAABABAAADAAAAAQAyAAABAQADAAAAAQAyAAABAgADAAAABAAAJ94BAwAD
+AAAAAQABAAABBgADAAAAAQACAAABCgADAAAAAQABAAABEQAEAAAAAQAAAAgBEgADAAAAAQABAAABFQAD
+AAAAAQAEAAABFgADAAAAAQAyAAABFwAEAAAAAQAAJxABHAADAAAAAQABAAABKAADAAAAAQACAAABUgAD
+AAAAAQABAAABUwADAAAABAAAJ+aHcwAHAAAatAAAJ+4AAAAAAAgACAAIAAgAAQABAAEAAQAAGrRhcHBs
+AhAAAG1udHJSR0IgWFlaIAfcAAUAEAANADAANGFjc3BBUFBMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAD21gABAAAAANMtYXBwbAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAEWRlc2MAAAFQAAAAYmRzY20AAAG0AAADuGNwcnQAAAVsAAAAJHd0cHQAAAWQAAAAFHJYWVoAAAWk
+AAAAFGdYWVoAAAW4AAAAFGJYWVoAAAXMAAAAFHJUUkMAAAXgAAAIDGFhcmcAAA3sAAAAIHZjZ3QAAA4M
+AAAGEm5kaW4AABQgAAAGPmNoYWQAABpgAAAALG1tb2QAABqMAAAAKGJUUkMAAAXgAAAIDGdUUkMAAAXg
+AAAIDGFhYmcAAA3sAAAAIGFhZ2cAAA3sAAAAIGRlc2MAAAAAAAAACERpc3BsYXkAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAABtbHVjAAAAAAAAAB4AAAAMc2tTSwAAABYAAAF4Y2FFUwAAABgAAAGOaGVJTAAAABYAAAGm
+cHRCUgAAABgAAAG8aXRJVAAAABQAAAHUaHVIVQAAABQAAAHodWtVQQAAABwAAAH8a29LUgAAAAwAAAIY
+bmJOTwAAABIAAAIkY3NDWgAAABYAAAI2emhUVwAAAAwAAAJMZGVERQAAABAAAAJYcm9STwAAABIAAAJo
+c3ZTRQAAABAAAAJ6emhDTgAAAAwAAAJMamFKUAAAAA4AAAKKYXIAAAAAABQAAAKYZWxHUgAAACIAAAKs
+cHRQVAAAABYAAALObmxOTAAAABYAAALkZnJGUgAAABYAAAL6ZXNFUwAAABIAAAJodGhUSAAAAAwAAAMQ
+dHJUUgAAABQAAAMcZmlGSQAAABAAAAMwaHJIUgAAABQAAANAcGxQTAAAABIAAANUcnVSVQAAACQAAANm
+ZW5VUwAAABIAAAOKZGFESwAAABwAAAOcAEYAYQByAGUAYgBuAP0AIABMAEMARABMAEMARAAgAGUAbgAg
+AGMAbwBsAG8AciAPAEwAQwBEACAF5gXRBeIF1QXgBdkATABDAEQAIABDAG8AbABvAHIAaQBkAG8ATABD
+AEQAIABjAG8AbABvAHIAaQBTAHoA7QBuAGUAcwAgAEwAQwBEBBoEPgQ7BEwEPgRABD4EMgQ4BDkAIABM
+AEMARM7st+wAIABMAEMARABGAGEAcgBnAGUALQBMAEMARABCAGEAcgBlAHYAbgD9ACAATABDAERfaYJy
+ACAATABDAEQARgBhAHIAYgAtAEwAQwBEAEwAQwBEACAAYwBvAGwAbwByAEYA5AByAGcALQBMAEMARDCr
+MOkw/AAgAEwAQwBEIA8ATABDAEQAIAZFBkQGSAZGBikDiAOzA8cDwQPJA7wDtwAgA78DuAPMA70DtwAg
+AEwAQwBEAEwAQwBEACAAYQAgAEMAbwByAGUAcwBLAGwAZQB1AHIAZQBuAC0ATABDAEQATABDAEQAIABj
+AG8AdQBsAGUAdQByAEwAQwBEACAOKg41AFIAZQBuAGsAbABpACAATABDAEQAVgDkAHIAaQAtAEwAQwBE
+AEwAQwBEACAAdQAgAGIAbwBqAGkASwBvAGwAbwByACAATABDAEQEJgQyBDUEQgQ9BD4EOQAgBBYEGgAt
+BDQEOARBBD8EOwQ1BDkAQwBvAGwAbwByACAATABDAEQATABDAEQALQBmAGEAcgB2AGUAcwBrAOYAcgBt
+dGV4dAAAAABDb3B5cmlnaHQgQXBwbGUsIEluYy4sIDIwMTIAWFlaIAAAAAAAAPNSAAEAAAABFs9YWVog
+AAAAAAAAbzEAADljAAABg1hZWiAAAAAAAABg7gAAt2oAAAgSWFlaIAAAAAAAACa3AAAPMgAAyZdjdXJ2
+AAAAAAAABAAAAAAFAAoADwAUABkAHgAjACgALQAyADYAOwBAAEUASgBPAFQAWQBeAGMAaABtAHIAdwB8
+AIEAhgCLAJAAlQCaAJ8AowCoAK0AsgC3ALwAwQDGAMsA0ADVANsA4ADlAOsA8AD2APsBAQEHAQ0BEwEZ
+AR8BJQErATIBOAE+AUUBTAFSAVkBYAFnAW4BdQF8AYMBiwGSAZoBoQGpAbEBuQHBAckB0QHZAeEB6QHy
+AfoCAwIMAhQCHQImAi8COAJBAksCVAJdAmcCcQJ6AoQCjgKYAqICrAK2AsECywLVAuAC6wL1AwADCwMW
+AyEDLQM4A0MDTwNaA2YDcgN+A4oDlgOiA64DugPHA9MD4APsA/kEBgQTBCAELQQ7BEgEVQRjBHEEfgSM
+BJoEqAS2BMQE0wThBPAE/gUNBRwFKwU6BUkFWAVnBXcFhgWWBaYFtQXFBdUF5QX2BgYGFgYnBjcGSAZZ
+BmoGewaMBp0GrwbABtEG4wb1BwcHGQcrBz0HTwdhB3QHhgeZB6wHvwfSB+UH+AgLCB8IMghGCFoIbgiC
+CJYIqgi+CNII5wj7CRAJJQk6CU8JZAl5CY8JpAm6Cc8J5Qn7ChEKJwo9ClQKagqBCpgKrgrFCtwK8wsL
+CyILOQtRC2kLgAuYC7ALyAvhC/kMEgwqDEMMXAx1DI4MpwzADNkM8w0NDSYNQA1aDXQNjg2pDcMN3g34
+DhMOLg5JDmQOfw6bDrYO0g7uDwkPJQ9BD14Peg+WD7MPzw/sEAkQJhBDEGEQfhCbELkQ1xD1ERMRMRFP
+EW0RjBGqEckR6BIHEiYSRRJkEoQSoxLDEuMTAxMjE0MTYxODE6QTxRPlFAYUJxRJFGoUixStFM4U8BUS
+FTQVVhV4FZsVvRXgFgMWJhZJFmwWjxayFtYW+hcdF0EXZReJF64X0hf3GBsYQBhlGIoYrxjVGPoZIBlF
+GWsZkRm3Gd0aBBoqGlEadxqeGsUa7BsUGzsbYxuKG7Ib2hwCHCocUhx7HKMczBz1HR4dRx1wHZkdwx3s
+HhYeQB5qHpQevh7pHxMfPh9pH5Qfvx/qIBUgQSBsIJggxCDwIRwhSCF1IaEhziH7IiciVSKCIq8i3SMK
+IzgjZiOUI8Ij8CQfJE0kfCSrJNolCSU4JWgllyXHJfcmJyZXJocmtyboJxgnSSd6J6sn3CgNKD8ocSii
+KNQpBik4KWspnSnQKgIqNSpoKpsqzysCKzYraSudK9EsBSw5LG4soizXLQwtQS12Last4S4WLkwugi63
+Lu4vJC9aL5Evxy/+MDUwbDCkMNsxEjFKMYIxujHyMioyYzKbMtQzDTNGM38zuDPxNCs0ZTSeNNg1EzVN
+NYc1wjX9Njc2cjauNuk3JDdgN5w31zgUOFA4jDjIOQU5Qjl/Obw5+To2OnQ6sjrvOy07azuqO+g8Jzxl
+PKQ84z0iPWE9oT3gPiA+YD6gPuA/IT9hP6I/4kAjQGRApkDnQSlBakGsQe5CMEJyQrVC90M6Q31DwEQD
+REdEikTORRJFVUWaRd5GIkZnRqtG8Ec1R3tHwEgFSEtIkUjXSR1JY0mpSfBKN0p9SsRLDEtTS5pL4kwq
+THJMuk0CTUpNk03cTiVObk63TwBPSU+TT91QJ1BxULtRBlFQUZtR5lIxUnxSx1MTU19TqlP2VEJUj1Tb
+VShVdVXCVg9WXFapVvdXRFeSV+BYL1h9WMtZGllpWbhaB1pWWqZa9VtFW5Vb5Vw1XIZc1l0nXXhdyV4a
+XmxevV8PX2Ffs2AFYFdgqmD8YU9homH1YklinGLwY0Njl2PrZEBklGTpZT1lkmXnZj1mkmboZz1nk2fp
+aD9olmjsaUNpmmnxakhqn2r3a09rp2v/bFdsr20IbWBtuW4SbmtuxG8eb3hv0XArcIZw4HE6cZVx8HJL
+cqZzAXNdc7h0FHRwdMx1KHWFdeF2Pnabdvh3VnezeBF4bnjMeSp5iXnnekZ6pXsEe2N7wnwhfIF84X1B
+faF+AX5ifsJ/I3+Ef+WAR4CogQqBa4HNgjCCkoL0g1eDuoQdhICE44VHhauGDoZyhteHO4efiASIaYjO
+iTOJmYn+imSKyoswi5aL/IxjjMqNMY2Yjf+OZo7OjzaPnpAGkG6Q1pE/kaiSEZJ6kuOTTZO2lCCUipT0
+lV+VyZY0lp+XCpd1l+CYTJi4mSSZkJn8mmia1ZtCm6+cHJyJnPedZJ3SnkCerp8dn4uf+qBpoNihR6G2
+oiailqMGo3aj5qRWpMelOKWpphqmi6b9p26n4KhSqMSpN6mpqhyqj6sCq3Wr6axcrNCtRK24ri2uoa8W
+r4uwALB1sOqxYLHWskuywrM4s660JbSctRO1irYBtnm28Ldot+C4WbjRuUq5wro7urW7LrunvCG8m70V
+vY++Cr6Evv+/er/1wHDA7MFnwePCX8Lbw1jD1MRRxM7FS8XIxkbGw8dBx7/IPci8yTrJuco4yrfLNsu2
+zDXMtc01zbXONs62zzfPuNA50LrRPNG+0j/SwdNE08bUSdTL1U7V0dZV1tjXXNfg2GTY6Nls2fHadtr7
+24DcBdyK3RDdlt4c3qLfKd+v4DbgveFE4cziU+Lb42Pj6+Rz5PzlhOYN5pbnH+ep6DLovOlG6dDqW+rl
+63Dr++yG7RHtnO4o7rTvQO/M8Fjw5fFy8f/yjPMZ86f0NPTC9VD13vZt9vv3ivgZ+Kj5OPnH+lf65/t3
+/Af8mP0p/br+S/7c/23//3BhcmEAAAAAAAMAAAACZmYAAPKnAAANWQAAE9AAAAoOdmNndAAAAAAAAAAA
+AAMBAAACAAAABwAeAEoAiwDjASoBbgHAAhkCdALaA0kDwwRHBNQFbQYRBsIHfAg+CQcJ3Qq5C5wMjw2n
+DtwQEBFLEokTyRURFlwXrBkEGmEbvR0gHowf+CFkItokTiXJJy8ojinrK0ksny32L0MwjTHQMw00QjVz
+Npw3wDjgOf07FzwrPTk+RT9SQGNBc0KEQ5dEq0W/RtNH6Uj/ShVLLExDTVtOaU92UIVRklKfU6tUt1XC
+VstX0ljZWd9a41voXO1d6F7cX85gv2GvYp5jjWR6ZWZmUWc7aCRpDmn2at9rxmypbY1ucG9TcDdxGnH8
+ct5zwHSjdYV2ZndJeCt5Cnnqesx7sHyYfYR+d39xgHKBeoKKg6GEvYXfhwmIPIlwiqOL1o0KjjyPbZCe
+kc6S/ZQslVuWipe2mOCaC5s1nF+diZ6yn9uhBKIto1akf6WoptGn+KkgqkyrfKyyrfGvOrCPse+zW7TP
+tk+31Lk8unS7qbzcvgu/M8BWwXHChcORxJbFlsaRx4jIg8mHyo3LjcyFzXTOV88uz/vQwNF70jbS9tPX
+1LnVmtZ911/YQtkl2gna7dvR3LXdmt5932DgROEp4hDi+ePm5NblyebB57vouem56qXrjux27V7uRe8r
+8BDw9fHa8r7zofSF9Wj2S/cv+BP49/nc+sD7ovyE/WX+RP8i//8AAAAGABoAQAB4AMUBEwFMAZAB3wIz
+Ao4C8wNfA9YEVQTdBXAGDga3B2UIGgjaCZwKZwtCDD0NVA5oD4AQoBHBEukUFRVEFnkXrxjvGi4bchy8
+HgsfViCqIf8jQSSBJb8m/Cg3KWoqnSvLLPIuFS8zMEgxWzJnM3E0eTV9Nno3ajhbOUw6PTswPCI9FT4I
+Pvo/7UDhQdVCykO+RLNFp0aYR4hId0loSllLSEw4TSdOFU8ET/RQ4lHRUsBTsFSeVYhWc1deWElZM1od
+WwZb7lzWXb1eo1+KYG9hVGI0Ywxj4mS5ZY9mZmc8aBFo5mm7apFrZWw6bQ9t4263b4hwWXErcfxyznOg
+dHJ1Q3YVdud3uXiMeV56MHsCe9d8r32Lfm1/VYBEgTqCOYM9hEiFWIZuh4eIpYnDiuGL/o0cjjmPVpBz
+kZCSrJPJlOaWApccmDaZUZptm4ucrJ3QnvagIqFQooOjuaTxpi6ncai0qferOax8rb6vALBBsYOyxbQF
+tUe2iLfHuQe6RbuCvL299L8mwFPBe8Kew7vE1cXpxvfIBMkTyiHLL8w9zUzOWs9o0HfRhtKV06LUr9W8
+1snX1tjl2fTbA9wU3SXeON9M4Gfho+Lp5CflWuaG56rox+nh6vjsDu0l7j/vW/CA8dDzM/ST9fP3Uvi0
++hj7hfz4/nf//wAAAAQAEQAqAE4AgADAAQcBOgF0AbcCAgJNAqAC+wNeA8oEPAS2BTgFwgZQBuMHewgb
+CMcJjQpjCzwMGwz+DeIOyw+1EKURmBKOE4gUhRWGFosXkxifGasauBu9HL0dvh6/H74guyG1IqsjnSSL
+JXUmXCdAKCIpACnbKrcriyxWLSAt6i61L4AwSzEWMeEyqzN1ND81CTXTNp03aDg0OPg5vjqFO0s8Ejza
+PaI+aj8yP/xAxkGRQl1DKkP3RMNFj0ZbRydH8ki+SYpKVkshS+tMtk2ATkxPFk/hUKtRc1I7UwJTylSS
+VVpWIFbnV65YdVk7WgJayVuPXFNdFl3ZXptfXWAdYN1hnWJdYxxj2mSYZVZmE2bPZ4toRWkAabtqdmsx
+a+xsp21ibhxu12+TcE5xCHHBcnpzM3PsdKV1XnYXds93h3g/ePh5sHppeyB72XyUfVR+GX7lf7iAlIF5
+gmaDXIRZhVuGZYd1iIWJloqmi7aMxo3VjuWP9JEDkhOTIpQwlTqWQ5dKmFGZWZpim2+cf52Tnqyfy6Dv
+oiWjeaTQpienfqjWqi2rhKzbrjGviLDesjazi7TftjO3h7jcujO7irzivjy/mMD2wlTDtcUnxqTILcnF
+y2vNJM7s0MfSsdSp1rDYwdrd3QDfMOGn5Ibniuq37g/xiPUY+LX8V///AABuZGluAAAAAAAABjYAAKXj
+AABWoQAAUVsAAKcrAAAlmwAADhQAAFANAABUOQACQo8AAdmZAAFHrgADAQAAAgAAAA0AJwBGAGYAhwCo
+AMkA6wEOATEBVQF6AZ0BvAHbAfwCHQI/AmIChgKqAs8C9AMbA0EDaAOQA7kD4gQLBDUEYASMBLgE5AUS
+BT8FbgWhBdUGCgZBBngGsgbsBygHZwenB+kILgh1CL8JCwlaCawKAQpYCrILDgtuC9IMOAygDQgNcg3e
+DkoOuQ8oD5oQDRCBEPcRbxHoEmMS3xNiE+cUbRT2FYEWDhadFy8XwxhbGPUZkRoxGtMbdxwdHNAdhx5C
+HwAfwSCFIU0iGSLoI7skkSVqJkYnJSgMKPUp4irSK8Qsui2zLrAvrzCyMbgywDPLNN418TcEOBU5Izot
+OzE8MD0qPiA/EkACQO9B20K/Q6JEiEVvRlhHQkgvSR5KD0sDS/hM8E3qTuVP4lDhUeRS61PzVP1WCVcX
+WCdZOVpNW2Nce12VXrBfzmDtYg5jM2RZZX9mo2fFaONp/WsSbCFtKm4uby1wKXEichZzCXP6dOl2GndN
+eIR5v3r+fEV9k37rgE2Bu4M0hLmGSYfjiYeLIYyujkCP4JGRk1iVPZdJmXebxZ4boA6iAqP5pfKn7qns
+q+yt76/1sf20CLYbuC+6RLxZvmnAdsJ+xIDGfch2ymzMYM6L0LjS6tUh113Zn9vm3jHggeLV5SvniOnn
+7EfuqvEQ83v17fhm+uf9cP//AAAADwAuAFEAdQCaAL8A5AELATIBWwGEAakBywHvAhQCOgJgAogCsALZ
+AwMDLQNZA4UDsQPfBA0EPARrBJsEzQT+BTEFZAWcBdUGDwZMBokGyAcKB00HkgfaCCUIcgjCCRYJbAnG
+CiMKggrlC0oLugwrDJ8NFQ2MDgYOgg8AD4EQAxCIEQ4RlxIiEq8TQBPVFG0VBhWiFkEW4heGGC0Y1hmB
+GjAa4BuTHEgdBB3CHoMfRiAMINYhoiJzI0YkHiT4JdYmtyegKJcpkSqOK44ski2aLqYvtTDIMd4y9zQV
+NTo2YzeOOL057zslPF89mz7bQB5BZEKvQ/tFRUaLR8tJBUo3S2JMhk2mTsFP2lDwUgRTFlQqVUBWWVdz
+WI9ZrlrOW/FdFl49X2ZgkWG+Yu5kI2VYZo9nxmj9ajRraWyebdFvAnAycWByjnO7dOh2D3c3eGB5i3q4
+e+d9F35Jf32AsoHqgyOEXYWahtiIF4lZip6L5I0tjniPxpEYkm+TzJUwlpuYDpmJmwyclZ4nn8ehaaMM
+pLKmWqgEqbCrX60QrsOweLIvs+i1p7dpuS268ry6voLATMIXw+PFsMd8yUrLGczQzlXP49F60x7UztaL
+2FPaJtwB3eLfxuGr44/lcudT6Rvqn+wn7bHvPvDO8l/z7/WA9w/4mfoe+5/9Gv6P//8AAAAXAEEAcACf
+AM8A/wEyAWYBmQHFAfMCIgJSAoQCtwLsAyEDWAOQA8kEAwQ+BHoEtwT1BTUFdgW9BgUGTwabBuoHOweQ
+B+gIRAikCQgJcAncCkwKwAs3C7oMQgzMDVkN6g5+DxUPsBBPEPERlhI+EukTnRRTFQ0VyhaJF0wYEhja
+GaUachtBHBMc6x3GHqQfhiBrIVQiQSMyJCclHyYbJxooICkrKjkrSyxhLXwumi+9MOQyDjM8NHI1rjbv
+ODU5gTrSPCg9hD7mQExBt0MrRKRGIUejSSlKtUxETdhPcFEMUrBUW1YJV71Zdls0XPhewGCNYl5kNmYM
+Z9lpmmtJbOlueW/8cXRy5XRQdbN3EXhyedR7Onyhfgt/eIDngliDzIVChrqINIm2iz2MyY5Zj+uRfpMR
+lKKWL5e5mT6av5w8nbafBaBMoZWi36QqpXemxagVqWaquqwOrWSuvLAVsXCyy7QotYq27bhRube7HryG
+ve6/V8DBwivDlcT/xmrH1MlAyqvMFs1zzsrQG9Fo0qzT6tUj1lfXgtio2cra5dv83RDeH98r4DXhOuI+
+40DkQOU+5jrnN+gx6SrqIusO6+nsue137jXu7O+l8FnxCvG88mbzEPO49Fz1APWi9kL24vd/+Bz4uflV
++fD6jPsn+8L8Xvz4/ZP+L/7J/2T//wAAc2YzMgAAAAAAAQxCAAAF3v//8yYAAAeSAAD9kf//+6L///2j
+AAAD3AAAwGxtbW9kAAAAAAAABhAAAJyjAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0iorLC1aJGNsYXNz
+bmFtZVgkY2xhc3Nlc18QEE5TQml0bWFwSW1hZ2VSZXCjLC4vWk5TSW1hZ2VSZXBYTlNPYmplY3TSKisx
+MldOU0FycmF5ojEv0iorNDVeTlNNdXRhYmxlQXJyYXmjNDEv0zc4Dzk6O1dOU1doaXRlXE5TQ29sb3JT
+cGFjZUQwIDAAEAOADNIqKz0+V05TQ29sb3KiPS/SKitAQVdOU0ltYWdlokAvAAgAEQAaACQAKQAyADcA
+SQBMAFEAUwBiAGgAdQB8AIsAkgCfAKYArgCwALIAtAC5ALsAvQDGAMsA1gDYANoA3ADhAOQA5gDoAOoA
+7wEGAQgBCkOwQ7VDwEPJQ9xD4EPrQ/RD+UQBRARECUQYRBxEI0QrRDhEPUQ/REFERkRORFFEVkReAAAA
+AAAAAgEAAAAAAAAAQgAAAAAAAAAAAAAAAAAARGE
+</mutableData>
+        </image>
+    </resources>
+</document>

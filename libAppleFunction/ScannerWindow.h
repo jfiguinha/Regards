@@ -55,5 +55,6 @@ private:
     ofxScannerDevice *     activeDevice;
     wxImage               latestImage;
     wxChoice *choice;
+    wxStaticBox * statusBox;
 };
 
