@@ -59,11 +59,6 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 
     
     wxString folder = CFileUtility::GetDocumentFolderPath();
-#ifdef __APPLE__
-    
-    wxStandardPathsBase& stdp = wxStandardPaths::Get();
-    folder = stdp.GetDocumentsDir();
-#endif
     
 	modificationManager = new CModificationManager(folder);
 
