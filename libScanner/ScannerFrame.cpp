@@ -364,6 +364,9 @@ wxString CScannerFrame::ScanPage()
         
    // wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
     wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
+	
+	if (!wxFileExists(pdfFile))
+		pdfFile = "";
     
     /*
     CScannerWindow d(this, -1, _("Acquire"));
