@@ -240,6 +240,7 @@ cl_mem COpenCLEffect::LoadFloatImage(float * data, const int& width, const int& 
 void COpenCLEffect::SetBitmap(CImageLoadingFormat * bitmap)
 {
 	cl_mem outputValue = nullptr;
+	
 	if(bitmap != nullptr && bitmap->IsOk())
 	{
 		filename = bitmap->GetFilename();
@@ -766,7 +767,6 @@ CRegardsFloatBitmap * COpenCLEffect::GetFloatBitmap(const bool &source)
 			}
 		}
 	}
-
 	return bitmapOut;
 }
 
@@ -810,8 +810,8 @@ CRegardsBitmap * COpenCLEffect::GetBitmap(const bool &source)
 			}
 		}
 	}
-
-	bitmapOut->SetFilename(filename);
+	if(bitmapOut != nullptr)
+		bitmapOut->SetFilename(filename);
 	return bitmapOut;
 
 }
@@ -885,7 +885,7 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		if(paramOutput != nullptr)
 		{
 			paramOutput->SetLibelle("input");
-			paramOutput->SetNoDelete(true);
+			paramOutput->SetNoDelete(false);
 			vecParam.push_back(paramOutput);	
 
 			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
@@ -901,7 +901,7 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		else
 		{
 			input->SetLibelle("input");
-			input->SetNoDelete(true);
+			input->SetNoDelete(false);
 			vecParam.push_back(input);	
 
 			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
@@ -941,12 +941,11 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		}
 		vecParam.clear();
 	}
-	/*
+
 	if(paramOutput != nullptr)
 		paramOutput = nullptr;
 	else
 		input = nullptr;
-	*/
 	return 0;
 }
 

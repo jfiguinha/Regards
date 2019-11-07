@@ -106,6 +106,7 @@ namespace Regards
 			int GetSizeData();
 
 			cl_mem_flags  flag;
+			wxString filename;
 			COpenCLContext * context;
 			void SetOutputValue(cl_mem output, int widthOutput, int heightOutput);
 			void RefreshMemoryBitmap(CRegardsBitmap * bitmapOut);
@@ -114,7 +115,6 @@ namespace Regards
 			CRegardsFloatBitmap* GetFloatBitmap(cl_mem input, const int& width, const int& height);
 			CRegardsBitmap * GetBitmap(cl_mem input, const int &width, const int &height);
 
-			wxString filename;
 			//Bitmap Memory Buffer
 			bool dataIsOk ;
 			COpenCLParameter * input;
