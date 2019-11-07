@@ -137,7 +137,7 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
         }
 	}
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
-
+    dialog.Close();
 	CommitTransection();
 }
 

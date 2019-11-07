@@ -232,6 +232,8 @@
 {
     CGImageRefToNSImageTransformer *imageTransformer = [[CGImageRefToNSImageTransformer alloc] init];
     [NSValueTransformer setValueTransformer:imageTransformer forName:@"NSImageFromCGImage"];
+    
+    [[NSRunningApplication currentApplication] activateWithOptions:(NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
 }
 
 //----------------------------------------------------------------------------------------------- applicationDidFinishLaunching:
@@ -375,7 +377,7 @@
         
         NSMenu*     menuDPI = [[NSMenu alloc] init];
         
-        _scanResolution = 300;
+        _scanResolution = 75;
         [mScanResolutionMenu setEnabled:YES];
         
         //DPI Resolution

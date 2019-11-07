@@ -206,8 +206,8 @@
             filePath = "AppController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "494"
-            endingLineNumber = "494"
+            startingLineNumber = "496"
+            endingLineNumber = "496"
             landmarkName = "-scannerDevice:didSelectFunctionalUnit:error:"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,8 +222,8 @@
             filePath = "AppController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "604"
-            endingLineNumber = "604"
+            startingLineNumber = "606"
+            endingLineNumber = "606"
             landmarkName = "-startOverviewScan:"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +254,8 @@
             filePath = "AppController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "393"
-            endingLineNumber = "393"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
             landmarkName = "-deviceDidBecomeReady:"
             landmarkType = "7">
          </BreakpointContent>
@@ -264,6 +264,22 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "B8D7D5AB-17B8-4454-B3DC-1536458CE126"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AppController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "642"
+            endingLineNumber = "642"
+            landmarkName = "-startScan:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C831C9DF-1746-4ECB-8D6A-0B4018C9CB0F"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -279,22 +295,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C831C9DF-1746-4ECB-8D6A-0B4018C9CB0F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AppController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "638"
-            endingLineNumber = "638"
-            landmarkName = "-startScan:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "28EE6E42-2F17-4DC6-B096-FF3B1C29B766"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -302,8 +302,8 @@
             filePath = "AppController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "438"
-            endingLineNumber = "438"
+            startingLineNumber = "440"
+            endingLineNumber = "440"
             landmarkName = "-device:didReceiveStatusInformation:"
             landmarkType = "7">
          </BreakpointContent>

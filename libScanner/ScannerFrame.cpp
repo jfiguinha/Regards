@@ -356,19 +356,19 @@ wxString CScannerFrame::ScanPage()
     wxString pdfFile = "";
 	wxImage image;
 #ifdef __APPLE__
-/*
     wxArrayString output;
     printf("CScannerFrame::ScanPage \n");
-    wxString scanFile = CFileUtility::GetTempFile("Scan.jpeg");
+    wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
     wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
     if (wxFileExists(scanFile))
-        image.LoadFile(scanFile, wxBITMAP_TYPE_JPEG);
-    */
+        image.LoadFile(scanFile, wxBITMAP_TYPE_TIFF);
+    /*
     CScannerWindow d(this, -1, _("Acquire"));
     if (d.ShowModal() == wxID_OK)
     {
         //image = d.GetImage();
     }
+    */
     
 #else
 #if __WXSCANSANE__  
