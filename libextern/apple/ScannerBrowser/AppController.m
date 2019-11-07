@@ -637,6 +637,8 @@
             fu.scanArea         = NSMakeRect( 0.0, 0.0, s.width, s.height );
         }
         
+        NSString * documentName = [NSString stringWithFormat:@"Scan_%@",
+        [@(_scanResolution) stringValue]];
         fu.resolution                   = _scanResolution;
         //[fu.supportedResolutions indexGreaterThanOrEqualToIndex:100];
         fu.bitDepth = [fu.supportedBitDepths indexGreaterThanOrEqualToIndex:(self.scanColor > 0 ? 8 : 1)];
@@ -645,7 +647,7 @@
         //fu.pixelDataType                = ICScannerPixelDataTypeRGB;
         scanner.transferMode            = ICScannerTransferModeFileBased;
         scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Documents/Regards/temp" stringByExpandingTildeInPath]];
-        scanner.documentName            = @"Scan";
+        scanner.documentName            = documentName;
         scanner.documentUTI             = (id)kUTTypeTIFF;
         
         [scanner requestScan];

@@ -18,6 +18,7 @@
 #include <wx/numdlg.h>
 #include <LibResource.h>
 #include <wx/wxsanedlg.h>
+#include <wx/dir.h>
 #include <libPicture.h>
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
@@ -358,10 +359,45 @@ wxString CScannerFrame::ScanPage()
 #ifdef __APPLE__
     wxArrayString output;
     printf("CScannerFrame::ScanPage \n");
-    wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
+    //Find all file with Scan
+	wxString scanFile;
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+    wxMkDir(tempFolder);
+#else
+	wxString tempFolder = documentPath + "/temp";
+    wxMkDir(tempFolder,  wxS_DIR_DEFAULT);
+#endif
+    wxArrayString files;
+    wxDir::GetAllFiles(tempFolder, &files, "Scan_*", wxDIR_FILES);
+    for (wxString file : files)
+        wxRemoveFile(file);
+        
+   // wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
     wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
-    if (wxFileExists(scanFile))
-        image.LoadFile(scanFile, wxBITMAP_TYPE_TIFF);
+    
+    wxDir::GetAllFiles(tempFolder, &files, "Scan_*", wxDIR_FILES);
+    if(files.size() > 0)
+    {
+        scanFile = files[0];
+        if (wxFileExists(scanFile))
+            image.LoadFile(scanFile, wxBITMAP_TYPE_TIFF);  
+            
+        //find DPI
+        int start = scanFile.Find("_") + 1;
+        int end = scanFile.Find(".");
+        if(start > 1)
+        {
+            wxString dpi = scanFile.substr(start, end - start);
+            printf("dpi %s \n", dpi);
+            image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+            image.SetOption(wxIMAGE_OPTION_RESOLUTIONX, dpi);
+            image.SetOption(wxIMAGE_OPTION_RESOLUTIONY, dpi);
+            image.SetOption(wxIMAGE_OPTION_RESOLUTION, dpi);
+        }
+    }
+
     /*
     CScannerWindow d(this, -1, _("Acquire"));
     if (d.ShowModal() == wxID_OK)
