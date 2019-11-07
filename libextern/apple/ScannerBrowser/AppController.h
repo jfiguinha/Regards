@@ -55,15 +55,20 @@
     
     ICDeviceBrowser*                mDeviceBrowser;
     NSMutableArray*                 mScanners;
+    
     IBOutlet  NSWindow*             mWindow;
     IBOutlet  NSTableView*          mScannersTableView;
     IBOutlet  NSArrayController*    mScannersController;
     IBOutlet  NSPopUpButton*        mFunctionalUnitMenu;
+    IBOutlet  NSPopUpButton*        mScanResolutionMenu;
     IBOutlet  NSProgressIndicator*  mProgressIndicator;
     IBOutlet  NSTextField*          mStatusText;
 }
 
+@property (nonatomic, readonly) NSUInteger scanColor;
+@property (nonatomic) IBOutlet NSMatrix *colorRadio;
 @property  BOOL mOpenScanner;
+@property NSInteger scanResolution;
 @property(retain)   NSMutableArray* scanners;
 @property (nonatomic) IBOutlet NSWindow *setupWindow;
 

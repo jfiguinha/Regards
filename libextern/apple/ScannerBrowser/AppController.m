@@ -202,11 +202,28 @@
 
 @implementation AppController
 
+@synthesize scanColor;
 @synthesize scanners = mScanners;
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender
 {
     return YES;
+}
+
+- (NSArray *)checkResolutions {
+    
+    NSMutableArray *resolutions = [[NSMutableArray alloc] init];
+    if(self.selectedScanner) {
+        [self.selectedScanner.selectedFunctionalUnit.preferredResolutions enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+            [resolutions addObject:[NSNumber numberWithInteger:idx]];
+        }];
+        
+    }
+    return resolutions;
+}
+
+- (NSUInteger)scanColor {
+    return [[self.colorRadio selectedCell] tag];
 }
 
 //------------------------------------------------------------------------------------------------------------------- initialize
@@ -356,6 +373,29 @@
             }
         }
         
+        NSMenu*     menuDPI = [[NSMenu alloc] init];
+        
+        _scanResolution = 300;
+        [mScanResolutionMenu setEnabled:YES];
+        
+        //DPI Resolution
+        NSMutableArray *resolutions = [[NSMutableArray alloc] init];
+        if(self.selectedScanner) {
+            [self.selectedScanner.selectedFunctionalUnit.preferredResolutions enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                [resolutions addObject:[NSNumber numberWithInteger:idx]];
+            }];
+        }
+        for ( NSNumber* n in resolutions )
+        {
+            NSMenuItem* menuItemDPI;
+            NSString *myNumberInString = [n stringValue];
+            menuItemDPI = [[NSMenuItem alloc] initWithTitle:myNumberInString action:@selector(selectResolutionDPI:) keyEquivalent:myNumberInString];
+            [menuItemDPI setTarget:self];
+            [menuItem setTag:n];
+            [menuDPI addItem:menuItemDPI];
+        }
+
+        [mScanResolutionMenu setMenu:menuDPI];
         [mFunctionalUnitMenu setMenu:menu];
     }
     
@@ -363,6 +403,9 @@
     
     if ( functionalUnit )
             [mFunctionalUnitMenu selectItemWithTag:functionalUnit.type];
+    
+
+    [mScanResolutionMenu selectItemWithTag:_scanResolution];
 }
 
 //--------------------------------------------------------------------------------------------- device:didCloseSessionWithError:
@@ -480,6 +523,10 @@
 {
     NSLog( @"scannerDevice: \n%@\ndidCompleteScanWithError: \n%@\n", scanner, error );
     [mProgressIndicator setHidden:YES];
+    //Fin de l'application
+    //Fermeture de la session
+     [[self selectedScanner] requestCloseSession];
+    [[NSApplication sharedApplication] terminate:nil];
 }
 
 #pragma mark -
@@ -487,7 +534,7 @@
 
 - (IBAction)openCloseSession:(id)sender
 {
-    [self.setupWindow makeKeyAndOrderFront:nil];
+    //[self.setupWindow makeKeyAndOrderFront:nil];
     [sender setTitle:@"Close"];
     _mOpenScanner = TRUE;
     if ( [self selectedScanner].hasOpenSession )
@@ -513,6 +560,19 @@
     
     if ( sender && ( selectedType != scanner.selectedFunctionalUnit.type ) )
         [scanner requestSelectFunctionalUnit:[sender tag]];
+}
+
+- (IBAction)selectResolutionDPI:(id)sender
+{
+    NSString*                   titleOfSelectedItem = [sender title];
+    _scanResolution = [titleOfSelectedItem intValue];
+    //ICScannerFunctionalUnitType selectedType        = [sender tag];
+    //ICScannerDevice*            scanner             = [self selectedScanner];
+    
+   // NSLog( @"titleOfSelectedItem: %@, selectedType: %ld\n", titleOfSelectedItem, selectedType );
+    
+   // if ( sender && ( selectedType != scanner.selectedFunctionalUnit.type ) )
+   //     [scanner requestSelectFunctionalUnit:[sender tag]];
 }
 
 
@@ -575,14 +635,16 @@
             fu.scanArea         = NSMakeRect( 0.0, 0.0, s.width, s.height );
         }
         
-        fu.resolution                   = [fu.supportedResolutions indexGreaterThanOrEqualToIndex:100];
-        fu.bitDepth                     = ICScannerBitDepth8Bits;
-        fu.pixelDataType                = ICScannerPixelDataTypeRGB;
-        
+        fu.resolution                   = _scanResolution;
+        //[fu.supportedResolutions indexGreaterThanOrEqualToIndex:100];
+        fu.bitDepth = [fu.supportedBitDepths indexGreaterThanOrEqualToIndex:(self.scanColor > 0 ? 8 : 1)];
+        fu.pixelDataType                = self.scanColor;
+        //fu.bitDepth                     = ICScannerBitDepth8Bits;
+        //fu.pixelDataType                = ICScannerPixelDataTypeRGB;
         scanner.transferMode            = ICScannerTransferModeFileBased;
-        scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Pictures" stringByExpandingTildeInPath]];
+        scanner.downloadsDirectory      = [NSURL fileURLWithPath:[@"~/Documents/Regards/temp" stringByExpandingTildeInPath]];
         scanner.documentName            = @"Scan";
-        scanner.documentUTI             = (id)kUTTypeJPEG;
+        scanner.documentUTI             = (id)kUTTypeTIFF;
         
         [scanner requestScan];
         [mProgressIndicator setHidden:NO];

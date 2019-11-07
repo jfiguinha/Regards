@@ -233,6 +233,7 @@
 				GCC_PREFIX_HEADER = ScannerBrowser_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = ScannerBrowser;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
@@ -251,6 +252,7 @@
 				GCC_PREFIX_HEADER = ScannerBrowser_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_NAME = ScannerBrowser;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = app;
