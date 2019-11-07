@@ -219,7 +219,7 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 				dialog.Update(i, msg);
 			}
 		}
-		dialog.Close();
+		dialog.Destroy();
 		CommitTransection();
 	}
 	return i;
