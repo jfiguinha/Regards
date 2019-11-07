@@ -360,44 +360,11 @@ wxString CScannerFrame::ScanPage()
     wxArrayString output;
     printf("CScannerFrame::ScanPage \n");
     //Find all file with Scan
-	wxString scanFile;
-	wxString documentPath = CFileUtility::GetDocumentFolderPath();
-#ifdef WIN32
-	wxString tempFolder = documentPath + "\\temp";
-    wxMkDir(tempFolder);
-#else
-	wxString tempFolder = documentPath + "/temp";
-    wxMkDir(tempFolder,  wxS_DIR_DEFAULT);
-#endif
-    wxArrayString files;
-    wxDir::GetAllFiles(tempFolder, &files, "Scan_*", wxDIR_FILES);
-    for (wxString file : files)
-        wxRemoveFile(file);
+    pdfFile = CFileUtility::GetTempFile("Scan.pdf");
         
    // wxString scanFile = CFileUtility::GetTempFile("Scan.tiff");
     wxExecute("ScannerBrowser.app/Contents/MacOS/ScannerBrowser", output);
     
-    wxDir::GetAllFiles(tempFolder, &files, "Scan_*", wxDIR_FILES);
-    if(files.size() > 0)
-    {
-        scanFile = files[0];
-        if (wxFileExists(scanFile))
-            image.LoadFile(scanFile, wxBITMAP_TYPE_TIFF);  
-            
-        //find DPI
-        int start = scanFile.Find("_") + 1;
-        int end = scanFile.Find(".");
-        if(start > 1)
-        {
-            wxString dpi = scanFile.substr(start, end - start);
-            printf("dpi %s \n", dpi);
-            image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
-            image.SetOption(wxIMAGE_OPTION_RESOLUTIONX, dpi);
-            image.SetOption(wxIMAGE_OPTION_RESOLUTIONY, dpi);
-            image.SetOption(wxIMAGE_OPTION_RESOLUTION, dpi);
-        }
-    }
-
     /*
     CScannerWindow d(this, -1, _("Acquire"));
     if (d.ShowModal() == wxID_OK)
@@ -458,6 +425,8 @@ wxString CScannerFrame::ScanPage()
 	//delete gdiplus;
 #endif
 #endif
+
+#ifndef __APPLE__
 	if (image.IsOk())
 	{
         pdfFile = CFileUtility::GetTempFile("scanner.pdf");
@@ -468,7 +437,7 @@ wxString CScannerFrame::ScanPage()
         picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
 
 	}
-
+#endif
 	return pdfFile;
 }
 
