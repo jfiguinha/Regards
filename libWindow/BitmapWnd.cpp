@@ -724,7 +724,7 @@ CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
     TRACE();
 	if(filtreEffet != nullptr && bitmapLoad)
 	{
-		CRegardsBitmap * bitmap = this->source->GetRegardsBitmap(true);//filtreEffet->GetBitmap(source);
+		CRegardsBitmap * bitmap = filtreEffet->GetBitmap(source);
 		if (bitmap != nullptr)
 		{
 			bitmap->SetOrientation(orientation);
@@ -743,7 +743,7 @@ CRegardsFloatBitmap * CBitmapWnd::GetFloatBitmap(const bool &source)
     TRACE();
 	if(filtreEffet != nullptr && bitmapLoad)
 	{
-		CRegardsFloatBitmap * bitmap = this->source->GetFloatBitmap(true);// filtreEffet->GetFloatBitmap(source);
+		CRegardsFloatBitmap * bitmap = filtreEffet->GetFloatBitmap(source);
 		return bitmap;
 	}
 	return nullptr;
@@ -1548,7 +1548,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 			delete filtreEffet;
 
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
-
+        
 		renderOpenGL->LoadingResource(scale_factor);
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
@@ -1628,6 +1628,12 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	AfterRender();
 
 	this->SwapBuffers();
+    
+    if(source != nullptr)
+    {
+        delete source;
+        source = nullptr;
+    }
 
     printf("CBitmapWnd End OnPaint \n");
 	//scrollbar->SetPosition(posLargeur, posHauteur);

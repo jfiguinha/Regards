@@ -116,11 +116,12 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
 {
 	BeginTransaction();
     CLibPicture libPicture;
-    wxProgressDialog dialog("Import File", "Checking...", listFile.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+#ifndef __WXMSW__    
+    wxProgressDialog dialog("Import File", "Checking...", listFile.size(), NULL, wxPD_APP_MODAL);
     int updatesize = 0;
     wxString msg = "in progress";
     dialog.Update(updatesize, msg);    
-    
+#endif
 	for (wxString filename : listFile)
 	{
         updatesize++;
@@ -131,13 +132,17 @@ void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, cons
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
               
 		}
+#ifndef __WXMSW__           
         if (false == dialog.Update(updatesize, msg))
         {
             break;
         }
+#endif        
 	}
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
-    dialog.Close();
+#ifndef __WXMSW__    
+    dialog.Destroy();
+#endif
 	CommitTransection();
 }
 

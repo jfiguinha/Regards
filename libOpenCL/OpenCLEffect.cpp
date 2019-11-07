@@ -885,7 +885,7 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		if(paramOutput != nullptr)
 		{
 			paramOutput->SetLibelle("input");
-			paramOutput->SetNoDelete(false);
+			paramOutput->SetNoDelete(true);
 			vecParam.push_back(paramOutput);	
 
 			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
@@ -901,7 +901,7 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		else
 		{
 			input->SetLibelle("input");
-			input->SetNoDelete(false);
+			input->SetNoDelete(true);
 			vecParam.push_back(input);	
 
 			COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
@@ -942,10 +942,12 @@ int COpenCLEffect::GetRgbaBitmap(void * cl_image)
 		vecParam.clear();
 	}
 
+    /*
 	if(paramOutput != nullptr)
 		paramOutput = nullptr;
 	else
 		input = nullptr;
+    */
 	return 0;
 }
 
