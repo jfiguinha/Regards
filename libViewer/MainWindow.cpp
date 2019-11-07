@@ -483,6 +483,8 @@ void CMainWindow::ProcessIdle()
     TRACE();
 	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
+
+	/*
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
@@ -493,6 +495,7 @@ void CMainWindow::ProcessIdle()
 		wxCommandEvent evt(wxEVENT_REFRESHDATA);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+	*/
     
     if(checkVersion)
     {

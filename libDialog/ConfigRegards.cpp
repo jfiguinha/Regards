@@ -132,7 +132,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
         wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);
         wxMessageBox(errorProcessNumberMin, errorInfo);
     }
-    else if((thumbnailProcess + faceProcess + exifProcess) > nbProcesseur && (thumbnailProcess > 1 || faceProcess > 1 || exifProcess > 1))
+    else if((thumbnailProcess + exifProcess) > nbProcesseur && faceProcess > nbProcesseur && (thumbnailProcess > 1 || faceProcess > 1 || exifProcess > 1))
     {
         wxString errorProcessNumberMax = CLibResource::LoadStringFromResource(L"ErrorProcessNumberMax",1);
         wxString errorInfo = CLibResource::LoadStringFromResource(L"informationserror",1);

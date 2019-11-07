@@ -199,29 +199,29 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
-		wxProgressDialog dialog("Import File", "Checking...", files.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
-		wxString msg = "in progress";
-		dialog.Update(files.size(), msg);
-
-
-	BeginTransaction();
-	for (wxString file : files)
+	if (files.size() > 0)
 	{
-		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+		wxProgressDialog dialog("Import File", "Checking...", files.size(), NULL, wxPD_APP_MODAL);
+		wxString msg = "in progress";
+		//dialog.Update(files.size(), msg);
+
+		BeginTransaction();
+		for (wxString file : files)
 		{
-			int extensionId = libPicture.TestImageFormat(file);
-			if (i == 0)
-				firstFile = file;
-			file.Replace("'", "''");
-			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
-			i++;
-				if (false == dialog.Update(i, msg))
-				{
-					break;
-				}
+			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+			{
+				int extensionId = libPicture.TestImageFormat(file);
+				if (i == 0)
+					firstFile = file;
+				file.Replace("'", "''");
+				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+				i++;
+				dialog.Update(i, msg);
+			}
 		}
+		dialog.Close();
+		CommitTransection();
 	}
-	CommitTransection();
 	return i;
 
 	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));
