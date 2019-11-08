@@ -62,13 +62,6 @@ chmod +x configure
 make -j$NBPROC
 cd ..
 
-#Compile fftw-3.3.8  :
-cd fftw-3.3.8 
-chmod +x configure
-./configure --enable-float
-make -j$NBPROC
-cd ..
-
 #Compile heif-master
 cd heif-master/srcs 
 cmake ../srcs 
@@ -109,13 +102,6 @@ chmod +x multilib.sh
 cd .. 
 cd .. 
 cd .. 
-
-#Compile libexif
-cd libexif-master
-chmod +x configure
-./configure
-make -j$NBPROC
-cd ..
 
 #Compille ffmpeg
 ./ffmpeg_build.sh

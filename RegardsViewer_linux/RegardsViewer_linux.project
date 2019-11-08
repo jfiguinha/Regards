@@ -237,6 +237,7 @@
         <Library Value="Parameter"/>
         <Library Value="RegardsRaw"/>
         <Library Value="RegardsCL"/>
+        <Library Value="RegardsGL"/>
         <Library Value="OpenCL"/>
         <Library Value="SqlData"/>
         <Library Value="CxImage"/>
@@ -268,7 +269,6 @@
         <Library Value="xcb-xfixes"/>
         <Library Value="xcb-shape"/>
         <Library Value="SM"/>
-        <Library Value="webp"/>
         <Library Value="SDL2"/>
         <Library Value="FaceRecognition"/>
         <Library Value="va"/>
@@ -296,19 +296,6 @@
         <Library Value="aom"/>
         <Library Value="exif"/>
         <Library Value="webkit2gtk-4.0"/>
-        <Library Value="vorbisenc"/>
-        <Library Value="vorbis"/>
-        <Library Value="fdk-aac"/>
-        <Library Value="x264"/>
-        <Library Value="mp3lame"/>
-        <Library Value="faac"/>
-        <Library Value="ass"/>
-        <Library Value="gpac"/>
-        <Library Value="opus"/>
-        <Library Value="theora"/>
-        <Library Value="vpx"/>
-        <Library Value="theoraenc"/>
-        <Library Value="theoradec"/>
         <Library Value="wxIA"/>
         <Library Value="Window"/>
         <Library Value="wxPDFDoc"/>
