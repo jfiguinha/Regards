@@ -277,9 +277,11 @@ void CTypePhotoDetectionDlg::PictureCategoryRecognition(void * param)
 
 	for (int categorie : listCategorie)
 	{
+		char label[1024];
 		CSqlPhotos photo;
 		int numPhoto = photo.GetPhotoId(path->filename);
-		categoriePhoto.InsertPhotoCategorie(numPhoto, categorie);
+		picture->GetLabel(categorie, label, 1024, faceData);
+		categoriePhoto.InsertPhotoCategorie(numPhoto, categorie, label);
 	}
 
 

@@ -227,6 +227,7 @@
     <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PhotoCatalog.h" />
     <ClInclude Include="PhotoCategorie.h" />
+    <ClInclude Include="PhotoCategorieUsenet.h" />
     <ClInclude Include="PhotoCriteria.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
     <ClInclude Include="PhotoGps.h" />

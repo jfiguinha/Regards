@@ -1,6 +1,7 @@
 #pragma once
 #include "SqlExecuteRequest.h"
 #include "SqlResult.h"
+#include <PhotoCategorieUsenet.h>
 
 namespace Regards
 {
@@ -12,8 +13,9 @@ namespace Regards
 			CSqlPhotoCategorieUsenet();
 			~CSqlPhotoCategorieUsenet();
 			vector<wxString> GetPhotoListTreatment();
+			vector<CPhotoCategorieUsenet> GetPhotoListCategorie(const int &numPhoto);
 			bool InsertPhotoProcessing(const wxString &path);
-			bool InsertPhotoCategorie(const int &numPhoto, const int &categorie);
+			bool InsertPhotoCategorie(const int &numPhoto, const int &categorie, const wxString &label);
 			bool DeletePhotoProcessing(const wxString &path);
 			bool DeletePhotoProcessingDatabase();
 			bool DeletePhotoCategorie(const int &numPhoto);
@@ -23,6 +25,7 @@ namespace Regards
 			int type;
 			int TraitementResult(CSqlResult * sqlResult);
 			vector<wxString> listPhoto;
+			vector<CPhotoCategorieUsenet> listCategoriePhoto;
 		};
 	}
 }
