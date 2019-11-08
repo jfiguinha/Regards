@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libDialog" InternalType="Library" Version="10.0.0">
+<CodeLite_Project Name="libDialog" InternalType="Library" Version="11000">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -29,6 +29,11 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="TypePhotoDetection.cpp"/>
+    <File Name="JxrOption.cpp"/>
+    <File Name="J2kOption.cpp"/>
+    <File Name="ExrOption.cpp"/>
+    <File Name="BmpOption.cpp"/>
     <File Name="SaveFileFormat.cpp"/>
     <File Name="FaceDetection.cpp"/>
     <File Name="CategoryDetection.cpp"/>
@@ -50,6 +55,11 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="TypePhotoDetection.h"/>
+    <File Name="JxrOption.h"/>
+    <File Name="J2kOption.h"/>
+    <File Name="ExrOption.h"/>
+    <File Name="BmpOption.h"/>
     <File Name="SaveFromCFunction.h"/>
     <File Name="SaveFileFormat.h"/>
     <File Name="FaceDetection.h"/>
@@ -73,6 +83,8 @@
     <File Name="SavePicture.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple"/>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
@@ -178,6 +190,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
