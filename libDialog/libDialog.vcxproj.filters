@@ -52,6 +52,9 @@
     <Filter Include="CategoryDetection">
       <UniqueIdentifier>{bedd0e2d-2cbf-4206-b226-1642be6a55c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TypePhotoDetection">
+      <UniqueIdentifier>{402f485a-2e43-4a43-90c1-68d6e87741de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -126,6 +129,9 @@
     <ClCompile Include="JxrOption.cpp">
       <Filter>Picture Save Option</Filter>
     </ClCompile>
+    <ClCompile Include="TypePhotoDetection.cpp">
+      <Filter>TypePhotoDetection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -199,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="JxrOption.h">
       <Filter>Picture Save Option</Filter>
+    </ClInclude>
+    <ClInclude Include="TypePhotoDetection.h">
+      <Filter>TypePhotoDetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

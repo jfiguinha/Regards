@@ -23,7 +23,7 @@ BmpOption::BmpOption(wxWindow* parent)
     isOk = false;
 	//(*Initialize(BmpOption)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("BmpOption"),_T("wxDialog"));
-	rbCompression = (wxRadioBox*)FindWindow(XRCID("ID_RBCOMPRESSION"));
+	rbCompression = (wxRadioBox*)FindWindow(XRCID("ID_RBCODEC"));
 	btnOK = (wxButton*)FindWindow(XRCID("ID_OK"));
 	btnCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 

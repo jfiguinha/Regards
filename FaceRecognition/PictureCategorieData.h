@@ -68,11 +68,12 @@ public:
 	~CPictureCategorieData();
 	int LoadPredictor(const std::string & file_name);
 	std::vector<int> GetCategorie(const char * filename);
+	std::vector<int> GetCategorie(const unsigned char * data, const int &size);
 	std::vector<string> GetCategorieLabel(const char * filename);
 	void GetLabel(const int &numLabel, char * labelOut, int size);
 
 private:
-
+	std::vector<int> CPictureCategorieData::GetCategorie(const matrix<rgb_pixel> & img);
 	string predicator;
 	std::vector<string> labels;
 	a_net_type net;

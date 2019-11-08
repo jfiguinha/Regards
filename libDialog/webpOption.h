@@ -1,51 +1,51 @@
 #pragma once
 
 #ifndef WX_PRECOMP
-	//(*HeadersPCH(JpegOption)
-	#include <wx/radiobox.h>
-	#include <wx/statbox.h>
-	#include <wx/slider.h>
-	#include <wx/button.h>
-	#include <wx/dialog.h>
-	//*)
+//(*HeadersPCH(WebpOption)
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
+#include <wx/slider.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+//*)
 #endif
-//(*Headers(JpegOption)
+//(*Headers(WebpOption)
 //*)
 
-class WebpOption: public wxDialog
+class WebpOption : public wxDialog
 {
-	public:
+public:
 
-		WebpOption(wxWindow* parent);
-		virtual ~WebpOption();
+	WebpOption(wxWindow* parent);
+	virtual ~WebpOption();
 
-		//(*Declarations(JpegOption)
-		wxStaticBox* sbCompression;
-		wxButton* btnCancel;
-		wxSlider* slCompression;
-		wxButton* btnOK;
-		//*)
-    
-        bool IsOk();
-        int CompressionOption();
-        int CompressionLevel();
+	//(*Declarations(WebpOption)
+	wxStaticBox* sbCompression;
+	wxButton* btnCancel;
+	wxRadioBox* rbCodec;
+	wxSlider* slCompression;
+	wxButton* btnOK;
+	//*)
 
-	protected:
+	bool IsOk();
+	int CompressionOption();
+	int CompressionLevel();
 
-		//(*Identifiers(JpegOption)
-		//*)
+protected:
 
-	private:
+	//(*Identifiers(WebpOption)
+	//*)
 
-		//(*Handlers(JpegOption)
-		void OnbtnOKClick(wxCommandEvent& event);
-		void OnbtnCancelClick(wxCommandEvent& event);
-		void OnslCompressionCmdScroll(wxScrollEvent& event);
-		//*)
+private:
 
-        bool isOk;
-        int compressOption;
-        int compressLevel;
-		DECLARE_EVENT_TABLE()
+	//(*Handlers(WebpOption)
+	void OnbtnOKClick(wxCommandEvent& event);
+	void OnbtnCancelClick(wxCommandEvent& event);
+	void OnslCompressionCmdScroll(wxScrollEvent& event);
+	//*)
+
+	bool isOk;
+	int compressOption;
+	int compressLevel;
+	DECLARE_EVENT_TABLE()
 };
-

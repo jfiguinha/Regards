@@ -117,6 +117,9 @@
     <ClInclude Include="SqlLibExplorer.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="SqlPhotoCategorieUsenet.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlCatalog.cpp">
@@ -213,6 +216,9 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="SqlLibExplorer.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SqlPhotoCategorieUsenet.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

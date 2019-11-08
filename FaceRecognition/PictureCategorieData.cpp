@@ -1,5 +1,5 @@
 #include "PictureCategorieData.h"
-
+#include "LoadPicture.h"
 
 // ----------------------------------------------------------------------------------------
 
@@ -76,8 +76,21 @@ int CPictureCategorieData::LoadPredictor(const std::string & file_name)
 	return 0;
 }
 
+std::vector<int> CPictureCategorieData::GetCategorie(const unsigned char * data, const int &size)
+{
+	matrix<rgb_pixel> img;
+	load_jpeg(img, data, size);
+	return GetCategorie(img);
+}
 
 std::vector<int> CPictureCategorieData::GetCategorie(const char * filename)
+{
+	matrix<rgb_pixel> img;
+	load_image(img, filename);
+	return GetCategorie(img);
+}
+
+std::vector<int> CPictureCategorieData::GetCategorie(const matrix<rgb_pixel> & img)
 {
 	
 	std::vector<int> categorie;
@@ -92,11 +105,9 @@ std::vector<int> CPictureCategorieData::GetCategorie(const char * filename)
 
 
 	dlib::array<matrix<rgb_pixel>> images;
-	matrix<rgb_pixel> img, crop;
+	matrix<rgb_pixel> crop;
 
 	dlib::rand rnd;
-
-	load_image(img, filename);
 
 	const int num_crops = 16;
 	// Grab 16 random crops from the image.  We will run all of them through the

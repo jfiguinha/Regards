@@ -218,6 +218,7 @@
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="SavePicture.cpp" />
     <ClCompile Include="TiffOption.cpp" />
+    <ClCompile Include="TypePhotoDetection.cpp" />
     <ClCompile Include="webpOption.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +244,7 @@
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="SavePicture.h" />
     <ClInclude Include="TiffOption.h" />
+    <ClInclude Include="TypePhotoDetection.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="wx_pch.h" />
   </ItemGroup>

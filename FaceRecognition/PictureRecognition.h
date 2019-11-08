@@ -40,6 +40,7 @@ class FACERECOGNITION_API CPictureCategorie {
 public:
 	CPictureCategorie();
 	~CPictureCategorie(void);
+	std::vector<int> GetCategorieFromJpegBuffer(const unsigned char * data, const int &size, void * pictureData);
 	std::vector<int> GetCategorieFromPicture(const char * filename, void * pictureData);
 	void GetLabel(const int &numLabel, char * labelOut, int size, void * pictureData);
 

@@ -23,6 +23,17 @@ CPictureCategorie::~CPictureCategorie()
 }
 
 
+std::vector<int> CPictureCategorie::GetCategorieFromJpegBuffer(const unsigned char * data, const int &size, void * pictureData)
+{
+	if (pictureData != nullptr)
+	{
+		return ((CPictureCategorieData *)pictureData)->GetCategorie(data, size);
+
+	}
+	std::vector<int> categorie;
+	return categorie;
+}
+
 std::vector<int> CPictureCategorie::GetCategorieFromPicture(const char * filename, void * pictureData)
 {
 	if (pictureData != nullptr)

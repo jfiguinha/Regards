@@ -222,6 +222,7 @@
     <ClInclude Include="SqlLibExplorer.h" />
     <ClInclude Include="SqlOpenCLKernel.h" />
     <ClInclude Include="SqlPhotoCategorie.h" />
+    <ClInclude Include="SqlPhotoCategorieUsenet.h" />
     <ClInclude Include="SqlPhotoCriteria.h" />
     <ClInclude Include="SqlPhotoGPS.h" />
     <ClInclude Include="SqlPhotos.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="SqlLibExplorer.cpp" />
     <ClCompile Include="SqlOpenCLKernel.cpp" />
     <ClCompile Include="SqlPhotoCategorie.cpp" />
+    <ClCompile Include="SqlPhotoCategorieUsenet.cpp" />
     <ClCompile Include="SqlPhotoCriteria.cpp" />
     <ClCompile Include="SqlPhotoGPS.cpp" />
     <ClCompile Include="SqlPhotos.cpp" />
