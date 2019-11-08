@@ -114,6 +114,18 @@
     <ClCompile Include="CategoryDetection.cpp">
       <Filter>CategoryDetection</Filter>
     </ClCompile>
+    <ClCompile Include="BmpOption.cpp">
+      <Filter>Picture Save Option</Filter>
+    </ClCompile>
+    <ClCompile Include="ExrOption.cpp">
+      <Filter>Picture Save Option</Filter>
+    </ClCompile>
+    <ClCompile Include="J2kOption.cpp">
+      <Filter>Picture Save Option</Filter>
+    </ClCompile>
+    <ClCompile Include="JxrOption.cpp">
+      <Filter>Picture Save Option</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -175,6 +187,18 @@
     </ClInclude>
     <ClInclude Include="CategoryDetection.h">
       <Filter>CategoryDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="BmpOption.h">
+      <Filter>Picture Save Option</Filter>
+    </ClInclude>
+    <ClInclude Include="ExrOption.h">
+      <Filter>Picture Save Option</Filter>
+    </ClInclude>
+    <ClInclude Include="J2kOption.h">
+      <Filter>Picture Save Option</Filter>
+    </ClInclude>
+    <ClInclude Include="JxrOption.h">
+      <Filter>Picture Save Option</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

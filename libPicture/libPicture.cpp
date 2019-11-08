@@ -69,6 +69,10 @@ using namespace Regards::exiv2;
 #include <PngOption.h>
 #include <webpOption.h>
 #include <bpgoption.h>
+#include <bmpoption.h>
+#include <exroption.h>
+#include <j2koption.h>
+#include <jxroption.h>
 #include <CompressionOption.h>
 
 #include <wxSVG/SVGDocument.h>
@@ -361,6 +365,14 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	{
 	case BMP:
 	{
+		BmpOption bmpOption(nullptr);
+		bmpOption.ShowModal();
+		if (bmpOption.IsOk())
+		{
+			quality = bmpOption.CompressionOption();
+			returnValue = 1;
+		}
+
 		returnValue = 1;
 	}
 	break;
@@ -485,6 +497,46 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 
+	case JP2:
+	case J2K:
+	{
+		J2kOption j2kOption(nullptr);
+		j2kOption.ShowModal();
+		if (j2kOption.IsOk())
+		{
+			option = j2kOption.CompressionOption();
+			quality = j2kOption.CompressionLevel();
+			returnValue = 1;
+		}
+
+	}
+	break;
+
+	case EXR:
+	{
+		ExrOption exrOption(nullptr);
+		exrOption.ShowModal();
+		if (exrOption.IsOk())
+		{
+			option = exrOption.CompressionOption();
+			returnValue = 1;
+		}
+	}
+	break;
+
+	case JXR:
+	{
+		JxrOption jxrOption(nullptr);
+		jxrOption.ShowModal();
+		if (jxrOption.IsOk())
+		{
+			option = jxrOption.CompressionOption();
+			quality = jxrOption.CompressionLevel();
+			returnValue = 1;
+		}
+	}
+	break;
+
 	case PPM:
 	{
 		returnValue = 1;
@@ -519,44 +571,135 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 	{
 	case BMP:
 	{
-		//iReturn = CBmp::SaveBMP(bitmap, fileName);
-		CxImage * image = bitmap->GetCxImage();
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("bmp"));
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		int _option = BMP_DEFAULT;
+		if(option == 1)
+			_option = BMP_SAVE_RLE;
+		int pitch = regards->GetBitmapWidth() * 4;
+		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FreeImage_Save(FIF_BMP, Image, fileName, _option);
+		FreeImage_Unload(Image);
+		delete regards;
+	}
+	break;
+
+	case J2K:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		int _option = quality;
+		switch (option)
+		{
+		case 1:
+			_option = J2K_DEFAULT;
+			break;
+		}
+		int pitch = regards->GetBitmapWidth() * 4;
+		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FreeImage_Save(FIF_J2K, Image, fileName, _option);
+		FreeImage_Unload(Image);
+		delete regards;
+	}
+	break;
+
+	case JP2:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		int _option = quality;
+		switch (option)
+		{
+		case 1:
+			_option = JP2_DEFAULT;
+			break;
+		}
+		int pitch = regards->GetBitmapWidth() * 4;
+		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FreeImage_Save(FIF_JP2, Image, fileName, _option);
+		FreeImage_Unload(Image);
+		delete regards;
+	}
+	break;
+
+	case JXR:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		int _option = quality;
+		switch (option)
+		{
+			case 1:
+				_option = JXR_DEFAULT;
+				break;
+			case 2:
+				_option = JXR_LOSSLESS;
+				break;
+			case 3:
+				_option = JXR_PROGRESSIVE;
+				break;
+		}
+		int pitch = regards->GetBitmapWidth() * 4;
+		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FreeImage_Save(FIF_JXR, Image, fileName, _option);
+		FreeImage_Unload(Image);
+		delete regards;
+	}
+	break;
+
+	case EXR:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		int _option = EXR_DEFAULT;
+		switch (option)
+		{
+		case 1:
+			_option = EXR_FLOAT;
+			break;
+		case 2:
+			_option = EXR_NONE;
+			break;
+		case 3:
+			_option = EXR_ZIP;
+			break;
+		case 4:
+			_option = EXR_PIZ;
+			break;
+		case 5:
+			_option = EXR_PXR24;
+			break;
+		case 6:
+			_option = EXR_B44;
+			break;
+		case 7:
+			_option = EXR_LC;
+			break;
+		}
+		int pitch = regards->GetBitmapWidth() * 4;
+		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
+		FreeImage_Save(FIF_EXR, Image, fileName, _option);
+		FreeImage_Unload(Image);
+		delete regards;
 	}
 	break;
 
 	case WEBP:
 	{
-#ifdef __FREEIMAGE__
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
-		float quality_factor = quality;
+		int _option = quality;
+		switch (option)
+		{
+		case 1:
+			_option = WEBP_DEFAULT;
+			break;
+		case 2:
+			_option = WEBP_LOSSLESS;
+			break;
+		}
         int pitch = regards->GetBitmapWidth() * 4;
         FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE); 
-        FreeImage_Save(FIF_WEBP, Image, fileName, quality_factor);
+        FreeImage_Save(FIF_WEBP, Image, fileName, option);
         FreeImage_Unload(Image);
 		delete regards;
-#else
-		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
-		float quality_factor = quality;
-		uint8_t * output = nullptr;
-
-		regards->VertFlipBuf();
-
-		size_t size = WebPEncodeBGRA(regards->GetPtBitmap(),
-			regards->GetBitmapWidth(), regards->GetBitmapHeight(), regards->GetWidthSize(),
-										   quality_factor, &output);
-		writefile(fileName, output, size);
-
-		free(output);
-		delete regards;
-#endif
-		break;
+		
 	}
+		break;
 
 	case TGA:
 	{
@@ -630,125 +773,126 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		delete image;
 	}
 	break;
-#ifdef LIBBPG
-	case BPG:
-	{
-		int width = bitmap->GetWidth();
-		int height = bitmap->GetHeight();
-		int lossless_mode = option;
-		int compress_level = quality;
 
-		CxImage * image = bitmap->GetCxImage();
-		//image->SetCodecOption(option, CXIMAGE_FORMAT_PNG);
+	#ifdef LIBBPG
+		case BPG:
+		{
+			int width = bitmap->GetWidth();
+			int height = bitmap->GetHeight();
+			int lossless_mode = option;
+			int compress_level = quality;
+
+			CxImage * image = bitmap->GetCxImage();
+			//image->SetCodecOption(option, CXIMAGE_FORMAT_PNG);
 		
 
-		uint8_t * buffer = 0;
-		int32_t sizeLen = 0;
-		image->Encode(buffer, sizeLen, CxImage::GetTypeIdFromName("png"));
-#if defined(WIN32)
-        int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
-#else
-        int(*BPG_SavePNGPicture)(uint8_t * , uint64_t , int , int , int , const char * ) = (int(*)(uint8_t * , uint64_t , int , int , int , const char * ))dlsym(lib_handle, "BPG_SavePNGPicture");
-        if (BPG_SavePNGPicture) {
-            printf("[%s] dlsym(lib_handle, \"BPG_SavePNGPicture\"): Successful\n", __FILE__);
-            int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
-        }
-        else {
-            printf("[%s] Unable to get symbol: %s\n",
-                   __FILE__, dlerror());
-            //exit(EXIT_FAILURE);
-        }
-#endif
-		image->FreeMemory(buffer);
-		delete image;
-	}
-	break;
-#endif
+			uint8_t * buffer = 0;
+			int32_t sizeLen = 0;
+			image->Encode(buffer, sizeLen, CxImage::GetTypeIdFromName("png"));
+	#if defined(WIN32)
+			int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
+	#else
+			int(*BPG_SavePNGPicture)(uint8_t * , uint64_t , int , int , int , const char * ) = (int(*)(uint8_t * , uint64_t , int , int , int , const char * ))dlsym(lib_handle, "BPG_SavePNGPicture");
+			if (BPG_SavePNGPicture) {
+				printf("[%s] dlsym(lib_handle, \"BPG_SavePNGPicture\"): Successful\n", __FILE__);
+				int result = BPG_SavePNGPicture(buffer, sizeLen, compress_level, lossless_mode, 8, CConvertUtility::ConvertToUTF8(fileName));
+			}
+			else {
+				printf("[%s] Unable to get symbol: %s\n",
+					   __FILE__, dlerror());
+				//exit(EXIT_FAILURE);
+			}
+	#endif
+			image->FreeMemory(buffer);
+			delete image;
+		}
+		break;
+	#endif
 
-	case JPEG:
-	{
-		CxImage * image = bitmap->GetCxImage();
-		image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
-		image->SetJpegQualityF((float)quality);
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
-
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
-	}
-	break;
-
-	case PNM:
-	{
-		CxImage * image = bitmap->GetCxImage();
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
-	}
-	break;
-
-	case JPC:
-	{
-		CxImage * image = bitmap->GetCxImage();
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpc"));
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
-	}
-	break;
-
-	case JPEG2000:
-	{
-		CxImage * image = bitmap->GetCxImage();
-		image->SetJpegQualityF((float)quality);
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jp2"));
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
-
-	}
-	break;
-
-	case PPM:
-	{
-		CxImage * image = bitmap->GetCxImage();
-		image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
-		wxString error = image->GetLastError();
-		if (error != "")
-			wxMessageBox(error,
-			informations_error, wxOK | wxICON_ERROR);
-		delete image;
-
-	}
-	break;
-
-	case PDF:
+		case JPEG:
 		{
-			wxImage * image = bitmap->GetwxImage();
-			image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
-			image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, bitmap->GetResolution());
-			image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, bitmap->GetResolution());
-			image->SetOption(wxIMAGE_OPTION_RESOLUTION, bitmap->GetResolution());
-            SaveToPDF( image, fileName);
+			CxImage * image = bitmap->GetCxImage();
+			image->SetCodecOption(option, CXIMAGE_FORMAT_JPG);
+			image->SetJpegQualityF((float)quality);
+			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpg"));
+
+			wxString error = image->GetLastError();
+			if (error != "")
+				wxMessageBox(error,
+				informations_error, wxOK | wxICON_ERROR);
+			delete image;
 		}
 		break;
 
-	case XPM:
-	{
-		wxImage * image = bitmap->GetwxImage();
-		image->SaveFile(fileName, wxBITMAP_TYPE_XPM);
-		delete image;
-	}
-	break;
+		case PNM:
+		{
+			CxImage * image = bitmap->GetCxImage();
+			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pnm"));
+			wxString error = image->GetLastError();
+			if (error != "")
+				wxMessageBox(error,
+				informations_error, wxOK | wxICON_ERROR);
+			delete image;
+		}
+		break;
+
+		case JPC:
+		{
+			CxImage * image = bitmap->GetCxImage();
+			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jpc"));
+			wxString error = image->GetLastError();
+			if (error != "")
+				wxMessageBox(error,
+				informations_error, wxOK | wxICON_ERROR);
+			delete image;
+		}
+		break;
+
+		case JPEG2000:
+		{
+			CxImage * image = bitmap->GetCxImage();
+			image->SetJpegQualityF((float)quality);
+			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("jp2"));
+			wxString error = image->GetLastError();
+			if (error != "")
+				wxMessageBox(error,
+				informations_error, wxOK | wxICON_ERROR);
+			delete image;
+
+		}
+		break;
+
+		case PPM:
+		{
+			CxImage * image = bitmap->GetCxImage();
+			image->Save(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
+			wxString error = image->GetLastError();
+			if (error != "")
+				wxMessageBox(error,
+				informations_error, wxOK | wxICON_ERROR);
+			delete image;
+
+		}
+		break;
+
+		case PDF:
+			{
+				wxImage * image = bitmap->GetwxImage();
+				image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+				image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, bitmap->GetResolution());
+				image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, bitmap->GetResolution());
+				image->SetOption(wxIMAGE_OPTION_RESOLUTION, bitmap->GetResolution());
+				SaveToPDF( image, fileName);
+			}
+			break;
+
+		case XPM:
+		{
+			wxImage * image = bitmap->GetwxImage();
+			image->SaveFile(fileName, wxBITMAP_TYPE_XPM);
+			delete image;
+		}
+		break;
 	}
 
     
@@ -2253,22 +2397,6 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			}
 			break;
 
-        case EXR:
-        case WEBP:
-		case PCD:
-		case MNG:
-		case PSD:
-			{
-				//CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("psd"));
-				//bitmap->SetPicture(_cxImage);
-				CRegardsBitmap * _bitmap = LoadFromFreeImage(CConvertUtility::ConvertToUTF8(fileName));
-				if (_bitmap != nullptr)
-				{
-					_bitmap->SetFilename(fileName);
-					bitmap->SetPicture(_bitmap);
-				}
-			}
-			break;
 		case PGX:
 			{
 			CxImage * _cxImage = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("pgx"));

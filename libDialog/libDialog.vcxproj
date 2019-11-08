@@ -197,17 +197,21 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
     <ClCompile Include="CategoryDetection.cpp" />
     <ClCompile Include="ChangeLabel.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
     <ClCompile Include="ConfigRegards.cpp" />
     <ClCompile Include="ExportFile.cpp" />
+    <ClCompile Include="ExrOption.cpp" />
     <ClCompile Include="FaceDetection.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
     <ClCompile Include="InterpolationFilterSelect.cpp" />
+    <ClCompile Include="J2kOption.cpp" />
     <ClCompile Include="JpegOption.cpp" />
+    <ClCompile Include="JxrOption.cpp" />
     <ClCompile Include="MoveFaceDialog.cpp" />
     <ClCompile Include="OpenCLDialog.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
@@ -218,17 +222,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
     <ClInclude Include="CategoryDetection.h" />
     <ClInclude Include="ChangeLabel.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="ConfigRegards.h" />
     <ClInclude Include="ExportFile.h" />
+    <ClInclude Include="ExrOption.h" />
     <ClInclude Include="FaceDetection.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="IndexGenerator.h" />
     <ClInclude Include="InterpolationFilterSelect.h" />
+    <ClInclude Include="J2kOption.h" />
     <ClInclude Include="JpegOption.h" />
+    <ClInclude Include="JxrOption.h" />
     <ClInclude Include="MoveFaceDialog.h" />
     <ClInclude Include="OpenCLDialog.h" />
     <ClInclude Include="PertinenceValue.h" />

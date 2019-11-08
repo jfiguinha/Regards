@@ -32,6 +32,9 @@
 #define EXR 28
 #define HDR 29
 #define PDF 30
+#define JXR 31
+#define J2K 32
+#define JP2 33
 
 #define AVI 101
 #define MOV 102
