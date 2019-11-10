@@ -414,7 +414,7 @@ void CToolbarWindow::OnPaint(wxPaintEvent& event)
 			if (nav->IsVisible())
 			{
                 //nav->Resize(navigatorWidth, nav->GetHeight());
-                nav->SetBackgroundBitmap(backPicture);
+               // nav->SetBackgroundBitmap(backPicture);
 				nav->SetPosition(xStart, yStart);
 				yStart += themeToolbar.GetMargeY()  + nav->GetHeight();
 			}
@@ -443,7 +443,7 @@ void CToolbarWindow::OnPaint(wxPaintEvent& event)
 			if (nav->IsVisible())
 			{
                 //nav->Resize(nav->GetWidth(), navigatorHeight);
-                nav->SetBackgroundBitmap(backPicture);
+               // nav->SetBackgroundBitmap(backPicture);
 				nav->SetPosition(xStart, yStart);
 				xStart += themeToolbar.GetMargeX()  + nav->GetWidth();
 			}

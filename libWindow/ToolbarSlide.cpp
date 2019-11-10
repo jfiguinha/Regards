@@ -272,7 +272,13 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 {
 	wxBitmap bitmapBuffer = wxBitmap(width, height);
 	wxMemoryDC memDC(bitmapBuffer);
-
+		wxRect rc;
+		rc.x = 0;
+		rc.width = width;
+		rc.y = 0;
+		rc.height = height;
+		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+    
 	if (colorBackground)
 	{
 		wxRect rc;
@@ -286,7 +292,7 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 	{
 		memDC.DrawBitmap(background, 0, 0);
 	}
-
+    
 	positionSlider.x = themeSlider.GetButtonWidth();
 	positionSlider.width = width - (themeSlider.GetButtonWidth() * 2);
 	positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
@@ -337,7 +343,7 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 
 	memDC.SelectObject(wxNullBitmap);
 
-	bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
+	//bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
 	dc->DrawBitmap(bitmapBuffer, x, y, true);
 
 	CalculPositionButton();

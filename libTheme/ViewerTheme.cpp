@@ -41,8 +41,6 @@ void CMainTheme::InitThumbnailFaceThemeToolbar()
 	themeThumbnailFaceToolbar.slider.isColorBackground = true;
 	themeThumbnailFaceToolbar.slider.SetWidth(200);
 	themeThumbnailFaceToolbar.slider.SetHeight(30);
-	themeThumbnailFaceToolbar.slider.SetWidth(200);
-	themeThumbnailFaceToolbar.slider.SetHeight(30);
 
 	themeThumbnailFaceToolbar.texte.SetTailleX(120);
 	themeThumbnailFaceToolbar.texte.SetTailleY(30);
@@ -86,8 +84,6 @@ void CMainTheme::InitThumbnailToolbar()
 	themeThumbnailToolbar.button.showButtonOnly = 1;
 
 	themeThumbnailToolbar.slider.isColorBackground = true;
-	themeThumbnailToolbar.slider.SetWidth(200);
-	themeThumbnailToolbar.slider.SetHeight(30);
 	themeThumbnailToolbar.slider.SetWidth(200);
 	themeThumbnailToolbar.slider.SetHeight(30);
 

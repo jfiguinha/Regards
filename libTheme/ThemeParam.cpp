@@ -249,8 +249,18 @@ void CThemeParam::InitBitmapToolbar()
 	themeBitmapToolbar.button.SetRectangleSize(4);
 	themeBitmapToolbar.button.showButtonOnly = 1;
 
+	themeBitmapToolbar.slider.SetRectangleHeight(10);
+	//themeBitmapToolbar.slider.rectanglePast.Set(45, 48, 56);
+	//themeBitmapToolbar.slider.rectangleNext.Set(45, 48, 56);
+	themeBitmapToolbar.slider.font.SetColorFont(wxColour(255, 255, 255));
+	themeBitmapToolbar.slider.colorBack.Set(45, 48, 56);
 	themeBitmapToolbar.slider.SetWidth(200);
 	themeBitmapToolbar.slider.SetHeight(30);
+    
+	//themeBitmapToolbar.slider.rectangleNext.Set(45, 48, 56);
+	//themeBitmapToolbar.slider.rectanglePast.Set(45, 48, 56);
+	//themeBitmapToolbar.slider.SetWidth(200);
+	//themeBitmapToolbar.slider.SetHeight(30);
 }
 
 

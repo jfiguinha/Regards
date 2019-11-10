@@ -379,6 +379,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	supportOpenCL = videoEffectParameter.enableOpenCL;
 	muVideoEffect.unlock();
 
+    renderBitmapOpenGL->SetCurrent(*this);
+    //updateContext = false;
+
+/*
 #ifdef WIN32
     renderBitmapOpenGL->SetCurrent(*this);
 #else
@@ -388,7 +392,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
         updateContext = false;
     }   
 #endif
-    
+ */   
 
     if (openCLEngine == nullptr)
     {

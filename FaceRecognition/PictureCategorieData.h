@@ -73,7 +73,7 @@ public:
 	void GetLabel(const int &numLabel, char * labelOut, int size);
 
 private:
-	std::vector<int> CPictureCategorieData::GetCategorie(const matrix<rgb_pixel> & img);
+	std::vector<int> GetCategorie(const matrix<rgb_pixel> & img);
 	string predicator;
 	std::vector<string> labels;
 	a_net_type net;
