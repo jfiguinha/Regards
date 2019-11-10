@@ -71,8 +71,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\build\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\libExtern\wxWidgets-master\src\expat\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);</IncludePath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\libExtern\wxWidgets-master\src\expat\lib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)\libExtern\wxWidgets-master\src\expat\expat\lib;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)\libExtern\wxWidgets-master\src\expat\expat\lib;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\libExtern\wxWidgets-3.1.2\src\expat\lib;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\libExtern\wxWidgets-3.1.2\src\expat\lib;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\ia32;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include</IncludePath>
   </PropertyGroup>

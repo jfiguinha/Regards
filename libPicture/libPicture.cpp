@@ -4,7 +4,10 @@
 #include "libPicture.h"
 #define __FREEIMAGE__
 #include <FreeImage.h>
-
+#include <ImfRgbaFile.h>
+#include <ImfArray.h>
+#include <webp/decode.h>
+#include <webp/encode.h>
 #include <ximage.h>
 #include <xfile.h>
 #include <xiofile.h>
@@ -31,6 +34,14 @@
 #else
 #include <dlfcn.h>
 #endif
+#endif
+
+#if defined(__MINGW32__) || defined(__WXMAC__)
+using namespace Imf_2_3;
+using namespace Imath_2_3;
+#else
+using namespace Imf_2_2;
+using namespace Imath_2_2;
 #endif
 
 #ifdef TURBOJPEG
@@ -2123,7 +2134,104 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			break;
 #endif
                 
+		case EXR:
+		{
+			if (isThumbnail)
+			{
+				CRegardsBitmap * picture = nullptr;
+				Array2D<Rgba> pixels;
+				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+				Box2i dw = file.dataWindow();
+				int width = dw.max.x - dw.min.x + 1;
+				int height = dw.max.y - dw.min.y + 1;
+				pixels.resizeErase(height, width);
+				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
+				file.readPixels(dw.min.y, dw.max.y);
 
+				if (width > 0 && height > 0)
+				{
+					picture = new CRegardsBitmap(width, height);
+					int k = 0;
+					uint8_t * data = picture->GetPtBitmap();
+					for (int i = 0; i < height; i++)
+					{
+						for (int j = 0; j < width; j++, k += 4)
+						{
+							float rvalue = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							float gvalue = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							float bvalue = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							float avalue = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+
+							data[k] = (int)(bvalue * 255.0);
+							data[k + 1] = (int)(gvalue * 255.0);
+							data[k + 2] = (int)(rvalue * 255.0);
+							data[k + 3] = (int)(avalue * 255.0);
+							/*
+							int rvalue = clamp(float(pixels[i][j].r), 0.0f, 1.0f) * 255;
+							float gvalue = clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							float bvalue = clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							color.red(rvalue);
+							color.green(gvalue);
+							color.blue(bvalue);
+							blank_image.pixelColor(j, i, color);*/
+						}
+					}
+					picture->VertFlipBuf();
+					bitmap->SetPicture(picture);
+					bitmap->SetFilename(fileName);
+				}
+			}
+			else
+			{
+				CRegardsFloatBitmap * picture = nullptr;
+				Array2D<Rgba> pixels;
+				RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+				Box2i dw = file.dataWindow();
+				int width = dw.max.x - dw.min.x + 1;
+				int height = dw.max.y - dw.min.y + 1;
+				pixels.resizeErase(height, width);
+				file.setFrameBuffer(&pixels[0][0] - dw.min.x - dw.min.y * width, 1, width);
+				file.readPixels(dw.min.y, dw.max.y);
+
+				if (width > 0 && height > 0)
+				{
+					picture = new CRegardsFloatBitmap(width, height);
+					int k = 0;
+					float * data = picture->GetData();
+					for (int i = height - 1; i >= 0; i--)
+					{
+						for (int j = 0; j < width; j++, k += 4)
+						{
+							data[k] = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							data[k + 1] = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							data[k + 2] = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							data[k + 3] = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+						}
+					}
+					bitmap->SetPicture(picture);
+					bitmap->SetFilename(fileName);
+				}
+			}
+		}
+		break;
+
+		case WEBP:
+		{
+			size_t data_size;
+			uint8_t* _compressedImage = readfile(fileName, data_size);
+			if (_compressedImage != nullptr && data_size > 0)
+			{
+				CRegardsBitmap * picture = new CRegardsBitmap();
+				int width = 0, height = 0;
+				uint8_t * data = WebPDecodeBGRA(_compressedImage, data_size, &width, &height);
+				picture->SetBitmap(data, width, height, true, false);
+				bitmap->SetPicture(picture);
+				bitmap->SetFilename(fileName);
+				delete[] _compressedImage;
+			}
+
+		}
+		break;
             
         case JPEG:
 			{
@@ -2629,6 +2737,29 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
         }
         break;        
 
+	case EXR:
+	{
+		RgbaInputFile file(CConvertUtility::ConvertToUTF8(fileName));
+		Box2i dw = file.dataWindow();
+		width = dw.max.x - dw.min.x + 1;
+		height = dw.max.y - dw.min.y + 1;
+	}
+	break;
+
+	case WEBP:
+	{
+		typeImage = TYPE_IMAGE_REGARDSIMAGE;
+		int result = 0;
+		size_t data_size;
+		uint8_t* data = readfile(fileName, data_size);
+		if (data != nullptr && data_size > 0)
+		{
+			result = WebPGetInfo(data, data_size, &width, &height);
+			delete[] data;
+		}
+		break;
+	}
+
             
 	case JPEG:
 #ifdef TURBOJPEG
@@ -2719,8 +2850,7 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		image = new CxImage(CConvertUtility::ConvertToUTF8(fileName), CxImage::GetTypeIdFromName("ppm"));
 		break;
 
-    case EXR:
-    case WEBP:
+
 	case PCD:
 	case MNG:
 	case PSD:

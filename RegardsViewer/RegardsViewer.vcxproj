@@ -136,7 +136,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libexif.lib;freetyped.lib;libiconv.lib;libxml2.lib;jasperd.lib;leptonica-1.78.0d.lib;tesseract41d.lib;FreeImaged.lib;openjp2.lib;cairod.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpegd.lib;wxpng.lib;wxtiff.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libexif.lib;freetyped.lib;libiconv.lib;libxml2.lib;jasperd.lib;leptonica-1.78.0d.lib;tesseract41d.lib;FreeImaged.lib;openjp2.lib;cairod.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpegd.lib;wxpng.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>mkdir -p "$(SolutionDir)\x64\Debug\Resources"
@@ -315,6 +315,9 @@ XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\
     <ProjectReference Include="..\libextern\SDL2-2.0.5\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libextern\zlib\zlib.vcxproj">
+      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libMediaInfo\libMediaInfo.vcxproj">
       <Project>{eb3343b0-c0ff-4840-afee-433fd2e4aa92}</Project>
     </ProjectReference>
@@ -450,16 +453,20 @@ XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets" Condition="Exists('..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets')" />
     <Import Project="..\packages\openssl-vc141-static-x86_64.1.0.2\build\native\openssl-vc141-static-x86_64.targets" Condition="Exists('..\packages\openssl-vc141-static-x86_64.1.0.2\build\native\openssl-vc141-static-x86_64.targets')" />
     <Import Project="..\packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\curl-vc141-dynamic-x86_64.targets" Condition="Exists('..\packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\curl-vc141-dynamic-x86_64.targets')" />
+    <Import Project="..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets" Condition="Exists('..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets')" />
+    <Import Project="..\packages\libwebp.v140.redist.0.5.0.1\build\native\libwebp.v140.redist.targets" Condition="Exists('..\packages\libwebp.v140.redist.0.5.0.1\build\native\libwebp.v140.redist.targets')" />
+    <Import Project="..\packages\libwebp.v140.0.5.0.2\build\native\libwebp.v140.targets" Condition="Exists('..\packages\libwebp.v140.0.5.0.2\build\native\libwebp.v140.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets'))" />
     <Error Condition="!Exists('..\packages\openssl-vc141-static-x86_64.1.0.2\build\native\openssl-vc141-static-x86_64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openssl-vc141-static-x86_64.1.0.2\build\native\openssl-vc141-static-x86_64.targets'))" />
     <Error Condition="!Exists('..\packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\curl-vc141-dynamic-x86_64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\curl-vc141-dynamic-x86_64.targets'))" />
+    <Error Condition="!Exists('..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\openexr-msvc14-x64.2.2.0.7784\build\native\OpenEXR-msvc14-x64.targets'))" />
+    <Error Condition="!Exists('..\packages\libwebp.v140.redist.0.5.0.1\build\native\libwebp.v140.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libwebp.v140.redist.0.5.0.1\build\native\libwebp.v140.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\libwebp.v140.0.5.0.2\build\native\libwebp.v140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libwebp.v140.0.5.0.2\build\native\libwebp.v140.targets'))" />
   </Target>
 </Project>

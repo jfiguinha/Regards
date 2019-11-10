@@ -27,7 +27,7 @@
 
 #if CXIMAGE_SUPPORT_JPG
 
-typedef int wxjpeg_boolean;
+//typedef int wxjpeg_boolean;
 
 #define CXIMAGEJPG_SUPPORT_EXIF CXIMAGE_SUPPORT_EXIF
 
@@ -173,7 +173,7 @@ public:
 		pDest->free_in_buffer = eBufSize;
 	}
 
-	static  wxjpeg_boolean EmptyOutputBuffer(j_compress_ptr cinfo)
+	static boolean EmptyOutputBuffer(j_compress_ptr cinfo)
 	{
 		CxFileJpg* pDest = (CxFileJpg*)cinfo->dest;
 		if (pDest->m_pFile->Write(pDest->m_pBuffer,1,eBufSize)!=(size_t)eBufSize)
@@ -204,7 +204,7 @@ public:
 		pSource->m_bStartOfFile = TRUE;
 	}
 
-	static  wxjpeg_boolean FillInputBuffer(j_decompress_ptr cinfo)
+	static boolean FillInputBuffer(j_decompress_ptr cinfo)
 	{
 		size_t nbytes;
 		CxFileJpg* pSource = (CxFileJpg*)cinfo->src;
