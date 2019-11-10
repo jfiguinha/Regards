@@ -1,5 +1,5 @@
 #include <header.h>
-#include "WebpOption.h"
+#include "webpOption.h"
 
 #ifndef WX_PRECOMP
 //(*InternalHeadersPCH(WebpOption)
