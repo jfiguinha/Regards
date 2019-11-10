@@ -69,10 +69,10 @@ using namespace Regards::exiv2;
 #include <PngOption.h>
 #include <webpOption.h>
 #include <bpgoption.h>
-#include <bmpoption.h>
-#include <exroption.h>
-#include <j2koption.h>
-#include <jxroption.h>
+#include <BmpOption.h>
+#include <ExrOption.h>
+#include <J2kOption.h>
+#include <JxrOption.h>
 #include <CompressionOption.h>
 
 #include <wxSVG/SVGDocument.h>
