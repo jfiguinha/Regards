@@ -478,6 +478,11 @@ void CMainWindow::RefreshTimer(wxCommandEvent& event)
 }
 */
 
+bool CMainWindow::IsVideoStart()
+{
+    return videoStart;
+}
+
 void CMainWindow::ProcessIdle()
 {
     TRACE();
@@ -496,6 +501,8 @@ void CMainWindow::ProcessIdle()
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 	*/
+    
+    printf("ProcessIdle : updateCriteria : %d refreshFolder : %d updateFolder : %d updatePicture %d\n", updateCriteria, refreshFolder, updateFolder, updatePicture);
     
     if(checkVersion)
     {
@@ -766,6 +773,7 @@ void CMainWindow::ProcessIdle()
         }
 
 
+        printf("ProcessIdle : %d \n", numElementTraitement);
 		wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
         wxString message = label+ to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
         if (statusBarViewer != nullptr)
@@ -821,6 +829,7 @@ void CMainWindow::Md5Checking(wxCommandEvent& event)
 	}
 	nbProcessMD5--;
 	numElementTraitement++;
+    printf("Md5Checking \n");
 	wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
 	wxString message = label + to_string(numElementTraitement) + L"/" + to_string(imageList->GetNbElement());
 	if (statusBarViewer != nullptr)
