@@ -1603,8 +1603,9 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
         }
     #endif
 
+    renderOpenGL->SetCurrent(*this);
 
-            
+    /*
     #if defined(WIN32) || defined(__APPLE__)
         renderOpenGL->SetCurrent(*this);
     #else
@@ -1614,6 +1615,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             updateContext = false;
         }
     #endif
+    */
                
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
