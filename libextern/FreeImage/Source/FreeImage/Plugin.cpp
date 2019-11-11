@@ -378,7 +378,7 @@ FreeImage_Close(PluginNode *node, FreeImageIO *io, fi_handle handle, void *data)
 
 FIBITMAP * DLL_CALLCONV
 FreeImage_LoadFromHandle(FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags) {
-	if ((fif >= 0) && (fif < FreeImage_GetFIFCount())) {
+	if ((fif >= 0) && (fif <= FreeImage_GetFIFCount())) {
 		PluginNode *node = s_plugins->FindNodeFromFIF(fif);
 		
 		if (node != NULL) {
@@ -445,8 +445,12 @@ FreeImage_SaveToHandle(FREE_IMAGE_FORMAT fif, FIBITMAP *dib, FreeImageIO *io, fi
 		return FALSE;
 	}
 
-	if ((fif >= 0) && (fif < FreeImage_GetFIFCount())) {
+    FreeImage_OutputMessageProc((int)fif, "FreeImage_SaveToHandle:formats");
+
+	if ((fif >= 0) && (fif <= FreeImage_GetFIFCount())) {
 		PluginNode *node = s_plugins->FindNodeFromFIF(fif);
+
+        FreeImage_OutputMessageProc((int)fif, "FreeImage_SaveToHandle:Find Node");
 		
 		if (node) {
 			if(node->m_plugin->save_proc != NULL) {
