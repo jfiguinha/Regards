@@ -228,6 +228,8 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			libPicture.SavePicture(file, bitmap);
 
 #else
+            
+            std::vector<wxString> v = {".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".ico",".cur",".ani",".jxr",".exr",".j2k"};
 			szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files ICO (*.ICO)|*.ico|Files CUR (*.CUR)|*.cur|Files ANI (*.ANI)|*.ani|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k";
 
 
@@ -237,8 +239,10 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			if (saveFileDialog.ShowModal() == wxID_CANCEL)
 				return;
 
-
+            int filterIndex = saveFileDialog.GetFilterIndex();
 			wxString file = saveFileDialog.GetPath();
+            wxString ext = v.at(filterIndex);
+            
 			libPicture.SavePicture(file, bitmap);
 
 #endif
