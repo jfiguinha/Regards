@@ -186,6 +186,7 @@
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
+        <LibraryPath Value="../libextern/FreeImage/Dist"/>
         <Library Value="wxjpeg-3.1"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
