@@ -660,11 +660,8 @@ void CViewerFrame::OnOpenCLConfiguration(wxCommandEvent& event)
 
 void CViewerFrame::OnFileSystemModified(wxFileSystemWatcherEvent& event)
 {
-    if(!mainWindow->IsVideoStart())
-    {    
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
-        mainWindow->GetEventHandler()->AddPendingEvent(evt);
-    }
+    wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHFOLDER);
+    mainWindow->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CViewerFrame::OnIconSizeLess(wxCommandEvent& event)
