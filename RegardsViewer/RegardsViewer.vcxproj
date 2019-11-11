@@ -315,9 +315,6 @@ XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\
     <ProjectReference Include="..\libextern\SDL2-2.0.5\VisualC\SDL\SDL.vcxproj">
       <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libextern\zlib\zlib.vcxproj">
-      <Project>{dc1868f1-3aa4-47ad-9157-776f89373c93}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libMediaInfo\libMediaInfo.vcxproj">
       <Project>{eb3343b0-c0ff-4840-afee-433fd2e4aa92}</Project>
     </ProjectReference>

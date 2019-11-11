@@ -343,15 +343,22 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 
 	memDC.SelectObject(wxNullBitmap);
 
-	//bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
-	dc->DrawBitmap(bitmapBuffer, x, y, true);
+	if (!colorBackground)
+	{
+		bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
+		dc->DrawBitmap(bitmapBuffer, x, y, true);
+	}
+	else
+	{
+		dc->DrawBitmap(bitmapBuffer, x, y, false);
+	}
 
 	CalculPositionButton();
     
 
-        if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-            button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
-        dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
+    if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
+        button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
+    dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
 
 }
 
