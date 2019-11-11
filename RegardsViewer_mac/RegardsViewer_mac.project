@@ -278,6 +278,9 @@
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
         <Library Value="lept"/>
+        <Library Value="IlmImf"/>
+        <Library Value="IexMath"/>
+        <Library Value="Half"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -344,7 +347,7 @@
         <Command Enabled="yes">mkdir -p ./Debug/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.30.1/" \
+	-e "s/VERSION/2.31.0/" \
 	../Regards/mac/Info.plist.in &gt;./Debug/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Debug/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Debug/RegardsViewer ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
