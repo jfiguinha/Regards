@@ -115,13 +115,13 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			break;
 
 		case 15:
-			iFormat = IFF;
-			extension = "iff";
+			iFormat = JXR;
+			extension = "jxr";
 			break;
 
 		case 16:
-			iFormat = JXR;
-			extension = "jxr";
+			iFormat = IFF;
+			extension = "iff";
 			break;
 
 		case 17:

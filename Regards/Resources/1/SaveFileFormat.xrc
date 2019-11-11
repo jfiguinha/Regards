@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="SaveFileFormat">
 		<title>File Save</title>
 		<centered>1</centered>
-		<size>400,347</size>
+		<size>400,427</size>
 		<object class="wxRadioBox" name="ID_RBSELECTFORMAT">
 			<label>Select Save Format</label>
 			<style>wxRA_SPECIFY_COLS</style>
@@ -29,15 +29,15 @@
 			</content>
 			<default>-1</default>
 			<pos>8,0</pos>
-			<size>384,304</size>
+			<size>384,384</size>
 		</object>
 		<object class="wxButton" name="ID_BTNOK">
 			<label>OK</label>
-			<pos>80,312</pos>
+			<pos>80,392</pos>
 		</object>
 		<object class="wxButton" name="ID_BTNCANCEL">
 			<label>Cancel</label>
-			<pos>224,312</pos>
+			<pos>224,392</pos>
 		</object>
 	</object>
 </resource>
