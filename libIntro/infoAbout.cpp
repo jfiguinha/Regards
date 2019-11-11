@@ -53,7 +53,7 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.30.1");
+	treeDataWidth->SetValue("2.31.0");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
@@ -126,7 +126,7 @@ void CInfoAbout::Init()
 	CTreeData * treelibBPG = new CTreeData();
 	treelibBPG->SetIsParent(false);
 	treelibBPG->SetKey("wxWidget");
-	treelibBPG->SetValue("3.1.1");
+	treelibBPG->SetValue("3.1.3");
 	tr.append_child(child, treelibBPG);
 
 	CTreeData * treelibTurboJpeg = new CTreeData();
@@ -170,13 +170,7 @@ void CInfoAbout::Init()
 	treelibJasper->SetKey("jasper");
 	treelibJasper->SetValue("1.900.1");
 	tr.append_child(child, treelibJasper);       
-
-	CTreeData * treelibMng = new CTreeData();
-	treelibMng->SetIsParent(false);
-	treelibMng->SetKey("libmng");
-	treelibMng->SetValue("2.0.3");
-	tr.append_child(child, treelibMng);  
-    
+   
 	CTreeData * treelibde265 = new CTreeData();
 	treelibde265->SetIsParent(false);
 	treelibde265->SetKey("libde265");
