@@ -14,7 +14,7 @@
 #include "wx/defs.h"
 
 #if wxUSE_PROPGRID
-
+#include "wx/textctrl.h"
 #include "wx/scrolwin.h"
 #include "wx/recguard.h"
 #include "wx/time.h" // needed for wxMilliClock_t

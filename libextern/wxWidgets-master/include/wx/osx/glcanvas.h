@@ -98,6 +98,7 @@ public:
     // implement wxGLCanvasBase methods
     virtual bool SwapBuffers() wxOVERRIDE;
 
+	virtual void Refresh(bool eraseBackground = true, const wxRect *rect = NULL) wxOVERRIDE;
 
     // Mac-specific functions
     // ----------------------

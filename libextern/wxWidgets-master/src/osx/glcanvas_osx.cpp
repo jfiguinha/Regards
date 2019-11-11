@@ -507,6 +507,13 @@ bool wxGLCanvas::Create(wxWindow *parent,
     return true;
 }
 
+void wxGLCanvas::Refresh(bool eraseBackground, const wxRect *rect)
+{
+    wxPaintEvent event(wxEVT_PAINT);
+    wxPostEvent(this, event);    	
+} 	
+
+
 #if WXWIN_COMPATIBILITY_2_8
 
 wxGLCanvas::wxGLCanvas(wxWindow *parent,

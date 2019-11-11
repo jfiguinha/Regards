@@ -164,7 +164,9 @@ static bool IsAvailable()
     if ( !GDK_IS_X11_DISPLAY(gdk_display_get_default()) )
 #endif
     {
+#if wxUSE_LOG
         wxSafeShowMessage(_("Fatal Error"), _("wxGLCanvas is only supported on X11 currently.  You may be able to\nwork around this by setting environment variable GDK_BACKEND=x11 before starting\nyour program."));
+#endif
         return false;
     }
 

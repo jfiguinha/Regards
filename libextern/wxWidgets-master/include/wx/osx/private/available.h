@@ -14,6 +14,7 @@
 // builtin which should be used instead of manual checks for API availability
 // as using this builtin suppresses the compiler -Wunguarded-availability
 // warnings, so use it if possible for the implementation of our own macro.
+/*
 #if defined(__clang__) && __has_builtin(__builtin_available)
     #define WX_IS_MACOS_AVAILABLE(major, minor) \
         __builtin_available(macOS major ## . ## minor, *)
@@ -26,6 +27,7 @@
     #define WX_API_AVAILABLE_MACOS(major, minor) \
          __attribute__((availability(macos,introduced=major ## . ## minor)))
 #else // Not clang or old clang version without __builtin_available
+*/
     #include "wx/platinfo.h"
 
     #define WX_IS_MACOS_AVAILABLE(major, minor) \
@@ -35,6 +37,6 @@
         wxPlatformInfo::Get().CheckOSVersion(major, minor, micro)
 
     #define WX_API_AVAILABLE_MACOS(major, minor)
-#endif
+//#endif
 
 #endif // _WX_OSX_PRIVATE_AVAILABLE_H_
