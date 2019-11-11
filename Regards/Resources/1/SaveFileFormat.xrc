@@ -15,13 +15,17 @@
 				<item>TIFF</item>
 				<item>PNG</item>
 				<item>GIF</item>
-				<!--<item>BPG</item>-->
 				<item>JPEG</item>
 				<item>PNM</item>
 				<item>JPC</item>
 				<item>JPEG 2000</item>
 				<item>PPM</item>
 				<item>XPM</item>
+				<item>WEBP</item>
+				<item>PDF</item>
+				<item>JXR</item>
+				<item>IFF</item>
+				<item>EXR</item>
 			</content>
 			<default>-1</default>
 			<pos>8,0</pos>

@@ -566,6 +566,12 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 
+	case IFF:
+	{
+		returnValue = 1;
+	}
+	break;
+
 	}
 
 	return returnValue;

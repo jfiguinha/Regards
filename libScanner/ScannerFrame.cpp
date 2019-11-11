@@ -185,7 +185,7 @@ void CScannerFrame::OnExport(wxCommandEvent& event)
 	wxString filename = centralWindow->GetFilename();
 	if (filename != "")
 	{
-		CSavePicture::SavePicture(this, filename);
+		CSavePicture::SavePicture(this, nullptr, filename);
 	}
 }
 
