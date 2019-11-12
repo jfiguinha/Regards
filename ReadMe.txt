@@ -54,6 +54,25 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.31
+- Add new saving format support
+- Add support black mode for osx
+- Bug Correction
+News for version 2.30.1
+- Add Scanner Application for mac os
+- Correct bug on save picture
+- Correct bug on refresh folder
+- Add progressbox for folder selection
+News for version 2.30
+- Add PDF Support
+- Add Scanner Application from Menu File-> Scanner
+- Add new file support
+- Add FreeImage Lib
+- Rewrite Filter management support
+- Add Multipage print
+- Remove Face Recognition on the main program
+- Add Face Detection into a dialog box
+- Bug correction
 News for version 2.20
 - Bug Correction
 - Add Folder Watcher

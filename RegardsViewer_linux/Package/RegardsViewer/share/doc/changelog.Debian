@@ -1,9 +1,8 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
-News for version 2.20
+News for version 2.31
 - Bug Correction
-- Add Folder Watcher
-- Add Version Checker
-- Use Thunderbird to send email in linux
+- Add new saving format support
+- Add support black mode for osxux
 
