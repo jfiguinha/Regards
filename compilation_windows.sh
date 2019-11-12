@@ -18,7 +18,6 @@ pacman -S mingw-w64-x86_64-freeglut
 pacman -S mingw-w64-x86_64-glew
 pacman -S unzip
 pacman -S zip
-pacman -S mingw-w64-x86_64-poppler
 pacman -S mingw-w64-x86_64-qpdf
 pacman -S mingw-w64-x86_64-tesseract-ocr
 pacman -S mingw-w64-x86_64-freeimage
