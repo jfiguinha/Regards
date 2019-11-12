@@ -629,6 +629,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		case 1:
 			_option = J2K_DEFAULT;
 			break;
+		default:
+			_option = 100 - quality;
+			break;
 		}
 		int pitch = regards->GetBitmapWidth() * 4;
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
@@ -649,6 +652,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		{
 		case 1:
 			_option = JP2_DEFAULT;
+			break;
+		default:
+			_option = 100 - quality;
 			break;
 		}
 		int pitch = regards->GetBitmapWidth() * 4;
@@ -676,6 +682,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 				break;
 			case 3:
 				_option = JXR_PROGRESSIVE;
+				break;
+			default:
+				_option = 100 - quality;
 				break;
 		}
 		int pitch = regards->GetBitmapWidth() * 4;
@@ -739,6 +748,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 			break;
 		case 2:
 			_option = WEBP_LOSSLESS;
+			break;
+		default:
+			_option = 100 - quality;
 			break;
 		}
         int pitch = regards->GetBitmapWidth() * 4;
