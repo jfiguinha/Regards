@@ -14,6 +14,8 @@ tar xf poppler-0.81.0.tar.xz
 
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
 chmod +x configure
@@ -41,39 +43,12 @@ make -j$NBPROC
 cd ..
 cd ..
 
-#Compile jasper-1.900.1
-cd jasper-1.900.1
-./configure 
-make -j$NBPROC
-cd ..
-
 #Compile libde265-master
 cd libde265-master
 cmake -G "MSYS Makefiles" ../libde265-master 
 make -j$NBPROC
 cd ..
 
-#Compile Zen From MediaInfo_DLL_GNU_FromSource
-cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake
-cmake ../CMake/ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-make install
-cd .. 
-cd .. 
-cd .. 
-cd .. 
-
-export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-
-#Compile MediaInfoLib From MediaInfo_DLL_GNU_FromSource
-cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
-./configure
-make -j$NBPROC
-cd .. 
-cd .. 
-cd .. 
-cd .. 
-cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
@@ -97,20 +72,43 @@ cd ..
 cd .. 
 cd .. 
 
-#Compile libexif
-cd libexif-master
-chmod +x configure
-./configure
+#compile jasper
+cd jasper-2.0.14
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
+sudo make install
+cd ..
 cd ..
 
 #Compile libpoppler
 cd poppler-0.81.0
 mkdir build
 cd build
-cmake ../  -G "MSYS Makefiles"
+cmake ../ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
+cd ..
+cd ..
+
+#Compile Zen From MediaInfo_DLL_GNU_FromSource
+cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake
+cmake ../CMake/ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+make install
+cd .. 
+cd .. 
+cd .. 
+cd .. 
+
+#Compile MediaInfoLib From MediaInfo_DLL_GNU_FromSource
+cd MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library
+./configure
+make -j$NBPROC
+cd ..
+cd ..
+cd ..
 cd ..
 cd ..
 
