@@ -722,9 +722,9 @@ void CBitmapWnd::CalculRealPosFromScreen(const int &xScreen, const int &yScreen,
 CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
 {
     TRACE();
-	if(filtreEffet != nullptr && bitmapLoad)
+	if(filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
-		CRegardsBitmap * bitmap = filtreEffet->GetBitmap(source);
+		CRegardsBitmap * bitmap = this->source->GetRegardsBitmap(source);
 		if (bitmap != nullptr)
 		{
 			bitmap->SetOrientation(orientation);
@@ -741,9 +741,9 @@ CRegardsBitmap * CBitmapWnd::GetBitmap(const bool &source)
 CRegardsFloatBitmap * CBitmapWnd::GetFloatBitmap(const bool &source)
 {
     TRACE();
-	if(filtreEffet != nullptr && bitmapLoad)
+	if(filtreEffet != nullptr && bitmapLoad && this->source != nullptr)
 	{
-		CRegardsFloatBitmap * bitmap = filtreEffet->GetFloatBitmap(source);
+		CRegardsFloatBitmap * bitmap = this->source->GetFloatBitmap(source);
 		return bitmap;
 	}
 	return nullptr;
@@ -1630,11 +1630,13 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	this->SwapBuffers();
     
+	/*
     if(source != nullptr)
     {
         delete source;
         source = nullptr;
     }
+	*/
 
     printf("CBitmapWnd End OnPaint \n");
 	//scrollbar->SetPosition(posLargeur, posHauteur);
