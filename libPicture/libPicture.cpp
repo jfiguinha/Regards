@@ -36,7 +36,10 @@
 #endif
 #endif
 
-#if defined(__MINGW32__) || defined(__WXMAC__)
+#if defined(__MINGW32__)
+using namespace Imf_2_4;
+using namespace Imath_2_4;
+#elif defined(__WXMAC__)
 using namespace Imf_2_3;
 using namespace Imath_2_3;
 #else

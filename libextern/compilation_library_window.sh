@@ -53,19 +53,6 @@ cmake -G "MSYS Makefiles" ../libde265-master
 make -j$NBPROC
 cd ..
 
-#Compile libjpeg-turbo-1.5.1
-cd libjpeg-turbo-1.5.1 
-chmod +x configure
-./configure
-make -j$NBPROC
-cd .. 
-
-#Compile libwebp-0.6.0
-cd libwebp-0.6.0
-cmake -G "MSYS Makefiles" ../libwebp-0.6.0
-make -j$NBPROC
-cd .. 
-
 #Compile Zen From MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake
 cmake ../CMake/ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
@@ -115,6 +102,16 @@ cd libexif-master
 chmod +x configure
 ./configure
 make -j$NBPROC
+cd ..
+
+#Compile libpoppler
+cd poppler-0.81.0
+mkdir build
+cd build
+cmake ../  -G "MSYS Makefiles"
+make -j$NBPROC
+sudo make install
+cd ..
 cd ..
 
 #Compille ffmpeg
