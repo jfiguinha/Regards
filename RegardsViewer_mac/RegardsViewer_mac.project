@@ -502,7 +502,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.30.1/" \
+	-e "s/VERSION/2.31.0/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -574,6 +574,9 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		 <Command Enabled="yes">install_name_tool -change /usr/local/opt/openexr/lib/libIlmImf-2_3.24.dylib @executable_path/../Frameworks/libIlmImf-2_3.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_3.24.dylib @executable_path/../Frameworks/libIexMath-2_3.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf.24.dylib @executable_path/../Frameworks/libHalf.24.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm@7/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
