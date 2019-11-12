@@ -1,1 +1,0 @@
-makepkg-mingw -sCLf
