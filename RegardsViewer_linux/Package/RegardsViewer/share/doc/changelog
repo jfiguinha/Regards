@@ -1,6 +1,9 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.31
+- Add new saving format support
+- Add support black mode for osx
 News for version 2.30.1
 - Add Scanner Application for mac os
 - Correct bug on save picture
