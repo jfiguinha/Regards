@@ -68,11 +68,11 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	viewer->SetCommandId(IDM_VIEWERMODE);
 	navElement.push_back(viewer);
 
-	CToolbarButton* infos = new CToolbarButton(themeToolbar.button);
-	infos->SetButtonResourceId(L"IDB_SCANNER");
-	infos->SetLibelle(lblScanner);
-	infos->SetCommandId(IDM_SCANNER);
-	navElement.push_back(infos);
+	CToolbarButton* scanner = new CToolbarButton(themeToolbar.button);
+	scanner->SetButtonResourceId(L"IDB_SCANNER");
+	scanner->SetLibelle(lblScanner);
+	scanner->SetCommandId(IDM_SCANNER);
+	navElement.push_back(scanner);
 
 	CToolbarButton * print = new CToolbarButton(themeToolbar.button);
 	print->SetButtonResourceId(L"IDB_PRINTERPNG");
