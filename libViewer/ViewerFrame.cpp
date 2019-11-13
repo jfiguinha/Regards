@@ -299,7 +299,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 }
 
-void CViewerFrame::OnScanner(wxCommandEvent& event)
+void CViewerFrame::ShowScanner()
 {
 	if (frameScanner != nullptr)
 	{
@@ -312,6 +312,12 @@ void CViewerFrame::OnScanner(wxCommandEvent& event)
 		frameScanner->Centre(wxBOTH);
 		frameScanner->Show(true);
 	}
+	frameScanner->OnOpen();
+}
+
+void CViewerFrame::OnScanner(wxCommandEvent& event)
+{
+	ShowScanner();
 }
 
 void CViewerFrame::HideScanner(wxCommandEvent& event)

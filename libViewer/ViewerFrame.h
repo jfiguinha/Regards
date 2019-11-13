@@ -66,7 +66,7 @@ namespace Regards
             static void SetViewerMode(const bool &viewerMode);
             bool AddFSEntry(const wxString& dirPath);
             bool RemoveFSEntry(const wxString& dirPath);
-            
+			void ShowScanner();
 		private:
 			void OnExport(wxCommandEvent& event);
 			void OnPrint(wxCommandEvent& event);

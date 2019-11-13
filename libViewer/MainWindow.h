@@ -192,7 +192,7 @@ namespace Regards
 			void OnSetValueProgressBar(wxCommandEvent& event);
 			void OnEndPictureLoad(wxCommandEvent& event);
 			void OnRefreshPicture(wxCommandEvent& event);
-			
+			void OnScanner(wxCommandEvent& event);
 			void UpdateCriteriaMessage(wxCommandEvent& event);
 			void UpdateThumbnailMessage(wxCommandEvent& event);
 

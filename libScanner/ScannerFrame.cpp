@@ -122,9 +122,10 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
 #endif
 #endif
-	//if(mainInterface != nullptr)
-	//	mainInterface->HideAbout();
+
+	
 }
+
 
 CScannerFrame::~CScannerFrame()
 {
@@ -138,7 +139,11 @@ CScannerFrame::~CScannerFrame()
 		delete centralWindow;
 }
 
-
+void CScannerFrame::OnOpen()
+{
+	if(centralWindow != nullptr)
+		centralWindow->OnOpen();
+}
 
 void CScannerFrame::OnExportText(wxCommandEvent& event)
 {

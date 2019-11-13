@@ -20,6 +20,7 @@ using namespace Regards::Viewer;
 #define IDM_SHOWINFOS 156
 #define IDM_QUITTER 157
 #define IDM_PRINT 158
+#define IDM_SCANNER 159
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
@@ -32,6 +33,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 #ifndef __NOFACE_DETECTION__
 	wxString lblListFace = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 #endif
+	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
 	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 
@@ -65,6 +67,12 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	viewer->SetLibelle(lblViewerMode);
 	viewer->SetCommandId(IDM_VIEWERMODE);
 	navElement.push_back(viewer);
+
+	CToolbarButton* infos = new CToolbarButton(themeToolbar.button);
+	infos->SetButtonResourceId(L"IDB_SCANNER");
+	infos->SetLibelle(lblScanner);
+	infos->SetCommandId(IDM_SCANNER);
+	navElement.push_back(infos);
 
 	CToolbarButton * print = new CToolbarButton(themeToolbar.button);
 	print->SetButtonResourceId(L"IDB_PRINTERPNG");
@@ -141,6 +149,12 @@ void CToolbar::EventManager(const int &id)
 		}
 		break;
 
+	case IDM_SCANNER:
+	{
+		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWSCANNER);
+		wxQueueEvent(central, event);
+	}
 
 	case IDM_QUITTER:
 		{

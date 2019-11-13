@@ -145,6 +145,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
+	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 
 	int tabWidth[] = { 100, 300, 300, 300 };
@@ -1142,6 +1143,11 @@ bool CMainWindow::GetProcessEnd()
 	return true;
 }
 
+void CMainWindow::OnScanner(wxCommandEvent& event)
+{
+	TRACE();
+	statusBarViewer->ShowScanner();
+}
 
 void CMainWindow::OnExit(wxCommandEvent& event)
 {

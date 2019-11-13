@@ -24,7 +24,7 @@ namespace Regards
 			void LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
-
+			void OnOpen();
 
 		private:
 
