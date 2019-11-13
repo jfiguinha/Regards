@@ -154,6 +154,7 @@ void CToolbar::EventManager(const int &id)
 		wxWindow* central = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_SHOWSCANNER);
 		wxQueueEvent(central, event);
+		break;
 	}
 
 	case IDM_QUITTER:

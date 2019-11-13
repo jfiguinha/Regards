@@ -177,8 +177,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libqpdf", "Otherlib\libqpdf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libScanner", "libScanner\libScanner.vcxproj", "{B9FAB389-B14F-493D-89A4-BAC998A11299}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RegardsScanner", "RegardsScanner\RegardsScanner.vcxproj", "{A41A1910-B56B-493D-932C-3F3FEE7516A5}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libpoppler", "Otherlib\libpoppler\libpoppler.vcxproj", "{FFF433E3-4638-4949-8FC1-E28734B85002}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "poppler-cpp", "Otherlib\poppler-cpp\poppler-cpp.vcxproj", "{A38F6AD2-4B8E-411D-AA0B-2A09C81CEC7F}"
@@ -618,14 +616,6 @@ Global
 		{B9FAB389-B14F-493D-89A4-BAC998A11299}.Release|Win32.Build.0 = Release|Win32
 		{B9FAB389-B14F-493D-89A4-BAC998A11299}.Release|x64.ActiveCfg = Release|x64
 		{B9FAB389-B14F-493D-89A4-BAC998A11299}.Release|x64.Build.0 = Release|x64
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Debug|Win32.ActiveCfg = Debug|Win32
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Debug|Win32.Build.0 = Debug|Win32
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Debug|x64.ActiveCfg = Debug|x64
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Debug|x64.Build.0 = Debug|x64
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Release|Win32.ActiveCfg = Release|Win32
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Release|Win32.Build.0 = Release|Win32
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Release|x64.ActiveCfg = Release|x64
-		{A41A1910-B56B-493D-932C-3F3FEE7516A5}.Release|x64.Build.0 = Release|x64
 		{FFF433E3-4638-4949-8FC1-E28734B85002}.Debug|Win32.ActiveCfg = Debug|Win32
 		{FFF433E3-4638-4949-8FC1-E28734B85002}.Debug|Win32.Build.0 = Debug|Win32
 		{FFF433E3-4638-4949-8FC1-E28734B85002}.Debug|x64.ActiveCfg = Debug|x64
