@@ -1,6 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
+#include "wx/msw/wx.rc"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.
@@ -8,6 +9,7 @@
 #include "winresrc.h"
 /////////////////////////////////////////////////////////////////////////////
 // Français (France) resources
+// inclure la ligne suivante dans votre script de ressources :
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
 LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
