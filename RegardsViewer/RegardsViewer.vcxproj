@@ -231,17 +231,8 @@ XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(SolutionDir)\x64\Release\Resources"
-mkdir -p "$(SolutionDir)\x64\Release\Resources\1"
-mkdir -p "$(SolutionDir)\x64\Release\Resources\tessdata"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Release\Resources"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Release\Resources\1"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources\tessdata"" "$(SolutionDir)\x64\Release\Resources\tessdata""
-XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\bin\*.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\x64\dynamic\libcurl.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\lib\x64\dynamic\*.dll"  "$(SolutionDir)\x64\Release"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

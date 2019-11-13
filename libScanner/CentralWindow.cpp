@@ -113,33 +113,15 @@ void CCentralWindow::OnOpen()
 	{
 		if (numSelect == 0)
 		{
-			vector<int> listPage;
-			listPage.push_back(0);
-			file = frame->ScanPage();
-			if (file != "" && wxFileExists(file))
-			{
-				isOk = true;
-			}
+			wxCommandEvent evt(wxEVENT_SCANNER);
+			this->GetEventHandler()->AddPendingEvent(evt);
 		}
 		else
 		{
-			wxFileDialog openFileDialog(this, _("Open PDF file"), "", "",
-				"PDF files (*.pdf)|*.pdf", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-			if (openFileDialog.ShowModal() == wxID_CANCEL)
-				return;     // the user changed idea..
-
-			file = openFileDialog.GetPath();
-
-			if (wxFileExists(file))
-			{
-				isOk = true;
-			}
+			wxCommandEvent evt(wxEVENT_OPENFILE);
+			this->GetEventHandler()->AddPendingEvent(evt);
 		}
-		if (isOk)
-		{
-			filename = file;
-			LoadFile(filename);
-		}
+
 	}
 }
 

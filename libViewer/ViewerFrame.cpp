@@ -236,7 +236,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	wxMenu *menuFace = new wxMenu;
 	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
-	menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
+	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
@@ -265,7 +265,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxEVENT_CLOSESCANNER, wxCommandEventHandler(CViewerFrame::HideScanner));
 	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExport));
-	Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
+	//Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	
     if (folderList.size() == 0)
