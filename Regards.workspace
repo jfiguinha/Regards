@@ -74,9 +74,6 @@
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="RegardsScanner">
-    <Project Name="RegardsScanner" Path="RegardsScanner/RegardsScanner.project" Active="No"/>
-  </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
@@ -142,7 +139,6 @@
       <Project Name="wxIA" ConfigName="Debug"/>
       <Project Name="wxPDFDoc" ConfigName="Debug"/>
       <Project Name="libScanner" ConfigName="Debug"/>
-      <Project Name="RegardsScanner" ConfigName="Debug"/>
       <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
@@ -209,7 +205,6 @@
       <Project Name="wxIA" ConfigName="Release"/>
       <Project Name="wxPDFDoc" ConfigName="Release"/>
       <Project Name="libScanner" ConfigName="Release"/>
-      <Project Name="RegardsScanner" ConfigName="Release"/>
       <Project Name="RegardsViewer_mac" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
