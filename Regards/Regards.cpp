@@ -14,7 +14,6 @@
 #include <wx/wxpoppler.h>
 #endif
 
-
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
 	parser.SetDesc(g_cmdLineDesc);
@@ -145,15 +144,7 @@ bool MyApp::OnInit()
 	///////////////////////////////////////////////////////////////////
 	// Initialize common controls this is for the progress bar control
 	//
-	//INITCOMMONCONTROLSEX iccex;
-
-	//iccex.dwSize = sizeof(iccex);
-	//iccex.dwICC = ICC_BAR_CLASSES;
-
-	//InitCommonControlsEx(&iccex);
-
-	
-	
+    //InitCommonControls(); 
 #endif
 
 	wxSocketBase::Initialize();

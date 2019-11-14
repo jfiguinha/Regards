@@ -78,7 +78,7 @@
     <Project Name="RegardsScanner" Path="RegardsScanner/RegardsScanner.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="Debug" Selected="yes">
+    <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
       <Project Name="libPrint" ConfigName="Debug"/>
@@ -145,7 +145,7 @@
       <Project Name="RegardsScanner" ConfigName="Debug"/>
       <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Release" Selected="no">
+    <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
       <Project Name="libPrint" ConfigName="Release"/>

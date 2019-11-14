@@ -437,7 +437,7 @@ Copyright (C) 2012 Free Software Foundation, Inc.
 This config.status script is free software; the Free Software Foundation
 gives unlimited permission to copy, distribute and modify it."
 
-ac_pwd='/c/developpement/git_gcc/Regards/libextern/exiv2-0.26'
+ac_pwd='/c/developpement/git/Regards/libextern/exiv2-0.26'
 srcdir='.'
 INSTALL='/usr/bin/install -c'
 test -n "$AWK" || AWK=awk
@@ -679,7 +679,7 @@ postuninstall_cmds='dldll=`$SHELL 2>&1 -c '\''. $file; echo \$dlname'\''`~
 finish_cmds=''
 finish_eval=''
 hardcode_into_libs='no'
-sys_lib_search_path_spec=' =C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/ C:/msys64/mingw64/bin/../lib/gcc/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/x86_64-w64-mingw32/9.1.0/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/../lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../x86_64-w64-mingw32/9.1.0/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../lib/ F:/msys64/mingw64/x86_64-w64-mingw32/lib/x86_64-w64-mingw32/9.1.0/ F:/msys64/mingw64/x86_64-w64-mingw32/lib/../lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../ F:/msys64/mingw64/x86_64-w64-mingw32/lib/'
+sys_lib_search_path_spec=' =C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/ C:/msys64/mingw64/bin/../lib/gcc/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/x86_64-w64-mingw32/9.2.0/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/../lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../x86_64-w64-mingw32/9.2.0/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../lib/ C:/building/msys64/mingw64/x86_64-w64-mingw32/lib/x86_64-w64-mingw32/9.2.0/ C:/building/msys64/mingw64/x86_64-w64-mingw32/lib/../lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/ C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../ C:/building/msys64/mingw64/x86_64-w64-mingw32/lib/'
 sys_lib_dlsearch_path_spec='/lib /usr/lib'
 hardcode_action='immediate'
 enable_dlopen='unknown'
@@ -740,12 +740,12 @@ include_expsyms_CXX=''
 prelink_cmds_CXX=''
 file_list_spec_CXX=''
 hardcode_action_CXX='immediate'
-compiler_lib_search_dirs_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0 C:/msys64/mingw64/bin/../lib/gcc C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/../lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../..'
-predep_objects_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/../lib/dllcrt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/crtbegin.o'
-postdep_objects_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/crtend.o'
+compiler_lib_search_dirs_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0 C:/msys64/mingw64/bin/../lib/gcc C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/../lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../..'
+predep_objects_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/../lib/dllcrt2.o C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/crtbegin.o'
+postdep_objects_CXX='C:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/crtend.o'
 predeps_CXX=''
 postdeps_CXX='-lstdc++ -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lmsvcrt'
-compiler_lib_search_path_CXX='-LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.1.0/../../..'
+compiler_lib_search_path_CXX='-LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0 -LC:/msys64/mingw64/bin/../lib/gcc -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib/../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../../../x86_64-w64-mingw32/lib -LC:/msys64/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/9.2.0/../../..'
 
 LTCC='gcc'
 LTCFLAGS='-O2'

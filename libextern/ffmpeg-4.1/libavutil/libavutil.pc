@@ -1,7 +1,7 @@
-prefix=/home/jfigu_000/ffmpeg_build
+prefix=/home/jfigu/ffmpeg_build
 exec_prefix=${prefix}
-libdir=/home/jfigu_000/ffmpeg_build/lib
-includedir=/home/jfigu_000/ffmpeg_build/include
+libdir=/home/jfigu/ffmpeg_build/lib
+includedir=/home/jfigu/ffmpeg_build/include
 
 Name: libavutil
 Description: FFmpeg utility library

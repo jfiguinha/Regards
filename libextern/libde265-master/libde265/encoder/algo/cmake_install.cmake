@@ -1,4 +1,4 @@
-# Install script for directory: C:/developpement/git_gcc/Regards/libextern/libde265-master/libde265/encoder/algo
+# Install script for directory: C:/developpement/git/Regards/libextern/libde265-master/libde265/encoder/algo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
