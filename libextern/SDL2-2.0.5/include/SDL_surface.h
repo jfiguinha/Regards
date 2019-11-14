@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -25,8 +25,8 @@
  *  Header file for ::SDL_Surface definition and management functions.
  */
 
-#ifndef SDL_surface_h_
-#define SDL_surface_h_
+#ifndef _SDL_surface_h
+#define _SDL_surface_h
 
 #include "SDL_stdinc.h"
 #include "SDL_pixels.h"
@@ -118,11 +118,8 @@ typedef int (*SDL_blit) (struct SDL_Surface * src, SDL_Rect * srcrect,
 extern DECLSPEC SDL_Surface *SDLCALL SDL_CreateRGBSurface
     (Uint32 flags, int width, int height, int depth,
      Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
-
-/* !!! FIXME for 2.1: why does this ask for depth? Format provides that. */
 extern DECLSPEC SDL_Surface *SDLCALL SDL_CreateRGBSurfaceWithFormat
     (Uint32 flags, int width, int height, int depth, Uint32 format);
-
 extern DECLSPEC SDL_Surface *SDLCALL SDL_CreateRGBSurfaceFrom(void *pixels,
                                                               int width,
                                                               int height,
@@ -511,6 +508,6 @@ extern DECLSPEC int SDLCALL SDL_LowerBlitScaled
 #endif
 #include "close_code.h"
 
-#endif /* SDL_surface_h_ */
+#endif /* _SDL_surface_h */
 
 /* vi: set ts=4 sw=4 expandtab: */

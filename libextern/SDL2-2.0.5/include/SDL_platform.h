@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -25,8 +25,8 @@
  *  Try to get a standard set of platform defines.
  */
 
-#ifndef SDL_platform_h_
-#define SDL_platform_h_
+#ifndef _SDL_platform_h
+#define _SDL_platform_h
 
 #if defined(_AIX)
 #undef __AIX__
@@ -180,6 +180,6 @@ extern DECLSPEC const char * SDLCALL SDL_GetPlatform (void);
 #endif
 #include "close_code.h"
 
-#endif /* SDL_platform_h_ */
+#endif /* _SDL_platform_h */
 
 /* vi: set ts=4 sw=4 expandtab: */
