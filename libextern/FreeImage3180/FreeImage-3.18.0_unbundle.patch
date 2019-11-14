@@ -126,23 +126,23 @@ diff -rupN FreeImage/Makefile.gnu FreeImage-new/Makefile.gnu
  #include "J2KHelper.h"
  
  // --------------------------------------------------------------------------
-diff -rupN FreeImage/Source/FreeImage/Plugin.cpp FreeImage-new/Source/FreeImage/Plugin.cpp
---- FreeImage/Source/FreeImage/Plugin.cpp	2017-02-18 14:09:28.000000000 +0100
-+++ FreeImage-new/Source/FreeImage/Plugin.cpp	2018-07-31 23:37:58.558953201 +0200
-@@ -263,7 +263,12 @@ FreeImage_Initialise(BOOL load_local_plu
- 			s_plugins->AddNode(InitDDS);
- 	        s_plugins->AddNode(InitGIF);
- 	        s_plugins->AddNode(InitHDR);
--			s_plugins->AddNode(InitG3);
-+/* The G3 fax format plugin is deliberately disabled in the Fedora build of
-+   FreeImage as it requires that FreeImage uses a private copy of libtiff
-+   which is a no no because of security reasons. */
-+#if 0
-+ 			s_plugins->AddNode(InitG3);
-+#endif
- 			s_plugins->AddNode(InitSGI);
- 			s_plugins->AddNode(InitEXR);
- 			s_plugins->AddNode(InitJ2K);
+//diff -rupN FreeImage/Source/FreeImage/Plugin.cpp FreeImage-new/Source/FreeImage/Plugin.cpp
+//--- FreeImage/Source/FreeImage/Plugin.cpp	2017-02-18 14:09:28.000000000 +0100
+//+++ FreeImage-new/Source/FreeImage/Plugin.cpp	2018-07-31 23:37:58.558953201 +0200
+//@@ -263,7 +263,12 @@ FreeImage_Initialise(BOOL load_local_plu
+// 			s_plugins->AddNode(InitDDS);
+// 	        s_plugins->AddNode(InitGIF);
+// 	        s_plugins->AddNode(InitHDR);
+//-			s_plugins->AddNode(InitG3);
+//+/* The G3 fax format plugin is deliberately disabled in the Fedora build of
+//+   FreeImage as it requires that FreeImage uses a private copy of libtiff
+//+   which is a no no because of security reasons. */
+//+#if 0
+//+ 			s_plugins->AddNode(InitG3);
+//+#endif
+// 			s_plugins->AddNode(InitSGI);
+// 			s_plugins->AddNode(InitEXR);
+// 			s_plugins->AddNode(InitJ2K);
 diff -rupN FreeImage/Source/FreeImage/PluginEXR.cpp FreeImage-new/Source/FreeImage/PluginEXR.cpp
 --- FreeImage/Source/FreeImage/PluginEXR.cpp	2015-03-03 23:07:08.000000000 +0100
 +++ FreeImage-new/Source/FreeImage/PluginEXR.cpp	2018-07-31 23:37:58.559953201 +0200

@@ -29,9 +29,9 @@ options=('strip' 'staticlibs' '!buildflags')
 source=('FreeImage3180.zip'
         'FreeImage-3.17.0_mingw-makefiles.patch'
         'FreeImage-3.18.0_unbundle.patch')
-sha256sums=('bf42e75f4fa7794b2df5959c9c66b58c9497669c4b9b8b9b56358f0fb5a26f41'
+sha256sums=('793f6a65cc6116311058f7c3324047b2cbbbccf81bf18e75026043a915a5193f'
             'df3845a61b45fdb0426c4466e48e2478e63effb721cb0b1f2521952390c57290'
-            '029960951b743bbf78557d78cd3ac5c417146b169f65aaf9fc2c7a914a87611b')
+            '5c723dbefd02f14477e955063ee0f43aeecb6080304c8722fd4dcbb6bb390100')
 
 prepare() {
   cd ${srcdir}/${_realname}
