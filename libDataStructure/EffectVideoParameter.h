@@ -47,6 +47,7 @@ public:
 		streamSubtitleUpdate = 0;
         enableOpenCL = supportOpenCL;
 		denoiseEnable = 0;
+        bandcEnable = 1;
 	};
 	~CVideoEffectParameter()
 	{
