@@ -67,6 +67,9 @@
     <Filter Include="Splitter">
       <UniqueIdentifier>{43b60825-45ab-4430-9d1f-28e7f13fdee1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{1e1d744a-3a22-46f1-b598-9c5ec4f23965}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
