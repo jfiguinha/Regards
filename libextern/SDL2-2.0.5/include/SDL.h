@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2016 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2017 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -26,8 +26,8 @@
  */
 
 
-#ifndef _SDL_H
-#define _SDL_H
+#ifndef SDL_h_
+#define SDL_h_
 
 #include "SDL_main.h"
 #include "SDL_stdinc.h"
@@ -127,6 +127,6 @@ extern DECLSPEC void SDLCALL SDL_Quit(void);
 #endif
 #include "close_code.h"
 
-#endif /* _SDL_H */
+#endif /* SDL_h_ */
 
 /* vi: set ts=4 sw=4 expandtab: */
