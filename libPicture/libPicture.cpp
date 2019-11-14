@@ -728,10 +728,12 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		}
 		int pitch = regards->GetBitmapWidth() * 4;
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
-		if(!FreeImage_Save(FIF_EXR, Image, fileName, _option))
+		FIBITMAP * floatImage = FreeImage_ConvertToFloat(Image);
+		if(!FreeImage_Save(FIF_EXR, floatImage, fileName, _option))
         {
             wxMessageBox("Unable to save EXR file", "Error", wxICON_ERROR);
         }
+		FreeImage_Unload(floatImage);
 		FreeImage_Unload(Image);
 		delete regards;
 	}
