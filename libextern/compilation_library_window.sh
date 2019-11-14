@@ -16,6 +16,11 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
+#Generate package FreeImage
+cd FreeImage3180
+makepkg -sCLf
+cd ..
+
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
 chmod +x configure
