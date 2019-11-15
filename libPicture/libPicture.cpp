@@ -137,7 +137,9 @@ void CLibPicture::UnloadBpgDll()
 
 static void MyMessageFunction(FREE_IMAGE_FORMAT fif, const char * msg)
 {
+#ifndef NDEBUG
     wxMessageBox(msg,"FreeImage error", wxICON_ERROR);
+#endif
 }
 
 FREE_IMAGE_FORMAT ImageFormat(const char* filename)
