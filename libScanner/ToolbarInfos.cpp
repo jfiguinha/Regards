@@ -9,10 +9,17 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	: CToolbarWindow(parent, id, theme, vertical)
 {
 	infos = nullptr;
+	history = nullptr;
+	effect = nullptr;
+	effectParameter = nullptr;
 	this->toolbarInterface = toolbarInterface;
     saveLastPush = true;
 	wxString infos_label = CLibResource::LoadStringFromResource(L"LBLINFOS",1);// L"Infos";
 	wxString ocr_label = "OCR";
+	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);//L"History";
+	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1);//L"Effect";
+	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);//L"Effect Parameter";
+
 	infos = new CToolbarTexte(themeToolbar.texte);
 	infos->SetCommandId(WM_INFOS);
 	infos->SetLibelle(infos_label);
@@ -22,6 +29,21 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	ocrText->SetCommandId(WM_OCR);
 	ocrText->SetLibelle(ocr_label);
 	navElement.push_back(ocrText);
+
+	history = new CToolbarTexte(themeToolbar.texte);
+	history->SetCommandId(WM_HISTORY);
+	history->SetLibelle(history_label);
+	navElement.push_back(history);
+
+	effect = new CToolbarTexte(themeToolbar.texte);
+	effect->SetCommandId(WM_EFFECT);
+	effect->SetLibelle(effect_label);
+	navElement.push_back(effect);
+
+	effectParameter = new CToolbarTexte(themeToolbar.texte);
+	effectParameter->SetCommandId(WM_EFFECTPARAMETER);
+	effectParameter->SetLibelle(effectParameter_label);
+	navElement.push_back(effectParameter);
 }
 
 CToolbarInfos::~CToolbarInfos()
@@ -36,6 +58,47 @@ void CToolbarInfos::SetInfosPush()
 void CToolbarInfos::SetOcrPush()
 {
 	ocrText->SetPush(true);
+}
+
+void CToolbarInfos::SetEffectPush()
+{
+	effect->SetPush(true);
+}
+
+void CToolbarInfos::SetHistoryPush()
+{
+	history->SetPush(true);
+}
+
+void CToolbarInfos::SetEffectParameterPush()
+{
+	effectParameter->SetPush(true);
+}
+
+void CToolbarInfos::SetEffectInactif()
+{
+	effect->SetVisible(false);
+	Refresh();
+}
+
+void CToolbarInfos::SetEffectParameterInactif()
+{
+	effectParameter->SetVisible(false);
+	Refresh();
+}
+
+void CToolbarInfos::SetEffectParameterActif(const wxString &libelle)
+{
+	if (libelle != "")
+	{
+		effectParameter->SetVisible(true);
+		effectParameter->SetLibelle(libelle);
+		effectParameter->SetLibelleTooltip(libelle);
+		if (navPush != nullptr)
+			navPush->SetInactif();
+		effectParameter->SetActif();
+		Refresh();
+	}
 }
 
 void CToolbarInfos::SetOcrActif()

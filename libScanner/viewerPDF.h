@@ -4,6 +4,7 @@
 #include <WindowMain.h>
 #include <PanelWithClickToolbar.h>
 #include "ToolbarPDF.h"
+#include "FiltreToolbar.h"
 #include <BitmapInterface.h>
 using namespace std;
 using namespace Regards::Window;
@@ -47,6 +48,9 @@ namespace Regards
 			wxString GetFilename();
 			int GetAnimationPosition();
 
+			void HideValidationToolbar();
+			void ShowValidationToolbar(const bool &visible, const int &filtre);
+
 		private:
 			
 			bool GetProcessEnd();
@@ -74,7 +78,7 @@ namespace Regards
 			CPanelWithClickToolbar * panelVideo;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailMultiPage * thumbnailVideo;
-
+			CFiltreToolbar * filtreToolbar;
 
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
@@ -92,6 +96,8 @@ namespace Regards
 			vector<CImageVideoThumbnail *> pageThumbnail;
 
 			CScannerFrame * frame = nullptr;
+
+			bool isEffect;
 		};
 
 

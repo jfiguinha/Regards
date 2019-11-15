@@ -49,7 +49,7 @@ CBitmapViewerInfosWnd::CBitmapViewerInfosWnd(wxWindow* parent, wxWindowID id, CS
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
-		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDID);
+		panelInfosWindow = new CPanelInfosWnd(paneInfos->GetPaneWindow(), PANELINFOSWNDSCANNERID);
 		paneInfos->SetWindow(panelInfosWindow);
 	}
 

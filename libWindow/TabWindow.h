@@ -3,6 +3,8 @@
 #include <WindowMain.h>
 #include <vector>
 
+class CModificationManager;
+
 namespace Regards
 {
 	namespace Window
@@ -38,7 +40,7 @@ namespace Regards
             void ClickShowButton(const int& id);
             void HideAllWindow();
 			virtual void LoadInfo() = 0;
-
+			CModificationManager * modificationManager;
 			vector<CTabWindowData*> listWindow;
 			CToolbarWindow * toolbarWindow = nullptr;
 			int windowVisible;

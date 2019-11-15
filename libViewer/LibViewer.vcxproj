@@ -221,7 +221,6 @@
     <ClInclude Include="ListFace.h" />
     <ClInclude Include="ListPicture.h" />
     <ClInclude Include="MainWindow.h" />
-    <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="PanelPhotoWnd.h" />
     <ClInclude Include="PreviewInfosWnd.h" />
@@ -265,7 +264,6 @@
     <ClCompile Include="ListFace.cpp" />
     <ClCompile Include="ListPicture.cpp" />
     <ClCompile Include="MainWindow.cpp" />
-    <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="PanelPhotoWnd.cpp" />
     <ClCompile Include="PreviewInfosWnd.cpp" />

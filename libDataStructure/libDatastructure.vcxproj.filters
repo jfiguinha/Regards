@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ModificationManager">
+      <UniqueIdentifier>{1d231297-09ff-4926-acb7-a1647b4dec40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -219,6 +222,9 @@
     <ClInclude Include="PhotoCategorieUsenet.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ModificationManager.h">
+      <Filter>ModificationManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Country.cpp">
@@ -289,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="PhotoCatalog.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ModificationManager.cpp">
+      <Filter>ModificationManager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

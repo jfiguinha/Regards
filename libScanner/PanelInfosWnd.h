@@ -9,6 +9,7 @@
 #include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
 #include "TabWindow.h"
+#include "FiltreEffect.h"
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -31,15 +32,26 @@ namespace Regards
 		public:
 			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
 			~CPanelInfosWnd();
+			void OnFiltreOk(const int &numFiltre);
+			void OnFiltreCancel();
 			void SetFile(const wxString &filename);
 			wxString GetFilename();
+			void ApplyEffect(const int &numItem);
+			void ShowFiltre(const wxString &title);
+			CFiltreEffect * GetFilterWindow(int &numFiltre);
 
 		protected:
 
 			void InfosUpdate();
 			void LoadInfo();
 			void DisplayURL(const wxString &url);
-            
+			void EffectUpdate();
+			void HistoryUpdate();
+
+			CInfoEffectWnd * historyEffectWnd;
+			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
+			CFiltreEffectScrollWnd * filtreEffectWnd;
+
 			CInfosFileWnd * infosFileWnd;
 			CToolbarInfos * infosToolbar;
 			COcrWnd * ocrWnd;

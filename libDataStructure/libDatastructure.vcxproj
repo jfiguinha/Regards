@@ -222,6 +222,7 @@
     <ClInclude Include="ListCriteriaPhoto.h" />
     <ClInclude Include="MainInterface.h" />
     <ClInclude Include="Metadata.h" />
+    <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="MotionBlurEffectParameter.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="FolderCatalog.cpp" />
     <ClCompile Include="GeoPluginValue.cpp" />
     <ClCompile Include="ImageLoadingFormat.cpp" />
+    <ClCompile Include="ModificationManager.cpp" />
     <ClCompile Include="PhotoCatalog.cpp" />
     <ClCompile Include="PhotoCategorie.cpp" />
     <ClCompile Include="PhotoCriteria.cpp" />

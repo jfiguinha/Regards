@@ -20,6 +20,18 @@ namespace Regards
             void SetInfosPush();
 			void SetOcrPush();
 			void SetOcrActif();
+
+			void SetEffectParameterInactif();
+			void SetEffectParameterActif(const wxString &libelle);
+
+			void SetEffectActif();
+			void SetEffectInactif();
+
+			void SetEffectPush();
+			void SetEffectParameterPush();
+
+			void SetHistoryPush();
+
 		private:
 
 			virtual void Resize();
@@ -28,6 +40,9 @@ namespace Regards
 			CToolbarInterface * toolbarInterface;
 			CToolbarTexte * infos;
 			CToolbarTexte * ocrText;
+			CToolbarTexte * history;
+			CToolbarTexte * effect;
+			CToolbarTexte * effectParameter;
 		};
 
 

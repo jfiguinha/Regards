@@ -117,6 +117,30 @@ void CViewerPDF::AnimationPicturePrevious()
 	LoadAnimationBitmap(filename, animationPosition);
 }
 
+
+void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
+{
+	isEffect = visible;
+	filtreToolbar->SetNumFiltre(filtre);
+	if (filtreToolbar != nullptr)
+	{
+		if (!filtreToolbar->IsShown())
+			filtreToolbar->Show(true);
+	}
+	Resize();
+}
+
+void CViewerPDF::HideValidationToolbar()
+{
+	isEffect = false;
+	if (filtreToolbar != nullptr)
+	{
+		if (filtreToolbar->IsShown())
+			filtreToolbar->Show(false);
+	}
+	showBitmapWindow->SetBitmapPreviewEffect(0);
+}
+
 wxString CViewerPDF::GetFilename()
 {
 	return filename;

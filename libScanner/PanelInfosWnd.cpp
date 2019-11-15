@@ -13,6 +13,10 @@
 #include <FilterData.h>
 #include "OcrWnd.h"
 #include <wx/stdpaths.h>
+#include "FiltreEffectWnd.h"
+#include "InfoEffectWnd.h"
+#include "ThumbnailViewerEffectWnd.h"
+#include <ShowBitmap.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -28,11 +32,15 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	width = 0;
 	height = 0;
 	windowVisible = WM_INFOS;
- 
+	//Effect Parameter
+	modificationManager = nullptr;
+
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
-    
-    wxString folder = CFileUtility::GetDocumentFolderPath();
+	wxString folder = CFileUtility::GetDocumentFolderPath();
+
+	modificationManager = new CModificationManager(folder);
+
 #ifdef __APPLE__
     wxStandardPathsBase& stdp = wxStandardPaths::Get();
     folder = stdp.GetDocumentsDir();
@@ -64,6 +72,64 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		listWindow.push_back(tabOcr);
 
 	}   
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeTree themeTree;
+		viewerTheme->GetTreeTheme(&themeTree);
+
+		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);
+		filtreEffectWnd->Show(false);
+
+		CTabWindowData * tabInfosFile = new CTabWindowData();
+		tabInfosFile->window = filtreEffectWnd;
+		tabInfosFile->windowMain = filtreEffectWnd;
+		tabInfosFile->windowName = WM_EFFECTPARAMETER;
+		listWindow.push_back(tabInfosFile);
+	}
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeTree themeTree;
+		viewerTheme->GetTreeTheme(&themeTree);
+		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree);
+		historyEffectWnd->Show(false);
+
+		CTabWindowData * tabInfosFile = new CTabWindowData();
+		tabInfosFile->window = historyEffectWnd;
+		tabInfosFile->windowMain = historyEffectWnd;
+		tabInfosFile->windowName = WM_HISTORY;
+		listWindow.push_back(tabInfosFile);
+	}
+
+	if (viewerTheme != nullptr)
+		viewerTheme->GetBitmapWindowTheme(&themeBitmap);
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeScrollBar themeScroll;
+		viewerTheme->GetScrollTheme(&themeScroll);
+
+		CThemeThumbnail themeThumbnail;
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
+
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail);
+
+		thumbnailEffectWnd->Show(false);
+
+		CTabWindowData * tabInfosFileEffect = new CTabWindowData();
+		tabInfosFileEffect->window = thumbnailEffectWnd;
+		tabInfosFileEffect->windowMain = thumbnailEffectWnd;
+		tabInfosFileEffect->windowName = WM_EFFECT;
+		listWindow.push_back(tabInfosFileEffect);
+
+	}
 	
 	if (viewerTheme != nullptr)
 	{
@@ -77,6 +143,84 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
     
 }
 
+void CPanelInfosWnd::HistoryUpdate()
+{
+	wxString historyLibelle = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);
+	CShowBitmap * bitmapViewer = (CShowBitmap *)this->FindWindowById(SHOWBITMAPVIEWERIDPDF);
+	if (bitmapViewer != nullptr)
+	{
+		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
+		historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
+		delete bitmap;
+	}
+}
+
+
+void CPanelInfosWnd::ApplyEffect(const int &numItem)
+{
+	//Test si l'history fonctionne ou pas 
+	HistoryUpdate();
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, false);
+}
+
+void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
+{
+	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
+	ClickShowButton(WM_EFFECT);
+}
+
+CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
+{
+	if (filtreEffectWnd != nullptr)
+	{
+		numFiltre = filtreEffectWnd->GetNumFiltre();
+		return filtreEffectWnd->GetFiltreEffect();
+	}
+	return nullptr;
+}
+
+
+void CPanelInfosWnd::OnFiltreCancel()
+{
+	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+
+	if (bitmapViewer != nullptr)
+	{
+		bitmapViewer->OnFiltreCancel();
+		bitmapViewer->SetBitmapPreviewEffect(0);
+	}
+
+	/*
+	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+	*/
+	ClickShowButton(WM_EFFECT);
+}
+
+void CPanelInfosWnd::EffectUpdate()
+{
+	if (thumbnailEffectWnd->GetFilename() != filename)
+	{
+		thumbnailEffectWnd->SetFile(filename);
+	}
+}
+
+void CPanelInfosWnd::ShowFiltre(const wxString &title)
+{
+	HideAllWindow();
+	infosToolbar->SetEffectParameterPush();
+	filtreEffectWnd->Show(true);
+	if (windowVisible == WM_EFFECT)
+	{
+		infosToolbar->SetEffectParameterActif(title);
+	}
+	Resize();
+}
+
 wxString CPanelInfosWnd::GetFilename()
 {
 	return filename;
@@ -87,6 +231,10 @@ CPanelInfosWnd::~CPanelInfosWnd()
 	delete(infosFileWnd);  
 	delete(ocrWnd);
 	delete(infosToolbar);
+	delete(historyEffectWnd);
+	delete(filtreEffectWnd);
+	delete(thumbnailEffectWnd);
+	delete(modificationManager);
 }
 
 void CPanelInfosWnd::SetFile(const wxString &filename)
@@ -97,9 +245,11 @@ void CPanelInfosWnd::SetFile(const wxString &filename)
 
 		infosToolbar->SetInfosActif();
 
-		LoadInfo();
-
 		ocrWnd->Init();
+
+		infosToolbar->SetEffectParameterInactif();
+
+		LoadInfo();
 	}
     
 }
@@ -118,6 +268,17 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_OCR:
 			//InfosUpdate();
 			infosToolbar->SetOcrPush();
+			break;
+		case WM_HISTORY:
+			HistoryUpdate();
+			infosToolbar->SetHistoryPush();
+			break;
+		case WM_EFFECT:
+			if (!thumbnailEffectWnd->IsShown())
+				thumbnailEffectWnd->Show(true);
+			EffectUpdate();
+			infosToolbar->SetEffectPush();
+			thumbnailEffectWnd->Refresh();
 			break;
 		}
 	}

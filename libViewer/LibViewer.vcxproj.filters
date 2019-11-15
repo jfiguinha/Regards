@@ -126,9 +126,6 @@
     <ClInclude Include="MainWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ModificationManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="PreviewInfosWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -246,9 +243,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ModificationManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PreviewInfosWnd.cpp">

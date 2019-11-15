@@ -32,6 +32,11 @@
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ExportOCr.cpp" />
     <ClCompile Include="ExportPDF.cpp" />
+    <ClCompile Include="FiltreEffect.cpp" />
+    <ClCompile Include="FiltreEffectWnd.cpp" />
+    <ClCompile Include="FiltreToolbar.cpp" />
+    <ClCompile Include="InfoEffect.cpp" />
+    <ClCompile Include="InfoEffectWnd.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="OcrWnd.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
@@ -40,6 +45,8 @@
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
     <ClCompile Include="ThumbnailSelection.cpp" />
+    <ClCompile Include="ThumbnailViewerEffect.cpp" />
+    <ClCompile Include="ThumbnailViewerEffectWnd.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
@@ -51,6 +58,11 @@
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ExportOcr.h" />
     <ClInclude Include="ExportPDF.h" />
+    <ClInclude Include="FiltreEffect.h" />
+    <ClInclude Include="FiltreEffectWnd.h" />
+    <ClInclude Include="FiltreToolbar.h" />
+    <ClInclude Include="InfoEffect.h" />
+    <ClInclude Include="InfoEffectWnd.h" />
     <ClInclude Include="OcrWnd.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="PanelInfosWnd.h" />
@@ -59,6 +71,8 @@
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
     <ClInclude Include="ThumbnailSelection.h" />
+    <ClInclude Include="ThumbnailViewerEffect.h" />
+    <ClInclude Include="ThumbnailViewerEffectWnd.h" />
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
     <ClInclude Include="ValidationToolbar.h" />
