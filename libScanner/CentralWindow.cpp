@@ -13,6 +13,7 @@
 #include <qpdf/QUtil.hh>
 #include "SelectPage.h"
 #include <FileUtility.h>
+#include <ConvertUtility.h>
 
 using namespace Regards::Window;
 
@@ -236,8 +237,9 @@ void CCentralWindow::LoadFile()
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea..
 
-	filename = openFileDialog.GetPath();
-	LoadFile(filename);
+	wxString file = wxString(openFileDialog.GetPath());
+   // const char * local_utf8 = CConvertUtility::ConvertToUTF8(file);
+	LoadFile(file);
 }
 
 void CCentralWindow::LoadFile(const wxString &filename)
