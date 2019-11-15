@@ -74,12 +74,6 @@ private:
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif
-
-#ifndef __APPLE__
-#ifdef __WXSCANSANE__ 
-	void OnSelectSource(wxCommandEvent& event);
-#endif
-#endif
 	void OnOpenImage(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
    
@@ -92,7 +86,7 @@ private:
 #endif
 
 #ifndef __APPLE__
-#if __WXSCANSANE__  
+#ifdef __WXSCANSANE__  
     wxScanSane * scanSane;
 #endif
 #endif

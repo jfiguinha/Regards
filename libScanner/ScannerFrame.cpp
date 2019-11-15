@@ -77,11 +77,6 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	menuFile->Append(ID_EXPORTTXT, _("&Export PDF to TEXT ..."), _("Export PDF to TEXT"));
 	//menuFile->Append(ID_OCR, _("&OCR PDF..."), _("OCR PDF"));
 	menuFile->Append(ID_ACQUIREIMAGE, _("&Acquire Image..."), _("Acquire an image"));
-#ifndef __APPLE__
-#if __WXSCANSANE__  
-	menuFile->Append(ID_SELECTSOURCE, _("&Select Source..."), _("Select source"));
-#endif
-#endif
 	menuFile->AppendSeparator();
 	menuFile->Append(ID_PRINT, _("&Print PDF..."), _("Print PDF"));
 	menuFile->AppendSeparator();
@@ -117,13 +112,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
-#ifndef __APPLE__
-#if __WXSCANSANE__  
-	Connect(ID_SELECTSOURCE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnSelectSource));
-#endif
-#endif
 
-	
 }
 
 
@@ -272,14 +261,6 @@ void CScannerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 		mainInterface->ShowAbout();
 }
 
-#ifndef __APPLE__
-#ifdef __WXSCANSANE__ 
-void CScannerFrame::OnSelectSource(wxCommandEvent& WXUNUSED(event))
-{
-    scanSane->SelectSource("", true, this);
-}
-#endif
-#endif
 #ifdef __WXMSW__
 wxImage CScannerFrame::GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd)
 {
@@ -383,6 +364,8 @@ wxString CScannerFrame::ScanPage()
     
 #else
 #if __WXSCANSANE__  
+    scanSane->SelectSource("", true, this);
+
     if(scanSane->IsSourceSelected())
     {
         wxScanSaneAcquireDialog d(this, -1, _("Acquire"), scanSane);
@@ -453,23 +436,9 @@ void CScannerFrame::OnUpdateUI(wxUpdateUIEvent& event)
 {
 	switch (event.GetId())
 	{
-#ifdef __APPLE__
     case ID_ACQUIREIMAGE:
 		event.Enable(true);
 		break;
-#elif defined(__WXSCANSANE__)
-	case ID_ACQUIREIMAGE:
-		if (scanSane != nullptr)
-			event.Enable(scanSane->IsSourceSelected());
-		else
-			event.Enable(false);
-		break;
-#else
-    case ID_ACQUIREIMAGE:
-		event.Enable(true);
-		break;
-#endif
-
 	case ID_EXPORTHTML:
 	case ID_EXPORTTXT:
 	case ID_EXPORT:
