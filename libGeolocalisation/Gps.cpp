@@ -119,7 +119,7 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 
     
     printf("CGps GeolocalisationGPS \n");
-     
+	CURLcode res;
 	CURL *curl;
     this->latitude = latitude;
     this->longitude = longitude;
@@ -150,7 +150,13 @@ bool CGps::GeolocalisationGPS(const wxString &latitude, const wxString &longitud
 	curl_easy_setopt(curl, CURLOPT_URL, CConvertUtility::ConvertToUTF8(httpAdress));
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &data);
-	curl_easy_perform(curl); /* ignores error */
+	res = curl_easy_perform(curl); /* ignores error */
+	if (res != CURLE_OK)
+	{
+		wxString error = curl_easy_strerror(res);
+		wxMessageBox(error);
+		printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+	}
 	curl_easy_cleanup(curl);
 
     //wxString mystring2(chars, wxConvUTF8);
