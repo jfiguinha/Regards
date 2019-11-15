@@ -135,6 +135,11 @@ void CLibPicture::UnloadBpgDll()
 
 #endif
 
+static void MyMessageFunction(FREE_IMAGE_FORMAT fif, const char * msg)
+{
+    wxMessageBox(msg,"FreeImage error", wxICON_ERROR);
+}
+
 FREE_IMAGE_FORMAT ImageFormat(const char* filename)
 {
 	//check the file signature and deduce its format
@@ -3012,7 +3017,8 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 
 void CLibPicture::InitFreeImage()
 {
-    FreeImage_Initialise();
+    FreeImage_Initialise(true);
+    FreeImage_SetOutputMessage(&MyMessageFunction);
 }
 
 void CLibPicture::UninitFreeImage()

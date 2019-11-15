@@ -35,7 +35,7 @@ WebpOption::WebpOption(wxWindow* parent)
 	Connect(XRCID("ID_SLCOMPRESSION"), wxEVT_SCROLL_TOP | wxEVT_SCROLL_BOTTOM | wxEVT_SCROLL_LINEUP | wxEVT_SCROLL_LINEDOWN | wxEVT_SCROLL_PAGEUP | wxEVT_SCROLL_PAGEDOWN | wxEVT_SCROLL_THUMBTRACK | wxEVT_SCROLL_THUMBRELEASE | wxEVT_SCROLL_CHANGED, (wxObjectEventFunction)&WebpOption::OnslCompressionCmdScroll);
 	//*)
 
-	SetTitle("Jpeg Saving Option");
+	SetTitle("Webp Saving Option");
 }
 
 WebpOption::~WebpOption()
