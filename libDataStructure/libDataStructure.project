@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ModificationManager.cpp"/>
     <File Name="PhotoCatalog.cpp"/>
     <File Name="ThumbnailDataSQL.cpp"/>
     <File Name="RegardsJpegPicture.cpp"/>
@@ -52,6 +53,7 @@
     <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ModificationManager.h"/>
     <File Name="PhotoCategorieUsenet.h"/>
     <File Name="PhotoCatalog.h"/>
     <File Name="ThumbnailMessage.h"/>

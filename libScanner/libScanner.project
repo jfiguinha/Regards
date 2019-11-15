@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libScanner" Version="10.0.0" InternalType="Library">
+<CodeLite_Project Name="libScanner" Version="11000" InternalType="Library">
+  <VirtualDirectory Name="Effect">
+    <VirtualDirectory Name="Include">
+      <File Name="ThumbnailViewerEffectWnd.h"/>
+      <File Name="ThumbnailViewerEffect.h"/>
+      <File Name="InfoEffectWnd.h"/>
+      <File Name="InfoEffect.h"/>
+      <File Name="FiltreToolbar.h"/>
+      <File Name="FiltreEffectWnd.h"/>
+      <File Name="FiltreEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="src">
+      <File Name="ThumbnailViewerEffectWnd.cpp"/>
+      <File Name="ThumbnailViewerEffect.cpp"/>
+      <File Name="InfoEffectWnd.cpp"/>
+      <File Name="InfoEffect.cpp"/>
+      <File Name="FiltreToolbar.cpp"/>
+      <File Name="FiltreEffectWnd.cpp"/>
+      <File Name="FiltreEffect.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -63,6 +83,8 @@
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options="" Assembler="">
@@ -205,6 +227,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
