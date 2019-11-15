@@ -29,7 +29,7 @@ options=('strip' 'staticlibs' '!buildflags')
 source=('FreeImage3180.zip'
         'FreeImage-3.17.0_mingw-makefiles.patch'
         'FreeImage-3.18.0_unbundle.patch')
-sha256sums=('793f6a65cc6116311058f7c3324047b2cbbbccf81bf18e75026043a915a5193f'
+sha256sums=('07883f8f244d633177262694876cbc2170175a2defc1e1f297b4a06f03c66521'
             'df3845a61b45fdb0426c4466e48e2478e63effb721cb0b1f2521952390c57290'
             '5c723dbefd02f14477e955063ee0f43aeecb6080304c8722fd4dcbb6bb390100')
 
