@@ -9,6 +9,7 @@
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include "ThumbnailViewerEffectWnd.h"
+#include <libPicture.h>
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 
@@ -58,6 +59,10 @@ wxString CThumbnailViewerEffectWnd::GetFilename()
 
 void CThumbnailViewerEffectWnd::SetFile(const wxString & filename)
 {
-    if(thumbnailEffect != nullptr)
-        return thumbnailEffect->SetFile(filename);
+	if (thumbnailEffect != nullptr)
+	{
+		CLibPicture libPicture;
+		CImageLoadingFormat * load = libPicture.LoadThumbnail(filename);
+		return thumbnailEffect->SetFile(filename, load);
+	}
 }

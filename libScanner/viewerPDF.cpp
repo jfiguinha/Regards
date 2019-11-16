@@ -85,6 +85,13 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		panelVideo->SetWindow(scrollVideoWindow);
 	}
 
+	if (viewerTheme != nullptr)
+	{
+		CThemeToolbar theme;
+		viewerTheme->GetFiltreToolbarTheme(&theme);
+		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
+	}
+
 	//----------------------------------------------------------------------------------------
 	//Panel Picture Infos
 	//----------------------------------------------------------------------------------------
@@ -93,6 +100,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme);
 	}
 
+	filtreToolbar->Show(false);
 
 	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
@@ -124,8 +132,8 @@ void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
 	filtreToolbar->SetNumFiltre(filtre);
 	if (filtreToolbar != nullptr)
 	{
-		if (!filtreToolbar->IsShown())
-			filtreToolbar->Show(true);
+		//if (!filtreToolbar->IsShown())
+		filtreToolbar->Show(true);
 	}
 	Resize();
 }
@@ -162,6 +170,7 @@ CViewerPDF::~CViewerPDF()
 	delete(scrollVideoWindow);
 	delete(panelVideo);
 	delete(showBitmapWindow);
+	delete(filtreToolbar);
 }
 
 
@@ -253,7 +262,22 @@ void CViewerPDF::RedrawBarPos()
 
 	if (showBitmapWindow != nullptr)
 	{
-		showBitmapWindow->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
+		if (filtreToolbar != nullptr)
+		{
+			if (filtreToolbar->IsShown())
+			{
+				wxRect rcAffichageBitmap;
+				int toolbarHeightSize = filtreToolbar->GetHeight();	    
+				rcAffichageBitmap.x = 0;
+				rcAffichageBitmap.y = 0;
+				rcAffichageBitmap.width = width;
+				rcAffichageBitmap.height = height - (topHeight + bottomHeight);
+				filtreToolbar->SetSize(rcAffichageBitmap.x, (topHeight + rcAffichageBitmap.height) - toolbarHeightSize, rcAffichageBitmap.width, toolbarHeightSize);
+				showBitmapWindow->SetSize(rcAffichageBitmap.x, topHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - toolbarHeightSize);
+			}
+			else
+				showBitmapWindow->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
+		}
 	}
 
 	printf("CViewerPDF::RedrawBarPos() \n");

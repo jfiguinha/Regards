@@ -139,7 +139,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	}
     
     toolbarWindow = infosToolbar;
-    
+	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
     
 }
 
@@ -150,17 +150,22 @@ void CPanelInfosWnd::HistoryUpdate()
 	if (bitmapViewer != nullptr)
 	{
 		CRegardsBitmap * bitmap = bitmapViewer->GetBitmap(true);
-		historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
-		delete bitmap;
+		if(bitmap != nullptr)
+		{
+			wxString filename = bitmap->GetFilename();
+			historyEffectWnd->HistoryUpdate(bitmap, filename, historyLibelle, modificationManager);
+			delete bitmap;
+		}
 	}
 }
 
 
-void CPanelInfosWnd::ApplyEffect(const int &numItem)
+void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 {
+	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, false);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, _filename, false);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
@@ -182,30 +187,23 @@ CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
 
 void CPanelInfosWnd::OnFiltreCancel()
 {
-	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)this->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 
 	if (bitmapViewer != nullptr)
 	{
 		bitmapViewer->OnFiltreCancel();
 		bitmapViewer->SetBitmapPreviewEffect(0);
+		bitmapViewer->ReinitPicture();
 	}
 
-	/*
-	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	if (mainWindow != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_REFRESHPICTURE);
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-	*/
 	ClickShowButton(WM_EFFECT);
 }
 
 void CPanelInfosWnd::EffectUpdate()
 {
-	if (thumbnailEffectWnd->GetFilename() != filename)
+	if (thumbnailEffectWnd->GetFilename() != _filename)
 	{
-		thumbnailEffectWnd->SetFile(filename);
+		thumbnailEffectWnd->SetFile(_filename);
 	}
 }
 
@@ -223,7 +221,7 @@ void CPanelInfosWnd::ShowFiltre(const wxString &title)
 
 wxString CPanelInfosWnd::GetFilename()
 {
-	return filename;
+	return _filename;
 }
 
 CPanelInfosWnd::~CPanelInfosWnd()
@@ -237,11 +235,11 @@ CPanelInfosWnd::~CPanelInfosWnd()
 	delete(modificationManager);
 }
 
-void CPanelInfosWnd::SetFile(const wxString &filename)
+void CPanelInfosWnd::SetFile(wxString filename)
 {
-	if (this->filename != filename)
+	if (_filename != filename)
 	{
-		this->filename = filename;
+		_filename = wxString(filename);
 
 		infosToolbar->SetInfosActif();
 
@@ -287,5 +285,5 @@ void CPanelInfosWnd::LoadInfo()
 void CPanelInfosWnd::InfosUpdate()
 {
     if(infosFileWnd != nullptr)
-        infosFileWnd->InfosUpdate(filename);
+        infosFileWnd->InfosUpdate(_filename);
 }

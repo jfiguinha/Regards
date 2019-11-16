@@ -657,6 +657,27 @@ void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& updateA
 	}
 }
 
+void CBitmapWnd::ReinitPicture()
+{
+	TRACE();
+	printf("CBitmapWnd::SetBitmap \n");
+
+	bitmapLoad = true;
+	bitmapUpdate = true;
+	flipVertical = 0;
+	flipHorizontal = 0;
+	angle = 0;
+
+	printf("CBitmapWnd::SetBitmap  muBitmap.lock()\n");
+
+	printf("CBitmapWnd::SetBitmap  muBitmap.unlock()\n");
+	toolOption = MOVEPICTURE;
+	ShrinkImage(false);
+	AfterSetBitmap();
+	RefreshWindow();
+
+}
+
 //-----------------------------------------------------------------
 //Affectation de l'image
 //-----------------------------------------------------------------

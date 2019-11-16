@@ -8,7 +8,6 @@
 #include "ParamInit.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include "PanelInfosWnd.h"
 #include "viewerPDF.h"
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
@@ -61,7 +60,7 @@ CBitmapViewerInfosWnd::CBitmapViewerInfosWnd(wxWindow* parent, wxWindowID id, CS
 	this->posBar = positionBar;
 	this->SetWindow(previewWindow, paneInfos);
 
-	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CBitmapViewerInfosWnd::OnResize));
+	
 	
 
 	RedrawBarPos();

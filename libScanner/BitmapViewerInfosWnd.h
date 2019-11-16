@@ -2,6 +2,7 @@
 #include <Splitter.h>
 #include <PanelWithClickToolbar.h>
 #include <ToolbarInterface.h>
+#include "PanelInfosWnd.h"
 using namespace Regards::Window;
 
 class CImageLoadingFormat;
@@ -12,7 +13,6 @@ namespace Regards
 	namespace Scanner
 	{
 		class CViewerPDF;
-		class CPanelInfosWnd;
 
 		class CBitmapViewerInfosWnd :public CSplitter
 		{

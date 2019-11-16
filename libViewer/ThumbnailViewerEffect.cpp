@@ -23,6 +23,8 @@ void CThumbnailViewerEffect::OnPictureClick(CThumbnailData * data)
 	int numItem = data->GetNumPhotoId();
 	if (panelInfos != nullptr)
 	{
-		panelInfos->ApplyEffect(numItem);
+		wxCommandEvent evt(wxEVENT_APPLYEFFECT);
+		evt.SetInt(numItem);
+		panelInfos->GetEventHandler()->AddPendingEvent(evt);
 	}
 }

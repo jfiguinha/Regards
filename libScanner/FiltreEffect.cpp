@@ -50,7 +50,7 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, CTreeElementValue * po
 
 void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre)
 {
-	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
@@ -92,7 +92,7 @@ void CFiltreEffect::UpdateScreenRatio()
 
 void CFiltreEffect::UpdateMousePosition()
 {
-	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (bitmapWindow != nullptr)
 	{
 		CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
@@ -102,7 +102,7 @@ void CFiltreEffect::UpdateMousePosition()
 
 CImageLoadingFormat * CFiltreEffect::ApplyEffect()
 {
-	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERID);
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 
 	if (filterEffect != nullptr)
 	{

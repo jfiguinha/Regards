@@ -45,14 +45,15 @@ namespace Regards
 			void SetBitmapFile(const wxString &filename, const bool &isThumbnail);
 			void SetVideoFile(const wxString &filename);
 			void SetAnimationFile(const wxString &filename);
-			void ApplyEffect(const int &numItem);
-			wxString GetFilename();
             void ShowFiltre(const wxString &title);
             void UpdateData();
             CFiltreEffect * GetFilterWindow(int &numFiltre);
+			wxString GetFilename();
 
 		protected:
 
+			void ApplyEffect(wxCommandEvent& event);
+			
 			wxString MapsUpdate();
 			void EffectUpdate();
 			void HistoryUpdate();

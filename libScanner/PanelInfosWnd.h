@@ -34,14 +34,14 @@ namespace Regards
 			~CPanelInfosWnd();
 			void OnFiltreOk(const int &numFiltre);
 			void OnFiltreCancel();
-			void SetFile(const wxString &filename);
+			void SetFile(wxString filename);
 			wxString GetFilename();
-			void ApplyEffect(const int &numItem);
+			
 			void ShowFiltre(const wxString &title);
 			CFiltreEffect * GetFilterWindow(int &numFiltre);
 
 		protected:
-
+			void ApplyEffect(wxCommandEvent& event);
 			void InfosUpdate();
 			void LoadInfo();
 			void DisplayURL(const wxString &url);
@@ -55,7 +55,7 @@ namespace Regards
 			CInfosFileWnd * infosFileWnd;
 			CToolbarInfos * infosToolbar;
 			COcrWnd * ocrWnd;
-			wxString filename;
+			wxString _filename;
             wxString url;
 	
 		};

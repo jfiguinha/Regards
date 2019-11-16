@@ -100,6 +100,7 @@ namespace Regards
 			COpenCLContext * GetOpenCLContext();
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
+			void ReinitPicture();
 
 		protected:
 

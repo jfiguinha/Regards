@@ -100,7 +100,7 @@ void CInfoEffect::ClickOnElement(CPositionElement * element, wxWindow * window, 
 	CTreeData * treeData = (CTreeData *)element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
-		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)window->FindWindowById(BITMAPWINDOWVIEWERID);
+		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)window->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 		if (bitmapViewer != nullptr)
 		{
 			wxString key = treeData->GetExifKey();

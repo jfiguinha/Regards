@@ -36,6 +36,7 @@ public:
 		_thread = nullptr;
 		thumbnail = nullptr;
         picture = nullptr;
+		imageLoading = nullptr;
 	};
 	~CThreadBitmapEffect() 
 	{
@@ -46,6 +47,7 @@ public:
 	int numIcone;
     CRegardsBitmap * picture;
 	CThumbnailDataStorage * thumbnailData;
+	CImageLoadingFormat * imageLoading;
 	thread * _thread;
 	CThumbnailEffect * thumbnail;
 };
@@ -53,6 +55,7 @@ public:
 CThumbnailEffect::CThumbnailEffect(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnail(parent, id, themeThumbnail, testValidity)
 {
+	imageLoading = nullptr;
 	isAllProcess = true;
     processIdle = false;
 	barseparationHeight = 40;
@@ -81,6 +84,9 @@ CThumbnailEffect::~CThumbnailEffect(void)
 
 	}
 	listSeparator.clear();
+
+	if (imageLoading != nullptr)
+		delete imageLoading;
 }
 
 wxString CThumbnailEffect::GetWaitingMessage()
@@ -159,10 +165,10 @@ void CThumbnailEffect::GetBitmapDimension(const int &width, const int &height, i
 	tailleAffichageBitmapHeight = int(float(height) * newRatio);
 }
 
-void CThumbnailEffect::SetFile(const wxString &filename)
+void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * imageLoading)
 {
 	processIdle = false;
-
+	this->imageLoading = imageLoading;
 	CLoadingResource loadingResource;
 	this->filename = filename;
 	CRgbaquad backcolor = CRgbaquad(themeThumbnail.colorBack.Red(), themeThumbnail.colorBack.Green(), themeThumbnail.colorBack.Blue());
@@ -363,7 +369,12 @@ void CThumbnailEffect::LoadPicture(void * param)
     CImageLoadingFormat thumbnail; 
     CSqlThumbnail sqlThumbnail;  
     CRgbaquad colorQuad = CRgbaquad(threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Red(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Green(), threadLoadingBitmap->thumbnail->themeThumbnail.colorBack.Blue());
-	CRegardsBitmap * bitmap = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
+	CRegardsBitmap * bitmap = nullptr;
+
+	if (threadLoadingBitmap->imageLoading == nullptr)
+		bitmap = sqlThumbnail.GetPictureThumbnail(threadLoadingBitmap->filepath);
+	else
+		bitmap = threadLoadingBitmap->imageLoading->GetRegardsBitmap();
 
     
 	if(bitmap != nullptr)
@@ -443,6 +454,7 @@ void CThumbnailEffect::ProcessIdle()
                         pLoadBitmap->filepath = filename;
                         pLoadBitmap->filename = pThumbnailData->GetFilename();
                         pLoadBitmap->numIcone = i;
+						pLoadBitmap->imageLoading = imageLoading;
                         pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
                         nbProcess++;
                         pThumbnailData->SetIsProcess(true);

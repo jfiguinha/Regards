@@ -16,7 +16,7 @@ namespace Regards
 			CThumbnailEffect(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailEffect(void);
 
-			void SetFile(const wxString &filename);
+			void SetFile(const wxString &filename, CImageLoadingFormat * imageLoading);
 			void SetIconeSize(const int &width, const int &height);
 			wxString GetFilename();
             wxString GetWaitingMessage();
@@ -46,6 +46,7 @@ namespace Regards
 			wxString rotateEffect;
             wxString hdrEffect;
 			wxString videoLabelEffect;
+			CImageLoadingFormat * imageLoading;
 
 		};
 	}

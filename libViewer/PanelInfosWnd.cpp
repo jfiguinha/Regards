@@ -204,7 +204,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 
     toolbarWindow = infosToolbar;
     
-    
+	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 }
 
 CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
@@ -331,11 +331,12 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
     
 }
 
-void CPanelInfosWnd::ApplyEffect(const int &numItem)
+void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 {
+	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-    filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, isVideo);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, false);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
