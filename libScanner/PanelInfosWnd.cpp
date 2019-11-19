@@ -179,7 +179,7 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, _filename, false, PANELINFOSWNDSCANNERID, SCANNER_PREVIEWINFOWND);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, _filename, false, PANELINFOSWNDSCANNERID, PDFWINDOWID);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)

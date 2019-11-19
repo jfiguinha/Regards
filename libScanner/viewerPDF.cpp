@@ -174,6 +174,7 @@ void CViewerPDF::HideValidationToolbar()
 			filtreToolbar->Show(false);
 	}
 	showBitmapWindow->SetBitmapPreviewEffect(0);
+	Resize();
 }
 
 wxString CViewerPDF::GetFilename()
