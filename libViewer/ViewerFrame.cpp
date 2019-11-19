@@ -236,6 +236,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	wxMenu *menuFace = new wxMenu;
 	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
+	menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
 	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
@@ -253,7 +254,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuParameter, labelParameter);
-	menuBar->Append(menuFace, "Face");
+	menuBar->Append(menuFace, "Photo Detection");
     menuBar->Append(menuSizeIcon, labelSizeIcon);
 
 	menuBar->Append(menuHelp, labelHelp);
@@ -875,6 +876,7 @@ EVT_MENU(ID_OpenCL, CViewerFrame::OnOpenCLConfiguration)
 EVT_MENU(ID_SIZEICONLESS, CViewerFrame::OnIconSizeLess)
 EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
 EVT_MENU(ID_FACEDETECTION, CViewerFrame::OnFaceDetection)
+EVT_MENU(ID_CATEGORYDETECTION, CViewerFrame::OnCategoryDetection)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
 EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)

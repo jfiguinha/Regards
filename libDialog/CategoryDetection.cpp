@@ -14,12 +14,7 @@
 #include <LibResource.h>
 #include <ConvertUtility.h>
 #include <window_id.h>
-#include <SqlFindCriteria.h>
-#include <SqlCriteria.h>
-#include <SqlGps.h>
-#include <SqlPhotoCriteria.h>
 #include <SqlPhotos.h>
-#include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <RegardsBitmap.h>
 #include <libPicture.h>
@@ -35,11 +30,8 @@ using namespace Regards::exiv2;
 #endif
 #include <ImageLoadingFormat.h>
 #include <picture_id.h>
-#include <SqlFacePhoto.h>
-#include <SqlFaceDescriptor.h>
-#include <SqlFindFacePhoto.h>
-#include <SqlFaceRecognition.h>
-#include <SqlFaceLabel.h>
+#include <SqlPhotoCategorieUsenet.h>
+
 using namespace Regards::Sqlite;
 
 #define wxEVENT_CATEGORYADD 1
@@ -195,6 +187,8 @@ CCategoryDetectionDlg::CCategoryDetectionDlg(wxWindow* parent)
 	categorieData = new CPictureCategorieLoadData();
 	//pictureCategorie = new CPictureCategorie();
 	categorieData->LoadData((const char*)model.mb_str(wxConvUTF8));
+
+	SetTitle("Category USENET recognition");
 }
 
 CCategoryDetectionDlg::~CCategoryDetectionDlg()
@@ -216,6 +210,7 @@ void CCategoryDetectionDlg::OnSize(wxSizeEvent& evt)
 //---------------------------------------------------------------------------------------
 void CCategoryDetectionDlg::CategoryRecognition(void * param)
 {
+	CSqlPhotoCategorieUsenet facePhoto;
 	CThreadCategory * path = (CThreadCategory *)param;
 	bool pictureOK = false;
 	CRegardsConfigParam * config = (CRegardsConfigParam*)CParamInit::getInstance();
@@ -264,19 +259,29 @@ void CCategoryDetectionDlg::CategoryRecognition(void * param)
 
 	if (pictureOK)
 	{
+		CSqlPhotos sqlPhotos;
+		int numPhotoId = sqlPhotos.GetPhotoId(path->filename);
+
 		CPictureCategorie * pictureCategorie = new CPictureCategorie();
 		std::vector<string> labels;
 		void * copyData = path->categoryData->GetCopyData();
-		std::vector<int> listCategorie = pictureCategorie->GetCategorieFromPicture(path->filename, copyData);
+		std::vector<int> listCategorie = pictureCategorie->GetCategorieFromJpegBuffer(pictureData->data, pictureData->size, copyData);
 		for (int i : listCategorie)
 		{
 			char label[255];
 			pictureCategorie->GetLabel(i, label, 255, copyData);
+			wxString _libelle = wxString::FromUTF8(label);
+			facePhoto.InsertPhotoCategorie(numPhotoId, i, _libelle);
+			
+
 			labels.push_back(label);
 		}
 		path->categoryData->DeleteCopy(copyData);
 		delete pictureCategorie;
 	}
+
+
+
 
 	if (path->mainWindow != nullptr)
 	{
@@ -316,18 +321,13 @@ void CCategoryDetectionDlg::OnIdle(wxIdleEvent& evt)
 	if (config != nullptr)
 		nbProcesseur = config->GetFaceProcess();
 
-	CSqlFacePhoto facePhoto;
+	CSqlPhotoCategorieUsenet facePhoto;
 	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
 
 	//Recherche Nb Fichier non traité pour le visage
 	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0 && !pushCloseButton)
 	{
-		PhotosVector photoList;
-		CSqlFindPhotos findphotos;
-		findphotos.GetAllPhotos(&photoList);
-
-		CSqlFacePhoto sqlFacePhoto;
-		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
+		facePhoto.InsertPhotoProcessing(listPhoto.at(0));
 
 		CThreadCategory * path = new CThreadCategory();
 		path->filename = listPhoto.at(0);

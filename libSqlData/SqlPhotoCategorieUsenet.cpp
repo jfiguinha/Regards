@@ -28,7 +28,7 @@ vector<wxString> CSqlPhotoCategorieUsenet::GetPhotoListTreatment()
 {
 	type = 1;
 	listPhoto.clear();
-	ExecuteRequest("SELECT FullPath FROM PHOTOSTHUMBNAIL WHERE FullPath not in (select FullPath FROM PHOTO_CATEGORIE_USENET_PROCESSING)");
+	ExecuteRequest("SELECT FullPath FROM PHOTOS WHERE FullPath not in (select FullPath FROM PHOTO_CATEGORIE_USENET_PROCESSING)");
 	return listPhoto;
 }
 
@@ -36,7 +36,7 @@ vector<CPhotoCategorieUsenet> CSqlPhotoCategorieUsenet::GetPhotoListCategorie(co
 {
 	type = 2;
 	listCategoriePhoto.clear();
-	ExecuteRequest("SELECT NumPhoto,NumCategorie,libelle) FROM PHOTO_CATEGORIE_USENET WHERE NumPhoto = " + to_string(numPhoto));
+	ExecuteRequest("SELECT NumPhoto,NumCategorie,libelle FROM PHOTO_CATEGORIE_USENET WHERE NumPhoto = " + to_string(numPhoto));
 	return listCategoriePhoto;
 }
 
