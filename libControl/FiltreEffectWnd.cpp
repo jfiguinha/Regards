@@ -145,7 +145,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 
 						if (previewWindow != nullptr)
 						{
-							wxCommandEvent evt(wxEVENT_SHOWTOOLBAR);
+							wxCommandEvent evt(wxEVENT_SHOWTOOLBARFILTRE);
 							evt.SetInt(numItem);
 							previewWindow->GetEventHandler()->AddPendingEvent(evt);
 						}
@@ -181,7 +181,7 @@ void CFiltreEffectScrollWnd::ApplyEffect(const int &numItem, CInfoEffectWnd * hi
 
 						if (previewWindow != nullptr)
 						{
-							wxCommandEvent evt(wxEVENT_SHOWTOOLBAR);
+							wxCommandEvent evt(wxEVENT_SHOWTOOLBARFILTRE);
 							evt.SetInt(numItem);
 							previewWindow->GetEventHandler()->AddPendingEvent(evt);
 						}

@@ -351,7 +351,7 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, filename, false, PANELINFOSWNDID, PREVIEWWINDOWID);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, filename, false, PANELINFOSWNDID, PREVIEWVIEWERID);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
@@ -459,7 +459,7 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_AUDIOVIDEO:
             if (!thumbnailEffectWnd->IsShown())
                 thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWWINDOWID);
+            filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWVIEWERID);
 			AudioVideoUpdate();
             infosToolbar->SetAudioVideoPush();
             thumbnailEffectWnd->Refresh();
@@ -467,7 +467,7 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_VIDEOEFFECT:
             if (!thumbnailEffectWnd->IsShown())
                 thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWWINDOWID);
+            filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWVIEWERID);
 			VideoEffectUpdate();
             infosToolbar->SetVideoEffectPush();
             thumbnailEffectWnd->Refresh();

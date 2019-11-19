@@ -108,7 +108,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CViewerPDF::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CViewerPDF::OnFiltreCancel));
-	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CViewerPDF::OnShowToolbar));
+	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CViewerPDF::OnShowToolbar));
 }
 
 void CViewerPDF::OnShowToolbar(wxCommandEvent& event)

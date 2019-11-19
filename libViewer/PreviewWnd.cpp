@@ -80,7 +80,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 	Connect(wxEVENT_SHOWTOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CPreviewWnd::OnFiltreCancel));
-	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::OnShowToolbar));
+	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CPreviewWnd::OnShowToolbar));
 }
 
 
