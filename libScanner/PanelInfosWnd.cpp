@@ -186,6 +186,7 @@ void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
 {
 	filtreEffectWnd->OnFiltreOk(numFiltre, historyEffectWnd);
 	ClickShowButton(WM_EFFECT);
+	infosToolbar->SetEffectParameterInactif();
 }
 
 CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
@@ -211,6 +212,7 @@ void CPanelInfosWnd::OnFiltreCancel()
 	}
 
 	ClickShowButton(WM_EFFECT);
+	infosToolbar->SetEffectParameterInactif();
 }
 
 void CPanelInfosWnd::EffectUpdate()
