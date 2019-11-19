@@ -156,13 +156,6 @@ int CBitmapViewerInfosWnd::GetAnimationPosition()
 	return -1;
 }
 
-wxString CBitmapViewerInfosWnd::SetImage(wxImage imageFile)
-{
-	if (previewWindow != nullptr)
-		return previewWindow->SetImage(imageFile);
-
-	return "";
-}
 
 void CBitmapViewerInfosWnd::LoadFile(const wxString &filename)
 {

@@ -40,9 +40,6 @@
     <Filter Include="OCR">
       <UniqueIdentifier>{4013c5a1-85b2-4a89-9c87-d8062721cc45}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Effect">
-      <UniqueIdentifier>{94f86698-e53b-45d0-88c4-9d9b74a333a5}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SelectPage.cpp">
@@ -108,27 +105,6 @@
     <ClCompile Include="ExportOCr.cpp">
       <Filter>OCR</Filter>
     </ClCompile>
-    <ClCompile Include="FiltreEffect.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreEffectWnd.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreToolbar.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoEffect.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoEffectWnd.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffect.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -181,27 +157,6 @@
     </ClInclude>
     <ClInclude Include="ExportOcr.h">
       <Filter>OCR</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreEffect.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreEffectWnd.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreToolbar.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoEffect.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoEffectWnd.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffect.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffectWnd.h">
-      <Filter>Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

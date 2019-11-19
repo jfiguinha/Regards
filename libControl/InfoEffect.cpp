@@ -6,12 +6,14 @@
 #include <ImageLoadingFormat.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
+#include "BitmapWndViewer.h"
 using namespace Regards::Window;
-using namespace Regards::Scanner;
+using namespace Regards::Control;
 
 
-CInfoEffect::CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager)
+CInfoEffect::CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager, int bitmapWindowId)
 {
+	this->bitmapWindowId = bitmapWindowId;
 	widthPosition = 0;
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
@@ -100,7 +102,7 @@ void CInfoEffect::ClickOnElement(CPositionElement * element, wxWindow * window, 
 	CTreeData * treeData = (CTreeData *)element->GetTreeData();
 	if (element->GetType() == ELEMENT_TEXTE)
 	{
-		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)window->FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+		CBitmapWndViewer* bitmapViewer = (CBitmapWndViewer*)window->FindWindowById(bitmapWindowId);
 		if (bitmapViewer != nullptr)
 		{
 			wxString key = treeData->GetExifKey();

@@ -7,27 +7,21 @@
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
 #include "ThumbnailViewerEffectWnd.h"
-#include "MainTheme.h"
-#include "MainThemeInit.h"
-#include "ScannerParam.h"
-#include "ScannerParamInit.h"
 #include <libPicture.h>
 using namespace Regards::Control;
-using namespace Regards::Scanner;
 
 CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, 
-	const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail)
+	const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail, int panelInfosId, bool checkValidity)
 : CWindowMain("CThumbnailViewerEffectWnd",parent, id)
 {
     thumbnailEffectScroll = nullptr;
     thumbnailEffect = nullptr;
-	bool checkValidity = false;
     thumbnailEffectScroll = new CScrollbarWnd(this, wxID_ANY);
-	CMainParam * config = CMainParamInit::getInstance();
-	if (config != nullptr)
-		checkValidity = config->GetCheckThumbnailValidity();
+	//CMainParam * config = CMainParamInit::getInstance();
+	//if (config != nullptr)
+	//	checkValidity = config->GetCheckThumbnailValidity();
 
-	thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY,  themeThumbnail, checkValidity);
+	thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY,  themeThumbnail, checkValidity, panelInfosId);
     thumbnailEffectScroll->SetCentralWindow(thumbnailEffect, themeScroll);
 }
 

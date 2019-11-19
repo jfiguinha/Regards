@@ -19,6 +19,7 @@
 #include "ThumbnailViewerEffectWnd.h"
 #include <ImageLoadingFormat.h>
 #include <FilterData.h>
+#include "ViewerParamInit.h"
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -89,7 +90,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
 
-        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);    
+        filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
         filtreEffectWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
@@ -118,7 +119,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
-		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree);
+		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERID);
 		historyEffectWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
@@ -133,13 +134,19 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
     
 	if (viewerTheme != nullptr)
 	{
+		bool checkValidity = false;
+
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetScrollTheme(&themeScroll);
 
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
+
+		CMainParam * config = CMainParamInit::getInstance();
+		if (config != nullptr)
+			checkValidity = config->GetCheckThumbnailValidity();
         
-		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail);
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID, checkValidity);
 		
 		thumbnailEffectWnd->Show(false);
         
@@ -336,7 +343,7 @@ void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, filename, false);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, filename, false, PANELINFOSWNDID, PREVIEWWINDOWID);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)
@@ -444,7 +451,7 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_AUDIOVIDEO:
             if (!thumbnailEffectWnd->IsShown())
                 thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, this, filename, isVideo);
+            filtreEffectWnd->ApplyEffect(IDM_FILTRE_AUDIOVIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWWINDOWID);
 			AudioVideoUpdate();
             infosToolbar->SetAudioVideoPush();
             thumbnailEffectWnd->Refresh();
@@ -452,7 +459,7 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_VIDEOEFFECT:
             if (!thumbnailEffectWnd->IsShown())
                 thumbnailEffectWnd->Show(true);
-            filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, this, filename, isVideo);
+            filtreEffectWnd->ApplyEffect(IDM_FILTRE_VIDEO, historyEffectWnd, filename, isVideo, PANELINFOSWNDID, PREVIEWWINDOWID);
 			VideoEffectUpdate();
             infosToolbar->SetVideoEffectPush();
             thumbnailEffectWnd->Refresh();

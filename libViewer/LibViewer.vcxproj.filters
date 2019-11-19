@@ -78,12 +78,6 @@
     <ClInclude Include="ThumbnailToolBarZoom.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffect.h">
-      <Filter>Thumbnail\include</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffectWnd.h">
-      <Filter>Thumbnail\include</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailViewerVideo.h">
       <Filter>Thumbnail\include</Filter>
     </ClInclude>
@@ -94,21 +88,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="CategoryWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreEffect.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreEffectWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreToolbar.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoEffect.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="InfoEffectWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="InfosSeparationBarExplorer.h">
@@ -149,9 +128,6 @@
     </ClInclude>
     <ClInclude Include="PanelPhotoWnd.h">
       <Filter>Panel\include</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerPicture.h">
-      <Filter>Thumbnail\include</Filter>
     </ClInclude>
     <ClInclude Include="ViewerWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -197,12 +173,6 @@
     <ClCompile Include="ThumbnailToolBarZoom.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffect.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
-      <Filter>Thumbnail\source</Filter>
-    </ClCompile>
     <ClCompile Include="ThumbnailViewerVideo.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
@@ -213,21 +183,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CategoryWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreEffect.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreEffectWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreToolbar.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoEffect.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="InfoEffectWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="InfosSeparationBarExplorer.cpp">

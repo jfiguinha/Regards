@@ -56,9 +56,13 @@ namespace Regards
 		protected:
 
 
+			void OnFiltreOK(wxCommandEvent& event);
+			void OnFiltreCancel(wxCommandEvent& event);
 			void ShowToolbar(wxCommandEvent& event);
 			void HideToolbar(wxCommandEvent& event);
             void OnPaint(wxPaintEvent& event);
+			void OnShowToolbar(wxCommandEvent& event);
+
             
 			CShowBitmap * showBitmapWindow;
 			CShowVideo * showVideoWindow;

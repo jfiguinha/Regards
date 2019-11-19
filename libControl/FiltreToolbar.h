@@ -4,7 +4,7 @@ using namespace Regards::Window;
 
 namespace Regards
 {
-	namespace Scanner
+	namespace Control
 	{
 		class CFiltreToolbar : public CToolbarWindow
 		{
@@ -17,7 +17,7 @@ namespace Regards
 
 			void EventManager(const int &id);
 			int numFiltre;
-
+			wxWindow * wxWindowPanel;
 		};
 	}
 }

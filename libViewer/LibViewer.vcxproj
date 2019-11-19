@@ -210,12 +210,7 @@
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
-    <ClInclude Include="FiltreEffect.h" />
-    <ClInclude Include="FiltreEffectWnd.h" />
-    <ClInclude Include="FiltreToolbar.h" />
     <ClInclude Include="ImageList.h" />
-    <ClInclude Include="InfoEffect.h" />
-    <ClInclude Include="InfoEffectWnd.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="InfosSeparationBarFace.h" />
     <ClInclude Include="ListFace.h" />
@@ -232,9 +227,6 @@
     <ClInclude Include="ThumbnailFolder.h" />
     <ClInclude Include="ThumbnailToolBar.h" />
     <ClInclude Include="ThumbnailToolBarZoom.h" />
-    <ClInclude Include="ThumbnailViewerEffect.h" />
-    <ClInclude Include="ThumbnailViewerEffectWnd.h" />
-    <ClInclude Include="ThumbnailViewerPicture.h" />
     <ClInclude Include="ThumbnailViewerVideo.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ToolbarInfos.h" />
@@ -253,12 +245,7 @@
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
-    <ClCompile Include="FiltreEffect.cpp" />
-    <ClCompile Include="FiltreEffectWnd.cpp" />
-    <ClCompile Include="FiltreToolbar.cpp" />
     <ClCompile Include="ImageList.cpp" />
-    <ClCompile Include="InfoEffect.cpp" />
-    <ClCompile Include="InfoEffectWnd.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InfosSeparationBarFace.cpp" />
     <ClCompile Include="ListFace.cpp" />
@@ -275,8 +262,6 @@
     <ClCompile Include="ThumbnailFolder.cpp" />
     <ClCompile Include="ThumbnailToolBar.cpp" />
     <ClCompile Include="ThumbnailToolBarZoom.cpp" />
-    <ClCompile Include="ThumbnailViewerEffect.cpp" />
-    <ClCompile Include="ThumbnailViewerEffectWnd.cpp" />
     <ClCompile Include="ThumbnailViewerPicture.cpp" />
     <ClCompile Include="ThumbnailViewerVideo.cpp" />
     <ClCompile Include="toolbar.cpp" />

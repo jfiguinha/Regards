@@ -13,12 +13,12 @@ using namespace Regards::Control;
 
 namespace Regards
 {
-    namespace Scanner
+    namespace Control
     {      
         class CThumbnailViewerEffectWnd : public CWindowMain
         {
         public:
-            CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail);
+            CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail, int panelInfosId, bool checkValidity);
             virtual ~CThumbnailViewerEffectWnd(void);
             
             void UpdateScreenRatio();
@@ -26,7 +26,7 @@ namespace Regards
             wxString GetFilename();
             void SetFile(const wxString & filename);
         private:
-            
+
             CScrollbarWnd * thumbnailEffectScroll;
             CThumbnailViewerEffect * thumbnailEffect;
         };

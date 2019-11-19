@@ -14,9 +14,11 @@
 #include "OcrWnd.h"
 #include <wx/stdpaths.h>
 #include "FiltreEffectWnd.h"
-#include "InfoEffectWnd.h"
+#include <InfoEffectWnd.h>
 #include "ThumbnailViewerEffectWnd.h"
 #include <ShowBitmap.h>
+#include "ScannerParam.h"
+#include "ScannerParamInit.h"
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
@@ -81,7 +83,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
 
-		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree);
+		filtreEffectWnd = new CFiltreEffectScrollWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERIDPDF);
 		filtreEffectWnd->Show(false);
 
 		CTabWindowData * tabInfosFile = new CTabWindowData();
@@ -98,7 +100,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 		CThemeTree themeTree;
 		viewerTheme->GetTreeTheme(&themeTree);
-		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree);
+		historyEffectWnd = new CInfoEffectWnd(this, wxID_ANY, themeScroll, themeTree, BITMAPWINDOWVIEWERIDPDF);
 		historyEffectWnd->Show(false);
 
 		CTabWindowData * tabInfosFile = new CTabWindowData();
@@ -113,13 +115,19 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
+		bool checkValidity = false;
+
 		CThemeScrollBar themeScroll;
 		viewerTheme->GetScrollTheme(&themeScroll);
 
 		CThemeThumbnail themeThumbnail;
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 
-		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail);
+		CMainParam * config = CMainParamInit::getInstance();
+		if (config != nullptr)
+			checkValidity = config->GetCheckThumbnailValidity();
+
+		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDSCANNERID, checkValidity);
 
 		thumbnailEffectWnd->Show(false);
 
@@ -140,7 +148,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
     
     toolbarWindow = infosToolbar;
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
-    
+	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
 }
 
 void CPanelInfosWnd::HistoryUpdate()
@@ -159,13 +167,19 @@ void CPanelInfosWnd::HistoryUpdate()
 	}
 }
 
+void CPanelInfosWnd::ShowFiltreEvent(wxCommandEvent& event)
+{
+	int numItem = event.GetInt();
+	ShowFiltre(CFiltreData::GetFilterLabel(numItem));
+}
+
 
 void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 {
 	int numItem = event.GetInt();
 	//Test si l'history fonctionne ou pas 
 	HistoryUpdate();
-	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, this, _filename, false);
+	filtreEffectWnd->ApplyEffect(numItem, historyEffectWnd, _filename, false, PANELINFOSWNDSCANNERID, SCANNER_PREVIEWINFOWND);
 }
 
 void CPanelInfosWnd::OnFiltreOk(const int &numFiltre)

@@ -20,13 +20,17 @@ class CImageLoadingFormat;
 
 namespace Regards
 {
+	namespace Control
+	{
+		class CInfoEffectWnd;
+		class CFiltreEffectScrollWnd;
+		class CThumbnailViewerEffectWnd;
+	}
+
 	namespace Scanner
 	{
 		class COcrWnd;
-        class CInfoEffectWnd;
-        class CFiltreEffectScrollWnd;
-        class CThumbnailViewerEffectWnd;
-        
+
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
@@ -42,6 +46,7 @@ namespace Regards
 
 		protected:
 			void ApplyEffect(wxCommandEvent& event);
+			void ShowFiltreEvent(wxCommandEvent& event);
 			void InfosUpdate();
 			void LoadInfo();
 			void DisplayURL(const wxString &url);

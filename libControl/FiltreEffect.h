@@ -14,14 +14,14 @@ class CRegardsBitmap;
 
 namespace Regards
 {
-	namespace Scanner
+	namespace Control
 	{
 
 		class CFiltreEffect : public CTreeControl, public IFiltreEffectInterface
 		{
 		public:
 
-			CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo);
+			CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo, int bitmapWindowId);
 			~CFiltreEffect(void);
 			virtual void Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre);
 			virtual void SlidePosChange(CTreeElement * treeElement, const int &position,  CTreeElementValue * value, const wxString &key);
@@ -63,6 +63,7 @@ namespace Regards
 
 			bool isVideo = false;
             int index;
+			int bitmapWindowId;
 		};
 	}
 }

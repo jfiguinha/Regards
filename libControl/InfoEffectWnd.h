@@ -12,12 +12,12 @@ using namespace Regards::Window;
 
 namespace Regards
 {
-    namespace Scanner
+    namespace Control
     {
         class CInfoEffectWnd : public CTreeWithScrollbar
         {
         public:
-            CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree);
+            CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int bitmapWindowId);
             ~CInfoEffectWnd(void);
 
             void AddModification(CRegardsBitmap * bitmap,const wxString & libelle);
@@ -26,6 +26,7 @@ namespace Regards
         private:
           
             CInfoEffect * historyEffectOld;
+			int bitmapWindowId;
         };
     }
 }

@@ -3,18 +3,17 @@
 #include <ConvertUtility.h>
 #include <TreeDataEffect.h>
 #include <FilterData.h>
-#include <BitmapWndViewer.h>
 #include <LibResource.h>
 #include <RegardsBitmap.h>
 #include <FilterData.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include <BitmapWndViewer.h>
+#include "BitmapWndViewer.h"
 #define TAILLEMAX 1024
-using namespace Regards::Scanner;
 using namespace Regards::Control;
-CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo)
+CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo, int bitmapWindowId)
 {
+	this->bitmapWindowId = bitmapWindowId;
 	filtre = 0;
 	widthPosition = 0;
 	filterEffect = nullptr;
@@ -50,7 +49,7 @@ void CFiltreEffect::AddTreeInfos(const wxString &exifKey, CTreeElementValue * po
 
 void CFiltreEffect::Init(CEffectParameter * effectParameter, CRegardsBitmap * source, const wxString &filename, const int &filtre)
 {
-	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWndViewer * bitmapViewer = (CBitmapWndViewer*)wxWindow::FindWindowById(bitmapWindowId);
 
 	this->filtre = filtre;
 	this->effectParameter = effectParameter;
@@ -92,7 +91,7 @@ void CFiltreEffect::UpdateScreenRatio()
 
 void CFiltreEffect::UpdateMousePosition()
 {
-	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(bitmapWindowId);
 	if (bitmapWindow != nullptr)
 	{
 		CImageLoadingFormat * imageLoad = filterEffect->ApplyEffect(effectParameter, bitmapWindow);
@@ -102,7 +101,7 @@ void CFiltreEffect::UpdateMousePosition()
 
 CImageLoadingFormat * CFiltreEffect::ApplyEffect()
 {
-	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
+	CBitmapWndViewer * bitmapWindow = (CBitmapWndViewer *)wxWindow::FindWindowById(bitmapWindowId);
 
 	if (filterEffect != nullptr)
 	{

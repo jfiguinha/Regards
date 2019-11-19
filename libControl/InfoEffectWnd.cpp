@@ -7,11 +7,12 @@
 //
 #include <header.h>
 #include "InfoEffectWnd.h"
-using namespace Regards::Scanner;
+using namespace Regards::Control;
 
-CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree)
+CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int bitmapWindowId)
 	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree)
 {
+	this->bitmapWindowId = bitmapWindowId;
 	historyEffectOld = nullptr;
 }
 
@@ -32,7 +33,7 @@ void CInfoEffectWnd::HistoryUpdate(CRegardsBitmap * bitmap,const wxString & file
 {
     if (historyEffectOld == nullptr || historyEffectOld->GetFilename() != filename)
     {
-        CInfoEffect * historyEffect = new CInfoEffect(treeWindow, modificationManager);
+        CInfoEffect * historyEffect = new CInfoEffect(treeWindow, modificationManager, bitmapWindowId);
         historyEffect->Init(bitmap, filename, historyLibelle);
 		treeWindow->SetTreeControl(historyEffect);
         delete(historyEffectOld);

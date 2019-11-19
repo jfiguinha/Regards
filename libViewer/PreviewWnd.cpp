@@ -78,6 +78,9 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 
 	Connect(wxEVENT_HIDETOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::HideToolbar));
 	Connect(wxEVENT_SHOWTOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
+	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
+	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CPreviewWnd::OnFiltreCancel));
+	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::OnShowToolbar));
 }
 
 
@@ -92,6 +95,29 @@ CPreviewWnd::~CPreviewWnd()
 
 }
 
+void CPreviewWnd::OnShowToolbar(wxCommandEvent& event)
+{
+	int numItem = event.GetInt();
+	ShowValidationToolbar(true, numItem);
+}
+
+void CPreviewWnd::OnFiltreOK(wxCommandEvent& event)
+{
+	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDID);
+	int numFiltre = event.GetInt();
+	if (panelInfos != nullptr)
+		panelInfos->OnFiltreOk(numFiltre);
+	this->HideValidationToolbar();
+}
+
+void CPreviewWnd::OnFiltreCancel(wxCommandEvent& event)
+{
+	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDID);
+	int numFiltre = event.GetInt();
+	if (panelInfos != nullptr)
+		panelInfos->OnFiltreCancel();
+	this->HideValidationToolbar();
+}
 
 void CPreviewWnd::OnPaint(wxPaintEvent& event)
 {

@@ -19,6 +19,7 @@
 #include <ParamInit.h>
 #include <StatusText.h>
 #include <picture_id.h>
+#include "PanelInfosWnd.h"
 //#include "PictureElement.h"
 #include "ThumbnailMessage.h"
 #include <SqlThumbnailVideo.h>
@@ -105,7 +106,33 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
-	
+	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CViewerPDF::OnFiltreOK));
+	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CViewerPDF::OnFiltreCancel));
+	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CViewerPDF::OnShowToolbar));
+}
+
+void CViewerPDF::OnShowToolbar(wxCommandEvent& event)
+{
+	int numItem = event.GetInt();
+	ShowValidationToolbar(true, numItem);
+}
+
+void CViewerPDF::OnFiltreOK(wxCommandEvent& event)
+{
+	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
+	int numFiltre = event.GetInt();
+	if (panelInfos != nullptr)
+		panelInfos->OnFiltreOk(numFiltre);
+	this->HideValidationToolbar();
+}
+
+void CViewerPDF::OnFiltreCancel(wxCommandEvent& event)
+{
+	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
+	int numFiltre = event.GetInt();
+	if (panelInfos != nullptr)
+		panelInfos->OnFiltreCancel();
+	this->HideValidationToolbar();
 }
 
 void CViewerPDF::AnimationPictureNext()

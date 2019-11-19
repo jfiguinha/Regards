@@ -1,19 +1,17 @@
 #pragma once
 #include <TreeWindow.h>
-#include <BitmapWndViewer.h>
 #include "ModificationManager.h"
-using namespace Regards::Control;
 using namespace Regards::Window;
 
 namespace Regards
 {
-	namespace Scanner
+	namespace Control
 	{
 		class CInfoEffect : public CTreeControl
 		{
 		public:
 
-			CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager);
+			CInfoEffect(CTreeElementControlInterface * interfaceControl, CModificationManager * modificationManager, int bitmapWindowId);
 			~CInfoEffect();
 
 			wxString GetFilename();
@@ -45,6 +43,7 @@ namespace Regards
 			CModificationManager * modificationManager;
 			int widthPosition;
 			wxString filename;
+			int bitmapWindowId;
 		};
 
 	}

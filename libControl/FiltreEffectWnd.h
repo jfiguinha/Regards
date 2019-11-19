@@ -9,22 +9,21 @@
 #include "FiltreEffect.h"
 #include <TreeWithScrollbar.h>
 using namespace Regards::Window;
-
+using namespace Regards::Control;
 class CImageLoadingFormat;
 
 namespace Regards
 {
-    namespace Scanner
+    namespace Control
     {
-        class CInfoEffectWnd;
-        class CPanelInfosWnd;
+		class CInfoEffectWnd;
         
         class CFiltreEffectScrollWnd : public CTreeWithScrollbar
         {
         public:
-            CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree);
+            CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int bitmapWindowId);
             ~CFiltreEffectScrollWnd(void);
-            void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, CPanelInfosWnd * panelInfos, const wxString &filename, const int & isVideo);
+            void ApplyEffect(const int &numItem, CInfoEffectWnd * historyEffectWnd, const wxString &filename, const int & isVideo, int panelId, int previewId);
             void OnFiltreOk(const int &numFiltre, CInfoEffectWnd * historyEffectWnd);
 			void OnFiltreCancel();
             CFiltreEffect * GetFiltreEffect();
@@ -39,6 +38,7 @@ namespace Regards
             CEffectParameter * effectParameter;
             CFiltreEffect * filtreEffectOld;
 			int numFiltre;
+			int bitmapWindowId;
         };
     }
 }

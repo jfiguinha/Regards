@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../libDialog;../CxImage;../otherlib/RegardsRaw;../libExif;..\include;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPicture;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libextern/librapidxml;../libWindow;../libTheme;../libDatastructure;../libVideoThumbnail;../libEmail;../libFFmpegPlayer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libDialog;../CxImage;../otherlib/RegardsRaw;../libExif;..\include;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPicture;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libextern/librapidxml;../libWindow;../libTheme;../libDatastructure;../libVideoThumbnail;../libEmail;../libVideoFFmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -204,6 +204,11 @@
     <ClInclude Include="CriteriaTree.h" />
     <ClInclude Include="CriteriaTreeWnd.h" />
     <ClInclude Include="effect.h" />
+    <ClInclude Include="FiltreEffect.h" />
+    <ClInclude Include="FiltreEffectWnd.h" />
+    <ClInclude Include="FiltreToolbar.h" />
+    <ClInclude Include="InfoEffect.h" />
+    <ClInclude Include="InfoEffectWnd.h" />
     <ClInclude Include="InfosFile.h" />
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
@@ -214,6 +219,8 @@
     <ClInclude Include="ThumbnailVertical.h" />
     <ClInclude Include="ThumbnailVerticalListFile.h" />
     <ClInclude Include="ThumbnailVideo.h" />
+    <ClInclude Include="ThumbnailViewerEffect.h" />
+    <ClInclude Include="ThumbnailViewerEffectWnd.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -226,6 +233,11 @@
     <ClCompile Include="BitmapWndViewer.cpp" />
     <ClCompile Include="CriteriaTree.cpp" />
     <ClCompile Include="CriteriaTreeWnd.cpp" />
+    <ClCompile Include="FiltreEffect.cpp" />
+    <ClCompile Include="FiltreEffectWnd.cpp" />
+    <ClCompile Include="FiltreToolbar.cpp" />
+    <ClCompile Include="InfoEffect.cpp" />
+    <ClCompile Include="InfoEffectWnd.cpp" />
     <ClCompile Include="InfosFile.cpp" />
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
@@ -236,6 +248,8 @@
     <ClCompile Include="ThumbnailVertical.cpp" />
     <ClCompile Include="ThumbnailVerticalListFile.cpp" />
     <ClCompile Include="ThumbnailVideo.cpp" />
+    <ClCompile Include="ThumbnailViewerEffect.cpp" />
+    <ClCompile Include="ThumbnailViewerEffectWnd.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

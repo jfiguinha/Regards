@@ -70,6 +70,12 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{1e1d744a-3a22-46f1-b598-9c5ec4f23965}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Effect\Toolbar">
+      <UniqueIdentifier>{d69eed87-c5bb-4fd4-942e-4133779afb94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Infos">
+      <UniqueIdentifier>{ee22c52a-eaab-4a87-9f55-d2ddaa19f702}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -126,6 +132,27 @@
     <ClInclude Include="ThumbnailVerticalListFile.h">
       <Filter>Thumbnail\Vertical</Filter>
     </ClInclude>
+    <ClInclude Include="FiltreToolbar.h">
+      <Filter>Effect\Toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoEffect.h">
+      <Filter>Infos</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoEffectWnd.h">
+      <Filter>Infos</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffect.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffectWnd.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffect.h">
+      <Filter>Thumbnail\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffectWnd.h">
+      <Filter>Thumbnail\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="InfosFile.cpp">
@@ -175,6 +202,27 @@
     </ClCompile>
     <ClCompile Include="ThumbnailVerticalListFile.cpp">
       <Filter>Thumbnail\Vertical</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreToolbar.cpp">
+      <Filter>Effect\Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoEffect.cpp">
+      <Filter>Infos</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoEffectWnd.cpp">
+      <Filter>Infos</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffect.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffectWnd.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffect.cpp">
+      <Filter>Thumbnail\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
+      <Filter>Thumbnail\Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

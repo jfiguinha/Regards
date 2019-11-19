@@ -1,10 +1,8 @@
 #include <header.h>
 #include "FiltreToolbar.h"
-#include "ViewerPDF.h"
-#include "PanelInfosWnd.h"
 #include <LibResource.h>
 #include <window_id.h>
-using namespace Regards::Scanner;
+using namespace Regards::Control;
 
 #define WM_OK 1
 #define WM_CANCEL 2
@@ -42,27 +40,26 @@ void CFiltreToolbar::SetNumFiltre(const int &numFiltre)
 
 void CFiltreToolbar::EventManager(const int &id)
 {
-	CPanelInfosWnd * panelInfos = (CPanelInfosWnd *)this->FindWindowById(PANELINFOSWNDSCANNERID);
-	CViewerPDF * previewWindow = (CViewerPDF *)this->FindWindowById(PREVIEWVIEWERID);
 	switch (id)
 	{
-
-	case WM_OK:
-		if (panelInfos != nullptr)
-			panelInfos->OnFiltreOk(numFiltre);
-		if (previewWindow != nullptr)
-			previewWindow->HideValidationToolbar();
+		case WM_OK:
+		{
+			wxCommandEvent evt(wxEVENT_FILTREOK);
+			evt.SetInt(id);
+			GetParent()->GetEventHandler()->AddPendingEvent(evt);
+		}
 		break;
 
-	case WM_CANCEL:
-		if (panelInfos != nullptr)
-			panelInfos->OnFiltreCancel();
-		if (previewWindow != nullptr)
-			previewWindow->HideValidationToolbar();
+		case WM_CANCEL:
+		{
+			wxCommandEvent evt(wxEVENT_FILTRECANCEL);
+			evt.SetInt(id);
+			GetParent()->GetEventHandler()->AddPendingEvent(evt);
+		}
 		break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 }
 

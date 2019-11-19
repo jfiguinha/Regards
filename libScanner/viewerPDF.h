@@ -67,6 +67,9 @@ namespace Regards
 			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
 			void OnSize(wxSizeEvent& event);
 			void AnimationSetPosition(wxCommandEvent& event);
+			void OnFiltreOK(wxCommandEvent& event);
+			void OnFiltreCancel(wxCommandEvent& event);
+			void OnShowToolbar(wxCommandEvent& event);
 
 			void ImageSuivante();
 			void ImagePrecedente();

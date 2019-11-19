@@ -29,12 +29,14 @@ using namespace Regards::Internet;
 class CImageLoadingFormat;
 namespace Regards
 {
-	namespace Viewer
+	namespace Control
 	{
-        class CInfoEffectWnd;
-        class CFiltreEffectScrollWnd;
-        class CThumbnailViewerEffectWnd;
-        
+		class CInfoEffectWnd;
+		class CFiltreEffectScrollWnd;
+		class CThumbnailViewerEffectWnd;
+	}
+	namespace Viewer
+	{        
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
