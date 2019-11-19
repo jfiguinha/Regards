@@ -55,7 +55,8 @@ namespace Regards
 		protected:
 
 			void ApplyEffect(wxCommandEvent& event);
-			
+			void ShowFiltreEvent(wxCommandEvent& event);
+
 			wxString MapsUpdate();
 			void EffectUpdate();
 			void HistoryUpdate();

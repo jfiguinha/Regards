@@ -212,6 +212,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
     toolbarWindow = infosToolbar;
     
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
+	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
 }
 
 CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
@@ -337,6 +338,13 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 	}
     
 }
+
+void CPanelInfosWnd::ShowFiltreEvent(wxCommandEvent& event)
+{
+	int numItem = event.GetInt();
+	ShowFiltre(CFiltreData::GetFilterLabel(numItem));
+}
+
 
 void CPanelInfosWnd::ApplyEffect(wxCommandEvent& event)
 {
