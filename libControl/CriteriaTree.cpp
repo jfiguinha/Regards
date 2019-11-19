@@ -11,6 +11,7 @@
 #include <libPicture.h>
 #include <SqlFindFacePhoto.h>
 #include <LibResource.h>
+#include <SqlPhotoCategorieUsenet.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -281,6 +282,19 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
         }
     }
     
+
+	//Usenet Categorie
+	CSqlPhotoCategorieUsenet sqlPhotoUsenet;
+	vector<CPhotoCategorieUsenet> photoCategorie = sqlPhotoUsenet.GetPhotoListCategorie(numPhotoId);
+	for (int i = 0; i < photoCategorie.size(); i++)
+	{
+		CPhotoCategorieUsenet photoLocal = photoCategorie.at(i);
+		CTreeData * treeDataFileName = new CTreeData();
+		treeDataFileName->SetIsParent(false);
+		treeDataFileName->SetKey("usenet.category");
+		treeDataFileName->SetValue(photoLocal.libelle);
+		tr.append_child(child, treeDataFileName);
+	}
 
     CreateElement();
 	

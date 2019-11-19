@@ -286,6 +286,7 @@ void CCategoryDetectionDlg::CategoryRecognition(void * param)
 	if (path->mainWindow != nullptr)
 	{
 		wxCommandEvent evt(wxEVENT_CATEGORYADD);
+		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 
