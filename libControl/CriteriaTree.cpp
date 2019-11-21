@@ -206,6 +206,15 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
             treeDataFileName->SetValue(dirname.GetPath());
             tr.append_child(child, treeDataFileName);
         }
+		else if (photoCategorie.GetId() == 5)
+		{
+			wxString libelleCategorie = photoCategorie.GetLibelle();
+			CTreeData * treeDataFileName = new CTreeData();
+			treeDataFileName->SetIsParent(false);
+			treeDataFileName->SetKey("usenet.category");
+			treeDataFileName->SetValue(libelleCategorie);
+			tr.append_child(child, treeDataFileName);
+		}
         else
         {
             CriteriaVector criteriaVector;
@@ -281,20 +290,6 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
             }
         }
     }
-    
-
-	//Usenet Categorie
-	CSqlPhotoCategorieUsenet sqlPhotoUsenet;
-	vector<CPhotoCategorieUsenet> photoCategorie = sqlPhotoUsenet.GetPhotoListCategorie(numPhotoId);
-	for (int i = 0; i < photoCategorie.size(); i++)
-	{
-		CPhotoCategorieUsenet photoLocal = photoCategorie.at(i);
-		CTreeData * treeDataFileName = new CTreeData();
-		treeDataFileName->SetIsParent(false);
-		treeDataFileName->SetKey("usenet.category");
-		treeDataFileName->SetValue(photoLocal.libelle);
-		tr.append_child(child, treeDataFileName);
-	}
 
     CreateElement();
 	

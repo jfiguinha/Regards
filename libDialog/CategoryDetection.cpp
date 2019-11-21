@@ -307,7 +307,11 @@ void CCategoryDetectionDlg::OnCategoryAdd(wxCommandEvent& event)
 	if (path != nullptr)
 		delete path;
 
+	int pos = (int)(((float)position / (float)nbFile) * 100.0f);
+	Gauge1->SetValue(pos);
+
 	nbProcessFacePhoto--;
+	position++;
 }
 
 void CCategoryDetectionDlg::SetStart()
@@ -324,6 +328,8 @@ void CCategoryDetectionDlg::OnIdle(wxIdleEvent& evt)
 
 	CSqlPhotoCategorieUsenet facePhoto;
 	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
+	if (nbFile == 0)
+		nbFile = listPhoto.size();
 
 	//Recherche Nb Fichier non traité pour le visage
 	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0 && !pushCloseButton)

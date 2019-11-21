@@ -67,11 +67,9 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_FACE_PROCESSING_TABLE "CREATE TABLE FACE_PROCESSING (FullPath NVARCHAR(255))"
 #define SQL_DROP_PROCESSING_NAME "DROP TABLE FACE_PROCESSING"
 
-#define SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_PROCESSING_TABLE "CREATE TABLE PHOTO_CATEGORIE_USENET_PROCESSING (FullPath NVARCHAR(255))"
-#define SQL_DROP_PHOTO_CATEGORIE_USENET_PROCESSING_PROCESSING_NAME "DROP TABLE PHOTOCATEGORIE_PROCESSING"
+#define SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE "CREATE TABLE PHOTO_CATEGORIE_USENET_PROCESSING (FullPath NVARCHAR(255))"
+#define SQL_DROP_PHOTO_CATEGORIE_USENET_PROCESSING_NAME "DROP TABLE PHOTOCATEGORIE_PROCESSING"
 
-#define SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE "CREATE TABLE PHOTO_CATEGORIE_USENET (NumPhoto INT, NumCategorie INT, libelle NVARCHAR(255))"
-#define SQL_DROP_PHOTO_CATEGORIE_USENET_NAME "DROP TABLE PHOTO_CATEGORIE_USENET"
 
 #define SQL_CREATE_PHOTO_GPS_TABLE "CREATE TABLE PHOTOSGPS (NumPhoto INT, FullPath NVARCHAR(255), NumFolderId INT)"
 #define SQL_DROP_PHOTO_GP_TABLE "DROP TABLE PHOTOSGPS"
@@ -229,8 +227,16 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 		{
 			sqlVersion.DeleteVersion();
 			sqlVersion.InsertVersion("2.18.0.0");
-			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_PROCESSING_TABLE);
 			hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE);
+		}
+
+		if (sqlVersion.GetVersion() == "2.18.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.33.0.0");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,2,'Categorie');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,1,'Category');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,3,'Categoria');");
 		}
     }
     return hr;
@@ -304,7 +310,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.18.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.33.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -429,6 +435,24 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	}
 
 	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (4,3,'Gente');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,2,'Categorie');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,1,'Category');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,3,'Categoria');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -856,12 +880,6 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	{
 		goto Exit;
 	} 
-
-	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_PROCESSING_TABLE);
-	if (hr == -1)
-	{
-		goto Exit;
-	}
 
 	hr = ExecuteSQLWithNoResult(SQL_CREATE_PHOTO_CATEGORIE_USENET_PROCESSING_TABLE);
 	if (hr == -1)

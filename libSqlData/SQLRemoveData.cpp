@@ -13,6 +13,7 @@
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
 #include "SqlThumbnailVideo.h"
+#include "SqlPhotoCategorieUsenet.h"
 using namespace Regards::Sqlite;
 
 CSQLRemoveData::CSQLRemoveData()
@@ -62,6 +63,9 @@ bool CSQLRemoveData::DeleteCatalog(const int &numCatalog)
 
 	CSqlFaceLabel sqlFaceLabel;
 	sqlFaceLabel.DeleteFaceLabelDatabase();
+
+	CSqlPhotoCategorieUsenet photoCategorie;
+	photoCategorie.DeletePhotoProcessingDatabase();
 
 	//Suppression du catalog
 	//CSqlCatalog sqlCatalog;
@@ -120,6 +124,10 @@ bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 	CSqlFacePhoto sqlFacePhoto;
 	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
 
+	CSqlPhotoCategorieUsenet photoCategorie;
+	for(wxString photoPath : listPhoto)
+		photoCategorie.DeletePhotoProcessing(photoPath);
+
 	return 0;
 }
 
@@ -135,6 +143,9 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVecto
     CSqlThumbnail sqlThumbnail;
     CSqlThumbnailVideo sqlThumbnailVideo;
 	CSqlFacePhoto sqlFacePhoto;
+	
+	
+
 	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
 
 	for (auto photo : listPhoto)
@@ -149,6 +160,8 @@ bool CSQLRemoveData::DeleteListPhoto(const vector<int> &listPhoto, CriteriaVecto
 
 		//Suppression des photos du catalog
 		sqlPhoto.DeletePhoto(photo);
+
+		
 	}
 
 	sqlFindCriteria.SearchCriteriaAlone(criteriaVector);

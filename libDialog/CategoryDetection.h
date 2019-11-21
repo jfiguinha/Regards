@@ -56,7 +56,8 @@ class CCategoryDetectionDlg : public wxDialog
 		int mode;
 		int nbProcessFacePhoto;
 		bool pushCloseButton;
-
+		int nbFile = 0;
+		int position = 0;
 		CPictureCategorieLoadData * categorieData;
 		
 
