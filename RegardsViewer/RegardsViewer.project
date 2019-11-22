@@ -481,13 +481,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf26.dll ./Debug/qpdf26.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnspr4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nss3.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/smime3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/nssutil3.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplc4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libplds4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Debug</Command>
