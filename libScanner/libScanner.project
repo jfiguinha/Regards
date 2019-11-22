@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libScanner" Version="11000" InternalType="Library">
-  <VirtualDirectory Name="Effect">
-    <VirtualDirectory Name="Include">
-      <File Name="ThumbnailViewerEffectWnd.h"/>
-      <File Name="ThumbnailViewerEffect.h"/>
-      <File Name="InfoEffectWnd.h"/>
-      <File Name="InfoEffect.h"/>
-      <File Name="FiltreToolbar.h"/>
-      <File Name="FiltreEffectWnd.h"/>
-      <File Name="FiltreEffect.h"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="src">
-      <File Name="ThumbnailViewerEffectWnd.cpp"/>
-      <File Name="ThumbnailViewerEffect.cpp"/>
-      <File Name="InfoEffectWnd.cpp"/>
-      <File Name="InfoEffect.cpp"/>
-      <File Name="FiltreToolbar.cpp"/>
-      <File Name="FiltreEffectWnd.cpp"/>
-      <File Name="FiltreEffect.cpp"/>
-    </VirtualDirectory>
+  <VirtualDirectory Name="Ocr">
+    <File Name="OcrLabelWnd.h"/>
+    <File Name="OcrLabelWnd.cpp"/>
+    <File Name="OcrLabel.h"/>
+    <File Name="OcrLabel.cpp"/>
   </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
@@ -78,6 +64,7 @@
     <File Name="ScannerFrame.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="BboxText.h"/>
     <File Name="OcrWnd.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="viewerPDF.h"/>

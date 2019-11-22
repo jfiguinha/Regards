@@ -40,10 +40,6 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="Panel Infos">
-      <VirtualDirectory Name="Window">
-        <File Name="InfoEffectWnd.cpp"/>
-        <File Name="InfoEffectWnd.h"/>
-      </VirtualDirectory>
       <VirtualDirectory Name="Toolbar">
         <File Name="ToolbarInfos.h"/>
         <File Name="ToolbarInfos.cpp"/>
@@ -61,9 +57,6 @@
   <VirtualDirectory Name="src">
     <File Name="ViewerWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
-    <File Name="FiltreEffect.cpp"/>
-    <File Name="FiltreToolbar.cpp"/>
-    <File Name="InfoEffect.cpp"/>
     <File Name="MainWindow.cpp"/>
     <File Name="PreviewInfosWnd.cpp"/>
     <File Name="PreviewToolbar.cpp"/>
@@ -72,7 +65,6 @@
     <File Name="ViewerFrame.cpp"/>
     <File Name="CategoryFolderWindow.cpp"/>
     <File Name="CategoryWnd.cpp"/>
-    <File Name="FiltreEffectWnd.cpp"/>
     <File Name="InfosSeparationBarExplorer.cpp"/>
     <File Name="ListPicture.cpp"/>
     <File Name="InfosSeparationBarFace.cpp"/>
@@ -82,9 +74,6 @@
   <VirtualDirectory Name="include">
     <File Name="ViewerWindow.h"/>
     <File Name="CentralWindow.h"/>
-    <File Name="FiltreEffect.h"/>
-    <File Name="FiltreToolbar.h"/>
-    <File Name="InfoEffect.h"/>
     <File Name="MainWindow.h"/>
     <File Name="PreviewInfosWnd.h"/>
     <File Name="PreviewToolbar.h"/>
@@ -92,7 +81,6 @@
     <File Name="Toolbar.h"/>
     <File Name="CategoryFolderWindow.h"/>
     <File Name="CategoryWnd.h"/>
-    <File Name="FiltreEffectWnd.h"/>
     <File Name="InfosSeparationBarExplorer.h"/>
     <File Name="ListPicture.h"/>
     <File Name="InfosSeparationBarFace.h"/>
@@ -109,8 +97,6 @@
       <File Name="ThumbnailFolder.cpp"/>
       <File Name="ThumbnailToolBar.cpp"/>
       <File Name="ThumbnailToolBarZoom.cpp"/>
-      <File Name="ThumbnailViewerEffect.cpp"/>
-      <File Name="ThumbnailViewerEffectWnd.cpp"/>
       <File Name="ThumbnailViewerVideo.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
@@ -121,8 +107,6 @@
       <File Name="ThumbnailFolder.h"/>
       <File Name="ThumbnailToolBar.h"/>
       <File Name="ThumbnailToolBarZoom.h"/>
-      <File Name="ThumbnailViewerEffect.h"/>
-      <File Name="ThumbnailViewerEffectWnd.h"/>
       <File Name="ThumbnailViewerVideo.h"/>
     </VirtualDirectory>
   </VirtualDirectory>

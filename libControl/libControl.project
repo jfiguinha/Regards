@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="10.0.0">
+  <VirtualDirectory Name="Criteria">
+    <File Name="CriteriaTreeWnd.cpp"/>
+    <File Name="CriteriaTree.cpp"/>
+    <File Name="CriteriaTreeWnd.h"/>
+    <File Name="CriteriaTree.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Infos">
+    <File Name="InfosFileWnd.cpp"/>
+    <File Name="InfosFile.cpp"/>
+    <File Name="InfosFileWnd.h"/>
+    <File Name="InfosFile.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Print">
+    <File Name="BitmapPrintout.cpp"/>
+    <File Name="BitmapPrintout.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="ShowBitmap">
+    <VirtualDirectory Name="Toolbar">
+      <File Name="BitmapToolbar.h"/>
+      <File Name="BitmapToolbar.cpp"/>
+    </VirtualDirectory>
+    <File Name="ShowBitmap.cpp"/>
+    <File Name="BitmapWndViewer.cpp"/>
+    <File Name="ShowBitmap.h"/>
+    <File Name="BitmapWndViewer.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Effect">
+    <VirtualDirectory Name="Infos">
+      <File Name="InfoEffectWnd.h"/>
+      <File Name="InfoEffectWnd.cpp"/>
+      <File Name="InfoEffect.h"/>
+      <File Name="InfoEffect.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Toolbar">
+      <File Name="FiltreToolbar.h"/>
+      <File Name="FiltreToolbar.cpp"/>
+    </VirtualDirectory>
+    <File Name="FiltreEffectWnd.h"/>
+    <File Name="FiltreEffectWnd.cpp"/>
+    <File Name="FiltreEffect.h"/>
+    <File Name="FiltreEffect.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -27,49 +69,43 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Thumbnail">
-    <VirtualDirectory Name="include">
+    <VirtualDirectory Name="Video">
       <File Name="ThumbnailVideo.h"/>
+      <File Name="ThumbnailVideo.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Effect">
+      <File Name="ThumbnailViewerEffectWnd.h"/>
+      <File Name="ThumbnailViewerEffectWnd.cpp"/>
+      <File Name="ThumbnailViewerEffect.h"/>
+      <File Name="ThumbnailViewerEffect.cpp"/>
+      <File Name="ThumbnailEffect.cpp"/>
+      <File Name="ThumbnailEffect.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="include">
       <File Name="ThumbnailVerticalListFile.h"/>
       <File Name="ThumbnailVertical.h"/>
       <File Name="ThumbnailHorizontal.h"/>
-      <File Name="ThumbnailEffect.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="src">
-      <File Name="ThumbnailVideo.cpp"/>
       <File Name="ThumbnailVerticalListFile.cpp"/>
       <File Name="ThumbnailVertical.cpp"/>
       <File Name="ThumbnailHorizontal.cpp"/>
-      <File Name="ThumbnailEffect.cpp"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="BitmapPrintout.cpp"/>
-    <File Name="BitmapToolbar.cpp"/>
-    <File Name="BitmapWndViewer.cpp"/>
-    <File Name="InfosFile.cpp"/>
     <File Name="InfosSeparationBarEffect.cpp"/>
-    <File Name="ShowBitmap.cpp"/>
-    <File Name="CriteriaTree.cpp"/>
-    <File Name="CriteriaTreeWnd.cpp"/>
-    <File Name="InfosFileWnd.cpp"/>
     <File Name="SplitterWithPanel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="BitmapPrintout.h"/>
-    <File Name="BitmapToolbar.h"/>
-    <File Name="BitmapWndViewer.h"/>
-    <File Name="CriteriaTree.h"/>
-    <File Name="CriteriaTreeWnd.h"/>
     <File Name="effect.h"/>
     <File Name="EffectVideoWnd.h"/>
-    <File Name="InfosFile.h"/>
-    <File Name="InfosFileWnd.h"/>
     <File Name="InfosSeparationBarEffect.h"/>
-    <File Name="ShowBitmap.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
@@ -109,6 +145,7 @@
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libVideoFFMpeg"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -192,6 +229,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
