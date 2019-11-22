@@ -9,7 +9,10 @@
 #include <ShowBitmap.h>
 #include <tesseract/baseapi.h>
 #include <tesseract/renderer.h>
-
+#include "MainTheme.h"
+#include "MainThemeInit.h"
+#include "ScannerParam.h"
+#include "ScannerParamInit.h"
 #include <libPicture.h>
 #include <ImageLoadingFormat.h>
 #include <directoryctrl.h>
@@ -40,6 +43,7 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);
 
+	/*
 	long style = wxDIRCTRL_DEFAULT_STYLE;
 	long treeStyle = wxTR_HAS_BUTTONS;
 
@@ -61,16 +65,26 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), treeStyle);
 	treeCtrl->SetBackgroundColour(themeTree.bgColorOne);
 	treeCtrl->SetForegroundColour(themeTree.bgColorBackground);
+	*/
+
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+
+	CThemeScrollBar themeScroll;
+	viewerTheme->GetScrollTheme(&themeScroll);
+
+	viewerTheme->GetTreeTheme(&themeTree);
+	ocrLabelWnd = new COcrLabelWnd(this, wxID_ANY, themeScroll, themeTree, this->GetId());
+	ocrLabelWnd->Show(true);
+
 	wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
 	hsizer->Add(listOcr, 1, wxEXPAND | wxALL, 5);
-	hsizer->Add(treeCtrl, 2, wxEXPAND | wxALL, 5);
+	hsizer->Add(ocrLabelWnd, 2, wxEXPAND | wxALL, 5);
 
 
 	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
-	Connect(wxEVT_CHECKTREE_CHOICE, wxTreeEventHandler(COcrWnd::OnSelChanged), NULL, this);
-	Connect(wxEVT_CHECKTREE_FOCUS, wxTreeEventHandler(COcrWnd::OnGetFocus), NULL, this);
+	Connect(wxEVENT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
 
 }
 
@@ -78,7 +92,7 @@ void COcrWnd::Init()
 {
 	ocrPdf->Enable(true);
 	exportPdf->Enable(false);
-	treeCtrl->DeleteAllItems();
+	ocrLabelWnd->Init();
 	listRect.clear();
 }
 
@@ -147,51 +161,20 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	filtreEffet->SetBitmap(imageLoad);
 }
 
-void COcrWnd::OnGetFocus(wxTreeEvent& aEvent)
+void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
 {
-	wxTreeItemId treeItem = treeCtrl->GetSelection();
-	BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeItem);
-	wxString libelle;
-	if (bboxText != nullptr)
-		libelle = bboxText->label;
+	int id = aEvent.GetInt();
+	int checked = aEvent.GetExtraLong();
 
-	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
-#ifdef WIN32
-	resourcePath = resourcePath + "\\espeak";
-#else
-	resourcePath = resourcePath + "/espeak";
-#endif    
-
-	wxString process = "espeak-ng.exe " + libelle + " -vfr --path=" + resourcePath;
-	wxExecute(process);
-}
-
-void COcrWnd::OnSelChanged(wxTreeEvent& aEvent)
-{
-	// Allow calling GetPath() in multiple selection from OnSelFilter
-	//if (treeCtrl->HasFlag(wxTR_MULTIPLE))
-	//{
-	wxTreeItemId treeItem = aEvent.GetItem();
-	long isChecked = aEvent.GetExtraLong();
-	wxString libelle;
-	BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeItem);
-	if (bboxText != nullptr)
-		bboxText->selected = isChecked;
-
-	/*
-	wxArrayTreeItemIds items;
-	treeCtrl->GetSelections(items);
-	for (int i = 0;i < items.size();i++)
+	for (BBoxText * bboxText : listRect)
 	{
-		// return first string only
-		wxTreeItemId treeid = items[i];
-		BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeid);
-		if(bboxText != nullptr)
-			bboxText->selected = !bboxText->selected;
+		if (id == bboxText->id)
+		{
+			if (bboxText != nullptr)
+				bboxText->selected = checked;
+			break;
+		}
 	}
-	*/
-	//}
-
 	//GenerateLayerBitmap();
 	CBitmapWndViewer * viewer = (CBitmapWndViewer *)wxWindow::FindWindowById(BITMAPWINDOWVIEWERIDPDF);
 	if (viewer != nullptr)
@@ -205,7 +188,7 @@ void COcrWnd::Resize()
 
 	int panelListOcrH = listOcr->GetMinHeight();
 	listOcr->SetSize(0, 0, width, panelListOcrH);
-	treeCtrl->SetSize(0, panelListOcrH, width, height - panelListOcrH);
+	ocrLabelWnd->SetSize(0, panelListOcrH, width, height - panelListOcrH);
 }
 
 void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language)
@@ -279,7 +262,8 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 //////////////////////////////////////////////////////////////////////////////////////////
 void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 {
-	wxTreeItemId rootId = treeCtrl->AddRoot("Text");
+	int id = 0;
+	//wxTreeItemId rootId = treeCtrl->AddRoot("Text");
 	xml_document<> doc;
 	// Read the xml file into a vector
 	//const char * fichier = CConvertUtility::ConvertFromwxString(filename);
@@ -357,10 +341,10 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 
 												if (libelle != "")
 												{
-													wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
-													treeCtrl->SetItemHasChildren(treeid);
-													treeCtrl->MakeCheckable(treeid, true);
-													bboxText->SetId(treeid);
+													//wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+													//treeCtrl->SetItemHasChildren(treeid);
+													//treeCtrl->MakeCheckable(treeid, true);
+													bboxText->id = id++;
 													listRect.push_back(bboxText);
 													numLigne++;
 												}
@@ -382,7 +366,7 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 			}
 		}
 	}
-
+	ocrLabelWnd->Update(listRect);
 }
 
 void COcrWnd::OnOcr(wxCommandEvent& event)

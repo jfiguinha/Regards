@@ -40,6 +40,9 @@
     <Filter Include="OCR">
       <UniqueIdentifier>{4013c5a1-85b2-4a89-9c87-d8062721cc45}</UniqueIdentifier>
     </Filter>
+    <Filter Include="OCR\Tree">
+      <UniqueIdentifier>{87aabcb6-1ac1-4b9e-81c1-6940c6a969c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SelectPage.cpp">
@@ -105,6 +108,12 @@
     <ClCompile Include="ExportOCr.cpp">
       <Filter>OCR</Filter>
     </ClCompile>
+    <ClCompile Include="OcrLabel.cpp">
+      <Filter>OCR\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="OcrLabelWnd.cpp">
+      <Filter>OCR\Tree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
@@ -157,6 +166,15 @@
     </ClInclude>
     <ClInclude Include="ExportOcr.h">
       <Filter>OCR</Filter>
+    </ClInclude>
+    <ClInclude Include="OcrLabel.h">
+      <Filter>OCR\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="OcrLabelWnd.h">
+      <Filter>OCR\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="BboxText.h">
+      <Filter>OCR\Tree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

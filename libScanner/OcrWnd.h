@@ -2,6 +2,7 @@
 #include <WindowMain.h>
 #include <checktree.h>
 #include <MouseUpdate.h>
+#include "OcrLabelWnd.h"
 using namespace Regards::Window;
 
 class CRegardsBitmap;
@@ -10,16 +11,6 @@ namespace Regards
 {
 	namespace Scanner
 	{
-		class BBoxText : public wxTreeItemData
-		{
-		public:
-			wxRect rect;
-			wxString label;
-			int confidence;
-			int numLigne;
-			bool selected;
-		};
-
 		class COcrWnd : public CWindowMain, public IMouseUpdate
 		{
 		public:
@@ -33,8 +24,8 @@ namespace Regards
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);
-			void OnSelChanged(wxTreeEvent& aEvent);
-			void OnGetFocus(wxTreeEvent& aEvent);
+			void OnSelChanged(wxCommandEvent& aEvent);
+
 			wxPanel * CreateListTesseract(wxWindow * parent);
 			void LoadOcrBoxFile(wxString boxfile);
 		
@@ -46,7 +37,7 @@ namespace Regards
 			float YDrawingPosition(const float &m_ly, const long &m_lVScroll, const float &ratio);
 
 			wxPanel * listOcr;
-			wxCheckTree * treeCtrl;
+			COcrLabelWnd * ocrLabelWnd;
 			wxButton * exportPdf;
 			wxButton * ocrPdf;
 			vector<wxString> listFile;
