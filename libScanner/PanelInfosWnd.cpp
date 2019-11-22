@@ -30,13 +30,14 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 {
 	infosFileWnd = nullptr;
 	infosToolbar = nullptr;
+	webBrowser = nullptr;
 	//bitmap = new CRegardsBitmap();
 	width = 0;
 	height = 0;
 	windowVisible = WM_INFOS;
 	//Effect Parameter
 	modificationManager = nullptr;
-
+	url = "http://www.google.fr";
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	wxString folder = CFileUtility::GetDocumentFolderPath();
@@ -137,6 +138,19 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		tabInfosFileEffect->windowName = WM_EFFECT;
 		listWindow.push_back(tabInfosFileEffect);
 
+	}
+
+	if (webBrowser == nullptr)
+	{
+		webBrowser = wxWebView::New(this, wxID_ANY);
+		webBrowser->Show(false);
+
+		/*
+		CTabWindowData * tabInfosFile = new CTabWindowData();
+		tabInfosFile->window = webBrowser;
+		tabInfosFile->windowName = WM_HTMLEDITOR;
+		listWindow.push_back(tabInfosFile);
+		*/
 	}
 	
 	if (viewerTheme != nullptr)
@@ -249,6 +263,7 @@ CPanelInfosWnd::~CPanelInfosWnd()
 	delete(filtreEffectWnd);
 	delete(thumbnailEffectWnd);
 	delete(modificationManager);
+	delete(webBrowser);
 }
 
 void CPanelInfosWnd::SetFile(wxString filename)
@@ -294,8 +309,24 @@ void CPanelInfosWnd::LoadInfo()
 			infosToolbar->SetEffectPush();
 			thumbnailEffectWnd->Refresh();
 			break;
+		case WM_HTMLEDITOR:
+		{
+			wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+			wxString newUrl = "file:///" + resourcePath + "/ckeditor4.html";
+			if (url != newUrl)
+				DisplayURL(newUrl);
+			url = newUrl;
+			infosToolbar->SetEditorPush();
+		}
+		break;
 		}
 	}
+}
+
+void CPanelInfosWnd::DisplayURL(const wxString &url)
+{
+	webBrowser->LoadURL(url);
+	Resize();
 }
 
 void CPanelInfosWnd::InfosUpdate()

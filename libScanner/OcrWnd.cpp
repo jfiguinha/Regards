@@ -81,6 +81,7 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 		}
 	}
 
+	/*
 	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
 #ifdef WIN32
 	resourcePath = resourcePath + "\\espeak";
@@ -90,7 +91,7 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 #else
 	resourcePath = resourcePath + "/espeak";
 #endif    
-
+	*/
 }
 
 void COcrWnd::Init()

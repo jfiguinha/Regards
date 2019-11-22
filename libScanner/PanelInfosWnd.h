@@ -62,7 +62,7 @@ namespace Regards
 			COcrWnd * ocrWnd;
 			wxString _filename;
             wxString url;
-	
+			wxWebView * webBrowser = nullptr;
 		};
 
 	}

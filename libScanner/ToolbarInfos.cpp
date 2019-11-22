@@ -19,6 +19,7 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	wxString history_label = CLibResource::LoadStringFromResource(L"LBLHISTORY", 1);//L"History";
 	wxString effect_label = CLibResource::LoadStringFromResource(L"LBLEFFECT", 1);//L"Effect";
 	wxString effectParameter_label = CLibResource::LoadStringFromResource(L"LBLEFFECTPARAMETER", 1);//L"Effect Parameter";
+	wxString editor_label = "EDITOR";
 
 	infos = new CToolbarTexte(themeToolbar.texte);
 	infos->SetCommandId(WM_INFOS);
@@ -44,6 +45,13 @@ CToolbarInfos::CToolbarInfos(wxWindow* parent, wxWindowID id, const CThemeToolba
 	effectParameter->SetCommandId(WM_EFFECTPARAMETER);
 	effectParameter->SetLibelle(effectParameter_label);
 	navElement.push_back(effectParameter);
+
+	/*
+	editorParam = new CToolbarTexte(themeToolbar.texte);
+	editorParam->SetCommandId(WM_HTMLEDITOR);
+	editorParam->SetLibelle(editor_label);
+	navElement.push_back(editorParam);
+	*/
 }
 
 CToolbarInfos::~CToolbarInfos()
@@ -68,6 +76,11 @@ void CToolbarInfos::SetEffectPush()
 void CToolbarInfos::SetHistoryPush()
 {
 	history->SetPush(true);
+}
+
+void CToolbarInfos::SetEditorPush()
+{
+	editorParam->SetPush(true);
 }
 
 void CToolbarInfos::SetEffectParameterPush()

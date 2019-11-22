@@ -31,6 +31,7 @@ namespace Regards
 			void SetEffectParameterPush();
 
 			void SetHistoryPush();
+			void SetEditorPush();
 
 		private:
 
@@ -42,6 +43,7 @@ namespace Regards
 			CToolbarTexte * ocrText;
 			CToolbarTexte * history;
 			CToolbarTexte * effect;
+			CToolbarTexte * editorParam;
 			CToolbarTexte * effectParameter;
 		};
 
