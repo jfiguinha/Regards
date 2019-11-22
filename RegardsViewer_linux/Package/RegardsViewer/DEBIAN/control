@@ -1,5 +1,5 @@
 Package: RegardsViewer
-Version: 2.32.0
+Version: 2.33.0
 Architecture: amd64
 Depends: libwebkit2gtk-4.0-dev, freeglut3-dev, libgtk-3-dev, libva-dev, libsndio-dev, liblzma-dev, libxml2-dev, libcurl4-openssl-dev, libopenexr-dev, libasound-dev, libxv-dev, libxtst-dev, libglew-dev, libturbojpeg-dev, libsdl2-dev, libssh-dev, mesa-common-dev, mesa-opencl-icd, libsane-dev, libopenjp2-7-dev, libfftw3-dev, libleptonica-dev, libexif-dev
 Maintainer: Figuinha Jacques
