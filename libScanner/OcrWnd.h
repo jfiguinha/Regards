@@ -25,6 +25,7 @@ namespace Regards
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);
 			void OnSelChanged(wxCommandEvent& aEvent);
+			void OnSelRead(wxCommandEvent& aEvent);
 
 			wxPanel * CreateListTesseract(wxWindow * parent);
 			void LoadOcrBoxFile(wxString boxfile);

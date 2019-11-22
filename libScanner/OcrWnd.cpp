@@ -43,30 +43,6 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);
 
-	/*
-	long style = wxDIRCTRL_DEFAULT_STYLE;
-	long treeStyle = wxTR_HAS_BUTTONS;
-
-	treeStyle |= wxTR_HIDE_ROOT;
-
-#ifdef __WXGTK20__
-	treeStyle |= wxTR_NO_LINES;
-#endif
-
-	if (style & wxDIRCTRL_EDIT_LABELS)
-		treeStyle |= wxTR_EDIT_LABELS;
-
-	if (style & wxDIRCTRL_MULTIPLE)
-		treeStyle |= wxTR_MULTIPLE;
-
-	if ((style & wxDIRCTRL_3D_INTERNAL) == 0)
-		treeStyle |= wxNO_BORDER;
-
-	treeCtrl = new wxCheckTree(this, wxID_ANY, wxDefaultPosition, wxSize(250, 200), treeStyle);
-	treeCtrl->SetBackgroundColour(themeTree.bgColorOne);
-	treeCtrl->SetForegroundColour(themeTree.bgColorBackground);
-	*/
-
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
 	CThemeScrollBar themeScroll;
@@ -85,6 +61,35 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
 	Connect(wxEVENT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
+	Connect(wxEVENT_CHECKTREE_READ, wxCommandEventHandler(COcrWnd::OnSelRead), NULL, this);
+	
+
+}
+
+void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
+{
+	int id = aEvent.GetInt();
+	wxString label = "";
+
+	for (BBoxText * bboxText : listRect)
+	{
+		if (id == bboxText->id)
+		{
+			if (bboxText != nullptr)
+				label = bboxText->label;
+			break;
+		}
+	}
+
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	resourcePath = resourcePath + "\\espeak";
+	wxString language = choice->GetStringSelection();
+	wxString link = resourcePath + "\\espeak-ng.exe \"" + label + "\" -v" + language.substr(0,2) + " --path=" + resourcePath;
+	wxExecute(link);
+#else
+	resourcePath = resourcePath + "/espeak";
+#endif    
 
 }
 
