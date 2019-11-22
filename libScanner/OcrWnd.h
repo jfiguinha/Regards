@@ -33,7 +33,8 @@ namespace Regards
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);
-			void OnSelChanged(wxCommandEvent& aEvent);
+			void OnSelChanged(wxTreeEvent& aEvent);
+			void OnGetFocus(wxTreeEvent& aEvent);
 			wxPanel * CreateListTesseract(wxWindow * parent);
 			void LoadOcrBoxFile(wxString boxfile);
 		

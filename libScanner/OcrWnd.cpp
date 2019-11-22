@@ -69,13 +69,14 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
-	Connect(wxEVT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
-
+	Connect(wxEVT_CHECKTREE_CHOICE, wxTreeEventHandler(COcrWnd::OnSelChanged), NULL, this);
+	Connect(wxEVT_CHECKTREE_FOCUS, wxTreeEventHandler(COcrWnd::OnGetFocus), NULL, this);
 
 }
 
 void COcrWnd::Init()
 {
+	ocrPdf->Enable(true);
 	exportPdf->Enable(false);
 	treeCtrl->DeleteAllItems();
 	listRect.clear();
@@ -146,11 +147,38 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	filtreEffet->SetBitmap(imageLoad);
 }
 
-void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
+void COcrWnd::OnGetFocus(wxTreeEvent& aEvent)
+{
+	wxTreeItemId treeItem = treeCtrl->GetSelection();
+	BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeItem);
+	wxString libelle;
+	if (bboxText != nullptr)
+		libelle = bboxText->label;
+
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	resourcePath = resourcePath + "\\espeak";
+#else
+	resourcePath = resourcePath + "/espeak";
+#endif    
+
+	wxString process = "espeak-ng.exe " + libelle + " -vfr --path=" + resourcePath;
+	wxExecute(process);
+}
+
+void COcrWnd::OnSelChanged(wxTreeEvent& aEvent)
 {
 	// Allow calling GetPath() in multiple selection from OnSelFilter
 	//if (treeCtrl->HasFlag(wxTR_MULTIPLE))
 	//{
+	wxTreeItemId treeItem = aEvent.GetItem();
+	long isChecked = aEvent.GetExtraLong();
+	wxString libelle;
+	BBoxText * bboxText = (BBoxText *)treeCtrl->GetItemData(treeItem);
+	if (bboxText != nullptr)
+		bboxText->selected = isChecked;
+
+	/*
 	wxArrayTreeItemIds items;
 	treeCtrl->GetSelections(items);
 	for (int i = 0;i < items.size();i++)
@@ -161,6 +189,7 @@ void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
 		if(bboxText != nullptr)
 			bboxText->selected = !bboxText->selected;
 	}
+	*/
 	//}
 
 	//GenerateLayerBitmap();
@@ -281,63 +310,71 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 						xml_node<> * p_node = divchild_node->first_node("p");
 						if (p_node != 0)
 						{
-							xml_node<> * spanligne_node = p_node->first_node("span");
-							if (spanligne_node != 0)
+							do
 							{
-								xml_attribute<char> * libelle = spanligne_node->first_attribute("class");
-								if (libelle != 0)
+								xml_node<> * spanligne_node = p_node->first_node("span");
+								if (spanligne_node != 0)
 								{
-									string ocr_libelle = libelle->value();
-									if (ocr_libelle == "ocr_line")
+									do
 									{
-										BBoxText * bboxText = new BBoxText();
-										xml_attribute<> * libelleTitle = spanligne_node->first_attribute("title");
-										string value = libelleTitle->value();
-										vector<wxString> bboxVector = CConvertUtility::split(value, ';');
-										wxString bbox = bboxVector[0];
-										vector<wxString> coordonneeVector = CConvertUtility::split(bbox, ' ');
-										bboxText->rect.x = atoi(coordonneeVector[1]);
-										bboxText->rect.y = atoi(coordonneeVector[2]);
-										bboxText->rect.width = atoi(coordonneeVector[3]) - bboxText->rect.x;
-										bboxText->rect.height = atoi(coordonneeVector[4]) - bboxText->rect.y;
-										bboxText->selected = true;
-										wxString libelle;
-										xml_node<> * spanword_node = spanligne_node->first_node("span");
-										if (spanword_node != 0)
+										xml_attribute<char> * libelle = spanligne_node->first_attribute("class");
+										if (libelle != 0)
 										{
-											do
+											string ocr_libelle = libelle->value();
+											if (ocr_libelle == "ocr_line" || ocr_libelle == "ocr_header")
 											{
-												xml_attribute<char> * lblClass = spanword_node->first_attribute("class");
-												string class_libelle = lblClass->value();
-												wxString span_value = wxString::FromUTF8(spanword_node->value());
+												BBoxText * bboxText = new BBoxText();
+												xml_attribute<> * libelleTitle = spanligne_node->first_attribute("title");
+												string value = libelleTitle->value();
+												vector<wxString> bboxVector = CConvertUtility::split(value, ';');
+												wxString bbox = bboxVector[0];
+												vector<wxString> coordonneeVector = CConvertUtility::split(bbox, ' ');
+												bboxText->rect.x = atoi(coordonneeVector[1]);
+												bboxText->rect.y = atoi(coordonneeVector[2]);
+												bboxText->rect.width = atoi(coordonneeVector[3]) - bboxText->rect.x;
+												bboxText->rect.height = atoi(coordonneeVector[4]) - bboxText->rect.y;
+												bboxText->selected = true;
+												wxString libelle;
+												xml_node<> * spanword_node = spanligne_node->first_node("span");
 												if (spanword_node != 0)
-													libelle.append(span_value);
+												{
+													do
+													{
+														xml_attribute<char> * lblClass = spanword_node->first_attribute("class");
+														string class_libelle = lblClass->value();
+														wxString span_value = wxString::FromUTF8(spanword_node->value());
+														if (spanword_node != 0)
+															libelle.append(span_value);
 
-												spanword_node = spanword_node->next_sibling();
-												if (spanword_node != 0)
-													libelle.append(" ");
-											} while (spanword_node != 0);
-										}
+														spanword_node = spanword_node->next_sibling();
+														if (spanword_node != 0)
+															libelle.append(" ");
+													} while (spanword_node != 0);
+												}
 
-										bboxText->numLigne = numLigne;
-										bboxText->label = libelle;
+												bboxText->numLigne = numLigne;
+												bboxText->label = libelle;
 
-										if (libelle != "")
-										{
-											wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
-											treeCtrl->SetItemHasChildren(treeid);
-											treeCtrl->MakeCheckable(treeid, true);
-											bboxText->SetId(treeid);
-											listRect.push_back(bboxText);
-											numLigne++;
+												if (libelle != "")
+												{
+													wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
+													treeCtrl->SetItemHasChildren(treeid);
+													treeCtrl->MakeCheckable(treeid, true);
+													bboxText->SetId(treeid);
+													listRect.push_back(bboxText);
+													numLigne++;
+												}
+												else
+												{
+													delete bboxText;
+												}
+											}
 										}
-										else
-										{
-											delete bboxText;
-										}
-									}
+										spanligne_node = spanligne_node->next_sibling();
+									} while (spanligne_node != 0);
 								}
-							}
+								p_node = p_node->next_sibling();
+							} while (p_node != 0);
 						}
 						divchild_node = divchild_node->next_sibling();
 					} while (divchild_node != 0);
@@ -401,10 +438,14 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 
 			//outputFile.append(".hocr");
 			LoadOcrBoxFile(outputFile);
+
 			/*
 			Pix *image = pixRead(preprocess.ToStdString().c_str());
 
+			wxTreeItemId rootId = treeCtrl->AddRoot("Text");
+
 			//api->Init(CurDir, "eng");
+
 			CExportOcr::api.SetPageSegMode(tesseract::PSM_AUTO_OSD); //PSM_SINGLE_BLOCK PSM_AUTO_OSD
 
 			CExportOcr::api.SetImage(image);
