@@ -51,7 +51,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Window">
     <Project Name="libControl" Path="libControl/libControl.project" Active="No"/>
-    <Project Name="libViewer" Path="libViewer/libViewer.project" Active="Yes"/>
+    <Project Name="libViewer" Path="libViewer/libViewer.project" Active="No"/>
     <Project Name="libWindow" Path="libWindow/libWindow.project" Active="No"/>
     <Project Name="libWindowMain" Path="libWindowMain/libWindowMain.project" Active="No"/>
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
