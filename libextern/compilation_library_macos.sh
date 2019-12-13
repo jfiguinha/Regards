@@ -79,12 +79,6 @@ make -j$NBPROC
 cd ..
 cd ..
 
-#Compile fftw
-cd fftw-3.3.8
- ./configure --enable-float 
-make -j$NBPROC
-cd ..
-
 #Compile glew-2.1.0
 cd glew-2.1.0
 chmod +x config/config.guess
