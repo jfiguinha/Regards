@@ -1453,6 +1453,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 		renderOpenGL->LoadingResource(scale_factor);
 	}
+    
+    
 
 	muBitmap.lock();
 
@@ -1482,6 +1484,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 		ApplyPreviewEffect(widthOutput, heightOutput);
 
+        bool textureBinging = false;
+        
 		if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 		{
 			printf("CBitmapWnd IsSharedContextCompatible \n");
@@ -1492,27 +1496,32 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 			}
 			catch (...)
 			{
-				return;
 			}
 
 			try
 			{
 				cl_int err;
 				cl_mem cl_image = renderOpenGL->GetOpenCLTexturePt();
-				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-				Error::CheckError(err);
-				filtreEffet->GetRgbaBitmap(cl_image);
-				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-				Error::CheckError(err);
-				err = clFlush(openclContext->GetCommandQueue());
-				Error::CheckError(err);
+                if(cl_image != nullptr)
+                {
+                    err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    filtreEffet->GetRgbaBitmap(cl_image);
+                    err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    err = clFlush(openclContext->GetCommandQueue());
+                    Error::CheckError(err);
+                    
+                    textureBinging = true;
+                }
 			}
 			catch (...)
 			{
 
 			}
 		}
-		else
+		
+        if(!textureBinging)
 		{
 			CRegardsBitmap* bitmap = filtreEffet->GetBitmap(false);
 			if (!filtreEffet->OpenCLHasEnoughMemory() && openclContext != nullptr)
@@ -1557,6 +1566,8 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 	if (width == 0 || height == 0)
 		return;
+        
+    renderOpenGL->LoadingResource(scale_factor);
 
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
@@ -1570,7 +1581,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
         
-		renderOpenGL->LoadingResource(scale_factor);
+		
 
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 

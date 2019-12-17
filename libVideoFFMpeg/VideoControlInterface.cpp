@@ -65,6 +65,7 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
         openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
     }            
     
+    bool isOpenGLOpenCL = false;
      if(openclContext->IsSharedContextCompatible())
      { 
         if(angle == 90 || angle == 270)
@@ -72,6 +73,7 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
         else
             glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height, openclContext->GetContext());
 
+        
         if(glTexture != nullptr)
         {
             
@@ -79,13 +81,17 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
             {
                 cl_int err ;
                 cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
-                err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-                Error::CheckError(err);
-                openclEffect->GetRgbaBitmap(cl_image);
-                err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
-                Error::CheckError(err);
-                err = clFlush(openclContext->GetCommandQueue());
-                Error::CheckError(err);
+                if(cl_image != nullptr)
+                {
+                    err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    openclEffect->GetRgbaBitmap(cl_image);
+                    err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
+                    Error::CheckError(err);
+                    err = clFlush(openclContext->GetCommandQueue());
+                    Error::CheckError(err);
+                    isOpenGLOpenCL = true;
+                }
 
             }
             catch(...)
@@ -94,7 +100,7 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
             }
         }
     }
-    else
+    if(!isOpenGLOpenCL)
     {
         if(angle == 90 || angle == 270)
             glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width);
