@@ -244,10 +244,7 @@ namespace Regards
 			CImageLoadingFormat * source;
 			bool bitmapLoad;
             mutex muBitmap;
-            bool updateContext = true;
-
             bool updateFilter = false;
-
 			int xPosImage = 0;
 			int yPosImage = 0;
 		};

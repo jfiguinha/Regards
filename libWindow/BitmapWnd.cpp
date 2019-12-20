@@ -54,16 +54,12 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 #ifdef RENDEROPENGL
 	glTexture = nullptr;
 	openCLEngine = nullptr;
-	renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
-#ifdef WIN32
-    renderOpenGL->Init(this);
-#endif 
+	renderOpenGL = nullptr;
 #endif
 	idWindowMain = idMain;
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
 	config = nullptr;
-    updateContext = true;
     
 	filtreEffet = nullptr;
 	flipVertical = 0;
@@ -201,6 +197,10 @@ CBitmapWnd::~CBitmapWnd(void)
 	filtreEffet = nullptr;
 
 #ifdef RENDEROPENGL
+
+	if (renderOpenGL)
+		renderOpenGL->SetCurrent(*this);
+
 	if(renderOpenGL != nullptr)
 		delete renderOpenGL;
 
@@ -1083,9 +1083,46 @@ void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 void CBitmapWnd::OnSize(wxSizeEvent& event)
 {
     TRACE();
-    updateContext = true;
+
+#ifdef __WXGTK__        
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+
     int _width =  event.GetSize().GetX();
     int _height =  event.GetSize().GetY();
+
+#ifdef RENDEROPENGL
+
+	if (renderOpenGL == nullptr)
+	{
+		renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+
+		//Now we have a context, retrieve pointers to OGL functions
+		renderOpenGL->Init(this);
+
+		if (openCLEngine == nullptr)
+		{
+			openCLEngine = new COpenCLEngine();
+			if (openCLEngine != nullptr)
+				openclContext = openCLEngine->GetInstance();
+
+			renderOpenGL->LoadingResource(scale_factor);
+		}
+
+		//Some GPUs need an additional forced paint event
+
+
+		PostSizeEvent();
+	}
+
+	// This is normally only necessary if there is more than one wxGLCanvas
+	// or more than one wxGLContext in the application.
+	renderOpenGL->SetCurrent(*this);
+
+#endif
 
 	if (_width == 20 && _height == 20)
 	{
@@ -1093,11 +1130,7 @@ void CBitmapWnd::OnSize(wxSizeEvent& event)
 	}
 	else
 	{
-#ifdef __WXGTK__        
-        double scale_factor = GetContentScaleFactor();
-#else
-        double scale_factor = 1.0f;
-#endif
+
 		width = _width * scale_factor;
 		height = _height * scale_factor;        
 		//width = _width;
@@ -1458,18 +1491,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		return;
 
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
-
-	if (openCLEngine == nullptr)
-	{
-		openCLEngine = new COpenCLEngine();
-		if (openCLEngine != nullptr)
-			openclContext = openCLEngine->GetInstance();
-
-		renderOpenGL->LoadingResource(scale_factor);
-	}
-    
-    
+	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;  
 
 	muBitmap.lock();
 
@@ -1632,7 +1654,12 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
     TRACE();
+	// This is a dummy, to avoid an endless succession of paint messages.
+	// OnPaint handlers must always create a wxPaintDC.
+	wxPaintDC dc(this);
 
+	if (height < 1)
+		return;
 
         
     #if defined(WIN32) && defined(_DEBUG)
@@ -1642,27 +1669,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
     printf("CBitmapWnd OnPaint \n");
 
-    #ifndef WIN32
-        if(!renderOpenGL->IsInit())
-        {
-            renderOpenGL->Init(this);
-            
-        }
-    #endif
-
 	renderOpenGL->SetCurrent(*this);
-          
-	/*
-    #if defined(WIN32) || defined(__APPLE__)
-        renderOpenGL->SetCurrent(*this);
-    #else
-        if(updateContext)
-        {
-            renderOpenGL->SetCurrent(*this);
-            updateContext = false;
-        }
-    #endif
-    */        
+    
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)

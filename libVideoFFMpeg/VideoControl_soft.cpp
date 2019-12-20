@@ -48,12 +48,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 #endif
 {
 #ifdef RENDEROPENGL  
-	renderBitmapOpenGL = new Regards::Video::CRenderBitmapInterfaceOpenGL(this);
-    printf("CVideoControl initialisation \n");   
-#ifdef WIN32
-    renderBitmapOpenGL->Init(this);
-#endif  
-
+	renderBitmapOpenGL = nullptr;
 #ifdef GLUT
 #ifndef __APPLE__
 	int argc = 1;
@@ -63,9 +58,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 #endif
 
 #endif
-
-
-
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
@@ -106,6 +98,55 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 #endif
 	openclEffectYUV = nullptr;
 	
+}
+
+
+//------------------------------------------------------------------------------------
+//Agrandissement de la fenête
+//------------------------------------------------------------------------------------
+void CVideoControlSoft::OnSize(wxSizeEvent& event)
+{
+	TRACE();
+
+#ifdef __WXGTK__        
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+
+	int _width = event.GetSize().GetX();
+	int _height = event.GetSize().GetY();
+
+#ifdef RENDEROPENGL
+
+	if (renderBitmapOpenGL == nullptr)
+	{
+		renderBitmapOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+
+		//Now we have a context, retrieve pointers to OGL functions
+		renderBitmapOpenGL->Init(this);
+
+		if (openCLEngine == nullptr)
+		{
+			openCLEngine = new COpenCLEngine();
+			if (openCLEngine != nullptr)
+				openclContext = openCLEngine->GetInstance();
+		}
+
+		//Some GPUs need an additional forced paint event
+
+
+		PostSizeEvent();
+	}
+
+	// This is normally only necessary if there is more than one wxGLCanvas
+	// or more than one wxGLContext in the application.
+	renderBitmapOpenGL->SetCurrent(*this);
+
+#endif
+
+	this->ProcessOnSizeEvent(event);
 }
 
 void CVideoControlSoft::SetRotation(const int &rotation)
@@ -259,7 +300,10 @@ CVideoControlSoft::~CVideoControlSoft()
 {
     
 	delete fpsTimer;
-#ifdef RENDEROPENGL     
+#ifdef RENDEROPENGL   
+
+	renderBitmapOpenGL->SetCurrent(*this);
+
     if(renderBitmapOpenGL != nullptr)
         delete renderBitmapOpenGL;
 
@@ -372,6 +416,10 @@ void CVideoControlSoft::UpdateScreenRatio()
 
 void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 {
+	// This is a dummy, to avoid an endless succession of paint messages.
+	// OnPaint handlers must always create a wxPaintDC.
+	wxPaintDC dc(this);
+
 #ifdef __WXGTK__
     double scale_factor = GetContentScaleFactor();
 #else
@@ -380,15 +428,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
-
-    //printf("OnPaint Soft Render begin \n"); 
-#ifndef WIN32
-    if(!renderBitmapOpenGL->IsInit())
-    {
-        renderBitmapOpenGL->Init(this);
-        
-    }
-#endif
+	renderBitmapOpenGL->SetCurrent(*this);
 #endif 
 
     std::clock_t start;
@@ -409,29 +449,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	muVideoEffect.unlock();
 
 #ifdef RENDEROPENGL 
-    renderBitmapOpenGL->SetCurrent(*this);
-    //updateContext = false;
-
-/*
-#ifdef WIN32
-    renderBitmapOpenGL->SetCurrent(*this);
-#else
-    if(updateContext)
-    {
-        renderBitmapOpenGL->SetCurrent(*this);
-        updateContext = false;
-    }   
-#endif
- */   
-
-
-	if (openCLEngine == nullptr)
+	if (openclEffectYUV == nullptr)
 	{
-		openCLEngine = new COpenCLEngine();
-
-		if (openCLEngine != nullptr)
-			openclContext = openCLEngine->GetInstance();
-
 		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 	}
 #else
