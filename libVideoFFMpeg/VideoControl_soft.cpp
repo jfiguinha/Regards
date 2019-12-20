@@ -101,28 +101,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 }
 
 
-//------------------------------------------------------------------------------------
-//Agrandissement de la fenête
-//------------------------------------------------------------------------------------
-void CVideoControlSoft::OnSize(wxSizeEvent& event)
-{
-	TRACE();
-
-#ifdef __WXGTK__        
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-
-	int _width = event.GetSize().GetX();
-	int _height = event.GetSize().GetY();
-
-
-
-	this->ProcessOnSizeEvent(event);
-}
-
 void CVideoControlSoft::SetRotation(const int &rotation)
 {
     wxCommandEvent event(EVENT_VIDEOROTATION);
@@ -402,8 +380,6 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
-    
-#ifdef RENDEROPENGL
 
 	if (renderBitmapOpenGL == nullptr)
 	{
