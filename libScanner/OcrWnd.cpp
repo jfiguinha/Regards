@@ -71,6 +71,7 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 
 void COcrWnd::OnExport(wxCommandEvent& event)
 {
+#ifdef WIN32
 	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
 	if (showBitmap != nullptr)
 	{
@@ -98,6 +99,7 @@ void COcrWnd::OnExport(wxCommandEvent& event)
 		bitmapBackground->SaveToBmp("c:\\developpement\\test.bmp");
 		delete bitmapBackground;
 	}
+#endif
 }
 
 void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
