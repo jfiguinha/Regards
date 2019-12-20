@@ -43,16 +43,8 @@ void CRenderOpenGL::Init(wxGLCanvas * canvas)
         sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
 
         GLuint err;
-    #ifdef GLEW_MX
-        err = glewContextInit(glewGetContext());
-    #ifdef _WIN32
-        err = err || wglewContextInit(wglewGetContext());
-    #elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
-        err = err || glxewContextInit(glxewGetContext());
-    #endif
-    #else
         err = glewInit();
-    #endif
+
         if (GLEW_OK != err)
         {
           /* Problem: glewInit failed, something is seriously wrong. */

@@ -133,21 +133,6 @@ using namespace Regards::Viewer;
 #include <GL/glxew.h>
 #endif
 
-#ifdef GLEW_MX
-GLEWContext _glewctx;
-#  define glewGetContext() (&_glewctx)
-#  ifdef _WIN32
-WGLEWContext _wglewctx;
-#    define wglewGetContext() (&_wglewctx)
-#elif defined(_WIN64)
-WGLEWContext _wglewctx;
-#    define wglewGetContext() (&_wglewctx)
-#  elif !defined(__APPLE__) || defined(GLEW_APPLE_GLX)
-GLXEWContext _glxewctx;
-#    define glxewGetContext() (&_glxewctx)
-#  endif
-#endif //GLEW_MX
-
 #include <wx/glcanvas.h>
 int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0 };
 #else
