@@ -176,7 +176,9 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
 	//filtreraw = nullptr;
+#ifdef RENDEROPENGL
 	pictureNext = nullptr;
+#endif
 	mouseUpdate = nullptr;
 	etape = 0;
 	preview = 0;
@@ -228,8 +230,9 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	//delete(openclEffectVideo);
 	delete(transitionTimer);
 	delete(m_cDessin);
+#ifdef RENDEROPENGL
 	delete(pictureNext);
-
+#endif
 	if (afterEffect != nullptr)
 		delete afterEffect;
 }
@@ -517,10 +520,10 @@ CDraw * CBitmapWndViewer::GetDessinPt()
 {
 	return m_cDessin;
 }
-
+#ifdef RENDEROPENGL
 void CBitmapWndViewer::AfterRender()
 {
-	if(bitmapLoad)
+	if (bitmapLoad)
 	{
 		//Affichage de la transition
 		int numEffect = 0;
@@ -590,7 +593,95 @@ void CBitmapWndViewer::AfterRender()
 
 	}
 }
+#else
 
+void CBitmapWndViewer::LoadingResource(const double & scale_factor)
+{
+	wxColor colorToReplace = wxColor(0, 0, 0);
+	wxColor colorActifReplacement = wxColor(255, 255, 255);
+	arrowPrevious = CLibResource::CreatePictureFromSVG("IDB_ARROWLPNG", 32 * scale_factor, 32 * scale_factor);
+	arrowPrevious.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+	arrowNext = CLibResource::CreatePictureFromSVG("IDB_ARROWRPNG", 32 * scale_factor, 32 * scale_factor);
+	arrowNext.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
+		colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+}
+
+void CBitmapWndViewer::ShowArrowNext(wxDC * memDC)
+{
+	int left = width - arrowNext.GetWidth();
+	int top = (height - arrowNext.GetHeight()) / 2;
+	memDC->DrawBitmap(arrowNext, left, top);
+
+}
+
+void CBitmapWndViewer::ShowArrowPrevious(wxDC * memDC)
+{
+
+	int left = 0;
+	int top = (height - arrowPrevious.GetHeight()) / 2;
+	memDC->DrawBitmap(arrowPrevious, left, top);
+
+}
+
+void CBitmapWndViewer::AfterRender(wxDC * dc)
+{
+#ifdef __WXGTK__
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	if(!arrowPrevious.IsOk())
+		LoadingResource(scale_factor);
+
+	if(bitmapLoad)
+	{
+		//Affichage de la transition
+		int numEffect = 0;
+
+		//if (isDiaporama)
+		//	numEffect = config->GetDiaporamaTransitionEffect();
+		if (config != nullptr)
+			numEffect = config->GetEffect();
+
+		if (isDiaporama)
+		{
+			if (isDiaporama && numEffect == 0)
+			{
+				startTransition = false;
+				bitmapInterface->TransitionEnd();
+			}
+		}
+
+		if (numEffect != 0)
+		{
+			wxRect out;
+			CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
+			if (bitmapOut != nullptr)
+			{
+				CImageLoadingFormat image;
+				image.SetPicture(bitmapOut);
+				wxImage * imageR = image.GetwxImage();
+				dc->DrawBitmap(*imageR, out.x, out.y, true);
+				delete imageR;
+
+			}
+		}
+	}
+
+	if (!isDiaporama)
+	{
+		//Insertion dans le HBITMAP
+		if (fixArrow && (etape == 0 || etape == 100))
+		{
+			ShowArrowPrevious(dc);
+			ShowArrowNext(dc);
+		}
+
+	}
+}
+#endif
 void CBitmapWndViewer::KeyPress(const int &key)
 {
 	if (key == WXK_ESCAPE)

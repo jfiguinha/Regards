@@ -99,23 +99,32 @@ public:
 
 protected:
 	void calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
+#ifdef RENDEROPENGL
     GLTexture * RenderToTexture(COpenCLEffectVideo * openclEffect);
     GLTexture * RenderToTexture(CRegardsBitmap * bitmap);
     GLTexture * RenderFFmpegToTexture();
+#else
+	CRegardsBitmap * GenerateBitmap(COpenCLEffectVideo * openclEffect);
+	CRegardsBitmap * RenderToBitmap();
+	CRegardsBitmap * RenderToBitmap(COpenCLEffectVideo * openclEffect);
+#endif
     void CopyFrame(AVFrame * frame);
     void SetFrameData(AVFrame * frame);
+#ifdef RENDEROPENGL
     GLTexture * RenderToGLTexture();
-    
+#endif
 	mutex muBitmap;
     mutex muVideoEffect;
     mutex muSubtitle;
     
     CRegardsBitmap * bitmap = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
+    CffmpegToBitmap * ffmpegToBitmap = nullptr;
+#ifdef RENDEROPENGL
 	COpenCLEngine * openCLEngine = nullptr;
 	COpenCLContext * openclContext = nullptr;
-    CffmpegToBitmap * ffmpegToBitmap = nullptr;
     CRenderBitmapInterfaceOpenGL * renderBitmapOpenGL;
+#endif
     CVideoEffectParameter videoEffectParameter;
 	float video_aspect_ratio;
 	int widthVideo;

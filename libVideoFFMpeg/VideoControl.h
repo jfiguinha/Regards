@@ -1,8 +1,12 @@
 #pragma once
 #ifdef WIN32
 #include "VideoControlInterface.h"
+#ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
 #include "RenderBitmapInterfaceOpenGL.h"
+#else
+#include "WindowMain.h"
+#endif
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
 #include <BitmapYUV.h>
@@ -19,8 +23,11 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Video;
 
-
+#ifdef RENDEROPENGL  
 class CVideoControl : public CWindowOpenGLMain, public CVideoControlInterface
+#else
+class CVideoControl : public CWindowMain, public CVideoControlInterface
+#endif
 {
 public:
 	CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
@@ -72,7 +79,9 @@ public:
 
 	void SetDXVA2Compatible(const bool &compatible);
 	bool GetDXVA2Compatible();
+#ifdef RENDEROPENGL  
 	GLTexture * RenderFromOpenGLTexture();
+#endif
 	IDirect3D9Ex * GetDirectd3d9();
 	HMODULE GetDXVA2Lib();
 	void * GetDXVA2CreateDirect3DDeviceManager9();
@@ -118,7 +127,10 @@ private:
 
 
 	bool isDXVA2Compatible;
+
+#ifdef RENDEROPENGL 
 	bool UnbindTexture();
+#endif
 	COpenCLEffectVideoNV12 * openclEffectNV12;
 	LPDIRECT3DSURFACE9 surface;
 	DXVA2Context * dxva2;

@@ -19,14 +19,16 @@ namespace Regards
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 			void Init();
-            static void tesseract_preprocess(wxString source_file, wxString out_file);
-            static  void OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language);
+
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			void OnSelRead(wxCommandEvent& aEvent);
-
+			void OnExport(wxCommandEvent& event);
+			wxRect FindRect(wxString ocr_title);
+			void tesseract_preprocess(wxString source_file, wxString out_file);
+			void OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language);
 			wxPanel * CreateListTesseract(wxWindow * parent);
 			void LoadOcrBoxFile(wxString boxfile);
 		
@@ -41,9 +43,11 @@ namespace Regards
 			COcrLabelWnd * ocrLabelWnd;
 			wxButton * exportPdf;
 			wxButton * ocrPdf;
+			wxButton * exportImage;
 			vector<wxString> listFile;
 			wxChoice *choice;
-			vector<BBoxText *> listRect;
+			vector<ChOcrElement *> listRect;
+			CPage * pageInfo;
 			//wxBitmap bmpSelection;
 			CRegardsBitmap * bitmapBackground;
 		};

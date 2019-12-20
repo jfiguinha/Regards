@@ -7,22 +7,17 @@
 #include <Interpolation.h>
 #include <config_id.h>
 #include "ffmpegToBitmap.h"
-
+#include <ImageLoadingFormat.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #include <OpenCL/opencl.h>
 #include <utility.h>
 #else
 #include <CL/cl.h>
-#include <CL/cl_gl.h>
 #include <utility.h>
 #endif
 
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+
 #include <ConvertUtility.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
@@ -30,21 +25,46 @@ wxDEFINE_EVENT(EVENT_ENDVIDEOTHREAD, wxCommandEvent);
 
 AVFrame * copyFrameBuffer = nullptr;
 
+#ifdef RENDEROPENGL
+#ifdef GLUT
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
+#endif
+#include <CL/cl_gl.h>
+#else
+extern COpenCLEngine * openCLEngine;
+extern COpenCLContext * openclContext;
+#endif
+
+
 CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
+#ifdef RENDEROPENGL  
 : CWindowOpenGLMain("CVideoControl",parent, id)
+#else
+: CWindowMain("CVideoControl", parent, id)
+#endif
 {
+#ifdef RENDEROPENGL  
 	renderBitmapOpenGL = new Regards::Video::CRenderBitmapInterfaceOpenGL(this);
-    printf("CVideoControl initialisation \n");
-    
+    printf("CVideoControl initialisation \n");   
 #ifdef WIN32
     renderBitmapOpenGL->Init(this);
 #endif  
 
+#ifdef GLUT
 #ifndef __APPLE__
-    int argc = 1;
-    char* argv[1] ={wxString((wxTheApp->argv)[0]).char_str()};
-    glutInit(&argc, argv);  
+	int argc = 1;
+	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
+	glutInit(&argc, argv);
 #endif
+#endif
+
+#endif
+
+
 
 	widthVideo = 0;
 	heightVideo = 0;
@@ -80,8 +100,10 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	videoEnd = true;
 	this->windowMain = windowMain;
 	this->eventPlayer = eventPlayer;
+#ifdef RENDEROPENGL 
 	openCLEngine = nullptr;
 	openclContext = nullptr;
+#endif
 	openclEffectYUV = nullptr;
 	
 }
@@ -237,10 +259,15 @@ CVideoControlSoft::~CVideoControlSoft()
 {
     
 	delete fpsTimer;
-    
+#ifdef RENDEROPENGL     
     if(renderBitmapOpenGL != nullptr)
         delete renderBitmapOpenGL;
-    
+
+	if (openCLEngine != nullptr)
+		delete openCLEngine;
+	openCLEngine = nullptr;
+
+#endif
 	if(openclEffectYUV != nullptr)
 		delete openclEffectYUV;
         
@@ -250,9 +277,7 @@ CVideoControlSoft::~CVideoControlSoft()
         ffmpegToBitmap = nullptr;               
     }
     
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-	openCLEngine = nullptr;
+
 
 	if(pictureSubtitle != nullptr)
 		delete pictureSubtitle;
@@ -352,7 +377,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 #else
     double scale_factor = 1.0f;
 #endif
+
+#ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
+
     //printf("OnPaint Soft Render begin \n"); 
 #ifndef WIN32
     if(!renderBitmapOpenGL->IsInit())
@@ -361,7 +389,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
         
     }
 #endif
-    
+#endif 
+
     std::clock_t start;
     start = std::clock();    
     
@@ -379,6 +408,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	supportOpenCL = videoEffectParameter.enableOpenCL;
 	muVideoEffect.unlock();
 
+#ifdef RENDEROPENGL 
     renderBitmapOpenGL->SetCurrent(*this);
     //updateContext = false;
 
@@ -394,15 +424,25 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 #endif
  */   
 
-    if (openCLEngine == nullptr)
-    {
+
+	if (openCLEngine == nullptr)
+	{
 		openCLEngine = new COpenCLEngine();
 
 		if (openCLEngine != nullptr)
 			openclContext = openCLEngine->GetInstance();
 
 		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-    }
+	}
+#else
+
+	if (openclEffectYUV == nullptr)
+	{
+		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+	}
+
+#endif
+
 
     nbFrame++;
     printf("Nb Frame per Seconds : %d \n",nbFrame);
@@ -415,6 +455,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
             fpsTimer->Start(1000);
 	}
 
+#ifdef RENDEROPENGL 
 	if(videoRenderStart)
 	{
         glTexture = RenderToGLTexture();
@@ -490,7 +531,32 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
     if(deleteTexture && glTexture != nullptr)
         delete glTexture;
-    
+#else
+
+	wxPaintDC dc(this);
+	wxRect rc;
+	rc.x = 0;
+	rc.y = 0;
+	rc.width = width;
+	rc.height = height;
+	FillRect(&dc, rc, wxColor(0, 0, 0));
+	if (videoRenderStart)
+	{
+		CRegardsBitmap * bitmap = RenderToBitmap();
+		
+		CImageLoadingFormat image;
+		image.SetPicture(bitmap);
+		wxImage * picture = image.GetwxImage();
+
+		int x = (width - picture->GetWidth()) / 2;
+		int y = (height - picture->GetHeight()) / 2;
+
+		dc.DrawBitmap(*picture, x, y);
+
+		delete picture;
+	}
+
+#endif
 
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 

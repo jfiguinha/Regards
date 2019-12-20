@@ -101,7 +101,7 @@ void COcrLabel::Init()
 	SaveState();
 }
 
-void COcrLabel::Init(vector<BBoxText *> &labelList)
+void COcrLabel::Init(vector<ChOcrElement *> &labelList)
 {
 	item = 0;
 
@@ -113,13 +113,17 @@ void COcrLabel::Init(vector<BBoxText *> &labelList)
 	treeDataPicture->SetKey("Ocr");
 	child = tr.insert(top, treeDataPicture);
 
-	for (BBoxText * bbox : labelList)
+	for (ChOcrElement * text : labelList)
 	{
-		CTreeData * data = new CTreeData();
-		data->SetIsParent(false);
-		data->SetKey(to_string(bbox->id));
-		data->SetValue(bbox->label);
-		tr.append_child(child, data);
+		if (text->itemClass == "ocr_line")
+		{
+			ChOcrElementLine * bbox = (ChOcrElementLine *)text;
+			CTreeData * data = new CTreeData();
+			data->SetIsParent(false);
+			data->SetKey(to_string(bbox->id));
+			data->SetValue(bbox->label);
+			tr.append_child(child, data);
+		}
 	}
 
 	CreateElement();

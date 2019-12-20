@@ -1,6 +1,10 @@
 #pragma once
 #include "VideoControlInterface.h"
+#ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
+#else
+#include "WindowMain.h"
+#endif
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
 #include <BitmapYUV.h>
@@ -10,7 +14,11 @@ using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
 
+#ifdef RENDEROPENGL  
 class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
+#else
+class CVideoControlSoft : public CWindowMain, public CVideoControlInterface
+#endif
 {
 public:
 	CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);

@@ -1,4 +1,5 @@
 #include <header.h>
+#ifdef RENDEROPENGL
 #include "GLSLParameter.h"
 using namespace Regards::OpenGL;
 
@@ -78,3 +79,4 @@ void CGLSLParameterTexture::Add(GLint progHandle)
 
 	bool error = (GL_NO_ERROR == glGetError());
 }
+#endif

@@ -37,7 +37,7 @@ void COcrLabelWnd::Init()
 	}
 }
 
-void COcrLabelWnd::Update(vector<BBoxText *> &labelList)
+void COcrLabelWnd::Update(vector<ChOcrElement *> &labelList)
 {
     if (ocrLabelOld != nullptr)
     {

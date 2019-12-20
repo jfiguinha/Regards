@@ -17,12 +17,15 @@ extern "C" {
 #include <libavfilter/buffersrc.h>
 }
 
+#include <RegardsBitmap.h>
+
 AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
 
  CffmpegToBitmap::CffmpegToBitmap(const bool & rgba)
  {
+#ifdef RENDEROPENGL  
      glTexture = new GLTexture();
-     
+#endif
      if(rgba)
          pixelFormat = AV_PIX_FMT_BGRA;
      else
@@ -108,11 +111,10 @@ void CffmpegToBitmap::DeleteData()
 
 CffmpegToBitmap::~CffmpegToBitmap()
 {
-    
-  
-    
+#ifdef RENDEROPENGL  
     if(glTexture != nullptr)
         delete glTexture;    
+#endif
 }
 
 int CffmpegToBitmap::GetThumbnailWidth()
@@ -136,7 +138,7 @@ void CffmpegToBitmap::createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, 
     avpicture_fill((AVPicture*) *pAvFrame, *pFrameBuffer, pixelFormat, width, height);
 }
 
-/*
+
 void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
      
@@ -152,8 +154,7 @@ void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AV
         int lineSize = convertedFrame->linesize[0];
 
         uint8_t *tmp_ptr = imageToDisplay->GetData();
-          
-#pragma omp parallel for
+
         for(int y=0; y<height; y++) 
         {
             memcpy(tmp_ptr+y*width*3, 
@@ -162,7 +163,7 @@ void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AV
         }        
     }
 }
-*/
+
 void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
     //printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
@@ -173,7 +174,7 @@ void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth,
           
 
 }
-
+#ifdef RENDEROPENGL  
 GLTexture * CffmpegToBitmap::ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle)
 {
     int localAngle = angle % 360;
@@ -212,4 +213,44 @@ GLTexture * CffmpegToBitmap::ConvertFrameToOpenGLTexutreWithInterpolation(const 
     
     return glTexture;
 }
+#else
+CRegardsBitmap * CffmpegToBitmap::ConvertFrameToBitmapWithInterpolation(const int &angle)
+{
+	CRegardsBitmap * picture = nullptr;
+	int localAngle = angle % 360;
 
+	if (convertedFrame != nullptr)
+	{
+		//int lineSize = convertedFrame->linesize[0];
+		uint8_t * data = convertedFrame->data[0];
+
+		if (localAngle != 0)
+		{
+			printf("Rotate Picture : %d \n", localAngle);
+			CRgbaquad * m_OriginalBitmapBits = (CRgbaquad *)data;
+			wxSize m_size = wxSize(videoFrameOutputWidth, videoFrameOutputHeight);
+			wxSize m_sizedst;
+			CRgbaquad clrBack;
+			CRotateByShearRGB Rot(CRotateByShearRGB::Progress);
+			CRgbaquad * m_ScaledBitmapBits = Rot.AllocAndRotate(
+				m_OriginalBitmapBits,
+				m_size,
+				angle,
+				&m_sizedst,
+				clrBack
+			);
+			picture = new CRegardsBitmap();
+			picture->SetBitmap((uint8_t *)m_ScaledBitmapBits, m_sizedst.GetWidth(), m_sizedst.GetHeight());
+			delete[] m_ScaledBitmapBits;
+		}
+		else
+		{
+			picture = new CRegardsBitmap();
+			picture->SetBitmap((uint8_t *)data, videoFrameOutputWidth, videoFrameOutputHeight);
+		}
+	}
+
+
+	return picture;
+}
+#endif

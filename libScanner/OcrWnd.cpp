@@ -22,6 +22,7 @@
 #include "ExportOcr.h"
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
+//#include "ExportOdt.h"
 #ifdef __APPLE__
 #undef fract1
 #endif
@@ -30,6 +31,7 @@ enum
 {
 	ID_BUT_OCR = 3000,
 	ID_BUT_OCRPDF = ID_BUT_OCR + 1,
+	ID_BUT_EXPORT = ID_BUT_OCR + 2,
 	ID_BUT_PREVIEW,
 };
 
@@ -60,10 +62,42 @@ COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	
 	Connect(ID_BUT_OCR, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcr));
 	Connect(ID_BUT_OCRPDF, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnOcrPDF));
+	//Connect(ID_BUT_EXPORT, wxEVT_BUTTON, wxCommandEventHandler(COcrWnd::OnExport));
 	Connect(wxEVENT_CHECKTREE_CHOICE, wxCommandEventHandler(COcrWnd::OnSelChanged), NULL, this);
 	Connect(wxEVENT_CHECKTREE_READ, wxCommandEventHandler(COcrWnd::OnSelRead), NULL, this);
 	
 
+}
+
+void COcrWnd::OnExport(wxCommandEvent& event)
+{
+	CShowBitmap * showBitmap = (CShowBitmap *)wxWindow::FindWindowById(SHOWBITMAPVIEWERIDPDF);
+	if (showBitmap != nullptr)
+	{
+		CRegardsBitmap * bitmapBackground = showBitmap->GetBitmap(true);
+		bitmapBackground->VertFlipBuf();
+		for (ChOcrElement * text : listRect)
+		{
+			if (text->itemClass == "ocr_line")
+			{
+				ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
+				CRgbaquad color = CRgbaquad(255, 255, 255);
+				uint8_t * data = bitmapBackground->GetPtBitmap();
+				int maxY = bboxText->rect.y + bboxText->rect.height;
+				int maxX = bboxText->rect.x + bboxText->rect.width;
+				for (int y = bboxText->rect.y; y < maxY; y++)
+				{
+					for (int x = bboxText->rect.x; x < maxX; x++)
+					{
+						bitmapBackground->SetColorValue(x, y, color);
+					}
+				}
+			}
+		}
+		bitmapBackground->VertFlipBuf();
+		bitmapBackground->SaveToBmp("c:\\developpement\\test.bmp");
+		delete bitmapBackground;
+	}
 }
 
 void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
@@ -71,13 +105,17 @@ void COcrWnd::OnSelRead(wxCommandEvent& aEvent)
 	int id = aEvent.GetInt();
 	wxString label = "";
 
-	for (BBoxText * bboxText : listRect)
+	for (ChOcrElement * text : listRect)
 	{
-		if (id == bboxText->id)
+		if (text->itemClass == "ocr_line")
 		{
-			if (bboxText != nullptr)
-				label = bboxText->label;
-			break;
+			ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
+			if (id == bboxText->id)
+			{
+				if (bboxText != nullptr)
+					label = bboxText->label;
+				break;
+			}
 		}
 	}
 
@@ -134,17 +172,21 @@ void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_
 	int hpos = bitmapViewer->GetHPos();
 	int vpos = bitmapViewer->GetVPos();
 
-	for (BBoxText * bbox : listRect)
+	for (ChOcrElement * text : listRect)
 	{
-		if (bbox->selected)
+		if (text->itemClass == "ocr_line")
 		{
-			wxRect rcTemp;
-			rcTemp.x = XDrawingPosition(bbox->rect.x, hpos, bitmapViewer->GetRatio());
-			rcTemp.width = bbox->rect.width * bitmapViewer->GetRatio();
-			rcTemp.y = YDrawingPosition(bbox->rect.y, vpos, bitmapViewer->GetRatio());
-			rcTemp.height = bbox->rect.height * bitmapViewer->GetRatio();
+			ChOcrElementLine * bbox = (ChOcrElementLine *)text;
+			if (bbox->selected)
+			{
+				wxRect rcTemp;
+				rcTemp.x = XDrawingPosition(bbox->rect.x, hpos, bitmapViewer->GetRatio());
+				rcTemp.width = bbox->rect.width * bitmapViewer->GetRatio();
+				rcTemp.y = YDrawingPosition(bbox->rect.y, vpos, bitmapViewer->GetRatio());
+				rcTemp.height = bbox->rect.height * bitmapViewer->GetRatio();
 
-			CDraw::DessinerRectangleVide(dc, 2, rcTemp, wxColor(0, 0, 255, 0));
+				CDraw::DessinerRectangleVide(dc, 2, rcTemp, wxColor(0, 0, 255, 0));
+			}
 		}
 	}
 }
@@ -172,13 +214,17 @@ void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
 	int id = aEvent.GetInt();
 	int checked = aEvent.GetExtraLong();
 
-	for (BBoxText * bboxText : listRect)
+	for (ChOcrElement * text : listRect)
 	{
-		if (id == bboxText->id)
+		if (text->itemClass == "ocr_line")
 		{
-			if (bboxText != nullptr)
-				bboxText->selected = checked;
-			break;
+			ChOcrElementLine * bboxText = (ChOcrElementLine *)text;
+			if (id == bboxText->id)
+			{
+				if (bboxText != nullptr)
+					bboxText->selected = checked;
+				break;
+			}
 		}
 	}
 	//GenerateLayerBitmap();
@@ -210,33 +256,42 @@ void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString langua
 	wxFileName fullpath(outputFile);
 	wxString extension = fullpath.GetExt();    
     
+	if (extension == "odt")
+	{
+		/*
+		CExportOdt exportOdt;
+		pageInfo->resolution = 72;
+		bool value = exportOdt.Export(pageInfo, listRect, outputFile);
+		*/
+	}
+	else
+	{
+		int i = 0;
+		char * args[8];
+		args[i++] = new char[255];
+		args[i] = new char[255];
+		strcpy(args[i++], bitmapFile);
+		args[i] = new char[255];
+		strcpy(args[i++], outputFile);
+		args[i] = new char[255];
+		strcpy(args[i++], "-l");
+		args[i] = new char[255];
+		strcpy(args[i++], language);
+		args[i] = new char[255];
+		strcpy(args[i++], "--tessdata-dir");
+		args[i] = new char[255];
+		strcpy(args[i++], resourcePath);
+		args[i] = new char[255];
+		strcpy(args[i++], extension);
+		wxString error = "";
+		int failed = CExportOcr::ExportOcr(8, args, error);
 
-    
-	int i = 0;
-	char * args[8];
-	args[i++] = new char[255];
-	args[i] = new char[255];
-	strcpy(args[i++], bitmapFile);
-	args[i] = new char[255];
-	strcpy(args[i++], outputFile);
-	args[i] = new char[255];
-	strcpy(args[i++], "-l");
-	args[i] = new char[255];
-	strcpy(args[i++], language);
-	args[i] = new char[255];
-	strcpy(args[i++], "--tessdata-dir");
-	args[i] = new char[255]; 
-	strcpy(args[i++], resourcePath);
-	args[i] = new char[255];
-	strcpy(args[i++], extension);
-	wxString error = "";
-	int failed = CExportOcr::ExportOcr(8, args, error);
-	
-	for (int i = 0; i < 8; i++)
-		delete[] args[i];   
-        
-    
-    wxRename(outputFile + "." + extension, outputFile);
+		for (int i = 0; i < 8; i++)
+			delete[] args[i];
+
+
+		wxRename(outputFile + "." + extension, outputFile);
+	}
 }
 
 void COcrWnd::OnOcrPDF(wxCommandEvent& event)
@@ -252,6 +307,7 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 
 	wxString preprocess = CFileUtility::GetTempFile("preprocess.bmp", false);
 
+	//wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr | Odt files (*.odt) | *.odt", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	wxFileDialog saveFileDialog(this, _("Export OCR to ... "), "", "", "PDF files (*.pdf)|*.pdf | TXT files (*.txt)|*.txt | boxfile files (*.boxfile) | *.boxfile | hOcr files (*.hocr) | *.hocr", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (saveFileDialog.ShowModal() == wxID_CANCEL)
 		return;     // the user changed idea...
@@ -262,6 +318,28 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
     OcrToPDF(preprocess, newfilename, language);
 }
 
+wxRect COcrWnd::FindRect(wxString ocr_title)
+{
+	wxRect rect;
+	vector<wxString> listLabel = CConvertUtility::split(ocr_title, ';');
+	for (wxString text : listLabel)
+	{
+		int pos = text.Find("bbox");
+		if (pos != -1)
+		{
+			int sizebbox = 5;
+			wxString coord = text.substr(pos + sizebbox, text.length() - pos + sizebbox);
+			vector<wxString> listCoord = CConvertUtility::split(coord, ' ');
+			rect.x = atoi(listCoord[0]);
+			rect.y = atoi(listCoord[1]);
+			rect.width = atoi(listCoord[2]) - rect.x;
+			rect.height = atoi(listCoord[3]) - rect.y;
+			break;
+		}
+	}
+	return rect;
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //Loading Parameter
@@ -269,6 +347,18 @@ void COcrWnd::OnOcrPDF(wxCommandEvent& event)
 void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 {
 	int id = 0;
+
+	if (pageInfo != nullptr)
+		delete pageInfo;
+
+	for (ChOcrElement * element : listRect)
+	{
+		if (element != nullptr)
+			delete element;
+	}
+
+	listRect.clear();
+
 	//wxTreeItemId rootId = treeCtrl->AddRoot("Text");
 	xml_document<> doc;
 	// Read the xml file into a vector
@@ -291,6 +381,22 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 			xml_node<> * div_node = body_node->first_node("div");
 			if (div_node != 0)
 			{
+				xml_attribute<char> * libelle = div_node->first_attribute("class");
+				if (libelle != 0)
+				{
+					string ocr_libelle = libelle->value();
+					if (ocr_libelle == "ocr_page")
+					{
+						pageInfo = new CPage();
+						xml_attribute<> * libelleTitle = div_node->first_attribute("title");
+						if (libelleTitle != 0)
+						{
+							wxString ocr_title = libelleTitle->value();
+							pageInfo->rect = FindRect(ocr_title);
+							pageInfo->resolution = 300;
+						}
+					}
+				}
 				xml_node<> * divchild_node = div_node->first_node("div");
 
 				if (divchild_node != 0)
@@ -300,6 +406,23 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 						xml_node<> * p_node = divchild_node->first_node("p");
 						if (p_node != 0)
 						{
+							xml_attribute<char> * libelle = p_node->first_attribute("class");
+							if (libelle != 0)
+							{
+								string ocr_libelle = libelle->value();
+								if (ocr_libelle == "ocr_par")
+								{
+									ChOcrElementPar * elementPar = new ChOcrElementPar();
+									xml_attribute<> * libelleTitle = p_node->first_attribute("title");
+									if (libelleTitle != 0)
+									{
+										wxString ocr_title = libelleTitle->value();
+										elementPar->rect = FindRect(ocr_title);
+										listRect.push_back(elementPar);
+									}
+								}
+							}
+
 							do
 							{
 								xml_node<> * spanligne_node = p_node->first_node("span");
@@ -313,17 +436,17 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 											string ocr_libelle = libelle->value();
 											if (ocr_libelle == "ocr_line" || ocr_libelle == "ocr_header")
 											{
-												BBoxText * bboxText = new BBoxText();
+												//BBoxText * bboxText = new BBoxText();
+
+												ChOcrElementLine * elementTitle = new ChOcrElementLine();
 												xml_attribute<> * libelleTitle = spanligne_node->first_attribute("title");
-												string value = libelleTitle->value();
-												vector<wxString> bboxVector = CConvertUtility::split(value, ';');
-												wxString bbox = bboxVector[0];
-												vector<wxString> coordonneeVector = CConvertUtility::split(bbox, ' ');
-												bboxText->rect.x = atoi(coordonneeVector[1]);
-												bboxText->rect.y = atoi(coordonneeVector[2]);
-												bboxText->rect.width = atoi(coordonneeVector[3]) - bboxText->rect.x;
-												bboxText->rect.height = atoi(coordonneeVector[4]) - bboxText->rect.y;
-												bboxText->selected = true;
+												if (libelleTitle != 0)
+												{
+													wxString ocr_title = libelleTitle->value();
+													elementTitle->rect = FindRect(ocr_title);
+												}
+
+												elementTitle->selected = true;
 												wxString libelle;
 												xml_node<> * spanword_node = spanligne_node->first_node("span");
 												if (spanword_node != 0)
@@ -342,21 +465,18 @@ void COcrWnd::LoadOcrBoxFile(wxString boxfile)
 													} while (spanword_node != 0);
 												}
 
-												bboxText->numLigne = numLigne;
-												bboxText->label = libelle;
+												elementTitle->numLigne = numLigne;
+												elementTitle->label = libelle;
 
 												if (libelle != "")
 												{
-													//wxTreeItemId treeid = treeCtrl->AppendItem(rootId, bboxText->label, -1, -1, bboxText);
-													//treeCtrl->SetItemHasChildren(treeid);
-													//treeCtrl->MakeCheckable(treeid, true);
-													bboxText->id = id++;
-													listRect.push_back(bboxText);
+													elementTitle->id = id++;
+													listRect.push_back(elementTitle);
 													numLigne++;
 												}
 												else
 												{
-													delete bboxText;
+													delete elementTitle;
 												}
 											}
 										}
@@ -535,10 +655,13 @@ wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
 
 	exportPdf = new wxButton(panel, ID_BUT_OCRPDF, _("&Export To File ..."));
 	ocrPdf = new wxButton(panel, ID_BUT_OCR, _("&OCR"));
+	//exportImage = new wxButton(panel, ID_BUT_EXPORT, _("&Export"));
 	gsizer->Add(ocrPdf, wxGBPosition(row, 2), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	gsizer->Add(exportPdf, wxGBPosition(row, 3), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
+	//gsizer->Add(exportImage, wxGBPosition(row, 4), wxDefaultSpan, wxALIGN_CENTER_VERTICAL | wxEXPAND);
 	exportPdf->Enable(false);
 	ocrPdf->Enable(true);
+	//exportImage->Enable(true);
 	panel->SetSizer(sizer);
 	sizer->SetSizeHints(panel);
 	return panel;

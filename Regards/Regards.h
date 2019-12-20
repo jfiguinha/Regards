@@ -120,6 +120,8 @@ using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Viewer;
 
+#ifdef RENDEROPENGL
+
 #include <GL/glew.h>
 #if defined(_WIN32)
 #include <GL/wglew.h>
@@ -148,6 +150,12 @@ GLXEWContext _glxewctx;
 
 #include <wx/glcanvas.h>
 int args[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_DEPTH_SIZE, 16, 0 };
+#else
+
+COpenCLEngine * openCLEngine = nullptr;
+COpenCLContext * openclContext = nullptr;
+
+#endif
 
 // c: pointer to original argc
 // v: pointer to original argv

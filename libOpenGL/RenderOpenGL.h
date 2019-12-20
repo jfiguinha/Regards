@@ -2,7 +2,7 @@
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
-
+#ifdef RENDEROPENGL
 #pragma once
 #include <GLTexture.h>
 #include <GLSLShader.h>
@@ -10,7 +10,7 @@
 #include <EffectParameter.h>
 using namespace Regards::OpenGL;
 
-#define RENDEROPENGL WM_USER+1
+//#define RENDEROPENGL WM_USER+1
 
 class CRegardsBitmap;
 
@@ -67,3 +67,5 @@ namespace Regards
 		};
 	}
 }
+
+#endif

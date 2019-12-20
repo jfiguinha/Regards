@@ -111,6 +111,8 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 
 }
 
+#ifdef RENDEROPENGL
+
 void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	cl_int err;
@@ -168,3 +170,5 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		rcOut.y = (bmpViewer->GetHeight() - rcOut.height) / 2;
 	}
 }
+
+#endif

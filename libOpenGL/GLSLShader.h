@@ -1,3 +1,4 @@
+#ifdef RENDEROPENGL
 #pragma once
 #include "GLSLParameter.h"
 
@@ -50,3 +51,5 @@ namespace Regards
 		};
 	}
 }
+
+#endif

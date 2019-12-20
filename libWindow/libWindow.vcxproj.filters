@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{42ce0cb4-d751-4cc4-a51b-bb27dd8f3900}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{d79d6a29-b792-48b2-b0bc-2f0c8aacab14}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -31,9 +34,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="BitmapInterface.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="CalendarDialogBox.h">
@@ -183,6 +183,9 @@
     <ClInclude Include="wxImagePanel.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="BitmapWnd.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -192,9 +195,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="BitmapInfosGps.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapWnd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CalendarDialogBox.cpp">
@@ -322,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="wxImagePanel.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapWnd.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

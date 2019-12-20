@@ -27,12 +27,17 @@
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace Regards::exiv2;
+
 const float CBitmapWnd::TabRatio[] = { 0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f, 1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f};
 const long CBitmapWnd::Max = 27;
 
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
 
+#ifndef RENDEROPENGL
+extern COpenCLEngine * openCLEngine;
+extern COpenCLContext * openclContext;
+#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -40,19 +45,26 @@ const long CBitmapWnd::Max = 27;
 
 CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID idMain, const CThemeBitmapWindow & theme)
 //	: CWindowMain(parent, id)
+#ifdef RENDEROPENGL
 : CWindowOpenGLMain("CBitmapWnd", parent, id)
+#else
+: CWindowMain("CBitmapWnd", parent, id)
+#endif
 {
+#ifdef RENDEROPENGL
 	glTexture = nullptr;
+	openCLEngine = nullptr;
 	renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
 #ifdef WIN32
     renderOpenGL->Init(this);
 #endif 
+#endif
 	idWindowMain = idMain;
 	//bitmap = nullptr;
 	sliderInterface = nullptr;
 	config = nullptr;
     updateContext = true;
-    openCLEngine = nullptr;
+    
 	filtreEffet = nullptr;
 	flipVertical = 0;
 	flipHorizontal = 0;
@@ -188,13 +200,14 @@ CBitmapWnd::~CBitmapWnd(void)
 		delete filtreEffet;
 	filtreEffet = nullptr;
 
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-	openCLEngine = nullptr;
-
+#ifdef RENDEROPENGL
 	if(renderOpenGL != nullptr)
 		delete renderOpenGL;
 
+	if (openCLEngine != nullptr)
+		delete openCLEngine;
+	openCLEngine = nullptr;
+#endif
 }
 
 void CBitmapWnd::SetKey(const int &iKey)
@@ -1429,6 +1442,8 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	}
 }
 
+#ifdef RENDEROPENGL
+
 void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
@@ -1687,6 +1702,173 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
    
 }
 
+#else
+
+void CBitmapWnd::RenderToScreenWithOpenCLSupport(wxDC * dc)
+{
+	CRgbaquad color;
+
+#ifdef __WXGTK__
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	if (width == 0 || height == 0)
+		return;
+
+	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+
+
+	muBitmap.lock();
+
+	if (openCLEngine != nullptr && source != nullptr)
+	{
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+
+		filtreEffet = new CFiltreEffet(color, openclContext, source);
+	}
+
+
+	muBitmap.unlock();
+
+	bool update = false;
+	UpdateScrollBar(update);
+
+	wxImage picture;
+
+	if (bitmapLoad && width > 0 && height > 0)
+	{
+		int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+		int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+
+		if (widthOutput < 0 || heightOutput < 0)
+			return;
+
+		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+		ApplyPreviewEffect(widthOutput, heightOutput);
+
+		picture = filtreEffet->GetwxImage();
+
+	}
+
+	if (picture.IsOk())
+	{
+		int x = (width - picture.GetWidth()) / 2;
+		int y = (height - picture.GetHeight()) / 2;
+		dc->DrawBitmap(picture, x, y);
+		xPosImage = x;
+		yPosImage = y;
+	}
+
+}
+
+void CBitmapWnd::RenderToScreenWithoutOpenCLSupport(wxDC * dc)
+{
+	CRgbaquad color;
+
+#ifdef __WXGTK__
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	if (width == 0 || height == 0)
+		return;
+
+	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
+	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+
+	wxImage picture;
+
+	if (source != nullptr && bitmapLoad)
+	{
+		//CRegardsBitmap* bitmapSpecial = nullptr;
+
+		if (filtreEffet != nullptr)
+			delete filtreEffet;
+
+		filtreEffet = new CFiltreEffet(color, nullptr, source);
+
+		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
+
+		ApplyPreviewEffect(widthOutput, heightOutput);
+
+		picture = filtreEffet->GetwxImage();
+	}
+
+	if (picture.IsOk())
+	{
+		int x = (width - picture.GetWidth()) / 2;
+		int y = (height - picture.GetHeight()) / 2;
+		dc->DrawBitmap(picture, x, y);
+		xPosImage = x;
+		yPosImage = y;
+	}
+}
+
+//-----------------------------------------------------------------
+//Dessin de l'image
+//-----------------------------------------------------------------
+void CBitmapWnd::OnPaint(wxPaintEvent& event)
+{
+	TRACE();
+	wxPaintDC dc(this);
+	wxBitmap localmemBitmap(width,height);
+	wxRect rc;
+	rc.x = 0;
+	rc.y = 0;
+	rc.width = width;
+	rc.height = height;
+	wxMemoryDC memDC(localmemBitmap);
+
+
+#if defined(WIN32) && defined(_DEBUG)
+	DWORD tickCount = GetTickCount();
+	OutputDebugString(L"OnPaint\n");
+#endif
+
+	printf("CBitmapWnd OnPaint \n");
+
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+	
+	FillRect(&memDC, rc, themeBitmap.colorBack);
+
+	if (!supportOpenCL)
+		RenderToScreenWithoutOpenCLSupport(&memDC);
+	else
+		RenderToScreenWithOpenCLSupport(&memDC);
+
+	AfterRender(&memDC);
+
+	memDC.SelectObject(wxNullBitmap);
+
+	dc.DrawBitmap(localmemBitmap, 0, 0);
+
+	printf("CBitmapWnd End OnPaint \n");
+	//scrollbar->SetPosition(posLargeur, posHauteur);
+
+#if defined(WIN32) && defined(_DEBUG)
+	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
+	DWORD Result = LasttickCount - tickCount;
+
+	wchar_t Temp[10];
+	swprintf_s(Temp, L"%d", Result);
+	OutputDebugString(L"Render Time : ");
+	OutputDebugString(Temp);
+	OutputDebugString(L"\n");
+#endif
+
+
+}
+
+#endif
 
 void CBitmapWnd::RefreshWindow()
 {

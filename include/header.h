@@ -9,6 +9,7 @@
 #define EXIV2
 #define FFMPEG
 #define USECURL
+#define RENDEROPENGL
 //#define WX_PRECOMP
 
 #include <thread>

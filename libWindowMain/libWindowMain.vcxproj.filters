@@ -33,6 +33,9 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="WindowOpenGLMain.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowUtility.cpp">

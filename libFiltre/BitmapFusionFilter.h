@@ -26,7 +26,9 @@ namespace Regards
 			~CBitmapFusionFilter();
 			int GetTypeFilter();
 			CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut);
+#ifdef RENDEROPENGL
 			void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut);
+#endif
 		private:
 
 			CRegardsBitmap * bitmapOutCopy;

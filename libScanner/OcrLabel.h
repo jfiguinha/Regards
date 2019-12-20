@@ -14,7 +14,7 @@ namespace Regards
 			COcrLabel(CTreeElementControlInterface * interfaceControl, int idWindow);
 			~COcrLabel();
 
-			void Init(vector<BBoxText *> &labelList);
+			void Init(vector<ChOcrElement *> &labelList);
 			void SetActifElement(const wxString &key);
             void UpdateScreenRatio();
 			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};

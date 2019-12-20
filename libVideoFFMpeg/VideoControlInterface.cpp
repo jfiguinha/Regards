@@ -37,6 +37,8 @@ void CVideoControlInterface::calculate_display_rect(wxRect *rect, int scr_xleft,
 	rect->height = FFMAX(height, 1);
 }
 
+#ifdef RENDEROPENGL
+
 GLTexture * CVideoControlInterface::RenderToTexture(CRegardsBitmap * bitmap)
 {
     GLTexture * glTexture = new GLTexture();
@@ -130,7 +132,7 @@ GLTexture * CVideoControlInterface::RenderFFmpegToTexture()
 
     return glTexture;
 }
-
+#endif
 
 void CVideoControlInterface::Rotate90()
 {
@@ -293,7 +295,7 @@ void CVideoControlInterface::CopyFrame(AVFrame * frame)
 //-------------------------------------------------------------------------------------------------
 //
 //-------------------------------------------------------------------------------------------------
-
+#ifdef RENDEROPENGL
 GLTexture * CVideoControlInterface::RenderToGLTexture()
 {
     // printf("RenderToBitmap  \n"); 
@@ -343,3 +345,100 @@ GLTexture * CVideoControlInterface::RenderToGLTexture()
     
     return glTexture;
 }
+#else
+
+CRegardsBitmap * CVideoControlInterface::GenerateBitmap(COpenCLEffectVideo * openclEffect)
+{
+	muVideoEffect.lock();
+	int bicubic = videoEffectParameter.BicubicEnable;
+	muVideoEffect.unlock();
+	wxRect rect;
+
+	if (angle == 90 || angle == 270)
+	{
+		calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+		openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
+	}
+	else
+	{
+		calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+		openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
+	}
+	muVideoEffect.lock();
+	openclEffect->ApplyVideoEffect(&videoEffectParameter);
+	muVideoEffect.unlock();
+	CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
+	return bitmap;
+}
+
+CRegardsBitmap * CVideoControlInterface::RenderToBitmap(COpenCLEffectVideo * openclEffect)
+{
+	// printf("RenderToBitmap  \n"); 
+	std::clock_t start;
+	start = std::clock();
+	double duration;
+	CRegardsBitmap * picture = nullptr;
+	if (!isffmpegDecode)
+	{
+
+		printf("VideoControl Is use_opencl \n");
+		if (openclEffect != nullptr && openclEffect->IsOk())
+		{
+			muBitmap.lock();
+			picture = GenerateBitmap(openclEffect);
+			muBitmap.unlock();
+		}
+
+		deleteTexture = false;
+	}
+	else
+	{
+		muBitmap.lock();
+		picture = ffmpegToBitmap->ConvertFrameToBitmapWithInterpolation(angle);
+		muBitmap.unlock();
+		deleteTexture = false;
+	}
+
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+	//std::cout<<"RenderToBitmap Time Execution: "<< duration <<'\n';
+
+	return picture;
+}
+
+
+CRegardsBitmap * CVideoControlInterface::RenderToBitmap()
+{
+	// printf("RenderToBitmap  \n"); 
+	std::clock_t start;
+	start = std::clock();
+	double duration;
+	CRegardsBitmap * picture = nullptr;
+	if (!isffmpegDecode)
+	{
+
+		printf("VideoControl Is use_opencl \n");
+		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
+		{
+			muBitmap.lock();
+			picture = GenerateBitmap(openclEffectYUV);
+			muBitmap.unlock();
+		}
+
+		deleteTexture = false;
+	}
+	else
+	{
+		muBitmap.lock();
+		picture = ffmpegToBitmap->ConvertFrameToBitmapWithInterpolation(angle);
+		muBitmap.unlock();
+		deleteTexture = false;
+	}
+
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+
+	//std::cout<<"RenderToBitmap Time Execution: "<< duration <<'\n';
+
+	return picture;
+}
+#endif

@@ -20,7 +20,7 @@ namespace Regards
 			COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int idWindow);
             ~COcrLabelWnd(void);
 			void Init();
-            void Update(vector<BBoxText *> &labelList);
+            void Update(vector<ChOcrElement *> &labelList);
             
         private:
 			int idWindow;

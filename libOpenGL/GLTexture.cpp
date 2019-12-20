@@ -1,4 +1,5 @@
 #include <header.h>
+#ifdef RENDEROPENGL
 #include "GLTexture.h"
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
@@ -134,6 +135,7 @@ bool GLTexture::Create(const int &nWidth, const int &nHeight, uint8_t * pbyData)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, nWidth, nHeight, 0, format, GL_UNSIGNED_BYTE, pbyData);
 	
 	/*
@@ -185,3 +187,5 @@ void GLTexture::Enable()
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, m_nTextureID );
 }
+
+#endif

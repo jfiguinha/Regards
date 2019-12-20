@@ -1181,7 +1181,7 @@ HtmlOutputDev::HtmlOutputDev(Catalog *catalogA, const char *fileName, const char
     {
       fprintf(page, "<?xml version=\"1.0\" encoding=\"%s\"?>\n", htmlEncoding->c_str());
       fputs("<!DOCTYPE pdf2xml SYSTEM \"pdf2xml.dtd\">\n\n", page);
-      fprintf(page,"<pdf2xml producer=\"%s\" version=\"%s\">\n", PACKAGE_NAME, PACKAGE_VERSION);
+      fprintf(page,"<pdf2xml producer=\"%s\" version=\"%s\">\n", "Poppler", "0.81");
     } 
     else 
     {

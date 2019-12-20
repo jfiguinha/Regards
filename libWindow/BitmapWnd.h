@@ -1,12 +1,18 @@
 #pragma once
 
+//#define RENDEROPENGL
+
 #include "WindowMain.h"
+#ifdef RENDEROPENGL
 #include "WindowOpenGLMain.h"
+#endif
 #include <RegardsConfigParam.h>
 #include <OpenCLEngine.h>
 #include <theme.h>
 #include "ScrollInterface.h"
+#ifdef RENDEROPENGL
 #include "RenderBitmapInterfaceOpenGL.h"
+#endif
 #include "SliderInterface.h"
 #include <BitmapDisplay.h>
 using namespace std;
@@ -24,7 +30,11 @@ namespace Regards
 {
 	namespace Window
 	{
+#ifdef RENDEROPENGL
 		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface, public IBitmapDisplay
+#else
+		class CBitmapWnd : public CWindowMain, public CScrollInterface, public IBitmapDisplay
+#endif
 		{
 		public:
 			CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface* slider, wxWindowID idMain, const CThemeBitmapWindow& theme);
@@ -105,7 +115,11 @@ namespace Regards
 		protected:
 
 			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput) {};
+#ifdef RENDEROPENGL
 			virtual void AfterRender() {};
+#else
+			virtual void AfterRender(wxDC * dc) {};
+#endif
 			int UpdateResized();
 			void Update();
 			virtual bool NeedAfterRenderBitmap() { return false; };
@@ -130,8 +144,13 @@ namespace Regards
 #ifdef KeyPress
 #undef KeyPress
 #endif			
+#ifdef RENDEROPENGL
 			void RenderToScreenWithOpenCLSupport();
 			void RenderToScreenWithoutOpenCLSupport();
+#else
+			void RenderToScreenWithOpenCLSupport(wxDC * dc);
+			void RenderToScreenWithoutOpenCLSupport(wxDC * dc);
+#endif
 			void RefreshWindow();
 			//virtual CRegardsBitmap* RenderSpecialEffect() { return nullptr; };
             virtual void KeyPress(const int &key){};
@@ -204,12 +223,15 @@ namespace Regards
 			CThemeBitmapWindow themeBitmap;
 			CRegardsConfigParam * config;
 
-			COpenCLEngine * openCLEngine;
-			COpenCLContext * openclContext;
+
 			CFiltreEffet * filtreEffet;
 			int filterInterpolation;
+#ifdef RENDEROPENGL
 			CRenderBitmapInterfaceOpenGL * renderOpenGL;
 			GLTexture * glTexture;
+			COpenCLEngine * openCLEngine;
+			COpenCLContext * openclContext;
+#endif
 			//bool isOpenGL;
 
 			int orientation;

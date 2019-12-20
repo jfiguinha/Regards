@@ -49,7 +49,14 @@ namespace Regards
 
 		private:
 			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
-			void AfterRender();
+#ifdef RENDEROPENGL
+			virtual void AfterRender();
+#else
+			void LoadingResource(const double & scale_factor);
+			virtual void AfterRender(wxDC * dc);
+			void ShowArrowPrevious(wxDC * memDC);
+			void ShowArrowNext(wxDC * memDC);
+#endif
 			void SetDessinRatio();
 			void DeterminePos(wxRect &rc, const int &nTailleAffichageWidth, const int &nTailleAffichageHeight, int &left, int &top);
 			
@@ -98,7 +105,9 @@ namespace Regards
 			bool invertColor;
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
+#ifdef RENDEROPENGL
 			GLTexture * pictureNext;
+#endif
 			IMouseUpdate * mouseUpdate;
 
 		};

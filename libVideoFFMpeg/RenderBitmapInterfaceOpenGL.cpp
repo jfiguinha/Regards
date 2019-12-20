@@ -3,6 +3,7 @@
 // ou les fichiers Include spécifiques aux projets qui sont utilisés fréquemment,
 // et sont rarement modifiés
 //
+#ifdef RENDEROPENGL
 #include "RenderBitmapInterfaceOpenGL.h"
 #include <ConfigParam.h>
 #include <GLSLShader.h>
@@ -306,3 +307,5 @@ GLTexture * CRenderBitmapInterfaceOpenGL::GetVideoTexturePt()
 	return textureVideo;
 }
 
+
+#endif
