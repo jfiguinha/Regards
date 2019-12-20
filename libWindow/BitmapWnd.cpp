@@ -1094,35 +1094,7 @@ void CBitmapWnd::OnSize(wxSizeEvent& event)
     int _width =  event.GetSize().GetX();
     int _height =  event.GetSize().GetY();
 
-#ifdef RENDEROPENGL
 
-	if (renderOpenGL == nullptr)
-	{
-		renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
-
-		//Now we have a context, retrieve pointers to OGL functions
-		renderOpenGL->Init(this);
-
-		if (openCLEngine == nullptr)
-		{
-			openCLEngine = new COpenCLEngine();
-			if (openCLEngine != nullptr)
-				openclContext = openCLEngine->GetInstance();
-
-			renderOpenGL->LoadingResource(scale_factor);
-		}
-
-		//Some GPUs need an additional forced paint event
-
-
-		PostSizeEvent();
-	}
-
-	// This is normally only necessary if there is more than one wxGLCanvas
-	// or more than one wxGLContext in the application.
-	renderOpenGL->SetCurrent(*this);
-
-#endif
 
 	if (_width == 20 && _height == 20)
 	{
@@ -1660,6 +1632,36 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	if (height < 1)
 		return;
+
+	if (renderOpenGL == nullptr)
+	{
+		renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+
+		//Now we have a context, retrieve pointers to OGL functions
+		renderOpenGL->Init(this);
+
+    #ifdef __WXGTK__
+        double scale_factor = GetContentScaleFactor();
+    #else
+        double scale_factor = 1.0f;
+    #endif 
+
+        renderOpenGL->LoadingResource(scale_factor);
+	}
+
+	// This is normally only necessary if there is more than one wxGLCanvas
+	// or more than one wxGLContext in the application.
+	renderOpenGL->SetCurrent(*this);
+    
+
+    if (openCLEngine == nullptr)
+    {
+        openCLEngine = new COpenCLEngine();
+        if (openCLEngine != nullptr)
+            openclContext = openCLEngine->GetInstance();
+
+        
+    }
 
         
     #if defined(WIN32) && defined(_DEBUG)

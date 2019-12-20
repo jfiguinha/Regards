@@ -79,8 +79,6 @@ private:
 	void OnIdle(wxIdleEvent& evt);
 	void OnShowFPS(wxTimerEvent& event);
     void Resize();
-	void OnSize(wxSizeEvent& event);
-
     
 	bool subtilteUpdate;
 	thread * threadVideo;

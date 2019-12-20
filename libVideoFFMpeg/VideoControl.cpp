@@ -121,55 +121,6 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 	openclEffectYUV = nullptr;
 }
 
-
-//------------------------------------------------------------------------------------
-//Agrandissement de la fenête
-//------------------------------------------------------------------------------------
-void CVideoControl::OnSize(wxSizeEvent& event)
-{
-	TRACE();
-
-#ifdef __WXGTK__        
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-
-	int _width = event.GetSize().GetX();
-	int _height = event.GetSize().GetY();
-
-#ifdef RENDEROPENGL
-
-	if (renderBitmapOpenGL == nullptr)
-	{
-		renderBitmapOpenGL = new CRenderBitmapInterfaceOpenGL(this);
-
-		//Now we have a context, retrieve pointers to OGL functions
-		renderBitmapOpenGL->Init(this);
-
-		if (openCLEngine == nullptr)
-		{
-			openCLEngine = new COpenCLEngine();
-			if (openCLEngine != nullptr)
-				openclContext = openCLEngine->GetInstance();
-		}
-
-		//Some GPUs need an additional forced paint event
-
-
-		PostSizeEvent();
-	}
-
-	// This is normally only necessary if there is more than one wxGLCanvas
-	// or more than one wxGLContext in the application.
-	renderBitmapOpenGL->SetCurrent(*this);
-
-#endif
-
-	this->ProcessOnSizeEvent(event);
-}
-
 void CVideoControl::VideoRotation(wxCommandEvent& event)
 {
 	long rotation = event.GetExtraLong();
@@ -834,6 +785,31 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
 #endif
+
+
+#ifdef RENDEROPENGL
+
+	if (renderBitmapOpenGL == nullptr)
+	{
+		renderBitmapOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+
+		//Now we have a context, retrieve pointers to OGL functions
+		renderBitmapOpenGL->Init(this);
+	}
+
+	// This is normally only necessary if there is more than one wxGLCanvas
+	// or more than one wxGLContext in the application.
+	renderBitmapOpenGL->SetCurrent(*this);
+
+    if (openCLEngine == nullptr)
+    {
+        openCLEngine = new COpenCLEngine();
+        if (openCLEngine != nullptr)
+            openclContext = openCLEngine->GetInstance();
+    }
+
+#endif
+
     printf("OnPaint CVideoControl begin \n"); 
        
     std::clock_t start;

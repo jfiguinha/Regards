@@ -102,7 +102,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 
 
 //------------------------------------------------------------------------------------
-//Agrandissement de la fenête
+//Agrandissement de la fenÃªte
 //------------------------------------------------------------------------------------
 void CVideoControlSoft::OnSize(wxSizeEvent& event)
 {
@@ -118,33 +118,7 @@ void CVideoControlSoft::OnSize(wxSizeEvent& event)
 	int _width = event.GetSize().GetX();
 	int _height = event.GetSize().GetY();
 
-#ifdef RENDEROPENGL
 
-	if (renderBitmapOpenGL == nullptr)
-	{
-		renderBitmapOpenGL = new CRenderBitmapInterfaceOpenGL(this);
-
-		//Now we have a context, retrieve pointers to OGL functions
-		renderBitmapOpenGL->Init(this);
-
-		if (openCLEngine == nullptr)
-		{
-			openCLEngine = new COpenCLEngine();
-			if (openCLEngine != nullptr)
-				openclContext = openCLEngine->GetInstance();
-		}
-
-		//Some GPUs need an additional forced paint event
-
-
-		PostSizeEvent();
-	}
-
-	// This is normally only necessary if there is more than one wxGLCanvas
-	// or more than one wxGLContext in the application.
-	renderBitmapOpenGL->SetCurrent(*this);
-
-#endif
 
 	this->ProcessOnSizeEvent(event);
 }
@@ -428,7 +402,26 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
+    
+#ifdef RENDEROPENGL
+
+	if (renderBitmapOpenGL == nullptr)
+	{
+		renderBitmapOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+
+		//Now we have a context, retrieve pointers to OGL functions
+		renderBitmapOpenGL->Init(this);
+	}
+
 	renderBitmapOpenGL->SetCurrent(*this);
+    
+
+    if (openCLEngine == nullptr)
+    {
+        openCLEngine = new COpenCLEngine();
+        if (openCLEngine != nullptr)
+            openclContext = openCLEngine->GetInstance();
+    }
 #endif 
 
     std::clock_t start;
