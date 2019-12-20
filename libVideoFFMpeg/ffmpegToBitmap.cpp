@@ -139,30 +139,7 @@ void CffmpegToBitmap::createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, 
 }
 
 
-void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
-{
-     
-    if(imageToDisplay != nullptr && src_frame != nullptr)
-    {
-        printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
-        
-        sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
-              convertedFrame->data, convertedFrame->linesize);
 
-        int width = thumbnailWidth;
-        int height = thumbnailHeight;
-        int lineSize = convertedFrame->linesize[0];
-
-        uint8_t *tmp_ptr = imageToDisplay->GetData();
-
-        for(int y=0; y<height; y++) 
-        {
-            memcpy(tmp_ptr+y*width*3, 
-                convertedFrame->data[0]+y*convertedFrame->linesize[0], 
-                width*3);
-        }        
-    }
-}
 
 void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
 {
@@ -214,6 +191,32 @@ GLTexture * CffmpegToBitmap::ConvertFrameToOpenGLTexutreWithInterpolation(const 
     return glTexture;
 }
 #else
+
+void CffmpegToBitmap::ConvertFrameWithInterpolation(wxImage * imageToDisplay, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight)
+{
+     
+    if(imageToDisplay != nullptr && src_frame != nullptr)
+    {
+        printf("thumbnail bitmap width %d height %d \n", thumbnailWidth, thumbnailHeight);
+        
+        sws_scale(scaleContext, src_frame->data, src_frame->linesize, 0, src_frame->height,
+              convertedFrame->data, convertedFrame->linesize);
+
+        int width = thumbnailWidth;
+        int height = thumbnailHeight;
+        int lineSize = convertedFrame->linesize[0];
+
+        uint8_t *tmp_ptr = imageToDisplay->GetData();
+
+        for(int y=0; y<height; y++) 
+        {
+            memcpy(tmp_ptr+y*width*3, 
+                convertedFrame->data[0]+y*convertedFrame->linesize[0], 
+                width*3);
+        }        
+    }
+}
+
 CRegardsBitmap * CffmpegToBitmap::ConvertFrameToBitmapWithInterpolation(const int &angle)
 {
 	CRegardsBitmap * picture = nullptr;

@@ -534,27 +534,44 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 #else
 
 	wxPaintDC dc(this);
+    
+	wxBitmap localmemBitmap(width,height);
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
 	rc.width = width;
 	rc.height = height;
-	FillRect(&dc, rc, wxColor(0, 0, 0));
+	wxMemoryDC memDC(localmemBitmap);    
+	FillRect(&memDC, rc, wxColor(0, 0, 0));
 	if (videoRenderStart)
 	{
 		CRegardsBitmap * bitmap = RenderToBitmap();
-		
-		CImageLoadingFormat image;
-		image.SetPicture(bitmap);
-		wxImage * picture = image.GetwxImage();
+		if(bitmap != nullptr)
+        {
+            CImageLoadingFormat image;
+            image.SetPicture(bitmap);
+            wxImage * picture = image.GetwxImage();
 
-		int x = (width - picture->GetWidth()) / 2;
-		int y = (height - picture->GetHeight()) / 2;
+            int x = (width - picture->GetWidth()) / 2;
+            int y = (height - picture->GetHeight()) / 2;
 
-		dc.DrawBitmap(*picture, x, y);
+            memDC.DrawBitmap(picture->Mirror(false), x, y);
+            //memDC.DrawBitmap(*picture, x, y);
 
-		delete picture;
+            delete picture;
+        }
 	}
+    
+	memDC.SelectObject(wxNullBitmap);
+
+    if(scale_factor != 1.0)
+    {
+        wxImage image = localmemBitmap.ConvertToImage();
+        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
+        dc.DrawBitmap(resized, 0, 0);
+    }
+    else
+        dc.DrawBitmap(localmemBitmap, 0, 0);
 
 #endif
 
