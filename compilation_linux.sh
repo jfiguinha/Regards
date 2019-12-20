@@ -16,7 +16,6 @@ sudo apt install libgtk-3-dev
 sudo apt install libwebkit2gtk-4.0
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
-sudo apt install mesa-opencl-icd
 sudo apt install git
 sudo apt install libturbojpeg-dev
 sudo apt install libsdl2-dev
@@ -32,6 +31,7 @@ sudo apt install ocl-icd-opencl-dev
 sudo apt install libopenjp2-7-dev
 sudo apt install libfftw3-dev
 sudo apt install libleptonica-dev
+sudo apt install libwebp-dev
 #sudo apt install ocl-icd-opencl-dev
 
 #Get AMD SDK
