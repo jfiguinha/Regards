@@ -32,6 +32,7 @@
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
   <Dependencies Name="Debug">
@@ -198,6 +199,7 @@
         <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
+        <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
@@ -243,7 +245,6 @@
         <Library Value="SqlData"/>
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
-        <Library Value="OpenGL"/>
         <Library Value="wx_gtk3u_gl-3.1.a"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
@@ -267,8 +268,6 @@
         <Library Value="swscale"/>
         <Library Value="xcb"/>
         <Library Value="xcb-shm"/>
-        <Library Value="xcb-xfixes"/>
-        <Library Value="xcb-shape"/>
         <Library Value="SM"/>
         <Library Value="SDL2"/>
         <Library Value="FaceRecognition"/>
@@ -311,7 +310,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../libPrint/Debug"/>
