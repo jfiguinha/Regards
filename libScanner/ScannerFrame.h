@@ -4,7 +4,9 @@
 #ifdef __WXMSW__
 #include <gdiplus.h>
 #else
+#ifndef __APPLE__
 #include <wx/wxscan.h>
+#endif
 #endif
 #include <MainInterface.h>
 #include <MainTheme.h>

@@ -12,12 +12,14 @@
 #define WXSCAN_H_INCLUDED
 
 // Define some macros for several scanning environments.
-#if defined( __UNIX_LIKE__ )
+#if defined( __UNIX_LIKE__ ) and not defined(__APPLE__)
 #   define __WXSCANSANE__   1
 #elif defined( __WXMSW__ )
 #   define wxScan           wxScanTwain
 #   define __WXSCANTWAIN__  1
 #endif
+
+
 
 // Include additional headers.
 #if __WXSCANSANE__

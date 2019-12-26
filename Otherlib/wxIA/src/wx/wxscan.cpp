@@ -10,10 +10,11 @@
 
 // Include headers.
 #include <header.h>
+
 #include <wx/wxscan.h>
 #include <map>
 #include <wx/progdlg.h>
-#if defined( __UNIX_LIKE__ )
+#if defined( __UNIX_LIKE__ ) and not defined(__APPLE__)
 
 #include <sane/saneopts.h>
 
@@ -700,5 +701,3 @@ bool wxScanSane::SaneGetDevices()
 //
 // ...
 #endif // __WXMSW__
-
-
