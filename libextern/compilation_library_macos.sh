@@ -1,5 +1,5 @@
 #!/bin/bash
-NBPROC=$(sysctl -n hw.physicalcpu)
+NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
 #Get libjasper
@@ -62,6 +62,7 @@ cd ..
 
 #decompression
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
+tar xf  fftw-3.3.8.tar.gz
 
 
 #Compile exiv2-0.26 :
@@ -131,6 +132,11 @@ cmake ../source
 make -j$NBPROC
 cd .. 
 cd .. 
+
+cd fftw-3.3.8
+./configure --enable-float
+make -j$NBPROC
+cd ..
 
 #Compille ffmpeg
 ./ffmpeg_build_macos.sh

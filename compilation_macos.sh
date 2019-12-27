@@ -1,22 +1,22 @@
 #!/bin/bash
-NBPROC=$(sysctl -n hw.physicalcpu)
+NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
 #update pacman
 brew update 
 brew upgrade
 xcode-select --install
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC llvm@7
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC pango 
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC git 
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC libexif 
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC OpenEXR
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC glew
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC coreutils
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC sane-backends
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC leptonica
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC libjpeg-turbo
-brew install -v HOMEBREW_MAKE_JOBS=$NBPROC fftw
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v pkgconfig
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v llvm@7
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v pango 
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v git 
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v libexif 
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v OpenEXR
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v glew
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v coreutils
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v leptonica
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v libjpeg-turbo
+#bHOMEBREW_MAKE_JOBS=$NBPROC rew install -v fftw
 #Install External Library
 cd libextern
 chmod +x compilation_library_macos.sh
