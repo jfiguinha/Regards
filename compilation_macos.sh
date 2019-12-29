@@ -9,13 +9,14 @@ xcode-select --install
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v pkgconfig
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v llvm@7
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v pango 
-HOMEBREW_MAKE_JOBS=$NBPROC brew install -v git 
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v libexif 
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v OpenEXR
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v glew
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v coreutils
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v leptonica
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v libjpeg-turbo
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v wget
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v unzip
 #bHOMEBREW_MAKE_JOBS=$NBPROC rew install -v fftw
 #Install External Library
 cd libextern
