@@ -10,7 +10,7 @@ mkdir build
 cd build
 cmake ../../aom -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
-make install
+sudo make install
 cd ..
 cd ..
 
