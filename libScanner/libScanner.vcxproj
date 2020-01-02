@@ -44,7 +44,6 @@
     <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
-    <ClCompile Include="uuid.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="viewerPDF.cpp" />
   </ItemGroup>
@@ -170,7 +169,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\libzip\lib;$(SolutionDir)libextern\libzip\win32;$(SolutionDir)libextern\libxml++-3.0.0;$(SolutionDir)libextern\libxml++-3.0.0\MSVC_Net2010\libxml++;$(SolutionDir)libextern\qpdf-master\include;..\otherlib\wxia\include;..\otherlib\wxia\wia;$(SolutionDir)libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;..\FaceRecognition;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource;..\libextern\libjpeg-turbo-1.5.1</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)libextern\qpdf-master\include;..\otherlib\wxia\include;..\otherlib\wxia\wia;$(SolutionDir)libextern\poppler_windows-master\cpp;$(SolutionDir)libextern\poppler_windows-master\build\poppler;$(SolutionDir)libextern\poppler_windows-master\build;$(SolutionDir)libextern\cairo-dev_1.10.2-1_win64\include;..\FaceRecognition;..\libCompress;..\libOpenGL;..\otherlib\libglew;..\wxCheckTree;..\libVideoFFMpeg;..\otherlib\libRaw;..\include;..\libMediaInfo;..\libWindowMain;..\libFiltreInterface;..\libIntro;..\libDialog;..\libOpenCL;..\libFiltre;..\libDatastructure;..\libPrint;..\libCursor;..\libVideoThumbnail;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libPicture;..\libParameter;..\libControl;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libGeolocalisation;..\libUtility;..\libResource;..\libextern\libjpeg-turbo-1.5.1</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;TURBOJPEG;OPENGL;GLEW_STATIC;FFMPEG;VIEWER;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

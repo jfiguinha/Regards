@@ -120,9 +120,6 @@
     <ClCompile Include="ExportOCr.cpp">
       <Filter>OCR\Export</Filter>
     </ClCompile>
-    <ClCompile Include="uuid.cpp">
-      <Filter>OCR\uuid</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SelectPage.h">
