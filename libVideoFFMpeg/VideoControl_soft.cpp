@@ -254,10 +254,13 @@ CVideoControlSoft::~CVideoControlSoft()
 	delete fpsTimer;
 #ifdef RENDEROPENGL   
 
-	renderBitmapOpenGL->SetCurrent(*this);
+	
 
-    if(renderBitmapOpenGL != nullptr)
-        delete renderBitmapOpenGL;
+	if (renderBitmapOpenGL != nullptr)
+	{
+		renderBitmapOpenGL->SetCurrent(*this);
+		delete renderBitmapOpenGL;
+	}
 
 	if (openCLEngine != nullptr)
 		delete openCLEngine;

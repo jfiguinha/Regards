@@ -35,27 +35,35 @@ COpenCLContext::COpenCLContext(cl_platform_id platformId, cl_device_id deviceId,
 void COpenCLContext::GetOutputData(cl_mem cl_output_buffer, void * dataOut, const int &sizeOutput, const int &flag)
 {
 	cl_int err = 0;
-	if (flag == CL_MEM_USE_HOST_PTR)
+	try
 	{
-		void* tmp_ptr = clEnqueueMapBuffer(GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
-		Error::CheckError(err);
-		if (tmp_ptr != dataOut)
-		{// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
-			throw Error("clEnqueueMapBuffer failed to return original pointer");
-		}
-		
-		err = clFinish(GetCommandQueue());
-		Error::CheckError(err);
+		if (flag == CL_MEM_USE_HOST_PTR)
+		{
+			void* tmp_ptr = clEnqueueMapBuffer(GetCommandQueue(), cl_output_buffer, true, CL_MAP_READ, 0, sizeOutput, 0, nullptr, nullptr, &err);
+			Error::CheckError(err);
+			if (tmp_ptr != dataOut)
+			{// the pointer have to be same because CL_MEM_USE_HOST_PTR option was used in clCreateBuffer
+				throw Error("clEnqueueMapBuffer failed to return original pointer");
+			}
 
-		err = clEnqueueUnmapMemObject(GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
-		Error::CheckError(err);
+			err = clFinish(GetCommandQueue());
+			Error::CheckError(err);
+
+			err = clEnqueueUnmapMemObject(GetCommandQueue(), cl_output_buffer, tmp_ptr, 0, nullptr, nullptr);
+			Error::CheckError(err);
+		}
+		else
+		{
+			err = clEnqueueReadBuffer(GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
+			Error::CheckError(err);
+			err = clFinish(GetCommandQueue());
+			Error::CheckError(err);
+		}
 	}
-	else
+	catch (...)
 	{
-		err = clEnqueueReadBuffer(GetCommandQueue(), cl_output_buffer, CL_TRUE, 0, sizeOutput, dataOut, 0, nullptr, nullptr);
-		Error::CheckError(err);
-		err = clFinish(GetCommandQueue());
-		Error::CheckError(err);
+		wxMessageBox("Error copy video data", "Information");
+
 	}
 }
 

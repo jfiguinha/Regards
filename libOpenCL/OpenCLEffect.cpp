@@ -25,7 +25,8 @@ COpenCLEffect::COpenCLEffect(const CRgbaquad &backColor, COpenCLContext * contex
 {
 	bool useMemory = (context->GetDeviceType() == CL_DEVICE_TYPE_GPU) ? false : true;
 	this->backColor = backColor;
-	flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
+	//flag = useMemory ? CL_MEM_USE_HOST_PTR : CL_MEM_COPY_HOST_PTR;
+	flag =  CL_MEM_COPY_HOST_PTR;
 	this->context = context;
 	dataIsOk = false;
 

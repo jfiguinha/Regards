@@ -249,7 +249,13 @@ CVideoControl::~CVideoControl()
 	initDevice = true;
 
 #ifdef RENDEROPENGL 
-	UnbindTexture();
+	// This is normally only necessary if there is more than one wxGLCanvas
+// or more than one wxGLContext in the application.
+	if (renderBitmapOpenGL != nullptr)
+	{
+		renderBitmapOpenGL->SetCurrent(*this);
+		UnbindTexture();
+	}
 #endif
 	if(m_pRenderTargetSurface)
 		IDirect3DSurface9_Release(m_pRenderTargetSurface);
@@ -273,7 +279,6 @@ CVideoControl::~CVideoControl()
         FreeLibrary(dxva2lib);
         
 #ifdef RENDEROPENGL 
-	renderBitmapOpenGL->SetCurrent(*this);
 	if(renderBitmapOpenGL!= nullptr)
 		delete renderBitmapOpenGL;
 #endif
@@ -626,6 +631,9 @@ IDirect3DDevice9Ex * CVideoControl::GetDirect3DDevice()
 #ifdef RENDEROPENGL 
 bool CVideoControl::UnbindTexture()
 {
+	if (initDevice)
+		renderBitmapOpenGL->DeleteVideoTexture();
+
 	if (WGLEW_NV_DX_interop)
 	{
 		if (hTexture != nullptr)
@@ -641,9 +649,11 @@ bool CVideoControl::UnbindTexture()
 				hDevice = nullptr;
 			}
 			initDevice = false;
+
+			
 		}
 
-		renderBitmapOpenGL->DeleteVideoTexture();
+		
 	}
 
 	return true;
