@@ -186,7 +186,7 @@
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswresample"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libswscale"/>
         <LibraryPath Value="../libextern/ffmpeg-4.1/libpostproc"/>
-        <LibraryPath Value="../libextern/libde265-master/libde265"/>
+        <LibraryPath Value="../libextern/libde265-master/build/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/libexif-master/libexif/.libs"/>
         <LibraryPath Value="../libextern/libwebp-0.6.0/"/>
@@ -467,7 +467,7 @@
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Debug/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Debug/libRegardsBpg.dll ./Debug/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Debug/libFaceRecognition.dll</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
+        <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Debug/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Debug/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug/libheif_shared.dll</Command>
         <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll  ./Debug/libfreeimage-3.dll</Command>
@@ -625,7 +625,7 @@
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
+        <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
         <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll ./Release/libfreeimage-3.dll</Command>

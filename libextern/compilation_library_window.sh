@@ -50,7 +50,9 @@ cd ..
 
 #Compile libde265-master
 cd libde265-master
-cmake -G "MSYS Makefiles" ../libde265-master 
+mkdir build
+cd build
+cmake -G "MSYS Makefiles" ../
 make -j$NBPROC
 cd ..
 
