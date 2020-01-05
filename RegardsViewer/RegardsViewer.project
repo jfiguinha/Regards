@@ -472,6 +472,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll  ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug</Command>
@@ -488,7 +489,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Debug</Command>
@@ -648,7 +648,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Release</Command>
