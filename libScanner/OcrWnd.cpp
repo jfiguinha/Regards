@@ -612,7 +612,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		}
 	}
 	//GenerateLayerBitmap();
-	viewer->Refresh();
+	//viewer->Refresh();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
