@@ -55,7 +55,7 @@ cd build
 cmake -G "MSYS Makefiles" ../
 make -j$NBPROC
 cd ..
-
+cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
