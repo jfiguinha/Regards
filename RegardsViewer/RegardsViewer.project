@@ -197,6 +197,7 @@
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build/cpp"/>
+        <LibraryPath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/lib"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>

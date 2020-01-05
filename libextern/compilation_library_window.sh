@@ -16,6 +16,19 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 
+#get Tesseract
+wget https://github.com/tesseract-ocr/tesseract/archive/4.1.0.zip
+unzip 4.1.0.zip
+
+#compile tesseract
+cd tesseract-4.1.0
+./autogen.sh
+./configure --prefix="$HOME/ffmpeg_build"
+make -j$NBPROC
+make install
+cd ..
+cd ..
+
 #Generate package FreeImage
 cd FreeImage3180
 makepkg -sCLf
@@ -85,7 +98,7 @@ mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
-sudo make install
+make install
 cd ..
 cd ..
 
