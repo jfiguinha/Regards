@@ -45,6 +45,11 @@ using namespace Regards::Scanner;
 #endif
 #endif
 
+//Connect(wxEVT_MOVE, wxMoveEventHandler(Move::OnMove));
+BEGIN_EVENT_TABLE(CScannerFrame, wxFrame)
+EVT_CLOSE(CScannerFrame::OnCloseWindow)
+END_EVENT_TABLE()
+
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
@@ -115,6 +120,18 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 
 }
 
+void CScannerFrame::OnCloseWindow(wxCloseEvent &event)
+{
+	if (mainInterface != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_CLOSESCANNER);
+		mainInterface->parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	else
+	{
+		Exit();
+	}
+}
 
 CScannerFrame::~CScannerFrame()
 {
