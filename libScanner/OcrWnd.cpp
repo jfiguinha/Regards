@@ -188,7 +188,7 @@ void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_
 				rcTemp.y = YDrawingPosition(bbox->rect.y, vpos, bitmapViewer->GetRatio());
 				rcTemp.height = bbox->rect.height * bitmapViewer->GetRatio();
 
-				CDraw::DessinerRectangleVide(dc, 2, rcTemp, wxColor(0, 0, 255, 0));
+				CDraw::DessinerRectangleVide(dc, 2, rcTemp, wxColor(0, 0, 255, 255));
 			}
 		}
 	}
@@ -196,6 +196,7 @@ void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_
 
 void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessin, int & widthOutput, int & heightOutput)
 {
+    
 	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
 	CRegardsBitmap * _bitmap = filtreEffet->GetBitmap(false);
 	imageLoad->SetPicture(_bitmap);
@@ -216,6 +217,24 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	imageLoad->SetPicture(local_image);
 	filtreEffet->SetBitmap(imageLoad);
 	delete image;
+    
+    
+    /*
+	wxImage image = filtreEffet->GetwxImage();
+	wxBitmap bitmap = wxBitmap(image);
+	wxMemoryDC dc;
+	dc.SelectObject(bitmap);
+	wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
+	//wxImage render = filtreEffet->GetwxImage();
+	
+	Drawing(&dc, bitmapViewer, dessin);
+
+	dc.SelectObject(wxNullBitmap);
+	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+	wxImage * local_image = new wxImage(bitmap.ConvertToImage());
+	imageLoad->SetPicture(local_image);
+	filtreEffet->SetBitmap(imageLoad);
+    */
 }
 
 void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
