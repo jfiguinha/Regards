@@ -41,6 +41,7 @@ using namespace Regards::Control;
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {
+    pageInfo = nullptr;
 	//bitmapBackground = nullptr;
 	CThemeTree themeTree;
 	listOcr = CreateListTesseract(this);

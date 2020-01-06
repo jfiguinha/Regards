@@ -26,22 +26,21 @@ wxString CFileUtility::GetTempFile(wxString filename, const bool &removeFile)
     if (!wxMkDir(tempFolder,  wxS_DIR_DEFAULT)) {
 #endif
 	
-		// handle the error here
+		throw("Error folder doesn't exist.");
 	}
-	else
-	{
+
 #ifdef WIN32
-		file = tempFolder + "\\" + filename;
+    file = tempFolder + "\\" + filename;
 #else
-		file = tempFolder + "/" + filename;
+    file = tempFolder + "/" + filename;
 #endif
 
-		if (removeFile)
-		{
-			if (wxFileExists(file))
-				wxRemoveFile(file);
-		}
-	}
+    if (removeFile)
+    {
+        if (wxFileExists(file))
+            wxRemoveFile(file);
+    }
+
 	return file;
 }
 
