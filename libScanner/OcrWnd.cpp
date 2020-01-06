@@ -201,7 +201,7 @@ void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisp
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
 	wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
-	wxImage render = filtreEffet->GetwxImage();
+	//wxImage render = filtreEffet->GetwxImage();
 	
 	Drawing(&dc, bitmapViewer, dessin);
 
