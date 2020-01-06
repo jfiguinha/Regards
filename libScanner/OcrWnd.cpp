@@ -196,20 +196,26 @@ void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_
 
 void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessin, int & widthOutput, int & heightOutput)
 {
-	wxImage image = filtreEffet->GetwxImage();
-	wxBitmap bitmap = wxBitmap(image);
+	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+	CRegardsBitmap * _bitmap = filtreEffet->GetBitmap(false);
+	imageLoad->SetPicture(_bitmap);
+	wxImage * image = imageLoad->GetwxImage();
+	delete imageLoad;
+
+	wxBitmap bitmap = wxBitmap(*image);
 	wxMemoryDC dc;
 	dc.SelectObject(bitmap);
-	wxRect rc(0, 0, image.GetWidth(), image.GetHeight());
+	wxRect rc(0, 0, image->GetWidth(), image->GetHeight());
 	//wxImage render = filtreEffet->GetwxImage();
 	
 	Drawing(&dc, bitmapViewer, dessin);
 
 	dc.SelectObject(wxNullBitmap);
-	CImageLoadingFormat * imageLoad = new CImageLoadingFormat();
+	imageLoad = new CImageLoadingFormat();
 	wxImage * local_image = new wxImage(bitmap.ConvertToImage());
 	imageLoad->SetPicture(local_image);
 	filtreEffet->SetBitmap(imageLoad);
+	delete image;
 }
 
 void COcrWnd::OnSelChanged(wxCommandEvent& aEvent)
@@ -613,7 +619,7 @@ void COcrWnd::OnOcr(wxCommandEvent& event)
 		}
 	}
 	//GenerateLayerBitmap();
-	//viewer->Refresh();
+	viewer->Refresh();
 }
 
 wxPanel * COcrWnd::CreateListTesseract(wxWindow * parent)
