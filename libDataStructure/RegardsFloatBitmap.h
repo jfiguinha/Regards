@@ -13,7 +13,7 @@ public:
 	virtual ~CRegardsFloatBitmap();
 
 	bool IsValid();
-	inline int GetPosition(const int &x, const int &y) const;
+	int GetPosition(const int &x, const int &y);
 	//Flip
 	bool HorzFlipBuf();
 	bool VertFlipBuf();
