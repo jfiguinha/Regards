@@ -38,7 +38,7 @@ CRegardsFloatBitmap::CRegardsFloatBitmap()
 	m_lSize = 0;
 }
 
-int CRegardsFloatBitmap::GetPosition(const int &x, const int &y) const
+int CRegardsFloatBitmap::GetPosition(const int &x, const int &y)
 {
 	return (x << 2) + (y * (m_iWidth << 2));
 }
