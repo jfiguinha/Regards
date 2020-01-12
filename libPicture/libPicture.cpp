@@ -24,7 +24,7 @@
 #include <wx/filename.h>
 #include <wx/progdlg.h>
 #include <wx/pdfdocument.h>
-
+#include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
 #endif
@@ -423,23 +423,7 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 #endif
-	case TGA:
-	{
-		returnValue = 1;
-	}
-	break;
 
-	case PCX:
-	{
-		returnValue = 1;
-	}
-	break;
-
-	case MNG:
-	{
-		returnValue = 1;
-	}
-	break;
 
 	case TIFF:
 	{
@@ -492,17 +476,7 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 
-	case PNM:
-	{
-		returnValue = 1;
-	}
-	break;
 
-	case JPC:
-	{
-		returnValue = 1;
-	}
-	break;
 
 	case JPEG2000:
 	{
@@ -558,25 +532,16 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	}
 	break;
 
+	case TGA:
+	case PCX:
+	case MNG:
 	case PPM:
-	{
-		returnValue = 1;
-	}
-	break;
-
 	case XPM:
-	{
-		returnValue = 1;
-	}
-	break;
-
 	case PDF:
-	{
-		returnValue = 1;
-	}
-	break;
-
 	case IFF:
+	case PFM:
+	case PNM:
+	case JPC:
 	{
 		returnValue = 1;
 	}
@@ -596,6 +561,13 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
     wxString informations_error = CLibResource::LoadStringFromResource(L"informationserror",1);
 	switch (iFormat)
 	{
+	case PFM:
+	{
+		CRegardsFloatBitmap * regards = bitmap->GetFloatBitmap(true);
+		CPfm::WriteFilePFM(regards, fileName, 1.0f);
+		delete regards;
+		break;
+	}
 	case BMP:
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
@@ -2075,6 +2047,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			break;
 #endif
 
+		case PFM:
+		{
+			CRegardsFloatBitmap * test = CPfm::ReadFilePFM(fileName);
+			bitmap->SetPicture(test);
+			break;
+		}
+
         case HDR:
             {
                CPiccanteFilter::LoadPicture(fileName, isThumbnail,bitmap);
@@ -2792,7 +2771,12 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
 	switch (iFormat)
 	{
-        
+	case PFM:
+	{
+		CPfm::GetDimensions(fileName, width, height);
+	}
+	break;
+
     case HDR:
         {
             CPiccanteFilter::GetPictureDimensions(fileName,width,height);

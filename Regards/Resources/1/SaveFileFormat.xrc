@@ -27,6 +27,7 @@
 				<item>IFF</item>
 				<item>EXR</item>
                 <item>BPG</item>
+				<item>PFM</item>
 			</content>
 			<default>-1</default>
 			<pos>8,0</pos>
