@@ -19,6 +19,7 @@ HOMEBREW_MAKE_JOBS=$NBPROC brew install -v wget
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v unzip
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v cmake
 HOMEBREW_MAKE_JOBS=$NBPROC brew install -v yasm
+HOMEBREW_MAKE_JOBS=$NBPROC brew install -v tbb
 #bHOMEBREW_MAKE_JOBS=$NBPROC rew install -v fftw
 #Install External Library
 cd libextern
