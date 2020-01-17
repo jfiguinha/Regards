@@ -32,6 +32,7 @@
     <File Name="../Regards/Regards.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
   <Dependencies Name="Release">

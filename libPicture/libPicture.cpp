@@ -36,15 +36,12 @@
 #endif
 #endif
 
-#if defined(__MINGW32__)
-using namespace Imf_2_4;
-using namespace Imath_2_4;
-#elif defined(__WXMAC__)
-using namespace Imf_2_3;
-using namespace Imath_2_3;
-#else
+#if defined(__WXGTK__)
 using namespace Imf_2_2;
 using namespace Imath_2_2;
+#else
+using namespace Imf_2_4;
+using namespace Imath_2_4;
 #endif
 
 #ifdef TURBOJPEG
