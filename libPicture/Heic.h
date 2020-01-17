@@ -18,8 +18,9 @@ public:
 	static CRegardsBitmap * GetThumbnailPicture(const string &filename);
 	static void GetPictureDimension(const string &filename, int &width, int &height);
 	static void GetMetadata(const string &filename, uint8_t * & data, long & size);
+	
 private:
-	static CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder = nullptr);
+	
 	static void DecodePictureMultiThread(void * parameter);
 };
 #endif

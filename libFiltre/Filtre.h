@@ -15,9 +15,10 @@ namespace Regards
 			virtual ~CFiltre();
 			void SetParameter(CRegardsBitmap * pBitmap, CRgbaquad color);
 			void Compute();
+			virtual void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest) {};
 
 		protected:
-			virtual void PixelCompute(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest){};
+			
 			int GetPosition(const int &x, const int &y);
 			int bmWidth;
 			int bmHeight;

@@ -24,6 +24,10 @@
 #include <ThumbnailMessage.h>
 using namespace Regards::Window;
 
+//#define TBB
+#include <tbb/parallel_for.h>
+#include <tbb/task_scheduler_init.h>
+
 class CImageLoadingFormat;
 
 #define TIMER_LOADING 4
@@ -451,6 +455,22 @@ void CThumbnail::SetIconeSize(const int &width, const int &height)
     ResizeThumbnail();
 }
 
+struct mytask {
+	mytask(CThreadLoadingBitmap * pLoadBitmap)
+	{
+		this->pLoadBitmap = pLoadBitmap;
+	}
+
+	void operator()()
+	{
+		CThumbnail::LoadPicture(pLoadBitmap);
+	}
+
+
+	CThreadLoadingBitmap * pLoadBitmap;
+};
+
+
 void CThumbnail::ProcessIdle()
 {
     TRACE();
@@ -475,6 +495,61 @@ void CThumbnail::ProcessIdle()
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.UpdatePhotoList();
 	sqlPhoto.GetPhotoList(&photoList);
+
+#ifdef TBB
+
+	//nbProcesseur = 1;
+	if (photoList.size() > 0)
+	{
+		wxCommandEvent * event = new wxCommandEvent(EVENT_UPDATEMESSAGE);
+		event->SetExtraLong(photoList.size());
+		wxQueueEvent(this, event);
+
+		//tbb::task_scheduler_init init;  // Automatic number of threads
+		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+		std::vector<mytask> tasks;
+		//#pragma omp parallel for
+
+		int nbElement = iconeList->GetNbElement();
+
+		for (int i = 0; i < nbElement; i++)
+		{
+			CIcone * icone = iconeList->GetElement(i);
+			iconeList->Lock();
+
+			if (icone != nullptr)
+			{
+				CThumbnailData * pThumbnailData = icone->GetData();
+
+				if (pThumbnailData != nullptr)
+				{
+					CThreadLoadingBitmap * pLoadBitmap = new CThreadLoadingBitmap();
+					pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
+					pLoadBitmap->percent = pThumbnailData->GetPercent();
+					pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
+					pLoadBitmap->filename = pThumbnailData->GetFilename();
+					pLoadBitmap->thumbnail = this;
+					pLoadBitmap->numIcone = i;
+					tasks.push_back(mytask(pLoadBitmap));
+				}
+			}
+			iconeList->Unlock();
+		}
+
+
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, tasks.size()),
+			[&tasks](const tbb::blocked_range<size_t>& r)
+		{
+			for (size_t i = r.begin(); i < r.end(); ++i)
+				tasks[i]();
+		}
+		);
+	}
+
+#else
+
 	//nbProcesseur = 1;
 	if (photoList.size() > 0)
 	{
@@ -541,6 +616,8 @@ void CThumbnail::ProcessIdle()
 			}
 		}
 	}
+
+#endif
 
 	if (photoList.size() == 0)
 		processIdle = false;     

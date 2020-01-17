@@ -8,9 +8,14 @@
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
-
+#include <tbb/parallel_for.h>
+#include <tbb/task_scheduler_init.h>
 using namespace std;
 using namespace HEIF;
+
+#define TBB
+
+static CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder = nullptr);
 
 typedef struct x265Frame
 {
@@ -243,7 +248,7 @@ CRegardsBitmap * GetRGBPicture(const de265_image * img)
 
 
 
-CRegardsBitmap * CHeic::DecodeFrame(void * data, int length, void * externDecoder)
+CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder)
 {
 	CRegardsBitmap * picture = nullptr;
 	de265_error err = de265_error::DE265_OK;
@@ -707,6 +712,39 @@ void CHeic::DecodePictureMultiThread(void * parameter)
 	delete[] decoding->_memoryBuffer;
 }
 
+struct mytask {
+	mytask(x265Frame * frame)
+	{
+		this->frame = frame;
+	}
+
+	void operator()()
+	{
+		frame->picture = DecodeFrame(frame->_memoryBuffer, frame->memoryBufferSize);
+		if (frame->picture != nullptr)
+		{
+			frame->picture->SetFilename(frame->filename);
+		}
+
+		delete[] frame->_memoryBuffer;
+	}
+
+	CRegardsBitmap * GetFrame()
+	{
+		return frame->picture;
+	}
+
+	void Free()
+	{
+		if (frame != nullptr)
+			delete frame;
+
+		frame = nullptr;
+	}
+
+	x265Frame * frame;
+};
+
 CRegardsBitmap * CHeic::GetPicture(const string &filename)
 {
 	struct PictureEncoder
@@ -793,6 +831,95 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 				break;
 			}
 
+
+#ifdef TBB
+
+			//tbb::task_scheduler_init init;  // Automatic number of threads
+			tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+			std::vector<mytask> tasks;
+			//#pragma omp parallel for
+
+			for (const auto masterId : itemIds)
+			{
+				x265Frame * frame = new x265Frame;
+				frame->memoryBufferSize = 1024 * 1024;
+				frame->_memoryBuffer = new uint8_t[memoryBufferSize];
+				frame->filename = filename;
+				reader->getItemDataWithDecoderParameters(masterId, frame->_memoryBuffer, frame->memoryBufferSize);
+				tasks.push_back(mytask(frame));
+			}
+
+
+			tbb::parallel_for(
+				tbb::blocked_range<size_t>(0, tasks.size()),
+				[&tasks](const tbb::blocked_range<size_t>& r)
+			{
+				for (size_t i = r.begin(); i < r.end(); ++i)
+					tasks[i]();
+			}
+			);
+
+
+
+			if(tasks.size() > 0)
+			{
+				ImageId itemId;
+				reader->getPrimaryItem(itemId);
+
+				Array<ItemPropertyInfo> propertyInfos;
+				reader->getItemProperties(itemId, propertyInfos);
+
+				uint32_t _width, _heigth;
+				reader->getWidth(itemId, _width);
+				reader->getHeight(itemId, _heigth);
+
+				CRegardsBitmap * bitmapSrc = tasks[0].GetFrame();
+				int boxWidth = bitmapSrc->GetBitmapWidth();
+				int boxHeight = bitmapSrc->GetBitmapHeight();
+
+				int nbItemWidth = _width / boxWidth;
+				if (nbItemWidth * boxWidth < _width)
+					nbItemWidth++;
+
+				int nbItemHeight = _heigth / boxHeight;
+				if (nbItemHeight * boxHeight < _heigth)
+					nbItemHeight++;
+
+				CRegardsBitmap * out = new CRegardsBitmap(boxWidth * nbItemWidth, boxHeight * nbItemHeight);
+				int x = 0;
+				int y = (nbItemHeight * boxHeight) - boxHeight;
+
+				for (mytask task : tasks)
+				{
+					out->InsertBitmap(task.GetFrame(), x, y, false);
+					x += boxWidth;
+
+					if (x > _width)
+					{
+						x = 0;
+						y -= boxHeight;
+					}
+				}
+
+				picture = out->CropBitmap(0, boxHeight * nbItemHeight - _heigth, _width, _heigth);
+
+				delete out;
+				listPicture.clear();
+				picture->SetFilename(filename);
+
+			}
+
+
+			for (mytask task : tasks)
+			{
+				task.Free();
+			}
+
+			tasks.clear();
+#else
+
+
 			for (const auto masterId : itemIds)
 			{
 				PictureEncoder picture;
@@ -852,6 +979,8 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 					listThread[j] = nullptr;
 				}
 			}
+
+
 			
 			if (listPicture.size() > 0)
 			{
@@ -908,6 +1037,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 				picture->SetFilename(filename);
 
 			}
+#endif
 		}
 		delete[] memoryBuffer;
     }

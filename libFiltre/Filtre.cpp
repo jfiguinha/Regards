@@ -2,6 +2,30 @@
 #include "Filtre.h"
 #include "RegardsBitmap.h"
 using namespace Regards::FiltreEffet;
+
+#include <tbb/parallel_for.h>
+#include <tbb/task_scheduler_init.h>
+
+struct mytask {
+	mytask(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest, CFiltre * pt)
+	{
+		this->x = x;
+		this->y = y;
+		this->pBitsSrc= pBitsSrc;
+		this->pBitsDest = pBitsDest;
+		this->filtre = pt;
+	}
+
+	void operator()() {
+		filtre->PixelCompute(x, y, pBitsSrc, pBitsDest);
+	}
+	int x;
+	int y;
+	uint8_t * pBitsSrc;
+	uint8_t * pBitsDest;
+	CFiltre * filtre;
+};
+
 CFiltre::CFiltre()
 {
 
@@ -40,6 +64,32 @@ void CFiltre::Compute()
 		pBitsDest = new uint8_t[pictureSize];
 		pBitsSrc = pBitmap->GetPtBitmap();
 
+		
+		//tbb::task_scheduler_init init;  // Automatic number of threads
+		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+		std::vector<mytask> tasks;
+		//#pragma omp parallel for
+		for (auto y = 0; y < bmHeight; y++)
+		{
+			//#pragma omp parallel for
+			for (auto x = 0; x < bmWidth; x++)
+			{
+				tasks.push_back(mytask(x, y, pBitsSrc, pBitsDest, this));
+			}
+		}
+
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, tasks.size()),
+			[&tasks](const tbb::blocked_range<size_t>& r) 
+			{
+				for (size_t i = r.begin(); i < r.end(); ++i) 
+					tasks[i]();
+			}
+		);
+
+
+		/*
 //#pragma omp parallel for
 		for (auto y = 0; y < bmHeight; y++)
 		{
@@ -49,6 +99,7 @@ void CFiltre::Compute()
 				PixelCompute(x, y, pBitsSrc, pBitsDest);
 			}
 		}
+		*/
 
 		pBitmap->SetBitmap(pBitsDest, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		delete[] pBitsDest;
