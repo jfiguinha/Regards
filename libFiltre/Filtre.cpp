@@ -6,8 +6,8 @@ using namespace Regards::FiltreEffet;
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
 
-struct mytask {
-	mytask(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest, CFiltre * pt)
+struct myFiltreTask {
+	myFiltreTask(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest, CFiltre * pt)
 	{
 		this->x = x;
 		this->y = y;
@@ -16,7 +16,8 @@ struct mytask {
 		this->filtre = pt;
 	}
 
-	void operator()() {
+	void operator()() 
+    {
 		filtre->PixelCompute(x, y, pBitsSrc, pBitsDest);
 	}
 	int x;
@@ -68,14 +69,14 @@ void CFiltre::Compute()
 		//tbb::task_scheduler_init init;  // Automatic number of threads
 		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
-		std::vector<mytask> tasks;
+		std::vector<myFiltreTask> tasks;
 		//#pragma omp parallel for
 		for (auto y = 0; y < bmHeight; y++)
 		{
 			//#pragma omp parallel for
 			for (auto x = 0; x < bmWidth; x++)
 			{
-				tasks.push_back(mytask(x, y, pBitsSrc, pBitsDest, this));
+				tasks.push_back(myFiltreTask(x, y, pBitsSrc, pBitsDest, this));
 			}
 		}
 
