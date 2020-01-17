@@ -354,6 +354,7 @@
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
         <Library Value="lept"/>
+        <Library Value="tbb"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -624,6 +625,9 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libturbojpeg.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbb.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc_proxy.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>

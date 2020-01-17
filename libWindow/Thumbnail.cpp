@@ -455,6 +455,7 @@ void CThumbnail::SetIconeSize(const int &width, const int &height)
     ResizeThumbnail();
 }
 
+#ifdef TBB
 struct mytask {
 	mytask(CThreadLoadingBitmap * pLoadBitmap)
 	{
@@ -469,7 +470,7 @@ struct mytask {
 
 	CThreadLoadingBitmap * pLoadBitmap;
 };
-
+#endif
 
 void CThumbnail::ProcessIdle()
 {
