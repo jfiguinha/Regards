@@ -36,13 +36,9 @@
 #endif
 #endif
 
-#if defined(__WXGTK__)
-using namespace Imf_2_2;
-using namespace Imath_2_2;
-#else
-using namespace Imf_2_4;
-using namespace Imath_2_4;
-#endif
+
+using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
+using namespace IMATH_INTERNAL_NAMESPACE;
 
 #ifdef TURBOJPEG
 #include <turbojpeg.h>
