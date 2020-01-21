@@ -249,7 +249,7 @@ public:
 
 	virtual void ShowViewer()
 	{
-		frameViewer = new CViewerFrame("Regards Viewer", wxPoint(50, 50), wxSize(1200, 800), this, fileToOpen);
+		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxDefaultSize, this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
 	}

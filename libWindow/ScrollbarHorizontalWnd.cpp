@@ -154,7 +154,7 @@ bool CScrollbarHorizontalWnd::SetPosition(const int &left)
 		value = false;
 	}
 
-    this->Refresh();
+	PaintNow();
 	return value;
 }
 
@@ -183,7 +183,7 @@ bool CScrollbarHorizontalWnd::UpdateScrollBar(const int &posLargeur, const int &
 			needToRedraw = true;
 		if (needToRedraw)
         {
-             this->Refresh();
+			PaintNow();
         }
 	}
 
@@ -412,7 +412,7 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxX();
 		MoveBar(currentXPos, themeScroll.colorBarActif);
         scrollInterface->SetLeftPosition(currentXPos);
-        this->Refresh();
+		PaintNow();
     }
 }
 
@@ -501,7 +501,7 @@ void CScrollbarHorizontalWnd::MoveBar(const int &currentPos, wxColour color)
 	}
 
 	//DrawRectangleElement(&dc, color);
-	this->Refresh();
+	PaintNow();
 }
 
 void CScrollbarHorizontalWnd::OnLButtonDown(wxMouseEvent& event)
@@ -668,6 +668,12 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)
 #if defined(WIN32) && defined(_DEBUG)
 	//OutputDebugString(L"CScrollbarHorizontalWnd::OnPaint \n");
 #endif
+}
+
+void CScrollbarHorizontalWnd::PaintNow()
+{
+	wxClientDC dc(this);
+	DrawElement(&dc);
 }
 
 void CScrollbarHorizontalWnd::OnPaint(wxPaintEvent& event)

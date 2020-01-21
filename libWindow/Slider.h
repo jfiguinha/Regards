@@ -28,6 +28,7 @@ namespace Regards
 
 		private:
 
+			void PaintNow();
 			void OnMouseMove(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);

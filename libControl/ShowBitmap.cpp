@@ -33,6 +33,7 @@ void CShowBitmap::SetNormalMode()
 
 void CShowBitmap::SetFullscreen(const bool &fullscreen)
 {
+	this->fullscreen = fullscreen;
 	bitmapWindow->SetFullscreen(fullscreen);
 }
 
@@ -57,6 +58,8 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	defaultToolbar = true;
 	defaultViewer = true;
 	isDiaporama = false;
+	fullscreen = false;
+	showToolbar = true;
 	width = 0;
 	height = 0;
 	CThemeBitmapWindow themeBitmap;
@@ -138,6 +141,7 @@ void CShowBitmap::StopTransition()
 
 void CShowBitmap::HideToolbar()
 {
+	showToolbar = false;
 	if (pictureToolbar != nullptr)
 	{
 		if (pictureToolbar->IsShown())
@@ -164,6 +168,7 @@ bool CShowBitmap::IsToolbarMouseOver()
 
 void CShowBitmap::ShowToolbar()
 {
+	showToolbar = true;
 	if (pictureToolbar != nullptr)
 	{
 		if (!pictureToolbar->IsShown())
@@ -179,6 +184,17 @@ void CShowBitmap::ShowToolbar()
 
 void CShowBitmap::Resize()
 {
+	if (!showToolbar && fullscreen)
+	{
+		scrollbar->HideHorizontalScroll();
+		scrollbar->HideVerticalScroll();
+	}
+	else
+	{
+		scrollbar->ShowVerticalScroll();
+		scrollbar->ShowHorizontalScroll();
+	}
+
 	if (isDiaporama)
 	{
 		pictureToolbar->SetSize(0, 0, 0, 0);
@@ -213,6 +229,8 @@ void CShowBitmap::Resize()
 
 		}
 	}
+
+
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)

@@ -67,7 +67,8 @@ namespace Regards
 			int height;
             wxTimer * loadingTimer;
             int progressValue;
-			
+			bool fullscreen;
+			bool showToolbar;
 		};
 	}
 }

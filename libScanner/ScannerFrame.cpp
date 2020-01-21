@@ -61,7 +61,7 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 {
 
 	SetIcon(wxICON(sample));
-
+	this->Maximize();
 	this->mainInterface = mainInterface;
 
 	viewerParam = new CMainParam();

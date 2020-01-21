@@ -740,18 +740,6 @@ int CRegardsBitmap::InsertBitmap(CRegardsBitmap * bitmap, int xPos, int yPos, co
 #pragma omp parallel for
 			for (auto x = xPos; x < xEnd; x++)
 			{
-                /*
-				CRgbaquad * colorSrc = GetPtColorValue(x, y);
-				CRgbaquad color = bitmap->GetColorValue(x - xPos, y - yPos);
-				float alpha = color.GetFAlpha() / 255.0f;
-				float alphaDiff = 1.0f - alpha;
-				if (alphaDiff < 1.0f)
-				{
-					colorSrc->Mul(alphaDiff);
-					color.Mul(alpha);
-					colorSrc->Add(color);
-				}
-                */
                 CRgbaquad * colorSrc = GetPtColorValue(x, y);
 				if (colorSrc != nullptr)
 				{

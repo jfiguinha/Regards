@@ -26,9 +26,12 @@ namespace Regards
 
 			void SetPageSize(const int &pageSize);
 			void SetLineSize(const int &lineSize);
+
 			void HideVerticalScroll();
 			void HideHorizontalScroll();
 			void ShowVerticalScroll();
+			void ShowHorizontalScroll();
+
 			int GetBarWidth();
 			int GetBarHeight();
 			void SetControlSize(const int &width, const int &height, const bool &useScaleFactor = false);

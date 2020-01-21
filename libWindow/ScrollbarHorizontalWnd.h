@@ -34,6 +34,7 @@ namespace Regards
             
 		protected:
 
+			void PaintNow();
 			void DrawElement(wxDC * dc);
 			void OnPaint(wxPaintEvent& event);
 			void OnSize(wxSizeEvent& event);

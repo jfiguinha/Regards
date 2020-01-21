@@ -50,6 +50,7 @@ namespace Regards
            
             void UpdateScreenRatio();
 			wxString GetWaitingMessage();
+			static void LoadPicture(void * param);
 
 		protected:
 			void EraseThumbnail(wxCommandEvent& event);
@@ -92,7 +93,7 @@ namespace Regards
             void OnRefreshIcone(wxTimerEvent& event);
 			virtual void RenderIcone(wxDC * dc) = 0;
 			virtual void UpdateScroll() = 0;
-			static void LoadPicture(void * param);
+			
 
 			void UpdateRenderIcone(wxCommandEvent& event);
 			CIcone *  FindIcone(const wxString &filename);

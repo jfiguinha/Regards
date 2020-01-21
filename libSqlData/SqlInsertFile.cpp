@@ -4,6 +4,8 @@
 #include <wx/dir.h>
 #include <wx/progdlg.h>
 using namespace Regards::Sqlite;
+#include <tbb/parallel_for.h>
+#include <tbb/task_scheduler_init.h>
 
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB")
@@ -112,33 +114,97 @@ void CSqlInsertFile::UpdateFolder(const vector<wxString> &listFile, const int &i
    
 }
 */
+
+struct myImportFileFromFoldertask {
+	myImportFileFromFoldertask(CSqlInsertFile * insertFile, wxString filename, int idFolder)
+	{
+		this->insertFile = insertFile;
+		this->filename = filename;
+		this->idFolder = idFolder;
+	}
+
+	void operator()()
+	{
+		if (insertFile->GetNumPhoto(filename) == 0)
+		{
+			CLibPicture libPicture;
+			int extensionId = libPicture.TestImageFormat(filename);
+			filename.Replace("'", "''");
+			insertFile->ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
+
+		}
+	}
+
+	int idFolder;
+	wxString filename;
+	CSqlInsertFile * insertFile;
+};
+
 void CSqlInsertFile::ImportFileFromFolder(const vector<wxString> &listFile, const int &idFolder)
 {
 	BeginTransaction();
     CLibPicture libPicture;
-    int updatesize = 0;
+
+	//tbb::task_scheduler_init init;  // Automatic number of threads
+	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+	std::vector<myImportFileFromFoldertask> tasks;
 
 	for (wxString filename : listFile)
 	{
-        updatesize++;
+		tasks.push_back(myImportFileFromFoldertask(this, filename, idFolder));
+		/*
 		if (GetNumPhoto(filename) == 0)
 		{            
             int extensionId = libPicture.TestImageFormat(filename);
 			filename.Replace("'", "''");
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ", '" + filename + "', 0, 0, " + to_string(extensionId) + ")");
               
-		}       
+		}  
+		*/
 	}
+
+
+	tbb::parallel_for(
+		tbb::blocked_range<size_t>(0, tasks.size()),
+		[&tasks](const tbb::blocked_range<size_t>& r)
+	{
+		for (size_t i = r.begin(); i < r.end(); ++i)
+			tasks[i]();
+	}
+	);
+	
 	ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and NumPhoto not in (SELECT NumPhoto FROM PHOTOSSEARCHCRITERIA)");
 
 	CommitTransection();
 }
 
+struct myInsertPhotoFolderToRefreshtask {
+	myInsertPhotoFolderToRefreshtask(CSqlInsertFile * insertFile, wxString filename)
+	{
+		this->insertFile = insertFile;
+		this->filename = filename;
+	}
+
+	void operator()()
+	{
+		CLibPicture libPicture;
+		if (libPicture.TestImageFormat(filename) != 0)
+		{
+			filename.Replace("'", "''");
+			insertFile->ExecuteRequestWithNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES ('" + filename + "')");
+		}
+	}
+
+	wxString filename;
+	CSqlInsertFile * insertFile;
+};
+
 void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString &folder)
 {
 	CLibPicture libPicture;
 
-	BeginTransaction();
+	//BeginTransaction();
 
 	ExecuteRequestWithNoResult("DELETE FROM PHOTOFOLDER");
 
@@ -146,16 +212,32 @@ void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString &folder)
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
+	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+	std::vector<myInsertPhotoFolderToRefreshtask> tasks;
+
 	for (wxString file : files)
 	{
+		tasks.push_back(myInsertPhotoFolderToRefreshtask(this, file));
+		/*
 		if (libPicture.TestImageFormat(file) != 0)
 		{
 			file.Replace("'", "''");
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOFOLDER (FullPath) VALUES ('" + file + "')");
 		}
+		*/
 	}
 
-	CommitTransection();
+	tbb::parallel_for(
+		tbb::blocked_range<size_t>(0, tasks.size()),
+		[&tasks](const tbb::blocked_range<size_t>& r)
+	{
+		for (size_t i = r.begin(); i < r.end(); ++i)
+			tasks[i]();
+	}
+	);
+
+	//CommitTransection();
 }
 
 bool CSqlInsertFile::GetPhotoToAdd(vector<wxString> * listFile)
@@ -183,6 +265,30 @@ bool CSqlInsertFile::GetPhotoToRemove(vector<int> * listFile, const int &idFolde
 	return (ExecuteRequest("SELECT NumPhoto FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder) + " and FullPath not in(Select FullPath From PHOTOFOLDER)") != -1) ? true : false;
 }
 
+struct myAddFileFromFoldertask {
+	myAddFileFromFoldertask(CSqlInsertFile * insertFile, wxString file, int idFolder)
+	{
+		this->insertFile = insertFile;
+		this->file = file;
+		this->idFolder = idFolder;
+	}
+
+	void operator()()
+	{
+		CLibPicture libPicture;
+		if (libPicture.TestImageFormat(file) != 0 && insertFile->GetNumPhoto(file) == 0)
+		{
+			int extensionId = libPicture.TestImageFormat(file);
+			file.Replace("'", "''");
+			insertFile->ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+		}
+	}
+
+	int idFolder;
+	wxString file;
+	CSqlInsertFile * insertFile;
+};
+
 int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 	CLibPicture libPicture;
@@ -192,11 +298,20 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
+	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+
+	std::vector<myAddFileFromFoldertask> tasks;
+
 	if (files.size() > 0)
 	{
-		BeginTransaction();
+		//BeginTransaction();
 		for (wxString file : files)
 		{
+			tasks.push_back(myAddFileFromFoldertask(this, file, idFolder));
+			if (i == 0)
+				firstFile = file;
+			i++;
+			/*
 			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{
 				int extensionId = libPicture.TestImageFormat(file);
@@ -206,8 +321,19 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 				i++;         
 			}
+			*/
 		}
-		CommitTransection();
+
+		tbb::parallel_for(
+			tbb::blocked_range<size_t>(0, tasks.size()),
+			[&tasks](const tbb::blocked_range<size_t>& r)
+		{
+			for (size_t i = r.begin(); i < r.end(); ++i)
+				tasks[i]();
+		}
+		);
+
+		//CommitTransection();
 	}
 	return i;
 
@@ -216,6 +342,30 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 	//
 }
 
+struct myImportFromFoldertask {
+	myImportFromFoldertask(CSqlInsertFile * insertFile, wxString file, int idFolder)
+	{
+		this->insertFile = insertFile;
+		this->file = file;
+		this->idFolder = idFolder;
+	}
+
+	void operator()()
+	{
+		CLibPicture libPicture;
+		if (libPicture.TestImageFormat(file) != 0 && insertFile->GetNumPhoto(file) == 0)
+		{
+			int extensionId = libPicture.TestImageFormat(file);
+			file.Replace("'", "''");
+			insertFile->ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
+			
+		}
+	}
+
+	int idFolder;
+	wxString file;
+	CSqlInsertFile * insertFile;
+};
 
 int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
 {
@@ -226,10 +376,18 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
+	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
-	BeginTransaction();
+	std::vector<myImportFromFoldertask> tasks;
+
+	//BeginTransaction();
 	for (wxString file : files)
 	{
+		tasks.push_back(myImportFromFoldertask(this, file, idFolder));
+		if (i == 0)
+			firstFile = file;
+		i++;
+		/*
 		if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 		{
             int extensionId = libPicture.TestImageFormat(file);
@@ -239,8 +397,19 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 			ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 			i++;
 		}
+		*/
 	}
-	CommitTransection();
+
+	tbb::parallel_for(
+		tbb::blocked_range<size_t>(0, tasks.size()),
+		[&tasks](const tbb::blocked_range<size_t>& r)
+	{
+		for (size_t i = r.begin(); i < r.end(); ++i)
+			tasks[i]();
+	}
+	);
+
+	//CommitTransection();
 	return i;
 
 	//ExecuteRequestWithNoResult("INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath) SELECT NumPhoto, FullPath FROM PHOTOS WHERE NumFolderCatalog = " + to_string(idFolder));

@@ -170,7 +170,7 @@ bool CScrollbarVerticalWnd::UpdateScrollBar(const int &posHauteur, const int &sc
 
 		if (needToRedraw)
 		{
-             this->Refresh();
+			PaintNow();
         }
 	}
 
@@ -237,7 +237,7 @@ bool CScrollbarVerticalWnd::SetPosition(const int &top)
 		value = false;
 	}
 	
-    this->Refresh();
+	PaintNow();
 	return value;
 }
 
@@ -542,7 +542,7 @@ void CScrollbarVerticalWnd::MoveBar(const int &currentPos, wxColour color)
 	}
 
 	//DrawRectangleElement(&dc, color);
-	this->Refresh();
+	PaintNow();
 }
 
 void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
@@ -562,7 +562,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
         TestMaxY();
 		MoveBar(currentYPos, themeScroll.colorBarActif);
         scrollInterface->SetTopPosition(currentYPos);
-        this->Refresh();
+		PaintNow();
     }
 }
 
@@ -727,6 +727,12 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 		pageTop->Stop();
 	if (pageBottom->IsRunning())
 		pageBottom->Stop();
+}
+
+void CScrollbarVerticalWnd::PaintNow()
+{
+	wxClientDC dc(this);
+	DrawElement(&dc);
 }
 
 void CScrollbarVerticalWnd::OnPaint(wxPaintEvent& event)

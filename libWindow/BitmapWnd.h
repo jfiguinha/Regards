@@ -247,6 +247,7 @@ namespace Regards
             bool updateFilter = false;
 			int xPosImage = 0;
 			int yPosImage = 0;
+			bool controlKeyPush = false;
 		};
 	}
 }

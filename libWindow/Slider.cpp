@@ -246,7 +246,7 @@ void CSlider::OnMouseMove(wxMouseEvent& event)
 		if ((xPos >= positionSlider.x && xPos <= (positionSlider.x + positionSlider.width)))
 		{
 			CalculTimePosition(xPos);
-			Refresh();
+			PaintNow();
 		}
 	}
 }
@@ -265,12 +265,12 @@ void CSlider::OnLButtonDown(wxMouseEvent& event)
 	else if (xPos > positionButton.width)
 	{
 		ClickRightPage(xPos);
-		Refresh();
+		PaintNow();
 	}
 	else if (xPos < positionButton.x)
 	{
 		ClickLeftPage(xPos);
-		Refresh();
+		PaintNow();
 	}
 }
 
@@ -285,6 +285,23 @@ void CSlider::OnLButtonUp(wxMouseEvent& event)
 
 }
 
+/*
+ * Alternatively, you can use a clientDC to paint on the panel
+ * at any time. Using this generally does not free you from
+ * catching paint events, since it is possible that e.g. the window
+ * manager throws away your drawing when the window comes to the
+ * background, and expects you will redraw it when the window comes
+ * back (by sending a paint event).
+ *
+ * In most cases, this will not be needed at all; simply handling
+ * paint events and calling Refresh() when a refresh is needed
+ * will do the job.
+ */
+void CSlider::PaintNow()
+{
+	wxClientDC dc(this);
+	Draw(&dc);
+}
 
 void CSlider::OnPaint(wxPaintEvent& event)
 {

@@ -1001,7 +1001,12 @@ void CBitmapWnd::OnKeyUp(wxKeyEvent& event)
 {
     TRACE();
 	SetKey(0);
-    
+	switch (event.GetKeyCode())
+	{
+	case WXK_CONTROL:
+		controlKeyPush = false;
+		break;
+	}
 }
 
 void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
@@ -1026,6 +1031,10 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 	case WXK_RIGHT:
         updateFilter = true;
 		this->MoveRight();
+		break;
+
+	case WXK_CONTROL:
+		controlKeyPush = true;
 		break;
 
 	case WXK_NUMPAD_ADD:
@@ -1060,21 +1069,41 @@ void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 {
     TRACE();
+	int move = 0;
 #ifdef __APPLE__
     
-    if (event.m_wheelRotation == 1)
-        this->MoveTop();
-    else if (event.m_wheelRotation == -1)
-        this->MoveBottom();
+	if (event.m_wheelRotation == 1)
+		move = 0;
+	else if (event.m_wheelRotation == -1)
+		move = 1;
     
 #else
     
 	if (event.m_wheelRotation == 120)
-		this->MoveTop();
+		move = 0;
 	else
-		this->MoveBottom();
+		move = 1;
     
 #endif
+
+	if (controlKeyPush)
+		move += 10;
+
+	switch (move)
+	{
+	case 0:
+		this->MoveTop();
+		break;
+	case 1:
+		this->MoveBottom();
+		break;
+	case 10:
+		this->ZoomOn();
+		break;
+	case 11:
+		this->ZoomOut();
+		break;
+	}
 }
 
 //------------------------------------------------------------------------------------

@@ -184,7 +184,10 @@ void CScrollbarWnd::ShowVerticalScroll()
 {
 	showV = true;
 }
-
+void CScrollbarWnd::ShowHorizontalScroll()
+{
+	showH = true;
+}
 void CScrollbarWnd::HideVerticalScroll()
 {
 	showV = false;
