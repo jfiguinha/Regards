@@ -29,7 +29,7 @@ using namespace Regards::Window;
 using namespace Regards::exiv2;
 
 const float CBitmapWnd::TabRatio[] = { 0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f, 1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f};
-const long CBitmapWnd::Max = 27;
+const long CBitmapWnd::Max = 26;
 
 #define TIMER_RESIZE 1
 #define TIMER_LOADING 4
@@ -1098,10 +1098,18 @@ void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 		this->MoveBottom();
 		break;
 	case 10:
-		this->ZoomOn();
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMIN);
+            this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+            this->ZoomOn();
+        }
 		break;
 	case 11:
-		this->ZoomOut();
+        {
+            wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_BITMAPZOOMOUT);
+            this->GetParent()->GetEventHandler()->AddPendingEvent(evt);    
+            this->ZoomOut();
+        }
 		break;
 	}
 }
