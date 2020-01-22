@@ -1,6 +1,9 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
-News for version 2.34
+News for version 2.35
+- new Picture mode
+- Add Tbb library for image optimization
+- Add pfm format
 - Bug Correction
 
