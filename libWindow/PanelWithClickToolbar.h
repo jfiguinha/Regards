@@ -29,14 +29,15 @@ namespace Regards
 			int GetHeight();
 			void ShowPanel();
 			void HidePanel(const bool& refresh = true);
-			
+			void ClosePane(const int &id);
+			void ClickShowButton(const int &id);
 
 		protected:
 
 			void ShowPane(wxCommandEvent& event);
 			void ClosePane(wxCommandEvent& event);
-			void ClickShowButton(const int &id);
-			void ClosePane(const int &id);
+			
+			
 			void RefreshPane(const int& id);
 			void Resize();
 

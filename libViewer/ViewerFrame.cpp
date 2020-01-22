@@ -117,6 +117,11 @@ void CViewerFrame::OpenFile(const wxString &fileToOpen)
         mainWindow->OnAddFolder(evt);
         mainWindow->SetSelectFile(fileToOpen);
     }
+
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+	event.SetInt(4);
+	wxPostEvent(central, event);
 }
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen)

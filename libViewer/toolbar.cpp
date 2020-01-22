@@ -21,6 +21,7 @@ using namespace Regards::Viewer;
 #define IDM_QUITTER 157
 #define IDM_PRINT 158
 #define IDM_SCANNER 159
+#define IDM_PICTUREMODE 160
 
 CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme, const bool& vertical)
 	: CToolbarWindow(parent,id,theme, vertical)
@@ -36,6 +37,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	wxString lblScanner = CLibResource::LoadStringFromResource(L"LBLSCANNER", 1);
 	wxString lblExplorerMode = CLibResource::LoadStringFromResource(L"LBLEXPLORERMODE", 1);
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
+	wxString lblPictureMode = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1);
 
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
 	screen->SetButtonResourceId(L"IDB_FOLDER");
@@ -67,6 +69,12 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	viewer->SetLibelle(lblViewerMode);
 	viewer->SetCommandId(IDM_VIEWERMODE);
 	navElement.push_back(viewer);
+
+	CToolbarButton * picture = new CToolbarButton(themeToolbar.button);
+	picture->SetButtonResourceId(L"IDB_PHOTOVIEWERPNG");
+	picture->SetLibelle(lblPictureMode);
+	picture->SetCommandId(IDM_PICTUREMODE);
+	navElement.push_back(picture);
 
 	CToolbarButton* scanner = new CToolbarButton(themeToolbar.button);
 	scanner->SetButtonResourceId(L"IDB_SCANNER");
@@ -148,6 +156,15 @@ void CToolbar::EventManager(const int &id)
 			wxPostEvent(central, event);
 		}
 		break;
+
+	case IDM_PICTUREMODE:
+	{
+		wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+		event.SetInt(4);
+		wxPostEvent(central, event);
+	}
+	break;
 
 	case IDM_SCANNER:
 	{

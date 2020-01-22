@@ -27,6 +27,8 @@ namespace Regards
 			void SetEffect(const bool &effect);
 			void ShowInfos();
 
+			void HideInfos();
+
 			void FullscreenMode();
 			void ScreenMode();
 			bool IsPanelInfosVisible();

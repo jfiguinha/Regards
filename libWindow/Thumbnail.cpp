@@ -52,7 +52,7 @@ public:
 	int percent;
 	wxString filename;
 	int typeElement;
-	int numIcone;
+	//int numIcone;
 	int timePosition;
     CImageLoadingFormat * bitmapIcone;
 	thread * _thread;
@@ -164,7 +164,6 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 	if (numActif != nullptr)
 	{
 		numActif->SetActive(false);
-		//numActif->RenderIcone(&winDC);
 	}
 
 	numActif = iconeList->GetElement(numItem);
@@ -212,7 +211,6 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 	if (numSelect != nullptr)
 	{
 		numSelect->SetSelected(true);
-		//numSelect->RenderIcone(&winDC);
 	}
 
 
@@ -472,6 +470,18 @@ struct mytask {
 };
 #endif
 
+void CThumbnail::ProcessThumbnail(CThumbnailData * pThumbnailData)
+{
+	CThreadLoadingBitmap * pLoadBitmap = new CThreadLoadingBitmap();
+	pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
+	pLoadBitmap->percent = pThumbnailData->GetPercent();
+	pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
+	pLoadBitmap->filename = pThumbnailData->GetFilename();
+	pLoadBitmap->thumbnail = this;
+	pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
+	pThumbnailData->SetIsProcess(true);
+}
+
 void CThumbnail::ProcessIdle()
 {
     TRACE();
@@ -592,16 +602,8 @@ void CThumbnail::ProcessIdle()
                             bool isProcess = pThumbnailData->IsProcess();
                             if (!isProcess && !isLoad)
                             {
-                                CThreadLoadingBitmap * pLoadBitmap = new CThreadLoadingBitmap();
-                                pLoadBitmap->timePosition = pThumbnailData->GetTimePosition();
-                                pLoadBitmap->percent = pThumbnailData->GetPercent();
-                                pLoadBitmap->typeElement = pThumbnailData->GetTypeElement();
-                                pLoadBitmap->filename = pThumbnailData->GetFilename();
-                                pLoadBitmap->thumbnail = this;
-                                pLoadBitmap->numIcone = i;
-                                pLoadBitmap->_thread = new thread(LoadPicture, pLoadBitmap);
-                                nbProcess++;
-                                pThumbnailData->SetIsProcess(true);
+								ProcessThumbnail(pThumbnailData);
+								nbProcess++;
 								photoList.erase(photoList.begin());
                             }
                             sqlPhoto.InsertProcessStart(filename);
@@ -776,7 +778,33 @@ void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const
     
 	if (pBitmapIcone == nullptr)
 		return;
-	pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur);
+
+	int nbProcesseur = 1;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+		nbProcesseur = config->GetThumbnailProcess();
+
+	int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur);
+	if (value == 1 && nbProcess < nbProcesseur)
+	{
+		if (pBitmapIcone != nullptr)
+		{
+			CThumbnailData * pThumbnailData = pBitmapIcone->GetData();
+
+			if (pThumbnailData != nullptr)
+			{
+
+
+				bool isLoad = pThumbnailData->IsLoad();
+				bool isProcess = pThumbnailData->IsProcess();
+				if (!isProcess && !isLoad)
+				{
+					ProcessThumbnail(pThumbnailData);
+					nbProcess++;
+				}
+			}
+		}
+	}
     
     //this->UpdateScroll();
 }
@@ -1091,28 +1119,7 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         if (threadLoadingBitmap->bitmapIcone != nullptr)
         {
 			CThumbnailData * pThumbnailData = nullptr;
-			CIcone * icone = nullptr;
-			if (!(threadLoadingBitmap->numIcone < iconeList->GetNbElement()))
-			{
-				icone = FindIcone(threadLoadingBitmap->filename);
-
-			}
-			else
-			{
-				icone  = iconeList->GetElement(threadLoadingBitmap->numIcone);
-                if(icone != nullptr)
-                {
-                    pThumbnailData = icone->GetData();
-                    if(pThumbnailData != nullptr)
-                    {
-                        if (pThumbnailData->GetFilename() != threadLoadingBitmap->filename)
-                        {
-                            icone = FindIcone(threadLoadingBitmap->filename);
-                            pThumbnailData = nullptr;
-                        }
-                    }
-                }
-			}
+			CIcone * icone = FindIcone(threadLoadingBitmap->filename);
 
 			if (icone != nullptr && pThumbnailData == nullptr)
 				pThumbnailData = icone->GetData();

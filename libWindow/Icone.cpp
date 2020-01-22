@@ -643,9 +643,9 @@ void CIcone::CalculPosition(const wxImage & render)
 //----------------------------------------------------------------------------------
 //
 //----------------------------------------------------------------------------------
-void CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
+int CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur)
 {
-	
+	int returnValue = 0;
 	wxBitmap localmemBitmap(themeIcone.GetWidth(), themeIcone.GetHeight());  
     
     if (pThumbnailData != nullptr)
@@ -683,6 +683,8 @@ void CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur
 					image = CreateFromSVG(themeIcone.GetWidth(), themeIcone.GetHeight(), photoVector);
 					image.Replace(colorToReplace.Red(), colorToReplace.Green(), colorToReplace.Blue(),
 						colorActifReplacement.Red(), colorActifReplacement.Green(), colorActifReplacement.Blue());
+
+					returnValue = 1;
 				}
 
 			}
@@ -729,7 +731,7 @@ void CIcone::RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur
 
 	//if (!thumbnailIconeCache)
 	//	scale.Destroy();
-
+	return returnValue;
 }
 
 void CIcone::SetActive(const bool &value)

@@ -68,6 +68,11 @@ namespace Regards
 			bool IsPanelThumbnailVisible();
 			bool IsPanelInfosVisible();
 
+			void HideThumbnailPanel();
+			void HidePanelInfos();
+			void ShowThumbnailPanel();
+			void ShowPanelInfos();
+
 			void ShowToolbar();
 			void HideToolbar();
 

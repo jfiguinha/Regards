@@ -101,6 +101,7 @@ void CPreviewInfosWnd::UpdateScreenRatio()
     this->ResizeWindow();
 }
 
+
 CPreviewInfosWnd::~CPreviewInfosWnd()
 {
 	CMainParam * config = CMainParamInit::getInstance();
@@ -143,9 +144,15 @@ void CPreviewInfosWnd::ResizeWindow()
 
 void CPreviewInfosWnd::ShowInfos()
 {
+	paneInfos->ClickShowButton(1);
+}
+
+
+void CPreviewInfosWnd::HideInfos()
+{
 	if (paneInfos->IsPanelVisible())
 	{
-		paneInfos->ShowPanel();
+		paneInfos->ClosePane(1);
 	}
 }
 

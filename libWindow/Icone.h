@@ -77,7 +77,7 @@ namespace Regards
 				return state;
 			}
 
-			void RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur);
+			int RenderIcone(wxDC * dc, const int &posLargeur, const int &posHauteur);
 
 			bool IsChecked();
 

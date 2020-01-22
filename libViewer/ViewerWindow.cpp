@@ -701,6 +701,28 @@ bool CViewerWindow::IsPanelInfosVisible()
 	return false;
 }
 
+void CViewerWindow::HideThumbnailPanel()
+{
+	panelPicture->ClosePane(1);
+}
+
+void CViewerWindow::HidePanelInfos()
+{
+	if (previewInfosWnd != nullptr)
+		previewInfosWnd->HideInfos();
+}
+
+void CViewerWindow::ShowThumbnailPanel()
+{
+	panelPicture->ClickShowButton(1);
+}
+
+void CViewerWindow::ShowPanelInfos()
+{
+	if (previewInfosWnd != nullptr)
+		previewInfosWnd->ShowInfos();
+}
+
 //////////////////////////////////////////////////////////////////////////
 //Picture Loading Function
 //////////////////////////////////////////////////////////////////////////

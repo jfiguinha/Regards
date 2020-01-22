@@ -184,6 +184,9 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	case 1:
 		viewerWindow->Show(true);
 		this->SetWindow(panelSearch, viewerWindow);
+		panelSearch->ClickShowButton(1);
+		viewerWindow->ShowPanelInfos();
+		viewerWindow->ShowThumbnailPanel();
 		break;
 #ifndef __NOFACE_DETECTION__
 	case 2:
@@ -195,6 +198,14 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		listPicture->Show(true);
 		this->SetWindow(panelSearch, listPicture);
 		break;
+	case 4:
+		viewerWindow->Show(true);
+		this->SetWindow(panelSearch, viewerWindow);
+		panelSearch->ClosePane(1);
+		viewerWindow->HidePanelInfos();
+		viewerWindow->HideThumbnailPanel();
+		break;
+
 	}
 	this->Resize(this);
 }
