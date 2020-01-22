@@ -542,10 +542,10 @@ void CBitmapWndViewer::AfterRender()
 			}
 		}
 
-		if (numEffect != 0)
+		if (numEffect != 0 && etape < 100)
 		{
 			wxRect out;
-			//Génération de la texture
+			//GÃ©nÃ©ration de la texture
 			if (renderOpenGL != nullptr && afterEffect != nullptr)
 			{
 				//cl_int err;
