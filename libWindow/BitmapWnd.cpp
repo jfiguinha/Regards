@@ -144,12 +144,12 @@ CFiltreEffet * CBitmapWnd::GetFiltreEffet()
 int CBitmapWnd::GetWidth()
 {
     TRACE();
-	return GetSize().x;
+	return width;
 }
 int CBitmapWnd::GetHeight()
 {
     TRACE();
-    return GetSize().y;
+    return height;
 }
 
 float CBitmapWnd::GetRatio()
@@ -1297,12 +1297,9 @@ float CBitmapWnd::CalculPictureRatio(const int &pictureWidth, const int &picture
 	{
 		newRatio = (float)height / (float)(pictureHeight);
 	}
-	else
+	if ((pictureWidth * newRatio) > width)
 	{
-		if ((pictureWidth * newRatio) > width)
-		{
-			newRatio = (float)width / (float)(pictureWidth);
-		}
+		newRatio = (float)width / (float)(pictureWidth);
 	}
 
 	return newRatio;
