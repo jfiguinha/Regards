@@ -162,6 +162,7 @@ void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, in
 		windowToAdd->window = window;
 		windowToAdd->position = position;
 		windowToAdd->size = size;
+		windowToAdd->isTop = false;
 		windowToAdd->fixe = fixe;
 		windowToAdd->rect = rect;
 		windowToAdd->id = id;
@@ -195,83 +196,215 @@ void CWindowManager::UnInit()
 {
 }
 
-void CWindowManager::Init()
+
+
+void CWindowManager::Init_bottom()
 {
 	int width = GetSize().x;
 	int height = GetSize().y;
-
-	CWindowToAdd * top = FindWindow(Pos::wxTOP);
-	if (top != nullptr)
-	{
-			if (!top->fixe)
-			{
-				wxRect rect = top->rect;
-				if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
-				{
-					//Initialize value 25%
-					top->rect.x = 0;
-					top->rect.y = 0;
-					top->rect.width = width;
-					top->rect.height = (height / 4);
-					if (top->separationBar != nullptr)
-					{
-						top->rect.height -= top->separationBar->size;
-						top->separationBar->rect.x = 0;
-						top->separationBar->rect.y = top->rect.height;
-						top->separationBar->rect.width = width;
-						top->separationBar->rect.height = top->separationBar->size;
-						top->separationBar->posBar = top->separationBar->rect.y + top->separationBar->size / 2;
-					}
-				}
-			}
-			else
-			{
-				top->rect.x = 0;
-				top->rect.y = 0;
-				top->rect.width = width;
-				top->rect.height = top->size;
-			}
-	}
+	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
+	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
 
 	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
 	if (bottom != nullptr)
 	{
-			if (!bottom->fixe)
+		int x = 0;
+		int bottom_width = width;
+		int default_height = (height / 4);
+
+		if (left != nullptr)
+		{
+			if (left->isTop)
 			{
-				wxRect rect = bottom->rect;
-				if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
+				if (left->fixe)
 				{
-					//Initialize value 25%
-					bottom->rect.x = 0;
-					bottom->rect.y = height - (height / 4);
-					bottom->rect.width = width;
-					bottom->rect.height = height / 4;
-					if (bottom->separationBar != nullptr)
+					x = left->rect.x;
+					bottom_width -= left->rect.width;
+				}
+				else
+				{
+					x = left->rect.x;
+					bottom_width -= left->rect.width;
+
+					if (left->separationBar != nullptr)
 					{
-						bottom->rect.y += bottom->separationBar->size;
-						bottom->rect.height -= bottom->separationBar->size;
-						bottom->separationBar->rect.x = 0;
-						bottom->separationBar->rect.y = bottom->rect.y - bottom->separationBar->size;
-						bottom->separationBar->rect.width = width;
-						bottom->separationBar->rect.height = bottom->separationBar->size;
-						bottom->separationBar->posBar = bottom->separationBar->rect.y + bottom->separationBar->size / 2;
+						x += left->separationBar->rect.x;
+						bottom_width -= left->separationBar->rect.width;
 					}
 				}
 			}
-			else
-			{
-				bottom->rect.x = 0;
-				bottom->rect.y = height - bottom->size;
-				bottom->rect.width = width;
-				bottom->rect.height = bottom->size;
-			}
-	}
+		}
 
+		if (right != nullptr)
+		{
+			if (right->isTop)
+			{
+				if (right->fixe)
+					bottom_width -= left->rect.width;
+				else
+				{
+					bottom_width -= left->rect.width;
+
+					if (right->separationBar != nullptr)
+						bottom_width -= left->separationBar->rect.width;
+				}
+			}
+		}
+
+		if (bottom->fixe)
+		{
+			default_height = bottom->size;
+		}
+
+		SetWindowBottomSize(bottom, default_height, x, height - default_height, bottom_width);
+	}
+}
+
+
+void CWindowManager::SetWindowBottomSize(CWindowToAdd * bottom, int height, int x, int y, int width)
+{
+	if (!bottom->fixe)
+	{
+		wxRect rect = bottom->rect;
+		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
+		{
+			//Initialize value 25%
+			bottom->rect.x = 0;
+			bottom->rect.y = y;
+			bottom->rect.width = width;
+			bottom->rect.height = height;
+			if (bottom->separationBar != nullptr)
+			{
+				bottom->rect.y += bottom->separationBar->size;
+				bottom->rect.height -= bottom->separationBar->size;
+				bottom->separationBar->rect.x = 0;
+				bottom->separationBar->rect.y = bottom->rect.y - bottom->separationBar->size;
+				bottom->separationBar->rect.width = width;
+				bottom->separationBar->rect.height = bottom->separationBar->size;
+				bottom->separationBar->posBar = bottom->separationBar->rect.y + bottom->separationBar->size / 2;
+			}
+		}
+	}
+	else
+	{
+		bottom->rect.x = 0;
+		bottom->rect.y = y;
+		bottom->rect.width = width;
+		bottom->rect.height = height;
+	}
+}
+
+void CWindowManager::Init_top()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
+	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
+	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	if (top != nullptr)
+	{
+		int x = 0;
+		int top_width = width;
+		int default_height = (height / 4);
+
+		if (left != nullptr)
+		{
+			if (left->isTop)
+			{
+				if (left->fixe)
+				{
+					x = left->rect.x;
+					top_width -= left->rect.width;
+				}
+				else
+				{
+					x = left->rect.x;
+					top_width -= left->rect.width;
+
+					if (left->separationBar != nullptr)
+					{
+						x += left->separationBar->rect.x;
+						top_width -= left->separationBar->rect.width;
+					}
+				}
+			}
+		}
+
+		if (right != nullptr)
+		{
+			if (right->isTop)
+			{
+				if (right->fixe)
+					top_width -= left->rect.width;
+				else
+				{
+					top_width -= left->rect.width;
+
+					if (right->separationBar != nullptr)
+						top_width -= left->separationBar->rect.width;
+				}
+			}
+		}
+
+		if (top->fixe)
+		{
+			default_height = top->size;
+		}
+			   		 
+		SetWindowTopSize(top, default_height, x, top_width);
+	}
+}
+
+void CWindowManager::SetWindowTopSize(CWindowToAdd * top, int height, int x, int top_width)
+{
+	if (!top->fixe)
+	{
+		wxRect rect = top->rect;
+		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
+		{
+			//Initialize value 25%
+			top->rect.x = x;
+			top->rect.y = 0;
+			top->rect.width = top_width;
+			top->rect.height = height;
+			if (top->separationBar != nullptr)
+			{
+				top->rect.height -= top->separationBar->size;
+				top->separationBar->rect.x = x;
+				top->separationBar->rect.y = top->rect.height;
+				top->separationBar->rect.width = top_width;
+				top->separationBar->rect.height = top->separationBar->size;
+				top->separationBar->posBar = top->separationBar->rect.y + top->separationBar->size / 2;
+			}
+		}
+	}
+	else
+	{
+		top->rect.x = x;
+		top->rect.y = 0;
+		top->rect.width = top_width;
+		top->rect.height = height;
+	}
+}
+
+
+void CWindowManager::Init_left()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
 	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
 	if (left != nullptr)
 	{
-			int y = 0;
-			int left_height = height;
+		int y = 0;
+		int left_height = height;
+		if (left->isTop)
+		{
+			SetWindowLeftSize(left, width, y, left_height);
+		}
+		else
+		{
 			if (top != nullptr)
 			{
 				if (!top->isHide)
@@ -310,45 +443,107 @@ void CWindowManager::Init()
 				}
 			}
 
-			if (!left->fixe)
-			{
-				wxRect rect = left->rect;
-				if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
-				{
-					//Initialize value 25%
-					left->rect.x = 0;
-					left->rect.y = y;
-					left->rect.width = width / 4;
-					left->rect.height = left_height;
-				}
-
-				if (left->separationBar != nullptr)
-				{
-					left->rect.x = 0;
-					left->rect.y = y;
-					left->rect.height = left_height;
-					left->rect.width -= left->separationBar->size;
-					left->separationBar->rect.x = left->rect.width;
-					left->separationBar->rect.y = y;
-					left->separationBar->rect.width = left->separationBar->size;
-					left->separationBar->rect.height = left_height;
-					left->separationBar->posBar = left->separationBar->rect.x + left->separationBar->size / 2;
-				}
-			}
-			else
-			{
-				left->rect.x = 0;
-				left->rect.y = y;
-				left->rect.width = left->size;
-				left->rect.height = left_height;
-			}
+			SetWindowLeftSize(left, width, y, left_height);
+		}
 	}
 
+}
+
+void CWindowManager::SetWindowLeftSize(CWindowToAdd * left, int width, int y, int left_height)
+{
+	if (!left->fixe)
+	{
+		wxRect rect = left->rect;
+		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
+		{
+			//Initialize value 25%
+			left->rect.x = 0;
+			left->rect.y = y;
+			left->rect.width = width / 4;
+			left->rect.height = left_height;
+		}
+
+		if (left->separationBar != nullptr)
+		{
+			left->rect.x = 0;
+			left->rect.y = y;
+			left->rect.height = left_height;
+			left->rect.width -= left->separationBar->size;
+			left->separationBar->rect.x = left->rect.width;
+			left->separationBar->rect.y = y;
+			left->separationBar->rect.width = left->separationBar->size;
+			left->separationBar->rect.height = left_height;
+			left->separationBar->posBar = left->separationBar->rect.x + left->separationBar->size / 2;
+		}
+	}
+	else
+	{
+		left->rect.x = 0;
+		left->rect.y = y;
+		left->rect.width = left->size;
+		left->rect.height = left_height;
+	}
+}
+
+void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, int right_height)
+{
+	if (!right->fixe)
+	{
+		wxRect rect = right->rect;
+		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
+		{
+			//Initialize value 25%
+			right->rect.x = width - (width / 4);
+			right->rect.y = y;
+			right->rect.width = width / 4;
+			right->rect.height = right_height;
+		}
+
+		if (right->separationBar != nullptr)
+		{
+			right->rect.y = y;
+			right->rect.x += right->separationBar->size;
+			right->rect.width -= right->separationBar->size;
+			right->rect.height = right_height;
+			right->separationBar->rect.x = right->rect.x - right->separationBar->size;
+			right->separationBar->rect.y = y;
+			right->separationBar->rect.width = right->separationBar->size;
+			right->separationBar->rect.height = right_height;
+			right->separationBar->posBar = right->separationBar->rect.x + right->separationBar->size / 2;
+		}
+	}
+	else
+	{
+		right->rect.x = width - right->size;
+		right->rect.y = y;
+		right->rect.width = right->size;
+		right->rect.height = right_height;
+	}
+}
+
+
+void CWindowManager::Init_right()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
 	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
+
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
+
+
 	if (right != nullptr)
 	{
-			int y = 0;
-			int right_height = height;
+		int y = 0;
+		int right_height = height;
+
+		if (right->isTop)
+		{
+			SetWindowRightSize(right, width, y, right_height);
+		}
+		else
+		{
+
 			if (top != nullptr)
 			{
 				if (top->fixe)
@@ -381,41 +576,20 @@ void CWindowManager::Init()
 				}
 			}
 
-			if (!right->fixe)
-			{
-				wxRect rect = right->rect;
-				if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
-				{
-					//Initialize value 25%
-					right->rect.x = width - (width / 4);
-					right->rect.y = y;
-					right->rect.width = width / 4;
-					right->rect.height = right_height;
-				}
-
-				if (right->separationBar != nullptr)
-				{
-					right->rect.y = y;
-					right->rect.x += right->separationBar->size;
-					right->rect.width -= right->separationBar->size;
-					right->rect.height = right_height;
-					right->separationBar->rect.x = right->rect.x - right->separationBar->size;
-					right->separationBar->rect.y = y;
-					right->separationBar->rect.width = right->separationBar->size;
-					right->separationBar->rect.height = right_height;
-					right->separationBar->posBar = right->separationBar->rect.x + right->separationBar->size / 2;
-				}
-			}
-			else
-			{
-				right->rect.x = width - right->size;
-				right->rect.y = y;
-				right->rect.width = right->size;
-				right->rect.height = right_height;
-			}
+			SetWindowRightSize(right, width, y, right_height);
+		}
 	}
+}
 
+void CWindowManager::Init_Central()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
+	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
 	CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
+	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
 	if (central)
 	{
 		int x = 0;
@@ -491,6 +665,18 @@ void CWindowManager::Init()
 		central->rect.width = width;
 		central->rect.height = height;
 	}
+}
+
+void CWindowManager::Init()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
+
+	Init_top();
+	Init_bottom();
+	Init_left();
+	Init_right();
+	Init_Central();
 }
 
 void CWindowManager::GenerateRenderBitmap()
@@ -963,8 +1149,11 @@ void CWindowManager::Resize()
 						windowToAdd->window->Raise();  // bring window to front
 						windowToAdd->window->Show(true); // show the window
 					}
+
+#ifdef _DEBUG
 					wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
 					OutputDebugString(temp);
+#endif
 				}
 				else
 					windowToAdd->window->SetSize(rc);
@@ -980,8 +1169,10 @@ void CWindowManager::Resize()
 						if (windowToAdd->separationBar->separationBar->IsShown())
 						{
 							windowToAdd->separationBar->separationBar->SetSize(windowToAdd->separationBar->rect);
+#ifdef _DEBUG
 							wsprintf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
 							OutputDebugString(temp);
+#endif
 						}
 						else
 							windowToAdd->separationBar->separationBar->SetSize(rc);

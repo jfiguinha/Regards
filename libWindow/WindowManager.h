@@ -6,7 +6,7 @@ namespace Regards
 {
 	namespace Window
 	{
-		enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT };
+		enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT};
 
 		class CSeparationBarToAdd
 		{
@@ -29,6 +29,7 @@ namespace Regards
 			bool fixe;
 			bool fixe_old;
 			int id;
+			bool isTop;
 			bool isHide;
 			int diffWidth;
 			int diffHeight;
@@ -74,6 +75,18 @@ namespace Regards
 			void MoveBottom(int difference);
 			void MoveRight(int difference);
 			void MoveLeft(int difference);
+
+			//Init Window
+			void Init_top();
+			void Init_bottom();
+			void Init_right();
+			void Init_left();
+			void Init_Central();
+
+			void SetWindowRightSize(CWindowToAdd * right, int width, int y, int right_height);
+			void SetWindowLeftSize(CWindowToAdd * left, int width, int y, int left_height);
+			void SetWindowTopSize(CWindowToAdd * top, int height, int x, int top_width);
+			void SetWindowBottomSize(CWindowToAdd * bottom, int height, int x, int y, int width);
 
 			void OnPaint(wxPaintEvent& event);
 
