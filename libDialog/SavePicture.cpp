@@ -133,7 +133,6 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			iFormat = BPG;
 			extension = "bpg";
 			break;
-		}
 
 		case 19:
 			iFormat = PFM;
