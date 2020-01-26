@@ -130,7 +130,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite;..\Otherlib\wxPDFDoc\include;..\libextern\poppler_windows-master\cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\wxCheckTree;..\Regards;..\libOpenCL;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite;..\Otherlib\wxPDFDoc\include;..\libextern\poppler_windows-master\cpp</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

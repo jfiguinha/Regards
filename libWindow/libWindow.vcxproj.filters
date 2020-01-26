@@ -186,6 +186,9 @@
     <ClInclude Include="BitmapWnd.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="WindowManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -325,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="BitmapWnd.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowManager.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

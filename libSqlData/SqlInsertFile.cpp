@@ -5,12 +5,13 @@
 #include <wx/progdlg.h>
 using namespace Regards::Sqlite;
 
-
+/*
 #ifdef WIN32
 #define USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
 #endif
+*/
 
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB")

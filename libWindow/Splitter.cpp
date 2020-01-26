@@ -145,7 +145,7 @@ int CSplitter::GetPosition()
 }
 
 
-bool CSplitter::OnLButtonDown()
+bool CSplitter::OnLButtonDown(CSeparationBar * separationBar)
 {
 	moving = true;
 	if (fastRender)
@@ -166,7 +166,7 @@ bool CSplitter::OnLButtonDown()
 	return true;
 }
 
-void CSplitter::OnLButtonUp()
+void CSplitter::OnLButtonUp(CSeparationBar * separationBar)
 {
 	moving = false;
 	if (fastRender)
@@ -205,7 +205,7 @@ CSplitter::~CSplitter()
 }
 
 
-void CSplitter::SetNewPosition()
+void CSplitter::SetNewPosition(CSeparationBar * separationBar)
 {
 	if (!fixPosition)
 	{

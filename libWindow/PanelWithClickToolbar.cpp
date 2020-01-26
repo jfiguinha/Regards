@@ -1,5 +1,7 @@
 #include <header.h>
 #include "PanelWithClickToolbar.h"
+#include "MainTheme.h"
+#include "MainThemeInit.h"
 using namespace Regards::Window;
 
 #define PANE_WITHCLICKTOOLBAR 1
@@ -53,6 +55,17 @@ wxWindow * CPanelWithClickToolbar::GetPaneWindow()
 	return paneWindow;
 }
 
+CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical)
+{
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	CThemePane theme;
+	viewerTheme->GetPaneTheme(&theme);
+	CThemeToolbar themeClickInfosToolbar;
+	viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
+	CPanelWithClickToolbar * panel = new CPanelWithClickToolbar(parent, windowName, idPanel, theme, themeClickInfosToolbar, panelLabel, isVisible, false, isVertical);
+	return panel;
+}
+
 void CPanelWithClickToolbar::SetWindow(CWindowMain * windowMain)
 {
 	mainWindow = windowMain;
@@ -83,6 +96,8 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id)
 			clickWindow->Show(false);
 			paneWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+			event->SetId(this->GetId());
+			event->SetInt(1);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -97,6 +112,7 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 		case PANE_WITHCLICKTOOLBAR:
 		{
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESHDATA);
+			event->SetId(this->GetId());
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -114,6 +130,8 @@ void CPanelWithClickToolbar::ClosePane(const int &id)
 			paneWindow->Show(false);
 			clickWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+			event->SetId(this->GetId());
+			event->SetInt(0);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;

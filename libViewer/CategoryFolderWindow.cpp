@@ -197,7 +197,8 @@ void CCategoryFolderWindow::ProcessIdle()
 	wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
 	eventChange.SetClientData(thumbnailMessage);
-	mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+	if(mainWnd != nullptr)
+		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 
 	/*
     wxString message = "Criteria Nb Image to Process :  " + to_string(nbPhotos);

@@ -26,6 +26,7 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <wx/textfile.h>
+#include <myFrame.h>
 #ifdef USECURL
 #include <curl/curl.h>
 #endif
@@ -249,9 +250,15 @@ public:
 
 	virtual void ShowViewer()
 	{
+#ifdef TEST_WINDOWMANAGER
+		wxFrame* frame = new MyFrame(NULL);
+		SetTopWindow(frame);
+		frame->Show();
+#else
 		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxDefaultSize, this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
+#endif
 	}
 
 	virtual void ShowAbout()

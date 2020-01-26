@@ -22,17 +22,17 @@ namespace Regards
 			int GetPosition();
 			void SetSeparationBarVisible(const bool& visible);
 			bool GetSeparationVisibility();
-			void UpdatePosition(){};
+			void UpdatePosition(CSeparationBar * separationBar){};
             virtual void UpdateScreenRatio() = 0;
 			//virtual void OnPaint(wxPaintEvent& event);
 
 			void GenerateHorizontalRenderBitmap();
 			void GenerateVerticalRenderBitmap();
 
-			bool OnLButtonDown();
-			void OnLButtonUp();
+			bool OnLButtonDown(CSeparationBar * separationBar);
+			void OnLButtonUp(CSeparationBar * separationBar);
 
-			void SetNewPosition();
+			void SetNewPosition(CSeparationBar * separationBar);
 			void Resize();
 			void Resize(wxWindow * window);
 			

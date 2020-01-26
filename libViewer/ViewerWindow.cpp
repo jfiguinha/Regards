@@ -229,6 +229,7 @@ void CViewerWindow::AnimationPicturePrevious()
 
 CViewerWindow::~CViewerWindow()
 {
+
 	if (videoThumbnail.size() > 0)
 	{
 		for (int i = 0; i < videoThumbnail.size(); i++)
@@ -407,6 +408,8 @@ wxRect CViewerWindow::GetWindowRect()
 
 void CViewerWindow::RedrawBarPos()
 {
+	return;
+
     if(isPicture)
     {
 		panelVideo->HidePanel(false);
