@@ -331,7 +331,7 @@ void CListPicture::GeolocalizeFile(wxCommandEvent& event)
             wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLGeoModifFinalMessage", 1);
             wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
 
-			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+			wxProgressDialog dialog(caption, text, listItem.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 			for (int i = 0; i < listItem.size(); i++)
 			{
 				int j = i + 1;
@@ -409,7 +409,7 @@ void CListPicture::ChangeDateFile(wxCommandEvent& event)
             wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLDateModifFinalMessage", 1);
             wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
 
-			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+			wxProgressDialog dialog(caption, text, listItem.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 			for (int i = 0; i < listItem.size(); i++)
 			{
 				int j = i + 1;
@@ -893,7 +893,7 @@ void CListPicture::ExportFile(wxCommandEvent& event)
 					libPicture.SavePictureOption(infoFile.outputFormat, optionPicture, qualityPicture);
 				}
 
-				wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+				wxProgressDialog dialog(caption, text, listItem.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 				for (int i = 0; i < listItem.size(); i++)
 				{
 					int j = i + 1;
@@ -939,7 +939,7 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 		wxString deleteFinalMessage = CLibResource::LoadStringFromResource(L"LBLDeleteFinalMessage", 1);
 		wxString informations = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
 
-		wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		wxProgressDialog dialog(caption, text, listItem.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 		for (int i = 0; i < listItem.size(); i++)
 		{
 			int j = i + 1;
@@ -1002,7 +1002,7 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 		if (dlg.ShowModal() == wxID_OK)
 		{
 			wxString folderPath = dlg.GetPath();
-			wxProgressDialog dialog(caption, text, listItem.size(), NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+			wxProgressDialog dialog(caption, text, listItem.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 			for (int i = 0; i < listItem.size(); i++)
 			{
 				int j = i + 1;
