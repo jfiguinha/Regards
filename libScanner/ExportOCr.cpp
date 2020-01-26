@@ -428,7 +428,7 @@ static void PreloadRenderers(
 
 void CExportOcr::monitorProgress(ETEXT_DESC *monitor, int page)
 {
-	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT);
+	wxProgressDialog dialog("OCR in progress", "Percent : ", 100, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
 	while (1) {
 		if (false == dialog.Update(monitor[page].progress, "Percent : "))

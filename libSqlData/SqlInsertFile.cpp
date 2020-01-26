@@ -306,7 +306,7 @@ struct myAddFileFromFoldertask {
 	CSqlInsertFile * insertFile;
 };
 #endif
-int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolder, wxString &firstFile)
+int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 #ifndef USE_TBB
 	CLibPicture libPicture;
@@ -320,7 +320,7 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 	wxString msg = "In progress ...";
-	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), NULL, wxPD_APP_MODAL);
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), parent, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 	int updatesize = 0;
 	dialog.Update(updatesize, msg);
 
