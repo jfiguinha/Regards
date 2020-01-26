@@ -26,7 +26,9 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <wx/textfile.h>
+#ifdef TEST_WINDOWMANAGER
 #include <myFrame.h>
+#endif
 #ifdef USECURL
 #include <curl/curl.h>
 #endif
