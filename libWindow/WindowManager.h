@@ -49,13 +49,12 @@ namespace Regards
 			void AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id = 0);
 			void SetSeparationBarVisible(const bool& visible);
 			bool GetSeparationVisibility();
-			void UpdatePosition(CSeparationBar * separationBar) {};
 
 			void GenerateRenderBitmap();
 			void HideWindow(Pos position);
 			void ShowWindow(Pos position);
-			bool OnLButtonDown(CSeparationBar * separationBar);
-			void OnLButtonUp(CSeparationBar * separationBar);
+			bool OnLButtonDown();
+			void OnLButtonUp();
 
 			void SetNewPosition(CSeparationBar * separationBar);
 			virtual void Resize();

@@ -72,7 +72,6 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="myFrame.h"/>
     <File Name="ViewerWindow.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="MainWindow.h"/>

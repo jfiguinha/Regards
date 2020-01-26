@@ -14,8 +14,10 @@ namespace Regards
 		public:
 			CSeparationBar(IMoveWindow * moveWindow, wxWindow* parent, wxWindowID id, const CThemeSeparationBar & theme);
 			~CSeparationBar();
+			void SetTheme(CThemeSeparationBar * theme);
 			void SetFastRender(const bool &fast);
 			void SetHorizontal(const bool &horizontal);
+			void SetScreenPosition(const int &position);
 
 		private:
 

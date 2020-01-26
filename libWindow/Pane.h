@@ -42,13 +42,11 @@ namespace Regards
 			void SetTitleBarVisibility(const bool &visible);
 			int GetTitleHeight();
 
-			
-
 		protected:
-
+			void OnShow(wxShowEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
-			void OnShow(wxShowEvent& event);
+
 			void OnIdle(wxIdleEvent& evt);
 		private:
 

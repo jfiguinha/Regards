@@ -26,6 +26,8 @@
 #include <libPicture.h>
 #include <ConvertUtility.h>
 #include <wx/textfile.h>
+//#define TEST_WINDOWMANAGER
+
 #ifdef TEST_WINDOWMANAGER
 #include <myFrame.h>
 #endif
@@ -80,40 +82,40 @@ extern "C"
 
 static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
 {
-    if (NULL == _mutex)
-        return -1;
+	if (NULL == _mutex)
+		return -1;
 
-    switch(op)
-    {
-    case AV_LOCK_CREATE:
-    {
-        *_mutex = NULL;
-        mutex * m = new mutex();
-        *_mutex = static_cast<void*>(m);
-        break;
-    }
-    case AV_LOCK_OBTAIN:
-    {
-        mutex * m =  static_cast<mutex*>(*_mutex);
-        m->lock();
-        break;
-    }
-    case AV_LOCK_RELEASE:
-    {
-        mutex * m = static_cast<mutex*>(*_mutex);
-        m->unlock();
-        break;
-    }
-    case AV_LOCK_DESTROY:
-    {
-        mutex * m = static_cast<mutex*>(*_mutex);
-        delete m;
-        break;
-    }
-    default:
-        break;
-    }
-    return 0;
+	switch (op)
+	{
+	case AV_LOCK_CREATE:
+	{
+		*_mutex = NULL;
+		mutex * m = new mutex();
+		*_mutex = static_cast<void*>(m);
+		break;
+	}
+	case AV_LOCK_OBTAIN:
+	{
+		mutex * m = static_cast<mutex*>(*_mutex);
+		m->lock();
+		break;
+	}
+	case AV_LOCK_RELEASE:
+	{
+		mutex * m = static_cast<mutex*>(*_mutex);
+		m->unlock();
+		break;
+	}
+	case AV_LOCK_DESTROY:
+	{
+		mutex * m = static_cast<mutex*>(*_mutex);
+		delete m;
+		break;
+	}
+	default:
+		break;
+	}
+	return 0;
 }
 
 #endif
@@ -150,17 +152,17 @@ COpenCLContext * openclContext = nullptr;
 // o: option name after hyphen
 // d: default value (if NULL, the option takes no argument)
 const char *pick_option(int *c, char **v, const char *o, const char *d) {
-  int id = d ? 1 : 0;
-  for (int i = 0; i < *c - id; i++) {
-    if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o)) {
-      char *r = v[i + id] + 1 - id;
-      for (int j = i; j < *c - id; j++)
-        v[j] = v[j + id + 1];
-      *c -= id + 1;
-      return r;
-    }
-  }
-  return d;
+	int id = d ? 1 : 0;
+	for (int i = 0; i < *c - id; i++) {
+		if (v[i][0] == '-' && 0 == strcmp(v[i] + 1, o)) {
+			char *r = v[i + id] + 1 - id;
+			for (int j = i; j < *c - id; j++)
+				v[j] = v[j + id + 1];
+			*c -= id + 1;
+			return r;
+		}
+	}
+	return d;
 }
 
 bool CMasterWindow::endProgram = false;
@@ -174,7 +176,7 @@ public:
 	// override base class virtuals
 	// ----------------------------
 	MyApp(
-		)
+	)
 	{
 
 		//Init x11
@@ -182,25 +184,25 @@ public:
 		frameStart = nullptr;
 		//frameViewer = nullptr;
 #ifdef USECURL
-        curl_global_init(CURL_GLOBAL_ALL);
+		curl_global_init(CURL_GLOBAL_ALL);
 #endif        
 
-        
+
 #ifdef __WXGTK__
 		int result = XInitThreads();
-                
-    
-        
+
+
+
 #endif
 
 #pragma omp parallel for
-	for (auto i = 0; i < 256; i++)
-		value[i] = (float)i;
+		for (auto i = 0; i < 256; i++)
+			value[i] = (float)i;
 
 #ifdef FFMPEG
-            //Init FFMPEG
-        int res = -1;
-        res = av_lockmgr_register(&ff_lockmgr);
+		//Init FFMPEG
+		int res = -1;
+		res = av_lockmgr_register(&ff_lockmgr);
 		// register all codecs, demux and protocols 
 		avcodec_register_all();
 #if CONFIG_AVDEVICE
@@ -281,22 +283,22 @@ public:
 			frameStart->Show(false);
 
 	}
-    
-    virtual wxString GetAppName()
-    {
-        return "RegardsViewer";
-    }
-    virtual void AddImageHandler( wxImageHandler* poHandler );
-    virtual wxString GetImageFilter();
-    
+
+	virtual wxString GetAppName()
+	{
+		return "RegardsViewer";
+	}
+	virtual void AddImageHandler(wxImageHandler* poHandler);
+	virtual wxString GetImageFilter();
+
 private:
 	CRegardsConfigParam * regardsParam;
 	MyFrameIntro * frameStart;
 	CViewerFrame * frameViewer;
 	wxString fileToOpen;
-    wxString m_strImageFilterList;
-    wxString m_strImageFilter;
-    
+	wxString m_strImageFilterList;
+	wxString m_strImageFilter;
+
 #ifdef __WXMSW__
 	ULONG_PTR m_gdiplusToken;   // class member
 #endif
@@ -313,6 +315,6 @@ static const wxCmdLineEntryDesc g_cmdLineDesc[] =
 {
 	{ wxCMD_LINE_PARAM, NULL, NULL, "input file", wxCMD_LINE_VAL_STRING,
 	wxCMD_LINE_PARAM_OPTIONAL },
-    
+
 	{ wxCMD_LINE_NONE }
 };

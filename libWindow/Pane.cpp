@@ -20,23 +20,25 @@ CWindowMain("CPane",parent, id)
 	this->themePane = themePane;
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
-	Connect(wxEVT_SHOW, wxShowEventHandler(CPane::OnShow));
+	//Connect(wxEVT_SHOW, wxShowEventHandler(CPane::OnShow));
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CPane::OnPaint));
 	//Connect(wxEVT_IDLE, wxIdleEventHandler(CPane::OnIdle));
 }
 
 void CPane::OnShow(wxShowEvent& event)
 {
-	if (IsShown())
+	if (hWndOther != nullptr)
 	{
-		hWndOther->Show(true);
-	}
-	else
-	{
-		hWndOther->Show(false);
+		if (IsShown())
+		{
+			hWndOther->Show(true);
+		}
+		else
+		{
+			hWndOther->Show(false);
+		}
 	}
 }
-
 void CPane::OnPaint(wxPaintEvent& event)
 {
     int width = GetWindowWidth();

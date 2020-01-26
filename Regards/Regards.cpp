@@ -14,7 +14,6 @@
 #include <wx/wxpoppler.h>
 #endif
 
-
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
 	parser.SetDesc(g_cmdLineDesc);
@@ -263,8 +262,6 @@ bool MyApp::OnInit()
     
      
     //wxXmlResource::Get()->LoadAllFiles("rc");
-	
-
 	
 	frameStart = new MyFrameIntro("Welcome to Regards","REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);

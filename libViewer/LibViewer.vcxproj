@@ -207,7 +207,6 @@
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
-    <ClInclude Include="myFrame.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />

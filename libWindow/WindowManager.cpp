@@ -727,7 +727,7 @@ bool CWindowManager::GetSeparationVisibility()
 
 }
 
-bool CWindowManager::OnLButtonDown(CSeparationBar * separationBar)
+bool CWindowManager::OnLButtonDown()
 {
 	this->SetFocus();
 	moving = true;
@@ -735,7 +735,7 @@ bool CWindowManager::OnLButtonDown(CSeparationBar * separationBar)
 	return true;
 }
 
-void CWindowManager::OnLButtonUp(CSeparationBar * separationBar)
+void CWindowManager::OnLButtonUp()
 {
 	moving = false;
 	Resize();

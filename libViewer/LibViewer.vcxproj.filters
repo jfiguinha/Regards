@@ -147,9 +147,6 @@
     <ClInclude Include="CheckVersion.h">
       <Filter>CheckVersion</Filter>
     </ClInclude>
-    <ClInclude Include="myFrame.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">

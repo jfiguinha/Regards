@@ -197,6 +197,7 @@ void CCategoryFolderWindow::ProcessIdle()
 	wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
 	eventChange.SetClientData(thumbnailMessage);
+
 	if(mainWnd != nullptr)
 		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 
@@ -256,7 +257,9 @@ void CCategoryFolderWindow::ProcessIdle()
 		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 		wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
 		eventChange.SetClientData(thumbnailMessage);
-		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+
+		if(mainWnd != nullptr)
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 
 		/*
 		if (statusBarViewer != nullptr)
@@ -273,9 +276,12 @@ void CCategoryFolderWindow::ProcessIdle()
 			thumbnailMessage->nbElement = catalogfolderVector.size();
 			thumbnailMessage->typeMessage = 2;
 			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
-			eventChange.SetClientData(thumbnailMessage);
-			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			if (mainWnd != nullptr)
+			{
+				wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
+				eventChange.SetClientData(thumbnailMessage);
+				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+			}
 			/*
 			message = "Folder Processing " + to_string(counter) + " / " + to_string(catalogfolderVector.size());
 			if (statusBarViewer != nullptr)

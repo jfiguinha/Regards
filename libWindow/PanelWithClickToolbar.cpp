@@ -55,6 +55,7 @@ wxWindow * CPanelWithClickToolbar::GetPaneWindow()
 	return paneWindow;
 }
 
+
 CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical)
 {
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
@@ -96,8 +97,6 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id)
 			clickWindow->Show(false);
 			paneWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-			event->SetId(this->GetId());
-			event->SetInt(1);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -112,7 +111,6 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 		case PANE_WITHCLICKTOOLBAR:
 		{
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESHDATA);
-			event->SetId(this->GetId());
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -130,8 +128,6 @@ void CPanelWithClickToolbar::ClosePane(const int &id)
 			paneWindow->Show(false);
 			clickWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-			event->SetId(this->GetId());
-			event->SetInt(0);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;

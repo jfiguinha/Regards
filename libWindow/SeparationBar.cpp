@@ -85,7 +85,7 @@ void CSeparationBar::SetFastRender(const bool &fast)
 
 void CSeparationBar::OnLButtonDown(wxMouseEvent& event)
 {
-	if (moveWindow->OnLButtonDown(this))
+	if (moveWindow->OnLButtonDown())
 	{
 		if (horizontal)
             ::wxSetCursor(wxCursor(wxCURSOR_SIZENS));
@@ -117,7 +117,7 @@ void CSeparationBar::OnPaint(wxPaintEvent& event)
 
 void CSeparationBar::OnLButtonUp(wxMouseEvent& event)
 {
-	moveWindow->OnLButtonUp(this);
+	moveWindow->OnLButtonUp();
 	if (bSplitterMoving)
 	{
         if(HasCapture())

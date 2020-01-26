@@ -313,10 +313,16 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
     BeginTransaction();
 #endif
 
+
+
 	int i = 0;
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+	wxString msg = "In progress ...";
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), NULL, wxPD_APP_MODAL);
+	int updatesize = 0;
+	dialog.Update(updatesize, msg);
 
 #ifdef USE_TBB
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
@@ -333,6 +339,13 @@ int CSqlInsertFile::AddFileFromFolder(const wxString &folder, const int &idFolde
 				firstFile = file;
 			i++;            
 #else
+
+			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
+			if (false == dialog.Update(i, message))
+			{
+				break;
+			}
+
 			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{
 				int extensionId = libPicture.TestImageFormat(file);
