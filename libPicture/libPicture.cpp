@@ -1050,7 +1050,7 @@ int CLibPicture::SavePicture(const wxString & fileNameIn, const wxString & fileN
 	{
 		int nbPicture = GetNbImage(fileNameIn);
 		wxString msg = "in progress";
-		wxProgressDialog dialog("Export File", "Checking...", nbPicture, NULL, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+		wxProgressDialog dialog("Export File", "Checking...", nbPicture, this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 		int updatesize = 0;
 		dialog.Update(updatesize, msg);
 		

@@ -12,6 +12,7 @@
 !define MUI_PRODUCT "Regards Viewer 2.35"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
+!define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
   Name "Regards Viewer 2.35"
@@ -25,8 +26,6 @@
 
   ;Request application privileges for Windows Vista
   RequestExecutionLevel admin
-  
-  
 
 ;--------------------------------
 ;Interface Settings
@@ -50,6 +49,29 @@
 ;Languages
  
   !insertmacro MUI_LANGUAGE "English"
+ 
+
+
+Function .onInit
+StrCpy $0 "$INSTDIR\Uninstall.exe"
+IfFileExists "$INSTDIR\Uninstall.exe" file_found file_not_found
+file_found:
+${If} $0 != ""
+${AndIf} ${Cmd} `MessageBox MB_YESNO|MB_ICONQUESTION "Uninstall previous version?" /SD IDYES IDYES`
+  Delete "$INSTDIR\Uninstall.exe"
+  Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
+
+  ;create start-menu items
+  Delete "$SMPROGRAMS\${MUI_PRODUCT}"
+
+  RMDIR /r "$INSTDIR"
+
+  DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
+${EndIf}
+file_not_found:
+	DetailPrint "Uninstall Regards Viewer"
+
+FunctionEnd
   
 Function openLinkNewWindow
   Push $3
@@ -101,6 +123,7 @@ Section "Regards Viewer 2.35" SecRegardsViewer
 
   SetOutPath "$INSTDIR"
   
+  
   ;ADD YOUR OWN FILES HERE...
   DetailPrint "*** Installing Regards Viewer 2.35..."
   File "Prerequisites\RegardsViewer2.zip"
@@ -149,17 +172,20 @@ SectionEnd
 
 Section "Uninstall"
 
-
   Delete "$INSTDIR\Uninstall.exe"
   Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
-  
+
   ;create start-menu items
   Delete "$SMPROGRAMS\${MUI_PRODUCT}"
 
-  RMDir "$INSTDIR"
+  RMDIR /r "$INSTDIR"
 
   DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
 
 SectionEnd
+
+
+ 
+ 
 
 
