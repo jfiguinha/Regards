@@ -124,7 +124,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_CRITERIASHOWUPDATE, wxCommandEventHandler(CMainWindow::RefreshCriteriaPictureList));
 	Connect(TOOLBAR_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnShowToolbar));
 	Connect(VIDEO_END_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoEnd));
-    Connect(VIDEO_START, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoStart));
+    Connect(VIDEO_START, wxCommandEventHandler(CMainWindow::OnVideoStart));
 	Connect(wxEVENT_ADDFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnAddFolder));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
 	Connect(wxEVENT_REMOVEFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRemoveFolder));
@@ -649,12 +649,11 @@ void CMainWindow::ProcessIdle()
 				numElement = position;
 		}
 
-		wxWindow * window = this->FindWindowById(CENTRALVIEWERWINDOWID);
-		if (window)
+		if (centralWnd)
 		{
 			wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
 			evt.SetClientData(imageList);
-			window->GetEventHandler()->AddPendingEvent(evt);
+			centralWnd->GetEventHandler()->AddPendingEvent(evt);
 		}
 
 		updateFolder = false;
@@ -681,13 +680,12 @@ void CMainWindow::ProcessIdle()
 			{
 				if (firstFileToShow != L"")
 				{
-					wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
 					wxCommandEvent evt(wxEVENT_LOADPICTURE);
 					CPictureElement * pictureElement = new CPictureElement();
 					pictureElement->filename = firstFileToShow;
 					pictureElement->numElement = numElement;
 					evt.SetClientData(pictureElement);
-					viewerWindow->GetEventHandler()->AddPendingEvent(evt);
+					centralWnd->GetEventHandler()->AddPendingEvent(evt);
 					filename = firstFileToShow;
 				}
 			}
@@ -708,13 +706,12 @@ void CMainWindow::ProcessIdle()
 				{
 					firstFileToShow = photoName;
 					this->filename = photoName;
-					wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
 					wxCommandEvent evt(wxEVENT_LOADPICTURE);
 					CPictureElement * pictureElement = new CPictureElement();
 					pictureElement->filename = firstFileToShow;
 					pictureElement->numElement = numElement;
 					evt.SetClientData(pictureElement);
-					viewerWindow->GetEventHandler()->AddPendingEvent(evt);
+					centralWnd->GetEventHandler()->AddPendingEvent(evt);
 				}
 				this->filename = photoName;
 				loadPicture = false;
@@ -887,12 +884,12 @@ CMainWindow::~CMainWindow()
 	bool showInfos;
 	bool showThumbnail;
 
-	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-	if (viewerWindow != nullptr)
+	if (centralWnd != nullptr)
 	{
-		showInfos = viewerWindow->IsPanelInfosVisible();
-		showThumbnail = viewerWindow->IsPanelThumbnailVisible();
+		//showInfos = centralWnd->IsPanelInfosVisible();
+		//showThumbnail = centralWnd->IsPanelThumbnailVisible();
 	}
+	
 
 	if (viewerParam != nullptr)
 	{
@@ -1048,10 +1045,9 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 {
     TRACE();
 	long timePosition = event.GetExtraLong();
-	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-	if (viewerWindow != nullptr)
+	if (centralWnd != nullptr)
 	{
-		viewerWindow->SetPosition(timePosition);
+		centralWnd->SetPosition(timePosition);
 	}
 }
 
@@ -1229,13 +1225,12 @@ void CMainWindow::ImagePrecedente()
 
 void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
-	wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
 	wxCommandEvent evt(wxEVENT_LOADPICTURE);
 	CPictureElement * pictureElement = new CPictureElement();
 	pictureElement->filename = filename;
 	pictureElement->numElement = numElement;
 	evt.SetClientData(pictureElement);
-	viewerWindow->GetEventHandler()->AddPendingEvent(evt);
+	centralWnd->GetEventHandler()->AddPendingEvent(evt);
 }
 
 
@@ -1259,14 +1254,12 @@ void CMainWindow::ShowToolbar()
 {
     TRACE();
 	showToolbar = !showToolbar;
-
-	CViewerWindow * viewerWindow = (CViewerWindow *)this->FindWindowById(VIEWERPICTUREWND);
-	if (viewerWindow != nullptr)
+	if (centralWnd != nullptr)
 	{
 		if (!showToolbar)
-			viewerWindow->HideToolbar();
+			centralWnd->HideToolbar();
 		else
-			viewerWindow->ShowToolbar();
+			centralWnd->ShowToolbar();
 	}
 }
 

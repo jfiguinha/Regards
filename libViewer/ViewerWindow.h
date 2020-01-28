@@ -60,9 +60,7 @@ namespace Regards
 		public:
 			CViewerWindow(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
 			~CViewerWindow();
-
-
-
+					   
 			void SetListeFile(PhotosVector* photoVector);
 
 			bool IsPanelThumbnailVisible();

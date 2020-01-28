@@ -204,7 +204,7 @@ void CShowVideo::OnVideoStart()
     
     if (windowMain != nullptr)
     {
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_START);
+        wxCommandEvent evt(VIDEO_START);
         this->windowMain->GetEventHandler()->AddPendingEvent(evt);
     }
 #ifdef __APPLE__
@@ -246,10 +246,10 @@ void CShowVideo::OnPositionVideo(const int64_t &position)
 	int videoPos = position / 1000;
 	if (videoPos != videoPosOld)
 	{
-		wxWindow * viewerWindow = this->FindWindowById(VIEWERPICTUREWND);
+		wxWindow * viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
 		if (viewerWindow != nullptr)
 		{
-			wxCommandEvent event(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_UPDATE_ID);
+			wxCommandEvent event(VIDEO_UPDATE_ID);
 			event.SetExtraLong(videoPos);
 			viewerWindow->GetEventHandler()->AddPendingEvent(event);
 		}

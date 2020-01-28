@@ -66,8 +66,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme);
 	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CPreviewWnd::OnPaint));
-    
+   
     
 	isVideo = false;
 	animationToolbar->Show(false);
@@ -117,25 +116,6 @@ void CPreviewWnd::OnFiltreCancel(wxCommandEvent& event)
 	if (panelInfos != nullptr)
 		panelInfos->OnFiltreCancel();
 	this->HideValidationToolbar();
-}
-
-void CPreviewWnd::OnPaint(wxPaintEvent& event)
-{
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
-    if(width == 0 || height == 0)
-        return;
-    
-    wxPaintDC dc(this);
-    wxRect rc = GetRect();
-    if(fullscreen)
-    {
-        this->FillRect(&dc, rc, themeBitmap.colorFullscreen);
-    }
-    else
-    {
-        this->FillRect(&dc, rc, themeBitmap.colorScreen);
-    }
 }
 
 void CPreviewWnd::ClickShowButton(const int &id)
@@ -511,12 +491,12 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
 			oldfilename = filename;
         
-			this->Resize();
+			//this->Resize();
 		}
 		else if(!isThumbnail)
 		{
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
-			this->Resize();
+			//this->Resize();
 		}
 	}
 	return 1;

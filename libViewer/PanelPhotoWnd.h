@@ -17,14 +17,14 @@ namespace Regards
 		public:
 			CPanelPhotoWnd(wxWindow* parent, wxWindowID id);
 			~CPanelPhotoWnd();
-			void RefreshData();
+
 		protected:
         
 			void SetFolder(wxCommandEvent& folderEvent);
 			void OnSelChanged(wxCommandEvent& aEvent);
 			void SaveParameter(wxCommandEvent& event);
 			void UpdateCriteria(wxCommandEvent& event);
-
+			void OnRefreshData(wxCommandEvent& event);
 			void LoadInfo();
             
 			CCategoryFolderWindow * categoryFolderWnd;

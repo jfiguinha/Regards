@@ -31,6 +31,7 @@ namespace Regards
 			int id;
 			bool isTop;
 			bool isHide;
+			bool isPanel;
 			int diffWidth;
 			int diffHeight;
 			CWindowMain * window;
@@ -45,16 +46,19 @@ namespace Regards
 			CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme);
 			virtual ~CWindowManager();
 
-			void AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel);
-			void AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id = 0);
+			void AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
+			void AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel);
 			void SetSeparationBarVisible(const bool& visible);
 			bool GetSeparationVisibility();
-
+			void ChangeWindow(CWindowMain * window, Pos position);
 			void GenerateRenderBitmap();
 			void HideWindow(Pos position);
 			void ShowWindow(Pos position);
+			void HidePaneWindow(Pos position);
+			void ShowPaneWindow(Pos position);
 			bool OnLButtonDown();
 			void OnLButtonUp();
+			void UpdateScreenRatio();
 
 			void SetNewPosition(CSeparationBar * separationBar);
 			virtual void Resize();
@@ -67,6 +71,7 @@ namespace Regards
 
 		private:
 
+			void OnRefreshData(wxCommandEvent& event);
 			void AddDifference(const int & diffWidth, const int &diffHeight, Pos position);
 			void OnResize(wxCommandEvent& event);
 			CWindowToAdd * FindWindow(Pos position);

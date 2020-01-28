@@ -8,7 +8,7 @@
 #include "Pane.h"
 
 using namespace Regards::Window;
-
+#define PANE_WITHCLICKTOOLBAR 1
 
 namespace Regards
 {
@@ -31,7 +31,7 @@ namespace Regards
 			void HidePanel(const bool& refresh = true);
 			void ClosePane(const int &id);
 			void ClickShowButton(const int &id);
-			static CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical);
+			static CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical, const bool &refreshButton);
 
 		protected:
 

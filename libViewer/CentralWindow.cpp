@@ -8,19 +8,27 @@
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
 #include <Gps.h>
+#include <libPicture.h>
+#include <picture_id.h>
+#include <ThumbnailMessage.h>
+#include "PictureElement.h"
+#include <ShowVideo.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
-CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, 
+
+#define DELAY_ANIMATION 20
+
+CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
-	: CSplitter(parent, id, theme)
+	: CWindowMain("CentralWindow", parent, id)
 {
-	posBarInfos = 0;
-	panelSearch = nullptr;
 	panelPhotoWnd = nullptr;
-	viewerWindow = nullptr;
 	viewerconfig = nullptr;
 	fullscreen = false;
+	isDiaporama = false;
+	showToolbar = true;
+	wxRect rect;
 
 	CMainParam* config = CMainParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
@@ -30,25 +38,23 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		photoVector = imageList->GetCopy();
 	}
 
-	if (viewerTheme != nullptr)
-	{
-		viewerWindow = new CViewerWindow(this, VIEWERPICTUREWND);
-		viewerWindow->SetListeFile(&photoVector);
-	}
+	windowManager = new CWindowManager(this, wxID_ANY, theme);
 
 	if (viewerTheme != nullptr)
 	{
-		listPicture = new CListPicture(this, LISTPICTUREID);
+		listPicture = new CListPicture(windowManager, LISTPICTUREID);
 		listPicture->Show(false);
 		listPicture->SetListeFile(&photoVector);
 	}
 #ifndef __NOFACE_DETECTION__
 	if (viewerTheme != nullptr)
 	{
-		listFace = new CListFace(this, LISTFACEID);
+		listFace = new CListFace(windowManager, LISTFACEID);
 		listFace->Show(false);
 	}
 #endif
+
+	//Add Criteria Window
 	if (viewerTheme != nullptr)
 	{
 		bool isPanelVisible = true;
@@ -61,43 +67,466 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
-		panelSearch = new CPanelWithClickToolbar(this, "PanelPhotoSearch", PHOTOSEEARCHPANEL, theme, themetoolbar, libelle, isPanelVisible, true, true);
-		panelPhotoWnd = new CPanelPhotoWnd(panelSearch->GetPaneWindow(), CRITERIAFOLDERWINDOWID);
-		panelSearch->SetWindow(panelPhotoWnd);
+		panelPhotoWnd = new CPanelPhotoWnd(this, CRITERIAFOLDERWINDOWID);
+		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true);
 	}
 
 
+	//----------------------------------------------------------------------------------------
+	//Panel Thumbnail Video
+	//----------------------------------------------------------------------------------------
+	if (viewerTheme != nullptr)
+	{
+		bool checkValidity = true;
+		bool isPanelVisible = true;
+		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+		{
+			config->GetShowVideoThumbnail(isPanelVisible);
+			checkValidity = config->GetCheckThumbnailValidity();
+		}
 
-	SetHorizontal(horizontal);
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
+		CThemePane theme;
+		CThemeToolbar themetoolbar;
+		CThemeScrollBar themeScroll;
+		CThemeThumbnail themeVideo;
+		viewerTheme->GetPaneTheme(&theme);
+		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		viewerTheme->GetScrollTheme(&themeScroll);
+		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-	this->SetWindow(panelSearch, viewerWindow);
+		scrollVideoWindow = new CScrollbarWnd(this, wxID_ANY);
+		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, themeVideo, checkValidity);
+
+		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
+		scrollVideoWindow->HideVerticalScroll();
+		scrollVideoWindow->SetPageSize(1000);
+		scrollVideoWindow->SetLineSize(200);
+
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight(), rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true);
+	}
+
+	//----------------------------------------------------------------------------------------
+	//Panel Thumbnail Picture
+	//----------------------------------------------------------------------------------------
+	if (viewerTheme != nullptr)
+	{
+		bool checkValidity = false;
+		bool isPanelVisible = true;
+		CMainTheme* viewerTheme = CMainThemeInit::getInstance();
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+		{
+			config->GetShowThumbnail(isPanelVisible);
+			checkValidity = config->GetCheckThumbnailValidity();
+		}
+
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLTHUMBNAIL", 1);
+		CThemePane theme;
+		CThemeToolbar themetoolbar;
+		CThemeScrollBar themeScroll;
+		CThemeThumbnail themeThumbnail;
+		viewerTheme->GetPaneTheme(&theme);
+		viewerTheme->GetScrollTheme(&themeScroll);
+		viewerTheme->GetThumbnailTheme(&themeThumbnail);
+		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+
+		scrollPictureWindow = new CScrollbarWnd(this, wxID_ANY);
+		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
+		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
+		scrollPictureWindow->HideVerticalScroll();
+		scrollPictureWindow->SetPageSize(1000);
+		scrollPictureWindow->SetLineSize(200);
+		thumbnailPicture->SetNoVScroll(true);
+
+		if (thumbnailPicture != nullptr)
+			thumbnailPicture->SetListeFile(&photoVector);
+
+		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true);
+	}
+
+	bool showInfos = true;
+	wxString urlServer;
+	CRegardsConfigParam * param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetUrlServer();
+	}
+
+	CMainParam * viewerParam = CMainParamInit::getInstance();
+	if (viewerParam != nullptr)
+	{
+		viewerParam->GetShowInfos(showInfos);
+	}
+
+	fileGeolocalisation = new CFileGeolocation(urlServer);
+
+	if (viewerTheme != nullptr)
+	{
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+		CThemePane theme;
+		viewerTheme->GetPaneTheme(&theme);
+		CThemeToolbar themeClickInfosToolbar;
+		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
+		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
+		panelInfosWindow = new CPanelInfosWnd(this, PANELINFOSWNDID, fileGeolocalisation);
+
+		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, true);
+	}
+
+	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, fileGeolocalisation);
+	windowManager->AddWindow(previewWindow, Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
-	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CCentralWindow::OnResize));
-	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CCentralWindow::OnRefreshData));
+	Connect(VIDEO_UPDATE_ID, wxCommandEventHandler(CCentralWindow::SetVideoPos));
+	Connect(wxTIMER_ANIMATION, wxEVT_TIMER, wxTimerEventHandler(CCentralWindow::OnTimerAnimation), nullptr, this);
+	Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CCentralWindow::OnLoadPicture));
+	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
+	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CCentralWindow::EndPictureThread));
 
-	if (config != nullptr)
-	{
-		viewerconfig = (CMainParam *)config;
-		this->posBar = viewerconfig->GetPositionCriteriaPreview();
-        Refresh();
-    }
+	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
+	processLoadPicture = false;
 
 	windowMode = 1;
 }
 
 
-void CCentralWindow::OnResize(wxCommandEvent& event)
+void CCentralWindow::HideToolbar()
 {
-	RedrawBarPos();
+	showToolbar = false;
+	if (isFullscreen)
+	{
+		windowManager->HideWindow(Pos::wxTOP);
+	}
+
+	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_HIDETOOLBAR);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
-void CCentralWindow::OnRefreshData(wxCommandEvent& event)
+void CCentralWindow::ShowToolbar()
 {
-	panelPhotoWnd->RefreshData();
+	showToolbar = true;
+
+	if (isFullscreen && !isPicture)
+	{
+		windowManager->ShowWindow(Pos::wxTOP);
+	}
+
+	//previewThumbnailSplitter->ShowToolbar();
+
+	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWTOOLBAR);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
+
+void CCentralWindow::OnShowPicture(wxCommandEvent& event)
+{
+	TRACE();
+	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
+	if (pictureData != nullptr)
+	{
+		if (pictureData->bitmap->GetFilename() == filename)
+		{
+			SetPicture(pictureData->bitmap, pictureData->isThumbnail);
+
+			if (!pictureData->isThumbnail)
+			{
+				StopLoadingPicture();
+			}
+
+		}
+		else
+			delete pictureData->bitmap;
+
+		delete pictureData;
+	}
+}
+
+void CCentralWindow::StopLoadingPicture()
+{
+	//showBitmapWindow->StopLoadingPicture();
+	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
+	if (bitmapWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ONSTOPLOADINGPICTURE);
+		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+///Mise à jour des informations sur les fichiers
+////////////////////////////////////////////////////////////////////////////////////////////////
+void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail)
+{
+	TRACE();
+	if (bitmap != nullptr && bitmap->IsOk())
+	{
+		filename = bitmap->GetFilename();
+		SetBitmap(bitmap, isThumbnail);
+		//UpdateInfos(bitmap);
+
+		CPictureInfosMessage * pictureInfos = new CPictureInfosMessage();
+		pictureInfos->filename = filename;
+		pictureInfos->infos = to_string(bitmap->GetWidth()) + "x" + to_string(bitmap->GetHeight());
+
+		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent evt(wxEVENT_INFOS);
+		evt.SetClientData(pictureInfos);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+
+	}
+}
+
+void CCentralWindow::StopAnimation()
+{
+	animationPosition = 0;
+	if (animationTimer->IsRunning())
+		animationTimer->Stop();
+}
+
+
+bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail)
+{
+	TRACE();
+	StopAnimation();
+	bool refresh = isPicture ? false : true;
+	bool result = false;
+	isAnimation = false;
+	isPicture = true;
+	isVideo = false;
+
+	if (bitmap != nullptr && bitmap->IsOk())
+	{
+		windowManager->HideWindow(Pos::wxTOP);
+		result = SetBitmap(bitmap, isThumbnail, false);
+	}
+	return result;
+}
+
+
+bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation)
+{
+	TRACE();
+	if (bitmap != nullptr && bitmap->IsOk())
+	{
+		isVideo = false;
+		bool loadInfo = true;
+		if (fileGeolocalisation->GetFilename() != bitmap->GetFilename())
+			fileGeolocalisation->SetFile(bitmap->GetFilename());
+		else
+			loadInfo = false;
+
+		if (isDiaporama)
+		{
+			if (previewWindow != nullptr)
+			{
+				if (previewWindow->SetBitmap(bitmap, isThumbnail, isAnimation))
+				{
+					isVideo = false;
+					filename = bitmap->GetFilename();
+				}
+			}
+		}
+		else
+		{
+
+			if (previewWindow != nullptr)
+			{
+				previewWindow->HideValidationToolbar();
+				if (previewWindow->SetBitmap(bitmap, isThumbnail, isAnimation))
+				{
+					isVideo = false;
+					filename = bitmap->GetFilename();
+					//if (loadInfo && panelInfosWindow->IsShown())
+					SetPanelInfos(isThumbnail);
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+
+void CCentralWindow::SetPanelInfos(const bool &isThumbnail)
+{
+
+	if (panelInfosWindow->GetFilename() != filename)
+	{
+		if (isVideo)
+			panelInfosWindow->SetVideoFile(filename);
+		else
+			panelInfosWindow->SetBitmapFile(filename, isThumbnail);
+
+		panelInfosWindow->Refresh();
+	}
+	else
+	{
+		if (!isThumbnail && this->isThumbnail)
+		{
+			panelInfosWindow->SetBitmapFile(filename, isThumbnail);
+			panelInfosWindow->Refresh();
+		}
+	}
+
+	this->isThumbnail = isThumbnail;
+
+}
+
+
+void CCentralWindow::SetVideoPos(wxCommandEvent& event)
+{
+	int64_t pos = event.GetExtraLong();
+	if (thumbnailVideo != nullptr)
+		thumbnailVideo->SetVideoPosition(pos);
+}
+
+void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
+{
+	printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
+
+	if (thumbnailVideo != nullptr)
+		thumbnailVideo->SetVideoPosition(animationPosition);
+
+	LoadAnimationBitmap(filename, animationPosition);
+	uint32_t delay = 0;
+	animationPosition++;
+	if (animationPosition < nbThumbnail)
+	{
+		CLibPicture libPicture;
+		CImageLoadingFormat * image = nullptr;
+		int iFormat = libPicture.TestImageFormat(filename);
+		if (iFormat != TIFF && iFormat != PDF)
+		{
+			CImageVideoThumbnail * video = videoThumbnail.at(animationPosition);
+			delay = video->delay;
+			//image = video->image;
+		}
+		else
+		{
+			//image = libPicture.LoadPicture(filename, false, animationPosition);
+			delay = libPicture.GetFrameDelay(filename);
+		}
+		printf("CViewerWindow::OnTimerAnimation Start delay %d \n", delay);
+		animationTimer->Start(delay, wxTIMER_ONE_SHOT);
+	}
+	else
+	{
+		//Stop
+		CAnimationToolbar * animationToolbar = (CAnimationToolbar *)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
+		if (animationToolbar != nullptr)
+			animationToolbar->AnimationStop();
+
+		CWindowMain * windowMain = (CWindowMain *)this->FindWindowById(MAINVIEWERWINDOWID);
+		if (windowMain != nullptr)
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVT_ANIMATIONTIMERSTOP);
+			windowMain->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+}
+
+void CCentralWindow::AnimationSetPosition(wxCommandEvent& event)
+{
+	int64_t * videoTime = (int64_t *)event.GetClientData();
+	if (thumbnailVideo != nullptr && videoTime != nullptr)
+		thumbnailVideo->SetVideoPosition(*videoTime);
+
+	if (videoTime != nullptr)
+		delete videoTime;
+}
+
+
+void CCentralWindow::AnimationPictureNext()
+{
+	animationPosition++;
+	if (animationPosition >= nbThumbnail)
+		animationPosition = nbThumbnail - 1;
+	if (thumbnailVideo != nullptr)
+		thumbnailVideo->SetVideoPosition(animationPosition);
+	LoadAnimationBitmap(filename, animationPosition);
+}
+
+void CCentralWindow::AnimationPicturePrevious()
+{
+	animationPosition--;
+	if (animationPosition < 0)
+		animationPosition = 0;
+	if (thumbnailVideo != nullptr)
+		thumbnailVideo->SetVideoPosition(animationPosition);
+	LoadAnimationBitmap(filename, animationPosition);
+}
+
+
+void CCentralWindow::Resize()
+{
+	if (windowManager != nullptr)
+		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+}
+
+void CCentralWindow::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
+{
+	if (numFrame == oldAnimationPosition && filename == oldFilename)
+		return;
+
+	oldFilename = filename;
+	oldAnimationPosition = numFrame;
+
+	printf("CViewerWindow::LoadAnimationBitmap %d \n", numFrame);
+	if (numFrame < nbThumbnail && numFrame >= 0)
+	{
+		CImageLoadingFormat * image = nullptr;
+		CLibPicture libPicture;
+		int iFormat = libPicture.TestImageFormat(filename);
+		if (iFormat != TIFF && iFormat != PDF)
+		{
+			CImageVideoThumbnail * thumbnail = videoThumbnail.at(numFrame);
+			if (thumbnail != nullptr)
+			{
+				CImageLoadingFormat * image = thumbnail->image;
+				if (image != nullptr)
+				{
+					CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+					switch (thumbnail->image->GetFormat())
+					{
+					case TYPE_IMAGE_CXIMAGE:
+						bitmap->SetPicture(image->GetCxImage());
+						break;
+					case TYPE_IMAGE_WXIMAGE:
+						bitmap->SetPicture(image->GetwxImage());
+						break;
+					case TYPE_IMAGE_REGARDSIMAGE:
+						bitmap->SetPicture(image->GetRegardsBitmap());
+						break;
+					case TYPE_IMAGE_REGARDSJPEGIMAGE:
+						bitmap->SetPicture(image->GetwxImage());
+						break;
+					}
+					bitmap->SetFilename(thumbnail->image->GetFilename());
+					SetBitmap(bitmap, false, true);
+				}
+			}
+		}
+		else
+		{
+			image = libPicture.LoadPicture(filename, false, numFrame);
+		}
+		SetBitmap(image, false, true);
+	}
+}
+
 
 void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 {
@@ -107,28 +536,6 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 		listPicture->ChangeTypeAffichage(&photoVector, typeAffichage);
 	}
 		
-}
-
-void CCentralWindow::RedrawBarPos()
-{
-	if (panelSearch != nullptr)
-	{
-		if (!panelSearch->IsPanelVisible())
-		{
-			posBarInfos = this->posBar;
-			SetWindow1FixPosition(true, panelSearch->GetWidth());
-			this->SetSeparationBarVisible(false);
-		}
-		else
-		{
-			this->posBar = posBarInfos;
-			this->SetSeparationBarVisible(true);
-			SetWindow1FixPosition(false, posBarInfos);
-		}
-	}
-
-	this->Resize(this);
-
 }
 
 void CCentralWindow::SetListeFile(wxCommandEvent& event)
@@ -143,37 +550,21 @@ void CCentralWindow::SetListeFile(wxCommandEvent& event)
 	if (listPicture != nullptr)
 		listPicture->SetListeFile(&photoVector);
 
-	if(viewerWindow != nullptr)
-		viewerWindow->SetListeFile(&photoVector);
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetListeFile(&photoVector);
 }
 
 CCentralWindow::~CCentralWindow()
 {
-	if (viewerconfig != nullptr)
-		viewerconfig->SetPositionCriteriaPreview(this->posBar);
+	if (windowManager != nullptr)
+		delete windowManager;
 
-	if (viewerWindow != nullptr)
-		delete(viewerWindow);
-
-    if(panelPhotoWnd != nullptr)
-        delete(panelPhotoWnd);
-
-	if (panelSearch != nullptr)
-		delete(panelSearch);
-
-	if (listPicture != nullptr)
-		delete(listPicture);
-
-#ifndef __NOFACE_DETECTION__
-	if (listFace != nullptr)
-		delete(listFace);
-#endif
 }
 
 void CCentralWindow::SetMode(wxCommandEvent& event)
 {
 	windowMode = event.GetInt();
-	viewerWindow->Show(false);
+
 #ifndef __NOFACE_DETECTION__
 	listFace->Show(false);
 #endif
@@ -182,71 +573,354 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	switch (windowMode)
 	{
 	case 1:
-		viewerWindow->Show(true);
-		this->SetWindow(panelSearch, viewerWindow);
-		panelSearch->ClickShowButton(1);
-		viewerWindow->ShowPanelInfos();
-		viewerWindow->ShowThumbnailPanel();
+		previewWindow->Show(true);
+		windowManager->ChangeWindow(previewWindow, Pos::wxCENTRAL);
+		windowManager->ShowWindow(Pos::wxRIGHT);
+		windowManager->ShowWindow(Pos::wxBOTTOM);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 		break;
 #ifndef __NOFACE_DETECTION__
 	case 2:
+		previewWindow->Show(false);
 		listFace->Show(true);
-		this->SetWindow(panelSearch, listFace);
+		windowManager->ChangeWindow(listFace, Pos::wxCENTRAL);
+		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->HideWindow(Pos::wxRIGHT);
+		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->HideWindow(Pos::wxTOP);
+		//this->SetWindow(panelSearch, listFace);
 		break;
 #endif
 	case 3:
+		previewWindow->Show(false);
 		listPicture->Show(true);
-		this->SetWindow(panelSearch, listPicture);
+		windowManager->ChangeWindow(listPicture, Pos::wxCENTRAL);
+		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->HideWindow(Pos::wxRIGHT);
+		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->HideWindow(Pos::wxTOP);
 		break;
 	case 4:
-		viewerWindow->Show(true);
-		this->SetWindow(panelSearch, viewerWindow);
-		panelSearch->ClosePane(1);
-		viewerWindow->HidePanelInfos();
-		viewerWindow->HideThumbnailPanel();
+		previewWindow->Show(true);
+		windowManager->ChangeWindow(previewWindow, Pos::wxCENTRAL);
+		windowManager->ShowWindow(Pos::wxRIGHT);
+		windowManager->ShowWindow(Pos::wxBOTTOM);
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->HidePaneWindow(Pos::wxLEFT);
+		windowManager->HidePaneWindow(Pos::wxTOP);
+		windowManager->HidePaneWindow(Pos::wxBOTTOM);
+		//viewerWindow->Show(true);
+		//this->SetWindow(panelSearch, viewerWindow);
+		//panelSearch->ClosePane(1);
+		////viewerWindow->HidePanelInfos();
+		//viewerWindow->HideThumbnailPanel();
 		break;
 
 	}
-	this->Resize(this);
+	windowManager->Resize();
 }
 
 void CCentralWindow::UpdateScreenRatio()
 {
-	if (viewerWindow != nullptr)
-		viewerWindow->UpdateScreenRatio();
+	if (windowManager != nullptr)
+		windowManager->UpdateScreenRatio();
+}
 
-	if (panelSearch != nullptr)
-		panelSearch->UpdateScreenRatio();
+void CCentralWindow::StartAnimation()
+{
+	animationPosition = 0;
+	LoadAnimationBitmap(filename, 0);
+	animationTimer->Start(DELAY_ANIMATION, wxTIMER_ONE_SHOT);
 }
 
 void CCentralWindow::FullscreenMode()
 {
-	if (viewerWindow != nullptr)
-		viewerWindow->FullscreenMode();
-
 	fullscreen = true;
-	this->posBarInfos = this->posBar;
-	panelSearch->Show(false);
-	this->SetWindow(nullptr, viewerWindow);
-	this->Resize(this);
+	windowManager->HideWindow(Pos::wxLEFT);
+	windowManager->HideWindow(Pos::wxRIGHT);
+	windowManager->Resize();
 }
 
 void CCentralWindow::ScreenMode()
 {
-	if (viewerWindow != nullptr)
-		viewerWindow->ScreenMode();
-
 	fullscreen = false;
+	windowManager->ShowWindow(Pos::wxLEFT);
+	windowManager->ShowWindow(Pos::wxRIGHT);
+	windowManager->Resize();
+}
 
-    panelSearch->Show(true);
-	this->SetWindow(panelSearch, viewerWindow);
-	//ShowPanelInfos();
-	wxWindow * window = this->FindWindowById(VIEWERPICTUREWND);
-	if (window)
+
+void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
+{
+	TRACE();
+	CPictureElement * pictureElement = (CPictureElement *)event.GetClientData();
+	LoadPictureInThread(pictureElement->filename, pictureElement->numElement);
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
+	delete pictureElement;
+}
+
+bool CCentralWindow::GetProcessEnd()
+{
+	TRACE();
+	if (processLoadPicture)
+		return false;
+
+	return true;
+}
+
+
+void CCentralWindow::SetPosition(const long &timePosition)
+{
+	if (isVideo)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWPANELINFO);
-		window->GetEventHandler()->AddPendingEvent(evt);
+		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
+#ifdef FFMPEG
+		if (showVideoWindow != nullptr)
+			showVideoWindow->SetPosition(timePosition);
+#else
+		if (showVideoWindow != nullptr)
+			showVideoWindow->SetPosition(timePosition * ONE_MSEC);
+#endif
 	}
-	this->SetSeparationBarVisible(true);
-	this->Resize(this);
+	else
+	{
+		animationPosition = timePosition;
+		LoadAnimationBitmap(filename, timePosition);
+	}
+}
+
+void CCentralWindow::LoadPictureInThread(const wxString &filename, const int &numElement)
+{
+	TRACE();
+	if (!wxFileExists(filename))
+		this->filename = CLibResource::GetPhotoCancel();
+	else
+		this->filename = filename;
+
+	CLibPicture libPicture;
+
+	if (libPicture.TestIsVideo(filename))
+	{
+		//StartLoadingPicture(numElement);
+		SetVideo(filename);
+		
+	}
+	else if (libPicture.TestIsAnimation(filename))
+	{
+		SetAnimation(filename);
+
+		if (isDiaporama)
+		{
+			wxWindow* mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent evt(wxTIMER_DIAPORAMATIMERSTART);
+			mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+	else
+	{
+		StartLoadingPicture(numElement);
+		LoadingPicture(filename);
+	}
+	windowManager->Resize();
+}
+
+void CCentralWindow::StartLoadingPicture(const int &numElement)
+{
+	//showBitmapWindow->StartLoadingPicture();
+	wxWindow* bitmapWindow = this->FindWindowById(THUMBNAILVIEWERPICTURE);
+	if (bitmapWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_ONSTARTLOADINGPICTURE);
+		evt.SetExtraLong(numElement);
+		//showBitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+		bitmapWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+bool CCentralWindow::SetAnimation(const wxString &filename)
+{
+	windowManager->ShowWindow(Pos::wxTOP);
+	StopAnimation();
+	CLibPicture libPicture;
+	bool refresh = isAnimation ? false : true;
+	bool result = false;
+	isVideo = false;
+	isAnimation = true;
+	isPicture = false;
+	oldAnimationPosition = -1;
+	oldFilename = L"";
+	int iFormat = libPicture.TestImageFormat(filename);
+	nbThumbnail = libPicture.GetNbImage(filename);
+	if (thumbnailVideo->GetFilename() != filename)
+	{
+		thumbnailVideo->SetFilename(filename);
+		if (nbThumbnail > 0)
+			thumbnailVideo->SetFile(filename, nbThumbnail);
+	}
+
+	if (videoThumbnail.size() > 0)
+	{
+		for (int i = 0; i < videoThumbnail.size(); i++)
+		{
+			CImageVideoThumbnail * imageVideo = videoThumbnail.at(i);
+			delete imageVideo;
+		}
+	}
+
+	videoThumbnail.clear();
+
+	if (iFormat != TIFF && iFormat != PDF)
+		libPicture.LoadAllVideoThumbnail(filename, &videoThumbnail, false, false);
+
+	animationPosition = 0;
+
+	LoadAnimationBitmap(filename, 0);
+	if (refresh)
+		Refresh();
+
+	CAnimationToolbar* animationToolbar = (CAnimationToolbar*)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
+	if (animationToolbar != nullptr)
+		animationToolbar->AnimationStart();
+	return result;
+}
+
+
+void CCentralWindow::SetVideo(const wxString &path)
+{
+	StopAnimation();
+	bool refresh = isVideo ? false : true;
+	filename = path;
+	isVideo = true;
+	isAnimation = false;
+	isPicture = false;
+	
+
+	windowManager->ShowWindow(Pos::wxTOP);
+	//thumbnailVideoPanel->SetVideo(path);
+	//thumbnailVideoPanel->ShowVideoThumbnail();
+	if (thumbnailVideo->GetFilename() != filename)
+	{
+		thumbnailVideo->SetFilename(filename);
+		thumbnailVideo->SetFile(filename);
+	}
+
+	if (previewWindow != nullptr)
+		previewWindow->SetVideo(path);
+
+	windowManager->Refresh();
+}
+
+void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
+{
+	TRACE();
+	if (!processLoadPicture)
+	{
+		CThreadPictureData * pictureData = new CThreadPictureData();
+		pictureData->mainWindow = this;
+		pictureData->picture = filenameToShow;
+		pictureData->isVisible = true;
+		thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
+		pictureData->myThread = threadloadPicture;
+		processLoadPicture = true;
+	}
+}
+
+void CCentralWindow::EndPictureThread(wxCommandEvent& event)
+{
+	TRACE();
+	processLoadPicture = false;
+
+	CThreadPictureData * pictureData = (CThreadPictureData *)event.GetClientData();
+	if (pictureData != nullptr)
+	{
+		if (pictureData->myThread != nullptr)
+		{
+			pictureData->myThread->join();
+			delete pictureData->myThread;
+		}
+
+		wxString * filename = new wxString();
+		*filename = pictureData->picture;
+		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
+		evt.SetClientData(filename);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+
+		delete pictureData;
+	}
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+//Picture Loading Function
+//////////////////////////////////////////////////////////////////////////
+void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
+{
+	TRACE();
+	CLibPicture libPicture;
+	CImageLoadingFormat * bitmap = nullptr;
+
+	if (pictureData != nullptr)
+	{
+		CSqlThumbnail sqlThumbnail;
+		CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
+		CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(pictureData->picture);
+		if (bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
+		{
+			_loadingPicture->SetPicture(bitmapThumbnail);
+			CBitmapReturn * bitmapReturn = new CBitmapReturn();
+			bitmapReturn->myThread = nullptr;
+			bitmapReturn->isThumbnail = true;
+			bitmapReturn->bitmap = _loadingPicture;
+			wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
+			event->SetClientData(bitmapReturn);
+			wxQueueEvent(pictureData->mainWindow, event);
+		}
+
+		clock_t tStart = clock();
+		bitmap = libPicture.LoadPicture(pictureData->picture);
+		int timeToLoad = (int)((clock() - tStart) / (CLOCKS_PER_SEC / 1000));
+
+		if (timeToLoad < 300)
+		{
+			CRegardsConfigParam * config;
+			config = CParamInit::getInstance();
+			//Test si transition
+			if (config != nullptr)
+			{
+				int numEffect = config->GetEffect();
+				if (numEffect > 0)
+				{
+					std::this_thread::sleep_for(std::chrono::milliseconds(300 - timeToLoad));
+				}
+
+			}
+		}
+
+		if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
+		{
+			if (bitmap != nullptr)
+				delete bitmap;
+
+			bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+		}
+	}
+
+	if (bitmap != nullptr)
+	{
+		CBitmapReturn * bitmapReturn = new CBitmapReturn();
+		bitmapReturn->myThread = nullptr;
+		bitmapReturn->isThumbnail = false;
+		bitmapReturn->bitmap = bitmap;
+		wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
+		event->SetClientData(bitmapReturn);
+		wxQueueEvent(pictureData->mainWindow, event);
+	}
+
+	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
+	event->SetClientData(pictureData);
+	wxQueueEvent(pictureData->mainWindow, event);
 }

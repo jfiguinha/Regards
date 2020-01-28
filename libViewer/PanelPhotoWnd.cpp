@@ -86,6 +86,7 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_SAVEPARAMETER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::SaveParameter));
 	Connect(wxEVENT_SELCHANGED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
 }
 
 CPanelPhotoWnd::~CPanelPhotoWnd()
@@ -167,7 +168,7 @@ void CPanelPhotoWnd::OnSelChanged(wxCommandEvent& aEvent)
 	}
 }
 
-void CPanelPhotoWnd::RefreshData()
+void CPanelPhotoWnd::OnRefreshData(wxCommandEvent& event)
 {
 	switch (windowVisible)
 	{

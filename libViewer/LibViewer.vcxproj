@@ -208,7 +208,6 @@
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
     <ClInclude Include="PictureElement.h" />
-    <ClInclude Include="ViewerWindow.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ImageList.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
@@ -218,7 +217,6 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="PanelPhotoWnd.h" />
-    <ClInclude Include="PreviewInfosWnd.h" />
     <ClInclude Include="PreviewToolbar.h" />
     <ClInclude Include="PreviewWnd.h" />
     <ClInclude Include="ThumbnailFace.h" />
@@ -243,7 +241,6 @@
     <ClCompile Include="CategoryFolderWindow.cpp" />
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
-    <ClCompile Include="ViewerWindow.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
@@ -253,7 +250,6 @@
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="PanelPhotoWnd.cpp" />
-    <ClCompile Include="PreviewInfosWnd.cpp" />
     <ClCompile Include="PreviewToolbar.cpp" />
     <ClCompile Include="PreviewWnd.cpp" />
     <ClCompile Include="ThumbnailFace.cpp" />

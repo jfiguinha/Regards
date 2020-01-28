@@ -19,6 +19,7 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	oldHeight = 0;
 	init = false;
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CWindowManager::OnPaint));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
 }
 
 void CWindowManager::OnPaint(wxPaintEvent& event)
@@ -36,6 +37,57 @@ void CWindowManager::OnPaint(wxPaintEvent& event)
 			}
 		}
 	}
+}
+
+void CWindowManager::OnRefreshData(wxCommandEvent& event)
+{
+	int id = event.GetId();
+	for (CWindowToAdd * windowToAdd : listWindow)
+	{
+		if (windowToAdd != nullptr)
+		{
+			if (windowToAdd->id == id)
+			{
+				if (windowToAdd->window != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_REFRESHDATA);
+					evt.SetExtraLong(1);
+					windowToAdd->window->GetEventHandler()->AddPendingEvent(evt);
+				}
+			}
+		}
+	}
+}
+
+void CWindowManager::ChangeWindow(CWindowMain * window, Pos position)
+{
+	CWindowToAdd * windowToadd = FindWindow(position);
+	if (windowToadd != nullptr)
+	{
+		windowToadd->window = window;
+		this->Refresh();
+	}
+}
+
+void CWindowManager::UpdateScreenRatio()
+{
+
+	for (CWindowToAdd * windowToAdd : listWindow)
+	{
+		if (windowToAdd != nullptr)
+		{
+			if (windowToAdd->window != nullptr)
+				windowToAdd->window->UpdateScreenRatio();
+
+			if (windowToAdd->separationBar != nullptr)
+			{
+				if (windowToAdd->separationBar->separationBar != nullptr)
+					windowToAdd->separationBar->separationBar->UpdateScreenRatio();
+			}
+		}
+
+	}
+
 }
 
 void CWindowManager::OnResize(wxCommandEvent& event)
@@ -103,16 +155,16 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 	Resize();
 }
 
-void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel)
+void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton)
 {
 	CPanelWithClickToolbar * panel = nullptr;
 	if (pos == Pos::wxLEFT || pos == Pos::wxRIGHT)
-		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, true);
+		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, true, refreshButton);
 	else
-		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false);
+		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false, refreshButton);
 	window->Reparent(panel);
 	panel->SetWindow(window);
-	AddWindow(panel, pos, fixe, size, rect, idPanel);
+	AddWindow(panel, pos, fixe, size, rect, idPanel, true);
 }
 
 void CWindowManager::HideWindow(Pos position)
@@ -120,17 +172,61 @@ void CWindowManager::HideWindow(Pos position)
 	CWindowToAdd * window = FindWindow(position);
 	if (window != nullptr)
 	{
-		window->isHide = true;
-		window->window->Show(false);
-		if (window->separationBar != nullptr)
+		if (!window->isHide)
 		{
-			if (window->separationBar->separationBar != nullptr)
-				window->separationBar->separationBar->Show(false);
+			window->isHide = true;
+			window->window->Show(false);
+			if (window->separationBar != nullptr)
+			{
+				if (window->separationBar->separationBar != nullptr)
+					window->separationBar->separationBar->Show(false);
+			}
+			Init();
+			Resize();
 		}
-		Init();
-		Resize();
 	}
 	
+}
+
+void CWindowManager::HidePaneWindow(Pos position)
+{
+	CWindowToAdd * window = FindWindow(position);
+
+	if (window != nullptr)
+	{
+		if (window->isPanel)
+		{
+			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->window;
+			if (panel != nullptr)
+			{
+				if (panel->IsPanelVisible())
+				{
+					panel->ClosePane(PANE_WITHCLICKTOOLBAR);
+				}
+			}
+		}
+
+	}
+}
+
+void CWindowManager::ShowPaneWindow(Pos position)
+{
+	CWindowToAdd * window = FindWindow(position);
+
+	if (window != nullptr)
+	{
+		if (window->isPanel)
+		{
+			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->window;
+			if (panel != nullptr)
+			{
+				if (!panel->IsPanelVisible())
+				{
+					panel->ClickShowButton(PANE_WITHCLICKTOOLBAR);
+				}
+			}
+		}
+	}
 }
 
 void CWindowManager::ShowWindow(Pos position)
@@ -139,22 +235,25 @@ void CWindowManager::ShowWindow(Pos position)
 
 	if (window != nullptr)
 	{
-		window->isHide = false;
-		window->window->Show(true);
-		if (window->separationBar != nullptr)
+		if (window->isHide)
 		{
-			if (window->separationBar->separationBar != nullptr)
+			window->isHide = false;
+			window->window->Show(true);
+			if (window->separationBar != nullptr)
 			{
-				if(window->fixe)
-					window->separationBar->separationBar->Show(true);
+				if (window->separationBar->separationBar != nullptr)
+				{
+					if (window->fixe)
+						window->separationBar->separationBar->Show(true);
+				}
 			}
+			Init();
+			Resize();
 		}
-		Init();
-		Resize();
 	}
 }
 
-void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id)
+void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel)
 {
 	CWindowToAdd * windowToAdd = new CWindowToAdd();
 	if (window != nullptr)
@@ -166,6 +265,7 @@ void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, in
 		windowToAdd->fixe = fixe;
 		windowToAdd->rect = rect;
 		windowToAdd->id = id;
+		windowToAdd->isPanel = isPanel;
 		windowToAdd->isHide = false;
 		if (!fixe && position != Pos::wxCENTRAL)
 		{
@@ -195,8 +295,6 @@ void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, in
 void CWindowManager::UnInit()
 {
 }
-
-
 
 void CWindowManager::Init_bottom()
 {
@@ -259,7 +357,6 @@ void CWindowManager::Init_bottom()
 		SetWindowBottomSize(bottom, default_height, x, height - default_height, bottom_width);
 	}
 }
-
 
 void CWindowManager::SetWindowBottomSize(CWindowToAdd * bottom, int height, int x, int y, int width)
 {
@@ -386,7 +483,6 @@ void CWindowManager::SetWindowTopSize(CWindowToAdd * top, int height, int x, int
 		top->rect.height = height;
 	}
 }
-
 
 void CWindowManager::Init_left()
 {
@@ -521,7 +617,6 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, 
 	}
 }
 
-
 void CWindowManager::Init_right()
 {
 	int width = GetSize().x;
@@ -536,7 +631,7 @@ void CWindowManager::Init_right()
 	{
 		int y = 0;
 		int right_height = height;
-
+			   
 		if (right->isTop)
 		{
 			SetWindowRightSize(right, width, y, right_height);
@@ -546,33 +641,39 @@ void CWindowManager::Init_right()
 
 			if (top != nullptr)
 			{
-				if (top->fixe)
+				if (!top->isHide)
 				{
-					y = top->size;
-					right_height -= top->size;
-				}
-				else
-				{
-					y = top->rect.height;
-					right_height -= top->rect.height;
-					if (top->separationBar != nullptr && !top->fixe)
+					if (top->fixe)
 					{
-						right_height -= top->separationBar->size;
-						y += top->separationBar->size;
+						y = top->size;
+						right_height -= top->size;
+					}
+					else
+					{
+						y = top->rect.height;
+						right_height -= top->rect.height;
+						if (top->separationBar != nullptr && !top->fixe)
+						{
+							right_height -= top->separationBar->size;
+							y += top->separationBar->size;
+						}
 					}
 				}
 			}
 			if (bottom != nullptr)
 			{
-				if (bottom->fixe)
+				if (!bottom->isHide)
 				{
-					right_height -= bottom->size;
-				}
-				else
-				{
-					right_height -= bottom->rect.height;
-					if (bottom->separationBar != nullptr && !bottom->fixe)
-						right_height -= bottom->separationBar->size;
+					if (bottom->fixe)
+					{
+						right_height -= bottom->size;
+					}
+					else
+					{
+						right_height -= bottom->rect.height;
+						if (bottom->separationBar != nullptr && !bottom->fixe)
+							right_height -= bottom->separationBar->size;
+					}
 				}
 			}
 
@@ -1139,7 +1240,9 @@ void CWindowManager::Resize()
 		{
 			if (windowToAdd->window != nullptr)
 			{
+#ifdef _DEBUG
 				TCHAR temp[255];
+#endif
 				if (windowToAdd->window->IsShown())
 				{
 					windowToAdd->window->SetSize(windowToAdd->rect);

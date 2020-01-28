@@ -4,7 +4,7 @@
 #include "MainThemeInit.h"
 using namespace Regards::Window;
 
-#define PANE_WITHCLICKTOOLBAR 1
+
 
 CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString & windowName, wxWindowID id, const CThemePane & themePane, const CThemeToolbar & themeToolbar, const wxString & paneLibelle, const bool & isPanelVisible, const bool& refreshButton, const bool& vertical)
 	: CWindowMain(windowName,parent,id)
@@ -56,14 +56,14 @@ wxWindow * CPanelWithClickToolbar::GetPaneWindow()
 }
 
 
-CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical)
+CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical, const bool &refreshButton)
 {
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 	CThemePane theme;
 	viewerTheme->GetPaneTheme(&theme);
 	CThemeToolbar themeClickInfosToolbar;
 	viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
-	CPanelWithClickToolbar * panel = new CPanelWithClickToolbar(parent, windowName, idPanel, theme, themeClickInfosToolbar, panelLabel, isVisible, false, isVertical);
+	CPanelWithClickToolbar * panel = new CPanelWithClickToolbar(parent, windowName, idPanel, theme, themeClickInfosToolbar, panelLabel, isVisible, refreshButton, isVertical);
 	return panel;
 }
 
@@ -97,6 +97,8 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id)
 			clickWindow->Show(false);
 			paneWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+			event->SetId(this->GetId());
+			event->SetInt(1);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -111,6 +113,7 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 		case PANE_WITHCLICKTOOLBAR:
 		{
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_REFRESHDATA);
+			event->SetId(this->GetId());
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -128,6 +131,8 @@ void CPanelWithClickToolbar::ClosePane(const int &id)
 			paneWindow->Show(false);
 			clickWindow->Show(true);
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+			event->SetId(this->GetId());
+			event->SetInt(0);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;

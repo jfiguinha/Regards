@@ -105,9 +105,6 @@
     <ClInclude Include="MainWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="PreviewInfosWnd.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="PreviewToolbar.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -128,9 +125,6 @@
     </ClInclude>
     <ClInclude Include="PanelPhotoWnd.h">
       <Filter>Panel\include</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewerWindow.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="CentralWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -200,9 +194,6 @@
     <ClCompile Include="MainWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="PreviewInfosWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="PreviewToolbar.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -226,9 +217,6 @@
     </ClCompile>
     <ClCompile Include="ThumbnailViewerPicture.cpp">
       <Filter>Thumbnail\source</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewerWindow.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CentralWindow.cpp">
       <Filter>Fichiers sources</Filter>

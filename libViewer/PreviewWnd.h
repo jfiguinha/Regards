@@ -60,7 +60,6 @@ namespace Regards
 			void OnFiltreCancel(wxCommandEvent& event);
 			void ShowToolbar(wxCommandEvent& event);
 			void HideToolbar(wxCommandEvent& event);
-            void OnPaint(wxPaintEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 
             

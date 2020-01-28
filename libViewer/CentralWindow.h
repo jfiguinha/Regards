@@ -1,13 +1,17 @@
 #pragma once
 #include <Splitter.h>
 #include "PanelPhotoWnd.h"
-#include "ViewerWindow.h"
 #include "ListPicture.h"
+#include "WindowManager.h"
+#include "ThumbnailViewerVideo.h"
+#include "ThumbnailViewerPicture.h"
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #endif
 #include "ViewerParam.h"
+#include "PanelInfosWnd.h"
 #include <PanelWithClickToolbar.h>
+#include "PreviewWnd.h"
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
@@ -18,7 +22,45 @@ namespace Regards
 {
 	namespace Viewer
 	{
-		class CCentralWindow :public CSplitter
+		class CThreadPictureData
+		{
+		public:
+
+			CThreadPictureData()
+			{
+				mainWindow = nullptr;
+				isVisible = false;
+				myThread = nullptr;
+				isThumbnail = false;
+			}
+
+			~CThreadPictureData()
+			{
+			}
+
+			wxWindow * mainWindow;
+			wxString picture;
+			bool isVisible;
+			bool isThumbnail;
+			thread * myThread;
+		};
+
+		class CBitmapReturn
+		{
+		public:
+			CBitmapReturn()
+			{
+				bitmap = nullptr;
+				isThumbnail = false;
+				myThread = nullptr;
+			};
+
+			CImageLoadingFormat * bitmap;
+			bool isThumbnail;
+			thread * myThread;
+		};
+
+		class CCentralWindow : public CWindowMain
 		{
 		public:
 			CCentralWindow(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal = true);
@@ -27,36 +69,85 @@ namespace Regards
 			void UpdateScreenRatio();
 			void FullscreenMode();
 			void ScreenMode();
+			void HideToolbar();
+			void ShowToolbar();
+			void AnimationPictureNext();
+			void AnimationPicturePrevious();
+			void SetPosition(const long& timePosition);
+			void StopAnimation();
+			void StartAnimation();
 
 		private:
 
-			void OnRefreshData(wxCommandEvent& event);
+			void OnLoadPicture(wxCommandEvent& event);
+			bool GetProcessEnd();
+			void LoadPictureInThread(const wxString &filename, const int &numElement);
+			void LoadingPicture(const wxString &filenameToShow);
+			void EndPictureThread(wxCommandEvent& event);
+			void StartLoadingPicture(const int &numElement);
+			virtual void Resize();
 			void SetListeFile(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
-			void OnResize(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
-			void RedrawBarPos();
+			void OnShowPicture(wxCommandEvent& event);
+			void SetVideoPos(wxCommandEvent& event);
+			void OnTimerAnimation(wxTimerEvent& event);
+			void SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail);
+			void StopLoadingPicture();
 
-			int posBarInfos;
+			bool SetAnimation(const wxString &filename);
 
-			CPanelWithClickToolbar * panelSearch;
 			CPanelPhotoWnd * panelPhotoWnd;
-			
 			CMainParam * viewerconfig;
-
-			//Viewer window
-			CViewerWindow * viewerWindow;
-			//Explorer Window
 			CListPicture * listPicture;
 			//Face List
 #ifndef __NOFACE_DETECTION__
 			CListFace * listFace;
 #endif
 
+			CScrollbarWnd * scrollVideoWindow;
+			CThumbnailViewerVideo * thumbnailVideo;
+
+			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
+			CPanelInfosWnd * panelInfosWindow;
+
+			//Preview
+			CPreviewWnd * previewWindow;
+			CFileGeolocation * fileGeolocalisation;
+
+			//Thumbnail Picture
+			CScrollbarWnd * scrollPictureWindow;
+			CThumbnailViewerPicture * thumbnailPicture;
+
+			//Window List
+			static void LoadingNewPicture(CThreadPictureData * pictureData);
+			void AnimationSetPosition(wxCommandEvent& event);
+			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail);
+			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
+			void SetPanelInfos(const bool &isThumbnail);
+			void SetVideo(const wxString &path);
+
 			PhotosVector photoVector;
 
+			CWindowManager * windowManager;
 			int windowMode;
 			bool fullscreen;
+			wxTimer * animationTimer;
+			int animationPosition;
+			vector<CImageVideoThumbnail *> videoThumbnail;
+			bool processLoadPicture;
+			int nbThumbnail;
+			wxString filename;
+			int oldAnimationPosition = -1;
+			wxString oldFilename = L"";
+			bool showToolbar;
+			bool isFullscreen;
+			bool isPicture;
+			bool isAnimation;
+			bool isVideo;
+			bool isDiaporama;
+			bool isThumbnail;
 		};
 	}
 }
