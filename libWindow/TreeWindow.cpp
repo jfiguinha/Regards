@@ -211,7 +211,7 @@ void CTreeWindow::CalculControlSize()
 	{
 		controlWidth = treeControl->GetWidth();
 		controlHeight = treeControl->GetNbRow() * themeTree.GetRowHeight();
-		//scrollbar->SetControlSize(controlWidth, controlHeight);
+		scrollbar->SetControlSize(controlWidth, controlHeight);
 	}
 
 }

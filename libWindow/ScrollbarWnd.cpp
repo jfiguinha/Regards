@@ -431,5 +431,7 @@ void CScrollbarWnd::Resize()
                     control->SetSize(pictureWidth, pictureHeight);
             }
         }
+        
+        this->GetParent()->Refresh();
     }
 }
