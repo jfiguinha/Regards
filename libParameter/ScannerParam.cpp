@@ -35,7 +35,9 @@ CMainParam::CMainParam()
 	folder = "";
 	showFolder = true;
 	pertinence = 0.0;
+	
 }
+
 
 wxString CMainParam::GetLastSqlRequest()
 {

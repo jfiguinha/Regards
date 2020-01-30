@@ -3,6 +3,9 @@
 #include "RegardsBitmap.h"
 using namespace Regards::FiltreEffet;
 
+#define USE_TBB
+
+#ifdef USE_TBB	
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
 
@@ -26,6 +29,7 @@ struct myFiltreTask {
 	uint8_t * pBitsDest;
 	CFiltre * filtre;
 };
+#endif
 
 CFiltre::CFiltre()
 {
@@ -65,7 +69,7 @@ void CFiltre::Compute()
 		pBitsDest = new uint8_t[pictureSize];
 		pBitsSrc = pBitmap->GetPtBitmap();
 
-		
+#ifdef USE_TBB		
 		//tbb::task_scheduler_init init;  // Automatic number of threads
 		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
@@ -88,19 +92,18 @@ void CFiltre::Compute()
 					tasks[i]();
 			}
 		);
+#else
 
-
-		/*
-//#pragma omp parallel for
+#pragma omp parallel for
 		for (auto y = 0; y < bmHeight; y++)
 		{
-//#pragma omp parallel for
+#pragma omp parallel for
 			for (auto x = 0; x < bmWidth; x++)
 			{
 				PixelCompute(x, y, pBitsSrc, pBitsDest);
 			}
 		}
-		*/
+#endif
 
 		pBitmap->SetBitmap(pBitsDest, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		delete[] pBitsDest;

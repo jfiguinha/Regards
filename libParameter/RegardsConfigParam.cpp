@@ -31,6 +31,17 @@ CRegardsConfigParam::CRegardsConfigParam()
     numLanguage = 1;
 	numInterpolation = 0;
 	openCLSupport = 0;
+	useDxva2 = 0;
+}
+
+void CRegardsConfigParam::SetDxva2Actif(const int &useDxva2)
+{
+	this->useDxva2 = useDxva2;
+}
+
+bool CRegardsConfigParam::GetDxva2Actif()
+{
+	return useDxva2;
 }
 
 bool CRegardsConfigParam::GetIsOpenCLSupport()
@@ -240,6 +251,7 @@ void CRegardsConfigParam::SetEffectLibrary(xml_node<>* sectionPosition)
 void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibVideo)));
+	sectionPosition->append_node(node("UseDXVA2", to_string(useDxva2)));
 }
 
 void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
@@ -273,6 +285,14 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		numLibVideo = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("UseDXVA2");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		useDxva2 = atoi(child_node->value());
 	}
 }
 

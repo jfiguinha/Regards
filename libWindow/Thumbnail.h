@@ -123,7 +123,7 @@ namespace Regards
 
 			int numStartElement;
 			int nbElementToShow;
-
+			bool preprocess_thumbnail = false;
 
 			int positionSize;
 			

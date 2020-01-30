@@ -134,7 +134,6 @@ private:
 	LPDIRECT3DSURFACE9 surface;
 	DXVA2Context * dxva2;
 	HANDLE hTexture;
-	
     HMODULE d3dlib;
     HMODULE dxva2lib;
 	IDirect3D9Ex *d3d9;

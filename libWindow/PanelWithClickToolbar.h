@@ -21,6 +21,7 @@ namespace Regards
 			CPanelWithClickToolbar(wxWindow* parent, const wxString& windowName, wxWindowID id, const CThemePane& themePane, const CThemeToolbar& themeToolbar, const wxString& paneLibelle, const bool& isPanelVisible, const bool &refreshButton, const bool &vertical);
 			virtual ~CPanelWithClickToolbar();
 			wxWindow * GetPaneWindow();
+			wxWindow * GetWindow();
 			void UpdateScreenRatio();
 			void SetWindow(CWindowMain * windowMain);
 			bool IsPanelVisible();
@@ -37,7 +38,7 @@ namespace Regards
 
 			void ShowPane(wxCommandEvent& event);
 			void ClosePane(wxCommandEvent& event);
-			
+			void RefreshData(wxCommandEvent& event);
 			
 			void RefreshPane(const int& id);
 			void Resize();
@@ -47,6 +48,7 @@ namespace Regards
 			CWindowMain* mainWindow;
 			CClickToolbar * clickWindow;
 			bool isPanelVisible;
+			bool isVertical;
 		};
 
 

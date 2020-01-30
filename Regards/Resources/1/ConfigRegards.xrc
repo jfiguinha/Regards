@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="ConfigRegards">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>363,600</size>
+		<size>363,670</size>
 		<object class="wxRadioBox" name="ID_RBTRANSITIONEFFECT">
 			<label>Transition Effect</label>
 			<style>wxRA_SPECIFY_COLS</style>
@@ -15,8 +15,8 @@
 			<pos>0,0</pos>
 			<size>360,70</size>
 		</object>
-		<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
-			<label>Database in memory</label>
+		<object class="wxRadioBox" name="ID_RBDXVA2">
+			<label>Use DXVA2</label>
 			<style>wxRA_SPECIFY_COLS</style>
 			<content>
 				<item>Yes</item>
@@ -26,59 +26,70 @@
 			<pos>0,74</pos>
 			<size>360,70</size>
 		</object>		
+		<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
+			<label>Database in memory</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>0,148</pos>
+			<size>360,70</size>
+		</object>		
 		<object class="wxStaticBox" name="sbDiaporama">
 			<label>Sequence</label>
-			<pos>0,150</pos>
+			<pos>0,220</pos>
 			<size>360,70</size>
 		</object>
 		<object class="wxSpinCtrl" name="ID_SCTIME">
 			<value>0</value>
-			<pos>56,170</pos>
+			<pos>56,240</pos>
 			<size>88,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTIME">
 			<label>Time :</label>
-			<pos>16,170</pos>
+			<pos>16,240</pos>
 			<size>40,24</size>
 		</object>
 		<object class="wxStaticBox" name="sbProcess">
 			<label>Process</label>
-			<pos>0,200</pos>
+			<pos>0,270</pos>
 			<size>360,200</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTHUMBNAIL">
 			<label>THUMBNAIL :</label>
-			<pos>16,220</pos>
+			<pos>16,290</pos>
 			<size>100,24</size>
 		</object>		
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
-			<pos>120,220</pos>
+			<pos>120,290</pos>
 			<size>88,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
 			<label>EXIF :</label>
-			<pos>16,260</pos>
+			<pos>16,330</pos>
 			<size>100,24</size>
 		</object>			
 		<object class="wxSpinCtrl" name="ID_SCEXIF">
 			<value>0</value>
-			<pos>120,260</pos>
+			<pos>120,330</pos>
 			<size>88,21</size>
 		</object>	
 		<object class="wxStaticText" name="ID_STFACE">
 			<label>FACE :</label>
-			<pos>16,300</pos>
+			<pos>16,370</pos>
 			<size>40,24</size>
 		</object>	
 		<object class="wxSpinCtrl" name="ID_SCFACE">
 			<value>0</value>
-			<pos>120,300</pos>
+			<pos>120,370</pos>
 			<size>88,21</size>
 		</object>		
 		<object class="wxStaticBox" name="sbDiaporama">
 			<label>Face Detection</label>
-			<pos>0,350</pos>
+			<pos>0,420</pos>
 			<size>360,180</size>
 		</object>	
 		<object class="wxRadioBox" name="ID_PICTUREFACEDETECTION">
@@ -92,16 +103,16 @@
 				<item>Full HD Size (1080p)</item>
 			</content>
 			<default>-1</default>
-			<pos>16,370</pos>
+			<pos>16,440</pos>
 			<size>320,140</size>
 		</object>
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,550</pos>
+			<pos>64,620</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,550</pos>
+			<pos>192,620</pos>
 		</object>		
 	</object>
 </resource>

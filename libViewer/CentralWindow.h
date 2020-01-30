@@ -78,7 +78,7 @@ namespace Regards
 			void StartAnimation();
 
 		private:
-
+			CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
 			void LoadPictureInThread(const wxString &filename, const int &numElement);
@@ -132,7 +132,6 @@ namespace Regards
 
 			CWindowManager * windowManager;
 			int windowMode;
-			bool fullscreen;
 			wxTimer * animationTimer;
 			int animationPosition;
 			vector<CImageVideoThumbnail *> videoThumbnail;

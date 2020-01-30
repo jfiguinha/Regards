@@ -79,6 +79,9 @@ public:
 	bool GetIsOpenCLSupport();
 	void SetIsOpenCLSupport(const int& openCLSupport);
 
+	void SetDxva2Actif(const int &useDxva2);
+	bool GetDxva2Actif();
+
 protected:
 
 	void InitVideoToolbar();
@@ -143,5 +146,6 @@ protected:
 
     int loadFromBinaries = 0;
 	int openCLSupport = 0;
+	int useDxva2 = 0;
 };
 

@@ -46,7 +46,7 @@ namespace Regards
 			void OnShow(wxShowEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
-
+			void RefreshData(wxCommandEvent& event);
 			void OnIdle(wxIdleEvent& evt);
 		private:
 

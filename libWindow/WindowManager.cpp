@@ -18,26 +18,10 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	oldWidth = 0;
 	oldHeight = 0;
 	init = false;
-	Connect(wxEVT_PAINT, wxPaintEventHandler(CWindowManager::OnPaint));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
+	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowManager::OnResize));
 }
 
-void CWindowManager::OnPaint(wxPaintEvent& event)
-{
-	for (CWindowToAdd * windowToAdd : listWindow)
-	{
-		if (windowToAdd != nullptr)
-		{
-			if (windowToAdd->window != nullptr)
-				windowToAdd->window->Refresh();
-			if (windowToAdd->separationBar != nullptr)
-			{
-				if (windowToAdd->separationBar->separationBar != nullptr)
-					windowToAdd->separationBar->separationBar->Refresh();
-			}
-		}
-	}
-}
 
 void CWindowManager::OnRefreshData(wxCommandEvent& event)
 {
@@ -162,7 +146,9 @@ void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, i
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, true, refreshButton);
 	else
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false, refreshButton);
-	window->Reparent(panel);
+
+	wxWindow * parent = panel->GetPaneWindow();
+	window->Reparent(parent);
 	panel->SetWindow(window);
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true);
 }
@@ -243,7 +229,7 @@ void CWindowManager::ShowWindow(Pos position)
 			{
 				if (window->separationBar->separationBar != nullptr)
 				{
-					if (window->fixe)
+					if (!window->fixe)
 						window->separationBar->separationBar->Show(true);
 				}
 			}
@@ -1245,13 +1231,27 @@ void CWindowManager::Resize()
 #endif
 				if (windowToAdd->window->IsShown())
 				{
+					
 					windowToAdd->window->SetSize(windowToAdd->rect);
-					if (windowToAdd->position == Pos::wxCENTRAL)
+					windowToAdd->window->Resize();
+					/*
+					windowToAdd->window->SetFocus();
+					windowToAdd->window->Raise();  // bring window to front
+					windowToAdd->window->Refresh();
+										
+					if (windowToAdd->isPanel)
 					{
-						windowToAdd->window->SetFocus();
-						windowToAdd->window->Raise();  // bring window to front
-						windowToAdd->window->Show(true); // show the window
+						CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)windowToAdd->window;
+						if (panel != nullptr)
+						{
+							wxWindow * window = panel->GetWindow();
+							window->SetFocus();
+							window->Raise();  // bring window to front
+							window->Refresh();
+						}
 					}
+					*/
+
 
 #ifdef _DEBUG
 					wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
@@ -1280,7 +1280,6 @@ void CWindowManager::Resize()
 						else
 							windowToAdd->separationBar->separationBar->SetSize(rc);
 
-						
 					}
 				}
 			}
@@ -1289,5 +1288,7 @@ void CWindowManager::Resize()
 
 	oldWidth = width;
 	oldHeight = height;
+
+	Refresh();
 }
 

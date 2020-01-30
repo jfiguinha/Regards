@@ -15,6 +15,8 @@
 #include "ffmpegToBitmap.h"
 #include <RegardsBitmap.h>
 #include <ImageLoadingFormat.h>
+#include <ViewerParam.h>
+#include <ViewerParamInit.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(EVENT_ENDVIDEOTHREAD, wxCommandEvent);
@@ -53,7 +55,6 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 	windowWidth = 0;
 	windowHeight = 0;
 	dxva2ToOpenGLWorking = true;
-
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
@@ -707,7 +708,13 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				hTexture = wglDXRegisterObjectNV(hDevice, dxva2->m_pSharedSurface,glTexture->GetTextureID(), GL_TEXTURE_2D, WGL_ACCESS_READ_ONLY_NV);
 			
 				if (hTexture == NULL)
-					return 0;
+				{
+					wxMessageBox("DXVA2 not support by your Graphic Card. Please Restart Regards.", "Error", wxICON_ERROR);
+					CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+					if(regardsParam != nullptr)
+						regardsParam->SetDxva2Actif(0);
+				}
+				
 			}
 		}
 
@@ -866,7 +873,8 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 #ifdef RENDEROPENGL 
 		UnbindTexture();
 #endif
-		dxva2ToOpenGLWorking = true;
+
+		dxva2ToOpenGLWorking = true;	
 		initStart = false;
 	}
 
@@ -1158,29 +1166,31 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 
             int heightSize = heightVideo;
 
-            if (hTexture != nullptr && hDevice != nullptr)
-            {
-                // Copy the result to the shared surface
-                IDirect3DSurface9* pSharedSurface =dxva2->m_pSharedSurface;
-                RECT rc = { 0, 0, widthVideo, heightVideo };
-                //RECT rcWindow = { 0, 0, widthVideo, heightVideo };
+			if (hTexture != nullptr && hDevice != nullptr)
+			{
+				// Copy the result to the shared surface
+				IDirect3DSurface9* pSharedSurface = dxva2->m_pSharedSurface;
+				RECT rc = { 0, 0, widthVideo, heightVideo };
+				//RECT rcWindow = { 0, 0, widthVideo, heightVideo };
 
-                HRESULT hr = d3d9device->BeginScene();	
-                if (FAILED(hr))
-                    return;
-                //hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
-                hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
-                if (FAILED(hr))
-                    dxva2ToOpenGLWorking = false;
-                else
-                    dxva2ToOpenGLWorking = true;
+				HRESULT hr = d3d9device->BeginScene();
+				if (FAILED(hr))
+					return;
+				//hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
+				hr = d3d9device->StretchRect(surface, &rc, pSharedSurface, &rc, D3DTEXF_NONE);
+				if (FAILED(hr))
+					dxva2ToOpenGLWorking = false;
+				else
+					dxva2ToOpenGLWorking = true;
 
-                hr = d3d9device->EndScene();
-                if (FAILED(hr))
-                    return;
+				hr = d3d9device->EndScene();
+				if (FAILED(hr))
+					return;
 
 
-            }
+			}
+			else
+				dxva2ToOpenGLWorking = false;
 
             muBitmap.unlock();	
 
@@ -1191,7 +1201,7 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
             dxva2ToOpenGLWorking = false;
             printf("dxva2ToOpenGLWorking false \n");
         }	
-        if (!dxva2ToOpenGLWorking)
+        if (!dxva2ToOpenGLWorking && openclEffectNV12 != nullptr)
         {
              printf("copy surface LPDIRECT3DSURFACE9 \n");
              
@@ -1222,11 +1232,13 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
     }
     else
     {
+		if (dxva2Context == nullptr)
+		{
+			SetFrameData(src_frame);
 
-        SetFrameData(src_frame);
-        
-        if(isffmpegDecode)
-            CopyFrame(src_frame);        
+			if (isffmpegDecode)
+				CopyFrame(src_frame);
+		}
 
     }
 

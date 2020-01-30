@@ -19,13 +19,15 @@ using namespace Regards::Viewer;
 
 #define DELAY_ANIMATION 20
 
+
+
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
 	: CWindowMain("CentralWindow", parent, id)
 {
 	panelPhotoWnd = nullptr;
 	viewerconfig = nullptr;
-	fullscreen = false;
+	isFullscreen = false;
 	isDiaporama = false;
 	showToolbar = true;
 	wxRect rect;
@@ -67,8 +69,10 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
+		
 		panelPhotoWnd = new CPanelPhotoWnd(this, CRITERIAFOLDERWINDOWID);
 		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true);
+
 	}
 
 
@@ -105,7 +109,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		scrollVideoWindow->SetPageSize(1000);
 		scrollVideoWindow->SetLineSize(200);
 
-		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight(), rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true);
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -145,6 +149,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 			thumbnailPicture->SetListeFile(&photoVector);
 
 		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true);
+
 	}
 
 	bool showInfos = true;
@@ -174,9 +179,10 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		panelInfosWindow = new CPanelInfosWnd(this, PANELINFOSWNDID, fileGeolocalisation);
 
 		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, true);
+
 	}
 
-	previewWindow = new CPreviewWnd(this, PREVIEWVIEWERID, fileGeolocalisation);
+	previewWindow = new CPreviewWnd(windowManager, PREVIEWVIEWERID, fileGeolocalisation);
 	windowManager->AddWindow(previewWindow, Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
@@ -201,12 +207,13 @@ void CCentralWindow::HideToolbar()
 	if (isFullscreen)
 	{
 		windowManager->HideWindow(Pos::wxTOP);
+		windowManager->HideWindow(Pos::wxBOTTOM);
 	}
 
 	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
 	if (window != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_HIDETOOLBAR);
+		wxCommandEvent evt(wxEVENT_HIDETOOLBAR);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -215,18 +222,18 @@ void CCentralWindow::ShowToolbar()
 {
 	showToolbar = true;
 
+	windowManager->ShowWindow(Pos::wxBOTTOM);
+
 	if (isFullscreen && !isPicture)
 	{
 		windowManager->ShowWindow(Pos::wxTOP);
+		
 	}
 
-	//previewThumbnailSplitter->ShowToolbar();
-
-	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
-	if (window != nullptr)
+	if (previewWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SHOWTOOLBAR);
-		window->GetEventHandler()->AddPendingEvent(evt);
+		wxCommandEvent evt(wxEVENT_SHOWTOOLBAR);
+		previewWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -637,18 +644,31 @@ void CCentralWindow::StartAnimation()
 
 void CCentralWindow::FullscreenMode()
 {
-	fullscreen = true;
-	windowManager->HideWindow(Pos::wxLEFT);
-	windowManager->HideWindow(Pos::wxRIGHT);
-	windowManager->Resize();
+	previewWindow->SetFullscreen(true);
+	if (!isFullscreen)
+	{
+		isFullscreen = true;
+		windowManager->HideWindow(Pos::wxLEFT);
+		windowManager->HideWindow(Pos::wxRIGHT);
+		windowManager->Resize();
+	}
 }
 
 void CCentralWindow::ScreenMode()
 {
-	fullscreen = false;
-	windowManager->ShowWindow(Pos::wxLEFT);
-	windowManager->ShowWindow(Pos::wxRIGHT);
-	windowManager->Resize();
+	previewWindow->SetFullscreen(false);
+	if (isFullscreen)
+	{
+		isFullscreen = false;
+		windowManager->ShowWindow(Pos::wxLEFT);
+		windowManager->ShowWindow(Pos::wxRIGHT);
+		if (!showToolbar)
+			windowManager->ShowWindow(Pos::wxBOTTOM);
+		if(!isPicture)
+			windowManager->ShowWindow(Pos::wxTOP);
+
+		windowManager->Resize();
+	}
 }
 
 

@@ -28,6 +28,21 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const wxString & w
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarWnd::OnEraseBackground));
     Connect(wxEVT_MOTION, wxMouseEventHandler(CScrollbarWnd::OnMouseMove));
     Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarWnd::OnMouseLeave));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CScrollbarWnd::RefreshData));
+}
+
+void CScrollbarWnd::RefreshData(wxCommandEvent& event)
+{
+	if (scrollInterface != nullptr)
+	{
+		wxWindow * window = scrollInterface->GetWindow();
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_REFRESHDATA);
+			evt.SetExtraLong(1);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
 }
 
 void CScrollbarWnd::OnHide(wxTimerEvent& event)

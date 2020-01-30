@@ -64,8 +64,9 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 
 
 	CMainWindow * mainWnd = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
-	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme);
 	showVideoWindow = new CShowVideo(this, SHOWVIDEOVIEWERID, mainWnd, viewerTheme);
+	showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERID, BITMAPWINDOWVIEWERID, MAINVIEWERWINDOWID, this, viewerTheme);
+	
    
     
 	isVideo = false;
@@ -75,8 +76,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 	bitmapInfos->Show(false);
 	previewToolbar->Show(false);
 
-	Connect(wxEVENT_HIDETOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::HideToolbar));
-	Connect(wxEVENT_SHOWTOOLBAR, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
+	Connect(wxEVENT_HIDETOOLBAR, wxCommandEventHandler(CPreviewWnd::HideToolbar));
+	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CPreviewWnd::OnFiltreCancel));
 	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CPreviewWnd::OnShowToolbar));

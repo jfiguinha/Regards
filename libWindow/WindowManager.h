@@ -92,8 +92,6 @@ namespace Regards
 			void SetWindowTopSize(CWindowToAdd * top, int height, int x, int top_width);
 			void SetWindowBottomSize(CWindowToAdd * bottom, int height, int x, int y, int width);
 
-			void OnPaint(wxPaintEvent& event);
-
 			void DrawSeparationBar(const int &x, const int &y, const int &width, const int &height, const bool &horizontal);
 			
 			

@@ -12,7 +12,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	paneWindow = nullptr;
 	mainWindow = nullptr;
 	clickWindow = nullptr;
-
+	this->isVertical = isVertical;
 	this->isPanelVisible = isPanelVisible;
 
 	//----------------------------------------------------------------------------------------
@@ -27,6 +27,7 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	//#define wxEVENT_CLOSEPANE 215
 	Connect(wxEVENT_SHOWPANE, wxCommandEventHandler(CPanelWithClickToolbar::ShowPane));
 	Connect(wxEVENT_CLOSEPANE, wxCommandEventHandler(CPanelWithClickToolbar::ClosePane));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelWithClickToolbar::RefreshData));
 
 	if(isPanelVisible)
 	{
@@ -37,6 +38,16 @@ CPanelWithClickToolbar::CPanelWithClickToolbar(wxWindow* parent, const wxString 
 	{
 		clickWindow->Show(true);
 		paneWindow->Show(false);
+	}
+}
+
+void CPanelWithClickToolbar::RefreshData(wxCommandEvent& event)
+{
+	if (paneWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHDATA);
+		evt.SetExtraLong(1);
+		paneWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
@@ -53,6 +64,14 @@ void CPanelWithClickToolbar::ClosePane(wxCommandEvent& event)
 wxWindow * CPanelWithClickToolbar::GetPaneWindow()
 {
 	return paneWindow;
+}
+
+wxWindow * CPanelWithClickToolbar::GetWindow()
+{
+	if (isPanelVisible)
+		return paneWindow;
+	else
+		return clickWindow;
 }
 
 
@@ -143,11 +162,11 @@ void CPanelWithClickToolbar::ClosePane(const int &id)
 
 void CPanelWithClickToolbar::Resize()
 {
-	if(clickWindow->IsShown())
+	if (clickWindow->IsShown())
 	{
 		clickWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
-	else if(paneWindow->IsShown())
+	else if (paneWindow->IsShown())
 	{
 		paneWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
@@ -177,12 +196,13 @@ void CPanelWithClickToolbar::HidePanel(const bool &refresh)
 	this->Show(false);
 	clickWindow->Show(false);
 	paneWindow->Show(false);
-
+	/*
 	if(refresh)
 	{
 		wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
 		wxQueueEvent(this->GetParent(), event);
 	}
+	*/
 }
 
 void CPanelWithClickToolbar::ShowPanel()

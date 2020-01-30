@@ -116,6 +116,7 @@ namespace Regards
 			int positionFolderCriteria;
 			int positionPreviewFace;
 			bool check;
+			
 		};
 	}
 }

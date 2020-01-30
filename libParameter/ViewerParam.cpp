@@ -34,7 +34,6 @@ CMainParam::CMainParam()
 	enAvant = 1;
 	folder = "";
 	showFolder = true;
-	pertinence = 0.0;
 }
 
 wxString CMainParam::GetLastSqlRequest()
@@ -471,7 +470,7 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
         nodeName = child_node->name();
         pertinence = atoi(child_node->value());
     }
-	
+
 }
 
 void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)

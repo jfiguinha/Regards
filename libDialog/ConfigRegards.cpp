@@ -42,6 +42,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	//rbDiaporamaTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
+	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbPictureFaceDetectionSize = (wxRadioBox*)FindWindow(XRCID("ID_PICTUREFACEDETECTION"));
 	//rbThumbnailQuality = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILQUALITY"));
@@ -83,6 +84,12 @@ void ConfigRegards::Init()
     
     int exifProcess = regardsParam->GetExifProcess();
     scProcessExif->SetValue(exifProcess);
+
+	bool dxva2Use = regardsParam->GetDxva2Actif();
+	if (dxva2Use == 0)
+		rdDxva2Render->SetSelection(1);
+	else
+		rdDxva2Render->SetSelection(0);
 /*
 	int effectDiaporama = regardsParam->GetDiaporamaTransitionEffect();
 	if (effectDiaporama == 0)
@@ -118,6 +125,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetEffect(1);
 	else
 		regardsParam->SetEffect(0);
+
+	int dxva2Use = rdDxva2Render->GetSelection();
+	if (dxva2Use == 0)
+		regardsParam->SetDxva2Actif(1);
+	else
+		regardsParam->SetDxva2Actif(0);
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);

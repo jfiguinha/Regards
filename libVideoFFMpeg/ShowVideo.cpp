@@ -6,10 +6,12 @@
 #include <ThemeInit.h>
 #include <OpenCLContext.h>
 #include <window_id.h>
-
+#include <ViewerParam.h>
+#include <ViewerParamInit.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
 using namespace Regards::OpenCL;
+using namespace Regards::Viewer;
 
 #define WM_SETPOSITION SDL_USER+1
 
@@ -33,19 +35,34 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	}
     
 #ifdef WIN32
-    OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
-    if(device != nullptr)
-    {
-        if(device->deviceType == CL_DEVICE_TYPE_CPU)
-            softRender = true;
-        else if(!device->openGlSharing)
-            softRender = true;
-    }
 
-    if(softRender)
-        videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
-    else
-        videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+	int dxva2 = 0;
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		dxva2 = regardsParam->GetDxva2Actif();
+	}
+	if (dxva2)
+	{
+		OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
+		if (device != nullptr)
+		{
+			if (device->deviceType == CL_DEVICE_TYPE_CPU)
+				softRender = true;
+			else if (!device->openGlSharing)
+				softRender = true;
+		}
+	}
+	else
+	{
+		softRender = true;
+	}
+
+	if (softRender)
+		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+	else
+		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+
 #else
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 #endif

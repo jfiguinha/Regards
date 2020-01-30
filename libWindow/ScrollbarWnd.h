@@ -51,7 +51,8 @@ namespace Regards
             void OnMouseMove(wxMouseEvent& event);
             void OnHide(wxTimerEvent& event);
             void OnMouseLeave(wxMouseEvent& event);
-            
+			void RefreshData(wxCommandEvent& event);
+
 			CScrollbarHorizontalWnd * scrollHorizontal;
 			CScrollbarVerticalWnd * scrollVertical;
 			CScrollInterface * scrollInterface;

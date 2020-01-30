@@ -31,6 +31,7 @@ class ConfigRegards: public wxDialog
         wxSpinCtrl* scProcessExif;
         wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;
+		wxRadioBox* rdDxva2Render;
 		wxRadioBox* rbTransitionEffect;
 		wxRadioBox* rbRenderVideo;
 		wxRadioBox* rbEffectLibrary;

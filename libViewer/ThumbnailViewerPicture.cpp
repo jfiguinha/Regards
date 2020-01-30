@@ -17,6 +17,7 @@ CThumbnailViewerPicture::CThumbnailViewerPicture(wxWindow* parent, wxWindowID id
 
 	widthThumbnail = 0;
 	heightThumbnail = 0;
+	preprocess_thumbnail = true;
 }
 
 

@@ -61,9 +61,12 @@ bool CSqlThumbnail::TestThumbnail(const wxString & path)
 
 bool CSqlThumbnail::InsertThumbnail(const wxString & path, const uint8_t * zBlob, const int &nBlob, const int & width, const int &height, const wxString &hash)
 {
+	bool returnValue = true;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	return ExecuteInsertBlobData("INSERT INTO PHOTOSTHUMBNAIL (FullPath, width, height, hash, thumbnail) VALUES('" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "', ? )", 4, zBlob, nBlob);
+	if(!TestThumbnail(path))
+		returnValue = ExecuteInsertBlobData("INSERT INTO PHOTOSTHUMBNAIL (FullPath, width, height, hash, thumbnail) VALUES('" + fullpath + "'," + to_string(width) + "," + to_string(height) + ",'" + hash + "', ? )", 4, zBlob, nBlob);
+	return returnValue;
 }
 
 wxImage CSqlThumbnail::GetThumbnail(const wxString & path)

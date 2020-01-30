@@ -785,27 +785,28 @@ void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const
 		nbProcesseur = config->GetThumbnailProcess();
 
 	int value = pBitmapIcone->RenderIcone(deviceContext, posLargeur, posHauteur);
-	if (value == 1 && nbProcess < nbProcesseur)
+
+	if (preprocess_thumbnail)
 	{
-		if (pBitmapIcone != nullptr)
+		if (value == 1 && nbProcess < nbProcesseur)
 		{
-			CThumbnailData * pThumbnailData = pBitmapIcone->GetData();
-
-			if (pThumbnailData != nullptr)
+			if (pBitmapIcone != nullptr)
 			{
+				CThumbnailData * pThumbnailData = pBitmapIcone->GetData();
 
-
-				bool isLoad = pThumbnailData->IsLoad();
-				bool isProcess = pThumbnailData->IsProcess();
-				if (!isProcess && !isLoad)
+				if (pThumbnailData != nullptr)
 				{
-					ProcessThumbnail(pThumbnailData);
-					nbProcess++;
+					bool isLoad = pThumbnailData->IsLoad();
+					bool isProcess = pThumbnailData->IsProcess();
+					if (!isProcess && !isLoad)
+					{
+						ProcessThumbnail(pThumbnailData);
+						nbProcess++;
+					}
 				}
 			}
 		}
 	}
-    
     //this->UpdateScroll();
 }
 

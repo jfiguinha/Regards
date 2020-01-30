@@ -20,9 +20,20 @@ CWindowMain("CPane",parent, id)
 	this->themePane = themePane;
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
+	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPane::RefreshData));
 	//Connect(wxEVT_SHOW, wxShowEventHandler(CPane::OnShow));
 	//Connect(wxEVT_PAINT, wxPaintEventHandler(CPane::OnPaint));
 	//Connect(wxEVT_IDLE, wxIdleEventHandler(CPane::OnIdle));
+}
+
+void CPane::RefreshData(wxCommandEvent& event)
+{
+	if (hWndOther != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_REFRESHDATA);
+		evt.SetExtraLong(1);
+		hWndOther->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CPane::OnShow(wxShowEvent& event)
