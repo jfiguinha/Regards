@@ -174,11 +174,13 @@ vector<CImageVideoThumbnail *> CThumbnailVideo::GetVideoListFrame(const wxString
 				picture = nullptr;
 			}
 			cxVideo->timePosition = timePosition;
-			if(compressJpeg)
+			if (compressJpeg)
+			{
 				cxVideo->image->SetPicturToJpeg(picture);
+				delete picture;
+			}
 			else
 				cxVideo->image->SetPicture(picture);
-			delete picture;
 			cxVideo->image->SetFilename(fileName);
 			cxVideo->image->SetOrientation(rotation);
 			listPicture.push_back(cxVideo);

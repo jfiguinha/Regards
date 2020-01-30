@@ -178,7 +178,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
 		panelInfosWindow = new CPanelInfosWnd(this, PANELINFOSWNDID, fileGeolocalisation);
 
-		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, true);
+		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 
 	}
 
@@ -804,6 +804,9 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 	CAnimationToolbar* animationToolbar = (CAnimationToolbar*)this->FindWindowById(ANIMATIONTOOLBARWINDOWID);
 	if (animationToolbar != nullptr)
 		animationToolbar->AnimationStart();
+
+
+	SetPanelInfos(false);
 	return result;
 }
 
@@ -830,6 +833,7 @@ void CCentralWindow::SetVideo(const wxString &path)
 	if (previewWindow != nullptr)
 		previewWindow->SetVideo(path);
 
+	SetPanelInfos(false);
 	windowManager->Refresh();
 }
 
