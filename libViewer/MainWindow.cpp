@@ -353,6 +353,13 @@ void CMainWindow::OnVideoStart(wxCommandEvent& event)
     TRACE();
     //centralWnd->StopLoadingPicture();
 	videoStart = true;
+    
+    if(centralWnd != nullptr)
+    {
+        wxCommandEvent evt(VIDEO_START);
+       centralWnd->GetEventHandler()->AddPendingEvent(evt); 
+    }
+   
 }
 
 void CMainWindow::OnShowToolbar(wxCommandEvent& event)

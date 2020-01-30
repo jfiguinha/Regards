@@ -54,7 +54,7 @@ namespace Regards
 
 		protected:
 			void ProcessThumbnail(CThumbnailData * pThumbnailData);
-			void EraseThumbnail(wxCommandEvent& event);
+			virtual void EraseThumbnail(wxCommandEvent& event);
 			void StartLoadingPicture(wxCommandEvent& event);
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);

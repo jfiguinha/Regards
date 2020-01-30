@@ -16,6 +16,7 @@ namespace Regards
 
 		private:
 
+           virtual void EraseThumbnail(wxCommandEvent& event);
 			void OnTimerProcess(wxTimerEvent& event);
 			virtual void ProcessThumbnailIdle();
 			int FindNumItem(const int &videoPos);

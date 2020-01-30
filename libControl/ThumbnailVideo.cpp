@@ -10,6 +10,8 @@
 #include <ImageLoadingFormat.h>
 #include <SqlThumbnailVideo.h>
 #include <picture_id.h>
+#include <SqlThumbnail.h>
+#include <SqlPhotosWithoutThumbnail.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 
@@ -290,17 +292,61 @@ void CThumbnailVideo::ProcessThumbnailIdle()
 }
 
 
+void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
+{
+    TRACE();
+    long value = event.GetExtraLong();
+    if(value == 1)
+    {
+        CSqlThumbnailVideo sqlThumbnailvideo;
+        sqlThumbnailvideo.DeleteThumbnail(videoFilename);
+        
+        CSqlThumbnail sqlThumbnail;
+        sqlThumbnail.DeleteThumbnail(videoFilename);
+        
+        int numElement = iconeList->GetNbElement();
+        for (int i = 0;i < numElement;i++)
+        {
+            CIcone * pIcone = iconeList->GetElement(i);
+            if(pIcone != nullptr)
+            {
+                CThumbnailData * pThumbnailData = pIcone->GetData();
+                if (pThumbnailData != nullptr)
+                {
+                    pThumbnailData->InitLoadState();
+                    wxString filename = pThumbnailData->GetFilename();
+                    pThumbnailData->SetIsProcess(false);
+                    pThumbnailData->SetIsLoading(false);
+                    pIcone->DestroyCache();
+                }
+            }
+        }
+        
+        CSqlPhotosWithoutThumbnail sqlPhoto;
+        sqlPhoto.GeneratePhotoList();
+        
+        processIdle = true;
+    }
+	thumbnailPos = 0;
+
+    threadDataProcess = true;
+    process_end = false;
+    InitScrollingPos();
+    InitWithDefaultPicture(videoFilename, 20);
+    processTimer->Start(500);
+    Refresh();
+    
+}
+    
+
 void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
 {
-	if(videoFilename != videoFile)
-	{
-		threadDataProcess = true;
-		process_end = false;
-		InitScrollingPos();
-		InitWithDefaultPicture(videoFile, size);
-		videoFilename = videoFile;	
-		processTimer->Start(500);
-        Refresh();
-	}
+    threadDataProcess = true;
+    process_end = false;
+    InitScrollingPos();
+    InitWithDefaultPicture(videoFile, size);
+    videoFilename = videoFile;	
+    processTimer->Start(500);
+    Refresh();
 
 }

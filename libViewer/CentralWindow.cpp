@@ -193,13 +193,29 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	Connect(wxEVENT_LOADPICTURE, wxCommandEventHandler(CCentralWindow::OnLoadPicture));
 	Connect(EVENT_SHOWPICTURE, wxCommandEventHandler(CCentralWindow::OnShowPicture));
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CCentralWindow::EndPictureThread));
-
+    Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
 
 	windowMode = 1;
 }
 
+void CCentralWindow::OnVideoStart(wxCommandEvent& event)
+{
+	if (thumbnailVideo != nullptr)
+    {
+        thumbnailVideo->SetVideoPosition(0);
+        
+        wxCommandEvent evt(wxEVENT_REFRESHDATA);
+        evt.SetExtraLong(0);
+        thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);
+        
+    }
+
+    thumbnailVideo->Refresh();
+    panelInfosWindow->Refresh();
+    windowManager->Resize();
+}
 
 void CCentralWindow::HideToolbar()
 {
@@ -274,7 +290,7 @@ void CCentralWindow::StopLoadingPicture()
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-///Mise à jour des informations sur les fichiers
+///Mise Ã  jour des informations sur les fichiers
 ////////////////////////////////////////////////////////////////////////////////////////////////
 void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThumbnail)
 {
@@ -398,6 +414,12 @@ void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 	int64_t pos = event.GetExtraLong();
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(pos);
+        
+        
+    thumbnailVideo->Refresh();
+    //panelInfosWindow->Refresh();
+    //windowManager->Resize();
+
 }
 
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
@@ -828,13 +850,14 @@ void CCentralWindow::SetVideo(const wxString &path)
 	{
 		thumbnailVideo->SetFilename(filename);
 		thumbnailVideo->SetFile(filename);
+       // thumbnailVideo->Refresh();
 	}
 
 	if (previewWindow != nullptr)
 		previewWindow->SetVideo(path);
 
-	SetPanelInfos(false);
-	windowManager->Refresh();
+	SetPanelInfos(true);
+	//windowManager->Resize();
 }
 
 void CCentralWindow::LoadingPicture(const wxString &filenameToShow)

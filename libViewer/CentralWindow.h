@@ -86,6 +86,7 @@ namespace Regards
 			void EndPictureThread(wxCommandEvent& event);
 			void StartLoadingPicture(const int &numElement);
 			virtual void Resize();
+           void OnVideoStart(wxCommandEvent& event);
 			void SetListeFile(wxCommandEvent& event);
 			void ChangeTypeAffichage(wxCommandEvent& event);
 			void SetMode(wxCommandEvent& event);
