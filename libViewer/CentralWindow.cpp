@@ -205,16 +205,18 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 	if (thumbnailVideo != nullptr)
     {
         thumbnailVideo->SetVideoPosition(0);
-        
+#ifdef __APPLE__        
         wxCommandEvent evt(wxEVENT_REFRESHDATA);
         evt.SetExtraLong(0);
         thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);
-        
+#endif
     }
 
+#ifdef __APPLE__ 
     thumbnailVideo->Refresh();
     panelInfosWindow->Refresh();
     windowManager->Resize();
+#endif
 }
 
 void CCentralWindow::HideToolbar()
@@ -766,7 +768,7 @@ void CCentralWindow::LoadPictureInThread(const wxString &filename, const int &nu
 		StartLoadingPicture(numElement);
 		LoadingPicture(filename);
 	}
-	windowManager->Resize();
+	//windowManager->Resize();
 }
 
 void CCentralWindow::StartLoadingPicture(const int &numElement)
@@ -856,7 +858,7 @@ void CCentralWindow::SetVideo(const wxString &path)
 	if (previewWindow != nullptr)
 		previewWindow->SetVideo(path);
 
-	SetPanelInfos(true);
+	SetPanelInfos(false);
 	//windowManager->Resize();
 }
 
