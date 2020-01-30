@@ -317,12 +317,15 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 
 	int i = 0;
 	wxArrayString files;
+    wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
-	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+#ifndef __WXGTK__
+	
 	wxString msg = "In progress ...";
 	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), parent, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
 	int updatesize = 0;
 	dialog.Update(updatesize, msg);
+#endif
 
 #ifdef USE_TBB
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
@@ -340,11 +343,14 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 			i++;            
 #else
 
+    
+#ifndef __WXGTK__    
 			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
 			if (false == dialog.Update(i, message))
 			{
 				break;
 			}
+#endif
 
 			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{
