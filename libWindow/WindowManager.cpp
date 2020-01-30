@@ -8,6 +8,10 @@ using namespace Regards::Window;
 
 #define WINDOW_MINSIZE 100
 
+#ifndef WIN32
+#define WM_USER 0x4000
+#endif
+
 CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme)
 	: CWindowMain("CWindowManager", parent, id)
 {
@@ -1227,35 +1231,20 @@ void CWindowManager::Resize()
 			if (windowToAdd->window != nullptr)
 			{
 #ifdef _DEBUG
+#ifdef WIN32
 				TCHAR temp[255];
+#endif
 #endif
 				if (windowToAdd->window->IsShown())
 				{
 					
 					windowToAdd->window->SetSize(windowToAdd->rect);
-					windowToAdd->window->Resize();
-					/*
-					windowToAdd->window->SetFocus();
-					windowToAdd->window->Raise();  // bring window to front
-					windowToAdd->window->Refresh();
-										
-					if (windowToAdd->isPanel)
-					{
-						CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)windowToAdd->window;
-						if (panel != nullptr)
-						{
-							wxWindow * window = panel->GetWindow();
-							window->SetFocus();
-							window->Raise();  // bring window to front
-							window->Refresh();
-						}
-					}
-					*/
-
 
 #ifdef _DEBUG
+#ifdef WIN32
 					wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
 					OutputDebugString(temp);
+#endif
 #endif
 				}
 				else
@@ -1268,13 +1257,19 @@ void CWindowManager::Resize()
 				{
 					if (windowToAdd->separationBar->separationBar->IsShown())
 					{
+#ifdef _DEBUG
+#ifdef WIN32                        
 						TCHAR temp[255];
+#endif
+#endif
 						if (windowToAdd->separationBar->separationBar->IsShown())
 						{
 							windowToAdd->separationBar->separationBar->SetSize(windowToAdd->separationBar->rect);
 #ifdef _DEBUG
+#ifdef WIN32
 							wsprintf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
 							OutputDebugString(temp);
+#endif
 #endif
 						}
 						else
