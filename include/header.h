@@ -10,6 +10,7 @@
 #define FFMPEG
 #define USECURL
 #define RENDEROPENGL
+#define GLUT
 //#define WX_PRECOMP
 
 #include <thread>
