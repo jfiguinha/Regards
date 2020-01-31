@@ -19,6 +19,12 @@ CMainThemeInit::~CMainThemeInit()
 
 CMainTheme * CMainThemeInit::getInstance()
 {
+	if (nullptr == _singleton)
+	{
+		CMainTheme * viewerTheme = new CMainTheme();
+		CMainThemeInit::Initialize(viewerTheme);
+		return viewerTheme;
+	}
 	return _singleton;
 }
 

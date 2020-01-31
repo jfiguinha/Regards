@@ -19,6 +19,7 @@ namespace Regards
 			CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 			void Init();
+			void UpdateScreenRatio();
 
 		private:
 			void OnOcr(wxCommandEvent& event);

@@ -16,13 +16,10 @@ CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowI
 {
     thumbnailEffectScroll = nullptr;
     thumbnailEffect = nullptr;
-    thumbnailEffectScroll = new CScrollbarWnd(this, wxID_ANY);
-	//CMainParam * config = CMainParamInit::getInstance();
-	//if (config != nullptr)
-	//	checkValidity = config->GetCheckThumbnailValidity();
+    
+	thumbnailEffect = new CThumbnailViewerEffect(this, wxID_ANY,  themeThumbnail, checkValidity, panelInfosId);
+	thumbnailEffectScroll = new CScrollbarWnd(this, thumbnailEffect, wxID_ANY);
 
-	thumbnailEffect = new CThumbnailViewerEffect(thumbnailEffectScroll, wxID_ANY,  themeThumbnail, checkValidity, panelInfosId);
-    thumbnailEffectScroll->SetCentralWindow(thumbnailEffect, themeScroll);
 }
 
 CThumbnailViewerEffectWnd::~CThumbnailViewerEffectWnd(void)

@@ -113,14 +113,24 @@ void CThumbnailMultiPage::SetVideoPosition(const int64_t &videoPos)
 	if (numFirstElement > (nbIconeElement - 1))
 		numFirstElement = nbIconeElement - 1;
 
-	CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-	if (!scrollH->IsMoving() && pIcone != nullptr)
+	if (!isMoving && pIcone != nullptr)
 	{
 		wxRect rect = pIcone->GetPos();
 		rect.x = posLargeur + rect.x;
 		rect.y = posHauteur + rect.y;
-		scrollH->SetPosition(rect.x); scrollH->Refresh();
-		posLargeur = scrollH->GetPosition();
+
+		wxWindow * parent = this->GetParent();
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = rect.x;
+			size->y = posHauteur;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+		posLargeur = rect.x;
 	}
 
 	numSelect = pIcone;

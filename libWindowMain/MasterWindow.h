@@ -19,6 +19,12 @@ namespace Regards
 			void SetWindowWidth(const int &width);
 			virtual int GetWindowWidth();
 
+			virtual void UpdateScreenRatio() = 0;
+
+
+			virtual int GetWidth() { return this->GetWindowWidth(); };
+			virtual int GetHeight() { return this->GetWindowHeight(); };
+
 			void StartThread();
 
 			static void SetEndProgram();

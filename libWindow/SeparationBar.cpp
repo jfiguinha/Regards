@@ -21,6 +21,11 @@ CSeparationBar::CSeparationBar(IMoveWindow * moveWindow, wxWindow* parent, wxWin
 	this->theme = theme;
 }
 
+void CSeparationBar::UpdateScreenRatio()
+{
+	Resize();
+}
+
 void CSeparationBar::SetHorizontal(const bool &horizontal)
 {
 	this->horizontal = horizontal;

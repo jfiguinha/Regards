@@ -23,14 +23,13 @@ CThumbnailSelection::CThumbnailSelection(wxWindow* parent, wxWindowID id, wxStri
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
 		viewerTheme->GetScrollTheme(&theme);
-		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
+		
 
 		//widthSize = theme.GetRectangleSize();
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFileSelection = new CThumbnailFileSelection(thumbscrollbar, THUMBNAILFILESELECTION, themeThumbnail, checkValidity);
-
-		thumbscrollbar->SetCentralWindow(thumbnailFileSelection, theme);
+		thumbnailFileSelection = new CThumbnailFileSelection(this, THUMBNAILFILESELECTION, themeThumbnail, checkValidity);
+		thumbscrollbar = new CScrollbarWnd(this, thumbnailFileSelection, wxID_ANY);
 	}
 
 	if (viewerTheme != nullptr)
@@ -64,6 +63,11 @@ CThumbnailSelection::~CThumbnailSelection()
 vector<int> CThumbnailSelection::GetSelectItem()
 {
 	return thumbnailFileSelection->GetSelectItem();
+}
+
+void CThumbnailSelection::UpdateScreenRatio()
+{
+	this->Resize();
 }
 
 void CThumbnailSelection::RedrawBarPos()

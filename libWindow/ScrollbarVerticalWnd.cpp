@@ -1,6 +1,6 @@
 #include "header.h"
 #include "ScrollbarVerticalWnd.h"
-#include "ScrollInterface.h"
+
 #include <window_id.h>
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
@@ -18,8 +18,8 @@ enum
 	TIMER_STOPMOVING = 14
 };
 
-CScrollbarVerticalWnd::CScrollbarVerticalWnd(CScrollInterface * scrollInterface, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme)
-	:wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
+CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString &windowName, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme)
+	:CWindowMain(windowName, parent, id)
 {
 	scrollMoving = false;
 
@@ -32,7 +32,6 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(CScrollInterface * scrollInterface,
 	pageBottom = nullptr;
 	stopMoving = nullptr;
 	m_bTracking = false;
-	this->scrollInterface = scrollInterface;
 	barSize = 40;
 	barPosY = 0;
 	showEmptyRectangle = false;
@@ -393,6 +392,10 @@ void CScrollbarVerticalWnd::SetIsMoving()
 
 	scrollMoving = true;
 	stopMoving->Start(1000);
+
+	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+	evt.SetInt(1);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
 bool CScrollbarVerticalWnd::IsMoving()
@@ -420,6 +423,10 @@ void CScrollbarVerticalWnd::OnMouseLeave(wxMouseEvent& event)
 		stopMoving->Stop();
 
 	scrollMoving = false;
+
+	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+	evt.SetInt(0);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CScrollbarVerticalWnd::OnMouseHover(wxMouseEvent& events)
@@ -561,9 +568,20 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
         TestMinY();
         TestMaxY();
 		MoveBar(currentYPos, themeScroll.colorBarActif);
-        scrollInterface->SetTopPosition(currentYPos);
+		SendTopPosition(currentYPos);
 		PaintNow();
     }
+}
+
+void CScrollbarVerticalWnd::SendTopPosition(const int &value)
+{
+	wxWindow * window = this->GetParent();
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_TOPPOSITION);
+		evt.SetInt(value);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 bool CScrollbarVerticalWnd::TestMaxY()
@@ -594,7 +612,7 @@ void CScrollbarVerticalWnd::ClickTopTriangle()
 	currentYPos -= lineSize;
 	TestMinY();
 	MoveBar(currentYPos, themeScroll.colorBar);
-	scrollInterface->SetTopPosition(currentYPos);
+	SendTopPosition(currentYPos);
 }
 
 void CScrollbarVerticalWnd::ClickBottomTriangle()
@@ -604,7 +622,7 @@ void CScrollbarVerticalWnd::ClickBottomTriangle()
 	currentYPos += lineSize;
 	TestMaxY();
 	MoveBar(currentYPos, themeScroll.colorBar);
-	scrollInterface->SetTopPosition(currentYPos);
+	SendTopPosition(currentYPos);
 }
 
 void CScrollbarVerticalWnd::ClickTopPage()
@@ -614,7 +632,7 @@ void CScrollbarVerticalWnd::ClickTopPage()
 	currentYPos -= pageSize;
 	TestMinY();
 	MoveBar(currentYPos, themeScroll.colorBar);
-	scrollInterface->SetTopPosition(currentYPos);
+	SendTopPosition(currentYPos);
 }
 
 void CScrollbarVerticalWnd::ClickBottomPage()
@@ -624,7 +642,7 @@ void CScrollbarVerticalWnd::ClickBottomPage()
 	currentYPos += pageSize;
 	TestMaxY();
 	MoveBar(currentYPos, themeScroll.colorBar);
-	scrollInterface->SetTopPosition(currentYPos);
+	SendTopPosition(currentYPos);
 }
 
 
@@ -716,7 +734,7 @@ void CScrollbarVerticalWnd::OnLButtonUp(wxMouseEvent& event)
 		currentYPos += diff * lineSize;
 		TestMinY();
 		TestMaxY();
-		scrollInterface->SetTopPosition(currentYPos);
+		SendTopPosition(currentYPos);
 	}
 		
 	if (triangleTop->IsRunning())

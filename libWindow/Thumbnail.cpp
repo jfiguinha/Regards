@@ -170,16 +170,21 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
 	if (move)
 	{
-		CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
-		CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-
 		if (numItem == 0)
 		{
-			scrollV->SetPosition(0);
-			scrollH->SetPosition(0);
+
+			if (this->GetParent() != nullptr)
+			{
+				wxSize * size = new wxSize();
+				wxCommandEvent evt(wxEVENT_SETPOSITION);
+				size->x = 0;
+				size->y = 0;
+				evt.SetClientData(size);
+				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+			}
 		}
 		else{
-			if (!scrollV->IsMoving())
+			if (!isMoving)
 			{
 				wxRect rect = numActif->GetPos();
 				rect.x = posLargeur + rect.x;
@@ -187,19 +192,18 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
 				//Positionnement au milieu
 				
-				int yPos = max((rect.y - scrollV->GetScreenHeight() / 2),0);
-				int xPos = max((rect.x - scrollH->GetScreenWidth() / 2), 0);
+				int yPos = max((rect.y - this->GetHeight() / 2),0);
+				int xPos = max((rect.x - this->GetWidth() / 2), 0);
 
-				scrollV->SetPosition(yPos);
-				scrollH->SetPosition(xPos);
-
-
-				if (GetWindowWidth() < GetWidth())
-					posLargeur = scrollH->GetPosition();
-
-				if (GetWindowHeight() < GetHeight())
-					posHauteur = scrollV->GetPosition();
-
+				if (this->GetParent() != nullptr)
+				{
+					wxSize * size = new wxSize();
+					wxCommandEvent evt(wxEVENT_SETPOSITION);
+					size->x = xPos;
+					size->y = yPos;
+					evt.SetClientData(size);
+					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
+				}
 			}
 		}
 	}
@@ -305,8 +309,6 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	nbElementToShow = 0;
 	isStoragePt = false;
 
-	defaultPageSize = 200;
-	defaultLineSize = 200;
 
 	//this->statusbar = statusbar;
 
@@ -333,9 +335,62 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVENT_ONSTARTLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StartLoadingPicture));
 	Connect(wxEVENT_ONSTOPLOADINGPICTURE, wxCommandEventHandler(CThumbnail::StopLoadingPicture));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CThumbnail::EraseThumbnail));
-		
+	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CThumbnail::OnScrollMove));
+	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
+	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
+	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CThumbnail::OnMoveLeft));
+	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CThumbnail::OnMoveRight));
+	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CThumbnail::OnMoveTop));
+	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CThumbnail::OnMoveBottom));
 	processIdle = true;
     
+}
+
+void CThumbnail::OnMoveLeft(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnMoveRight(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnMoveTop(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnMoveBottom(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnLeftPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnTopPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CThumbnail::OnScrollMove(wxCommandEvent& event)
+{
+	isMoving = event.GetInt();
 }
 
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
@@ -868,8 +923,6 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 	CIcone * pBitmapIcone = FindElement(xPos, yPos);
 	if (pBitmapIcone != nullptr)
 	{
-		int posHauteur = scrollbar->GetPosHauteur();
-		int posLargeur = scrollbar->GetPosLargeur();
 		numSelect = pBitmapIcone;
 		pBitmapIcone->OnClick(xPos, yPos, posLargeur, posHauteur);
         //
@@ -963,7 +1016,18 @@ void CThumbnail::CalculControlSize()
     TRACE();
 	controlWidth = GetWidth();
 	controlHeight = GetHeight();
-	scrollbar->SetControlSize(controlWidth, controlHeight);
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		ControlSize * controlSize = new ControlSize();
+		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+		controlSize->controlWidth = controlWidth;
+		controlSize->controlHeight = controlHeight;
+		controlSize->useScaleFactor = true;
+		evt.SetClientData(controlSize);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1009,6 +1073,51 @@ void CThumbnail::TestMaxY()
 		posHauteur = 0;
 }
 
+
+
+void CThumbnail::MoveTop()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CThumbnail::MoveLeft()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CThumbnail::MoveBottom()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CThumbnail::MoveRight()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
 
 void CThumbnail::OnKeyDown(wxKeyEvent& event)
 {
@@ -1061,26 +1170,21 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 void CThumbnail::InitScrollingPos()
 {
     TRACE();
-    
-    if(posHauteur < 0)
-        posHauteur = 0;
-    
-    if(posLargeur < 0)
-        posLargeur = 0;
-    
-    if(scrollbar != nullptr)
-    {
-        scrollbar->SetPosition(0, 0);
-        posHauteur = scrollbar->GetPosHauteur();
-        posLargeur = scrollbar->GetPosLargeur();
-    }
 
+	posHauteur = 0;
+	posLargeur = 0;
 
-	if (posHauteur < 0)
-		posHauteur = 0;
+	wxWindow * parent = this->GetParent();
 
-	if (posLargeur < 0)
-		posLargeur = 0;
+	if (parent != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
    
 }
 

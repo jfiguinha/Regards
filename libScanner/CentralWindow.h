@@ -25,7 +25,7 @@ namespace Regards
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
 			void OnOpen();
-
+			void UpdateScreenRatio();
 		private:
 
 			void OnSave(wxCommandEvent& event);

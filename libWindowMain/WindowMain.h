@@ -41,8 +41,6 @@ namespace Regards
 
 			}
 
-			virtual int GetWidth() { return this->GetWindowWidth(); };
-			virtual int GetHeight() { return this->GetWindowHeight(); };
 
 			virtual void OnResize(wxCommandEvent& event)
 			{
@@ -54,10 +52,6 @@ namespace Regards
                 this->Refresh();
              }            
             
-            virtual void UpdateScreenRatio()
-            {
-                
-            }
             
 			virtual void PushThreadIdleEvent()
 			{

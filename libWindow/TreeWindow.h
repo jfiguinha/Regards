@@ -1,7 +1,7 @@
 #pragma once
 
 #include <theme.h>
-#include "ScrollInterface.h"
+
 #include "PositionElement.h"
 #include "TreeElement.h"
 #include <TreeData.h>
@@ -22,7 +22,7 @@ namespace Regards
 	{
 		class CScrollInterface;
 
-		class CTreeWindow : public CWindowMain, public CScrollInterface, public CTreeElementSlideInterface, public CTreeElementControlInterface
+		class CTreeWindow : public CWindowMain, public CTreeElementSlideInterface, public CTreeElementControlInterface
 		{
 		public:
 			CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & theme);
@@ -56,6 +56,13 @@ namespace Regards
 			void OnMouseWheel(wxMouseEvent& event);
 			void OnKeyDown(wxKeyEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event){};
+			void OnLeftPosition(wxCommandEvent& event);
+			void OnTopPosition(wxCommandEvent& event);
+			void OnMoveLeft(wxCommandEvent& event);
+			void OnMoveRight(wxCommandEvent& event);
+			void OnMoveTop(wxCommandEvent& event);
+			void OnMoveBottom(wxCommandEvent& event);
+			void OnScrollMove(wxCommandEvent& event);
 
 			void Resize();
 			void DrawBackgroundRectangle(wxDC * deviceContext, const int &y, const int &rowHeight, const wxColour &color);
@@ -63,6 +70,11 @@ namespace Regards
 			void UpdateTreeControl();
 			void GenerateBackgroundBitmap(wxDC * deviceContext, const int &posLargeur, const int &posHauteur);
 			
+			void MoveTop();
+			void MoveLeft();
+			void MoveBottom();
+			void MoveRight();
+
 			void Update()
 			{
 				Refresh();
@@ -87,7 +99,10 @@ namespace Regards
             //Buffer
             wxBitmap backgroundBuffer; 
             bool bufferUpdate;
-            
+			int posHauteur;
+			int posLargeur;
+
+			int isMoving;
 		};
 	}
 }

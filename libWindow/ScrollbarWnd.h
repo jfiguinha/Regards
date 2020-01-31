@@ -1,41 +1,45 @@
 #pragma once
 #include <theme.h>
 #include <WindowMain.h>
+#include <WindowOpenGLMain.h>
+#include "WindowManager.h"
 namespace Regards
 {
 	namespace Window
 	{
-		class CScrollInterface;
 		class CScrollbarHorizontalWnd;
 		class CScrollbarVerticalWnd;
+
+		class ControlSize
+		{
+		public:
+			int controlWidth;
+			int controlHeight;
+			bool useScaleFactor = false;
+		};
 
 		class CScrollbarWnd : public CWindowMain
 		{
 		public:
-			CScrollbarWnd(wxWindow* parent, wxWindowID id, const wxString & windowName = "ScrollBar", const bool & autohidden = true);
+			CScrollbarWnd(wxWindow* parent, CWindowMain * centralWindow, wxWindowID id, const wxString & windowName = "ScrollBar");
+			CScrollbarWnd(wxWindow* parent, CWindowOpenGLMain * centralWindow, wxWindowID id, const wxString & windowName = "ScrollBar");
 			~CScrollbarWnd();
 
-			void SetCentralWindow(CScrollInterface * scrollInterface, const CThemeScrollBar & theme);
-
-			CScrollInterface * GetScrollPt();
-
-			CScrollbarHorizontalWnd * GetHScrollbar();
-			CScrollbarVerticalWnd * GetVScrollbar();
-            
-            void UpdateScreenRatio();
+			void UpdateScreenRatio();
 
 			void SetPageSize(const int &pageSize);
 			void SetLineSize(const int &lineSize);
 
+			
 			void HideVerticalScroll();
 			void HideHorizontalScroll();
 			void ShowVerticalScroll();
 			void ShowHorizontalScroll();
+			
 
 			int GetBarWidth();
 			int GetBarHeight();
-			void SetControlSize(const int &width, const int &height, const bool &useScaleFactor = false);
-			void SetPosition(const int &posX, const int &posY);
+
 			void Resize();
 
 			virtual int GetHeight();
@@ -44,32 +48,47 @@ namespace Regards
 			int GetPosLargeur();
 			int GetPosHauteur();
 
+		private:
+			void DefaultConstructor();
+
 		protected:
 
-			void OnSize(wxSizeEvent& event);
-			void OnEraseBackground(wxEraseEvent& event){};
-            void OnMouseMove(wxMouseEvent& event);
-            void OnHide(wxTimerEvent& event);
-            void OnMouseLeave(wxMouseEvent& event);
+			void SetPosition(const int &posX, const int &posY);
 			void RefreshData(wxCommandEvent& event);
+			void OnLeftPosition(wxCommandEvent& event);
+			void OnControlSize(wxCommandEvent& event);
+			void OnSetPosition(wxCommandEvent& event);
+
+			void OnMoveLeft(wxCommandEvent& event);
+			void OnMoveRight(wxCommandEvent& event);
+			void OnMoveTop(wxCommandEvent& event);
+			void OnMoveBottom(wxCommandEvent& event);
+
+			void OnScrollMove(wxCommandEvent& event);
 
 			CScrollbarHorizontalWnd * scrollHorizontal;
 			CScrollbarVerticalWnd * scrollVertical;
-			CScrollInterface * scrollInterface;
+			void OnTopPosition(wxCommandEvent& event);
+
+			void TestMaxX();
+			void TestMaxY();
 
 			bool showV;
 			bool showH;
             bool _showV = false;
             bool _showH = false;
-			int width;
-			int height;
             bool useScaleFactor = false;
 			int posHauteur;
 			int posLargeur;
 			int controlHeight;
 			int controlWidth;
-            bool autohidden = false;
+
+			int defaultPageSize;
+			int defaultLineSize;
+
             wxTimer * loadingTimer;
+			CWindowManager * windowManager;
+			CWindowToAdd * centralWindow;
 		};
 	}
 }

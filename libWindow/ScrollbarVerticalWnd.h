@@ -1,16 +1,14 @@
 #pragma once
 #include <theme.h>
-
+#include <WindowMain.h>
 namespace Regards
 {
 	namespace Window
 	{
-		class CScrollInterface;
-
-		class CScrollbarVerticalWnd : public wxWindow
+		class CScrollbarVerticalWnd : public CWindowMain
 		{
 		public:
-			CScrollbarVerticalWnd(CScrollInterface * scrollInterface, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme);
+			CScrollbarVerticalWnd(const wxString &windowName, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme);
 			~CScrollbarVerticalWnd();
 
 			int GetWidthSize();
@@ -52,7 +50,7 @@ namespace Regards
 			void OnTimerStopMoving(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event);
 			void OnEraseBackground(wxEraseEvent& event){};
-
+			void SendTopPosition(const int &value);
 			void DrawElement(wxDC * dc);
 
 			void Resize();
@@ -115,7 +113,6 @@ namespace Regards
 			wxTimer * stopMoving;
 
 			CThemeScrollBar themeScroll;
-			CScrollInterface * scrollInterface;
             
             bool showTriangle = false;
 		};

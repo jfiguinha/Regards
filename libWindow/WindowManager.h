@@ -1,12 +1,14 @@
 #pragma once
 #include "SeparationBar.h"
 #include "WindowMain.h"
+#include "WindowOpenGLMain.h"
 
 namespace Regards
 {
 	namespace Window
 	{
 		enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT};
+		class CPanelWithClickToolbar;
 
 		class CSeparationBarToAdd
 		{
@@ -22,6 +24,46 @@ namespace Regards
 		class CWindowToAdd
 		{
 		public:
+
+			CWindowToAdd()
+			{
+				window = nullptr;
+				windowOpengl = nullptr;
+			}
+
+			wxWindow * GetWindow()
+			{
+				if (window != nullptr)
+					return window;
+				return windowOpengl;
+			}
+			CMasterWindow * GetMasterWindowPt()
+			{
+				if (window != nullptr)
+					return window;
+				return windowOpengl;
+			}
+
+			CPanelWithClickToolbar * GetPanel()
+			{
+				if (isPanel)
+				{
+					if (window != nullptr)
+						return (CPanelWithClickToolbar *)window;
+				}
+				return nullptr;
+			}
+
+			void SetWindow(CWindowMain * window)
+			{
+				this->window = window;
+			}
+
+			void SetWindow(CWindowOpenGLMain * window)
+			{
+				this->windowOpengl = window;
+			}
+
 			wxRect rect;
 			wxRect rect_old;
 			Pos position;
@@ -34,8 +76,12 @@ namespace Regards
 			bool isPanel;
 			int diffWidth;
 			int diffHeight;
-			CWindowMain * window;
+
 			CSeparationBarToAdd * separationBar;
+
+		private:
+			CWindowMain * window;
+			CWindowOpenGLMain * windowOpengl;
 		};
 
 
@@ -48,6 +94,7 @@ namespace Regards
 
 			void AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
 			void AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel);
+			void AddWindow(CWindowOpenGLMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel);
 			void SetSeparationBarVisible(const bool& visible);
 			bool GetSeparationVisibility();
 			void ChangeWindow(CWindowMain * window, Pos position);
@@ -70,7 +117,7 @@ namespace Regards
 			vector<CWindowToAdd *> listWindow;
 
 		private:
-
+			void AddWindow(CWindowToAdd * windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel);
 			void OnRefreshData(wxCommandEvent& event);
 			void AddDifference(const int & diffWidth, const int &diffHeight, Pos position);
 			void OnResize(wxCommandEvent& event);

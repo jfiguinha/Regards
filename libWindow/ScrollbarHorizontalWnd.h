@@ -1,16 +1,16 @@
 #pragma once
 #include <theme.h>
-
+#include <WindowMain.h>
 namespace Regards
 {
 	namespace Window
 	{
 		class CScrollInterface;
 
-		class CScrollbarHorizontalWnd : public wxWindow
+		class CScrollbarHorizontalWnd : public CWindowMain
 		{
 		public:
-			CScrollbarHorizontalWnd(CScrollInterface * scrollInterface, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme);
+			CScrollbarHorizontalWnd(const wxString &windowName, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme);
 			~CScrollbarHorizontalWnd();
 
 			int GetHeightSize();
@@ -52,6 +52,8 @@ namespace Regards
 			void OnEraseBackground(wxEraseEvent& event){};
 
 			void Resize();
+
+			void SendLeftPosition(const int &value);
 
 			void ClickLeftTriangle();
 			void ClickRightTriangle();
@@ -108,7 +110,6 @@ namespace Regards
 			bool scrollMoving;
 			int width;
 			int height;
-			CScrollInterface * scrollInterface;
             
             bool showTriangle = false;
 		};

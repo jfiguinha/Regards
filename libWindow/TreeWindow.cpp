@@ -17,12 +17,12 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & the
 	oldPosHauteur = 0;
 	controlWidth = 0;
 	controlHeight = 0;
-	defaultPageSize = 50;
-	defaultLineSize = 5;
+	//defaultPageSize = 50;
+	//defaultLineSize = 5;
 	posHauteur = 0;
 	posLargeur = 0;
 	themeTree = theme;
-	defaultPageSize = 50;
+	//defaultPageSize = 50;
     
     //Buffer
     /*
@@ -33,7 +33,7 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & the
     widthBuffer = 0;
     heightBuffer = 0;     
     */
-	defaultLineSize = themeTree.GetRowHeight();
+	//defaultLineSize = themeTree.GetRowHeight();
 	themeTree.themeTriangle.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeCheckbox.SetHeight(themeTree.GetRowHeight());
 	themeTree.themeDelete.SetHeight(themeTree.GetRowHeight());
@@ -48,6 +48,107 @@ CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & the
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CTreeWindow::OnKeyDown));
 	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CTreeWindow::OnEraseBackground));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CTreeWindow::OnMouseCaptureLost));
+
+	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CTreeWindow::OnScrollMove));
+	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CTreeWindow::OnLeftPosition));
+	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CTreeWindow::OnTopPosition));
+	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CTreeWindow::OnMoveLeft));
+	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CTreeWindow::OnMoveRight));
+	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CTreeWindow::OnMoveTop));
+	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CTreeWindow::OnMoveBottom));
+
+}
+
+
+void CTreeWindow::OnMoveLeft(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnMoveRight(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnMoveTop(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnMoveBottom(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnLeftPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnTopPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CTreeWindow::OnScrollMove(wxCommandEvent& event)
+{
+	isMoving = event.GetInt();
+}
+
+void CTreeWindow::MoveTop()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CTreeWindow::MoveLeft()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CTreeWindow::MoveBottom()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CTreeWindow::MoveRight()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CTreeWindow::UpdateElement(CTreeElement * treeElement)
@@ -211,7 +312,19 @@ void CTreeWindow::CalculControlSize()
 	{
 		controlWidth = treeControl->GetWidth();
 		controlHeight = treeControl->GetNbRow() * themeTree.GetRowHeight();
-		scrollbar->SetControlSize(controlWidth, controlHeight);
+
+		wxWindow * parent = this->GetParent();
+
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = controlWidth;
+			controlSize->controlHeight = controlHeight;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 
 }
@@ -447,8 +560,28 @@ void CTreeWindow::OnPaint(wxPaintEvent& event)
         oldPosLargeur = posLargeur;
         oldPosHauteur = posHauteur; 
 
-        scrollbar->SetControlSize(controlWidth, controlHeight);
-        scrollbar->SetPosition(posLargeur, posHauteur);
+		wxWindow * parent = this->GetParent();
+
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = controlWidth;
+			controlSize->controlHeight = controlHeight;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = posLargeur;
+			size->y = posHauteur;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
        
     }
     else

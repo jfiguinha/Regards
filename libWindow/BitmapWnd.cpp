@@ -78,10 +78,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	toolOption = 0;
 	hCursorHand = CResourceCursor::GetClosedHand();
 	postEffect = false;
-	posHauteur = 0;
-	posLargeur = 0;
-	defaultPageSize = 50;
-	defaultLineSize = 5;
 	showScroll = true;
 	themeBitmap = theme;
 
@@ -97,6 +93,13 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CBitmapWnd::OnKeyUp));
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CBitmapWnd::OnMouseCaptureLost));
 	Connect(wxEVENT_UPDATEBITMAP, wxCommandEventHandler(CBitmapWnd::OnUpdateBitmap));
+	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CBitmapWnd::OnLeftPosition));
+	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CBitmapWnd::OnTopPosition));
+	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CBitmapWnd::OnMoveLeft));
+	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CBitmapWnd::OnMoveRight));
+	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CBitmapWnd::OnMoveTop));
+	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CBitmapWnd::OnMoveBottom));
+	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CBitmapWnd::OnScrollMove));
 	bitmapwidth = 0;
 	bitmapheight = 0;
 	bitmapUpdate = false;
@@ -105,6 +108,53 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 
 	themeBitmap.colorBack = themeBitmap.colorScreen;
 	filterInterpolation = CUBICFILTER;
+}
+
+void CBitmapWnd::OnScrollMove(wxCommandEvent& event)
+{
+	isMoving = event.GetInt();
+}
+
+void CBitmapWnd::OnMoveLeft(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CBitmapWnd::OnMoveRight(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CBitmapWnd::OnMoveTop(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CBitmapWnd::OnMoveBottom(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CBitmapWnd::OnLeftPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CBitmapWnd::OnTopPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
 }
 
 void CBitmapWnd::OnUpdateBitmap(wxCommandEvent& event)
@@ -389,13 +439,7 @@ void CBitmapWnd::ZoomOn()
 
     updateFilter = true;
 
-	bool update;
-	UpdateScrollBar(update);
-
-	if (update)
-	{
-        RefreshWindow();
-	}
+	UpdateScrollBar();
 }
 
 //-----------------------------------------------------------------
@@ -420,38 +464,40 @@ void CBitmapWnd::SetZoomPosition(const int &position)
 
 	CalculPositionPicture(centerX, centerY);
 
-	bool update;
-	UpdateScrollBar(update);
 
-	if (update)
-	{
-        RefreshWindow();
-	}
+	UpdateScrollBar();
+
 }
 
 //-----------------------------------------------------------------
 //Zoom +
 //-----------------------------------------------------------------
-void CBitmapWnd::SetPosition(const int &left, const int &top)
+void CBitmapWnd::UpdateScrollBar()
 {
-    TRACE();
-}
+	wxWindow * parent = this->GetParent();
 
-//-----------------------------------------------------------------
-//Zoom +
-//-----------------------------------------------------------------
-void CBitmapWnd::UpdateScrollBar(bool &update)
-{
-    TRACE();
-	update = true;
-	if (showScroll)
+	if (parent != nullptr)
 	{
-        
-		scrollbar->SetControlSize(int(GetBitmapWidthWithRatio()), int(GetBitmapHeightWithRatio()), true);
-		scrollbar->SetPosition(posLargeur, posHauteur);
-		posLargeur = scrollbar->GetPosLargeur();
-		posHauteur = scrollbar->GetPosHauteur();
+		ControlSize * controlSize = new ControlSize();
+		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+		controlSize->controlWidth = int(GetBitmapWidthWithRatio());
+		controlSize->controlHeight = int(GetBitmapHeightWithRatio());
+		controlSize->useScaleFactor = true;
+		evt.SetClientData(controlSize);
+		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	if (parent != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	this->Refresh();
 }
 
 
@@ -478,13 +524,8 @@ void CBitmapWnd::ZoomOut()
 
     updateFilter = true;
     
-	bool update;
-	UpdateScrollBar(update);
+	UpdateScrollBar();
 
-	if (update)
-	{
-        RefreshWindow();
-	}
 }
 
 //-----------------------------------------------------------------
@@ -504,13 +545,7 @@ void CBitmapWnd::ShrinkImage(const bool &redraw)
 
     updateFilter = true;
 
-	bool update;
-	UpdateScrollBar(update);
-
-	if (update && redraw)
-    {
-        RefreshWindow();
-    }
+	UpdateScrollBar();
 }
 
 
@@ -1009,6 +1044,51 @@ void CBitmapWnd::OnKeyUp(wxKeyEvent& event)
 	}
 }
 
+void CBitmapWnd::MoveTop()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CBitmapWnd::MoveLeft()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CBitmapWnd::MoveBottom()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CBitmapWnd::MoveRight()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+
 void CBitmapWnd::OnKeyDown(wxKeyEvent& event)
 {
     TRACE();
@@ -1163,13 +1243,7 @@ int CBitmapWnd::UpdateResized()
         else if (showScroll)
         {
             CalculPositionPicture(centerX, centerY);
-            bool update = false;
-            UpdateScrollBar(update);
-            if (update)
-            {
-                RefreshWindow();         
-            }
-
+            UpdateScrollBar();
         }
     }
     
@@ -1213,8 +1287,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 					TestMaxX();
 					TestMaxY();
 
-					bool update;
-					UpdateScrollBar(update);
+					UpdateScrollBar();
 
 #if defined(WIN32) && defined(_DEBUG)
 					TCHAR message[200];
@@ -1223,12 +1296,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 #endif
 
                     updateFilter = true;
-                    
-					if (update)
-                    {
-                        RefreshWindow();
-                    }
-                    //Refresh();
+
 				}
 			}
 			break;
@@ -1387,13 +1455,7 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 void CBitmapWnd::Update()
 { 
     TRACE();
-	bool update;
-	UpdateScrollBar(update);
-
-	if (update)
-    {
-        RefreshWindow();
-    }
+	UpdateScrollBar();
 }
 
 void CBitmapWnd::UpdateScreenRatio()
@@ -1512,8 +1574,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 	muBitmap.unlock();
 
-	bool update = false;
-	UpdateScrollBar(update);
+	//UpdateScrollBar();
 
 	if (bitmapLoad && width > 0 && height > 0)
 	{

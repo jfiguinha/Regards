@@ -87,9 +87,6 @@
     <ClInclude Include="ScrollbarWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ScrollInterface.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SeparationBar.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -243,9 +240,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="ScrollbarWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ScrollInterface.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SeparationBar.cpp">

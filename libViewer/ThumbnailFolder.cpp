@@ -63,32 +63,33 @@ void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
     
     if (move)
     {
-        CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
-        CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-        
+      
         if (numItem == 0)
         {
-            scrollV->SetPosition(0);
-            scrollH->SetPosition(0);
             InitScrollingPos();
         }
         else{
-            if (!scrollV->IsMoving())
+            if (!isMoving)
             {
                 wxRect rect = numActif->GetPos();
                 
-                int yPos = max((rect.y - scrollV->GetScreenHeight() / 2),0);
-                int xPos = max((rect.x - scrollH->GetScreenWidth() / 2), 0);
+                int yPos = max((rect.y - this->GetHeight() / 2),0);
+                int xPos = max((rect.x - this->GetWidth() / 2), 0);
 
-                scrollV->SetPosition(yPos);
-                scrollH->SetPosition(xPos);
-                
-                
-                if (GetWindowWidth() < GetWidth())
-                    posLargeur = scrollH->GetPosition();
-                
-                if (GetWindowHeight() < GetHeight())
-                    posHauteur = scrollV->GetPosition();
+				wxWindow * parent = this->GetParent();
+
+				if (parent != nullptr)
+				{
+					wxSize * size = new wxSize();
+					wxCommandEvent evt(wxEVENT_SETPOSITION);
+					size->x = xPos;
+					size->y = yPos;
+					evt.SetClientData(size);
+					parent->GetEventHandler()->AddPendingEvent(evt);
+				}
+              
+                posLargeur = xPos;
+                posHauteur = yPos;
                 
             }
         }
@@ -722,10 +723,6 @@ CIcone * CThumbnailFolder::FindElement(const int &xPos, const int &yPos)
 void CThumbnailFolder::RenderIconeWithVScroll(wxDC * deviceContext)
 {
     
-	posHauteur = scrollbar->GetPosHauteur();
-	posLargeur = scrollbar->GetPosLargeur();
-
-
 	for (auto i = 0; i < listSeparator.size(); i++)
 	{
 		CInfosSeparationBar * infosSeparationBar = listSeparator.at(i);
@@ -828,10 +825,30 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 		float posX = (float)posLargeur * xRatio;
 		float posY = (float)posHauteur * yRatio;
 
-		scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-		scrollbar->SetPosition(posX, posY);
+		wxWindow * parent = this->GetParent();
 
-		posLargeur = scrollbar->GetPosLargeur();
-		posHauteur = scrollbar->GetPosHauteur();
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = thumbnailSizeX;
+			controlSize->controlHeight = thumbnailSizeY;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = posX;
+			size->y = posY;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		posLargeur = posX;
+		posHauteur = posY;
 	}
 }

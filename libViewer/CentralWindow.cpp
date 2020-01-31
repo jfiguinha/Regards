@@ -101,10 +101,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		scrollVideoWindow = new CScrollbarWnd(this, wxID_ANY);
-		thumbnailVideo = new CThumbnailViewerVideo(scrollVideoWindow, wxID_ANY, themeVideo, checkValidity);
-
-		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
+		thumbnailVideo = new CThumbnailViewerVideo(this, wxID_ANY, themeVideo, checkValidity);
+		scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(1000);
 		scrollVideoWindow->SetLineSize(200);
@@ -137,9 +135,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 
-		scrollPictureWindow = new CScrollbarWnd(this, wxID_ANY);
-		thumbnailPicture = new CThumbnailViewerPicture(scrollPictureWindow, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
-		scrollPictureWindow->SetCentralWindow(thumbnailPicture, themeScroll);
+		thumbnailPicture = new CThumbnailViewerPicture(this, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
+		scrollPictureWindow = new CScrollbarWnd(this, thumbnailPicture, wxID_ANY);
 		scrollPictureWindow->HideVerticalScroll();
 		scrollPictureWindow->SetPageSize(1000);
 		scrollPictureWindow->SetLineSize(200);

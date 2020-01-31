@@ -76,6 +76,11 @@ namespace Regards
 					delete m_animationCtrl;
 			};
 
+			void UpdateScreenRatio()
+			{
+				Resize();
+			}
+
 			void Resize()
 			{
             #ifdef __WXGTK__

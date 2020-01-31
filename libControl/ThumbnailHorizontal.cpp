@@ -26,12 +26,20 @@ wxString CThumbnailHorizontal::GetWaitingMessage()
 
 void CThumbnailHorizontal::InitPosition()
 {
-    if(scrollbar != nullptr)
-    {
-        scrollbar->SetPosition(0, 0);
-        posHauteur = scrollbar->GetPosHauteur();
-        posLargeur = scrollbar->GetPosLargeur();
-    }
+	wxWindow * parent = this->GetParent();
+	if (parent != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	posHauteur = 0;
+	posLargeur = 0;
+
 }
 
 void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
@@ -129,32 +137,44 @@ void CThumbnailHorizontal::UpdateScroll()
 		thumbnailSizeX = nbLigneX * themeThumbnail.themeIcone.GetWidth();
 		thumbnailSizeY = themeThumbnail.themeIcone.GetHeight();
 
-		scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-		scrollbar->SetPosition(posLargeur, posHauteur);
-		//UpdateScrollBar(update);
+		wxWindow * parent = this->GetParent();
+
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = thumbnailSizeX;
+			controlSize->controlHeight = thumbnailSizeY;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = posLargeur;
+			size->y = posHauteur;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
-    
-    posHauteur = scrollbar->GetPosHauteur();
-    posLargeur = scrollbar->GetPosLargeur();
+
 
 }
 
 
 CIcone * CThumbnailHorizontal::FindElement(const int &xPos, const int &yPos)
 {
-	CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-	if (scrollH != nullptr)
-	{
-		int x = scrollH->GetPosition() + xPos;
-		if (x > thumbnailSizeX)
-			return nullptr;
+	int x = posLargeur + xPos;
+	if (x > thumbnailSizeX)
+		return nullptr;
 
-		int numElement = x / themeThumbnail.themeIcone.GetWidth();
+	int numElement = x / themeThumbnail.themeIcone.GetWidth();
 
-		if (numElement >= iconeList->GetNbElement())
-			return nullptr;
+	if (numElement >= iconeList->GetNbElement())
+		return nullptr;
 
-		return iconeList->GetElement(numElement);
-	}
-	return nullptr;
+	return iconeList->GetElement(numElement);
 }

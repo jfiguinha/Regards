@@ -76,10 +76,12 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
+
+
 		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILPDFPANEL, theme, themetoolbar, libelle, isPanelVisible, false, false);
-		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), wxID_ANY);
-		thumbnailVideo = new CThumbnailMultiPage(scrollVideoWindow, wxID_ANY, themeVideo, checkValidity);
-		scrollVideoWindow->SetCentralWindow(thumbnailVideo, themeScroll);
+		
+		thumbnailVideo = new CThumbnailMultiPage(this, wxID_ANY, themeVideo, checkValidity);
+		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(1000);
 		scrollVideoWindow->SetLineSize(200);

@@ -2,6 +2,7 @@
 #include <WindowMain.h>
 #include "ValidationToolbar.h"
 #include "ThumbnailFileSelection.h"
+#include <ScrollbarWnd.h>
 using namespace std;
 using namespace Regards::Window;
 class CImageLoadingFormat;
@@ -18,7 +19,7 @@ namespace Regards
 			CThumbnailSelection(wxWindow* parent, wxWindowID id, wxString filename);
 			~CThumbnailSelection();
 			vector<int> GetSelectItem();
-
+			void UpdateScreenRatio();
 		private:
 
 			void RedrawBarPos();

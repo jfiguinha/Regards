@@ -218,7 +218,6 @@
     <ClInclude Include="ScrollbarHorizontalWnd.h" />
     <ClInclude Include="ScrollbarVerticalWnd.h" />
     <ClInclude Include="ScrollbarWnd.h" />
-    <ClInclude Include="ScrollInterface.h" />
     <ClInclude Include="SeparationBar.h" />
     <ClInclude Include="Slider.h" />
     <ClInclude Include="Splitter.h" />
@@ -274,7 +273,6 @@
     <ClCompile Include="ScrollbarHorizontalWnd.cpp" />
     <ClCompile Include="ScrollbarVerticalWnd.cpp" />
     <ClCompile Include="ScrollbarWnd.cpp" />
-    <ClCompile Include="ScrollInterface.cpp" />
     <ClCompile Include="SeparationBar.cpp" />
     <ClCompile Include="Slider.cpp" />
     <ClCompile Include="Splitter.cpp" />

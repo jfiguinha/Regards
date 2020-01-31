@@ -23,44 +23,34 @@ CThumbnailVertical::~CThumbnailVertical(void)
 
 CIcone * CThumbnailVertical::FindElementWithVScroll(const int &xPos, const int &yPos)
 {
-	CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-	CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
-	if (scrollH != nullptr && scrollV != nullptr)
-	{
+	int x = posLargeur + xPos;
+	int y = posHauteur + yPos;
 
-		int x = scrollH->GetPosition() + xPos;
-		int y = scrollV->GetPosition() + yPos;
+	int nbElementByX = thumbnailSizeX / themeThumbnail.themeIcone.GetWidth();
+	int numY = y / themeThumbnail.themeIcone.GetHeight();
+	int numX = x / themeThumbnail.themeIcone.GetWidth();
+	int numElement = numY * nbElementByX + numX;
 
-		int nbElementByX = thumbnailSizeX / themeThumbnail.themeIcone.GetWidth();
-		int numY = y / themeThumbnail.themeIcone.GetHeight();
-		int numX = x / themeThumbnail.themeIcone.GetWidth();
-		int numElement = numY * nbElementByX + numX;
+	if (numElement >= iconeList->GetNbElement())
+		return nullptr;
 
-		if (numElement >= iconeList->GetNbElement())
-			return nullptr;
+	return iconeList->GetElement(numElement);
 
-		return iconeList->GetElement(numElement);
-	}
-	return nullptr;
 }
 
 CIcone * CThumbnailVertical::FindElementWithoutVScroll(const int &xPos, const int &yPos)
 {
-	CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-	if (scrollH != nullptr)
-	{
-		int x = scrollH->GetPosition() + xPos;
-		if (x > thumbnailSizeX)
-			return nullptr;
+	int x = posLargeur + xPos;
+	if (x > thumbnailSizeX)
+		return nullptr;
 
-		int numElement = x / themeThumbnail.themeIcone.GetWidth();
+	int numElement = x / themeThumbnail.themeIcone.GetWidth();
 
-		if (numElement >= iconeList->GetNbElement())
-			return nullptr;
+	if (numElement >= iconeList->GetNbElement())
+		return nullptr;
 
-		return iconeList->GetElement(numElement);
-	}
-	return nullptr;
+	return iconeList->GetElement(numElement);
+
 }
 
 CIcone * CThumbnailVertical::FindElement(const int &xPos, const int &yPos)
@@ -148,7 +138,6 @@ void CThumbnailVertical::RenderIconeWithVScroll(wxDC * deviceContext)
 
 void CThumbnailVertical::RenderIconeWithoutVScroll(wxDC * deviceContext)
 {
-	posLargeur = scrollbar->GetPosLargeur();
 	int x = -posLargeur;
 	int y = 0;
 
@@ -243,11 +232,31 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 		float posX = (float)posLargeur * xRatio;
 		float posY = (float)posHauteur * yRatio;
 
-		scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-		scrollbar->SetPosition(posX, posY);
+		wxWindow * parent = this->GetParent();
 
-		posLargeur = scrollbar->GetPosLargeur();
-		posHauteur = scrollbar->GetPosHauteur();
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = thumbnailSizeX;
+			controlSize->controlHeight = thumbnailSizeY;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = posX;
+			size->y = posY;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		posLargeur = posX;
+		posHauteur = posY;
 	}
 }
 
@@ -261,13 +270,32 @@ void CThumbnailVertical::UpdateScrollWithoutVScroll()
 		thumbnailSizeX = nbLigneX * themeThumbnail.themeIcone.GetWidth();
 		thumbnailSizeY = themeThumbnail.themeIcone.GetHeight();
 
-		scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-		scrollbar->SetPosition(posLargeur, posHauteur);
+		wxWindow * parent = this->GetParent();
+
+		if (parent != nullptr)
+		{
+			ControlSize * controlSize = new ControlSize();
+			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+			controlSize->controlWidth = thumbnailSizeX;
+			controlSize->controlHeight = thumbnailSizeY;
+			controlSize->useScaleFactor = true;
+			evt.SetClientData(controlSize);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
+		if (parent != nullptr)
+		{
+			wxSize * size = new wxSize();
+			wxCommandEvent evt(wxEVENT_SETPOSITION);
+			size->x = posLargeur;
+			size->y = posHauteur;
+			evt.SetClientData(size);
+			parent->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 		//UpdateScrollBar(update);
 	}
 
-	posHauteur = scrollbar->GetPosHauteur();
-	posLargeur = scrollbar->GetPosLargeur();
 }
 
 void CThumbnailVertical::UpdateScroll()

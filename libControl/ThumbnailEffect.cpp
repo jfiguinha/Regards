@@ -686,8 +686,26 @@ void CThumbnailEffect::UpdateScroll()
 	}
 
 	//int nbElement = pIconeList.size();
+	wxWindow * parent = this->GetParent();
 
-	scrollbar->SetControlSize(thumbnailSizeX, thumbnailSizeY);
-	scrollbar->SetPosition(posLargeur, posHauteur);
+	if (parent != nullptr)
+	{
+		ControlSize * controlSize = new ControlSize();
+		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+		controlSize->controlWidth = thumbnailSizeX;
+		controlSize->controlHeight = thumbnailSizeY;
+		evt.SetClientData(controlSize);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	if (parent != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 

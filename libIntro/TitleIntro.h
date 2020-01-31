@@ -14,7 +14,7 @@ namespace Regards
 
 			void SetTitle(const wxString &title);
 			int GetHeight();
-
+			void UpdateScreenRatio();
 
 		private:
 			void Resize();

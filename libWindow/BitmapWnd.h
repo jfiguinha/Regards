@@ -9,7 +9,7 @@
 #include <RegardsConfigParam.h>
 #include <OpenCLEngine.h>
 #include <theme.h>
-#include "ScrollInterface.h"
+
 #ifdef RENDEROPENGL
 #include "RenderBitmapInterfaceOpenGL.h"
 #endif
@@ -31,9 +31,9 @@ namespace Regards
 	namespace Window
 	{
 #ifdef RENDEROPENGL
-		class CBitmapWnd : public CWindowOpenGLMain, public CScrollInterface, public IBitmapDisplay
+		class CBitmapWnd : public CWindowOpenGLMain, public IBitmapDisplay
 #else
-		class CBitmapWnd : public CWindowMain, public CScrollInterface, public IBitmapDisplay
+		class CBitmapWnd : public CWindowMain, public IBitmapDisplay
 #endif
 		{
 		public:
@@ -98,7 +98,6 @@ namespace Regards
 			virtual void SetKeyOption(const int& iKey) {};
 			int GetKey();
 
-			void SetPosition(const int& left, const int& top);
 
 			void SetFullscreen(const bool& fullscreen);
 
@@ -141,6 +140,14 @@ namespace Regards
 			void OnKeyUp(wxKeyEvent& event);
 			void OnEraseBackground(wxEraseEvent& event) {};
 			void OnUpdateBitmap(wxCommandEvent& event);
+			void OnLeftPosition(wxCommandEvent& event);
+			void OnTopPosition(wxCommandEvent& event);
+			void OnMoveLeft(wxCommandEvent& event);
+			void OnMoveRight(wxCommandEvent& event);
+			void OnMoveTop(wxCommandEvent& event);
+			void OnMoveBottom(wxCommandEvent& event);
+			void OnScrollMove(wxCommandEvent& event);
+
 #ifdef KeyPress
 #undef KeyPress
 #endif			
@@ -171,15 +178,20 @@ namespace Regards
 			virtual int GetRawBitmapHeight();
 			virtual int GetOrientation();
 
-			void TestMaxX();
-			void TestMaxY();	
-
-			void UpdateScrollBar(bool &update);
 			float CalculRatio(const int &pictureWidth, const int &pictureHeight);
 
 			void CalculCenterPicture();
 			void CalculPositionPicture(const float &x, const float &y);
 			void CalculRectPictureInterpolation(wxRect &picture, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert = true);
+
+			void UpdateScrollBar();
+			void TestMaxY();
+			void TestMaxX();
+			void MoveTop();
+			void MoveLeft();
+			void MoveBottom();
+			void MoveRight();
+
 			int interpolation;
 			bool zoom;
 			//bool zoomOn;
@@ -248,6 +260,11 @@ namespace Regards
 			int xPosImage = 0;
 			int yPosImage = 0;
 			bool controlKeyPush = false;
+
+			int posLargeur = 0;
+			int posHauteur = 0;
+
+			int isMoving;
 		};
 	}
 }

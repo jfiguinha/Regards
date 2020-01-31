@@ -22,6 +22,11 @@ CTitleIntro::~CTitleIntro()
 
 }
 
+void CTitleIntro::UpdateScreenRatio()
+{
+	this->Resize();
+}
+
 int CTitleIntro::GetHeight()
 {
 	wxWindowDC dc(this);

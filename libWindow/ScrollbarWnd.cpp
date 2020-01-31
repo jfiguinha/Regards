@@ -2,145 +2,228 @@
 #include "ScrollbarWnd.h"
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarVerticalWnd.h"
-#include "ScrollInterface.h"
+#include "MainThemeInit.h"
+#include "MainTheme.h"
 using namespace Regards::Window;
 
 #define TIMER_HIDE 1
 
-CScrollbarWnd::CScrollbarWnd(wxWindow* parent, wxWindowID id, const wxString & windowName, const bool & autohidden)
+CScrollbarWnd::CScrollbarWnd(wxWindow* parent, CWindowMain * centralWindow, wxWindowID id, const wxString & windowName)
 	: CWindowMain(windowName, parent, id)
 {
-    this->autohidden = false;
+	wxRect rect;
+	DefaultConstructor();
+	this->centralWindow->SetWindow(centralWindow);
+	windowManager->AddWindow(centralWindow, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
+	centralWindow->Reparent(this);
+
+	
+}
+
+CScrollbarWnd::CScrollbarWnd(wxWindow* parent, CWindowOpenGLMain * centralWindow, wxWindowID id, const wxString & windowName)
+	: CWindowMain(windowName, parent, id)
+{
+	wxRect rect;
+
+	DefaultConstructor();
+	this->centralWindow->SetWindow(centralWindow);
+	windowManager->AddWindow(centralWindow, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
+	centralWindow->Reparent(this);
+}
+
+
+void CScrollbarWnd::DefaultConstructor()
+{
+	wxRect rect;
+	   
+	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
+	centralWindow = new CWindowToAdd();
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeSplitter theme;
+		viewerTheme->GetSplitterTheme(&theme);
+		windowManager = new CWindowManager(this, wxID_ANY, theme);
+	}
+
 	scrollHorizontal = nullptr;
 	scrollVertical = nullptr;
-	scrollInterface = nullptr;
-	showV = false;
-	showH = false;
-	width = 0;
-	height = 0;
+	//scrollInterface = nullptr;
+	showV = true;
+	showH = true;
 	posHauteur = 0;
 	posLargeur = 0;
 	controlHeight = 0;
 	controlWidth = 0;
 	loadingTimer = new wxTimer(this, TIMER_HIDE);
-	Connect(TIMER_HIDE, wxEVT_TIMER, wxTimerEventHandler(CScrollbarWnd::OnHide), nullptr, this);
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CScrollbarWnd::OnSize));
-	Connect(wxEVT_ERASE_BACKGROUND, wxEraseEventHandler(CScrollbarWnd::OnEraseBackground));
-    Connect(wxEVT_MOTION, wxMouseEventHandler(CScrollbarWnd::OnMouseMove));
-    Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CScrollbarWnd::OnMouseLeave));
+
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeScrollBar theme;
+		viewerTheme->GetScrollTheme(&theme);
+		scrollHorizontal = new CScrollbarHorizontalWnd("ScrollbarHorizontal", windowManager, wxID_ANY, theme);
+		scrollVertical = new CScrollbarVerticalWnd("ScrollbarVertical", windowManager, wxID_ANY, theme);
+	}
+	windowManager->AddWindow(scrollHorizontal, Pos::wxBOTTOM, true, GetBarHeight(), rect, wxID_ANY, false);
+	windowManager->AddWindow(scrollVertical, Pos::wxRIGHT, true, GetBarWidth(), rect, wxID_ANY, false);
+
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CScrollbarWnd::RefreshData));
+	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CScrollbarWnd::OnLeftPosition));
+	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CScrollbarWnd::OnTopPosition));
+	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CScrollbarWnd::OnControlSize));
+	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CScrollbarWnd::OnSetPosition));
+
+	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CScrollbarWnd::OnMoveLeft));
+	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CScrollbarWnd::OnMoveRight));
+	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CScrollbarWnd::OnMoveTop));
+	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CScrollbarWnd::OnMoveBottom));
+
+	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CScrollbarWnd::OnScrollMove));
+
+	defaultPageSize = 50;
+	defaultLineSize = 5;
+}
+
+void CScrollbarWnd::OnScrollMove(wxCommandEvent& event)
+{
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+		evt.SetInt(event.GetInt());
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CScrollbarWnd::OnMoveLeft(wxCommandEvent& event)
+{
+	int pageSize = defaultPageSize;
+	if (scrollVertical != nullptr)
+	{
+		pageSize = scrollVertical->GetPageSize();
+	}
+	posLargeur -= pageSize;
+	TestMaxX();
+
+	this->Update();
+}
+
+void CScrollbarWnd::OnMoveRight(wxCommandEvent& event)
+{
+	int pageSize = defaultPageSize;
+	if (scrollHorizontal != nullptr)
+	{
+		pageSize = scrollHorizontal->GetPageSize();
+	}
+	posLargeur += pageSize;
+	TestMaxX();
+
+	this->Update();
+}
+
+void CScrollbarWnd::OnMoveTop(wxCommandEvent& event)
+{
+	int pageSize = defaultPageSize;
+	if (scrollVertical != nullptr)
+	{
+		pageSize = scrollVertical->GetPageSize();
+	}
+	posHauteur -= pageSize;
+	TestMaxY();
+
+	this->Update();
+}
+
+void CScrollbarWnd::OnMoveBottom(wxCommandEvent& event)
+{
+	int pageSize = defaultPageSize;
+	if (scrollVertical != nullptr)
+	{
+		pageSize = scrollVertical->GetPageSize();
+	}
+	posHauteur += pageSize;
+	TestMaxY();
+
+}
+
+
+void CScrollbarWnd::OnLeftPosition(wxCommandEvent& event)
+{
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_LEFTPOSITION);
+		evt.SetInt(event.GetInt());
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CScrollbarWnd::OnTopPosition(wxCommandEvent& event)
+{
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_TOPPOSITION);
+		evt.SetInt(event.GetInt());
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CScrollbarWnd::RefreshData(wxCommandEvent& event)
 {
-	if (scrollInterface != nullptr)
+	if (centralWindow->GetWindow() != nullptr)
 	{
-		wxWindow * window = scrollInterface->GetWindow();
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_REFRESHDATA);
-			evt.SetExtraLong(1);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
+		wxCommandEvent evt(wxEVENT_REFRESHDATA);
+		evt.SetExtraLong(1);
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
 	}
-}
-
-void CScrollbarWnd::OnHide(wxTimerEvent& event)
-{
-    if(autohidden)
-    {
-        showV = false;
-        showH = false;
-        Resize();
-    }
-}
-
-void CScrollbarWnd::OnMouseLeave(wxMouseEvent& event)
-{
-    if(autohidden)
-        loadingTimer->Start(500, true);
 }
 
 int CScrollbarWnd::GetHeight()
 {
-	return scrollInterface->GetHeight() + this->GetBarHeight();
+	return windowManager->GetHeight();
 }
 
 int CScrollbarWnd::GetWidth()
 {
-	return scrollInterface->GetHeight() + this->GetBarWidth();
+	return windowManager->GetWidth();
 }
 
-void CScrollbarWnd::OnMouseMove(wxMouseEvent& event)
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+void CScrollbarWnd::TestMaxX()
 {
-	int xPos = event.GetX();
-	int yPos = event.GetY();
-    
-    //printf("CScrollbarWnd::OnMouseMove \n");
-    
-    if(autohidden)
-    {
-        bool resize = false;
-        _showV = false;
-        _showH = false;
+	TRACE();
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		CMasterWindow * window = centralWindow->GetMasterWindowPt();
 
-        if (xPos >= width - (2 * scrollVertical->GetWidthSize()))
-            _showV = true;
+		if (posLargeur >= controlWidth - window->GetWidth())
+			posLargeur = controlWidth - window->GetWidth();
 
-        if (yPos >= height - ( 2 * scrollHorizontal->GetHeightSize()))
-            _showH = true;
-
-        if (_showH || _showV)
-        {
-            if(loadingTimer->IsRunning())
-                loadingTimer->Stop();
-
-            if (_showV && !showV)
-            {
-                showV = _showV;
-                resize = true;
-            }
-            if (_showH && !showH)
-            {
-                showH = _showH;
-                resize = true;
-            }
-            
-            
-        }
-        else
-        {
-            //Start Timer for hide
-            loadingTimer->Start(500, true);
-        }
-
-        if(resize)
-            Resize();
-            
-         
-    }
-    
-   
-    event.Skip();
+		if (posLargeur < 0)
+			posLargeur = 0;
+	}
 }
 
-void CScrollbarWnd::SetCentralWindow(CScrollInterface * scrollInterface, const CThemeScrollBar & theme)
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+void CScrollbarWnd::TestMaxY()
 {
-    if(autohidden)
-    {
-        //printf("SetCentralWindow \n");
-        scrollHorizontal = new CScrollbarHorizontalWnd(scrollInterface, scrollInterface->GetWindow(), wxID_ANY, theme);
-        scrollVertical = new CScrollbarVerticalWnd(scrollInterface, scrollInterface->GetWindow(), wxID_ANY, theme);
-    }
-    else
-    {
-        scrollHorizontal = new CScrollbarHorizontalWnd(scrollInterface, this, wxID_ANY, theme);
-        scrollVertical = new CScrollbarVerticalWnd(scrollInterface, this, wxID_ANY, theme);
-    }
-	this->scrollInterface = scrollInterface;
-	showV = true;
-	showH = true;
-	scrollInterface->SetScrollbar(this);	
+	TRACE();
+
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		CMasterWindow * window = centralWindow->GetMasterWindowPt();
+
+
+		if (posHauteur >= controlHeight - window->GetHeight())
+			posHauteur = controlHeight - window->GetHeight();
+
+		if (posHauteur < 0)
+			posHauteur = 0;
+	}
 }
 
 void CScrollbarWnd::SetPageSize(const int &pageSize)
@@ -165,28 +248,11 @@ int CScrollbarWnd::GetBarWidth()
 	return scrollVertical->GetWidthSize();
 }
 
-CScrollbarHorizontalWnd * CScrollbarWnd::GetHScrollbar()
-{
-	return scrollHorizontal;
-}
-
-CScrollbarVerticalWnd * CScrollbarWnd::GetVScrollbar()
-{
-	return scrollVertical;
-}
 
 CScrollbarWnd::~CScrollbarWnd()
 {
-
-	if (loadingTimer != nullptr)
-	{
-		if (loadingTimer->IsRunning())
-			loadingTimer->Stop();
-		delete loadingTimer;
-	}
-	//delete(scrollVertical);
-	//delete(scrollHorizontal);
-	
+	if (windowManager != nullptr)
+		delete windowManager;
 }
 
 void CScrollbarWnd::UpdateScreenRatio()
@@ -195,39 +261,38 @@ void CScrollbarWnd::UpdateScreenRatio()
     scrollHorizontal->UpdateScreenRatio();
     this->Resize();
 }
-void CScrollbarWnd::ShowVerticalScroll()
-{
-	showV = true;
-}
-void CScrollbarWnd::ShowHorizontalScroll()
-{
-	showH = true;
-}
-void CScrollbarWnd::HideVerticalScroll()
-{
-	showV = false;
-}
-void CScrollbarWnd::HideHorizontalScroll()
-{
-	showH = false;
-}
 
-
-void CScrollbarWnd::SetControlSize(const int &width, const int &height, const bool &useScaleFactor)
+void CScrollbarWnd::OnSetPosition(wxCommandEvent& event)
 {
-	if (width != controlWidth || height != controlHeight)
+	wxSize * size = (wxSize*)event.GetClientData();
+	if (size != nullptr)
 	{
-		controlWidth = width;
-		controlHeight = height;
-        this->useScaleFactor = useScaleFactor;
-		Resize();
+		int posX = size->x;
+		int posY = size->y;
+		SetPosition(posX, posY);
+		delete size;
+	}
+}
 
+void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
+{
+	ControlSize * controlSize = (ControlSize *)event.GetClientData();
+	if (controlSize != nullptr)
+	{
+		if (controlSize->controlWidth != controlWidth || controlSize->controlHeight != controlHeight)
+		{
+			controlWidth = controlSize->controlWidth;
+			controlHeight = controlSize->controlHeight;
+			this->useScaleFactor = useScaleFactor;
+			Resize();
+		}
+		delete controlSize;
 	}
 }
 
 int CScrollbarWnd::GetPosLargeur()
 {
-	int pictureWidth = width;
+	int pictureWidth = GetWindowWidth();
 
     if(scrollVertical != nullptr && showV)
     {
@@ -244,7 +309,7 @@ int CScrollbarWnd::GetPosLargeur()
 
 int CScrollbarWnd::GetPosHauteur()
 {
-	int pictureHeight = height;
+	int pictureHeight = GetWindowHeight();
 
     if(scrollHorizontal != nullptr && showH)
     {
@@ -262,13 +327,30 @@ int CScrollbarWnd::GetPosHauteur()
 	return posHauteur;
 }
 
+void CScrollbarWnd::ShowVerticalScroll()
+{
+	showV = true;
+}
+void CScrollbarWnd::ShowHorizontalScroll()
+{
+	showH = true;
+}
+void CScrollbarWnd::HideVerticalScroll()
+{
+	showV = false;
+}
+void CScrollbarWnd::HideHorizontalScroll()
+{
+	showH = false;
+}
+
 void CScrollbarWnd::SetPosition(const int &posX, const int &posY)
 {
 	posHauteur = std::max(posY, 0);
 	posLargeur = std::max(posX, 0);
 
-	int pictureWidth = width;
-	int pictureHeight = height;
+	int pictureWidth = GetWindowWidth();
+	int pictureHeight = GetWindowHeight();
 
     if(scrollHorizontal != nullptr && scrollVertical != nullptr)
     {
@@ -298,140 +380,67 @@ void CScrollbarWnd::SetPosition(const int &posX, const int &posY)
 	}
 }
 
-void CScrollbarWnd::OnSize(wxSizeEvent& event)
-{
-#ifdef __WXGTK__
-    double scale_factor = GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
-	int pictureWidth = event.GetSize().GetWidth();
-	int pictureHeight = event.GetSize().GetHeight();
-#if defined(WIN32) && defined(_DEBUG)
-	wxString toShow = "CScrollbarWnd size x : " + to_string(pictureWidth) + " y : " + to_string(pictureHeight) + "\n";
-	OutputDebugString(toShow.ToStdWstring().c_str());
-#endif
-
-	if(pictureWidth > 0 && pictureHeight > 0)
-	{
-		width = pictureWidth;
-		height = pictureHeight;
-		Resize();
-	}
-}
-
-
 void CScrollbarWnd::Resize()
 {
 	//CDeferPos deferpos;
-	int pictureWidth = width;
-	int pictureHeight = height;
+	wxRect rect;
+	int pictureWidth = GetWindowWidth();
+	int pictureHeight = GetWindowHeight();
+	bool _showScrollV = false;
+	bool _showScrollH = false;
 #ifdef __WXGTK__
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
-	wxWindow * control = scrollInterface->GetWindow();
+
     if(!useScaleFactor)
         scale_factor = 1.0f;
     printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight);
 
     if(scrollHorizontal != nullptr && scrollVertical != nullptr)
     {   
-        bool valueH = scrollHorizontal->IsShown();
-        bool valueV = scrollVertical->IsShown();
+		bool valueH = false;
+		bool valueV = false;
+		if(showV && (controlHeight > pictureHeight * scale_factor))
+			valueV = true;
 
-		if(showV)
+		if(showH && (controlWidth > pictureWidth * scale_factor))
+			valueH = true;
+		      
+		if (valueV && showV)
 		{
-			if(controlHeight > pictureHeight * scale_factor)
-			{
-				scrollVertical->Show();
-				valueV = true;
-			}
-			else
-			{
-				scrollVertical->Hide();
-				valueV = false;
-			}
+			pictureWidth -= scrollVertical->GetWidthSize();
+			_showScrollV = true;
 		}
-		else
-		{
-			scrollVertical->Hide();
-			valueV = false;
-		}
-
-		if(showH)
-		{
-			if(controlWidth > pictureWidth * scale_factor)
-			{
-				scrollHorizontal->Show();
-				valueH = true;
-			}
-			else
-			{
-				scrollHorizontal->Hide();
-				valueH = false;
-			}
-		}
-		else
-		{
-			valueH = false;
-			scrollHorizontal->Hide();
-		}
-       
-        if (valueV)
-            pictureWidth -= scrollVertical->GetWidthSize();
-
-        if (valueH)
-            pictureHeight -= scrollHorizontal->GetHeightSize();
-
-        if (valueH && valueV)
-            scrollVertical->ShowEmptyRectangle(true, scrollHorizontal->GetHeightSize());
-        else
-            scrollVertical->ShowEmptyRectangle(false, scrollHorizontal->GetHeightSize());
-
-        if(!autohidden)
-        {
-            int x= control->GetSize().x;
-            int y= control->GetSize().y;
-            if(x != pictureWidth || y != pictureHeight)
-            {
-                printf("CScrollbarWnd::Resize() control->SetSize pictureWidth : %d, pictureHeight : %d \n", pictureWidth, pictureHeight);
-                if(pictureWidth > 0 && pictureHeight > 0)
-                    control->SetSize(pictureWidth, pictureHeight);
-            }
-        }
 
 		if (valueH && showH)
-            scrollHorizontal->SetSize(0, pictureHeight, pictureWidth, scrollHorizontal->GetHeightSize());
-			
-        if (valueV && showV)
-            scrollVertical->SetSize(pictureWidth, 0, scrollVertical->GetWidthSize(), height); 
+		{
+			pictureHeight -= scrollHorizontal->GetHeightSize();
+			_showScrollH = true;
+		}
 
-		if (scrollVertical != nullptr && showV)
-            scrollVertical->UpdateScrollBar(posHauteur, pictureHeight * scale_factor, controlHeight);
+		if (scrollVertical != nullptr && _showScrollV)
+		{
+			windowManager->ShowWindow(Pos::wxRIGHT);
+			scrollVertical->UpdateScrollBar(posHauteur, pictureHeight * scale_factor, controlHeight);
+		}
+		else
+			windowManager->HideWindow(Pos::wxRIGHT);
 
-		if (scrollHorizontal != nullptr&& showH)
-            scrollHorizontal->UpdateScrollBar(posLargeur, pictureWidth * scale_factor, controlWidth);
-
-        if(autohidden)
-        {
-            if (valueV)
-                pictureWidth += scrollVertical->GetWidthSize();
-
-            if (valueH)
-                pictureHeight += scrollHorizontal->GetHeightSize();
-            
-            int x= control->GetSize().x;
-            int y= control->GetSize().y;
-            if(x != pictureWidth || y != pictureHeight)
-            {
-                printf("CScrollbarWnd::Resize() control->SetSize pictureWidth : %d, pictureHeight : %d \n", pictureWidth, pictureHeight);
-                if(pictureWidth > 0 && pictureHeight > 0)
-                    control->SetSize(pictureWidth, pictureHeight);
-            }
-        }
+		if (scrollHorizontal != nullptr && _showScrollH)
+		{
+			windowManager->ShowWindow(Pos::wxBOTTOM);
+			scrollHorizontal->UpdateScrollBar(posLargeur, pictureWidth * scale_factor, controlWidth);
+		}
+		else
+		{
+			windowManager->HideWindow(Pos::wxBOTTOM);
+		}
         
-        this->GetParent()->Refresh();
+		if (windowManager != nullptr)
+			windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+
+		windowManager->Refresh();
     }
 }

@@ -194,6 +194,11 @@ void COcrWnd::Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_
 	}
 }
 
+void COcrWnd::UpdateScreenRatio()
+{
+	this->Resize();
+}
+
 void COcrWnd::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessin, int & widthOutput, int & heightOutput)
 {
     

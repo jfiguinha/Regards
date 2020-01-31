@@ -1,6 +1,6 @@
 #include "header.h"
 #include "ScrollbarHorizontalWnd.h"
-#include "ScrollInterface.h"
+
 #include <ClosedHandCursor.h>
 #include <window_id.h>
 #include <wx/dcbuffer.h>
@@ -20,15 +20,14 @@ enum
 };
 
 
-CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(CScrollInterface * scrollInterface, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme)
-	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
+CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(const wxString &windowName, wxWindow* parent, wxWindowID id, const CThemeScrollBar & theme)
+	: CWindowMain(windowName, parent, id)
 {
 
 
 	scrollMoving = false;
 	width = 0;
 	height = 0;
-	this->scrollInterface = scrollInterface;
 	m_bTracking = false;
 	captureBar = false;
 	pictureWidth = 0;
@@ -79,6 +78,8 @@ void CScrollbarHorizontalWnd::SetIsMoving()
 		stopMoving->Stop();
 	scrollMoving = true;
 	stopMoving->Start(1000);
+
+
 }
 
 bool CScrollbarHorizontalWnd::IsMoving()
@@ -343,6 +344,10 @@ void CScrollbarHorizontalWnd::OnMouseLeave(wxMouseEvent& event)
 		pageLeft->Stop();
 	if (pageRight->IsRunning())
 		pageRight->Stop();
+
+	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+	evt.SetInt(0);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CScrollbarHorizontalWnd::OnMouseHover(wxMouseEvent& event)
@@ -403,6 +408,10 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 	//wxWindowDC dc(this);
 	SetIsMoving();
 
+	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+	evt.SetInt(1);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
+
 	if (captureBar)
 	{
 		int diffX = xPos - xPositionStart;
@@ -411,7 +420,10 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
         TestMinX();
         TestMaxX();
 		MoveBar(currentXPos, themeScroll.colorBarActif);
-        scrollInterface->SetLeftPosition(currentXPos);
+
+		SendLeftPosition(currentXPos);
+
+        //scrollInterface->SetLeftPosition(currentXPos);
 		PaintNow();
     }
 }
@@ -560,7 +572,8 @@ void CScrollbarHorizontalWnd::OnLButtonUp(wxMouseEvent& event)
 		currentXPos += diff * lineSize;
 		TestMinX();
 		TestMaxX();
-		scrollInterface->SetLeftPosition(currentXPos);
+
+		SendLeftPosition(currentXPos);
 	}
 
 	if (triangleLeft->IsRunning())
@@ -601,6 +614,17 @@ void CScrollbarHorizontalWnd::OnTimerStopMoving(wxTimerEvent& event)
 		stopMoving->Stop();
 }
 
+void CScrollbarHorizontalWnd::SendLeftPosition(const int &value)
+{
+	wxWindow * window = this->GetParent();
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_LEFTPOSITION);
+		evt.SetInt(value);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 void CScrollbarHorizontalWnd::ClickLeftTriangle()
 {
 	//Click Top Triangle
@@ -608,7 +632,7 @@ void CScrollbarHorizontalWnd::ClickLeftTriangle()
 	currentXPos -= lineSize;
 	TestMinX();
 	MoveBar(currentXPos, themeScroll.colorBar);
-	scrollInterface->SetLeftPosition(currentXPos);
+	SendLeftPosition(currentXPos);
 }
 
 void CScrollbarHorizontalWnd::ClickRightTriangle()
@@ -620,7 +644,7 @@ void CScrollbarHorizontalWnd::ClickRightTriangle()
 	TestMaxX();
 	//SetPosition(currentXPos);
 	MoveBar(currentXPos, themeScroll.colorBar);
-	scrollInterface->SetLeftPosition(currentXPos);
+	SendLeftPosition(currentXPos);
 }
 
 void CScrollbarHorizontalWnd::ClickLeftPage()
@@ -632,7 +656,7 @@ void CScrollbarHorizontalWnd::ClickLeftPage()
 	TestMinX();
 	//SetPosition(currentXPos);
 	MoveBar(currentXPos, themeScroll.colorBar);
-	scrollInterface->SetLeftPosition(currentXPos);
+	SendLeftPosition(currentXPos);
 }
 
 void CScrollbarHorizontalWnd::ClickRightPage()
@@ -644,7 +668,7 @@ void CScrollbarHorizontalWnd::ClickRightPage()
 	TestMaxX();
 	//SetPosition(currentXPos);
 	MoveBar(currentXPos, themeScroll.colorBar);
-	scrollInterface->SetLeftPosition(currentXPos);
+	SendLeftPosition(currentXPos);
 }
 
 void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)

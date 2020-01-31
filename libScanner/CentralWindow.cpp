@@ -294,6 +294,10 @@ CCentralWindow::~CCentralWindow()
 
 }
 
+void CCentralWindow::UpdateScreenRatio()
+{
+	this->Resize();
+}
 
 void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage, int oldAnimationPosition)
 {

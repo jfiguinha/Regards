@@ -71,11 +71,6 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	this->bitmapInterface = bitmapInterface;
 
 	if (config != nullptr)
-		config->GetScrollTheme(&themeScroll);
-
-	scrollbar = new CScrollbarWnd(this, wxID_ANY, "BitmapScroll", false);
-
-	if (config != nullptr)
 	{
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
@@ -86,11 +81,14 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	if (config != nullptr)
 		config->GetBitmapWindowTheme(&themeBitmap);
 
-	bitmapWindow = new CBitmapWndViewer(scrollbar, bitmapViewerId, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
+	bitmapWindow = new CBitmapWndViewer(this, bitmapViewerId, pictureToolbar, mainViewerId, themeBitmap, bitmapInterface);
+
+	if (config != nullptr)
+		config->GetScrollTheme(&themeScroll);
+
+	scrollbar = new CScrollbarWnd(this, bitmapWindow, wxID_ANY, "BitmapScroll");
 	
     loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
-	//pictureToolbar->SetBitmapDisplayPt(bitmapWindow);
-	scrollbar->SetCentralWindow(bitmapWindow, themeScroll);
 	progressBar = new wxGauge(this, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, 10), wxGA_HORIZONTAL);
 	progressBar->SetRange(100);
 	progressBar->SetValue(0);    
@@ -101,7 +99,75 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
+
+	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CShowBitmap::OnMoveLeft));
+	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CShowBitmap::OnMoveRight));
+	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CShowBitmap::OnMoveTop));
+	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CShowBitmap::OnMoveBottom));
+	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CShowBitmap::OnControlSize));
+	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowBitmap::OnSetPosition));
+
     progressValue = 0;
+}
+
+void CShowBitmap::OnControlSize(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+		evt.SetClientData(event.GetClientData());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CShowBitmap::OnSetPosition(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		evt.SetClientData(event.GetClientData());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CShowBitmap::OnMoveLeft(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		evt.SetInt(event.GetInt());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CShowBitmap::OnMoveRight(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		evt.SetInt(event.GetInt());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CShowBitmap::OnMoveTop(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		evt.SetInt(event.GetInt());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CShowBitmap::OnMoveBottom(wxCommandEvent& event)
+{
+	if (scrollbar != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		evt.SetInt(event.GetInt());
+		scrollbar->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CShowBitmap::OnTimerRefresh(wxTimerEvent& event)

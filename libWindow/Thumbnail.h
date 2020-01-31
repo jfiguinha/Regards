@@ -2,7 +2,7 @@
 #include <ConfigParam.h>
 #include <ThumbnailData.h>
 #include <SqlThumbnail.h>
-#include "ScrollInterface.h"
+
 #include "IconeList.h"
 
 #include "WindowMain.h"
@@ -22,7 +22,7 @@ namespace Regards
 		class CScrollbarHorizontalWnd;
 		class CScrollbarVerticalWnd;
 
-		class CThumbnail : public CWindowMain, public CScrollInterface
+		class CThumbnail : public CWindowMain
 		{
 		public:
 			CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
@@ -58,6 +58,7 @@ namespace Regards
 			void StartLoadingPicture(wxCommandEvent& event);
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
+			void OnScrollMove(wxCommandEvent& event);
 			virtual void ProcessThumbnailIdle(){};
 
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
@@ -83,6 +84,12 @@ namespace Regards
             void OnEnterWindow(wxMouseEvent& event);
             void OnLeaveWindow(wxMouseEvent& event);
 			bool GetProcessEnd();
+			void OnLeftPosition(wxCommandEvent& event);
+			void OnTopPosition(wxCommandEvent& event);
+			void OnMoveLeft(wxCommandEvent& event);
+			void OnMoveRight(wxCommandEvent& event);
+			void OnMoveTop(wxCommandEvent& event);
+			void OnMoveBottom(wxCommandEvent& event);
 
 			void CalculControlSize();
 			virtual void OnPictureClick(CThumbnailData * data) = 0;
@@ -101,7 +108,10 @@ namespace Regards
 			//------------------------------------------------------------
 			//Variable
 			//------------------------------------------------------------
-
+			void MoveTop();
+			void MoveLeft();
+			void MoveBottom();
+			void MoveRight();
 
 			//Variable
             CIconeList * iconeList;
@@ -161,6 +171,11 @@ namespace Regards
 
 			wxString selectFilename;
 			wxString actifFilename;
+
+			int posHauteur;
+			int posLargeur;
+			int isMoving;
+
 		};
 	}
 }

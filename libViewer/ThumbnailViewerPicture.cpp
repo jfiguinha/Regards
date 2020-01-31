@@ -50,32 +50,31 @@ void CThumbnailViewerPicture::SetActifItem(const int &numItem, const bool &move)
 
 	if (move)
 	{
-		CScrollbarVerticalWnd * scrollV = scrollbar->GetVScrollbar();
-		CScrollbarHorizontalWnd * scrollH = scrollbar->GetHScrollbar();
-
 		if (numItem == 0)
 		{
-			scrollV->SetPosition(0);
-			scrollH->SetPosition(0);
 			InitScrollingPos();
 		}
 		else {
-			if (!scrollV->IsMoving())
+			if (!isMoving)
 			{
 				wxRect rect = numActif->GetPos();
 
-				int yPos = max((rect.y - scrollV->GetScreenHeight() / 2), 0);
-				int xPos = max((rect.x - scrollH->GetScreenWidth() / 2), 0);
+				int yPos = max((rect.y - this->GetHeight() / 2), 0);
+				int xPos = max((rect.x - this->GetWidth() / 2), 0);
 
-				scrollV->SetPosition(yPos);
-				scrollH->SetPosition(xPos);
+				wxWindow * parent = this->GetParent();
 
-
-				if (GetWindowWidth() < GetWidth())
-					posLargeur = scrollH->GetPosition();
-
-				if (GetWindowHeight() < GetHeight())
-					posHauteur = scrollV->GetPosition();
+				if (parent != nullptr)
+				{
+					wxSize * size = new wxSize();
+					wxCommandEvent evt(wxEVENT_SETPOSITION);
+					size->x = xPos;
+					size->y = yPos;
+					evt.SetClientData(size);
+					parent->GetEventHandler()->AddPendingEvent(evt);
+				}
+				posLargeur = xPos;
+				posHauteur = yPos;
 
 			}
 		}
@@ -218,9 +217,6 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 {
-
-	posLargeur = scrollbar->GetPosLargeur();
-
 	//#pragma omp parallel for
 	int numElement = iconeList->GetNbElement();
 	for (int i = 0; i < numElement; i++)

@@ -67,12 +67,11 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
 		viewerTheme->GetScrollTheme(&theme);
-		thumbscrollbar = new CScrollbarWnd(this, wxID_ANY);
+		
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFolder = new CThumbnailFolder(thumbscrollbar, THUMBNAILFOLDER, themeThumbnail, checkValidity);
-		//thumbnailWindow->Init(typeAffichage);
-		thumbscrollbar->SetCentralWindow(thumbnailFolder, theme);
+		thumbnailFolder = new CThumbnailFolder(this, THUMBNAILFOLDER, themeThumbnail, checkValidity);
+		thumbscrollbar = new CScrollbarWnd(this, thumbnailFolder, wxID_ANY);
 	}
 
 	if (viewerTheme != nullptr)

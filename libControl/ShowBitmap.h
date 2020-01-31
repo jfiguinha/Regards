@@ -50,6 +50,14 @@ namespace Regards
 			void Resize();
             void OnTimerRefresh(wxTimerEvent& event);
             
+			void OnControlSize(wxCommandEvent& event);
+			void OnSetPosition(wxCommandEvent& event);
+
+			void OnMoveLeft(wxCommandEvent& event);
+			void OnMoveRight(wxCommandEvent& event);
+			void OnMoveTop(wxCommandEvent& event);
+			void OnMoveBottom(wxCommandEvent& event);
+
 			bool showLoadBar = false;
             wxGauge * progressBar;
 			CScrollbarWnd * scrollbar;
