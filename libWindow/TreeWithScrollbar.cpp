@@ -8,9 +8,9 @@ CTreeWithScrollbar::CTreeWithScrollbar(const wxString &windowName, wxWindow* par
 {
 	scrollWindow = nullptr;
 	treeWindow = nullptr;
-	scrollWindow = new CScrollbarWnd(this, wxID_ANY);
-	treeWindow = new CTreeWindow(scrollWindow, wxID_ANY, theme);
-	scrollWindow->SetCentralWindow(treeWindow, themeScroll);
+	treeWindow = new CTreeWindow(this, wxID_ANY, theme);
+	scrollWindow = new CScrollbarWnd(this, treeWindow, wxID_ANY);
+
 }
 CTreeWithScrollbar::~CTreeWithScrollbar(void)
 {
