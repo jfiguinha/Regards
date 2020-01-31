@@ -707,5 +707,6 @@ void CThumbnailEffect::UpdateScroll()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
+
 }
 

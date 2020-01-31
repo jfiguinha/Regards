@@ -21,7 +21,6 @@ namespace Regards
 			CThumbnailFolder(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFolder(void);
 			void Init(PhotosVector * photoVector, const int &typeAffichage = SHOW_ALL);
-            void SetActifItem(const int &numItem, const bool &move);  
 
 		protected:
 

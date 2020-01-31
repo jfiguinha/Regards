@@ -81,7 +81,6 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	showScroll = true;
 	themeBitmap = theme;
 
-    Connect(wxEVT_SIZE, wxSizeEventHandler(CBitmapWnd::OnSize));
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd::OnLButtonDown));
@@ -191,16 +190,6 @@ CFiltreEffet * CBitmapWnd::GetFiltreEffet()
 	return filtreEffet;
 }
 
-int CBitmapWnd::GetWidth()
-{
-    TRACE();
-	return width;
-}
-int CBitmapWnd::GetHeight()
-{
-    TRACE();
-    return height;
-}
 
 float CBitmapWnd::GetRatio()
 {
@@ -345,8 +334,8 @@ void CBitmapWnd::CalculCenterPicture()
     TRACE();
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
-	float screenWidth = float(width);
-	float screenHeight = float(height);
+	float screenWidth = float(GetWidth());
+	float screenHeight = float(GetHeight());
 	float middleScreenWidth = screenWidth / 2.0f;
 	float middleScreenHeight = screenHeight / 2.0f;
 
@@ -374,8 +363,8 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
     TRACE();
 	float bitmapRatioWidth = GetBitmapWidthWithRatio();
 	float bitmapRatioHeight = GetBitmapHeightWithRatio();
-	float screenWidth = float(width);
-	float screenHeight = float(height);
+	float screenWidth = float(GetWidth());
+	float screenHeight = float(GetHeight());
 
 	float middleScreenWidth = screenWidth / 2.0f;
 	float middleScreenHeight = screenHeight / 2.0f;
@@ -496,7 +485,6 @@ void CBitmapWnd::UpdateScrollBar()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-
 	this->Refresh();
 }
 
@@ -1194,40 +1182,11 @@ void CBitmapWnd::OnMouseWheel(wxMouseEvent& event)
 	}
 }
 
-//------------------------------------------------------------------------------------
-//Agrandissement de la fenête
-//------------------------------------------------------------------------------------
-void CBitmapWnd::OnSize(wxSizeEvent& event)
+void CBitmapWnd::Resize()
 {
-    TRACE();
-
-#ifdef __WXGTK__        
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-
-    int _width =  event.GetSize().GetX();
-    int _height =  event.GetSize().GetY();
-
-
-
-	if (_width == 20 && _height == 20)
-	{
-		//not corrected size
-	}
-	else
-	{
-
-		width = _width * scale_factor;
-		height = _height * scale_factor;        
-		//width = _width;
-		//height = _height;
-        updateFilter = true;
-        UpdateResized();
-        Resize();
-	}
+	updateFilter = true;
+	UpdateResized();
+	this->Refresh();
 }
 
 int CBitmapWnd::UpdateResized()
@@ -1321,7 +1280,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 void CBitmapWnd::TestMaxX()
 {
     TRACE();
-	int xValue = int(GetBitmapWidthWithRatio()) - width;
+	int xValue = int(GetBitmapWidthWithRatio()) - GetWidth();
 
 	if(posLargeur >= xValue)
 		posLargeur = xValue;
@@ -1336,7 +1295,7 @@ void CBitmapWnd::TestMaxX()
 void CBitmapWnd::TestMaxY()
 {
     TRACE();
-	int yValue = int(GetBitmapHeightWithRatio()) - height;
+	int yValue = int(GetBitmapHeightWithRatio()) - GetHeight();
 
 	if(posHauteur >= yValue)
 		posHauteur = yValue;
@@ -1357,17 +1316,17 @@ float CBitmapWnd::CalculPictureRatio(const int &pictureWidth, const int &picture
 	//int tailleAffichageWidth = 0, tailleAffichageHeight = 0;
 
 	if (pictureWidth > pictureHeight)
-		newRatio = (float)width / (float)(pictureWidth);
+		newRatio = (float)GetWidth() / (float)(pictureWidth);
 	else
-		newRatio = (float)height / (float)(pictureHeight);
+		newRatio = (float)GetHeight() / (float)(pictureHeight);
 
-	if ((pictureHeight * newRatio) > height)
+	if ((pictureHeight * newRatio) > GetHeight())
 	{
-		newRatio = (float)height / (float)(pictureHeight);
+		newRatio = (float)GetHeight() / (float)(pictureHeight);
 	}
-	if ((pictureWidth * newRatio) > width)
+	if ((pictureWidth * newRatio) > GetWidth())
 	{
-		newRatio = (float)width / (float)(pictureWidth);
+		newRatio = (float)GetWidth() / (float)(pictureWidth);
 	}
 
 	return newRatio;
@@ -1416,7 +1375,7 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 	int yValue = 0;
 
 
-	if (widthOutput > width)
+	if (widthOutput > GetWidth())
 	{
 		left = 0;
 		xValue = posLargeur;
@@ -1424,13 +1383,13 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 	else
 	{
 		xValue = 0;
-		left = (width - widthOutput) / 2;
+		left = (GetWidth() - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = width - (left * 2);
+	widthInterpolationSize = GetWidth() - (left * 2);
 
 
-	if (heightOutput > height)
+	if (heightOutput > GetHeight())
 	{
 		top = 0;
 		yValue = posHauteur;
@@ -1438,14 +1397,14 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 	else
 	{
 		yValue = 0;
-		top = (height - heightOutput) / 2;
+		top = (GetHeight() - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = height - (top * 2);
+	heightInterpolationSize = GetHeight() - (top * 2);
 
 	rc.x = max(xValue,0);
 	if (invert)
-		rc.y = max((heightOutput - height) - yValue, 0);
+		rc.y = max((heightOutput - GetHeight()) - yValue, 0);
 	else
 		rc.y = max(yValue,0);
 	rc.width = widthOutput;
@@ -1517,7 +1476,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	//else
 	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
-	if (width >= widthOutput && height >= heightOutput)
+	if (GetWidth() >= widthOutput && GetHeight() >= heightOutput)
 	{
 		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
 	}
@@ -1527,13 +1486,13 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 		int tailleAffichageWidth = widthOutput;
 		int tailleAffichageHeight = heightOutput;
 
-		if (width > tailleAffichageWidth)
-			left = ((width - tailleAffichageWidth) / 2);
+		if (GetWidth() > tailleAffichageWidth)
+			left = ((GetWidth() - tailleAffichageWidth) / 2);
 		else
 			left = 0;
 
-		if (height > tailleAffichageHeight)
-			top = ((height - tailleAffichageHeight) / 2);
+		if (GetHeight() > tailleAffichageHeight)
+			top = ((GetHeight() - tailleAffichageHeight) / 2);
 		else
 			top = 0;
 
@@ -1541,6 +1500,34 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 		CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 		filtreEffet->Interpolation(widthOutput, heightOutput, rc, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
 	}
+}
+
+int CBitmapWnd::GetWidth()
+{
+
+#ifdef __WXGTK__        
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+	int _width = GetSize().GetX();
+
+	return _width * scale_factor;
+}
+
+int CBitmapWnd::GetHeight()
+{
+
+#ifdef __WXGTK__        
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+	int _height = GetSize().GetY();
+
+	return _height * scale_factor;
 }
 
 #ifdef RENDEROPENGL
@@ -1555,7 +1542,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 	double scale_factor = 1.0f;
 #endif 
 
-	if (width == 0 || height == 0)
+	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
@@ -1576,7 +1563,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 
 	//UpdateScrollBar();
 
-	if (bitmapLoad && width > 0 && height > 0)
+	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
 	{
 		int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
 		int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
@@ -1641,12 +1628,12 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		}
 	}
 
-	renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+	renderOpenGL->CreateScreenRender(GetWidth(), GetHeight(), CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
 	if (glTexture != nullptr)
 	{
-		int x = (width - glTexture->GetWidth()) / 2;
-		int y = (height - glTexture->GetHeight()) / 2;
+		int x = (GetWidth() - glTexture->GetWidth()) / 2;
+		int y = (GetHeight() - glTexture->GetHeight()) / 2;
 		if (openclContext->IsSharedContextCompatible())
 			renderOpenGL->RenderToScreen(x, y, true);
 		else
@@ -1668,7 +1655,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	double scale_factor = 1.0f;
 #endif 
 
-	if (width == 0 || height == 0)
+	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
         
     renderOpenGL->LoadingResource(scale_factor);
@@ -1701,13 +1688,13 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 			printf("CBitmapWnd GetDisplayTexture Error \n");
 		delete bitmap;
 
-		renderOpenGL->CreateScreenRender(width, height, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+		renderOpenGL->CreateScreenRender(GetWidth(), GetHeight(), CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 	}
 
 	if (glTexture != nullptr)
 	{
-		int x = (width - glTexture->GetWidth()) / 2;
-		int y = (height - glTexture->GetHeight()) / 2;
+		int x = (GetWidth() - glTexture->GetWidth()) / 2;
+		int y = (GetHeight() - glTexture->GetHeight()) / 2;
 		renderOpenGL->RenderToScreen(x, y, false);
 
 		xPosImage = x;
@@ -1725,7 +1712,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
 
-	if (height < 1)
+	if (GetHeight() < 1)
 		return;
 
 	if (renderOpenGL == nullptr)

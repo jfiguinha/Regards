@@ -39,81 +39,6 @@ CThumbnailFace::~CThumbnailFace(void)
 	listSeparator.clear();
 }
 
-void CThumbnailFace::SetActifItem(const int &numItem, const bool &move)
-{
-    if (numItem >= iconeList->GetNbElement())
-        return;
-    
-    if (numSelect != NULL)
-        numSelect->SetSelected(false);
-    
-    if (numActif != nullptr)
-    {
-        numActif->SetActive(false);
-        //numActif->RenderIcone(&winDC);
-    }
-    
-    numActif = iconeList->GetElement(numItem);
-
-    if (move)
-    {       
-        if (numItem == 0)
-        {
-			wxWindow * parent = this->GetParent();
-
-			if (parent != nullptr)
-			{
-				wxSize * size = new wxSize();
-				wxCommandEvent evt(wxEVENT_SETPOSITION);
-				size->x = 0;
-				size->y = 0;
-				evt.SetClientData(size);
-				parent->GetEventHandler()->AddPendingEvent(evt);
-			}
-
-			posLargeur = 0;
-			posHauteur = 0;
-        }
-        else{
-            if (!isMoving)
-            {
-                wxRect rect = numActif->GetPos();
-               
-                //Positionnement au milieu
-
-                int yPos = max((rect.y - this->GetHeight() / 2),0);
-                int xPos = max((rect.x - this->GetWidth() / 2), 0);
-
-				wxWindow * parent = this->GetParent();
-
-				if (parent != nullptr)
-				{
-					wxSize * size = new wxSize();
-					wxCommandEvent evt(wxEVENT_SETPOSITION);
-					size->x = xPos;
-					size->y = yPos;
-					evt.SetClientData(size);
-					parent->GetEventHandler()->AddPendingEvent(evt);
-				}
-
-				posLargeur = xPos;
-				posHauteur = yPos;               
-                
-            }
-        }
-    }
-    
-    numSelect = iconeList->GetElement(numItem);
-    
-    if (numSelect != nullptr)
-    {
-        numSelect->SetSelected(true);
-        //numSelect->RenderIcone(&winDC);
-    }
-
-	this->Refresh();
-}
-
 void CThumbnailFace::OnPictureClick(CThumbnailData * data)
 {
     CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
@@ -700,6 +625,6 @@ void CThumbnailFace::UpdateScrollWithVScroll()
             posLargeur = posX;
             posHauteur = posY;
         }
-
+		this->Refresh();
 }
 #endif

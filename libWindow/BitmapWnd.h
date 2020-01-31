@@ -129,7 +129,6 @@ namespace Regards
 			//void OnLoading(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event) {};
 			void OnPaint(wxPaintEvent& event);
-			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnRButtonDown(wxMouseEvent& event);
@@ -147,6 +146,8 @@ namespace Regards
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
+
+			virtual void CBitmapWnd::Resize();
 
 #ifdef KeyPress
 #undef KeyPress
@@ -222,8 +223,8 @@ namespace Regards
 			float centerY;
 			bool showScroll;
 
-			int width;
-			int height;
+			//int width;
+			//int height;
 
 			int mouseScrollX;
 			int mouseScrollY;

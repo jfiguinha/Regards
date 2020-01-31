@@ -152,7 +152,7 @@ void CThumbnail::GetSelectItem(vector<CThumbnailData *> & vectorData)
 void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 {
     TRACE();
-	wxWindowDC winDC(this);
+
     int numElement = iconeList->GetNbElement();
 
 	if (numItem >= numElement)
@@ -192,8 +192,8 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 
 				//Positionnement au milieu
 				
-				int yPos = max((rect.y - this->GetHeight() / 2),0);
-				int xPos = max((rect.x - this->GetWidth() / 2), 0);
+				int yPos = max((rect.y - this->GetWindowHeight() / 2),0);
+				int xPos = max((rect.x - this->GetWindowWidth() / 2), 0);
 
 				if (this->GetParent() != nullptr)
 				{
@@ -204,10 +204,18 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 					evt.SetClientData(size);
 					this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 				}
+
+				posLargeur = xPos;
+				posHauteur = yPos;
+				
 			}
 		}
+
+
 	}
     
+
+	 
     
 
 	numSelect = iconeList->GetElement(numItem);
@@ -276,6 +284,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	actifFilename = "";
 	controlWidth = 0;
 	controlHeight = 0;
+	isMoving = 0;
 	thumbnailPos = 0;
     oldPosLargeur = 0;
     oldPosHauteur = 0;    
@@ -1185,7 +1194,7 @@ void CThumbnail::InitScrollingPos()
 		evt.SetClientData(size);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
-   
+
 }
 
 CIcone * CThumbnail::FindIcone(const wxString &filename)

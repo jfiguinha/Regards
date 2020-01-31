@@ -25,7 +25,6 @@ namespace Regards
 			CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFace(void);
 			void Init();
-            void SetActifItem(const int &numItem, const bool &move); 
 			void MoveFace(const wxString &faceName);
 
 		protected:

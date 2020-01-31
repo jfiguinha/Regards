@@ -17,7 +17,7 @@ namespace Regards
 			CThumbnailFileSelection(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFileSelection(void);
 			void Init(const wxString &filename, const int &typeAffichage = SHOW_ALL);
-            void SetActifItem(const int &numItem, const bool &move);  
+
 			vector<int> GetSelectItem();
 
 		protected:

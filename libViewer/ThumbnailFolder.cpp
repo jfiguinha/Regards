@@ -34,77 +34,6 @@ CThumbnailFolder::~CThumbnailFolder(void)
 }
 
 
-
-void CThumbnailFolder::SetActifItem(const int &numItem, const bool &move)
-{
-    this->SetFocus();
-   
-    if (numItem >= iconeList->GetNbElement())
-        return;
-        
-    CIcone * numItemSelected = iconeList->GetElement(numItem);
-    
-    if(numItemSelected == nullptr)
-        return;    
-    
-    //if(numItemSelected == numActif)
-     //   return numSelect->GetData()->GetFilename();        
-    
-    if (numSelect != NULL)
-        numSelect->SetSelected(false);
-    
-    if (numActif != nullptr)
-    {
-        numActif->SetActive(false);
-        //numActif->RenderIcone(&winDC);
-    }
-    
-    numActif = iconeList->GetElement(numItem);
-    
-    if (move)
-    {
-      
-        if (numItem == 0)
-        {
-            InitScrollingPos();
-        }
-        else{
-            if (!isMoving)
-            {
-                wxRect rect = numActif->GetPos();
-                
-                int yPos = max((rect.y - this->GetHeight() / 2),0);
-                int xPos = max((rect.x - this->GetWidth() / 2), 0);
-
-				wxWindow * parent = this->GetParent();
-
-				if (parent != nullptr)
-				{
-					wxSize * size = new wxSize();
-					wxCommandEvent evt(wxEVENT_SETPOSITION);
-					size->x = xPos;
-					size->y = yPos;
-					evt.SetClientData(size);
-					parent->GetEventHandler()->AddPendingEvent(evt);
-				}
-              
-                posLargeur = xPos;
-                posHauteur = yPos;
-                
-            }
-        }
-    }
-    
-    numSelect = iconeList->GetElement(numItem);
-    
-    if (numSelect != nullptr)
-    {
-        numSelect->SetSelected(true);
-        //numSelect->RenderIcone(&winDC);
-    }
-	this->Refresh();
-}
-
 void CThumbnailFolder::OnPictureClick(CThumbnailData * data)
 {
 
@@ -851,4 +780,6 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 		posLargeur = posX;
 		posHauteur = posY;
 	}
+
+	this->Refresh();
 }

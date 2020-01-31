@@ -258,6 +258,7 @@ void CThumbnailVertical::UpdateScrollWithVScroll()
 		posLargeur = posX;
 		posHauteur = posY;
 	}
+
 }
 
 void CThumbnailVertical::UpdateScrollWithoutVScroll()

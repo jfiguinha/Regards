@@ -560,6 +560,7 @@ void CTreeWindow::OnPaint(wxPaintEvent& event)
         oldPosLargeur = posLargeur;
         oldPosHauteur = posHauteur; 
 
+
 		wxWindow * parent = this->GetParent();
 
 		if (parent != nullptr)
@@ -589,7 +590,5 @@ void CTreeWindow::OnPaint(wxPaintEvent& event)
         printf("CTreeWindow::OnPaint not bufferUpdate \n");
         dc.DrawBitmap(backgroundBuffer, 0, 0);     
     }
-
-  
 
 }

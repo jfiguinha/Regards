@@ -276,8 +276,8 @@ void CBitmapWndViewer::SetDessinRatio()
 
 	rc2.x = 0;
 	rc2.y = 0;
-	rc2.width = width;
-	rc2.height = height;
+	rc2.width = GetWidth();
+	rc2.height = GetHeight();
 
 	//GetClientRect(m_hWnd, &rc2);
 
@@ -446,7 +446,7 @@ void CBitmapWndViewer::MouseRelease(const int &xPos, const int &yPos)
 
 void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 {
-     printf("xPos : %d width : %d arrow : %d",xPos,width,arrowNext.GetWidth());
+     printf("xPos : %d width : %d arrow : %d",xPos, GetWidth(),arrowNext.GetWidth());
 #ifdef __WXGTK__
     double scale_factor = GetContentScaleFactor();
 #else
@@ -465,14 +465,14 @@ void CBitmapWndViewer::MouseClick(const int &xPos, const int &yPos)
 	else if (fixArrow)
 	{
 
-		int yPosTop = (height - arrowNext.GetHeight()) / 2;
-		int yPosBottom = (height - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
+		int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
+		int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
 		if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 		{
 			bitmapInterface->ImagePrecedente();
 		}
-		else if ((xPos > (width - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
+		else if ((xPos > (GetWidth() - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 		{
 			bitmapInterface->ImageSuivante();
 		}
@@ -723,15 +723,15 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		bool isOnArrow = false;
 		if (fixArrow && etape == 0)
 		{
-			int yPosTop = (height - arrowNext.GetHeight()) / 2;
-			int yPosBottom = (height - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
+			int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
+			int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
 			if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
-			else if ((xPos > (width - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
+			else if ((xPos > (GetWidth() - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));

@@ -40,6 +40,7 @@ void CThumbnailHorizontal::InitPosition()
 	posHauteur = 0;
 	posLargeur = 0;
 
+
 }
 
 void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
@@ -160,7 +161,6 @@ void CThumbnailHorizontal::UpdateScroll()
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
 	}
-
 
 }
 
