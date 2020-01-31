@@ -276,6 +276,8 @@ void CPreviewWnd::Resize()
     else
         showVideoWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 
+	Refresh();
+	Update();
 }
 
 void CPreviewWnd::SetDiaporamaMode()

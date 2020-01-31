@@ -76,7 +76,7 @@ void CSlider::DrawShapeElement(wxDC * dc, const wxRect &rc)
 
 void CSlider::SetTotalSecondTime(const int64_t &secondTime)
 {
-	wxWindowDC winDC(this);
+	wxClientDC winDC(this);
 	totalTimeInMilliseconds = secondTime;
 	secondTotalTime = (float)secondTime / (float)1000;
 	totalTime = CConvertUtility::GetTimeLibelle(secondTotalTime);
@@ -85,7 +85,7 @@ void CSlider::SetTotalSecondTime(const int64_t &secondTime)
 
 void CSlider::SetPastTime(const int64_t &secondTime)
 {
-	wxWindowDC winDC(this);
+	wxClientDC winDC(this);
 	totalPastTimeInMilliseconds = secondTime;
 	secondTimePast = (float)secondTime / (float)1000;
 	timePast = CConvertUtility::GetTimeLibelle(secondTimePast);
@@ -226,10 +226,6 @@ void CSlider::ClickRightPage(const int &x)
 
 }
 
-void CSlider::Resize()
-{
-	Refresh();
-}
 
 void CSlider::UpdatePositionEvent()
 {

@@ -166,6 +166,9 @@ void CListFace::Resize()
 	thumbFacePertinenceToolbar->SetSize(0, 0, GetWindowWidth(), thumbFacePertinenceToolbar->GetHeight());
 	thumbscrollbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight(), pictureWidth, pictureHeight);
 	thumbFaceToolbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight() + pictureHeight, GetWindowWidth(), thumbFaceToolbar->GetHeight());
+
+	Refresh();
+	Update();
 }
 
 

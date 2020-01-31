@@ -20,7 +20,7 @@ namespace Regards
             
 		private:
 
-            void Resize();
+
 			void OnPaint(wxPaintEvent& event);
             void OnLButtonDown(wxMouseEvent& event);
             void DrawInformations(wxDC * dc);

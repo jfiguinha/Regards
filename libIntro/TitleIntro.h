@@ -17,7 +17,7 @@ namespace Regards
 			void UpdateScreenRatio();
 
 		private:
-			void Resize();
+
 			void OnPaint(wxPaintEvent& event);
 
 			wxString title;

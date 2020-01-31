@@ -70,6 +70,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 	wxString toShow = name + " size x : " + to_string(_width) + " y : " + to_string(_height) + "\n";
 	OutputDebugString(toShow.ToStdWstring().c_str());
 #endif
+
 }
 
 CMasterWindow::CMasterWindow(void)

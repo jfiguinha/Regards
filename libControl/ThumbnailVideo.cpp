@@ -77,7 +77,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 	int numItem = 0;
 	CIcone * pIcone = nullptr;
     int nbIconeElement = iconeList->GetNbElement();
-	//wxWindowDC dc(this);
+	//wxClientDC dc(this);
 
 	if (nbIconeElement == 0)
 		return;

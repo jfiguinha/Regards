@@ -722,5 +722,6 @@ void CVideoControlSoft::Resize()
          SetFrameData(copyFrameBuffer);
     } 
 
-    Refresh();
+	Refresh();
+	Update();
 }

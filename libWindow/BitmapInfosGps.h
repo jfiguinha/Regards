@@ -19,7 +19,6 @@ namespace Regards
             
 		private:
 
-            void Resize();
 			void OnPaint(wxPaintEvent& event);
             void DrawInformations(wxDC * dc);
             

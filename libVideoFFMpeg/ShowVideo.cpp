@@ -504,6 +504,8 @@ void CShowVideo::Resize()
 		videoWindow->GetWindow()->SetSize(0, 0, width, height);
 		//videoWindow->SendSizeEvent();        
     }
+	Refresh();
+	Update();
 }
 
 void CShowVideo::OnSize(wxSizeEvent& event)

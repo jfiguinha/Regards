@@ -197,14 +197,9 @@ void CBitmapInfos::UpdateScreenRatio()
     Resize();
 }
 
-void CBitmapInfos::Resize()
-{
-	Refresh();
-}
-
 void CBitmapInfos::Redraw()
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
     DrawInformations(&dc);
 }
 

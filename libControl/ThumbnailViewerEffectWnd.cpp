@@ -41,6 +41,9 @@ void CThumbnailViewerEffectWnd::Resize()
 {
     if(thumbnailEffectScroll != nullptr)
         thumbnailEffectScroll->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+
+	Refresh();
+	Update();
 }
 
 wxString CThumbnailViewerEffectWnd::GetFilename()

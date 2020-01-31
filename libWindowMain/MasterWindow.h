@@ -40,6 +40,8 @@ namespace Regards
 			virtual wxString GetWaitingMessage(){ return wxString();};
             
             virtual void CallRefresh(wxWindow * window);
+
+			virtual void Resize() = 0;
             
 		protected:
 
@@ -47,7 +49,7 @@ namespace Regards
 			virtual void ProcessOnIdleEndEvent(wxCommandEvent& event);
 			virtual void ProcessOnSizeEvent(wxSizeEvent& event);
 			virtual void ProcessIdle(){};
-			virtual void Resize() = 0;	
+			
 			virtual void PushThreadIdleEvent(){};
 
 

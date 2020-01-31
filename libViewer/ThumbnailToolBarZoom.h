@@ -13,13 +13,13 @@ namespace Regards
 			virtual ~CThumbnailToolBarZoom();
 			int GetHeight();
             void UpdateScreenRatio();
-            
+
 		private:
 
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
-			void Resize();
+			
 			void Draw(wxDC * dc);
 			void DrawPreviousElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);
 			void DrawNextElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);

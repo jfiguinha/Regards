@@ -105,7 +105,7 @@ void CToolbarSlide::ClickRightPage(const int &x)
 
 bool CToolbarSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 {
-	//wxWindowDC dc(window);
+	//wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
 
 	int posXButtonBegin = this->x + posRectangle.x + positionButton.x;
@@ -121,7 +121,7 @@ bool CToolbarSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 void CToolbarSlide::ClickElement(wxWindow * window, const int &x, const int &y)
 {
 	int xSlide = x;
-	//wxWindowDC dc(window);
+	//wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlider.font);
 
 	int posXButtonBegin = this->x + posRectangle.x + positionButton.x;

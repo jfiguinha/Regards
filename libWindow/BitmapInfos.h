@@ -22,7 +22,6 @@ namespace Regards
 		private:
             void OnTimerGPSUpdate(wxTimerEvent& event);
 			void SetDateInfos(const wxString &dataInfos, char seperator);
-			void Resize();
 			void OnPaint(wxPaintEvent& event);
 			int Dayofweek(int d, int m, int y);
             void DrawInformations(wxDC * dc);

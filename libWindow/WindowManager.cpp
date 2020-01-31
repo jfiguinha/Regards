@@ -53,8 +53,8 @@ void CWindowManager::ChangeWindow(CWindowMain * window, Pos position)
 	CWindowToAdd * windowToadd = FindWindow(position);
 	if (windowToadd != nullptr)
 	{
+		window->Reparent(this);
 		windowToadd->SetWindow(window);
-		this->Refresh();
 	}
 }
 
@@ -1312,5 +1312,6 @@ void CWindowManager::Resize()
 	oldHeight = height;
 
 	Refresh();
+	Update();
 }
 

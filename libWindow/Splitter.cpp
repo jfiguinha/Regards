@@ -277,6 +277,9 @@ void CSplitter::Resize()
 	windowResize = false;
 
 	ResizeEvent();
+
+	Refresh();
+	Update();
 }
 
 void CSplitter::ResizeVertical()

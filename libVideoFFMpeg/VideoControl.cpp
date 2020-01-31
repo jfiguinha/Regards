@@ -1299,8 +1299,10 @@ void CVideoControl::Resize()
     if(pause && isffmpegDecode && copyFrameBuffer != nullptr)
     {
          SetFrameData(copyFrameBuffer);
-         Refresh();
     } 
+
+	Refresh();
+	Update();
 }
 
 #endif

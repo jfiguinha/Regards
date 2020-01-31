@@ -22,6 +22,7 @@ namespace Regards
 			int GetThumbnailHeight();
 			void SetListeFile(PhotosVector * photoVector);
 			void ChangeTypeAffichage(PhotosVector * photoVector, const long & typeAffichage);
+			void Resize();
 
 		private:
 			
@@ -34,7 +35,7 @@ namespace Regards
 			void GeolocalizeFile(wxCommandEvent& event);
 			void GenerateIndexFile(wxCommandEvent& event);
 			void ChangeDateFile(wxCommandEvent& event);
-			void Resize();
+			
 
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailToolBar * thumbToolbar;

@@ -28,7 +28,7 @@ namespace Regards
 			void SetPlay();
 			void SetPause();
 			void SetVolumePos(const long &volume);
-			void SetBackgroundColor(const wxColour & color);
+
 			void SetTotalSecondTime(const int64_t &millisecondTime);
 			void SetPastSecondTime(const int64_t &millisecondTime);
 			void UpdatePositionEvent();
@@ -36,7 +36,7 @@ namespace Regards
 			bool IsMouseOver();
 
             void UpdateScreenRatio();
-			void SetTheme(CThemeSlider * theme);
+
 
 		protected:
 
@@ -46,7 +46,6 @@ namespace Regards
 
 		private:
             
-			void Resize();
 			void OnMouseMove(wxMouseEvent& event);
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);

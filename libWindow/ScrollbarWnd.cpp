@@ -439,8 +439,13 @@ void CScrollbarWnd::Resize()
 		}
         
 		if (windowManager != nullptr)
+		{
 			windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+			windowManager->Resize();
+		}
 
-		windowManager->Refresh();
     }
+
+	Refresh();
+	Update();
 }

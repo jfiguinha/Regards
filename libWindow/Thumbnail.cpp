@@ -187,8 +187,8 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 			if (!isMoving)
 			{
 				wxRect rect = numActif->GetPos();
-				rect.x = posLargeur + rect.x;
-				rect.y = posHauteur + rect.y;
+				//rect.x = posLargeur + rect.x;
+				//rect.y = posHauteur + rect.y;
 
 				//Positionnement au milieu
 				
@@ -918,7 +918,7 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
     TRACE();
-	wxWindowDC winDC(this);
+	wxClientDC winDC(this);
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -1017,7 +1017,8 @@ void CThumbnail::Resize()
 	CalculControlSize();
 	ResizeThumbnail();
     
-	this->Refresh();
+	Refresh();
+	Update();
 }
 
 void CThumbnail::CalculControlSize()

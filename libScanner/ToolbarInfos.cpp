@@ -137,6 +137,7 @@ void CToolbarInfos::Resize()
 		nav->Resize(themeToolbar.texte.GetTailleX(), themeToolbar.texte.GetTailleY());
 	}
 	Refresh();
+	Update();
 }
 
 void CToolbarInfos::EventManager(const int &id)

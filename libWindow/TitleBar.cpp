@@ -36,7 +36,7 @@ void CTitleBar::Redraw()
 
 	//int middleYPos = (height - themeTitle.GetCroixHeigth()) / 2;
 
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 	FillRect(&dc, rect, themeTitle.colorBack);
 	dc.DrawBitmap(m_croixOff, rcFermer.x, rcFermer.y, false);
 	dc.DrawBitmap(m_refreshButton, rcRefresh.x, rcRefresh.y, false);
@@ -158,6 +158,7 @@ void CTitleBar::Resize()
 	rcRefresh.height = rcRefresh.y + themeTitle.GetCroixHeight();
 
 	Refresh();
+	Update();
 }
 
 void CTitleBar::OnPaint(wxPaintEvent& event)

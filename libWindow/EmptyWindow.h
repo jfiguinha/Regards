@@ -10,8 +10,5 @@ public:
 
 	void OnPaint(wxPaintEvent& event);
 
-private:
-
-	void Resize();
 };
 

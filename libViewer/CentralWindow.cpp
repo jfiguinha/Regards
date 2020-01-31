@@ -42,19 +42,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	windowManager = new CWindowManager(this, wxID_ANY, theme);
 
-	if (viewerTheme != nullptr)
-	{
-		listPicture = new CListPicture(windowManager, LISTPICTUREID);
-		listPicture->Show(false);
-		listPicture->SetListeFile(&photoVector);
-	}
-#ifndef __NOFACE_DETECTION__
-	if (viewerTheme != nullptr)
-	{
-		listFace = new CListFace(windowManager, LISTFACEID);
-		listFace->Show(false);
-	}
-#endif
 
 	//Add Criteria Window
 	if (viewerTheme != nullptr)
@@ -182,6 +169,21 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	previewWindow = new CPreviewWnd(windowManager, PREVIEWVIEWERID, fileGeolocalisation);
 	windowManager->AddWindow(previewWindow, Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
+
+	if (viewerTheme != nullptr)
+	{
+		listPicture = new CListPicture(windowManager, LISTPICTUREID);
+		listPicture->Show(false);
+		listPicture->SetListeFile(&photoVector);
+	}
+#ifndef __NOFACE_DETECTION__
+	if (viewerTheme != nullptr)
+	{
+		listFace = new CListFace(windowManager, LISTFACEID);
+		listFace->Show(false);
+	}
+#endif
+
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
@@ -212,6 +214,7 @@ void CCentralWindow::HideToolbar()
 	{
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->Resize();
 	}
 
 	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
@@ -233,6 +236,8 @@ void CCentralWindow::ShowToolbar()
 		windowManager->ShowWindow(Pos::wxTOP);
 		
 	}
+
+	windowManager->Resize();
 
 	if (previewWindow != nullptr)
 	{
@@ -322,6 +327,7 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
 		windowManager->HideWindow(Pos::wxTOP);
+		windowManager->Resize();
 		result = SetBitmap(bitmap, isThumbnail, false);
 	}
 	return result;
@@ -484,8 +490,10 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-	if (windowManager != nullptr)
+	if (windowManager != nullptr)	
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+	Refresh();
+	Update();
 }
 
 void CCentralWindow::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
@@ -602,7 +610,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
-		//this->SetWindow(panelSearch, listFace);
+
 		break;
 #endif
 	case 3:

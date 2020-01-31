@@ -117,6 +117,8 @@ void CPane::Resize()
 	{
 		hWndOther->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
+	Refresh();
+	Update();
 }
 
 void CPane::OnMouseMove(wxMouseEvent& event)

@@ -1059,5 +1059,7 @@ void CListPicture::Resize()
 		
 		thumbscrollbar->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
+	Refresh();
+	Update();
 
 }

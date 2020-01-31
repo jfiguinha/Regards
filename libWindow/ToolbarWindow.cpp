@@ -128,17 +128,12 @@ int CToolbarWindow::GetNavigatorWidth()
 	return size;
 }
 
-void CToolbarWindow::Resize()
-{
-	Refresh();
-}
-
 void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 {
     bool needToRedraw = false;
     int xPos = event.GetX();
     int yPos = event.GetY();
-    wxWindowDC dc(this);
+    wxClientDC dc(this);
     int i = 0;
     
     //printf("CToolbarWindow::OnMouseMove x : %d y : %d \n", xPos, yPos);
@@ -182,7 +177,7 @@ void CToolbarWindow::OnMouseMove(wxMouseEvent& event)
 
 void CToolbarWindow::OnLButtonUp(wxMouseEvent& event)
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -257,7 +252,7 @@ void CToolbarWindow::DrawButton(wxDC * dc, CToolbarElement * nav)
 
 void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
@@ -302,7 +297,7 @@ void CToolbarWindow::OnLButtonDown(wxMouseEvent& event)
 
 void CToolbarWindow::OnMouseLeave(wxMouseEvent& event)
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 
 	//if (pushButton->IsRunning())
 	//	pushButton->Stop();

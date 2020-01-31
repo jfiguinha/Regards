@@ -28,10 +28,6 @@ namespace Regards
             void OnMouseLeave(wxMouseEvent& event);
             void OnMouseHover(wxMouseEvent& event);
 
-             
-			//Variable
-			void Resize();
-
 			bool bSplitterMoving;
 			bool horizontal;
 			int position;

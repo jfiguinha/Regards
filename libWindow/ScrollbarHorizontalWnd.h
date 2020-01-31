@@ -37,7 +37,6 @@ namespace Regards
 			void PaintNow();
 			void DrawElement(wxDC * dc);
 			void OnPaint(wxPaintEvent& event);
-			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
@@ -108,8 +107,6 @@ namespace Regards
 			CThemeScrollBar themeScroll;
 
 			bool scrollMoving;
-			int width;
-			int height;
             
             bool showTriangle = false;
 		};

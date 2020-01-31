@@ -24,7 +24,7 @@ namespace Regards
 			//Slider Event
 			CSliderInterface * sliderEvent;
 			void SetPastTime(const int64_t &secondTime);
-			void Resize();
+
 
 		private:
 

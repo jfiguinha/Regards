@@ -940,6 +940,8 @@ void CMainWindow::Resize()
 	{
 		centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
+	Refresh();
+	Update();
 }
 
 

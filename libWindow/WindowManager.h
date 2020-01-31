@@ -56,11 +56,15 @@ namespace Regards
 
 			void SetWindow(CWindowMain * window)
 			{
+				this->window = nullptr;
+				this->windowOpengl = nullptr;
 				this->window = window;
 			}
 
 			void SetWindow(CWindowOpenGLMain * window)
 			{
+				this->window = nullptr;
+				this->windowOpengl = nullptr;
 				this->windowOpengl = window;
 			}
 

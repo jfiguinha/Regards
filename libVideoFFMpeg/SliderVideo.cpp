@@ -461,11 +461,6 @@ void CSliderVideo::ClickRightPage(const int &x)
 
 }
 
-void CSliderVideo::Resize()
-{
-	Refresh();
-}
-
 void CSliderVideo::UpdatePositionEvent()
 {
 	if (sliderEvent != nullptr)

@@ -37,7 +37,6 @@ namespace Regards
 
 			void PaintNow();
 			void OnPaint(wxPaintEvent& event);
-			void OnSize(wxSizeEvent& event);
 			void OnMouseMove(wxMouseEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
 			void OnLButtonUp(wxMouseEvent& event);
@@ -102,9 +101,6 @@ namespace Regards
 			bool m_bTracking;
 
 			bool scrollMoving;
-
-			int width;
-			int height;
 
 			wxTimer * triangleTop;
 			wxTimer * triangleBottom;

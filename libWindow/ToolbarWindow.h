@@ -27,7 +27,7 @@ namespace Regards
 		protected:
 
 			virtual void EventManager(const int &id) = 0;
-			virtual void Resize();
+			
 
 			void OnPaint(wxPaintEvent& event);
 			void OnMouseMove(wxMouseEvent& event);

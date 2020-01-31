@@ -1187,6 +1187,7 @@ void CBitmapWnd::Resize()
 	updateFilter = true;
 	UpdateResized();
 	this->Refresh();
+	this->Update();
 }
 
 int CBitmapWnd::UpdateResized()
@@ -1197,7 +1198,7 @@ int CBitmapWnd::UpdateResized()
 	    if (shrinkImage)
         {
             ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
-            RefreshWindow();
+            //RefreshWindow();
         }
         else if (showScroll)
         {

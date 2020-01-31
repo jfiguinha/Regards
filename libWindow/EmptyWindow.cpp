@@ -27,8 +27,3 @@ void CEmptyWindow::OnPaint(wxPaintEvent& event)
 	FillRect(&dc, rc, wxColour(128, 128, 128));
 }
 
-void CEmptyWindow::Resize()
-{
-	Refresh();
-}
-

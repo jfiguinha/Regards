@@ -321,11 +321,17 @@ void CBitmapWndViewer::SetBitmapPreviewEffect(const int &effect)
 
 void CBitmapWndViewer::Resize()
 {
+	updateFilter = true;
+	UpdateResized();
+
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		if (!isInUse && m_cDessin != nullptr)
 			SetDessinRatio();
 	}
+
+	Refresh();
+	Update();
 }
 
 void CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)

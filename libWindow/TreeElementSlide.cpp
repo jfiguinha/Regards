@@ -212,7 +212,7 @@ void CTreeElementSlide::ClickRightPage(const int &x)
 
 bool CTreeElementSlide::FindCirclePos(wxWindow * window, const int &y, const int &x)
 {
-	wxWindowDC dc(window);
+	wxClientDC dc(window);
 	//wxSize renderLast = CWindowMain::GetSizeTexte(&dc, to_string(GetLastValue()), themeSlide.font);
 
 	if ((x >= (positionButton.x + slidePos.x) && x <= ((positionButton.x + positionButton.width) + slidePos.x)) && (y >= positionButton.y && y <= (positionButton.y + positionButton.height)))

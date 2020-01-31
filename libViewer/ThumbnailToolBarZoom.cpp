@@ -36,12 +36,6 @@ CThumbnailToolBarZoom::~CThumbnailToolBarZoom()
 {
 }
 
-
-void CThumbnailToolBarZoom::Resize()
-{
-    Refresh();
-}
-
 void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 {
 	bool update = false;
@@ -89,7 +83,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 
 void CThumbnailToolBarZoom::OnMouseMove(wxMouseEvent& event)
 {
-	wxWindowDC winDC(this);
+	wxClientDC winDC(this);
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 

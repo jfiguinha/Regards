@@ -26,8 +26,6 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(const wxString &windowName, wxW
 
 
 	scrollMoving = false;
-	width = 0;
-	height = 0;
 	m_bTracking = false;
 	captureBar = false;
 	pictureWidth = 0;
@@ -53,7 +51,6 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(const wxString &windowName, wxW
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CScrollbarHorizontalWnd::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseMove));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CScrollbarHorizontalWnd::OnSize));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CScrollbarHorizontalWnd::OnLButtonDown));
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CScrollbarHorizontalWnd::OnLButtonUp));
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CScrollbarHorizontalWnd::OnMouseHover));
@@ -197,7 +194,7 @@ void CScrollbarHorizontalWnd::CalculBarSize()
         barStartX = themeScroll.GetMarge() + themeScroll.GetMarge() + themeScroll.GetRectangleSize();
     else
         barStartX = 0;
-	barEndX = width - barStartX;
+	barEndX = GetWindowWidth() - barStartX;
 
 	int diff = pictureWidth - screenWidth;
 	float nbPos = float(diff) / float(lineSize);
@@ -327,8 +324,8 @@ void CScrollbarHorizontalWnd::DrawRectangleElement(wxDC * dc, const wxColour &co
 	}
 
 	rc.width = rcPosBar.width - rcPosBar.x;
-	rc.height = height - (themeScroll.GetMarge() * 2);
-	dc->DrawRoundedRectangle(rc, (height / 2) - themeScroll.GetMarge());
+	rc.height = GetWindowHeight() - (themeScroll.GetMarge() * 2);
+	dc->DrawRoundedRectangle(rc, (GetWindowHeight() / 2) - themeScroll.GetMarge());
 	dc->SetBrush(wxNullBrush);
 	//FillRect(dc, rc, colorBar);    
 }
@@ -362,7 +359,7 @@ void CScrollbarHorizontalWnd::Resize()
     else
         barStartX = 0;
         
-	barEndX = width - barStartX;
+	barEndX = GetWindowWidth() - barStartX;
 	//int tailleY = height;
 
 	if (barPosX == 0)
@@ -373,8 +370,8 @@ void CScrollbarHorizontalWnd::Resize()
 	rcPosTriangleLeft.y = themeScroll.GetMarge();
 	rcPosTriangleLeft.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
 
-	rcPosTriangleRight.x = (width - barStartX) + themeScroll.GetMarge();
-	rcPosTriangleRight.width = width - themeScroll.GetMarge();
+	rcPosTriangleRight.x = (GetWindowWidth() - barStartX) + themeScroll.GetMarge();
+	rcPosTriangleRight.width = GetWindowWidth() - themeScroll.GetMarge();
 	rcPosTriangleRight.y = themeScroll.GetMarge();
 	rcPosTriangleRight.height = themeScroll.GetMarge() + themeScroll.GetRectangleSize();
 
@@ -389,23 +386,16 @@ void CScrollbarHorizontalWnd::Resize()
 		rcPosBar.y = themeScroll.GetMarge();
 		rcPosBar.height = themeScroll.GetRectangleSize() + themeScroll.GetMarge();
 	}
-}
 
-void CScrollbarHorizontalWnd::OnSize(wxSizeEvent& event)
-{
-    
-	width = event.GetSize().GetWidth();
-	height = event.GetSize().GetHeight();
-	Resize();
-    //wxPaintEvent paintevent(wxEVT_PAINT);
-    //wxPostEvent(this, paintevent); 
+	Refresh();
+	Update();
 }
 
 void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	//wxWindowDC dc(this);
+	//wxClientDC dc(this);
 	SetIsMoving();
 
 	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
@@ -676,8 +666,8 @@ void CScrollbarHorizontalWnd::DrawElement(wxDC * dc)
 	wxRect rc;
 	rc.x = 0;
 	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
+	rc.width = GetWindowWidth();
+	rc.height = GetWindowHeight();
 	FillRect(dc, rc, themeScroll.colorBack);
     if(showTriangle)
     {

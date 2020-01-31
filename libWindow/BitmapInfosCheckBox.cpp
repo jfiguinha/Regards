@@ -54,14 +54,10 @@ void CBitmapInfosCheckBox::UpdateScreenRatio()
     Resize();
 }
 
-void CBitmapInfosCheckBox::Resize()
-{
-	Refresh();
-}
 
 void CBitmapInfosCheckBox::Redraw()
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
     DrawInformations(&dc);
 }
 

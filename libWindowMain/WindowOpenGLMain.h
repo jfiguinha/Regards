@@ -45,7 +45,8 @@ namespace Regards
             
              void OnRefresh(wxCommandEvent& event)
              {
-                this->Refresh();
+				 this->Refresh();
+				 this->Update();
              }                 
             
 			virtual void PushThreadIdleEvent()
@@ -64,6 +65,8 @@ namespace Regards
 			virtual void OnSize(wxSizeEvent& event)
 			{
 				this->ProcessOnSizeEvent(event);
+				this->Refresh();
+				this->Update();
 			}
 
 			virtual wxString GetWaitingMessage()

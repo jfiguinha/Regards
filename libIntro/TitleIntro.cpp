@@ -29,14 +29,9 @@ void CTitleIntro::UpdateScreenRatio()
 
 int CTitleIntro::GetHeight()
 {
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 	wxSize size = GetSizeTexte(&dc, title, themeFont.font);
 	return size.y;
-}
-
-void CTitleIntro::Resize()
-{
-	Refresh();
 }
 
 void CTitleIntro::OnPaint(wxPaintEvent& event)

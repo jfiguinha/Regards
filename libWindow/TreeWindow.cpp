@@ -64,35 +64,35 @@ void CTreeWindow::OnMoveLeft(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnMoveRight(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnMoveTop(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnMoveBottom(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnLeftPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posLargeur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnTopPosition(wxCommandEvent& event)
@@ -154,7 +154,7 @@ void CTreeWindow::MoveRight()
 void CTreeWindow::UpdateElement(CTreeElement * treeElement)
 {
     TRACE();
-	wxWindowDC dc(this);
+	wxClientDC dc(this);
 	int xPos = 0;
 	if (treeElement->GetRow() > 0)
 		xPos = treeControl->GetWidthRow(treeElement->GetRow() - 1);
@@ -364,6 +364,7 @@ void CTreeWindow::Resize()
 	//UpdateTreeControl();
     bufferUpdate = true;
     Refresh();
+	Update();
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
@@ -375,7 +376,7 @@ void CTreeWindow::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
-    wxWindowDC dc(this);
+	wxClientDC dc(this);
     try
     {
         CPositionElement * element = treeControl->FindElement(xPos + posLargeur, yPos + posHauteur);

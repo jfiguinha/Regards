@@ -274,6 +274,9 @@ void COcrWnd::Resize()
 	int panelListOcrH = listOcr->GetMinHeight();
 	listOcr->SetSize(0, 0, width, panelListOcrH);
 	ocrLabelWnd->SetSize(0, panelListOcrH, width, height - panelListOcrH);
+
+	Refresh();
+	Update();
 }
 
 void COcrWnd::OcrToPDF(wxString bitmapFile, wxString outputFile, wxString language)
