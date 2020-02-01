@@ -147,7 +147,7 @@ namespace Regards
 			void OnMoveBottom(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
 
-			virtual void CBitmapWnd::Resize();
+			virtual void Resize();
 
 #ifdef KeyPress
 #undef KeyPress
