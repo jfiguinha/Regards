@@ -55,10 +55,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="ViewerWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
     <File Name="MainWindow.cpp"/>
-    <File Name="PreviewInfosWnd.cpp"/>
     <File Name="PreviewToolbar.cpp"/>
     <File Name="PreviewWnd.cpp"/>
     <File Name="toolbar.cpp"/>
@@ -72,10 +70,8 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="ViewerWindow.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="MainWindow.h"/>
-    <File Name="PreviewInfosWnd.h"/>
     <File Name="PreviewToolbar.h"/>
     <File Name="PreviewWnd.h"/>
     <File Name="Toolbar.h"/>
