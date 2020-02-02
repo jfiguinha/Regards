@@ -36,7 +36,7 @@ namespace Regards
 			void GenerateIndexFile(wxCommandEvent& event);
 			void ChangeDateFile(wxCommandEvent& event);
 			
-
+			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailToolBar * thumbToolbar;
 			CThumbnailToolBarZoom * thumbToolbarZoom;

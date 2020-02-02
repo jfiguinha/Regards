@@ -33,6 +33,7 @@ namespace Regards
 			void ThumbnailMove(wxCommandEvent& event);
 			void Resize();
 
+			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
 			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;

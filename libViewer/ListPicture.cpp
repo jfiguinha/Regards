@@ -52,6 +52,8 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	thumbnailFolder = nullptr;
 	typeAffichage = SHOW_ALL;
 
+	wxRect rect;
+
 	bool checkValidity = false;
 	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -62,17 +64,26 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
+		CThemeSplitter theme;
+		viewerTheme->GetSplitterTheme(&theme);
+		windowManager = new CWindowManager(this, wxID_ANY, theme);
+	}
+
+	if (viewerTheme != nullptr)
+	{
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
 		viewerTheme->GetScrollTheme(&theme);
 		
 
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFolder = new CThumbnailFolder(this, THUMBNAILFOLDER, themeThumbnail, checkValidity);
-		thumbscrollbar = new CScrollbarWnd(this, thumbnailFolder, wxID_ANY);
+		thumbnailFolder = new CThumbnailFolder(windowManager, THUMBNAILFOLDER, themeThumbnail, checkValidity);
+		thumbscrollbar = new CScrollbarWnd(windowManager, thumbnailFolder, wxID_ANY);
 		thumbscrollbar->ShowVerticalScroll();
 		thumbnailFolder->SetNoVScroll(false);
 		thumbnailFolder->SetCheck(true);
+
+		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -80,16 +91,19 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		std::vector<int> value = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbToolbar = new CThumbnailToolBar(this, wxID_ANY, theme, false);
+		thumbToolbar = new CThumbnailToolBar(windowManager, wxID_ANY, theme, false);
 		thumbToolbar->SetTabValue(value);
 		thumbToolbar->SetTrackBarPosition(4);
+
+		windowManager->AddWindow(thumbToolbar, Pos::wxBOTTOM, true, thumbToolbar->GetHeight(), rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
 	{
 		CThemeToolBarZoom theme;
 		viewerTheme->GetThumbnailToolbarZoomTheme(theme);
-		thumbToolbarZoom = new CThumbnailToolBarZoom(this, wxID_ANY, theme);
+		thumbToolbarZoom = new CThumbnailToolBarZoom(windowManager, wxID_ANY, theme);
+		windowManager->AddWindow(thumbToolbarZoom, Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY, false);
 	}
 
 	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomOn));
@@ -107,10 +121,9 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 
 CListPicture::~CListPicture()
 {
-	delete(thumbnailFolder);
-	delete(thumbToolbar);
-	delete(thumbscrollbar);
-	delete(thumbToolbarZoom);
+	if(windowManager != nullptr)
+		delete(windowManager);
+	
 }
 
 int CListPicture::GetThumbnailHeight()
@@ -964,11 +977,8 @@ void CListPicture::DeleteFile(wxCommandEvent& event)
 
 void CListPicture::UpdateScreenRatio()
 {
-    thumbscrollbar->UpdateScreenRatio();
-    thumbToolbar->UpdateScreenRatio();
-    thumbToolbarZoom->UpdateScreenRatio();
-	thumbnailFolder->UpdateScreenRatio();
-    this->Resize();
+	if (windowManager != nullptr)
+		windowManager->UpdateScreenRatio();
 }
 
 void CListPicture::CopyFile(wxCommandEvent& event)
@@ -1023,11 +1033,7 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 
 void CListPicture::Resize()
 {
-	int pictureWidth = GetWindowWidth();
-	int pictureHeight = GetWindowHeight() - (thumbToolbar->GetHeight() + thumbToolbarZoom->GetHeight());
-
-	thumbToolbarZoom->SetSize(0, 0, GetWindowWidth(), thumbToolbarZoom->GetHeight());
-	thumbscrollbar->SetSize(0, thumbToolbarZoom->GetHeight(), pictureWidth, pictureHeight);
-	thumbToolbar->SetSize(0, pictureHeight + thumbToolbarZoom->GetHeight(), GetWindowWidth(), thumbToolbar->GetHeight());
+	if (windowManager != nullptr)
+		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
 
 }

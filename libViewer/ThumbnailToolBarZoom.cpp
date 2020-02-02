@@ -26,12 +26,6 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnailToolBarZoom::OnLButtonDown));
 }
 
-void CThumbnailToolBarZoom::Resize()
-{
-	this->Refresh();
-	this->Update();
-}
-
 int CThumbnailToolBarZoom::GetHeight()
 {
 	return themeToolbarZoom.GetHeight();

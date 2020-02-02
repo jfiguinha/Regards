@@ -17,6 +17,7 @@ using namespace Regards::Viewer;
 CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CListFace",parent, id)
 {
+	wxRect rect;
 	thumbscrollbar = nullptr;
 	thumbFaceToolbar = nullptr;
 	thumbnailFace = nullptr;
@@ -30,16 +31,26 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
+		CThemeSplitter theme;
+		viewerTheme->GetSplitterTheme(&theme);
+		windowManager = new CWindowManager(this, wxID_ANY, theme);
+	}
+
+
+	if (viewerTheme != nullptr)
+	{
 		CThemeThumbnail themeThumbnail;
 		CThemeScrollBar theme;
 		viewerTheme->GetScrollTheme(&theme);
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
-		thumbnailFace = new CThumbnailFace(this, THUMBNAILFACE, themeThumbnail, checkValidity);
-		thumbscrollbar = new CScrollbarWnd(this, thumbnailFace, wxID_ANY);
+		thumbnailFace = new CThumbnailFace(windowManager, THUMBNAILFACE, themeThumbnail, checkValidity);
+		thumbscrollbar = new CScrollbarWnd(windowManager, thumbnailFace, wxID_ANY);
 		thumbscrollbar->ShowVerticalScroll();
 		thumbnailFace->SetNoVScroll(false);
 		thumbnailFace->SetCheck(true);
 		thumbnailFace->Init();
+
+		windowManager->AddWindow(thumbnailFace, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -49,9 +60,11 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
-		thumbFaceToolbar = new CThumbnailFaceToolBar(this, wxID_ANY, theme, false);
+		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
 		thumbFaceToolbar->SetTabValue(value);
 		thumbFaceToolbar->SetTrackBarPosition(4);
+
+		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
 
 		int position = 2;
 		if(config != nullptr)
@@ -65,9 +78,11 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 			}
 		}
 
-		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
+		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(valuePertinence);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
+
+		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
 	}
 
 	
@@ -105,10 +120,8 @@ void CListFace::ThumbnailMove(wxCommandEvent& event)
 
 CListFace::~CListFace()
 {
-	delete(thumbnailFace);
-	delete(thumbFacePertinenceToolbar);
-	delete(thumbFaceToolbar);
-	delete(thumbscrollbar);
+	delete(windowManager);
+
 }
 
 int CListFace::GetThumbnailHeight()
@@ -139,20 +152,15 @@ void CListFace::ThumbnailZoomPosition(wxCommandEvent& event)
 
 void CListFace::UpdateScreenRatio()
 {
-    thumbscrollbar->UpdateScreenRatio();
-    thumbFaceToolbar->UpdateScreenRatio();
-	thumbnailFace->UpdateScreenRatio();
-    this->Resize();
+	if (windowManager != nullptr)
+		windowManager->UpdateScreenRatio();
 }
 
 
 void CListFace::Resize()
 {
-	int pictureWidth = GetWindowWidth();
-	int pictureHeight = GetWindowHeight() - (thumbFaceToolbar->GetHeight() + thumbFacePertinenceToolbar->GetHeight());
-	thumbFacePertinenceToolbar->SetSize(0, 0, GetWindowWidth(), thumbFacePertinenceToolbar->GetHeight());
-	thumbscrollbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight(), pictureWidth, pictureHeight);
-	thumbFaceToolbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight() + pictureHeight, GetWindowWidth(), thumbFaceToolbar->GetHeight());
+	if (windowManager != nullptr)
+		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
 }
 
 #endif

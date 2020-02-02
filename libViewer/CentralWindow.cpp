@@ -598,6 +598,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+		windowManager->Update();
 		break;
 #ifndef __NOFACE_DETECTION__
 	case 2:
@@ -608,7 +609,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->Resize();
+		windowManager->Update();
 		break;
 #endif
 	case 3:
@@ -619,7 +620,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->Resize();
+		windowManager->Update();
 		break;
 	case 4:
 		previewWindow->Show(true);
@@ -630,6 +631,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HidePaneWindow(Pos::wxLEFT);
 		windowManager->HidePaneWindow(Pos::wxTOP);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
+		windowManager->Update();
 		//viewerWindow->Show(true);
 		//this->SetWindow(panelSearch, viewerWindow);
 		//panelSearch->ClosePane(1);

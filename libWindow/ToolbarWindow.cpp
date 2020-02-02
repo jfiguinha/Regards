@@ -364,13 +364,6 @@ void CToolbarWindow::DrawBackground(wxDC * deviceContext)
 	}
 }
 
-
-void CToolbarWindow::Resize()
-{
-	this->Refresh();
-	this->Update();
-}
-
 void CToolbarWindow::GenerateNavigatorButton(wxDC * deviceContext)
 {
 
