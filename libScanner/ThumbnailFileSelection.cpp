@@ -501,7 +501,6 @@ void CThumbnailFileSelection::UpdateScrollWithVScroll()
 			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 			controlSize->controlWidth = thumbnailSizeX;
 			controlSize->controlHeight = thumbnailSizeY;
-			controlSize->useScaleFactor = true;
 			evt.SetClientData(controlSize);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}

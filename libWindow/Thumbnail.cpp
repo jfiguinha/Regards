@@ -1050,7 +1050,6 @@ void CThumbnail::CalculControlSize()
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 		controlSize->controlWidth = controlWidth;
 		controlSize->controlHeight = controlHeight;
-		controlSize->useScaleFactor = true;
 		evt.SetClientData(controlSize);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}

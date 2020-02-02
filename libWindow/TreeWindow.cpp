@@ -321,7 +321,6 @@ void CTreeWindow::CalculControlSize()
 			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 			controlSize->controlWidth = controlWidth;
 			controlSize->controlHeight = controlHeight;
-			controlSize->useScaleFactor = true;
 			evt.SetClientData(controlSize);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}
@@ -569,7 +568,6 @@ void CTreeWindow::OnPaint(wxPaintEvent& event)
 			wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 			controlSize->controlWidth = controlWidth;
 			controlSize->controlHeight = controlHeight;
-			controlSize->useScaleFactor = true;
 			evt.SetClientData(controlSize);
 			parent->GetEventHandler()->AddPendingEvent(evt);
 		}

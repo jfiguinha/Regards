@@ -471,7 +471,6 @@ void CBitmapWnd::UpdateScrollBar()
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 		controlSize->controlWidth = int(GetBitmapWidthWithRatio());
 		controlSize->controlHeight = int(GetBitmapHeightWithRatio());
-		controlSize->useScaleFactor = true;
 		evt.SetClientData(controlSize);
 		parent->GetEventHandler()->AddPendingEvent(evt);
 	}
