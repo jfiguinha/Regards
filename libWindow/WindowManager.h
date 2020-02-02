@@ -72,6 +72,7 @@ namespace Regards
 			wxRect rect_old;
 			Pos position;
 			int size;
+			int size_old;
 			bool fixe;
 			bool fixe_old;
 			int id;
