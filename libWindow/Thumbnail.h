@@ -61,12 +61,12 @@ namespace Regards
 			void OnScrollMove(wxCommandEvent& event);
 			virtual void ProcessThumbnailIdle(){};
 
+			void TestMaxX();
+			void TestMaxY();
+
 			virtual void FindOtherElement(wxDC * dc, const int &x, const int &y){};
 
 			void OpenFileViewer(const wxString &filename);
-			void Update(){ Refresh(); };
-			void TestMaxX();
-			void TestMaxY();
 			void SetIconeSize(const int &width, const int &height);
 			virtual void CreateOrLoadStorageFile(){};
 			virtual void SetNbFiles(const int &nbFiles){};
@@ -86,10 +86,6 @@ namespace Regards
 			bool GetProcessEnd();
 			void OnLeftPosition(wxCommandEvent& event);
 			void OnTopPosition(wxCommandEvent& event);
-			void OnMoveLeft(wxCommandEvent& event);
-			void OnMoveRight(wxCommandEvent& event);
-			void OnMoveTop(wxCommandEvent& event);
-			void OnMoveBottom(wxCommandEvent& event);
 
 			void CalculControlSize();
 			virtual void OnPictureClick(CThumbnailData * data) = 0;

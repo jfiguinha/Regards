@@ -32,6 +32,4 @@ void CTreeWithScrollbar::Resize()
 	if (scrollWindow != nullptr)
 		scrollWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 
-	Refresh();
-	Update();
 }

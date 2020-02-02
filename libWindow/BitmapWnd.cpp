@@ -1187,7 +1187,6 @@ void CBitmapWnd::Resize()
 	updateFilter = true;
 	UpdateResized();
 	this->Refresh();
-	this->Update();
 }
 
 int CBitmapWnd::UpdateResized()
@@ -1412,16 +1411,10 @@ void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolat
 	rc.height = heightOutput;
 }
 
-void CBitmapWnd::Update()
-{ 
-    TRACE();
-	UpdateScrollBar();
-}
-
 void CBitmapWnd::UpdateScreenRatio()
 {
     TRACE();
-    Update();
+    Resize();
 }
 
 void CBitmapWnd::GenerateExifPosition(int & localAngle, int & localflipHorizontal, int & localflipVertical)

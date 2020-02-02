@@ -474,8 +474,8 @@ void CScrollbarVerticalWnd::Resize()
 		rcPosBar.height = barPosY + barSize;
 	}
 
-	Refresh();
-	Update();
+	this->Refresh();
+
 }
 
 

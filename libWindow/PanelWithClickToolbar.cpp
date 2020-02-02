@@ -170,8 +170,6 @@ void CPanelWithClickToolbar::Resize()
 	{
 		paneWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
-	Refresh();
-	Update();
 }
 
 int CPanelWithClickToolbar::GetHeight()

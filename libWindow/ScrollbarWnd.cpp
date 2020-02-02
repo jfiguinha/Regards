@@ -100,12 +100,18 @@ void CScrollbarWnd::OnMoveLeft(wxCommandEvent& event)
 	int pageSize = defaultPageSize;
 	if (scrollVertical != nullptr)
 	{
-		pageSize = scrollVertical->GetPageSize();
+		pageSize = scrollHorizontal->GetPageSize();
 	}
 	posLargeur -= pageSize;
 	TestMaxX();
+	scrollHorizontal->SetPosition(posHauteur);
 
-	this->Update();
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_LEFTPOSITION);
+		evt.SetInt(posLargeur);
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CScrollbarWnd::OnMoveRight(wxCommandEvent& event)
@@ -117,8 +123,14 @@ void CScrollbarWnd::OnMoveRight(wxCommandEvent& event)
 	}
 	posLargeur += pageSize;
 	TestMaxX();
+	scrollHorizontal->SetPosition(posLargeur);
 
-	this->Update();
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_LEFTPOSITION);
+		evt.SetInt(posLargeur);
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CScrollbarWnd::OnMoveTop(wxCommandEvent& event)
@@ -130,8 +142,15 @@ void CScrollbarWnd::OnMoveTop(wxCommandEvent& event)
 	}
 	posHauteur -= pageSize;
 	TestMaxY();
+	scrollVertical->SetPosition(posHauteur);
 
-	this->Update();
+
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_TOPPOSITION);
+		evt.SetInt(posHauteur);
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CScrollbarWnd::OnMoveBottom(wxCommandEvent& event)
@@ -143,7 +162,14 @@ void CScrollbarWnd::OnMoveBottom(wxCommandEvent& event)
 	}
 	posHauteur += pageSize;
 	TestMaxY();
+	scrollVertical->SetPosition(posHauteur);
 
+	if (centralWindow->GetWindow() != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_TOPPOSITION);
+		evt.SetInt(posHauteur);
+		centralWindow->GetWindow()->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 
@@ -198,8 +224,8 @@ void CScrollbarWnd::TestMaxX()
 	{
 		CMasterWindow * window = centralWindow->GetMasterWindowPt();
 
-		if (posLargeur >= controlWidth - window->GetWidth())
-			posLargeur = controlWidth - window->GetWidth();
+		if (posLargeur >= controlWidth - window->GetWindowWidth())
+			posLargeur = controlWidth - window->GetWindowWidth();
 
 		if (posLargeur < 0)
 			posLargeur = 0;
@@ -218,8 +244,8 @@ void CScrollbarWnd::TestMaxY()
 		CMasterWindow * window = centralWindow->GetMasterWindowPt();
 
 
-		if (posHauteur >= controlHeight - window->GetHeight())
-			posHauteur = controlHeight - window->GetHeight();
+		if (posHauteur >= controlHeight - window->GetWindowHeight())
+			posHauteur = controlHeight - window->GetWindowHeight();
 
 		if (posHauteur < 0)
 			posHauteur = 0;
@@ -445,7 +471,4 @@ void CScrollbarWnd::Resize()
 		}
 
     }
-
-	Refresh();
-	Update();
 }

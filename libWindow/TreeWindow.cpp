@@ -363,8 +363,7 @@ void CTreeWindow::Resize()
     TRACE();
 	//UpdateTreeControl();
     bufferUpdate = true;
-    Refresh();
-	Update();
+	this->Refresh();
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)

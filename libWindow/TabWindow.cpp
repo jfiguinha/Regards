@@ -123,6 +123,4 @@ void CTabWindow::Resize()
 		windowToShow->SetSize(rcAffichageBitmap.x, toolbarWindow->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
 	}
 
-	Refresh();
-	Update();
 }

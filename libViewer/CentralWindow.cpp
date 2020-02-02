@@ -91,7 +91,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		thumbnailVideo = new CThumbnailViewerVideo(this, wxID_ANY, themeVideo, checkValidity);
 		scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
-		scrollVideoWindow->SetPageSize(1000);
+		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
 
 		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true);
@@ -125,7 +125,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		thumbnailPicture = new CThumbnailViewerPicture(this, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
 		scrollPictureWindow = new CScrollbarWnd(this, thumbnailPicture, wxID_ANY);
 		scrollPictureWindow->HideVerticalScroll();
-		scrollPictureWindow->SetPageSize(1000);
+		scrollPictureWindow->SetPageSize(200);
 		scrollPictureWindow->SetLineSize(200);
 		thumbnailPicture->SetNoVScroll(true);
 
@@ -492,8 +492,6 @@ void CCentralWindow::Resize()
 {
 	if (windowManager != nullptr)	
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-	Refresh();
-	Update();
 }
 
 void CCentralWindow::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
@@ -610,7 +608,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
-
+		windowManager->Resize();
 		break;
 #endif
 	case 3:
@@ -621,6 +619,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
+		windowManager->Resize();
 		break;
 	case 4:
 		previewWindow->Show(true);

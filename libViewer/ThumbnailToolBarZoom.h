@@ -24,6 +24,7 @@ namespace Regards
 			void DrawPreviousElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);
 			void DrawNextElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);
 			void DrawElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);
+			void Resize();
 
 			wxRect positionPrevious;
 			wxRect positionNext;

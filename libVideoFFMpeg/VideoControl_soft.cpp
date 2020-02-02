@@ -723,5 +723,5 @@ void CVideoControlSoft::Resize()
     } 
 
 	Refresh();
-	Update();
+
 }

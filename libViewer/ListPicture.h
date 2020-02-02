@@ -50,7 +50,7 @@ namespace Regards
 			void CreateFolder(const wxString &newFolder);
 
 			int typeAffichage;
-			bool showToolbar;
+
 		};
 	}
 }

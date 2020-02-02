@@ -21,9 +21,7 @@ CWindowMain("CPane",parent, id)
 	//titleBar->Show(false)
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CPane::OnMouseMove));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPane::RefreshData));
-	//Connect(wxEVT_SHOW, wxShowEventHandler(CPane::OnShow));
-	//Connect(wxEVT_PAINT, wxPaintEventHandler(CPane::OnPaint));
-	//Connect(wxEVT_IDLE, wxIdleEventHandler(CPane::OnIdle));
+
 }
 
 void CPane::RefreshData(wxCommandEvent& event)
@@ -36,47 +34,6 @@ void CPane::RefreshData(wxCommandEvent& event)
 	}
 }
 
-void CPane::OnShow(wxShowEvent& event)
-{
-	if (hWndOther != nullptr)
-	{
-		if (IsShown())
-		{
-			hWndOther->Show(true);
-		}
-		else
-		{
-			hWndOther->Show(false);
-		}
-	}
-}
-void CPane::OnPaint(wxPaintEvent& event)
-{
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
-    if(width == 0 || height == 0)
-        return;
-    
-	titleBar->Redraw();
-	if (hWndOther != nullptr)
-	{
-		hWndOther->Update();
-	}
-}
-
-void CPane::OnIdle(wxIdleEvent& evt)
-{
-#if defined(WIN32) && defined(_DEBUG)
-	wxString toShow = "CPane OnIdle size x : " + to_string(GetWindowWidth()) + " y : " + to_string(GetWindowHeight()) + "\n";
-	OutputDebugString(toShow.ToStdWstring().c_str());
-	if (hWndOther != nullptr)
-	{
-		wxSize otherSize = hWndOther->GetSize();
-		wxString toShow = "CPane OnIdle otherSize size x : " + to_string(otherSize.x) + " y : " + to_string(otherSize.y) + "\n";
-		OutputDebugString(toShow.ToStdWstring().c_str());
-	}
-#endif
-}
 
 CPane::~CPane()
 {
@@ -117,8 +74,7 @@ void CPane::Resize()
 	{
 		hWndOther->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
-	Refresh();
-	Update();
+
 }
 
 void CPane::OnMouseMove(wxMouseEvent& event)

@@ -69,7 +69,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	: CWindowMain("CMainWindow",parent, id)
 {
 	sendMessageVideoStop = false;
-	loadPicture = true;
+	//loadPicture = true;
 	fullscreen = false;
 	startDiaporama = false;
 	nbProcessMD5 = 0;
@@ -80,7 +80,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	typeAffichage = SHOW_ALL;
 	updateCriteria = true;
 	updateFolder = true;
-	updatePicture = false;
+	//updatePicture = false;
 	refreshFolder = false;
 	numElementTraitement = 0;
 	start = true;
@@ -159,7 +159,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	//refreshTimer->Start(300000, wxTIMER_ONE_SHOT);
     //diaporamaTimer->Start(2000, wxTIMER_ONE_SHOT);
-	updatePicture = true;
+	//updatePicture = true;
 
 	refreshFolder = true;
     if(imageList->GetNbElement() > 0)
@@ -170,7 +170,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	updateFolder = true;
 	processIdle = true;
 
-
+	LoadPicture();
 }
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
@@ -317,8 +317,8 @@ void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 
 	if (*threadFilename != firstFileToShow)
 	{
-		updatePicture = true;
-		processIdle = true;
+		UpdatePicture();
+		//processIdle = true;
 	}
 
 	if (threadFilename != nullptr)
@@ -664,10 +664,11 @@ void CMainWindow::ProcessIdle()
 		}
 
 		updateFolder = false;
-		updatePicture = true;
+		UpdatePicture();
 
         hasDoneOneThings = true;
 	}
+	/*
 	else if (updatePicture)
 	{
 		if (imageList->GetNbElement() > 0)
@@ -734,7 +735,7 @@ void CMainWindow::ProcessIdle()
             sendMessageVideoStop = true;
         }
         hasDoneOneThings = true;
-    }
+    }*/
 	else if (numElementTraitement < imageList->GetNbElement())
 	{
         bool isValid = false;
@@ -790,6 +791,40 @@ void CMainWindow::ProcessIdle()
         processIdle = false;
         
  
+}
+
+void CMainWindow::UpdatePicture()
+{
+	if (imageList->GetNbElement() > 0)
+	{
+		bool isValid = true;
+		if (filename != L"")
+		{
+			imageList->FindFileIndex(filename);
+			firstFileToShow = filename;
+		}
+		else
+			firstFileToShow = imageList->GetFilePath(numElement, isValid);
+
+
+
+		if (isValid)
+		{
+			if (firstFileToShow != L"")
+			{
+				wxCommandEvent evt(wxEVENT_LOADPICTURE);
+				CPictureElement * pictureElement = new CPictureElement();
+				pictureElement->filename = firstFileToShow;
+				pictureElement->numElement = numElement;
+				evt.SetClientData(pictureElement);
+				centralWnd->GetEventHandler()->AddPendingEvent(evt);
+				filename = firstFileToShow;
+			}
+		}
+		//numElementTraitement = 0;
+	}
+	//updatePicture = false;
+	//hasDoneOneThings = true;
 }
 
 void CMainWindow::OnIdle(wxIdleEvent& evt)
@@ -940,8 +975,7 @@ void CMainWindow::Resize()
 	{
 		centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 	}
-	Refresh();
-	Update();
+
 }
 
 
@@ -1060,13 +1094,49 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 	}
 }
 
+void CMainWindow::LoadPicture()
+{
+	if (!videoStart)
+	{
+		bool isValid = false;
+		wxString photoName = imageList->GetFilePath(numElement, isValid);
+		if (isValid)
+		{
+			if (firstFileToShow != photoName)
+			{
+				firstFileToShow = photoName;
+				this->filename = photoName;
+				wxCommandEvent evt(wxEVENT_LOADPICTURE);
+				CPictureElement * pictureElement = new CPictureElement();
+				pictureElement->filename = firstFileToShow;
+				pictureElement->numElement = numElement;
+				evt.SetClientData(pictureElement);
+				centralWnd->GetEventHandler()->AddPendingEvent(evt);
+			}
+			this->filename = photoName;
+			//loadPicture = false;
+			sendMessageVideoStop = false;
+		}
+	}
+	else if (videoStart && !sendMessageVideoStop)
+	{
+		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
+		if (showVideoWindow != nullptr)
+			showVideoWindow->StopVideo();
+
+		sendMessageVideoStop = true;
+	}
+}
+
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
     TRACE();
 	int photoId = event.GetExtraLong();
 	numElement = imageList->FindFileIndex(photoId);
-	loadPicture = true;
-	processIdle = true;
+	LoadPicture();
+	//hasDoneOneThings = true;
+	//loadPicture = true;
+	//processIdle = true;
 }
 void CMainWindow::TransitionEnd()
 {
@@ -1216,8 +1286,7 @@ void CMainWindow::ImageSuivante()
 	if (numElement >= imageList->GetNbElement())
 		numElement = 0;
 
-	loadPicture = true;
-    processIdle = true;
+	LoadPicture();
 }
 
 void CMainWindow::ImagePrecedente()
@@ -1227,8 +1296,7 @@ void CMainWindow::ImagePrecedente()
 	if (numElement < 0)
 		numElement = (int)imageList->GetNbElement() - 1;
 
-	loadPicture = true;
-    processIdle = true;
+	LoadPicture();
 }
 
 
@@ -1247,16 +1315,14 @@ void CMainWindow::ImageFin()
 {
     TRACE();
 	this->numElement = (int)imageList->GetNbElement() - 1;
-	loadPicture = true;
-    processIdle = true;
+	LoadPicture();
 }
 
 void CMainWindow::ImageDebut()
 {
     TRACE();
 	this->numElement = 0;
-	loadPicture = true;
-    processIdle = true;
+	LoadPicture();
 }
 
 void CMainWindow::ShowToolbar()

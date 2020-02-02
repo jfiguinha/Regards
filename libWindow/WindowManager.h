@@ -103,8 +103,8 @@ namespace Regards
 			bool GetSeparationVisibility();
 			void ChangeWindow(CWindowMain * window, Pos position);
 			void GenerateRenderBitmap();
-			void HideWindow(Pos position);
-			void ShowWindow(Pos position);
+			void HideWindow(Pos position, const bool &refresh = true);
+			void ShowWindow(Pos position, const bool &refresh = true);
 			void HidePaneWindow(Pos position);
 			void ShowPaneWindow(Pos position);
 			bool OnLButtonDown();

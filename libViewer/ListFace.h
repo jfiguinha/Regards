@@ -36,10 +36,8 @@ namespace Regards
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
 			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
-			//CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			CThumbnailFace * thumbnailFace;
-			bool update;
-			bool updateFaceList;
+
 
 		};
 	}

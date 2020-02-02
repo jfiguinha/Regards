@@ -295,8 +295,6 @@ void CShowBitmap::Resize()
 
 		}
 	}
-	Refresh();
-	Update();
 
 }
 

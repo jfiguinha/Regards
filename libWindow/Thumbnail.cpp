@@ -347,40 +347,52 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CThumbnail::OnScrollMove));
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
-	Connect(wxEVENT_MOVELEFT, wxCommandEventHandler(CThumbnail::OnMoveLeft));
-	Connect(wxEVENT_MOVERIGHT, wxCommandEventHandler(CThumbnail::OnMoveRight));
-	Connect(wxEVENT_MOVETOP, wxCommandEventHandler(CThumbnail::OnMoveTop));
-	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CThumbnail::OnMoveBottom));
 	processIdle = true;
     
 }
 
-void CThumbnail::OnMoveLeft(wxCommandEvent& event)
+void CThumbnail::MoveTop()
 {
-	int pos = event.GetInt();
-	posLargeur = pos;
-	this->Refresh();
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
-void CThumbnail::OnMoveRight(wxCommandEvent& event)
+void CThumbnail::MoveLeft()
 {
-	int pos = event.GetInt();
-	posLargeur = pos;
-	this->Refresh();
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
-void CThumbnail::OnMoveTop(wxCommandEvent& event)
+void CThumbnail::MoveBottom()
 {
-	int pos = event.GetInt();
-	posHauteur = pos;
-	this->Refresh();
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
-void CThumbnail::OnMoveBottom(wxCommandEvent& event)
+void CThumbnail::MoveRight()
 {
-	int pos = event.GetInt();
-	posHauteur = pos;
-	this->Refresh();
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CThumbnail::OnLeftPosition(wxCommandEvent& event)
@@ -949,6 +961,9 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 
 }
 
+
+
+
 void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 {
     TRACE();
@@ -993,6 +1008,9 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     if(width == 0 || height == 0)
         return;
 
+	TestMaxX();
+	TestMaxY();
+
     
 	render = true;
     printf("CThumbnail::OnPaint \n");   
@@ -1016,9 +1034,7 @@ void CThumbnail::Resize()
     
 	CalculControlSize();
 	ResizeThumbnail();
-    
-	Refresh();
-	Update();
+
 }
 
 void CThumbnail::CalculControlSize()
@@ -1084,50 +1100,6 @@ void CThumbnail::TestMaxY()
 }
 
 
-
-void CThumbnail::MoveTop()
-{
-	wxWindow * parent = this->GetParent();
-
-	if (parent != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_MOVETOP);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
-
-void CThumbnail::MoveLeft()
-{
-	wxWindow * parent = this->GetParent();
-
-	if (parent != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_MOVELEFT);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
-
-void CThumbnail::MoveBottom()
-{
-	wxWindow * parent = this->GetParent();
-
-	if (parent != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
-
-void CThumbnail::MoveRight()
-{
-	wxWindow * parent = this->GetParent();
-
-	if (parent != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_MOVERIGHT);
-		parent->GetEventHandler()->AddPendingEvent(evt);
-	}
-}
 
 void CThumbnail::OnKeyDown(wxKeyEvent& event)
 {

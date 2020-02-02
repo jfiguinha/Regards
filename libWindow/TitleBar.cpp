@@ -157,8 +157,7 @@ void CTitleBar::Resize()
 	rcRefresh.width = rcRefresh.x + themeTitle.GetCroixWidth();
 	rcRefresh.height = rcRefresh.y + themeTitle.GetCroixHeight();
 
-	Refresh();
-	Update();
+	this->Refresh();
 }
 
 void CTitleBar::OnPaint(wxPaintEvent& event)

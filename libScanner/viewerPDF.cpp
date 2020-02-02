@@ -247,8 +247,6 @@ void CViewerPDF::OnResize(wxCommandEvent& event)
 void CViewerPDF::Resize()
 {
 	RedrawBarPos();
-	Refresh();
-	Update();
 }
 
 wxRect CViewerPDF::GetWindowRect()

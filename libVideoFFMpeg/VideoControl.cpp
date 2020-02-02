@@ -1302,7 +1302,6 @@ void CVideoControl::Resize()
     } 
 
 	Refresh();
-	Update();
 }
 
 #endif

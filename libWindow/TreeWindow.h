@@ -75,11 +75,6 @@ namespace Regards
 			void MoveBottom();
 			void MoveRight();
 
-			void Update()
-			{
-				Refresh();
-			}
-
 			void TestMaxX();
 			void TestMaxY();
             wxColour GetBackgroundColour(const int &yPos);

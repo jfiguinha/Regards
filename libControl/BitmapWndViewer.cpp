@@ -330,8 +330,7 @@ void CBitmapWndViewer::Resize()
 			SetDessinRatio();
 	}
 
-	Refresh();
-	Update();
+	this->Refresh();
 }
 
 void CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)

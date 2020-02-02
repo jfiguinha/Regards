@@ -20,7 +20,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	thumbscrollbar = nullptr;
 	thumbFaceToolbar = nullptr;
 	thumbnailFace = nullptr;
-	update = true;
 	bool checkValidity = false;
 	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -37,8 +36,10 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		thumbnailFace = new CThumbnailFace(this, THUMBNAILFACE, themeThumbnail, checkValidity);
 		thumbscrollbar = new CScrollbarWnd(this, thumbnailFace, wxID_ANY);
-
-
+		thumbscrollbar->ShowVerticalScroll();
+		thumbnailFace->SetNoVScroll(false);
+		thumbnailFace->SetCheck(true);
+		thumbnailFace->Init();
 	}
 
 	if (viewerTheme != nullptr)
@@ -69,19 +70,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
 	}
 
+	
 
-    if(thumbscrollbar != nullptr)
-        thumbscrollbar->Show(true);
-    if(thumbFaceToolbar != nullptr)
-        thumbFaceToolbar->Show(true);
-    if(thumbFacePertinenceToolbar != nullptr)
-        thumbFacePertinenceToolbar->Show(true);
-
-	thumbFaceToolbar->Show(true);
-	thumbscrollbar->ShowVerticalScroll();
-	thumbnailFace->SetNoVScroll(false);
-	thumbnailFace->SetCheck(true);
-	thumbnailFace->Init();
 
 	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
@@ -89,9 +79,6 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_THUMBNAILREFRESH, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailRefresh));
 	Connect(wxEVENT_THUMBNAILMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailMove));
 
-
-	update = false;
-	processIdle = true;
 }
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)
@@ -162,17 +149,10 @@ void CListFace::UpdateScreenRatio()
 void CListFace::Resize()
 {
 	int pictureWidth = GetWindowWidth();
-	int pictureHeight = GetWindowHeight() - thumbFaceToolbar->GetHeight() - thumbFacePertinenceToolbar->GetHeight();
+	int pictureHeight = GetWindowHeight() - (thumbFaceToolbar->GetHeight() + thumbFacePertinenceToolbar->GetHeight());
 	thumbFacePertinenceToolbar->SetSize(0, 0, GetWindowWidth(), thumbFacePertinenceToolbar->GetHeight());
 	thumbscrollbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight(), pictureWidth, pictureHeight);
 	thumbFaceToolbar->SetSize(0, thumbFacePertinenceToolbar->GetHeight() + pictureHeight, GetWindowWidth(), thumbFaceToolbar->GetHeight());
-
-	Refresh();
-	Update();
 }
-
-
-//wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
-//this->GetEventHandler()->AddPendingEvent(evt);
 
 #endif

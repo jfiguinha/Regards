@@ -38,7 +38,6 @@ using namespace Regards::exiv2;
 #include <SetMetadataDate.h>
 #endif
 
-wxDEFINE_EVENT(EVENT_REFRESHVIEWER, wxCommandEvent);
 
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -52,7 +51,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	thumbToolbarZoom = nullptr;
 	thumbnailFolder = nullptr;
 	typeAffichage = SHOW_ALL;
-	showToolbar = true;
 
 	bool checkValidity = false;
 	CMainParam * config = CMainParamInit::getInstance();
@@ -72,6 +70,9 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		thumbnailFolder = new CThumbnailFolder(this, THUMBNAILFOLDER, themeThumbnail, checkValidity);
 		thumbscrollbar = new CScrollbarWnd(this, thumbnailFolder, wxID_ANY);
+		thumbscrollbar->ShowVerticalScroll();
+		thumbnailFolder->SetNoVScroll(false);
+		thumbnailFolder->SetCheck(true);
 	}
 
 	if (viewerTheme != nullptr)
@@ -91,13 +92,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		thumbToolbarZoom = new CThumbnailToolBarZoom(this, wxID_ANY, theme);
 	}
 
-    if(thumbscrollbar != nullptr)
-        thumbscrollbar->Show(true);
-    if(thumbToolbar != nullptr)
-        thumbToolbar->Show(true);
-    if(thumbToolbarZoom != nullptr)
-        thumbToolbarZoom->Show(true);
-
 	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomOn));
 	Connect(wxEVENT_THUMBNAILZOOMOFF, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomOff));
 	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomPosition));
@@ -108,12 +102,6 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_CHANGEDATEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ChangeDateFile));
 	Connect(wxEVENT_GENERATEINDEXFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::GenerateIndexFile));
 
-	showToolbar = true;
-	thumbToolbar->Show(true);
-	thumbToolbarZoom->Show(true);
-	thumbscrollbar->ShowVerticalScroll();
-	thumbnailFolder->SetNoVScroll(false);
-	thumbnailFolder->SetCheck(true);
 
 }
 
@@ -1023,16 +1011,6 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 				if (false == dialog.Update(i, message))
 					break;
 			}
-
-			/*
-			CopyFileDlg copyFile(this);
-			copyFile.SetSelectItem(&listItem);
-			copyFile.SetMode(1);
-			copyFile.SetLibelle(caption, text, copyMessage, copyFinalMessage, informations);
-			copyFile.SetDestinationFolder(folderPath);
-			copyFile.Start();
-			copyFile.ShowModal();
-			*/
 		}
 	}
 	else
@@ -1045,21 +1023,11 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 
 void CListPicture::Resize()
 {
-	if (showToolbar)
-	{
-		int pictureWidth = GetWindowWidth();
-		int pictureHeight = GetWindowHeight() - (thumbToolbar->GetHeight() + thumbToolbarZoom->GetHeight());
+	int pictureWidth = GetWindowWidth();
+	int pictureHeight = GetWindowHeight() - (thumbToolbar->GetHeight() + thumbToolbarZoom->GetHeight());
 
-		thumbToolbarZoom->SetSize(0, 0, GetWindowWidth(), thumbToolbarZoom->GetHeight());
-		thumbscrollbar->SetSize(0, thumbToolbarZoom->GetHeight(), pictureWidth, pictureHeight);
-		thumbToolbar->SetSize(0, pictureHeight + thumbToolbarZoom->GetHeight(), GetWindowWidth(), thumbToolbar->GetHeight());
-	}
-	else
-	{
-		
-		thumbscrollbar->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-	}
-	Refresh();
-	Update();
+	thumbToolbarZoom->SetSize(0, 0, GetWindowWidth(), thumbToolbarZoom->GetHeight());
+	thumbscrollbar->SetSize(0, thumbToolbarZoom->GetHeight(), pictureWidth, pictureHeight);
+	thumbToolbar->SetSize(0, pictureHeight + thumbToolbarZoom->GetHeight(), GetWindowWidth(), thumbToolbar->GetHeight());
 
 }

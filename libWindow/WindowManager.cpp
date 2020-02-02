@@ -158,7 +158,7 @@ void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, i
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true);
 }
 
-void CWindowManager::HideWindow(Pos position)
+void CWindowManager::HideWindow(Pos position, const bool &refresh)
 {
 	CWindowToAdd * window = FindWindow(position);
 	if (window != nullptr)
@@ -175,8 +175,11 @@ void CWindowManager::HideWindow(Pos position)
 					if (window->separationBar->separationBar != nullptr)
 						window->separationBar->separationBar->Show(false);
 				}
-				Init();
-				Resize();
+				if (refresh)
+				{
+					Init();
+					Resize();
+				}
 			}
 		}
 	}
@@ -224,7 +227,7 @@ void CWindowManager::ShowPaneWindow(Pos position)
 	}
 }
 
-void CWindowManager::ShowWindow(Pos position)
+void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 {
 	CWindowToAdd * window = FindWindow(position);
 
@@ -242,8 +245,11 @@ void CWindowManager::ShowWindow(Pos position)
 						window->separationBar->separationBar->Show(true);
 				}
 			}
-			Init();
-			Resize();
+			if (refresh)
+			{
+				Init();
+				Resize();
+			}
 		}
 	}
 }
@@ -1311,7 +1317,5 @@ void CWindowManager::Resize()
 	oldWidth = width;
 	oldHeight = height;
 
-	Refresh();
-	Update();
 }
 
