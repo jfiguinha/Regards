@@ -24,6 +24,12 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	init = false;
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowManager::OnResize));
+    
+#ifdef WIN32
+    fastRender = true;
+#else
+	fastRender = false;
+#endif
 }
 
 
@@ -879,14 +885,18 @@ bool CWindowManager::OnLButtonDown()
 {
 	this->SetFocus();
 	moving = true;
-	GenerateRenderBitmap();
+    if (fastRender)
+		GenerateRenderBitmap();
 	return true;
 }
 
 void CWindowManager::OnLButtonUp()
 {
 	moving = false;
-	Resize();
+	if (fastRender)
+	{
+		Resize();
+	}
 	this->Refresh();
 }
 
@@ -1154,14 +1164,18 @@ void CWindowManager::SetNewPosition(CSeparationBar * separationBar)
 					}
 
 
-					if (windowToAdd->separationBar->isHorizontal)
+                if (fastRender && moving)
+                {
+                    if (windowToAdd->separationBar->isHorizontal)
 					{
 						DrawSeparationBar(windowToAdd->separationBar->rect.x, position.y, windowToAdd->separationBar->rect.width, themeSplitter.themeFast.size, windowToAdd->separationBar->isHorizontal);
 					}
 					else
 					{
 						DrawSeparationBar(position.x, windowToAdd->separationBar->rect.y, themeSplitter.themeFast.size, windowToAdd->separationBar->rect.height, windowToAdd->separationBar->isHorizontal);
-					}
+					}  
+                }
+
 
 
 					break;
@@ -1169,6 +1183,9 @@ void CWindowManager::SetNewPosition(CSeparationBar * separationBar)
 			}
 		}
 	}
+    
+     if (!fastRender)
+         this->Resize();
 }
 
 

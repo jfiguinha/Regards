@@ -146,7 +146,7 @@ namespace Regards
 
 			void DrawSeparationBar(const int &x, const int &y, const int &width, const int &height, const bool &horizontal);
 			
-			
+			bool fastRender;
 			bool init;
 			int oldWidth;
 			int oldHeight;
