@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libScanner" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Ocr">
     <File Name="OcrLabelWnd.h"/>
     <File Name="OcrLabelWnd.cpp"/>
     <File Name="OcrLabel.h"/>
     <File Name="OcrLabel.cpp"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="Export">
     <File Name="ExportOCr.cpp"/>
     <File Name="ExportOcr.h"/>
@@ -26,10 +26,6 @@
   <VirtualDirectory Name="Panel">
     <File Name="PanelInfosWnd.h"/>
     <File Name="PanelInfosWnd.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="Splitter">
-    <File Name="BitmapViewerInfosWnd.h"/>
-    <File Name="BitmapViewerInfosWnd.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Toolbar">
     <File Name="ToolbarInfos.h"/>
