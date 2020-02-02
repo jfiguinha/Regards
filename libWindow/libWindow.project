@@ -44,7 +44,6 @@
     <File Name="ScrollbarHorizontalWnd.cpp"/>
     <File Name="ScrollbarVerticalWnd.cpp"/>
     <File Name="ScrollbarWnd.cpp"/>
-    <File Name="ScrollInterface.cpp"/>
     <File Name="SeparationBar.cpp"/>
     <File Name="Slider.cpp"/>
     <File Name="Splitter.cpp"/>
@@ -95,7 +94,6 @@
     <File Name="ScrollbarHorizontalWnd.h"/>
     <File Name="ScrollbarVerticalWnd.h"/>
     <File Name="ScrollbarWnd.h"/>
-    <File Name="ScrollInterface.h"/>
     <File Name="SeparationBar.h"/>
     <File Name="Slider.h"/>
     <File Name="Splitter.h"/>
