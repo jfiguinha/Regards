@@ -348,17 +348,45 @@ void CWindowManager::Init_bottom()
 		{
 			if (left->isTop)
 			{
-				x = left->rect.width;
-				bottom_width -= left->rect.width;
+				if (left->fixe)
+				{
+					x = left->size;
+					bottom_width -= left->size;
+				}
+				else
+				{
+					x = left->rect.width;
+					bottom_width -= left->rect.width;
 
+					if (left->separationBar != nullptr)
+					{
+						x += left->separationBar->rect.width;
+						bottom_width -= left->separationBar->rect.width;
+					}
+				}
 			}
+
+
 		}
 
 		if (right != nullptr)
 		{
 			if (right->isTop)
 			{
-				bottom_width -= right->rect.width;
+				if (right->fixe)
+				{
+					x = right->size;
+					bottom_width -= right->size;
+				}
+				else
+				{
+
+					bottom_width -= right->rect.width;
+					if (right->separationBar != nullptr)
+					{
+						bottom_width -= right->separationBar->rect.width;
+					}
+				}
 			}
 		}
 
@@ -421,9 +449,22 @@ void CWindowManager::Init_top()
 		{
 			if (left->isTop)
 			{
-				x = left->rect.width;
-				top_width -= left->rect.width;
+				if (left->fixe)
+				{
+					x = left->size;
+					top_width -= left->size;
+				}
+				else
+				{
+					x = left->rect.width;
+					top_width -= left->rect.width;
 
+					if (left->separationBar != nullptr)
+					{
+						x += left->separationBar->rect.width;
+						top_width -= left->separationBar->rect.width;
+					}
+				}
 			}
 		}
 
@@ -431,7 +472,19 @@ void CWindowManager::Init_top()
 		{
 			if (right->isTop)
 			{
-				top_width -= right->rect.width;
+				if (right->fixe)
+				{
+					top_width -= right->size;
+				}
+				else
+				{
+					top_width -= right->rect.width;
+
+					if (right->separationBar != nullptr)
+					{
+						top_width -= right->separationBar->rect.width;
+					}
+				}
 			}
 		}
 
@@ -556,7 +609,7 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd * left, int width, int y, in
 			left->rect.x = 0;
 			left->rect.y = y;
 			left->rect.height = left_height;
-			left->rect.width -= left->separationBar->size;
+			//left->rect.width -= left->separationBar->size;
 			left->separationBar->rect.x = left->rect.width;
 			left->separationBar->rect.y = y;
 			left->separationBar->rect.width = left->separationBar->size;
@@ -590,8 +643,8 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, 
 		if (right->separationBar != nullptr)
 		{
 			right->rect.y = y;
-			right->rect.x += right->separationBar->size;
-			right->rect.width -= right->separationBar->size;
+			//right->rect.x += right->separationBar->size;
+			//right->rect.width -= right->separationBar->size;
 			right->rect.height = right_height;
 			right->separationBar->rect.x = right->rect.x - right->separationBar->size;
 			right->separationBar->rect.y = y;
