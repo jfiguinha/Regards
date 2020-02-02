@@ -1046,7 +1046,7 @@ void CThumbnail::CalculControlSize()
 
 	if (parent != nullptr)
 	{
-		ControlSize * controlSize = new ControlSize();
+		CControlSize * controlSize = new CControlSize();
 		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
 		controlSize->controlWidth = controlWidth;
 		controlSize->controlHeight = controlHeight;

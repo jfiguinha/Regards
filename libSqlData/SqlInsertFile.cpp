@@ -319,7 +319,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 	wxArrayString files;
     wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
 
-#ifndef __WXGTK__
+#ifdef WIN32
 	
 	wxString msg = "In progress ...";
 	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), parent, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
@@ -344,7 +344,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 #else
 
     
-#ifndef __WXGTK__    
+#ifdef WIN32    
 			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
 			if (false == dialog.Update(i, message))
 			{

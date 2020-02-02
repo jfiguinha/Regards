@@ -1,7 +1,9 @@
 #include <header.h>
 #include "viewerPDF.h"
 #include <tesseract/baseapi.h>
+#undef fract1
 #include <leptonica/allheaders.h>
+#define fract1
 #include <wx/choicdlg.h> 
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>

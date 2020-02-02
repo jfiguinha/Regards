@@ -10,13 +10,14 @@ namespace Regards
 		class CScrollbarHorizontalWnd;
 		class CScrollbarVerticalWnd;
 
-		class ControlSize
-		{
-		public:
-			int controlWidth;
-			int controlHeight;
-			bool useScaleFactor = false;
-		};
+
+        class CControlSize
+        {
+        public:
+            int controlWidth;
+            int controlHeight;
+            bool useScaleFactor = false;
+        };
 
 		class CScrollbarWnd : public CWindowMain
 		{

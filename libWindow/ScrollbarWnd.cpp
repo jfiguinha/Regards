@@ -302,7 +302,7 @@ void CScrollbarWnd::OnSetPosition(wxCommandEvent& event)
 
 void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
 {
-	ControlSize * controlSize = (ControlSize *)event.GetClientData();
+	CControlSize * controlSize = (CControlSize *)event.GetClientData();
 	if (controlSize != nullptr)
 	{
 		if (controlSize->controlWidth != controlWidth || controlSize->controlHeight != controlHeight)
