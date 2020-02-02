@@ -28,7 +28,6 @@
     <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlLinks.cc" />
     <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlOutputDev.cc" />
     <ClCompile Include="..\libextern\poppler_windows-master\utils\InMemoryFile.cc" />
-    <ClCompile Include="BitmapViewerInfosWnd.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ExportOCr.cpp" />
     <ClCompile Include="ExportPDF.cpp" />
@@ -50,7 +49,6 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="BboxText.h" />
-    <ClInclude Include="BitmapViewerInfosWnd.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ExportOcr.h" />
     <ClInclude Include="ExportPDF.h" />

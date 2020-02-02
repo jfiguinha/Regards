@@ -144,7 +144,7 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 	Resize();
 }
 
-void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton)
+void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton, const bool &isTop)
 {
 	CPanelWithClickToolbar * panel = nullptr;
 	if (pos == Pos::wxLEFT || pos == Pos::wxRIGHT)
@@ -254,24 +254,24 @@ void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 	}
 }
 
-void CWindowManager::AddWindow(CWindowOpenGLMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel)
+void CWindowManager::AddWindow(CWindowOpenGLMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop)
 {
 	CWindowToAdd * windowToAdd = new CWindowToAdd();
 	if (window != nullptr)
 	{
 		window->Reparent(this);
 		windowToAdd->SetWindow(window);
-		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel);
+		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel, isTop);
 	}
 }
 
-void CWindowManager::AddWindow(CWindowToAdd * windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel)
+void CWindowManager::AddWindow(CWindowToAdd * windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop)
 {
 	if (windowToAdd != nullptr)
 	{
 		windowToAdd->position = position;
 		windowToAdd->size = size;
-		windowToAdd->isTop = false;
+		windowToAdd->isTop = isTop;
 		windowToAdd->fixe = fixe;
 		windowToAdd->rect = rect;
 		windowToAdd->id = id;
@@ -301,14 +301,14 @@ void CWindowManager::AddWindow(CWindowToAdd * windowToAdd, Pos position, bool fi
 	}
 }
 
-void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel)
+void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop)
 {
 	CWindowToAdd * windowToAdd = new CWindowToAdd();
 	if (window != nullptr)
 	{
 		window->Reparent(this);
 		windowToAdd->SetWindow(window);
-		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel);
+		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel, isTop);
 	}
 }
 

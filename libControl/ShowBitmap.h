@@ -15,7 +15,7 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CShowBitmap : public wxWindow
+		class CShowBitmap : public CWindowMain
 		{
 		public:
 
@@ -42,7 +42,6 @@ namespace Regards
 
 		private:
 
-			void OnSize(wxSizeEvent& event);
 			void OnIdle(wxIdleEvent& evt);
             void OnViewerDblClick(wxCommandEvent& event);
             void OnViewerZoomIn(wxCommandEvent& event);
@@ -70,9 +69,9 @@ namespace Regards
 			bool defaultViewer;
 			bool bitmapWndLocal;
 			bool isDiaporama;
-			int width;
+			//int width;
 			bool transitionEnd;
-			int height;
+			//int height;
             wxTimer * loadingTimer;
             int progressValue;
 			bool fullscreen;

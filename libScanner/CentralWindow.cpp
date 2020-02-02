@@ -1,7 +1,6 @@
 #include <header.h>
 #include "CentralWindow.h"
 #include "ToolbarPDF.h"
-#include "BitmapViewerInfosWnd.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <ConfigParam.h>
@@ -40,7 +39,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 		toolbarPDF->Show(true);
 	}
 
-	previewWindow = new CBitmapViewerInfosWnd(this, SCANNER_PREVIEWINFOWND, frame, theme, false);
+	previewWindow = new CViewerPDF(this, frame, PDFWINDOWID);
 	previewWindow->Show(true);
 
 	this->frame = frame;

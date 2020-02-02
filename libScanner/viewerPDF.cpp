@@ -5,7 +5,7 @@
 #include <wx/choicdlg.h> 
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>
-
+#include "PanelInfosWnd.h"
 #include <LibResource.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
@@ -42,9 +42,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	showBitmapWindow = nullptr;
 	isFullscreen = false;
 	filename = L"";
-	width = 0;
-	height = 0;
-
+	wxRect rect;
 	showToolbar = true;
 	checkValidity = false;
 
@@ -52,6 +50,14 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	CMainParam * config = CMainParamInit::getInstance();
 	if (config != nullptr)
 		checkValidity = config->GetCheckThumbnailValidity();
+
+
+	if (viewerTheme != nullptr)
+	{
+		CThemeSplitter theme;
+		viewerTheme->GetSplitterTheme(&theme);
+		windowManager = new CWindowManager(this, wxID_ANY, theme);
+	}
 
 	//----------------------------------------------------------------------------------------
 	//Panel Thumbnail Video
@@ -66,7 +72,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 			checkValidity = config->GetCheckThumbnailValidity();
 		}
 
-		wxString libelle = "Image List";// CLibResource::LoadStringFromResource(L"LBLTHUMBNAILVIDEO", 1);
+		wxString libelle = "Image List";
 		CThemePane theme;
 		CThemeToolbar themetoolbar;
 		CThemeScrollBar themeScroll;
@@ -76,16 +82,27 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-
-
-		panelVideo = new CPanelWithClickToolbar(this, "CThumbnailVideoPanel", THUMBNAILPDFPANEL, theme, themetoolbar, libelle, isPanelVisible, false, false);
-		
-		thumbnailVideo = new CThumbnailMultiPage(this, wxID_ANY, themeVideo, checkValidity);
-		scrollVideoWindow = new CScrollbarWnd(panelVideo->GetPaneWindow(), thumbnailVideo, wxID_ANY);
+		thumbnailVideo = new CThumbnailMultiPage(windowManager, wxID_ANY, themeVideo, checkValidity);
+		scrollVideoWindow = new CScrollbarWnd(windowManager, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
-		scrollVideoWindow->SetPageSize(1000);
+		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
-		panelVideo->SetWindow(scrollVideoWindow);
+
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailImageList", true, THUMBNAILPDFPANEL, true);
+
+	}
+
+
+	if (viewerTheme != nullptr)
+	{
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
+		CThemePane theme;
+		viewerTheme->GetPaneTheme(&theme);
+		CThemeToolbar themeClickInfosToolbar;
+		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
+		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDSCANNERID);
+		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false, true);
+
 	}
 
 	if (viewerTheme != nullptr)
@@ -93,6 +110,7 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 		CThemeToolbar theme;
 		viewerTheme->GetFiltreToolbarTheme(&theme);
 		filtreToolbar = new CFiltreToolbar(this, wxID_ANY, theme, false);
+		windowManager->AddWindow(filtreToolbar, Pos::wxBOTTOM, true, filtreToolbar->GetHeight(), rect, wxID_ANY, false);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -100,18 +118,26 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	//----------------------------------------------------------------------------------------
 	if (viewerTheme != nullptr)
 	{
-		showBitmapWindow = new CShowBitmap(this, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme);
+		showBitmapWindow = new CShowBitmap(windowManager, SHOWBITMAPVIEWERIDPDF, BITMAPWINDOWVIEWERIDPDF, SCANNER_MAINVIEWERWINDOWID, this, viewerTheme);
+		windowManager->AddWindow(showBitmapWindow, Pos::wxCENTRAL, false, 0, rect, SCANNER_MAINVIEWERWINDOWID, false);
 	}
 
-	filtreToolbar->Show(false);
+	
 
 	Connect(wxEVT_ANIMATIONPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CViewerPDF::AnimationSetPosition));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CViewerPDF::OnSize));
-	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CViewerPDF::OnResize));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CViewerPDF::OnFiltreOK));
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CViewerPDF::OnFiltreCancel));
 	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CViewerPDF::OnShowToolbar));
+
+	windowManager->HideWindow(Pos::wxBOTTOM);
 }
+
+void CViewerPDF::Resize()
+{
+	if (windowManager != nullptr)
+		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+}
+
 
 void CViewerPDF::OnShowToolbar(wxCommandEvent& event)
 {
@@ -159,24 +185,16 @@ void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
 {
 	isEffect = visible;
 	filtreToolbar->SetNumFiltre(filtre);
-	if (filtreToolbar != nullptr)
-	{
-		//if (!filtreToolbar->IsShown())
-		filtreToolbar->Show(true);
-	}
-	Resize();
+	windowManager->ShowWindow(Pos::wxBOTTOM);
+	//Resize();
 }
 
 void CViewerPDF::HideValidationToolbar()
 {
 	isEffect = false;
-	if (filtreToolbar != nullptr)
-	{
-		if (filtreToolbar->IsShown())
-			filtreToolbar->Show(false);
-	}
+	windowManager->HideWindow(Pos::wxBOTTOM);
 	showBitmapWindow->SetBitmapPreviewEffect(0);
-	Resize();
+	//Resize();
 }
 
 wxString CViewerPDF::GetFilename()
@@ -194,33 +212,19 @@ CImageLoadingFormat * CViewerPDF::GetImage()
 CViewerPDF::~CViewerPDF()
 {
 	pageThumbnail.clear();
-
-	
-	delete(thumbnailVideo);
-	delete(scrollVideoWindow);
-	delete(panelVideo);
-	delete(showBitmapWindow);
-	delete(filtreToolbar);
+	delete(windowManager);
 }
 
 
 
 void CViewerPDF::HidePanel()
 {
-	if (panelVideo != nullptr)
-		panelVideo->HidePanel();
-
-	this->RedrawBarPos();
+	windowManager->HidePaneWindow(Pos::wxTOP);
 }
 
 void CViewerPDF::ShowPanelVideoThumbnail()
 {
-	if (panelVideo != nullptr)
-	{
-		panelVideo->ShowPanel();
-	}
-
-	this->RedrawBarPos();
+	windowManager->ShowPaneWindow(Pos::wxTOP);
 }
 
 
@@ -233,94 +237,9 @@ void CViewerPDF::SetPosition(const long &timePosition)
 void CViewerPDF::UpdateScreenRatio()
 {
 	printf("CViewerPDF::UpdateScreenRatio() \n");
-	panelVideo->UpdateScreenRatio();
-	showBitmapWindow->UpdateScreenRatio();
-	this->Resize();
+	windowManager->UpdateScreenRatio();
 }
 
-
-void CViewerPDF::OnResize(wxCommandEvent& event)
-{
-	RedrawBarPos();
-}
-
-void CViewerPDF::Resize()
-{
-	RedrawBarPos();
-}
-
-wxRect CViewerPDF::GetWindowRect()
-{
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
-	return rc;
-}
-
-
-void CViewerPDF::RedrawBarPos()
-{
-	//wxRect rc = GetWindowRect();
-	int bottomHeight = 0;
-	int topHeight = 0;
-
-	if (!isFullscreen && !panelVideo->IsShown())
-	{
-		panelVideo->Show();
-		//if(!thumbnailVideoPanel->IsPanelVideoThumbnailVisible())
-		panelVideo->ShowPanel();
-	}
-
-	if (panelVideo->IsShown())
-	{
-		int iconeHeight = panelVideo->GetHeight();
-		panelVideo->SetSize(0, 0, width, iconeHeight);
-		panelVideo->Refresh();
-		topHeight += iconeHeight;
-	}
-
-
-
-	if (!showToolbar && isFullscreen)
-	{
-		panelVideo->HidePanel(false);
-		bottomHeight = 0;
-		topHeight = 0;
-	}
-
-	if (showBitmapWindow != nullptr)
-	{
-		if (filtreToolbar != nullptr)
-		{
-			if (filtreToolbar->IsShown())
-			{
-				wxRect rcAffichageBitmap;
-				int toolbarHeightSize = filtreToolbar->GetHeight();	    
-				rcAffichageBitmap.x = 0;
-				rcAffichageBitmap.y = 0;
-				rcAffichageBitmap.width = width;
-				rcAffichageBitmap.height = height - (topHeight + bottomHeight);
-				filtreToolbar->SetSize(rcAffichageBitmap.x, (topHeight + rcAffichageBitmap.height) - toolbarHeightSize, rcAffichageBitmap.width, toolbarHeightSize);
-				showBitmapWindow->SetSize(rcAffichageBitmap.x, topHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - toolbarHeightSize);
-			}
-			else
-				showBitmapWindow->SetSize(0, topHeight, width, height - (topHeight + bottomHeight));
-		}
-	}
-
-	printf("CViewerPDF::RedrawBarPos() \n");
-}
-
-
-void CViewerPDF::OnSize(wxSizeEvent& event)
-{
-
-	width = event.GetSize().GetWidth();
-	height = event.GetSize().GetHeight();
-	RedrawBarPos();
-}
 
 void CViewerPDF::AnimationSetPosition(wxCommandEvent& event)
 {

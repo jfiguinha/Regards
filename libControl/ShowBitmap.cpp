@@ -47,7 +47,7 @@ void CShowBitmap::UpdateScreenRatio()
 
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
 	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config)
-	: wxWindow(parent, id, wxPoint(0,0), wxSize(0,0), 0)
+	: CWindowMain("ShowBitmap", parent, id)
 {
 	transitionEnd = false;
 	tempImage = nullptr;
@@ -60,8 +60,7 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	isDiaporama = false;
 	fullscreen = false;
 	showToolbar = true;
-	width = 0;
-	height = 0;
+
 	CThemeBitmapWindow themeBitmap;
 	configRegards = CParamInit::getInstance();
 	CThemeScrollBar themeScroll;
@@ -95,7 +94,6 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
     
     Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CShowBitmap::OnTimerRefresh), nullptr, this);
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
-	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowBitmap::OnSize));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
     Connect(wxEVT_BITMAPZOOMOUT, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomOut));
@@ -250,6 +248,9 @@ void CShowBitmap::ShowToolbar()
 
 void CShowBitmap::Resize()
 {
+	int width = GetWindowWidth();
+	int height = GetWindowHeight();
+
 	if (!showToolbar && fullscreen)
 	{
 		scrollbar->HideHorizontalScroll();
@@ -396,14 +397,6 @@ CRegardsBitmap * CShowBitmap::GetBitmap(const bool &source)
 		return bitmapWindow->GetBitmap(source);
 
 	return nullptr;
-}
-
-void CShowBitmap::OnSize(wxSizeEvent& event)
-{
-    
-	width = event.GetSize().GetWidth();
-	height = event.GetSize().GetHeight();
-	Resize();
 }
 
 void CShowBitmap::OnViewerZoomIn(wxCommandEvent& event)

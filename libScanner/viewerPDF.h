@@ -29,6 +29,7 @@ namespace Regards
 	{
 		
 		class CThumbnailMultiPage;
+		class CPanelInfosWnd;
 
 		class CViewerPDF : public CWindowMain, public CBitmapInterface
 		{
@@ -54,35 +55,27 @@ namespace Regards
 		private:
 			
 			bool GetProcessEnd();
-			void ClosePane(const int& id) {};
-			void RefreshPane(const int& id) {};	
 			void ShowPanelVideoThumbnail();
 			void HidePanel();
-			void Resize();
-			void OnResize(wxCommandEvent& event);
-
-
-
+					   
 
 			void LoadAnimationBitmap(const wxString &filename, const int &numFrame);
-			void OnSize(wxSizeEvent& event);
+
 			void AnimationSetPosition(wxCommandEvent& event);
 			void OnFiltreOK(wxCommandEvent& event);
 			void OnFiltreCancel(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
-
+			void Resize();
 			void ImageSuivante();
 			void ImagePrecedente();
-			void RedrawBarPos();
-			wxRect GetWindowRect();
 			int nbThumbnail;
 
 			//Thumbnail Video
-			CPanelWithClickToolbar * panelVideo;
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailMultiPage * thumbnailVideo;
 			CFiltreToolbar * filtreToolbar;
-
+			CWindowManager * windowManager;
+			CPanelInfosWnd * panelInfosWindow;
 
 			//CPreviewThumbnailSplitter * previewThumbnailSplitter;
 			CShowBitmap * showBitmapWindow;
@@ -91,8 +84,6 @@ namespace Regards
 			wxString filename;
 			int oldAnimationPosition = -1;
 			wxString oldFilename = L"";
-			int width;
-			int height;
 
 			bool showToolbar;
 			int animationPosition;

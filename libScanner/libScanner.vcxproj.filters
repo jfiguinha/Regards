@@ -28,9 +28,6 @@
     <Filter Include="SeparationBar">
       <UniqueIdentifier>{dc28e3ac-f401-4f01-b0df-7f996efe0e5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Splitter">
-      <UniqueIdentifier>{9a856045-5943-441e-996f-70615947c1e5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Panel">
       <UniqueIdentifier>{5c0fea45-d8f9-4bf3-8291-d43d79e2c65d}</UniqueIdentifier>
     </Filter>
@@ -77,9 +74,6 @@
     </ClCompile>
     <ClCompile Include="InfosSeparationBarExplorer.cpp">
       <Filter>SeparationBar</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapViewerInfosWnd.cpp">
-      <Filter>Splitter</Filter>
     </ClCompile>
     <ClCompile Include="PanelInfosWnd.cpp">
       <Filter>Panel</Filter>
@@ -148,9 +142,6 @@
     </ClInclude>
     <ClInclude Include="InfosSeparationBarExplorer.h">
       <Filter>SeparationBar</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapViewerInfosWnd.h">
-      <Filter>Splitter</Filter>
     </ClInclude>
     <ClInclude Include="PanelInfosWnd.h">
       <Filter>Panel</Filter>

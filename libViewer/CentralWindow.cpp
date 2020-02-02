@@ -57,7 +57,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themetoolbar;
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		
-		panelPhotoWnd = new CPanelPhotoWnd(this, CRITERIAFOLDERWINDOWID);
+		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
 		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true);
 
 	}
@@ -88,8 +88,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		thumbnailVideo = new CThumbnailViewerVideo(this, wxID_ANY, themeVideo, checkValidity);
-		scrollVideoWindow = new CScrollbarWnd(this, thumbnailVideo, wxID_ANY);
+		thumbnailVideo = new CThumbnailViewerVideo(windowManager, wxID_ANY, themeVideo, checkValidity);
+		scrollVideoWindow = new CScrollbarWnd(windowManager, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
@@ -122,8 +122,8 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetThumbnailTheme(&themeThumbnail);
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 
-		thumbnailPicture = new CThumbnailViewerPicture(this, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
-		scrollPictureWindow = new CScrollbarWnd(this, thumbnailPicture, wxID_ANY);
+		thumbnailPicture = new CThumbnailViewerPicture(windowManager, THUMBNAILVIEWERPICTURE, themeThumbnail, checkValidity);
+		scrollPictureWindow = new CScrollbarWnd(windowManager, thumbnailPicture, wxID_ANY);
 		scrollPictureWindow->HideVerticalScroll();
 		scrollPictureWindow->SetPageSize(200);
 		scrollPictureWindow->SetLineSize(200);
@@ -160,7 +160,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
-		panelInfosWindow = new CPanelInfosWnd(this, PANELINFOSWNDID, fileGeolocalisation);
+		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID, fileGeolocalisation);
 
 		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 

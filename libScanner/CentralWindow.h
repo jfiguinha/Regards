@@ -36,7 +36,6 @@ namespace Regards
 			void OnPrint(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnExtractPage(wxCommandEvent& event);
-
 			wxString ProcessExtractFile(const vector<int> & listPage);
 			void ProcessFile(const vector<int> & listPage);
 			void ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage, int oldAnimationPosition);
@@ -44,7 +43,7 @@ namespace Regards
 			void RedrawBarPos();
 			void OnSize(wxSizeEvent& event);
 			CToolbarPDF * toolbarPDF;
-			CBitmapViewerInfosWnd * previewWindow;
+			CViewerPDF * previewWindow;
 			int width;
 			int height;
 			wxString filename;
