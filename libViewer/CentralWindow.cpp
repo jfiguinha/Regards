@@ -58,7 +58,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		
 		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
-		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true);
+		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true, true);
 
 	}
 

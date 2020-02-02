@@ -129,13 +129,16 @@ CViewerPDF::CViewerPDF(wxWindow* parent, CScannerFrame * frame, wxWindowID id)
 	Connect(wxEVENT_FILTRECANCEL, wxCommandEventHandler(CViewerPDF::OnFiltreCancel));
 	Connect(wxEVENT_SHOWTOOLBARFILTRE, wxCommandEventHandler(CViewerPDF::OnShowToolbar));
 
-	windowManager->HideWindow(Pos::wxBOTTOM);
+	//windowManager->HideWindow(Pos::wxBOTTOM);
 }
 
 void CViewerPDF::Resize()
 {
 	if (windowManager != nullptr)
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+
+	if (!showValidationToolbar && windowManager->IsWindowVisible(Pos::wxBOTTOM))
+		windowManager->HideWindow(Pos::wxBOTTOM);
 }
 
 
@@ -184,6 +187,7 @@ void CViewerPDF::AnimationPicturePrevious()
 void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
 {
 	isEffect = visible;
+	showValidationToolbar = true;
 	filtreToolbar->SetNumFiltre(filtre);
 	windowManager->ShowWindow(Pos::wxBOTTOM);
 	//Resize();
@@ -192,6 +196,7 @@ void CViewerPDF::ShowValidationToolbar(const bool &visible, const int &filtre)
 void CViewerPDF::HideValidationToolbar()
 {
 	isEffect = false;
+	showValidationToolbar = false;
 	windowManager->HideWindow(Pos::wxBOTTOM);
 	showBitmapWindow->SetBitmapPreviewEffect(0);
 	//Resize();
@@ -271,6 +276,9 @@ void CViewerPDF::LoadAnimationBitmap(const wxString &filename, const int &numFra
 
 		showBitmapWindow->SetBitmap(image, false);
 	}
+
+	if (panelInfosWindow != nullptr)
+		panelInfosWindow->SetFile(filename);
 }
 
 void CViewerPDF::ImageSuivante()

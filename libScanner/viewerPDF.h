@@ -69,7 +69,7 @@ namespace Regards
 			void ImageSuivante();
 			void ImagePrecedente();
 			int nbThumbnail;
-
+			bool showValidationToolbar = false;
 			//Thumbnail Video
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailMultiPage * thumbnailVideo;

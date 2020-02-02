@@ -110,7 +110,7 @@ namespace Regards
 			bool OnLButtonDown();
 			void OnLButtonUp();
 			void UpdateScreenRatio();
-
+			bool IsWindowVisible(Pos position);
 			void SetNewPosition(CSeparationBar * separationBar);
 			virtual void Resize();
 			void UnInit();
