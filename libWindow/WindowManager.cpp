@@ -352,7 +352,7 @@ void CWindowManager::Init_bottom()
 
 		if (left != nullptr)
 		{
-			if (left->isTop)
+			if (left->isTop && !left->isHide)
 			{
 				if (left->fixe)
 				{
@@ -377,7 +377,7 @@ void CWindowManager::Init_bottom()
 
 		if (right != nullptr)
 		{
-			if (right->isTop)
+			if (right->isTop && !right->isHide)
 			{
 				if (right->fixe)
 				{
@@ -453,7 +453,7 @@ void CWindowManager::Init_top()
 
 		if (left != nullptr)
 		{
-			if (left->isTop)
+			if (left->isTop && !left->isHide)
 			{
 				if (left->fixe)
 				{
@@ -476,7 +476,7 @@ void CWindowManager::Init_top()
 
 		if (right != nullptr)
 		{
-			if (right->isTop)
+			if (right->isTop && !right->isHide)
 			{
 				if (right->fixe)
 				{

@@ -78,7 +78,7 @@ namespace Regards
 			bool showH;
             bool _showV = false;
             bool _showH = false;
-            bool useScaleFactor = false;
+            bool _useScaleFactor = false;
 			int posHauteur;
 			int posLargeur;
 			int controlHeight;

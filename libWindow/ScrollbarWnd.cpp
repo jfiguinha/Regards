@@ -309,7 +309,7 @@ void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
 		{
 			controlWidth = controlSize->controlWidth;
 			controlHeight = controlSize->controlHeight;
-			this->useScaleFactor = useScaleFactor;
+			_useScaleFactor = controlSize->useScaleFactor;
 			Resize();
 		}
 		delete controlSize;
@@ -414,16 +414,18 @@ void CScrollbarWnd::Resize()
 	int pictureHeight = GetWindowHeight();
 	bool _showScrollV = false;
 	bool _showScrollH = false;
+    
 #ifdef __WXGTK__
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
+    
 
-    if(!useScaleFactor)
+    if(!_useScaleFactor)
         scale_factor = 1.0f;
-    printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight);
-
+    printf("CScrollbarWnd::Resize() controlHeight : %d pictureHeight : %d \n", controlHeight, pictureHeight* scale_factor);
+    printf("CScrollbarWnd::Resize() controlWidth : %d pictureWidth : %d \n", controlWidth, pictureWidth* scale_factor);
     if(scrollHorizontal != nullptr && scrollVertical != nullptr)
     {   
 		bool valueH = false;
