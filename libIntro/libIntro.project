@@ -76,6 +76,7 @@
         <IncludePath Value="../libIntro"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
