@@ -14,6 +14,8 @@ using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
 
+class CFFmfc;
+
 #ifdef RENDEROPENGL  
 class CVideoControlSoft : public CWindowOpenGLMain, public CVideoControlInterface
 #else
@@ -101,5 +103,5 @@ private:
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;
-    
+	CFFmfc * ffmfc;
 };

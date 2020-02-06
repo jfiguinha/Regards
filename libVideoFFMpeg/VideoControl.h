@@ -17,6 +17,7 @@
 #include <d3d9.h>
 
 class CRegardsBitmap;
+class CFFmfc;
 
 using namespace Regards::OpenCL;
 using namespace std;
@@ -147,6 +148,7 @@ private:
 	int windowHeight;
 	bool dxva2ToOpenGLWorking;
 	HANDLE hDevice;
+	CFFmfc * ffmfc;
 };
 
 #endif

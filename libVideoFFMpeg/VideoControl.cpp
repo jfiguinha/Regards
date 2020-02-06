@@ -120,6 +120,8 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 	openclContext = nullptr;
 #endif
 	openclEffectYUV = nullptr;
+
+	ffmfc = new CFFmfc();
 }
 
 void CVideoControl::VideoRotation(wxCommandEvent& event)
@@ -194,7 +196,7 @@ void CVideoControl::OnIdle(wxIdleEvent& evt)
 		exit = true;
 		if (!videoEnd)
 		{
-			if(ffmfc_quit())
+			if(ffmfc->Quit())
 			{
 				wxCommandEvent localevent;
 				EndVideoThread(localevent);
@@ -212,7 +214,7 @@ void CVideoControl::OnShowFPS(wxTimerEvent& event)
 
 void CVideoControl::PlayVideo(CVideoControl * sdlWindow)
 {
-    ffmfc_play(sdlWindow, CConvertUtility::ConvertToStdString(sdlWindow->filename));
+	sdlWindow->ffmfc->Play(sdlWindow, CConvertUtility::ConvertToStdString(sdlWindow->filename));
     wxCommandEvent event(EVENT_ENDVIDEOTHREAD);
     wxPostEvent(sdlWindow, event);
 }
@@ -300,6 +302,9 @@ CVideoControl::~CVideoControl()
 
 	if(pictureSubtitle != nullptr)
 		delete pictureSubtitle;
+
+	if (ffmfc)
+		delete ffmfc;
 }
 
 void CVideoControl::SetSubtitulePicture(CRegardsBitmap * picture)
@@ -361,7 +366,7 @@ int CVideoControl::PlayMovie(const wxString &movie)
 void CVideoControl::VideoStart(wxCommandEvent& event)
 {
 	eventPlayer->OnVideoStart();
-    ffmfc_play();
+	ffmfc->Play();
 	pause = false;
     videoStart =true;
 }
@@ -1025,7 +1030,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 int CVideoControl::ChangeSubtitleStream(int newStreamSubtitle)
 {
-	ffmfc_change_subtitle_stream(newStreamSubtitle);
+	ffmfc->Change_subtitle_stream(newStreamSubtitle);
 	SetVideoPosition(videoPosition / 1000);
 	return 0;
 }
@@ -1033,7 +1038,7 @@ int CVideoControl::ChangeSubtitleStream(int newStreamSubtitle)
 
 int CVideoControl::ChangeAudioStream(int newStreamAudio)
 {
-	ffmfc_change_audio_stream(newStreamAudio);
+	ffmfc->Change_audio_stream(newStreamAudio);
 	SetVideoPosition(videoPosition / 1000);
 	return 0;
 }
@@ -1042,7 +1047,7 @@ void CVideoControl::OnPlay()
 {
 	if (pause && !videoEnd)
 	{
-		ffmfc_play_pause();
+		ffmfc->Play_pause();
 	}
 	else if(videoEnd)
     {
@@ -1056,7 +1061,7 @@ void CVideoControl::OnStop()
 {
 	exit = true;
 	stopVideo = true;
-    if(ffmfc_quit())
+    if(ffmfc->Quit())
 	{
 		wxCommandEvent localevent;
 		EndVideoThread(localevent);
@@ -1068,7 +1073,7 @@ void CVideoControl::OnPause()
 {
 	if (!pause)
 	{
-		ffmfc_play_pause();
+		ffmfc->Play_pause();
 	}
 	pause = true;
 }
@@ -1081,7 +1086,7 @@ void CVideoControl::SetVideoDuration(int64_t duration)
 
 void CVideoControl::SetVideoPosition(int64_t pos)
 {
-	ffmfc_SetTimePosition(pos * 1000 * 1000);
+	ffmfc->SetTimePosition(pos * 1000 * 1000);
 }
 
 void CVideoControl::SetCurrentclock(wxString message)
@@ -1099,17 +1104,17 @@ void CVideoControl::SetPos(int64_t pos)
 
 void CVideoControl::VolumeUp()
 {
-	ffmfc_VolumeUp();
+	ffmfc->VolumeUp();
 }
 
 void CVideoControl::VolumeDown()
 {
-	ffmfc_VolumeDown();
+	ffmfc->VolumeDown();
 }
 
 int CVideoControl::GetVolume()
 {
-	return ffmfc_GetVolume();
+	return ffmfc->GetVolume();
 }
 
 void CVideoControl::OnRButtonDown(wxMouseEvent& event)
@@ -1294,7 +1299,7 @@ void CVideoControl::Resize()
      updateContext = true;
      
     if(videoStart)
-        ffmfc_videoDisplaySize(GetWindowWidth(),GetWindowHeight() );
+		ffmfc->VideoDisplaySize(GetWindowWidth(),GetWindowHeight() );
         
     if(pause && isffmpegDecode && copyFrameBuffer != nullptr)
     {

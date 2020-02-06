@@ -183,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="ffmfcpimpl.h" />
     <ClInclude Include="ffmpeg.h" />
     <ClInclude Include="ffmpegToBitmap.h" />
     <ClInclude Include="ffmpeg_dxva2.h" />
@@ -200,6 +201,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ffmfcpimpl.cpp" />
     <ClCompile Include="ffmpegToBitmap.cpp" />
     <ClCompile Include="ffmpeg_dxva2.cpp" />
     <ClCompile Include="ffplaycore.cpp" />

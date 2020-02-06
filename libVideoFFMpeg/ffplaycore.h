@@ -13,53 +13,11 @@
  * This software transplant ffplay to Microsoft VC++ environment. 
  * And use MFC to build a simple Graphical User Interface. 
  */
+
 #include "VideoControlInterface.h"
-//#include "ffplaymfc.h"
-//#include "ffplaymfcDlg.h"
-//#include "afxdialogex.h"
-//--------------
-#include <inttypes.h>
-#include <math.h>
-#include <limits.h>
-#include <signal.h>
 
-extern "C"
-{
-#include "libavutil/avstring.h"
-#include "libavutil/mathematics.h"
-#include "libavutil/pixdesc.h"
-#include "libavutil/imgutils.h"
-#include "libavutil/dict.h"
-#include "libavutil/parseutils.h"
-#include "libavutil/samplefmt.h"
-#include "libavutil/avassert.h"
-#include "libavutil/time.h"
-#include "libavformat/avformat.h"
-#include "libavdevice/avdevice.h"
-#include "libswscale/swscale.h"
-#include "libavutil/opt.h"
-#include "libavcodec/avfft.h"
-#include "libswresample/swresample.h"
-#include "libavutil/display.h"
-}
+class CFFmfcPimpl;
 
-#include <SDL.h>
-#include <SDL_thread.h>
-
-//#include "cmdutils.h"
-
-#include <assert.h>
-
-//²¹³ä¶¨Òå
-//#define INT64_MIN       (-9223372036854775807i64 - 1)
-//#define INT64_MAX       9223372036854775807i64
-
-//×î¶à´æ´¢µÄÖ¡ÐÅÏ¢
-#define MAX_FRAME_NUM 10000
-//×î¶à´æ´¢µÄPacketÐÅÏ¢
-#define MAX_PACKET_NUM 10000
-//URL³¤¶È
-#define MAX_URL_LENGTH 500
 
 class CBitmapToShow
 {
@@ -75,64 +33,47 @@ public:
     //SDL_Rect displayRect;
 };
 
+class CFFmfc
+{
+public:
+	CFFmfc();
+	~CFFmfc();
 
-//¾²Ì¬º¯ÊýÖ»ÄÜÔÚÉùÃ÷ËüµÄÎÄ¼þµ±ÖÐ¿É¼û£¬²»ÄÜ±»ÆäËûÎÄ¼þËùµ÷ÓÃ£¬Ò²¾ÍÊÇËµ¸Ã¾²Ì¬º¯ÊýÖ»
-//ÄÜÔÚÆä¶¨ÒåµÄ.cpp»ò.cÖÐµ÷ÓÃ£¬ÔÚÆäËü.cpp»ò.cÎÄ¼þµÄº¯ÊýÀïÊÇ²»ÄÜ±»µ÷ÓÃµÄ¡£¡±
-//ÐèÒª¶Ôstatic void toggle_pause(VideoState *is)½øÐÐ·â×°
+	//Send Command "Pause"
+	void Play_pause();
+	//Send Command "Step"
+	void Seek_step();
+	//Send Command "FullScreen"
+	void Play_fullcreen();
+	//Send Command "Seek"
+	void Seek(int time);
+	//Send Command "AspectRatio"
+	void Aspectratio(int num, int den);
+	//Send Command "WindowSize"
+	void Size(int percentage);
+	//Send Command "Audio Display Mode"
+	void Audio_display(int mode);
+	void Change_audio_stream(int newStreamIndex);
+	void Change_subtitle_stream(int newStreamIndex);
+	//Send Command "Quit"
+	bool Quit();
+	void VolumeUp();
+	void VolumeDown();
+	int GetVolume();
+	void SetTimePosition(int64_t time);
+	//Main function
+	int Play(CVideoControlInterface * control, string filename);
+	void Play();
+	//Reset
+	int Reset_index();
+	//Seek Bar
+	void Seek_bar(int pos);
+	//Video display Size
+	void VideoDisplaySize(int width, int height);
+	void SetOutputMode(int outputMode);
+	void SetVideoParameter(int angle, int flipV, int flipH);
 
-//·¢ËÍ¡°ÔÝÍ£¡±ÃüÁî
-//Send Command "Pause"
-void ffmfc_play_pause();
+private:
+	CFFmfcPimpl * _pimpl;
+};
 
-//·¢ËÍ¡°ÖðÖ¡¡±ÃüÁî
-//Send Command "Step"
-void ffmfc_seek_step();
-
-//·¢ËÍ¡°È«ÆÁ¡±ÃüÁî
-//Send Command "FullScreen"
-void ffmfc_play_fullcreen();
-
-//·¢ËÍ¡°Ç°½ø/ºóÍË¡±ÃüÁî
-//Send Command "Seek"
-void ffmfc_seek(int time);
-
-//·¢ËÍ¡°¿í¸ß±È¡±ÃüÁî
-//Send Command "AspectRatio"
-void ffmfc_aspectratio(int num,int den);
-
-//·¢ËÍ¡°´óÐ¡¡±ÃüÁî
-//Send Command "WindowSize"
-void ffmfc_size(int percentage);
-
-//·¢ËÍ¡°´°¿Ú»­ÃæÄÚÈÝ¡±ÃüÁî
-//Send Command "Audio Display Mode"
-void ffmfc_audio_display(int mode);
-
-void ffmfc_change_audio_stream(int newStreamIndex);
-void ffmfc_change_subtitle_stream(int newStreamIndex);
-//·¢ËÍ¡°ÍË³ö¡±ÃüÁî
-//Send Command "Quit"
-bool ffmfc_quit();
-
-void ffmfc_VolumeUp();
-void ffmfc_VolumeDown();
-int ffmfc_GetVolume();
-void ffmfc_SetTimePosition(int64_t time);
-//½âÂëÖ÷º¯Êý
-//Main function
-int ffmfc_play(CVideoControlInterface * control, string filename);
-void ffmfc_play();
-//¸´Î»
-//Reset
-int ffmfc_reset_index();
-
-//²¥·Å½ø¶È
-//Seek Bar
-void ffmfc_seek_bar(int pos);
-
-//Video display Size
-void ffmfc_videoDisplaySize(int width, int height);
-
-void ffmfc_SetOutputMode(int outputMode);
-
-void ffmfc_SetVideoParameter(int angle, int flipV, int flipH);
