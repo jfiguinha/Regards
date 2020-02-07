@@ -207,6 +207,22 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
+void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement)
+{
+	TRACE();
+	wxCommandEvent evt(wxEVENT_LOADPICTURE);
+	CPictureElement * pictureElement = new CPictureElement();
+	pictureElement->filename = filename;
+	pictureElement->numElement = numElement;
+	evt.SetClientData(pictureElement);
+	this->GetEventHandler()->AddPendingEvent(evt);
+	/*
+	LoadPictureInThread(filename, numElement);
+	if (thumbnailPicture != nullptr)
+		thumbnailPicture->SetActifItem(numElement, true);
+	*/
+}
+
 void CCentralWindow::HideToolbar()
 {
 	showToolbar = false;
@@ -685,7 +701,7 @@ void CCentralWindow::ScreenMode()
 	}
 }
 
-
+/*
 void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 {
 	TRACE();
@@ -695,6 +711,7 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
 	delete pictureElement;
 }
+*/
 
 bool CCentralWindow::GetProcessEnd()
 {

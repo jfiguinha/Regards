@@ -811,12 +811,15 @@ void CMainWindow::UpdatePicture()
 		{
 			if (firstFileToShow != L"")
 			{
+				/*
 				wxCommandEvent evt(wxEVENT_LOADPICTURE);
 				CPictureElement * pictureElement = new CPictureElement();
 				pictureElement->filename = firstFileToShow;
 				pictureElement->numElement = numElement;
 				evt.SetClientData(pictureElement);
 				centralWnd->GetEventHandler()->AddPendingEvent(evt);
+				*/
+				centralWnd->LoadPicture(firstFileToShow, numElement);
 				filename = firstFileToShow;
 			}
 		}
@@ -1096,32 +1099,37 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 void CMainWindow::LoadPicture()
 {
 	bool isValid = false;
-	wxString photoName = imageList->GetFilePath(numElement, isValid);
+	this->filename = imageList->GetFilePath(numElement, isValid);
 
 	if (!videoStart)
 	{
 
 		if (isValid)
 		{
-			if (firstFileToShow != photoName)
+			if (firstFileToShow != this->filename)
 			{
-				firstFileToShow = photoName;
-				this->filename = photoName;
-				wxCommandEvent evt(wxEVENT_LOADPICTURE);
-				CPictureElement * pictureElement = new CPictureElement();
-				pictureElement->filename = firstFileToShow;
-				pictureElement->numElement = numElement;
-				evt.SetClientData(pictureElement);
-				centralWnd->GetEventHandler()->AddPendingEvent(evt);
+				firstFileToShow = this->filename;
+				centralWnd->LoadPicture(firstFileToShow, numElement);
 			}
-			this->filename = photoName;
 		}
 	}
 	else if (videoStart)
 	{
 		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
-		if (showVideoWindow != nullptr)
-			showVideoWindow->StopVideo(photoName);
+
+
+		CLibPicture libPicture;
+		if (!libPicture.TestIsVideo(this->filename))
+		{
+			centralWnd->LoadPicture(this->filename, numElement);
+			if (showVideoWindow != nullptr)
+				showVideoWindow->StopVideo("");
+		}
+		else
+		{
+			if (showVideoWindow != nullptr)
+				showVideoWindow->StopVideo(this->filename);
+		}
 	}
 }
 
@@ -1299,12 +1307,7 @@ void CMainWindow::ImagePrecedente()
 
 void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
-	wxCommandEvent evt(wxEVENT_LOADPICTURE);
-	CPictureElement * pictureElement = new CPictureElement();
-	pictureElement->filename = filename;
-	pictureElement->numElement = numElement;
-	evt.SetClientData(pictureElement);
-	centralWnd->GetEventHandler()->AddPendingEvent(evt);
+	centralWnd->LoadPicture(filename, numElement);
 }
 
 

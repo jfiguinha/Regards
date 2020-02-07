@@ -1273,17 +1273,20 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 
 void CVideoControl::Resize()
 {
-     updateContext = true;
-     
-    if(videoStart)
-		ffmfc->VideoDisplaySize(GetWindowWidth(),GetWindowHeight() );
-        
-    if(pause && isffmpegDecode && copyFrameBuffer != nullptr)
-    {
-         SetFrameData(copyFrameBuffer);
-    } 
+	if (!stopVideo)
+	{
+		updateContext = true;
 
-	Refresh();
+		if (videoStart)
+			ffmfc->VideoDisplaySize(GetWindowWidth(), GetWindowHeight());
+
+		if (pause && isffmpegDecode  && copyFrameBuffer != nullptr)
+		{
+			SetFrameData(copyFrameBuffer);
+		}
+
+		Refresh();
+	}
 }
 
 #endif
