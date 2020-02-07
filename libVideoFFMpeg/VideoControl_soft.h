@@ -40,7 +40,7 @@ public:
 	void UpdateFiltre(CEffectParameter * effectParameter);
 	CEffectParameter * GetParameter();
 	void OnPlay();
-	void OnStop();
+	void OnStop(wxString photoName);
 	void OnPause();
 	int PlayMovie(const wxString &movie);
 

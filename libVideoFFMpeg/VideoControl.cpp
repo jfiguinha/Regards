@@ -338,8 +338,7 @@ int CVideoControl::PlayMovie(const wxString &movie)
 	}
 	else if(movie != filename)
 	{
-		OnStop();
-		standByMovie = movie;
+		OnStop(movie);
 	}
 
 	return 0;
@@ -1039,16 +1038,12 @@ void CVideoControl::OnPlay()
 	pause = false;
 }
 
-void CVideoControl::OnStop()
+void CVideoControl::OnStop(wxString photoName)
 {
 	exit = true;
 	stopVideo = true;
-    if(ffmfc->Quit())
-	{
-		wxCommandEvent localevent;
-		EndVideoThread(localevent);
-		//videoEnd = true;
-	}
+	ffmfc->Quit();
+	standByMovie = photoName;
 }
 
 void CVideoControl::OnPause()

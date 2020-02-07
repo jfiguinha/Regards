@@ -567,7 +567,7 @@ int CFFmfc::Play(CVideoControlInterface * control, string filename)
 
 	_pimpl->autoexit=1;
 	
-
+	/*
 #ifndef SDL2
 	SDL_EventState(SDL_ACTIVEEVENT, SDL_IGNORE);
 #endif
@@ -577,6 +577,7 @@ int CFFmfc::Play(CVideoControlInterface * control, string filename)
 	if (av_lockmgr_register(_pimpl->lockmgr)) {
 		_pimpl->do_exit(nullptr);
 	}
+	*/
 
 	av_init_packet(&_pimpl->flush_pkt);
 	_pimpl->flush_pkt.data = (uint8_t *)(intptr_t)"FLUSH";

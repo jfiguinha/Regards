@@ -365,12 +365,12 @@ void CShowVideo::UpdateScreenRatio()
     this->Resize();
 }
 
-void CShowVideo::StopVideo()
+void CShowVideo::StopVideo(wxString photoName)
 {
 	play = false;
 	ShowSliderToolbar(true);
 	videoSlider->SetPastSecondTime(0);
-	videoWindow->OnStop();
+	videoWindow->OnStop(photoName);
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
 #else

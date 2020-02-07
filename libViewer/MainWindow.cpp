@@ -68,7 +68,6 @@ wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar)
 	: CWindowMain("CMainWindow",parent, id)
 {
-	sendMessageVideoStop = false;
 	//loadPicture = true;
 	fullscreen = false;
 	startDiaporama = false;
@@ -1096,10 +1095,12 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 
 void CMainWindow::LoadPicture()
 {
+	bool isValid = false;
+	wxString photoName = imageList->GetFilePath(numElement, isValid);
+
 	if (!videoStart)
 	{
-		bool isValid = false;
-		wxString photoName = imageList->GetFilePath(numElement, isValid);
+
 		if (isValid)
 		{
 			if (firstFileToShow != photoName)
@@ -1114,17 +1115,13 @@ void CMainWindow::LoadPicture()
 				centralWnd->GetEventHandler()->AddPendingEvent(evt);
 			}
 			this->filename = photoName;
-			//loadPicture = false;
-			sendMessageVideoStop = false;
 		}
 	}
-	else if (videoStart && !sendMessageVideoStop)
+	else if (videoStart)
 	{
 		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
 		if (showVideoWindow != nullptr)
-			showVideoWindow->StopVideo();
-
-		sendMessageVideoStop = true;
+			showVideoWindow->StopVideo(photoName);
 	}
 }
 

@@ -59,7 +59,7 @@ public:
     virtual void SetVideoPosition(int64_t pos) = 0;
     
 	virtual void OnPlay() = 0;
-	virtual void OnStop() = 0;
+	virtual void OnStop(wxString photoName) = 0;
 	virtual void OnPause() = 0;
 	virtual int PlayMovie(const wxString &movie) = 0;    
     

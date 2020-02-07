@@ -225,6 +225,7 @@ public:
 
 #ifdef SDL2
 
+		//putenv("SDL_AUDIO_CHANNELS=2");
 		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------
 		//³õÊ¼»¯

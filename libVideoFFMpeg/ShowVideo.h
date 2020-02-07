@@ -38,7 +38,6 @@ public:
 	CEffectParameter * GetParameter();
 	void UpdateFiltre(CEffectParameter * effectParameter);
 
-	void PositionVideo(const int64_t &position);
 	void SlidePosChange(const int &position, const wxString &key){};
 	void ZoomPos(const int &position){};
 	void MoveSlider(const int64_t &position);
@@ -50,7 +49,7 @@ public:
 	void FlipHorizontal();
 	CVideoControlInterface * GetVideoControl();
 
-	void StopVideo();
+	void StopVideo(wxString photoName);
 	void PlayVideo();
 	void PauseVideo();
 			
