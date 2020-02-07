@@ -54,6 +54,14 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.41
+- Correct bug on add folder
+- Video engine rewrite
+
+News for version 2.40
+- new Window Manager
+- Bug correction
+
 News for version 2.35
 - new Picture mode
 - Add Tbb library for image optimization

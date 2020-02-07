@@ -1,6 +1,9 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.41
+- Correct bug on add folder
+- Video engine rewrite
 News for version 2.40
 - new Window Manager
 - Bug correction
