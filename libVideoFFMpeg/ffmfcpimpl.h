@@ -518,7 +518,9 @@ public:
 	const char *subtitle_codec_name = 0;
 	const char *video_codec_name = 0;
 	int rdftspeed = 20;
+#ifdef WIN32
 	DXVA2Context * dxva2 = nullptr;
+#endif
 	wxWindow * parent = nullptr;
 	/* current context */
 	int64_t audio_callback_time = 0;
