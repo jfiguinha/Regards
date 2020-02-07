@@ -86,6 +86,11 @@ A/V sync as SDL does not have hardware buffer fullness info. */
 #define FF_ALLOC_EVENT   (SDL_USEREVENT)
 #define FF_REFRESH_EVENT (SDL_USEREVENT + 1)
 #define FF_QUIT_EVENT    4096
+#define FF_STEP_EVENT    FF_QUIT_EVENT + 1
+#define FF_PAUSE_EVENT	FF_QUIT_EVENT + 2
+#define FF_PLAY_EVENT	FF_QUIT_EVENT + 3
+#define FF_ASPECT_EVENT	FF_QUIT_EVENT + 4
+#define FF_AUDIODISPLAY_EVENT	FF_QUIT_EVENT + 5
 
 //自定义一个事件，用于调整播放进度
 #define SEEK_BAR_EVENT    (SDL_USEREVENT + 4)
@@ -94,6 +99,8 @@ A/V sync as SDL does not have hardware buffer fullness info. */
 #define SET_POSITION (SDL_USEREVENT + 7)
 #define CHANGE_AUDIO (SDL_USEREVENT + 8)
 #define CHANGE_SUBTITLE (SDL_USEREVENT + 9)
+#define VOLUME_EVENT  (SDL_USEREVENT + 10)
+#define SET_SEEKPOSITION (SDL_USEREVENT + 11)
 
 #define ALPHA_BLEND(a, oldp, newp, s)\
 	((((oldp << s) * (255 - (a))) + (newp * (a))) / (255 << s))
@@ -467,10 +474,6 @@ public:
 
 	void toggle_audio_display(VideoState *is, int mode);
 
-	/* handle an event sent by the GUI */
-	//处理各种鼠标键盘命令,包括各种事件
-	void event_loop(VideoState *cur_stream);
-
 	static int lockmgr(void **mtx, enum AVLockOp op);
 
 	//SOUND Volume
@@ -485,11 +488,11 @@ public:
 	string input_filename;
 	int screen_width = 0;
 	int screen_height = 0;
-	int audio_disable;
-	int video_disable;
+	int audio_disable = 0;
+	int video_disable = 0;
 	int wanted_stream[AVMEDIA_TYPE_NB] = { -1,-1,0,-1,0 };
 	int seek_by_bytes = -1;
-	int display_disable;
+	int display_disable = 0;
 	int show_status = 0;
 	int av_sync_type = AV_SYNC_AUDIO_MASTER;
 	int64_t start_time = AV_NOPTS_VALUE;
@@ -504,21 +507,21 @@ public:
 	enum AVDiscard skip_loop_filter = AVDISCARD_DEFAULT;
 	int error_concealment = 3;
 	int decoder_reorder_pts = -1;
-	int autoexit;
-	int exit_on_keydown;
-	int exit_on_mousedown;
+	int autoexit = 0;
+	int exit_on_keydown = 0;
+	int exit_on_mousedown = 0;
 	int loop = 1;
 	int framedrop = -1;
 	int infinite_buffer = -1;
 	enum ShowMode show_mode = SHOW_MODE_NONE;
-	const char *audio_codec_name;
-	const char *subtitle_codec_name;
-	const char *video_codec_name;
+	const char *audio_codec_name = 0;
+	const char *subtitle_codec_name = 0;
+	const char *video_codec_name = 0;
 	int rdftspeed = 20;
 	DXVA2Context * dxva2 = nullptr;
-
+	wxWindow * parent = nullptr;
 	/* current context */
-	int64_t audio_callback_time;
+	int64_t audio_callback_time = 0;
 
 	AVPacket flush_pkt;
 

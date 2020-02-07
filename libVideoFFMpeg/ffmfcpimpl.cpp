@@ -354,7 +354,19 @@ void CFFmfcPimpl::video_display(VideoState *is)
 int CFFmfcPimpl::refresh_thread(void *opaque)
 {
 	VideoState *is = (VideoState *)opaque;
-	while (!is->abort_request) {
+	while (!is->abort_request) 
+	{
+		wxCommandEvent evt(FF_REFRESH_EVENT);
+		evt.SetClientData(opaque);
+		if (is->ic != nullptr)
+		{
+			if (!is->refresh && (!is->paused || is->force_refresh)) {
+				is->refresh = 1;
+				is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
+			}
+		}
+		
+		/*
 		SDL_Event event;
 		event.type = FF_REFRESH_EVENT;
 		event.user.data1 = opaque;
@@ -365,6 +377,8 @@ int CFFmfcPimpl::refresh_thread(void *opaque)
 				SDL_PushEvent(&event);
 			}
 		}
+		*/
+
 
 		if (CMasterWindow::endProgram)
 			return 0;
@@ -2224,12 +2238,17 @@ fail:
 		avformat_close_input(&is->ic);
 	}
 
-	if (ret != 0) {
+	if (ret != 0) 
+	{
+		wxCommandEvent evt(FF_QUIT_EVENT);
+		evt.SetClientData(is);
+		is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
+		/*
 		SDL_Event event;
-
 		event.type = FF_QUIT_EVENT;
 		event.user.data1 = is;
 		SDL_PushEvent(&event);
+		*/
 	}
 	SDL_DestroyMutex(wait_mutex);
 	return 0;
@@ -2409,264 +2428,7 @@ void CFFmfcPimpl::toggle_audio_display(VideoState *is, int mode)
 	SDL_UpdateRect(dlg->screen, is->xleft, is->ytop, is->width, is->height);
 #endif
 }
-/* handle an event sent by the GUI */
-//处理各种鼠标键盘命令,包括各种事件
-void CFFmfcPimpl::event_loop(VideoState *cur_stream)
-{
-	SDL_Event event;
-	double incr, pos, frac;
 
-	for (;;) {
-
-		double x;
-		//判断退出-------
-		if (exit_remark == 1)
-			break;
-		//---------------
-		if (cur_stream->abort_request)
-			break;
-
-		SDL_WaitEvent(&event);
-		switch (event.type) {
-#ifdef SDL2
-		case SDL_WINDOWEVENT:
-			switch (event.window.event)
-			{
-			case SDL_WINDOWEVENT_RESIZED:
-				screen_width = cur_stream->width = event.window.data1;
-				screen_height = cur_stream->height = event.window.data2;
-				cur_stream->force_refresh = 1;
-				break;
-
-			case SDL_WINDOWEVENT_EXPOSED:
-				cur_stream->force_refresh = 1;
-				break;
-			}
-			break;
-#endif
-		case SDL_KEYDOWN:
-			if (exit_on_keydown)
-			{
-				cur_stream->_pimpl->do_exit(cur_stream);
-				break;
-			}
-			switch (event.key.keysym.sym) {
-			case SDLK_ESCAPE:
-			case SDLK_q:
-				cur_stream->_pimpl->do_exit(cur_stream);
-				break;
-			case SDLK_p:
-				//暂停
-			case SDLK_SPACE:
-				toggle_pause(cur_stream);
-				break;
-			case SDLK_z:
-				toggle_play(cur_stream);
-				break;
-			case SDLK_s: // S: Step to next frame
-				step_to_next_frame(cur_stream);
-				break;
-			case SDLK_a:
-			{
-				//stream_cycle_channel(cur_stream, AVMEDIA_TYPE_AUDIO);
-				int newaudioIndex = event.window.data1;
-				stream_change_stream(cur_stream, AVMEDIA_TYPE_AUDIO, newaudioIndex);
-			}
-			break;
-			case SDLK_v:
-				stream_cycle_channel(cur_stream, AVMEDIA_TYPE_VIDEO);
-				break;
-			case SDLK_t:
-				stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
-				break;
-				//修改了一下，三中显示模式分成了三个键
-			case SDLK_w:
-				toggle_audio_display(cur_stream, SHOW_MODE_VIDEO);
-				cur_stream->force_refresh = 1;
-				break;
-			case SDLK_e:
-				toggle_audio_display(cur_stream, SHOW_MODE_WAVES);
-				cur_stream->force_refresh = 1;
-				break;
-			case SDLK_r:
-				toggle_audio_display(cur_stream, SHOW_MODE_RDFT);
-				cur_stream->force_refresh = 1;
-				break;
-			case SDLK_y:
-				cur_stream->v_show_mode = SHOW_MODE_Y;
-				break;
-			case SDLK_PAGEUP:
-				incr = 600.0;
-				goto do_seek;
-			case SDLK_PAGEDOWN:
-				incr = -600.0;
-				goto do_seek;
-				//左方向键
-			case SDLK_LEFT:
-				incr = -10.0;
-				goto do_seek;
-			case SDLK_RIGHT:
-				incr = 10.0;
-				goto do_seek;
-			case SDLK_UP:
-				incr = 60.0;
-				goto do_seek;
-			case SDLK_DOWN:
-				incr = -60.0;
-
-			do_seek:
-				if (seek_by_bytes) {
-					if (cur_stream->video_stream >= 0 && cur_stream->video_current_pos >= 0) {
-						pos = cur_stream->video_current_pos;
-					}
-					else if (cur_stream->audio_stream >= 0 && cur_stream->audio_pkt.pos >= 0) {
-						pos = cur_stream->audio_pkt.pos;
-					}
-					else
-						pos = avio_tell(cur_stream->ic->pb);
-					if (cur_stream->ic->bit_rate)
-						incr *= cur_stream->ic->bit_rate / 8.0;
-					else
-						incr *= 180000.0;
-					pos += incr;
-					stream_seek(cur_stream, pos, incr, 1);
-				}
-				else {
-					pos = get_master_clock(cur_stream);
-					pos += incr;
-					stream_seek(cur_stream, (int64_t)(pos * AV_TIME_BASE), (int64_t)(incr * AV_TIME_BASE), 0);
-				}
-				break;
-			default:
-				break;
-			}
-			break;
-#ifndef SDL2
-		case SDL_VIDEOEXPOSE:
-			cur_stream->force_refresh = 1;
-			break;
-#endif
-			//鼠标单击
-		case SDL_MOUSEBUTTONDOWN:
-			if (exit_on_mousedown) {
-				cur_stream->_pimpl->do_exit(cur_stream);
-				break;
-			}
-		case SDL_MOUSEMOTION:
-			if (event.type == SDL_MOUSEBUTTONDOWN) {
-				x = event.button.x;
-			}
-			else {
-				if (event.motion.state != SDL_PRESSED)
-					break;
-				x = event.motion.x;
-			}
-			if (seek_by_bytes || cur_stream->ic->duration <= 0) {
-				uint64_t size = avio_size(cur_stream->ic->pb);
-				stream_seek(cur_stream, size*x / cur_stream->width, 0, 1);
-			}
-			else {
-				int64_t ts;
-				int ns, hh, mm, ss;
-				int tns, thh, tmm, tss;
-				tns = cur_stream->ic->duration / 1000000LL;
-				thh = tns / 3600;
-				tmm = (tns % 3600) / 60;
-				tss = (tns % 60);
-				frac = x / cur_stream->width;
-				ns = frac * tns;
-				hh = ns / 3600;
-				mm = (ns % 3600) / 60;
-				ss = (ns % 60);
-				fprintf(stderr, "Seek to %2.0f%% (%2d:%02d:%02d) of total duration (%2d:%02d:%02d)       \n", frac * 100,
-					hh, mm, ss, thh, tmm, tss);
-				ts = frac * cur_stream->ic->duration;
-				if (cur_stream->ic->start_time != AV_NOPTS_VALUE)
-					ts += cur_stream->ic->start_time;
-				stream_seek(cur_stream, ts, 0, 0);
-			}
-			break;
-#ifndef SDL2
-		case SDL_VIDEORESIZE:
-			/*
-			dlg->screen = SDL_SetVideoMode(event.resize.w, event.resize.h, 0,
-				SDL_HWSURFACE|SDL_RESIZABLE|SDL_ASYNCBLIT|SDL_HWACCEL);
-				*/
-			screen_width = cur_stream->width = event.resize.w;
-			screen_height = cur_stream->height = event.resize.h;
-			cur_stream->force_refresh = 1;
-			break;
-#endif
-
-			// case SDL_QUIT:
-		case FF_QUIT_EVENT:
-			cur_stream->_pimpl->do_exit(cur_stream);
-			break;
-		case CHANGE_AUDIO:
-		{
-			//toggle_pause(cur_stream);
-			int newaudioIndex = event.window.data1;
-			stream_change_stream(cur_stream, AVMEDIA_TYPE_AUDIO, newaudioIndex);
-			//toggle_play(cur_stream);
-		}
-		break;
-		case CHANGE_SUBTITLE:
-		{
-			//toggle_pause(cur_stream);
-			int newSubtitleIndex = event.window.data1;
-			stream_change_stream(cur_stream, AVMEDIA_TYPE_SUBTITLE, newSubtitleIndex);
-			//toggle_play(cur_stream);
-		}
-		break;
-
-		case VOLUME_UP_EVENT:
-		case VOLUME_DOWN_EVENT:
-			percentVolume = event.window.data1;
-			break;
-		case SET_POSITION: {
-			int64_t ts = time_position;
-			if (cur_stream->ic != nullptr)
-			{
-				if (cur_stream->ic->start_time != AV_NOPTS_VALUE)
-					ts += cur_stream->ic->start_time;
-				stream_seek(cur_stream, ts, 0, 0);
-				stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
-			}
-		}
-								 break;
-
-
-		case FF_ALLOC_EVENT:
-			alloc_picture((VideoState *)(event.user.data1));
-			break;
-		case FF_REFRESH_EVENT:
-		{
-			cur_stream->_pimpl->video_refresh((VideoState *)(event.user.data1));
-			//video_refresh_timer(event.user.data1);
-			cur_stream->refresh = 0;
-		}
-		break;
-		case SEEK_BAR_EVENT: {
-			if (seek_by_bytes || cur_stream->ic->duration <= 0) {
-				uint64_t size = avio_size(cur_stream->ic->pb);
-				stream_seek(cur_stream, size*seek_bar_pos / 1000, 0, 1);
-			}
-			else {
-				int64_t ts;
-				frac = (double)seek_bar_pos / 1000;
-				ts = frac * cur_stream->ic->duration;
-				if (cur_stream->ic->start_time != AV_NOPTS_VALUE)
-					ts += cur_stream->ic->start_time;
-				stream_seek(cur_stream, ts, 0, 0);
-			}
-			break;
-		}
-
-		default:
-			break;
-		}
-	}
-}
 
 int CFFmfcPimpl::lockmgr(void **mtx, enum AVLockOp op)
 {

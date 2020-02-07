@@ -21,7 +21,7 @@
 #include <ConvertUtility.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
-wxDEFINE_EVENT(EVENT_ENDVIDEOTHREAD, wxCommandEvent);
+
 
 AVFrame * copyFrameBuffer = nullptr;
 
@@ -61,7 +61,6 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
-	threadVideo = nullptr;
 	volumeStart = 64;
 	old_width = 0;
 	old_height = 0;
@@ -81,7 +80,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	config = CParamInit::getInstance();
     Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControlSoft::OnPaint));
     Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControlSoft::OnSize));
-    Connect(EVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
+    Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
     Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
@@ -99,7 +98,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	openclEffectYUV = nullptr;
 	
 
-	ffmfc = new CFFmfc();
+	ffmfc = new CFFmfc(this, wxID_ANY);
 }
 
 
@@ -214,25 +213,8 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 	nbFrame = 0;
 }
 
-void CVideoControlSoft::PlayVideo(CVideoControlSoft * sdlWindow)
-{
-    //const char * fichier = CConvertUtility::ConvertFromwxString(sdlWindow->filename);
-	sdlWindow->ffmfc->Play(sdlWindow, CConvertUtility::ConvertToStdString(sdlWindow->filename));
-    wxCommandEvent event(EVENT_ENDVIDEOTHREAD);
-    wxPostEvent(sdlWindow, event);
-}
-
-
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
-    
-    if(threadVideo != nullptr)
-    {
-        threadVideo->join();
-        delete threadVideo;
-        threadVideo = nullptr;
-    }
-
     videoEnd = true;
     if (eventPlayer != nullptr)
     {
@@ -328,7 +310,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie)
         videoEnd = false;
         filename = movie;
 		standByMovie = "";
-		threadVideo = new thread(PlayVideo, this);
+		ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
 	}
 	else if(movie != filename)
 	{
@@ -597,7 +579,7 @@ void CVideoControlSoft::OnPlay()
 {
 	if (pause && !videoEnd)
 	{
-		ffmfc->Play_pause();
+		ffmfc->Pause();
 	}
 	else if(videoEnd)
     {
@@ -623,7 +605,7 @@ void CVideoControlSoft::OnPause()
 {
 	if (!pause)
 	{
-		ffmfc->Play_pause();
+		ffmfc->Pause();
 	}
 	pause = true;
 }

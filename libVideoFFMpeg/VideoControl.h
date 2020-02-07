@@ -50,7 +50,6 @@ public:
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
 	void SetVideoPosition(int64_t pos);
-	static void PlayVideo(CVideoControl * sdlWindow);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
@@ -103,7 +102,6 @@ private:
 	void OnShowFPS(wxTimerEvent& event);
     void Resize();
 	bool subtilteUpdate;
-	thread * threadVideo;
 	int volumeStart;
 	int old_width;
 	int old_height;

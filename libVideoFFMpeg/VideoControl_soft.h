@@ -30,7 +30,7 @@ public:
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
 	void SetVideoPosition(int64_t pos);
-	static void PlayVideo(CVideoControlSoft * sdlWindow);
+	//static void PlayVideo(CVideoControlSoft * sdlWindow);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
@@ -83,7 +83,7 @@ private:
     void Resize();
     
 	bool subtilteUpdate;
-	thread * threadVideo;
+	//thread * threadVideo;
 	int volumeStart;
 	int old_width;
 	int old_height;

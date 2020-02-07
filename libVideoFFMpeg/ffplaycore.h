@@ -15,9 +15,7 @@
  */
 
 #include "VideoControlInterface.h"
-
-class CFFmfcPimpl;
-
+#include "ffmfcpimpl.h"
 
 class CBitmapToShow
 {
@@ -33,18 +31,16 @@ public:
     //SDL_Rect displayRect;
 };
 
-class CFFmfc
+class CFFmfc : public wxWindow
 {
 public:
-	CFFmfc();
+	CFFmfc(wxWindow* parent, wxWindowID id);
 	~CFFmfc();
 
 	//Send Command "Pause"
-	void Play_pause();
+	void Pause();
 	//Send Command "Step"
 	void Seek_step();
-	//Send Command "FullScreen"
-	void Play_fullcreen();
 	//Send Command "Seek"
 	void Seek(int time);
 	//Send Command "AspectRatio"
@@ -74,6 +70,22 @@ public:
 	void SetVideoParameter(int angle, int flipV, int flipH);
 
 private:
+
+	void RefreshEvent(wxCommandEvent& event);
+	void SeekBarEvent(wxCommandEvent& event);
+	void PositionSeekEvent(wxCommandEvent& event);
+	void PositionEvent(wxCommandEvent& event);
+	void ChangeVolumeEvent(wxCommandEvent& event);
+	void AudioDisplay(wxCommandEvent& event);
+	void AspectEvent(wxCommandEvent& event);
+	void PauseEvent(wxCommandEvent& event);
+	void PlayEvent(wxCommandEvent& event);
+	void StepEvent(wxCommandEvent& event);
+	void QuitEvent(wxCommandEvent& event);
+	void ChangeAudioEvent(wxCommandEvent& event);
+	void ChangeSubtitleEvent(wxCommandEvent& event);
+
+	CFFmfcPimpl::VideoState * cur_stream;
 	CFFmfcPimpl * _pimpl;
 };
 
