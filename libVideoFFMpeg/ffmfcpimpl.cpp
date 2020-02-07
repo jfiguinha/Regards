@@ -44,7 +44,7 @@ int CFFmfcPimpl::packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
 
 	if (q->abort_request)
 		return -1;
-	//PacketList将Packet组成一个链表
+	//PacketList陆芦Packet脳茅鲁脡脪禄赂枚脕麓卤铆
 	pkt1 = (AVPacketList*)av_malloc(sizeof(AVPacketList));
 	if (!pkt1)
 		return -1;
@@ -52,10 +52,10 @@ int CFFmfcPimpl::packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
 	pkt1->next = nullptr;
 
 	if (!q->last_pkt)
-		//第一个
+		//碌脷脪禄赂枚
 		q->first_pkt = pkt1;
 	else
-		//其他情况
+		//脝盲脣没脟茅驴枚
 		q->last_pkt->next = pkt1;
 	q->last_pkt = pkt1;
 	q->nb_packets++;
@@ -64,7 +64,7 @@ int CFFmfcPimpl::packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
 	SDL_CondSignal(q->cond);
 	return 0;
 }
-//往队列里添加Packet
+//脥霉露脫脕脨脌茂脤铆录脫Packet
 int CFFmfcPimpl::packet_queue_put(PacketQueue *q, AVPacket *pkt)
 {
 	int ret;
@@ -74,7 +74,7 @@ int CFFmfcPimpl::packet_queue_put(PacketQueue *q, AVPacket *pkt)
 		return -1;
 
 	SDL_LockMutex(q->mutex);
-	//往队列里添加Packet(两层)?
+	//脥霉露脫脕脨脌茂脤铆录脫Packet(脕陆虏茫)?
 	ret = packet_queue_put_private(q, pkt);
 	SDL_UnlockMutex(q->mutex);
 
@@ -261,7 +261,7 @@ void CFFmfcPimpl::stream_close(VideoState *is)
 	av_free(is);
 }
 
-//退出
+//脥脣鲁枚
 void CFFmfcPimpl::do_exit(VideoState *is)
 {
 	exit_remark = 1;
@@ -757,7 +757,7 @@ void CFFmfcPimpl::alloc_picture(VideoState *is)
 	SDL_CondSignal(is->pictq_cond);
 	SDL_UnlockMutex(is->pictq_mutex);
 }
-//解码成功后用于显示，也是放到另一个队列中？
+//陆芒脗毛鲁脡鹿娄潞贸脫脙脫脷脧脭脢戮拢卢脪虏脢脟路脜碌陆脕铆脪禄赂枚露脫脕脨脰脨拢驴
 int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, int64_t pos)
 {
 	VideoPicture *vp;
@@ -832,8 +832,8 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 
 		/* get a pointer on the bitmap */
 		SDL_LockSurface(vp->bmp);
-		//显示YUV数据
-		//设置输出格式-----------------
+		//脧脭脢戮YUV脢媒戮脻
+		//脡猫脰脙脢盲鲁枚赂帽脢陆-----------------
 
 		is->v_show_mode = SHOW_MODE_RGB24;
 
@@ -881,11 +881,11 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 	}
 	return 0;
 	}
-//解码一帧视频
+//陆芒脗毛脪禄脰隆脢脫脝碌
 int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt)
 {
 	int got_picture, i;
-	//从Packet队列中获取Packet
+	//麓脫Packet露脫脕脨脰脨禄帽脠隆Packet
 	if (packet_queue_get(&is->videoq, pkt, 1) < 0)
 		return -1;
 
@@ -909,12 +909,12 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 
 		return 0;
 	}
-	//解码
+	//陆芒脗毛
 	if (avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
 		return 0;
 
 	if (got_picture) {
-		//注意：此处设置MFC参数！
+		//脳垄脪芒拢潞麓脣麓娄脡猫脰脙MFC虏脦脢媒拢隆
 		//ffmfc_param_vframe(is,frame,pkt);
 		//--------------------------
 		int ret = 1;
@@ -957,7 +957,7 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 	return 0;
 }
 
-//解码视频
+//陆芒脗毛脢脫脝碌
 int CFFmfcPimpl::video_thread(void *arg)
 {
 	AVPacket pkt = { 0 };
@@ -983,7 +983,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 		//avcodec_get_frame_defaults(frame);
 		av_frame_unref(frame);
 		av_free_packet(&pkt);
-		//解码一帧视频
+		//陆芒脗毛脪禄脰隆脢脫脝碌
 		ret = is->_pimpl->get_video_frame(is, frame, &pts_int, &pkt);
 		if (ret < 0)
 			goto the_end;
@@ -992,7 +992,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 			continue;
 
 		pts = pts_int * av_q2d(is->video_st->time_base);
-		//解码成功后用于显示，也是放到另一个队列中？
+		//陆芒脗毛鲁脡鹿娄潞贸脫脙脫脷脧脭脢戮拢卢脪虏脢脟路脜碌陆脕铆脪禄赂枚露脫脕脨脰脨拢驴
 		ret = is->_pimpl->queue_picture(is, frame, pts, pkt.pos);
 
 		if (ret < 0)
@@ -1079,7 +1079,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 	}
 	return 0;
 }
-//播放音频的时候SDL的显示
+//虏楼路脜脪么脝碌碌脛脢卤潞貌SDL碌脛脧脭脢戮
 /* copy samples for viewing in editor window */
 void CFFmfcPimpl::update_sample_display(VideoState *is, short *samples, int samples_size)
 {
@@ -1188,7 +1188,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 				break;
 			}
 
-			//注意：此处设置MFC参数---
+			//脳垄脪芒拢潞麓脣麓娄脡猫脰脙MFC虏脦脢媒---
 			//ffmfc_param_aframe(is,is->frame,pkt_temp);
 			//----------
 
@@ -1352,7 +1352,7 @@ void CFFmfcPimpl::sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 	is->audio_current_pts_drift = is->audio_current_pts - is->_pimpl->audio_callback_time / 1000000.0;
 }
 
-int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, struct AudioParams *audio_hw_params)
+int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, AudioParams *audio_hw_params)
 {
 	SDL_AudioSpec wanted_spec, spec;
 	const char *env;
@@ -1518,7 +1518,7 @@ const char * CFFmfcPimpl::getExt(const char *fspec) {
 }
 
 /* open a given stream. Return 0 if OK */
-//打开一个Stream，视频或音频
+//麓貌驴陋脪禄赂枚Stream拢卢脢脫脝碌禄貌脪么脝碌
 int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 {
 	AVFormatContext *ic = is->ic;
@@ -1531,8 +1531,8 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 	if (stream_index < 0 || stream_index >= ic->nb_streams)
 		return -1;
 	avctx = ic->streams[stream_index]->codec;
-	// 为视频流寻找解码器
-	//注意：此处可以指定解码器
+	// 脦陋脢脫脝碌脕梅脩掳脮脪陆芒脗毛脝梅
+	//脳垄脪芒拢潞麓脣麓娄驴脡脪脭脰赂露篓陆芒脗毛脝梅
 	codec = avcodec_find_decoder(avctx->codec_id);
 	//#ifdef CMDUTILS
 	opts = filter_codec_opts(codec_opts, avctx->codec_id, ic, ic->streams[stream_index], codec);
@@ -1572,7 +1572,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 			avctx->coded_width = ic->streams[stream_index]->codec->width;
 
 
-			//printf("视频高：%d\n",ic->streams[video_index]->codec->height);
+			//printf("脢脫脝碌赂脽拢潞%d\n",ic->streams[video_index]->codec->height);
 
 			avctx->opaque = ist;
 			if (dxva2_init(avctx, dlg, avctx->coded_width, avctx->coded_height) == 0)
@@ -1607,7 +1607,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 				//MetaData?
 				if (!av_dict_get(opts, "threads", nullptr, 0))
 					av_dict_set(&opts, "threads", "auto", 0);
-				// 打开解码器，二者之间建立联系
+				// 麓貌驴陋陆芒脗毛脝梅拢卢露镁脮脽脰庐录盲陆篓脕垄脕陋脧碌
 
 				if (avcodec_open2(avctx, codec, nullptr) < 0)
 				{
@@ -1657,7 +1657,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 #else
 		av_dict_set(&opts, "threads", "auto", 0);
 #endif
-		// 打开解码器，二者之间建立联系
+		// 麓貌驴陋陆芒脗毛脝梅拢卢露镁脮脽脰庐录盲陆篓脕垄脕陋脧碌
 		if (!codec ||
 			avcodec_open2(avctx, codec, &opts) < 0)
 			return -1;
@@ -1668,7 +1668,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 	}
 
 	/* prepare audio output */
-	//准备SDL音频输出
+	//脳录卤赂SDL脪么脝碌脢盲鲁枚
 	if (avctx->codec_type == AVMEDIA_TYPE_AUDIO) {
 		int audio_hw_buf_size = audio_open(is, avctx->channel_layout, avctx->channels, avctx->sample_rate, &is->audio_src);
 		if (audio_hw_buf_size < 0)
@@ -1681,7 +1681,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 	switch (avctx->codec_type)
 	{
-		//设置is结构体
+		//脡猫脰脙is陆谩鹿鹿脤氓
 	case AVMEDIA_TYPE_AUDIO:
 		is->audio_stream = stream_index;
 		is->audio_st = ic->streams[stream_index];
@@ -1697,9 +1697,9 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 		memset(&is->audio_pkt, 0, sizeof(is->audio_pkt));
 		memset(&is->audio_pkt_temp, 0, sizeof(is->audio_pkt_temp));
-		//初始化Packet队列
+		//鲁玫脢录禄炉Packet露脫脕脨
 		CFFmfcPimpl::packet_queue_start(&is->audioq);
-		//开播
+		//驴陋虏楼
 		SDL_PauseAudio(0);
 		break;
 
@@ -1724,7 +1724,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		is->video_st = ic->streams[stream_index];
 
 		CFFmfcPimpl::packet_queue_start(&is->videoq);
-		//视频线程
+		//脢脫脝碌脧脽鲁脤
 #ifdef SDL2
 		is->video_tid = SDL_CreateThread(video_thread, "Video Thread", is);
 #else
@@ -1864,7 +1864,7 @@ int CFFmfcPimpl::is_realtime(AVFormatContext *s)
 }
 
 /* this thread gets the stream from the disk or the network */
-//解码线程，获得视音频Packet并放入队列
+//陆芒脗毛脧脽鲁脤拢卢禄帽碌脙脢脫脪么脝碌Packet虏垄路脜脠毛露脫脕脨
 int CFFmfcPimpl::read_thread(void *arg)
 {
 
@@ -1888,28 +1888,28 @@ int CFFmfcPimpl::read_thread(void *arg)
 	ic = avformat_alloc_context();
 	ic->interrupt_callback.callback = decode_interrupt_cb;
 	ic->interrupt_callback.opaque = is;
-	// 打开视频文件（没有打开编解码器），初始化AVFormatContext
-	// 新版中已经将其废弃
+	// 麓貌驴陋脢脫脝碌脦脛录镁拢篓脙禄脫脨麓貌驴陋卤脿陆芒脗毛脝梅拢漏拢卢鲁玫脢录禄炉AVFormatContext
+	// 脨脗掳忙脰脨脪脩戮颅陆芦脝盲路脧脝煤
 	//if(av_open_input_file(&pFormatCtx, filename, nullptr, 0, nullptr)!=0)
 	//{
 	//	printf("Couldn't open file.\n");
 	//	return -1;
 	//}
-	//改为avformat_open_input()
+	//赂脛脦陋avformat_open_input()
 	//--------------------------
 	//if(avformat_open_input(&pFormatCtx,filename,nullptr,nullptr)!=0){
 	//char rtspurl[100]="rtsp://169.254.197.35:8554/sh1943.mpg";
-	//为了使FFMPEG可以直接从内存中读取数据
-	//抓包的时候直接从内存中读取数据
+	//脦陋脕脣脢鹿FFMPEG驴脡脪脭脰卤陆脫麓脫脛脷麓忙脰脨露脕脠隆脢媒戮脻
+	//脳楼掳眉碌脛脢卤潞貌脰卤陆脫麓脫脛脷麓忙脰脨露脕脠隆脢媒戮脻
 
 	err = avformat_open_input(&ic, is->filename, is->iformat, &is->_pimpl->format_opts);
 
 	//if(avformat_open_input(&pFormatCtx,"sprink_12M.ts",nullptr,nullptr)!=0){
-	////AfxMessageBox()是全局的函数，记住在VC里有AFX开关的都是全局函数。
-	//而MessageBox()是CWnd的成员函数，也就是说在哪都可以调用AfxMessageBox（），
-	//但是MessageBox()只能在基类是CWnd的类里面直接调用。 
-	//printf("输入格式:%s\n",ic->iformat->name);
-	//printf("IO缓存大小:%d\n",ic->pb.buffer_size);
+	////AfxMessageBox()脢脟脠芦戮脰碌脛潞炉脢媒拢卢录脟脳隆脭脷VC脌茂脫脨AFX驴陋鹿脴碌脛露录脢脟脠芦戮脰潞炉脢媒隆拢
+	//露酶MessageBox()脢脟CWnd碌脛鲁脡脭卤潞炉脢媒拢卢脪虏戮脥脢脟脣碌脭脷脛脛露录驴脡脪脭碌梅脫脙AfxMessageBox拢篓拢漏拢卢
+	//碌芦脢脟MessageBox()脰禄脛脺脭脷禄霉脌脿脢脟CWnd碌脛脌脿脌茂脙忙脰卤陆脫碌梅脫脙隆拢 
+	//printf("脢盲脠毛赂帽脢陆:%s\n",ic->iformat->name);
+	//printf("IO禄潞麓忙麓贸脨隆:%d\n",ic->pb.buffer_size);
 	if (err < 0) {
 #ifdef CMDUTILS
 		print_error(is->filename, err);
@@ -1931,7 +1931,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 
 	opts = is->_pimpl->setup_find_stream_info_opts(ic, is->_pimpl->codec_opts);
 	orig_nb_streams = ic->nb_streams;
-	// 获取流信息，加入AVFormatContext中
+	// 禄帽脠隆脕梅脨脜脧垄拢卢录脫脠毛AVFormatContext脰脨
 	//This is useful for file formats with no headers such as MPEG. 
 	err = avformat_find_stream_info(ic, opts);
 	if (err < 0) {
@@ -1969,7 +1969,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 		}
 	}
 
-	// 获取第个视频流，音频流索引
+	// 禄帽脠隆碌脷赂枚脢脫脝碌脕梅拢卢脪么脝碌脕梅脣梅脪媒
 	for (i = 0; i < ic->nb_streams; i++)
 	{
 		AVDictionaryEntry * tag = nullptr;
@@ -2008,21 +2008,21 @@ int CFFmfcPimpl::read_thread(void *arg)
 
 
 	//int video_index = st_index[AVMEDIA_TYPE_VIDEO];
-	//printf("视频编码器名称：%s\n",ic->streams[video_index]->codec->codec_name);
-	//printf("视频宽：%d\n",ic->streams[video_index]->codec->width);
-	//printf("视频高：%d\n",ic->streams[video_index]->codec->height);
+	//printf("脢脫脝碌卤脿脗毛脝梅脙没鲁脝拢潞%s\n",ic->streams[video_index]->codec->codec_name);
+	//printf("脢脫脝碌驴铆拢潞%d\n",ic->streams[video_index]->codec->width);
+	//printf("脢脫脝碌赂脽拢潞%d\n",ic->streams[video_index]->codec->height);
 	//zhenlv=(ic->streams[video_index]->codec->time_base.den)/(ic->streams[video_index]->codec->time_base.num);
-	//printf("视频帧率：%f\n",zhenlv);
+	//printf("脢脫脝碌脰隆脗脢拢潞%f\n",zhenlv);
 
 
 	if (!is->_pimpl->audio_disable)
 		st_index[AVMEDIA_TYPE_AUDIO] = av_find_best_stream(ic, AVMEDIA_TYPE_AUDIO, is->_pimpl->wanted_stream[AVMEDIA_TYPE_AUDIO], st_index[AVMEDIA_TYPE_VIDEO], nullptr, 0);
 
 	//int audio_index = st_index[AVMEDIA_TYPE_AUDIO];
-	//printf("音频编码器名称：%s\n",ic->streams[audio_index]->codec->codec_name);
-	//printf("采样率：%d\n",ic->streams[audio_index]->codec->sample_rate);
-	//printf("帧大小：%d\n",ic->streams[audio_index]->codec->frame_size);
-	//printf("声道数：%d\n",ic->streams[audio_index]->codec->channels);
+	//printf("脪么脝碌卤脿脗毛脝梅脙没鲁脝拢潞%s\n",ic->streams[audio_index]->codec->codec_name);
+	//printf("虏脡脩霉脗脢拢潞%d\n",ic->streams[audio_index]->codec->sample_rate);
+	//printf("脰隆麓贸脨隆拢潞%d\n",ic->streams[audio_index]->codec->frame_size);
+	//printf("脡霉碌脌脢媒拢潞%d\n",ic->streams[audio_index]->codec->channels);
 	if (!is->_pimpl->video_disable)
 		st_index[AVMEDIA_TYPE_SUBTITLE] =
 		av_find_best_stream(ic, AVMEDIA_TYPE_SUBTITLE,
@@ -2038,9 +2038,9 @@ int CFFmfcPimpl::read_thread(void *arg)
 	is->show_mode = (VideoState::ShowMode)is->_pimpl->show_mode;
 
 	/* open the streams */
-	//打开Stream，视频或音频
+	//麓貌驴陋Stream拢卢脢脫脝碌禄貌脪么脝碌
 	if (st_index[AVMEDIA_TYPE_AUDIO] >= 0) {
-		//打开
+		//麓貌驴陋
 		is->_pimpl->stream_component_open(is, st_index[AVMEDIA_TYPE_AUDIO]);
 	}
 
@@ -2070,9 +2070,9 @@ int CFFmfcPimpl::read_thread(void *arg)
 
 	if (is->_pimpl->infinite_buffer < 0 && is->_pimpl->is_realtime(ic))
 		is->_pimpl->infinite_buffer = 1;
-	//获取一些系统信息
+	//禄帽脠隆脪禄脨漏脧碌脥鲁脨脜脧垄
 
-	//注意：在此处设置MFC参数
+	//脳垄脪芒拢潞脭脷麓脣麓娄脡猫脰脙MFC虏脦脢媒
 	//ffmfc_param_global(is);
 	is->_pimpl->dlg->SetVideoDuration(is->ic->duration);
 
@@ -2099,7 +2099,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 #endif
 
 
-		//当调整播放进度以后
+		//碌卤碌梅脮没虏楼路脜陆酶露脠脪脭潞贸
 		if (is->seek_req) {
 			int64_t seek_target = is->seek_pos;
 			int64_t seek_min = is->seek_rel > 0 ? seek_target - is->seek_rel + 2 : INT64_MIN;
@@ -2113,7 +2113,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 			}
 			else {
 				if (is->audio_stream >= 0) {
-					//清空当前的PAcket队列
+					//脟氓驴脮碌卤脟掳碌脛PAcket露脫脕脨
 					is->_pimpl->packet_queue_flush(&is->audioq);
 					is->_pimpl->packet_queue_put(&is->audioq, &is->_pimpl->flush_pkt);
 				}
@@ -2135,7 +2135,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 		}
 
 		/* if the queue are full, no need to read more */
-		//如果Packet队列满了，则等待
+		//脠莽鹿没Packet露脫脕脨脗煤脕脣拢卢脭貌碌脠麓媒
 		if (is->_pimpl->infinite_buffer < 1 &&
 			(is->audioq.size + is->videoq.size + is->subtitleq.size > MAX_QUEUE_SIZE
 				|| ((is->audioq.nb_packets > MIN_FRAMES || is->audio_stream < 0 || is->audioq.abort_request)
@@ -2178,13 +2178,13 @@ int CFFmfcPimpl::read_thread(void *arg)
 			continue;
 		}
 
-		//读取一个Packet
+		//露脕脠隆脪禄赂枚Packet
 		ret = av_read_frame(ic, pkt);
-		//printf("Packet dts：%d\n",pkt->dts);
-		//printf("Packet pts：%d\n",pkt->pts);
-		//printf("Packet Size：%d\n",pkt->size);
-		//printf("Packet dts：%d\n",pkt->dts);
-		//此处设置图表参数
+		//printf("Packet dts拢潞%d\n",pkt->dts);
+		//printf("Packet pts拢潞%d\n",pkt->pts);
+		//printf("Packet Size拢潞%d\n",pkt->size);
+		//printf("Packet dts拢潞%d\n",pkt->dts);
+		//麓脣麓娄脡猫脰脙脥录卤铆虏脦脢媒
 
 		//ffmfc_param_packet(is,pkt);
 		//--------------------
@@ -2206,12 +2206,12 @@ int CFFmfcPimpl::read_thread(void *arg)
 			<= ((double)is->_pimpl->duration / 1000000);
 		if (pkt->stream_index == is->audio_stream && pkt_in_play_range) {
 			is->_pimpl->packet_queue_put(&is->audioq, pkt);
-			//printf("音频Packet，加入音频队列\n");
+			//printf("脪么脝碌Packet拢卢录脫脠毛脪么脝碌露脫脕脨\n");
 			//---------------------------------
 		}
 		else if (pkt->stream_index == is->video_stream && pkt_in_play_range) {
 			is->_pimpl->packet_queue_put(&is->videoq, pkt);
-			//printf("视频Packet，加入视频队列\n");
+			//printf("脢脫脝碌Packet拢卢录脫脠毛脢脫脝碌露脫脕脨\n");
 		}
 		else if (pkt->stream_index == is->subtitle_stream && pkt_in_play_range) {
 			is->_pimpl->packet_queue_put(&is->subtitleq, pkt);
@@ -2253,7 +2253,7 @@ fail:
 	SDL_DestroyMutex(wait_mutex);
 	return 0;
 }
-//设置各种SDL信号，开始解码线程
+//脡猫脰脙赂梅脰脰SDL脨脜潞脜拢卢驴陋脢录陆芒脗毛脧脽鲁脤
 CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInputFormat *iformat)
 {
 	VideoState *is;
@@ -2268,13 +2268,13 @@ CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInput
 	is->_pimpl = this;
 
 	/* start video display */
-	//初始化各种变量
+	//鲁玫脢录禄炉赂梅脰脰卤盲脕驴
 	is->pictq_mutex = SDL_CreateMutex();
 	is->pictq_cond = SDL_CreateCond();
 
 	is->subpq_mutex = SDL_CreateMutex();
 	is->subpq_cond = SDL_CreateCond();
-	//初始化Packet队列
+	//鲁玫脢录禄炉Packet露脫脕脨
 	packet_queue_init(&is->videoq);
 	packet_queue_init(&is->audioq);
 	packet_queue_init(&is->subtitleq);
@@ -2282,7 +2282,7 @@ CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInput
 	is->continue_read_thread = SDL_CreateCond();
 
 	is->av_sync_type = av_sync_type;
-	//解码线程
+	//陆芒脗毛脧脽鲁脤
 
 #ifdef SDL2
 	is->read_tid = SDL_CreateThread(read_thread, "Read Thread", is);
@@ -2297,7 +2297,7 @@ CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInput
 	}
 	return is;
 }
-//以下几个函数都是处理event_loop()中的各种操作的
+//脪脭脧脗录赂赂枚潞炉脢媒露录脢脟麓娄脌铆event_loop()脰脨碌脛赂梅脰脰虏脵脳梅碌脛
 void CFFmfcPimpl::stream_cycle_channel(VideoState *is, int codec_type)
 {
 	AVFormatContext *ic = is->ic;

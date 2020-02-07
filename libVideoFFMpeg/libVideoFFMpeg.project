@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="ffmfcpimpl.cpp"/>
     <File Name="VideoControlInterface.cpp"/>
     <File Name="ffmpegToBitmap.cpp"/>
     <File Name="VideoControl_soft.cpp"/>
@@ -40,6 +41,8 @@
     <File Name="ffmpeg_dxva2.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ffmpeg.h"/>
+    <File Name="ffmfcpimpl.h"/>
     <File Name="ffmpegToBitmap.h"/>
     <File Name="VideoControlInterface.h"/>
     <File Name="VideoControl_soft.h"/>

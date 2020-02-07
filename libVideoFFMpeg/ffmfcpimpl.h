@@ -3,15 +3,15 @@
 /*
  * FFplay for MFC
  *
- * 雷霄骅 Lei Xiaohua
+ * 脌脳脧枚忙猫 Lei Xiaohua
  * leixiaohua1020@126.com
- * 中国传媒大学/数字电视技术
+ * 脰脨鹿煤麓芦脙陆麓贸脩搂/脢媒脳脰碌莽脢脫录录脢玫
  * Communication University of China / Digital TV Technology
  *
  * http://blog.csdn.net/leixiaohua1020
  *
- * 本工程将ffmpeg项目中的ffplay播放器（ffplay.c）移植到了VC的环境下。
- * 并且使用MFC做了一套简单的界面。
+ * 卤戮鹿陇鲁脤陆芦ffmpeg脧卯脛驴脰脨碌脛ffplay虏楼路脜脝梅拢篓ffplay.c拢漏脪脝脰虏碌陆脕脣VC碌脛禄路戮鲁脧脗隆拢
+ * 虏垄脟脪脢鹿脫脙MFC脳枚脕脣脪禄脤脳录貌碌楼碌脛陆莽脙忙隆拢
  * This software transplant ffplay to Microsoft VC++ environment.
  * And use MFC to build a simple Graphical User Interface.
  */
@@ -92,7 +92,7 @@ A/V sync as SDL does not have hardware buffer fullness info. */
 #define FF_ASPECT_EVENT	FF_QUIT_EVENT + 4
 #define FF_AUDIODISPLAY_EVENT	FF_QUIT_EVENT + 5
 
-//自定义一个事件，用于调整播放进度
+//脳脭露篓脪氓脪禄赂枚脢脗录镁拢卢脫脙脫脷碌梅脮没虏楼路脜陆酶露脠
 #define SEEK_BAR_EVENT    (SDL_USEREVENT + 4)
 #define VOLUME_UP_EVENT    (SDL_USEREVENT + 5)
 #define VOLUME_DOWN_EVENT    (SDL_USEREVENT + 6)
@@ -139,7 +139,7 @@ public:
 
 
 
-	//读取输入文件协议的时候使用；来自ffmpeg源码
+	//露脕脠隆脢盲脠毛脦脛录镁脨颅脪茅碌脛脢卤潞貌脢鹿脫脙拢禄脌麓脳脭ffmpeg脭麓脗毛
 	typedef struct URLContext {
 		const AVClass *av_class; ///< information for av_log(). Set by url_open().
 		struct URLProtocol *prot;
@@ -207,7 +207,7 @@ public:
 		AV_SYNC_VIDEO_MASTER,
 		AV_SYNC_EXTERNAL_CLOCK, /* synchronize to an external clock */
 	};
-	//视频显示方式
+	//脢脫脝碌脧脭脢戮路陆脢陆
 	enum V_Show_Mode {
 		SHOW_MODE_YUV = 0, SHOW_MODE_Y, SHOW_MODE_U, SHOW_MODE_V, SHOW_MODE_RGB24
 	};
@@ -253,9 +253,9 @@ public:
 		int audio_write_buf_size;
 		AVPacket audio_pkt_temp;
 		AVPacket audio_pkt;
-		struct AudioParams audio_src;
-		struct AudioParams audio_tgt;
-		struct SwrContext *swr_ctx;
+		AudioParams audio_src;
+		AudioParams audio_tgt;
+		SwrContext *swr_ctx;
 		double audio_current_pts;
 		double audio_current_pts_drift;
 		int frame_drops_early;
@@ -309,7 +309,7 @@ public:
 		int last_video_stream, last_audio_stream, last_subtitle_stream;
 
 		SDL_cond *continue_read_thread;
-		//视频显示方式------------
+		//脢脫脝碌脧脭脢戮路陆脢陆------------
 		enum V_Show_Mode v_show_mode;
 
 		CFFmfcPimpl * _pimpl;
@@ -320,7 +320,7 @@ public:
 	enum ShowMode {
 		SHOW_MODE_NONE = -1, SHOW_MODE_VIDEO = 0, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB
 	};
-	//指向MFC窗口的指针
+	//脰赂脧貌MFC麓掳驴脷碌脛脰赂脮毛
 
 
 
@@ -406,20 +406,20 @@ public:
 	potential locking problems */
 	void alloc_picture(VideoState *is);
 
-	//解码成功后用于显示，也是放到另一个队列中？
+	//陆芒脗毛鲁脡鹿娄潞贸脫脙脫脷脧脭脢戮拢卢脪虏脢脟路脜碌陆脕铆脪禄赂枚露脫脕脨脰脨拢驴
 	int queue_picture(VideoState *is, AVFrame *src_frame, double pts1, int64_t pos);
 
-	//解码一帧视频
+	//陆芒脗毛脪禄脰隆脢脫脝碌
 	int get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, AVPacket *pkt);
 
-	//解码视频
+	//陆芒脗毛脢脫脝碌
 	static int video_thread(void *arg);
 	static int subtitle_thread(void *arg);
 	static int refresh_thread(void *opaque);
 	/* prepare a new audio buffer */
 	static void sdl_audio_callback(void *opaque, Uint8 *stream, int len);
 
-	//播放音频的时候SDL的显示
+	//虏楼路脜脪么脝碌碌脛脢卤潞貌SDL碌脛脧脭脢戮
 	/* copy samples for viewing in editor window */
 	void update_sample_display(VideoState *is, short *samples, int samples_size);
 
@@ -430,7 +430,7 @@ public:
 	/* decode one audio frame and returns its uncompressed size */
 	int audio_decode_frame(VideoState *is, double *pts_ptr);
 	   
-	int audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, struct AudioParams *audio_hw_params);
+	int audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, AudioParams *audio_hw_params);
 
 #ifndef CMDUTILS
 
@@ -449,7 +449,7 @@ public:
 	const char *getExt(const char *fspec);
 
 	/* open a given stream. Return 0 if OK */
-	//打开一个Stream，视频或音频
+	//麓貌驴陋脪禄赂枚Stream拢卢脢脫脝碌禄貌脪么脝碌
 	int stream_component_open(VideoState *is, int stream_index);
 
 	void stream_component_close(VideoState *is, int stream_index);
@@ -459,10 +459,10 @@ public:
 	int is_realtime(AVFormatContext *s);
 	
 	/* this thread gets the stream from the disk or the network */
-	//解码线程，获得视音频Packet并放入队列
+	//陆芒脗毛脧脽鲁脤拢卢禄帽碌脙脢脫脪么脝碌Packet虏垄路脜脠毛露脫脕脨
 	static int read_thread(void *arg);
 
-	//以下几个函数都是处理event_loop()中的各种操作的
+	//脪脭脧脗录赂赂枚潞炉脢媒露录脢脟麓娄脌铆event_loop()脰脨碌脛赂梅脰脰虏脵脳梅碌脛
 	void stream_cycle_channel(VideoState *is, int codec_type);
 
 	//-------------------------------------------------------------------------------
@@ -531,7 +531,7 @@ public:
 	int video_angle = 0;
 	int video_flipV = 0;
 	int video_flipH = 0;
-	//专门设置的标记，在程序将要退出的时候会置1
+	//脳篓脙脜脡猫脰脙碌脛卤锚录脟拢卢脭脷鲁脤脨貌陆芦脪陋脥脣鲁枚碌脛脢卤潞貌禄谩脰脙1
 	int exit_remark = 0;
 
 	//---------------------------------
