@@ -5,6 +5,8 @@
 #include <LibResource.h>
 using namespace Regards::Sqlite;
 
+
+
 CSqlExecuteRequest::CSqlExecuteRequest(const wxString & databaseName)
 {
 	useTransaction = false;
@@ -79,17 +81,21 @@ int CSqlExecuteRequest::ExecuteRequestWithNoResult(const wxString &requestSQL)
 
 void CSqlExecuteRequest::BeginTransaction()
 {
+#ifdef USE_TRANSACTION
 	_sqlLibTransaction = CSqlEngine::getInstance(databaseName);
 	_sqlLibTransaction->BeginTransaction();
 	_sqlLibTransaction->lock();
 	useTransaction = true;
+#endif
 }
 
 void CSqlExecuteRequest::CommitTransection()
 {
+#ifdef USE_TRANSACTION
 	_sqlLibTransaction->CommitTransection();
 	useTransaction = false;
 	_sqlLibTransaction->unlock();
+#endif
 }
 
 int64_t CSqlExecuteRequest::GetLastId()

@@ -5,13 +5,12 @@
 #include <wx/progdlg.h>
 using namespace Regards::Sqlite;
 
-/*
-#ifdef WIN32
+
 #define USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
-#endif
-*/
+
+
 
 CSqlInsertFile::CSqlInsertFile()
 	: CSqlExecuteRequest(L"RegardsDB")
@@ -312,9 +311,7 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 	CLibPicture libPicture;
     BeginTransaction();
 #endif
-
-
-
+	   
 	int i = 0;
 	wxArrayString files;
     wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
