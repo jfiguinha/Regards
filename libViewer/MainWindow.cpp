@@ -1100,7 +1100,15 @@ void CMainWindow::LoadPicture()
 {
 	bool isValid = false;
 	this->filename = imageList->GetFilePath(numElement, isValid);
-
+	if (isValid)
+	{
+		if (firstFileToShow != this->filename)
+		{
+			firstFileToShow = this->filename;
+			centralWnd->LoadPicture(firstFileToShow, numElement);
+		}
+	}
+	/*
 	if (!videoStart)
 	{
 
@@ -1131,6 +1139,7 @@ void CMainWindow::LoadPicture()
 				showVideoWindow->StopVideo(this->filename);
 		}
 	}
+	*/
 }
 
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
