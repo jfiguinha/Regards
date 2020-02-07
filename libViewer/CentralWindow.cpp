@@ -701,7 +701,7 @@ void CCentralWindow::ScreenMode()
 	}
 }
 
-/*
+
 void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 {
 	TRACE();
@@ -711,7 +711,7 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
 	delete pictureElement;
 }
-*/
+
 
 bool CCentralWindow::GetProcessEnd()
 {
