@@ -126,12 +126,15 @@ void CFFmfc::PositionEvent(wxCommandEvent& event)
 	int64_t * ts = (int64_t *)event.GetClientData();
 	if (ts != nullptr)
 	{
-		if (_pimpl->g_is->ic != nullptr)
+		if (*ts > 0)
 		{
-			if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
-				ts += _pimpl->g_is->ic->start_time;
-			_pimpl->stream_seek(cur_stream, *ts, 0, 0);
-			_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
+			if (_pimpl->g_is->ic != nullptr)
+			{
+				if (_pimpl->g_is->ic->start_time != AV_NOPTS_VALUE)
+					ts += _pimpl->g_is->ic->start_time;
+				_pimpl->stream_seek(cur_stream, *ts, 0, 0);
+				_pimpl->stream_cycle_channel(cur_stream, AVMEDIA_TYPE_SUBTITLE);
+			}
 		}
 		delete ts;
 	}
