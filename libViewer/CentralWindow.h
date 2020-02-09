@@ -16,12 +16,17 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 class CImageLoadingFormat;
+class CPictureElement;
 #define CATALOG_FILTER 2
+
+
 
 namespace Regards
 {
 	namespace Viewer
 	{
+
+        
 		class CThreadPictureData
 		{
 		public:
@@ -100,6 +105,7 @@ namespace Regards
 
 			bool SetAnimation(const wxString &filename);
 
+            CPictureElement * pictureElement;
 			CPanelPhotoWnd * panelPhotoWnd;
 			CMainParam * viewerconfig;
 			CListPicture * listPicture;
