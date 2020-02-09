@@ -54,12 +54,14 @@
     <File Name="moviestreaminfo.h"/>
     <File Name="videostream.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../CxImage"/>
-        <IncludePath Value="../libextern/ffmpeg-4.1"/>
+        <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../include"/>
@@ -147,6 +149,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

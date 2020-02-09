@@ -54,6 +54,8 @@
     <File Name="RenderBitmapInterfaceOpenGL.h"/>
     <File Name="ffmpeg_dxva2.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall;-fpermissive" C_Options="-Wall;" Assembler="">
@@ -62,7 +64,7 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/ffmpeg-4.1"/>
+        <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
         <IncludePath Value="../libextern/SDL2-2.0.5/include"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libDataStructure"/>
@@ -163,6 +165,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

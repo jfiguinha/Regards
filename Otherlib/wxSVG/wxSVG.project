@@ -317,10 +317,12 @@
       <File Name="include/wxSVGXML/svgxmlhelpr.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++11;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-Wno-narrowing;-fopenmp" C_Options="-Wall;" Assembler="">
-        <IncludePath Value="../../libextern/ffmpeg-4.1"/>
+        <IncludePath Value="../../libextern/ffmpeg-4.2.2"/>
         <IncludePath Value="../../libextern/libexif-master"/>
         <IncludePath Value="../wxSVG/include"/>
         <IncludePath Value="../wxSVG/include/wxSVG"/>
@@ -410,6 +412,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
