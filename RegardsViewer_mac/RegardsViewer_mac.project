@@ -568,7 +568,6 @@
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
         <LibraryPath Value="../FaceRecognition_mac/Release"/>
         <LibraryPath Value="../libAppleFunction/Release"/>
-        <LibraryPath Value="../Otherlib/wxIA/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
       </Linker>
