@@ -86,6 +86,7 @@ namespace Regards
 			void LoadingPicture(const wxString &filenameToShow);
 			void EndPictureThread(wxCommandEvent& event);
 			void StartLoadingPicture(const int &numElement);
+			void OnVideoEnd(wxCommandEvent& event);
 			virtual void Resize();
            void OnVideoStart(wxCommandEvent& event);
 			void SetListeFile(wxCommandEvent& event);
@@ -149,6 +150,7 @@ namespace Regards
 			bool isVideo;
 			bool isDiaporama;
 			bool isThumbnail;
+			bool videoStart;
 		};
 	}
 }

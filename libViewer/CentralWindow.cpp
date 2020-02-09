@@ -30,6 +30,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	isFullscreen = false;
 	isDiaporama = false;
 	showToolbar = true;
+	videoStart = false;
 	wxRect rect;
 
 	CMainParam* config = CMainParamInit::getInstance();
@@ -94,7 +95,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		scrollVideoWindow->SetPageSize(200);
 		scrollVideoWindow->SetLineSize(200);
 
-		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, true);
+		windowManager->AddPanel(scrollVideoWindow, Pos::wxTOP, true, themeVideo.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailVideoPanel", true, THUMBNAILVIDEOPANEL, false, true);
 	}
 
 	//----------------------------------------------------------------------------------------
@@ -132,7 +133,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		if (thumbnailPicture != nullptr)
 			thumbnailPicture->SetListeFile(&photoVector);
 
-		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true);
+		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, false, true);
 
 	}
 
@@ -184,6 +185,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	}
 #endif
 
+	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
 	Connect(wxEVENT_SETMODEVIEWER, wxCommandEventHandler(CCentralWindow::SetMode));
@@ -199,8 +201,14 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	windowMode = 1;
 }
 
+void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
+{
+	videoStart = false;
+}
+
 void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 {
+	videoStart = true;
 	if (thumbnailVideo != nullptr)
     {
         thumbnailVideo->SetVideoPosition(0);
@@ -210,6 +218,11 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement)
 {
 	TRACE();
+	if (videoStart)
+		if (previewWindow != nullptr)
+			previewWindow->StopVideo();
+
+
 	wxCommandEvent evt(wxEVENT_LOADPICTURE);
 	CPictureElement * pictureElement = new CPictureElement();
 	pictureElement->filename = filename;

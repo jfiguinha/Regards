@@ -504,6 +504,11 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 }
 
 
+void CPreviewWnd::StopVideo()
+{
+	showVideoWindow->StopVideo("");
+}
+
 bool CPreviewWnd::SetVideo(const wxString &filename)
 {
     if(oldfilename != filename)

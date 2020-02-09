@@ -265,12 +265,14 @@ void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 						window->separationBar->separationBar->Show(true);
 				}
 			}
-			if (refresh)
-			{
-				Init();
-				Resize();
-			}
+
 		}
+	}
+
+	if (refresh)
+	{
+		Init();
+		Resize();
 	}
 }
 

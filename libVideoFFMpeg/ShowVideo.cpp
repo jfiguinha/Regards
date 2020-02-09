@@ -188,7 +188,7 @@ void CShowVideo::OnVideoEnd()
 	videoSlider->SetPause();
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, VIDEO_END_ID);
+		wxCommandEvent evt(VIDEO_END_ID);
 		this->windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 #ifdef __APPLE__

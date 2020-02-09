@@ -33,6 +33,7 @@ namespace Regards
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation = false);
 			bool SetVideo(const wxString &filename);
 			void SetEffect(const bool &effect);
+			void StopVideo();
 			void TransitionEnd();
 			void ImageSuivante();
 			void ImagePrecedente();

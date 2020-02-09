@@ -260,7 +260,7 @@ namespace Regards
 			int numElementTraitement;
 			bool start;
 			bool criteriaSendMessage;
-			bool videoStart;
+			//bool videoStart;
 			//bool sendMessageVideoStop;
 			//bool loadPicture;
             bool checkVersion;

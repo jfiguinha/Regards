@@ -84,7 +84,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	numElementTraitement = 0;
 	start = true;
 	criteriaSendMessage = false;
-	videoStart = false;
+	//videoStart = false;
 	checkVersion = true;
     imageList = new CImageList();
     PhotosVector pictures;
@@ -122,7 +122,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(EVENT_ENDNEWPICTURETHREAD, wxCommandEventHandler(CMainWindow::OnEndPictureLoad));
 	Connect(wxEVENT_CRITERIASHOWUPDATE, wxCommandEventHandler(CMainWindow::RefreshCriteriaPictureList));
 	Connect(TOOLBAR_UPDATE_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnShowToolbar));
-	Connect(VIDEO_END_ID, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnVideoEnd));
+	Connect(VIDEO_END_ID, wxCommandEventHandler(CMainWindow::OnVideoEnd));
     Connect(VIDEO_START, wxCommandEventHandler(CMainWindow::OnVideoStart));
 	Connect(wxEVENT_ADDFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnAddFolder));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
@@ -350,9 +350,7 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 void CMainWindow::OnVideoStart(wxCommandEvent& event)
 {
     TRACE();
-    //centralWnd->StopLoadingPicture();
-	videoStart = true;
-    
+   
     if(centralWnd != nullptr)
     {
         wxCommandEvent evt(VIDEO_START);
@@ -916,7 +914,11 @@ void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
 void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 {
     TRACE();
-	videoStart = false;
+	if (centralWnd != nullptr)
+	{
+		wxCommandEvent evt(VIDEO_END_ID);
+		centralWnd->GetEventHandler()->AddPendingEvent(evt);
+	}
 	if(startDiaporama)
 		ImageSuivante();
 
