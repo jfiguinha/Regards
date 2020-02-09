@@ -189,7 +189,6 @@
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
-        <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
@@ -274,7 +273,6 @@
         <Library Value="wxtiff-3.1"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
-        <Library Value="aom"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>

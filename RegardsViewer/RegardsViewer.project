@@ -193,7 +193,6 @@
         <LibraryPath Value="../libextern/libjpeg-turbo-1.5.1/.libs"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake"/>
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
-        <LibraryPath Value="../libextern/aom/build"/>
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build/cpp"/>
@@ -340,7 +339,6 @@
         <Library Value="IlmImf"/>
         <Library Value="IexMath"/>
         <Library Value="Half"/>
-        <Library Value="aom"/>
         <Library Value="Bcrypt"/>
         <Library Value="libheif_shared"/>
         <Library Value="VideoThumbnail"/>
