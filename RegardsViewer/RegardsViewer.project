@@ -353,6 +353,7 @@
         <Library Value="tesseract"/>
         <Library Value="lept"/>
         <Library Value="tbb"/>
+        <Library Value="aom"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

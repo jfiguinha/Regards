@@ -285,6 +285,7 @@
         <Library Value="IexMath"/>
         <Library Value="Half"/>
         <Library Value="tbb"/>
+        <Library Value="aom"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
