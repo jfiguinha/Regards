@@ -204,9 +204,17 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
 	videoStart = false;
-    wxCommandEvent evt(wxEVENT_LOADPICTURE);
-    evt.SetClientData(pictureElement);
-    this->GetEventHandler()->AddPendingEvent(evt);    
+    if(loadPicture)
+    {
+        CPictureElement * pictureElement = new CPictureElement();
+        pictureElement->filename = filename;
+        pictureElement->numElement = numElement;      
+        wxCommandEvent evt(wxEVENT_LOADPICTURE);
+        evt.SetClientData(pictureElement);
+        this->GetEventHandler()->AddPendingEvent(evt); 
+
+        loadPicture = false;   
+    }
 }
 
 void CCentralWindow::OnVideoStart(wxCommandEvent& event)
@@ -222,17 +230,22 @@ void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement
 {
 	TRACE();
     
-    pictureElement = new CPictureElement();
-    pictureElement->filename = filename;
-    pictureElement->numElement = numElement;    
+    this->filename = filename;
+    this->numElement = numElement;
     
 	if (videoStart)
     {
+        loadPicture = true;
+        
 		if (previewWindow != nullptr)
 			previewWindow->StopVideo();
     }
     else
     {
+        loadPicture = false;
+        CPictureElement * pictureElement = new CPictureElement();
+        pictureElement->filename = filename;
+        pictureElement->numElement = numElement;  
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt);

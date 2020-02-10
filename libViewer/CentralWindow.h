@@ -16,7 +16,7 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 class CImageLoadingFormat;
-class CPictureElement;
+
 #define CATALOG_FILTER 2
 
 
@@ -105,7 +105,7 @@ namespace Regards
 
 			bool SetAnimation(const wxString &filename);
 
-            CPictureElement * pictureElement;
+            
 			CPanelPhotoWnd * panelPhotoWnd;
 			CMainParam * viewerconfig;
 			CListPicture * listPicture;
@@ -113,6 +113,10 @@ namespace Regards
 #ifndef __NOFACE_DETECTION__
 			CListFace * listFace;
 #endif
+
+            bool loadPicture = false;
+            wxString filename;
+            int numElement;
 
 			CScrollbarWnd * scrollVideoWindow;
 			CThumbnailViewerVideo * thumbnailVideo;
