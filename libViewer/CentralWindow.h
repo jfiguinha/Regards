@@ -150,7 +150,7 @@ namespace Regards
 			vector<CImageVideoThumbnail *> videoThumbnail;
 			bool processLoadPicture;
 			int nbThumbnail;
-			wxString filename;
+
 			int oldAnimationPosition = -1;
 			wxString oldFilename = L"";
 			bool showToolbar;
