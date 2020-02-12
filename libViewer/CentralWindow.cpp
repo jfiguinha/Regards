@@ -197,7 +197,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
     Connect(VIDEO_START, wxCommandEventHandler(CCentralWindow::OnVideoStart));
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
-
+    windowManager->HidePaneWindow(Pos::wxTOP);
 	windowMode = 1;
 }
 
@@ -885,8 +885,8 @@ void CCentralWindow::SetVideo(const wxString &path)
 	isAnimation = false;
 	isPicture = false;
 	
-
-	windowManager->ShowWindow(Pos::wxTOP);
+    windowManager->ShowPaneWindow(Pos::wxTOP);
+	//windowManager->ShowWindow(Pos::wxTOP);
 	//thumbnailVideoPanel->SetVideo(path);
 	//thumbnailVideoPanel->ShowVideoThumbnail();
 	if (thumbnailVideo->GetFilename() != filename)
