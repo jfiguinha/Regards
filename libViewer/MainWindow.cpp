@@ -489,11 +489,6 @@ void CMainWindow::ProcessIdle()
 	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
 
-	if (loadPicture)
-	{
-		LoadPicture();
-		loadPicture = false;
-	}
 
 	/*
 	CRegardsConfigParam * config = CParamInit::getInstance();
@@ -716,7 +711,11 @@ void CMainWindow::ProcessIdle()
 
         hasDoneOneThings = true;
 	}
-    
+	else if (loadPicture)
+	{
+		LoadPicture();
+		loadPicture = false;
+	}
     
         
         
