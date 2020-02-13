@@ -226,32 +226,37 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
+void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElement, const bool &first)
+{
+	this->filename = filename;
+	this->numElement = numElement;
+
+	if (videoStart)
+	{
+		loadPicture = true;
+
+		if (previewWindow != nullptr)
+			previewWindow->StopVideo();
+	}
+	else
+	{
+		loadPicture = false;
+		CPictureElement * pictureElement = new CPictureElement();
+		pictureElement->filename = filename;
+		pictureElement->numElement = numElement;
+		pictureElement->first = first;
+		wxCommandEvent evt(wxEVENT_LOADPICTURE);
+		evt.SetClientData(pictureElement);
+		this->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
 {
 	TRACE();
 	if (this->filename != filename)
 	{
-		this->filename = filename;
-		this->numElement = numElement;
-
-		if (videoStart)
-		{
-			loadPicture = true;
-
-			if (previewWindow != nullptr)
-				previewWindow->StopVideo();
-		}
-		else
-		{
-			loadPicture = false;
-			CPictureElement * pictureElement = new CPictureElement();
-			pictureElement->filename = filename;
-			pictureElement->numElement = numElement;
-			pictureElement->first = first;
-			wxCommandEvent evt(wxEVENT_LOADPICTURE);
-			evt.SetClientData(pictureElement);
-			this->GetEventHandler()->AddPendingEvent(evt);
-		}
+		RefreshPicture(filename, numElement, first);
 	}
 	/*
 	LoadPictureInThread(filename, numElement);

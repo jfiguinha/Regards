@@ -82,7 +82,8 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 			void StopAnimation();
 			void StartAnimation();
-			void LoadPicture(const wxString &filename, const int &numElement, const bool &first = true);
+			void RefreshPicture(const wxString &filename, const int &numElement, const bool &first = false);
+			void LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
 
 		private:
 			CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);

@@ -1219,7 +1219,7 @@ void CMainWindow::ImagePrecedente()
 
 void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 {
-	centralWnd->LoadPicture(filename, numElement);
+	centralWnd->RefreshPicture(filename, numElement);
 }
 
 
