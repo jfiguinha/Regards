@@ -109,12 +109,6 @@ void CVideoControlSoft::SetRotation(const int &rotation)
     wxPostEvent(this, event);
 }
 
-void CVideoControlSoft::SetVideoStart()
-{
-    wxCommandEvent event(EVENT_VIDEOSTART);
-    wxPostEvent(this, event);
-}
-
 void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 {
 	long rotation = event.GetExtraLong();
@@ -310,8 +304,10 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         videoEnd = false;
         filename = movie;
 		standByMovie = "";
+        pause = false;
         if(play)
             ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
+
 	}
 	else if(movie != filename)
 	{
@@ -327,6 +323,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 	eventPlayer->OnVideoStart();
 	ffmfc->Play();
 	pause = false;
+    videoEnd = false;
     videoStart =true;
     fpsTimer->Start(1000);
 }

@@ -897,7 +897,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	}
 
 	if (previewWindow != nullptr)
-		previewWindow->SetVideo(path, first);
+		previewWindow->SetVideo(path, !first);
 
 	SetPanelInfos(false);
 	//windowManager->Resize();

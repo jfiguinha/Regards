@@ -11,6 +11,7 @@
 #include "MainThemeInit.h"
 #include "MainTheme.h"
 #include "SqlFindPhotos.h"
+#include <SqlPhotos.h>
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
@@ -709,14 +710,7 @@ void CMainWindow::ProcessIdle()
         }   
 
         hasDoneOneThings = true;
-	}
-	else if (loadPicture)
-	{
-		
-		loadPicture = false;
-	}
-    
-        
+	}      
         
 	//muPictureList.unlock();
 
@@ -992,6 +986,12 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
             
             wxString dir = wxString(*info);
             statusBarViewer->RemoveFSEntry(dir);
+            
+            //Test if I found the file in the new list
+            CSqlPhotos sqlPhotos;
+            int numPhotoId = sqlPhotos.GetPhotoId(filename);
+            if(numPhotoId == -1)
+                ImageDebut();
 		}
 	}
 	delete info;

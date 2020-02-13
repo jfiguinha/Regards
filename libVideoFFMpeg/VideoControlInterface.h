@@ -47,7 +47,6 @@ public:
     virtual void SetVideoDuration(int64_t duration) = 0;
     virtual int getWidth() = 0;
     virtual int getHeight() = 0;    
-    virtual void SetVideoStart() = 0;
     virtual wxWindow * GetWindow() = 0;
     virtual void SetVideoPreviewEffect(CEffectParameter * effectParameter) = 0;
     virtual CEffectParameter * GetParameter() = 0;

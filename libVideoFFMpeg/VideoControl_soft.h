@@ -68,7 +68,6 @@ public:
         this->Refresh();
     }
     void SetRotation(const int &rotation);
-    void SetVideoStart();
 	void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
     void UpdateScreenRatio();
 

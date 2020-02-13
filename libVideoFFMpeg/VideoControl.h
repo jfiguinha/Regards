@@ -75,8 +75,6 @@ public:
 	};
     
     void SetRotation(const int &rotation);
-    void SetVideoStart();    
-
 	void SetDXVA2Compatible(const bool &compatible);
 	bool GetDXVA2Compatible();
 #ifdef RENDEROPENGL  
