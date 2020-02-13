@@ -163,6 +163,7 @@ namespace Regards
 			bool isDiaporama;
 			bool isThumbnail;
 			bool videoStart;
+            bool stopVideo;
 		};
 	}
 }

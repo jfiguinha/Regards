@@ -199,10 +199,12 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	processLoadPicture = false;
     windowManager->HideWindow(Pos::wxTOP, false);
 	windowMode = 1;
+    stopVideo = false;
 }
 
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
+    stopVideo = false;
 	videoStart = false;
     if(loadPicture)
     {
@@ -235,8 +237,12 @@ void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElem
 	{
 		loadPicture = true;
 
-		if (previewWindow != nullptr)
-			previewWindow->StopVideo();
+		if (previewWindow != nullptr && !stopVideo)
+        {
+            stopVideo = true;
+            previewWindow->StopVideo();
+        }
+			
 	}
 	else
 	{
@@ -254,6 +260,7 @@ void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElem
 void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
 {
 	TRACE();
+    printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
 	if (this->filename != filename)
 	{
 		RefreshPicture(filename, numElement, first);
@@ -471,7 +478,7 @@ void CCentralWindow::SetVideoPos(wxCommandEvent& event)
 
 void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 {
-	printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
+	//printf("CViewerWindow::OnTimerAnimation %d \n", animationPosition);
 
 	if (thumbnailVideo != nullptr)
 		thumbnailVideo->SetVideoPosition(animationPosition);
@@ -495,7 +502,7 @@ void CCentralWindow::OnTimerAnimation(wxTimerEvent& event)
 			//image = libPicture.LoadPicture(filename, false, animationPosition);
 			delay = libPicture.GetFrameDelay(filename);
 		}
-		printf("CViewerWindow::OnTimerAnimation Start delay %d \n", delay);
+		//printf("CViewerWindow::OnTimerAnimation Start delay %d \n", delay);
 		animationTimer->Start(delay, wxTIMER_ONE_SHOT);
 	}
 	else
@@ -560,7 +567,7 @@ void CCentralWindow::LoadAnimationBitmap(const wxString &filename, const int &nu
 	oldFilename = filename;
 	oldAnimationPosition = numFrame;
 
-	printf("CViewerWindow::LoadAnimationBitmap %d \n", numFrame);
+	//printf("CViewerWindow::LoadAnimationBitmap %d \n", numFrame);
 	if (numFrame < nbThumbnail && numFrame >= 0)
 	{
 		CImageLoadingFormat * image = nullptr;
@@ -929,7 +936,7 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 {
 	TRACE();
 	processLoadPicture = false;
-
+    wxString localPicture = "";
 	CThreadPictureData * pictureData = (CThreadPictureData *)event.GetClientData();
 	if (pictureData != nullptr)
 	{
@@ -938,7 +945,7 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 			pictureData->myThread->join();
 			delete pictureData->myThread;
 		}
-
+        localPicture = pictureData->picture;
 		wxString * filename = new wxString();
 		*filename = pictureData->picture;
 		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
@@ -948,6 +955,17 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 
 		delete pictureData;
 	}
+    
+    if(localPicture != "" && localPicture != this->filename)
+    {
+        CPictureElement * pictureElement = new CPictureElement();
+		pictureElement->filename = filename;
+		pictureElement->numElement = numElement;
+		pictureElement->first = false;
+		wxCommandEvent evt(wxEVENT_LOADPICTURE);
+		evt.SetClientData(pictureElement);
+		this->GetEventHandler()->AddPendingEvent(evt);
+    }
 }
 
 
