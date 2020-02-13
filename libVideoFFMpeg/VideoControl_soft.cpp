@@ -575,14 +575,21 @@ int CVideoControlSoft::ChangeAudioStream(int newStreamAudio)
 
 void CVideoControlSoft::OnPlay()
 {
-	if (pause && !videoEnd)
+	if (videoStart)
 	{
-		ffmfc->Pause();
+		if (pause && !videoEnd)
+		{
+			ffmfc->Pause();
+		}
+		else if (videoEnd)
+		{
+			PlayMovie(filename, true);
+		}
 	}
-	else if(videoEnd)
-    {
+	else
+	{
 		PlayMovie(filename, true);
-    }
+	}
 
 	pause = false;
 }
@@ -597,11 +604,14 @@ void CVideoControlSoft::OnStop(wxString photoName)
 
 void CVideoControlSoft::OnPause()
 {
-	if (!pause)
+	if (videoStart)
 	{
-		ffmfc->Pause();
+		if (!pause)
+		{
+			ffmfc->Pause();
+		}
+		pause = true;
 	}
-	pause = true;
 }
 
 void CVideoControlSoft::SetVideoDuration(int64_t duration)
