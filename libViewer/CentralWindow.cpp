@@ -208,11 +208,11 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     {
         CPictureElement * pictureElement = new CPictureElement();
         pictureElement->filename = filename;
-        pictureElement->numElement = numElement;      
+        pictureElement->numElement = numElement;  
+        pictureElement->first = false;     
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt); 
-
         loadPicture = false;   
     }
 }
@@ -226,7 +226,7 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
-void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement)
+void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
 {
 	TRACE();
     
@@ -245,7 +245,8 @@ void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement
         loadPicture = false;
         CPictureElement * pictureElement = new CPictureElement();
         pictureElement->filename = filename;
-        pictureElement->numElement = numElement;  
+        pictureElement->numElement = numElement;
+        pictureElement->first = first;  
         wxCommandEvent evt(wxEVENT_LOADPICTURE);
         evt.SetClientData(pictureElement);
         this->GetEventHandler()->AddPendingEvent(evt);
@@ -740,7 +741,7 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 {
 	TRACE();
 	CPictureElement * pictureElement = (CPictureElement *)event.GetClientData();
-	LoadPictureInThread(pictureElement->filename, pictureElement->numElement);
+	LoadPictureInThread(pictureElement);
 	if (thumbnailPicture != nullptr)
 		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
 	delete pictureElement;
@@ -777,20 +778,20 @@ void CCentralWindow::SetPosition(const long &timePosition)
 	}
 }
 
-void CCentralWindow::LoadPictureInThread(const wxString &filename, const int &numElement)
+void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 {
 	TRACE();
 	if (!wxFileExists(filename))
-		this->filename = CLibResource::GetPhotoCancel();
+		filename = CLibResource::GetPhotoCancel();
 	else
-		this->filename = filename;
+		filename = pictureElement->filename;
 
 	CLibPicture libPicture;
 
 	if (libPicture.TestIsVideo(filename))
 	{
 		//StartLoadingPicture(numElement);
-		SetVideo(filename);
+		SetVideo(filename, pictureElement->first);
 		
 	}
 	else if (libPicture.TestIsAnimation(filename))
@@ -876,7 +877,7 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 }
 
 
-void CCentralWindow::SetVideo(const wxString &path)
+void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 {
 	StopAnimation();
 	bool refresh = isVideo ? false : true;
@@ -896,7 +897,7 @@ void CCentralWindow::SetVideo(const wxString &path)
 	}
 
 	if (previewWindow != nullptr)
-		previewWindow->SetVideo(path);
+		previewWindow->SetVideo(path, first);
 
 	SetPanelInfos(false);
 	//windowManager->Resize();

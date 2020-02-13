@@ -168,8 +168,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	updateFolder = true;
 	processIdle = true;
-	loadPicture = true;
-	
+	LoadPicture(true);
 }
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
@@ -713,7 +712,7 @@ void CMainWindow::ProcessIdle()
 	}
 	else if (loadPicture)
 	{
-		LoadPicture();
+		
 		loadPicture = false;
 	}
     
@@ -1035,7 +1034,7 @@ void CMainWindow::PictureVideoClick(wxCommandEvent& event)
 	}
 }
 
-void CMainWindow::LoadPicture()
+void CMainWindow::LoadPicture(const bool & first)
 {
 	bool isValid = false;
 	this->filename = imageList->GetFilePath(numElement, isValid);
@@ -1044,7 +1043,7 @@ void CMainWindow::LoadPicture()
 		if (firstFileToShow != this->filename)
 		{
 			firstFileToShow = this->filename;
-			centralWnd->LoadPicture(firstFileToShow, numElement);
+			centralWnd->LoadPicture(firstFileToShow, numElement, first);
 		}
 	}
 }

@@ -16,6 +16,7 @@ using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
 class CImageLoadingFormat;
+class CPictureElement;
 
 #define CATALOG_FILTER 2
 
@@ -81,13 +82,13 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 			void StopAnimation();
 			void StartAnimation();
-			void LoadPicture(const wxString &filename, const int &numElement);
+			void LoadPicture(const wxString &filename, const int &numElement, const bool &first);
 
 		private:
 			CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
-			void LoadPictureInThread(const wxString &filename, const int &numElement);
+			void LoadPictureInThread(CPictureElement * pictureElement);
 			void LoadingPicture(const wxString &filenameToShow);
 			void EndPictureThread(wxCommandEvent& event);
 			void StartLoadingPicture(const int &numElement);
@@ -139,7 +140,7 @@ namespace Regards
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail);
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation);
 			void SetPanelInfos(const bool &isThumbnail);
-			void SetVideo(const wxString &path);
+			void SetVideo(const wxString &path, const bool &first);
 
 			PhotosVector photoVector;
 

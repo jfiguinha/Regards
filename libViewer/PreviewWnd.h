@@ -31,7 +31,7 @@ namespace Regards
 			CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);
 			~CPreviewWnd();
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation = false);
-			bool SetVideo(const wxString &filename);
+			bool SetVideo(const wxString &filename, const bool &play = true);
 			void SetEffect(const bool &effect);
 			void StopVideo();
 			void TransitionEnd();

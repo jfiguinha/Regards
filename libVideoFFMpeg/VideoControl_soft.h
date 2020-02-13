@@ -42,7 +42,7 @@ public:
 	void OnPlay();
 	void OnStop(wxString photoName);
 	void OnPause();
-	int PlayMovie(const wxString &movie);
+	int PlayMovie(const wxString &movie, const bool &play);
 
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);

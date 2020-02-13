@@ -343,7 +343,7 @@ void CShowVideo::InitControl()
 	}
 }
 
-bool CShowVideo::SetVideo(const wxString &filename, const int &rotation)
+bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const bool &play)
 {
 	videoPosOld = 0;
 	bool value = false;
@@ -352,7 +352,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation)
 		if (play)
 			PauseVideo();
 
-		value = videoWindow->PlayMovie(filename);
+		value = videoWindow->PlayMovie(filename, play);
 
 	}
 	return value;

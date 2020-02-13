@@ -222,7 +222,7 @@ namespace Regards
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
-			void LoadPicture();
+			void LoadPicture(const bool &first = false);
 			void UpdatePicture();
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
@@ -262,7 +262,6 @@ namespace Regards
 			bool criteriaSendMessage;
 			//bool videoStart;
 			//bool sendMessageVideoStop;
-			bool loadPicture;
             bool checkVersion;
 
 		};

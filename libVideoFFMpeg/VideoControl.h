@@ -60,7 +60,7 @@ public:
 	void OnPlay();
 	void OnStop(wxString photoName);
 	void OnPause();
-	int PlayMovie(const wxString &movie);
+	int PlayMovie(const wxString &movie, const bool &play);
 	int GetState(){ return 0; };
     void OnRefresh(wxCommandEvent& event);
 	int ChangeAudioStream(int newStreamAudio);

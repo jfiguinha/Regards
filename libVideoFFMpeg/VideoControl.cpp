@@ -224,7 +224,7 @@ void CVideoControl::EndVideoThread(wxCommandEvent& event)
 
 	if(standByMovie != "")
 	{
-		PlayMovie(standByMovie);
+		PlayMovie(standByMovie, true);
 	}
 }
 
@@ -319,7 +319,7 @@ void CVideoControl::DeleteSubtitulePicture()
 
 
 
-int CVideoControl::PlayMovie(const wxString &movie)
+int CVideoControl::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd)
 	{
@@ -334,7 +334,8 @@ int CVideoControl::PlayMovie(const wxString &movie)
         videoEnd = false;
         filename = movie;
 		standByMovie = "";
-		ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
+        if(play)
+            ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
 	}
 	else if(movie != filename)
 	{
@@ -1032,7 +1033,7 @@ void CVideoControl::OnPlay()
 	}
 	else if(videoEnd)
     {
-		PlayMovie(filename);
+		PlayMovie(filename, true);
     }
 
 	pause = false;

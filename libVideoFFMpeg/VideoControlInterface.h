@@ -61,7 +61,7 @@ public:
 	virtual void OnPlay() = 0;
 	virtual void OnStop(wxString photoName) = 0;
 	virtual void OnPause() = 0;
-	virtual int PlayMovie(const wxString &movie) = 0;    
+	virtual int PlayMovie(const wxString &movie, const bool &play) = 0;    
     
 
     

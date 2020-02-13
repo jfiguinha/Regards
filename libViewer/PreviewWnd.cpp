@@ -509,7 +509,7 @@ void CPreviewWnd::StopVideo()
 	showVideoWindow->StopVideo("");
 }
 
-bool CPreviewWnd::SetVideo(const wxString &filename)
+bool CPreviewWnd::SetVideo(const wxString &filename, const bool &play)
 {
     if(oldfilename != filename)
     {
@@ -543,7 +543,7 @@ bool CPreviewWnd::SetVideo(const wxString &filename)
         
 		int rotation = 0;
         libPicture.GetPictureDimensions(filename, width, height, rotation);
-        showVideoWindow->SetVideo(filename, rotation);
+        showVideoWindow->SetVideo(filename, rotation, play);
         oldfilename = filename;
         this->Resize();
     }

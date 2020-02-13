@@ -227,7 +227,7 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 
 	if(standByMovie != "")
 	{
-		PlayMovie(standByMovie);
+		PlayMovie(standByMovie, true);
 	}
 }
 
@@ -295,7 +295,7 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 	muSubtitle.unlock();
 }
 
-int CVideoControlSoft::PlayMovie(const wxString &movie)
+int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
 	if (videoEnd)
 	{
@@ -310,7 +310,8 @@ int CVideoControlSoft::PlayMovie(const wxString &movie)
         videoEnd = false;
         filename = movie;
 		standByMovie = "";
-		ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
+        if(play)
+            ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
 	}
 	else if(movie != filename)
 	{
@@ -583,7 +584,7 @@ void CVideoControlSoft::OnPlay()
 	}
 	else if(videoEnd)
     {
-		PlayMovie(filename);
+		PlayMovie(filename, true);
     }
 
 	pause = false;

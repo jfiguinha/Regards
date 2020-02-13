@@ -21,7 +21,7 @@ class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterf
 public:
 	CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
 	~CShowVideo();
-	bool SetVideo(const wxString &filename, const int &rotation);
+	bool SetVideo(const wxString &filename, const int &rotation, const bool &play);
 	int GetVideoWidth();
 	int GetVideoHeight();
 
