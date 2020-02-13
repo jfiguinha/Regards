@@ -301,7 +301,6 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         newVideo = true;
 		initStart = true;
 		videoRenderStart = false;
-        videoEnd = false;
         filename = movie;
 		standByMovie = "";
         pause = false;
