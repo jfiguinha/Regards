@@ -262,7 +262,7 @@ namespace Regards
 			bool criteriaSendMessage;
 			//bool videoStart;
 			//bool sendMessageVideoStop;
-			//bool loadPicture;
+			bool loadPicture;
             bool checkVersion;
 
 		};

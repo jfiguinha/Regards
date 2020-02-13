@@ -168,8 +168,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	updateFolder = true;
 	processIdle = true;
-
-	LoadPicture();
+	loadPicture = true;
+	
 }
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
@@ -665,74 +665,11 @@ void CMainWindow::ProcessIdle()
 
         hasDoneOneThings = true;
 	}
-	/*
-	else if (updatePicture)
+	else if (loadPicture)
 	{
-		if (imageList->GetNbElement() > 0)
-		{
-            bool isValid = true;
-			if (filename != L"")
-			{
-				imageList->FindFileIndex(filename);
-				firstFileToShow = filename;
-			}
-			else
-				firstFileToShow = imageList->GetFilePath(numElement, isValid);
-
-
-
-			if (isValid)
-			{
-				if (firstFileToShow != L"")
-				{
-					wxCommandEvent evt(wxEVENT_LOADPICTURE);
-					CPictureElement * pictureElement = new CPictureElement();
-					pictureElement->filename = firstFileToShow;
-					pictureElement->numElement = numElement;
-					evt.SetClientData(pictureElement);
-					centralWnd->GetEventHandler()->AddPendingEvent(evt);
-					filename = firstFileToShow;
-				}
-			}
-			//numElementTraitement = 0;
-		}
-		updatePicture = false;
-        hasDoneOneThings = true;
+		LoadPicture();
+		loadPicture = false;
 	}
-	else if(loadPicture)
-	{
-        if(!videoStart)
-        {
-            bool isValid = false;
-            wxString photoName = imageList->GetFilePath(numElement, isValid);
-			if (isValid)
-			{
-				if (firstFileToShow != photoName)
-				{
-					firstFileToShow = photoName;
-					this->filename = photoName;
-					wxCommandEvent evt(wxEVENT_LOADPICTURE);
-					CPictureElement * pictureElement = new CPictureElement();
-					pictureElement->filename = firstFileToShow;
-					pictureElement->numElement = numElement;
-					evt.SetClientData(pictureElement);
-					centralWnd->GetEventHandler()->AddPendingEvent(evt);
-				}
-				this->filename = photoName;
-				loadPicture = false;
-				sendMessageVideoStop = false;
-			}
-        }
-        else if(videoStart && !sendMessageVideoStop)
-        {
-            CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
-            if (showVideoWindow != nullptr)
-                showVideoWindow->StopVideo();
-
-            sendMessageVideoStop = true;
-        }
-        hasDoneOneThings = true;
-    }*/
 	else if (numElementTraitement < imageList->GetNbElement())
 	{
         bool isValid = false;
