@@ -195,15 +195,14 @@ void CWindowManager::HideWindow(Pos position, const bool &refresh)
 					if (window->separationBar->separationBar != nullptr)
 						window->separationBar->separationBar->Show(false);
 				}
-				if (refresh)
-				{
-					Init();
-					Resize();
-				}
 			}
 		}
 	}
-
+	if (refresh)
+	{
+		Init();
+		Resize();
+	}
 }
 
 void CWindowManager::HidePaneWindow(Pos position)

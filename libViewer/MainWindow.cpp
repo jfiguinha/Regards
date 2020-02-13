@@ -489,6 +489,12 @@ void CMainWindow::ProcessIdle()
 	bool hasDoneOneThings = false;
 	int nbProcesseur = 1;
 
+	if (loadPicture)
+	{
+		LoadPicture();
+		loadPicture = false;
+	}
+
 	/*
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -664,11 +670,6 @@ void CMainWindow::ProcessIdle()
 		UpdatePicture();
 
         hasDoneOneThings = true;
-	}
-	else if (loadPicture)
-	{
-		LoadPicture();
-		loadPicture = false;
 	}
 	else if (numElementTraitement < imageList->GetNbElement())
 	{
@@ -1047,38 +1048,6 @@ void CMainWindow::LoadPicture()
 			centralWnd->LoadPicture(firstFileToShow, numElement);
 		}
 	}
-	/*
-	if (!videoStart)
-	{
-
-		if (isValid)
-		{
-			if (firstFileToShow != this->filename)
-			{
-				firstFileToShow = this->filename;
-				centralWnd->LoadPicture(firstFileToShow, numElement);
-			}
-		}
-	}
-	else if (videoStart)
-	{
-		CShowVideo * showVideoWindow = (CShowVideo *)this->FindWindowById(SHOWVIDEOVIEWERID);
-
-
-		CLibPicture libPicture;
-		if (!libPicture.TestIsVideo(this->filename))
-		{
-			centralWnd->LoadPicture(this->filename, numElement);
-			if (showVideoWindow != nullptr)
-				showVideoWindow->StopVideo("");
-		}
-		else
-		{
-			if (showVideoWindow != nullptr)
-				showVideoWindow->StopVideo(this->filename);
-		}
-	}
-	*/
 }
 
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
@@ -1087,9 +1056,6 @@ void CMainWindow::OnPictureClick(wxCommandEvent& event)
 	int photoId = event.GetExtraLong();
 	numElement = imageList->FindFileIndex(photoId);
 	LoadPicture();
-	//hasDoneOneThings = true;
-	//loadPicture = true;
-	//processIdle = true;
 }
 void CMainWindow::TransitionEnd()
 {
