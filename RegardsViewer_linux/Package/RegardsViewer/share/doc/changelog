@@ -1,6 +1,8 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.43
+- Correct bug on thumbnail
 News for version 2.42
 - Update to ffmpeg 4.2.2
 - Correct video stop

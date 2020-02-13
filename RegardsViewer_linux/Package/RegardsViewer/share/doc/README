@@ -54,6 +54,12 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.43
+- Correct bug on thumbnail
+News for version 2.42
+- Update to ffmpeg 4.2.2
+- Correct video stop
+- Correct display if video is the first element
 News for version 2.41
 - Correct bug on add folder
 - Video engine rewrite
