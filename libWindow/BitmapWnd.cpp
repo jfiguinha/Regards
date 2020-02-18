@@ -643,6 +643,7 @@ void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& updateA
 		{
 			if (updateAll)
 			{
+				loadBitmap = true;
 				bitmapLoad = true;
 				bitmapUpdate = true;
 				flipVertical = 0;
@@ -670,6 +671,7 @@ void CBitmapWnd::UpdateBitmap(CImageLoadingFormat* bitmapIn, const bool& updateA
 			else
 			{
 
+				loadBitmap = true;
 				bitmapLoad = true;
 				filename = bitmapIn->GetFilename();
 				bitmapUpdate = true;
@@ -725,6 +727,7 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 	{
 		if(bitmapIn->IsOk())
 		{
+			loadBitmap = true;
 			bitmapLoad = true;
 			filename = bitmapIn->GetFilename();
 			bitmapUpdate = true;
@@ -1190,6 +1193,9 @@ void CBitmapWnd::Resize()
 
 int CBitmapWnd::UpdateResized()
 {
+	oldWidth = 0;
+	oldHeight = 0;
+
     TRACE();
     if (bitmapLoad)
     {
@@ -1498,29 +1504,12 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 int CBitmapWnd::GetWidth()
 {
 
-#ifdef __WXGTK__        
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-	int _width = GetSize().GetX();
-
-	return _width * scale_factor;
+	return GetWindowWidth();
 }
 
 int CBitmapWnd::GetHeight()
 {
-
-#ifdef __WXGTK__        
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
-	int _height = GetSize().GetY();
-
-	return _height * scale_factor;
+	return GetWindowHeight();
 }
 
 #ifdef RENDEROPENGL
@@ -1535,20 +1524,19 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 	double scale_factor = 1.0f;
 #endif 
 
-	if (GetWidth() == 0 || GetHeight() == 0)
-		return;
-
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;  
 
 	muBitmap.lock();
 
-	if (openCLEngine != nullptr && source != nullptr)
+	if (loadBitmap)
 	{
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 
 		filtreEffet = new CFiltreEffet(color, openclContext, source);
+
+		loadBitmap = false;
 	}
 
 
@@ -1656,7 +1644,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
 	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
 
-	if (source != nullptr && bitmapLoad)
+	if (loadBitmap)
 	{
 		//CRegardsBitmap* bitmapSpecial = nullptr;
 
@@ -1664,9 +1652,12 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 			delete filtreEffet;
 
 		filtreEffet = new CFiltreEffet(color, nullptr, source);
-        
-		
 
+		loadBitmap = false;
+	}
+		
+	if (bitmapLoad && GetWidth() > 0 && GetHeight() > 0)
+	{
 		GenerateScreenBitmap(filtreEffet, widthOutput, heightOutput);
 
 		ApplyPreviewEffect(widthOutput, heightOutput);
@@ -1705,8 +1696,15 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
 
-	if (GetHeight() < 1)
+	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
+
+	if(!loadBitmap)
+		if (this->GetWidth() == oldWidth || this->GetHeight() == oldHeight)
+			return;
+
+	oldWidth = GetWidth();
+	oldHeight = GetHeight();
 
 	if (renderOpenGL == nullptr)
 	{
@@ -1728,7 +1726,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	// or more than one wxGLContext in the application.
 	renderOpenGL->SetCurrent(*this);
     
-
     if (openCLEngine == nullptr)
     {
         openCLEngine = new COpenCLEngine();
@@ -1743,11 +1740,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
         DWORD tickCount = GetTickCount();
         OutputDebugString(L"OnPaint\n");
     #endif
-
-    printf("CBitmapWnd OnPaint \n");
-
-	renderOpenGL->SetCurrent(*this);
-    
+   
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)

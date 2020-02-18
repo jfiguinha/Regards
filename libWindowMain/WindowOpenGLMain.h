@@ -65,8 +65,8 @@ namespace Regards
 			virtual void OnSize(wxSizeEvent& event)
 			{
 				this->ProcessOnSizeEvent(event);
-				this->Refresh();
-				this->Update();
+				//this->Refresh();
+				//this->Update();
 			}
 
 			virtual wxString GetWaitingMessage()

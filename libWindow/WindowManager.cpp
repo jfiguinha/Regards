@@ -25,11 +25,11 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowManager::OnResize));
     
-#ifdef WIN32
-    fastRender = true;
-#else
+//#ifdef WIN32
+//    fastRender = true;
+//#else
 	fastRender = false;
-#endif
+//#endif
 }
 
 

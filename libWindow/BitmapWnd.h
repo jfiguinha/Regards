@@ -265,6 +265,9 @@ namespace Regards
 			int posLargeur = 0;
 			int posHauteur = 0;
 
+			int oldWidth = 0;
+			int oldHeight = 0;
+			bool loadBitmap = false;
 			int isMoving;
 		};
 	}
