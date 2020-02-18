@@ -329,7 +329,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 
 int CVideoControlSoft::getWidth()
 {
-#ifdef __WXGTK__
+#ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
@@ -338,7 +338,7 @@ int CVideoControlSoft::getWidth()
 }
 int CVideoControlSoft::getHeight()
 {
-#ifdef __WXGTK__
+#ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
@@ -357,7 +357,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
 
-#ifdef __WXGTK__
+#ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
@@ -418,7 +418,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 
     nbFrame++;
-    printf("Nb Frame per Seconds : %d \n",nbFrame);
+    //printf("Nb Frame per Seconds : %d \n",nbFrame);
 
 
     if (videoRenderStart && initStart)
@@ -432,8 +432,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if(videoRenderStart)
 	{
         glTexture = RenderToGLTexture();
-        if(glTexture != nullptr)
-            printf("glTexture id : %d \n",glTexture->GetTextureID());
+        //if(glTexture != nullptr)
+        //    printf("glTexture id : %d \n",glTexture->GetTextureID());
     }
     
     if(videoRenderStart && glTexture != nullptr)
@@ -455,10 +455,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
                 inverted = 1;
                 
             //printf("Inverted %d Enable OpenCL %d \n",inverted, enableopenCL);
-            printf("flipH : %d flipV : %d inverted : %d \n", flipH, flipV, inverted);
+            //printf("flipH : %d flipV : %d inverted : %d \n", flipH, flipV, inverted);
             muVideoEffect.lock();
             renderBitmapOpenGL->RenderWithEffect(x,y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
-            printf("Rotation : %d \n",videoEffectParameter.rotation);
+           // printf("Rotation : %d \n",videoEffectParameter.rotation);
             muVideoEffect.unlock();
             
              
@@ -497,7 +497,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	}
 	else
 	{
-		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
+		renderBitmapOpenGL->CreateScreenRender(width * scale_factor, height * scale_factor, CRgbaquad(0,0,0,0));
 	}
 
 	this->SwapBuffers();
@@ -551,7 +551,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
 
-    std::cout<<"Video OnPaint Time : "<< duration <<'\n';
+    //std::cout<<"Video OnPaint Time : "<< duration <<'\n';
     
 
    // printf("OnPaint end \n");
@@ -686,7 +686,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
     heightVideo = src_frame->height;  
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
+    //std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
     
     //Refresh();
 #if defined(__WXGTK__)

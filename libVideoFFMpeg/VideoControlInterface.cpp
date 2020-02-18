@@ -14,6 +14,9 @@
 
 void CVideoControlInterface::calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height)
 {
+    
+ 
+    
 	float aspect_ratio = video_aspect_ratio;
 	int width, height, x, y;
 	
@@ -124,7 +127,7 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
 
 GLTexture * CVideoControlInterface::RenderFFmpegToTexture()
 {
-    printf("CVideoControlSoft decode by ffmpeg 1 \n");   
+    //printf("CVideoControlSoft decode by ffmpeg 1 \n");   
 
     GLTexture * glTexture = ffmpegToBitmap->ConvertFrameToOpenGLTexutreWithInterpolation(angle);  
 
@@ -169,7 +172,7 @@ bool CVideoControlInterface::IsCPUContext()
     
     }
     
-    printf("IsCPUContext CPU : %d \n", isCPU);
+    //printf("IsCPUContext CPU : %d \n", isCPU);
         
     return (isCPU == 1 ? true : false);
 }
@@ -252,7 +255,7 @@ void CVideoControlInterface::SetFrameData(AVFrame * src_frame)
         
         if(openclEffectYUV != nullptr)
         {
-            printf("OpenCL openclEffectYUV \n");
+            //printf("OpenCL openclEffectYUV \n");
             int ysize = 0;
             int usize = 0;
             int vsize = 0;
@@ -307,7 +310,7 @@ GLTexture * CVideoControlInterface::RenderToGLTexture()
     if(!isffmpegDecode)
     {
         
-        printf("VideoControl Is use_opencl \n");               
+      //  printf("VideoControl Is use_opencl \n");               
         if(openclEffectYUV != nullptr && openclEffectYUV->IsOk())
         {
             muBitmap.lock();
@@ -381,7 +384,7 @@ CRegardsBitmap * CVideoControlInterface::RenderToBitmap(COpenCLEffectVideo * ope
 	if (!isffmpegDecode)
 	{
 
-		printf("VideoControl Is use_opencl \n");
+		//printf("VideoControl Is use_opencl \n");
 		if (openclEffect != nullptr && openclEffect->IsOk())
 		{
 			muBitmap.lock();
@@ -417,7 +420,7 @@ CRegardsBitmap * CVideoControlInterface::RenderToBitmap()
 	if (!isffmpegDecode)
 	{
 
-		printf("VideoControl Is use_opencl \n");
+		//printf("VideoControl Is use_opencl \n");
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
 			muBitmap.lock();

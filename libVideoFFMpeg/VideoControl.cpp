@@ -999,8 +999,8 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    printf("Nb Frame per Seconds : %d \n",nbFrame);
-    std::cout<<"Video OnPaint Time : "<< duration <<'\n';
+    //printf("Nb Frame per Seconds : %d \n",nbFrame);
+    //std::cout<<"Video OnPaint Time : "<< duration <<'\n';
     
     nbFrame++;
 }
