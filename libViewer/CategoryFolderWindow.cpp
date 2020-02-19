@@ -157,15 +157,10 @@ void CCategoryFolderWindow::UpdateCriteria(const bool &needToSendMessage)
 		CCategoryWnd * catalogWnd = new CCategoryWnd(windowMain, treeWindow->GetTheme(), treeWindow);
 		catalogWnd->Init();
 		treeWindow->SetTreeControl(catalogWnd);
-
-		//int x = treeWindow->GetSize().x;
-		//int y = treeWindow->GetSize().y;
-
 		delete(catalogWndOld);
 		catalogWndOld = catalogWnd;	
 		update = true;
 	}
-	treeWindow->Refresh();
     processIdle = true;
 }
 

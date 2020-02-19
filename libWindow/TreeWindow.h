@@ -78,7 +78,8 @@ namespace Regards
 			void TestMaxX();
 			void TestMaxY();
             wxColour GetBackgroundColour(const int &yPos);
-            
+			void GenerateScreenBuffer();
+
 			wxBitmap * renderBitmap;
 			int bitmapWidth;
 			int bitmapHeight;
@@ -93,7 +94,7 @@ namespace Regards
             
             //Buffer
             wxBitmap backgroundBuffer; 
-            bool bufferUpdate;
+           // bool bufferUpdate;
 			int posHauteur;
 			int posLargeur;
 
