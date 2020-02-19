@@ -1628,14 +1628,17 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		}
 	}
     
-    printf("gl texture width : %d height %d \n", glTexture->GetWidth(), glTexture->GetHeight());
-     printf("screen width : %d height %d \n", GetWidth(), GetHeight());
-     printf("Scale Factor : %f \n", GetContentScaleFactor());
+
 
 	renderOpenGL->CreateScreenRender(GetWidth()* scale_factor, GetHeight()* scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
 	if (glTexture != nullptr)
 	{
+        
+        printf("gl texture width : %d height %d \n", glTexture->GetWidth(), glTexture->GetHeight());
+        printf("screen width : %d height %d \n", GetWidth(), GetHeight());
+        printf("Scale Factor : %f \n", GetContentScaleFactor());
+     
 		int x = ((GetWidth() * scale_factor) - glTexture->GetWidth()) / 2;
 		int y = ((GetHeight() * scale_factor) - glTexture->GetHeight()) / 2;
 		if (openclContext->IsSharedContextCompatible())

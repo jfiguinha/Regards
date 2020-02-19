@@ -440,7 +440,7 @@ void CWindowManager::SetWindowBottomSize(CWindowToAdd * bottom, int height, int 
 }
 
 void CWindowManager::Init_top()
-{
+{ 
 	int width = GetSize().x;
 	int height = GetSize().y;
 	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
@@ -450,7 +450,7 @@ void CWindowManager::Init_top()
 	{
 		int x = 0;
 		int top_width = width;
-		int default_height = (height / 4);
+		int default_height = (height / 4) ;
 
 		if (left != nullptr)
 		{
@@ -607,7 +607,7 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd * left, int width, int y, in
 			//Initialize value 25%
 			left->rect.x = 0;
 			left->rect.y = y;
-			left->rect.width = width / 4;
+			left->rect.width = (width / 4) ;
 			left->rect.height = left_height;
 		}
 
@@ -643,7 +643,7 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, 
 			//Initialize value 25%
 			right->rect.x = width - (width / 4);
 			right->rect.y = y;
-			right->rect.width = width / 4;
+			right->rect.width = (width / 4);
 			right->rect.height = right_height;
 		}
 

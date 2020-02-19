@@ -27,6 +27,7 @@ namespace Regards
 			int GetTypeFilter();
 			CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut);
 #ifdef RENDEROPENGL
+            void DeleteMemory();
 			void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut);
 #endif
 		private:
@@ -37,6 +38,7 @@ namespace Regards
 			cl_mem cl_nextPicture;
 			int width;
 			int height;
+            int oldetape = -1;
 		};
 	}
 }

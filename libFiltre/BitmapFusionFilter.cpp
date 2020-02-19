@@ -55,7 +55,14 @@ int CBitmapFusionFilter::GetTypeFilter()
 }
 
 
-
+void CBitmapFusionFilter::DeleteMemory()
+{
+	if (cl_nextPicture != nullptr)
+	{
+		clReleaseMemObject(cl_nextPicture);
+        cl_nextPicture = nullptr;
+	}
+}
 
 CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
@@ -121,8 +128,9 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		if (openclEffectVideo == nullptr)
 			openclEffectVideo = new COpenCLEffectVideo(bmpViewer->GetOpenCLContext());
 
-		if (etape == 0)
-		{
+		if (etape == 0 && oldetape != etape)
+		{           
+            
 			CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
 			int orientation = nextPicture->GetOrientation();
 			bitmapTemp->RotateExif(orientation);
@@ -130,10 +138,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 			height = bitmapTemp->GetBitmapHeight();
 			glPicture->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
 			glBindTexture(GL_TEXTURE_2D, glPicture->GetTextureID());
-			cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, glPicture->GetTextureID(), &err);
 			delete bitmapTemp;
-
-
 		}
 
 
@@ -141,7 +146,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		try
 		{
 			cl_int err;
-
+            cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, glPicture->GetTextureID(), &err);
 			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
 			Error::CheckError(err);
 			openclEffectVideo->SetAlphaValue(cl_nextPicture, glPicture->GetWidth(), glPicture->GetHeight(), etape);
@@ -157,6 +162,14 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 			Error::CheckError(err);
 			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
 			Error::CheckError(err);
+            
+            if (cl_nextPicture != nullptr)
+            {
+                clReleaseMemObject(cl_nextPicture);
+                cl_nextPicture = nullptr;
+            }            
+            
+            
 		}
 		catch (...)
 		{
@@ -168,6 +181,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		rcOut.height =height * newRatio;
 		rcOut.x = (bmpViewer->GetWidth() - rcOut.width) / 2;
 		rcOut.y = (bmpViewer->GetHeight() - rcOut.height) / 2;
+        oldetape = etape;
 	}
 }
 
