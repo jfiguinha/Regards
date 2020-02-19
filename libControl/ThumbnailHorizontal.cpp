@@ -100,7 +100,7 @@ void CThumbnailHorizontal::RenderIcone(wxDC * deviceContext)
         CIcone * pBitmapIcone = iconeList->GetElement(i);
 		if (pBitmapIcone != nullptr)
 		{
-            printf("RenderIcone Num Icone : %d \n ", i);
+            //printf("RenderIcone Num Icone : %d \n ", i);
 
 			//if visible
 			int left = x;

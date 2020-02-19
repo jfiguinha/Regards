@@ -519,6 +519,13 @@ CDraw * CBitmapWndViewer::GetDessinPt()
 #ifdef RENDEROPENGL
 void CBitmapWndViewer::AfterRender()
 {
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+        
+    
 	if (bitmapLoad)
 	{
 		//Affichage de la transition
@@ -552,7 +559,7 @@ void CBitmapWndViewer::AfterRender()
 				{
 					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);
 					if (renderOpenGL != nullptr)
-						renderOpenGL->ShowSecondBitmap(pictureNext, out.width, out.height, out.x, out.y);
+						renderOpenGL->ShowSecondBitmap(pictureNext, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 				}
 				else
 				{
@@ -567,13 +574,11 @@ void CBitmapWndViewer::AfterRender()
 						delete bitmapOut;
 
 						if (renderOpenGL != nullptr)
-							renderOpenGL->ShowSecondBitmap(pictureNext, out.width, out.height, out.x, out.y);
+							renderOpenGL->ShowSecondBitmap(pictureNext, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 					}
 				}
 
 			}
-
-
 
 		}
 	}
@@ -585,6 +590,8 @@ void CBitmapWndViewer::AfterRender()
 		{
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
+            if(afterEffect != nullptr)
+                afterEffect->DeleteMemory();
 		}
 
 	}

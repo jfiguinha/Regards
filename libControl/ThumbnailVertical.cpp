@@ -299,7 +299,7 @@ void CThumbnailVertical::UpdateScrollWithoutVScroll()
 
 void CThumbnailVertical::UpdateScroll()
 {
-    printf("CThumbnailVertical::UpdateScroll \n");
+    //printf("CThumbnailVertical::UpdateScroll \n");
 	if (noVscroll)
 	{
 		UpdateScrollWithoutVScroll();
