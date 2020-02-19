@@ -693,7 +693,7 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(this, event);  
 #else
-    this->Refresh();
+   this->Refresh();
 #endif 
 }
 

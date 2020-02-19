@@ -635,11 +635,7 @@ void CBitmapWndViewer::ShowArrowPrevious(wxDC * memDC)
 
 void CBitmapWndViewer::AfterRender(wxDC * dc)
 {
-#ifdef __WXGTK__
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
+
 
 	if(!arrowPrevious.IsOk())
 		LoadingResource(scale_factor);
@@ -706,6 +702,8 @@ void CBitmapWndViewer::KeyPress(const int &key)
 
 void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 {
+
+    
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
 		int hpos = CBitmapWnd::GetHPos();

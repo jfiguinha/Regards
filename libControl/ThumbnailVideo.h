@@ -17,13 +17,11 @@ namespace Regards
 		private:
 
            virtual void EraseThumbnail(wxCommandEvent& event);
-			void OnTimerProcess(wxTimerEvent& event);
 			virtual void ProcessThumbnailIdle();
 			int FindNumItem(const int &videoPos);
 			void InitWithDefaultPicture(const wxString & szFileName, const int &size = 20);
 			int numItemSelected;
 			bool process_end;
-			wxTimer * processTimer;
 			wxString videoFilename;
 		};
 	}

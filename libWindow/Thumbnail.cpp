@@ -811,6 +811,7 @@ void CThumbnail::LoadPicture(void * param)
 void CThumbnail::OnMouseMove(wxMouseEvent& event)
 {
     TRACE();
+
     bool needtoRedraw = false;
 
         int xPos = event.GetX();
@@ -845,7 +846,7 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 		 this->Refresh();
     }
 
-    this->GetParent()->GetEventHandler()->ProcessEvent(event);
+    //this->GetParent()->GetEventHandler()->ProcessEvent(event);
 }
 
 void CThumbnail::RenderBitmap(wxDC * deviceContext, CIcone * pBitmapIcone, const int &posLargeur, const int &posHauteur)
@@ -1074,12 +1075,12 @@ void CThumbnail::TestMaxX()
 void CThumbnail::OnEnterWindow(wxMouseEvent& event)
 {
     TRACE();
-    refreshTimer->Start(100);
+    //refreshTimer->Start(100);
 }
 void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 {
     TRACE();
-    refreshTimer->Stop();
+    //refreshTimer->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

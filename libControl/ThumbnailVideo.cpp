@@ -22,26 +22,10 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeTh
 {
 	numItemSelected = -1;
 	process_end = true;
-	processTimer = new wxTimer(this, wxTIMER_PROCESS);
-	Connect(wxTIMER_PROCESS, wxEVT_TIMER, wxTimerEventHandler(CThumbnailVideo::OnTimerProcess), nullptr, this);
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
 {
-	if (processTimer->IsRunning())
-		processTimer->Stop();
-
-	delete(processTimer);
-}
-
-void CThumbnailVideo::OnTimerProcess(wxTimerEvent& event)
-{
-	if (!process_end)
-	{
-		processIdle = true;
-	}
-	else
-		processTimer->Stop();
 }
 
 int CThumbnailVideo::FindNumItem(const int &videoPos)
@@ -122,7 +106,7 @@ void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
 		wxRect rect = pIcone->GetPos();
 		rect.x = posLargeur + rect.x;
 		rect.y = posHauteur + rect.y;
-
+        
 		wxWindow * parent = this->GetParent();
 
 		if (parent != nullptr)
@@ -344,7 +328,7 @@ void CThumbnailVideo::EraseThumbnail(wxCommandEvent& event)
     process_end = false;
     InitScrollingPos();
     InitWithDefaultPicture(videoFilename, 20);
-    processTimer->Start(500);
+    //processTimer->Start(500);
     Refresh();
     
 }
@@ -357,7 +341,7 @@ void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
     InitScrollingPos();
     InitWithDefaultPicture(videoFile, size);
     videoFilename = videoFile;	
-    processTimer->Start(500);
+   // processTimer->Start(500);
     Refresh();
 
 }

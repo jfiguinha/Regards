@@ -963,7 +963,7 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-#ifdef __WXGTK__
+#ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
@@ -1222,7 +1222,7 @@ int CBitmapWnd::UpdateResized()
 void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 {
     TRACE();
-#ifdef __WXGTK__
+#ifndef WIN32
     double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
@@ -1275,7 +1275,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 			}
 	}
 
-	MouseMove(xPos * scale_factor, yPos * scale_factor);
+	MouseMove(xPos* scale_factor, yPos* scale_factor);
     
     this->Refresh();
 }
@@ -1809,7 +1809,7 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport(wxDC * dc)
 {
 	CRgbaquad color;
 
-#ifdef __WXGTK__
+#ifndef WIN32
 	double scale_factor = GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
@@ -1871,7 +1871,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport(wxDC * dc)
 {
 	CRgbaquad color;
 
-#ifdef __WXGTK__
+#ifndef WIN32
 	double scale_factor = GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
