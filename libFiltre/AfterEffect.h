@@ -23,7 +23,7 @@ public:
 	virtual int GetTypeFilter() = 0;
 	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
 #ifdef RENDEROPENGL
-    virtual void DeleteMemory() = 0;
 	virtual void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
+	virtual void GenerateTexture(GLTexture * glPicture, CImageLoadingFormat * nextPicture) = 0;
 #endif
 };

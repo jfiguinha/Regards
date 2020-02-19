@@ -20,7 +20,10 @@
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
 #ifdef __APPLE__
+#include <OpenCL/cl.h>
 #include <opencl/cl_gl.h>
+#else
+#include <CL/cl.h>
 #endif
 using namespace Regards::Viewer;
 
@@ -28,8 +31,6 @@ CBitmapFusionFilter::CBitmapFusionFilter()
 {
 	bitmapTemp = nullptr;
 	bitmapOutCopy = nullptr;
-	openclEffectVideo = nullptr;
-	cl_nextPicture = nullptr;
 }
 
 CBitmapFusionFilter::~CBitmapFusionFilter()
@@ -40,28 +41,11 @@ CBitmapFusionFilter::~CBitmapFusionFilter()
 	if (bitmapOutCopy != nullptr)
 		delete bitmapOutCopy;
 
-	if (openclEffectVideo != nullptr)
-		delete openclEffectVideo;
-
-	if (cl_nextPicture != nullptr)
-	{
-		clReleaseMemObject(cl_nextPicture);
-	}
 }
 
 int CBitmapFusionFilter::GetTypeFilter()
 {
 	return IDM_AFTEREFFECT_FUSION;
-}
-
-
-void CBitmapFusionFilter::DeleteMemory()
-{
-	if (cl_nextPicture != nullptr)
-	{
-		clReleaseMemObject(cl_nextPicture);
-        cl_nextPicture = nullptr;
-	}
 }
 
 CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
@@ -120,28 +104,27 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 
 #ifdef RENDEROPENGL
 
+void  CBitmapFusionFilter::GenerateTexture(GLTexture * glPicture, CImageLoadingFormat * nextPicture)
+{
+	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
+	int orientation = nextPicture->GetOrientation();
+	bitmapTemp->RotateExif(orientation);
+	width = bitmapTemp->GetBitmapWidth();
+	height = bitmapTemp->GetBitmapHeight();
+	glPicture->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
+	glBindTexture(GL_TEXTURE_2D, glPicture->GetTextureID());
+	delete bitmapTemp;
+}
+
 void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
+	COpenCLEffectVideo * openclEffectVideo = nullptr;
+	cl_mem cl_nextPicture = nullptr;
+
 	cl_int err;
 	if (bmpViewer->GetOpenCLContext() != nullptr)
 	{
-		if (openclEffectVideo == nullptr)
-			openclEffectVideo = new COpenCLEffectVideo(bmpViewer->GetOpenCLContext());
-
-		if (etape == 0 && oldetape != etape)
-		{           
-            
-			CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
-			int orientation = nextPicture->GetOrientation();
-			bitmapTemp->RotateExif(orientation);
-			width = bitmapTemp->GetBitmapWidth();
-			height = bitmapTemp->GetBitmapHeight();
-			glPicture->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
-			glBindTexture(GL_TEXTURE_2D, glPicture->GetTextureID());
-			delete bitmapTemp;
-		}
-
-
+		openclEffectVideo = new COpenCLEffectVideo(bmpViewer->GetOpenCLContext());
 
 		try
 		{
@@ -162,12 +145,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 			Error::CheckError(err);
 			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
 			Error::CheckError(err);
-            
-            if (cl_nextPicture != nullptr)
-            {
-                clReleaseMemObject(cl_nextPicture);
-                cl_nextPicture = nullptr;
-            }            
+          
             
             
 		}
@@ -181,7 +159,16 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		rcOut.height =height * newRatio;
 		rcOut.x = (bmpViewer->GetWidth() - rcOut.width) / 2;
 		rcOut.y = (bmpViewer->GetHeight() - rcOut.height) / 2;
-        oldetape = etape;
+	}
+
+	if (openclEffectVideo != nullptr)
+		delete openclEffectVideo;
+	openclEffectVideo = nullptr;
+
+	if (cl_nextPicture != nullptr)
+	{
+		clReleaseMemObject(cl_nextPicture);
+		cl_nextPicture = nullptr;
 	}
 }
 

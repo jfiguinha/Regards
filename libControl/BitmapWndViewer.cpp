@@ -414,6 +414,18 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 				m_bTransition = true;
 				nextPicture = bmpSecond;
 				etape = 0;
+
+#ifdef RENDEROPENGL
+				if (renderOpenGL != nullptr && afterEffect != nullptr)
+				{
+					if (pictureNext == nullptr)
+						pictureNext = new GLTexture();
+
+					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
+						afterEffect->GenerateTexture(pictureNext, nextPicture);
+				}
+#endif
+
 				//renderNext.Destroy();
 				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			}
@@ -551,10 +563,6 @@ void CBitmapWndViewer::AfterRender()
 			//Génération de la texture
 			if (renderOpenGL != nullptr && afterEffect != nullptr)
 			{
-				//cl_int err;
-				if (pictureNext == nullptr)
-					pictureNext = new GLTexture();
-
 				if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 				{
 					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);
@@ -590,8 +598,6 @@ void CBitmapWndViewer::AfterRender()
 		{
 			renderOpenGL->ShowArrowPrevious();
 			renderOpenGL->ShowArrowNext();
-            if(afterEffect != nullptr)
-                afterEffect->DeleteMemory();
 		}
 
 	}

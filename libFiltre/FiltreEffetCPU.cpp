@@ -43,6 +43,7 @@ int CFiltreEffetCPU::GetWidth()
 		if (pBitmap != nullptr)
 			return pBitmap->GetBitmapWidth();
 	}
+	return 0;
 }
 
 int CFiltreEffetCPU::GetHeight()
@@ -57,6 +58,7 @@ int CFiltreEffetCPU::GetHeight()
 		if (pBitmap != nullptr)
 			return pBitmap->GetBitmapHeight();
 	}
+	return 0;
 }
 
 void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
