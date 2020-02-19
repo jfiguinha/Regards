@@ -604,7 +604,7 @@ int CBitmapWnd::GetInterpolation()
 float CBitmapWnd::GetBitmapWidthWithRatio()
 {
     TRACE();
-	return float(GetBitmapWidth()) * ratio;
+	return (float(GetBitmapWidth()) * ratio) * scaleFactor;
 }
 
 //-----------------------------------------------------------------
@@ -613,7 +613,7 @@ float CBitmapWnd::GetBitmapWidthWithRatio()
 float CBitmapWnd::GetBitmapHeightWithRatio()
 {
     TRACE();
-	return  float(GetBitmapHeight()) * ratio;
+	return  (float(GetBitmapHeight()) * ratio) * scaleFactor;
 }
 
 
@@ -1375,50 +1375,44 @@ void CBitmapWnd::TestMaxPosition()
 
 void CBitmapWnd::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
 {
-    TRACE();
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-   
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+    TRACE();  
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
 	int xValue = 0;
 	int yValue = 0;
 
 
-	if (widthOutput > GetWidth()* scale_factor)
+	if (widthOutput > GetWidth())
 	{
 		left = 0;
-		xValue = posLargeur * scale_factor;
+		xValue = posLargeur * scaleFactor;
 	}
 	else
 	{
 		xValue = 0;
-		left = (GetWidth()* scale_factor - widthOutput) / 2;
+		left = (GetWidth() - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = GetWidth()* scale_factor - (left * 2);
+	widthInterpolationSize = GetWidth() - (left * 2);
 
 
-	if (heightOutput > GetHeight()* scale_factor)
+	if (heightOutput > GetHeight())
 	{
 		top = 0;
-		yValue = posHauteur* scale_factor;
+		yValue = posHauteur* scaleFactor;
 	}
 	else
 	{
 		yValue = 0;
-		top = (GetHeight()* scale_factor - heightOutput) / 2;
+		top = (GetHeight() - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = GetHeight()* scale_factor - (top * 2);
+	heightInterpolationSize = GetHeight() - (top * 2);
 
 	rc.x = max(xValue,0);
 	if (invert)
     {
-        int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+        int heightmax = heightOutput - GetHeight() - yValue;
         rc.y = max(heightmax, 0);
     }
 	else
@@ -1521,7 +1515,6 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 
 int CBitmapWnd::GetWidth()
 {
-
 	return GetWindowWidth();
 }
 
@@ -1535,15 +1528,9 @@ int CBitmapWnd::GetHeight()
 void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
-
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;  
+	
+	int widthOutput = int(GetBitmapWidthWithRatio()) * scaleFactor;
+	int heightOutput = int(GetBitmapHeightWithRatio()) * scaleFactor;
 
 	muBitmap.lock();
 
@@ -1632,12 +1619,12 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
      printf("screen width : %d height %d \n", GetWidth(), GetHeight());
      printf("Scale Factor : %f \n", GetContentScaleFactor());
 
-	renderOpenGL->CreateScreenRender(GetWidth()* scale_factor, GetHeight()* scale_factor, CRgbaquad(0, 0, 0));
+	renderOpenGL->CreateScreenRender(GetWidth(), GetHeight(), CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 
 	if (glTexture != nullptr)
 	{
-		int x = ((GetWidth() * scale_factor) - glTexture->GetWidth()) / 2;
-		int y = ((GetHeight() * scale_factor) - glTexture->GetHeight()) / 2;
+		int x = (GetWidth() - glTexture->GetWidth()) / 2;
+		int y = (GetHeight() - glTexture->GetHeight()) / 2;
 		if (openclContext->IsSharedContextCompatible())
 			renderOpenGL->RenderToScreen(x, y, true);
 		else
@@ -1653,14 +1640,8 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 {
 	CRgbaquad color;
 
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
 
 	if (loadBitmap)
 	{
@@ -1693,13 +1674,13 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 			printf("CBitmapWnd GetDisplayTexture Error \n");
 		delete bitmap;
 
-		renderOpenGL->CreateScreenRender(GetWidth() * scale_factor, GetHeight() * scale_factor, CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
+		renderOpenGL->CreateScreenRender(GetWidth(), GetHeight(), CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue()));
 	}
 
 	if (glTexture != nullptr)
 	{
-		int x = (GetWidth() * scale_factor - glTexture->GetWidth()) / 2;
-		int y = (GetHeight() * scale_factor - glTexture->GetHeight()) / 2;
+		int x = (GetWidth() - glTexture->GetWidth()) / 2;
+		int y = (GetHeight() - glTexture->GetHeight()) / 2;
 		renderOpenGL->RenderToScreen(x, y, false);
 
 		xPosImage = x;
@@ -1730,13 +1711,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		//Now we have a context, retrieve pointers to OGL functions
 		renderOpenGL->Init(this);
 
-    #ifndef WIN32
-        double scale_factor = GetContentScaleFactor();
-    #else
-        double scale_factor = 1.0f;
-    #endif 
-
-        renderOpenGL->LoadingResource(scale_factor);
+        renderOpenGL->LoadingResource(scaleFactor);
 	}
 
 	// This is normally only necessary if there is more than one wxGLCanvas

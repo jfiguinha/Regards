@@ -46,8 +46,8 @@ public:
 
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);
-    int getWidth();
-    int getHeight();
+	int GetWidth();
+	int GetHeight();
 
     wxWindow * GetWindow()
     {

@@ -65,8 +65,8 @@ public:
     void OnRefresh(wxCommandEvent& event);
 	int ChangeAudioStream(int newStreamAudio);
 	int ChangeSubtitleStream(int newStreamSubtitle);
-    int getWidth();
-    int getHeight();
+    int GetWidth();
+    int GetHeight();
 	void SetSubtitulePicture(CRegardsBitmap * picture);
 	void DeleteSubtitulePicture();
 	bool GetPausedValue()

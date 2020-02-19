@@ -45,8 +45,8 @@ public:
     virtual void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context) = 0;
     virtual void SetRotation(const int &rotation) = 0;
     virtual void SetVideoDuration(int64_t duration) = 0;
-    virtual int getWidth() = 0;
-    virtual int getHeight() = 0;    
+    virtual int GetWidth() = 0;
+    virtual int GetHeight() = 0;    
     virtual wxWindow * GetWindow() = 0;
     virtual void SetVideoPreviewEffect(CEffectParameter * effectParameter) = 0;
     virtual CEffectParameter * GetParameter() = 0;
