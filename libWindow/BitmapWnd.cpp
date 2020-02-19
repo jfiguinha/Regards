@@ -963,11 +963,7 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-#ifdef __WXGTK__
-    double scale_factor = GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
+
 	switch(toolOption)
 	{
 		case MOVEPICTURE:
@@ -991,7 +987,7 @@ void CBitmapWnd::OnLButtonDown(wxMouseEvent& event)
 			break;
 	}
 
-	MouseClick(xPos * scale_factor, yPos * scale_factor);
+	MouseClick(xPos * scaleFactor, yPos * scaleFactor);
 }
 
 //-----------------------------------------------------------------
@@ -1222,11 +1218,6 @@ int CBitmapWnd::UpdateResized()
 void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 {
     TRACE();
-#ifdef __WXGTK__
-    double scale_factor = GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
 	int xPos = event.GetX();
 	int yPos = event.GetY();
     
@@ -1275,7 +1266,7 @@ void CBitmapWnd::OnMouseMove(wxMouseEvent& event)
 			}
 	}
 
-	MouseMove(xPos * scale_factor, yPos * scale_factor);
+	MouseMove(xPos * scaleFactor, yPos * scaleFactor);
     
     this->Refresh();
 }
@@ -1473,11 +1464,6 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 {
     TRACE();
     
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
     
 	int localAngle = angle;
 	int localflipHorizontal = flipHorizontal;
@@ -1487,7 +1473,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	//else
 	GenerateExifPosition(localAngle, localflipHorizontal, localflipVertical);
 
-	if (GetWidth() * scale_factor >= widthOutput && GetHeight() * scale_factor >= heightOutput)
+	if (GetWidth()  >= widthOutput && GetHeight() >= heightOutput)
 	{
 		filtreEffet->Interpolation(widthOutput, heightOutput, filterInterpolation, localflipHorizontal, localflipVertical, localAngle);
 	}
@@ -1497,13 +1483,13 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 		int tailleAffichageWidth = widthOutput;
 		int tailleAffichageHeight = heightOutput;
 
-		if (GetWidth() * scale_factor > tailleAffichageWidth)
-			left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+		if (GetWidth()  > tailleAffichageWidth)
+			left = ((GetWidth() - tailleAffichageWidth) / 2);
 		else
 			left = 0;
 
-		if (GetHeight() * scale_factor > tailleAffichageHeight)
-			top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+		if (GetHeight()  > tailleAffichageHeight)
+			top = ((GetHeight() - tailleAffichageHeight) / 2);
 		else
 			top = 0;
 
@@ -1529,8 +1515,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 {
 	CRgbaquad color;
 	
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scaleFactor;
-	int heightOutput = int(GetBitmapHeightWithRatio()) * scaleFactor;
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
 
 	muBitmap.lock();
 
@@ -1778,17 +1764,11 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport(wxDC * dc)
 {
 	CRgbaquad color;
 
-#ifdef __WXGTK__
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
 	if (width == 0 || height == 0)
 		return;
 
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
 
 
 	muBitmap.lock();
@@ -1811,8 +1791,8 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport(wxDC * dc)
 
 	if (bitmapLoad && width > 0 && height > 0)
 	{
-		int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-		int heightOutput = int(GetBitmapHeightWithRatio()) * scale_factor;
+		int widthOutput = int(GetBitmapWidthWithRatio());
+		int heightOutput = int(GetBitmapHeightWithRatio());
 
 		if (widthOutput < 0 || heightOutput < 0)
 			return;
@@ -1840,17 +1820,11 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport(wxDC * dc)
 {
 	CRgbaquad color;
 
-#ifdef __WXGTK__
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
 	if (width == 0 || height == 0)
 		return;
 
-	int widthOutput = int(GetBitmapWidthWithRatio()) * scale_factor;
-	int heightOutput = int(GetBitmapHeightWithRatio())* scale_factor;
+	int widthOutput = int(GetBitmapWidthWithRatio());
+	int heightOutput = int(GetBitmapHeightWithRatio());
 
 	wxImage picture;
 

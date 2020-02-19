@@ -103,7 +103,7 @@ void CMasterWindow::SetWindowHeight(const int &height)
 
 int CMasterWindow::GetWindowHeight()
 {
-	return windowMainPimpl->height * scaleFactor;
+	return windowMainPimpl->height;
 }
 
 void CMasterWindow::SetWindowWidth(const int &width)
@@ -113,7 +113,7 @@ void CMasterWindow::SetWindowWidth(const int &width)
 
 int CMasterWindow::GetWindowWidth()
 {
-	return windowMainPimpl->width * scaleFactor;
+	return windowMainPimpl->width;
 }
 
 void CMasterWindow::StartThread()
