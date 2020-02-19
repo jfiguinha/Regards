@@ -1017,7 +1017,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 	int got_subtitle;
 	double pts;
 	int i, j;
-	int r, g, b, y, u, v, a;
+	//int r, g, b, y, u, v, a;
 
 	for (;;) {
 		while (is->paused && !is->subtitleq.abort_request) {
