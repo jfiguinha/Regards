@@ -589,8 +589,8 @@ int CFFmfc::Play(CVideoControlInterface * control, string filename)
 		_pimpl->do_exit(nullptr);
 	}
 
-	_pimpl->g_is->width = _pimpl->dlg->GetWidth();
-	_pimpl->g_is->height = _pimpl->dlg->GetHeight();
+	_pimpl->g_is->width = _pimpl->dlg->getWidth();
+	_pimpl->g_is->height = _pimpl->dlg->getHeight();
 
     wxCommandEvent event(EVENT_VIDEOSTART);
     wxPostEvent(_pimpl->parent, event);

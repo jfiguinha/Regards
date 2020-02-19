@@ -327,16 +327,24 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
     fpsTimer->Start(1000);
 }
 
-int CVideoControlSoft::GetWidth()
+int CVideoControlSoft::getWidth()
 {
-	return GetWindowWidth();
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+     return GetSize().x * scale_factor;
 }
-
-int CVideoControlSoft::GetHeight()
+int CVideoControlSoft::getHeight()
 {
-	return GetWindowHeight();
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+    return GetSize().y * scale_factor;
 }
-
 
 void CVideoControlSoft::UpdateScreenRatio()
 {
@@ -349,6 +357,11 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
 
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
@@ -376,8 +389,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     start = std::clock();    
     
 
-	int width = GetWidth();
-	int height = GetHeight();
+    int width = GetWindowWidth() * scale_factor;
+    int height = GetWindowHeight() * scale_factor;
     if(width == 0 || height == 0)
         return;
 	
@@ -484,7 +497,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	}
 	else
 	{
-		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
+		renderBitmapOpenGL->CreateScreenRender(width * scale_factor, height * scale_factor, CRgbaquad(0,0,0,0));
 	}
 
 	this->SwapBuffers();

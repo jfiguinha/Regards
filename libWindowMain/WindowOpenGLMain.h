@@ -22,7 +22,15 @@ namespace Regards
 			CWindowOpenGLMain(wxString name, wxWindow* parent, wxWindowID id)
 				: wxGLCanvas(parent, id, args, wxDefaultPosition, wxDefaultSize)
 			{
+            #ifdef __WXGTK__
+            #if wxCHECK_VERSION(3, 1, 2)
+                scaleFactor = 1.0f;
+            #else
                 scaleFactor = GetContentScaleFactor();
+            #endif
+            #else
+                scaleFactor = 1.0f;
+            #endif
 				this->name = name;
                 Connect(wxEVENT_REFRESH, wxCommandEventHandler(CWindowOpenGLMain::OnRefresh));
 				Connect(wxEVT_SIZE, wxSizeEventHandler(CWindowOpenGLMain::OnSize));

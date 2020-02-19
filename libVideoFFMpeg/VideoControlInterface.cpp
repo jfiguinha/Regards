@@ -61,12 +61,12 @@ GLTexture * CVideoControlInterface::RenderToTexture(COpenCLEffectVideo * openclE
 
     if(angle == 90 || angle == 270)
     {
-        calculate_display_rect(&rect, 0, 0, GetHeight(), GetWidth());
+        calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
         openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
     }
     else
     {
-        calculate_display_rect(&rect, 0, 0, GetWidth(), GetHeight());
+        calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
         openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
     }            
     
@@ -200,11 +200,11 @@ void CVideoControlInterface::SetFrameData(AVFrame * src_frame)
         wxRect rect;
         if(angle == 90 || angle == 270)
         {
-            calculate_display_rect(&rect, 0, 0, GetHeight(), GetWidth());
+            calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
         }
         else
         {
-            calculate_display_rect(&rect, 0, 0, GetWidth(), GetHeight());            
+            calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());            
         }
         
         if(ffmpegToBitmap != nullptr)

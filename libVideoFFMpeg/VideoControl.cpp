@@ -354,14 +354,13 @@ void CVideoControl::VideoStart(wxCommandEvent& event)
     videoStart =true;
 }
 
-int CVideoControl::GetWidth()
+int CVideoControl::getWidth()
 {
-	return GetWindowWidth();
+     return GetSize().x;
 }
-
-int CVideoControl::GetHeight()
+int CVideoControl::getHeight()
 {
-	return GetWindowHeight();
+    return GetSize().y;
 }
 
 void CVideoControl::UpdateScreenRatio()
@@ -720,12 +719,12 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 
 				if(angle == 90 || angle == 270)
 				{
-					calculate_display_rect(&rect, 0, 0, GetHeight(), GetWidth());
+					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
 					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, angle, bicubic);
 				}
 				else
 				{
-					calculate_display_rect(&rect, 0, 0, GetWidth(), GetHeight());
+					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
 					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, bicubic);
 				}
 
@@ -821,8 +820,8 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 	muVideoEffect.unlock();
 
 
-    int width = GetWidth();
-    int height = GetHeight();
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
     if(width == 0 || height == 0)
         return;
 	
