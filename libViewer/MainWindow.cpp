@@ -146,6 +146,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
 	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
+	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnEndThumbnail));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 
 	int tabWidth[] = { 100, 300, 300, 300 };
@@ -635,6 +636,7 @@ void CMainWindow::ProcessIdle()
             
         imageList->SetImageList(pictures);
 		numElement = 0;
+		
 		if (isValid)
 		{
 			int position = 0;
@@ -652,7 +654,11 @@ void CMainWindow::ProcessIdle()
 
 			if (isFound)
 				numElement = position;
+			else
+				firstFileToShow = filename = pictures.at(0).GetPath();
 		}
+
+		
 
 		if (centralWnd)
 		{
@@ -987,11 +993,7 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
             wxString dir = wxString(*info);
             statusBarViewer->RemoveFSEntry(dir);
             
-            //Test if I found the file in the new list
-            CSqlPhotos sqlPhotos;
-            int numPhotoId = sqlPhotos.GetPhotoId(filename);
-            if(numPhotoId == -1)
-                ImageDebut();
+
 		}
 	}
 	delete info;
@@ -1134,6 +1136,14 @@ bool CMainWindow::GetProcessEnd()
 		return false;
 
 	return true;
+}
+
+void CMainWindow::OnEndThumbnail(wxCommandEvent& event)
+{
+	wxString * thumbName = (wxString *)event.GetClientData();
+	if(*thumbName == filename)
+		centralWnd->OnEndThumbnail();
+	delete thumbName;
 }
 
 void CMainWindow::OnScanner(wxCommandEvent& event)

@@ -226,7 +226,7 @@ namespace Regards
 			void UpdatePicture();
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
-
+			void OnEndThumbnail(wxCommandEvent& event);
 			static void CheckMD5(void * param);
 
 			bool fullscreen;

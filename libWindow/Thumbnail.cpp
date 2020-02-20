@@ -1183,9 +1183,9 @@ CIcone * CThumbnail::FindIcone(const wxString &filename)
 void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
 {
     TRACE();
-    
-	nbProcess--;
 
+	nbProcess--;
+	wxString * filename = new wxString();
     CThreadLoadingBitmap * threadLoadingBitmap = (CThreadLoadingBitmap *)event.GetClientData();
     if(threadLoadingBitmap == nullptr)
     {
@@ -1199,15 +1199,16 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         {
 			CThumbnailData * pThumbnailData = nullptr;
 			CIcone * icone = FindIcone(threadLoadingBitmap->filename);
-
+			*filename = threadLoadingBitmap->filename;
 			if (icone != nullptr && pThumbnailData == nullptr)
 				pThumbnailData = icone->GetData();
 					
 			if (icone != nullptr && pThumbnailData != nullptr)
             {
-                if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
-                    pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
-                    
+				if (pThumbnailData->GetTypeElement() == TYPEVIDEO)
+				{
+					pThumbnailData->SetTimePosition(threadLoadingBitmap->timePosition);
+				}
 				pThumbnailData->SetIsProcess(false);
                 pThumbnailData->SetBitmap(threadLoadingBitmap->bitmapIcone); 
                 pThumbnailData->SetIsLoading(false);
@@ -1241,12 +1242,28 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         threadLoadingBitmap = nullptr;
     }
 
+	CLibPicture libPicture;
+	if (libPicture.TestIsVideo(*filename))
+	{
+		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		if (mainWnd != nullptr)
+		{
+			wxCommandEvent eventChange(wxEVENT_ENDVIDEOTHUMBNAIL);
+			eventChange.SetClientData(filename);
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+		}
+	}
+	else
+		delete filename;
+
+	/*
 	if (idWindowToRefresh != 0)
 	{
 		wxWindow * window = this->FindWindowById(idWindowToRefresh);
 		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+	*/
 
 	this->Refresh();
 }

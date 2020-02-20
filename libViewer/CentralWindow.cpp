@@ -220,6 +220,15 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
     }
 }
 
+void CCentralWindow::OnEndThumbnail()
+{
+	if (isVideo)
+	{
+		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
+		thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
 void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 {
      printf("CCentralWindow::OnVideoStart \n");
@@ -321,6 +330,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 {
     printf("CCentralWindow::OnShowPicture \n");
 	TRACE();
+
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
 	if (pictureData != nullptr)
 	{

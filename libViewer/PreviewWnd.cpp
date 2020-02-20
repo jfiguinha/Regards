@@ -492,12 +492,12 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
 			oldfilename = filename;
         
-			//this->Resize();
+			this->Resize();
 		}
 		else if(!isThumbnail)
 		{
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
-			//this->Resize();
+			this->Resize();
 		}
 	}
 	return 1;
