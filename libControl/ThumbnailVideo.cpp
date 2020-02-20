@@ -22,6 +22,12 @@ CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeTh
 {
 	numItemSelected = -1;
 	process_end = true;
+	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CThumbnailVideo::EndVideoThumbnail));
+}
+
+void CThumbnailVideo::EndVideoThumbnail(wxCommandEvent& event)
+{
+	ProcessThumbnail();
 }
 
 CThumbnailVideo::~CThumbnailVideo(void)
@@ -242,7 +248,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 
 }
 
-bool CThumbnailVideo::ProcessThumbnailIdle()
+void CThumbnailVideo::ProcessThumbnail()
 {
 	if (videoFilename != "")
 	{
@@ -277,7 +283,7 @@ bool CThumbnailVideo::ProcessThumbnailIdle()
 			}
 		}
 	}
-	return true;
+	this->Refresh();
 }
 
 

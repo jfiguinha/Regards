@@ -59,7 +59,6 @@ namespace Regards
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
-			virtual bool ProcessThumbnailIdle() { return false; };
 
 			void TestMaxX();
 			void TestMaxY();
@@ -171,6 +170,7 @@ namespace Regards
 			int posHauteur;
 			int posLargeur;
 			int isMoving;
+			int idWindowToRefresh = 0;
 
 		};
 	}

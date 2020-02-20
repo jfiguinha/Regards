@@ -8,6 +8,7 @@ CThumbnailViewerVideo::CThumbnailViewerVideo(wxWindow* parent, wxWindowID id, co
 	: CThumbnailVideo(parent, id, themeThumbnail, testValidity)
 {
 	filename = L"";
+	idWindowToRefresh = THUMBNAILVIDEOWINDOW;
 }
 
 

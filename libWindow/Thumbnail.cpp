@@ -957,8 +957,6 @@ void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 }
 
 
-
-
 void CThumbnail::StartLoadingPicture(wxCommandEvent& event)
 {
     TRACE();
@@ -1243,6 +1241,12 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         threadLoadingBitmap = nullptr;
     }
 
-	ProcessThumbnailIdle();
+	if (idWindowToRefresh != 0)
+	{
+		wxWindow * window = this->FindWindowById(idWindowToRefresh);
+		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 	this->Refresh();
 }

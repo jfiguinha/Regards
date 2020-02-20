@@ -89,7 +89,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetScrollTheme(&themeScroll);
 		viewerTheme->GetThumbnailTheme(&themeVideo);
 
-		thumbnailVideo = new CThumbnailViewerVideo(windowManager, wxID_ANY, themeVideo, checkValidity);
+		thumbnailVideo = new CThumbnailViewerVideo(windowManager, THUMBNAILVIDEOWINDOW, themeVideo, checkValidity);
 		scrollVideoWindow = new CScrollbarWnd(windowManager, thumbnailVideo, wxID_ANY);
 		scrollVideoWindow->HideVerticalScroll();
 		scrollVideoWindow->SetPageSize(200);
