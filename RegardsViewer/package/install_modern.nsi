@@ -9,13 +9,13 @@
 !include "ZipDLL.nsh"
 ;--------------------------------
 ;General
-!define MUI_PRODUCT "Regards Viewer 2.44"
+!define MUI_PRODUCT "Regards Viewer 2.45"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
-  Name "Regards Viewer 2.44"
+  Name "Regards Viewer 2.45"
   OutFile "RegardsViewer2Setup.exe"
 
   ;Default installation folder
@@ -119,13 +119,13 @@ Call openLinkNewWindow
 
 ;--------------------------------
 ;Installer Sections
-Section "Regards Viewer 2.44" SecRegardsViewer
+Section "Regards Viewer 2.45" SecRegardsViewer
 
   SetOutPath "$INSTDIR"
   
   
   ;ADD YOUR OWN FILES HERE...
-  DetailPrint "*** Installing Regards Viewer 2.44..."
+  DetailPrint "*** Installing Regards Viewer 2.45..."
   File "Prerequisites\RegardsViewer2.zip"
   ZipDLL::extractall "$INSTDIR\RegardsViewer2.zip" $INSTDIR
   ;Store installation folder
@@ -160,7 +160,7 @@ SectionEnd
 ;Descriptions
 
   ;Language strings
-  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.44"
+  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.45"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN

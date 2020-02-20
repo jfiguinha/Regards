@@ -1,5 +1,6 @@
 //**************************************************************************
 //What's New
 //**************************************************************************
-News for version 2.44
-- Correct crash bug on thumbnail and video
+News for version 2.45
+- Correct crash on WaveFilter mac os
+- Correct display correction mac os (HiDPI)
