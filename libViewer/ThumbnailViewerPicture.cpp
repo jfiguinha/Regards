@@ -150,7 +150,7 @@ void CThumbnailViewerPicture::ResizeThumbnailWithoutVScroll()
 
 void CThumbnailViewerPicture::RenderIconeWithoutVScroll(wxDC * deviceContext)
 {
-	//#pragma omp parallel for
+	//
 	int numElement = iconeList->GetNbElement();
 	for (int i = 0; i < numElement; i++)
 	{

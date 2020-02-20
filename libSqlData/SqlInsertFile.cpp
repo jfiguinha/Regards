@@ -3,7 +3,7 @@
 #include <libPicture.h>
 #include <wx/dir.h>
 #include <ConvertUtility.h>
-#include <wx/progdlg.h>
+
 #include <algorithm>
 using namespace Regards::Sqlite;
 
@@ -309,7 +309,7 @@ struct myAddFileFromFoldertask {
 	CSqlInsertFile * insertFile;
 };
 #endif
-int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder, const int &idFolder, wxString &firstFile)
+int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dialog, wxArrayString & files, const wxString &folder, const int &idFolder, wxString &firstFile)
 {
 #ifndef USE_TBB
 	CLibPicture libPicture;
@@ -317,18 +317,6 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 #endif
 	   
 	int i = 0;
-	wxArrayString files;
-    wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
-    if(files.size() > 0)
-        sort(files.begin(), files.end());
-    
-#ifdef WIN32
-	
-	wxString msg = "In progress ...";
-	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), parent, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
-	int updatesize = 0;
-	dialog.Update(updatesize, msg);
-#endif
 
 #ifdef USE_TBB
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
@@ -350,13 +338,13 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 #else
 
     
-#ifdef WIN32    
+
 			wxString message = "In progress : " + to_string(i) + "/" + to_string(files.Count());
 			if (false == dialog.Update(i, message))
 			{
 				break;
 			}
-#endif
+
 
 			if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
 			{

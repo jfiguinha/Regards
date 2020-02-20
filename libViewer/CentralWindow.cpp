@@ -20,7 +20,6 @@ using namespace Regards::Viewer;
 #define DELAY_ANIMATION 20
 
 
-
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
 	: CWindowMain("CentralWindow", parent, id)
@@ -782,7 +781,10 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 	CPictureElement * pictureElement = (CPictureElement *)event.GetClientData();
 	LoadPictureInThread(pictureElement);
 	if (thumbnailPicture != nullptr)
+    {
 		thumbnailPicture->SetActifItem(pictureElement->numElement, true);
+       // thumbnailPicture->Refresh();
+    }
 	delete pictureElement;
 }
 

@@ -16,7 +16,6 @@ using namespace Regards::Viewer;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-
 CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
 	: CWindowMain("CPreviewWnd",parent, id)
 {

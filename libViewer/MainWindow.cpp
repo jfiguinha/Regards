@@ -12,6 +12,7 @@
 #include "MainTheme.h"
 #include "SqlFindPhotos.h"
 #include <SqlPhotos.h>
+#include <wx/progdlg.h>
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
@@ -921,6 +922,19 @@ void CMainWindow::Resize()
 void CMainWindow::AddFolder(const wxString &folder)
 {
     TRACE();
+    
+    
+	wxString msg = "In progress ...";
+    
+	wxArrayString files;
+    wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+    if(files.size() > 0)
+        sort(files.begin(), files.end());    
+    
+	wxProgressDialog dialog("Add Folder", "File import ...", files.Count(), this, wxPD_APP_MODAL | wxPD_AUTO_HIDE);
+	int updatesize = 0;
+	dialog.Update(updatesize, msg);      
+    
 	//Indication d'imporation des critères 
 	CSqlFolderCatalog sqlFolderCatalog;
 	int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, folder);
@@ -932,7 +946,7 @@ void CMainWindow::AddFolder(const wxString &folder)
 		idFolder = sqlFolderCatalog.GetOrInsertFolderCatalog(NUMCATALOGID, folder);
 		//Insert la liste des photos dans la base de données.
 		CSqlInsertFile sqlInsertFile;
-		sqlInsertFile.AddFileFromFolder(this, folder, idFolder, filename);
+		sqlInsertFile.AddFileFromFolder(this, dialog, files, folder, idFolder, filename);
         printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(filename));
 	}
 
@@ -947,6 +961,8 @@ void CMainWindow::AddFolder(const wxString &folder)
 		evt.SetClientData(newFolder);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+    
+    dialog.Destroy();
 }
 
 void CMainWindow::OnAddFolder(wxCommandEvent& event)
@@ -955,6 +971,7 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
  	wxString * info = (wxString *)event.GetClientData();
     
     printf("OnAddFolder : %s \n",CConvertUtility::ConvertToUTF8(*info));
+  
     
 	if (*info != "")
 	{
@@ -964,7 +981,7 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 		criteriaSendMessage = true;
 	}
 	delete info;
-    
+
     processIdle = true;
 }
 

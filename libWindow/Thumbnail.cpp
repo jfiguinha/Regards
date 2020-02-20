@@ -23,7 +23,6 @@
 #include <SqlFaceThumbnail.h>
 #include <ThumbnailMessage.h>
 using namespace Regards::Window;
-
 //#define TBB
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
@@ -182,6 +181,9 @@ void CThumbnail::SetActifItem(const int &numItem, const bool &move)
 				evt.SetClientData(size);
 				this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 			}
+            
+            posLargeur = 0;
+            posHauteur = 0;            
 		}
 		else{
 			if (!isMoving)

@@ -17,7 +17,6 @@ CThumbnailViewerVideo::~CThumbnailViewerVideo(void)
 
 }
 
-
 void CThumbnailViewerVideo::OnPictureClick(CThumbnailData * data)
 {
 	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
