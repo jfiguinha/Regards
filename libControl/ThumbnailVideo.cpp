@@ -242,7 +242,7 @@ void CThumbnailVideo::InitWithDefaultPicture(const wxString & szFileName, const 
 
 }
 
-void CThumbnailVideo::ProcessThumbnailIdle()
+bool CThumbnailVideo::ProcessThumbnailIdle()
 {
 	if (videoFilename != "")
 	{
@@ -284,6 +284,7 @@ void CThumbnailVideo::ProcessThumbnailIdle()
 			processIdle = true;
 		}
 	}
+	return true;
 }
 
 
@@ -343,5 +344,5 @@ void CThumbnailVideo::SetFile(const wxString &videoFile, const int &size)
     videoFilename = videoFile;	
    // processTimer->Start(500);
     Refresh();
-
+	processIdle = true;
 }

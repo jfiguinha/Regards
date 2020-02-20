@@ -59,7 +59,7 @@ namespace Regards
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
-			virtual void ProcessThumbnailIdle(){};
+			virtual bool ProcessThumbnailIdle() { return false; };
 
 			void TestMaxX();
 			void TestMaxY();

@@ -17,7 +17,7 @@ namespace Regards
 		private:
 
            virtual void EraseThumbnail(wxCommandEvent& event);
-			virtual void ProcessThumbnailIdle();
+			virtual bool ProcessThumbnailIdle();
 			int FindNumItem(const int &videoPos);
 			void InitWithDefaultPicture(const wxString & szFileName, const int &size = 20);
 			int numItemSelected;

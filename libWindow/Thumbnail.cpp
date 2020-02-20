@@ -563,8 +563,8 @@ void CThumbnail::ProcessIdle()
     TRACE();
     //printf("CThumbnail::ProcessIdle() \n");
 	//printf("CThumbnail::pIconeList %d \n", pIconeList.size());
-	ProcessThumbnailIdle();
-    
+	if (ProcessThumbnailIdle())
+		return;
 
 
 	if (iconeList->GetNbElement() == 0 || threadDataProcess == false)
