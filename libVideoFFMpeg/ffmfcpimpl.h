@@ -213,100 +213,100 @@ public:
 	};
 
 	typedef struct VideoState {
-		SDL_Thread *read_tid;
-		SDL_Thread *video_tid;
-		SDL_Thread *refresh_tid;
-		AVInputFormat *iformat;
-		int no_background;
-		int abort_request;
-		int force_refresh;
-		int paused;
-		int last_paused;
-		int que_attachments_req;
-		int seek_req;
-		int seek_flags;
-		int64_t seek_pos;
-		int64_t seek_rel;
-		int read_pause_return;
-		AVFormatContext *ic;
+		SDL_Thread *read_tid = nullptr;
+		SDL_Thread *video_tid = nullptr;
+		SDL_Thread *refresh_tid = nullptr;
+		AVInputFormat *iformat = nullptr;
+		int no_background = 0;
+		int abort_request = 0;
+		int force_refresh = 0;
+		int paused = 0;
+		int last_paused = 0;
+		int que_attachments_req = 0;
+		int seek_req = 0;
+		int seek_flags = 0;
+		int64_t seek_pos = 0;
+		int64_t seek_rel = 0;
+		int read_pause_return = 0;
+		AVFormatContext *ic = nullptr;
 
-		int audio_stream;
+		int audio_stream = 0;
 
-		int av_sync_type;
-		double external_clock; /* external clock base */
-		int64_t external_clock_time;
+		int av_sync_type = 0;
+		double external_clock = 0; /* external clock base */
+		int64_t external_clock_time = 0;
 
-		double audio_clock;
-		double audio_diff_cum; /* used for AV difference average computation */
-		double audio_diff_avg_coef;
-		double audio_diff_threshold;
-		int audio_diff_avg_count;
-		AVStream *audio_st;
+		double audio_clock = 0;
+		double audio_diff_cum = 0; /* used for AV difference average computation */
+		double audio_diff_avg_coef = 0;
+		double audio_diff_threshold = 0;
+		int audio_diff_avg_count = 0;
+		AVStream *audio_st = nullptr;
 		PacketQueue audioq;
-		int audio_hw_buf_size;
+		int audio_hw_buf_size = 0;
 		DECLARE_ALIGNED(16, uint8_t, audio_buf2)[AVCODEC_MAX_AUDIO_FRAME_SIZE * 4];
 		uint8_t silence_buf[SDL_AUDIO_BUFFER_SIZE];
-		uint8_t *audio_buf;
-		uint8_t *audio_buf1;
-		unsigned int audio_buf_size; /* in bytes */
-		int audio_buf_index; /* in bytes */
-		int audio_write_buf_size;
+		uint8_t *audio_buf  = nullptr;
+		uint8_t *audio_buf1 = nullptr;
+		unsigned int audio_buf_size = 0; /* in bytes */
+		int audio_buf_index = 0; /* in bytes */
+		int audio_write_buf_size = 0;
 		AVPacket audio_pkt_temp;
 		AVPacket audio_pkt;
 		AudioParams audio_src;
 		AudioParams audio_tgt;
 		SwrContext *swr_ctx;
-		double audio_current_pts;
-		double audio_current_pts_drift;
-		int frame_drops_early;
-		int frame_drops_late;
-		double frame_last_delay;
-		AVFrame *frame;
+		double audio_current_pts = 0;
+		double audio_current_pts_drift = 0;
+		int frame_drops_early = 0;
+		int frame_drops_late = 0;
+		double frame_last_delay = 0;
+		AVFrame *frame = nullptr;
 
 		enum ShowMode {
 			SHOW_MODE_NONE = -1, SHOW_MODE_VIDEO = 0, SHOW_MODE_WAVES, SHOW_MODE_RDFT, SHOW_MODE_NB
 		} show_mode;
 		int16_t sample_array[SAMPLE_ARRAY_SIZE];
-		int sample_array_index;
-		int last_i_start;
-		RDFTContext *rdft;
-		int rdft_bits;
-		FFTSample *rdft_data;
-		int xpos;
+		int sample_array_index = 0;
+		int last_i_start = 0;
+		RDFTContext *rdft = nullptr;
+		int rdft_bits = 0;
+		FFTSample *rdft_data = nullptr;
+		int xpos = 0;
 
-		SDL_Thread *subtitle_tid;
-		int subtitle_stream;
-		int subtitle_stream_changed;
-		AVStream *subtitle_st;
+		SDL_Thread *subtitle_tid = nullptr;
+		int subtitle_stream = 0;
+		int subtitle_stream_changed = 0;
+		AVStream *subtitle_st = nullptr;
 		PacketQueue subtitleq;
 		SubPicture subpq[SUBPICTURE_QUEUE_SIZE];
-		int subpq_size, subpq_rindex, subpq_windex;
-		SDL_mutex *subpq_mutex;
-		SDL_cond *subpq_cond;
+		int subpq_size = 0, subpq_rindex = 0, subpq_windex = 0;
+		SDL_mutex *subpq_mutex = nullptr;
+		SDL_cond *subpq_cond = nullptr;
 
-		double frame_timer;
-		double frame_last_pts;
-		double frame_last_duration;
-		double frame_last_dropped_pts;
-		double frame_last_returned_time;
-		double frame_last_filter_delay;
-		int64_t frame_last_dropped_pos;
-		double video_clock;                          ///< pts of last decoded frame / predicted pts of next decoded frame
-		int video_stream;
-		AVStream *video_st;
+		double frame_timer = 0;
+		double frame_last_pts = 0;
+		double frame_last_duration = 0;
+		double frame_last_dropped_pts = 0;
+		double frame_last_returned_time = 0;
+		double frame_last_filter_delay = 0;
+		int64_t frame_last_dropped_pos = 0;
+		double video_clock = 0;                          ///< pts of last decoded frame / predicted pts of next decoded frame
+		int video_stream = 0;
+		AVStream *video_st = nullptr;
 		PacketQueue videoq;
-		double video_current_pts;                    ///< current displayed pts (different from video_clock if frame fifos are used)
-		double video_current_pts_drift;              ///< video_current_pts - time (av_gettime) at which we updated video_current_pts - used to have running video pts
-		int64_t video_current_pos;                   ///< current displayed file pos
+		double video_current_pts = 0;                    ///< current displayed pts (different from video_clock if frame fifos are used)
+		double video_current_pts_drift = 0;              ///< video_current_pts - time (av_gettime) at which we updated video_current_pts - used to have running video pts
+		int64_t video_current_pos = 0;                   ///< current displayed file pos
 		VideoPicture pictq[VIDEO_PICTURE_QUEUE_SIZE];
-		int pictq_size, pictq_rindex, pictq_windex;
-		SDL_mutex *pictq_mutex;
-		SDL_cond *pictq_cond;
+		int pictq_size = 0, pictq_rindex = 0, pictq_windex = 0;
+		SDL_mutex *pictq_mutex = nullptr;
+		SDL_cond *pictq_cond = nullptr;
 		char filename[1024];
-		int width, height, xleft, ytop;
-		int step;
-		int refresh;
-		int last_video_stream, last_audio_stream, last_subtitle_stream;
+		int width = 0, height = 0, xleft = 0, ytop = 0;
+		int step = 0;
+		int refresh = 0;
+		int last_video_stream = 0, last_audio_stream = 0, last_subtitle_stream = 0;
 
 		SDL_cond *continue_read_thread;
 		//ÊÓÆµÏÔÊ¾·½Ê½------------

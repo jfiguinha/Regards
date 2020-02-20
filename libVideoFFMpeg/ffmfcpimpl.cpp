@@ -421,7 +421,7 @@ double CFFmfcPimpl::get_external_clock(VideoState *is)
 /* get the current master clock value */
 double CFFmfcPimpl::get_master_clock(VideoState *is)
 {
-	double val;
+	double val = 0;
 
 	if (is->av_sync_type == AV_SYNC_VIDEO_MASTER) {
 		if (is->video_st)
