@@ -37,6 +37,10 @@ int CImageList::GetNbElement()
 		photolist.reserve(pictures.size());
 		copy(pictures.begin(), pictures.end(), back_inserter(photolist));
 	}    
+	else
+	{
+		photolist.clear();
+	}
     muList.unlock();
  }
  
