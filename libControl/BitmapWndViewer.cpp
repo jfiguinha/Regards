@@ -265,19 +265,25 @@ void CBitmapWndViewer::DeterminePos(wxRect &rc, const int &nTailleAffichageWidth
 
 void CBitmapWndViewer::SetDessinRatio()
 {
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif    
+    
 	wxRect rc, rc2;
 	int iLeft, iTop;
 	int iTailleWidth, iTailleHeight;
 
 	rc2.x = 0;
 	rc2.y = 0;
-	rc2.width = GetWidth();
-	rc2.height = GetHeight();
+	rc2.width = GetWidth() * scale_factor;
+	rc2.height = GetHeight() * scale_factor;
 
 	//GetClientRect(m_hWnd, &rc2);
 
-	iTailleWidth = GetBitmapWidthWithRatio();
-	iTailleHeight = GetBitmapHeightWithRatio();
+	iTailleWidth = GetBitmapWidthWithRatio() * scale_factor;
+	iTailleHeight = GetBitmapHeightWithRatio() * scale_factor;
 
 	if (m_cDessin != nullptr)
 		m_cDessin->SetRatio(ratio);
@@ -712,8 +718,6 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		CFiltreData::SetCursor(toolOption);
 		if (mouseBlock)
 		{
-
-
 			m_cDessin->MouseMove(xPos - xPosImage, yPos - yPosImage, hpos, vpos, CBitmapWnd::GetRatio());
 			updateFilter = true;
 			this->Refresh();

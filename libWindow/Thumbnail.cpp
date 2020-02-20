@@ -596,7 +596,7 @@ void CThumbnail::ProcessIdle()
 		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
 		std::vector<mytask> tasks;
-		//#pragma omp parallel for
+		//
 
 		int nbElement = iconeList->GetNbElement();
 

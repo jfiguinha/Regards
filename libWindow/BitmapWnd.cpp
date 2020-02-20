@@ -396,12 +396,24 @@ void CBitmapWnd::CalculPositionPicture(const float &x, const float &y)
 
 int CBitmapWnd::GetHPos()
 {
-	return posLargeur;
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif    
+    
+	return posLargeur * scale_factor;
 }
 
 int CBitmapWnd::GetVPos()
 {
-	return posHauteur;
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif    
+    
+	return posHauteur * scale_factor;
 }
 
 //-----------------------------------------------------------------
