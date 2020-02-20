@@ -561,12 +561,6 @@ void CThumbnail::ProcessThumbnail(CThumbnailData * pThumbnailData)
 void CThumbnail::ProcessIdle()
 {
     TRACE();
-    //printf("CThumbnail::ProcessIdle() \n");
-	//printf("CThumbnail::pIconeList %d \n", pIconeList.size());
-	if (ProcessThumbnailIdle())
-		return;
-
-
 	if (iconeList->GetNbElement() == 0 || threadDataProcess == false)
     {
         processIdle = false;
@@ -1249,5 +1243,6 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
         threadLoadingBitmap = nullptr;
     }
 
+	ProcessThumbnailIdle();
 	this->Refresh();
 }

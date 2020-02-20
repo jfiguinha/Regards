@@ -275,13 +275,6 @@ bool CThumbnailVideo::ProcessThumbnailIdle()
 				if (thumbnail != nullptr)
 					delete thumbnail;
 			}
-			processIdle = false;
-			process_end = true;
-			Refresh();
-		}
-		else
-		{
-			processIdle = true;
 		}
 	}
 	return true;
