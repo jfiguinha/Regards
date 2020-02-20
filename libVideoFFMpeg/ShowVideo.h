@@ -92,6 +92,7 @@ private:
 	int videoPosOld;
 	bool isDiaporama;
     bool softRender = false;
+	int64_t videoTotalTime = 0;
 	vector<CStreamInfo> listStream;
 };
 

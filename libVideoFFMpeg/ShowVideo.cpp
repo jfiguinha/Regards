@@ -202,6 +202,7 @@ void CShowVideo::SetVideoDuration(const int64_t &position)
 {
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
+		videoTotalTime = position;
 		videoSlider->SetTotalSecondTime(position / 1000);
 	}
 #ifdef __APPLE__
@@ -257,27 +258,31 @@ void CShowVideo::OnAfterOpenVideo()
 
 void CShowVideo::OnPositionVideo(const int64_t &position)
 {
-	if (videoSlider != nullptr)
-		videoSlider->SetPastSecondTime(position);
-
-	int videoPos = position / 1000;
-	if (videoPos != videoPosOld)
+	if (position > 0 && position <= videoTotalTime)
 	{
-		wxWindow * viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
-		if (viewerWindow != nullptr)
+
+		if (videoSlider != nullptr)
+			videoSlider->SetPastSecondTime(position);
+
+		int videoPos = position / 1000;
+		if (videoPos != videoPosOld)
 		{
-			wxCommandEvent event(VIDEO_UPDATE_ID);
-			event.SetExtraLong(videoPos);
-			viewerWindow->GetEventHandler()->AddPendingEvent(event);
+			wxWindow * viewerWindow = this->FindWindowById(CENTRALVIEWERWINDOWID);
+			if (viewerWindow != nullptr)
+			{
+				wxCommandEvent event(VIDEO_UPDATE_ID);
+				event.SetExtraLong(videoPos);
+				viewerWindow->GetEventHandler()->AddPendingEvent(event);
+			}
+			videoPosOld = videoPos;
 		}
-		videoPosOld = videoPos;
-	}
-    
+
 #ifdef __APPLE__
-    videoSlider->CallRefresh(videoSlider);
+		videoSlider->CallRefresh(videoSlider);
 #else
-	videoSlider->Refresh();
+		videoSlider->Refresh();
 #endif
+	}
 	//wxPostEvent(main, event);
 
 	//CLocalWindow * mainWindow = (CLocalWindow *)CWindowManagerEngine::getInstance()->GetWindow(L"MainWindow");
@@ -345,6 +350,7 @@ void CShowVideo::InitControl()
 
 bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const bool &play)
 {
+	videoTotalTime = 0;
 	videoPosOld = 0;
 	bool value = false;
 	if (videoWindow != nullptr && videoSlider != nullptr)
