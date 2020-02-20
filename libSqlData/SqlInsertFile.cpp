@@ -2,7 +2,9 @@
 #include "SqlInsertFile.h"
 #include <libPicture.h>
 #include <wx/dir.h>
+#include <ConvertUtility.h>
 #include <wx/progdlg.h>
+#include <algorithm>
 using namespace Regards::Sqlite;
 
 /*
@@ -222,6 +224,8 @@ void CSqlInsertFile::InsertPhotoFolderToRefresh(const wxString &folder)
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
+    if(files.size() > 0)
+        sort(files.begin(), files.end());
 
 #ifdef USE_TBB 
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
@@ -315,7 +319,9 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 	int i = 0;
 	wxArrayString files;
     wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
-
+    if(files.size() > 0)
+        sort(files.begin(), files.end());
+    
 #ifdef WIN32
 	
 	wxString msg = "In progress ...";
@@ -333,11 +339,14 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 	{
 		for (wxString file : files)
 		{
-#ifdef USE_TBB            
-			tasks.push_back(myAddFileFromFoldertask(this, file, idFolder));
-			if (i == 0)
-				firstFile = file;
-			i++;            
+#ifdef USE_TBB   
+            if (libPicture.TestImageFormat(file) != 0 && GetNumPhoto(file) == 0)
+            {
+                tasks.push_back(myAddFileFromFoldertask(this, file, idFolder));
+                if (i == 0)
+                    firstFile = file;
+                i++;            
+            }
 #else
 
     
@@ -354,6 +363,8 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, const wxString &folder,
 				int extensionId = libPicture.TestImageFormat(file);
 				if (i == 0)
 					firstFile = file;
+                printf("CSqlInsertFile::AddFileFromFolder : %s \n", CConvertUtility::ConvertToUTF8(file));
+                    
 				file.Replace("'", "''");
 				ExecuteRequestWithNoResult("INSERT INTO PHOTOS (NumFolderCatalog, FullPath, CriteriaInsert, Process, ExtensionId) VALUES (" + to_string(idFolder) + ",'" + file + "', 0, 0, " + to_string(extensionId) + ")");
 				i++;         
@@ -418,7 +429,10 @@ int CSqlInsertFile::ImportFileFromFolder(const wxString &folder, const int &idFo
 	wxArrayString files;
 
 	wxDir::GetAllFiles(folder, &files, wxEmptyString, wxDIR_FILES);
-
+    
+    if(files.size() > 0)
+        sort(files.begin(), files.end());
+    
 #ifdef USE_TBB
 	tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 	std::vector<myImportFromFoldertask> tasks;

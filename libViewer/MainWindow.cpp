@@ -43,7 +43,6 @@ using namespace Regards::Viewer;
 using namespace std;
 using namespace Regards::Sqlite;
 
-
 bool firstTime = true;
 
 class CThreadMD5
@@ -654,7 +653,7 @@ void CMainWindow::ProcessIdle()
 
 			if (isFound)
 				numElement = position;
-			else
+			else if(pictures.size() > 0)
 				firstFileToShow = filename = pictures.at(0).GetPath();
 		}
 
@@ -934,6 +933,7 @@ void CMainWindow::AddFolder(const wxString &folder)
 		//Insert la liste des photos dans la base de données.
 		CSqlInsertFile sqlInsertFile;
 		sqlInsertFile.AddFileFromFolder(this, folder, idFolder, filename);
+        printf("CMainWindow::AddFolder : %s \n", CConvertUtility::ConvertToUTF8(filename));
 	}
 
 
