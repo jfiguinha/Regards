@@ -88,64 +88,66 @@ void CWaveFilter::ProcessWaves()
 
 void CWaveFilter::WaterEffect(CRegardsBitmap * bitmap)
 {
-	uint8_t * data = bitmap->GetPtBitmap();
-	uint8_t * copy = new uint8_t[bitmap->GetBitmapSize()];
-	memcpy(copy, data, bitmap->GetBitmapSize());
+    if(bitmap != nullptr)
+    {
+        uint8_t * data = bitmap->GetPtBitmap();
+        uint8_t * copy = new uint8_t[bitmap->GetBitmapSize()];
+        memcpy(copy, data, bitmap->GetBitmapSize());
 
-	int _bmpWidth = bitmap->GetBitmapWidth();
-	int _bmpHeight = bitmap->GetBitmapHeight();
-	int xOffset, yOffset;
-	short alpha;
+        int _bmpWidth = bitmap->GetBitmapWidth();
+        int _bmpHeight = bitmap->GetBitmapHeight();
+        int xOffset, yOffset;
+        short alpha;
 
-	if (_weHaveWaves)
-	{
-#pragma omp parallel for
-		for (int x = 1; x < _bmpWidth - 1; x++)
-		{
-#pragma omp parallel for
-			for (int y = 1; y < _bmpHeight - 1; y++)
-			{
-				int waveX = (int)x >> _scale;
-				int waveY = (int)y >> _scale;
+        if (_weHaveWaves)
+        {
+            for (int x = 1; x < _bmpWidth - 1; x++)
+            {
+                for (int y = 1; y < _bmpHeight - 1; y++)
+                {
+                    int waveX = (int)x >> _scale;
+                    int waveY = (int)y >> _scale;
 
-				//check bounds
-				if (waveX <= 0) waveX = 1;
-				if (waveY <= 0) waveY = 1;
-				if (waveX >= _waveWidth - 1) waveX = _waveWidth - 2;
-				if (waveY >= _waveHeight - 1) waveY = _waveHeight - 2;
+                    //check bounds
+                    if (waveX <= 0) waveX = 1;
+                    if (waveY <= 0) waveY = 1;
+                    if (waveX >= _waveWidth - 1) waveX = _waveWidth - 2;
+                    if (waveY >= _waveHeight - 1) waveY = _waveHeight - 2;
 
-				//this gives us the effect of water breaking the light
-				xOffset = (GetWaveData(waveX - 1, waveY, _activeBuffer) - GetWaveData(waveX + 1, waveY, _activeBuffer)) >> 3;
-				yOffset = (GetWaveData(waveX, waveY - 1, _activeBuffer) - GetWaveData(waveX, waveY + 1, _activeBuffer)) >> 3;
+                    //this gives us the effect of water breaking the light
+                    xOffset = (GetWaveData(waveX - 1, waveY, _activeBuffer) - GetWaveData(waveX + 1, waveY, _activeBuffer)) >> 3;
+                    yOffset = (GetWaveData(waveX, waveY - 1, _activeBuffer) - GetWaveData(waveX, waveY + 1, _activeBuffer)) >> 3;
 
-				if ((xOffset != 0) || (yOffset != 0))
-				{
-					//check bounds
-					if (x + xOffset >= _bmpWidth - 1)	xOffset = _bmpWidth - x - 1;
-					if (y + yOffset >= _bmpHeight - 1)	yOffset = _bmpHeight - y - 1;
-					if (x + xOffset < 0)	xOffset = -x;
-					if (y + yOffset < 0)	yOffset = -y;
+                    if ((xOffset != 0) || (yOffset != 0))
+                    {
+                        //check bounds
+                        if (x + xOffset >= _bmpWidth - 1)	xOffset = _bmpWidth - x - 1;
+                        if (y + yOffset >= _bmpHeight - 1)	yOffset = _bmpHeight - y - 1;
+                        if (x + xOffset < 0)	xOffset = -x;
+                        if (y + yOffset < 0)	yOffset = -y;
 
-					//generate alpha
-					alpha = (short)(200 - xOffset);
-					if (alpha < 0) alpha = 0;
-					if (alpha > 255) alpha = 254;
+                        //generate alpha
+                        alpha = (short)(200 - xOffset);
+                        if (alpha < 0) alpha = 0;
+                        if (alpha > 255) alpha = 254;
 
-					//set colors
-					copy[4 * (x + y*_bmpWidth)] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth)];
-					copy[4 * (x + y*_bmpWidth) + 1] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth) + 1];
-					copy[4 * (x + y*_bmpWidth) + 2] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth) + 2];
-					copy[4 * (x + y*_bmpWidth) + 3] = alpha;
+                        //set colors
+                        copy[4 * (x + y*_bmpWidth)] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth)];
+                        copy[4 * (x + y*_bmpWidth) + 1] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth) + 1];
+                        copy[4 * (x + y*_bmpWidth) + 2] = data[4 * (x + xOffset + (y + yOffset)*_bmpWidth) + 2];
+                        copy[4 * (x + y*_bmpWidth) + 3] = alpha;
 
-				}
+                    }
 
-			}
-		}
-	}
+                }
+            }
+        }
 
-	memcpy(data, copy, bitmap->GetBitmapSize());
+        memcpy(data, copy, bitmap->GetBitmapSize());
 
-	delete[] copy;
+        delete[] copy;     
+    }
+
 }
 
 void CWaveFilter::PutDrop(int x, int y, short height, int radius)
