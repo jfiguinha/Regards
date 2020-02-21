@@ -1213,7 +1213,8 @@ int CBitmapWnd::UpdateResized()
     {
 	    if (shrinkImage)
         {
-            ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+            ShrinkImage();
+            //ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
             //RefreshWindow();
         }
         else if (showScroll)
