@@ -56,9 +56,6 @@ namespace Regards
 			void OnMoveRight(wxCommandEvent& event);
 			void OnMoveTop(wxCommandEvent& event);
 			void OnMoveBottom(wxCommandEvent& event);
-
-			bool showLoadBar = false;
-            wxGauge * progressBar;
 			CScrollbarWnd * scrollbar;
 			CBitmapToolbar * pictureToolbar;
 			CBitmapWndViewer * bitmapWindow;
@@ -69,10 +66,9 @@ namespace Regards
 			bool defaultViewer;
 			bool bitmapWndLocal;
 			bool isDiaporama;
-			//int width;
+
 			bool transitionEnd;
-			//int height;
-            wxTimer * loadingTimer;
+
             int progressValue;
 			bool fullscreen;
 			bool showToolbar;

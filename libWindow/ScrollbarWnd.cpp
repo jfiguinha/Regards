@@ -15,7 +15,7 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, CWindowMain * centralWindow, wxWi
 	DefaultConstructor();
 	this->centralWindow->SetWindow(centralWindow);
 	windowManager->AddWindow(centralWindow, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
-	centralWindow->Reparent(this);
+	//centralWindow->Reparent(windowManager);
 
 	
 }
@@ -28,7 +28,7 @@ CScrollbarWnd::CScrollbarWnd(wxWindow* parent, CWindowOpenGLMain * centralWindow
 	DefaultConstructor();
 	this->centralWindow->SetWindow(centralWindow);
 	windowManager->AddWindow(centralWindow, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
-	centralWindow->Reparent(this);
+	//centralWindow->Reparent(windowManager);
 }
 
 

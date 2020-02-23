@@ -73,6 +73,8 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	{
 		config->GetBitmapToolbarTheme(&themeToolbar);
 	}
+    
+    pictureToolbar = nullptr;
 
 	pictureToolbar = new CBitmapToolbar(this, wxID_ANY, bitmapViewerId, themeToolbar, false);
 	pictureToolbar->SetTabValue(value);
@@ -84,15 +86,11 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 
 	if (config != nullptr)
 		config->GetScrollTheme(&themeScroll);
+        
+    scrollbar = nullptr;
 
 	scrollbar = new CScrollbarWnd(this, bitmapWindow, wxID_ANY, "BitmapScroll");
-	
-    loadingTimer = new wxTimer(this, wxTIMER_REFRESH);
-	progressBar = new wxGauge(this, wxID_ANY, 200, wxPoint(1000, 0), wxSize(200, 10), wxGA_HORIZONTAL);
-	progressBar->SetRange(100);
-	progressBar->SetValue(0);    
-    
-    Connect(wxTIMER_REFRESH, wxEVT_TIMER, wxTimerEventHandler(CShowBitmap::OnTimerRefresh), nullptr, this);
+
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CShowBitmap::OnIdle));
     Connect(wxEVT_BITMAPDBLCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerDblClick));
     Connect(wxEVT_BITMAPZOOMIN, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CShowBitmap::OnViewerZoomIn));
@@ -168,12 +166,6 @@ void CShowBitmap::OnMoveBottom(wxCommandEvent& event)
 	}
 }
 
-void CShowBitmap::OnTimerRefresh(wxTimerEvent& event)
-{
-    progressValue += 5;
-    progressBar->SetValue(progressValue);
-}
-
 void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
 {
     if (pictureToolbar != nullptr)
@@ -191,7 +183,7 @@ void CShowBitmap::OnViewerDblClick(wxCommandEvent& event)
 
 CShowBitmap::~CShowBitmap()
 {
-    delete(progressBar);
+
 	delete(pictureToolbar);
 	delete(bitmapWindow);
 	delete(scrollbar);
@@ -248,6 +240,7 @@ void CShowBitmap::ShowToolbar()
 
 void CShowBitmap::Resize()
 {
+
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
 
@@ -271,24 +264,11 @@ void CShowBitmap::Resize()
 	{
 		if (pictureToolbar->IsShown())
 		{
-			//CDeferPos deferpos;
-			if (showLoadBar)
-			{
-				int pictureWidth = width;
-				int pictureHeight = height - pictureToolbar->GetHeight() - 10;
+            int pictureWidth = width;
+            int pictureHeight = height - pictureToolbar->GetHeight();
 
-				scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
-				progressBar->SetSize(0, height - pictureToolbar->GetHeight() - 10, width, 10);
-				pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
-			}
-			else
-			{
-				int pictureWidth = width;
-				int pictureHeight = height - pictureToolbar->GetHeight();
-
-				scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
-				pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
-			}
+            scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+            pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
 		}
 		else
 		{
@@ -296,7 +276,7 @@ void CShowBitmap::Resize()
 
 		}
 	}
-
+ 
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)
