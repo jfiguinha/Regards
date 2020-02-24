@@ -419,9 +419,7 @@ void CThumbnail::OnScrollMove(wxCommandEvent& event)
 void CThumbnail::OnRefreshIcone(wxTimerEvent& event)
 {
     TRACE();
-	refreshTimer->Stop();
      this->Refresh();    
-	 refreshTimer->Start(100);
 }
 
 CThumbnail::~CThumbnail()
@@ -825,6 +823,22 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
 				{
 					numActif->SetActive(false);
 					needtoRedraw = true;
+					refreshTimer->Stop();
+				}
+
+				if (pBitmapIcone != nullptr)
+				{
+					if (!refreshTimer->IsRunning())
+					{
+						CThumbnailData * data = pBitmapIcone->GetData();
+						if (data != nullptr)
+						{
+							wxString filename = data->GetFilename();
+							CLibPicture libPicture;
+							if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
+								refreshTimer->Start(100);
+						}
+					}
 				}
             
 			}
@@ -833,6 +847,18 @@ void CThumbnail::OnMouseMove(wxMouseEvent& event)
             {
                 numActif = pBitmapIcone;
                 pBitmapIcone->SetActive(true);
+				if (pBitmapIcone != nullptr)
+				{
+					CThumbnailData * data = pBitmapIcone->GetData();
+					if (data != nullptr)
+					{
+						wxString filename = data->GetFilename();
+						CLibPicture libPicture;
+						if (libPicture.TestIsVideo(filename) || libPicture.TestIsPDF(filename) || libPicture.TestIsAnimation(filename))
+							refreshTimer->Start(100);
+					}
+				}
+
                 needtoRedraw = true;
             }
 		}
@@ -923,6 +949,7 @@ void CThumbnail::OnLDoubleClick(wxMouseEvent& event)
 			}
 		}
 }
+
 
 void CThumbnail::OnLButtonDown(wxMouseEvent& event)
 {
@@ -1069,12 +1096,12 @@ void CThumbnail::TestMaxX()
 void CThumbnail::OnEnterWindow(wxMouseEvent& event)
 {
     TRACE();
-    //refreshTimer->Start(100);
+   // refreshTimer->Start(100);
 }
 void CThumbnail::OnLeaveWindow(wxMouseEvent& event)
 {
     TRACE();
-    //refreshTimer->Stop();
+    refreshTimer->Stop();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
