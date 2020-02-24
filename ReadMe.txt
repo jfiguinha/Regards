@@ -54,6 +54,14 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.47
+- Correct animation thumbnail bug
+- Correct crash on scan window
+
+News for version 2.46
+- Correct display bug on mac os
+- Auto select opencl device on startup
+
 News for version 2.45
 - Correct crash on WaveFilter mac os
 - Correct display correction mac os (HiDPI)
