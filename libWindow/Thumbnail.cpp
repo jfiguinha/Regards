@@ -1245,7 +1245,7 @@ void CThumbnail::UpdateRenderIcone(wxCommandEvent& event)
     }
 
 	CLibPicture libPicture;
-	if (libPicture.TestIsVideo(*filename))
+	if (libPicture.TestIsVideo(*filename) || libPicture.TestIsPDF(*filename) || libPicture.TestIsAnimation(*filename))
 	{
 		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 		if (mainWnd != nullptr)

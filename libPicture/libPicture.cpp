@@ -1253,29 +1253,37 @@ vector<CImageVideoThumbnail *> CLibPicture::LoadDefaultVideoThumbnail(const  wxS
     int rotation = 0;
 
 	CThumbnailVideo video;
-	int movieDuration = video.GetMovieDuration(szFileName) / 1000000;
-	int pourcentage = (int)((float)movieDuration / (float)100);
+	int movieDuration = 0;
+	int pourcentage = 0;
+
+	//Test if is animation
+	bool isAnimation = false;
+	isAnimation = TestIsAnimation(szFileName);
+
 	for (auto i = 0; i < size; i++)
 	{
 		float percent = ((float)i / (float)size) * 100.0f;
 		CImageVideoThumbnail * cxVideo = new CImageVideoThumbnail();
 		//CRegardsBitmap * picture = nullptr;
-		int timePosition = 0;	
+		int timePosition = 0;
 		cxVideo->rotation = rotation;
 		cxVideo->percent = percent;
 
-	#ifdef WIN32
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\loading.png";
-	#else
-			wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/loading.png";
-	#endif
+#ifdef WIN32
+		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\loading.png";
+#else
+		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/loading.png";
+#endif
 
 		CImageLoadingFormat * picture = LoadPicture(photoCancel);
 		picture->Resize(widthThumbnail, heightThumbnail, 0);
 		picture->SetFilename(CConvertUtility::ConvertToStdString(szFileName));
 		cxVideo->image = new CImageLoadingFormat();
 		cxVideo->image->SetPicturToJpeg(picture->GetRegardsBitmap());
-		cxVideo->timePosition = pourcentage * percent;
+		if (isAnimation)
+			cxVideo->timePosition = i;
+		else
+			cxVideo->timePosition = pourcentage * percent;
 		cxVideo->image->SetFilename(szFileName);
 		cxVideo->image->SetOrientation(rotation);
 		delete picture;

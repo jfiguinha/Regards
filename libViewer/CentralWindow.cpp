@@ -221,7 +221,7 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 
 void CCentralWindow::OnEndThumbnail()
 {
-	if (isVideo)
+	if (isVideo || isAnimation)
 	{
 		wxCommandEvent evt(wxEVENT_ENDVIDEOTHUMBNAIL);
 		thumbnailVideo->GetEventHandler()->AddPendingEvent(evt);

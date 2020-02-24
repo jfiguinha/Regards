@@ -47,7 +47,12 @@ int64_t VideoThumbnailer::GetMovieDuration(const string& videoFile)
 {
 	int64_t duration = 0;
 	AVFormatContext* pFormatCtx = nullptr;
-	avformat_open_input(&pFormatCtx, videoFile.c_str(), NULL, NULL);
+	int ret = avformat_open_input(&pFormatCtx, videoFile.c_str(), NULL, NULL);
+	if (pFormatCtx != nullptr)
+	{
+		duration = pFormatCtx->duration;
+	}
+	
 	if(pFormatCtx != nullptr)
 	{
 		duration = pFormatCtx->duration;
