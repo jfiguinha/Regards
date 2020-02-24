@@ -714,7 +714,11 @@ void CBitmapWndViewer::KeyPress(const int &key)
 
 void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 {
-
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
     
 	if (CFiltreData::SupportMouseClick(toolOption))
 	{
@@ -740,15 +744,15 @@ void CBitmapWndViewer::MouseMove(const int &xPos, const int &yPos)
 		bool isOnArrow = false;
 		if (fixArrow && etape == 0)
 		{
-			int yPosTop = (GetHeight() - arrowNext.GetHeight()) / 2;
-			int yPosBottom = (GetHeight() - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
+			int yPosTop = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2;
+			int yPosBottom = (GetHeight() * scale_factor - arrowNext.GetHeight()) / 2 + arrowNext.GetHeight();
 
-			if (xPos < arrowPrevious.GetWidth() && (yPos > yPosTop && yPos < yPosBottom))
+			if (xPos < arrowPrevious.GetWidth() * scale_factor && (yPos > yPosTop && yPos < yPosBottom))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
 			}
-			else if ((xPos > (GetWidth() - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
+			else if ((xPos > (GetWidth() * scale_factor - arrowNext.GetWidth()) && (yPos > yPosTop && yPos < yPosBottom)))
 			{
 				isOnArrow = true;
 				::wxSetCursor(wxCursor(wxCURSOR_HAND));
