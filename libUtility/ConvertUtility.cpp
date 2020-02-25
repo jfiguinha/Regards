@@ -37,12 +37,15 @@ const std::string CConvertUtility::ConvertToStdString(const wxString & s)
 
 const char * CConvertUtility::ConvertToUTF8(const wxString & s)
 {
+    /*
 #ifdef __WXGTK__    
     const char* str = (const char*)s.mb_str(wxConvUTF8);
-    return str;
+    return s.ToUTF8();
 #else
     return s.mb_str(wxConvUTF8);
 #endif
+ * */
+    return s.ToUTF8();
 }
 
 wxString CConvertUtility::GetTimeLibelle(const int &timePosition)
