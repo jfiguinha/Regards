@@ -79,8 +79,8 @@ namespace Regards
 			bool isTop;
 			bool isHide;
 			bool isPanel;
-			int diffWidth;
-			int diffHeight;
+			int diffWidth = 0;
+			int diffHeight = 0;
 
 			CSeparationBarToAdd * separationBar;
 

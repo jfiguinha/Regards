@@ -1320,8 +1320,6 @@ void CWindowManager::Resize()
 	int width = GetSize().GetX();
 	int height = GetSize().GetY();
 
-	if (!(width > 20 && height > 20))
-		return;
 
 
 	int diffWidth = width - oldWidth;
@@ -1380,6 +1378,8 @@ void CWindowManager::Resize()
 					_wnd->SetSize(rc);
 
 			}
+
+
 			if (windowToAdd->separationBar != nullptr)
 			{
 				if (windowToAdd->separationBar->separationBar != nullptr)

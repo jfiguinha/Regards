@@ -60,6 +60,14 @@ int CPane::GetTitleHeight()
 
 void CPane::Resize()
 {
+#ifdef _DEBUG
+#ifdef WIN32
+	TCHAR temp[255];
+	wsprintf(temp, L"CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
+	OutputDebugString(temp);
+#endif
+#endif
+
 	printf("CPane Resize size x : %d y : %d \n", GetWindowWidth(), GetWindowHeight());
 	if (titleBarVisible)
 	{
