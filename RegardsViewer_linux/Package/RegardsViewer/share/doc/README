@@ -54,6 +54,9 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.48
+- Correct window visibility when you switch from picture mode and viewer mode
+- Correct UTF8 crash on file name
 News for version 2.47
 - Correct animation thumbnail bug
 - Correct crash on scan window
