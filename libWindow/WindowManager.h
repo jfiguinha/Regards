@@ -106,8 +106,8 @@ namespace Regards
 			void GenerateRenderBitmap();
 			void HideWindow(Pos position, const bool &refresh = true);
 			void ShowWindow(Pos position, const bool &refresh = true);
-			void HidePaneWindow(Pos position);
-			void ShowPaneWindow(Pos position);
+			void HidePaneWindow(Pos position, const int &refresh = 1);
+			void ShowPaneWindow(Pos position, const int &refresh = 1);
 			bool OnLButtonDown();
 			void OnLButtonUp();
 			void UpdateScreenRatio();

@@ -47,7 +47,7 @@ void CTabWindow::UpdateScreenRatio()
 	this->Resize();
 }
 
-void CTabWindow::ClickShowButton(const int& id)
+void CTabWindow::ClickShowButton(const int& id, const int &refresh)
 {
 	HideAllWindow();
 	for (CTabWindowData * window : listWindow)

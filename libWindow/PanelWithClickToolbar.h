@@ -30,8 +30,8 @@ namespace Regards
 			int GetHeight();
 			void ShowPanel();
 			void HidePanel(const bool& refresh = true);
-			void ClosePane(const int &id);
-			void ClickShowButton(const int &id);
+			void ClosePane(const int &id, const int &refresh = 1);
+			void ClickShowButton(const int &id, const int &refresh = 1);
 			static CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &isVertical, const bool &refreshButton);
 
 		protected:

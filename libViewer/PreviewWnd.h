@@ -46,7 +46,7 @@ namespace Regards
 			void ShowValidationToolbar(const bool &visible, const int &filtre);
 			void HideValidationToolbar();
 
-			void ClickShowButton(const int &id);
+			void ClickShowButton(const int &id, const int &refresh = 1);
 			void SetFullscreen(const bool &fullscreen);
 
 			void SetDiaporamaMode();

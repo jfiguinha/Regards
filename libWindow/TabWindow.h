@@ -93,7 +93,7 @@ namespace Regards
 		protected:
 
             void Resize();
-            void ClickShowButton(const int& id);
+            void ClickShowButton(const int& id, const int &refresh = 1);
             void HideAllWindow();
 			virtual void LoadInfo() = 0;
 			CModificationManager * modificationManager;
