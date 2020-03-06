@@ -38,8 +38,7 @@ void CTabWindow::UpdateScreenRatio()
 	for (CTabWindowData* window : listWindow)
 	{
 		if (window != nullptr)
-            if(window->windowMain != nullptr)
-                window->windowMain->UpdateScreenRatio();
+			window->UpdateScreenRatio();
 	}
 
 	if(toolbarWindow != nullptr)
@@ -53,11 +52,11 @@ void CTabWindow::ClickShowButton(const int& id)
 	HideAllWindow();
 	for (CTabWindowData * window : listWindow)
 	{
-		if (window->windowName == id)
+		if (window->GetId() == id)
 		{
 			windowVisible = id;
 			LoadInfo();
-			window->window->Show(true);
+			window->ShowWindow();
 			break;
 		}
 	}
@@ -86,8 +85,7 @@ void CTabWindow::HideAllWindow()
 	{
 		if (window != nullptr)
 		{
-			if(window != nullptr)
-				window->window->Show(false);
+			window->ShowWindow(false);
 		}
 	}
 }
@@ -112,8 +110,8 @@ void CTabWindow::Resize()
 	{
 		if (window != nullptr)
 		{
-			if (window != nullptr && window->window->IsShown())
-				windowToShow = window->window;
+			if (window != nullptr && window->IsShown())
+				windowToShow = window->GetWindow();
 		}
 
 	}

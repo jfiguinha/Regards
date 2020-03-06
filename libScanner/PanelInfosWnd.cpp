@@ -63,15 +63,13 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		infosFileWnd->Show(true);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = infosFileWnd;
-        tabInfosFile->windowMain = infosFileWnd;
-        tabInfosFile->windowName = WM_INFOS;
+        tabInfosFile->SetWindow(infosFileWnd);
+		tabInfosFile->SetId(WM_INFOS);
         listWindow.push_back(tabInfosFile);
 
 		CTabWindowData * tabOcr = new CTabWindowData();
-		tabOcr->window = ocrWnd;
-		tabOcr->windowMain = ocrWnd;
-		tabOcr->windowName = WM_OCR;
+		tabOcr->SetWindow(ocrWnd);
+		tabOcr->SetId(WM_OCR);
 		listWindow.push_back(tabOcr);
 
 	}   
@@ -88,9 +86,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		filtreEffectWnd->Show(false);
 
 		CTabWindowData * tabInfosFile = new CTabWindowData();
-		tabInfosFile->window = filtreEffectWnd;
-		tabInfosFile->windowMain = filtreEffectWnd;
-		tabInfosFile->windowName = WM_EFFECTPARAMETER;
+		tabInfosFile->SetWindow(filtreEffectWnd);
+		tabInfosFile->SetId(WM_EFFECTPARAMETER);
 		listWindow.push_back(tabInfosFile);
 	}
 
@@ -105,9 +102,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		historyEffectWnd->Show(false);
 
 		CTabWindowData * tabInfosFile = new CTabWindowData();
-		tabInfosFile->window = historyEffectWnd;
-		tabInfosFile->windowMain = historyEffectWnd;
-		tabInfosFile->windowName = WM_HISTORY;
+		tabInfosFile->SetWindow(historyEffectWnd);
+		tabInfosFile->SetId(WM_HISTORY);
 		listWindow.push_back(tabInfosFile);
 	}
 
@@ -133,9 +129,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 		thumbnailEffectWnd->Show(false);
 
 		CTabWindowData * tabInfosFileEffect = new CTabWindowData();
-		tabInfosFileEffect->window = thumbnailEffectWnd;
-		tabInfosFileEffect->windowMain = thumbnailEffectWnd;
-		tabInfosFileEffect->windowName = WM_EFFECT;
+		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
+		tabInfosFileEffect->SetId(WM_EFFECT);
 		listWindow.push_back(tabInfosFileEffect);
 
 	}

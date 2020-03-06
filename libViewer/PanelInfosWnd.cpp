@@ -76,9 +76,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 		infosFileWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = infosFileWnd;
-        tabInfosFile->windowMain = infosFileWnd;
-        tabInfosFile->windowName = WM_INFOS;
+		tabInfosFile->SetWindow(infosFileWnd);
+		tabInfosFile->SetId(WM_INFOS);
         listWindow.push_back(tabInfosFile);
 	}
 	
@@ -94,21 +93,18 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         filtreEffectWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = filtreEffectWnd;
-        tabInfosFile->windowMain = filtreEffectWnd;
-        tabInfosFile->windowName = WM_EFFECTPARAMETER;
+		tabInfosFile->SetWindow(filtreEffectWnd);
+		tabInfosFile->SetId(WM_EFFECTPARAMETER);
         listWindow.push_back(tabInfosFile);
 
 		CTabWindowData * tabInfosFileVideo = new CTabWindowData();
-		tabInfosFileVideo->window = filtreEffectWnd;
-		tabInfosFileVideo->windowMain = filtreEffectWnd;
-		tabInfosFileVideo->windowName = WM_VIDEOEFFECT;
+		tabInfosFileVideo->SetWindow(filtreEffectWnd);
+		tabInfosFileVideo->SetId(WM_VIDEOEFFECT);
 		listWindow.push_back(tabInfosFileVideo);
 
 		CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
-		tabInfosFileAudioVideo->window = filtreEffectWnd;
-		tabInfosFileAudioVideo->windowMain = filtreEffectWnd;
-		tabInfosFileAudioVideo->windowName = WM_AUDIOVIDEO;
+		tabInfosFileAudioVideo->SetWindow(filtreEffectWnd);
+		tabInfosFileAudioVideo->SetId(WM_AUDIOVIDEO);
 		listWindow.push_back(tabInfosFileAudioVideo);
 	}
 
@@ -123,9 +119,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 		historyEffectWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = historyEffectWnd;
-        tabInfosFile->windowMain = historyEffectWnd;
-        tabInfosFile->windowName = WM_HISTORY;
+		tabInfosFile->SetWindow(historyEffectWnd);
+		tabInfosFile->SetId(WM_HISTORY);
         listWindow.push_back(tabInfosFile);
 	}
 	
@@ -158,9 +153,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         listWindow.push_back(tabInfosFileVideo);
         */
         CTabWindowData * tabInfosFileEffect = new CTabWindowData();
-        tabInfosFileEffect->window = thumbnailEffectWnd;
-        tabInfosFileEffect->windowMain = thumbnailEffectWnd;
-        tabInfosFileEffect->windowName = WM_EFFECT;
+		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
+		tabInfosFileEffect->SetId(WM_EFFECT);
         listWindow.push_back(tabInfosFileEffect);
         /*
         CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
@@ -177,8 +171,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         webBrowser->Show(false);   
 
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = webBrowser;
-        tabInfosFile->windowName = WM_MAPS;
+		tabInfosFile->SetWindow(webBrowser);
+		tabInfosFile->SetId(WM_MAPS);
         listWindow.push_back(tabInfosFile);     
     }
 
@@ -200,9 +194,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
     
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = criteriaTreeWnd;
-        tabInfosFile->windowMain = criteriaTreeWnd;
-        tabInfosFile->windowName = WM_CRITERIA;
+        tabInfosFile->SetWindow(criteriaTreeWnd);
+		tabInfosFile->SetId(WM_CRITERIA);
         listWindow.push_back(tabInfosFile);
     }
 
