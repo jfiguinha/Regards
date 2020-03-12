@@ -30,7 +30,6 @@ public:
 	void SetCurrentclock(wxString message);
 	void SetPos(int64_t pos);
 	void SetVideoPosition(int64_t pos);
-	//static void PlayVideo(CVideoControlSoft * sdlWindow);
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
@@ -68,13 +67,15 @@ public:
         this->Refresh();
     }
     void SetRotation(const int &rotation);
-	void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
+	virtual void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
     void UpdateScreenRatio();
 
-private:
+protected:
+
+    void OnRefresh(wxCommandEvent& event);
 	bool GetProcessEnd();
 	void EndVideoThread(wxCommandEvent& event);
-	void OnPaint(wxPaintEvent &event);
+	virtual void OnPaint(wxPaintEvent &event);
 	void OnRButtonDown(wxMouseEvent& event);
 	void VideoRotation(wxCommandEvent& event);
 	void OnIdle(wxIdleEvent& evt);
@@ -82,7 +83,6 @@ private:
     void Resize();
     
 	bool subtilteUpdate;
-	//thread * threadVideo;
 	int volumeStart;
 	int old_width;
 	int old_height;

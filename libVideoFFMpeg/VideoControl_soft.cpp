@@ -87,6 +87,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
     fpsTimer = new wxTimer(this, TIMER_FPS);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
+    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
 	pause = false;
 	videoEnd = true;
 	this->windowMain = windowMain;
@@ -101,6 +102,10 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	ffmfc = new CFFmfc(this, wxID_ANY);
 }
 
+void CVideoControlSoft::OnRefresh(wxCommandEvent& event)
+{
+    Refresh();
+}
 
 void CVideoControlSoft::SetRotation(const int &rotation)
 {
@@ -231,9 +236,6 @@ CVideoControlSoft::~CVideoControlSoft()
     
 	delete fpsTimer;
 #ifdef RENDEROPENGL   
-
-	
-
 	if (renderBitmapOpenGL != nullptr)
 	{
 		renderBitmapOpenGL->SetCurrent(*this);
@@ -259,6 +261,7 @@ CVideoControlSoft::~CVideoControlSoft()
 
 	if (ffmfc)
 		delete ffmfc;
+
 }
 
 void CVideoControlSoft::SetSubtitulePicture(CRegardsBitmap * picture)

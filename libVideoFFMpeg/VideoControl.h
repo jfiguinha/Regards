@@ -1,80 +1,16 @@
 #pragma once
 #ifdef WIN32
-#include "VideoControlInterface.h"
-#ifdef RENDEROPENGL  
-#include "WindowOpenGLMain.h"
-#include "RenderBitmapInterfaceOpenGL.h"
-#else
-#include "WindowMain.h"
-#endif
-#include "EffectVideoParameter.h"
-#include "VideoInterface.h"
-#include <BitmapYUV.h>
-#include <ParamInit.h>
-#include <RegardsConfigParam.h>
 #include "ffmpeg_dxva2.h"
-#include <OpenCLEffectVideoNV12.h>
 #include <d3d9.h>
 
-class CRegardsBitmap;
-class CFFmfc;
-
-using namespace Regards::OpenCL;
-using namespace std;
-using namespace Regards::Window;
-using namespace Regards::Video;
-
-#ifdef RENDEROPENGL  
-class CVideoControl : public CWindowOpenGLMain, public CVideoControlInterface
-#else
-class CVideoControl : public CWindowMain, public CVideoControlInterface
-#endif
+class CVideoControl : public CVideoControlSoft
 {
 public:
 	CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControl();
     
     static CVideoControlInterface * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
-
-    wxWindow * GetWindow()
-    {
-        return this;
-    }
-
-    void RedrawFrame()
-    {
-        this->Refresh();
-    }
-
-	void SetVideoDuration(int64_t duration);
-	void SetCurrentclock(wxString message);
-	void SetPos(int64_t pos);
-	void SetVideoPosition(int64_t pos);
-	void VolumeUp();
-	void VolumeDown();
-	int GetVolume();
-	void VideoStart(wxCommandEvent& event);
-	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
-	void UpdateFiltre(CEffectParameter * effectParameter);
-	CEffectParameter * GetParameter();
-	void OnPlay();
-	void OnStop(wxString photoName);
-	void OnPause();
-	int PlayMovie(const wxString &movie, const bool &play);
-	int GetState(){ return 0; };
-    void OnRefresh(wxCommandEvent& event);
-	int ChangeAudioStream(int newStreamAudio);
-	int ChangeSubtitleStream(int newStreamSubtitle);
-    int getWidth();
-    int getHeight();
-	void SetSubtitulePicture(CRegardsBitmap * picture);
-	void DeleteSubtitulePicture();
-	bool GetPausedValue()
-	{
-		return pause;
-	};
-    
-    void SetRotation(const int &rotation);
+   
 	void SetDXVA2Compatible(const bool &compatible);
 	bool GetDXVA2Compatible();
 #ifdef RENDEROPENGL  
@@ -87,42 +23,13 @@ public:
 	IDirect3DDevice9Ex * GetDirect3DDevice();
 	HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height);
 	
-	void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
-    void UpdateScreenRatio();
+    virtual void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
 
-private:
-	bool GetProcessEnd();
-	void EndVideoThread(wxCommandEvent& event);
-	void OnPaint(wxPaintEvent &event);
-	void OnRButtonDown(wxMouseEvent& event);
-	void VideoRotation(wxCommandEvent& event);
-	void OnIdle(wxIdleEvent& evt);
-	void OnShowFPS(wxTimerEvent& event);
-    void Resize();
-	bool subtilteUpdate;
-	int volumeStart;
-	int old_width;
-	int old_height;
-	bool pause;
-	wxString filename;
-    
-	IVideoInterface * eventPlayer;
-	CRegardsConfigParam * config;
-    bool newVideo ;
-	bool videoEnd ;
-	bool stopVideo;
-	bool exit ;
-	bool quitWindow;
-    bool videoStart;
-	wxString msgFrame;
-	CWindowMain * windowMain;
-	wxTimer * fpsTimer;
-	bool initStart;
-	bool videoRenderStart;
-	wxString standByMovie;
+protected:
 
+    virtual void OnPaint(wxPaintEvent& event);
 
-	bool isDXVA2Compatible;
+    bool isDXVA2Compatible;
 
 #ifdef RENDEROPENGL 
 	bool UnbindTexture();
@@ -144,7 +51,7 @@ private:
 	int windowHeight;
 	bool dxva2ToOpenGLWorking;
 	HANDLE hDevice;
-	CFFmfc * ffmfc;
+
 };
 
 #endif

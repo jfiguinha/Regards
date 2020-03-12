@@ -17,8 +17,6 @@
 #include <ImageLoadingFormat.h>
 #include <ViewerParam.h>
 #include <ViewerParamInit.h>
-//#include "LoadingResource.h"
-wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 
 #ifndef RENDEROPENGL
 extern COpenCLEngine * openCLEngine;
@@ -31,63 +29,13 @@ extern COpenCLContext * openclContext;
 #endif
 
 CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
-#ifdef RENDEROPENGL  
-: CWindowOpenGLMain("CVideoControl",parent, id)
-#else
-: CWindowMain("CVideoControl", parent, id)
-#endif
+: CVideoControlSoft(parent, id, windowMain, eventPlayer)
 {
-#ifdef RENDEROPENGL 
-	renderBitmapOpenGL = nullptr;
-#ifdef GLUT
-	int argc = 1;
-	char* argv[1] = { wxString((wxTheApp->argv)[0]).char_str() };
-	glutInit(&argc, argv);
-#endif
-
-#endif
-    printf("CVideoControl initialisation \n");
-
-
 	hDevice = nullptr;
 	hTexture = nullptr;
 	windowWidth = 0;
 	windowHeight = 0;
 	dxva2ToOpenGLWorking = true;
-	widthVideo = 0;
-	heightVideo = 0;
-	subtilteUpdate = false;
-	volumeStart = 64;
-	old_width = 0;
-	old_height = 0;
-	pause = false;
-	config = nullptr;
-	angle = 0;
-	flipV = false;
-    newVideo = true;
-	flipH = false;
-	videoEnd = false;
-	exit = false;
-	quitWindow = false;
-    videoStart = false;
-    videoRenderStart = false;
-	pictureSubtitle = nullptr;
-	video_aspect_ratio = 0.0;
-	config = CParamInit::getInstance();
-    Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControl::OnPaint));
-    Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControl::OnSize));
-    Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControl::EndVideoThread));
-    Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControl::VideoStart));
-	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControl::OnIdle));
-	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControl::VideoRotation));
-    Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControl::OnRefresh));
-    fpsTimer = new wxTimer(this, TIMER_FPS);
-	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControl::OnRButtonDown));
-    Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControl::OnShowFPS), nullptr, this);
-	pause = false;
-	videoEnd = true;
-	this->windowMain = windowMain;
-	this->eventPlayer = eventPlayer;
 
 	initDevice = true;
 	dxva2 = nullptr;
@@ -113,119 +61,6 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
         throw("Failed to create IDirect3D object\n");
     }
 
-#ifdef RENDEROPENGL  
-	openCLEngine = nullptr;
-	openclContext = nullptr;
-#endif
-	openclEffectYUV = nullptr;
-
-	ffmfc = new CFFmfc(this, wxID_ANY);
-}
-
-void CVideoControl::VideoRotation(wxCommandEvent& event)
-{
-	long rotation = event.GetExtraLong();
-	if(rotation < 0)
-		rotation = 360 + rotation;
-	angle = rotation % 360;
-}
-
-void CVideoControl::UpdateFiltre(CEffectParameter * effectParameter)
-{
-	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
-	if(videoParameter->streamAudioUpdate)
-	{
-		ChangeAudioStream(videoParameter->streamAudioIndex);
-		videoParameter->streamAudioUpdate = 0;
-	}
-	else if(videoParameter->streamVideoUpdate)
-	{
-		//ChangeAudioStream(videoParameter->streamAudioIndex);
-		videoParameter->streamVideoUpdate = 0;
-	}
-	else if(videoParameter->streamSubtitleUpdate)
-	{
-		//ChangeAudioStream(videoParameter->streamAudioIndex);
-		videoParameter->streamSubtitleUpdate = 0;
-	}
-
-	muVideoEffect.lock();
-	videoEffectParameter = *videoParameter;
-	muVideoEffect.unlock();
-
-	//Refresh();
-}
-
-void CVideoControl::SetVideoPreviewEffect(CEffectParameter * effectParameter)
-{
-	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
-	muVideoEffect.lock();
-	videoEffectParameter = *videoParameter;
-	muVideoEffect.unlock();
-}
-
-CEffectParameter * CVideoControl::GetParameter()
-{
-	CVideoEffectParameter * videoParameter = new CVideoEffectParameter();
-	muVideoEffect.lock();
-	*videoParameter = videoEffectParameter;
-	muVideoEffect.unlock();
-	return videoParameter;
-}
-
-
-bool CVideoControl::GetProcessEnd()
-{
-	return videoEnd;
-}
-
-void CVideoControl::OnRefresh(wxCommandEvent& event)
-{
-    Refresh();
-}
-
-void CVideoControl::OnIdle(wxIdleEvent& evt)
-{
-    //TRACE();
-	if(endProgram && videoRenderStart && !quitWindow)
-	{
-		fpsTimer->Stop();
-		quitWindow = true;
-		exit = true;
-		if (!videoEnd)
-		{
-			if(ffmfc->Quit())
-			{
-				wxCommandEvent localevent;
-				EndVideoThread(localevent);
-				//videoEnd = true;
-			}
-		}
-	}
-}
-
-void CVideoControl::OnShowFPS(wxTimerEvent& event)
-{
-	msgFrame = wxString::Format("FPS : %d", nbFrame);
-	nbFrame = 0;
-}
-
-void CVideoControl::EndVideoThread(wxCommandEvent& event)
-{
-    videoEnd = true;
-    if (eventPlayer != nullptr)
-    {
-        eventPlayer->OnPositionVideo(0);
-        eventPlayer->OnVideoEnd();
-    }
-	fpsTimer->Stop();
-	videoRenderStart = false;
-	stopVideo = true;
-
-	if(standByMovie != "")
-	{
-		PlayMovie(standByMovie, true);
-	}
 }
 
 
@@ -240,6 +75,8 @@ CVideoControl::~CVideoControl()
 	{
 		renderBitmapOpenGL->SetCurrent(*this);
 		UnbindTexture();
+        delete renderBitmapOpenGL;
+        renderBitmapOpenGL = nullptr;
 	}
 #endif
 	if(m_pRenderTargetSurface)
@@ -262,110 +99,14 @@ CVideoControl::~CVideoControl()
 
     if (dxva2lib)
         FreeLibrary(dxva2lib);
-        
-#ifdef RENDEROPENGL 
-	if(renderBitmapOpenGL!= nullptr)
-		delete renderBitmapOpenGL;
-#endif
-	delete fpsTimer;
 
-	if(openclEffectYUV != nullptr)
-		delete openclEffectYUV;
+	
 
 	if(openclEffectNV12 != nullptr)
 		delete openclEffectNV12;
 
-#ifdef RENDEROPENGL  
-	if (openCLEngine != nullptr)
-		delete openCLEngine;
-	openCLEngine = nullptr;
-#endif
+
 	
-
-	if(pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
-	if (ffmfc)
-		delete ffmfc;
-}
-
-void CVideoControl::SetSubtitulePicture(CRegardsBitmap * picture)
-{
-	muSubtitle.lock();
-
-	if(pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
-	pictureSubtitle = picture;
-
-	subtilteUpdate = true;
-
-	muSubtitle.unlock();
-}
-
-void CVideoControl::DeleteSubtitulePicture()
-{
-	muSubtitle.lock();
-
-	if(pictureSubtitle != nullptr)
-		delete pictureSubtitle;
-
-	pictureSubtitle = nullptr;
-
-	subtilteUpdate = true;
-
-	muSubtitle.unlock();
-}
-
-
-
-int CVideoControl::PlayMovie(const wxString &movie, const bool &play)
-{
-	if (videoEnd)
-	{
-		stopVideo = false;
-		angle = 0;
-		flipV = false;
-		flipH = false;
-        videoStart = false;
-        newVideo = true;
-		initStart = true;
-		videoRenderStart = false;
-        filename = movie;
-		standByMovie = "";
-        pause = false;
-        if(play)
-            ffmfc->Play(this, CConvertUtility::ConvertToStdString(filename));
-	}
-	else if(movie != filename)
-	{
-		OnStop(movie);
-	}
-
-	return 0;
-}
-
-void CVideoControl::VideoStart(wxCommandEvent& event)
-{
-	eventPlayer->OnVideoStart();
-	ffmfc->Play();
-	pause = false;
-    videoEnd = false;
-    videoStart =true;
-}
-
-int CVideoControl::getWidth()
-{
-     return GetSize().x;
-}
-int CVideoControl::getHeight()
-{
-    return GetSize().y;
-}
-
-void CVideoControl::UpdateScreenRatio()
-{
-    Refresh();
 }
 
 IDirect3D9Ex * CVideoControl::GetDirectd3d9()
@@ -651,13 +392,6 @@ bool CVideoControl::UnbindTexture()
 CVideoControlInterface * CVideoControl::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
 {
    return new CVideoControl(parent, id, windowMain, eventPlayer); 
-}
-
-void CVideoControl::SetRotation(const int &rotation)
-{
-    wxCommandEvent event(EVENT_VIDEOROTATION);
-    event.SetExtraLong(rotation);
-    wxPostEvent(this, event);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1005,109 +739,12 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
     nbFrame++;
 }
 
-int CVideoControl::ChangeSubtitleStream(int newStreamSubtitle)
-{
-	ffmfc->Change_subtitle_stream(newStreamSubtitle);
-	SetVideoPosition(videoPosition / 1000);
-	return 0;
-}
-
-
-int CVideoControl::ChangeAudioStream(int newStreamAudio)
-{
-	ffmfc->Change_audio_stream(newStreamAudio);
-	SetVideoPosition(videoPosition / 1000);
-	return 0;
-}
-
-void CVideoControl::OnPlay()
-{
-	if (videoStart)
-	{
-		if (pause && !videoEnd)
-		{
-			ffmfc->Pause();
-		}
-		else if (videoEnd)
-		{
-			PlayMovie(filename, true);
-		}
-	}
-	else
-	{
-		PlayMovie(filename, true);
-	}
-
-	pause = false;
-}
-
-void CVideoControl::OnStop(wxString photoName)
-{
-	exit = true;
-	stopVideo = true;
-	ffmfc->Quit();
-	standByMovie = photoName;
-}
-
-void CVideoControl::OnPause()
-{
-	if (videoStart)
-	{
-		if (!pause)
-		{
-			ffmfc->Pause();
-		}
-		pause = true;
-	}
-}
-
-void CVideoControl::SetVideoDuration(int64_t duration)
-{
-	if (eventPlayer != nullptr)
-		eventPlayer->SetVideoDuration(duration);
-}
-
-void CVideoControl::SetVideoPosition(int64_t pos)
-{
-	ffmfc->SetTimePosition(pos * 1000 * 1000);
-}
-
-void CVideoControl::SetCurrentclock(wxString message)
-{
-	this->message = message;
-}
-
 void CVideoControl::SetPos(int64_t pos)
 {
 	videoPosition = pos;
 	if (eventPlayer != nullptr)
 		eventPlayer->OnPositionVideo(pos);
 	//Refresh();
-}
-
-void CVideoControl::VolumeUp()
-{
-	ffmfc->VolumeUp();
-}
-
-void CVideoControl::VolumeDown()
-{
-	ffmfc->VolumeDown();
-}
-
-int CVideoControl::GetVolume()
-{
-	return ffmfc->GetVolume();
-}
-
-void CVideoControl::OnRButtonDown(wxMouseEvent& event)
-{
-	//wxWindow * window = this->FindWindowById(idWindowMain);
-	if (windowMain != nullptr)
-	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, TOOLBAR_UPDATE_ID);
-		windowMain->GetEventHandler()->AddPendingEvent(evt);
-	}
 }
 
 void CVideoControl::SetDXVA2Compatible(const bool &compatible)
@@ -1275,24 +912,6 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
     std::cout<<"Set Data time execution: "<< duration <<'\n';
     
     this->Refresh();
-}
-
-void CVideoControl::Resize()
-{
-	if (!stopVideo)
-	{
-		updateContext = true;
-
-		if (videoStart)
-			ffmfc->VideoDisplaySize(GetWindowWidth(), GetWindowHeight());
-
-		if (pause && isffmpegDecode  && copyFrameBuffer != nullptr)
-		{
-			SetFrameData(copyFrameBuffer);
-		}
-
-		Refresh();
-	}
 }
 
 #endif
