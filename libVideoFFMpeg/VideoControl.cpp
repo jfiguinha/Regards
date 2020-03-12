@@ -739,14 +739,6 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
     nbFrame++;
 }
 
-void CVideoControl::SetPos(int64_t pos)
-{
-	videoPosition = pos;
-	if (eventPlayer != nullptr)
-		eventPlayer->OnPositionVideo(pos);
-	//Refresh();
-}
-
 void CVideoControl::SetDXVA2Compatible(const bool &compatible)
 {
 	isDXVA2Compatible = compatible;
@@ -834,7 +826,6 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
             D3DSURFACE_DESC    surfaceDesc;
             D3DLOCKED_RECT     LockedRect;
             HRESULT            hr;
-            int                ret;
 
             IDirect3DSurface9_GetDesc(surface, &surfaceDesc);
             muBitmap.lock();

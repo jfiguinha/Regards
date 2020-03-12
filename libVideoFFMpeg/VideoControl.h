@@ -1,6 +1,8 @@
 #pragma once
 #ifdef WIN32
+#include "VideoControl_soft.h"
 #include "ffmpeg_dxva2.h"
+#include "OpenCLEffectVideoNV12.h"
 #include <d3d9.h>
 
 class CVideoControl : public CVideoControlSoft
