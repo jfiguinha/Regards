@@ -118,7 +118,7 @@ void CPreviewWnd::OnFiltreCancel(wxCommandEvent& event)
 	this->HideValidationToolbar();
 }
 
-void CPreviewWnd::ClickShowButton(const int &id)
+void CPreviewWnd::ClickShowButton(const int &id, const int &refresh)
 {
 	switch (id)
 	{

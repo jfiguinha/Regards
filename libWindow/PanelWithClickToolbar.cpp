@@ -106,7 +106,7 @@ void CPanelWithClickToolbar::UpdateScreenRatio()
     this->Resize();
 }
 
-void CPanelWithClickToolbar::ClickShowButton(const int &id)
+void CPanelWithClickToolbar::ClickShowButton(const int &id, const int &refresh)
 {
 	switch (id)
 	{
@@ -118,6 +118,7 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id)
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
 			event->SetId(this->GetId());
 			event->SetInt(1);
+			event->SetExtraLong(refresh);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;
@@ -140,7 +141,7 @@ void CPanelWithClickToolbar::RefreshPane(const int& id)
 }
 
 
-void CPanelWithClickToolbar::ClosePane(const int &id)
+void CPanelWithClickToolbar::ClosePane(const int &id, const int &refresh)
 {
 	switch (id)
 	{
@@ -152,6 +153,7 @@ void CPanelWithClickToolbar::ClosePane(const int &id)
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
 			event->SetId(this->GetId());
 			event->SetInt(0);
+			event->SetExtraLong(refresh);
 			wxQueueEvent(this->GetParent(), event);
 		}
 		break;

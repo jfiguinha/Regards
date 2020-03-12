@@ -12,7 +12,7 @@ namespace Regards
 			public:
 				CToolbarInterface(){};
 				virtual ~CToolbarInterface(){};
-				virtual void ClickShowButton(const int &id) = 0;
+				virtual void ClickShowButton(const int &id, const int &refresh = 1) = 0;
 			protected:
 				void EventManager(const int &id);
 		};

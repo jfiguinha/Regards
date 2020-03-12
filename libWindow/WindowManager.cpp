@@ -89,6 +89,7 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 {
 	int id = event.GetId();
 	int value = event.GetInt();
+	int show = event.GetExtraLong();
 
 	for (CWindowToAdd * windowToAdd : listWindow)
 	{
@@ -151,7 +152,8 @@ void CWindowManager::OnResize(wxCommandEvent& event)
 
 	}
 
-	Resize();
+	if(show)
+		Resize();
 }
 
 bool CWindowManager::IsWindowVisible(Pos position)
@@ -205,7 +207,7 @@ void CWindowManager::HideWindow(Pos position, const bool &refresh)
 	}
 }
 
-void CWindowManager::HidePaneWindow(Pos position)
+void CWindowManager::HidePaneWindow(Pos position, const int &refresh)
 {
 	CWindowToAdd * window = FindWindow(position);
 
@@ -218,7 +220,7 @@ void CWindowManager::HidePaneWindow(Pos position)
 			{
 				if (panel->IsPanelVisible())
 				{
-					panel->ClosePane(PANE_WITHCLICKTOOLBAR);
+					panel->ClosePane(PANE_WITHCLICKTOOLBAR, refresh);
 				}
 			}
 		}
@@ -226,7 +228,7 @@ void CWindowManager::HidePaneWindow(Pos position)
 	}
 }
 
-void CWindowManager::ShowPaneWindow(Pos position)
+void CWindowManager::ShowPaneWindow(Pos position, const int &refresh)
 {
 	CWindowToAdd * window = FindWindow(position);
 
@@ -239,7 +241,7 @@ void CWindowManager::ShowPaneWindow(Pos position)
 			{
 				if (!panel->IsPanelVisible())
 				{
-					panel->ClickShowButton(PANE_WITHCLICKTOOLBAR);
+					panel->ClickShowButton(PANE_WITHCLICKTOOLBAR, refresh);
 				}
 			}
 		}

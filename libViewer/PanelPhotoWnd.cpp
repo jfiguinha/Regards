@@ -46,9 +46,8 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = folderWnd;
-        tabInfosFile->windowMain = nullptr;
-        tabInfosFile->windowName = WM_FOLDER;
+		tabInfosFile->SetWindow(folderWnd);
+		tabInfosFile->SetId(WM_FOLDER);
         listWindow.push_back(tabInfosFile);
 	}
 
@@ -64,9 +63,8 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 		categoryFolderWnd->Show(false);
         
         CTabWindowData * tabInfosFile = new CTabWindowData();
-        tabInfosFile->window = categoryFolderWnd;
-        tabInfosFile->windowMain = categoryFolderWnd;
-        tabInfosFile->windowName = WM_CRITERIA;
+		tabInfosFile->SetWindow(categoryFolderWnd);
+		tabInfosFile->SetId(WM_CRITERIA);
         listWindow.push_back(tabInfosFile);
 	}
     

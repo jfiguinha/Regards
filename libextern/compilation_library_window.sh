@@ -27,7 +27,6 @@ cd tesseract-4.1.0
 make -j$NBPROC
 make install
 cd ..
-cd ..
 
 #Generate package FreeImage
 cd FreeImage3180
@@ -108,7 +107,7 @@ mkdir build
 cd build
 cmake ../ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
-sudo make install
+make install
 cd ..
 cd ..
 
