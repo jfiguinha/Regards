@@ -2,14 +2,17 @@
 #include "VideoControlInterface.h"
 #ifdef RENDEROPENGL  
 #include "WindowOpenGLMain.h"
-#else
-#include "WindowMain.h"
 #endif
+#include "WindowMain.h"
 #include "EffectVideoParameter.h"
 #include "VideoInterface.h"
 #include <BitmapYUV.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <OpenCLContext.h>
+#include <OpenCLEngine.h>
+#include <OpenCLEffectVideoYUV.h>
+#include "RenderBitmapInterfaceOpenGL.h"
 using namespace Regards::Window;
 using namespace Regards::Video;
 using namespace Regards::OpenCL;
@@ -53,7 +56,7 @@ public:
         return this;
     }
     
-    static  CVideoControlInterface * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
+    static  CVideoControlSoft * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 
 	void SetSubtitulePicture(CRegardsBitmap * picture);
 	void DeleteSubtitulePicture();
@@ -70,6 +73,11 @@ public:
 	virtual void SetData(void * data, const float & sample_aspect_ratio, void * WIN32Context);
     void UpdateScreenRatio();
 
+	void Rotate90();
+	void Rotate270();
+	void FlipVertical();
+	void FlipHorizontal();
+
 protected:
 
     void OnRefresh(wxCommandEvent& event);
@@ -81,7 +89,16 @@ protected:
 	void OnIdle(wxIdleEvent& evt);
 	void OnShowFPS(wxTimerEvent& event);
     void Resize();
-    
+	void calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
+	GLTexture * RenderToGLTexture();
+	GLTexture * RenderToTexture(CRegardsBitmap * bitmap);
+	GLTexture * RenderToTexture(COpenCLEffectVideo * openclEffect);
+	GLTexture * RenderFFmpegToTexture();
+
+	bool IsCPUContext();
+	void SetFrameData(AVFrame * src_frame);
+	void CopyFrame(AVFrame * frame);
+
 	bool subtilteUpdate;
 	int volumeStart;
 	int old_width;
@@ -103,4 +120,35 @@ protected:
 	bool videoRenderStart;
 	wxString standByMovie;
 	CFFmfc * ffmfc;
+
+	mutex muBitmap;
+	mutex muVideoEffect;
+	mutex muSubtitle;
+
+
+	CRegardsBitmap * bitmap = nullptr;
+	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
+	CffmpegToBitmap * ffmpegToBitmap = nullptr;
+#ifdef RENDEROPENGL
+	COpenCLEngine * openCLEngine = nullptr;
+	COpenCLContext * openclContext = nullptr;
+	CRenderBitmapInterfaceOpenGL * renderBitmapOpenGL;
+#endif
+	CVideoEffectParameter videoEffectParameter;
+	float video_aspect_ratio;
+	int widthVideo;
+	int heightVideo;
+	int angle;
+	bool flipV;
+	bool flipH;
+	bool oldBicubic = 0;
+	AVFrame * copyFrameBuffer = nullptr;
+	int isCPU = -1;
+	bool isffmpegDecode = false;
+	bool deleteTexture = false;
+	int nbFrame;
+	wxString message;
+	CRegardsBitmap * pictureSubtitle;
+	int videoPosition;
+	bool updateContext = true;
 };

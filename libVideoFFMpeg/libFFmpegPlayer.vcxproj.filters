@@ -86,9 +86,6 @@
     <ClCompile Include="VideoControl_soft.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="VideoControlInterface.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
     </ClCompile>

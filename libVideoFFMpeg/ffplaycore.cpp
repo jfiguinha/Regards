@@ -1,5 +1,6 @@
 #include <header.h>
 #include "ffplaycore.h"
+#include <window_id.h>
 
 
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
@@ -282,14 +283,6 @@ bool CFFmfc::Quit()
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
-		/*
-		SDL_Event event;
-		event.type = FF_QUIT_EVENT;
-		event.user.data1 = _pimpl->g_is;
-		{
-			SDL_PushEvent(&event);
-		}
-		*/
 		wxCommandEvent evt(FF_QUIT_EVENT);
 		evt.SetClientData(cur_stream);
 		this->GetEventHandler()->AddPendingEvent(evt);
@@ -305,12 +298,6 @@ bool CFFmfc::Quit()
 //·¢ËÍ¡°ÖðÖ¡¡±ÃüÁî
 //Send Command "Step"
 void CFFmfc::Seek_step() {
-	/*
-	SDL_Event event;
-	event.type = SDL_KEYDOWN;
-	event.key.keysym.sym = SDLK_s;
-	SDL_PushEvent(&event);
-	*/
 	wxCommandEvent evt(FF_STEP_EVENT);
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
@@ -353,21 +340,6 @@ void CFFmfc::Aspectratio(int num, int den) {
 	wxCommandEvent evt(FF_ASPECT_EVENT);
 	evt.SetClientData(size);
 	this->GetEventHandler()->AddPendingEvent(evt);
-	/*
-#ifdef SDL2
-	SDL_Event event;
-	event.type = SDL_WINDOWEVENT;
-	event.window.event = SDL_WINDOWEVENT_RESIZED;
-	event.window.data1 = w_re;
-	event.window.data2 = h;
-#else
-	SDL_Event event;
-	event.type = SDL_VIDEORESIZE;
-	event.resize.w = w_re;
-	event.resize.h = h;
-#endif
-	SDL_PushEvent(&event);
-	*/
 }
 
 //·¢ËÍ¡°´óÐ¡¡±ÃüÁî
@@ -382,23 +354,6 @@ void CFFmfc::Size(int percentage){
 	wxCommandEvent evt(FF_ASPECT_EVENT);
 	evt.SetClientData(size);
 	this->GetEventHandler()->AddPendingEvent(evt);
-
-	/*
-#ifdef SDL2
-	SDL_Event event;
-	event.type = SDL_WINDOWEVENT;
-	event.window.event = SDL_WINDOWEVENT_RESIZED;
-	event.window.data1=w*percentage/100;
-	event.window.data2=h*percentage/100;
-#else
-	SDL_Event event;
-	event.type = SDL_VIDEORESIZE;
-	event.resize.w=w*percentage/100;
-	event.resize.h=h*percentage/100;
-#endif
-
-	SDL_PushEvent(&event);
-	*/
 }
 //·¢ËÍ¡°´°¿Ú»­ÃæÄÚÈÝ¡±ÃüÁî
 //Send Command "Audio Display Mode"
@@ -407,16 +362,6 @@ void CFFmfc::Audio_display(int mode){
 	wxCommandEvent evt(FF_AUDIODISPLAY_EVENT);
 	evt.SetInt(mode);
 	this->GetEventHandler()->AddPendingEvent(evt);
-	/*
-	SDL_Event event;
-	event.type = SDL_KEYDOWN;
-	switch(mode){
-	case 0:event.key.keysym.sym=SDLK_w;break;
-	case 1:event.key.keysym.sym=SDLK_e;break;
-	case 2:event.key.keysym.sym=SDLK_r;break;
-	}
-	SDL_PushEvent(&event);
-	*/
 }
 
 //--------------------------------------------------------------
@@ -424,12 +369,6 @@ void CFFmfc::Audio_display(int mode){
 //--------------------------------------------------------------
 void CFFmfc::Change_audio_stream(int newStreamIndex)
 {
-	/*
-	SDL_Event event;
-	event.type = CHANGE_AUDIO;
-	event.window.data1= newStreamIndex;
-	SDL_PushEvent(&event);
-	*/
 	wxCommandEvent evt(CHANGE_AUDIO);
 	evt.SetInt(newStreamIndex);
 	this->GetEventHandler()->AddPendingEvent(evt);
@@ -437,12 +376,6 @@ void CFFmfc::Change_audio_stream(int newStreamIndex)
 
 void CFFmfc::Change_subtitle_stream(int newStreamIndex)
 {
-	/*
-	SDL_Event event;
-	event.type = CHANGE_SUBTITLE;
-	event.window.data1= newStreamIndex;
-	SDL_PushEvent(&event);
-	*/
 	wxCommandEvent evt(CHANGE_SUBTITLE);
 	evt.SetInt(newStreamIndex);
 	this->GetEventHandler()->AddPendingEvent(evt);
@@ -459,13 +392,6 @@ void CFFmfc::VolumeUp()
 	wxCommandEvent evt(VOLUME_EVENT);
 	evt.SetInt(_pimpl->volume);
 	this->GetEventHandler()->AddPendingEvent(evt);
-
-	/*
-	SDL_Event event;
-	event.type = VOLUME_EVENT;
-	event.window.data1= _pimpl->volume;
-	SDL_PushEvent(&event);
-	*/
 }
 
 int CFFmfc::GetVolume()
@@ -476,13 +402,6 @@ int CFFmfc::GetVolume()
 
 void CFFmfc::SetTimePosition(int64_t time)
 {
-	/*
-	SDL_Event event;
-	event.type = SET_POSITION;
-	_pimpl->time_position = time;
-	SDL_PushEvent(&event);
-	*/
-
 	int64_t * pos = new int64_t();
 	*pos = time;
 	_pimpl->time_position = time;
@@ -496,12 +415,6 @@ void CFFmfc::VolumeDown()
 	if (_pimpl->volume > 0)
 		_pimpl->volume -= 10;
 
-	/*
-	SDL_Event event;
-	event.type = VOLUME_DOWN_EVENT;
-	event.window.data1= _pimpl->volume;
-	SDL_PushEvent(&event);
-	*/
 	wxCommandEvent evt(VOLUME_EVENT);
 	evt.SetInt(_pimpl->volume);
 	this->GetEventHandler()->AddPendingEvent(evt);
@@ -513,20 +426,6 @@ void CFFmfc::Seek(int time){
 	wxCommandEvent evt(SET_SEEKPOSITION);
 	evt.SetInt(time);
 	this->GetEventHandler()->AddPendingEvent(evt);
-	/*
-	SDL_Event event;
-	event.type = SDL_KEYDOWN;
-	switch (time){
-	case -10 :event.key.keysym.sym=SDLK_LEFT;break;
-	case 10 :event.key.keysym.sym=SDLK_RIGHT;break;
-	case -60 :event.key.keysym.sym=SDLK_DOWN;break;
-	case 60 :event.key.keysym.sym=SDLK_UP;break;
-	case -600 :event.key.keysym.sym=SDLK_PAGEDOWN;break;
-	case 600 :event.key.keysym.sym=SDLK_PAGEUP;break;
-	default :event.key.keysym.sym=SDLK_RIGHT;break;
-	}
-	SDL_PushEvent(&event);
-	*/
 }
 //²¥·Å½ø¶È
 //Seek Bar
@@ -534,12 +433,6 @@ void CFFmfc::Seek_bar(int pos){
 	wxCommandEvent evt(SEEK_BAR_EVENT);
 	evt.SetInt(pos);
 	this->GetEventHandler()->AddPendingEvent(evt);
-	/*
-	SDL_Event event;
-	event.type = SEEK_BAR_EVENT;
-	_pimpl->seek_bar_pos=pos;
-	SDL_PushEvent(&event);
-	*/
 }
 
 
@@ -548,7 +441,7 @@ void CFFmfc::Seek_bar(int pos){
 //½âÂëÖ÷º¯Êý
 //Main function
 //#define __MINGW32__
-int CFFmfc::Play(CVideoControlInterface * control, string filename)
+int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 {
 	_pimpl->dlg = control;
 	_pimpl->parent = this;

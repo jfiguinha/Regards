@@ -13,7 +13,7 @@ using namespace Regards::Window;
 using namespace Regards::Video;
 
 class CVideoEffectParameter;
-class CVideoControlInterface;
+class CVideoControlSoft;
 
 
 class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
@@ -22,8 +22,6 @@ public:
 	CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
 	~CShowVideo();
 	bool SetVideo(const wxString &filename, const int &rotation, const bool &play);
-	int GetVideoWidth();
-	int GetVideoHeight();
 
 	void SetPosition(const int64_t &timePosition);
 	void SetVideoDuration(const int64_t &position);
@@ -47,7 +45,7 @@ public:
 	void Rotate270();
 	void FlipVertical();
 	void FlipHorizontal();
-	CVideoControlInterface * GetVideoControl();
+	CVideoControlSoft * GetVideoControl();
 
 	void StopVideo(wxString photoName);
 	void PlayVideo();
@@ -82,7 +80,7 @@ private:
 	void InitControl();
 
 	CSliderVideo * videoSlider;
-	CVideoControlInterface * videoWindow;
+	CVideoControlSoft * videoWindow;
 	CVideoEffectParameter * videoEffectParameter;
 	CWindowMain * windowMain;
 	bool play;

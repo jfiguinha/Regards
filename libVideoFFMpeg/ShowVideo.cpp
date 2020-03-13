@@ -79,7 +79,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	this->windowMain = windowMain;
 }
 
-CVideoControlInterface * CShowVideo::GetVideoControl()
+CVideoControlSoft * CShowVideo::GetVideoControl()
 {
 	return videoWindow;
 }
@@ -244,7 +244,7 @@ void CShowVideo::OnVideoPause()
 
 void CShowVideo::OnAfterOpenVideo()
 {
-	videoSlider->SetTotalSecondTime(videoWindow->GetDuration());
+	videoSlider->SetTotalSecondTime(0);
 	videoSlider->SetPastSecondTime(0);
 	ShowSlider(false);
 	PlayVideo();
@@ -318,26 +318,6 @@ void CShowVideo::MoveSlider(const int64_t &position)
 {
 	if (videoWindow != nullptr)
 		videoWindow->SetVideoPosition(position);
-
-	//CLocalWindow * mainWindow = (CLocalWindow *)CWindowManagerEngine::getInstance()->GetWindow(L"MainWindow");
-	//if (mainWindow != nullptr)
-	//	mainWindow->OnCommand(WM_SETPOSITION, 0, position / 1000);
-}
-
-int CShowVideo::GetVideoWidth()
-{
-	int width = 0;
-	if (videoWindow != nullptr)
-		width = videoWindow->GetVideoWidth();
-	return width;
-}
-
-int CShowVideo::GetVideoHeight()
-{
-	int height = 0;
-	if (videoWindow != nullptr)
-		height = videoWindow->GetVideoHeight();
-	return height;
 }
 
 void CShowVideo::InitControl()

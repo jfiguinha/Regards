@@ -11,7 +11,7 @@ public:
 	CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
 	~CVideoControl();
     
-    static CVideoControlInterface * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
+    static CVideoControlSoft * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
    
 	void SetDXVA2Compatible(const bool &compatible);
 	bool GetDXVA2Compatible();

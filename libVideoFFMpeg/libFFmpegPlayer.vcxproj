@@ -209,7 +209,6 @@
     <ClCompile Include="ShowVideo.cpp" />
     <ClCompile Include="SliderVideo.cpp" />
     <ClCompile Include="VideoControl.cpp" />
-    <ClCompile Include="VideoControlInterface.cpp" />
     <ClCompile Include="VideoControl_soft.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

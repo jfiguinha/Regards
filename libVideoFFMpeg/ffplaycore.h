@@ -58,7 +58,7 @@ public:
 	int GetVolume();
 	void SetTimePosition(int64_t time);
 	//Main function
-	int Play(CVideoControlInterface * control, string filename);
+	int SetFile(CVideoControlInterface * control, string filename);
 	void Play();
 	//Reset
 	int Reset_index();

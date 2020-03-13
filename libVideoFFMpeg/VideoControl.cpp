@@ -389,7 +389,7 @@ bool CVideoControl::UnbindTexture()
 	return true;
 }
 #endif
-CVideoControlInterface * CVideoControl::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
+CVideoControlSoft * CVideoControl::CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer)
 {
    return new CVideoControl(parent, id, windowMain, eventPlayer); 
 }

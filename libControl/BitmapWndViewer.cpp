@@ -210,7 +210,7 @@ void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 
 	if (m_bTransition)
 	{
-		if(numEffect == 2)
+		if(isDiaporama)
 			etape += 1;
 		else
 			etape += 10;

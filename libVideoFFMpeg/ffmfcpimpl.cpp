@@ -2170,7 +2170,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 				}
 				else if (is->_pimpl->autoexit) {
 					ret = AVERROR_EOF;
-					is->_pimpl->dlg->OnBnClickedStop();
+					//is->_pimpl->dlg->OnBnClickedStop();
 					goto fail;
 				}
 			}
