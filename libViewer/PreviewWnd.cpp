@@ -168,7 +168,7 @@ void CPreviewWnd::Resize()
 	//int heightScreen = GetWindowHeight();
 	//int height = this->GetSize().y;
 
-
+	/*
 	if (isDiaporama)
 	{ 
 		wxRect rcAffichageBitmap;
@@ -203,6 +203,7 @@ void CPreviewWnd::Resize()
         
         return;
 	}
+	*/
     
     if (previewToolbar != nullptr && filtreToolbar != nullptr)
     {
@@ -454,6 +455,11 @@ void CPreviewWnd::UpdateInfos()
 bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation )
 {
     TRACE();
+	if (isThumbnail && isDiaporama)
+	{
+
+		return true;
+	}
 
 	if(bitmap != nullptr && bitmap->IsOk())
 	{

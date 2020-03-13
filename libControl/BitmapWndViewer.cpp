@@ -199,9 +199,18 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 
 void CBitmapWndViewer::OnTransition(wxTimerEvent& event)
 {
+	int numEffect = 0;
+	if (isDiaporama)
+		numEffect = config->GetDiaporamaTransitionEffect();
+	else if (config != nullptr)
+		numEffect = config->GetEffect();
+
 	if (m_bTransition)
 	{
-		etape += 10;
+		if(numEffect == 2)
+			etape += 1;
+		else
+			etape += 10;
 		if (etape == 110)
 		{
 			etape = 0;
@@ -389,9 +398,9 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	int numEffect = 0;
 	
-	//if (isDiaporama)
-	//	numEffect = config->GetDiaporamaTransitionEffect();
-    if (config != nullptr)
+	if (isDiaporama)
+		numEffect = config->GetDiaporamaTransitionEffect();
+    else if (config != nullptr)
 		numEffect = config->GetEffect();
 
 	if(!bitmapLoad)
@@ -406,6 +415,17 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 			bitmapInterface->TransitionEnd();
 		}
 		break;
+
+	case 2:
+		{
+			SetBitmap(bmpSecond, false);
+			startTransition = true;
+			m_bTransition = true;
+			etape = 0;
+			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+		}
+	break;
+
 
 	default:
 		{
@@ -555,9 +575,9 @@ void CBitmapWndViewer::AfterRender()
 		//Affichage de la transition
 		int numEffect = 0;
 
-		//if (isDiaporama)
-		//	numEffect = config->GetDiaporamaTransitionEffect();
-		if (config != nullptr)
+		if (isDiaporama)
+			numEffect = config->GetDiaporamaTransitionEffect();
+		else if (config != nullptr)
 			numEffect = config->GetEffect();
 
 		if (isDiaporama)
@@ -569,38 +589,59 @@ void CBitmapWndViewer::AfterRender()
 			}
 		}
 
-		if (numEffect != 0 && etape < 100)
+		switch (numEffect)
 		{
-			wxRect out;
-			//Génération de la texture
-			if (renderOpenGL != nullptr && afterEffect != nullptr)
+			case 2:
 			{
-				if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
+				if (etape < 100)
 				{
-					afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);
-					if (renderOpenGL != nullptr)
-						renderOpenGL->ShowSecondBitmap(pictureNext, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+					ratio = ratio + 0.0005;
+					CalculPositionPicture(centerX, centerY);
+					//this->Refresh();
 				}
-				else
-				{
-					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
-					if (bitmapOut != nullptr)
-					{
-						if (pictureNext->GetHeight() != bitmapOut->GetBitmapHeight() || pictureNext->GetWidth() != bitmapOut->GetBitmapWidth())
-							pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-						else
-							pictureNext->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
-						glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
-						delete bitmapOut;
+//					SetRatioPos(posRatio+=1);
+				break;
+			}
 
-						if (renderOpenGL != nullptr)
-							renderOpenGL->ShowSecondBitmap(pictureNext, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+			default:
+			{
+				if (numEffect != 0 && etape < 100)
+				{
+					wxRect out;
+					//Génération de la texture
+					if (renderOpenGL != nullptr && afterEffect != nullptr)
+					{
+						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
+						{
+							afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);
+							if (renderOpenGL != nullptr)
+								renderOpenGL->ShowSecondBitmap(pictureNext, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+						}
+						else
+						{
+							CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
+							if (bitmapOut != nullptr)
+							{
+								if (pictureNext->GetHeight() != bitmapOut->GetBitmapHeight() || pictureNext->GetWidth() != bitmapOut->GetBitmapWidth())
+									pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+								else
+									pictureNext->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+								glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
+								delete bitmapOut;
+
+								if (renderOpenGL != nullptr)
+									renderOpenGL->ShowSecondBitmap(pictureNext, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+							}
+						}
+
 					}
 				}
-
+				break;
 			}
 
 		}
+
+
 	}
 
 	if (!isDiaporama)
@@ -657,8 +698,8 @@ void CBitmapWndViewer::AfterRender(wxDC * dc)
 		//Affichage de la transition
 		int numEffect = 0;
 
-		//if (isDiaporama)
-		//	numEffect = config->GetDiaporamaTransitionEffect();
+		if (isDiaporama)
+			numEffect = config->GetDiaporamaTransitionEffect();
 		if (config != nullptr)
 			numEffect = config->GetEffect();
 

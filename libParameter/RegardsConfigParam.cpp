@@ -582,7 +582,7 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 
 int CRegardsConfigParam::GetDiaporamaTransitionEffect()
 {
-	return diaporamaEffect;
+	return 2;// diaporamaEffect;
 }
 
 void CRegardsConfigParam::SetDiaporamaTransitionEffect(const int &diaporamaEffect)

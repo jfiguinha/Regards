@@ -255,12 +255,14 @@ void CShowBitmap::Resize()
 		scrollbar->ShowHorizontalScroll();
 	}
 
+	/*
 	if (isDiaporama)
 	{
 		pictureToolbar->SetSize(0, 0, 0, 0);
 		scrollbar->SetSize(0, 0, width, height);
 	}
-	else if (pictureToolbar != nullptr && scrollbar != nullptr)
+	*/
+	if (pictureToolbar != nullptr && scrollbar != nullptr)
 	{
 		if (pictureToolbar->IsShown())
 		{
@@ -334,13 +336,22 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);
 		int numEffect = 0;
-		
-		if (configRegards != nullptr)
+
+		if (isDiaporama)
+			numEffect = configRegards->GetDiaporamaTransitionEffect();
+		else if (configRegards != nullptr)
 			numEffect = configRegards->GetEffect();
 
 		if (numEffect != 0)
 		{
 			if (isThumbnail)
+			{
+				transitionEnd = false;
+				bitmapWindow->ShrinkImage();
+				bitmapWindow->SetTransitionBitmap(bitmap);
+				tempImage = nullptr;
+			}
+			else if (isDiaporama)
 			{
 				transitionEnd = false;
 				bitmapWindow->ShrinkImage();

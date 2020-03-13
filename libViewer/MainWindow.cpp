@@ -1024,6 +1024,10 @@ void CMainWindow::StartDiaporama()
 	
 	if (viewerParam != nullptr)
 	{
+		CPreviewWnd * previewWindow = (CPreviewWnd *)this->FindWindowById(PREVIEWVIEWERID);
+		if (previewWindow != nullptr)
+			previewWindow->SetDiaporamaMode();
+
 		bool isValid = false;
         wxString fileToLoad = imageList->GetFilePath(numElement,isValid);
 		if (isValid)
@@ -1105,6 +1109,10 @@ void CMainWindow::StopDiaporama()
     TRACE();
 	if (startDiaporama)
 	{
+		CPreviewWnd * previewWindow = (CPreviewWnd *)this->FindWindowById(PREVIEWVIEWERID);
+		if (previewWindow != nullptr)
+			previewWindow->SetNormalMode();
+
 		startDiaporama = false;
 		if (diaporamaTimer->IsRunning())
 			diaporamaTimer->Stop();

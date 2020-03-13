@@ -459,6 +459,12 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 			}
 		}
 	}
+
+	if (isThumbnail && isDiaporama)
+	{
+		if (bitmap != nullptr && bitmap->IsOk())
+			delete bitmap;
+	}
 	return 0;
 }
 
