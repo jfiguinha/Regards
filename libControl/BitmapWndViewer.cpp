@@ -138,6 +138,9 @@ void CBitmapWndViewer::SetDiaporamaMode()
 void CBitmapWndViewer::SetNormalMode()
 {
 	isDiaporama = false;
+	if (transitionTimer->IsRunning())
+		transitionTimer->Stop();
+	this->ShrinkImage();
 }
 
 void CBitmapWndViewer::PrintPicture()
