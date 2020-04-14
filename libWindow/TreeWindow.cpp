@@ -99,7 +99,7 @@ void CTreeWindow::OnTopPosition(wxCommandEvent& event)
 {
 	int pos = event.GetInt();
 	posHauteur = pos;
-	this->Refresh();
+	Resize();
 }
 
 void CTreeWindow::OnScrollMove(wxCommandEvent& event)
