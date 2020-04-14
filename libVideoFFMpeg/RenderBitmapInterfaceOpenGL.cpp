@@ -213,7 +213,7 @@ GLTexture * CRenderBitmapInterfaceOpenGL::GetVideoTexture(const int &width, cons
 
 	return textureVideo;
 }
-#ifndef __WXGTK__
+#ifdef WIN32
 cl_mem CRenderBitmapInterfaceOpenGL::GetCopyVideoTexture(cl_context context)
 {
 	if(textureVideo != nullptr)
@@ -296,11 +296,13 @@ cl_mem CRenderBitmapInterfaceOpenGL::GetCopyVideoTexture(cl_context context)
     else
         directcopytexture = true;
 }
-#endif
+
 cl_mem CRenderBitmapInterfaceOpenGL::GetOpenCLVideoTexturePt()
 {
 	return cl_textureVideoCopy;
 }
+
+#endif
 
 GLTexture * CRenderBitmapInterfaceOpenGL::GetVideoTexturePt()
 {

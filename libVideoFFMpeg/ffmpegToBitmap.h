@@ -34,7 +34,7 @@ public:
     
 private:
  
-    void rotate90(uint8_t * buffer, const unsigned int width, const unsigned int height);
+    //void rotate90(uint8_t * buffer, const unsigned int width, const unsigned int height);
     void createAVFrame(AVFrame** pAvFrame, uint8_t** pFrameBuffer, int width, int height);
     AVFrame* convertedFrame = nullptr;
     uint8_t* convertedFrameBuffer = nullptr;
