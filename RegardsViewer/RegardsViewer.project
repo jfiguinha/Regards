@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="RegardsViewer_Windows" InternalType="GUI" Version="10.0.0">
+<CodeLite_Project Name="RegardsViewer_Windows" InternalType="GUI" Version="11000">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -583,7 +583,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcairo-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcurl-4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexpat-1.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libffi-6.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfontconfig-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeglut.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreetype-6.dll ./Release</Command>
@@ -595,6 +594,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libffi-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_4.dll ./Release</Command>
@@ -644,7 +644,7 @@
         <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/libpoppler-91.dll ./Release/libpoppler-91.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Release/libjpegxr.dll</Command>
         <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/cpp/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf26.dll ./Release/qpdf26.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf28.dll ./Release/qpdf28.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Release</Command>

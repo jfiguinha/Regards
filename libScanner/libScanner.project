@@ -121,7 +121,6 @@
         <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
         <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
         <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
-        <IncludePath Value="../libextern/qpdf-master/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
