@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libVideoFFMpeg" InternalType="Library" Version="10.0.0">
+<CodeLite_Project Name="libVideoFFMpeg" InternalType="Library" Version="11000">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -30,7 +30,6 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="ffmfcpimpl.cpp"/>
-    <File Name="VideoControlInterface.cpp"/>
     <File Name="ffmpegToBitmap.cpp"/>
     <File Name="VideoControl_soft.cpp"/>
     <File Name="ffplaycore.cpp"/>
