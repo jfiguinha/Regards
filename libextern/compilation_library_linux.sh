@@ -59,8 +59,11 @@ cd ..
 #Compile qpdf
 cd qpdf-master
 chmod +x configure
-./configure
+./configure --prefix="$HOME/ffmpeg_build"
 make -j$NBPROC
+chmod +x mkinstalldirs
+chmod +x install-sh
+sudo make install
 cd ..
 
 #Compile exiv2-0.26 :
