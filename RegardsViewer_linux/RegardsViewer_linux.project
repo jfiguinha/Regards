@@ -469,7 +469,7 @@
         <Command Enabled="yes">cp ../FaceRecognition_unix/Release/libFaceRecognition.so ./Release/libFaceRecognition.so</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release/libexiv2.so.26</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release/libde265.so</Command>
-        <Command Enabled="yes">cp ../libextern/qpdf-master/libqpdf/build/.libs/libqpdf.so.* ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Release</Command>
