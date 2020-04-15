@@ -674,6 +674,11 @@ CCentralWindow::~CCentralWindow()
 
 }
 
+bool CCentralWindow::IsVideo()
+{
+    return isVideo;
+}
+
 void CCentralWindow::SetMode(wxCommandEvent& event)
 {
 	windowMode = event.GetInt();

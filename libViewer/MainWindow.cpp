@@ -169,8 +169,15 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
         processIdle = false;
 
 	updateFolder = true;
-	processIdle = true;
+	//processIdle = true;
 	LoadPicture(true);
+}
+
+bool CMainWindow::IsVideo()
+{
+    if(centralWnd != nullptr)
+        return centralWnd->IsVideo();
+    return false;
 }
 
 void CMainWindow::OnPrint(wxCommandEvent& event)
@@ -287,6 +294,7 @@ void CMainWindow::RefreshCriteriaPictureList(wxCommandEvent& event)
 {
     TRACE();
 	updateFolder = true;
+    printf("RefreshCriteriaPictureList /n");
     processIdle = true;
 }
 
@@ -294,6 +302,7 @@ void CMainWindow::OnFacePertinence()
 {
     TRACE();
 	updateFolder = true;
+    printf("OnFacePertinence /n");
     processIdle = true;
 
 }
@@ -706,6 +715,8 @@ void CMainWindow::ProcessIdle()
                 numElementTraitement++;
             }            
         }
+        else
+            numElementTraitement++;
 
 
 		wxString label = CLibResource::LoadStringFromResource(L"LBLFILECHECKING", 1);
@@ -1216,6 +1227,7 @@ bool CMainWindow::IsFullscreen()
 void CMainWindow::InitPictures(wxCommandEvent& event)
 {
     TRACE();
+    printf("InitPictures \n");
 	refreshFolder = true;
     processIdle = true;
 	//updateCriteria = true;
@@ -1226,6 +1238,7 @@ void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 {
     TRACE();
 	updateCriteria = true;
+    printf("OnFaceInfosUpdate /n");
     processIdle = true;
 }
 

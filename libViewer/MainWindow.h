@@ -187,7 +187,8 @@ namespace Regards
 			void OnAddFolder(wxCommandEvent& event);
 
 			wxString GetFilename();
-
+            bool IsVideo();
+            
 		private:
 
 			void OnUpdateInfos(wxCommandEvent& event);
