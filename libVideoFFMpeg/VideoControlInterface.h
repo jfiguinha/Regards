@@ -2,6 +2,10 @@
 
 #ifdef WIN32
 #include "ffmpeg_dxva2.h"
+#else
+extern "C"{
+#include "libavcodec/avcodec.h"
+}
 #endif
 
 class CRegardsBitmap;
