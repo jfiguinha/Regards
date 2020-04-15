@@ -364,7 +364,14 @@ void CTreeWindow::Resize()
 {
     TRACE();
 	GenerateScreenBuffer();
-	this->Refresh();
+	//this->Refresh();
+	wxClientDC dc(this);
+	if (backgroundBuffer.IsOk())
+	{
+
+		printf("CTreeWindow::OnPaint not bufferUpdate \n");
+		dc.DrawBitmap(backgroundBuffer, 0, 0);
+	}
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
