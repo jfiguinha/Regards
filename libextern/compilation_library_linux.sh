@@ -36,6 +36,12 @@ cd ..
 sudo apt install unzip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
+#compile glew
+cd glew-2.1.0
+chmod +x config/config.guess
+make
+cd ..
+
 #compile jasper
 cd jasper-2.0.14
 mkdir build

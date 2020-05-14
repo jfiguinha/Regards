@@ -12,8 +12,6 @@ Depends: libexif-dev, libgtk-3-dev, freeglut3-dev, mesa-common-dev, libturbojpeg
 Description: RegardsViewer is a picture viewer and video player
  Regards is a modern photo viewer.
  Support highDPI definition screen.
- Support reading Picture format :  BMP files, Dr. Halo CUT, DDS, EXR files, Raw Fax G3, GIF files, HDR files, ICO files, IFF, JBIG files, JNG files, JPEG/JIF files, JPEG-2000 File Format, JPEG-2000 codestream, JPEG-XR files, KOALA, Kodak PhotoCD, MNG, PCX, PBM/PGM/PPM files, PFM files, PNG files, Macintosh PICT, Photoshop PSD, RAW camera, Sun RAS, SGI, TARGA files, TIFF files, WBMP files, WebP files, XBM, XPM files, PFM, SVG AND HEIC.
- Support reading Video format (DXVA2 acceleration support) : mpeg4, avi, mkv, webp, y4m, quicktime and AVCHD.
  Support Exif and xmp file information.
  Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
  Support GPS informations from Photo and Apple Iphone Video.
@@ -23,7 +21,7 @@ Description: RegardsViewer is a picture viewer and video player
 <</CTRL>>
 <<FILES>>
 1
-/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer/opt/RegardsViewer -> RegardsViewer -> /usr/bin
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /usr/bin
 <</FILES>>
 <<SCRIPTS>>
 <<PREINST>>
