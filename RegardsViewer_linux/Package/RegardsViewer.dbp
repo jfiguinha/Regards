@@ -1,0 +1,93 @@
+[DEBREATE-0.7.13]
+<<CTRL>>
+Package: RegardsViewer
+Version: 2.49
+Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
+Section: graphics
+Source: https://github.com/jfiguinha/Regards.git
+Homepage: https://jfiguinha.pagesperso-orange.fr/
+Architecture: amd64
+Priority: standard
+Depends: libexif-dev, libgtk-3-dev, freeglut3-dev, mesa-common-dev, libturbojpeg-dev, libsdl2-dev, libglew-dev, libopenexr-dev, libcurl4-openssl-dev, libssh-dev, liblzma-dev, libva-dev, libsane-dev, ocl-icd-opencl-dev, libopenjp2-7-dev, libfftw3-dev, libleptonica-dev, libwebp-dev, libtbb-dev, libwebkit2gtk-4.0-dev
+Description: RegardsViewer is a picture viewer and video player
+ Regards is a modern photo viewer.
+ Support highDPI definition screen.
+ Support reading Picture format :  BMP files, Dr. Halo CUT, DDS, EXR files, Raw Fax G3, GIF files, HDR files, ICO files, IFF, JBIG files, JNG files, JPEG/JIF files, JPEG-2000 File Format, JPEG-2000 codestream, JPEG-XR files, KOALA, Kodak PhotoCD, MNG, PCX, PBM/PGM/PPM files, PFM files, PNG files, Macintosh PICT, Photoshop PSD, RAW camera, Sun RAS, SGI, TARGA files, TIFF files, WBMP files, WebP files, XBM, XPM files, PFM, SVG AND HEIC.
+ Support reading Video format (DXVA2 acceleration support) : mpeg4, avi, mkv, webp, y4m, quicktime and AVCHD.
+ Support Exif and xmp file information.
+ Support New Apple Photo format for IOS 11 HEIF multithreading and Exif.
+ Support GPS informations from Photo and Apple Iphone Video.
+ Hi Quality display interpolation.
+ OpenGL Picture display and OpenCL post Effect.
+
+<</CTRL>>
+<<FILES>>
+1
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer/opt/RegardsViewer -> RegardsViewer -> /usr/bin
+<</FILES>>
+<<SCRIPTS>>
+<<PREINST>>
+0
+<</PREINST>>
+<<POSTINST>>
+0
+<</POSTINST>>
+<<PRERM>>
+0
+<</PRERM>>
+<<POSTRM>>
+0
+<</POSTRM>>
+<</SCRIPTS>>
+<<CHANGELOG>>
+<<DEST>>DEFAULT<</DEST>>
+
+<</CHANGELOG>>
+<<COPYRIGHT>>
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Figuinha 
+Upstream-Contact: Figuinha Jacques <appt.jf@outlook.fr>
+Source: http://jfiguinha.pagesperso-orange.fr/
+
+Copyright: 2015-2020 Figuinha Jacques <appt.jf@outlook.fr>
+License: GPL-2+
+
+License: GPL-2+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.
+On Debian systems, the full text of the GNU General Public
+License version 2 can be found in the file
+'/usr/share/common-licenses/GPL-2'.
+<</COPYRIGHT>>
+<<MENU>>
+1
+Name=RegardsViewer
+Version=1.0
+Exec=/usr/bin/env sh -c "/usr/bin/RegardsViewer/RegardsViewer %f"
+Comment=Picture and Video Viewer
+Icon=/usr/bin/RegardsViewer/Resources/viewer.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=2DGraphics;Graphics;
+MimeType=image/bmp;image/gif;image/jpeg;image/jpg;image/pjpeg;image/png;image/svg;image/tiff;image/x-bmp;image/x-gray;image/x-icb;image/x-ico;image/x-png;image/x-portable-anymap;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;image/x-xbitmap;image/x-xpixmap;image/x-pcx;image/x-targa;image/x-tga;image/heic;video/mp4;application/mpeg4-iod;application/mpeg4-muxcodetable;application/mxf;application/ogg;application/ram;application/sdp;application/streamingmedia;application/vnd.apple.mpegurl;application/vnd.ms-asf;application/vnd.rn-realmedia;application/vnd.rn-realmedia-vbr;application/x-extension-m4a;application/x-extension-mp4;application/x-flac;application/x-flash-video;application/x-matroska;application/x-ogg;application/x-streamingmedia;video/3gp;video/3gpp;video/3gpp2;video/divx;video/dv;video/fli;video/flv;video/mp2t;video/mp4;video/mp4v-es;video/mpeg;video/mpeg-system;video/msvideo;video/ogg;video/quicktime;video/vnd.mpegurl;video/vnd.rn-realvideo;video/webm;video/x-avi;video/x-flc;video/x-fli;video/x-flv;video/x-m4v;video/x-matroska;video/x-mpeg;video/x-mpeg-system;video/x-mpeg2;video/x-ms-asf;video/x-ms-wm;video/x-ms-wmv;video/x-ms-wmx;video/x-msvideo;video/x-nsv;video/x-ogm+ogg;video/x-theora;video/x-theora+ogg;image/pdf;image/pnm;image/bmp;image/bpg;image/pcx;image/jpg;image/tif;image/gif;image/png;image/tga;image/jp2;image/jpc;image/ppm;image/mng;image/webp;image/iff;image/xpm;image/jxr;image/exr;image/j2k;image/pfm
+<</MENU>>
+<<BUILD>>
+1
+1
+1
+strip
+<</BUILD>>

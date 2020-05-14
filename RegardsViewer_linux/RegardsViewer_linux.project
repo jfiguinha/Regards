@@ -473,8 +473,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Release</Command>
-        <Command Enabled="yes">cp -r ./Release/* ./Package/RegardsViewer/opt/RegardsViewer</Command>
-        <Command Enabled="yes">dpkg -b ./Package/RegardsViewer</Command>
+        <Command Enabled="yes"/>
         <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
