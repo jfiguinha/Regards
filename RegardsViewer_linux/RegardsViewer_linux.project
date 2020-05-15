@@ -463,18 +463,21 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/x265_2.5/build/linux/8bit/libx265.so.130 ./Release/libx265.so.130</Command>
-        <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Release/libmediainfo.so.0</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release/libRegardsBpg.so</Command>
-        <Command Enabled="yes">cp ../FaceRecognition_unix/Release/libFaceRecognition.so ./Release/libFaceRecognition.so</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release/libexiv2.so.26</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release/libde265.so</Command>
+        <Command Enabled="yes">cp ../libextern/x265_2.5/build/linux/8bit/libx265.so.130 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Release</Command>
+        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
+        <Command Enabled="yes">cp ../FaceRecognition_unix/Release/libFaceRecognition.so ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Release</Command>
-        <Command Enabled="yes">cp -r ./Release/* ./Package/RegardsViewer/opt/RegardsViewer</Command>
-        <Command Enabled="yes">dpkg -b ./Package/RegardsViewer</Command>
+        <Command Enabled="yes">cp -R ./Release ./Package</Command>
+        <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
+        <Command Enabled="yes"/>
+        <Command Enabled="yes"/>
         <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
