@@ -26,14 +26,14 @@ sudo pacman -S curl
 sudo pacman -S expat
 sudo pacman -S libva
 sudo pacman -S sane
-sudo pacman -S ocl-icd-opencl
+sudo pacman -S ocl-icd
 sudo pacman -S openjpeg2
 sudo pacman -S fftw
 sudo pacman -S leptonica
 sudo pacman -S libwebp
 sudo pacman -S intel-tbb
-sudo pacman -S bz2
-sudo pacman -S vdpau
+sudo pacman -S bzip2
+sudo pacman -S mesa-vdpau
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
