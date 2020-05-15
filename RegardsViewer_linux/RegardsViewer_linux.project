@@ -265,6 +265,7 @@
         <Library Value="avutil"/>
         <Library Value="swresample"/>
         <Library Value="swscale"/>
+        <Library Value="bz2"/>
         <Library Value="xcb"/>
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
@@ -273,6 +274,7 @@
         <Library Value="va"/>
         <Library Value="va-x11"/>
         <Library Value="va-drm"/>
+        <Library Value="vdpau"/>
         <Library Value="Xext"/>
         <Library Value="lzma"/>
         <Library Value="asound"/>
