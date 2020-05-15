@@ -1,0 +1,19 @@
+# Maintainer: Jacques Figuinha <appt.jf@outlook.fr>
+pkgname=RegardsViewer-bin
+pkgver=2.49.0
+pkgrel=1
+pkgdesc="Regards is a modern photo viewer. (official precompiled binary)"
+arch=('x86_64')
+url="https://github.com/jfiguinha/Regards"
+license=('GPL')
+provides=()
+options=()
+depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'openexr' 'curl' 'expat' 'libva' 'sane' 'ocl-icd-opencl' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bz2' 'vdpau')
+optdepends=()
+conflicts=()
+source=("https://github.com/jfiguinha/Regards/releases/download/v2.49/RegardsViewer_arch_linux_2_49.tar.xz")
+
+package() {
+  # Recursively remove group's write permission before moving to package directory
+    install -Dm755 RegardsViewer ${pkgdir}/usr/bin/RegardsViewer
+}
