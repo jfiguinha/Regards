@@ -32,6 +32,8 @@ sudo pacman -S fftw
 sudo pacman -S leptonica
 sudo pacman -S libwebp
 sudo pacman -S intel-tbb
+sudo pacman -S bz2
+sudo pacman -S vdpau
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
