@@ -11,8 +11,8 @@ options=()
 depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'openexr' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau')
 optdepends=()
 conflicts=('RegardsViewer')
-source=("https://github.com/jfiguinha/Regards/releases/download/v2.49/RegardsViewer_arch_linux_2_49.tar.xz")
-sha256sums=('66e94e7e9a46694b5ffdbb037c53f970efb3996cad89cae12e6538d4c4973dc1')
+source=("https://github.com/jfiguinha/Regards/releases/download/v2.49/RegardsViewer_arch_linux_2_49.tar.gz")
+sha256sums=('584c9a60b062346480bdbc1c3239abbaced9933a8647df8c0b6c553e078dd601')
 
 package() {
   # Recursively remove group's write permission before moving to package directory
