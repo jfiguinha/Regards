@@ -16,5 +16,7 @@ sha256sums=('584c9a60b062346480bdbc1c3239abbaced9933a8647df8c0b6c553e078dd601')
 
 package() {
   # Recursively remove group's write permission before moving to package directory
-    install -Dm755 RegardsViewer ${pkgdir}/usr/bin/RegardsViewer
+  mkdir ${pkgdir}/usr
+  mkdir ${pkgdir}/usr/bin
+   mv ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
 }
