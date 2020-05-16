@@ -4,8 +4,8 @@
 #include "libPicture.h"
 #define __FREEIMAGE__
 #include <FreeImage.h>
-#include <ImfRgbaFile.h>
-#include <ImfArray.h>
+#include <OpenEXR/ImfRgbaFile.h>
+#include <OpenEXR/ImfArray.h>
 #include <webp/decode.h>
 #include <webp/encode.h>
 #include <ximage.h>
