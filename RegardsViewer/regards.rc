@@ -1,14 +1,14 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include "wx/msw/wx.rc"
+#include "../libextern/wxWidgets-master/include/wx/msw/wx.rc"
 /////////////////////////////////////////////////////////////////////////////
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
 #include "winresrc.h"
 /////////////////////////////////////////////////////////////////////////////
-// Français (France) resources
+// FranÃ§ais (France) resources
 // inclure la ligne suivante dans votre script de ressources :
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
@@ -165,7 +165,7 @@ BEGIN
     END
 END
 
-#endif    // Français (France) resources
+#endif    // FranÃ§ais (France) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

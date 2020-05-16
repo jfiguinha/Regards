@@ -432,15 +432,15 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgmp-10.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgomp-1.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgraphite2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImfUtil-2_4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmThread-2_4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImfUtil-2_5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmThread-2_5.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libintl-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblzma-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnghttp2-14.dll ./Debug</Command>
@@ -474,7 +474,6 @@
         <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll  ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-5.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Debug</Command>
@@ -492,7 +491,8 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-7.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -575,7 +575,7 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
-        <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir ../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1 --include-dir ../libextern/wxWidgets-master/include -o regards.rc.o</Command>
+        <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir "../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1" --include-dir "../libextern/wxWidgets-master/include" -o regards.rc.o</Command>
       </PreBuild>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
@@ -591,16 +591,16 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgmp-10.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgomp-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgraphite2.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libHalf-2_5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libharfbuzz-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libiconv-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libffi-7.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImfUtil-2_4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmThread-2_4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_4.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIex-2_5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIexMath-2_5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImf-2_5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmImfUtil-2_5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libIlmThread-2_5.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libImath-2_5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libintl-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblzma-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnghttp2-14.dll ./Release</Command>
@@ -619,7 +619,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbrotlicommon.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libidn2-0.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfftw3f-3.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Release</Command>
@@ -655,7 +654,8 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-7.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
         <Command Enabled="yes">rm ./package/Prerequisites/RegardsViewer2.zip</Command>
         <Command Enabled="yes">rm -R Resources</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./</Command>
