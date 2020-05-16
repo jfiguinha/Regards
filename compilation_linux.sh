@@ -20,7 +20,6 @@ sudo apt install git
 sudo apt install libturbojpeg-dev
 sudo apt install libsdl2-dev
 sudo apt install libglew-dev
-sudo apt install libopenexr-dev
 sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
 sudo apt install libexpat-dev
@@ -52,6 +51,3 @@ cd libextern
 chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
-
-#Regards Compilation
-/bin/sh -c '/usr/bin/make -j$NBPROC -e -f Makefile.linux'

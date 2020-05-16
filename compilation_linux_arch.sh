@@ -21,7 +21,6 @@ sudo pacman -S git
 sudo pacman -S libjpeg-turbo
 sudo pacman -S sdl2
 sudo pacman -S glew
-sudo pacman -S openexr
 sudo pacman -S curl
 sudo pacman -S expat
 sudo pacman -S libva
@@ -51,6 +50,3 @@ cd libextern
 chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
-
-#Regards Compilation
-/bin/sh -c '/usr/bin/make -j$NBPROC -e -f Makefile.linux'
