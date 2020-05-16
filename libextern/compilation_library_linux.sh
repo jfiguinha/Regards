@@ -22,6 +22,17 @@ make -j$NBPROC -f Makefile.gnu
 cd ..
 cd ..
 
+#compile OpenEXR
+unzip openexr-2.5.1.zip
+cd openexr-2.5.1
+mkdir build
+cd build
+cmake ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
 #compile tesseract
 cd tesseract-4.1.0
 mkdir build

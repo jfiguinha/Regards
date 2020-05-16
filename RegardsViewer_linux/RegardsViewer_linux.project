@@ -472,13 +472,12 @@
         <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libqpdf.so.* ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
+        <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
-        <Command Enabled="yes"/>
+        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o</Command>
+        <Command Enabled="yes">rm ./Package/RegardsViewer/*.o.d</Command>
         <Command Enabled="yes"/>
         <Command Enabled="yes"/>
       </PostBuild>
