@@ -27,7 +27,7 @@ unzip openexr-2.5.1.zip
 cd openexr-2.5.1
 mkdir build
 cd build
-cmake ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DCMAKE_INSTALL_RPATH="./" -DCMAKE_INSTALL_RPATH_USE_LINK_PATH="TRUE"
 make -j$NBPROC
 sudo make install
 cd ..
