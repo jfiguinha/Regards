@@ -55,3 +55,7 @@ sudo cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesserac
 
 export PROJECTPATH=$PWD
 make -j$NBPROC
+
+mkdir build
+
+cp -R ./RegardsViewer_linux/Release ./build
