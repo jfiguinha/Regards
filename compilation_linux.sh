@@ -17,6 +17,7 @@ sudo apt install libwebkit2gtk-4.0
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 sudo apt install git
+sudo apt install unzip
 sudo apt install libturbojpeg-dev
 sudo apt install libsdl2-dev
 sudo apt install libglew-dev

@@ -44,7 +44,6 @@ cd ..
 cd ..
 
 #decompression
-sudo apt install unzip
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 #compile glew

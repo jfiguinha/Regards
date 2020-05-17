@@ -4,12 +4,10 @@ echo $NBPROC
 
 #Install Depedency
 sudo pacman -S gcc
-sudo pacman -S g++
-sudo pacman -S build-essential
 sudo pacman -S cmake
-sudo pacman -S binutils-gold
 sudo pacman -S yasm
 sudo pacman -S nasm
+sudo pacman -S make
 sudo pacman -S wget
 sudo pacman -S autoconf
 sudo pacman -S libexif
@@ -50,3 +48,5 @@ cd libextern
 chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
+export PROJECTPATH=$PWD
+make -j$NBPROC
