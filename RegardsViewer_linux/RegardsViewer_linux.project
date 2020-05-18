@@ -382,6 +382,8 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Debug</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>

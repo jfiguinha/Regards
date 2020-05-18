@@ -1761,17 +1761,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	// This is normally only necessary if there is more than one wxGLCanvas
 	// or more than one wxGLContext in the application.
 	renderOpenGL->SetCurrent(*this);
-    
-    if (openCLEngine == nullptr)
-    {
-        openCLEngine = new COpenCLEngine();
-        if (openCLEngine != nullptr)
-            openclContext = openCLEngine->GetInstance();
-
-        
-    }
-
-        
+           
     #if defined(WIN32) && defined(_DEBUG)
         DWORD tickCount = GetTickCount();
         OutputDebugString(L"OnPaint\n");
@@ -1781,6 +1771,17 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
+        
+    if(supportOpenCL)
+    {
+        if (openCLEngine == nullptr)
+        {
+            openCLEngine = new COpenCLEngine();
+            if (openCLEngine != nullptr)
+                openclContext = openCLEngine->GetInstance();       
+        }
+
+    }        
 
 	if (!supportOpenCL)
 		RenderToScreenWithoutOpenCLSupport();

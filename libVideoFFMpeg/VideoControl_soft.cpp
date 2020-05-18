@@ -379,12 +379,14 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 	renderBitmapOpenGL->SetCurrent(*this);
     
-
-    if (openCLEngine == nullptr)
+    if(IsSupportOpenCL())
     {
-        openCLEngine = new COpenCLEngine();
-        if (openCLEngine != nullptr)
-            openclContext = openCLEngine->GetInstance();
+        if (openCLEngine == nullptr)
+        {
+            openCLEngine = new COpenCLEngine();
+            if (openCLEngine != nullptr)
+                openclContext = openCLEngine->GetInstance();
+        }
     }
 #endif 
 
@@ -400,24 +402,27 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if (quitWindow)
         return;
 
-	int supportOpenCL = 0;
-	muVideoEffect.lock();
-	supportOpenCL = videoEffectParameter.enableOpenCL;
-	muVideoEffect.unlock();
+    int supportOpenCL = 0;
+    if(IsSupportOpenCL())
+    {
+        muVideoEffect.lock();
+        supportOpenCL = videoEffectParameter.enableOpenCL;
+        muVideoEffect.unlock();
 
-#ifdef RENDEROPENGL 
-	if (openclEffectYUV == nullptr)
-	{
-		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-	}
-#else
+    #ifdef RENDEROPENGL 
+        if (openclEffectYUV == nullptr)
+        {
+            openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+        }
+    #else
 
-	if (openclEffectYUV == nullptr)
-	{
-		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-	}
+        if (openclEffectYUV == nullptr)
+        {
+            openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
+        }
+    #endif        
+    }
 
-#endif
 
 
     nbFrame++;
@@ -448,9 +453,13 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
             int inverted = 1;
             int x = (width - glTexture->GetWidth()) / 2;
             int y = (height  - glTexture->GetHeight()) / 2;
-            if(openclContext->IsSharedContextCompatible())
-                inverted = 0;
-               
+            
+            if(IsSupportOpenCL())
+            {
+                if(openclContext->IsSharedContextCompatible())
+                    inverted = 0;
+            }
+   
             if(!supportOpenCL)
                 inverted = 1;
                 
@@ -671,7 +680,10 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, void * dxva2Context)
 {
     std::clock_t start = std::clock();
-    bool isCPU = IsCPUContext();
+    
+    bool isCPU = 1;
+    if(IsSupportOpenCL())
+       isCPU = IsCPUContext();
    // printf("Set Data Begin \n");
      
 	videoRenderStart = true; 
@@ -757,6 +769,9 @@ GLTexture * CVideoControlSoft::RenderToTexture(CRegardsBitmap * bitmap)
 
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
+    if(openclEffect == nullptr)
+        return nullptr;
+    
 	muVideoEffect.lock();
 	int bicubic = videoEffectParameter.BicubicEnable;
 	muVideoEffect.unlock();
@@ -870,10 +885,10 @@ bool CVideoControlSoft::IsCPUContext()
 {
 	if (isCPU == -1)
 	{
-		OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
-		if (device != nullptr)
-			isCPU = (device->deviceType == CL_DEVICE_TYPE_CPU ? 1 : 0);
 
+            OpenCLDevice * device = COpenCLEngine::GetDefaultDevice();
+            if (device != nullptr)
+                isCPU = (device->deviceType == CL_DEVICE_TYPE_CPU ? 1 : 0);
 	}
 
 	//printf("IsCPUContext CPU : %d \n", isCPU);
@@ -881,15 +896,31 @@ bool CVideoControlSoft::IsCPUContext()
 	return (isCPU == 1 ? true : false);
 }
 
+int CVideoControlSoft::IsSupportOpenCL()
+{
+	int supportOpenCL = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
+
+	return supportOpenCL;
+}
 
 void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 {
 	int enableopenCL = 0;
-	muVideoEffect.lock();
-	enableopenCL = videoEffectParameter.enableOpenCL;
-	muVideoEffect.unlock();
+    bool isCPU = true;
+    if(IsSupportOpenCL())
+    {    
+    
+        muVideoEffect.lock();
+        enableopenCL = videoEffectParameter.enableOpenCL;
+        muVideoEffect.unlock();
 
-	bool isCPU = IsCPUContext();
+        isCPU = IsCPUContext();
+    }
+    else
+        enableopenCL = 0;
 
 	if (!enableopenCL || isCPU || src_frame->format != 0)
 	{

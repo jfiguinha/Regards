@@ -91,6 +91,7 @@ public:
 
 protected:
 
+    int IsSupportOpenCL();
     void OnRefresh(wxCommandEvent& event);
 	bool GetProcessEnd();
 	void EndVideoThread(wxCommandEvent& event);

@@ -152,7 +152,6 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     
     m_watcher = new wxFileSystemWatcher();
     m_watcher->SetOwner(this); 
-
     Connect(wxEVT_FSWATCHER, wxFileSystemWatcherEventHandler(CViewerFrame::OnFileSystemModified));    
 
 	//Test de la validité des répertoires
@@ -412,7 +411,7 @@ bool CViewerFrame::AddFSEntry(const wxString& dirPath)
          return false;
 
      wxFileName dirname(dirPath, "" );
-     return m_watcher->AddTree(dirname);
+     return m_watcher->AddTree(dirname,wxFSW_EVENT_CREATE | wxFSW_EVENT_DELETE | wxFSW_EVENT_RENAME | wxFSW_EVENT_MODIFY);
  }
 
 void CViewerFrame::OnClose(wxCloseEvent& event)
