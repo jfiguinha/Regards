@@ -31,6 +31,7 @@ sudo pacman -S libwebp
 sudo pacman -S intel-tbb
 sudo pacman -S bzip2
 sudo pacman -S mesa-vdpau
+sudo pacman -S unzip
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
