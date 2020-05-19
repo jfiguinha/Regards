@@ -234,9 +234,15 @@ int CLibPicture::TestImageFormat(const wxString & szFileName)
 		wxString extension = fichier.GetExt();
 		if (extension.size() < 3)
             return 0;
-
-        FREE_IMAGE_FORMAT fif = ImageFormat(CConvertUtility::ConvertToUTF8(szFileName));
-		numExt = TestExtension(extension.Lower());
+            
+        FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+        numExt = TestExtension(extension.Lower());
+        if(numExt == 0)
+        {
+            //Test if I can found a valid extension
+            fif = ImageFormat(CConvertUtility::ConvertToUTF8(szFileName));
+        }
+  		
         if(numExt == 0 && fif != FIF_UNKNOWN)
             numExt = fif + 1000;
 	}
