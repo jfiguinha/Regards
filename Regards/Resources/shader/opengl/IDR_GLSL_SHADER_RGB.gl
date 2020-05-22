@@ -1,60 +1,40 @@
 uniform sampler2D textureScreen;
-uniform float widthScreen;
-uniform float heightScreen;
 uniform float red;
 uniform float green;
 uniform float blue;
-uniform float left;
-uniform float top;
 void main(void)
 {	
-	float posX = gl_TexCoord[0].s;
-	float posY = gl_TexCoord[0].t; 
-	float texelSizeX = 1.0 / widthScreen; //size of one texel 
-	float texelSizeY = 1.0 / heightScreen; //size of one texel 
-	float leftPos = left * texelSizeX;
-	float topPos = top * texelSizeY;
-	float rightPos = (widthScreen - left) * texelSizeX;
-	float bottomPos = (heightScreen - top) * texelSizeY;
-	
-	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
-	{
-		 //------------------------------------------------------------
-		 //Variable													   
-		 //------------------------------------------------------------
-		vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
-		 
-		float _localred = red / 255.0; 
-		float _localgreen = green / 255.0; 
-		float _localblue = blue / 255.0; 
-		
-		_localred = src_color.r + _localred;
-		_localgreen = src_color.g + _localgreen;
-		_localblue = src_color.b + _localblue;
-		
-		if (_localred > 1.0)
-			_localred = 1.0;
-		
-		if(_localred < 0.0)
-			_localred = 0.0;
-		
-		if (_localgreen > 1.0)
-			_localgreen = 1.0;
-		
-		if(_localgreen < 0.0)
-			_localgreen = 0.0;
-			
-		if (_localblue > 1.0)
-			_localblue = 1.0;
-		
-		if(_localblue < 0.0)
-			_localblue = 0.0;
+	//------------------------------------------------------------
+	//Variable													   
+	//------------------------------------------------------------
+	vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
 
-		gl_FragColor = vec4(_localred, _localgreen, _localblue, src_color.a);
-	}
-	else
-	{
-		gl_FragColor = texture2D(textureScreen, vec2(posX,posY));
-	}
+	float _localred = red / 255.0; 
+	float _localgreen = green / 255.0; 
+	float _localblue = blue / 255.0; 
+
+	_localred = src_color.r + _localred;
+	_localgreen = src_color.g + _localgreen;
+	_localblue = src_color.b + _localblue;
+
+	if (_localred > 1.0)
+	_localred = 1.0;
+
+	if(_localred < 0.0)
+	_localred = 0.0;
+
+	if (_localgreen > 1.0)
+	_localgreen = 1.0;
+
+	if(_localgreen < 0.0)
+	_localgreen = 0.0;
+
+	if (_localblue > 1.0)
+	_localblue = 1.0;
+
+	if(_localblue < 0.0)
+	_localblue = 0.0;
+
+	gl_FragColor = vec4(_localred, _localgreen, _localblue, src_color.a);
 }
 

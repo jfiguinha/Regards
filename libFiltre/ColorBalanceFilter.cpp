@@ -73,7 +73,7 @@ void CColorBalanceFilter::FilterChangeParam(CEffectParameter * effectParameter, 
 	}
 }
 
-void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen)
+void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
 {
 	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
 	if (rgbEffectParameter != nullptr)
@@ -95,14 +95,6 @@ void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 			{
 				printf("SetTexture textureScreen failed \n ");
 			}
-			if (!m_pShader->SetParam("widthScreen", screen.width))
-			{
-				printf("SetParam widthScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("heightScreen", screen.height))
-			{
-				printf("SetParam heightScreen failed \n ");
-			}
 			if (!m_pShader->SetParam("red", rgbEffectParameter->red))
 			{
 				printf("SetParam red failed \n ");
@@ -115,21 +107,8 @@ void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 			{
 				printf("SetParam blue failed \n ");
 			}
-			if (!m_pShader->SetParam("left", 0))
-			{
-				printf("SetParam left failed \n ");
-			}
-			if (!m_pShader->SetParam("top", 0))
-			{
-				printf("SetParam top failed \n ");
-			}
 		}
 	}
 }
 
-void CColorBalanceFilter::DisableOpenGLShader()
-{
-	if (m_pShader != nullptr)
-		m_pShader->DisableShader();
-}
 

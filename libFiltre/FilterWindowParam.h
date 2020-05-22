@@ -31,8 +31,9 @@ public:
 	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 	static CImageLoadingFormat * RenderEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, int numFiltre);
-	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen) {};
-	virtual void DisableOpenGLShader() {};
+	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
+	virtual void DisableOpenGLShader();
+	virtual bool IsOpenGLCompatible();
 
 protected:
 
@@ -41,4 +42,5 @@ protected:
 	virtual void DrawingToPicture(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin);
 	CRegardsBitmap * source;
 	GLSLShader * m_pShader;
+	static bool supportOpenCL;
 };

@@ -187,6 +187,16 @@ GLTexture * CRenderOpenGL::GetDisplayTexture(const int &width, const int &height
 	return textureDisplay;
 }
 
+int CRenderOpenGL::GetWidth()
+{
+	return width;
+}
+
+int CRenderOpenGL::GetHeight()
+{
+	return height;
+}
+
 cl_mem CRenderOpenGL::GetOpenCLTexturePt()
 {
     return cl_textureDisplay;
@@ -256,7 +266,9 @@ void CRenderOpenGL::RenderQuad(GLTexture * texture, int left, int top, bool inve
     
     glPopMatrix();
     
-    //glFlush();
+    glFlush();
+
+	glEnd();
     
 }
 
@@ -342,7 +354,9 @@ void CRenderOpenGL::RenderQuad(GLTexture * texture, const bool & flipH,const boo
     
     glPopMatrix();
     
-    //glFlush();
+	glFlush();
+
+	glEnd();
     
 }
 
@@ -361,21 +375,23 @@ void CRenderOpenGL::RenderToTexture()
 
 void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter * effectParameter, const int &left, const int &top, const bool &inverted)
 {
+	bool renderPreview = false;
 	textureDisplay->Enable();
 	if (mousUpdate != nullptr)
 	{
-		wxRect screen;
-		screen.x = left;
-		screen.y = top;
-		screen.width = width;
-		screen.height = height;
-		mousUpdate->ApplyOpenGLShader(this, effectParameter, textureDisplay->GetTextureID(), screen);
-		RenderQuad(textureDisplay, left, top, inverted);
-		if (mousUpdate != nullptr)
+		if (mousUpdate->IsOpenGLCompatible())
+		{
+			mousUpdate->ApplyOpenGLShader(this, effectParameter, textureDisplay->GetTextureID());
+			RenderQuad(textureDisplay, left, top, inverted);
 			mousUpdate->DisableOpenGLShader();
+			renderPreview = true;
+		}
+
 	}
-	else
+
+	if(!renderPreview)
 	{
+		
 		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
 		if (m_pShader != nullptr)
 		{
@@ -389,6 +405,8 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 				printf("SetParam intensity failed \n ");
 			}
 		}
+
+
 		RenderQuad(textureDisplay, left, top, inverted);
 		if (m_pShader != nullptr)
 			m_pShader->DisableShader();

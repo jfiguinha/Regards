@@ -15,9 +15,16 @@
 #include <PiccanteFilter.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
+
+bool CFilterWindowParam::supportOpenCL = false;
+
 CFilterWindowParam::CFilterWindowParam()
 {
-    
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		supportOpenCL = config->GetIsOpenCLSupport();
 }
 
 CFilterWindowParam::~CFilterWindowParam()
@@ -54,6 +61,13 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 	}
 }
 
+bool CFilterWindowParam::IsOpenGLCompatible()
+{
+	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
+		return true;
+	return false;
+}
+
 void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
 {
 	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
@@ -83,7 +97,7 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 	else
 	{
 		filtreEffet->SetPreview(true);
-		if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()))
+		if (CFiltreData::IsOpenCLCompatible(GetTypeFilter()) && supportOpenCL)
 			filtreEffet->RenderEffect(GetTypeFilter(), effectParameter);
 		else
 		{
@@ -172,7 +186,7 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 		imageLoad->SetPicture(bitmap);
 		imageLoad->SetOrientation(bitmapViewer->GetOrientation());
 	}
-	else if (CFiltreData::IsOpenCLCompatible(numFiltre))
+	else if (CFiltreData::IsOpenCLCompatible(numFiltre) && supportOpenCL)
 	{
 		if (filtre != nullptr)
 		{
@@ -209,3 +223,29 @@ CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectP
 	CImageLoadingFormat * imageLoad = CFilterWindowParam::RenderEffect(effectParameter, bitmapViewer, GetTypeFilter());
 	return imageLoad;
 }
+
+void CFilterWindowParam::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
+{
+	GLSLShader * m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("textureScreen", textureID))
+		{
+			printf("SetTexture textureScreen failed \n ");
+		}
+		if (!m_pShader->SetParam("intensity", 100))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+}
+
+void CFilterWindowParam::DisableOpenGLShader()
+{
+	//glBindTexture(GL_TEXTURE_2D, 0);
+
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+}
+

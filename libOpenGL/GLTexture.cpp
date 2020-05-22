@@ -129,7 +129,9 @@ bool GLTexture::Create(const int &nWidth, const int &nHeight, uint8_t * pbyData)
 	
 	
 	glEnable(GL_TEXTURE_2D);
+	
 	glGenTextures(1, &m_nTextureID);
+	//glActiveTexture(GL_TEXTURE0 + m_nTextureID);
 	glBindTexture(GL_TEXTURE_2D, m_nTextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

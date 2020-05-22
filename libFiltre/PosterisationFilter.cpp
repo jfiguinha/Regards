@@ -54,15 +54,45 @@ void CPosterisationFilter::FilterChangeParam(CEffectParameter * effectParameter,
     CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
     
 	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectLevel)
-    {
-        posterisationEffectParameter->level = value;
-    }
-    if (key == libelleEffectGamma)
-    {
-        posterisationEffectParameter->gamma = value / 10.0;
-    }
+
+	if (posterisationEffectParameter != nullptr && valueInt != nullptr)
+	{
+		int value = valueInt->GetValue();
+		//Video Parameter
+		if (key == libelleEffectLevel)
+		{
+			posterisationEffectParameter->level = value;
+		}
+		if (key == libelleEffectGamma)
+		{
+			posterisationEffectParameter->gamma = value / 10.0;
+		}
+	}
 }
+
+void CPosterisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
+{
+	CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
+	if (posterisationEffectParameter != nullptr)
+	{
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_POSTERIZE");
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureID))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("level", posterisationEffectParameter->level))
+			{
+				printf("SetParam red failed \n ");
+			}
+			if (!m_pShader->SetParam("gamma", posterisationEffectParameter->gamma))
+			{
+				printf("SetParam green failed \n ");
+			}
+		}
+	}
+}
+
 

@@ -1,0 +1,50 @@
+uniform sampler2D textureScreen;
+uniform float nSamples;
+uniform float velocityScale;
+uniform float angleDegree;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float left;
+uniform float top;
+
+vec4 GetColor(vec2 point)
+{
+	float angle = radians(angleDegree);
+	float x = abs(point.x * cos(angle) - point.y * sin(angle));
+	float y = abs(point.x * sin(angle) + point.y * cos(angle));
+	return texture2D(textureScreen, vec2(x,y));
+}
+
+
+void main(void)
+{	
+
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t; 
+	float texelSizeX = 1.0 / widthScreen; //size of one texel 
+	float texelSizeY = 1.0 / heightScreen; //size of one texel 
+	float leftPos = left * texelSizeX;
+	float topPos = top * texelSizeY;
+	float rightPos = (widthScreen - left) * texelSizeX;
+	float bottomPos = (heightScreen - top) * texelSizeY;
+	
+	vec4 src_color = texture2D(textureScreen, gl_TexCoord[0].st).rgba;
+	
+	if(posX >= leftPos && posX < rightPos && posY >= topPos && posY < bottomPos)
+	{	
+		float speed = length(velocity / texelSize);
+		nSamples = clamp(int(speed), 1, MAX_SAMPLES);	
+		vec2 velocity = texture(textureScreen, gl_TexCoord).rg;
+		velocity *= uVelocityScale;
+
+		for (int i = 1; i < nSamples; ++i) 
+		{
+		  vec2 offset = velocity * (float(i) / float(nSamples - 1) - 0.5);
+		  src_color += GetColor(vec2(posX, posY) + offset);
+		}
+		src_color /= float(nSamples); 
+	}
+	gl_FragColor = src_color;
+
+}
+

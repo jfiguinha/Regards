@@ -48,10 +48,36 @@ void CSolarisationFilter::FilterChangeParam(CEffectParameter * effectParameter, 
     CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
     
 	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectThreshold)
-    {
-        solarisationEffectParameter->threshold = value;
-    }
+
+	if (solarisationEffectParameter != nullptr && valueInt != nullptr)
+	{
+		int value = valueInt->GetValue();
+		//Video Parameter
+		if (key == libelleEffectThreshold)
+		{
+			solarisationEffectParameter->threshold = value;
+		}
+	}
 }
+
+void CSolarisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
+{
+	CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
+	if (solarisationEffectParameter != nullptr)
+	{
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SOLARIZE");
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureID))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("threshold", solarisationEffectParameter->threshold))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+		}
+	}
+}
+

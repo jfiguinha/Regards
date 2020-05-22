@@ -2,6 +2,7 @@
 #include "SharpenMaskingFilter.h"
 #include "SharpenMaskingParameter.h"
 #include <FilterData.h>
+#include <RegardsBitmap.h>
 #include <LibResource.h>
 using namespace Regards::Viewer;
 
@@ -44,5 +45,34 @@ void CSharpenMaskingFilter::FilterChangeParam(CEffectParameter * effectParameter
 	if (key == libelleSharpness)
 	{
 		sharpenMaskingParameter->sharpness = (float)value / 10.0f;
+	}
+}
+
+void CSharpenMaskingFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
+{
+	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
+	if (sharpenMaskingParameter != nullptr)
+	{
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SHARPENMASKING");
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureID))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("fWidth", renderOpenGL->GetWidth()))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("fHeight", renderOpenGL->GetHeight()))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+			if (!m_pShader->SetParam("sharpness", sharpenMaskingParameter->sharpness))
+			{
+				printf("SetParam sharpness failed \n ");
+			}
+		}
 	}
 }

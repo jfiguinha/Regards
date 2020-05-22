@@ -52,7 +52,8 @@ namespace Regards
             void DeleteTexture();
             void Init(wxGLCanvas *canvas);
             bool IsInit();
-
+			int GetWidth();
+			int GetHeight();
 			GLSLShader * CreateShader(const wxString &shaderName);
 			GLSLShader * FindShader(const wxString &shaderName);
 

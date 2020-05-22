@@ -554,6 +554,12 @@ bool CFiltreData::IsOpenGLCompatible(const int &numFilter)
 {
 	switch (numFilter)
 	{
+	case IDM_FILTRE_SWIRL:
+	case IDM_AJUSTEMENT_SOLARISATION:
+	case IDM_SHARPENMASKING:
+	case ID_AJUSTEMENT_POSTERISATION:
+	case ID_AJUSTEMENT_PHOTOFILTRE:
+	case IDM_IMAGE_LIGHTCONTRAST:
 	case IDM_COLOR_BALANCE:
 		return true;
 	}

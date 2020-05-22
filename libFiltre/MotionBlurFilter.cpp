@@ -61,18 +61,79 @@ void CMotionBlurFilter::FilterChangeParam(CEffectParameter * effectParameter,  C
     CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
     
 	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectRadius)
-    {
-        motionBlurParameter->radius = value;
-    }
-    else if (key == libelleEffectSigma)
-    {
-        motionBlurParameter->sigma = value;
-    }
-    else if (key == libelleEffectAngle)
-    {
-        motionBlurParameter->angle = value;
-    }
+
+	if (motionBlurParameter != nullptr && valueInt != nullptr)
+	{
+
+		int value = valueInt->GetValue();
+		//Video Parameter
+		if (key == libelleEffectRadius)
+		{
+			motionBlurParameter->radius = value;
+		}
+		else if (key == libelleEffectSigma)
+		{
+			motionBlurParameter->sigma = value;
+		}
+		else if (key == libelleEffectAngle)
+		{
+			motionBlurParameter->angle = value;
+		}
+	}
+}
+
+void CMotionBlurFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
+{
+	CMotionBlurEffectParameter * motionBlurParameter = (CMotionBlurEffectParameter *)effectParameter;
+	if (motionBlurParameter != nullptr)
+	{
+/*
+uniform float nSamples;
+uniform float velocityScale;
+uniform float angleDegree;
+uniform float widthScreen;
+uniform float heightScreen;
+uniform float left;
+uniform float top;
+
+*/
+
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_MOTIONBLUR");
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureID))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("nSamples", motionBlurParameter->radius))
+			{
+				printf("SetParam red failed \n ");
+			}
+			if (!m_pShader->SetParam("velocityScale", motionBlurParameter->sigma))
+			{
+				printf("SetParam green failed \n ");
+			}
+			if (!m_pShader->SetParam("angleDegree", motionBlurParameter->angle))
+			{
+				printf("SetParam green failed \n ");
+			}
+			if (!m_pShader->SetParam("widthScreen", renderOpenGL->GetWidth()))
+			{
+				printf("SetParam widthBitmap failed \n ");
+			}
+			if (!m_pShader->SetParam("heightScreen", renderOpenGL->GetHeight()))
+			{
+				printf("SetParam heightBitmap failed \n ");
+			}
+			if (!m_pShader->SetParam("left", 0))
+			{
+				printf("SetParam widthBitmap failed \n ");
+			}
+			if (!m_pShader->SetParam("top", 0))
+			{
+				printf("SetParam heightBitmap failed \n ");
+			}
+		}
+	}
 }
