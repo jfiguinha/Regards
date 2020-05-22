@@ -142,12 +142,6 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
     }
 
 	glTexture->Disable();
-	
-
-
-	
-
-	
 }
 
 void CRenderBitmapInterfaceOpenGL::SetSubtitle(CRegardsBitmap * subtitle)

@@ -550,6 +550,16 @@ bool CFiltreData::IsPiccanteCompatible(const int &numFilter)
     return false;
 }
 
+bool CFiltreData::IsOpenGLCompatible(const int &numFilter)
+{
+	switch (numFilter)
+	{
+	case IDM_COLOR_BALANCE:
+		return true;
+	}
+
+	return false;
+}
 
 bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
 {

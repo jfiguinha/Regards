@@ -20,7 +20,8 @@ namespace Regards
 			void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 			void Init();
 			void UpdateScreenRatio();
-
+			void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen) {};
+			void DisableOpenGLShader() {};
 		private:
 			void OnOcr(wxCommandEvent& event);
 			void OnOcrPDF(wxCommandEvent& event);

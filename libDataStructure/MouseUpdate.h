@@ -16,11 +16,22 @@ namespace Regards
 	}
 }
 
+namespace Regards
+{
+	namespace OpenGL
+	{
+		class CRenderOpenGL;
+	}
+}
+
 using namespace Regards::FiltreEffet;
+using namespace Regards::OpenGL;
 
 class IMouseUpdate
 {
 public:
 	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing) = 0;
 	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput) = 0;
+	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen) = 0;
+	virtual void DisableOpenGLShader() = 0;
 };

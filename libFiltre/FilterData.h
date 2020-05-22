@@ -112,6 +112,7 @@ public:
     static bool NeedPreview(const int &numFilter);
     static bool NeedOriginalPreview(const int &numFilter);
     static bool IsOpenCLPreviewCompatible(const int &numFilter);
+	static bool IsOpenGLCompatible(const int &numFilter);
 	static bool IsOpenCLCompatible(const int &numFilter);
     static bool IsPiccanteCompatible(const int &numFilter);
     static bool OnFiltreOk(const int &numFiltre);

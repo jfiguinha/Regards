@@ -75,9 +75,6 @@
     <ClInclude Include="RenderBitmapInterfaceOpenGL.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="RenderPreviewBitmap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ScrollbarHorizontalWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -228,9 +225,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="RenderBitmapInterfaceOpenGL.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderPreviewBitmap.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="ScrollbarHorizontalWnd.cpp">

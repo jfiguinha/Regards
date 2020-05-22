@@ -359,10 +359,41 @@ void CRenderOpenGL::RenderToTexture()
 }
 
 
-void CRenderOpenGL::RenderToScreen(const int &left, const int &top, const bool &inverted)
+void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter * effectParameter, const int &left, const int &top, const bool &inverted)
 {
 	textureDisplay->Enable();
-	RenderQuad(textureDisplay, left, top, inverted);
+	if (mousUpdate != nullptr)
+	{
+		wxRect screen;
+		screen.x = left;
+		screen.y = top;
+		screen.width = width;
+		screen.height = height;
+		mousUpdate->ApplyOpenGLShader(this, effectParameter, textureDisplay->GetTextureID(), screen);
+		RenderQuad(textureDisplay, left, top, inverted);
+		if (mousUpdate != nullptr)
+			mousUpdate->DisableOpenGLShader();
+	}
+	else
+	{
+		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
+		if (m_pShader != nullptr)
+		{
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureDisplay->GetTextureID()))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("intensity", 100))
+			{
+				printf("SetParam intensity failed \n ");
+			}
+		}
+		RenderQuad(textureDisplay, left, top, inverted);
+		if (m_pShader != nullptr)
+			m_pShader->DisableShader();
+	}
+
 	textureDisplay->Disable();
 }
 

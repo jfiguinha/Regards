@@ -249,9 +249,6 @@
     <ClInclude Include="FilterWindowParam.h">
       <Filter>window\main</Filter>
     </ClInclude>
-    <ClInclude Include="FiltreEffectInterface.h">
-      <Filter>window\main</Filter>
-    </ClInclude>
     <ClInclude Include="FiltreUpdate.h">
       <Filter>window\main</Filter>
     </ClInclude>
@@ -326,9 +323,6 @@
     </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseUpdate.h">
-      <Filter>window\main</Filter>
     </ClInclude>
     <ClInclude Include="CropFilter.h">
       <Filter>window\Drawing</Filter>

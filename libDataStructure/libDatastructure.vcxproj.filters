@@ -225,6 +225,12 @@
     <ClInclude Include="ModificationManager.h">
       <Filter>ModificationManager</Filter>
     </ClInclude>
+    <ClInclude Include="MouseUpdate.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffectInterface.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Country.cpp">

@@ -12,7 +12,8 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <GLTexture.h>
+using namespace Regards::OpenGL;
 using namespace Regards::Viewer;
 
 CColorBalanceFilter::CColorBalanceFilter()
@@ -52,18 +53,83 @@ void CColorBalanceFilter::FilterChangeParam(CEffectParameter * effectParameter, 
     CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
     
 	CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-    int value = valueInt->GetValue();
-    //Video Parameter
-    if (key == libelleEffectColorRed)
-    {
-        rgbEffectParameter->red = value;
-    }
-    else if (key == libelleEffectColorGreen)
-    {
-        rgbEffectParameter->green = value;
-    }
-    else if (key == libelleEffectColorBlue)
-    {
-        rgbEffectParameter->blue = value;
-    }
+
+	if (rgbEffectParameter != nullptr && valueInt != nullptr)
+	{
+		int value = valueInt->GetValue();
+		//Video Parameter
+		if (key == libelleEffectColorRed)
+		{
+			rgbEffectParameter->red = value;
+		}
+		else if (key == libelleEffectColorGreen)
+		{
+			rgbEffectParameter->green = value;
+		}
+		else if (key == libelleEffectColorBlue)
+		{
+			rgbEffectParameter->blue = value;
+		}
+	}
 }
+
+void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen)
+{
+	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
+	if (rgbEffectParameter != nullptr)
+	{
+		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_RGB");
+		if (m_pShader != nullptr)
+		{
+			/*
+			uniform float widthScreen;
+			uniform float heightScreen;
+			uniform float red;
+			uniform float green;
+			uniform float blue;
+			uniform float left;
+			uniform float top;
+			*/
+			m_pShader->EnableShader();
+			if (!m_pShader->SetTexture("textureScreen", textureID))
+			{
+				printf("SetTexture textureScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("widthScreen", screen.width))
+			{
+				printf("SetParam widthScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("heightScreen", screen.height))
+			{
+				printf("SetParam heightScreen failed \n ");
+			}
+			if (!m_pShader->SetParam("red", rgbEffectParameter->red))
+			{
+				printf("SetParam red failed \n ");
+			}
+			if (!m_pShader->SetParam("green", rgbEffectParameter->green))
+			{
+				printf("SetParam green failed \n ");
+			}
+			if (!m_pShader->SetParam("blue", rgbEffectParameter->blue))
+			{
+				printf("SetParam blue failed \n ");
+			}
+			if (!m_pShader->SetParam("left", 0))
+			{
+				printf("SetParam left failed \n ");
+			}
+			if (!m_pShader->SetParam("top", 0))
+			{
+				printf("SetParam top failed \n ");
+			}
+		}
+	}
+}
+
+void CColorBalanceFilter::DisableOpenGLShader()
+{
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+}
+

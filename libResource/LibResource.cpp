@@ -100,7 +100,7 @@ int CLibResource::GetExtensionId(const wxString &extension)
 wxString CLibResource::GetOpenGLShaderProgram(const wxString &idName)
 {
 	CSqlResource sqlResource;
-	wxString program = sqlResource.GetOpenGLShader(idName);
+	wxString program = sqlResource.GetOpenGLFromFile(idName);
 	//printf("Program : %s \n",CConvertUtility::ConvertToUTF8(program));
 	return program;
 }

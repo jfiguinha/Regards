@@ -8,6 +8,7 @@
 #include <GLSLShader.h>
 #include <RGBAQuad.h>
 #include <EffectParameter.h>
+#include <MouseUpdate.h>
 using namespace Regards::OpenGL;
 
 //#define RENDEROPENGL WM_USER+1
@@ -26,6 +27,9 @@ namespace Regards
                 if(m_pShader != nullptr)
                     delete m_pShader;
             }
+
+
+
             wxString shaderName;
             GLSLShader * m_pShader = nullptr;
         };
@@ -41,17 +45,20 @@ namespace Regards
             GLTexture * GetDisplayTexture(const int &width, const int &height);
 			void CreateScreenRender(const int &width, const int &height, const CRgbaquad &color);
 			GLTexture * GetDisplayTexture(const int &width, const int &height, cl_context context);
-			void RenderToScreen(const int &left, const int &top,const bool & inverted = false);
+			void RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter * effectParameter, const int &left, const int &top,const bool & inverted = false);
 			cl_mem GetOpenCLTexturePt();
-			GLTexture * GetCopyTextureBitmap(const int &width, const int &height, cl_context context);
+			//GLTexture * GetCopyTextureBitmap(const int &width, const int &height, cl_context context);
 			void Print(int x, int y, const char *string);
             void DeleteTexture();
             void Init(wxGLCanvas *canvas);
             bool IsInit();
+
+			GLSLShader * CreateShader(const wxString &shaderName);
+			GLSLShader * FindShader(const wxString &shaderName);
+
 		protected:
 			void RenderToTexture();
-            GLSLShader * CreateShader(const wxString &shaderName);
-            GLSLShader * FindShader(const wxString &shaderName);
+
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
 			void RenderQuad(GLTexture * texture, int left = 0, int top = 0, bool inverted = false);
             void RenderQuad(GLTexture * texture, const bool & flipH,const bool & flipV, int left = 0, int top = 0, bool inverted = false);
@@ -64,6 +71,7 @@ namespace Regards
             float myGLVersion;
             vector<COpenGLShader *> listShader;
             bool isInit = false;
+			IMouseUpdate * mouseUpdate;
 		};
 	}
 }

@@ -269,6 +269,9 @@ namespace Regards
 			int oldHeight = 0;
 			bool loadBitmap = false;
 			int isMoving;
+
+			IMouseUpdate * mouseUpdate;
+			CEffectParameter * effectParameter;
 		};
 	}
 }

@@ -193,6 +193,20 @@ wxString CSqlResource::GetOpenCLUcharFromFile(const wxString& idName)
 	return text;
 }
 
+wxString CSqlResource::GetOpenGLFromFile(const wxString& idName)
+{
+	text = "";
+	typeResult = 7;
+	wxString resourcePath = CFileUtility::GetResourcesFolderPath();
+#ifdef WIN32
+	defaultPathSearch = resourcePath + "\\shader\\opengl";
+#else
+	defaultPathSearch = resourcePath + "/shader/opengl";
+#endif
+	ExecuteRequest("SELECT FilePath FROM OpenglResource WHERE idName = '" + idName + "'");
+	return text;
+}
+
 wxString  CSqlResource::GetVector(const wxString &idName)
 {
 	text = "";

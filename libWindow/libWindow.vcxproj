@@ -214,7 +214,6 @@
     <ClInclude Include="PaneInterface.h" />
     <ClInclude Include="PositionElement.h" />
     <ClInclude Include="RenderBitmapInterfaceOpenGL.h" />
-    <ClInclude Include="RenderPreviewBitmap.h" />
     <ClInclude Include="ScrollbarHorizontalWnd.h" />
     <ClInclude Include="ScrollbarVerticalWnd.h" />
     <ClInclude Include="ScrollbarWnd.h" />
@@ -269,7 +268,6 @@
     <ClCompile Include="PanelWithClickToolbar.cpp" />
     <ClCompile Include="PositionElement.cpp" />
     <ClCompile Include="RenderBitmapInterfaceOpenGL.cpp" />
-    <ClCompile Include="RenderPreviewBitmap.cpp" />
     <ClCompile Include="ScrollbarHorizontalWnd.cpp" />
     <ClCompile Include="ScrollbarVerticalWnd.cpp" />
     <ClCompile Include="ScrollbarWnd.cpp" />

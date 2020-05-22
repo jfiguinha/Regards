@@ -30,6 +30,7 @@ namespace Regards
 			void InsertVector(const wstring &idName, const wstring &filename);
 			wxString GetOpenCLFloatFromFile(const wxString& idName);
 			wxString GetOpenCLUcharFromFile(const wxString& idName);
+			wxString GetOpenGLFromFile(const wxString& idName);
 
 		private:
 			wxString GetOpenCLFloat(const wxString& idName);

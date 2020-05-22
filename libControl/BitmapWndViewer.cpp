@@ -114,6 +114,7 @@ void CBitmapWndViewer::SetListener(IMouseUpdate * mouseUpdate)
 void CBitmapWndViewer::RemoveListener()
 {
 	mouseUpdate = nullptr;
+	effectParameter = nullptr;
 	this->Refresh();
 }
 
@@ -354,12 +355,14 @@ void CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)
 
 void CBitmapWndViewer::OnFiltreOk()
 {
-    RefreshWindow();
+	RemoveListener();
+    //RefreshWindow();
 }
 
 void CBitmapWndViewer::OnFiltreCancel()
 {
-    RefreshWindow();
+	RemoveListener();
+    //RefreshWindow();
 }
 
 wxPoint CBitmapWndViewer::GetMousePosition()

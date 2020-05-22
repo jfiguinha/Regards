@@ -81,6 +81,9 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	showScroll = true;
 	themeBitmap = theme;
 
+	mouseUpdate = nullptr;
+	effectParameter = nullptr;
+
     Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapWnd::OnPaint));
 	Connect(wxEVT_MOTION, wxMouseEventHandler(CBitmapWnd::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CBitmapWnd::OnLButtonDown));
@@ -1655,9 +1658,9 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		int x = ((GetWidth() * scale_factor) - glTexture->GetWidth()) / 2;
 		int y = ((GetHeight() * scale_factor) - glTexture->GetHeight()) / 2;
 		if (openclContext->IsSharedContextCompatible())
-			renderOpenGL->RenderToScreen(x, y, true);
+			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, true);
 		else
-			renderOpenGL->RenderToScreen(x, y, false);
+			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
 
 		xPosImage = x;
 		yPosImage = y;
@@ -1716,7 +1719,8 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 	{
 		int x = (GetWidth() * scale_factor - glTexture->GetWidth()) / 2;
 		int y = (GetHeight() * scale_factor - glTexture->GetHeight()) / 2;
-		renderOpenGL->RenderToScreen(x, y, false);
+
+		renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
 
 		xPosImage = x;
 		yPosImage = y;

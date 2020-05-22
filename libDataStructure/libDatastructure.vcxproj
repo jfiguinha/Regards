@@ -211,6 +211,7 @@
     <ClInclude Include="FaceDescriptor.h" />
     <ClInclude Include="FaceFilePath.h" />
     <ClInclude Include="FaceName.h" />
+    <ClInclude Include="FiltreEffectInterface.h" />
     <ClInclude Include="FiltreUpdate.h" />
     <ClInclude Include="FolderCatalog.h" />
     <ClInclude Include="FreeRotateEffectParameter.h" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="ModificationManager.h" />
     <ClInclude Include="MotionBlurEffectParameter.h" />
+    <ClInclude Include="MouseUpdate.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PhotoCatalog.h" />

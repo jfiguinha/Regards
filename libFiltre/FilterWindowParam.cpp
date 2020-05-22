@@ -56,6 +56,9 @@ void CFilterWindowParam::DrawingToPicture(CEffectParameter * effectParameter, IB
 
 void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput)
 {
+	if (CFiltreData::IsOpenGLCompatible(GetTypeFilter()))
+		return;
+
 	if (CFiltreData::IsPiccanteCompatible(GetTypeFilter()))
 	{
 		filtreEffet->SetPreview(true);

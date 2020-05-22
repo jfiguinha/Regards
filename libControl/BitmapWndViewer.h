@@ -92,7 +92,7 @@ namespace Regards
 
 			//Preview Parameter
 			int preview;
-			CEffectParameter * effectParameter;
+			
 			IAfterEffect * afterEffect;
 
 			wxPoint oldMouse;
@@ -108,7 +108,7 @@ namespace Regards
 #ifdef RENDEROPENGL
 			GLTexture * pictureNext;
 #endif
-			IMouseUpdate * mouseUpdate;
+			
 
 		};
 	}

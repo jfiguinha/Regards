@@ -11,10 +11,12 @@
 #include <TreeElementValue.h>
 #include <EffectParameter.h>
 #include <MouseUpdate.h>
+#include <RenderOpenGL.h>
 class CFiltreEffet;
 class CRegardsBitmap;
 class CImageLoadingFormat;
 class IBitmapDisplay;
+using namespace Regards::OpenGL;
 
 class CFilterWindowParam : public IMouseUpdate
 {
@@ -29,6 +31,8 @@ public:
 	virtual CImageLoadingFormat * ApplyMouseMoveEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CDraw * dessing);
 	virtual void ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * dessing, int & widthOutput, int & heightOutput);
 	static CImageLoadingFormat * RenderEffect(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, int numFiltre);
+	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID, const wxRect &screen) {};
+	virtual void DisableOpenGLShader() {};
 
 protected:
 
@@ -36,4 +40,5 @@ protected:
 	virtual void Drawing(wxMemoryDC * dc, IBitmapDisplay * bitmapViewer, CDraw * m_cDessin);
 	virtual void DrawingToPicture(CEffectParameter * effectParameter, IBitmapDisplay * bitmapViewer, CFiltreEffet * filtreEffet, CDraw * m_cDessin);
 	CRegardsBitmap * source;
+	GLSLShader * m_pShader;
 };
