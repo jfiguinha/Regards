@@ -91,6 +91,7 @@ namespace Regards
 			CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
+            void OnShowWindow(wxShowEvent& event);
 			void LoadPictureInThread(CPictureElement * pictureElement);
 			void LoadingPicture(const wxString &filenameToShow);
 			void EndPictureThread(wxCommandEvent& event);
@@ -166,6 +167,7 @@ namespace Regards
 			bool isThumbnail;
 			bool videoStart;
             bool stopVideo;
+            bool init = false;
 		};
 	}
 }

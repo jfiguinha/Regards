@@ -910,41 +910,25 @@ CMainWindow::~CMainWindow()
 
 void CMainWindow::Resize()
 { 
-    /*
-    if(!isInit)
-    {  
-        centralWnd->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(),  wxDisplay().GetGeometry().GetHeight());
-        isInit = true;
-        return;
-    }
-    */
-    
-    isInit = true;
-    if(isInit)
+    TRACE();
+    if (!fullscreen)
     {
-        TRACE();
-        if (!fullscreen)
-        {
-            wxRect rcAffichageBitmap;
-            wxSize sizeStatusBar = statusBar->GetSize();
+        wxRect rcAffichageBitmap;
+        wxSize sizeStatusBar = statusBar->GetSize();
 
-            rcAffichageBitmap.x = 0;
-            rcAffichageBitmap.y = toolbar->GetNavigatorHeight();
-            rcAffichageBitmap.width = GetWindowWidth();
-            rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
+        rcAffichageBitmap.x = 0;
+        rcAffichageBitmap.y = toolbar->GetNavigatorHeight();
+        rcAffichageBitmap.width = GetWindowWidth();
+        rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
 
-            toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
-            centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width, rcAffichageBitmap.height);
-            statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width, sizeStatusBar.y);
-        }
-        else
-        {
-            centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-        }        
+        toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
+        centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width, rcAffichageBitmap.height);
+        statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width, sizeStatusBar.y);
     }
-    
-
-
+    else
+    {
+        centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+    }        
 }
 
 

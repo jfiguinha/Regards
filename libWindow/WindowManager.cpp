@@ -742,6 +742,28 @@ void CWindowManager::Init_right()
 		}
 	}
 }
+void CWindowManager::ResetPosition()
+{
+	int width = GetSize().x;
+	int height = GetSize().y;
+    
+    printf("ResetPosition() width : %d height : %d \n",width,height);
+    
+    
+    wxRect rect;
+ 	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
+    right->rect = rect;
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+    top->rect = rect;
+	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
+    bottom->rect = rect;
+	CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
+    central->rect = rect;
+	CWindowToAdd * left = FindWindow(Pos::wxLEFT);   
+    left->rect = rect;
+    
+    init = false;
+}
 
 void CWindowManager::Init_Central()
 {
@@ -834,13 +856,32 @@ void CWindowManager::Init_Central()
 
 void CWindowManager::Init()
 {
+	CWindowToAdd * right = FindWindow(Pos::wxRIGHT);
+	CWindowToAdd * top = FindWindow(Pos::wxTOP);
+	CWindowToAdd * bottom = FindWindow(Pos::wxBOTTOM);
+	CWindowToAdd * central = FindWindow(Pos::wxCENTRAL);
+	CWindowToAdd * left = FindWindow(Pos::wxLEFT);
+    
 	int width = GetSize().x;
 	int height = GetSize().y;
+    
+    printf("Init() width : %d height : %d \n",width,height);
 
-	Init_top();
+    if(left != nullptr)
+        if(left->isTop)
+            Init_left();
+    if(right != nullptr)
+        if(right->isTop)
+            Init_right();
+            
+    Init_top();
 	Init_bottom();
-	Init_left();
-	Init_right();
+    if(left != nullptr)
+        if(!left->isTop)
+            Init_left();
+    if(right != nullptr)
+        if(!right->isTop)
+            Init_right();
 	Init_Central();
 }
 

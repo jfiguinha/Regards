@@ -116,12 +116,14 @@ namespace Regards
 			virtual void Resize();
 			void UnInit();
 			void Init();
+             void ResetPosition();
 
 		protected:
 
 			vector<CWindowToAdd *> listWindow;
 
 		private:
+
 			void AddWindow(CWindowToAdd * windowToAdd, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop);
 			void OnRefreshData(wxCommandEvent& event);
 			void AddDifference(const int & diffWidth, const int &diffHeight, Pos position);

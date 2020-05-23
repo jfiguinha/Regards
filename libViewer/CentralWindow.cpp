@@ -32,7 +32,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	showToolbar = true;
 	videoStart = false;
 	wxRect rect;
-    int widthInfosWindow = wxDisplay().GetGeometry().GetWidth() / 4;
+    int widthInfosWindow = 0;//wxDisplay().GetGeometry().GetWidth() / 4;
 
 	CMainParam* config = CMainParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
@@ -589,9 +589,19 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-   
-	if (windowManager != nullptr)	
-		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+    
+    if(!init)
+    {
+        if(wxDisplay().GetGeometry().GetWidth() == GetWindowWidth())
+        {
+            init = true;
+            windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+            windowManager->ResetPosition();
+        }
+    }
+    
+    if (windowManager != nullptr)	
+        windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 }
 
 void CCentralWindow::LoadAnimationBitmap(const wxString &filename, const int &numFrame)
