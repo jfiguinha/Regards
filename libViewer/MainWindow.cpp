@@ -910,13 +910,14 @@ CMainWindow::~CMainWindow()
 
 void CMainWindow::Resize()
 { 
+    /*
     if(!isInit)
     {  
         centralWnd->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(),  wxDisplay().GetGeometry().GetHeight());
         isInit = true;
         return;
     }
-    
+    */
     
     isInit = true;
     if(isInit)

@@ -32,6 +32,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	showToolbar = true;
 	videoStart = false;
 	wxRect rect;
+    int widthInfosWindow = wxDisplay().GetGeometry().GetWidth() / 4;
 
 	CMainParam* config = CMainParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
@@ -59,7 +60,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		
 		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
-		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, 0, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true, true);
+		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, widthInfosWindow, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true, true);
 
 	}
 
@@ -163,7 +164,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
 		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID, fileGeolocalisation);
 
-		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, 0, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
+		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 
 	}
 
