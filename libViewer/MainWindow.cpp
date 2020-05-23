@@ -25,6 +25,7 @@
 #include "VideoFilter.h"
 #include <SQLRemoveData.h>
 #include <SqlFolderCatalog.h>
+#include <wx/display.h>
 #include <SqlInsertFile.h>
 #include <ExportFile.h>
 #include <SqlFindCriteria.h>
@@ -320,6 +321,7 @@ void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 	wxString * threadFilename = (wxString *)event.GetClientData();
 	if (startDiaporama)
 	{
+        printf("OnEndPictureLoad \n");
 		int timeDelai = viewerParam->GetDelaiDiaporamaOption();
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
@@ -854,6 +856,7 @@ void CMainWindow::SetSelectFile(const wxString &filename)
 
 void CMainWindow::OnTimerDiaporama(wxTimerEvent& event)
 {
+    printf("OnTimerDiaporama \n");
     TRACE();
 	ImageSuivante();
 }
@@ -907,25 +910,47 @@ CMainWindow::~CMainWindow()
 
 void CMainWindow::Resize()
 {
-    TRACE();
-	if (!fullscreen)
-	{
-		wxRect rcAffichageBitmap;
-		wxSize sizeStatusBar = statusBar->GetSize();
+    bool isShow = false;
+    if(!isInit)
+    {  
+        
+        wxRect rect = wxDisplay().GetClientArea();
 
-		rcAffichageBitmap.x = 0;
-		rcAffichageBitmap.y = toolbar->GetNavigatorHeight();
-		rcAffichageBitmap.width = GetWindowWidth();
-		rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
+        int widthDisplay = wxDisplay().GetGeometry().GetWidth();
+        int heightDisplay = wxDisplay().GetGeometry().GetHeight();
+        int width = GetWindowWidth();
+        int height = GetWindowHeight();
+        if(widthDisplay == width)
+        {
+            isShow = true;
+            isInit = true;
+        }
+    }
+    
+    if(isInit)
+    {
+        TRACE();
+        if (!fullscreen)
+        {
+            wxRect rcAffichageBitmap;
+            wxSize sizeStatusBar = statusBar->GetSize();
 
-		toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
-		centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width, rcAffichageBitmap.height);
-		statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width, sizeStatusBar.y);
-	}
-	else
-	{
-		centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-	}
+            rcAffichageBitmap.x = 0;
+            rcAffichageBitmap.y = toolbar->GetNavigatorHeight();
+            rcAffichageBitmap.width = GetWindowWidth();
+            rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
+
+            toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
+            centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width, rcAffichageBitmap.height);
+            statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width, sizeStatusBar.y);
+        }
+        else
+        {
+            centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+        }        
+    }
+    
+
 
 }
 

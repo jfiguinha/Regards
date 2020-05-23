@@ -1321,13 +1321,17 @@ void CWindowManager::Resize()
 
 	int width = GetSize().GetX();
 	int height = GetSize().GetY();
+    
+    if(width == 0 || height == 0)
+        return;
 
-
+    bool isShow = false;
+    isShow = this->IsShownOnScreen();
 
 	int diffWidth = width - oldWidth;
 	int diffHeight = height - oldHeight;
 
-	if (!init)
+	if (!init && isShow)
 	{
 		init = true;
 		Init();

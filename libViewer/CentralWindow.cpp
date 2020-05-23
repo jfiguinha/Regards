@@ -184,6 +184,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	}
 #endif
 
+    Connect(wxEVT_SHOW, wxShowEventHandler(CCentralWindow::OnShowWindow));
 	Connect(VIDEO_END_ID, wxCommandEventHandler(CCentralWindow::OnVideoEnd));
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CCentralWindow::SetListeFile));
 	Connect(wxEVENT_CHANGETYPEAFFICHAGE, wxCommandEventHandler(CCentralWindow::ChangeTypeAffichage));
@@ -200,6 +201,10 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	windowMode = 1;
     stopVideo = false;
 }
+
+void CCentralWindow::OnShowWindow(wxShowEvent& event)
+{
+    printf("CCentralWindow::OnShowWindow \n");}
 
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
@@ -585,7 +590,13 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-	if (windowManager != nullptr)	
+    bool isShow = false;
+    isShow = this->IsShownOnScreen();
+    
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
+    
+	if (windowManager != nullptr && isShow)	
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 }
 
