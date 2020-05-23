@@ -909,24 +909,16 @@ CMainWindow::~CMainWindow()
 }
 
 void CMainWindow::Resize()
-{
-    bool isShow = false;
+{ 
     if(!isInit)
     {  
-        
-        wxRect rect = wxDisplay().GetClientArea();
-
-        int widthDisplay = wxDisplay().GetGeometry().GetWidth();
-        int heightDisplay = wxDisplay().GetGeometry().GetHeight();
-        int width = GetWindowWidth();
-        int height = GetWindowHeight();
-        if(widthDisplay == width)
-        {
-            isShow = true;
-            isInit = true;
-        }
+        centralWnd->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(),  wxDisplay().GetGeometry().GetHeight());
+        isInit = true;
+        return;
     }
     
+    
+    isInit = true;
     if(isInit)
     {
         TRACE();

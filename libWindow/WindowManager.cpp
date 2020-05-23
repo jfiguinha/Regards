@@ -606,11 +606,13 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd * left, int width, int y, in
 		wxRect rect = left->rect;
 		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
 		{
+            
 			//Initialize value 25%
 			left->rect.x = 0;
 			left->rect.y = y;
 			left->rect.width = (width / 4) ;
 			left->rect.height = left_height;
+            printf("SetWindowLeftSize %d \n", left->rect.width);
 		}
 
 		if (left->separationBar != nullptr)
@@ -637,9 +639,12 @@ void CWindowManager::SetWindowLeftSize(CWindowToAdd * left, int width, int y, in
 
 void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, int right_height)
 {
+    printf("SetWindowRightSize width : %d y : %d right_height : %d  \n", width, y, right_height);
+    
 	if (!right->fixe)
 	{
 		wxRect rect = right->rect;
+        printf("SetWindowRightSize rect.x : %d rect.y : %d rect.width : %d rect.height : %d \n", rect.x, rect.y, rect.width, rect.height);
 		if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0)
 		{
 			//Initialize value 25%
@@ -647,6 +652,8 @@ void CWindowManager::SetWindowRightSize(CWindowToAdd * right, int width, int y, 
 			right->rect.y = y;
 			right->rect.width = (width / 4);
 			right->rect.height = right_height;
+            
+            printf("SetWindowRightSize %d \n", right->rect.width);
 		}
 
 		if (right->separationBar != nullptr)
@@ -819,6 +826,9 @@ void CWindowManager::Init_Central()
 		central->rect.y = y;
 		central->rect.width = width;
 		central->rect.height = height;
+        
+        printf("central x %d \n", central->rect.x);
+        printf("central width %d \n", central->rect.width);
 	}
 }
 
@@ -1322,16 +1332,14 @@ void CWindowManager::Resize()
 	int width = GetSize().GetX();
 	int height = GetSize().GetY();
     
-    if(width == 0 || height == 0)
+    if(width <= 0 || height <= 0)
         return;
 
-    bool isShow = false;
-    isShow = this->IsShownOnScreen();
 
 	int diffWidth = width - oldWidth;
 	int diffHeight = height - oldHeight;
 
-	if (!init && isShow)
+	if (!init)
 	{
 		init = true;
 		Init();

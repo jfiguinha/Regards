@@ -13,6 +13,7 @@
 #include <ThumbnailMessage.h>
 #include "PictureElement.h"
 #include <ShowVideo.h>
+#include <wx/display.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 
@@ -587,13 +588,8 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-    bool isShow = false;
-    isShow = this->IsShownOnScreen();
-    
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
-    
-	if (windowManager != nullptr && isShow)	
+   
+	if (windowManager != nullptr)	
 		windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 }
 
