@@ -30,26 +30,12 @@
   <VirtualDirectory Name="Toolbar">
     <File Name="ToolbarInfos.h"/>
     <File Name="ToolbarInfos.cpp"/>
-    <File Name="ValidationToolbar.h"/>
-    <File Name="ValidationToolbar.cpp"/>
     <File Name="ToolbarPDF.h"/>
     <File Name="ToolbarPDF.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Thumbnail">
     <File Name="ThumbnailMultiPage.h"/>
     <File Name="ThumbnailMultiPage.cpp"/>
-    <File Name="ThumbnailFileSelection.h"/>
-    <File Name="ThumbnailFileSelection.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="SeparationBar">
-    <File Name="InfosSeparationBarExplorer.h"/>
-    <File Name="InfosSeparationBarExplorer.cpp"/>
-  </VirtualDirectory>
-  <VirtualDirectory Name="Dialog">
-    <File Name="ThumbnailSelection.h"/>
-    <File Name="ThumbnailSelection.cpp"/>
-    <File Name="SelectPage.h"/>
-    <File Name="SelectPage.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

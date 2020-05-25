@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libDialog" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="SelectPage">
+    <VirtualDirectory Name="Thumbnail">
+      <File Name="ThumbnailSelection.h"/>
+      <File Name="ThumbnailSelection.cpp"/>
+      <File Name="ThumbnailFileSelection.h"/>
+      <File Name="ThumbnailFileSelection.cpp"/>
+    </VirtualDirectory>
+    <File Name="ValidationToolbar.cpp"/>
+    <File Name="SelectPage.cpp"/>
+    <File Name="InfosSeparationBarExplorer.cpp"/>
+    <File Name="ValidationToolbar.h"/>
+    <File Name="SelectPage.h"/>
+    <File Name="InfosSeparationBarExplorer.h"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -83,10 +97,17 @@
     <File Name="SavePicture.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple"/>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../libWindow"/>
+        <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libControl"/>
+        <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libResource"/>
@@ -105,6 +126,7 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../FaceRecognition"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
         <Preprocessor Value="LIBBPG"/>
       </Compiler>
       <Linker Options="">
@@ -189,6 +211,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
