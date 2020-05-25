@@ -31,19 +31,14 @@
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ExportOCr.cpp" />
     <ClCompile Include="ExportPDF.cpp" />
-    <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="OcrLabel.cpp" />
     <ClCompile Include="OcrLabelWnd.cpp" />
     <ClCompile Include="OcrWnd.cpp" />
     <ClCompile Include="PanelInfosWnd.cpp" />
     <ClCompile Include="ScannerFrame.cpp" />
-    <ClCompile Include="SelectPage.cpp" />
-    <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailMultiPage.cpp" />
-    <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPDF.cpp" />
-    <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="viewerPDF.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -55,16 +50,11 @@
     <ClInclude Include="OcrLabel.h" />
     <ClInclude Include="OcrLabelWnd.h" />
     <ClInclude Include="OcrWnd.h" />
-    <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="PanelInfosWnd.h" />
     <ClInclude Include="ScannerFrame.h" />
-    <ClInclude Include="SelectPage.h" />
-    <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailMultiPage.h" />
-    <ClInclude Include="ThumbnailSelection.h" />
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPDF.h" />
-    <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="viewerPDF.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

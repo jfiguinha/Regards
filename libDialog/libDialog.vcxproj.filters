@@ -55,6 +55,15 @@
     <Filter Include="TypePhotoDetection">
       <UniqueIdentifier>{402f485a-2e43-4a43-90c1-68d6e87741de}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SelectPage">
+      <UniqueIdentifier>{8ecf6784-0296-4f1b-a77a-bef3bc4aff22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SelectPage\Toolbar">
+      <UniqueIdentifier>{d3c77773-e42f-4a4e-95e1-a372686a6936}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SelectPage\Thumbnail">
+      <UniqueIdentifier>{1238d3f9-fe9b-47b9-bcd7-2eae4676522a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -132,6 +141,21 @@
     <ClCompile Include="TypePhotoDetection.cpp">
       <Filter>TypePhotoDetection</Filter>
     </ClCompile>
+    <ClCompile Include="SelectPage.cpp">
+      <Filter>SelectPage</Filter>
+    </ClCompile>
+    <ClCompile Include="ValidationToolbar.cpp">
+      <Filter>SelectPage\Toolbar</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailFileSelection.cpp">
+      <Filter>SelectPage\Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailSelection.cpp">
+      <Filter>SelectPage\Thumbnail</Filter>
+    </ClCompile>
+    <ClCompile Include="InfosSeparationBarExplorer.cpp">
+      <Filter>SelectPage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -208,6 +232,21 @@
     </ClInclude>
     <ClInclude Include="TypePhotoDetection.h">
       <Filter>TypePhotoDetection</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectPage.h">
+      <Filter>SelectPage</Filter>
+    </ClInclude>
+    <ClInclude Include="ValidationToolbar.h">
+      <Filter>SelectPage\Toolbar</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailFileSelection.h">
+      <Filter>SelectPage\Thumbnail</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailSelection.h">
+      <Filter>SelectPage\Thumbnail</Filter>
+    </ClInclude>
+    <ClInclude Include="InfosSeparationBarExplorer.h">
+      <Filter>SelectPage</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

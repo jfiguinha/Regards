@@ -282,46 +282,49 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
             platformName = config->GetOpenCLPlatformName();
         }
               
-        //OpenCL auto selected
-        if(platformName == "")
-        {
-            wxString deviceName = "";
-            int indexDevice  = -1;
-            OpenCLPlatform * openCLPlatformSelected = nullptr;
-            vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
-
-            for (OpenCLPlatform * openCLPlatform : listPlatform)
-            {
-
-                platformName == openCLPlatform->platformName;
-                openCLPlatformSelected = openCLPlatform;
-                break;
-            }
-
-            if(openCLPlatformSelected != nullptr)
-            {
-                vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
-
-                for (OpenCLDevice * openCLDevice : listDevice)
-                {
-                    indexDevice = openCLDevice->deviceIndex;
-                    deviceName = openCLDevice->deviceName;
-                    break;
-                }
-            }
-                 
-            
-
-			CRegardsConfigParam* config = CParamInit::getInstance();
-			if (config != nullptr)
+		if (config->GetIsOpenCLSupport())
+		{
+			//OpenCL auto selected
+			if (platformName == "")
 			{
-				config->SetOpenCLPlatformIndex(indexDevice);
-				config->SetOpenCLPlatformName(platformName);
-			}            
-            
-            //ShowOpenCLConfiguration(false);
-            //Exit();
-        }
+				wxString deviceName = "";
+				int indexDevice = -1;
+				OpenCLPlatform * openCLPlatformSelected = nullptr;
+				vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+
+				for (OpenCLPlatform * openCLPlatform : listPlatform)
+				{
+
+					platformName == openCLPlatform->platformName;
+					openCLPlatformSelected = openCLPlatform;
+					break;
+				}
+
+				if (openCLPlatformSelected != nullptr)
+				{
+					vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
+
+					for (OpenCLDevice * openCLDevice : listDevice)
+					{
+						indexDevice = openCLDevice->deviceIndex;
+						deviceName = openCLDevice->deviceName;
+						break;
+					}
+				}
+
+
+
+				CRegardsConfigParam* config = CParamInit::getInstance();
+				if (config != nullptr)
+				{
+					config->SetOpenCLPlatformIndex(indexDevice);
+					config->SetOpenCLPlatformName(platformName);
+				}
+
+				//ShowOpenCLConfiguration(false);
+				//Exit();
+			}
+		}
     }
 
 	if (fileToOpen != "")

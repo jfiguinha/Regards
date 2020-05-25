@@ -75,7 +75,7 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libExtern\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -106,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libextern\libjpeg-turbo-1.5.1;..\FaceRecognition;..\include;..\libExif;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libUtility;..\dllResource;..\libDatastructure;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libControl;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libOpenGL;..\libWindowMain;..\libextern\libjpeg-turbo-1.5.1;..\FaceRecognition;..\include;..\libExif;..\libsqlite;..\libPicture;..\libSqlEngine;..\libSqlData;..\libResource;..\libParameter;..\libOpenCL;..\libUtility;..\dllResource;..\libDatastructure;..\libextern\librapidxml;..\libTheme;..\libWindow;..\libControl;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -208,6 +208,7 @@
     <ClCompile Include="FaceDetection.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
+    <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InterpolationFilterSelect.cpp" />
     <ClCompile Include="J2kOption.cpp" />
     <ClCompile Include="JpegOption.cpp" />
@@ -217,8 +218,12 @@
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="SavePicture.cpp" />
+    <ClCompile Include="SelectPage.cpp" />
+    <ClCompile Include="ThumbnailFileSelection.cpp" />
+    <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="TiffOption.cpp" />
     <ClCompile Include="TypePhotoDetection.cpp" />
+    <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="webpOption.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +239,7 @@
     <ClInclude Include="FaceDetection.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="IndexGenerator.h" />
+    <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="InterpolationFilterSelect.h" />
     <ClInclude Include="J2kOption.h" />
     <ClInclude Include="JpegOption.h" />
@@ -243,8 +249,12 @@
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="SavePicture.h" />
+    <ClInclude Include="SelectPage.h" />
+    <ClInclude Include="ThumbnailFileSelection.h" />
+    <ClInclude Include="ThumbnailSelection.h" />
     <ClInclude Include="TiffOption.h" />
     <ClInclude Include="TypePhotoDetection.h" />
+    <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="wx_pch.h" />
   </ItemGroup>

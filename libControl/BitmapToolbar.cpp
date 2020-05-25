@@ -10,6 +10,7 @@ using namespace Regards::Control;
 #define WM_IMPRIMER 5
 #define WM_CROP 6
 #define IDM_SETSHRINK 7
+#define WM_EXPORT 8
 
 
 
@@ -28,6 +29,7 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	this->parentId = viewerId;
 
 	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
+	wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1);// "Save";
 	wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL",1);//"Emai";
 	wxString printLibelle = CLibResource::LoadStringFromResource("LBLPRINT",1);//"Print";
 	//wxString cropLibelle = CLibResource::LoadStringFromResource("LBLCROP",1);//"Crop";
@@ -40,6 +42,12 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	save->SetCommandId(WM_SAVE);
 	save->SetLibelleTooltip(saveLibelle);
 	navElement.push_back(save);
+
+	CToolbarButton * toolexport = new CToolbarButton(themeToolbar.button);
+	toolexport->SetButtonResourceId("IDB_EXPORT");
+	toolexport->SetCommandId(WM_EXPORT);
+	toolexport->SetLibelleTooltip(exportLibelle);
+	navElement.push_back(toolexport);
 
 	email = new CToolbarButton(themeToolbar.button);
 	email->SetButtonResourceId("IDB_EMAIL");
@@ -215,6 +223,14 @@ void CBitmapToolbar::EventManager(const int &id)
 			if (bitmapWindow != nullptr)
 				bitmapWindow->ShrinkImage();
 			break;
+
+		case WM_EXPORT:
+		{
+			if (bitmapWindow != nullptr)
+				bitmapWindow->ExportPicture();
+			break;
+		}
+
 		case WM_SAVE:
 			if (bitmapWindow != nullptr)
 				bitmapWindow->SavePicture();

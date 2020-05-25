@@ -9,6 +9,9 @@
 #include <Picture_id.h>
 #endif
 #include <wx/filename.h>
+#include "SelectPage.h"
+#include <FileUtility.h>
+#include <ImageLoadingFormat.h>
 
 CSavePicture::CSavePicture()
 {
@@ -19,13 +22,13 @@ CSavePicture::~CSavePicture()
 {
 }
 
-void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, const wxString &filename)
+wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &filename)
 {
-	CLibPicture libPicture;
 	wxString file = "";
 	if (filename != "")
 	{
 		wxString szFilter = "";
+
 
 #ifdef __APPLE__
 
@@ -128,7 +131,7 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			iFormat = EXR;
 			extension = "exr";
 			break;
-            
+
 		case 18:
 			iFormat = BPG;
 			extension = "bpg";
@@ -141,7 +144,7 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 		}
 
 		file = saveFileProgrammaticVersion(CConvertUtility::ConvertToStdString(extension));
-		
+
 
 #else
 
@@ -153,7 +156,7 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
-			return;
+			return "";
 
 		int filterIndex = saveFileDialog.GetFilterIndex();
 		file = saveFileDialog.GetPath();
@@ -168,6 +171,94 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 
 #endif
 	}
+	return file;
+
+}
+
+
+vector<int> CSavePicture::SelectPage(wxWindow * window, const wxString &filename)
+{
+	vector<int> listPage;
+	if (filename != "")
+	{
+		CSelectFileDlg selectFile(window, -1, filename, _("Select Page To Extract"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			listPage = selectFile.GetSelectItem();
+		}
+	}
+	return listPage;
+}
+
+
+void CSavePicture::ExportPicture(wxWindow * window, const wxString &filename)
+{
+	bool multipage = false;
+	CLibPicture libPicture;
+	wxString file = "";
+	if (filename != "")
+	{
+		file = SelectExternalFormat(window, filename);
+	}
+
+	//Select page if multipage
+	if (libPicture.TestIsAnimation(filename))
+		multipage = true;
+
+	if (file != "")
+	{
+		if (multipage)
+		{
+			wxString wxfileName;
+			int iFormat = 0;
+			int option = 0;
+			int quality = 0;
+
+			iFormat = libPicture.TestImageFormat(file);
+					   
+			if (libPicture.SavePictureOption(iFormat, option, quality) == 1)
+			{
+				vector<int> listPage = SelectPage(window, filename);
+				if (listPage.size() > 0)
+				{
+					for (int i = 0; i < listPage.size(); i++)
+					{
+						int numPage = listPage[i];
+						CImageLoadingFormat * imageFormat = libPicture.LoadPicture(filename, false, numPage);
+						if (imageFormat != nullptr)
+						{
+							wxFileName fileName(file);
+							wxString extension = ".";
+							extension.append(fileName.GetExt());
+
+							wxString fileoutput = fileName.GetPath() + "\\" + fileName.GetName() + "_" + to_string(numPage) + extension;
+
+
+							if (!libPicture.TestIsExifCompatible(filename))
+								imageFormat->ApplyExifOrientation(imageFormat->GetOrientation());
+
+							libPicture.SavePicture(fileoutput, imageFormat, option, quality);
+						}
+
+					}
+				}
+			}
+		}
+		else
+			libPicture.SavePicture(filename, file);
+
+		wxMessageBox("Save file complete", "Informations");
+	}
+}
+
+void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, const wxString &filename)
+{
+	CLibPicture libPicture;
+	wxString file = "";
+	if (filename != "")
+	{
+		file = SelectExternalFormat(window, filename);
+	}
 
 	if (file != "")
 	{
@@ -179,5 +270,8 @@ void CSavePicture::SavePicture(wxWindow * window, CImageLoadingFormat * bitmap, 
 		{
 			libPicture.SavePicture(filename, file);
 		}
+		wxMessageBox("Save file complete", "Informations");
 	}
+
+	
 }

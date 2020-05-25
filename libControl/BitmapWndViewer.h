@@ -30,6 +30,7 @@ namespace Regards
 			void SetListener(IMouseUpdate * mouseUpdate);
 			void RemoveListener();
 			void SendEmail();
+			void ExportPicture();
 			void SavePicture();
 			void PrintPicture();
 			void SetTransitionBitmap(CImageLoadingFormat * bmpSecond);

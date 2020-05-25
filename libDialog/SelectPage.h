@@ -1,6 +1,4 @@
 #pragma once
-#include <ScrollbarWnd.h>
-#include "ValidationToolbar.h"
 #include "ThumbnailSelection.h"
 
 using namespace Regards::Scanner;
@@ -23,9 +21,8 @@ protected:
 	//
 	void OnOk(wxCommandEvent& event);
 	void OnCancel(wxCommandEvent& event);
-	void OnSize(wxSizeEvent& event);
 
 	CThumbnailSelection * thumbnailFileSelection;
 
-private:
+
 };

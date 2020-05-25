@@ -253,9 +253,14 @@ void CBitmapWndViewer::AfterSetBitmap()
 		transitionTimer->Stop();
 }
 
+void CBitmapWndViewer::ExportPicture()
+{
+	CSavePicture::ExportPicture(this, filename);
+}
+
 void CBitmapWndViewer::SavePicture()
 {
-	CRegardsBitmap * bitmap = CBitmapWnd::GetBitmap(true);
+	CRegardsBitmap * bitmap = GetBitmap(true);
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
 	imageLoading->SetPicture(bitmap);
 	CSavePicture::SavePicture(this, imageLoading, filename);
