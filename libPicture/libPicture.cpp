@@ -80,6 +80,7 @@ using namespace Regards::exiv2;
 #include <ExrOption.h>
 #include <J2kOption.h>
 #include <JxrOption.h>
+#include <PDFOption.h>
 #include <CompressionOption.h>
 
 #include <wxSVG/SVGDocument.h>
@@ -423,6 +424,39 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	break;
 #endif
 
+	case PDF:
+	{
+		PDFOption pdfOption(nullptr);
+		pdfOption.ShowModal();
+		if (pdfOption.IsOk())
+		{
+			option = pdfOption.CompressionOption();
+			switch (option)
+			{
+				case 0:
+				{
+					CompressionOption jpegOption(nullptr);
+					jpegOption.ShowModal();
+					if (jpegOption.IsOk())
+					{
+						quality = jpegOption.CompressionLevel();
+					}
+					break;
+				}
+				case 1:
+				{
+					TiffOption tiffOption(nullptr);
+					tiffOption.ShowModal();
+					if (tiffOption.IsOk())
+						quality = tiffOption.CompressionOption();
+				}
+				break;
+			}
+			returnValue = 1;
+		}
+	}
+	break;
+
 
 	case TIFF:
 	{
@@ -536,7 +570,6 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	case MNG:
 	case PPM:
 	case XPM:
-	case PDF:
 	case IFF:
 	case PFM:
 	case PNM:
@@ -921,12 +954,71 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 		case PDF:
 			{
-				wxImage * image = bitmap->GetwxImage();
-				image->SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
-				image->SetOption(wxIMAGE_OPTION_RESOLUTIONX, bitmap->GetResolution());
-				image->SetOption(wxIMAGE_OPTION_RESOLUTIONY, bitmap->GetResolution());
-				image->SetOption(wxIMAGE_OPTION_RESOLUTION, bitmap->GetResolution());
-				SaveToPDF( image, fileName);
+				wxString fileToAdd = "";
+				wxString file = "";
+				wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+	#ifdef WIN32
+				wxString tempFolder = documentPath + "\\temp";
+				if (!wxMkDir(tempFolder)) {
+	#else
+				wxString tempFolder = documentPath + "/temp";
+				if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+	#endif
+					// handle the error here
+				}
+
+				//Save
+			if (option == 0)
+			{
+#ifdef WIN32
+				file = tempFolder + "\\temporary.jpg";
+#else
+				file = tempFolder + "/temporary.jpg";
+#endif
+
+
+				if (wxFileExists(file))
+					wxRemoveFile(file);
+
+				//JPEG
+				CxImage * image = bitmap->GetCxImage();
+				image->SetJpegQualityF((float)quality);
+				image->Save(CConvertUtility::ConvertToUTF8(file), CxImage::GetTypeIdFromName("jpg"));
+				delete image;
+
+			}
+			else
+			{
+#ifdef WIN32
+				file = tempFolder + "\\temporary.tiff";
+#else
+				file = tempFolder + "/temporary.tiff";
+#endif
+
+				if (wxFileExists(file))
+					wxRemoveFile(file);
+
+				//JPEG
+				CxImage * image = bitmap->GetCxImage();
+				image->SetCodecOption(quality, CXIMAGE_SUPPORT_TIF);
+				image->Save(CConvertUtility::ConvertToUTF8(file), CxImage::GetTypeIdFromName("tif"));
+				delete image;
+			}
+
+				wxImage image;
+				image.LoadFile(file);
+				int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+				int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+			//	double dblDpiBy72 = (double)m_nDpi / 72.0;
+				
+				image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+				//image.SetOption(wxIMAGE_OPTION_RESOLUTIONX, 200);// bitmap->GetResolution());
+				//image.SetOption(wxIMAGE_OPTION_RESOLUTIONY, 200);// bitmap->GetResolution());
+				//image.SetOption(wxIMAGE_OPTION_RESOLUTION, 200);//bitmap->GetResolution());
+				
+				SaveToPDF(&image, fileName, file, option, quality);
+				::wxRemoveFile(file);
 			}
 			break;
 
@@ -963,7 +1055,8 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 	return 0;
 }
 
-bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName)
+
+bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality)
 {
     if( poImage->HasOption( wxIMAGE_OPTION_RESOLUTIONUNIT ) )
     {
@@ -988,6 +1081,7 @@ bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName)
         if( nResolution )
         {
         
+			/*
             // Save image in a temporary file.
             wxString strTempFileName= wxFileName::CreateTempFileName( wxEmptyString );
             poImage->SaveFile(strTempFileName, wxBITMAP_TYPE_TIFF);
@@ -1001,7 +1095,27 @@ bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName)
             ::wxRemoveFile( strTempFileName );
             oPdfDocument.Close();
             oPdfDocument.SaveAsFile(fileName);
+			*/
+
+			// Create a PDF document, add a page, and put the image on it.
+			wxPdfDocument oPdfDocument;
+			//int tpl = oPdfDocument.BeginTemplate(0, 0, poImage->GetWidth(), poImage->GetHeight());
+			wxPrintOrientation orientation = (poImage->GetHeight() > poImage->GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
+			oPdfDocument.AddPage(orientation);
 			
+			float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
+			float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
+			double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
+			double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
+
+			if (option == 0)
+				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
+			else
+				oPdfDocument.Image(pictureName, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/tiff"));
+
+			oPdfDocument.Close();
+			oPdfDocument.SaveAsFile(fileName);
+
             return true;
         }
     }
@@ -1635,6 +1749,20 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 					listThumbnail->push_back(cxVideo);
 				}
 				break;
+			}
+
+			default:
+			{
+				CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+				imageVideoThumbnail->image = LoadThumbnail(szFileName);
+				imageVideoThumbnail->image->SetFilename(szFileName);
+				imageVideoThumbnail->rotation = 0;
+				imageVideoThumbnail->delay = 0;
+				imageVideoThumbnail->percent = 0;
+				imageVideoThumbnail->timePosition = 0;
+				listThumbnail->push_back(imageVideoThumbnail);
+
+				
 			}
 		}
     }

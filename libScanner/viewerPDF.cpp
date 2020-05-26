@@ -27,6 +27,7 @@
 #include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
 #include <FileUtility.h>
+#include "CentralWindow.h"
 #include "OcrWnd.h"
 //#include <qpdf/QIntC.hh>
 
@@ -338,24 +339,115 @@ void CViewerPDF::LoadFile(const wxString &filename)
 	bool result = false;
 	oldAnimationPosition = -1;
 	oldFilename = L"";
+
 	this->filename = filename;
 
-	pageThumbnail.clear();
-
-	libPicture.LoadAllVideoThumbnail(filename, &pageThumbnail, true, true);
-
-	thumbnailVideo->SetFile(filename, pageThumbnail);
-
-	nbThumbnail = libPicture.GetNbImage(filename);
-
-	if (showBitmapWindow != nullptr)
+	if (libPicture.TestIsPDF(this->filename))
 	{
-		animationPosition = 0;
+		pageThumbnail.clear();
+
+		libPicture.LoadAllVideoThumbnail(filename, &pageThumbnail, true, true);
+
+		thumbnailVideo->SetFile(filename, pageThumbnail);
+
+		nbThumbnail = libPicture.GetNbImage(filename);
+
+		if (showBitmapWindow != nullptr)
+		{
+			animationPosition = 0;
+
+		}
+	}
+	else
+	{
+		wxString fileToAdd = "";
+		wxString file = "";
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+		wxString tempFolder = documentPath + "\\temp";
+		if (!wxMkDir(tempFolder)) {
+#else
+		wxString tempFolder = documentPath + "/temp";
+		if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+			// handle the error here
+		}
+		else
+		{
+#ifdef WIN32
+			file = tempFolder + "\\temporary_file.pdf";
+#else
+			file = tempFolder + "/temporary_file.pdf";
+#endif
+
+#ifdef WIN32
+			fileToAdd = tempFolder + "\\fileToAdd.pdf";
+#else
+			fileToAdd = tempFolder + "/fileToAdd.pdf";
+#endif
+
+			if (wxFileExists(fileToAdd))
+				wxRemoveFile(fileToAdd);
+
+			if (wxFileExists(file))
+				wxRemoveFile(file);
+
+		}
+
+		this->filename = file;
+
+		//Conversion en pdf
+		pageThumbnail.clear();
+
+		libPicture.LoadAllVideoThumbnail(filename, &pageThumbnail, true, true);
+
+		thumbnailVideo->SetFile(filename, pageThumbnail);
+
+		nbThumbnail = libPicture.GetNbImage(filename);
+
+		if (showBitmapWindow != nullptr)
+		{
+			animationPosition = 0;
+
+		}
+
+		int option = 0;
+		int quality = 0;
+		libPicture.SavePictureOption(PDF, option, quality);
+
+		//Conversion en pdf
+		oldAnimationPosition = 0;
+		vector<int> listPageToAdd;
+		listPageToAdd.push_back(0);
+		int nbImage = libPicture.GetNbImage(filename);
+		for (int i = 0; i < nbImage; i++)
+		{
+			if (i == 0)
+			{
+				CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, 0);
+				libPicture.SavePicture(file, imageLoadingFormat, option, quality);
+				delete imageLoadingFormat;
+			}
+			else
+			{
+
+				CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, i);
+				libPicture.SavePicture(fileToAdd, imageLoadingFormat, option, quality);
+				CCentralWindow::ProcessAddFile(fileToAdd, file, listPageToAdd, oldAnimationPosition);
+				if (wxFileExists(fileToAdd))
+					wxRemoveFile(fileToAdd);
+				delete imageLoadingFormat;
+				
+			}
+			oldAnimationPosition++;
+		}
 
 	}
+	
 
 	//nbThumbnail = page.size();
-	LoadAnimationBitmap(filename, 0);
+	LoadAnimationBitmap(this->filename, 0);
 }
 
 int CViewerPDF::GetAnimationPosition()

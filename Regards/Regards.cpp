@@ -232,6 +232,7 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ExrOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\J2kOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JxrOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PDFOption.xrc");
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CategoryDetection.xrc");
@@ -258,6 +259,7 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ExrOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/J2kOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/JxrOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PDFOption.xrc");
 #endif
     
      

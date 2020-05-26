@@ -156,6 +156,9 @@
     <ClCompile Include="InfosSeparationBarExplorer.cpp">
       <Filter>SelectPage</Filter>
     </ClCompile>
+    <ClCompile Include="PDFOption.cpp">
+      <Filter>Picture Save Option</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="InfosSeparationBarExplorer.h">
       <Filter>SelectPage</Filter>
+    </ClInclude>
+    <ClInclude Include="PDFOption.h">
+      <Filter>Picture Save Option</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

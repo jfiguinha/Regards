@@ -77,7 +77,7 @@ public:
     
 private:
 
-    bool SaveToPDF( wxImage* poImage, const wxString &fileName);
+    bool SaveToPDF( wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
 	CRegardsBitmap * LoadFromFreeImage(const char* filename);
 	CRegardsBitmap * LoadThumbnailFromFreeImage(const char* filename);
 	bool PictureDimensionFreeImage(const char* filename, int &width, int &height);

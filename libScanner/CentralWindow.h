@@ -20,12 +20,14 @@ namespace Regards
 			CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame);
 			~CCentralWindow();
 
-			void LoadFile();
-			void LoadFile(const wxString &filename);
+			wxString LoadFile();
+			wxString LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
 			void OnOpen();
 			void UpdateScreenRatio();
+			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
+
 		private:
 
 			void OnSave(wxCommandEvent& event);
@@ -38,7 +40,7 @@ namespace Regards
 			void OnExtractPage(wxCommandEvent& event);
 			wxString ProcessExtractFile(const vector<int> & listPage);
 			void ProcessFile(const vector<int> & listPage);
-			void ProcessAddFile(const wxString &fileToAdd, const vector<int> & listPage, int oldAnimationPosition);
+			
 
 			void RedrawBarPos();
 			void OnSize(wxSizeEvent& event);

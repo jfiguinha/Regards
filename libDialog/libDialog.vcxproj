@@ -215,6 +215,7 @@
     <ClCompile Include="JxrOption.cpp" />
     <ClCompile Include="MoveFaceDialog.cpp" />
     <ClCompile Include="OpenCLDialog.cpp" />
+    <ClCompile Include="PDFOption.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="PngOption.cpp" />
     <ClCompile Include="SavePicture.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="JxrOption.h" />
     <ClInclude Include="MoveFaceDialog.h" />
     <ClInclude Include="OpenCLDialog.h" />
+    <ClInclude Include="PDFOption.h" />
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="PngOption.h" />
     <ClInclude Include="SavePicture.h" />

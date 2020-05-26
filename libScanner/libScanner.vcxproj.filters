@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Dialog">
-      <UniqueIdentifier>{541c3590-335a-4467-98d2-987f2f7cdf04}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Thumbnail">
       <UniqueIdentifier>{2d7d419a-6ae3-4f05-bd55-f0e535d727b8}</UniqueIdentifier>
     </Filter>
