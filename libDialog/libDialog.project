@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libDialog" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="SelectPage">
-    <VirtualDirectory Name="Thumbnail">
-      <File Name="ThumbnailSelection.h"/>
-      <File Name="ThumbnailSelection.cpp"/>
-      <File Name="ThumbnailFileSelection.h"/>
-      <File Name="ThumbnailFileSelection.cpp"/>
-    </VirtualDirectory>
-    <File Name="ValidationToolbar.cpp"/>
-    <File Name="SelectPage.cpp"/>
-    <File Name="InfosSeparationBarExplorer.cpp"/>
-    <File Name="ValidationToolbar.h"/>
-    <File Name="SelectPage.h"/>
-    <File Name="InfosSeparationBarExplorer.h"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -40,9 +26,24 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="SelectPage">
+    <VirtualDirectory Name="Thumbnail">
+      <File Name="ThumbnailSelection.h"/>
+      <File Name="ThumbnailSelection.cpp"/>
+      <File Name="ThumbnailFileSelection.h"/>
+      <File Name="ThumbnailFileSelection.cpp"/>
+    </VirtualDirectory>
+    <File Name="ValidationToolbar.cpp"/>
+    <File Name="SelectPage.cpp"/>
+    <File Name="InfosSeparationBarExplorer.cpp"/>
+    <File Name="ValidationToolbar.h"/>
+    <File Name="SelectPage.h"/>
+    <File Name="InfosSeparationBarExplorer.h"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="PDFOption.cpp"/>
     <File Name="TypePhotoDetection.cpp"/>
     <File Name="JxrOption.cpp"/>
     <File Name="J2kOption.cpp"/>
@@ -69,6 +70,7 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="PDFOption.h"/>
     <File Name="TypePhotoDetection.h"/>
     <File Name="JxrOption.h"/>
     <File Name="J2kOption.h"/>
