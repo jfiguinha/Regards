@@ -15,6 +15,8 @@
 #include <ConvertUtility.h>
 #include <libPicture.h>
 #include <picture_id.h>
+#include <wx/progdlg.h>
+#include <wx/pdfdocument.h>
 using namespace Regards::Window;
 
 CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * frame)
@@ -46,6 +48,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	this->frame = frame;
 
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CCentralWindow::OnSize));
+	Connect(wxEVENT_OPENMULTIFILE, wxCommandEventHandler(CCentralWindow::OnOpenMultiFile));
 	Connect(wxEVENT_OPENFILE, wxCommandEventHandler(CCentralWindow::OnOpenFile));
 	Connect(wxEVENT_SCANNER, wxCommandEventHandler(CCentralWindow::OnScan));
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CCentralWindow::OnPrint));
@@ -107,20 +110,32 @@ void CCentralWindow::OnOpen()
 	wxArrayString list;
 	list.push_back("Scan");
 	list.push_back("File");
+	list.push_back("Multifile");
 	bool isOk = false;
 	wxString file = "";
 	int numSelect = wxGetSingleChoiceIndex("Select Source : ", "Source", list, 0, this);
 	if (numSelect != -1)
 	{
-		if (numSelect == 0)
+		switch (numSelect)
 		{
-			wxCommandEvent evt(wxEVENT_SCANNER);
-			this->GetEventHandler()->AddPendingEvent(evt);
-		}
-		else
-		{
-			wxCommandEvent evt(wxEVENT_OPENFILE);
-			this->GetEventHandler()->AddPendingEvent(evt);
+			case 0:
+			{
+				wxCommandEvent evt(wxEVENT_SCANNER);
+				this->GetEventHandler()->AddPendingEvent(evt);
+				break;
+			}
+			case 1:
+			{
+				wxCommandEvent evt(wxEVENT_OPENFILE);
+				this->GetEventHandler()->AddPendingEvent(evt);
+				break;
+			}
+			case 2:
+			{
+				wxCommandEvent evt(wxEVENT_OPENMULTIFILE);
+				this->GetEventHandler()->AddPendingEvent(evt);
+				break;
+			}
 		}
 
 	}
@@ -176,6 +191,7 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 						vector<int> listPage = selectFile.GetSelectItem();
 						ProcessAddFile(fileToadd, filename, listPage, oldAnimationPosition);
 						isOk = true;
+						oldAnimationPosition += listPage.size();
 					}
 				}
 				else
@@ -186,8 +202,7 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 					int option = 0;
 					int quality = 0;
 					libPicture.SavePictureOption(PDF, option, quality);
-
-
+					
 
 #ifdef WIN32
 					wxString tempFolder = documentPath + "\\temp";
@@ -210,39 +225,19 @@ void CCentralWindow::OnAddPage(wxCommandEvent& event)
 							wxRemoveFile(fileToAdd);
 
 					}
-					vector<int> listPageToAdd;
-					listPageToAdd.push_back(0);
-					if (libPicture.TestIsAnimation(fileToadd))
-					{
-						CSelectFileDlg selectFile(this, -1, fileToadd, _("Select Page To Add"));
-						if (selectFile.ShowModal() == wxID_OK)
-						{
-							vector<int> listPage = selectFile.GetSelectItem();
-							for (int i = 0; i < listPage.size(); i++)
-							{
 
-								CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(fileToadd, false, listPage[i]);
-								libPicture.SavePicture(fileToAdd, imageLoadingFormat, option, quality);
-								ProcessAddFile(fileToadd, filename, listPageToAdd, oldAnimationPosition);
-								if (wxFileExists(fileToAdd))
-									wxRemoveFile(fileToAdd);
-								delete imageLoadingFormat;
-								oldAnimationPosition++;
-							}
-							isOk = true;
-						}
-					}
-					else
-					{
-						CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(fileToadd, false);
-						libPicture.SavePicture(fileToAdd, imageLoadingFormat, option, quality);
-						ProcessAddFile(fileToAdd, filename, listPageToAdd, oldAnimationPosition);
-						if (wxFileExists(fileToAdd))
-							wxRemoveFile(fileToAdd);
-						delete imageLoadingFormat;
-						isOk = true;
-						oldAnimationPosition++;
-					}
+					wxArrayString listFile;
+					listFile.push_back(fileToadd);
+					int nbPage = LoadPictureFile(listFile, fileToAdd);
+
+					vector<int> listPageToAdd;
+					for (int i = 0; i < nbPage; i++)
+						listPageToAdd.push_back(i);
+
+					ProcessAddFile(fileToadd, filename, listPageToAdd, oldAnimationPosition);
+
+					oldAnimationPosition += nbPage;
+					isOk = true;
 				}
 			}
 			if (isOk)
@@ -277,6 +272,235 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 	{
 		wxMessageBox("Please Open a File !", "Error", wxICON_INFORMATION);
 	}
+}
+
+void CCentralWindow::AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality)
+{
+	CLibPicture libPicture;
+	wxString file = "";
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+	if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+		// handle the error here
+	}
+
+	//Save
+	if (option == 0)
+	{
+
+#ifdef WIN32
+		file = tempFolder + "\\temporary.jpg";
+#else
+		file = tempFolder + "/temporary.jpg";
+#endif
+
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+		libPicture.SavePicture(file, imageFormat, 0, quality);
+	}
+	else
+	{
+#ifdef WIN32
+		file = tempFolder + "\\temporary.tiff";
+#else
+		file = tempFolder + "/temporary.tiff";
+#endif
+
+		if (wxFileExists(file))
+			wxRemoveFile(file);
+
+		libPicture.SavePicture(file, imageFormat, 0, quality);
+	}
+
+	wxImage image;
+	image.LoadFile(file);
+	int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+	int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+	//	double dblDpiBy72 = (double)m_nDpi / 72.0;
+
+	image.SetOption(wxIMAGE_OPTION_RESOLUTIONUNIT, wxIMAGE_RESOLUTION_INCHES);
+
+
+	if (image.HasOption(wxIMAGE_OPTION_RESOLUTIONUNIT))
+	{
+		int nResolutionUnit = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONUNIT);
+		int nResolution = 0;
+
+		// Get image resolution-
+		if (image.HasOption(wxIMAGE_OPTION_RESOLUTION))
+		{
+			nResolution = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTION);
+		}
+		else if (image.HasOption(wxIMAGE_OPTION_RESOLUTIONX) && (image.HasOption(wxIMAGE_OPTION_RESOLUTIONY)))
+		{
+			int nResolutionX = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONX);
+			int nResolutionY = image.GetOptionInt(wxIMAGE_OPTION_RESOLUTIONY);
+
+			if (nResolutionX == nResolutionY)
+			{
+				nResolution = nResolutionX;
+			}
+		}
+		if (nResolution)
+		{
+
+
+			//int tpl = oPdfDocument.BeginTemplate(0, 0, image.GetWidth(), image.GetHeight());
+			wxPrintOrientation orientation = (image.GetHeight() > image.GetWidth()) ? wxPORTRAIT : wxLANDSCAPE;
+			oPdfDocument.AddPage(orientation);
+
+			float nResolutionUnit = wxIMAGE_RESOLUTION_CM ? 2.54 : 1.0;
+			float imageScale = (double)nResolution * (float)nResolutionUnit / (float)72.0;
+			double pictureWidth = oPdfDocument.GetPageWidth() * nResolutionUnit;
+			double pictureHeight = oPdfDocument.GetPageHeight() * nResolutionUnit;
+
+			if (option == 0)
+				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/jpeg"));
+			else
+				oPdfDocument.Image(file, 0, 0, oPdfDocument.GetPageWidth(), oPdfDocument.GetPageHeight(), wxT("image/tiff"));
+
+
+		}
+	}
+}
+
+int CCentralWindow::LoadPictureFile(wxArrayString & listFile, wxString filenameOutput)
+{
+	int nbPage = 0;
+	CLibPicture libPicture;
+	//wxString _filename = "";
+
+	if (listFile.size() > 0)
+	{
+		int i = 0;
+
+
+		int option = 0;
+		int quality = 0;
+		//int iformat = libPicture.TestImageFormat(listFile[0]);
+
+		wxString documentPath = CFileUtility::GetDocumentFolderPath();
+		
+		libPicture.SavePictureOption(PDF, option, quality);
+
+		wxProgressDialog dialog("Add File to PDF", "Filename", listFile.size(), this, wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+		// Create a PDF document, add a page, and put the image on it.
+		wxPdfDocument oPdfDocument;
+
+		for (wxString filename : listFile)
+		{
+			wxString message = "Add File : " + filename;
+
+			if (false == dialog.Update(i++, message))
+				break;
+
+			if (libPicture.GetNbImage(filename) > 1)
+			{
+				CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Add"));
+				if (selectFile.ShowModal() == wxID_OK)
+				{
+					vector<int> listPage = selectFile.GetSelectItem();
+					for (int i = 0; i < listPage.size(); i++)
+					{
+
+						CImageLoadingFormat * imageLoadingFormat = libPicture.LoadPicture(filename, false, listPage[i]);
+						AddPdfPage(oPdfDocument, imageLoadingFormat, option, quality);
+						nbPage++;
+						delete imageLoadingFormat;
+					}
+				}
+			}
+			else
+			{
+				CImageLoadingFormat * imageFormat = libPicture.LoadPicture(filename);
+				AddPdfPage(oPdfDocument, imageFormat, option, quality);
+				nbPage++;
+				delete imageFormat;
+			}
+		}
+
+		oPdfDocument.Close();
+		oPdfDocument.SaveAsFile(filenameOutput);
+	}
+	return nbPage;
+}
+
+void CCentralWindow::OnOpenMultiFile(wxCommandEvent& event)
+{
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+	if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		filename = tempFolder + "\\temporary_file.pdf";
+#else
+		filename = tempFolder + "/temporary_file.pdf";
+#endif
+
+		if (wxFileExists(filename))
+			wxRemoveFile(filename);
+
+	}
+
+	wxString szFilter = "";
+	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
+	szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
+
+	wxFileDialog openFileDialog(this, _("Open Picture file"), "", "",
+		szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
+
+	if (openFileDialog.ShowModal() == wxID_CANCEL)
+		return;     // the user changed idea..
+
+
+	CLibPicture libPicture;
+	wxArrayString listFile;
+	int filterIndex = openFileDialog.GetFilterIndex();
+	openFileDialog.GetPaths(listFile);
+	if (listFile.size() > 0)
+	{
+		if (libPicture.TestIsPDF(listFile[0]))
+		{
+			int oldAnimationPosition = -1;
+			for (int i = 0; i < listFile.size(); i++)
+			{
+				CSelectFileDlg selectFile(this, -1, listFile[i], _("Select Page To Add"));
+				if (selectFile.ShowModal() == wxID_OK)
+				{
+					vector<int> listPage = selectFile.GetSelectItem();
+					for (int i = 0; i < listPage.size(); i++)
+					{
+						ProcessAddFile(listFile[i], filename, listPage, oldAnimationPosition);
+						oldAnimationPosition += listPage.size();
+					}
+				}
+			}
+		}
+		else
+		{
+			LoadPictureFile(listFile, filename);
+		}
+	}
+
+	if (previewWindow != nullptr)
+		previewWindow->LoadFile(filename);
+
 }
 
 void CCentralWindow::OnOpenFile(wxCommandEvent& event)
@@ -314,6 +538,29 @@ void CCentralWindow::OnExit(wxCommandEvent& event)
 
 wxString CCentralWindow::LoadFile()
 {
+	CLibPicture libPicture;
+	wxString documentPath = CFileUtility::GetDocumentFolderPath();
+#ifdef WIN32
+	wxString tempFolder = documentPath + "\\temp";
+	if (!wxMkDir(tempFolder)) {
+#else
+	wxString tempFolder = documentPath + "/temp";
+	if (!wxMkDir(tempFolder, wxS_DIR_DEFAULT)) {
+#endif
+		// handle the error here
+	}
+	else
+	{
+#ifdef WIN32
+		filename = tempFolder + "\\temporary_file.pdf";
+#else
+		filename = tempFolder + "/temporary_file.pdf";
+#endif
+
+		if (wxFileExists(filename))
+			wxRemoveFile(filename);
+	}
+
 	wxString szFilter = "";
 	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
 	szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
@@ -326,15 +573,27 @@ wxString CCentralWindow::LoadFile()
 
 	//int filterIndex = openFileDialog.GetFilterIndex();
 	wxString file = openFileDialog.GetPath();
-	/*
-	wxString ext = v.at(filterIndex);
-
-	if (ext != ".pdf")
+	if (!libPicture.TestIsPDF(file))
 	{
-		//Convert to pdf
+		wxArrayString listFile;
+		listFile.push_back(file);
+		LoadPictureFile(listFile, filename);
 	}
-	*/
-	return LoadFile(file);
+	else
+	{
+		int oldAnimationPosition = -1;
+		CSelectFileDlg selectFile(this, -1, file, _("Select Page To Add"));
+		if (selectFile.ShowModal() == wxID_OK)
+		{
+			vector<int> listPage = selectFile.GetSelectItem();
+			ProcessAddFile(file, filename, listPage, oldAnimationPosition);
+			oldAnimationPosition += listPage.size();
+		}
+	}
+	if (previewWindow != nullptr)
+		previewWindow->LoadFile(filename);
+
+	return filename;
 	
 
 }
@@ -426,8 +685,16 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 
 	if (file != "")
 	{
+		std::vector<QPDFPageObjectHelper> oldpages;
+		int oldpageno_len = 0;
+		int i = 0;
+		bool fileIn = false;
+		if (wxFileExists(filename))
+			fileIn = true;
+
 		QPDF oldpdf;
-		oldpdf.processFile(filename.ToStdString().c_str());
+		if(fileIn)
+			oldpdf.processFile(filename.ToStdString().c_str());
 
 		QPDF inpdf;
 		inpdf.processFile(fileToAdd.ToStdString().c_str());
@@ -436,16 +703,18 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 		QPDF outpdf;
 		outpdf.emptyPDF();
 
-		std::vector<QPDFPageObjectHelper> oldpages = QPDFPageDocumentHelper(oldpdf).getAllPages();
-		int oldpageno_len = oldpages.size();
 
-		int i = 0;
-		//std::vector<QPDFPageObjectHelper>::iterator iter = oldpages.begin();
-		for (; i <= oldAnimationPosition; i++)
+		if (fileIn)
 		{
-			auto object = oldpages.at(i);
-			QPDFPageObjectHelper& page(object);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			oldpages = QPDFPageDocumentHelper(oldpdf).getAllPages();
+			oldpageno_len = oldpages.size();
+
+			for (; i <= oldAnimationPosition; i++)
+			{
+				auto object = oldpages.at(i);
+				QPDFPageObjectHelper& page(object);
+				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			}
 		}
 
 
@@ -477,12 +746,15 @@ void CCentralWindow::ProcessAddFile(const wxString &fileToAdd, const wxString &f
 			pageno++;
 		}
 
-		//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
-		for (; i < oldpageno_len; i++)
+		if (fileIn)
 		{
-			auto object = oldpages.at(i);
-			QPDFPageObjectHelper& page(object);
-			QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			//for (int i = oldAnimationPosition; i < oldpageno_len; i++)
+			for (; i < oldpageno_len; i++)
+			{
+				auto object = oldpages.at(i);
+				QPDFPageObjectHelper& page(object);
+				QPDFPageDocumentHelper(outpdf).addPage(page, false);
+			}
 		}
 
 		QPDFWriter outpdfw(outpdf, outfile.c_str());

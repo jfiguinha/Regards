@@ -5,6 +5,7 @@
 using namespace std;
 using namespace Regards::Window;
 class CImageLoadingFormat;
+class wxPdfDocument;
 
 
 namespace Regards
@@ -29,9 +30,10 @@ namespace Regards
 			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
 
 		private:
-
+			void AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality);
 			void OnSave(wxCommandEvent& event);
 			void OnAddPage(wxCommandEvent& event);
+			void OnOpenMultiFile(wxCommandEvent& event);
 			void OnDeletePage(wxCommandEvent& event);
 			void OnOpenFile(wxCommandEvent& event);
 			void OnScan(wxCommandEvent& event);
@@ -40,7 +42,7 @@ namespace Regards
 			void OnExtractPage(wxCommandEvent& event);
 			wxString ProcessExtractFile(const vector<int> & listPage);
 			void ProcessFile(const vector<int> & listPage);
-			
+			int LoadPictureFile(wxArrayString & listFile, wxString filenameOutput);
 
 			void RedrawBarPos();
 			void OnSize(wxSizeEvent& event);
