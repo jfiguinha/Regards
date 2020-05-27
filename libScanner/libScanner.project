@@ -61,6 +61,7 @@
         <IncludePath Value="../libextern/poppler-0.81.0/build"/>
         <IncludePath Value="../wxCheckTree"/>
         <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
