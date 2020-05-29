@@ -148,7 +148,7 @@ CScannerFrame::~CScannerFrame()
 void CScannerFrame::OnOpen()
 {
 	if(centralWindow != nullptr)
-		centralWindow->OnOpen();
+		centralWindow->OnOpen(0);
 }
 
 void CScannerFrame::OnExportText(wxCommandEvent& event)

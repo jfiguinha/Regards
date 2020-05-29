@@ -25,23 +25,22 @@ namespace Regards
 			wxString LoadFile(const wxString &filename);
 			CImageLoadingFormat * GetImage();
 			wxString GetFilename();
-			void OnOpen();
+			void OnOpen(const int &type);
 			void UpdateScreenRatio();
 			static void ProcessAddFile(const wxString &fileToAdd, const wxString &filename, const vector<int> & listPage, int oldAnimationPosition);
 
 		private:
-			void AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality);
+			void AddPdfPage(wxPdfDocument & oPdfDocument, CImageLoadingFormat * imageFormat, int option, int quality, int numpage);
 			void OnSave(wxCommandEvent& event);
 			void OnAddPage(wxCommandEvent& event);
-			void OnOpenMultiFile(wxCommandEvent& event);
 			void OnDeletePage(wxCommandEvent& event);
 			void OnOpenFile(wxCommandEvent& event);
-			void OnScan(wxCommandEvent& event);
 			void OnPrint(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnExtractPage(wxCommandEvent& event);
 			wxString ProcessExtractFile(const vector<int> & listPage);
 			void ProcessFile(const vector<int> & listPage);
+			wxString ProcessLoadFiles(wxArrayString & listFile);
 			int LoadPictureFile(wxArrayString & listFile, wxString filenameOutput);
 
 			void RedrawBarPos();
