@@ -54,6 +54,22 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.51
+Under Scan Tools :
+- Add PDF creation with multifile picture
+- Add PDF compression choice with tiff or jpeg option
+
+News for version 2.50
+- Correct bug on default window position
+- Add opengl preview render on filter effect
+
+News for version 2.49
+- Correct bug on window refresh
+
+News for version 2.48
+- Correct window visibility when you switch from picture mode and viewer mode
+- Correct UTF8 crash on file name
+
 News for version 2.47
 - Correct animation thumbnail bug
 - Correct crash on scan window
