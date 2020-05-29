@@ -589,17 +589,24 @@ void CCentralWindow::AnimationPicturePrevious()
 
 void CCentralWindow::Resize()
 {
-    
+    printf("CCentralWindow::Resize() width : %d height : %d  width : %d \n", GetWindowWidth(), GetWindowHeight(), wxDisplay().GetGeometry().GetWidth());
     if(!init)
     {
         if(wxDisplay().GetGeometry().GetWidth() == GetWindowWidth())
         {
+            printf("CCentralWindow::Resize() \n");
             init = true;
-            windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-            windowManager->ResetPosition();
+            //windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+            //windowManager->ResetPosition();
         }
+        else
+        {
+            if (windowManager != nullptr)	
+                windowManager->SetSize(0, 0, wxDisplay().GetGeometry().GetWidth(), GetWindowHeight());   
+        }        
     }
-    
+
+
     if (windowManager != nullptr)	
         windowManager->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
 }
