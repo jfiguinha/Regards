@@ -118,6 +118,7 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libextern/libRapidXML"/>
+        <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
@@ -125,6 +126,7 @@
         <IncludePath Value="../libExif"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libextern/"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../FaceRecognition"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
