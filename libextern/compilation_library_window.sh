@@ -28,11 +28,6 @@ make -j$NBPROC
 make install
 cd ..
 
-#Generate package FreeImage
-cd FreeImage3180
-makepkg -sCLf
-cd ..
-
 #Compile exiv2-0.26 :
 cd exiv2-0.26 
 chmod +x configure
@@ -79,7 +74,7 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug 
+./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug 
 make -j$NBPROC
 cd ..
 

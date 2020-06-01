@@ -298,9 +298,6 @@
         <Library Value="postproc"/>
         <Library Value="glib-2.0"/>
         <Library Value="turbojpeg"/>
-        <Library Value="wxjpeg-3.1"/>
-        <Library Value="wxpng-3.1"/>
-        <Library Value="wxtiff-3.1"/>
         <Library Value="webp"/>
         <Library Value="lzma"/>
         <Library Value="SDL2"/>
@@ -462,6 +459,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libturbojpeg.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Debug</Command>
@@ -471,7 +469,6 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll  ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug</Command>
@@ -626,6 +623,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbb.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc_proxy.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
@@ -635,7 +633,6 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp ../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/bin/libfreeimage-3.dll ./Release/libfreeimage-3.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release/libjxrglue.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Release/libraw-19.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release/libwebp-7.dll</Command>
