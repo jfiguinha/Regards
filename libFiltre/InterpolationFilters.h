@@ -1,11 +1,11 @@
 #pragma once
 
 /////////////////////////////////////////////////////////////////////////////
-//Filtre supportée :
+//Filtre supportÃ©e :
 // Box, Bilinear, Gaussian, Hamming, Cubic, Blackman
 /////////////////////////////////////////////////////////////////////////////
 
-
+#ifdef __WIN32__
 
 #define FILTER_PI  double (3.1415926535897932384626433832795)
 #define FILTER_2PI double (2.0 * 3.1415926535897932384626433832795)
@@ -561,3 +561,4 @@ public:
 		}
 };
 
+#endif
