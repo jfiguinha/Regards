@@ -290,7 +290,6 @@
         <Library Value="z"/>
         <Library Value="pango-1.0"/>
         <Library Value="pangocairo-1.0"/>
-        <Library Value="wxjpeg-3.1"/>
         <Library Value="wxpng-3.1"/>
         <Library Value="wxtiff-3.1"/>
         <Library Value="fftw3f"/>
@@ -309,6 +308,7 @@
         <Library Value="lept"/>
         <Library Value="tbb"/>
         <Library Value="aom"/>
+        <Library Value="webp"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>

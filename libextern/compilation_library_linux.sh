@@ -14,14 +14,6 @@ tar xf poppler-0.81.0.tar.xz
 wget https://github.com/tesseract-ocr/tesseract/archive/4.1.0.zip
 unzip 4.1.0.zip
 
-#compile FreeImage
-cd FreeImage3180
-unzip FreeImage3180.zip
-cd FreeImage
-make -j$NBPROC -f Makefile.gnu
-cd ..
-cd ..
-
 #compile OpenEXR
 unzip openexr-2.5.1.zip
 cd openexr-2.5.1
@@ -118,7 +110,7 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-gtk=3
+./configure --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-gtk=3
 make -j$NBPROC
 cd ..
 

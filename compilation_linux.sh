@@ -25,6 +25,7 @@ sudo apt install libcurl4-openssl-dev
 sudo apt install libssh-dev
 sudo apt install libexpat-dev
 sudo apt install liblzma-dev
+sudo apt install libfreeimage-dev
 sudo apt install libva-dev
 sudo apt install libsane-dev
 sudo apt install ocl-icd-opencl-dev
