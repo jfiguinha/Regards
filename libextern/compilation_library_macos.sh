@@ -14,14 +14,6 @@ tar xf poppler-0.81.0.tar.xz
 wget https://github.com/tesseract-ocr/tesseract/archive/4.1.0.zip
 unzip 4.1.0.zip
 
-#compile FreeImage
-cd FreeImage3180
-unzip FreeImage3180.zip
-cd FreeImage
-make -j$NBPROC -f Makefile.osx
-cd ..
-cd ..
-
 #compile tesseract
 cd tesseract-4.1.0
 mkdir build
@@ -125,7 +117,7 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
+./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
 make -j$NBPROC
 cd ..
 

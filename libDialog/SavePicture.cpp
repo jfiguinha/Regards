@@ -36,7 +36,7 @@ wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &f
 		SaveFileFormat saveFormat(nullptr);
 		saveFormat.ShowModal();
 		if (!saveFormat.IsOk())
-			return;
+			return "";
 
 		wxString extension;
 		int iFormat = saveFormat.GetSaveFormat();

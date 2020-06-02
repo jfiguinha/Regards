@@ -81,6 +81,51 @@
     <Project Name="wxIA"/>
     <Project Name="libScanner"/>
   </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -145,9 +190,7 @@
         <LibraryPath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
-        <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
-        <Library Value="wxjpeg-3.1"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
@@ -214,6 +257,7 @@
         <Library Value="swresample"/>
         <Library Value="swscale"/>
         <Library Value="glib-2.0"/>
+        <Library Value="jpeg"/>
         <Library Value="turbojpeg"/>
         <Library Value="lzma"/>
         <Library Value="SDL2"/>
@@ -224,15 +268,13 @@
         <Library Value="dl"/>
         <Library Value="curl"/>
         <Library Value="AppleFunction"/>
-        <Library Value="wxpng-3.1"/>
-        <Library Value="wxtiff-3.1"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
         <Library Value="fontconfig"/>
-        <Library Value="freeimage-3.18.0"/>
+        <Library Value="freeimage"/>
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
         <Library Value="lept"/>
@@ -332,7 +374,7 @@
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="no">#cp ../libextern/fftw-3.3.8/.libs/libfftw3f.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp ../libextern/FreeImage3180/FreeImage/Dist/libfreeimage-3.18.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/leptonica/lib/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
@@ -364,7 +406,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler-cpp.0.dylib @executable_path/../Frameworks/libpoppler-cpp.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change libfreeimage-3.18.0.dylib-x86_64 @executable_path/../Frameworks/libfreeimage-3.18.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib @executable_path/../Frameworks/liblibfreeimage.3.18.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Debug/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -564,14 +606,17 @@
         <Command Enabled="yes">cp /usr/local/opt/cairo/lib/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libomp.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libturbojpeg.0.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/libpng/lib/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/libtiff/lib/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebp.7.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/openexr/lib/libIlmImf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf-2_5.25.dylib</Command>
         <Command Enabled="no">#cp ../libextern/fftw-3.3.8/.libs/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfftw3f.3.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
-        <Command Enabled="yes">cp ../libextern/FreeImage3180/FreeImage/Dist/libfreeimage-3.18.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libSDL2-2.0.0.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/leptonica/lib/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
@@ -594,6 +639,9 @@
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libexif/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.dylib @executable_path/../Frameworks/libtbb.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/developpement/git/Regards/libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -603,7 +651,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler-cpp.0.dylib @executable_path/../Frameworks/libpoppler-cpp.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change libfreeimage-3.18.0.dylib-x86_64 @executable_path/../Frameworks/libfreeimage-3.18.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib @executable_path/../Frameworks/liblibfreeimage.3.18.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Release/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -727,49 +775,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-  </Dependencies>
 </CodeLite_Project>
