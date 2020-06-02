@@ -59,7 +59,7 @@ bool CTreeElementSlide::TestEgality(CTreeElementValue * value1, CTreeElementValu
 {
 	switch(type)
 	{
-	case TYPE_INT:
+	case TYPE_ELEMENT_INT:
 		{
 			CTreeElementValueInt * valueInt1 = (CTreeElementValueInt *)value1;
 			CTreeElementValueInt * valueInt2 = (CTreeElementValueInt *)value2;
@@ -67,7 +67,7 @@ bool CTreeElementSlide::TestEgality(CTreeElementValue * value1, CTreeElementValu
 		}
 		break;
 
-	case TYPE_FLOAT:
+	case TYPE_ELEMENT_FLOAT:
 				{
 			CTreeElementValueFloat * valueInt1 = (CTreeElementValueFloat *)value1;
 			CTreeElementValueFloat * valueInt2 = (CTreeElementValueFloat *)value2;
@@ -75,7 +75,7 @@ bool CTreeElementSlide::TestEgality(CTreeElementValue * value1, CTreeElementValu
 		}
 		break;
 
-	case TYPE_BOOL:
+	case TYPE_ELEMENT_BOOL:
 				{
 			CTreeElementValueBool * valueInt1 = (CTreeElementValueBool *)value1;
 			CTreeElementValueBool * valueInt2 = (CTreeElementValueBool *)value2;

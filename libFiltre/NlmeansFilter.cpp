@@ -58,19 +58,19 @@ void CNlmeansFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTre
 	float value = 0.0;
 	switch(valueData->GetType())
 	{
-		case TYPE_INT:
+		case TYPE_ELEMENT_INT:
 			{
 				CTreeElementValueInt * intValue = (CTreeElementValueInt*)valueData;
 				value = intValue->GetValue();
 			}
 			break;
-		case TYPE_FLOAT:
+		case TYPE_ELEMENT_FLOAT:
 			{
 				CTreeElementValueFloat * intValue = (CTreeElementValueFloat*)valueData;
 				value = intValue->GetValue();
 			}
 			break;
-		case TYPE_BOOL:
+		case TYPE_ELEMENT_BOOL:
 			{
 				CTreeElementValueBool * intValue = (CTreeElementValueBool*)valueData;
 				value = intValue->GetValue();

@@ -1,8 +1,8 @@
 #pragma once
 
-#define TYPE_INT 1
-#define TYPE_FLOAT 2
-#define TYPE_BOOL 3
+#define TYPE_ELEMENT_INT 1
+#define TYPE_ELEMENT_FLOAT 2
+#define TYPE_ELEMENT_BOOL 3
 
 class CTreeElementValue
 {
@@ -43,7 +43,7 @@ public:
 
 	int GetType()
 	{
-		return TYPE_INT;
+		return TYPE_ELEMENT_INT;
 	}
 
 	void SetValue(const int &value)
@@ -87,7 +87,7 @@ public:
 
 	int GetType()
 	{
-		return TYPE_FLOAT;
+		return TYPE_ELEMENT_FLOAT;
 	}
 
 	wxString GetStringValue()
@@ -131,7 +131,7 @@ public:
 
 	int GetType()
 	{
-		return TYPE_BOOL;
+		return TYPE_ELEMENT_BOOL;
 	}
 
 	wxString GetStringValue()
