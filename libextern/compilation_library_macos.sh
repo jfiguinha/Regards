@@ -117,7 +117,7 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --with-libjpeg=builtin --with-libpng=builtin --with-libtiff=builtin --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
+./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
 make -j$NBPROC
 cd ..
 
