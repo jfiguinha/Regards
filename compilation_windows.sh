@@ -35,3 +35,7 @@ chmod +x compilation_library_window.sh
 cd ..
 
 # /bin/sh -c '/usr/bin/make -j12 -e -f Makefile'
+cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
+cd libextern/
+mkdir build
+cp ~/ffmpeg_build/bin/*.dll build

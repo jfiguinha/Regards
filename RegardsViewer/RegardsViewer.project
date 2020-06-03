@@ -469,15 +469,12 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/libpoppler-91.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/cpp/libpoppler-cpp-0.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf26.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Debug</Command>
@@ -488,8 +485,10 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/build/*.dll ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -572,6 +571,8 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
+        <Command Enabled="no">#if [ -d "Resources" ]; then rm -R Resources ; else echo "Exists";fi</Command>
+        <Command Enabled="no">#if [ -f "./package/Prerequisites/RegardsViewer2.zip" ]; then rm package/Prerequisites/RegardsViewer2.zip ; else echo "Exists";fi</Command>
         <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir "../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1" --include-dir "../libextern/wxWidgets-master/include" -o regards.rc.o</Command>
       </PreBuild>
       <PostBuild>
@@ -633,28 +634,24 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release/libjxrglue.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Release/libraw-19.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release/libwebp-7.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Release/libwebpmux-3.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/libpoppler-91.dll ./Release/libpoppler-91.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Release/libjpegxr.dll</Command>
-        <Command Enabled="yes">cp ../libextern/poppler-0.81.0/build/cpp/libpoppler-cpp-0.dll ./Release/libpoppler-cpp-0.dll</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf28.dll ./Release/qpdf28.dll</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/qpdf28.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpeg-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblcms2-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libopenjp2-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtiff-5.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libzstd.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblept-5.dll ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/tesseract-4.1.0/src/api/.libs/libtesseract-4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libarchive-13.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgif-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
-        <Command Enabled="yes">rm ./package/Prerequisites/RegardsViewer2.zip</Command>
-        <Command Enabled="yes">rm -R Resources</Command>
+        <Command Enabled="yes">cp ../libextern/build/*.dll ./Release</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">zip -r9 ./package/Prerequisites/RegardsViewer2.zip ./Resources</Command>
