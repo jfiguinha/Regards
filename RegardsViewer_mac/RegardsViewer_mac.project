@@ -374,7 +374,7 @@
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="no">#cp ../libextern/fftw-3.3.8/.libs/libfftw3f.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/leptonica/lib/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
@@ -406,7 +406,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler-cpp.0.dylib @executable_path/../Frameworks/libpoppler-cpp.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib @executable_path/../Frameworks/liblibfreeimage.3.18.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.dylib @executable_path/../Frameworks/liblibfreeimage.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Debug/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -615,7 +615,7 @@
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf-2_5.25.dylib</Command>
         <Command Enabled="no">#cp ../libextern/fftw-3.3.8/.libs/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfftw3f.3.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
-        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libSDL2-2.0.0.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/leptonica/lib/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/llvm@7/lib/libc++.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
@@ -648,7 +648,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler-cpp.0.dylib @executable_path/../Frameworks/libpoppler-cpp.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.3.18.0.dylib @executable_path/../Frameworks/liblibfreeimage.3.18.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/freeimage/lib/libfreeimage.dylib @executable_path/../Frameworks/liblibfreeimage.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change ./Release/libFaceRecognition.dylib @executable_path/../Frameworks/libFaceRecognition.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
