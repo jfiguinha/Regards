@@ -571,8 +571,6 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
-        <Command Enabled="no">#if [ -d "Resources" ]; then rm -R Resources ; else echo "Exists";fi</Command>
-        <Command Enabled="no">#if [ -f "./package/Prerequisites/RegardsViewer2.zip" ]; then rm package/Prerequisites/RegardsViewer2.zip ; else echo "Exists";fi</Command>
         <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir "../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1" --include-dir "../libextern/wxWidgets-master/include" -o regards.rc.o</Command>
       </PreBuild>
       <PostBuild>
@@ -652,6 +650,8 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/build/*.dll ./Release</Command>
+        <Command Enabled="yes">rm -f ./package/Prerequisites/RegardsViewer2.zip</Command>
+        <Command Enabled="yes">rm -f -R Resources</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">zip -r9 ./package/Prerequisites/RegardsViewer2.zip ./Resources</Command>
