@@ -748,6 +748,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libzen.0.dylib @executable_path/../Frameworks/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libmediainfo.0.dylib</Command>
         <Command Enabled="yes">$(shell change_link.sh)</Command>
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
+        <Command Enabled="yes">rm -f ./package/RegardsViewer2.dmg</Command>
         <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
