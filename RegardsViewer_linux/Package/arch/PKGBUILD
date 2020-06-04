@@ -8,7 +8,7 @@ url="https://github.com/jfiguinha/Regards"
 license=('GPL')
 provides=()
 options=()
-depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'openexr' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau' 'sndio' 'freeimage')
+depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'openexr' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau' 'sndio' 'freeimage' 'openexr')
 optdepends=()
 conflicts=('RegardsViewer')
 source=("https://github.com/jfiguinha/Regards/releases/download/v2.49/RegardsViewer_arch_linux_2_49.tar.xz")
@@ -18,5 +18,6 @@ package() {
   # Recursively remove group's write permission before moving to package directory
   mkdir ${pkgdir}/usr
   mkdir ${pkgdir}/usr/bin
-   mv ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
+   cp ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
+   mv ${srcdir}/RegardsViewer2 ${pkgdir}/opt
 }
