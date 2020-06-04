@@ -35,6 +35,7 @@ sudo pacman -S bzip2
 sudo pacman -S mesa-vdpau
 sudo pacman -S unzip
 sudo pacman -S sndio
+sudo pacman -S openexr
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
