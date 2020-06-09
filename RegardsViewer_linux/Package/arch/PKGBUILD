@@ -1,6 +1,6 @@
 # Maintainer: Jacques Figuinha <appt.jf@outlook.fr>
 pkgname=regardsviewer-bin
-pkgver=2.51.0
+pkgver=2.52.0
 pkgrel=1
 pkgdesc="Regards is a modern photo viewer. (official precompiled binary)"
 arch=('x86_64')
@@ -11,12 +11,19 @@ options=()
 depends=('libexif' 'gtk3' 'webkit2gtk' 'freeglut' 'mesa' 'libjpeg-turbo' 'sdl2' 'glew' 'openexr' 'curl' 'expat' 'libva' 'sane' 'ocl-icd' 'openjpeg2' 'fftw' 'leptonica' 'libwebp' 'intel-tbb' 'bzip2' 'mesa-vdpau' 'sndio' 'freeimage')
 optdepends=()
 conflicts=('RegardsViewer')
-source=("https://github.com/jfiguinha/Regards/releases/download/v2.49/RegardsViewer_arch_linux_2_49.tar.xz")
-sha256sums=('46f415e638178ef77bdc39cf15cb769f622f60715e62f40f799fb075f4368209')
+source=("RegardsViewer.zip")
+sha256sums=('0a53d82f68e72e95c2cbbbbb7e6e442ec844a4d256fe4d6d952d306b65a62528')
 
 package() {
   # Recursively remove group's write permission before moving to package directory
   mkdir ${pkgdir}/usr
   mkdir ${pkgdir}/usr/bin
-   mv ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
+  mkdir ${pkgdir}/usr/share
+  mkdir ${pkgdir}/usr/share/applications
+  mkdir ${pkgdir}/opt
+  mkdir ${pkgdir}/opt/RegardsViewer2
+   cp ${srcdir}/RegardsViewer ${pkgdir}/usr/bin
+   cp ${srcdir}/RegardsViewer.desktop ${pkgdir}/usr/share/applications
+   mv ${srcdir}/RegardsViewer2 ${pkgdir}/opt
+   chmod +x ${pkgdir}/usr/bin/RegardsViewer
 }
