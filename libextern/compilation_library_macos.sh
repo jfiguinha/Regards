@@ -11,11 +11,11 @@ wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
 tar xf poppler-0.81.0.tar.xz
 
 #get Tesseract
-wget https://github.com/tesseract-ocr/tesseract/archive/4.1.0.zip
-unzip 4.1.0.zip
+wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
+unzip 4.1.1.zip
 
 #compile tesseract
-cd tesseract-4.1.0
+cd tesseract-4.1.1
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
