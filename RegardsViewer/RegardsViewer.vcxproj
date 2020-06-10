@@ -90,7 +90,7 @@
     <LibraryPath>$(SolutionDir)libextern\FreeImage\x64\Release;$(SolutionDir)libextern\libOpenCL\lib\x86_64\;$(SolutionDir)libextern\heif-master\build\lib\Debug;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib</LibraryPath>
     <EmbedManifest>false</EmbedManifest>
     <TargetName>RegardsViewer</TargetName>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -105,7 +105,7 @@
     <IncludePath>$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\libextern\glew-2.1.0\include;$(SolutionDir)\libextern\SDL2-2.0.5\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
     <TargetName>RegardsViewer</TargetName>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSdk_71A_ExecutablePath);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);</ExecutablePath>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -141,20 +141,12 @@
       <AdditionalDependencies>IlmImf-2_3_d.lib;webpdemuxd.lib;webpdecoderd.lib;webpd.lib;libexif.lib;freetyped.lib;libiconv.lib;libxml2.lib;jasperd.lib;leptonica-1.78.0d.lib;tesseract41d.lib;FreeImaged.lib;openjp2.lib;cairod.lib;gdiplus.lib;wiaguid.lib;Rpcrt4.lib;comctl32.lib;heif_shared.lib;swscale.lib;fftw3f.lib;freeglutd.lib;D3d9.lib;opengl32.lib;swresample.lib;avutil.lib;avcodec.lib;avdevice.lib;avformat.lib;avfilter.lib;Propsys.lib;windowscodecs.lib;mfuuid.lib;mfplat.lib;mf.lib;evr.lib;mfplay.lib;mfreadwrite.lib;Strmiids.lib;Shlwapi.lib;opencl.lib;wxbase31ud.lib;wxbase31ud_net.lib;wxbase31ud_xml.lib;wxregexu.lib;wxexpat.lib;wxjpeg.lib;turbojpegd.lib;wxpng.lib;wxzlib.lib;wxmsw31ud_core.lib;wxmsw31ud_adv.lib;wxmsw31ud_html.lib;wxmsw31ud_gl.lib;wxmsw31ud_xrc.lib;wxmsw31ud_qa.lib;wxmsw31ud_aui.lib;wxmsw31ud_media.lib;wxmsw31ud_ribbon.lib;wxmsw31ud_stc.lib;wxmsw31ud_propgrid.lib;wxmsw31ud_richtext.lib;wxmsw31ud_webview.lib;wxscintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(SolutionDir)\x64\Debug\Resources"
-mkdir -p "$(SolutionDir)\x64\Debug\Resources\1"
-mkdir -p "$(SolutionDir)\x64\Debug\Resources\tessdata"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources" "$(SolutionDir)\x64\Debug\Resources"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Debug\Resources\1"
-XCOPY /R /Y "$(SolutionDir)\Regards\Resources\1" "$(SolutionDir)\x64\Debug\Resources\tessdata"
-XCOPY /Y "$(SolutionDir)\libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\x64\dynamic\libcurl_debug.dll"  "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\lib\x64\dynamic\*.dll"   "$(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\FreeImage3180\FreeImage\x64\Debug\FreeImaged.dll" $(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\FreeImage3180\FreeImage\x64\Debug\FreeImaged.lib" $(SolutionDir)\x64\Debug"
-XCOPY /Y "$(SolutionDir)\libextern\FreeImage3180\FreeImage\x64\Debug\FreeImaged.pdb" $(SolutionDir)\x64\Debug"</Command>
+      <Command>rmdir /Q /S "$(SolutionDir)x64\Debug\Resources"
+mkdir "$(SolutionDir)x64\Debug\Resources"
+XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" "$(SolutionDir)x64\Debug\Resources"
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Debug\heif_shared.dll" "$(SolutionDir)x64\Debug"
+XCOPY /Y "$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Debug\libx265.dll" "$(SolutionDir)x64\Debug"
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  "$(SolutionDir)x64\Debug"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -236,20 +228,12 @@ XCOPY /Y "$(SolutionDir)\libextern\FreeImage3180\FreeImage\x64\Debug\FreeImaged.
       <UACExecutionLevel>AsInvoker</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir -p "$(SolutionDir)x64\Release\Resources" 
-mkdir -p "$(SolutionDir)x64\Release\Resources\1" 
-mkdir -p "$(SolutionDir)x64\Release\Resources\tessdata" 
-XCOPY /R /Y "$(SolutionDir)Regards\Resources" "$(SolutionDir)\x64\Release\Resources"
- XCOPY /R /Y "$(SolutionDir)Regards\Resources\1" "$(SolutionDir)\x64\Release\Resources\1"
- XCOPY /R /Y "$(SolutionDir)Regards\Resources\tessdata" "$(SolutionDir)\x64\Release\Resources\tessdata"
- XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)\x64\Release"
- XCOPY /Y "$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)\x64\Release"
- XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\bin\*.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\x64\dynamic\libcurl.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)packages\openssl-vc141-static-x86_64.1.0.2\build\native\lib\x64\dynamic\*.dll"  "$(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)libextern\FreeImage3180\FreeImage\x64\Release\FreeImage.dll" $(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)libextern\FreeImage3180\FreeImage\x64\Release\FreeImage.lib" $(SolutionDir)\x64\Release"
-XCOPY /Y "$(SolutionDir)libextern\FreeImage3180\FreeImage\x64\Release\FreeImage.pdb" $(SolutionDir)\x64\Release"</Command>
+      <Command>rmdir /Q /S "$(SolutionDir)x64\Release\Resources"
+mkdir "$(SolutionDir)x64\Release\Resources"
+XCOPY /E /H /C /I "$(SolutionDir)Regards\Resources" "$(SolutionDir)x64\Release\Resources"
+XCOPY /Y "$(SolutionDir)libextern\heif-master\build\lib\Release\heif_shared.dll" "$(SolutionDir)x64\Release"
+XCOPY /Y "$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Release\libx265.dll" "$(SolutionDir)x64\Release"
+XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"  "$(SolutionDir)x64\Release"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
