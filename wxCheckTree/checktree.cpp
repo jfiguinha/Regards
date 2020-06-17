@@ -315,16 +315,18 @@ void wxCheckTree::On_Char( wxKeyEvent& event )
 
 void wxCheckTree::On_KeyDown( wxKeyEvent& event )
 {
+	/*
     if(event.GetKeyCode()==32)
     {
         ldhighlight( this, last_kf );
     }
-
+	*/
     event.Skip();
 }
 
 void wxCheckTree::On_KeyUp( wxKeyEvent& event )
 {
+	/*
     if( event.GetKeyCode()==32 )
     {
         mohighlight(this,last_kf,true);
@@ -336,7 +338,7 @@ void wxCheckTree::On_KeyUp( wxKeyEvent& event )
 
         Unselect();
     }
-
+	*/
     event.Skip();
 }
 
@@ -541,7 +543,7 @@ void wxCheckTree::On_Mouse_Wheel( wxMouseEvent& event )
 
 void wxCheckTree::On_Tree_Focus_Set( wxFocusEvent& event )
 {
-    //event.Skip();
+    event.Skip();
 
     //skipping this event will set the last selected item
     //to be highlighted and I want the tree items to only be

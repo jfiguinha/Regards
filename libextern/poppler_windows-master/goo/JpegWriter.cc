@@ -20,7 +20,7 @@
 #ifdef ENABLE_LIBJPEG
 
 #ifdef WIN32
-#define boolean int
+//#define boolean int
 #endif
 
 extern "C" {

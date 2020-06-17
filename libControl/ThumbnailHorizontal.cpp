@@ -46,7 +46,7 @@ void CThumbnailHorizontal::InitPosition()
 void CThumbnailHorizontal::SetListeFile(const vector<wxString> & files)
 {
     threadDataProcess = false;
-
+	this->SetFocus();
     InitScrollingPos();
     EraseThumbnailList();
 

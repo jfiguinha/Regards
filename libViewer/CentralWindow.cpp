@@ -276,10 +276,10 @@ void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement
 {
 	TRACE();
     printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
-	if (this->filename != filename)
-	{
+	//if (this->filename != filename)
+	//{
 		RefreshPicture(filename, numElement, first);
-	}
+	//}
 	/*
 	LoadPictureInThread(filename, numElement);
 	if (thumbnailPicture != nullptr)
