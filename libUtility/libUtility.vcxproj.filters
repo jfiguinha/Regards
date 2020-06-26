@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{e8bbb968-b276-407b-84ef-efbae7a0fc6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Registry">
+      <UniqueIdentifier>{653de218-ae50-4e95-a2c8-1f7752e7e7fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +39,9 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="RegistryAccess.h">
+      <Filter>Registry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConvertUtility.cpp">
@@ -52,6 +58,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="RegistryAccess.cpp">
+      <Filter>Registry</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

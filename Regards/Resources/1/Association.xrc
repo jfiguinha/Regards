@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="Association">
+		<title>Extension Assocation</title>
+		<centered>1</centered>
+		<size>400,306</size>
+		<object class="wxCheckListBox" name="ID_CHECKLIST">
+			<label>Extension Option</label>
+			<style>wxLB_MULTIPLE</style>
+			<content>
+				<item checked="1">pgm</item>
+				<item checked="1">pnm</item>
+				<item checked="1">bmp</item>
+				<item checked="1">pcx</item>
+				<item checked="1">jpg</item>
+				<item checked="1">jpe</item>
+				<item checked="1">jpeg</item>
+				<item checked="1">jfif</item>
+				<item checked="1">jif</item>
+				<item checked="1">jfi</item>
+				<item checked="1">tif</item>
+				<item checked="1">tiff</item>
+				<item checked="1">gif</item>
+				<item checked="1">png</item>
+				<item checked="1">tga</item>
+				<item checked="1">pcd</item>
+				<item checked="1">webp</item>
+				<item checked="1">bpg</item>
+				<item checked="1">jpc</item>
+				<item checked="1">j2c</item>
+				<item checked="1">pgx</item>
+				<item checked="1">ppm</item>
+				<item checked="1">psd</item>
+				<item checked="1">pdd</item>
+				<item checked="1">mng</item>
+				<item checked="1">jng</item>
+				<item checked="1">iff</item>
+				<item checked="1">xpm</item>
+				<item checked="1">ico</item>
+				<item checked="1">cur</item>
+				<item checked="1">ani</item>
+				<item checked="1">svg</item>
+				<item checked="1">exr</item>
+				<item checked="1">hdr</item>
+				<item checked="1">heic</item>
+				<item checked="1">nef</item>
+				<item checked="1">crw</item>
+				<item checked="1">cr2</item>
+				<item checked="1">dng</item>
+				<item checked="1">arw</item>
+				<item checked="1">erf</item>
+				<item checked="1">3fr</item>
+				<item checked="1">dcr</item>
+				<item checked="1">raw</item>
+				<item checked="1">x3f</item>
+				<item checked="1">mef</item>
+				<item checked="1">raf</item>
+				<item checked="1">mrw</item>
+				<item checked="1">pef</item>
+				<item checked="1">sr2</item>
+				<item checked="1">orf</item>
+				<item checked="1">jbg</item>
+				<item checked="1">mp4</item>
+				<item checked="1">dat</item>
+				<item checked="1">m4s</item>
+				<item checked="1">vob</item>
+				<item checked="1">mod</item>
+				<item checked="1">mpv2</item>
+				<item checked="1">mp2</item>
+				<item checked="1">m1v</item>
+				<item checked="1">mpe</item>
+				<item checked="1">mpg</item>
+				<item checked="1">mpeg</item>
+				<item checked="1">wtv</item>
+				<item checked="1">dvr-ms</item>
+				<item checked="1">m2ts</item>
+				<item checked="1">avi</item>
+				<item checked="1">wmv</item>
+				<item checked="1">asf</item>
+				<item checked="1">vm</item>
+				<item checked="1">mov</item>
+				<item checked="1">qt</item>
+				<item checked="1">vp8</item>
+				<item checked="1">vp9</item>
+				<item checked="1">webm</item>
+				<item checked="1">mkv</item>
+				<item checked="1">y4m</item>
+				<item checked="1">ivf</item>
+				<item checked="1">pdf</item>
+				<item checked="1">jxr</item>
+				<item checked="1">j2k</item>
+				<item checked="1">jp2</item>
+				<item checked="1">pfm</item>
+			</content>
+			<default>-1</default>
+			<pos>5,20</pos>
+			<size>390,216</size>
+		</object>
+		<object class="wxCheckBox" name="ID_CHECKSELECT">
+			<label>Select all extension</label>
+			<pos>5,250</pos>
+		</object>		
+		<object class="wxButton" name="ID_OK">
+			<label>OK</label>
+			<pos>88,280</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>224,280</pos>
+		</object>
+	</object>
+</resource>

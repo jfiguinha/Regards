@@ -233,6 +233,7 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\J2kOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JxrOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PDFOption.xrc");
+	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\Association.xrc");
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CategoryDetection.xrc");

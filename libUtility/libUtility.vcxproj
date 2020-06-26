@@ -181,6 +181,7 @@
     <ClInclude Include="ConvertUtility.h" />
     <ClInclude Include="FileUtility.h" />
     <ClInclude Include="LoadingResource.h" />
+    <ClInclude Include="RegistryAccess.h" />
     <ClInclude Include="wxmd5.h" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +197,7 @@
     </ClCompile>
     <ClCompile Include="FileUtility.cpp" />
     <ClCompile Include="LoadingResource.cpp" />
+    <ClCompile Include="RegistryAccess.cpp" />
     <ClCompile Include="wxmd5.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

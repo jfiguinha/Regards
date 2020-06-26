@@ -30,6 +30,7 @@
 #include <CategoryDetection.h>
 #include <SavePicture.h>
 #include <ScannerFrame.h>
+#include <Association.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -243,6 +244,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
 	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
+	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
@@ -270,6 +272,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(wxEVENT_CLOSESCANNER, wxCommandEventHandler(CViewerFrame::HideScanner));
 	Connect(wxID_PRINT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnPrint));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnExport));
+#ifdef WIN32
+	Connect(ID_ASSOCIATE, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnAssociate));
+#endif
 	//Connect(ID_SCANNER, wxEVT_MENU, wxCommandEventHandler(CViewerFrame::OnScanner));
 	mainWindow->Bind(wxEVT_CHAR_HOOK, &CViewerFrame::OnKeyDown, this);
 	
@@ -380,7 +385,15 @@ void CViewerFrame::OnExport(wxCommandEvent& event)
 		CSavePicture::SavePicture(this, nullptr, filename);
 	}
 }
-
+#ifdef WIN32
+void CViewerFrame::OnAssociate(wxCommandEvent& event)
+{
+	Association associate(this);
+	associate.ShowModal();
+	if (associate.IsOk())
+		associate.AssociateExtension();
+}
+#endif
 void CViewerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;

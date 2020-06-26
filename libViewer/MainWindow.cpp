@@ -851,6 +851,7 @@ void CMainWindow::SetSelectFile(const wxString &filename)
 {
     TRACE();
 	this->filename = filename;
+	this->UpdatePicture();
     //centralWnd->HidePanel();
 }
 
