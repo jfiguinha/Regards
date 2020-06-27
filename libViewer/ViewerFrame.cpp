@@ -84,6 +84,12 @@ bool CViewerFrame::GetViewerMode()
     return viewerMode;
 }
 
+void CViewerFrame::OpenFile(const wxString& fileName)
+{
+	if (mainWindow != nullptr)
+		mainWindow->OpenFile(fileName);
+}
+
 void CViewerFrame::SetViewerMode(const bool &mode)
 {
     viewerMode = mode;
@@ -95,6 +101,7 @@ void CViewerFrame::SetViewerMode(const bool &mode)
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE)
 {
+	mainWindow = nullptr;
 	fullscreen = false;
 	onExit = false;
 	mainWindowWaiting = nullptr;

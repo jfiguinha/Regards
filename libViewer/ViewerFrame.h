@@ -62,6 +62,7 @@ namespace Regards
 			void PrintPreview(CImageLoadingFormat * imageToPrint);
 			void PrintImagePreview(CRegardsBitmap * imageToPrint);
 			void Exit();
+			void OpenFile(const wxString& fileName);
 			void ShowViewer(){};
             static bool GetViewerMode();
             static void SetViewerMode(const bool &viewerMode);
