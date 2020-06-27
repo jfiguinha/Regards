@@ -84,11 +84,6 @@ bool CViewerFrame::GetViewerMode()
     return viewerMode;
 }
 
-void CViewerFrame::OpenFile(const wxString& fileName)
-{
-	if (mainWindow != nullptr)
-		mainWindow->OpenFile(fileName);
-}
 
 void CViewerFrame::SetViewerMode(const bool &mode)
 {

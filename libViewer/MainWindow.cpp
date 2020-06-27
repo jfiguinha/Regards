@@ -1233,6 +1233,8 @@ void CMainWindow::OpenFile(const wxString &fileToOpen)
 	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 	event.SetInt(4);
 	wxPostEvent(central, event);
+    
+    ProcessIdle();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////

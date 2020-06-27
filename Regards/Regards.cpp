@@ -56,9 +56,10 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 void MyApp::MacOpenFile(const wxString &fileName)
 {
     wxString message = "Mac Open Files : " + fileName;
+    fileToOpen = fileName;
 	//wxMessageBox(message);
 	//wxMessageBox(fileName);
-	frameViewer->OpenFile(fileName);
+	//frameViewer->OpenFile(fileName);
 }
 #endif
 
