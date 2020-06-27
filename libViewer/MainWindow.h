@@ -265,6 +265,7 @@ namespace Regards
 			//bool sendMessageVideoStop;
             bool checkVersion;
             bool isInit = false;
+            bool setViewerMode = false;
 		};
 	}
 

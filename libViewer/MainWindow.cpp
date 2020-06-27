@@ -733,7 +733,21 @@ void CMainWindow::ProcessIdle()
         hasDoneOneThings = true;
 	}      
         
-	//muPictureList.unlock();
+    if(setViewerMode)
+    {
+       setViewerMode = false;
+        wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+        wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+        event.SetInt(4);
+        wxPostEvent(central, event);       
+    }
+	
+    /*
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+	event.SetInt(4);
+	wxPostEvent(central, event);
+    */
 
     if(!hasDoneOneThings)
         processIdle = false;
@@ -1225,16 +1239,22 @@ void CMainWindow::OpenFile(const wxString &fileToOpen)
 	{
 		AddFolder(folder);
 	}
+    
+	this->filename = fileToOpen;
+	firstFileToShow = this->filename;    
+    
 	updateCriteria = true;
 	updateFolder = true;
 	processIdle = true;
+    setViewerMode = true;
 	
+    /*
 	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
 	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
 	event.SetInt(4);
 	wxPostEvent(central, event);
-    
-    ProcessIdle();
+    */
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
