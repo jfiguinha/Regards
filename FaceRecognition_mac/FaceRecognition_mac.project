@@ -21,7 +21,7 @@
   </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
-      <Compiler Options="-std=gnu++11;-Wall;-fpermissive;-fPIC" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="-std=gnu++11;-Wall;-fpermissive;-fPIC;-fopenmp" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../libextern/dlib-19.17"/>
         <IncludePath Value="../FaceRecognition"/>
         <Preprocessor Value="DLIB_JPEG_SUPPORT"/>
@@ -73,7 +73,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="clang++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>

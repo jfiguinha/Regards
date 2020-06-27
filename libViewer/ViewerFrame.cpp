@@ -89,6 +89,39 @@ void CViewerFrame::SetViewerMode(const bool &mode)
     viewerMode = mode;
 }
 
+<<<<<<< HEAD
+=======
+void CViewerFrame::OpenFile(const wxString &fileToOpen)
+{
+	FolderCatalogVector folderList;
+	CSqlFindFolderCatalog folderCatalog;
+	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+    bool find = false;
+    wxFileName filename(fileToOpen);
+    wxString folder = filename.GetPath();
+
+    for (CFolderCatalog folderlocal : folderList)
+    {
+        if (folder == folderlocal.GetFolderPath())
+        {
+            find = true;
+            break;
+        }
+    }
+
+    
+    mainWindow->SetSelectFile(fileToOpen);
+    
+    if (!find)
+    {
+        //mainWindow->AddFolder(folder);
+        wxString * newFolder = new wxString(folder);
+        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETFOLDER);
+        evt.SetClientData(newFolder);
+        mainWindow->OnAddFolder(evt);
+        
+    }
+>>>>>>> 138553a546a47bc906caabc3550a876f805b5292
 
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen)
