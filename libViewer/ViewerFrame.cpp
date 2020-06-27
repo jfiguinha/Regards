@@ -388,7 +388,8 @@ void CViewerFrame::OnExport(wxCommandEvent& event)
 #ifdef WIN32
 void CViewerFrame::OnAssociate(wxCommandEvent& event)
 {
-	wxExecute(wxT("associate.exe"), wxEXEC_SYNC);
+	wxString path = CFileUtility::GetProgramFolderPath() + "\\associate.exe";
+	wxExecute(path, wxEXEC_SYNC);
 	/*
 	Association associate(this);
 	associate.ShowModal();
