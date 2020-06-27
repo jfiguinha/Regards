@@ -317,6 +317,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	Connect(TIMER_LOADPICTURE, wxEVT_TIMER, wxTimerEventHandler(CViewerFrame::OnTimerLoadPicture), nullptr, this);
 }
 
+
 void CViewerFrame::ShowScanner()
 {
 	if (frameScanner != nullptr)
