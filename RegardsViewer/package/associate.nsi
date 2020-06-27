@@ -6,7 +6,6 @@
 ;Include Modern UI
 
 !include "MUI2.nsh"
-!include "ZipDLL.nsh"
 !include "FileAssociation.nsh"
 
 # Reserve plugin files (good practice)
@@ -17,14 +16,14 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
 ;--------------------------------
 ;General
-!define MUI_PRODUCT "Regards Viewer 2.54"
+!define MUI_PRODUCT "Regards Viewer 2.53"
 !define MUI_FILE "RegardsViewer"
 !define MUI_ICON "viewer.ico"
 !define UninstId "RegardsViewer2" ; You might want to use a GUID here
 
   ;Name and file
-  Name "Regards Viewer 2.54"
-  OutFile "RegardsViewer2Setup.exe"
+  Name "Associate"
+  OutFile "Associate.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES64\RegardsViewer2"
@@ -37,19 +36,21 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
 
 ;--------------------------------
 ;Interface Settings
-
+!define buttonText "!insertMacro buttonText"
   !define MUI_ABORTWARNING
+  
+MiscButtonText "Previous" "Next" "Cancel" "Ok"
 
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE "License.txt"
-  !insertmacro MUI_PAGE_COMPONENTS
-  !insertmacro MUI_PAGE_DIRECTORY
-  !insertmacro MUI_PAGE_INSTFILES
+ ; !insertmacro MUI_PAGE_WELCOME
+ ; !insertmacro MUI_PAGE_LICENSE "License.txt"
+ ; !insertmacro MUI_PAGE_COMPONENTS
+ ; !insertmacro MUI_PAGE_DIRECTORY
+ ; !insertmacro MUI_PAGE_INSTFILES
 	Page Custom ListViewShow ListViewLeave  
-  !insertmacro MUI_PAGE_FINISH
+ ; !insertmacro MUI_PAGE_FINISH
   
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -59,26 +60,70 @@ ReserveFile `${NSISDIR}\Plugins\EmbeddedLists.dll`
  
   !insertmacro MUI_LANGUAGE "English"
  !define Explode "!insertmacro Explode"
+ 
+!macro buttonText button value
+	Push ${button}
+	Push t
+	Push "${value}"
+	Call Buttons
+!macroend
 
+; Function (inserted via macros for installer vs uninstaller)
+; Buttons FUnction
+;   Used to interact with the three default buttons; Back, Next, Cancel
+; Usage :
+;   Push Back|Next|Cancel
+;   Push v|e|t
+;   Push 1|0|<string>
+;   Call Buttons | Call Un.Buttons
+; Result :
+;   Interacts with the appropriate button
+;   If 'v', then 1 will set visible and 0 will set invisible
+;   If 'e', then 1 will set enabled and 0 will set disabled
+;   If 't', then <string> will be set as the button's new label text
+!macro ButtonsFunc Un
+	Function ${Un}Buttons
+									; Stack: <value> <mode> <button>
+		Exch $2 ; value				; Stack: $2 <mode> <button>
+		Exch						; Stack: <mode> $2 <button>
+		Exch $1 ; mode				; Stack: $1 $2 <button>
+		Exch 2						; Stack: <button> $2 $1
+		Exch $0 ; button			; Stack: $0 $2 $1
+		Push $3						; Stack: $3 $0 $2 $1
+ 
+		StrCmp $0 "Back" 0 +3
+			StrCpy $3 3
+			goto _setbutton
+		StrCmp $0 "Next" 0 +3
+			StrCpy $3 1
+			goto _setbutton
+		StrCmp $0 "Cancel" 0 _end
+			StrCpy $3 2
+ 
+		_setbutton:
+		GetDlgItem $3 $HWNDPARENT $3
+ 
+		StrCmp $1 "v" 0 +3
+			ShowWindow $3 $2
+			goto _end
+		StrCmp $1 "e" 0 +3
+			EnableWindow $3 $2
+			goto _end
+		StrCmp $1 "t" 0 _end
+			SendMessage $3 ${WM_SETTEXT} 0 "STR:$2"
+ 
+		_end:
+ 
+									; Stack: $3 $0 $2 $1
+		Pop $3						; Stack: $0 $2 $1
+		Pop $0						; Stack: $2 $1
+		Pop $2						; Stack: $1
+		Pop $1						; Stack: [clean]
+	FunctionEnd
+!macroend
+!insertmacro ButtonsFunc ""
 
 Function .onInit
-StrCpy $0 "$INSTDIR\Uninstall.exe"
-IfFileExists "$INSTDIR\Uninstall.exe" file_found file_not_found
-file_found:
-${If} $0 != ""
-${AndIf} ${Cmd} `MessageBox MB_YESNO|MB_ICONQUESTION "Uninstall previous version?" /SD IDYES IDYES`
-  Delete "$INSTDIR\Uninstall.exe"
-  Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
-
-  ;create start-menu items
-  Delete "$SMPROGRAMS\${MUI_PRODUCT}"
-
-  RMDIR /r "$INSTDIR"
-
-  DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
-${EndIf}
-file_not_found:
-	DetailPrint "Uninstall Regards Viewer"
 
  InitPluginsDir
  File `/oname=$PLUGINSDIR\ListView_CheckBoxes.ini` `ListView_CheckBoxes.ini`
@@ -86,118 +131,20 @@ file_not_found:
  WriteINIStr `$PLUGINSDIR\ListView_CheckBoxes.ini` `Icons` `Icon1` `$EXEDIR\icon1.ico`
  WriteINIStr `$PLUGINSDIR\ListView_CheckBoxes.ini` `Icons` `Icon2` `$EXEDIR\icon2.ico`
 
+	${buttonText} "Close" "Ok"
 FunctionEnd
-  
-Function openLinkNewWindow
-  Push $3
-  Exch
-  Push $2
-  Exch
-  Push $1
-  Exch
-  Push $0
-  Exch
+
  
-  ReadRegStr $0 HKCR "http\shell\open\command" ""
-# Get browser path
-    DetailPrint $0
-  StrCpy $2 '"'
-  StrCpy $1 $0 1
-  StrCmp $1 $2 +2 # if path is not enclosed in " look for space as final char
-    StrCpy $2 ' '
-  StrCpy $3 1
-  loop:
-    StrCpy $1 $0 1 $3
-    DetailPrint $1
-    StrCmp $1 $2 found
-    StrCmp $1 "" found
-    IntOp $3 $3 + 1
-    Goto loop
- 
-  found:
-    StrCpy $1 $0 $3
-    StrCmp $2 " " +2
-      StrCpy $1 '$1"'
- 
-  Pop $0
-  Exec '$1 $0'
-  Pop $0
-  Pop $1
-  Pop $2
-  Pop $3
-FunctionEnd
- 
-!macro _OpenURL URL
-Push "${URL}"
-Call openLinkNewWindow
-!macroend  
-
-;--------------------------------
-;Installer Sections
-Section "Regards Viewer 2.54" SecRegardsViewer
-
-  SetOutPath "$INSTDIR"
-  
-  
-  ;ADD YOUR OWN FILES HERE...
-  DetailPrint "*** Installing Regards Viewer 2.54..."
-  File "Prerequisites\RegardsViewer2.zip"
-  ZipDLL::extractall "$INSTDIR\RegardsViewer2.zip" $INSTDIR
-  ;Store installation folder
-  WriteRegStr HKCU "Software\RegardsViewer2" "" $INSTDIR
-  
-  ;Create uninstaller
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
-
-  DetailPrint "*** Remove zip installer ..."
-  Delete "$INSTDIR\RegardsViewer2.zip"
-    
-  ;create desktop shortcut
-  CreateShortCut "$DESKTOP\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" ""
-  
-  ;create start-menu items
-  CreateDirectory "$SMPROGRAMS\${MUI_PRODUCT}"
-  CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\${MUI_PRODUCT}\${MUI_PRODUCT}.lnk" "$INSTDIR\${MUI_FILE}.exe" "" "$INSTDIR\${MUI_FILE}.exe" 0
-  
-  ;write uninstall information to the registry
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "DisplayName" "${MUI_PRODUCT} (remove only)"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${MUI_PRODUCT}" "UninstallString" "$INSTDIR\Uninstall.exe"
- 
-  WriteUninstaller "$INSTDIR\Uninstall.exe"
-
-
-SectionEnd
-
 
 ;--------------------------------
 ;Descriptions
-
-  ;Language strings
-  LangString DESC_SecRegardsViewer ${LANG_ENGLISH} "Regards Viewer 2.54"
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecRegardsViewer} $(DESC_SecRegardsViewer)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-;--------------------------------
-;Uninstaller Section
-
-Section "Uninstall"
-
-  Delete "$INSTDIR\Uninstall.exe"
-  Delete "$DESKTOP\${MUI_PRODUCT}.lnk"
-
-  ;create start-menu items
-  Delete "$SMPROGRAMS\${MUI_PRODUCT}"
-
-  RMDIR /r "$INSTDIR"
-
-  DeleteRegKey /ifempty HKCU "Software\RegardsViewer2"
-
-SectionEnd
-
+Var CHECKBOX
 
 # Custom page functions
 # [[
@@ -206,7 +153,14 @@ Function ListViewShow
 
  EmbeddedLists::Dialog `$PLUGINSDIR\ListView_CheckBoxes.ini`
   Pop $R0
+  
+WriteINIStr "$PLUGINSDIR\ioSpecial.ini" "Field 4" "Type" "Checkbox"
 
+FunctionEnd
+
+Function OnCheckbox
+	Pop $0 # HWND
+	MessageBox MB_OK "checkbox clicked"
 FunctionEnd
 
 !macro  Explode Length  Separator   String
@@ -311,10 +265,6 @@ Function ListViewLeave
 		#MessageBox MB_OK "Element #$1: $2"
 	${Next} 
 
-
-  
-  Push "https://fr.tipeee.com/regardsviewer"
-  Call openLinkNewWindow
 
 FunctionEnd
 

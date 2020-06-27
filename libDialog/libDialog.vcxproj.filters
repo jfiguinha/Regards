@@ -64,6 +64,9 @@
     <Filter Include="SelectPage\Thumbnail">
       <UniqueIdentifier>{1238d3f9-fe9b-47b9-bcd7-2eae4676522a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Association">
+      <UniqueIdentifier>{5f38767f-bec3-4d4b-854c-19ecd32b88ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -159,6 +162,9 @@
     <ClCompile Include="PDFOption.cpp">
       <Filter>Picture Save Option</Filter>
     </ClCompile>
+    <ClCompile Include="Association.cpp">
+      <Filter>Association</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="PDFOption.h">
       <Filter>Picture Save Option</Filter>
+    </ClInclude>
+    <ClInclude Include="Association.h">
+      <Filter>Association</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

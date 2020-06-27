@@ -157,7 +157,7 @@ namespace Regards
 		class CMainWindow : public CWindowMain
 		{
 		public:
-			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar);
+			CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, const bool & openFirstFile);
 			~CMainWindow();
             void UpdateScreenRatio();
 			void StartDiaporama();

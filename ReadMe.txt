@@ -54,6 +54,15 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.54
+- Correct direct display picture from explorer
+- Add Association program for windows
+News for version 2.53
+Correct IHM bug
+- Espace bar is disable when you check a folder to begin picture navigation
+- Display picture when you stay push on espace bar
+News for version 2.52
+- Update library link
 News for version 2.51
 Under Scan Tools :
 - Add PDF creation with multifile picture

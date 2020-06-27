@@ -67,7 +67,7 @@ public:
 
 wxDEFINE_EVENT(wxEVENT_SETSCREEN, wxCommandEvent);
 
-CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar)
+CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * statusbar, const bool & openFirstFile)
 	: CWindowMain("CMainWindow",parent, id)
 {
 	//loadPicture = true;
@@ -171,7 +171,9 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	updateFolder = true;
 	//processIdle = true;
-	LoadPicture(true);
+
+	if(openFirstFile)
+		LoadPicture(true);
 }
 
 bool CMainWindow::IsVideo()
@@ -851,6 +853,7 @@ void CMainWindow::SetSelectFile(const wxString &filename)
 {
     TRACE();
 	this->filename = filename;
+	this->UpdatePicture();
     //centralWnd->HidePanel();
 }
 

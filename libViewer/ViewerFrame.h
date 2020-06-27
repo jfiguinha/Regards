@@ -31,6 +31,7 @@ namespace Regards
 			ID_EXPORT = 12,
 			ID_SCANNER = 13,
 			ID_CATEGORYDETECTION = 14,
+			ID_ASSOCIATE = 15,
 			ID_VIDEO = 1018,
 			ID_AUDIO = 1019,
 			ID_SUBTITLE = 1020,
@@ -70,6 +71,9 @@ namespace Regards
 			void ShowScanner();
 		private:
 			void OnExport(wxCommandEvent& event);
+#ifdef WIN32
+			void OnAssociate(wxCommandEvent& event);
+#endif
 			void OnPrint(wxCommandEvent& event);
             void OnHelp(wxCommandEvent& event);
             void OnIconSizeLess(wxCommandEvent& event);
