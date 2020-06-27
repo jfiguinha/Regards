@@ -388,10 +388,14 @@ void CViewerFrame::OnExport(wxCommandEvent& event)
 #ifdef WIN32
 void CViewerFrame::OnAssociate(wxCommandEvent& event)
 {
+	wxExecute(wxT("associate.exe"), wxEXEC_SYNC);
+	/*
 	Association associate(this);
 	associate.ShowModal();
 	if (associate.IsOk())
 		associate.AssociateExtension();
+	*/
+
 }
 #endif
 void CViewerFrame::OnPrint(wxCommandEvent& event)
