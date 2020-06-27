@@ -193,9 +193,11 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 		sqlFindPhotos.SearchPhotos(sqlRequest);
 	}
 
-
+	bool openFirstFile = true;
 	//SetIcon(wxIcon(wxT("regards.xpm")));
-	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this);
+	if (fileToOpen != "")
+		openFirstFile = false;
+	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile);
 	
 	//mainWindow->Show(true);
 	//mainWindowWaiting->Show(false);
@@ -388,8 +390,10 @@ void CViewerFrame::OnExport(wxCommandEvent& event)
 #ifdef WIN32
 void CViewerFrame::OnAssociate(wxCommandEvent& event)
 {
+	
 	wxString path = CFileUtility::GetProgramFolderPath() + "\\associate.exe";
-	wxExecute(path, wxEXEC_SYNC);
+	ShellExecute(this->GetHWND(), L"runas", path, 0, 0, SW_SHOWNORMAL);
+	//wxExecute(path, wxEXEC_SYNC);
 	/*
 	Association associate(this);
 	associate.ShowModal();
