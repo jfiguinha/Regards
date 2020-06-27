@@ -107,16 +107,17 @@ void CViewerFrame::OpenFile(const wxString &fileToOpen)
         }
     }
 
-    if (find)
-        mainWindow->SetSelectFile(fileToOpen);
-    else
+    
+    mainWindow->SetSelectFile(fileToOpen);
+    
+    if (!find)
     {
         //mainWindow->AddFolder(folder);
         wxString * newFolder = new wxString(folder);
         wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETFOLDER);
         evt.SetClientData(newFolder);
         mainWindow->OnAddFolder(evt);
-        mainWindow->SetSelectFile(fileToOpen);
+        
     }
 
 	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
