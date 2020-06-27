@@ -89,41 +89,7 @@ void CViewerFrame::SetViewerMode(const bool &mode)
     viewerMode = mode;
 }
 
-void CViewerFrame::OpenFile(const wxString &fileToOpen)
-{
-	FolderCatalogVector folderList;
-	CSqlFindFolderCatalog folderCatalog;
-	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
-    bool find = false;
-    wxFileName filename(fileToOpen);
-    wxString folder = filename.GetPath();
 
-    for (CFolderCatalog folderlocal : folderList)
-    {
-        if (folder == folderlocal.GetFolderPath())
-        {
-            find = true;
-            break;
-        }
-    }
-
-    if (find)
-        mainWindow->SetSelectFile(fileToOpen);
-    else
-    {
-        //mainWindow->AddFolder(folder);
-        wxString * newFolder = new wxString(folder);
-        wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_SETFOLDER);
-        evt.SetClientData(newFolder);
-        mainWindow->OnAddFolder(evt);
-        mainWindow->SetSelectFile(fileToOpen);
-    }
-
-	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
-	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-	event.SetInt(4);
-	wxPostEvent(central, event);
-}
 
 CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSize& size, IMainInterface * mainInterface, const wxString &fileToOpen)
 	: wxFrame(nullptr, wxID_ANY, title, pos, size, wxMAXIMIZE | wxDEFAULT_FRAME_STYLE)
@@ -246,7 +212,9 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
 	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
+#ifdef WIN32
 	menuFile->Append(ID_ASSOCIATE, "&Associate", "Associate");
+#endif
 	menuFile->Append(WXPRINT_PAGE_SETUP, labelPageSetup_link, labelPageSetup);
 #ifdef __WXMAC__
 	menuFile->Append(WXPRINT_PAGE_MARGINS, labelPageMargins_link, labelPageMargins);
@@ -336,7 +304,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	if (fileToOpen != "")
 	{
-        OpenFile(fileToOpen);
+		mainWindow->OpenFile(fileToOpen);
 	}
 	else
 	{

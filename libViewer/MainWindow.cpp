@@ -1199,6 +1199,42 @@ void CMainWindow::OnExit(wxCommandEvent& event)
 	statusBarViewer->Exit();
 }
 
+void CMainWindow::OpenFile(const wxString &fileToOpen)
+{
+
+	FolderCatalogVector folderList;
+	CSqlFindFolderCatalog folderCatalog;
+	folderCatalog.GetFolderCatalog(&folderList, NUMCATALOGID);
+	bool find = false;
+	wxFileName filename(fileToOpen);
+	wxString folder = filename.GetPath();
+
+	for (CFolderCatalog folderlocal : folderList)
+	{
+		if (folder == folderlocal.GetFolderPath())
+		{
+			find = true;
+			break;
+		}
+	}
+
+	this->filename = fileToOpen;
+	firstFileToShow = this->filename;
+
+	if (!find)
+	{
+		AddFolder(folder);
+	}
+	updateCriteria = true;
+	updateFolder = true;
+	processIdle = true;
+	
+	wxWindow* central = this->FindWindowById(CENTRALVIEWERWINDOWID);
+	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+	event.SetInt(4);
+	wxPostEvent(central, event);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ///Gestion des événements du menu
 ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,6 @@ namespace Regards
 			void PrintImagePreview(CRegardsBitmap * imageToPrint);
 			void Exit();
 			void ShowViewer(){};
-            void OpenFile(const wxString &filename);
             static bool GetViewerMode();
             static void SetViewerMode(const bool &viewerMode);
             bool AddFSEntry(const wxString& dirPath);

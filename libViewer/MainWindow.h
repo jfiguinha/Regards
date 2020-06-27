@@ -180,7 +180,7 @@ namespace Regards
 			void SetRangeProgressBar(const int &range);
 			void SetPosProgressBar(const int &position);
 			void AddFolder(const wxString &folder);
-			
+			void OpenFile(const wxString &fileToOpen);
 			void OnFacePertinence();
 			void SetSelectFile(const wxString &filename);
 			bool GetProcessEnd();
