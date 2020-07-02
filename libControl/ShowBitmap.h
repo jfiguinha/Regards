@@ -47,7 +47,6 @@ namespace Regards
             void OnViewerZoomIn(wxCommandEvent& event);
             void OnViewerZoomOut(wxCommandEvent& event);
 			void Resize();
-            void OnTimerRefresh(wxTimerEvent& event);
             
 			void OnControlSize(wxCommandEvent& event);
 			void OnSetPosition(wxCommandEvent& event);
