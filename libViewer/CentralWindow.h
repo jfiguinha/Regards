@@ -150,6 +150,7 @@ namespace Regards
 
 			CWindowManager * windowManager;
 			int windowMode;
+			int oldWindowMode;
 			wxTimer * animationTimer;
 			int animationPosition;
 			vector<CImageVideoThumbnail *> videoThumbnail;
