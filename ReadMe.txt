@@ -50,6 +50,7 @@ An OpenCL 1.2 compatible device is necessary to use this software.
 
 SOFTPEDIA 3,5 / 5
 FIND MY SOFT 3 / 5 
+HOTPICKS LINUX FORMAT JUNE 2020
 
 //**************************************************************************
 //What's New
