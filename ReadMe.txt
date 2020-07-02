@@ -54,6 +54,8 @@ FIND MY SOFT 3 / 5
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for version 2.55
+- Correct display mode corruption
 News for version 2.54
 - Correct direct display picture from explorer
 - Add Association program for windows
