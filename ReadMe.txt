@@ -41,7 +41,7 @@ Installation on Mac os X 10.10 and Later
 //Configuration
 //**************************************************************************
 
-Works on minimum windows 7 and above, Mac OS X 10.12 and above, Linux Mint 18 or Ubuntu 16.04 x64 and above. 
+Works on minimum windows 7 and above, Mac OS X 10.11 and above, Ubuntu 18.04 x64, Linux Arch and above. 
 An OpenCL 1.2 compatible device is necessary to use this software.
 
 //**************************************************************************
