@@ -165,7 +165,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
 		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID, fileGeolocalisation);
 
-		windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
+		panelInfosClick = windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 
 	}
 
@@ -709,7 +709,8 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		return;
 	oldWindowMode = windowMode;
 
-	previewWindow->Show(false);
+	//previewWindow->Show(false);
+	panelInfosClick->Show(false);
 
 #ifndef __NOFACE_DETECTION__
 	listFace->Show(false);
@@ -719,14 +720,12 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	switch (windowMode)
 	{
 	case 1:
-		previewWindow->Show(true);
-		windowManager->ChangeWindow(previewWindow, Pos::wxCENTRAL);
-		windowManager->ShowWindow(Pos::wxRIGHT, false);
-		windowManager->ShowWindow(Pos::wxBOTTOM, false);
+		//previewWindow->Show(true);
+		panelInfosClick->Show(true);
+		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
+		windowManager->ShowWindow(Pos::wxBOTTOM, 0);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT, 0);
 		windowManager->ShowPaneWindow(Pos::wxLEFT, 0);
-		windowManager->ShowPaneWindow(Pos::wxBOTTOM, 0);
-		windowManager->HidePaneWindow(Pos::wxBOTTOM, 0);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 		windowManager->Update();
 		//windowManager->Resize();
@@ -734,8 +733,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 #ifndef __NOFACE_DETECTION__
 	case 2:
 		listFace->Show(true);
-		windowManager->ChangeWindow(listFace, Pos::wxCENTRAL);
-		windowManager->HideWindow(Pos::wxRIGHT, false);
+		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
 		windowManager->HideWindow(Pos::wxBOTTOM, false);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
@@ -744,28 +742,20 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 #endif
 	case 3:
 		listPicture->Show(true);
-		windowManager->ChangeWindow(listPicture, Pos::wxCENTRAL);
-		windowManager->HideWindow(Pos::wxRIGHT, false);
+		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
 		windowManager->HideWindow(Pos::wxBOTTOM, false);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->Update();
 		break;
 	case 4:
-		previewWindow->Show(true);
-		windowManager->ChangeWindow(previewWindow, Pos::wxCENTRAL);
-		windowManager->ShowWindow(Pos::wxRIGHT, 0);
+		panelInfosClick->Show(true);
+		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 		windowManager->ShowWindow(Pos::wxBOTTOM, 0);
 		windowManager->HidePaneWindow(Pos::wxRIGHT, 0);
 		windowManager->HidePaneWindow(Pos::wxLEFT, 0);
-		windowManager->HidePaneWindow(Pos::wxTOP, 0);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->Update();
-		//viewerWindow->Show(true);
-		//this->SetWindow(panelSearch, viewerWindow);
-		//panelSearch->ClosePane(1);
-		////viewerWindow->HidePanelInfos();
-		//viewerWindow->HideThumbnailPanel();
 		break;
 
 	}

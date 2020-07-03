@@ -54,18 +54,20 @@ namespace Regards
 				return nullptr;
 			}
 
-			void SetWindow(CWindowMain * window)
+			void SetWindow(CWindowMain * window, bool isPanel)
 			{
 				this->window = nullptr;
 				this->windowOpengl = nullptr;
 				this->window = window;
+				this->isPanel = isPanel;
 			}
 
-			void SetWindow(CWindowOpenGLMain * window)
+			void SetWindow(CWindowOpenGLMain * window, bool isPanel)
 			{
 				this->window = nullptr;
 				this->windowOpengl = nullptr;
 				this->windowOpengl = window;
+				this->isPanel = isPanel;
 			}
 
 			wxRect rect;
@@ -97,12 +99,12 @@ namespace Regards
 			CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme);
 			virtual ~CWindowManager();
 
-			void AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton, const bool &isTop = false);
+			CPanelWithClickToolbar * AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton, const bool &isTop = false);
 			void AddWindow(CWindowMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop = false);
 			void AddWindow(CWindowOpenGLMain * window, Pos position, bool fixe, int size, wxRect rect, int id, bool isPanel, const bool &isTop = false);
 			void SetSeparationBarVisible(const bool& visible);
 			bool GetSeparationVisibility();
-			void ChangeWindow(CWindowMain * window, Pos position);
+			void ChangeWindow(CWindowMain * window, Pos position, bool isPanel);
 			void GenerateRenderBitmap();
 			void HideWindow(Pos position, const bool &refresh = true);
 			void ShowWindow(Pos position, const bool &refresh = true);

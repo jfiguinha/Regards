@@ -114,6 +114,8 @@ namespace Regards
 			CPanelPhotoWnd * panelPhotoWnd;
 			CMainParam * viewerconfig;
 			CListPicture * listPicture;
+			CPanelWithClickToolbar * panelInfosClick;
+
 			//Face List
 #ifndef __NOFACE_DETECTION__
 			CListFace * listFace;

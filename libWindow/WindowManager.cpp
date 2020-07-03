@@ -54,13 +54,13 @@ void CWindowManager::OnRefreshData(wxCommandEvent& event)
 	}
 }
 
-void CWindowManager::ChangeWindow(CWindowMain * window, Pos position)
+void CWindowManager::ChangeWindow(CWindowMain * window, Pos position, bool isPanel)
 {
 	CWindowToAdd * windowToadd = FindWindow(position);
 	if (windowToadd != nullptr)
 	{
 		window->Reparent(this);
-		windowToadd->SetWindow(window);
+		windowToadd->SetWindow(window, isPanel);
 	}
 }
 
@@ -166,7 +166,7 @@ bool CWindowManager::IsWindowVisible(Pos position)
 	return false;
 }
 
-void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton, const bool &isTop)
+CPanelWithClickToolbar * CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton, const bool &isTop)
 {
 	CPanelWithClickToolbar * panel = nullptr;
 	if (pos == Pos::wxLEFT || pos == Pos::wxRIGHT)
@@ -178,6 +178,7 @@ void CWindowManager::AddPanel(CWindowMain * window, const Pos &pos, bool fixe, i
 	window->Reparent(parent);
 	panel->SetWindow(window);
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true, isTop);
+	return panel;
 }
 
 void CWindowManager::HideWindow(Pos position, const bool &refresh)
@@ -283,7 +284,7 @@ void CWindowManager::AddWindow(CWindowOpenGLMain * window, Pos position, bool fi
 	if (window != nullptr)
 	{
 		window->Reparent(this);
-		windowToAdd->SetWindow(window);
+		windowToAdd->SetWindow(window, isPanel);
 		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel, isTop);
 	}
 }
@@ -330,7 +331,7 @@ void CWindowManager::AddWindow(CWindowMain * window, Pos position, bool fixe, in
 	if (window != nullptr)
 	{
 		window->Reparent(this);
-		windowToAdd->SetWindow(window);
+		windowToAdd->SetWindow(window, isPanel);
 		AddWindow(windowToAdd, position, fixe, size, rect, id, isPanel, isTop);
 	}
 }
