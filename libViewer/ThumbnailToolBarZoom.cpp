@@ -22,7 +22,7 @@ CThumbnailToolBarZoom::CThumbnailToolBarZoom(wxWindow* parent, wxWindowID id, co
 	byLocalisation = CLibResource::LoadStringFromResource(L"LBLByLocalisation", 1);
 
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CThumbnailToolBarZoom::OnPaint));
-	Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnailToolBarZoom::OnMouseMove));
+	//Connect(wxEVT_MOTION, wxMouseEventHandler(CThumbnailToolBarZoom::OnMouseMove));
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CThumbnailToolBarZoom::OnLButtonDown));
 }
 
@@ -78,9 +78,9 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 		evt.SetExtraLong(typeAffichage);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-    Refresh();
+	this->Resize();
 }
-
+/*
 void CThumbnailToolBarZoom::OnMouseMove(wxMouseEvent& event)
 {
 	wxClientDC winDC(this);
@@ -164,7 +164,9 @@ void CThumbnailToolBarZoom::OnMouseMove(wxMouseEvent& event)
 			break;
 		}
 	}
+	this->Refresh();
 }
+*/
 
 void CThumbnailToolBarZoom::DrawPreviousElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont)
 {

@@ -18,7 +18,7 @@ namespace Regards
 
 			void OnPaint(wxPaintEvent& event);
 			void OnLButtonDown(wxMouseEvent& event);
-			void OnMouseMove(wxMouseEvent& event);
+			//void OnMouseMove(wxMouseEvent& event);
 			
 			void Draw(wxDC * dc);
 			void DrawPreviousElement(wxDC * dc, const wxString &libelle, const CThemeFont &themeFont);
