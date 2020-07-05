@@ -303,6 +303,7 @@
     <ClCompile Include="DecodeRaw.cpp" />
     <ClCompile Include="detector.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="FilterData.cpp" />
