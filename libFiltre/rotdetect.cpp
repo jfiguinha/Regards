@@ -29,7 +29,7 @@ extern "C"
 
 CRotDetect::rotation CRotDetect::analyzeResult(float * result)
 {
-	enum CRotDetect::tristate not, cw90, ccw90;
+	//enum CRotDetect::tristate not, cw90, ccw90;
 
 	
 	if(result[0] > result[1] && result[0] > result[2])
@@ -39,12 +39,13 @@ CRotDetect::rotation CRotDetect::analyzeResult(float * result)
 	if (result[2] > result[0] && result[2] > result[1])
 		return ROTATED90CCW;
 	
-	/* defuzzy result activations */
+	// defuzzy result activations
+    /*
 	not = defuzzy(result[0]);
 	cw90 = defuzzy(result[1]);
 	ccw90 = defuzzy(result[2]);
 
-	/* check for clear results */
+	// check for clear results 
 	if (not == VRAI && cw90 == FAUX && ccw90 == FAUX)
 		return NOT_ROTATED;
 
@@ -53,7 +54,7 @@ CRotDetect::rotation CRotDetect::analyzeResult(float * result)
 
 	if (not== FAUX && cw90 == FAUX && ccw90 == VRAI)
 		return ROTATED90CCW;
-
+*/
 	/* no clear result -> give up */
 	return UNKNOWN;
 }
