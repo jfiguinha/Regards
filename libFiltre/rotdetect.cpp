@@ -31,14 +31,14 @@ CRotDetect::rotation CRotDetect::analyzeResult(float * result)
 {
 	enum CRotDetect::tristate not, cw90, ccw90;
 
-	/*
+	
 	if(result[0] > result[1] && result[0] > result[2])
 		return NOT_ROTATED;
 	if (result[1] > result[0] && result[1] > result[2])
 		return ROTATED90CW;
 	if (result[2] > result[0] && result[2] > result[1])
 		return ROTATED90CCW;
-	*/
+	
 	/* defuzzy result activations */
 	not = defuzzy(result[0]);
 	cw90 = defuzzy(result[1]);

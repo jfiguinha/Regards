@@ -2752,73 +2752,45 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 	OutputDebugString(L"Convert\n");
 #endif
 
-	/*
-		if (image != nullptr && typeImage == TYPE_IMAGE_CXIMAGE)
-		{
-			wxString error = image->GetLastError();
-			if (error == "")
-				bitmap = ConvertCXImageToRegardsBitmap(image);
-			else
-				wxMessageBox(error,"Error Loading");
-			delete image;
-		}
-		else if (typeImage == TYPE_IMAGE_WXIMAGE)
-		{
-			if (imageWx.IsOk())
-            {
-                bitmap = ConvertwxImageToRegardsBitmap(imageWx);
-            }
-		}
-
-		if (iFormat != 0 && value && bitmap != nullptr)
-		{
-			bitmap->SetFilename(fileName);
-		}
-
+		int orientation = -1;
 		if(TestIsExifCompatible(fileName))
 		{
 			CMetadataExiv2 metadata(fileName);
-			bitmap->SetOrientation(metadata.GetOrientation());
+			orientation = metadata.GetOrientation();
+			bitmap->SetOrientation(orientation);
 		}
-		*/
-
-		if(TestIsExifCompatible(fileName))
+		
+		if(orientation == -1 || orientation == 1)
 		{
-			CMetadataExiv2 metadata(fileName);
-			bitmap->SetOrientation(metadata.GetOrientation());
-		}
-		//else
-		//{
-		//CImageLoadingFormat * thumbnail = nullptr;
-		if (!isThumbnail)
-		{
-			CImageLoadingFormat * thumbnail = LoadThumbnail(fileName);
-			int exifOrientation;
-			float result[4];
-			CRotDetect rotDetect;
-			rotDetect.rotdetect(thumbnail, result, false);
-
-			CRotDetect::rotation rot = rotDetect.analyzeResult(result);
-			//printf("Orientation of %s is ", argv[optIndex]);
-			switch (rot)
+			if (!isThumbnail)
 			{
-			case CRotDetect::NOT_ROTATED:
-				exifOrientation = 0;
-				break;
-			case CRotDetect::ROTATED90CW:
-				exifOrientation = 6;
-				break;
-			case CRotDetect::ROTATED90CCW:
-				exifOrientation = 3;
-				break;
-			default:
-				exifOrientation = 0;
-			}
-			bitmap->SetOrientation(exifOrientation);
+				CImageLoadingFormat * thumbnail = LoadThumbnail(fileName);
+				int exifOrientation;
+				float result[4];
+				CRotDetect rotDetect;
+				rotDetect.rotdetect(thumbnail, result, true);
+
+				CRotDetect::rotation rot = rotDetect.analyzeResult(result);
+				//printf("Orientation of %s is ", argv[optIndex]);
+				switch (rot)
+				{
+				case CRotDetect::NOT_ROTATED:
+					exifOrientation = 1;
+					break;
+				case CRotDetect::ROTATED90CW:
+					exifOrientation = 6;
+					break;
+				case CRotDetect::ROTATED90CCW:
+					exifOrientation = 5;
+					break;
+				default:
+					exifOrientation = 1;
+				}
+				bitmap->SetOrientation(exifOrientation);
 				
-			delete thumbnail;
+				delete thumbnail;
+			}
 		}
-		//}
 
 	}
 	catch (...)

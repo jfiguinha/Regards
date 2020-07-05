@@ -26,7 +26,7 @@ class CRotDetect
 {
 public:
 
-	CRotDetect(const float & opt_max_false = 0.20,const float & opt_min_true = 0.90)
+	CRotDetect(const float & opt_max_false = 0.20,const float & opt_min_true = 0.44)
 	{
 		this->opt_max_false = opt_max_false;
 		this->opt_min_true = opt_min_true;
