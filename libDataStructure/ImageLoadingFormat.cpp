@@ -10,6 +10,7 @@
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
 #include <wx/filename.h>
+#include <rotdetect.h>
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;
@@ -207,7 +208,7 @@ void CImageLoadingFormat::Rotate90()
 
 	case TYPE_IMAGE_REGARDSFLOATIMAGE:
 		{
-			//_floatImage->R
+			_floatImage->Rotate90();
 		}
 		break;
 	}
@@ -374,8 +375,8 @@ CRegardsFloatBitmap * CImageLoadingFormat::GetFloatBitmap(const bool &copy)
 			{
 				if(copy)
 				{
-					CRegardsFloatBitmap * _local = new CRegardsFloatBitmap();
-					*_local = *_floatImage;
+					CRegardsFloatBitmap * _local = new CRegardsFloatBitmap(this->GetWidth(), this->GetHeight());
+					memcpy(_local->GetData(), _floatImage->GetData(), _floatImage->GetSize());
 					return _local;
 				}
 				else
@@ -603,9 +604,9 @@ uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &comp
             {
                 for (int j = 0; j < width; j++, k+=4)
                 {
-                    inputBuffer[k] = (int)(buffer[k] * 255.0);
+                    inputBuffer[k] = (int)(buffer[k+2] * 255.0);
                     inputBuffer[k+1] = (int)(buffer[k+1] * 255.0);
-                    inputBuffer[k+2] = (int)(buffer[k+2] * 255.0);
+                    inputBuffer[k+2] = (int)(buffer[k] * 255.0);
                     inputBuffer[k+3] = (int)(buffer[k+3] * 255.0);    
                 }
             }
@@ -708,7 +709,29 @@ void CImageLoadingFormat::ApplyExifOrientation()
 		CMetadataExiv2 metadata(filename);
 		exifOrientation = metadata.GetOrientation();
 	}
-	
+	else
+	{
+		float result[4];
+		CRotDetect rotDetect;
+		rotDetect.rotdetect(this, result, false);
+
+		CRotDetect::rotation rot = rotDetect.analyzeResult(result);
+		//printf("Orientation of %s is ", argv[optIndex]);
+		switch (rot)
+		{
+		case CRotDetect::NOT_ROTATED:
+			exifOrientation = 0;
+			break;
+		case CRotDetect::ROTATED90CW:
+			exifOrientation = 6;
+			break;
+		case CRotDetect::ROTATED90CCW:
+			exifOrientation = 3;
+			break;
+		}
+
+
+	}
 	ApplyExifOrientation(exifOrientation);
 }
 

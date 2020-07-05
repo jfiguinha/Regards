@@ -129,7 +129,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_ADDFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnAddFolder));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CMainWindow::OnIdle));
 	Connect(wxEVENT_REMOVEFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnRemoveFolder));
-	Connect(wxEVENT_ONPICTURECLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::OnPictureClick));
+	Connect(wxEVENT_ONPICTURECLICK, wxCommandEventHandler(CMainWindow::OnPictureClick));
     Connect(wxEVT_CRITERIACHANGE, wxCommandEventHandler(CMainWindow::CriteriaChange));
 	Connect(wxEVENT_PICTUREVIDEOCLICK, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::PictureVideoClick));
 	Connect(wxEVENT_REFRESHFOLDER, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::InitPictures));
@@ -149,6 +149,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
 	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnEndThumbnail));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
+	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
 
 	int tabWidth[] = { 100, 300, 300, 300 };
 	statusBar->SetFieldsCount(4);
@@ -174,6 +175,29 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 
 	if(openFirstFile)
 		LoadPicture(true);
+}
+
+
+void CMainWindow::SetListeFile(wxCommandEvent& event)
+{
+	PhotosVector * newPhotosVectorList = (PhotosVector *)event.GetClientData();
+	//CImageList * picture = (CImageList *)event.GetClientData();
+
+	bool isValid = false;
+	wxString filepath = imageList->GetFilePath(numElement, isValid);
+
+	imageList->SetImageList(*newPhotosVectorList);
+
+	numElement = imageList->FindFileIndex(filepath);
+	
+	if (centralWnd)
+	{
+		wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
+		evt.SetClientData(imageList);
+		evt.SetInt(1);
+		centralWnd->GetEventHandler()->AddPendingEvent(evt);
+	}
+	
 }
 
 bool CMainWindow::IsVideo()
@@ -676,6 +700,7 @@ void CMainWindow::ProcessIdle()
 		if (centralWnd)
 		{
 			wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
+			evt.SetInt(0);
 			evt.SetClientData(imageList);
 			centralWnd->GetEventHandler()->AddPendingEvent(evt);
 		}

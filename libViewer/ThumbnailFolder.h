@@ -48,7 +48,7 @@ namespace Regards
 			PhotosVector GetPhotoByLocalisation(PhotosVector * photoVector, const wxString & criteria, const wxString & localisation, int &index);
 			
 			InfosSeparationBarVector listSeparator;
-
+			PhotosVector newPhotosVectorList;
 			int barseparationHeight;
 			int widthThumbnail;
 			int heightThumbnail;

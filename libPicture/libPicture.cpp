@@ -11,7 +11,7 @@
 #include <ximage.h>
 #include <xfile.h>
 #include <xiofile.h>
-
+#include <rotdetect.h>
 #include <RegardsBitmap.h>
 #include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
@@ -2787,6 +2787,38 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			CMetadataExiv2 metadata(fileName);
 			bitmap->SetOrientation(metadata.GetOrientation());
 		}
+		//else
+		//{
+		//CImageLoadingFormat * thumbnail = nullptr;
+		if (!isThumbnail)
+		{
+			CImageLoadingFormat * thumbnail = LoadThumbnail(fileName);
+			int exifOrientation;
+			float result[4];
+			CRotDetect rotDetect;
+			rotDetect.rotdetect(thumbnail, result, false);
+
+			CRotDetect::rotation rot = rotDetect.analyzeResult(result);
+			//printf("Orientation of %s is ", argv[optIndex]);
+			switch (rot)
+			{
+			case CRotDetect::NOT_ROTATED:
+				exifOrientation = 0;
+				break;
+			case CRotDetect::ROTATED90CW:
+				exifOrientation = 6;
+				break;
+			case CRotDetect::ROTATED90CCW:
+				exifOrientation = 3;
+				break;
+			default:
+				exifOrientation = 0;
+			}
+			bitmap->SetOrientation(exifOrientation);
+				
+			delete thumbnail;
+		}
+		//}
 
 	}
 	catch (...)

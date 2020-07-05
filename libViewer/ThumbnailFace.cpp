@@ -44,10 +44,16 @@ void CThumbnailFace::OnPictureClick(CThumbnailData * data)
     CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
+		/*
 		wxString * photoPath = new wxString();
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_FACECLICK);
+		wxCommandEvent evt(wxEVENT_FACECLICK);
 		*photoPath = data->GetFilename();
 		evt.SetClientData(photoPath);
+		evt.SetExtraLong(data->GetNumPhotoId());
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		*/
+		//mainWindow->PictureVideoClick(timePosition);
+		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
 		evt.SetExtraLong(data->GetNumPhotoId());
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}

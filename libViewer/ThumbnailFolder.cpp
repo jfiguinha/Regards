@@ -36,7 +36,14 @@ CThumbnailFolder::~CThumbnailFolder(void)
 
 void CThumbnailFolder::OnPictureClick(CThumbnailData * data)
 {
-
+	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWindow != nullptr && data != nullptr)
+	{
+		//mainWindow->PictureVideoClick(timePosition);
+		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
+		evt.SetExtraLong(data->GetNumPhotoId());
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 void CThumbnailFolder::AddSeparatorBar(const wxString &libelle, PhotosVector * photoVector, int &nbElement)
@@ -111,6 +118,7 @@ void CThumbnailFolder::ShowByYear(PhotosVector * photoVector, int &nbElement)
 		if (year != L"")
 		{
 			PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year, numElement);	
+			copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
 			AddSeparatorBar(year, &listPhoto, nbElement);
 		}
 	}
@@ -140,6 +148,7 @@ void CThumbnailFolder::ShowByMonth(PhotosVector * photoVector, int &nbElement)
 				{
 					PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year + L"." + month, numElement);
 					imonth = atoi(CConvertUtility::ConvertToUTF8(month));
+					copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
 					AddSeparatorBar(MonthName.at(imonth - 1) + L" " + year, &listPhoto, nbElement);
 				}
 			}
@@ -209,7 +218,7 @@ void CThumbnailFolder::ShowByLocalisation(PhotosVector * photoVector, int &nbEle
 								if (localisation != L"")
 								{
 									PhotosVector listPhoto = GetPhotoByLocalisation(photoVector, year + L"." + month + L"." + day, localisation,numElement);
-
+									copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
 									//sqlFindPhotos.SearchPhotos(&photoVector, localisation, );
 
 									wxString libelleLocalisation = L"";
@@ -277,6 +286,7 @@ void CThumbnailFolder::ShowByDay(PhotosVector * photoVector, int &nbElement)
 						if (day != L"")
 						{
 							PhotosVector listPhoto = GetPhotoByCriteria(photoVector, year + L"." + month + L"." + day, numElement);
+							copy(listPhoto.begin(), listPhoto.end(), back_inserter(newPhotosVectorList));
 							iyear = atoi(CConvertUtility::ConvertToUTF8(year));
 							imonth = atoi(CConvertUtility::ConvertToUTF8(month));
 							iday = atoi(CConvertUtility::ConvertToUTF8(day));
@@ -293,7 +303,7 @@ void CThumbnailFolder::ShowByDay(PhotosVector * photoVector, int &nbElement)
 void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &typeAffichage)
 {
 	threadDataProcess = false;
-
+	newPhotosVectorList.clear();
 	//---------------------------------
 	//Sauvegarde de l'état
 	//---------------------------------
@@ -341,6 +351,11 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	{
 		wxString libellePhoto = CLibResource::LoadStringFromResource(L"LBLALLPHOTO", 1);
 		AddSeparatorBar(libellePhoto, photoVector, i);
+		if (photoVector->size() > 0)
+		{
+			newPhotosVectorList.reserve(photoVector->size());
+			copy(photoVector->begin(), photoVector->end(), back_inserter(newPhotosVectorList));
+		}
 	}
 	else if (typeLocal == SHOW_BYYEAR)
 	{
@@ -389,6 +404,15 @@ void CThumbnailFolder::InitTypeAffichage(PhotosVector * photoVector, const int &
 	widthThumbnail = 0;
 	heightThumbnail = 0;
 	ResizeThumbnail();
+
+	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	if (mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SETLISTPICTURE);
+		evt.SetClientData(&newPhotosVectorList);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 	this->Refresh();
 }
 

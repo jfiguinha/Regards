@@ -16,6 +16,8 @@ namespace Regards
 
             void SetFullscreen();
             void SetScreen();
+			void DisableNavigationButton();
+			void EnableNavigationButton();
 
 		private:
 
@@ -36,6 +38,10 @@ namespace Regards
 			CToolbarButton * imagePlayDiaporama;
 			CToolbarButton * imageStopDiaporama;
             CToolbarButton * fullscreen;
+			CToolbarButton * imageEnd;
+			CToolbarButton * imageSuiv;
+			CToolbarButton * imageFirst;
+			CToolbarButton * imagePrec;
 		};
 	}
 }

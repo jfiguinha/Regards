@@ -2,8 +2,9 @@
 #include "InterpolationFloatBicubic.h"
 #include "RegardsFloatBitmap.h"
 #include <omp.h>
+#include "InterpolationFilters.h"
 
-CInterpolationFloatBicubic::CInterpolationFloatBicubic(const double & dWidth)
+CInterpolationFloat::CInterpolationFloat(const double & dWidth)
 {
 	wX = nullptr;
 	wY = nullptr;
@@ -11,7 +12,7 @@ CInterpolationFloatBicubic::CInterpolationFloatBicubic(const double & dWidth)
 }
 
 
-CInterpolationFloatBicubic::~CInterpolationFloatBicubic()
+CInterpolationFloat::~CInterpolationFloat()
 {
 	if (wX != nullptr)
 		delete[] wX;
@@ -20,7 +21,7 @@ CInterpolationFloatBicubic::~CInterpolationFloatBicubic()
 		delete[] wY;
 }
 
-void CInterpolationFloatBicubic::CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft)
+void CInterpolationFloat::CalculWeight(const int32_t &width, const int32_t &height, const float &ratioY, const float &ratioX, const float &posTop, const float &posLeft)
 {
 	wX = new weightX[width];
 	wY = new weightX[height];
@@ -49,7 +50,7 @@ void CInterpolationFloatBicubic::CalculWeight(const int32_t &width, const int32_
 	}
 }
 
-void CInterpolationFloatBicubic::Execute(CRegardsFloatBitmap * In, CRegardsFloatBitmap * & Out)
+void CInterpolationFloat::Execute(CRegardsFloatBitmap * In, CRegardsFloatBitmap * & Out)
 {
 	int width = Out->GetWidth();
 	int height = Out->GetHeight();
@@ -67,10 +68,8 @@ void CInterpolationFloatBicubic::Execute(CRegardsFloatBitmap * In, CRegardsFloat
 
 		CalculWeight(width, height, ratioY, ratioX, 0.0f, 0.0f);
 
-	#pragma omp parallel for
 		for (auto y = 0; y < height; y++)
 		{
-	#pragma omp parallel for
 			for (auto x = 0; x < width; x++)
 			{
 				float posY = (float)y * ratioY;
@@ -78,7 +77,7 @@ void CInterpolationFloatBicubic::Execute(CRegardsFloatBitmap * In, CRegardsFloat
 				float color[4];
 				Bicubic(color, In, posX, posY, wY[y].tabF, wX[x].tabF);
 				int i =  (x << 2) + (y * (width << 2));// int i = Out->GetPosition(x, y);
-				memcpy(data + i, &color, sizeof(weightX));
+				memcpy(&data[i], &color, sizeof(weightX));
 				//Out->SetColorValue(x, y, color);
 			}
 		}
@@ -86,7 +85,7 @@ void CInterpolationFloatBicubic::Execute(CRegardsFloatBitmap * In, CRegardsFloat
 
 }
 
-void CInterpolationFloatBicubic::Bicubic(float * data, CRegardsFloatBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
+void CInterpolationFloat::Bicubic(float * data, CRegardsFloatBitmap * In, const float &x, const float &y, float * tabF1, float * tabF)
 {
 
 	float nDenom = 0.0;
@@ -168,4 +167,23 @@ double CInterpolationFloatBicubic::Filter(const double &f)
 		(f < 0.0) ? (4.0 + f*f*(-6.0 - 3.0*f)) / 6.0 : (
 		(f < 1.0) ? (4.0 + f*f*(-6.0 + 3.0*f)) / 6.0 : (2.0 - f)*(2.0 - f)*(2.0 - f) / 6.0)));
 	
+}
+
+double CInterpolationFloatLanczos::Filter(const double &x)
+{
+	CSincFilter m_SincFilter(m_dWidth);
+
+	if (fabs(x) > m_dWidth)
+	{
+		return 0.0;
+	}
+
+	if (x < -3.0)
+		return(0.0);
+	if (x < 0.0)
+		return(m_SincFilter.Filter(-x)*m_SincFilter.Filter(-x / 3.0));
+	if (x < 3.0)
+		return(m_SincFilter.Filter(x)*m_SincFilter.Filter(x / 3.0));
+	return(0.0);
+
 }

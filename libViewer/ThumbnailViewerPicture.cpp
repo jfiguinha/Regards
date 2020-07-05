@@ -30,7 +30,7 @@ void CThumbnailViewerPicture::OnPictureClick(CThumbnailData * data)
 	CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_ONPICTURECLICK);
+		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
 		evt.SetExtraLong(data->GetNumPhotoId());
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}

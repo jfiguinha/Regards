@@ -37,13 +37,13 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	navElement.push_back(fullscreen);
 
 
-	CToolbarButton * imageFirst = new CToolbarButton(themeToolbar.button);
+	imageFirst = new CToolbarButton(themeToolbar.button);
 	imageFirst->SetButtonResourceId(L"IDB_ARROWTRACKLPNG");
 	imageFirst->SetLibelle(libelleFirst);
 	imageFirst->SetCommandId(WM_IMAGES_FIRST);
 	navElement.push_back(imageFirst);
 
-	CToolbarButton * imagePrec = new CToolbarButton(themeToolbar.button);
+	imagePrec = new CToolbarButton(themeToolbar.button);
 	imagePrec->SetButtonResourceId(L"IDB_ARROWLPNG");
 	imagePrec->SetLibelle(libellePrevious);
 	imagePrec->SetCommandId(WM_IMAGES_PRCDENTE);
@@ -87,19 +87,43 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	flipHorizontal->SetLibelle(libelleFlipHorizontal);
 	navElement.push_back(flipHorizontal);
 
-	CToolbarButton * imageSuiv = new CToolbarButton(themeToolbar.button);
+	imageSuiv = new CToolbarButton(themeToolbar.button);
 	imageSuiv->SetButtonResourceId(L"IDB_ARROWRPNG");
 	imageSuiv->SetCommandId(WM_IMAGES_SUIVANTE);
 	imageSuiv->SetRepeatable(true);
 	imageSuiv->SetLibelle(libelleNext);
 	navElement.push_back(imageSuiv);
 
-	CToolbarButton * imageEnd = new CToolbarButton(themeToolbar.button);
+	imageEnd = new CToolbarButton(themeToolbar.button);
 	imageEnd->SetButtonResourceId(L"IDB_ARROWTRACKRPNG");
 	imageEnd->SetCommandId(WM_IMAGES_END);
 	imageEnd->SetLibelle(libelleEnd);
 	navElement.push_back(imageEnd);
 	this->toolbarInterface = toolbarInterface;
+}
+
+void CPreviewToolbar::DisableNavigationButton()
+{
+	imagePlayDiaporama->SetVisible(false);
+	imageStopDiaporama->SetVisible(false);
+	fullscreen->SetVisible(false);
+	imageEnd->SetVisible(false);
+	imageSuiv->SetVisible(false);
+	imageFirst->SetVisible(false);
+	imagePrec->SetVisible(false);
+	this->Refresh();
+}
+
+void CPreviewToolbar::EnableNavigationButton()
+{
+	imagePlayDiaporama->SetVisible(true);
+	imageStopDiaporama->SetVisible(true);
+	fullscreen->SetVisible(true);
+	imageEnd->SetVisible(true);
+	imageSuiv->SetVisible(true);
+	imageFirst->SetVisible(true);
+	imagePrec->SetVisible(true);
+	this->Refresh();
 }
 
 

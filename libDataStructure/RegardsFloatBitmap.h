@@ -20,7 +20,8 @@ public:
     float * GetColorValue(const int &x, const int &y);
 	float * GetData();
 	long GetSize();
-
+	bool Rotate90();
+	bool Rotate180();
 	const int GetWidth();
 	const int GetHeight();
 

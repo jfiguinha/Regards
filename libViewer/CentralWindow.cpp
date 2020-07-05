@@ -676,6 +676,7 @@ void CCentralWindow::ChangeTypeAffichage(wxCommandEvent& event)
 
 void CCentralWindow::SetListeFile(wxCommandEvent& event)
 {
+	int element = event.GetInt();
 	CImageList * picture = (CImageList *)event.GetClientData();
 	if (picture != nullptr)
 	{
@@ -683,9 +684,11 @@ void CCentralWindow::SetListeFile(wxCommandEvent& event)
 		photoVector = picture->GetCopy();
 	}
 
-	if (listPicture != nullptr)
-		listPicture->SetListeFile(&photoVector);
+	if (element == 0)
+		if (listPicture != nullptr)
+			listPicture->SetListeFile(&photoVector);
 
+	
 	if (thumbnailPicture != nullptr)
 		thumbnailPicture->SetListeFile(&photoVector);
 }
@@ -708,7 +711,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	if (oldWindowMode == windowMode)
 		return;
 	oldWindowMode = windowMode;
-
+	previewWindow->SetNormalMode();
 	//previewWindow->Show(false);
 	panelInfosClick->Show(false);
 
@@ -723,15 +726,18 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		//previewWindow->Show(true);
 		panelInfosClick->Show(true);
 		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
-		windowManager->ShowWindow(Pos::wxBOTTOM, 0);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT, 0);
-		windowManager->ShowPaneWindow(Pos::wxLEFT, 0);
+		windowManager->ShowWindow(Pos::wxBOTTOM);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 		windowManager->Update();
 		//windowManager->Resize();
 		break;
 #ifndef __NOFACE_DETECTION__
 	case 2:
+		previewWindow->SetFaceMode();
 		listFace->Show(true);
 		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
 		windowManager->HideWindow(Pos::wxBOTTOM, false);
@@ -810,6 +816,12 @@ void CCentralWindow::OnLoadPicture(wxCommandEvent& event)
 	TRACE();
 	CPictureElement * pictureElement = (CPictureElement *)event.GetClientData();
 	LoadPictureInThread(pictureElement);
+	if (listPicture != nullptr)
+	{
+		listPicture->SetActifItem(pictureElement->numElement, true);
+		// thumbnailPicture->Refresh();
+	}
+
 	if (thumbnailPicture != nullptr)
     {
 		thumbnailPicture->SetActifItem(pictureElement->numElement, true);

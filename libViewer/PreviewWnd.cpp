@@ -280,6 +280,7 @@ void CPreviewWnd::Resize()
 
 void CPreviewWnd::SetDiaporamaMode()
 {
+	previewToolbar->EnableNavigationButton();
 	isDiaporama = true;
 	showBitmapWindow->SetDiaporamaMode();
 	this->Resize();
@@ -287,9 +288,15 @@ void CPreviewWnd::SetDiaporamaMode()
 
 void CPreviewWnd::SetNormalMode()
 {
+	previewToolbar->EnableNavigationButton();
 	isDiaporama = false;
 	showBitmapWindow->SetNormalMode();
 	this->Resize();
+}
+
+void CPreviewWnd::SetFaceMode()
+{
+	previewToolbar->DisableNavigationButton();
 }
 
 void CPreviewWnd::SetEffect(const bool &effect)

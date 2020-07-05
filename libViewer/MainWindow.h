@@ -191,6 +191,7 @@ namespace Regards
             
 		private:
 
+			void SetListeFile(wxCommandEvent& event);
 			void OnUpdateInfos(wxCommandEvent& event);
 			void OnShowToolbar(wxCommandEvent& event);
 			void OnStatusSetText(wxCommandEvent& event);

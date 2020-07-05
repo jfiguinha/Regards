@@ -26,6 +26,57 @@ CRegardsFloatBitmap::CRegardsFloatBitmap(const int &iWidth, const int &iHeight)
 	data = new float[m_lSize];
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+bool CRegardsFloatBitmap::Rotate180()
+{
+	if (data == nullptr)
+		return false;
+
+	for (auto x = 0; x < m_iWidth / 2; x++)// because you only have to loop on half the image
+	{
+		for (auto y = 0; y < m_iHeight; y++)
+		{
+			float temp[4];
+			memcpy(temp, data + GetPosition(x, y), 4 * sizeof(float));
+			memcpy(data + GetPosition(x, y), data + GetPosition(m_iWidth - x - 1, m_iHeight - y - 1), 4 * sizeof(float));
+			memcpy(data + GetPosition(m_iWidth - x - 1, m_iHeight - y - 1), temp, 4 * sizeof(float));
+		}
+	}
+
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////////////////
+bool CRegardsFloatBitmap::Rotate90()
+{
+	if (data == nullptr)
+		return false;
+
+	CRegardsFloatBitmap * out = new CRegardsFloatBitmap(m_iHeight, m_iWidth);
+	float * outColor = out->GetData();
+	float * inColor = GetData();
+	for (auto y = 0; y < m_iHeight; y++)
+	{
+		for (auto x = 0; x < m_iWidth; x++)
+		{
+			memcpy(&outColor[out->GetPosition(y, x)], &inColor[GetPosition(x, y)], 4 * sizeof(float));
+		}
+	}
+
+	memcpy(data, out->GetData(), m_lSize * sizeof(float));
+	m_iWidth = out->GetWidth();
+	m_iHeight = out->GetHeight();
+	//SetBitmap(out->GetData(), out->GetWidth(), out->GetHeight(), false);
+
+	delete out;
+	return true;
+}
+
+
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -40,15 +91,16 @@ CRegardsFloatBitmap::CRegardsFloatBitmap()
 
 int CRegardsFloatBitmap::GetPosition(const int &x, const int &y)
 {
-	return (x << 2) + (y * (m_iWidth << 2));
+	return ((x << 2) + (y * (m_iWidth << 2)));
 }
+
 
 float * CRegardsFloatBitmap::GetColorValue(const int &x, const int &y)
 {
 	if (data != nullptr && x >= 0 && y >= 0 && x < m_iWidth && y < m_iHeight)
 	{
 		int i = GetPosition(x, y);
-		return (data + i);
+		return &data[i];
 	}
 	return nullptr;    
 }

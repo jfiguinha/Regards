@@ -51,6 +51,7 @@ namespace Regards
 
 			void SetDiaporamaMode();
 			void SetNormalMode();
+			void SetFaceMode();
 
             void UpdateInfos();
             
