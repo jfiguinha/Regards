@@ -11,7 +11,9 @@
 #include <ximage.h>
 #include <xfile.h>
 #include <xiofile.h>
+#ifdef ROTDETECT
 #include <rotdetect.h>
+#endif
 #include <RegardsBitmap.h>
 #include <wx/wxpoppler.h>
 #include <RegardsFloatBitmap.h>
@@ -2760,6 +2762,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			bitmap->SetOrientation(orientation);
 		}
 		
+#ifdef ROTDETECT
 		if(orientation == -1 || orientation == 1)
 		{
 			if (!isThumbnail)
@@ -2791,7 +2794,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				delete thumbnail;
 			}
 		}
-
+#endif
 	}
 	catch (...)
 	{

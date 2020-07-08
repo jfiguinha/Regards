@@ -10,7 +10,9 @@
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
 #include <wx/filename.h>
+#ifdef ROTDETECT
 #include <rotdetect.h>
+#endif
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;
@@ -709,7 +711,8 @@ void CImageLoadingFormat::ApplyExifOrientation()
 		CMetadataExiv2 metadata(filename);
 		exifOrientation = metadata.GetOrientation();
 	}
-	else
+#ifdef ROTDETECT
+	if (orientation == -1 || orientation == 1)
 	{
 		float result[4];
 		CRotDetect rotDetect;
@@ -729,9 +732,8 @@ void CImageLoadingFormat::ApplyExifOrientation()
 			exifOrientation = 3;
 			break;
 		}
-
-
 	}
+#endif
 	ApplyExifOrientation(exifOrientation);
 }
 
