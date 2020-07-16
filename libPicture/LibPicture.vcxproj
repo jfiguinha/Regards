@@ -198,6 +198,7 @@
     <ClInclude Include="Heic.h" />
     <ClInclude Include="libPicture.h" />
     <ClInclude Include="pfm.h" />
+    <ClInclude Include="PictureData.h" />
     <ClInclude Include="raw.h" />
     <ClInclude Include="ScaleThumbnail.h" />
     <ClInclude Include="yuv420.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="pfm.cpp" />
+    <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="raw.cpp" />
     <ClCompile Include="ScaleThumbnail.cpp" />
   </ItemGroup>

@@ -1,0 +1,34 @@
+#pragma once
+
+class CRegardsBitmap;
+
+class CPictureData
+{
+public:
+	CPictureData(){};
+	~CPictureData();
+
+	static CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+	static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput);
+
+	int GetWidth();
+	void SetWidth(const int &width);
+	int GetHeight();
+	void SetHeight(const int &height);
+	wxString GetFilename();
+	void SetFilename(const wxString &filename);
+	void SetData(uint8_t * & extdata, const int &size);
+	void CopyData(CRegardsBitmap * & bitmap);
+	std::vector<char> CopyData();
+private:
+
+
+	int width;
+	int height;
+	wxString filename;
+	uint8_t * data = nullptr;
+	int	size;
+
+};
+
+

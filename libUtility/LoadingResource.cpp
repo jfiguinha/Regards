@@ -2,13 +2,14 @@
 #include "LoadingResource.h"
 #include <RegardsBitmap.h>
 #include <LibResource.h>
+#include <PictureData.h>
 
 CRegardsBitmap * CLoadingResource::LoadRegardsBmpResource(const wxString & resourceName)
 {
 	CLibResource libResource;
 	CPictureData * data = libResource.LoadBitmapFromResource(resourceName);
 	CRegardsBitmap * bitmap = new CRegardsBitmap();
-	bitmap->SetBitmap(data->data, data->width, data->height);
+	data->CopyData(bitmap);
 	delete data;
 	return bitmap;
 }

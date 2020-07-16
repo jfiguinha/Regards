@@ -45,6 +45,9 @@
     <ClInclude Include="pfm.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="PictureData.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ScaleThumbnail.cpp">
@@ -63,6 +66,9 @@
       <Filter>header</Filter>
     </ClCompile>
     <ClCompile Include="pfm.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureData.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

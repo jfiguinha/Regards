@@ -37,7 +37,7 @@
 #include "FaceInfosUpdate.h"
 #include "CheckVersion.h"
 #include <wx/mimetype.h>
-#include <PictureRecognition.h>
+
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Viewer;
@@ -1036,6 +1036,8 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 		criteriaSendMessage = true;
 	}
 	delete info;
+
+
 
     processIdle = true;
 }

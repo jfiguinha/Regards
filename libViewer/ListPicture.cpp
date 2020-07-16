@@ -106,9 +106,9 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 		windowManager->AddWindow(thumbToolbarZoom, Pos::wxTOP, true, thumbToolbarZoom->GetHeight(), rect, wxID_ANY, false);
 	}
 
-	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomOn));
-	Connect(wxEVENT_THUMBNAILZOOMOFF, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomOff));
-	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ThumbnailZoomPosition));
+	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListPicture::ThumbnailZoomOn));
+	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListPicture::ThumbnailZoomOff));
+	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxCommandEventHandler(CListPicture::ThumbnailZoomPosition));
 	Connect(wxEVENT_EXPORTFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::ExportFile));
 	Connect(wxEVENT_DELETEFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::DeleteFile));
 	Connect(wxEVENT_COPYFILE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListPicture::CopyFile));

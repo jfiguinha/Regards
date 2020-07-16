@@ -197,7 +197,6 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="ClosedHandCursor.h" />
     <ClInclude Include="LibResource.h" />
-    <ClInclude Include="PictureData.h" />
     <ClInclude Include="SqlLibResource.h" />
     <ClInclude Include="SqlResource.h" />
   </ItemGroup>
@@ -208,7 +207,6 @@
     </ClCompile>
     <ClCompile Include="ClosedHandCursor.cpp" />
     <ClCompile Include="LibResource.cpp" />
-    <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="SqlLibResource.cpp" />
     <ClCompile Include="SqlResource.cpp" />
   </ItemGroup>

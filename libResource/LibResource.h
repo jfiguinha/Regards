@@ -1,5 +1,5 @@
 #pragma once
-#include "PictureData.h"
+class CPictureData;
 
 class CLibResource
 {

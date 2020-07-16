@@ -25,7 +25,7 @@ int CSqlFaceDescriptor::InsertFaceDescriptor(const int & numFace, const char *zB
 
 CFaceDescriptor * CSqlFaceDescriptor::GetFaceDescriptor(const int & numFace)
 {
-	ExecuteRequest("SELECT FaceDescriptor FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(numFace));
+	ExecuteRequest("SELECT NumFace, FaceDescriptor FROM FACEDESCRIPTOR WHERE NumFace = " + to_string(numFace));
 	return faceDescriptor;
 }
 

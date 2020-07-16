@@ -12,6 +12,7 @@
 #include <FileUtility.h>
 #include <array>
 #include <ImageLoadingFormat.h>
+#include <DeepLearning.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
 
@@ -332,6 +333,14 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	if (bitmapWindow != nullptr)
 	{
 	
+		if (!isThumbnail)
+		{
+			if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
+			{
+				int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
+				bitmap->SetOrientation(exif);
+			}
+		}
         
 		//bitmapWindow->FixArrowNavigation(true);
         bitmapWindow->SetIsBitmapThumbnail(isThumbnail);

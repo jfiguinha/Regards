@@ -200,13 +200,11 @@
     <ClCompile Include="Association.cpp" />
     <ClCompile Include="BmpOption.cpp" />
     <ClCompile Include="bpgoption.cpp" />
-    <ClCompile Include="CategoryDetection.cpp" />
     <ClCompile Include="ChangeLabel.cpp" />
     <ClCompile Include="CompressionOption.cpp" />
     <ClCompile Include="ConfigRegards.cpp" />
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="ExrOption.cpp" />
-    <ClCompile Include="FaceDetection.cpp" />
     <ClCompile Include="GifOption.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
@@ -224,7 +222,6 @@
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailSelection.cpp" />
     <ClCompile Include="TiffOption.cpp" />
-    <ClCompile Include="TypePhotoDetection.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
     <ClCompile Include="webpOption.cpp" />
   </ItemGroup>
@@ -233,13 +230,11 @@
     <ClInclude Include="Association.h" />
     <ClInclude Include="BmpOption.h" />
     <ClInclude Include="bpgoption.h" />
-    <ClInclude Include="CategoryDetection.h" />
     <ClInclude Include="ChangeLabel.h" />
     <ClInclude Include="CompressionOption.h" />
     <ClInclude Include="ConfigRegards.h" />
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="ExrOption.h" />
-    <ClInclude Include="FaceDetection.h" />
     <ClInclude Include="GifOption.h" />
     <ClInclude Include="IndexGenerator.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
@@ -257,7 +252,6 @@
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailSelection.h" />
     <ClInclude Include="TiffOption.h" />
-    <ClInclude Include="TypePhotoDetection.h" />
     <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="webpOption.h" />
     <ClInclude Include="wx_pch.h" />

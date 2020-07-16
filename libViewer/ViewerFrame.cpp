@@ -26,8 +26,6 @@
 #include <FilterData.h>
 #include <wx/app.h>
 #include <libPicture.h>
-#include <FaceDetection.h>
-#include <CategoryDetection.h>
 #include <SavePicture.h>
 #include <ScannerFrame.h>
 #include <Association.h>
@@ -830,7 +828,7 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 		CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 		if(listFace != nullptr)
 		{
-			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
+			wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 			listFace->GetEventHandler()->AddPendingEvent(evt);
 		}
 #endif
@@ -839,10 +837,11 @@ void CViewerFrame::OnEraseDatabase(wxCommandEvent& event)
 
 void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
 {
+	/*
 	CCategoryDetectionDlg catergoryDetection(this);
 	catergoryDetection.ShowModal();
 
-	/*
+
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 	if (listFace != nullptr)
 	{
@@ -854,6 +853,7 @@ void CViewerFrame::OnCategoryDetection(wxCommandEvent& event)
 
 void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
 {
+	/*
 	CFaceDetectionDlg faceDetection(this);
 	faceDetection.Start();
 	faceDetection.ShowModal();
@@ -861,9 +861,11 @@ void CViewerFrame::OnFaceDetection(wxCommandEvent& event)
 	CListFace * listFace = (CListFace *)this->FindWindowById(LISTFACEID);
 	if (listFace != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILREFRESH);
+		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	*/
 }
 
 void CViewerFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))

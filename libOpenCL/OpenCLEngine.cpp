@@ -7,7 +7,7 @@
 #include <ParamInit.h>
 #include <IFiltreEffet.h>
 #include "config_id.h"
-
+#include <opencv2/core/ocl.hpp>
 #define GL_MAJOR_VERSION 0x821B
 #define GL_MINOR_VERSION 0x821C
 using namespace Regards::OpenCL;
@@ -434,12 +434,12 @@ OpenCLDevice * COpenCLEngine::GetDefaultDevice()
 COpenCLEngine::COpenCLEngine()
 {
 	_singleton = nullptr;
-	
+	OpenCLPlatform * platform = nullptr;
 	OpenCLDevice * device = GetDefaultDevice();
 
 	if (device == nullptr)
 	{
-		OpenCLPlatform * platform = COpenCLPlatformList::SelectPlatform(0);
+		platform = COpenCLPlatformList::SelectPlatform(0);
 		device = COpenCLDeviceList::SelectDevice(platform, 0);
 	}
 
@@ -452,6 +452,23 @@ COpenCLEngine::COpenCLEngine()
 			delete _singleton;
 			_singleton = nullptr;
 		}
+
+		if (platform == nullptr)
+		{
+			vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+			for (OpenCLPlatform * _plateform : listPlatform)
+			{
+				if (device->platformId == _plateform->platformId)
+					platform = _plateform;
+			}
+		}
+	}
+
+	if (platform != nullptr && _singleton != nullptr && device != nullptr)
+	{
+		//Set OpenCV to use OpenCL context
+		cv::ocl::setUseOpenCL(true);
+		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 	}
 }
 

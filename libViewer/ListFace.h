@@ -26,12 +26,20 @@ namespace Regards
 			int GetThumbnailHeight();
 
 		private:
+			void OnIdle(wxIdleEvent& evt);
+			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);
 			void ThumbnailZoomPosition(wxCommandEvent& event);
 			void ThumbnailRefresh(wxCommandEvent& event);
 			void ThumbnailMove(wxCommandEvent& event);
+			void OnFacePhotoAdd(wxCommandEvent& event);
+			void OnResourceLoad(wxCommandEvent& event);
 			void Resize();
+			void ProcessIdle();
+			bool GetProcessEnd();
+			static void FacialRecognition(void * param);
+			static void LoadResource(void * param);
 
 			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
@@ -39,7 +47,9 @@ namespace Regards
 			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			CThumbnailFace * thumbnailFace;
 
-
+			int nbProcessFacePhoto;
+			bool isLoadingResource;
+			std::thread * threadResource;
 		};
 	}
 }

@@ -7,12 +7,35 @@
 #include "ViewerParamInit.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
+#include "FileUtility.h"
 #include <MoveFaceDialog.h>
+#include <SqlFacePhoto.h>
+#include <SqlFaceLabel.h>
+#include <DeepLearning.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
+using namespace Regards::DeepLearning;
+
+class CThreadFace
+{
+public:
+
+	CThreadFace()
+	{
+		thread = nullptr;
+		mainWindow = nullptr;
+	};
+	~CThreadFace() {
+
+	};
 
 
+
+	wxString filename;
+	std::thread * thread;
+	wxWindow * mainWindow;
+};
 
 CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CListFace",parent, id)
@@ -86,14 +109,198 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	}
 
 	
+	Connect(wxEVT_IDLE, wxIdleEventHandler(CListFace::OnIdle));
+	Connect(wxEVENT_RESOURCELOAD, wxCommandEventHandler(CListFace::OnResourceLoad));
+	Connect(wxEVENT_FACEPHOTOADD, wxCommandEventHandler(CListFace::OnFacePhotoAdd));
+	Connect(wxEVENT_THUMBNAILZOOMON, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
+	Connect(wxEVENT_THUMBNAILZOOMOFF, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
+	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxCommandEventHandler(CListFace::ThumbnailZoomPosition));
+	Connect(wxEVENT_THUMBNAILREFRESH, wxCommandEventHandler(CListFace::ThumbnailRefresh));
+	Connect(wxEVENT_THUMBNAILMOVE, wxCommandEventHandler(CListFace::ThumbnailMove));
+	Connect(wxEVENT_THUMBNAILFOLDERADD, wxCommandEventHandler(CListFace::ThumbnailFolderAdd));
+
+	isLoadingResource = true;
+	CThreadFace * path = new CThreadFace();
+	path->mainWindow = this;
+	path->thread = new thread(LoadResource, path);
+
+	nbProcessFacePhoto = 0;
+	processIdle = false;
+}
 
 
-	Connect(wxEVENT_THUMBNAILZOOMON, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOn));
-	Connect(wxEVENT_THUMBNAILZOOMOFF, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomOff));
-	Connect(wxEVENT_THUMBNAILZOOMPOSITION, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailZoomPosition));
-	Connect(wxEVENT_THUMBNAILREFRESH, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailRefresh));
-	Connect(wxEVENT_THUMBNAILMOVE, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CListFace::ThumbnailMove));
+void CListFace::OnResourceLoad(wxCommandEvent& event)
+{
+	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	if (path->thread != nullptr)
+	{
+		path->thread->join();
+		delete(path->thread);
+		path->thread = nullptr;
+	}
 
+	if (path != nullptr)
+		delete path;
+
+	processIdle = true;
+	isLoadingResource = false;
+}
+
+
+void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
+{
+	processIdle = true;
+}
+
+void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
+{
+	CThreadFace * path = (CThreadFace *)event.GetClientData();
+	if (path->thread != nullptr)
+	{
+		path->thread->join();
+		delete(path->thread);
+		path->thread = nullptr;
+	}
+
+	if (path != nullptr)
+		delete path;
+
+	nbProcessFacePhoto--;
+
+	wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+	this->GetEventHandler()->AddPendingEvent(evt);
+}
+
+void CListFace::LoadResource(void * param)
+{
+	CThreadFace * path = (CThreadFace *)param;
+
+	//load Ressource
+
+#ifdef WIN32
+	//Face Data Preload
+
+	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
+	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotnet_street_view_resnet50_keras2.json";
+	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
+
+#else
+
+	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
+	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
+	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotnet_street_view_resnet50_keras2.json";
+	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
+#endif
+
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString());
+
+
+	if (path->mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_RESOURCELOAD);
+		evt.SetClientData(path);
+		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+//---------------------------------------------------------------------------------------
+//Test FacialRecognition
+//---------------------------------------------------------------------------------------
+void CListFace::FacialRecognition(void * param)
+{
+	CThreadFace * path = (CThreadFace *)param;
+	bool pictureOK = false;
+
+	CPictureData * pictureData = nullptr;
+	int nbFaceFound = 0;
+	CSqlThumbnail sqlThumbnail;
+	if (sqlThumbnail.TestThumbnail(path->filename))
+	{
+		pictureData = sqlThumbnail.GetJpegThumbnail(path->filename);
+		if (pictureData != nullptr)
+			pictureOK = true;
+	}
+	else
+	{
+		pictureData = CPictureData::LoadPictureToJpeg(path->filename, pictureOK);
+	}
+
+	if (pictureData != nullptr)
+	{
+
+		vector<int> listFace;
+		if (pictureOK)
+		{
+			listFace = CDeepLearning::FindFace(pictureData);
+		}
+
+		for (int numFace : listFace)
+		{
+			CDeepLearning::FindFaceCompatible(numFace);
+		}
+
+		delete pictureData;
+	}
+
+	if (path->mainWindow != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
+		evt.SetClientData(path);
+		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+}
+
+void CListFace::OnIdle(wxIdleEvent& evt)
+{
+	if (endProgram)
+	{
+		processIdle = false;
+	}
+
+	StartThread();
+}
+
+bool CListFace::GetProcessEnd()
+{
+	TRACE();
+	if (nbProcessFacePhoto > 0 || isLoadingResource)
+		return false;
+	return true;
+}
+
+void CListFace::ProcessIdle()
+{
+	int nbProcesseur = 1;
+	CRegardsConfigParam * config = CParamInit::getInstance();
+	if (config != nullptr)
+		nbProcesseur = config->GetFaceProcess();
+	//Find picture to examine
+	CSqlFacePhoto facePhoto;
+	vector<wxString> listPhoto = facePhoto.GetPhotoListTreatment();
+
+	//Find Face 
+
+	if (nbProcessFacePhoto < nbProcesseur && listPhoto.size() > 0)
+	{
+		CSqlFacePhoto sqlFacePhoto;
+		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
+
+		CThreadFace * path = new CThreadFace();
+		path->filename = listPhoto.at(0);
+		path->mainWindow = this;
+		path->thread = new thread(FacialRecognition, path);
+
+		nbProcessFacePhoto++;
+	}
+
+	//Recognize Face
+
+	if (listPhoto.size() == 0)
+	{
+		processIdle = false;
+	}
 }
 
 void CListFace::ThumbnailRefresh(wxCommandEvent& event)

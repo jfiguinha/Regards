@@ -10,9 +10,13 @@
 /////////////////////////////////////////////////////////////////////////////
 #include <header.h>
 #include <Regards.h>
+#include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
+
+
+using namespace Regards::DeepLearning;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
@@ -184,6 +188,9 @@ bool MyApp::OnInit()
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
 
 
+
+
+
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();
 
@@ -195,6 +202,8 @@ bool MyApp::OnInit()
 	else
 	{
 		regardsParam->SetIsOpenCLSupport(true);
+
+
 	}
 
 

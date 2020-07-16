@@ -767,6 +767,9 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 			bitmapwidth = bitmapIn->GetWidth();
 			bitmapheight = bitmapIn->GetHeight();
 			orientation = bitmapIn->GetOrientation();
+
+			
+
 			ShrinkImage(false);
 			AfterSetBitmap();
             RefreshWindow();

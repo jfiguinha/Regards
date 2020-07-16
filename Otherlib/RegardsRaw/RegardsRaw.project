@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="RegardsRaw" InternalType="Library" Version="10.0.0">
+<CodeLite_Project Name="RegardsRaw" InternalType="Library" Version="11000">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -56,6 +56,8 @@
     <File Name="internal/dcraw_fileio.cpp"/>
     <File Name="internal/demosaic_packs.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++11;-Wall;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-Wno-narrowing" C_Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;" Assembler="">
@@ -163,6 +165,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

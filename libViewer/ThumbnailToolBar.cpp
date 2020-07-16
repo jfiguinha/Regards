@@ -143,7 +143,7 @@ void CThumbnailToolBar::SlidePosChange(const int &position, const wxString &key)
 	CListPicture * listPicture = (CListPicture *)this->FindWindowById(LISTPICTUREID);
 	if (listPicture != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMPOSITION);
+		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
 		evt.SetExtraLong(position);
 		listPicture->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -154,7 +154,7 @@ void CThumbnailToolBar::ZoomPos(const int &position)
 	CListPicture * listPicture = (CListPicture *)this->FindWindowById(LISTPICTUREID);
 	if (listPicture != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMPOSITION);
+		wxCommandEvent evt(wxEVENT_THUMBNAILZOOMPOSITION);
 		evt.SetExtraLong(position);
 		listPicture->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -172,7 +172,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 			ZoomOn();
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMON);
+				wxCommandEvent evt(wxEVENT_THUMBNAILZOOMON);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;
@@ -181,7 +181,7 @@ void CThumbnailToolBar::EventManager(const int &id)
 			ZoomOff();
 			if (listPicture != nullptr)
 			{
-				wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_THUMBNAILZOOMOFF);
+				wxCommandEvent evt(wxEVENT_THUMBNAILZOOMOFF);
 				listPicture->GetEventHandler()->AddPendingEvent(evt);
 			}
 			break;

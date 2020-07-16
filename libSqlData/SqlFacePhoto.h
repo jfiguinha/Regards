@@ -1,6 +1,7 @@
 #pragma once
 #include "SqlExecuteRequest.h"
 #include "SqlResult.h"
+class CPictureData;
 class CRegardsBitmap;
 
 namespace Regards
@@ -17,6 +18,11 @@ namespace Regards
 			int GetNumFace(const wxString & path, const int &numberface);
 			vector<wxString> GetPhotoList();
 			vector<wxString> GetPhotoListTreatment();
+			vector<CPictureData *> GetAllFace();
+			vector<CPictureData *> GetAllFace(const int &numFace);
+			CPictureData * GetFacePicture(const int &numFace);
+			vector<int> GetAllNumFace();
+			vector<int> GetAllNumFace(const int &numFace);
 			wxImage GetFace(const int &numFace);
 			bool DeleteFaceDatabase();
 			bool DeletePhotoFaceDatabase(const wxString & path);
@@ -33,6 +39,9 @@ namespace Regards
 			int height;
 			wxString filename;
 			vector<wxString> listPhoto;
+			vector<CPictureData *> listFace;
+			CPictureData * facePicture;
+			vector<int> listFaceIndex;
 			wxImage bitmap;
 		};
 	}

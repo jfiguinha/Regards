@@ -2,6 +2,7 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
+#include <PictureData.h>
 #include <wx/mstream.h>
 using namespace Regards::Sqlite;
 
@@ -14,6 +15,48 @@ CSqlFacePhoto::CSqlFacePhoto()
 
 CSqlFacePhoto::~CSqlFacePhoto()
 {
+}
+
+vector<int> CSqlFacePhoto::GetAllNumFace()
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("SELECT (Select NumFace FROM FACE_RECOGNITION WHERE FACE_RECOGNITION.NumFaceCompatible = FACEPHOTO.NumFace) as NumFaceCompatible FROM FACEPHOTO");
+	return listFaceIndex;
+}
+
+vector<int> CSqlFacePhoto::GetAllNumFace(const int &numFace)
+{
+	listFaceIndex.clear();
+	type = 4;
+	ExecuteRequest("SELECT (Select NumFace FROM FACE_RECOGNITION WHERE FACE_RECOGNITION.NumFaceCompatible = FACEPHOTO.NumFace) as NumFaceCompatible FROM FACEPHOTO where NumFace != " + to_string(numFace));
+	return listFaceIndex;
+}
+
+vector<CPictureData *> CSqlFacePhoto::GetAllFace()
+{
+	type = 3;
+	listFace.clear();
+	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO");
+	return listFace;
+}
+
+vector<CPictureData *> CSqlFacePhoto::GetAllFace(const int &numFace)
+{
+	type = 3;
+	listFace.clear();
+	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO where NumFace != " + to_string(numFace));
+	return listFace;
+}
+
+CPictureData * CSqlFacePhoto::GetFacePicture(const int &numFace)
+{
+	type = 3;
+	listFace.clear();
+	ExecuteRequest("SELECT FullPath, width, height, Face FROM FACEPHOTO where NumFace = " + to_string(numFace));
+	if (listFace.size() > 0)
+		return listFace[0];
+	return nullptr;
 }
 
 bool CSqlFacePhoto::DeleteListOfPhoto(const vector<int> & listNumPhoto)
@@ -141,6 +184,7 @@ wxImage CSqlFacePhoto::GetFace(const int &numFace)
 }
 
 
+
 bool CSqlFacePhoto::DeletePhotoFaceDatabase(const wxString & path)
 {
 	wxString fullpath = path;
@@ -158,6 +202,10 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 	int nbResult = 0;
 	while (sqlResult->Next())
 	{
+		CPictureData * picture = nullptr;
+		if (type == 3)
+			picture = new CPictureData();
+
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
 			if(type == 0)
@@ -208,7 +256,54 @@ int CSqlFacePhoto::TraitementResult(CSqlResult * sqlResult)
 						break;
 				}
 			}
+			else if (type == 3)
+			{
+				
+				switch (i)
+				{
+				case 0:
+					picture->SetFilename(sqlResult->ColumnDataText(i));
+					break;
+				case 1:
+					picture->SetWidth(sqlResult->ColumnDataInt(i));
+					break;
+				case 2:
+					picture->SetHeight(sqlResult->ColumnDataInt(i));
+					break;
+				case 3:
+				{
+					int size = sqlResult->ColumnDataBlobSize(i);
+					if (size > 0)
+					{
+						uint8_t * data = new uint8_t[size];
+						sqlResult->ColumnDataBlob(i, (void * &)data, size);
+						if (data != nullptr)
+						{
+							picture->SetData(data, size);
+
+							delete[] data;
+							data = nullptr;
+						}
+					}
+				}
+				}
+				
+			}
+			else if (type == 4)
+			{
+				int numFace;
+				switch (i)
+				{
+				case 0:
+					numFace = sqlResult->ColumnDataInt(i);
+					break;
+				}
+				listFaceIndex.push_back(numFace);
+			}
 		}
+
+		if (type == 3)
+			listFace.push_back(picture);
 		nbResult++;
 	}
 	return nbResult;

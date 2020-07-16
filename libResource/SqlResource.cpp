@@ -265,11 +265,11 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 				break;
 
 			case 2:
-				memFile->width = sqlResult->ColumnDataInt(i);
+				memFile->SetWidth(sqlResult->ColumnDataInt(i));
 				break;
 
 			case 3:
-				memFile->height = sqlResult->ColumnDataInt(i);
+				memFile->SetHeight(sqlResult->ColumnDataInt(i));
 				break;
 
 			case 4:
@@ -278,17 +278,28 @@ int CSqlResource::TraitementResultBitmap(CSqlResult * sqlResult)
 
 			case 5:
 				{
-					memFile->size = sqlResult->ColumnDataBlobSize(i);
-					if (memFile->size > 0)
+				
+					int size = sqlResult->ColumnDataBlobSize(i);
+					if (size > 0)
 					{
 						
 						//const int req_comps = 4;
 						//int actual_comps = 4;
-						int sizeBuffer = memFile->width * memFile->height * 4;
-						if(sizeBuffer != memFile->size)
+						int sizeBuffer = memFile->GetWidth() * memFile->GetHeight() * 4;
+						if(sizeBuffer != size)
 							assert("error");
-						memFile->data = new uint8_t[sizeBuffer];
-						sqlResult->ColumnDataBlob(i, (void * &)memFile->data, sizeBuffer);
+						else
+						{
+							uint8_t * data = new uint8_t[sizeBuffer];
+							sqlResult->ColumnDataBlob(i, (void * &)data, sizeBuffer);
+							if (data != nullptr)
+							{
+								memFile->SetData(data, sizeBuffer);
+
+								delete[] data;
+								data = nullptr;
+							}
+						}
 					}
 					break;
 				}

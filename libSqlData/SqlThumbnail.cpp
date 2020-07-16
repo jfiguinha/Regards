@@ -196,12 +196,19 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 				case 0:
 					picture = new CPictureData();
 					find = true;
-					picture->size = sqlResult->ColumnDataBlobSize(i);
-					if (picture->size > 0)
+
+					int size = sqlResult->ColumnDataBlobSize(i);
+					if (size > 0)
 					{	
-						
-						picture->data = new uint8_t[picture->size+1];
-						sqlResult->ColumnDataBlob(i, (void * &)picture->data, picture->size);
+						uint8_t * data = new uint8_t[size];
+						sqlResult->ColumnDataBlob(i, (void * &)data, size);
+						if (data != nullptr)
+						{
+							picture->SetData(data, size);
+
+							delete[] data;
+							data = nullptr;
+						}
 					}
 					break;
 				}

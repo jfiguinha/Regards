@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libbpg" Version="10.0.0" InternalType="Library">
+<CodeLite_Project Name="libbpg" Version="11000" InternalType="Library">
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -37,6 +37,8 @@
     <File Name="../../../libextern/dlib-19.17/dlib/external/libpng/pngwtran.c"/>
     <File Name="../../../libextern/dlib-19.17/dlib/external/libpng/pngwutil.c" ExcludeProjConfig=""/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="-std=c99;-Wall;-fPIC;-pthread" Assembler="">
@@ -133,6 +135,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
