@@ -135,8 +135,8 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		
 		CSqlFacePhoto facePhoto;
 		std::vector<cv::Mat> listOfFace;
-		std::vector<char> data = pictureData->CopyData();
-		cv::Mat image = imdecode(Mat(data), 1);
+		//std::vector<char> data = pictureData->CopyData();
+		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 		detectFaceOpenCVDNN(image, listOfFace);
 
 		std::vector<cv_image<rgb_pixel>> faces;

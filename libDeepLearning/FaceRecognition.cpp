@@ -131,16 +131,17 @@ int CFaceRecognition::FaceRecognition(CPictureData * pictureData, const int &num
 
 		for (CPictureData * picture : listPicture)
 		{
-			std::vector<char> data = picture->CopyData();
-			cv::Mat image = imdecode(Mat(data), 1);
+			//std::vector<char> data = picture->CopyData();
+			cv::Mat image = cv::imdecode(cv::Mat(1, picture->GetSize(), CV_8UC1, picture->GetData()), IMREAD_UNCHANGED);
+
+			//cv::Mat image = imdecode(Mat(data), 1);
 			cv::Mat dst;//dst image
 			cv::cvtColor(image, dst, cv::COLOR_BGR2GRAY);
 			cv::resize(dst, image, size);
 			images.push_back(image);
 		}
 
-		std::vector<char> data = pictureData->CopyData();
-		cv::Mat testSample = imdecode(Mat(data), 1);
+		cv::Mat testSample = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 
 		
 		// Quit if there are not enough images for this demo.

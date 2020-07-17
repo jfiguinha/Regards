@@ -19,7 +19,9 @@ public:
 	void SetFilename(const wxString &filename);
 	void SetData(uint8_t * & extdata, const int &size);
 	void CopyData(CRegardsBitmap * & bitmap);
-	std::vector<char> CopyData();
+	uint8_t * GetData();
+	int GetSize();
+	//std::vector<char> CopyData();
 private:
 
 

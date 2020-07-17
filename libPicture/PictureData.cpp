@@ -41,12 +41,22 @@ void  CPictureData::SetFilename(const wxString &filename)
 	this->filename = filename;
 }
 
+uint8_t * CPictureData::GetData()
+{
+	return data;
+}
+
+int CPictureData::GetSize()
+{
+	return size;
+}
+/*
 std::vector<char> CPictureData::CopyData()
 {
 	std::vector<char> _data(data, data + size);
 	return _data;
 }
-
+*/
 void CPictureData::SetData(uint8_t * & extdata, const int &size)
 {
 	if (extdata != nullptr && size > 0)
@@ -55,6 +65,7 @@ void CPictureData::SetData(uint8_t * & extdata, const int &size)
 			delete[] data;
 		data = new uint8_t[size];
 		memcpy(data, extdata, size * sizeof(uint8_t));
+		this->size = size;
 	}
 }
 

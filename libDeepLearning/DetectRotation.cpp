@@ -33,6 +33,7 @@ int CDetectRotation::GetExifOrientation(CImageLoadingFormat * imageLoadingFormat
 
 int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat)
 {
+	int angle = 0;
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
@@ -43,19 +44,24 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		int compressMethod;
 		unsigned long size;
 		uint8_t * src = imageLoadingFormat->GetJpegData(size, compressMethod);
-		std::vector<char> data(src, src + size);
-		cv::Mat image = imdecode(Mat(data), 1);
-
-		const auto input = fdeep::tensor_from_bytes(image.ptr(),
-			static_cast<std::size_t>(image.rows),
-			static_cast<std::size_t>(image.cols),
-			static_cast<std::size_t>(image.channels()),
+		//std::vector<char> data(src, src + size);
+		//cv::Mat image = imdecode(Mat(data), 1);
+		cv::Mat image = cv::imdecode(cv::Mat(1, size, CV_8UC1, src), IMREAD_UNCHANGED);
+		cv::Size size_input(224, 224);//the dst image size,e.g.100x100
+		cv::Mat dst;//dst image
+		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+		cv::resize(image, dst, size_input);
+		const auto input = fdeep::tensor_from_bytes(dst.ptr(),
+			static_cast<std::size_t>(dst.rows),
+			static_cast<std::size_t>(dst.cols),
+			static_cast<std::size_t>(dst.channels()),
 			0.0f, 1.0f);
 
-		delete src;
-		return _model.predict_class({ input });
+		imageLoadingFormat->DestroyJpegData(src, compressMethod);
+
+		angle = _model.predict_class({ input });
 	}
-	return 0;
+	return angle;
 
 }
 
@@ -71,11 +77,11 @@ void CDetectRotation::LoadModel(const string &model_path)
 int CDetectRotation::RotateToExifOrientation(const int &angle)
 {
 	if (angle > 44 && angle < 135) //Rotate 90
-		return 6;
+		return 8;
 	else if (angle > 134 && angle < 225) //Rotate 180
 		return 3;
 	else if (angle > 224 && angle < 315)
-		return 8;
+		return 6;
 	return 0;
 }
 

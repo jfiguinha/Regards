@@ -27,7 +27,7 @@ CPictureData * CSqlThumbnail::GetJpegThumbnail(const wxString & path)
 	type = 5;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");
-	ExecuteRequest("SELECT thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
+	ExecuteRequest("SELECT FullPath, width, height, thumbnail FROM PHOTOSTHUMBNAIL WHERE FullPath = '" + fullpath + "'");
 	return picture;
 }
 
@@ -124,7 +124,6 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 		int height;
 		wxString hash = "";
 		wxString filename = "";
-
 		switch (type)
 		{
 		case 3:
@@ -189,12 +188,22 @@ int CSqlThumbnail::TraitementResult(CSqlResult * sqlResult)
 			}
 			break;
 		case 5:
+			picture = new CPictureData();
 			for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 			{
 				switch (i)
 				{
 				case 0:
-					picture = new CPictureData();
+					picture->SetFilename(sqlResult->ColumnDataText(i));
+					break;
+				case 1:
+					picture->SetWidth(sqlResult->ColumnDataInt(i));
+					break;
+				case 2:
+					picture->SetHeight(sqlResult->ColumnDataInt(i));
+					break;
+				case 3:
+					
 					find = true;
 
 					int size = sqlResult->ColumnDataBlobSize(i);

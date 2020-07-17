@@ -335,6 +335,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	
 		if (!isThumbnail)
 		{
+
 			if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
 			{
 				int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
