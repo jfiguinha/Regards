@@ -1,66 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Project Name="libAppleFunction" InternalType="Library" Version="11000">
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
-  <VirtualDirectory Name="Scanner">
-    <File Name="ofxScannerKit.mm"/>
-    <File Name="ofxScannerKit.h"/>
-    <File Name="event_scanner.h"/>
-    <File Name="ScannerWindow.mm" ExcludeProjConfig=""/>
-    <File Name="ScannerWindow.h"/>
-    <File Name="ofxCameraKit.mm" ExcludeProjConfig=""/>
-    <File Name="ofxCameraKit.h" ExcludeProjConfig=""/>
-    <File Name="MyScan.mm"/>
-    <File Name="MyScanInterface.h"/>
-    <File Name="ScanView.cpp"/>
-    <File Name="ScanView.h"/>
+<CodeLite_Project Name="libDeepLearning" Version="11000" InternalType="Library">
+  <VirtualDirectory Name="dlib">
+    <File Name="../libextern/dlib-19.17/dlib/all/source.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="SaveFileFormat.cpp"/>
-    <File Name="SaveFromCFunction.mm"/>
+    <File Name="FaceRecognition.cpp"/>
+    <File Name="FaceDetector.cpp"/>
+    <File Name="DetectRotation.cpp"/>
+    <File Name="DeepLearning.cpp"/>
+    <File Name="base64.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="SaveFileFormat.h"/>
-    <File Name="SaveFromCFunction.h"/>
+    <File Name="header.h"/>
+    <File Name="FaceRecognition.h"/>
+    <File Name="FaceDetector.h"/>
+    <File Name="DetectRotation.h"/>
+    <File Name="DeepLearning.h"/>
+    <File Name="base64.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="Email">
-    <File Name="MyEmail.mm"/>
-    <File Name="MyEmailInterface.h"/>
-    <File Name="SendEmail.cpp"/>
-    <File Name="SendEmail.h"/>
-  </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fpermissive" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags);-Wall;-pthread;-fpermissive" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../Otherlib"/>
-        <IncludePath Value="../libWindow"/>
-        <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libextern/dlib-19.17/dlib/all"/>
+        <IncludePath Value="../libextern/dlib-19.17"/>
         <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
+        <IncludePath Value="../libextern/json-3.8.0/include"/>
+        <IncludePath Value="../libextern/frugally-deep/include"/>
+        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
+        <IncludePath Value="../libextern/eigen"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="clang++" DebuggerType="" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-g;-O0" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0"/>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="header.h" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
+        <IncludePath Value="."/>
+      </Compiler>
       <Linker Options="" Required="yes"/>
       <ResourceCompiler Options="" Required="no"/>
-      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="./Debug" Command="" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
       <BuildSystem Name="Default"/>
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>
@@ -88,8 +80,8 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="clang++" DebuggerType="LLDB Debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-Os;-Wall" C_Options="-Os;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -100,7 +92,7 @@
       <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
         <![CDATA[]]>
       </Environment>
-      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="yes">
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
         <DebuggerSearchPaths/>
         <PostConnectCommands/>
         <StartupCommands/>

@@ -35,51 +35,6 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="libScanner"/>
-    <Project Name="wxPDFDoc"/>
-  </Dependencies>
   <Dependencies Name="Release">
     <Project Name="include"/>
     <Project Name="CxImage"/>
@@ -124,6 +79,7 @@
     <Project Name="wxIA"/>
     <Project Name="wxPDFDoc"/>
     <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -172,6 +128,12 @@
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
+        <IncludePath Value="../libextern/json-3.8.0/include"/>
+        <IncludePath Value="../libextern/frugally-deep/include"/>
+        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
+        <IncludePath Value="../libextern/eigen"/>
+        <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -208,7 +170,7 @@
         <Library Value="Exif_regards"/>
         <Library Value="Email"/>
         <Library Value="Picture"/>
-        <Library Value="FaceRecognition"/>
+        <Library Value="DeepLearning"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Geolocalisation"/>
@@ -270,7 +232,6 @@
         <Library Value="xcb-shm"/>
         <Library Value="SM"/>
         <Library Value="SDL2"/>
-        <Library Value="FaceRecognition"/>
         <Library Value="va"/>
         <Library Value="va-x11"/>
         <Library Value="va-drm"/>
@@ -308,6 +269,14 @@
         <Library Value="aom"/>
         <Library Value="webp"/>
         <Library Value="png"/>
+        <Library Value="opencv_calib3d"/>
+        <Library Value="opencv_core"/>
+        <Library Value="opencv_dnn"/>
+        <Library Value="opencv_features2d"/>
+        <Library Value="opencv_imgproc"/>
+        <Library Value="opencv_imgcodecs"/>
+        <Library Value="opencv_highgui"/>
+        <Library Value="opencv_face"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -350,7 +319,7 @@
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
-        <LibraryPath Value="../FaceRecognition_unix/Debug"/>
+        <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
@@ -446,7 +415,7 @@
         <LibraryPath Value="../Otherlib/libPsd/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Release"/>
-        <LibraryPath Value="../FaceRecognition_unix/Release"/>
+        <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../libPiccante/Release"/>
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
@@ -504,4 +473,50 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libDeepLearning"/>
+  </Dependencies>
 </CodeLite_Project>
