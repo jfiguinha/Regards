@@ -14,6 +14,17 @@ tar xf poppler-0.81.0.tar.xz
 wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
 unzip 4.1.1.zip
 
+#install leptonica
+tar xf  leptonica-1.79.0.tar.gz
+cd leptonica-1.79.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
 #compile tesseract
 cd tesseract-4.1.1
 mkdir build
@@ -23,6 +34,7 @@ make -j$NBPROC
 sudo make install
 cd ..
 cd ..
+
 
 #decompression
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
@@ -110,6 +122,20 @@ chmod +x multilib.sh
 cd .. 
 cd .. 
 cd .. 
+
+#compile opencv
+cd opencv
+unzip opencv-4.3.0.zip
+unzip opencv_contrib-4.3.0.zip
+cd opencv-4.3.0
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t -DCMAKE_CXX_FLAGS="-std=gnu++14" ../
+make -j$NBPROC
+make install
+cd ..
+cd ..
+cd ..
 
 #Compille ffmpeg
 ./ffmpeg_build.sh

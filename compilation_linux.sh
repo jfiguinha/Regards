@@ -31,7 +31,6 @@ sudo apt install libsane-dev
 sudo apt install ocl-icd-opencl-dev
 sudo apt install libopenjp2-7-dev
 sudo apt install libfftw3-dev
-sudo apt install libleptonica-dev
 sudo apt install libwebp-dev
 sudo apt install libtbb-dev
 sudo apt install libvdpau-dev
