@@ -74,7 +74,7 @@ cd ..
 cd wxWidgets-master
 chmod +x configure
 chmod +x src/stc/gen_iface.py
-./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug 
+./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug
 make -j$NBPROC
 cd ..
 
@@ -125,6 +125,22 @@ cd ..
 cd ..
 cd ..
 cd ..
+
+#compile opencv
+cd opencv
+unzip opencv-4.3.0.zip
+unzip opencv_contrib-4.3.0.zip
+cd opencv-4.3.0
+mkdir build
+cd build
+cmake -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t -DCMAKE_CXX_FLAGS="-std=gnu++14" ../
+make -j12
+make install
+cd ..
+cd ..
+cd ..
+
+
 
 #Compille ffmpeg
 ./ffmpeg_build_windows.sh
