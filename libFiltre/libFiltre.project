@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libFiltre" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Rotator">
-    <File Name="rotdetect.h"/>
-    <File Name="rotdetect.cpp"/>
-    <File Name="detector.h"/>
-    <File Name="detector.c"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -32,6 +26,12 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Rotator">
+    <File Name="rotdetect.h"/>
+    <File Name="rotdetect.cpp"/>
+    <File Name="detector.h"/>
+    <File Name="detector.c"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Dialog"/>
   <VirtualDirectory Name="bm3d">
     <File Name="bm3dfilter.h"/>

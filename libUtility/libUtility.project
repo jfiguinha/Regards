@@ -50,6 +50,7 @@
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../include"/>
+        <IncludePath Value="../libPicture"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

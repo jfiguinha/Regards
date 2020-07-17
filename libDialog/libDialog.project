@@ -43,15 +43,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="Association.cpp"/>
     <File Name="PDFOption.cpp"/>
-    <File Name="TypePhotoDetection.cpp"/>
     <File Name="JxrOption.cpp"/>
     <File Name="J2kOption.cpp"/>
     <File Name="ExrOption.cpp"/>
     <File Name="BmpOption.cpp"/>
     <File Name="SaveFileFormat.cpp"/>
-    <File Name="FaceDetection.cpp"/>
-    <File Name="CategoryDetection.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
     <File Name="CompressionOption.cpp"/>
     <File Name="ConfigRegards.cpp"/>
@@ -70,16 +68,14 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="Association.h"/>
     <File Name="PDFOption.h"/>
-    <File Name="TypePhotoDetection.h"/>
     <File Name="JxrOption.h"/>
     <File Name="J2kOption.h"/>
     <File Name="ExrOption.h"/>
     <File Name="BmpOption.h"/>
     <File Name="SaveFromCFunction.h"/>
     <File Name="SaveFileFormat.h"/>
-    <File Name="FaceDetection.h"/>
-    <File Name="CategoryDetection.h"/>
     <File Name="InterpolationFilterSelect.h"/>
     <File Name="CompressionOption.h"/>
     <File Name="ConfigRegards.h"/>

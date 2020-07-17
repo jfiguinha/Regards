@@ -120,10 +120,11 @@
     <Project Name="FaceRecognition_windows"/>
     <Project Name="wxPDFDoc"/>
     <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
@@ -166,6 +167,11 @@
         <IncludePath Value="../libextern/wxWidgets-master/include"/>
         <IncludePath Value="../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1"/>
         <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
+        <IncludePath Value="../libextern/json-3.8.0/include"/>
+        <IncludePath Value="../libextern/frugally-deep/include"/>
+        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
+        <IncludePath Value="../libextern/eigen"/>
+        <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -197,22 +203,22 @@
         <LibraryPath Value="../libextern/poppler-0.81.0/build"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build/cpp"/>
         <LibraryPath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/lib"/>
+        <LibraryPath Value="../libDeepLearning"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
         <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
         <Library Value="Control"/>
-        <Library Value="Viewer"/>
         <Library Value="Email"/>
         <Library Value="Exif_regards"/>
-        <Library Value="Picture"/>
-        <Library Value="FaceRecognition"/>
+        <Library Value="DeepLearning"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Geolocalisation"/>
         <Library Value="Utility"/>
         <Library Value="Dialog"/>
+        <Library Value="Picture"/>
         <Library Value="Resource"/>
         <Library Value="SqlData"/>
         <Library Value="DataStructure"/>
@@ -351,6 +357,14 @@
         <Library Value="lept"/>
         <Library Value="tbb"/>
         <Library Value="aom"/>
+        <Library Value="opencv_calib3d430"/>
+        <Library Value="opencv_core430"/>
+        <Library Value="opencv_dnn430"/>
+        <Library Value="opencv_features2d430"/>
+        <Library Value="opencv_imgproc430"/>
+        <Library Value="opencv_imgcodecs430"/>
+        <Library Value="opencv_highgui430"/>
+        <Library Value="opencv_face430"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -394,11 +408,11 @@
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
-        <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Debug"/>
         <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
         <LibraryPath Value="../libScanner/Debug"/>
+        <LibraryPath Value="../libDeepLearning/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -488,6 +502,17 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libtesseract-4.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssp-0.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/bin/*.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_core430.dll  ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_dnn430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_face430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_imgcodecs430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_imgproc430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_calib3d430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_objdetect430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_features2d430.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_flann430.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/build/*.dll ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
@@ -554,10 +579,10 @@
         <LibraryPath Value="../Otherlib/libPsd/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
         <LibraryPath Value="../Otherlib/wxIA/Release"/>
-        <LibraryPath Value="../FaceRecognition_windows/Release"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_windows/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
+        <LibraryPath Value="../libDeepLearning/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -574,6 +599,7 @@
         <Command Enabled="yes">$(RcCompilerName) -i regards.rc --use-temp-file --define WXMSW --define _UNICODE --include-dir "../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1" --include-dir "../libextern/wxWidgets-master/include" -o regards.rc.o</Command>
       </PreBuild>
       <PostBuild>
+        <Command Enabled="no">#/bin/bash</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbz2-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcairo-2.dll ./Release</Command>
@@ -628,7 +654,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
-        <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Release/libFaceRecognition.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
@@ -649,9 +674,21 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/liblz4.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libnettle-8.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libhogweed-6.dll ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/build/*.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssp-0.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/bin/*.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_core430.dll  ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_dnn430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_face430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_imgcodecs430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_imgproc430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_calib3d430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_objdetect430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_features2d430.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/home/jfigu/ffmpeg_build/x64/mingw/bin/libopencv_flann430.dll ./Release</Command>
         <Command Enabled="yes">rm -f ./package/Prerequisites/RegardsViewer2.zip</Command>
+        <Command Enabled="yes">"C:\Program Files (x86)\NSIS\makensis.exe" ./package/Associate.nsi</Command>
         <Command Enabled="yes">rm -f -R Resources</Command>
+        <Command Enabled="yes">cp ./package/Associate.exe ./Release</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./</Command>
         <Command Enabled="yes">zip -j -u ./package/Prerequisites/RegardsViewer2.zip ./Release/*.*</Command>
         <Command Enabled="yes">zip -r9 ./package/Prerequisites/RegardsViewer2.zip ./Resources</Command>

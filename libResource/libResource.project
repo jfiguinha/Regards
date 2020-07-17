@@ -31,14 +31,12 @@
   <VirtualDirectory Name="src">
     <File Name="ClosedHandCursor.cpp"/>
     <File Name="LibResource.cpp"/>
-    <File Name="PictureData.cpp"/>
     <File Name="SqlLibResource.cpp"/>
     <File Name="SqlResource.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="ClosedHandCursor.h"/>
     <File Name="LibResource.h"/>
-    <File Name="PictureData.h"/>
     <File Name="SqlLibResource.h"/>
     <File Name="SqlResource.h"/>
   </VirtualDirectory>

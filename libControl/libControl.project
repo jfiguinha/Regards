@@ -108,7 +108,8 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++11" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++14" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
@@ -146,6 +147,10 @@
         <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libVideoFFMpeg"/>
+        <IncludePath Value="../libextern/json-3.8.0/include"/>
+        <IncludePath Value="../libextern/frugally-deep/include"/>
+        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
+        <IncludePath Value="../libextern/eigen"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

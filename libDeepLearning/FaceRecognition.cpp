@@ -64,7 +64,7 @@ float CFaceRecognition::IsCompatibleFace(std::string const& dataface1, std::stri
 }
 
 //---------------------------------------------------------------------------------------
-//Test si compatible avec une autre Face à déplacer ailleurs
+//Test si compatible avec une autre Face Ã  dÃ©placer ailleurs
 //---------------------------------------------------------------------------------------	
 bool CFaceRecognition::FindCompatibility(const int &numFace)
 {

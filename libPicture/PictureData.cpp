@@ -43,8 +43,8 @@ void  CPictureData::SetFilename(const wxString &filename)
 
 std::vector<char> CPictureData::CopyData()
 {
-	std::vector<char> data(data, data + size);
-	return data;
+	std::vector<char> _data(data, data + size);
+	return _data;
 }
 
 void CPictureData::SetData(uint8_t * & extdata, const int &size)

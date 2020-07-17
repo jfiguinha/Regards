@@ -57,12 +57,6 @@
     <Project Name="libDialog" Path="libDialog/libDialog.project" Active="No"/>
     <Project Name="libScanner" Path="libScanner/libScanner.project" Active="No"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="FaceRecognition">
-    <Project Name="FaceRecognition_unix" Path="FaceRecognition_unix/FaceRecognition_unix.project" Active="No"/>
-    <Project Name="FaceRecognition" Path="FaceRecognition/FaceRecognition.project" Active="No"/>
-    <Project Name="FaceRecognition_mac" Path="FaceRecognition_mac/FaceRecognition_mac.project" Active="No"/>
-    <Project Name="FaceRecognition_windows" Path="FaceRecognition_windows/FaceRecognition_windows.project" Active="No"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
@@ -73,6 +67,9 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="DeepLearning">
+    <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
@@ -140,6 +137,7 @@
       <Project Name="wxPDFDoc" ConfigName="Debug"/>
       <Project Name="libScanner" ConfigName="Debug"/>
       <Project Name="RegardsViewer_mac" ConfigName="Debug"/>
+      <Project Name="libDeepLearning" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -206,6 +204,7 @@
       <Project Name="wxPDFDoc" ConfigName="Release"/>
       <Project Name="libScanner" ConfigName="Release"/>
       <Project Name="RegardsViewer_mac" ConfigName="Release"/>
+      <Project Name="libDeepLearning" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
