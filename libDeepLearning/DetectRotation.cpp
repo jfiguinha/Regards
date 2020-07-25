@@ -56,16 +56,17 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		cv::Mat image = cv::imdecode(cv::Mat(1, size, CV_8UC1, src), IMREAD_UNCHANGED);
 		cv::Mat dst;//dst image
 		cv::cvtColor(image, dst, cv::COLOR_BGR2RGB);
-		cv::flip(dst, dst, 1);
-		cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate    
-		cv::Mat r;       //Mat object for storing after rotation
+		cv::flip(dst, image, 1);
+		//cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate    
+		//cv::Mat r;       //Mat object for storing after rotation
 			///applie an affine transforation to image.
 		//r = cv::getRotationMatrix2D(pt, 180, 1.0);
-		warpAffine(dst, image, r, cv::Size(image.cols, image.rows));
+		//warpAffine(dst, image, r, cv::Size(image.cols, image.rows));
 
-		imshow("Display window", image);                   // Show our image inside it.     
-		cv::waitKey(0);
+		//imshow("Display window", image);                   // Show our image inside it.     
+		//cv::waitKey(0);
 
+        /*
 		int sizeCrop = 0;
 
 		if (image.cols > image.rows)
@@ -93,7 +94,18 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 			std::cout << "exception caught: " << err_msg << std::endl;
 			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
 		}
-
+        */
+		try
+		{
+			cv::resize(image, dst, cv::Size(224, 224));
+		}
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}        
+        
 		// cv::resize(image,dst,size);
 		assert(dst.isContinuous());
 		//const auto model = fdeep::load_model("/home/figuinha/developpement/git/model/fdeep_model.json");
@@ -105,54 +117,36 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		vec_append(all_results, *result[0].as_vector());
 		//const std::vector<float> result_vec = result.front().as_vector();
 
-        float result0 = all_results[0];
-        float result180 = all_results[1];
-        float result270 = all_results[2];
-        float result90 = all_results[3];
+        float result0 = all_results[0] * 100.0;
+        float result180 = all_results[1]* 100.0;
+        float result270 = all_results[2]* 100.0;
+        float result90 = all_results[3]* 100.0;
         
        std::cout << "show_tensor Result Tensor : " << std::endl;
        std::cout << fdeep::show_tensors(result) << std::endl;            
         
         if(!(result0 > minpourcent || result180 > minpourcent || result270 > minpourcent || result90 > minpourcent))
-            return 0;
+            angle = 0;
+        else
+        {
             
-
-
-		//cv::Mat resizeMat;
-
-		if (result0 > result90 && result0 > result180 && result0 > result270)
-		{
-			angle = 0;
-		}
-		else if (result90 > result0 && result90 > result180 && result90 > result270)
-		{
-			angle = 90;
-		}
-		else if (result180 > result0 && result180 > result90 && result180 > result270)
-		{
-			angle = 180;
-		}
-		else
-		{
-			angle = 270;
-		}
-
-		/*
-		cv::Size size_input(224, 224);//the dst image size,e.g.100x100
-		cv::Mat dst;//dst image
-		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-		cv::resize(image, dst, size_input);
-		const auto input = fdeep::tensor_from_bytes(dst.ptr(),
-			static_cast<std::size_t>(dst.rows),
-			static_cast<std::size_t>(dst.cols),
-			static_cast<std::size_t>(dst.channels()),
-			0.0f, 1.0f);
-		
-		
-
-		angle = _model.predict_class({ input });
-
-		*/
+            if (result0 > result90 && result0 > result180 && result0 > result270)
+            {
+                angle = 0;
+            }
+            else if (result90 > result0 && result90 > result180 && result90 > result270)
+            {
+                angle = 90;
+            }
+            else if (result180 > result0 && result180 > result90 && result180 > result270)
+            {
+                angle = 180;
+            }
+            else
+            {
+                angle = 270;
+            }
+        }
 
 		imageLoadingFormat->DestroyJpegData(src, compressMethod);
 	}
