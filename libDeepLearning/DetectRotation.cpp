@@ -47,6 +47,7 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 
 	if (isLoading)
 	{
+        int minpourcent = 50;
 		int compressMethod;
 		unsigned long size;
 		uint8_t * src = imageLoadingFormat->GetJpegData(size, compressMethod);
@@ -100,36 +101,21 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		// Use the correct scaling, i.e., low and high.
 	   const auto result = _model.predict({fdeep::tensor(fdeep::tensor_from_bytes(dst.ptr(), static_cast<std::size_t>(dst.rows), static_cast<std::size_t>(dst.cols), static_cast<std::size_t>(dst.channels()), 0.0f, 1.0f))});
 
-	   /*
-		const auto input = fdeep::tensor_from_bytes(dst.ptr(),
-			static_cast<std::size_t>(dst.rows),
-			static_cast<std::size_t>(dst.cols),
-			static_cast<std::size_t>(dst.channels()),
-			0.0f, 1.0f);
-
-		//std::cout << "show_tensor Input : " << std::endl;
-		//std::cout << fdeep::show_tensor(input) << std::endl;
-		//std::cout << "show_tensor IShape : " << std::endl;
-		//std::cout << fdeep::show_tensor_shape(input.shape()) << std::endl;
-
-		//auto result = model.predict_class({input});
-		const auto result = _model.predict({ input });
-
-		/*
-		std::cout << "show_tensor Result Shape : " << std::endl;
-		std::cout << fdeep::show_tensor_shape(result.front().shape()) << std::endl;
-		std::cout << "show_tensor Result Tensor : " << std::endl;
-		std::cout << fdeep::show_tensors(result) << std::endl;
-		*/
-
 		fdeep::float_vec all_results = {};
 		vec_append(all_results, *result[0].as_vector());
 		//const std::vector<float> result_vec = result.front().as_vector();
 
-		float result0 = all_results[0];
-		float result90 = all_results[1];
-		float result180 = all_results[2];
-		float result270 = all_results[3];
+        float result0 = all_results[0];
+        float result180 = all_results[1];
+        float result270 = all_results[2];
+        float result90 = all_results[3];
+        
+       std::cout << "show_tensor Result Tensor : " << std::endl;
+       std::cout << fdeep::show_tensors(result) << std::endl;            
+        
+        if(!(result0 > minpourcent || result180 > minpourcent || result270 > minpourcent || result90 > minpourcent))
+            return 0;
+            
 
 
 		//cv::Mat resizeMat;
