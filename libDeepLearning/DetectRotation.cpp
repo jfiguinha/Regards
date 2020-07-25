@@ -54,17 +54,16 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		//std::vector<char> data(src, src + size);
 		//cv::Mat image = imdecode(Mat(data), 1);
 		cv::Mat image = cv::imdecode(cv::Mat(1, size, CV_8UC1, src), IMREAD_UNCHANGED);
-		cv::Mat dst;//dst image
-		cv::cvtColor(image, dst, cv::COLOR_BGR2RGB);
-		cv::flip(dst, image, 1);
+		//cv::Mat dst;//dst image
+		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+		
 		//cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate    
 		//cv::Mat r;       //Mat object for storing after rotation
 			///applie an affine transforation to image.
 		//r = cv::getRotationMatrix2D(pt, 180, 1.0);
 		//warpAffine(dst, image, r, cv::Size(image.cols, image.rows));
 
-		//imshow("Display window", image);                   // Show our image inside it.     
-		//cv::waitKey(0);
+
 
         /*
 		int sizeCrop = 0;
@@ -97,7 +96,10 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
         */
 		try
 		{
-			cv::resize(image, dst, cv::Size(224, 224));
+			cv::resize(image, image, cv::Size(224, 224));
+            cv::flip(image, image, 0);
+           // imshow("Display window", image);                   // Show our image inside it.     
+           // cv::waitKey(0);
 		}
 		catch (cv::Exception& e)
 		{
@@ -107,11 +109,11 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
 		}        
         
 		// cv::resize(image,dst,size);
-		assert(dst.isContinuous());
+		assert(image.isContinuous());
 		//const auto model = fdeep::load_model("/home/figuinha/developpement/git/model/fdeep_model.json");
 
 		// Use the correct scaling, i.e., low and high.
-	   const auto result = _model.predict({fdeep::tensor(fdeep::tensor_from_bytes(dst.ptr(), static_cast<std::size_t>(dst.rows), static_cast<std::size_t>(dst.cols), static_cast<std::size_t>(dst.channels()), 0.0f, 1.0f))});
+	   const auto result = _model.predict({fdeep::tensor(fdeep::tensor_from_bytes(image.ptr(), static_cast<std::size_t>(image.rows), static_cast<std::size_t>(image.cols), static_cast<std::size_t>(image.channels()), 0.0f, 1.0f))});
 
 		fdeep::float_vec all_results = {};
 		vec_append(all_results, *result[0].as_vector());
