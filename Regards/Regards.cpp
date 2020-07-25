@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 #include <header.h>
 #include <Regards.h>
+#include <wx/filename.h>
 #include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
@@ -219,6 +220,8 @@ bool MyApp::OnInit()
 #ifdef WIN32
 
     wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage());
+	
+	/*
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CategoryDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\FaceDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ConfigRegards.xrc");
@@ -244,8 +247,10 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JxrOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PDFOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\Association.xrc");
+	*/
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
+	/*
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CategoryDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/FaceDetection.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ConfigRegards.xrc");
@@ -271,10 +276,169 @@ bool MyApp::OnInit()
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/J2kOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/JxrOption.xrc");
 	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PDFOption.xrc");
+	*/
 #endif
-    
-     
+	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
+	
+
+#ifdef PREPARE_DATA_TRAINING
+	//Create image learning
+	//int i = 0;
+	CLibPicture libPicture;
+	wxArrayString files;
+	wxString folder = "train";
+	wxDir::GetAllFiles("F:\\images_source\\0", &files, wxEmptyString, wxDIR_FILES);
+	for (wxString file : files)
+	{
+		folder = "train";
+		/*
+		if (i < 40000)
+		{
+			folder = "train";
+		}
+		else if (i < 50000)
+		{
+			folder = "validation";
+		}
+		else
+			break;
+		*/
+		for (int i = 0; i < 4; i++)
+		{
+			if (libPicture.TestImageFormat(file) != 0)
+			{
+				wxString libelle;
+				int type = i % 4;
+				wxFileName filePath(file);
+				CImageLoadingFormat * image = libPicture.LoadPicture(file);
+				float ratio = float(image->GetWidth()) / float(image->GetHeight());
+				image->Resize(1000, image->GetHeight() * ratio, 0);
+				switch (type)
+				{
+				case 1:
+					image->Rotate90();
+					image->Mirror();
+					break;
+				case 2:
+					image->Mirror();
+					image->Flip();
+					break;
+				case 3:
+					image->Rotate90();
+					image->Flip();
+					break;
+				}
+				switch (type)
+				{
+				case 0:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\0\\" + filePath.GetName() + ".jpg");
+					break;
+				case 1:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\90\\" + filePath.GetName() + ".jpg");
+					break;
+				case 2:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\180\\" + filePath.GetName() + ".jpg");
+					break;
+				case 3:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\270\\" + filePath.GetName() + ".jpg");
+					break;
+				}
+				image->SaveToJpeg(libelle);
+				delete image;
+				/*
+				cv::Mat image = cv::imread(file.ToStdString());// test\\photo.jpg");
+
+
+				float ratio = float(image.rows) / float(image.cols);
+				cv::resize(image, image, cv::Size(1000, image.rows * ratio));
+				/*
+				int sizeCrop = 0;
+
+				if (image.cols > image.rows)
+					sizeCrop = image.rows;
+				else
+					sizeCrop = image.cols;
+
+				int width = 224;
+				int height = 224;
+
+				int x1 = int((image.cols - sizeCrop) * 0.5);
+				//int x2 = int(image_center[0] + width * 0.5);
+				int y1 = int((image.rows - sizeCrop) * 0.5);
+				//int y2 = int(image_center[1] + height * 0.5);
+				cv::Rect myROI(x1, y1, sizeCrop, sizeCrop);
+
+				try
+				{
+					cv::Mat croppedImage = image(myROI);
+					cv::resize(croppedImage, image, cv::Size(224, 224));
+				}
+				catch (cv::Exception& e)
+				{
+					const char* err_msg = e.what();
+					std::cout << "exception caught: " << err_msg << std::endl;
+					std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+				}
+				*/
+
+				/*
+				cv::Mat dst;      //Mat object for output image file
+				cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate    
+				cv::Mat r;       //Mat object for storing after rotation
+					///applie an affine transforation to image.
+
+				switch (type)
+				{
+				case 0:
+					r = cv::getRotationMatrix2D(pt, 0, 1.0);      //Mat object for storing after rotation
+					warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
+					break;
+				case 1:
+					r = cv::getRotationMatrix2D(pt, 90, 1.0);      //Mat object for storing after rotation	
+					warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
+					break;
+				case 2:
+					r = cv::getRotationMatrix2D(pt, 180, 1.0);      //Mat object for storing after rotation
+					warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
+					break;
+				case 3:
+					r = cv::getRotationMatrix2D(pt, 270, 1.0);      //Mat object for storing after rotation
+					warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
+					break;
+				}
+
+				
+
+
+				//image->Resize(1000, image->GetHeight() * ratio, 0);
+				//int orientation = image->GetOrientation();
+				wxString libelle;
+				switch (type)
+				{
+				case 0:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\0\\" + filePath.GetName() + ".jpg");
+					break;
+				case 1:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\90\\" + filePath.GetName() + ".jpg");
+					break;
+				case 2:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\180\\" + filePath.GetName() + ".jpg");
+					break;
+				case 3:
+					libelle = wxString("F:\\picture_training\\raw-data\\" + folder + "\\270\\" + filePath.GetName() + ".jpg");
+					break;
+				}
+				cv::imwrite(libelle.ToStdString(), dst);
+				//delete image;
+				//i++;
+				*/
+			}
+		}
+	}
+
+	Exit();
     //wxXmlResource::Get()->LoadAllFiles("rc");
+#endif
 	
 	frameStart = new MyFrameIntro("Welcome to Regards","REGARDS V2", wxPoint(50, 50), wxSize(450, 340), this);
 	frameStart->Centre(wxBOTH);
