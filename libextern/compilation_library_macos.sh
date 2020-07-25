@@ -133,5 +133,19 @@ cd fftw-3.3.8
 make -j$NBPROC
 cd ..
 
+#compile opencv
+cd opencv
+unzip opencv-4.3.0.zip
+unzip opencv_contrib-4.3.0.zip
+cd opencv-4.3.0
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t -DCMAKE_CXX_FLAGS="-std=gnu++14" ../
+make -j$NBPROC
+make install
+cd ..
+cd ..
+cd ..
+
 #Compille ffmpeg
 ./ffmpeg_build_macos.sh
