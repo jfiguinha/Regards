@@ -5,7 +5,7 @@
 #include "FaceRecognition.h"
 using namespace Regards::DeepLearning;
 using namespace Regards::OpenCV;
-
+#undef AUTO_ROTATE
 
 static std::thread loadRot;
 static std::thread loadModel;
@@ -33,9 +33,7 @@ vector<int> CDeepLearning::FindFace(CPictureData * pictureData)
 
 void CDeepLearning::LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json)
 {
-#ifndef AUTO_ROTATE
 	CDetectRotation::LoadModel(rotation_json);
-#endif
 	CFaceDetector::LoadModel(config_file, weight_file, face_recognition);
 	muLoading.lock();
 	isload = true;
@@ -44,15 +42,11 @@ void CDeepLearning::LoadRessource(const string &config_file, const string &weigh
 
 bool CDeepLearning::IsResourceReady()
 {
-#ifndef AUTO_ROTATE
-	return false;
-#else
 	bool isLoading = false;
 	muLoading.lock();
 	isLoading = isload;
 	muLoading.unlock();
 	return isLoading;
-#endif
 }
 
 int CDeepLearning::GetExifOrientation(CImageLoadingFormat * imageLoadingFormat)

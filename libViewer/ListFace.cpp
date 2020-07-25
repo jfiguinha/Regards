@@ -12,6 +12,7 @@
 #include <SqlFacePhoto.h>
 #include <SqlFaceLabel.h>
 #include <DeepLearning.h>
+#include <ThumbnailMessage.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -35,6 +36,7 @@ public:
 	wxString filename;
 	std::thread * thread;
 	wxWindow * mainWindow;
+	int nbFace = 0;
 };
 
 CListFace::CListFace(wxWindow* parent, wxWindowID id)
@@ -155,20 +157,39 @@ void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
 	CThreadFace * path = (CThreadFace *)event.GetClientData();
-	if (path->thread != nullptr)
-	{
-		path->thread->join();
-		delete(path->thread);
-		path->thread = nullptr;
-	}
 
 	if (path != nullptr)
-		delete path;
+	{
+		if (path->thread != nullptr)
+		{
+			path->thread->join();
+			delete(path->thread);
+			path->thread = nullptr;
+		}
+
+
+		//Update criteria
+		if (path->nbFace > 0)
+		{
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+			wxQueueEvent(mainWnd, eventChange);
+		}
+
+
+
+		if (path != nullptr)
+			delete path;
+	}
+
+
+
 
 	nbProcessFacePhoto--;
 
 	wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 	this->GetEventHandler()->AddPendingEvent(evt);
+
 }
 
 void CListFace::LoadResource(void * param)
@@ -182,14 +203,14 @@ void CListFace::LoadResource(void * param)
 
 	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
-	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotnet_street_view_resnet50_keras2.json";
+	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
 
 #else
 
 	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
-	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotnet_street_view_resnet50_keras2.json";
+	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
 #endif
 
@@ -211,7 +232,7 @@ void CListFace::FacialRecognition(void * param)
 {
 	CThreadFace * path = (CThreadFace *)param;
 	bool pictureOK = false;
-
+	vector<int> listFace;
 	CPictureData * pictureData = nullptr;
 	int nbFaceFound = 0;
 	CSqlThumbnail sqlThumbnail;
@@ -229,7 +250,7 @@ void CListFace::FacialRecognition(void * param)
 	if (pictureData != nullptr)
 	{
 
-		vector<int> listFace;
+		
 		if (pictureOK)
 		{
 			listFace = CDeepLearning::FindFace(pictureData);
@@ -245,6 +266,7 @@ void CListFace::FacialRecognition(void * param)
 
 	if (path->mainWindow != nullptr)
 	{
+		path->nbFace = listFace.size();
 		wxCommandEvent evt(wxEVENT_FACEPHOTOADD);
 		evt.SetClientData(path);
 		path->mainWindow->GetEventHandler()->AddPendingEvent(evt);
@@ -291,6 +313,17 @@ void CListFace::ProcessIdle()
 		path->filename = listPhoto.at(0);
 		path->mainWindow = this;
 		path->thread = new thread(FacialRecognition, path);
+
+		CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+		thumbnailMessage->nbPhoto = listPhoto.size();
+		thumbnailMessage->typeMessage = 0;
+		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
+		eventChange.SetClientData(thumbnailMessage);
+		if (mainWnd != nullptr)
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+		else
+			delete thumbnailMessage;
 
 		nbProcessFacePhoto++;
 	}

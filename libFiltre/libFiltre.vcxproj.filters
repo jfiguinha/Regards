@@ -67,15 +67,6 @@
     <Filter Include="window\Drawing">
       <UniqueIdentifier>{01302cae-ea1e-4f01-bbd4-ba8a5dc27d55}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RotationDetector">
-      <UniqueIdentifier>{d1725921-6b59-4bd1-8083-357708310ac0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RotationDetector\Source">
-      <UniqueIdentifier>{6a27a8a3-1b24-424e-8c63-10d351007408}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RotationDetector\Include">
-      <UniqueIdentifier>{fc8442ca-5210-44a2-99f8-ca1d8182dd6d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -351,12 +342,6 @@
     <ClInclude Include="BitmapDisplay.h">
       <Filter>window\main</Filter>
     </ClInclude>
-    <ClInclude Include="rotdetect.h">
-      <Filter>RotationDetector\Include</Filter>
-    </ClInclude>
-    <ClInclude Include="detector.h">
-      <Filter>RotationDetector\Include</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">
@@ -529,12 +514,6 @@
     </ClCompile>
     <ClCompile Include="BitmapFusionFilter.cpp">
       <Filter>window\picture</Filter>
-    </ClCompile>
-    <ClCompile Include="rotdetect.cpp">
-      <Filter>RotationDetector\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="detector.c">
-      <Filter>RotationDetector\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -82,12 +82,10 @@ public:
 	void SetDxva2Actif(const int &useDxva2);
 	bool GetDxva2Actif();
 
-protected:
+	int GetDetectOrientation();
+	void SetDectectOrientation(const int& detectOrientation);
 
-	void InitVideoToolbar();
-	void InitBitmapToolbar();
-	void InitClickToolbar();
-	void InitToolbar();
+protected:
 
 	void LoadParameter();
 	void SaveParameter();
@@ -124,6 +122,7 @@ protected:
 	int openCLNumIndex;
     int numLanguage;
 	int numInterpolation;
+	int detectOrientation;
 
 	//Diaporama
 	int diaporamaTime;

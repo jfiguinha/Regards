@@ -32,6 +32,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numInterpolation = 0;
 	openCLSupport = 0;
 	useDxva2 = 0;
+	detectOrientation = 0;
 }
 
 void CRegardsConfigParam::SetDxva2Actif(const int &useDxva2)
@@ -262,6 +263,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
     sectionPosition->append_node(node("LoadFromBinaries", to_string(loadFromBinaries)));
 	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
+	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
 }
 
 
@@ -399,6 +401,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		openCLSupport = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("detectOrientation");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		detectOrientation = atoi(child_node->value());
 	}
 }
 
@@ -578,6 +588,16 @@ void CRegardsConfigParam::GetDiaporamaParameter(xml_node<> * position_node)
 		nodeName = child_node->name();
 		diaporamaFullscreen = atoi(child_node->value());
 	}
+}
+
+int CRegardsConfigParam::GetDetectOrientation()
+{
+	return detectOrientation;// diaporamaEffect;
+}
+
+void CRegardsConfigParam::SetDectectOrientation(const int& detectOrientation)
+{
+	this->detectOrientation = detectOrientation;
 }
 
 int CRegardsConfigParam::GetDiaporamaTransitionEffect()

@@ -216,7 +216,6 @@
     <ClInclude Include="CropFilter.h" />
     <ClInclude Include="DecodeRaw.h" />
     <ClInclude Include="DecodeRawParameter.h" />
-    <ClInclude Include="detector.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="EffectParameter.h" />
     <ClInclude Include="EffectVideoParameter.h" />
@@ -264,7 +263,6 @@
     <ClInclude Include="RotateByShearRGB.h" />
     <ClInclude Include="RotateFreeFilter.h" />
     <ClInclude Include="Rotation.h" />
-    <ClInclude Include="rotdetect.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="SharpenMaskingFilter.h" />
     <ClInclude Include="SharpenMaskingParameter.h" />
@@ -301,10 +299,6 @@
     <ClCompile Include="Crop.cpp" />
     <ClCompile Include="CropFilter.cpp" />
     <ClCompile Include="DecodeRaw.cpp" />
-    <ClCompile Include="detector.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="FilterData.cpp" />
     <ClCompile Include="FilterWindowParam.cpp" />
@@ -335,7 +329,6 @@
     <ClCompile Include="Rotate.cpp" />
     <ClCompile Include="RotateFreeFilter.cpp" />
     <ClCompile Include="Rotation.cpp" />
-    <ClCompile Include="rotdetect.cpp" />
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="SharpenMaskingFilter.cpp" />
     <ClCompile Include="SolarisationFilter.cpp" />

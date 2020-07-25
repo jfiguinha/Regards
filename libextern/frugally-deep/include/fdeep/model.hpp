@@ -21,7 +21,6 @@ namespace fdeep
 class model
 {
 public:
-
 	model() {};
     // A single forward pass (no batches).
     // Will raise an exception when used with a stateful model.

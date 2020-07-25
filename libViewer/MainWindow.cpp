@@ -143,6 +143,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	Connect(wxEVENT_PRINTPICTURE, wxCommandEventHandler(CMainWindow::PrintPreview));
 	Connect(wxEVENT_UPDATEMESSAGETHUMBNAIL, wxCommandEventHandler(CMainWindow::UpdateThumbnailMessage));
 	Connect(wxEVENT_UPDATEMESSAGECRITERIA, wxCommandEventHandler(CMainWindow::UpdateCriteriaMessage));
+	Connect(wxEVENT_UPDATEMESSAGEFACE, wxCommandEventHandler(CMainWindow::UpdateFaceMessage));
 	Connect(wxEVENT_PRINT, wxCommandEventHandler(CMainWindow::OnPrint));
 	Connect(wxEVENT_SETVALUEPROGRESSBAR, wxCommandEventHandler(CMainWindow::OnSetValueProgressBar));
     Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
@@ -233,6 +234,25 @@ void CMainWindow::UpdateThumbnailMessage(wxCommandEvent& event)
 	if (thumbnailMessage != nullptr)
 	{
 		wxString picture = CLibResource::LoadStringFromResource(L"LBLPICTURERENDER", 1);
+		wxString message = picture + to_string(thumbnailMessage->nbPhoto);
+		if (statusBarViewer != nullptr)
+		{
+			statusBarViewer->SetRangeProgressBar(thumbnailMessage->nbElement);
+			statusBarViewer->SetText(2, message);
+			statusBarViewer->SetPosProgressBar(thumbnailMessage->thumbnailPos + 1);
+		}
+
+		delete thumbnailMessage;
+	}
+}
+
+void CMainWindow::UpdateFaceMessage(wxCommandEvent& event)
+{
+	TRACE();
+	CThumbnailMessage * thumbnailMessage = (CThumbnailMessage *)event.GetClientData();
+	if (thumbnailMessage != nullptr)
+	{
+		wxString picture = CLibResource::LoadStringFromResource(L"LBLFACEPROCESS", 1);
 		wxString message = picture + to_string(thumbnailMessage->nbPhoto);
 		if (statusBarViewer != nullptr)
 		{

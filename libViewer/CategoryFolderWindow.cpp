@@ -195,7 +195,8 @@ void CCategoryFolderWindow::ProcessIdle()
 
 	if(mainWnd != nullptr)
 		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-
+	else
+		delete thumbnailMessage;
 	/*
     wxString message = "Criteria Nb Image to Process :  " + to_string(nbPhotos);
 
@@ -255,7 +256,8 @@ void CCategoryFolderWindow::ProcessIdle()
 
 		if(mainWnd != nullptr)
 			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-
+		else
+			delete thumbnailMessage;
 		/*
 		if (statusBarViewer != nullptr)
 		{
@@ -277,6 +279,8 @@ void CCategoryFolderWindow::ProcessIdle()
 				eventChange.SetClientData(thumbnailMessage);
 				mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 			}
+			else
+				delete thumbnailMessage;
 			/*
 			message = "Folder Processing " + to_string(counter) + " / " + to_string(catalogfolderVector.size());
 			if (statusBarViewer != nullptr)

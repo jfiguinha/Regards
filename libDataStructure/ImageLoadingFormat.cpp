@@ -267,6 +267,19 @@ int CImageLoadingFormat::GetResolution()
 {
 	return resolution;
 }
+/*
+From exiftool documentation
+
+1 = Horizontal (normal)
+2 = Mirror horizontal
+3 = Rotate 180
+4 = Mirror vertical
+5 = Mirror horizontal and rotate 270 CW
+6 = Rotate 90 CW
+7 = Mirror horizontal and rotate 90 CW
+8 = Rotate 270 CW
+
+*/
 
 void CImageLoadingFormat::SetOrientation(const int &orientation)
 {

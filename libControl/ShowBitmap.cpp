@@ -333,13 +333,16 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	if (bitmapWindow != nullptr)
 	{
 	
-		if (!isThumbnail)
+		if (configRegards->GetDetectOrientation())
 		{
-
-			if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
+			if (!isThumbnail)
 			{
-				int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
-				bitmap->SetOrientation(exif);
+
+				if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
+				{
+					int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
+					bitmap->SetOrientation(exif);
+				}
 			}
 		}
         

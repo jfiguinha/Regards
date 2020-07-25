@@ -263,10 +263,8 @@ bool CRegardsBitmap::HorzFlipBuf()
 	
 	int iWidth4 = m_iWidth << 2;
 
-#pragma omp parallel for
 	for (auto y = 0; y < m_iHeight; y++)
 	{
-#pragma omp parallel for
 		for (auto x = 0; x < MiddleX; x += 4)
 		{
 			uint8_t m_bDataBuffer[4];

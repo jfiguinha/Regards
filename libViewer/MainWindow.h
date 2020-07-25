@@ -202,6 +202,7 @@ namespace Regards
 			void OnScanner(wxCommandEvent& event);
 			void UpdateCriteriaMessage(wxCommandEvent& event);
 			void UpdateThumbnailMessage(wxCommandEvent& event);
+			void UpdateFaceMessage(wxCommandEvent& event);
 
 			void OnExit(wxCommandEvent& event);
 			void InitPictures(wxCommandEvent& event);
