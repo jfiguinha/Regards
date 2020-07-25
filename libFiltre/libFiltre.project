@@ -26,12 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Rotator">
-    <File Name="rotdetect.h"/>
-    <File Name="rotdetect.cpp"/>
-    <File Name="detector.h"/>
-    <File Name="detector.c"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Dialog"/>
   <VirtualDirectory Name="bm3d">
     <File Name="bm3dfilter.h"/>
