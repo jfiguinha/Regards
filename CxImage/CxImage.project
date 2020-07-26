@@ -92,7 +92,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
+      <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/jasper-2.0.14/build/src/libjasper/include"/>
         <IncludePath Value="../libextern/jasper-2.0.14/src/libjasper/include"/>

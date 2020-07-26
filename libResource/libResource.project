@@ -44,7 +44,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libDataStructure"/>

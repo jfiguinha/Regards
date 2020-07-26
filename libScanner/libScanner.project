@@ -56,7 +56,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options="" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/poppler-0.81.0/build"/>
         <IncludePath Value="../wxCheckTree"/>

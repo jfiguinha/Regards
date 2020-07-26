@@ -129,7 +129,7 @@
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++11;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
+      <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++14;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/fftw-3.3.8/api"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>

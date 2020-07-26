@@ -134,7 +134,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++11;-Wall" C_Options=";-Wall" Assembler="">
+      <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
         <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>

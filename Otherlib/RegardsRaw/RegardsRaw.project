@@ -60,7 +60,7 @@
   <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++11;-Wall;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-Wno-narrowing" C_Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;" Assembler="">
+      <Compiler Options="-fopenmp;-std=gnu++14;-Wall;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-Wno-narrowing" C_Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;" Assembler="">
         <IncludePath Value="../"/>
         <IncludePath Value="../RegardsRaw"/>
         <IncludePath Value="."/>
