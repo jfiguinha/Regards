@@ -200,7 +200,7 @@
         <Library Value="Email"/>
         <Library Value="Exif_regards"/>
         <Library Value="Picture"/>
-        <Library Value="FaceRecognition"/>
+        <Library Value="DeepLearning"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Geolocalisation"/>
@@ -283,10 +283,18 @@
         <Library Value="Half"/>
         <Library Value="tbb"/>
         <Library Value="aom"/>
+        <Library Value="opencv_calib3d"/>
+        <Library Value="opencv_core"/>
+        <Library Value="opencv_dnn"/>
+        <Library Value="opencv_features2d"/>
+        <Library Value="opencv_imgproc"/>
+        <Library Value="opencv_imgcodecs"/>
+        <Library Value="opencv_highgui"/>
+        <Library Value="opencv_face"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="LLDB Debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="../include/Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../libPrint/Debug"/>
@@ -321,7 +329,7 @@
         <LibraryPath Value="../libWindowMain/Debug"/>
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
-        <LibraryPath Value="../FaceRecognition_mac/Debug"/>
+        <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../libAppleFunction/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
@@ -562,7 +570,7 @@
         <LibraryPath Value="../libWindowMain/Release"/>
         <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
-        <LibraryPath Value="../FaceRecognition_mac/Release"/>
+        <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../libAppleFunction/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
@@ -587,7 +595,7 @@
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents/Resources</Command>
         <Command Enabled="yes">sed -e "s/IDENTIFIER/`echo . | sed -e 's,\.\./,,g' | sed -e 's,/,.,g'`/" \
 	-e "s/EXECUTABLE/RegardsViewer/" \
-	-e "s/VERSION/2.55.0/" \
+	-e "s/VERSION/2.60.0/" \
 	../Regards/mac/Info.plist.in &gt;./Release/RegardsViewer.app/Contents/Info.plist</Command>
         <Command Enabled="yes">/bin/echo "APPL????" &gt;./Release/RegardsViewer.app/Contents/PkgInfo</Command>
         <Command Enabled="yes">ln -f ./Release/RegardsViewer ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
