@@ -130,7 +130,7 @@ unzip opencv_contrib-4.3.0.zip
 cd opencv-4.3.0
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t -DCMAKE_CXX_FLAGS="-std=gnu++14" ../
+cmake -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14 -I ../../../eigen/Eigen" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
 make -j$NBPROC
 make install
 cd ..
