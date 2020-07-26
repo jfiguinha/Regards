@@ -854,9 +854,12 @@ namespace dlib
             return OTHER_ERROR;
         }
 
-
+#ifdef __APPLE__
+		if (::bind(sock,reinterpret_cast<sockaddr*>(&sa),sizeof(sockaddr_in)) == -1)
+#else
         // bind the new socket to the requested port and ip
         if (bind(sock,reinterpret_cast<sockaddr*>(&sa),sizeof(sockaddr_in)) == -1)
+#endif
         {   // if there was an error 
             close_socket(sock); 
 
@@ -988,13 +991,13 @@ namespace dlib
                 return OTHER_ERROR;
             }
         }
-
-
-
-        
-
-        // bind the new socket to the requested local port and local ip
-        if ( bind(sock,reinterpret_cast<sockaddr*>(&local_sa),sizeof(sockaddr_in)) == -1)
+		
+#ifdef __APPLE__
+		if (::bind(sock,reinterpret_cast<sockaddr*>(&local_sa),sizeof(sockaddr_in)) == -1)
+#else
+        // bind the new socket to the requested port and ip
+        if (bind(sock,reinterpret_cast<sockaddr*>(&local_sa),sizeof(sockaddr_in)) == -1)
+#endif
         {   // if there was an error 
             close_socket(sock); 
 

@@ -34,7 +34,9 @@ namespace dlib
                          << "\n\t img.channels(): " << img.channels() 
                          << "\n\t img.pixel_traits<pixel_type>::num: " << pixel_traits<pixel_type>::num 
                          );
-            IplImage temp = img;
+            //IplImage temp = img;
+            IplImage temp;
+            temp = cvIplImage(img);
             init(&temp);
         }
 
@@ -133,7 +135,9 @@ namespace dlib
 
         cv_image& operator=( const cv::Mat img)
         {
-            IplImage temp = img;
+            //IplImage temp = img;
+            IplImage temp;
+            temp = cvIplImage(img);			
             init(&temp);
             return *this;
         }
