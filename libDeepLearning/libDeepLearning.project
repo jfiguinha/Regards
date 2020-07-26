@@ -6,7 +6,7 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="dlib">
-    <File Name="../libextern/dlib-19.17/dlib/all/source.cpp"/>
+    <File Name="../libextern/dlib-19.20/dlib/all/source.cpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
@@ -29,8 +29,8 @@
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/dlib-19.17/dlib/all"/>
-        <IncludePath Value="../libextern/dlib-19.17"/>
+        <IncludePath Value="../libextern/dlib-19.20/dlib/all"/>
+        <IncludePath Value="../libextern/dlib-19.20"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
