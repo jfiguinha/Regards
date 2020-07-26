@@ -29,6 +29,22 @@
 
 // include this first so that it can disable the older version
 // of the winsock API when compiled in windows.
+#ifdef __APPLE__
+
+#include "../misc_api/misc_api_kernel_2.cpp"
+#include "../threads/multithreaded_object_extension.cpp"
+#include "../threads/threaded_object_extension.cpp"
+#include "../threads/threads_kernel_1.cpp"
+#include "../threads/threads_kernel_2.cpp"
+#include "../threads/threads_kernel_shared.cpp"
+#include "../threads/thread_pool_extension.cpp"
+#include "../threads/async.cpp"
+#include "../timer/timer.cpp"
+#include "../stack_trace.cpp"
+
+#else
+// include this first so that it can disable the older version
+// of the winsock API when compiled in windows.
 #include "../sockets/sockets_kernel_1.cpp"
 #include "../bsp/bsp.cpp"
 
@@ -57,6 +73,8 @@
 #include "../threads/async.cpp"
 #include "../timer/timer.cpp"
 #include "../stack_trace.cpp"
+
+#endif
 
 #ifdef DLIB_PNG_SUPPORT
 #include "../image_loader/png_loader.cpp"
