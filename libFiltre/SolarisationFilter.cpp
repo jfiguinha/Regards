@@ -12,7 +12,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-
+#include <RenderOpenGL.h>
 using namespace Regards::Viewer;
 
 CSolarisationFilter::CSolarisationFilter()

@@ -13,6 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 #include <GLTexture.h>
+#include <RenderOpenGL.h>
 using namespace Regards::OpenGL;
 using namespace Regards::Viewer;
 

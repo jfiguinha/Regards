@@ -17,7 +17,7 @@
 #include <BitmapDisplay.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-
+#include <RenderOpenGL.h>
 bool CFilterWindowParam::supportOpenCL = false;
 
 CFilterWindowParam::CFilterWindowParam()
