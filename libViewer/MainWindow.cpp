@@ -568,9 +568,20 @@ void CMainWindow::ProcessIdle()
         CCheckVersion _checkVersion(serverURL);
         wxString serverVersion = _checkVersion.GetLastVersion();
         serverVersion = serverVersion.SubString(0, serverVersion.length() - 2);
+
+		long localValueVersion;
+		long localServerVersion;
+
+		localVersion.Replace(".", "");
+		serverVersion.Replace(".", "");
+
+		if (!localVersion.ToLong(&localValueVersion)) { /* error! */ }
+		if (!serverVersion.ToLong(&localServerVersion)) { /* error! */ }
+
+
         if(serverVersion != "error" && serverVersion != "")
         {
-            if(localVersion != serverVersion )
+            if(localValueVersion < localServerVersion)
             {
                 wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS",1);
                 wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE",1);
