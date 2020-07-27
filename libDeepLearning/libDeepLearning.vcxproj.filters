@@ -36,7 +36,7 @@
     <ClCompile Include="base64.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\libextern\dlib-19.17\dlib\all\source.cpp">
+    <ClCompile Include="..\libextern\dlib-19.20\dlib\all\source.cpp">
       <Filter>dlib</Filter>
     </ClCompile>
   </ItemGroup>

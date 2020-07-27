@@ -157,7 +157,7 @@ void CListFace::ThumbnailFolderAdd(wxCommandEvent& event)
 void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 {
 	CThreadFace * path = (CThreadFace *)event.GetClientData();
-
+	int nbFace = 0;
 	if (path != nullptr)
 	{
 		if (path->thread != nullptr)
@@ -167,6 +167,7 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 			path->thread = nullptr;
 		}
 
+		nbFace = path->nbFace;
 
 		//Update criteria
 		if (path->nbFace > 0)
@@ -187,8 +188,11 @@ void CListFace::OnFacePhotoAdd(wxCommandEvent& event)
 
 	nbProcessFacePhoto--;
 
-	wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
-	this->GetEventHandler()->AddPendingEvent(evt);
+	if (nbFace > 0)
+	{
+		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
+		this->GetEventHandler()->AddPendingEvent(evt);
+	}
 
 }
 

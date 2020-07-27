@@ -1054,6 +1054,13 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 		updateCriteria = true;
 		updateFolder = true;
 		criteriaSendMessage = true;
+
+		wxWindow * window = this->FindWindowById(LISTFACEID);
+		if (window)
+		{
+			wxCommandEvent evt(wxEVENT_THUMBNAILFOLDERADD);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 	delete info;
 
