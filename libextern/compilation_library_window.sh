@@ -20,6 +20,17 @@ export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
 unzip 4.1.1.zip
 
+#install leptonica
+tar xf  leptonica-1.79.0.tar.gz
+cd leptonica-1.79.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
 #compile tesseract
 cd tesseract-4.1.1
 ./autogen.sh
