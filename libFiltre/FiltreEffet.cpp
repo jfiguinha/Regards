@@ -208,9 +208,9 @@ void CFiltreEffet::GetRgbaBitmap(void * cl_image)
 	filtreEffet->GetRgbaBitmap(cl_image);
 }
 
-int CFiltreEffet::RedEye(const wxRect& rSelectionBox)
+int CFiltreEffet::RedEye()
 {
-	filtreEffet->RedEye(rSelectionBox);
+	filtreEffet->RedEye();
 	return 0;
 }
 

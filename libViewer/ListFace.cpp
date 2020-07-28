@@ -210,6 +210,7 @@ void CListFace::LoadResource(void * param)
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
 	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
+	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 
 #else
 
@@ -217,9 +218,10 @@ void CListFace::LoadResource(void * param)
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
 	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
+	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
 
-	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString());
+	CDeepLearning::LoadRessource(config.ToStdString(), weight.ToStdString(), model.ToStdString(), json.ToStdString(), eye.ToStdString());
 
 
 	if (path->mainWindow != nullptr)

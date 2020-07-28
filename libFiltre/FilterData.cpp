@@ -56,7 +56,6 @@
 #include "VideoFilter.h"
 #include "AudioVideoFilter.h"
 #include "WaveFilter.h"
-#include "RedEyeFilter.h"
 #include "BestExposureFilter.h"
 #include "CropFilter.h"
 #include <Crop.h>
@@ -367,6 +366,10 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
             filtreEffet->Negatif();
             break;
 
+		case IDM_REDEYE:
+			filtreEffet->RedEye();
+			break;
+
     }
     return 0;
 }
@@ -485,11 +488,6 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		//filterEffect->Filter(effectParameter, filename, this);
 		break;
 
-	case IDM_REDEYE:
-		filterEffect = new CRedEyeFilter();
-		//filterEffect->Filter(effectParameter, filename, this);
-		break;
-
 	case IDM_CROP:
 		filterEffect = new CCropFilter();
 		//filterEffect->Filter(effectParameter, filename, this);
@@ -527,7 +525,7 @@ CDraw * CFiltreData::GetDrawingPt(const int &numFilter)
 {
 	switch (numFilter)
 	{
-	case IDM_REDEYE:
+	//case IDM_REDEYE:
 	case IDM_CROP:
 		return new CCrop();
 	case IDM_WAVE_EFFECT:
@@ -620,7 +618,7 @@ bool CFiltreData::SupportMouseSelection(const int &numFilter)
 	switch (numFilter)
 	{
 	case IDM_CROP:
-	case IDM_REDEYE:
+	//case IDM_REDEYE:
 		return true;
 		break;
 	}
@@ -632,7 +630,7 @@ void CFiltreData::SetCursor(const int &numFilter)
 	switch (numFilter)
 	{
 	case IDM_CROP:
-	case IDM_REDEYE:
+	//case IDM_REDEYE:
 		::wxSetCursor(wxCursor(wxCURSOR_CROSS));
 		break;
 
@@ -647,7 +645,7 @@ bool CFiltreData::SupportMouseClick(const int &numFilter)
 	{
 	case IDM_CROP:
 	case IDM_WAVE_EFFECT:
-	case IDM_REDEYE:
+	//case IDM_REDEYE:
 	case IDM_FILTRELENSFLARE:
 		return true;
 		break;
@@ -661,7 +659,7 @@ bool CFiltreData::NeedPreview(const int &numFilter)
     {
 		
 		case IDM_CROP:
-		case IDM_REDEYE:
+		//case IDM_REDEYE:
         case IDM_FILTER_BM3D:
 		case IDM_FILTRE_BILATERAL:
 		case IDM_FILTRE_NLMEAN:
@@ -868,7 +866,7 @@ bool CFiltreData::OnFiltreOk(const int &numFiltre)
         case IDM_FILTRE_CLOUDS:
         case IDM_BEST_EXPOSURE:
         case IDM_SHARPENMASKING:
-        case IDM_REDEYE:
+       // case IDM_REDEYE:
         case IDM_CROP:
         case IDM_FILTRE_MOTIONBLUR:
         case IDM_WAVE_EFFECT:
@@ -1044,7 +1042,7 @@ int CFiltreData::TypeApplyFilter(const int &numItem)
     switch (numItem)
     {
         case IDM_CROP:
-        case IDM_REDEYE:
+       // case IDM_REDEYE:
         case IDM_FILTER_BM3D:
         case IDM_FILTRE_BILATERAL:
         case IDM_FILTRE_NLMEAN:

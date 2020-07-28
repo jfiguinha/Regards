@@ -31,10 +31,10 @@ vector<int> CDeepLearning::FindFace(CPictureData * pictureData)
 	}
 }
 
-void CDeepLearning::LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json)
+void CDeepLearning::LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json, const string &eye_detection)
 {
 	CDetectRotation::LoadModel(rotation_json);
-	CFaceDetector::LoadModel(config_file, weight_file, face_recognition);
+	CFaceDetector::LoadModel(config_file, weight_file, face_recognition, eye_detection);
 	muLoading.lock();
 	isload = true;
 	muLoading.unlock();
@@ -63,6 +63,22 @@ int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 	}
 	return 0;
 
+}
+
+std::vector<wxRect> CDeepLearning::DetectEyes(CPictureData * pictureData)
+{
+	std::vector<wxRect> listEye;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	if (isLoading)
+	{
+		CFaceDetector faceDetector;
+		listEye = faceDetector.DetectEyes(pictureData);
+	}
+	return listEye;
 }
 
 int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)

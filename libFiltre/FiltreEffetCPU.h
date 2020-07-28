@@ -11,7 +11,7 @@ public:
 	int HistogramLog();
 	int HistogramNormalize();
 	int HistogramEqualize();
-	int RedEye(const wxRect& rSelectionBox);
+	int RedEye();
 	int ClaheFilter(int nBins, float clipLevel, int windowSize);
 	int BilateralFilter(int fSize,  float sigmaX, float sigmaP);
 	int NlmeansFilter(int fsize, int bsize, float sigma);

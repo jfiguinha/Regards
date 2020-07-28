@@ -46,7 +46,7 @@ public:
 	int Noise();
 	int Dilate();
 	int Negatif();
-	int RedEye(const wxRect& rSelectionBox);
+	int RedEye();
 	int FiltreEdge();
 	int FiltreMosaic();
 	int FlipVertical();

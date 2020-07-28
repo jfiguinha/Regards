@@ -40,7 +40,7 @@ namespace Regards
 			void Interpolation(const int &widthOut, const int &heightOut, const wxRect &rc, const int &method, int flipH, int flipV, int angle);
 			
 			int NiveauDeGris();
-			int RedEye(const wxRect& rSelectionBox){ return -1; };
+			int RedEye(){ return -1; };
 			int HistogramLog(){ return -1; };
 			int HistogramNormalize(){ return -1; };
 			int HistogramEqualize(){ return -1; };

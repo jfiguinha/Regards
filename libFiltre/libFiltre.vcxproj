@@ -112,7 +112,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libOpenGL;..\libTheme;..\libextern\librapidxml;..\libControl;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libPicture;..\libDeepLearning;..\libOpenGL;..\libTheme;..\libextern\librapidxml;..\libControl;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -147,7 +147,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\libControl;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libPicture;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\libControl;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -255,7 +255,6 @@
     <ClInclude Include="PosterisationEffectParameter.h" />
     <ClInclude Include="PosterisationFilter.h" />
     <ClInclude Include="RedEye.h" />
-    <ClInclude Include="RedEyeFilter.h" />
     <ClInclude Include="RedEyeParameter.h" />
     <ClInclude Include="RgbEffectParameter.h" />
     <ClInclude Include="Rotate.h" />
@@ -325,7 +324,6 @@
     <ClCompile Include="PiccanteFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />
     <ClCompile Include="RedEye.cpp" />
-    <ClCompile Include="RedEyeFilter.cpp" />
     <ClCompile Include="Rotate.cpp" />
     <ClCompile Include="RotateFreeFilter.cpp" />
     <ClCompile Include="Rotation.cpp" />

@@ -78,7 +78,7 @@ void CFiltreEffetCPU::SetBitmap(CImageLoadingFormat * bitmap)
 
 }
 
-int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
+int CFiltreEffetCPU::RedEye()
 {
 	CRegardsBitmap* bitmap = nullptr;
 	if (preview)
@@ -89,7 +89,7 @@ int CFiltreEffetCPU::RedEye(const wxRect& rSelectionBox)
 	if (bitmap != nullptr)
 	{
 		CRedEye redeye;
-		return redeye.RemoveRedEye(bitmap, backColor, rSelectionBox);
+		return redeye.RemoveRedEye(bitmap);
 	}
 	return 0;
 }

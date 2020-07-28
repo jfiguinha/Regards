@@ -65,7 +65,7 @@ const size_t inHeight = 300;
 const double inScaleFactor = 1.0;
 const float confidenceThreshold = 0.7;
 const cv::Scalar meanVal(104.0, 177.0, 123.0);
-
+cv::CascadeClassifier eye_cascade;
 bool CFaceDetector::isload = false;
 std::mutex CFaceDetector::muLoading;
 
@@ -77,7 +77,7 @@ CFaceDetector::~CFaceDetector()
 {
 }
 
-void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition)
+void CFaceDetector::LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection)
 {
 #ifdef CAFFE
 	const std::string caffeConfigFile = config_file;//"C:\\developpement\\git_gcc\\Rotnet\\Rotnetcpp\\model\\deploy.prototxt";
@@ -96,6 +96,8 @@ void CFaceDetector::LoadModel(const string &config_file, const string &weight_fi
 #endif
 
 		deserialize(face_recognition) >> anet;
+
+		eye_cascade.load(eye_detection);
 	}
 	catch (cv::Exception& e)
 	{
@@ -120,12 +122,13 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 
 int CFaceDetector::FindNbFace(cv::Mat & image)
 {
+	std::vector<cv::Rect> pointOfFace;
 	std::vector<cv::Mat> listOfFace;
 
 	//imshow("Display window", image);                   // Show our image inside it.     
 	//cv::waitKey(0);
 
-	detectFaceOpenCVDNN(image, listOfFace);
+	detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
 
 
 	return listOfFace.size();
@@ -149,7 +152,54 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		//std::vector<char> data = pictureData->CopyData();
 		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 
-		detectFaceOpenCVDNN(image, listOfFace);
+		cv::Mat dst;      //Mat object for output image file
+		cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate
+		cv::Mat r;       //Mat object for storing after rotation
+			///applie an affine transforation to image.
+		for (int type = 0; type < 4; type++)
+		{
+			int angle_detect = 0;
+			switch (type)
+			{
+			case 0:
+				r = cv::getRotationMatrix2D(pt, 0, 1.0);      //Mat object for storing after rotation
+				warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
+				break;
+			case 1:
+				angle_detect = 180;
+				r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+				warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
+				break;
+			case 2:
+				angle_detect = 270;
+				r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+				warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
+				break;
+			case 3:
+				angle_detect = 90;
+				r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+				warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
+				break;
+			}
+
+#ifdef WRITE_OUTPUT_SAMPLE
+			wxString file = "d:\\test" + to_string(type) + ".jpg";
+			cv::imwrite(file.toStd(), dst);
+#endif
+
+			//imshow("Display window", dst);                   // Show our image inside it.     
+			//cv::waitKey(0);
+
+
+			std::vector<cv::Rect> pointOfFace;
+			detectFaceOpenCVDNN(dst, listOfFace, pointOfFace);
+			if (listOfFace.size() > 0)
+			{
+				break;
+			}
+
+		}
+				
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
@@ -198,10 +248,52 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 	return listFace;
 }
 
+std::vector<wxRect> CFaceDetector::DetectEyes(CPictureData * pictureData)
+{
+	std::vector<wxRect> listEye;
+	
+	std::vector<cv::Rect> pointOfFace;
+	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	if (isLoading)
+	{
+		std::vector<cv::Mat> listOfFace;
+		//std::vector<char> data = pictureData->CopyData();
+		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+		detectFaceOpenCVDNN(image, listOfFace, pointOfFace);
+		if (listOfFace.size() > 0)
+		{
+			for (int i = 0; i < listOfFace.size(); i++)
+			{
+				cv::Mat gray;
+				std::vector<cv::Rect> eyes;
+
+				cv::cvtColor(listOfFace[i], gray, COLOR_BGR2GRAY);
+				eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+				for (cv::Rect rect : eyes)
+				{
+					wxRect eye;
+					eye.x = rect.x + pointOfFace[i].x;
+					eye.y = rect.y + pointOfFace[i].y;
+					eye.width = rect.width;
+					eye.height = rect.height;
+					listEye.push_back(eye);
+				}
+			}
+		}
+	}
+
+	return listEye;
+}
+
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<Mat> & listOfFace)
+void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<Mat> & listOfFace, std::vector<cv::Rect> & pointOfFace)
 {
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
@@ -238,6 +330,7 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<Mat> & 
 				cv::Mat croppedImage = frameOpenCVDNN(myROI);
 
 				listOfFace.push_back(croppedImage);
+				pointOfFace.push_back(myROI);
 			}
 		}
 	}

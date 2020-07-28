@@ -273,6 +273,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
                     break;
                 }
                 
+				
 				case IDM_REDEYE:
 				{
 					CRegardsBitmap * pBitmap = loadingResource.LoadRegardsBmpResource("IDB_REDEYE");
@@ -284,6 +285,7 @@ void CThumbnailEffect::SetFile(const wxString &filename, CImageLoadingFormat * i
 					break;
 				}
                 
+
 				case IDM_CROP:
 				{
                 

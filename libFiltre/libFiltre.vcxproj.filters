@@ -327,9 +327,6 @@
     <ClInclude Include="CropFilter.h">
       <Filter>window\Drawing</Filter>
     </ClInclude>
-    <ClInclude Include="RedEyeFilter.h">
-      <Filter>window\Drawing</Filter>
-    </ClInclude>
     <ClInclude Include="BitmapFusionEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
@@ -507,9 +504,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="CropFilter.cpp">
-      <Filter>window\Drawing</Filter>
-    </ClCompile>
-    <ClCompile Include="RedEyeFilter.cpp">
       <Filter>window\Drawing</Filter>
     </ClCompile>
     <ClCompile Include="BitmapFusionFilter.cpp">
