@@ -16,6 +16,26 @@
 using namespace Regards::Window;
 using namespace Regards::Control;
 
+class CThreadRotate
+{
+public:
+
+	CThreadRotate()
+	{
+		exif = 0;
+		thread = nullptr;
+		mainWindow = nullptr;
+	};
+	~CThreadRotate() {
+
+	};
+
+
+	int exif;
+	wxString filename;
+	std::thread * thread;
+	wxWindow * mainWindow;
+};
 
 
 void CShowBitmap::SetDiaporamaMode()
@@ -103,8 +123,9 @@ CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewe
 	Connect(wxEVENT_MOVEBOTTOM, wxCommandEventHandler(CShowBitmap::OnMoveBottom));
 	Connect(wxEVENT_SETCONTROLSIZE, wxCommandEventHandler(CShowBitmap::OnControlSize));
 	Connect(wxEVENT_SETPOSITION, wxCommandEventHandler(CShowBitmap::OnSetPosition));
-
+	Connect(wxEVENT_ROTATEDETECT, wxCommandEventHandler(CShowBitmap::OnRotateDetect));
     progressValue = 0;
+	filename = "";
 }
 
 void CShowBitmap::OnControlSize(wxCommandEvent& event)
@@ -327,6 +348,59 @@ void CShowBitmap::OnIdle(wxIdleEvent& evt)
 	}
 }
 
+//---------------------------------------------------------------------------------------
+//Test FacialRecognition
+//---------------------------------------------------------------------------------------
+void CShowBitmap::RotateRecognition(void * param)
+{
+	CThreadRotate * threadRotate = (CThreadRotate *)param;
+	if (threadRotate != nullptr)
+	{
+		if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
+		{
+			bool pictureOK;
+			CLibPicture libPicture;
+			CPictureData * pictureData = libPicture.LoadPictureData(threadRotate->filename, pictureOK);
+			if (pictureData != nullptr)
+			{
+				if (pictureOK)
+				{
+					threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
+					//bitmap->SetOrientation(exif);
+				}
+				delete pictureData;
+			}
+		}
+
+		if (threadRotate->mainWindow != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_ROTATEDETECT);
+			evt.SetClientData(threadRotate);
+			threadRotate->mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+
+
+}
+
+void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
+{
+	CThreadRotate * path = (CThreadRotate *)event.GetClientData();
+	if (path->thread != nullptr)
+	{
+		path->thread->join();
+		delete(path->thread);
+		path->thread = nullptr;
+
+		if(path->filename == filename)
+			bitmapWindow->SetOrientation(path->exif);
+	}
+
+	if (path != nullptr)
+		delete path;
+
+}
+
 bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbnail)
 {
 	TRACE();
@@ -335,15 +409,15 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	
 		if (configRegards->GetDetectOrientation())
 		{
-			if (!isThumbnail)
+			if(filename != bitmap->GetFilename())
 			{
+				CThreadRotate * path = new CThreadRotate();
+				path->filename = bitmap->GetFilename();
+				path->mainWindow = this;
+				path->thread = new thread(RotateRecognition, path);
 
-				if (Regards::DeepLearning::CDeepLearning::IsResourceReady())
-				{
-					int exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(bitmap);
-					bitmap->SetOrientation(exif);
-				}
 			}
+			filename = bitmap->GetFilename();
 		}
         
 		//bitmapWindow->FixArrowNavigation(true);

@@ -118,7 +118,18 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 	cv::imencode(".jpg", image, buff, param);
 }
 
+int CFaceDetector::FindNbFace(cv::Mat & image)
+{
+	std::vector<cv::Mat> listOfFace;
 
+	//imshow("Display window", image);                   // Show our image inside it.     
+	//cv::waitKey(0);
+
+	detectFaceOpenCVDNN(image, listOfFace);
+
+
+	return listOfFace.size();
+}
 
 std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 {

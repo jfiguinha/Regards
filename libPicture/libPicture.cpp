@@ -10,6 +10,7 @@
 #include <webp/encode.h>
 #include <ximage.h>
 #include <xfile.h>
+//#include <SqlThumbnail.h>
 #include <xiofile.h>
 #ifdef ROTDETECT
 #include <rotdetect.h>
@@ -37,7 +38,7 @@
 #include <dlfcn.h>
 #endif
 #endif
-
+#include "PictureData.h"
 
 using namespace OPENEXR_IMF_INTERNAL_NAMESPACE;
 using namespace IMATH_INTERNAL_NAMESPACE;
@@ -91,6 +92,8 @@ using namespace Regards::exiv2;
 #define TYPE_IMAGE_WXIMAGE 1
 #define TYPE_IMAGE_REGARDSIMAGE 2
 #define OR ||
+
+//using namespace Regards::Sqlite;
 
 
 #if defined(LIBBPG) && not defined(WIN32)
@@ -3161,4 +3164,24 @@ void CLibPicture::InitFreeImage()
 void CLibPicture::UninitFreeImage()
 {
     FreeImage_DeInitialise();
+}
+
+CPictureData * CLibPicture::LoadPictureData(const wxString &filename, bool &pictureOK)
+{
+	CPictureData * pictureData = nullptr;
+	/*
+	CSqlThumbnail sqlThumbnail;
+	if (sqlThumbnail.TestThumbnail(filename))
+	{
+		pictureData = sqlThumbnail.GetJpegThumbnail(filename);
+		if (pictureData != nullptr)
+			pictureOK = true;
+	}
+	else
+	{
+	*/
+		pictureData = CPictureData::LoadPictureToJpeg(filename, pictureOK);
+	//}
+
+	return pictureData;
 }

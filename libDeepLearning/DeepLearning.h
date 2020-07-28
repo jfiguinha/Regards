@@ -12,8 +12,8 @@ namespace Regards
 			static void LoadRessource(const string &config_file, const string &weight_file, const string &face_recognition, const string &rotation_json);
 			static vector<int> FindFace(CPictureData * pictureData);
 			static bool IsResourceReady();
-			static int GetExifOrientation(CImageLoadingFormat * imageLoadingFormat);
-			static int GetAngleOrientation(CImageLoadingFormat * imageLoadingFormat);
+			static int GetExifOrientation(CPictureData * pictureData);
+			static int GetAngleOrientation(CPictureData * pictureData);
 			static bool FindFaceCompatible(const int &numFace);
 		};
 	}

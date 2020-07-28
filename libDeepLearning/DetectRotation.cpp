@@ -1,9 +1,12 @@
 #include "header.h"
 #include "DetectRotation.h"
+#include "FaceDetector.h"
 using namespace cv;
 using namespace std;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
+
+
 
 static fdeep::model _model;
 bool CDetectRotation::isload = false;
@@ -19,15 +22,15 @@ CDetectRotation::~CDetectRotation()
 
 }
 
-int CDetectRotation::GetAngleOrientation(CImageLoadingFormat * imageLoadingFormat)
+int CDetectRotation::GetAngleOrientation(CPictureData * pictureDat)
 {
-	int angle = DectectOrientation(imageLoadingFormat);
+	int angle = DectectOrientationByFaceDetector(pictureDat);
 	return angle;
 }
 
-int CDetectRotation::GetExifOrientation(CImageLoadingFormat * imageLoadingFormat)
+int CDetectRotation::GetExifOrientation(CPictureData * pictureDatt)
 {
-	int angle = DectectOrientation(imageLoadingFormat);
+	int angle = DectectOrientationByFaceDetector(pictureDatt);
 	return RotateToExifOrientation(angle);
 }
 
@@ -37,7 +40,64 @@ void vec_append(fdeep::float_vec& results, const fdeep::float_vec& x) {
 }
 
 
-int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat)
+int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData)
+{
+	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	int angle = 0;
+	cv::Mat dst;      //Mat object for output image file
+	cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate
+	cv::Mat r;       //Mat object for storing after rotation
+		///applie an affine transforation to image.
+	for (int type = 0; type < 4; type++)
+	{
+		int angle_detect = 0;
+		switch (type)
+		{
+		case 0:
+			r = cv::getRotationMatrix2D(pt, 0, 1.0);      //Mat object for storing after rotation
+			warpAffine(image, dst, r, cv::Size(image.cols, image.rows));			
+			break;
+		case 1:
+			angle_detect = 180;
+			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+			warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
+			break;
+		case 2:
+			angle_detect = 270;
+			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+			warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
+			break;
+		case 3:
+			angle_detect = 90;
+			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
+			warpAffine(image, dst, r, cv::Size(image.rows, image.cols));	
+			break;
+		}
+
+#ifdef WRITE_OUTPUT_SAMPLE
+		wxString file = "d:\\test" + to_string(type) + ".jpg";
+		cv::imwrite(file.toStd(), dst);
+#endif
+
+		//imshow("Display window", dst);                   // Show our image inside it.     
+		//cv::waitKey(0);
+
+		
+
+		CFaceDetector faceDetector;
+		int nbFace = faceDetector.FindNbFace(dst);
+		if (nbFace > 0)
+		{
+			angle = angle_detect;
+			break;
+		}
+
+	}
+	return angle;
+
+}
+
+int CDetectRotation::DectectOrientation(CPictureData * pictureData)
 {
 	int angle = 0;
 	bool isLoading = false;
@@ -50,56 +110,11 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
         int minpourcent = 50;
 		int compressMethod;
 		unsigned long size;
-		uint8_t * src = imageLoadingFormat->GetJpegData(size, compressMethod);
-		//std::vector<char> data(src, src + size);
-		//cv::Mat image = imdecode(Mat(data), 1);
-		cv::Mat image = cv::imdecode(cv::Mat(1, size, CV_8UC1, src), IMREAD_UNCHANGED);
-		//cv::Mat dst;//dst image
-		cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-		
-		//cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate    
-		//cv::Mat r;       //Mat object for storing after rotation
-			///applie an affine transforation to image.
-		//r = cv::getRotationMatrix2D(pt, 180, 1.0);
-		//warpAffine(dst, image, r, cv::Size(image.cols, image.rows));
+		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
 
-
-
-        /*
-		int sizeCrop = 0;
-
-		if (image.cols > image.rows)
-			sizeCrop = image.rows;
-		else
-			sizeCrop = image.cols;
-
-		int width = 224;
-		int height = 224;
-
-		int x1 = int((image.cols - sizeCrop) * 0.5);
-		//int x2 = int(image_center[0] + width * 0.5);
-		int y1 = int((image.rows - sizeCrop) * 0.5);
-		//int y2 = int(image_center[1] + height * 0.5);
-		cv::Rect myROI(x1, y1, sizeCrop, sizeCrop);
-
-		try
-		{
-			cv::Mat croppedImage = image(myROI);
-			cv::resize(croppedImage, dst, cv::Size(224, 224));
-		}
-		catch (cv::Exception& e)
-		{
-			const char* err_msg = e.what();
-			std::cout << "exception caught: " << err_msg << std::endl;
-			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
-		}
-        */
 		try
 		{
 			cv::resize(image, image, cv::Size(224, 224));
-            cv::flip(image, image, 0);
-           // imshow("Display window", image);                   // Show our image inside it.     
-           // cv::waitKey(0);
 		}
 		catch (cv::Exception& e)
 		{
@@ -149,8 +164,6 @@ int CDetectRotation::DectectOrientation(CImageLoadingFormat * imageLoadingFormat
                 angle = 270;
             }
         }
-
-		imageLoadingFormat->DestroyJpegData(src, compressMethod);
 	}
 	return angle;
 

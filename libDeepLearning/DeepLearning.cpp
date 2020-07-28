@@ -49,7 +49,7 @@ bool CDeepLearning::IsResourceReady()
 	return isLoading;
 }
 
-int CDeepLearning::GetExifOrientation(CImageLoadingFormat * imageLoadingFormat)
+int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 {
 	bool isLoading = false;
 	muLoading.lock();
@@ -59,13 +59,13 @@ int CDeepLearning::GetExifOrientation(CImageLoadingFormat * imageLoadingFormat)
 	if (isLoading)
 	{
 		CDetectRotation detectRotation;
-		return detectRotation.GetExifOrientation(imageLoadingFormat);
+		return detectRotation.GetExifOrientation(pictureData);
 	}
 	return 0;
 
 }
 
-int CDeepLearning::GetAngleOrientation(CImageLoadingFormat * imageLoadingFormat)
+int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)
 {
 	bool isLoading = false;
 	muLoading.lock();
@@ -75,7 +75,7 @@ int CDeepLearning::GetAngleOrientation(CImageLoadingFormat * imageLoadingFormat)
 	if (isLoading)
 	{
 		CDetectRotation detectRotation;
-		return detectRotation.GetAngleOrientation(imageLoadingFormat);
+		return detectRotation.GetAngleOrientation(pictureData);
 	}
 	return 0;
 }

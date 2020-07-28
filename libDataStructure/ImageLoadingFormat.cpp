@@ -543,7 +543,6 @@ uint8_t * CImageLoadingFormat::CompressRegardsBitmapToJpeg(unsigned char * buffe
 }
 
 
-
 uint8_t * CImageLoadingFormat::GetJpegData(unsigned long & outputsize, int &compressMethod)
 {
 	if(!IsOk())

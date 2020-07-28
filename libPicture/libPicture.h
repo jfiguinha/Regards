@@ -11,6 +11,7 @@ class CRegardsBitmap;
 class CVideoThumbnail;
 class CImageLoadingFormat;
 class CImageVideoThumbnail;
+class CPictureData;
 
 class CLibPicture
 {
@@ -46,7 +47,7 @@ public:
 	bool TestIsExifCompatible(const wxString &filename);
 	int SavePictureOption(const int &format, int &option, int &quality);
 	int SavePicture(const  wxString & fileName, CImageLoadingFormat * bitmap,const int &option, const int &quality);
-
+	CPictureData * LoadPictureData(const wxString &filename, bool &pictureOK);
 	//-----------------------------------------------------------------------
 	//Fonction de conversion
 	//-----------------------------------------------------------------------

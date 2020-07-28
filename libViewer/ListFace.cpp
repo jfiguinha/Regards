@@ -6,6 +6,7 @@
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include "MainTheme.h"
+#include <libPicture.h>
 #include "MainThemeInit.h"
 #include "FileUtility.h"
 #include <MoveFaceDialog.h>
@@ -236,20 +237,10 @@ void CListFace::FacialRecognition(void * param)
 {
 	CThreadFace * path = (CThreadFace *)param;
 	bool pictureOK = false;
+	CLibPicture libPicture;
 	vector<int> listFace;
-	CPictureData * pictureData = nullptr;
+	CPictureData * pictureData = libPicture.LoadPictureData(path->filename, pictureOK);
 	int nbFaceFound = 0;
-	CSqlThumbnail sqlThumbnail;
-	if (sqlThumbnail.TestThumbnail(path->filename))
-	{
-		pictureData = sqlThumbnail.GetJpegThumbnail(path->filename);
-		if (pictureData != nullptr)
-			pictureOK = true;
-	}
-	else
-	{
-		pictureData = CPictureData::LoadPictureToJpeg(path->filename, pictureOK);
-	}
 
 	if (pictureData != nullptr)
 	{

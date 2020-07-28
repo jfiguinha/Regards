@@ -110,6 +110,8 @@ namespace Regards
 			//void StopLoadingBitmap();
 			//void StartLoadingBitmap();
 			void ReinitPicture();
+			void SetOrientation(const int &exif);
+
 
 		protected:
 

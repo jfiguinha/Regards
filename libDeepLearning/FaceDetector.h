@@ -14,7 +14,7 @@ namespace Regards
 
 			static void LoadModel(const string &config_file, const string &weight_file, const string &face_recognition);
 			std::vector<int> FindFace(CPictureData * pictureData);
-			
+			int FindNbFace(cv::Mat & image);
 		private:
 
 			void ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff);

@@ -13,13 +13,14 @@ namespace Regards
 			~CDetectRotation();
 
 			static void LoadModel(const string &model_path);
-			int GetExifOrientation(CImageLoadingFormat * imageLoadingFormat);
-			int GetAngleOrientation(CImageLoadingFormat * imageLoadingFormat);
+			int GetExifOrientation(CPictureData * pictureDat);
+			int GetAngleOrientation(CPictureData * pictureDat);
 
 		private:
 			int RotateToExifOrientation(const int &angle);
 			int RotateToOrientation(const int &angle);
-			int DectectOrientation(CImageLoadingFormat * imageLoadingFormat);
+			int DectectOrientation(CPictureData * pictureDat);
+			int DectectOrientationByFaceDetector(CPictureData * pictureData);
 			static bool isload;
 			static mutex muLoading;
 		};

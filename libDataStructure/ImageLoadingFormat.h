@@ -21,7 +21,6 @@ public:
 	void SaveToJpeg(const wxString &filename);
 	
 	CImageLoadingFormat * GetPage(const int &numPage);
-
 	void SetPicturToJpeg(CRegardsBitmap * image);
 	CxImage * GetCxImage(const bool &copy = true);
 	wxImage * GetwxImage(const bool &copy = true);

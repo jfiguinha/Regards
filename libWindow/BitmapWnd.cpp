@@ -843,6 +843,14 @@ int CBitmapWnd::GetOrientation()
 	return orientation;
 }
 
+void CBitmapWnd::SetOrientation(const int &exif)
+{
+	orientation = exif;
+	ShrinkImage(true);
+	//updateFilter = true;
+	//RefreshWindow();
+}
+
 int CBitmapWnd::GetRawBitmapWidth()
 {
     TRACE();
