@@ -55,6 +55,9 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.60 :
+- Opencv integration for face detection
+- Picture Orientation Detection base on Face Detection in picture
 News for version 2.55
 - Correct display mode corruption
 News for version 2.54
