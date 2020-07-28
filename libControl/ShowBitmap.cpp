@@ -13,6 +13,7 @@
 #include <array>
 #include <ImageLoadingFormat.h>
 #include <DeepLearning.h>
+#include <PictureData.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
 
