@@ -365,6 +365,7 @@
         <Library Value="opencv_imgcodecs430"/>
         <Library Value="opencv_highgui430"/>
         <Library Value="opencv_face430"/>
+        <Library Value="opencv_objdetect430"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
