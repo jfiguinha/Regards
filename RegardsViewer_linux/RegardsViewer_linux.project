@@ -323,6 +323,7 @@
         <Library Value="opencv_imgcodecs"/>
         <Library Value="opencv_highgui"/>
         <Library Value="opencv_face"/>
+        <Library Value="opencv_objdetect"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -487,6 +488,25 @@
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Release</Command>
+        <Command Enabled="yes">rm ./Release/libopencv*</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_core.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_core.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_dnn.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_dnn.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_face.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_face.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgcodecs.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgcodecs.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgproc.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgproc.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3 ./Release</Command>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
