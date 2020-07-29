@@ -32,7 +32,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	numInterpolation = 0;
 	openCLSupport = 0;
 	useDxva2 = 0;
-	detectOrientation = 1;
+	detectOrientation = 0;
 }
 
 void CRegardsConfigParam::SetDxva2Actif(const int &useDxva2)

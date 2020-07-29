@@ -1047,6 +1047,13 @@ void CMainWindow::AddFolder(const wxString &folder)
 		evt.SetClientData(newFolder);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
+
+	window = this->FindWindowById(LISTFACEID);
+	if (window)
+	{
+		wxCommandEvent evt(wxEVENT_THUMBNAILFOLDERADD);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
     
     dialog.Destroy();
 }
@@ -1066,12 +1073,7 @@ void CMainWindow::OnAddFolder(wxCommandEvent& event)
 		updateFolder = true;
 		criteriaSendMessage = true;
 
-		wxWindow * window = this->FindWindowById(LISTFACEID);
-		if (window)
-		{
-			wxCommandEvent evt(wxEVENT_THUMBNAILFOLDERADD);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
+
 	}
 	delete info;
 

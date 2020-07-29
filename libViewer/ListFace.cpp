@@ -94,6 +94,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
 
+		/*
 		int position = 2;
 		if(config != nullptr)
 		{
@@ -111,6 +112,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
 
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
+		*/
 	}
 
 	
@@ -261,7 +263,7 @@ void CListFace::FacialRecognition(void * param)
 	if (pictureData != nullptr)
 	{
 
-		
+		pictureData->SetFilename(path->filename);
 		if (pictureOK)
 		{
 			listFace = CDeepLearning::FindFace(pictureData);

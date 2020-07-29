@@ -18,7 +18,7 @@ using namespace dlib;
 using namespace std;
 
 #define CAFFE
-#define WRITE_OUTPUT_SAMPLE
+//#define WRITE_OUTPUT_SAMPLE
 
 // ----------------------------------------------------------------------------------------
 
@@ -127,14 +127,14 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 int CFaceDetector::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<cv::Mat> & listOfFace, int typeRotate)
 {
 	cv::Mat dst;      //Mat object for output image file
-
+	int tab[] = { 0, 270, 90, 180 };
 	for (int type = 0; type < 4; type++)
 	{
-		int angle_detect = type * 90;
-		if(typeRotate == 0)
-			Rotate(image, dst, angle_detect);
-		else
-			RotateCorrectly(image, dst, angle_detect);
+		int angle_detect = tab[type];
+		//if(typeRotate == 0)
+		//	Rotate(image, dst, angle_detect);
+		//else
+		RotateCorrectly(image, dst, angle_detect);
 
 
 #ifdef WRITE_OUTPUT_SAMPLE
@@ -225,16 +225,17 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 
 		for (Mat face : listOfFace)
 		{
+
 			std::vector<uchar> buff;
 			ImageToJpegBuffer(face, buff);
-			int numFace = facePhoto.InsertFace(pictureData->GetFilename(), i++, face.rows, face.cols, 1.0, reinterpret_cast<uchar*>(buff.data()), buff.size());
+			int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.rows, face.cols, 1.0, reinterpret_cast<uchar*>(buff.data()), buff.size());
 			listFace.push_back(numFace);
 
-			//cv::Size size(150, 150);
-			//cv::Mat dst;//dst image
-			//cv::resize(face, dst, size);
+			cv::Size size(150, 150);
+			cv::Mat dst;//dst image
+			cv::resize(face, dst, size);
 			//IplImage image2 = cvIplImage(face);
-			cv_image<rgb_pixel> cimg(cvIplImage(face));
+			cv_image<rgb_pixel> cimg(cvIplImage(dst));
 			faces.push_back(cimg);
 		}
 		
