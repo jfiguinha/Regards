@@ -58,6 +58,8 @@ HOTPICKS LINUX FORMAT JUNE 2020
 News for 2.60 :
 - Opencv integration for face detection
 - Picture Orientation Detection base on Face Detection in picture
+- Rewrite Red Eye filter with eye detection and Face detection
+- Bug correction
 News for version 2.55
 - Correct display mode corruption
 News for version 2.54
