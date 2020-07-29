@@ -717,6 +717,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	listFace->Show(false);
 	listPicture->Show(false);
 
+
 	panelInfosClick->Show(true);
 	windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 	windowManager->ShowWindow(Pos::wxBOTTOM);

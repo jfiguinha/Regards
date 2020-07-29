@@ -11,7 +11,7 @@ using namespace Regards::Window;
 CToolbarSlide::CToolbarSlide(const CThemeSlider & themeSlider, CSliderInterface * eventInterface)
 {
 	y = 0;
-	colorBackground = true;
+	colorBackground = false;
 	position = 0;
 	this->eventInterface = eventInterface;
 	this->themeSlider = themeSlider;
