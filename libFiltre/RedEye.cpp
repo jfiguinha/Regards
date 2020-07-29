@@ -19,13 +19,57 @@ CRgbaquad CRedEye::CalculColorOut(CRgbaquad colorIn)
 	return colorIn;
 }
 
-void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBox)
+
+wxPoint rotate_point(double cx, double cy, double angle, wxPoint p)
+{
+	double s = sin(angle);
+	double c = cos(angle);
+	// translate point back to origin:
+	p.x -= cx;
+	p.y -= cy;
+	// rotate point
+	//double Xnew = p.x * c - p.y * s;
+	//double Ynew = p.x * s + p.y * c;
+	float Xnew = p.x * c + p.y * s;
+	float Ynew = -p.x * s + p.y * c;
+	// translate point back:
+	p.x = Xnew + cx;
+	p.y = Ynew + cy;
+	return p;
+}
+
+wxRect CRedEye::ConvertPositionWithAngle(CRegardsBitmap * pBitmap, const wxRect & rSelectionBox, int angle)
+{
+	wxRect outputRect;
+	wxPoint in;
+	in.x = rSelectionBox.x;
+	in.y = rSelectionBox.y;
+	wxPoint out = rotate_point(pBitmap->GetBitmapWidth() / 2, pBitmap->GetBitmapHeight() / 2, angle, in);
+	outputRect.x = out.x;
+	outputRect.y = out.y;
+	if (angle == 90 || angle == 270)
+	{
+		outputRect.width = rSelectionBox.height;
+		outputRect.height = rSelectionBox.width;
+	}
+	else
+	{
+		outputRect.width = rSelectionBox.width;
+		outputRect.height = rSelectionBox.height;
+	}
+	return outputRect;
+}
+
+void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBox, int angle)
 {
 	int xmin, xmax, ymin, ymax;
-	xmin = rSelectionBox.x;
-	xmax = rSelectionBox.x + rSelectionBox.width;
-	ymax = pBitmap->GetBitmapHeight() - (rSelectionBox.y + rSelectionBox.height);
-	ymin = pBitmap->GetBitmapHeight() - rSelectionBox.y;
+	int local_angle = (360 - angle);
+	wxRect out = ConvertPositionWithAngle(pBitmap, rSelectionBox, angle);
+
+	xmin = out.x;
+	xmax = out.x + out.width;
+	ymax = out.y + out.height;
+	ymin = out.y;
 
 	if (xmin > xmax)
 	{
@@ -52,8 +96,8 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 			//CRgbaquad * color = pBitmap->GetPtColorValue(x,y);
 			//color->SetRed((uint8_t)(a*min(color->GetGreen(),color->GetBlue())+(1.0f-a)*color->GetRed()));
 			CRgbaquad color = pBitmap->GetColorValue(x, y);
-			color.SetRed((uint8_t)(a*min(color.GetGreen(), color.GetBlue()) + (1.0f - a)*color.GetRed()));
-			//color.SetColor(0, 255, 0, 0);
+			//color.SetRed((uint8_t)(a*min(color.GetGreen(), color.GetBlue()) + (1.0f - a)*color.GetRed()));
+			color.SetColor(0, 255, 0, 0);
 			pBitmap->SetColorValue(x, y, color);
 		}
 	}
@@ -61,6 +105,8 @@ void CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap, const wxRect & rSelectionBo
 
 bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap)
 {
+	DeepLearning::CDeepLearning::DetectEyes(pBitmap);
+	/*
 	wxString filename = pBitmap->GetFilename();
 	CLibPicture libPicture;
 	bool pictureOk;
@@ -69,14 +115,41 @@ bool CRedEye::RemoveRedEye(CRegardsBitmap * pBitmap)
 	{
 		if (pictureOk)
 		{
-			vector<wxRect> listOfEye = DeepLearning::CDeepLearning::DetectEyes(pictureData);
+			DeepLearning::CDeepLearning::DetectEyes(pictureData, angle);
+
+			switch (angle)
+			{
+			case 90:
+				pBitmap->RotateRawExif(6);
+				break;
+			case 180:
+				pBitmap->RotateRawExif(3);
+				break;
+			case 270:
+				pBitmap->RotateRawExif(8);
+				break;
+			}
+
 			for (wxRect rect : listOfEye)
 			{
-				RemoveRedEye(pBitmap, rect);
+				RemoveRedEye(pBitmap, rect, angle);
+			}
+
+			switch (angle)
+			{
+			case 90:
+				pBitmap->RotateRawExif(8);
+				break;
+			case 180:
+				pBitmap->RotateRawExif(3);
+				break;
+			case 270:
+				pBitmap->RotateRawExif(6);
+				break;
 			}
 		}
 		delete pictureData;
 	}
-
+	*/
 	return true;
 }

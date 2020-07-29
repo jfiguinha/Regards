@@ -13,8 +13,19 @@
 			</content>
 			<default>-1</default>
 			<pos>0,0</pos>
-			<size>360,70</size>
+			<size>180,70</size>
 		</object>
+		<object class="wxRadioBox" name="ID_RBROTATEAUTO">
+			<label>Use Rotate Auto</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>180,0</pos>
+			<size>180,70</size>
+		</object>			
 		<object class="wxRadioBox" name="ID_RBDXVA2">
 			<label>Use DXVA2</label>
 			<style>wxRA_SPECIFY_COLS</style>

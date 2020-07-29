@@ -45,6 +45,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbPictureFaceDetectionSize = (wxRadioBox*)FindWindow(XRCID("ID_PICTUREFACEDETECTION"));
+	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	//rbThumbnailQuality = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILQUALITY"));
 	//rbThumbnailCache = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILCACHE"));
 
@@ -72,6 +73,12 @@ void ConfigRegards::Init()
 		rbTransitionEffect->SetSelection(1);
 	else
 		rbTransitionEffect->SetSelection(0);
+
+	int autoRotate = regardsParam->GetDetectOrientation();
+	if (autoRotate == 0)
+		rbAutoRotate->SetSelection(1);
+	else
+		rbAutoRotate->SetSelection(0);
 
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
@@ -125,6 +132,12 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetEffect(1);
 	else
 		regardsParam->SetEffect(0);
+
+	int autoRotate = rbAutoRotate->GetSelection();
+	if (autoRotate == 0)
+		regardsParam->SetDectectOrientation(0);
+	else
+		regardsParam->SetDectectOrientation(1);
 
 	int dxva2Use = rdDxva2Render->GetSelection();
 	if (dxva2Use == 0)

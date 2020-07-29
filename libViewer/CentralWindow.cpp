@@ -713,11 +713,8 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	oldWindowMode = windowMode;
 	previewWindow->SetNormalMode();
 	//previewWindow->Show(false);
-	panelInfosClick->Show(false);
-
-#ifndef __NOFACE_DETECTION__
+	//panelInfosClick->Show(false);
 	listFace->Show(false);
-#endif
 	listPicture->Show(false);
 
 	switch (windowMode)
@@ -740,19 +737,22 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		previewWindow->SetFaceMode();
 		listFace->Show(true);
 		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
-		windowManager->HideWindow(Pos::wxBOTTOM, false);
+		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->Update();
+		panelInfosClick->Show(false);
 		break;
 #endif
 	case 3:
+		//panelInfosClick->Show(true);
 		listPicture->Show(true);
 		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
-		windowManager->HideWindow(Pos::wxBOTTOM, false);
+		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->Update();
+		panelInfosClick->Show(false);
 		break;
 	case 4:
 		panelInfosClick->Show(true);
@@ -762,6 +762,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->HidePaneWindow(Pos::wxLEFT, 0);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->Update();
+
 		break;
 
 	}

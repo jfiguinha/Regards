@@ -310,6 +310,8 @@ void CImageLoadingFormat::SetPicture(CRegardsBitmap * image, const bool &convert
 		format = TYPE_IMAGE_REGARDSIMAGE;
 		_image = image;
 		orientation = image->GetOrientation();
+		if (orientation < 0)
+			orientation = 0;
 		filename = _image->GetFilename();
 		this->convertToRGB24 = convertToRGB24;
 	}

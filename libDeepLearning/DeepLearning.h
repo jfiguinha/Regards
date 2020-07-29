@@ -15,7 +15,7 @@ namespace Regards
 			static int GetExifOrientation(CPictureData * pictureData);
 			static int GetAngleOrientation(CPictureData * pictureData);
 			static bool FindFaceCompatible(const int &numFace);
-			static std::vector<wxRect> DetectEyes(CPictureData * pictureData);
+			static void DetectEyes(CRegardsBitmap * pBitmap);
 		};
 	}
 }

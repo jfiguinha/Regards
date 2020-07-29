@@ -19,6 +19,8 @@ using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::DeepLearning;
 
+#define CAFFE
+
 class CThreadFace
 {
 public:
@@ -76,7 +78,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		thumbnailFace->SetCheck(true);
 		thumbnailFace->Init();
 
-		windowManager->AddWindow(thumbnailFace, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
+		windowManager->AddWindow(thumbscrollbar, Pos::wxCENTRAL, false, 0, rect, wxID_ANY, false);
 	}
 
 	if (viewerTheme != nullptr)
@@ -205,19 +207,31 @@ void CListFace::LoadResource(void * param)
 
 #ifdef WIN32
 	//Face Data Preload
-
+#ifdef CAFFE
+	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\deploy.prototxt";
+	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\res10_300x300_ssd_iter_140000_fp16.caffemodel";
+#else
 	wxString config = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "\\model\\opencv_face_detector_uint8.pb";
+#endif
 	wxString json = CFileUtility::GetResourcesFolderPath() + "\\model\\rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "\\model\\dlib_face_recognition_resnet_model_v1.dat";
+	wxString shape = CFileUtility::GetResourcesFolderPath() + "\\model\\shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "\\model\\haarcascade_eye.xml";
 
 #else
 
+#ifdef CAFFE
+	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/deploy.prototxt";
+	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/res10_300x300_ssd_iter_140000_fp16.caffemodel";
+#else
 	wxString config = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector.pbtxt";
 	wxString weight = CFileUtility::GetResourcesFolderPath() + "/model/opencv_face_detector_uint8.pb";
+
+#endif
 	wxString json = CFileUtility::GetResourcesFolderPath() + "/model/rotation_model.json";
 	wxString model = CFileUtility::GetResourcesFolderPath() + "/model/dlib_face_recognition_resnet_model_v1.dat";
+	wxString shape = CFileUtility::GetResourcesFolderPath() + "/model/shape_predictor_5_face_landmarks.dat";
 	wxString eye = CFileUtility::GetResourcesFolderPath() + "/model/haarcascade_eye.xml";
 #endif
 

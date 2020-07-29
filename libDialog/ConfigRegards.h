@@ -42,6 +42,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbThumbnailCache;
 		wxRadioBox* rbDatabaseInMemory;
 		wxRadioBox* rbPictureFaceDetectionSize;
+		wxRadioBox* rbAutoRotate;
 		//*)
 
 		bool IsOk();

@@ -65,7 +65,7 @@ int CDeepLearning::GetExifOrientation(CPictureData * pictureData)
 
 }
 
-std::vector<wxRect> CDeepLearning::DetectEyes(CPictureData * pictureData)
+void CDeepLearning::DetectEyes(CRegardsBitmap * pBitmap)
 {
 	std::vector<wxRect> listEye;
 	bool isLoading = false;
@@ -76,9 +76,8 @@ std::vector<wxRect> CDeepLearning::DetectEyes(CPictureData * pictureData)
 	if (isLoading)
 	{
 		CFaceDetector faceDetector;
-		listEye = faceDetector.DetectEyes(pictureData);
+		faceDetector.DetectEyes(pBitmap);
 	}
-	return listEye;
 }
 
 int CDeepLearning::GetAngleOrientation(CPictureData * pictureData)

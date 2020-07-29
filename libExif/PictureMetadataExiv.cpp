@@ -245,7 +245,7 @@ bool CPictureMetadataExiv::HasThumbnail()
 
 int CPictureMetadataExiv::GetOrientation()
 {
-	int orientation = 0;
+	int orientation = -1;
 	if (isExif)
 	{
 		try

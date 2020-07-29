@@ -14,6 +14,8 @@
 #include <ImageLoadingFormat.h>
 #include <DeepLearning.h>
 #include <PictureData.h>
+#include <MetadataExiv2.h>
+using namespace Regards::exiv2;
 using namespace Regards::Window;
 using namespace Regards::Control;
 
@@ -407,8 +409,8 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
-	
-		if (configRegards->GetDetectOrientation())
+		CMetadataExiv2 metaData(bitmap->GetFilename());
+		if (configRegards->GetDetectOrientation() && metaData.GetOrientation() == -1)
 		{
 			if(filename != bitmap->GetFilename())
 			{

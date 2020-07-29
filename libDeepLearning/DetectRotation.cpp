@@ -6,7 +6,7 @@ using namespace std;
 using namespace cv::dnn;
 using namespace Regards::OpenCV;
 
-
+#define WRITE_OUTPUT_SAMPLE
 
 static fdeep::model _model;
 bool CDetectRotation::isload = false;
@@ -42,57 +42,10 @@ void vec_append(fdeep::float_vec& results, const fdeep::float_vec& x) {
 
 int CDetectRotation::DectectOrientationByFaceDetector(CPictureData * pictureData)
 {
-	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	CFaceDetector faceDetector;
 	int angle = 0;
-	cv::Mat dst;      //Mat object for output image file
-	cv::Point2f pt(image.cols / 2., image.rows / 2.);          //point from where to rotate
-	cv::Mat r;       //Mat object for storing after rotation
-		///applie an affine transforation to image.
-	for (int type = 0; type < 4; type++)
-	{
-		int angle_detect = 0;
-		switch (type)
-		{
-		case 0:
-			r = cv::getRotationMatrix2D(pt, 0, 1.0);      //Mat object for storing after rotation
-			warpAffine(image, dst, r, cv::Size(image.cols, image.rows));			
-			break;
-		case 1:
-			angle_detect = 180;
-			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
-			warpAffine(image, dst, r, cv::Size(image.rows, image.cols));
-			break;
-		case 2:
-			angle_detect = 270;
-			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
-			warpAffine(image, dst, r, cv::Size(image.cols, image.rows));
-			break;
-		case 3:
-			angle_detect = 90;
-			r = cv::getRotationMatrix2D(pt, angle_detect, 1.0);      //Mat object for storing after rotation
-			warpAffine(image, dst, r, cv::Size(image.rows, image.cols));	
-			break;
-		}
-
-#ifdef WRITE_OUTPUT_SAMPLE
-		wxString file = "d:\\test" + to_string(type) + ".jpg";
-		cv::imwrite(file.toStd(), dst);
-#endif
-
-		//imshow("Display window", dst);                   // Show our image inside it.     
-		//cv::waitKey(0);
-
-		
-
-		CFaceDetector faceDetector;
-		int nbFace = faceDetector.FindNbFace(dst);
-		if (nbFace > 0)
-		{
-			angle = angle_detect;
-			break;
-		}
-
-	}
+	cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+	faceDetector.FindNbFace(image, angle);
 	return angle;
 
 }
