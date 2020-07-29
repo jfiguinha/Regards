@@ -307,6 +307,7 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
+	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
 	if (config != nullptr)
@@ -339,6 +340,19 @@ void CListFace::ProcessIdle()
 			delete thumbnailMessage;
 
 		nbProcessFacePhoto++;
+
+		if (sendMessageStatus)
+		{
+			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
+			thumbnailMessage->nbPhoto = listPhoto.size();
+			thumbnailMessage->thumbnailPos = nbProcessFacePhoto;
+			thumbnailMessage->nbElement = listPhoto.size();
+
+			wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
+			eventChange.SetClientData(thumbnailMessage);
+			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
+		}
 	}
 
 	//Recognize Face

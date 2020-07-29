@@ -693,7 +693,9 @@ void CThumbnail::ProcessIdle()
 #endif
 
 	if (photoList.size() == 0)
-		processIdle = false;     
+	{
+		processIdle = false;
+	}
 
 	
 }
