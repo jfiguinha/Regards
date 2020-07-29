@@ -658,7 +658,7 @@
         <Command Enabled="yes">rm ./Release/RegardsViewer.app/Contents/Frameworks/libopencv*</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_core.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/bopencv_dnn.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_dnn.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgproc.4.3.dylib  ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgcodecs.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
