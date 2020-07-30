@@ -39,11 +39,11 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <VirtualDirectory Name="src">
+      <File Name="RedEye.cpp"/>
       <File Name="Wave.cpp"/>
       <File Name="Selection.cpp"/>
       <File Name="Rotation.cpp"/>
       <File Name="Rotate.cpp"/>
-      <File Name="RedEye.cpp"/>
       <File Name="PiccanteFilter.cpp"/>
       <File Name="PerlinNoise.cpp"/>
       <File Name="MotionBlur.cpp"/>
@@ -58,13 +58,13 @@
       <File Name="circle.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
+      <File Name="RedEye.h"/>
       <File Name="Wave.h"/>
       <File Name="Selection.h"/>
       <File Name="Rotation.h"/>
       <File Name="RotateByShearRGB.h"/>
       <File Name="RotateByShear.h"/>
       <File Name="Rotate.h"/>
-      <File Name="RedEye.h"/>
       <File Name="PiccanteFilter.h"/>
       <File Name="PerlinNoise.h"/>
       <File Name="MotionBlur.h"/>
@@ -81,8 +81,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="window">
     <VirtualDirectory Name="drawing">
-      <File Name="RedEyeFilter.h"/>
-      <File Name="RedEyeFilter.cpp"/>
       <File Name="CropFilter.h"/>
       <File Name="CropFilter.cpp"/>
     </VirtualDirectory>
@@ -213,6 +211,7 @@
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libVideoFFMpeg"/>
@@ -238,6 +237,10 @@
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libextern/json-3.8.0/include"/>
+        <IncludePath Value="../libextern/frugally-deep/include"/>
+        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
+        <IncludePath Value="../libextern/eigen"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
