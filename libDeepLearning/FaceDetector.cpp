@@ -377,13 +377,14 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 
 			
 		}
-
+		cv::Mat cloneImage;
 		//cv::flip(image, image, -1);
-		RotateCorrectly(image, image, 360 - angle);
-
+		RotateCorrectly(image, cloneImage, 360 - angle);
+		//cv::Mat cloneImage = image.clone();
 		//imwrite("d:\\eye_image.jpg", image);
 		//uchar * arr = image.isContinuous() ? image.data : image.clone().data;
-		pBitmap->SetBitmap(image.clone().data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+		//uchar * arr = image.clone().data;
+		pBitmap->SetBitmap(cloneImage.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 		//uint length = image.total()*image.channels();
 	}
 

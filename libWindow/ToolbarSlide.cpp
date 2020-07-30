@@ -290,7 +290,8 @@ void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, 
 	}
 	else
 	{
-		memDC.DrawBitmap(background, 0, 0);
+		if(background.IsOk())
+			memDC.DrawBitmap(background, 0, 0);
 	}
     
 	positionSlider.x = themeSlider.GetButtonWidth();
