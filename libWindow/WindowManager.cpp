@@ -175,7 +175,7 @@ CPanelWithClickToolbar * CWindowManager::AddPanel(CWindowMain * window, const Po
 		panel = CPanelWithClickToolbar::CreatePanel(this, panelLabel, windowName, isVisible, idPanel, false, refreshButton);
 
 	wxWindow * parent = panel->GetPaneWindow();
-	window->Reparent(parent);
+	//window->Reparent(parent);
 	panel->SetWindow(window);
 	AddWindow(panel, pos, fixe, size, rect, idPanel, true, isTop);
 	return panel;

@@ -89,6 +89,7 @@ CPanelWithClickToolbar * CPanelWithClickToolbar::CreatePanel(wxWindow * parent, 
 void CPanelWithClickToolbar::SetWindow(CWindowMain * windowMain)
 {
 	mainWindow = windowMain;
+	mainWindow->Reparent(paneWindow);
 	paneWindow->SetOtherWindow(windowMain);
 }
 
@@ -115,6 +116,7 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id, const int &refresh)
 			isPanelVisible = true;
 			clickWindow->Show(false);
 			paneWindow->Show(true);
+			paneWindow->ShowOtherWindow();
 			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
 			event->SetId(this->GetId());
 			event->SetInt(1);

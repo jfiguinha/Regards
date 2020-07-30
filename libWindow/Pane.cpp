@@ -48,6 +48,14 @@ void CPane::UpdateScreenRatio()
     this->Resize();
 }
 
+void CPane::ShowOtherWindow()
+{
+	if (hMainWndOther != nullptr)
+		hMainWndOther->Show(true);
+	if (hWndOther != nullptr)
+		hWndOther->Show(true);
+}
+
 void CPane::SetClosable(const bool &value)
 {
 	titleBar->SetClosable(value);

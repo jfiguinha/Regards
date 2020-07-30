@@ -38,6 +38,7 @@ namespace Regards
 			virtual void ClosePane();
 			virtual void RefreshPane();
 			void Resize();
+			void ShowOtherWindow();
 
 			void SetTitleBarVisibility(const bool &visible);
 			int GetTitleHeight();

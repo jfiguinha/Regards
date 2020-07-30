@@ -717,7 +717,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	listFace->Show(false);
 	listPicture->Show(false);
 
-
+	/*
 	panelInfosClick->Show(true);
 	windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 	windowManager->ShowWindow(Pos::wxBOTTOM);
@@ -727,58 +727,60 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	windowManager->HidePaneWindow(Pos::wxBOTTOM);
 	windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 	windowManager->Update();
-
+	*/
 
 	switch (windowMode)
 	{
-		/*
+		
 	case 1:
-		//previewWindow->Show(true);
-		panelInfosClick->Show(true);
-		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 		windowManager->ShowWindow(Pos::wxBOTTOM);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+		panelInfosClick->Show(true);
+		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 		windowManager->Update();
-		//windowManager->Resize();
 		break;
-		*/
+		
 #ifndef __NOFACE_DETECTION__
 	case 2:
 		previewWindow->SetFaceMode();
 		listFace->Show(true);
-		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
-		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
+		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
 		windowManager->Update();
-		panelInfosClick->Show(false);
 		break;
 #endif
 	case 3:
 		listPicture->Show(true);
-		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
+		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
+		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->Update();
-		panelInfosClick->Show(false);
 		break;
 	case 4:
 		panelInfosClick->Show(true);
-		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
-		windowManager->ShowWindow(Pos::wxBOTTOM, 0);
-		windowManager->HidePaneWindow(Pos::wxRIGHT, 0);
-		windowManager->HidePaneWindow(Pos::wxLEFT, 0);
+		windowManager->ShowWindow(Pos::wxBOTTOM);
+		//windowManager->HidePaneWindow(Pos::wxRIGHT);
+		windowManager->HidePaneWindow(Pos::wxLEFT);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
+		windowManager->HidePaneWindow(Pos::wxTOP);
+		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
+		//windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
 		windowManager->Update();
 		break;
 
 	}
-	//windowManager->Resize();
+	windowManager->Resize();
 }
 
 void CCentralWindow::UpdateScreenRatio()
