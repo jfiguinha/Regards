@@ -540,7 +540,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
             int x = (width - picture->GetWidth()) / 2;
             int y = (height - picture->GetHeight()) / 2;
 
-            memDC.DrawBitmap(picture->Mirror(false), x, y);
+			if (picture->IsOk())
+				memDC.DrawBitmap(picture->Mirror(false), x, y);
             //memDC.DrawBitmap(*picture, x, y);
 
             delete picture;
@@ -553,9 +554,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     {
         wxImage image = localmemBitmap.ConvertToImage();
         wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-        dc.DrawBitmap(resized, 0, 0);
+		if (resized.IsOk())
+			dc.DrawBitmap(resized, 0, 0);
     }
-    else
+    else if(localmemBitmap.IsOk())
         dc.DrawBitmap(localmemBitmap, 0, 0);
 
 #endif

@@ -244,7 +244,7 @@ void CToolbarWindow::DrawButton(wxDC * dc, CToolbarElement * nav)
         wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
         dc->DrawBitmap(resized, nav->GetXPos()/ scale_factor, nav->GetYPos()/ scale_factor);
     }
-    else
+    else if (pictureBuffer.IsOk())
     {
         dc->DrawBitmap(pictureBuffer, nav->GetXPos(), nav->GetYPos());
     }  

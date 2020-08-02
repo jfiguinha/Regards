@@ -63,9 +63,9 @@ void CInfosSeparationBarExplorer::RenderIcone(wxDC * deviceContext, const int &p
 	rcSelect.width = bitmapCheckOn.GetWidth();
 	rcSelect.height = bitmapCheckOn.GetHeight();
 
-    if (isSelected)
+    if (isSelected && bitmapCheckOn.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOn, xPos, yPos);
-    else
+    else if (bitmapCheckOff.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOff, xPos, yPos);
     
     wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);

@@ -122,7 +122,8 @@ void CInfosSeparationBarFace::RenderIcone(wxDC * deviceContext, const int &posLa
 		bitmapEdit = bitmapEdit.ConvertToDisabled();
 	}
 
-	deviceContext->DrawBitmap(bitmapEdit, titleRectPos.x + titleRectPos.width + 5, titleRectPos.y);
+	if (bitmapEdit.IsOk())
+		deviceContext->DrawBitmap(bitmapEdit, titleRectPos.x + titleRectPos.width + 5, titleRectPos.y);
   
 	xPosEdit = _xPos + posLargeur + titleRectPos.x + titleRectPos.width + 5;
 	yPosEdit = _yPos + posHauteur + titleRectPos.y;
@@ -135,9 +136,9 @@ void CInfosSeparationBarFace::RenderIcone(wxDC * deviceContext, const int &posLa
 	rcSelect.width = bitmapCheckOn.GetWidth();
 	rcSelect.height = bitmapCheckOn.GetHeight();
 
-    if (isSelected)
+    if (isSelected && bitmapCheckOn.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOn, xPos, yPos);
-    else
+    else if (bitmapCheckOff.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOff, xPos, yPos);
     
     wxSize size = CWindowMain::GetSizeTexte(deviceContext, libelleSelectAll, theme.themeFont);
@@ -150,9 +151,9 @@ void CInfosSeparationBarFace::RenderIcone(wxDC * deviceContext, const int &posLa
 	xPos += size.x + 5;
 	yPos = y + (theme.GetHeight() - bitmapCheckOn.GetHeight());
 
-    if (isSelectIcone)
+    if (isSelectIcone && bitmapCheckOn.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOn, xPos, yPos);
-    else
+    else if (bitmapCheckOff.IsOk())
         deviceContext->DrawBitmap(bitmapCheckOff, xPos, yPos);
 
 	rcSelectIcone.x = _xPos + xPos + posLargeur;

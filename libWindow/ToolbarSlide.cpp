@@ -246,120 +246,127 @@ void CToolbarSlide::CalculPositionButton(const int &x)
 
 void CToolbarSlide::DrawShapeElement(wxDC * dc, const wxRect &rc)
 {
-	float pourcentage = 0.0;
-	wxRect rcPast;
-	rcPast.x = rc.x;
-	rcPast.y = rc.y;
-
-	if (position > 0)
+	if (dc != nullptr)
 	{
-		pourcentage = (float)position / (float)tabValue.size();
-		rcPast.width = (rc.width * pourcentage);
+		float pourcentage = 0.0;
+		wxRect rcPast;
+		rcPast.x = rc.x;
 		rcPast.y = rc.y;
-		rcPast.height = themeSlider.GetRectangleHeight();
-		CWindowMain::FillRect(dc, rcPast, themeSlider.rectanglePast);
-	}
 
-	wxRect rcNext;
-	rcNext.x = rcPast.x + rcPast.width;
-	rcNext.width = rc.width - rcPast.width;
-	rcNext.y = rc.y;
-	rcNext.height = themeSlider.GetRectangleHeight();
-	CWindowMain::FillRect(dc, rcNext, themeSlider.rectangleNext);
+		if (position > 0)
+		{
+			pourcentage = (float)position / (float)tabValue.size();
+			rcPast.width = (rc.width * pourcentage);
+			rcPast.y = rc.y;
+			rcPast.height = themeSlider.GetRectangleHeight();
+			CWindowMain::FillRect(dc, rcPast, themeSlider.rectanglePast);
+		}
+
+		wxRect rcNext;
+		rcNext.x = rcPast.x + rcPast.width;
+		rcNext.width = rc.width - rcPast.width;
+		rcNext.y = rc.y;
+		rcNext.height = themeSlider.GetRectangleHeight();
+		CWindowMain::FillRect(dc, rcNext, themeSlider.rectangleNext);
+	}
 }
 
 void CToolbarSlide::RenderSlide(wxDC * dc, const int &width, const int &height, const int &x, const int &y)
 {
-	wxBitmap bitmapBuffer = wxBitmap(width, height);
-	wxMemoryDC memDC(bitmapBuffer);
+	if (dc != nullptr)
+	{
+		wxBitmap bitmapBuffer = wxBitmap(width, height);
+		wxMemoryDC memDC(bitmapBuffer);
 		wxRect rc;
 		rc.x = 0;
 		rc.width = width;
 		rc.y = 0;
 		rc.height = height;
 		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
-    
-	if (colorBackground)
-	{
-		wxRect rc;
-		rc.x = 0;
-		rc.width = width;
-		rc.y = 0;
-		rc.height = height;
-		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+
+		if (colorBackground)
+		{
+			wxRect rc;
+			rc.x = 0;
+			rc.width = width;
+			rc.y = 0;
+			rc.height = height;
+			CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+		}
+		else
+		{
+			if (background.IsOk())
+				memDC.DrawBitmap(background, 0, 0);
+		}
+
+		positionSlider.x = themeSlider.GetButtonWidth();
+		positionSlider.width = width - (themeSlider.GetButtonWidth() * 2);
+		positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
+		positionSlider.height = themeSlider.GetRectangleHeight();
+
+		DrawShapeElement(&memDC, positionSlider);
+
+		memDC.SelectObject(wxNullBitmap);
+
+		dc->DrawBitmap(bitmapBuffer, x, y);
 	}
-	else
-	{
-		if(background.IsOk())
-			memDC.DrawBitmap(background, 0, 0);
-	}
-    
-	positionSlider.x = themeSlider.GetButtonWidth();
-	positionSlider.width = width - (themeSlider.GetButtonWidth() * 2);
-	positionSlider.y = (height - themeSlider.GetRectangleHeight()) / 2;
-	positionSlider.height = themeSlider.GetRectangleHeight();
-
-	DrawShapeElement(&memDC, positionSlider);
 
 
-
-	memDC.SelectObject(wxNullBitmap);
-
-	dc->DrawBitmap(bitmapBuffer, x, y);
 }
 
 void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 {
 	//bool oldRender = true;
-
-	wxBitmap bitmapBuffer = wxBitmap(themeSlider.GetWidth(), themeSlider.GetHeight());
-	wxMemoryDC memDC(bitmapBuffer);
-
-
-	wxRect rc;
-	rc.x = 0;
-	rc.width = themeSlider.GetWidth();
-	rc.y = 0;
-	rc.height = themeSlider.GetHeight();
-	CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
-
-	//int first = GetFirstValue();
-	//int last = GetLastValue();
-
-	wxSize renderFirst = CWindowMain::GetSizeTexte(dc, to_string(GetPositionValue()), themeSlider.font);
-	wxSize renderLast = CWindowMain::GetSizeTexte(dc, to_string(GetLastValue()), themeSlider.font);
-
-	posRectangle.x = renderLast.x;
-	posRectangle.width = themeSlider.GetWidth() - (posRectangle.x*2);
-	posRectangle.y = 0;
-	posRectangle.height = themeSlider.GetHeight();
-
-	RenderSlide(&memDC, posRectangle.width, posRectangle.height, posRectangle.x, posRectangle.y);
-
-	int yMedium = (themeSlider.GetHeight() - renderFirst.y) / 2;
-	CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);
-
-	yMedium = (themeSlider.GetHeight() - renderLast.y) / 2;
-	CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium, themeSlider.font);
-
-	memDC.SelectObject(wxNullBitmap);
-
-	if (!colorBackground)
+	if (dc != nullptr)
 	{
-		bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
-		dc->DrawBitmap(bitmapBuffer, x, y, true);
+		wxBitmap bitmapBuffer = wxBitmap(themeSlider.GetWidth(), themeSlider.GetHeight());
+		wxMemoryDC memDC(bitmapBuffer);
+
+
+		wxRect rc;
+		rc.x = 0;
+		rc.width = themeSlider.GetWidth();
+		rc.y = 0;
+		rc.height = themeSlider.GetHeight();
+		CWindowMain::FillRect(&memDC, rc, themeSlider.colorBack);
+
+		//int first = GetFirstValue();
+		//int last = GetLastValue();
+
+		wxSize renderFirst = CWindowMain::GetSizeTexte(dc, to_string(GetPositionValue()), themeSlider.font);
+		wxSize renderLast = CWindowMain::GetSizeTexte(dc, to_string(GetLastValue()), themeSlider.font);
+
+		posRectangle.x = renderLast.x;
+		posRectangle.width = themeSlider.GetWidth() - (posRectangle.x * 2);
+		posRectangle.y = 0;
+		posRectangle.height = themeSlider.GetHeight();
+
+		RenderSlide(&memDC, posRectangle.width, posRectangle.height, posRectangle.x, posRectangle.y);
+
+		int yMedium = (themeSlider.GetHeight() - renderFirst.y) / 2;
+		CWindowMain::DrawTexte(&memDC, to_string(GetPositionValue()), 0, yMedium, themeSlider.font);
+
+		yMedium = (themeSlider.GetHeight() - renderLast.y) / 2;
+		CWindowMain::DrawTexte(&memDC, to_string(GetLastValue()), themeSlider.GetWidth() - renderLast.x, yMedium, themeSlider.font);
+
+		memDC.SelectObject(wxNullBitmap);
+
+		if (!colorBackground)
+		{
+			bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
+			dc->DrawBitmap(bitmapBuffer, x, y, true);
+		}
+		else
+		{
+			dc->DrawBitmap(bitmapBuffer, x, y, false);
+		}
+
+		CalculPositionButton();
+
+
+		if (!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
+			button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
+		dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
 	}
-	else
-	{
-		dc->DrawBitmap(bitmapBuffer, x, y, false);
-	}
-
-	CalculPositionButton();
-    
-
-    if(!button.IsOk() || (button.GetWidth() != themeSlider.GetButtonWidth() || button.GetHeight() != themeSlider.GetButtonHeight()))
-        button = CLibResource::CreatePictureFromSVG("IDB_BOULESLIDER", themeSlider.GetButtonWidth(), themeSlider.GetButtonHeight());
-    dc->DrawBitmap(button, x + renderLast.x + positionButton.x, y + positionButton.y);
-
 }
 

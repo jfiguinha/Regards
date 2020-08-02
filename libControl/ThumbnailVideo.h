@@ -15,7 +15,7 @@ namespace Regards
 			void SetVideoPosition(const int64_t &videoPos);
 
 		private:
-
+			static bool ItemCompFonct(int x, int y, CIcone * icone, CWindowMain * parent);
            virtual void EraseThumbnail(wxCommandEvent& event);
 		   void EndVideoThumbnail(wxCommandEvent& event);
 			void ProcessThumbnail();

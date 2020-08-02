@@ -726,8 +726,8 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 
 	memDC.SelectObject(wxNullBitmap);
-
-	dc.DrawBitmap(localmemBitmap, 0, 0);
+	if (localmemBitmap.IsOk())
+		dc.DrawBitmap(localmemBitmap, 0, 0);
 
 #endif
 

@@ -329,7 +329,8 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
 	if (pThumbnailData != nullptr)
 	{
 		CalculPosition(bitmapScale);
-		memDC->DrawBitmap(bitmapScale, posXThumbnail, themeIcone.GetMarge());
+		if(bitmapScale.IsOk())
+			memDC->DrawBitmap(bitmapScale, posXThumbnail, themeIcone.GetMarge());
 
 		if (!themeIcone.showOnlyThumbnail)
 		{
@@ -378,15 +379,15 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
             switch (type)
             {
                 case INACTIFICONE:
-                    if (isChecked)
+                    if (isChecked && bitmapCheckOn.IsOk())
                         memDC->DrawBitmap(bitmapCheckOn.ConvertToDisabled(), themeIcone.GetMarge(), themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
-                    else
+                    else if(bitmapCheckOff.IsOk())
                         memDC->DrawBitmap(bitmapCheckOff.ConvertToDisabled(), themeIcone.GetMarge(), themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
                     break;
                 default:
-                    if (isChecked)
+                    if (isChecked && bitmapCheckOn.IsOk())
                         memDC->DrawBitmap(bitmapCheckOn, themeIcone.GetMarge(), themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOn.GetHeight());
-                    else
+                    else if(bitmapCheckOff.IsOk())
                         memDC->DrawBitmap(bitmapCheckOff, themeIcone.GetMarge(), themeIcone.GetHeight() - themeIcone.GetMarge() - bitmapCheckOff.GetHeight());
                     break;
             }
@@ -411,7 +412,8 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
             }
         }
            
-        memDC->DrawBitmap(transparent, posXThumbnail, themeIcone.GetMarge());
+		if(transparent.IsOk())
+			memDC->DrawBitmap(transparent, posXThumbnail, themeIcone.GetMarge());
         
         
 
@@ -421,7 +423,8 @@ void CIcone::RenderPictureBitmap(wxDC * memDC, const wxImage & bitmapScale, cons
         int yLocal = themeIcone.GetMarge() + (bitmapScale.GetHeight() - pictureLoading.GetHeight()) / 2;
         //if(pictureLoading.HasMask())
             
-        memDC->DrawBitmap(pictureLoading.ConvertToGreyscale(), xLocal, yLocal, true);
+		if(pictureLoading.IsOk())
+			memDC->DrawBitmap(pictureLoading.ConvertToGreyscale(), xLocal, yLocal, true);
     }
 }
 
@@ -457,14 +460,15 @@ void CIcone::RenderVideoBitmap(wxDC * memDC, const wxImage &  bitmapScale, const
 	switch (type)
 	{
 	case INACTIFICONE:
-		if (isChecked)
+		if (isChecked && bitmapImageCadreActif.IsOk())
 			memDC->DrawBitmap(bitmapImageCadreActif, 0, 0);
-		else
+		else if(bitmapImageCadreVideo.IsOk())
 			memDC->DrawBitmap(bitmapImageCadreVideo, 0, 0);
 		break;
 	case SELECTEDICONE:
 	case ACTIFICONE:
-		memDC->DrawBitmap(bitmapImageCadreActif, 0, 0);
+		if(bitmapImageCadreActif.IsOk())
+			memDC->DrawBitmap(bitmapImageCadreActif, 0, 0);
 		break;
 	}
 	
@@ -496,8 +500,11 @@ void CIcone::RenderVideoBitmap(wxDC * memDC, const wxImage &  bitmapScale, const
 		case INACTIFICONE:
 			if (isChecked)
 			{
-				memDC->DrawBitmap(bitmapImageActif, posXThumbnail, yPos);
-				memDC->DrawBitmap(bitmapImageCadreActif, 0, themeIcone.GetHeight() - bitmapImageCadreVideo.GetHeight());
+				if(bitmapImageActif.IsOk())
+					memDC->DrawBitmap(bitmapImageActif, posXThumbnail, yPos);
+
+				if(bitmapImageCadreActif.IsOk())
+					memDC->DrawBitmap(bitmapImageCadreActif, 0, themeIcone.GetHeight() - bitmapImageCadreVideo.GetHeight());
 			}
 			else
 			{

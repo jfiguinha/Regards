@@ -125,9 +125,9 @@ void CBitmapInfosCheckBox::DrawInformations(wxDC * dc)
         yPos = GetWindowHeight() - bitmapCheckOn.GetHeight();
         
         
-        if (isSelected)
+        if (isSelected && bitmapCheckOn.IsOk())
             dc->DrawBitmap(bitmapCheckOn, xPos, yPos);
-        else
+        else if(bitmapCheckOff.IsOk())
             dc->DrawBitmap(bitmapCheckOff, xPos, yPos);
         
         size = GetSizeTexte(dc, libelleSelectAll, bitmapInfosTheme.themeFont);

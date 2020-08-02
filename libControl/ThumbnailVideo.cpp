@@ -34,8 +34,33 @@ CThumbnailVideo::~CThumbnailVideo(void)
 {
 }
 
+bool CThumbnailVideo::ItemCompFonct(int videoPos, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		CThumbnailData * data = icone->GetData();
+		if (data != nullptr)
+		{
+			if (data->GetTimePosition() > videoPos)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 int CThumbnailVideo::FindNumItem(const int &videoPos)
 {
+	int numItem = 0;
+	pItemCompFonct _pf = &ItemCompFonct;
+	CIcone * icone = iconeList->FindElement(videoPos, 0, &_pf, this);
+	if (icone != nullptr)
+	{
+		numItem = icone->GetNumElement() - 1;
+	}
+	return numItem;
+	/*
 	int numItem = 0;
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
@@ -60,6 +85,7 @@ int CThumbnailVideo::FindNumItem(const int &videoPos)
 		numItem = numElement - 1;
 
 	return numItem;
+	*/
 }
 
 void CThumbnailVideo::SetVideoPosition(const int64_t &videoPos)
