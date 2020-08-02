@@ -414,6 +414,9 @@ void CScrollbarWnd::Resize()
 	int pictureHeight = GetWindowHeight();
 	bool _showScrollV = false;
 	bool _showScrollH = false;
+
+	if (!(pictureWidth > 0 && pictureHeight > 0))
+		return;
     
 #ifdef __WXGTK__
     double scale_factor = GetContentScaleFactor();

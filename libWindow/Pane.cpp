@@ -84,6 +84,8 @@ void CPane::Resize()
 		{
             int height =  GetWindowHeight() - titleBar->GetWindowHeight();
 			hWndOther->SetSize(0, titleBar->GetWindowHeight(), GetWindowWidth(), height);
+			if (hMainWndOther != nullptr)
+				hMainWndOther->Resize();
 		}
 	}
 	else if (hWndOther != nullptr)

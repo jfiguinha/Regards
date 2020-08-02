@@ -6,6 +6,8 @@
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
+
+
 CTreeWindow::CTreeWindow(wxWindow* parent, wxWindowID id, const CThemeTree & theme)
 	: CWindowMain("CTreeWindow",parent, id)
 {

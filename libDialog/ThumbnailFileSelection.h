@@ -26,7 +26,8 @@ namespace Regards
 			void ResizeThumbnail();
 
 		private:
-            
+			static bool ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent);
+			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void SetListeFile();
 			void AddSeparatorBar(const wxString &libelle, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);

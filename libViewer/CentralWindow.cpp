@@ -717,17 +717,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	listFace->Show(false);
 	listPicture->Show(false);
 
-	/*
-	panelInfosClick->Show(true);
-	windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
-	windowManager->ShowWindow(Pos::wxBOTTOM);
-	windowManager->ShowPaneWindow(Pos::wxRIGHT);
-	windowManager->ShowPaneWindow(Pos::wxLEFT);
-	windowManager->ShowPaneWindow(Pos::wxBOTTOM);
-	windowManager->HidePaneWindow(Pos::wxBOTTOM);
-	windowManager->ShowPaneWindow(Pos::wxBOTTOM);
-	windowManager->Update();
-	*/
 
 	switch (windowMode)
 	{
@@ -736,8 +725,6 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowWindow(Pos::wxBOTTOM);
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
-		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
-		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
 		panelInfosClick->Show(true);
 		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
@@ -763,18 +750,15 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
-		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->Update();
 		break;
 	case 4:
 		panelInfosClick->Show(true);
 		windowManager->ShowWindow(Pos::wxBOTTOM);
-		//windowManager->HidePaneWindow(Pos::wxRIGHT);
 		windowManager->HidePaneWindow(Pos::wxLEFT);
 		windowManager->HidePaneWindow(Pos::wxBOTTOM);
 		windowManager->HidePaneWindow(Pos::wxTOP);
 		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
-		//windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->HidePaneWindow(Pos::wxRIGHT);
 		windowManager->Update();
 		break;

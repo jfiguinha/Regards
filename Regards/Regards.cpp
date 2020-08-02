@@ -119,7 +119,8 @@ int MyApp::Close()
     CLibPicture::UnloadBpgDll();
 #endif
 #ifdef FFMPEG
-    av_lockmgr_register(nullptr);
+	avformat_network_deinit();
+    //av_lockmgr_register(nullptr);
 #endif
 	return 0;
 }

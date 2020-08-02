@@ -99,8 +99,22 @@ wxString CThumbnailEffect::GetFilename()
 	return filename;
 }
 
+bool CThumbnailEffect::ItemCompFonct(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	wxRect rc = icone->GetPos();
+	if ((rc.x < x && x < (rc.width + rc.x)) && (rc.y < y && y < (rc.height + rc.y)))
+	{
+		return true;
+	}
+	return false;
+}
+
 CIcone * CThumbnailEffect::FindElement(const int &xPos, const int &yPos)
 {
+	pItemCompFonct _pf = &ItemCompFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+
+	/*
 	int x = xPos;
 	int y = yPos;
 
@@ -118,6 +132,8 @@ CIcone * CThumbnailEffect::FindElement(const int &xPos, const int &yPos)
 		}
 	}
 	return nullptr;
+	*/
+
 }
 
 

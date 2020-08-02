@@ -12,6 +12,26 @@
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 
+class CItemPosSeparationBar
+{
+public:
+
+	CItemPosSeparationBar(int x, int y) : xPos(x), yPos(y) {}
+
+	bool operator()(CInfosSeparationBar * separatorBar)
+	{
+		wxRect rc = separatorBar->GetPos();
+		if ((rc.x < xPos && xPos < (rc.x + rc.width)) && (rc.y < yPos && yPos < (rc.height + rc.y)))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	int xPos;
+	int yPos;
+
+};
 
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
@@ -214,13 +234,24 @@ CIcone * CThumbnailFileSelection::FindIcone(const int &photoId)
 	return nullptr;
 }
 
-
+bool CThumbnailFileSelection::ItemCompWithVScrollFonct(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	wxRect rc = icone->GetPos();
+	if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
+	{
+		return true;
+	}
+	return false;
+}
 
 CIcone * CThumbnailFileSelection::FindElementWithVScroll(const int &xPos, const int &yPos)
 {
-	int x = xPos;
-	int y = yPos;
+	//int x = xPos;
+	//int y = yPos;
+	pItemCompFonct _pf = &ItemCompWithVScrollFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
 
+	/*
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -235,7 +266,7 @@ CIcone * CThumbnailFileSelection::FindElementWithVScroll(const int &xPos, const 
 		}
 	}
 
-	return nullptr;
+	return nullptr;*/
 }
 
 
@@ -243,7 +274,15 @@ CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &x
 {
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
+	CInfosSeparationBar * element;
 
+	InfosSeparationBarVector::iterator it;
+	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
+	if (it != listSeparator.end())
+		element = *it;
+
+	return element;
+	/*/
 	for (CInfosSeparationBar * separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
@@ -256,6 +295,7 @@ CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &x
 		}
 	}
 	return nullptr;
+	*/
 }
 
 
@@ -364,8 +404,29 @@ void CThumbnailFileSelection::ResizeThumbnail()
 	UpdateScroll();
 }
 
+bool CThumbnailFileSelection::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		CThumbnailFileSelection * thumbnail = (CThumbnailFileSelection *)parent;
+		wxRect rc = icone->GetPos();
+		int left = rc.x - thumbnail->posLargeur;
+		int right = rc.x + rc.width - thumbnail->posLargeur;
+		int top = rc.y - thumbnail->posHauteur;
+		int bottom = rc.y + rc.height - thumbnail->posHauteur;
+		if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 CIcone * CThumbnailFileSelection::FindElement(const int &xPos, const int &yPos)
 {
+	pItemCompFonct _pf = &ItemCompFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	/*
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -385,6 +446,7 @@ CIcone * CThumbnailFileSelection::FindElement(const int &xPos, const int &yPos)
 	}
 
 	return nullptr;
+	*/
 }
 
 

@@ -6,13 +6,17 @@
 #include <RegardsConfigParam.h>
 #include <OpenCLEngine.h>
 #include <ThumbnailData.h>
+#include <tbb/concurrent_vector.h>
 using namespace Regards::OpenCL;
+
 
 
 namespace Regards
 {
 	namespace Window
 	{
+		class CWindowMain;
+
 		#define INACTIFICONE 1
 		#define ACTIFICONE 2
 		#define SELECTEDICONE 3
@@ -152,7 +156,7 @@ namespace Regards
 			bool eraseBitmap = true;
 			wxBitmap bitmapLocal;
 		};
-		typedef std::vector<CIcone *> IconeVector;
-
+		typedef tbb::concurrent_vector<CIcone *> IconeVector;
+		typedef bool(*pItemCompFonct)(int, int, CIcone *, CWindowMain *);
 	}
 }

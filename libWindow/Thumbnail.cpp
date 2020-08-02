@@ -36,6 +36,10 @@ const int CThumbnail::Max = 14;
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEMESSAGE, wxCommandEvent);
 
+
+
+
+
 class CThreadLoadingBitmap
 {
 public:
@@ -64,9 +68,22 @@ public:
 #define WM_UPDATESTATUSBAR 504
 #define WM_LOADTHUMBNAIL 505
 
+bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	wxRect rc = icone->GetPos();
+	if ((rc.x < xPos && xPos < rc.width) && (rc.y < yPos && yPos < rc.height))
+	{
+		return true;
+	}
+	return false;
+}
+
 CIcone * CThumbnail::FindElement(const int &xPos, const int &yPos)
 {
     TRACE();
+	pItemCompFonct _pf = &ItemCompFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	/*
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -82,6 +99,7 @@ CIcone * CThumbnail::FindElement(const int &xPos, const int &yPos)
 	}
 
 	return nullptr;
+	*/
 }
 
 

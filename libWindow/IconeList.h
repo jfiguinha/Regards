@@ -4,6 +4,13 @@ namespace Regards
 {
 	namespace Window
 	{
+
+
+		
+		//PtrFonct pf;
+		
+
+
         class CIconeList
         {
         public:
@@ -16,6 +23,7 @@ namespace Regards
             void AddElement(CIcone * icone);
 			void Lock();
 			void Unlock();
+			CIcone * FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent);
         private:
             IconeVector pIconeList;
             mutex muList;

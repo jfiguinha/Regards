@@ -242,6 +242,8 @@ void CWindowManager::ShowPaneWindow(Pos position, const int &refresh)
 			{
 				if (!panel->IsPanelVisible())
 				{
+					//if (window->fixe)
+					//	panel->SetSize(window->rect_old);
 					panel->ClickShowButton(PANE_WITHCLICKTOOLBAR, refresh);
 				}
 			}

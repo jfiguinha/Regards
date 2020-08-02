@@ -1,6 +1,25 @@
 #include "header.h"
 #include "IconeList.h"
+#include <WindowMain.h>
 using namespace Regards::Window;
+
+//Class use for finding element in IconeList
+class CItemPos
+{
+public:
+
+	CItemPos(int x, int y, pItemCompFonct * pf, CWindowMain * parent) : xPos(x), yPos(y), _pf(pf), _parent(parent) {}
+
+	bool operator()(CIcone * icone)
+	{
+		return (*_pf)(xPos, yPos, icone, _parent);
+	}
+
+	int xPos;
+	int yPos;
+	CWindowMain * _parent;
+	pItemCompFonct * _pf;
+};
 
 int CIconeList::GetNbElement()
 {
@@ -41,6 +60,20 @@ void CIconeList::Lock()
 void CIconeList::Unlock()
 {
 	muList.unlock();
+}
+
+CIcone *  CIconeList::FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent)
+{
+	IconeVector::iterator it;
+	CIcone * element = nullptr;
+	muList.lock();
+	it =find_if(pIconeList.begin(), pIconeList.end(), CItemPos(xPos, yPos, _pf, parent));
+	muList.unlock();
+
+	if (it != pIconeList.end())
+		element = *it;
+
+	return element;
 }
 
  void CIconeList::EraseThumbnailList()

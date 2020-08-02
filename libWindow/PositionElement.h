@@ -1,5 +1,5 @@
 #pragma once
-
+#include <tbb/concurrent_vector.h>
 
 class CTreeData;
 class CTreeElement;
@@ -79,4 +79,4 @@ private:
 };
 
 
-typedef std::vector<CPositionElement *> PositionElementVector;
+typedef tbb::concurrent_vector<CPositionElement *> PositionElementVector;

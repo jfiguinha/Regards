@@ -79,7 +79,7 @@ extern "C"
 #define HADAMARD  6
 #define NONE      7
 
-
+/*
 static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
 {
 	if (NULL == _mutex)
@@ -117,7 +117,7 @@ static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
 	}
 	return 0;
 }
-
+*/
 #endif
 
 using namespace std;
@@ -201,23 +201,8 @@ public:
 
 #ifdef FFMPEG
 		//Init FFMPEG
-		int res = -1;
-		res = av_lockmgr_register(&ff_lockmgr);
-		// register all codecs, demux and protocols 
-		avcodec_register_all();
-#if CONFIG_AVDEVICE
-		avdevice_register_all();
-#endif
-#if CONFIG_AVFILTER 
-		avfilter_register_all();
-#endif
-		av_register_all();
-		//Èç¹ûÃ»ÓÐ±¾¾ä»á³ö´íÎó£º
-		//Warning:Using network protocols without global network initialization.
-		//²âÊÔÍøÂçÊý¾ÝµÄÊ±ºòÖ±½ÓÊ¹ÓÃrtsp://169.254.197.35:8554/sh1943.mpg¸ñÊ½µÄ²ÎÊý¾ÍÐÐ
-		//»òÊÇÊ¹ÓÃ rtmp://localhost/vod/sample.flv¶¼¿ÉÒÔ
-		//ÒòÎª´Ë°æ±¾ffmpeg¼¯³ÉÁËlibrtmp
-		//ºÍÎÄ¼þºÜÀàËÆ
+		//int res = -1;
+		//res = av_lockmgr_register(&ff_lockmgr);
 		avformat_network_init();
 #endif
 

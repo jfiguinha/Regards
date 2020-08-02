@@ -24,7 +24,7 @@ namespace Regards
 			void RenderIcone(wxDC * deviceContext);
 			void UpdateScroll();
 			CIcone * FindElement(const int &xPos, const int &yPos);
-			void SetActiveScroll(bool visible);
+			//void SetActiveScroll(bool visible);
 			//void UpdateThumbnail();
 
 			

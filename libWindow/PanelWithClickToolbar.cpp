@@ -125,7 +125,7 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id, const int &refresh)
 		}
 		break;
 	}
-
+	Resize();
 }
 
 void CPanelWithClickToolbar::RefreshPane(const int& id)
@@ -217,11 +217,13 @@ void CPanelWithClickToolbar::ShowPanel()
 	{
 		clickWindow->Show(false);
 		paneWindow->Show(true);
+		paneWindow->Resize();
 	}
 	else
 	{
 		clickWindow->Show(true);
 		paneWindow->Show(false);
+		clickWindow->Resize();
 	}
 }
 

@@ -3,6 +3,42 @@
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;
 
+
+struct treeElementPos {
+	treeElementPos(int x, int y, CTreeControl * parent) : _x(x), _y(y), treeControl(parent) {}
+
+	bool operator()(CPositionElement * value)
+	{
+		if (value != nullptr && treeControl != nullptr)
+		{
+			CTreeElement * treeElement = value->GetTreeElement();
+			if (treeElement != nullptr)
+			{
+				if (treeElement->IsVisible())
+				{
+					int xPos = 0;
+					if (value->GetRow() > 0)
+						xPos = treeControl->GetWidthRow(value->GetRow() - 1);
+
+					int x1 = value->GetX() + xPos;
+					int x2 = value->GetX() + xPos + treeElement->GetWidth();
+					int y1 = value->GetY();
+					int y2 = value->GetY() + treeElement->GetHeight();
+					if ((x1 <= _x && _x <= x2) && (y1 <= _y && _y <= y2))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	CTreeControl * treeControl;
+	int _x;
+	int _y;
+};
+
 CTreeControl::CTreeControl(CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
 {
 	themeTree = *theme;
@@ -265,6 +301,14 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	if(vectorPosElementDynamic.size() == 0)
 		return nullptr;
 
+	CPositionElement * treeElement = nullptr;
+	PositionElementVector::iterator it;
+	it = find_if(vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(), treeElementPos(x, y, this));
+	if (it != vectorPosElementDynamic.end())
+		treeElement = *it;
+
+	return treeElement;
+	/*
 	for (CPositionElement * value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
@@ -297,8 +341,9 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 			}
 		}
 	}
-
+	
 	return nullptr;
+	*/
 }
 
 CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData, const bool &dynamic)

@@ -52,6 +52,8 @@ namespace Regards
 			wxString GetWaitingMessage();
 			static void LoadPicture(void * param);
 
+			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
+
 		protected:
 			void ProcessThumbnail(CThumbnailData * pThumbnailData);
 			virtual void EraseThumbnail(wxCommandEvent& event);
