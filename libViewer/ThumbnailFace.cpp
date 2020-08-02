@@ -222,13 +222,26 @@ CIcone * CThumbnailFace::FindIcone(const int &photoId)
 	return nullptr;
 }
 
-
+bool CThumbnailFace::ItemCompFonctWithVScroll(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		wxRect rc = icone->GetPos();
+		if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 CIcone * CThumbnailFace::FindElementWithVScroll(const int &xPos, const int &yPos)
 {
+	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	/*
 	int x = xPos;
 	int y = yPos;
-
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -244,6 +257,7 @@ CIcone * CThumbnailFace::FindElementWithVScroll(const int &xPos, const int &yPos
 	}
 
 	return nullptr;
+	*/
 }
 
 
@@ -333,11 +347,25 @@ void CThumbnailFace::DeleteEmptyFace()
 	}
 }
 
+
+
 //-----------------------------------------------------------------
 //
 //-----------------------------------------------------------------
 CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, const int &yPos)
 {
+	int x = xPos + posLargeur;
+	int y = yPos + posHauteur;
+	CInfosSeparationBar * element;
+
+	InfosSeparationBarVector::iterator it;
+	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
+	if (it != listSeparator.end())
+		element = *it;
+
+	return element;
+
+	/*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
@@ -353,6 +381,7 @@ CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, cons
 		}
 	}
 	return nullptr;
+	*/
 }
 
 
@@ -545,12 +574,34 @@ void CThumbnailFace::ResizeThumbnailWithVScroll()
 
 }
 
+bool CThumbnailFace::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		CThumbnailFace * face = (CThumbnailFace *)parent;
+		wxRect rc = icone->GetPos();
+		int left = rc.x - face->posLargeur;
+		int right = rc.x + rc.width - face->posLargeur;
+		int top = rc.y - face->posHauteur;
+		int bottom = rc.y + rc.height - face->posHauteur;
+		if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 CIcone * CThumbnailFace::FindElement(const int &xPos, const int &yPos)
 {
 
 	if(!threadDataProcess)
 		return nullptr;
 
+	pItemCompFonct _pf = &ItemCompFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+
+	/*
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -570,6 +621,7 @@ CIcone * CThumbnailFace::FindElement(const int &xPos, const int &yPos)
 	}
 
 	return nullptr;
+	*/
 }
 
 

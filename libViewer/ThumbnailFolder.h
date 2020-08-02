@@ -28,7 +28,8 @@ namespace Regards
 			void ResizeThumbnail();
 
 		private:
-            
+			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
+			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void SetListeFile(PhotosVector * photoVector);
 			void ShowByMonth(PhotosVector* photoVector, int &nbElement);
 			void ShowByYear(PhotosVector * photoVector, int &nbElement);

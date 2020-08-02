@@ -12,27 +12,6 @@
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
 
-class CItemPosSeparationBar
-{
-public:
-
-	CItemPosSeparationBar(int x, int y) : xPos(x), yPos(y) {}
-
-	bool operator()(CInfosSeparationBar * separatorBar)
-	{
-		wxRect rc = separatorBar->GetPos();
-		if ((rc.x < xPos && xPos < (rc.x + rc.width)) && (rc.y < yPos && yPos < (rc.height + rc.y)))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	int xPos;
-	int yPos;
-
-};
-
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {

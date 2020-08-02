@@ -6,7 +6,7 @@ class CRedEyeFiltreEffectParameter : public CEffectParameter
 public:
 	CRedEyeFiltreEffectParameter()
 	{
-		intensity = 0.8;
+		intensity = 0.8f;
 	};
 	~CRedEyeFiltreEffectParameter(){};
 

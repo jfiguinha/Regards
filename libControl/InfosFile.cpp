@@ -612,14 +612,18 @@ void CInfosFile::UpdateElement()
 void CInfosFile::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
     TRACE();
-    
-	CTreeElement * treeElement = element->GetTreeElement();
-	if (element->GetType() == ELEMENT_TRIANGLE)
+	if (element != nullptr)
 	{
-		CTreeElementTriangle * treeElementTriangle = (CTreeElementTriangle *)treeElement;
-		treeElementTriangle->ClickElement(window, x, y);
-		UpdateElement();
-		eventControl->UpdateTreeControl();
+		CTreeElement * treeElement = element->GetTreeElement();
+		if (treeElement != nullptr)
+		{
+			if (element->GetType() == ELEMENT_TRIANGLE)
+			{
+				CTreeElementTriangle * treeElementTriangle = (CTreeElementTriangle *)treeElement;
+				treeElementTriangle->ClickElement(window, x, y);
+				UpdateElement();
+				eventControl->UpdateTreeControl();
+			}
+		}
 	}
-
 }

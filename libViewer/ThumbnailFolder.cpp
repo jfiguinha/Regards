@@ -499,10 +499,24 @@ CIcone * CThumbnailFolder::FindIcone(const int &photoId)
 	return nullptr;
 }
 
-
+bool CThumbnailFolder::ItemCompFonctWithVScroll(int x, int y, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		wxRect rc = icone->GetPos();
+		if ((rc.x < x && x < (rc.x + rc.width)) && (rc.y < y && y < (rc.height + rc.y)))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 CIcone * CThumbnailFolder::FindElementWithVScroll(const int &xPos, const int &yPos)
 {
+	pItemCompFonct _pf = &ItemCompFonctWithVScroll;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	/*
 	int x = xPos;
 	int y = yPos;
 
@@ -521,11 +535,24 @@ CIcone * CThumbnailFolder::FindElementWithVScroll(const int &xPos, const int &yP
 	}
 
 	return nullptr;
+	*/
 }
 
 
 CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, const int &yPos)
 {
+	int x = xPos + posLargeur;
+	int y = yPos + posHauteur;
+	CInfosSeparationBar * element;
+
+	InfosSeparationBarVector::iterator it;
+	it = find_if(listSeparator.begin(), listSeparator.end(), CItemPosSeparationBar(xPos, yPos));
+	if (it != listSeparator.end())
+		element = *it;
+
+	return element;
+
+	/*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
@@ -541,6 +568,7 @@ CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, co
 		}
 	}
 	return nullptr;
+	*/
 }
 
 
@@ -649,8 +677,29 @@ void CThumbnailFolder::ResizeThumbnail()
 	UpdateScroll();
 }
 
+bool CThumbnailFolder::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+{
+	if (icone != nullptr && parent != nullptr)
+	{
+		CThumbnailFolder * folder = (CThumbnailFolder *)parent;
+		wxRect rc = icone->GetPos();
+		int left = rc.x - folder->posLargeur;
+		int right = rc.x + rc.width - folder->posLargeur;
+		int top = rc.y - folder->posHauteur;
+		int bottom = rc.y + rc.height - folder->posHauteur;
+		if ((left < xPos && xPos < right) && (top < yPos && yPos < bottom))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 CIcone * CThumbnailFolder::FindElement(const int &xPos, const int &yPos)
 {
+	pItemCompFonct _pf = &ItemCompFonct;
+	return iconeList->FindElement(xPos, yPos, &_pf, this);
+	/*
     int numElement = iconeList->GetNbElement();
 	for (int i = 0;i < numElement;i++)
 	{
@@ -670,6 +719,7 @@ CIcone * CThumbnailFolder::FindElement(const int &xPos, const int &yPos)
 	}
 
 	return nullptr;
+	*/
 }
 
 

@@ -25,6 +25,7 @@ public:
 
 	CThreadRotate()
 	{
+		isReady = false;
 		exif = 0;
 		thread = nullptr;
 		mainWindow = nullptr;
@@ -33,7 +34,7 @@ public:
 
 	};
 
-
+	bool isReady;
 	int exif;
 	wxString filename;
 	std::thread * thread;
@@ -368,6 +369,7 @@ void CShowBitmap::RotateRecognition(void * param)
 			{
 				if (pictureOK)
 				{
+					threadRotate->isReady = true;
 					threadRotate->exif = Regards::DeepLearning::CDeepLearning::GetExifOrientation(pictureData);
 					//bitmap->SetOrientation(exif);
 				}
@@ -395,7 +397,7 @@ void CShowBitmap::OnRotateDetect(wxCommandEvent& event)
 		delete(path->thread);
 		path->thread = nullptr;
 
-		if(path->filename == filename)
+		if(path->filename == filename && path->isReady)
 			bitmapWindow->SetOrientation(path->exif);
 	}
 

@@ -5,9 +5,6 @@ namespace Regards
 	namespace Window
 	{
 
-
-		
-		//PtrFonct pf;
 		
 
 

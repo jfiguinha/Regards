@@ -32,7 +32,8 @@ namespace Regards
 			void ResizeThumbnailWithVScroll();
 			void MoveIcone(const int &numElement, const int &numFace);
 		private:
-  
+			static bool ItemCompFonctWithVScroll(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
+			static bool ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent);
 			void AddSeparatorBar(const wxString &libelle, const CFaceName & faceName, const std::vector<CFaceFilePath> & listPhotoFace, int &nbElement);
 			CIcone * FindElementWithVScroll(const int &xPos, const int &yPos);
 			void OnPictureClick(CThumbnailData * data);
