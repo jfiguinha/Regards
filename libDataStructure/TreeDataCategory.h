@@ -1,43 +1,51 @@
 #pragma once
 #include "TreeData.h"
 
-class CTreeDataCategory : public CTreeData
+namespace Regards
 {
-public:
+	namespace Window
+	{
 
-	CTreeDataCategory();
-	~CTreeDataCategory();
+		class CTreeDataCategory : public CTreeData
+		{
+		public:
 
-	bool operator==(const CTreeDataCategory &value) const;
+			CTreeDataCategory();
+			~CTreeDataCategory();
 
-	void SetTypeElement(const int &typeElement);
-	int GetTypeElement();
+			bool operator==(const CTreeDataCategory &value) const;
 
-	void SetIdElement(const int &id);
-	int GetIdElement();
-	wxString GetStringIdElement();
+			void SetTypeElement(const int &typeElement);
+			int GetTypeElement();
 
-	void SetNumElement(const int &iNumElement);
-	int GetNumElement();
+			void SetIdElement(const int &id);
+			int GetIdElement();
+			wxString GetStringIdElement();
 
-	void SetNumParent(const int &iNumElement);
-	int GetNumParent();
+			void SetNumElement(const int &iNumElement);
+			int GetNumElement();
 
-	void SetNumCatalog(const int & value);
-	int GetNumCatalog();
+			void SetNumParent(const int &iNumElement);
+			int GetNumParent();
 
-	void SetNumCategorie(const int & value);
-	int GetNumCategorie();
+			void SetNumCatalog(const int & value);
+			int GetNumCatalog();
 
-	void SetNumLevel(const int &iNumLevel);
-	int GetNumLevel();
+			void SetNumCategorie(const int & value);
+			int GetNumCategorie();
 
-private:
-	int typeElement;
-	int iNumElement;
-	int id;
-	int iNumParent;
-	int numCatalog;
-	int numCategorie;
-	int iNumLevel;
-};
+			void SetNumLevel(const int &iNumLevel);
+			int GetNumLevel();
+
+		private:
+			int typeElement;
+			int iNumElement;
+			int id;
+			int iNumParent;
+			int numCatalog;
+			int numCategorie;
+			int iNumLevel;
+		};
+
+	}
+}

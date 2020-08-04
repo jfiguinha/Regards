@@ -7,6 +7,8 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include "BitmapWndViewer.h"
+#include <TreeData.h>
+#include <TreeElementControlInterface.h>
 using namespace Regards::Window;
 using namespace Regards::Control;
 

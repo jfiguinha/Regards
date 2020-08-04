@@ -12,7 +12,7 @@
 #include <window_id.h>
 
 using namespace Regards::Window;
-using namespace Regards::Internet;
+//using namespace Regards::Internet;
 
 CBitmapInfosCheckBox::CBitmapInfosCheckBox(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme)
 	: CWindowMain("CBitmapInfosCheckBox",parent, id)

@@ -1,12 +1,13 @@
 #pragma once
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 #include <Photos.h>
 #include <wx/progdlg.h>
 namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+
 		class CSqlInsertFile : public CSqlExecuteRequest
 		{
 		public:

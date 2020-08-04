@@ -1,10 +1,17 @@
 #pragma once
-#include <TreeWindow.h>
+#include <TreeControl.h>
 #include "BboxText.h"
 using namespace Regards::Window;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CTreeElementControlInterface;
+		class CTreeElementValue;
+		class CPositionElement;
+	}
+
 	namespace Scanner
 	{
 		class COcrLabel : public CTreeControl

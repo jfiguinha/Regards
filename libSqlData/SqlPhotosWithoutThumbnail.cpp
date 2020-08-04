@@ -3,6 +3,7 @@
 #include "SqlFindPhotos.h"
 #include "SqlThumbnailVideo.h"
 #include "libPicture.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlPhotosWithoutThumbnail::CSqlPhotosWithoutThumbnail()

@@ -2,6 +2,7 @@
 #include "InfosFile.h"
 #include <ConvertUtility.h>
 #include <libPicture.h>
+#include <TreeData.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;
@@ -21,7 +22,9 @@ using namespace Regards::exiv2;
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
 #include <Gps.h>
+#include <theme.h>
 #include <LibResource.h>
+#include <TreeElementControlInterface.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Internet;
@@ -47,14 +50,14 @@ CInfosFile::CInfosFile(CThemeTree * theme, CTreeElementControlInterface * interf
 
 wxString CInfosFile::GetFilename()
 {
-    TRACE();
+    //TRACE();
     
 	return filename;
 }
 
 void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
-    TRACE();
+    //TRACE();
     
 	if (element != nullptr)
 	{
@@ -67,13 +70,13 @@ void CInfosFile::MouseOver(wxDC * deviceContext, CPositionElement * element, con
 
 void CInfosFile::UpdateScreenRatio()
 {
-    TRACE();
+    //TRACE();
     this->UpdateElement();
 }
 
 void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue, const int &index, tree<CTreeData *>::iterator &top, tree<CTreeData *>::iterator &child)
 {
-    TRACE();
+    //TRACE();
 	wchar_t seps[] = L".";
 	int item = 0;
 	wchar_t informations[TAILLEMAX];
@@ -157,7 +160,7 @@ void CInfosFile::AddTreeInfos(const wxString &exifKey, const wxString &exifValue
 
 void CInfosFile::SetFile(const wxString & picture)
 {
-    TRACE();
+    //TRACE();
     
 	if (filename == picture)
 		return;
@@ -287,7 +290,7 @@ void CInfosFile::SetFile(const wxString & picture)
 
 void CInfosFile::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 {
-    TRACE();
+    //TRACE();
     
 	CPositionElement * posElement = nullptr;
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
@@ -363,7 +366,7 @@ void CInfosFile::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CInfosFile::CreateElement()
 {
-    TRACE();
+    //TRACE();
     
 	bool isVisible = true;
 	widthPosition = 0;
@@ -412,7 +415,7 @@ void CInfosFile::CreateElement()
 
 void CInfosFile::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 {
-    TRACE();
+    //TRACE();
     
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
@@ -534,7 +537,7 @@ void CInfosFile::UpdateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CInfosFile::UpdateElement()
 {
-    TRACE();
+    //TRACE();
     
 	for (CPositionElement * value : vectorPosElement)
 	{
@@ -611,7 +614,7 @@ void CInfosFile::UpdateElement()
 
 void CInfosFile::ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur)
 {
-    TRACE();
+    //TRACE();
 	if (element != nullptr)
 	{
 		CTreeElement * treeElement = element->GetTreeElement();

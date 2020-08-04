@@ -1,12 +1,17 @@
 #pragma once
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
-#include <FaceDescriptor.h>
+//#include "SqlResult.h"
+//#include <FaceDescriptor.h>
+
+class CFaceDescriptor;
 
 namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+		
+
 		class CSqlFaceDescriptor : public CSqlExecuteRequest
 		{
 		public:

@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlPhotos.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlPhotos::CSqlPhotos(CSqlLib * _sqlLibTransaction, const bool &useTransaction)

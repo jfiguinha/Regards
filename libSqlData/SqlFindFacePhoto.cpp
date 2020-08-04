@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindFacePhoto.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindFacePhoto::CSqlFindFacePhoto()

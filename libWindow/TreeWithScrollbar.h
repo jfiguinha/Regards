@@ -1,6 +1,6 @@
 #pragma once
-#include "ScrollbarWnd.h"
-#include "TreeWindow.h"
+//#include "ScrollbarWnd.h"
+//#include "TreeWindow.h"
 #include <WindowMain.h>
 using namespace std;
 
@@ -8,6 +8,9 @@ namespace Regards
 {
 	namespace Window
 	{
+		class CTreeWindow;
+		class CScrollbarWnd;
+
 		class CTreeWithScrollbar : public CWindowMain
 		{
 		public:

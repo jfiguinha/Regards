@@ -8,6 +8,8 @@
 #include <ParamInit.h>
 #include <Gps.h>
 #include <SqlPhotos.h>
+#include <FileGeolocation.h>
+
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;

@@ -1,5 +1,6 @@
 #include "header.h"
 #include "TreeElementTriangle.h"
+using namespace Regards::Window;
 
 CTreeElementTriangle::CTreeElementTriangle()
 {

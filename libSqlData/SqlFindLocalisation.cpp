@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindLocalisation.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindLocalisation::CSqlFindLocalisation()

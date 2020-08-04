@@ -1,5 +1,6 @@
 #include <header.h>
 #include "ClickToolbar.h"
+#include "ToolbarInterface.h"
 using namespace Regards::Window;
 
 
@@ -23,7 +24,7 @@ CClickToolbar::CClickToolbar(wxWindow* parent, wxWindowID id, const CThemeToolba
 		screen->Resize(themeToolbar.button.GetRealTailleX(), themeToolbar.button.GetRealTailleY());
 		screen->SetButtonResourceId("IDB_BUTTON_CLICK");
 	}
-	screen->SetCommandId(WM_CLICK);
+	screen->SetCommandId(wxEVENT_WM_CLICK);
 	screen->SetLibelle("");
     screen->SetBorder(0);
 	screen->IsPushActif(false);
@@ -73,7 +74,7 @@ void CClickToolbar::EventManager(const int &id)
 {
 	switch (id)
 	{
-	case WM_CLICK:
+	case wxEVENT_WM_CLICK:
 		interfaceToolbar->ClickShowButton(idObject);
 		break;
 	}

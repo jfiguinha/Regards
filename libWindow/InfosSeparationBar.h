@@ -1,7 +1,7 @@
 #pragma once
 #include "Icone.h"
-#include <ThumbnailData.h>
-#include <Photos.h>
+//#include <ThumbnailData.h>
+//#include <Photos.h>
 class CRegardsBitmap;
 class CThumbnailData;
 
@@ -76,6 +76,5 @@ namespace Regards
 		};
 
 		typedef std::vector<CInfosSeparationBar *> InfosSeparationBarVector;
-
 	}
 }

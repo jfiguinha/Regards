@@ -7,7 +7,9 @@
 //
 #include <header.h>
 #include "OcrLabelWnd.h"
+#include <TreeWindow.h>
 using namespace Regards::Scanner;
+using namespace Regards::Window;
 
 COcrLabelWnd::COcrLabelWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int idWindow)
 	: CTreeWithScrollbar("COcrLabelWnd", parent, id, themeScroll, themeTree)

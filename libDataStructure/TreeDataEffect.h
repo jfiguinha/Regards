@@ -1,36 +1,45 @@
 #pragma once
 #include "TreeData.h"
 #include "Metadata.h"
-#include "TreeElementValue.h"
 
 
-class CTreeDataEffect : public CTreeData
+namespace Regards
 {
-public:
-	CTreeDataEffect(void);
-	~CTreeDataEffect(void);
+	namespace Window
+	{
+		class CTreeElementValue;
 
-	void SetIndex(const int & value);
-	int GetIndex();
+		class CTreeDataEffect : public CTreeData
+		{
+		public:
+			CTreeDataEffect(void);
+			~CTreeDataEffect(void);
 
-	void SetInitValue(CTreeElementValue * position);
-	CTreeElementValue * GetInitValue();
+			void SetIndex(const int & value);
+			int GetIndex();
 
-	void SetValue(void * value,const int & typeValue);
-	vector<CTreeElementValue *> * GetVectorValue();
-	vector<CMetadata> GetMetadataValue();
-	bool GetBoolValue();
+			void SetInitValue(CTreeElementValue * position);
+			CTreeElementValue * GetInitValue();
 
-	bool HasValue();
+			void SetValue(void * value, const int & typeValue);
+			vector<CTreeElementValue *> * GetVectorValue();
+			vector<CMetadata> GetMetadataValue();
+			bool GetBoolValue();
 
-protected:
+			bool HasValue();
 
-	int index;
-	vector<CTreeElementValue *> tabValue;
-	vector<CMetadata> tabMetadata;
-	bool boolvalue;
-	CTreeElementValue * position;
-	bool hasValue;
+		protected:
 
-};
+			int index;
+			vector<CTreeElementValue *> tabValue;
+			vector<CMetadata> tabMetadata;
+			bool boolvalue;
+			CTreeElementValue * position;
+			bool hasValue;
+
+		};
+	}
+}
+
+
 

@@ -36,6 +36,8 @@
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
+#include <TreeWindow.h>
+using namespace Regards::Window;
 using namespace Regards::Control;
 
 CFiltreEffectScrollWnd::CFiltreEffectScrollWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int bitmapWindowId)

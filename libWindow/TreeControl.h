@@ -1,22 +1,25 @@
 #pragma once
-#include "TreeElement.h"
-#include <TreeData.h>
-#include "Tree.h"
-#include "PositionElement.h"
-#include "TreeElementTriangle.h"
-#include "TreeElementSlide.h"
-#include "TreeElementDelete.h"
-#include "TreeElementTexte.h"
-#include "TreeElementTexteClick.h"
-#include "TreeElementCheckBox.h"
-#include "TreeElementListBox.h"
+//#include "TreeElement.h"
 #include "TreeElementSlideInterface.h"
-#include "TreeElementControlInterface.h"
+#include "Tree.h"
+#include <Metadata.h>
+#include "PositionElement.h"
 
 namespace Regards
 {
 	namespace Window
 	{
+		class CTreeData;
+		class CTreeElementControlInterface;
+		class CTreeElementListBox;
+		class CTreeElementTexteClick;
+		class CTreeElementDelete;
+		class CTreeElementTriangle;
+		class CTreeElementTexte;
+		class CTreeElementSlide;
+		class CTreeElementCheckBox;
+
+
 		class CTreeControl : public CTreeElementSlideInterface
 		{
 

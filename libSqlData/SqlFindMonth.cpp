@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindMonth.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindMonth::CSqlFindMonth()

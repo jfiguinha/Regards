@@ -2,6 +2,7 @@
 #include "SqlFacePhoto.h"
 #include "SqlFaceLabel.h"
 #include "SqlFaceRecognition.h"
+#include "SqlResult.h"
 #include <PictureData.h>
 #include <wx/mstream.h>
 using namespace Regards::Sqlite;

@@ -1,5 +1,6 @@
 #include <header.h>
 #include "TreeDataCategory.h"
+using namespace Regards::Window;
 
 CTreeDataCategory::CTreeDataCategory()
 {

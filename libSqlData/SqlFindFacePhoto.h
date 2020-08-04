@@ -1,6 +1,5 @@
 #pragma once
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 #include <FaceDescriptor.h>
 #include <FaceName.h>
 #include <FaceFilePath.h>
@@ -9,6 +8,8 @@ namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+
 		class CSqlFindFacePhoto : public CSqlExecuteRequest
 		{
 		public:

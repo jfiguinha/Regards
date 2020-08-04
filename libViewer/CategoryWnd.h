@@ -1,21 +1,33 @@
 #pragma once
+#include <TreeControl.h>
+/*
 #include <theme.h>
 #include <Criteria.h>
 #include <TreeWindow.h>
 #include "ViewerParam.h"
 #include <TreeDataCategory.h>
+*/
 using namespace Regards::Window;
-using namespace Regards::Viewer;
 
 #define WM_ADDCRITERIA 1
 #define WM_REFRESHCRITERIA 2
 
+class CThemeTree;
+
 namespace Regards
 {
+	namespace Window
+	{
+		class CTreeElementControlInterface;
+		class CTreeDataCategory;
+		class CWindowMain;
+	}
+
 	namespace Viewer
 	{
+		class CMainParam;
 
-		class CCategoryWnd :public CTreeControl
+		class CCategoryWnd :public Regards::Window::CTreeControl
 		{
 		public:
 			CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl);

@@ -2,6 +2,7 @@
 #include "SqlCriteria.h"
 #include "SqlPhotoCategorieUsenet.h"
 #include "SqlPhotoCriteria.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 

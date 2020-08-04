@@ -5,7 +5,8 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <ConvertUtility.h>
-
+#include <TreeWindow.h>
+#include "CriteriaTree.h"
 #if defined(LIBAPPLE)
 #include <AppleReadExif.h>
 #endif

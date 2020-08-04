@@ -2,6 +2,7 @@
 #include "PositionElement.h"
 #include "TreeData.h"
 #include "TreeElement.h"
+using namespace Regards::Window;
 
 CPositionElement::~CPositionElement()
 {

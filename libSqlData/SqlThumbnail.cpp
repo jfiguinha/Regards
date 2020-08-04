@@ -7,6 +7,7 @@
 #include <libPicture.h>
 #include <turbojpeg.h>
 #include <ConvertUtility.h>
+#include <PictureData.h>
 using namespace Regards::Sqlite;
 
 CSqlThumbnail::CSqlThumbnail()

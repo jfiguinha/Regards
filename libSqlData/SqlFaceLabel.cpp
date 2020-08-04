@@ -1,8 +1,7 @@
 #include <header.h>
 #include "SqlFaceLabel.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
-
-
 
 CSqlFaceLabel::CSqlFaceLabel()
 	: CSqlExecuteRequest(L"RegardsDB")

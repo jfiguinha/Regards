@@ -1,10 +1,11 @@
 #pragma once
 #include <PhotoCatalog.h>
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 
 namespace Regards
 {
+	class CSqlResult;
+
 	namespace Sqlite
 	{
 		class CSqlFindCatalog : public CSqlExecuteRequest

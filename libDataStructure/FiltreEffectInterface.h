@@ -7,7 +7,15 @@
 //
 
 #pragma once
-#include <TreeElementValue.h>
+namespace Regards
+{
+	namespace Window
+	{
+		class CTreeElementValue;
+	}
+}
+
+using namespace Regards::Window;
 
 class IFiltreEffectInterface
 {

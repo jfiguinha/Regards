@@ -24,9 +24,6 @@
     <ClInclude Include="Gps.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="verifnewversion.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="FileGeolocation.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>

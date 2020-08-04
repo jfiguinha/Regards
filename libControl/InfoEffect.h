@@ -1,5 +1,5 @@
 #pragma once
-#include <TreeWindow.h>
+#include <TreeControl.h>
 #include "ModificationManager.h"
 using namespace Regards::Window;
 
@@ -7,7 +7,7 @@ namespace Regards
 {
 	namespace Control
 	{
-		class CInfoEffect : public CTreeControl
+		class CInfoEffect : public Regards::Window::CTreeControl
 		{
 		public:
 

@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFolderCatalog.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFolderCatalog::CSqlFolderCatalog()

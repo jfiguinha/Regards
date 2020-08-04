@@ -1,7 +1,10 @@
 #pragma once
 
 #include <theme.h>
-
+#include "WindowMain.h"
+#include "TreeElementSlideInterface.h"
+#include "TreeElementControlInterface.h"
+/*
 #include "PositionElement.h"
 #include "TreeElement.h"
 #include <TreeData.h>
@@ -14,13 +17,14 @@
 #include "TreeElementSlideInterface.h"
 #include "TreeElementControlInterface.h"
 #include "WindowMain.h"
-
+*/
 
 namespace Regards
 {
 	namespace Window
 	{
 		class CScrollInterface;
+		class CTreeControl;
 
 		class CTreeWindow : public CWindowMain, public CTreeElementSlideInterface, public CTreeElementControlInterface
 		{

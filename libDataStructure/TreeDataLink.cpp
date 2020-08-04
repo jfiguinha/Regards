@@ -1,5 +1,6 @@
 #include <header.h>
 #include "TreeDataLink.h"
+using namespace Regards::Window;
 
 CTreeDataLink::CTreeDataLink(void)
 {

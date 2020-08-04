@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindYear.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindYear::CSqlFindYear()

@@ -4,6 +4,7 @@
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarVerticalWnd.h"
 #include <wx/dcbuffer.h>
+#include "TreeControl.h"
 using namespace Regards::Window;
 
 

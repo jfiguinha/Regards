@@ -1,5 +1,7 @@
 #include <header.h>
+#include "SqlResult.h"
 #include "SqlFaceDescriptor.h"
+#include <FaceDescriptor.h>
 using namespace Regards::Sqlite;
 
 

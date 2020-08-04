@@ -6,12 +6,13 @@
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 
 namespace Regards
 {
     namespace Sqlite
     {
+		class CSqlResult;
+
         class CSqlVersion : public CSqlExecuteRequest
         {
         public:

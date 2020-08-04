@@ -1,5 +1,6 @@
 #include <header.h>
 #include "TreeData.h"
+using namespace Regards::Window;
 
 CTreeData::CTreeData(void)
 {

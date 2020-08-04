@@ -1,6 +1,5 @@
 #pragma once
 #include <SqlExecuteRequest.h>
-#include "SqlResult.h"
 
 class CRegardsBitmap;
 
@@ -27,6 +26,8 @@ namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+
 		class CSqlOpenCLKernel : public CSqlExecuteRequest
 		{
 		public:

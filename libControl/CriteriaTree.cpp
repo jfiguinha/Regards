@@ -12,6 +12,8 @@
 #include <SqlFindFacePhoto.h>
 #include <LibResource.h>
 #include <SqlPhotoCategorieUsenet.h>
+#include <SqlPhotoCategorie.h>
+#include <TreeDataLink.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

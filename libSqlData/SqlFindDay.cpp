@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindDay.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindDay::CSqlFindDay()

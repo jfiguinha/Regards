@@ -1,6 +1,6 @@
 #include <header.h>
 #include "InfosFileWnd.h"
-
+#include <TreeWindow.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

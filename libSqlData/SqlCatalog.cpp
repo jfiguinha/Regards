@@ -1,4 +1,5 @@
 #include <header.h>
+#include "SqlResult.h"
 #include "SqlCatalog.h"
 using namespace Regards::Sqlite;
 

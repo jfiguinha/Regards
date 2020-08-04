@@ -9,8 +9,16 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include "BitmapWndViewer.h"
+#include <TreeElementTexte.h>
+#include <TreeElementSlide.h>
+#include <TreeElementTriangle.h>
+#include <TreeElementCheckbox.h>
+#include <TreeElementListbox.h>
+#include <PositionElement.h>
+#include <TreeElementControlInterface.h>
 #define TAILLEMAX 1024
 using namespace Regards::Control;
+using namespace Regards::Window;
 CFiltreEffect::CFiltreEffect(IFiltreUpdate * bitmapViewer, CTreeElementControlInterface * interfaceControl, bool isVideo, int bitmapWindowId)
 {
 	this->bitmapWindowId = bitmapWindowId;

@@ -6,6 +6,8 @@ namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+
 		class CSqlPhotoCriteria : public CSqlExecuteRequest
 		{
 		public:

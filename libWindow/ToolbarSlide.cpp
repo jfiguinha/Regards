@@ -6,6 +6,7 @@
 #include "WindowMain.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
+#include "SliderInterface.h"
 using namespace Regards::Window;
 
 CToolbarSlide::CToolbarSlide(const CThemeSlider & themeSlider, CSliderInterface * eventInterface)

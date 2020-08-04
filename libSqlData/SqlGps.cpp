@@ -8,6 +8,7 @@
 //
 
 #include "SqlGps.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlGps::CSqlGps(CSqlLib * _sqlLibTransaction, const bool &useTransaction)

@@ -1,5 +1,7 @@
 #include <header.h>
 #include "TreeDataEffect.h"
+#include "TreeElementValue.h"
+using namespace Regards::Window;
 
 CTreeDataEffect::CTreeDataEffect(void)
 {

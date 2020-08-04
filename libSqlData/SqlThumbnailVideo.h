@@ -1,6 +1,5 @@
 #pragma once
 #include <SqlExecuteRequest.h>
-#include "SqlResult.h"
 
 class CImageVideoThumbnail;
 
@@ -8,6 +7,8 @@ namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+
 		class CSqlThumbnailVideo : public CSqlExecuteRequest
 		{
 		public:

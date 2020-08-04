@@ -12,11 +12,11 @@
 #include <Regards.h>
 #include <wx/filename.h>
 #include <DeepLearning.h>
+#include <tbb/task_scheduler_init.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
-
-
+using namespace tbb;
 using namespace Regards::DeepLearning;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
@@ -179,6 +179,9 @@ bool MyApp::OnInit()
 #ifndef NDEBUG
     ::wxMessageBox("toto");
 #endif
+
+	//task_scheduler_init init;
+	//int n = tbb::task_scheduler_init::default_num_threads();
 
 	//Chargement des paramËtres de l'application
 	regardsParam = new CRegardsConfigParam();

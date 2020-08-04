@@ -1,12 +1,14 @@
 #pragma once
 #include <theme.h>
 #include "ToolbarElement.h"
-#include "SliderInterface.h"
+//#include "SliderInterface.h"
 
 namespace Regards
 {
 	namespace Window
 	{
+		class CSliderInterface;
+
 		class CToolbarSlide : public CToolbarElement
 		{
 		public:

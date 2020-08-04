@@ -1,10 +1,11 @@
 #pragma once
 #include <Criteria.h>
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 
 namespace Regards
 {
+	class CSqlResult;
+
 	namespace Sqlite
 	{
 		class CSqlFindCriteria : public CSqlExecuteRequest

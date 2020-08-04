@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlPhotoGPS.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlPhotoGPS::CSqlPhotoGPS(CSqlLib * _sqlLibTransaction, const bool &useTransaction)

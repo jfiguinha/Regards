@@ -1,14 +1,15 @@
 #pragma once
 #include <SqlExecuteRequest.h>
-#include "SqlResult.h"
-#include <PictureData.h>
 
 class CRegardsBitmap;
+class CPictureData;
 
 namespace Regards
 {
 	namespace Sqlite
 	{
+		class CSqlResult;
+		
 		class CSqlThumbnail : public CSqlExecuteRequest
 		{
 		public:

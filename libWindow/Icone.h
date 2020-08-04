@@ -1,15 +1,10 @@
 #pragma once
-#include <RegardsBitmap.h>
-#include <RGBAQuad.h>
 #include <theme.h>
-#include <ConfigParam.h>
-#include <RegardsConfigParam.h>
 #include <OpenCLEngine.h>
-#include <ThumbnailData.h>
-#include <tbb/concurrent_vector.h>
 using namespace Regards::OpenCL;
 
-
+class CThumbnailData;
+class CRegardsConfigParam;
 
 namespace Regards
 {

@@ -65,6 +65,7 @@ wxString CFileUtility::GetFolder(const wxString &szFilePath)
 
 wxString CFileUtility::GetResourcesFolderPath()
 {
+
 #if defined(__APPLE__) && not defined(__LLVM__)
 
      printf("toto 1 GetResourcesFolderPath \n");

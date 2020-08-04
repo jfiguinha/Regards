@@ -14,6 +14,8 @@
 #include <SqlFaceLabel.h>
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
+#include <PictureData.h>
+#include <RegardsConfigParam.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;

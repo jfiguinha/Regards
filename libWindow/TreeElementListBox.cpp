@@ -4,7 +4,7 @@
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <LibResource.h>
-
+using namespace Regards::Window;
 
 CTreeElementListBox::CTreeElementListBox(CTreeElementSlideInterface * eventInterface)
 {

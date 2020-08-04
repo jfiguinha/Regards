@@ -1,11 +1,13 @@
 #pragma once
 #include "WindowMain.h"
-#include "SliderInterface.h"
+//#include "SliderInterface.h"
 
 namespace Regards
 {
 	namespace Window
 	{
+		class CSliderInterface;
+
 		class CSlider : public CWindowMain
 		{
 		public:

@@ -1,13 +1,22 @@
 #pragma once
 #include <theme.h>
-#include <TreeWindow.h>
-#include <TreeElementControlInterface.h>
-#include <PositionElement.h>
-class CTreeElementTriangle;
-class CTreeElementTexte;
+#include <TreeControl.h>
+//#include <TreeElementControlInterface.h>
+//#include <PositionElement.h>
+
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CTreeElementTriangle;
+		class CTreeElementTexte;
+		class CPositionElement;
+		class CTreeElementControlInterface;
+	}
+
+	using namespace Regards::Window;
+
 	namespace Control
 	{
 		class CInfosFile : public Regards::Window::CTreeControl

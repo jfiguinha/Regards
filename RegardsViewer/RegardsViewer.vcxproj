@@ -218,6 +218,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  
       <FloatingPointExpressionEvaluation>Double</FloatingPointExpressionEvaluation>
       <DisableFunctionSplitting>false</DisableFunctionSplitting>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/p:XPDeprecationWarning=false %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

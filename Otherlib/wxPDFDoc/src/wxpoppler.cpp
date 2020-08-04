@@ -115,7 +115,7 @@ bool wxPoppler::RenderPage()
     
     poppler::page_renderer popplerRenderer;
 
-    double dblWidth, dblHeight;
+    //double dblWidth, dblHeight;
     double dblDpiBy72= (double)m_nDpi / 72.0;
 
     popplerRenderer.set_render_hint(poppler::page_renderer::text_antialiasing);

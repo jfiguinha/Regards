@@ -3,7 +3,8 @@
 #include "TreeElementTexte.h"
 #include "TreeElementTexteClick.h"
 #include "TreeDataLink.h"
-
+#include <TreeElementControlInterface.h>
+#include <TreeElementTriangle.h>
 using namespace Regards::Introduction;
 
 CInfoAbout::CInfoAbout(const CThemeTree & theme)

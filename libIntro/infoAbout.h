@@ -1,6 +1,6 @@
 #pragma once
 #include <theme.h>
-#include <TreeWindow.h>
+#include <TreeControl.h>
 using namespace Regards::Window;
 
 namespace Regards

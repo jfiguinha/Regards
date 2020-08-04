@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindCatalog.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindCatalog::CSqlFindCatalog()

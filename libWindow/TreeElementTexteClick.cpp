@@ -1,6 +1,7 @@
 #include "header.h"
 #include "TreeElementTexteClick.h"
 #include <FileUtility.h>
+using namespace Regards::Window;
 
 CTreeElementTexteClick::CTreeElementTexteClick()
 {

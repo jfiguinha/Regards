@@ -1,17 +1,20 @@
 #pragma once
 #include "WindowMain.h"
-#include <FileGeolocation.h>
-using namespace Regards::Internet;
+//#include <FileGeolocation.h>
+//using namespace Regards::Internet;
 namespace Regards
 {
+	namespace Internet
+	{
+		class CFileGeolocation;
+	}
+	
 	namespace Window
 	{
-
-        
 		class CBitmapInfos : public CWindowMain
 		{
 		public:
-			CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme, CFileGeolocation * fileGeolocalisation);
+			CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme, Regards::Internet::CFileGeolocation * fileGeolocalisation);
 			~CBitmapInfos();
             void UpdateData();
 			void SetFilename(const wxString &filename);
@@ -31,7 +34,7 @@ namespace Regards
 			wxString dateInfos;
 			bool gpsInfosUpdate;
 			CThemeBitmapInfos bitmapInfosTheme;
-			CFileGeolocation * fileGeolocalisation;
+			Regards::Internet::CFileGeolocation * fileGeolocalisation;
 			mutex mufileGeoloc;
             wxString urlServer = L"";
 		};

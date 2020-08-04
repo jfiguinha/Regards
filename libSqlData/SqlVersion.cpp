@@ -8,6 +8,7 @@
 //
 
 #include "SqlVersion.h"
+#include "SqlResult.h"
 #include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 

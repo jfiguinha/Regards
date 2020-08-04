@@ -1,7 +1,10 @@
 #include "header.h"
 #include "TreeElementTexte.h"
+using namespace Regards::Window;
 
 mutex CTreeElementTexte::muTexteSize;
+
+
 
 CTreeElementTexte::CTreeElementTexte()
 {

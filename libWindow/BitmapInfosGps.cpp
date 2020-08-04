@@ -10,7 +10,7 @@
 #include <LoadingResource.h>
 #include <wxSVG/SVGDocument.h>
 using namespace Regards::Window;
-using namespace Regards::Internet;
+//using namespace Regards::Internet;
 
 CBitmapInfosGps::CBitmapInfosGps(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme)
 	: CWindowMain("CBitmapInfosGps",parent, id)

@@ -8,6 +8,7 @@
 #include "LoadingResource.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
+#include "SliderInterface.h"
 using namespace Regards::Window;
 
 

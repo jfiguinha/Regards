@@ -16,6 +16,8 @@
 #ifdef WIN32
 #include <FiltreEffetCPU.h>
 #endif
+#include <RegardsBitmap.h>
+#include <RegardsConfigParam.h>
 
 using namespace Regards::Window;
 

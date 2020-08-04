@@ -8,13 +8,14 @@
 
 #pragma once
 #include "SqlExecuteRequest.h"
-#include "SqlResult.h"
 #include <PhotoGps.h>
 
 namespace Regards
 {
     namespace Sqlite
     {
+		class CSqlResult;
+
         class CSqlGps : public CSqlExecuteRequest
         {
         public:

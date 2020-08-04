@@ -1,6 +1,14 @@
 #include "header.h"
 #include "TreeControl.h"
 #include <wx/dcbuffer.h>
+#include "TreeElementTriangle.h"
+#include "TreeElementSlide.h"
+#include "TreeElementDelete.h"
+#include "TreeElementTexte.h"
+#include "TreeElementTexteClick.h"
+#include "TreeElementCheckBox.h"
+#include "TreeElementListBox.h"
+#include <TreeData.h>
 using namespace Regards::Window;
 
 

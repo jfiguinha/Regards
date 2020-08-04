@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFindCriteria.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFindCriteria::CSqlFindCriteria()

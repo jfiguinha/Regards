@@ -4,11 +4,7 @@ namespace Regards
 {
 	namespace Window
 	{
-
-		
-
-
-        class CIconeList
+	    class CIconeList
         {
         public:
             CIconeList(){};

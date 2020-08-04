@@ -1,6 +1,6 @@
 #include <header.h>
 #include "SqlFindPhotos.h"
-//#include <ctime>
+#include "SqlResult.h"
 #include <LibResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>

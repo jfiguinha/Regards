@@ -1,6 +1,6 @@
 #include "header.h"
 #include "TreeElement.h"
-
+using namespace Regards::Window;
 
 CTreeElement::CTreeElement()
 {

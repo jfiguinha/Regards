@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlFaceRecognition.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlFaceRecognition::CSqlFaceRecognition()

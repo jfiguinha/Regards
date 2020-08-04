@@ -1,16 +1,18 @@
 #pragma once
 #include <theme.h>
-#include "ToolbarInterface.h"
+//#include "ToolbarInterface.h"
 #include "ToolbarWindow.h"
 using namespace Regards::Window;
 using namespace std;
 
-#define WM_CLICK 86
+//
 
 namespace Regards
 {
 	namespace Window
 	{
+		class CToolbarInterface;
+
 		class CClickToolbar : public CToolbarWindow
 		{
 		public:

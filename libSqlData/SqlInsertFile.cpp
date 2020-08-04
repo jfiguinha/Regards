@@ -3,15 +3,15 @@
 #include <libPicture.h>
 #include <wx/dir.h>
 #include <ConvertUtility.h>
-
+#include "SqlResult.h"
 #include <algorithm>
 using namespace Regards::Sqlite;
 
-/*
-#define USE_TBB
+
+#ifdef USE_TBB
 #include <tbb/parallel_for.h>
 #include <tbb/task_scheduler_init.h>
-*/
+#endif
 
 
 CSqlInsertFile::CSqlInsertFile()
@@ -314,6 +314,8 @@ int CSqlInsertFile::AddFileFromFolder(wxWindow * parent, wxProgressDialog & dial
 #ifndef USE_TBB
 	CLibPicture libPicture;
     BeginTransaction();
+#else
+	CLibPicture libPicture;
 #endif
 	   
 	int i = 0;

@@ -25,8 +25,13 @@
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 #include <SqlFindCatalog.h>
+#include <theme.h>
+#include <Criteria.h>
+#include <TreeWindow.h>
+#include <TreeDataCategory.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
+using namespace Regards::Window;
 
 CCategoryWnd::CCategoryWnd(CWindowMain * windowMain, CThemeTree * theme, CTreeElementControlInterface * interfaceControl)
 {

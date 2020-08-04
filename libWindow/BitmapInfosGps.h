@@ -1,7 +1,7 @@
 #pragma once
 #include "WindowMain.h"
-#include <FileGeolocation.h>
-using namespace Regards::Internet;
+//#include <FileGeolocation.h>
+//using namespace Regards::Internet;
 namespace Regards
 {
 	namespace Window

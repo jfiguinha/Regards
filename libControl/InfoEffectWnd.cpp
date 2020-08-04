@@ -7,7 +7,9 @@
 //
 #include <header.h>
 #include "InfoEffectWnd.h"
+#include <TreeWindow.h>
 using namespace Regards::Control;
+using namespace Regards::Window;
 
 CInfoEffectWnd::CInfoEffectWnd(wxWindow* parent, wxWindowID id, const CThemeScrollBar & themeScroll, const CThemeTree & themeTree, int bitmapWindowId)
 	: CTreeWithScrollbar("CInfoEffectWnd", parent, id, themeScroll, themeTree)
