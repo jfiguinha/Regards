@@ -288,6 +288,7 @@
         <Library Value="IexMath"/>
         <Library Value="Half"/>
         <Library Value="tbb"/>
+        <Library Value="tbbmalloc_proxy"/>
         <Library Value="aom"/>
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
