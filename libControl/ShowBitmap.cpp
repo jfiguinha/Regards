@@ -411,6 +411,7 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 	TRACE();
 	if (bitmapWindow != nullptr)
 	{
+		
 		CMetadataExiv2 metaData(bitmap->GetFilename());
 		//if (configRegards->GetDetectOrientation() && metaData.GetOrientation() == -1)
 		if (configRegards->GetDetectOrientation())

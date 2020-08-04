@@ -1427,13 +1427,16 @@ void CWindowManager::Resize()
 
 #ifdef _DEBUG
 #ifdef WIN32
-					wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
-					OutputDebugString(temp);
+					//wsprintf(temp, L"windowToAdd rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->rect.x, windowToAdd->rect.y, windowToAdd->rect.width, windowToAdd->rect.height);
+					//OutputDebugString(temp);
 #endif
 #endif
 				}
 				else
 					_wnd->SetSize(rc);
+
+				_wnd->Refresh();
+				_wnd->Update();
 
 			}
 
@@ -1454,14 +1457,16 @@ void CWindowManager::Resize()
 							windowToAdd->separationBar->separationBar->SetSize(windowToAdd->separationBar->rect);
 #ifdef _DEBUG
 #ifdef WIN32
-							wsprintf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
-							OutputDebugString(temp);
+							//wsprintf(temp, L"separationBar rect : x : %d, y : %d, width %d, height %d \n", windowToAdd->separationBar->rect.x, windowToAdd->separationBar->rect.y, windowToAdd->separationBar->rect.width, windowToAdd->separationBar->rect.height);
+							//OutputDebugString(temp);
 #endif
 #endif
 						}
 						else
 							windowToAdd->separationBar->separationBar->SetSize(rc);
 
+						windowToAdd->separationBar->separationBar->Refresh();
+						windowToAdd->separationBar->separationBar->Update();
 					}
 				}
 			}

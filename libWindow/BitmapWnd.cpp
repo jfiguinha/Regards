@@ -737,11 +737,21 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 {
     TRACE();
     printf("CBitmapWnd::SetBitmap \n");
+
+
+
     //this->SetFocus();
 	if(bitmapIn != nullptr)
 	{
 		if(bitmapIn->IsOk())
 		{
+#if defined(WIN32) && defined(_DEBUG)
+			OutputDebugString(L"CBitmapWnd::SetBitmap");
+			OutputDebugString(L"\n");
+			OutputDebugString(bitmapIn->GetFilename());
+			OutputDebugString(L"\n");
+#endif
+
 			loadBitmap = true;
 			bitmapLoad = true;
 			filename = bitmapIn->GetFilename();
@@ -772,7 +782,11 @@ void CBitmapWnd::SetBitmap(CImageLoadingFormat * bitmapIn, const bool &copy)
 
 			ShrinkImage(false);
 			AfterSetBitmap();
-            RefreshWindow();
+
+			this->Refresh();
+			this->Update();
+
+            //RefreshWindow();
           
 		}
 	}
@@ -1744,6 +1758,11 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
     TRACE();
+#if defined(WIN32) && defined(_DEBUG)
+	OutputDebugString(L"CBitmapWnd::OnPaint");
+	OutputDebugString(L"\n");
+#endif
+
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);

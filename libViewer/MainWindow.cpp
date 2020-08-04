@@ -1268,6 +1268,12 @@ void CMainWindow::OnFaceInfosStatusBarUpdate(wxCommandEvent& event)
 void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 {
 	TRACE();
+
+#if defined(WIN32) && defined(_DEBUG)
+	OutputDebugString(L"CMainWindow::OnUpdateInfos");
+	OutputDebugString(L"\n");
+#endif
+
 	CPictureInfosMessage * pictureInfos = (CPictureInfosMessage *)event.GetClientData();
 	if (pictureInfos != nullptr)
 	{
@@ -1285,6 +1291,8 @@ void CMainWindow::OnUpdateInfos(wxCommandEvent& event)
 
 		delete pictureInfos;
 	}
+
+
 }
 
 bool CMainWindow::GetProcessEnd()

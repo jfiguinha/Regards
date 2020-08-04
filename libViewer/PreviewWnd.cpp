@@ -473,7 +473,13 @@ void CPreviewWnd::UpdateInfos()
 
 bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation )
 {
-    TRACE();
+#if defined(WIN32) && defined(_DEBUG)
+	OutputDebugString(L"CPreviewWnd::SetBitmap");
+	OutputDebugString(L"\n");
+	OutputDebugString(bitmap->GetFilename());
+	OutputDebugString(L"\n");
+#endif
+
 	if (isThumbnail && isDiaporama)
 	{
 

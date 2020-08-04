@@ -13,7 +13,10 @@
 #define GLUT
 //#define USE_TBB
 //#define WX_PRECOMP
+
+#ifdef USE_TBB
 #include <tbb/tbbmalloc_proxy.h>
+#endif
 #include <tbb/concurrent_vector.h>
 #include <thread>
 #include <mutex>

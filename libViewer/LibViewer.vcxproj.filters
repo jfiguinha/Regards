@@ -126,9 +126,6 @@
     <ClInclude Include="PanelPhotoWnd.h">
       <Filter>Panel\include</Filter>
     </ClInclude>
-    <ClInclude Include="CentralWindow.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ToolbarPhoto.h">
       <Filter>Toolbar\include</Filter>
     </ClInclude>
@@ -142,6 +139,9 @@
       <Filter>CheckVersion</Filter>
     </ClInclude>
     <ClInclude Include="WaitingWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="CentralWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -221,9 +221,6 @@
     <ClCompile Include="ThumbnailViewerPicture.cpp">
       <Filter>Thumbnail\source</Filter>
     </ClCompile>
-    <ClCompile Include="CentralWindow.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="CheckVersion.cpp">
       <Filter>CheckVersion</Filter>
     </ClCompile>
@@ -231,6 +228,9 @@
       <Filter>Toolbar\source</Filter>
     </ClCompile>
     <ClCompile Include="WaitingWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CentralWindow.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

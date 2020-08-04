@@ -292,6 +292,7 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToRegardsBitmap(CxImage * image)
 	}
 
 #if defined(WIN32) && defined(_DEBUG)
+	/*
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
 
@@ -300,6 +301,7 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToRegardsBitmap(CxImage * image)
 	OutputDebugString(L"Render Time : ");
 	OutputDebugString(Temp);
 	OutputDebugString(L"\n");
+	*/
 #endif
 
 
@@ -328,12 +330,13 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToScaleRegardsBitmapCRgbaquad(CxImag
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-
+	/*
 	wchar_t Temp[10];
 	swprintf_s(Temp, L"%d", Result);
 	OutputDebugString(L"Render Time : ");
 	OutputDebugString(Temp);
 	OutputDebugString(L"\n");
+	*/
 #endif
 
 	return bitmapOut;
@@ -361,12 +364,13 @@ CRegardsBitmap * CLibPicture::ConvertCXImageToScaleRegardsBitmapBGR(CxImage * im
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-
+	/*
 	wchar_t Temp[10];
 	swprintf_s(Temp, L"%d", Result);
 	OutputDebugString(L"Render Time : ");
 	OutputDebugString(Temp);
 	OutputDebugString(L"\n");
+	*/
 #endif
 
 	return bitmapOut;
@@ -2744,12 +2748,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-
+	/*
 	wchar_t Temp[10];
 	swprintf_s(Temp, L"%d", Result);
 	OutputDebugString(L"Render Time : ");
 	OutputDebugString(Temp);
 	OutputDebugString(L"\n");
+	*/
 #endif
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -2807,12 +2812,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
 	DWORD Result = LasttickCount - tickCount;
-
+	/*
 	wchar_t Temp[10];
 	swprintf_s(Temp, L"%d", Result);
 	OutputDebugString(L"Render Time : ");
 	OutputDebugString(Temp);
 	OutputDebugString(L"\n");
+	*/
 #endif
 
 	return bitmap;

@@ -54,6 +54,9 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
     threadInfos->threadLoadInfos->join();
     delete threadInfos->threadLoadInfos;
     delete threadInfos;
+
+	//treeWindow->Refresh();
+	//treeWindow->Update();
    
 }
 

@@ -479,6 +479,9 @@ void CPanelInfosWnd::LoadInfo()
 			break;
 		}
 	}
+
+	//this->Refresh();
+	//this->Update();
 }
 
 wxString CPanelInfosWnd::MapsUpdate()
