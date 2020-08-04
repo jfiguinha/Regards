@@ -55,6 +55,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="WaitingWindow.cpp"/>
     <File Name="CentralWindow.cpp"/>
     <File Name="MainWindow.cpp"/>
     <File Name="PreviewToolbar.cpp"/>
@@ -70,6 +71,7 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="WaitingWindow.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="MainWindow.h"/>
     <File Name="PreviewToolbar.h"/>
