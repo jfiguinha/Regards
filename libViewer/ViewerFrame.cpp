@@ -31,6 +31,7 @@
 #include <Association.h>
 #include <OpenCLEngine.h>
 #include "ListFace.h"
+#include "WaitingWindow.h"
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;

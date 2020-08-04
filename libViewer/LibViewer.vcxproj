@@ -230,6 +230,7 @@
     <ClInclude Include="ToolbarInfos.h" />
     <ClInclude Include="ToolbarPhoto.h" />
     <ClInclude Include="ViewerFrame.h" />
+    <ClInclude Include="WaitingWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -264,6 +265,7 @@
     <ClCompile Include="ToolbarInfos.cpp" />
     <ClCompile Include="ToolbarPhoto.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
+    <ClCompile Include="WaitingWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-zoom-in.xpm" />

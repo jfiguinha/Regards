@@ -47,6 +47,7 @@
 #include "CheckVersion.h"
 #include <wx/mimetype.h>
 #include <ShowBitmap.h>
+#include "WaitingWindow.h"
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Control;
@@ -72,6 +73,31 @@ public:
 	wxString filename;
 	std::thread * thread;
 	wxWindow * mainWindow;
+};
+
+class CFolderFiles
+{
+public:
+	vector<wxString> pictureFiles;
+	wxString folderName;
+};
+
+class CThreadVideoData
+{
+public:
+
+	CThreadVideoData()
+	{
+		mainWindow = nullptr;
+	}
+
+	~CThreadVideoData()
+	{
+	}
+
+	CMainWindow * mainWindow;
+	wxString video;
+
 };
 
 

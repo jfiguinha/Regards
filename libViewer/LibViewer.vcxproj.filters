@@ -141,6 +141,9 @@
     <ClInclude Include="CheckVersion.h">
       <Filter>CheckVersion</Filter>
     </ClInclude>
+    <ClInclude Include="WaitingWindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -226,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="ToolbarPhoto.cpp">
       <Filter>Toolbar\source</Filter>
+    </ClCompile>
+    <ClCompile Include="WaitingWindow.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
