@@ -5,6 +5,7 @@
 #include <ListCriteriaPhoto.h>
 #include <window_id.h>
 #include <SqlInsertFile.h>
+#include "ViewerParam.h"
 #include <SqlCriteria.h>
 #include <SqlFindFolderCatalog.h>
 #include <SqlPhotoCriteria.h>
@@ -15,6 +16,7 @@
 #include <SQLRemoveData.h>
 #include <SqlPhotos.h>
 #include <FolderCatalog.h>
+#include "CategoryWnd.h"
 //#include <PictureRecognition.h>
 #include <libPicture.h>
 #include <FileUtility.h>
@@ -23,7 +25,9 @@
 #include <SqlPhotoGPS.h>
 #include <ConvertUtility.h>
 #include <ThumbnailMessage.h>
+#include <TreeWindow.h>
 using namespace std;
+using namespace Regards::Window;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;

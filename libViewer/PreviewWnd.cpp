@@ -10,7 +10,19 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
+#include "FiltreToolbar.h"
+#include "PreviewToolbar.h"
+#include "AnimationToolbar.h"
+#include <ShowBitmap.h>
+#include <EffectVideoParameter.h>
+#include <BitmapInterface.h>
+#include <ToolbarInterface.h>
+#include <BitmapInfos.h>
+#include <wx/animate.h>
+#include <FileGeolocation.h>
+#include "PanelInfosWnd.h"
 using namespace Regards::Control;
+using namespace Regards::Internet;
 using namespace Regards::Viewer;
 
 #define PANE_INFOS 2

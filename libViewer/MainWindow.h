@@ -1,16 +1,14 @@
 #pragma once
-#include "Toolbar.h"
-#include <StatusBarInterface.h>
-#include "CentralWindow.h"
 #include "FileUtility.h"
-#include <EffectVideoParameter.h>
 #include <WindowMain.h>
+#include <wx/animate.h>
 using namespace Regards::Window;
 
 class CRegardsBitmap;
 class CImageLoadingFormat;
 class CPictureCategorieLoadData;
 class CPictureCategorie;
+class IStatusBarInterface;
 
 namespace Regards
 {
@@ -19,6 +17,10 @@ namespace Regards
 
 		class CMainWindow;
         class CImageList;
+		
+		class CToolbar;
+		class CMainParam;
+		class CCentralWindow;
 
 		class CFolderFiles
 		{

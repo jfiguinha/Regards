@@ -10,9 +10,18 @@
 #include "ThemeParam.h"
 #include "MainThemeInit.h"
 #include "MainTheme.h"
+#include "PanelInfosWnd.h"
 #include "SqlFindPhotos.h"
 #include <SqlPhotos.h>
 #include <wx/progdlg.h>
+#include <SqlThumbnail.h>
+#include "PreviewWnd.h"
+#include "Toolbar.h"
+#include <StatusBarInterface.h>
+#include "CentralWindow.h"
+#include "FileUtility.h"
+#include <EffectVideoParameter.h>
+#include "CategoryFolderWindow.h"
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
@@ -37,9 +46,10 @@
 #include "FaceInfosUpdate.h"
 #include "CheckVersion.h"
 #include <wx/mimetype.h>
-
+#include <ShowBitmap.h>
 //#include <jpge.h>
 //using namespace jpge;
+using namespace Regards::Control;
 using namespace Regards::Viewer;
 //const long ONE_MSEC = 1000;
 using namespace std;
@@ -78,7 +88,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface * 
 	showToolbar = true;
     multithread = true;
     needToReload = false;
-	typeAffichage = SHOW_ALL;
+	typeAffichage = THUMB_SHOW_ALL;
 	updateCriteria = true;
 	updateFolder = true;
 	//updatePicture = false;

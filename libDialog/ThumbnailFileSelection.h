@@ -3,8 +3,6 @@
 #include "InfosSeparationBarExplorer.h"
 using namespace Regards::Control;
 
-#define SHOW_ALL 0
-
 class CImageVideoThumbnail;
 
 namespace Regards
@@ -16,7 +14,7 @@ namespace Regards
 		public:
 			CThumbnailFileSelection(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, const CThemeThumbnail & themeThumbnail, const bool &testValidity);
 			virtual ~CThumbnailFileSelection(void);
-			void Init(const wxString &filename, const int &typeAffichage = SHOW_ALL);
+			void Init(const wxString &filename, const int &typeAffichage = THUMB_SHOW_ALL);
 
 			vector<int> GetSelectItem();
 

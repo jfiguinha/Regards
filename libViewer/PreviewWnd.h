@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 #include "FiltreToolbar.h"
 #include "PreviewToolbar.h"
 #include "AnimationToolbar.h"
@@ -12,6 +13,10 @@
 using namespace std;
 using namespace Regards::Window;
 using namespace Regards::Control;
+*/
+#include <WindowMain.h>
+#include <BitmapInterface.h>
+#include <ToolbarInterface.h>
 #ifndef FFMPEG
 #include <ShowVideo.h>
 using namespace Regards::Video;
@@ -20,16 +25,33 @@ class CShowVideo;
 #endif
 
 class CRegardsBitmap;
+class CImageLoadingFormat;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CBitmapInfos;
+	}
+	using namespace Regards::Window;
+
+	namespace Control
+	{
+		class CShowBitmap;
+		class CFiltreToolbar;
+	}
+	using namespace Regards::Control;
+
 	namespace Internet
 	{
 		class CFileGeolocation;
 	}
 	namespace Viewer
 	{
-		class CPreviewWnd : public CWindowMain, public CBitmapInterface, public CToolbarInterface
+		class CPreviewToolbar;
+		class CAnimationToolbar;
+
+		class CPreviewWnd : public CWindowMain, public CBitmapInterface, public Regards::Window::CToolbarInterface
 		{
 		public:
 			CPreviewWnd(wxWindow* parent, wxWindowID id, Regards::Internet::CFileGeolocation * fileGeolocalisation, const bool &horizontal = true);

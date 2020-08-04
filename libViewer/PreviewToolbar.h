@@ -1,11 +1,17 @@
 #pragma once
+#include <theme.h>
 #include "ToolbarWindow.h"
-#include "SliderInterface.h"
-#include <ToolbarInterface.h>
+//#include "SliderInterface.h"
+//#include <ToolbarInterface.h>
 using namespace Regards::Window;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CToolbarInterface;
+	}
+
 	namespace Viewer
 	{
 		class CPreviewToolbar : public CToolbarWindow

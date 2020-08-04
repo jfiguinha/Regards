@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include <PaneInterface.h>
 #include <ScrollbarWnd.h>
 #include <Pane.h>
@@ -8,8 +9,12 @@
 #include "ViewerParam.h"
 #include <TreeWithScrollbar.h>
 #include <Photos.h>
+*/
+
+#include <theme.h>
+#include <TreeWithScrollbar.h>
 using namespace Regards::Window;
-using namespace Regards::Viewer;
+//using namespace Regards::Viewer;
 //using namespace Regards::Control;
 
 class CFindPhotoCriteria;
@@ -19,6 +24,9 @@ namespace Regards
 {
 	namespace Viewer
 	{
+		class CCategoryWnd;
+		class CMainParam;
+
 		class CCategoryFolderWindow : public CTreeWithScrollbar
 		{
 		public:

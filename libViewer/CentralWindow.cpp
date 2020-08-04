@@ -14,6 +14,20 @@
 #include "PictureElement.h"
 #include <ShowVideo.h>
 #include <wx/display.h>
+#include "AnimationToolbar.h"
+#include <Splitter.h>
+#include "PanelPhotoWnd.h"
+#include "ListPicture.h"
+#include "WindowManager.h"
+#include "ThumbnailViewerVideo.h"
+#include "ThumbnailViewerPicture.h"
+#ifndef __NOFACE_DETECTION__
+#include "ListFace.h"
+#endif
+#include "ViewerParam.h"
+#include "PanelInfosWnd.h"
+#include <PanelWithClickToolbar.h>
+#include "PreviewWnd.h"
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 

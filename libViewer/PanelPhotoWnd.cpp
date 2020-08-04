@@ -12,7 +12,7 @@
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-using namespace Regards::Control;
+//using namespace Regards::Control;
 
 CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelPhotoWnd",parent, id)

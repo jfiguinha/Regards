@@ -1,4 +1,5 @@
 #pragma once
+/*
 #include <Splitter.h>
 #include "PanelPhotoWnd.h"
 #include "ListPicture.h"
@@ -12,22 +13,36 @@
 #include "PanelInfosWnd.h"
 #include <PanelWithClickToolbar.h>
 #include "PreviewWnd.h"
+*/
+
+#include <Photos.h>
+#include <WindowMain.h>
 using namespace std;
 using namespace Regards::Window;
-using namespace Regards::Control;
+//using namespace Regards::Control;
 class CImageLoadingFormat;
 class CPictureElement;
+class CImageVideoThumbnail;
 
 #define CATALOG_FILTER 2
 
-
-
 namespace Regards
 {
+	namespace Window
+	{
+		class CPanelWithClickToolbar;
+		class CScrollbarWnd;
+		class CWindowManager;
+	}
+
+	namespace Internet
+	{
+		class CFileGeolocation;
+	}
+	using namespace Regards::Internet;
+	
 	namespace Viewer
 	{
-
-        
 		class CThreadPictureData
 		{
 		public:
@@ -66,6 +81,16 @@ namespace Regards
 			thread * myThread;
 		};
 
+		class CPanelPhotoWnd;
+		class CListFace;
+		class CListPicture;
+		class CThumbnailViewerVideo;
+		class CPanelInfosWnd;
+		class CPreviewWnd;
+		class CThumbnailViewerPicture;
+		class CImageList;
+		class CMainParam;
+
 		class CCentralWindow : public CWindowMain
 		{
 		public:
@@ -88,7 +113,7 @@ namespace Regards
             bool IsVideo();
 
 		private:
-			CPanelWithClickToolbar * CreatePanel(wxWindow * parent, const Pos &pos, bool fixe, int size, wxRect rect, const wxString &panelLabel, const wxString &windowName, const bool &isVisible, const int &idPanel, const bool &refreshButton);
+
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
             //void OnShowWindow(wxShowEvent& event);

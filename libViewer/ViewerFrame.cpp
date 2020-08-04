@@ -29,12 +29,14 @@
 #include <SavePicture.h>
 #include <ScannerFrame.h>
 #include <Association.h>
+#include <OpenCLEngine.h>
+#include "ListFace.h"
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
-
+using namespace Regards::OpenCL;
 #define TIMER_LOADPICTURE 2
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."

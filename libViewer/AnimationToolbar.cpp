@@ -5,12 +5,14 @@
 #include "ViewerParamInit.h"
 #include <ConfigParam.h>
 #include <LibResource.h>
+#include <ToolbarButton.h>
 #include "ViewerParam.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
 #include <window_id.h>
 #endif
+#include <ToolbarInterface.h>
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 

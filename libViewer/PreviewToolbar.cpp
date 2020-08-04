@@ -4,6 +4,7 @@
 #include "ViewerParamInit.h"
 #include <ConfigParam.h>
 #include <LibResource.h>
+#include <ToolbarInterface.h>
 #include "ViewerParam.h"
 #include "MainWindow.h"
 #include <window_id.h>

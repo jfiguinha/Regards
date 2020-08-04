@@ -5,52 +5,58 @@ using namespace Regards::Window;
 
 class CRegardsBitmap;
 
-class CToolbarButton : public CToolbarElement
+namespace Regards
 {
-public:
-	CToolbarButton(const CThemeToolbarButton & theme);
-	virtual ~CToolbarButton();
+	namespace Window
+	{
+		class CToolbarButton : public CToolbarElement
+		{
+		public:
+			CToolbarButton(const CThemeToolbarButton & theme);
+			virtual ~CToolbarButton();
 
-	void SetLibelle(const wxString &libelle);
-	void SetButtonResourceId(const wxString &resourceId);
-	void DrawButton(wxDC * dc, const int &x, const int &y);
-	void Resize(const int &tailleX, const int &tailleY);
-    void ReplaceColor(const wxColor & colorToReplace, const wxColor & colorActifReplacement, const wxColor & colorInactifReplacement);
-	int GetWidth();
-	int GetHeight();
-    void SetBorder(const int &size);
-	int GetBitmapWidth();
-	int GetBitmapHeight();
+			void SetLibelle(const wxString &libelle);
+			void SetButtonResourceId(const wxString &resourceId);
+			void DrawButton(wxDC * dc, const int &x, const int &y);
+			void Resize(const int &tailleX, const int &tailleY);
+			void ReplaceColor(const wxColor & colorToReplace, const wxColor & colorActifReplacement, const wxColor & colorInactifReplacement);
+			int GetWidth();
+			int GetHeight();
+			void SetBorder(const int &size);
+			int GetBitmapWidth();
+			int GetBitmapHeight();
 
-protected:
+		protected:
 
-	virtual void DrawElement(wxDC * dc, const int &x, const int &y, const bool &inactif = false);
+			virtual void DrawElement(wxDC * dc, const int &x, const int &y, const bool &inactif = false);
 
-private:
+		private:
 
-	void CreateInactifButton(wxDC * dc, const int &x, const int &y);
-	void CreateActifButton(wxDC * dc, const int &x, const int &y);
-	void CreatePushButton(wxDC * dc, const int &x, const int &y);
-	void DrawShapeElement(wxDC * dc, const wxRect &rc);
-		
-    
-	int width;
-	int height;
-	wxString resourceId;
-			
-	wxString resourceFolder;
-	string resourceExtension;
+			void CreateInactifButton(wxDC * dc, const int &x, const int &y);
+			void CreateActifButton(wxDC * dc, const int &x, const int &y);
+			void CreatePushButton(wxDC * dc, const int &x, const int &y);
+			void DrawShapeElement(wxDC * dc, const wxRect &rc);
 
-	wxString libelle;
-	int buttonWidth;
-	int buttonHeight;
 
-    wxString vector;
-    wxImage button;
-	CThemeToolbarButton themeButton;
-    wxImage wxBackground;
-    
-    wxColor colorToReplace;
-    wxColor colorActifReplacement;
-    wxColor colorInactifReplacement;
-};
+			int width;
+			int height;
+			wxString resourceId;
+
+			wxString resourceFolder;
+			string resourceExtension;
+
+			wxString libelle;
+			int buttonWidth;
+			int buttonHeight;
+
+			wxString vector;
+			wxImage button;
+			CThemeToolbarButton themeButton;
+			wxImage wxBackground;
+
+			wxColor colorToReplace;
+			wxColor colorActifReplacement;
+			wxColor colorInactifReplacement;
+		};
+	}
+}

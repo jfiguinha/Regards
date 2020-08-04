@@ -20,6 +20,8 @@
 #include <ImageLoadingFormat.h>
 #include <FilterData.h>
 #include "ViewerParamInit.h"
+#include <ShowBitmap.h>
+#include <MainParamInit.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
