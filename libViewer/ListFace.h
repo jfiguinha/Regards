@@ -1,10 +1,11 @@
 #pragma once
 #ifndef __NOFACE_DETECTION__
-
+/*
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
+*/
 #include <WindowMain.h>
 using namespace Regards::Window;
 using namespace std;
@@ -13,9 +14,17 @@ class CFaceLoadData;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CWindowManager;
+		class CScrollbarWnd;
+	}
+
 	namespace Viewer
 	{
-		
+		class CThumbnailFacePertinenceToolBar;
+		class CThumbnailFace;
+		class CThumbnailFaceToolBar;
 
 		class CListFace : public CWindowMain
 		{

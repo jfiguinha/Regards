@@ -24,6 +24,7 @@
 #ifndef __NOFACE_DETECTION__
 #include "ListFace.h"
 #endif
+#include "ImageList.h"
 #include "ViewerParam.h"
 #include "PanelInfosWnd.h"
 #include <PanelWithClickToolbar.h>

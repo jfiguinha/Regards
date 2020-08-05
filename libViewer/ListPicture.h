@@ -1,17 +1,33 @@
 #pragma once
+/*
 #include <ScrollbarWnd.h>
 #include "ThumbnailFolder.h"
 #include "ThumbnailToolBar.h"
 #include "ThumbnailToolBarZoom.h"
 #include <WindowMain.h>
 #include "ImageList.h"
+*/
+#include <Photos.h>
 #include <ExportFile.h>
+#include <WindowMain.h>
 using namespace Regards::Window;
+
+class CThumbnailData;
 
 namespace Regards
 {
+	namespace Window
+	{
+		class CWindowManager;
+		class CScrollbarWnd;
+	}
+
 	namespace Viewer
 	{
+		class CThumbnailToolBar;
+		class CThumbnailToolBarZoom;
+		class CThumbnailFolder;
+
 		class CListPicture : public CWindowMain
 		{
 		public:

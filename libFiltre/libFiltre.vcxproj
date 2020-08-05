@@ -222,6 +222,7 @@
     <ClInclude Include="FilterData.h" />
     <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="Filtre.h" />
+    <ClInclude Include="FiltreEffectInterface.h" />
     <ClInclude Include="FiltreEffet.h" />
     <ClInclude Include="FiltreEffetCPU.h" />
     <ClInclude Include="FiltreUpdate.h" />

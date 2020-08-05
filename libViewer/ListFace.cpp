@@ -15,6 +15,10 @@
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
 #include <PictureData.h>
+#include <ScrollbarWnd.h>
+#include "ThumbnailFace.h"
+#include "ThumbnailFaceToolBar.h"
+#include "ThumbnailFacePertinenceToolBar.h"
 #include <RegardsConfigParam.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;

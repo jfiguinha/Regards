@@ -29,7 +29,12 @@
 #include <SqlGps.h>
 #include <SqlPhotoCriteria.h>
 #include <SqlPhotos.h>
-
+#include <ScrollbarWnd.h>
+#include "ThumbnailFolder.h"
+#include "ThumbnailToolBar.h"
+#include "ThumbnailToolBarZoom.h"
+#include <WindowMain.h>
+#include "ImageList.h"
 #ifdef EXIV2
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;
