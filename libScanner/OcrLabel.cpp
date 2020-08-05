@@ -5,7 +5,7 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <TreeData.h>
-#include "TreeElementCheckbox.h"
+#include "TreeElementCheckBox.h"
 #include "TreeElementControlInterface.h"
 #include <window_id.h>
 using namespace Regards::Window;
