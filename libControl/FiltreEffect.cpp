@@ -12,8 +12,8 @@
 #include <TreeElementTexte.h>
 #include <TreeElementSlide.h>
 #include <TreeElementTriangle.h>
-#include <TreeElementCheckbox.h>
-#include <TreeElementListbox.h>
+#include <TreeElementCheckBox.h>
+#include <TreeElementListBox.h>
 #include <PositionElement.h>
 #include <TreeElementControlInterface.h>
 #define TAILLEMAX 1024
