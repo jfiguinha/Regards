@@ -7,6 +7,7 @@ using namespace Regards::Sqlite;
 
 CSqlLib::CSqlLib()
 {
+	load_inmemory = false;
 	pCon = nullptr;
 	m_bConnected = false;
 	readonly = false;

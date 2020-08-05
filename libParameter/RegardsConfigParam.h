@@ -87,8 +87,8 @@ public:
 
 protected:
 
-	void LoadParameter();
-	void SaveParameter();
+	virtual void LoadParameter() override;
+	virtual void SaveParameter() override;
     
     void SetIconParameter(xml_node<>* sectionPosition);
     void GetIconParameter(xml_node<>* position_node);

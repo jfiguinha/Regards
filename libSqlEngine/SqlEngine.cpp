@@ -40,7 +40,7 @@ void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName,
 	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
 		_listOfBase.end(),
 		[&](const auto& val) { return val.baseName == baseName; });
-	if (i == _listOfBase.end())
+	if (i != _listOfBase.end())
 		return;
 
 	//for (DataBase db : _listOfBase)

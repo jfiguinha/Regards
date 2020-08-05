@@ -5,6 +5,7 @@
 
 CRegistryAccess::CRegistryAccess(void)
 {
+	dwDisposition = 0;
 	hKey = NULL;
 }
 

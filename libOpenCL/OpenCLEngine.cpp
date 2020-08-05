@@ -227,7 +227,6 @@ cl_device_type COpenCLDeviceList::ParseDeviceType(const wxString& device_type_na
 			)
 		{
 			return CL_DEVICE_TYPE_CPU;
-			continue;
 		}
 
 		if (
@@ -237,7 +236,6 @@ cl_device_type COpenCLDeviceList::ParseDeviceType(const wxString& device_type_na
 			)
 		{
 			return CL_DEVICE_TYPE_GPU;
-			continue;
 		}
 
 		if (
@@ -249,7 +247,6 @@ cl_device_type COpenCLDeviceList::ParseDeviceType(const wxString& device_type_na
 			)
 		{
 			return CL_DEVICE_TYPE_ACCELERATOR;
-			continue;
 		}
 
 		throw Error(
@@ -550,11 +547,20 @@ void COpenCLDeviceList::GetAllDevice()
 
 OpenCLDevice * COpenCLDeviceList::SelectDevice(OpenCLPlatform * platform, const int &index)
 {       
-    OpenCLDevice * deviceSelected = nullptr;
+    //OpenCLDevice * deviceSelected = nullptr;
 
     if (listOfDevice.size() == 0)
         GetAllDevice();
-        
+	
+	vector<OpenCLDevice *>::iterator i = std::find_if(listOfDevice.begin(),
+		listOfDevice.end(),
+		[&](const auto& openCL) { return openCL->deviceIndex == index && platform->platformId == openCL->platformId; });
+
+	if (i != listOfDevice.end())
+		return (OpenCLDevice *)(*i);	
+       
+	return nullptr;	   
+	/*
     for (OpenCLDevice * openCL : listOfDevice)
     {
         if(openCL->deviceIndex == index && platform->platformId == openCL->platformId)
@@ -563,8 +569,10 @@ OpenCLDevice * COpenCLDeviceList::SelectDevice(OpenCLPlatform * platform, const 
             break;
         }
     }
+	
 
     return deviceSelected;
+	*/
 }
 
 vector<OpenCLDevice *> COpenCLDeviceList::GetPlatformDevice(OpenCLPlatform * platform)
