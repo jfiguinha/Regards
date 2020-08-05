@@ -335,11 +335,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
 	bool value = false;
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
-		if (play)
-			PauseVideo();
-
 		value = videoWindow->PlayMovie(filename, play);
-
 	}
 	return value;
 }

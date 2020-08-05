@@ -6,7 +6,7 @@
 CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
-	_pimpl = new CFFmfcPimpl();
+	_pimpl = nullptr;
 	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
 	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
@@ -443,6 +443,11 @@ void CFFmfc::Seek_bar(int pos){
 //#define __MINGW32__
 int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 {
+	if (_pimpl != nullptr)
+		delete _pimpl;
+
+	_pimpl = new CFFmfcPimpl();
+
 	_pimpl->dlg = control;
 	_pimpl->parent = this;
 	Reset_index();

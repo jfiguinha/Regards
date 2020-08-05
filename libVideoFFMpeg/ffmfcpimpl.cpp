@@ -264,6 +264,7 @@ void CFFmfcPimpl::stream_close(VideoState *is)
 //ÍË³ö
 void CFFmfcPimpl::do_exit(VideoState *is)
 {
+
 	exit_remark = 1;
 	if (is) {
 		stream_close(is);
@@ -814,7 +815,7 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 		else
 			video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
 #ifdef WIN32
-		if (dlg->GetDXVA2HardwareCompatible())
+		if (dlg->GetDXVA2Compatible())
 			dlg->SetData(src_frame, video_aspect_ratio, dxva2);
 		else
 			dlg->SetData(src_frame, video_aspect_ratio, nullptr);
@@ -1796,7 +1797,7 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 
 #ifdef WIN32
 
-		if (dlg->GetDXVA2HardwareCompatible())
+		if (dlg->GetDXVA2Compatible())
 			dxva2_uninit(avctx);
 #endif
 
