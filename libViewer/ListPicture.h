@@ -39,8 +39,10 @@ namespace Regards
 			void SetListeFile(PhotosVector * photoVector);
 			void ChangeTypeAffichage(PhotosVector * photoVector, const long & typeAffichage);
 			void Resize();
+			void ForceRefresh();
 
 		private:
+			
 			
 			void ThumbnailZoomOn(wxCommandEvent& event);
 			void ThumbnailZoomOff(wxCommandEvent& event);

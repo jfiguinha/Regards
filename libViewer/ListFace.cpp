@@ -429,11 +429,19 @@ void CListFace::UpdateScreenRatio()
 		windowManager->UpdateScreenRatio();
 }
 
+void CListFace::ForceRefresh()
+{
+	thumbFaceToolbar->ForceRefresh();
+	thumbnailFace->ForceRefresh();
+}
 
 void CListFace::Resize()
 {
 	if (windowManager != nullptr)
+	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
+		this->ForceRefresh();
+	}
 }
 
 #endif

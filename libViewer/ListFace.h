@@ -34,8 +34,12 @@ namespace Regards
             void UpdateScreenRatio();
 			void SetActifItem(const int &numItem, const bool &move);	
 			int GetThumbnailHeight();
+			void Resize();
+			void ForceRefresh();
 
 		private:
+
+			
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -45,7 +49,6 @@ namespace Regards
 			void ThumbnailMove(wxCommandEvent& event);
 			void OnFacePhotoAdd(wxCommandEvent& event);
 			void OnResourceLoad(wxCommandEvent& event);
-			void Resize();
 			void ProcessIdle();
 			bool GetProcessEnd();
 			static void FacialRecognition(void * param);

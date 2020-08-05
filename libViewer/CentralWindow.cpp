@@ -813,6 +813,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
+		listFace->Resize();
 		//windowManager->Update();
 		break;
 #endif
@@ -823,6 +824,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
 		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
+		listPicture->Resize();
 		//windowManager->Update();
 		break;
 	case 4:

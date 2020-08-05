@@ -124,6 +124,13 @@ CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 
 }
 
+void CListPicture::ForceRefresh()
+{
+	thumbToolbar->ForceRefresh();
+	thumbToolbarZoom->ForceRefresh();
+	thumbnailFolder->ForceRefresh();
+}
+
 CListPicture::~CListPicture()
 {
 	if(windowManager != nullptr)
@@ -1039,6 +1046,9 @@ void CListPicture::CopyFile(wxCommandEvent& event)
 void CListPicture::Resize()
 {
 	if (windowManager != nullptr)
+	{
 		windowManager->SetSize(GetWindowWidth(), GetWindowHeight());
-
+		//windowManager->Resize();
+		this->ForceRefresh();
+	}
 }
