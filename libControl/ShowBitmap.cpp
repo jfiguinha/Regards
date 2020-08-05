@@ -296,12 +296,14 @@ void CShowBitmap::Resize()
             int pictureHeight = height - pictureToolbar->GetHeight();
 
             scrollbar->SetSize(0, 0, pictureWidth, pictureHeight);
+			scrollbar->Refresh();
             pictureToolbar->SetSize(0, height - pictureToolbar->GetHeight(), width, pictureToolbar->GetHeight());
+			pictureToolbar->Refresh();
 		}
 		else
 		{
 			scrollbar->SetSize(0, 0, width, height);
-
+			scrollbar->Refresh();
 		}
 	}
  

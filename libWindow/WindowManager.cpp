@@ -4,6 +4,8 @@
 #include <LibResource.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
+#include "WindowToAdd.h"
+#include "SeparationBar.h"
 using namespace Regards::Window;
 
 #define WINDOW_MINSIZE 100
@@ -11,6 +13,8 @@ using namespace Regards::Window;
 #ifndef WIN32
 #define WM_USER 0x4000
 #endif
+
+
 
 CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSplitter & theme)
 	: CWindowMain("CWindowManager", parent, id)
@@ -183,11 +187,13 @@ CPanelWithClickToolbar * CWindowManager::AddPanel(CWindowMain * window, const Po
 
 void CWindowManager::HideWindow(Pos position, const bool &refresh)
 {
+	bool needTorefresh = false;
 	CWindowToAdd * window = FindWindow(position);
 	if (window != nullptr)
 	{
 		if (!window->isHide)
 		{
+			needTorefresh = true;
 			wxWindow * _wnd = window->GetWindow();
 			if (_wnd != nullptr)
 			{
@@ -201,7 +207,7 @@ void CWindowManager::HideWindow(Pos position, const bool &refresh)
 			}
 		}
 	}
-	if (refresh)
+	if (refresh && needTorefresh)
 	{
 		Init();
 		Resize();
@@ -253,12 +259,14 @@ void CWindowManager::ShowPaneWindow(Pos position, const int &refresh)
 
 void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 {
+	bool needTorefresh = false;
 	CWindowToAdd * window = FindWindow(position);
 
 	if (window != nullptr)
 	{
 		if (window->isHide)
 		{
+			needTorefresh = true;
 			window->isHide = false;
 			window->GetWindow()->Show(true);
 			if (window->separationBar != nullptr)
@@ -273,7 +281,7 @@ void CWindowManager::ShowWindow(Pos position, const bool &refresh)
 		}
 	}
 
-	if (refresh)
+	if (refresh && needTorefresh)
 	{
 		Init();
 		Resize();
@@ -1374,7 +1382,7 @@ void CWindowManager::Resize()
 {
 
 	int width = GetSize().GetX();
-	int height = GetSize().GetY();
+ 	int height = GetSize().GetY();
     
     if(width <= 0 || height <= 0)
         return;
@@ -1436,7 +1444,8 @@ void CWindowManager::Resize()
 					_wnd->SetSize(rc);
 
 				_wnd->Refresh();
-				_wnd->Update();
+				//_wnd->Refresh();
+				//_wnd->Update();
 
 			}
 
@@ -1466,7 +1475,8 @@ void CWindowManager::Resize()
 							windowToAdd->separationBar->separationBar->SetSize(rc);
 
 						windowToAdd->separationBar->separationBar->Refresh();
-						windowToAdd->separationBar->separationBar->Update();
+						//windowToAdd->separationBar->separationBar->Refresh();
+						//windowToAdd->separationBar->separationBar->Update();
 					}
 				}
 			}

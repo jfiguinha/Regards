@@ -2,95 +2,16 @@
 #include "SeparationBar.h"
 #include "WindowMain.h"
 #include "WindowOpenGLMain.h"
+#include "WindowToAdd.h"
 
 namespace Regards
 {
 	namespace Window
 	{
-		enum class Pos { wxCENTRAL, wxTOP, wxBOTTOM, wxLEFT, wxRIGHT};
+		
 		class CPanelWithClickToolbar;
 
-		class CSeparationBarToAdd
-		{
-		public:
-			wxRect rect;
-			CSeparationBar * separationBar;
-			int separationBarId;
-			bool isHorizontal;
-			int posBar;
-			int size;
-		};
-
-		class CWindowToAdd
-		{
-		public:
-
-			CWindowToAdd()
-			{
-				window = nullptr;
-				windowOpengl = nullptr;
-			}
-
-			wxWindow * GetWindow()
-			{
-				if (window != nullptr)
-					return window;
-				return windowOpengl;
-			}
-			CMasterWindow * GetMasterWindowPt()
-			{
-				if (window != nullptr)
-					return window;
-				return windowOpengl;
-			}
-
-			CPanelWithClickToolbar * GetPanel()
-			{
-				if (isPanel)
-				{
-					if (window != nullptr)
-						return (CPanelWithClickToolbar *)window;
-				}
-				return nullptr;
-			}
-
-			void SetWindow(CWindowMain * window, bool isPanel)
-			{
-				this->window = nullptr;
-				this->windowOpengl = nullptr;
-				this->window = window;
-				this->isPanel = isPanel;
-			}
-
-			void SetWindow(CWindowOpenGLMain * window, bool isPanel)
-			{
-				this->window = nullptr;
-				this->windowOpengl = nullptr;
-				this->windowOpengl = window;
-				this->isPanel = isPanel;
-			}
-
-			wxRect rect;
-			wxRect rect_old;
-			Pos position;
-			int size;
-			int size_old;
-			bool fixe;
-			bool fixe_old;
-			int id;
-			bool isTop;
-			bool isHide;
-			bool isPanel;
-			int diffWidth = 0;
-			int diffHeight = 0;
-
-			CSeparationBarToAdd * separationBar;
-
-		private:
-			CWindowMain * window;
-			CWindowOpenGLMain * windowOpengl;
-		};
-
+		class CWindowToAdd;
 
 
 		class CWindowManager : public CWindowMain, public IMoveWindow

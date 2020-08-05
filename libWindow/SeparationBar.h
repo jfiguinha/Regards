@@ -2,9 +2,6 @@
 #include "IMoveWindow.h"
 #include "WindowMain.h"
 
-
-
-
 namespace Regards
 {
 	namespace Window

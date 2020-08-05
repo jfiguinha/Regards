@@ -102,6 +102,7 @@ void CTabWindow::Resize()
 	if (toolbarWindow != nullptr)
 	{
 		toolbarWindow->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbarWindow->GetHeight());
+		toolbarWindow->Refresh();
 	}
 
 	wxWindow* windowToShow = nullptr;
@@ -119,6 +120,7 @@ void CTabWindow::Resize()
 	if (windowToShow != nullptr)
 	{
 		windowToShow->SetSize(rcAffichageBitmap.x, toolbarWindow->GetHeight(), rcAffichageBitmap.width, rcAffichageBitmap.height);
+		windowToShow->Refresh();
 	}
 
 }

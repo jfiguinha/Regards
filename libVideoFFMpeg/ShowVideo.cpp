@@ -463,9 +463,9 @@ void CShowVideo::Resize()
 	if (isDiaporama && videoSlider != nullptr && videoWindow != nullptr)
 	{
 		videoSlider->SetSize(0, 0, 0, 0);
-		//videoSlider->SendSizeEvent();
+		videoSlider->Refresh();
 		videoWindow->GetWindow()->SetSize(0, 0, width, height);
-		//videoWindow->SendSizeEvent();
+		videoWindow->GetWindow()->Refresh();
 	}
 	else if(videoSlider != nullptr)
 	{
@@ -477,18 +477,18 @@ void CShowVideo::Resize()
 		int positionHeight = height - posHeight;
 
 		videoWindow->GetWindow()->SetSize(0, 0, width, positionHeight);
-		//videoWindow->SendSizeEvent();
+		videoWindow->GetWindow()->Refresh();
 
 		if (videoSlider->IsShown())
 		{
 			videoSlider->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
-			//videoSlider->SendSizeEvent();
+			videoSlider->Refresh();
 		}
 	}
     else
     {
 		videoWindow->GetWindow()->SetSize(0, 0, width, height);
-		//videoWindow->SendSizeEvent();        
+		videoWindow->GetWindow()->Refresh();
     }
 }
 

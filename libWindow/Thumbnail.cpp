@@ -1076,7 +1076,7 @@ void CThumbnail::Resize()
     
 	CalculControlSize();
 	ResizeThumbnail();
-
+	Refresh();
 }
 
 void CThumbnail::CalculControlSize()

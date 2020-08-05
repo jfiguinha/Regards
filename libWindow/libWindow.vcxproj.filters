@@ -183,6 +183,9 @@
     <ClInclude Include="WindowManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="WindowToAdd.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -318,6 +321,9 @@
       <Filter>Render</Filter>
     </ClCompile>
     <ClCompile Include="WindowManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowToAdd.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

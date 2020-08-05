@@ -74,6 +74,12 @@ namespace Regards
 				return "Window waiting : " + to_string(this->GetId());
 			}
 
+			virtual void ForceRefresh()
+			{
+				this->Refresh();
+				this->Update();
+			}
+
 		};
 	}
 }

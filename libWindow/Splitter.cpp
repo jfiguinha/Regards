@@ -480,14 +480,14 @@ void CSplitter::Resize(wxWindow * window)
 		if (window1->IsShown())
 		{
 			window1->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-			window1->PostSizeEvent();
+			window1->Refresh();
 		}
 
 	if (window2 != nullptr)
 		if (window2->IsShown())
 		{
 			window2->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-			window2->PostSizeEvent();
+			window2->Refresh();
 		}
 
 }

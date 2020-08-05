@@ -64,10 +64,22 @@ namespace Regards
 				this->ProcessOnIdleEndEvent(event);
 			}
 
+			virtual void ForceRefresh()
+			{
+				this->Refresh();
+				this->Update();
+			}
+
 			virtual void Resize()
 			{
 				this->Refresh();
 				this->Update();
+			}
+
+			virtual void SetSizeWindow(const int &x, const int &y, const int &width, const int &height)
+			{
+				this->SetSize(x,y,width,height);
+				this->Refresh();
 			}
 
 			virtual void OnEraseBackground(wxEraseEvent& event){};
@@ -75,9 +87,6 @@ namespace Regards
 			virtual void OnSize(wxSizeEvent& event)
 			{
 				this->ProcessOnSizeEvent(event);
-				//this->Refresh();
-				//this->Update();
-
 			}
 
 			virtual wxString GetWaitingMessage()

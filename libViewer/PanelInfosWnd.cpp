@@ -479,7 +479,7 @@ void CPanelInfosWnd::LoadInfo()
 			break;
 		}
 	}
-
+	//this->ForceRefresh();
 	//this->Refresh();
 	//this->Update();
 }

@@ -87,8 +87,6 @@ wxSize CMasterWindow::GetSizeTexte(wxDC * dc, const wxString &libelle, const CTh
 }
 
 
-
-
 wxRect CMasterWindow::GetWindowRect()
 {
 	wxRect rc = wxRect(0,0, windowMainPimpl->width,windowMainPimpl->height);

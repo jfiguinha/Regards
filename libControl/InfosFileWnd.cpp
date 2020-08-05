@@ -35,7 +35,7 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
     TRACE();
     
     CThreadLoadInfos * threadInfos = (CThreadLoadInfos *)event.GetClientData();
-    if(threadInfos->filename == filename)
+   // if(threadInfos->filename == filename)
     {
         threadInfos->infosFileWnd->CreateElement();
         //StopLoadingPicture(InfosFileScroll);
@@ -48,13 +48,14 @@ void CInfosFileWnd::UpdateTreeInfosEvent(wxCommandEvent &event)
 		delete(oldInfosFileControl);
         oldInfosFileControl = threadInfos->infosFileWnd;
     }
-    else
-        delete(threadInfos->infosFileWnd);
+   // else
+   //     delete(threadInfos->infosFileWnd);
     
     threadInfos->threadLoadInfos->join();
     delete threadInfos->threadLoadInfos;
     delete threadInfos;
 
+	//this->ForceRefresh();
 	//treeWindow->Refresh();
 	//treeWindow->Update();
    

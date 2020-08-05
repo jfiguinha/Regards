@@ -474,7 +474,7 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 #endif
 
 		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->Resize();
+		//windowManager->Resize();
 		result = SetBitmap(bitmap, isThumbnail, false);
 	}
 	return result;
@@ -980,7 +980,7 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 		StartLoadingPicture(numElement);
 		LoadingPicture(localFile);
 	}
-	windowManager->Resize();
+	//windowManager->Resize();
 }
 
 void CCentralWindow::StartLoadingPicture(const int &numElement)

@@ -244,6 +244,7 @@
     <ClInclude Include="TreeWindow.h" />
     <ClInclude Include="TreeWithScrollbar.h" />
     <ClInclude Include="WindowManager.h" />
+    <ClInclude Include="WindowToAdd.h" />
     <ClInclude Include="wxImagePanel.h" />
   </ItemGroup>
   <ItemGroup>
@@ -294,6 +295,7 @@
     <ClCompile Include="TreeWindow.cpp" />
     <ClCompile Include="TreeWithScrollbar.cpp" />
     <ClCompile Include="WindowManager.cpp" />
+    <ClCompile Include="WindowToAdd.cpp" />
     <ClCompile Include="wxImagePanel.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

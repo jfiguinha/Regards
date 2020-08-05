@@ -243,36 +243,52 @@ void CPreviewWnd::Resize()
 					rcAffichageBitmap.height = GetWindowHeight() - toolbarHeightSize - toolbarAnimationHeightSize;
 				}
 
-                if (bitmapInfos->IsShown())
-                    bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
+				if (bitmapInfos->IsShown())
+				{
+					bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
+					bitmapInfos->Refresh();
+				}
                 else
                     bitmapInfosHeight = 0;
 
                 showBitmapWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
+				showBitmapWindow->Refresh();
 				//showBitmapWindow->SendSizeEvent();
             }
             else
             {
-                if (bitmapInfos->IsShown())
-                    bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
+				if (bitmapInfos->IsShown())
+				{
+					bitmapInfos->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, bitmapInfosHeight);
+					bitmapInfos->Refresh();
+				}
                 else
                     bitmapInfosHeight = 0;
 
                 showVideoWindow->SetSize(rcAffichageBitmap.x, bitmapInfosHeight, rcAffichageBitmap.width, rcAffichageBitmap.height - bitmapInfosHeight);
+				showVideoWindow->Refresh();
 				//showVideoWindow->SendSizeEvent();
             }
 
-            if (filtreToolbar->IsShown())
-                filtreToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+			if (filtreToolbar->IsShown())
+			{
+				filtreToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+				filtreToolbar->Refresh();
+			}
 			else
 			{
 				if (animationToolbar->IsShown())
 				{
 					animationToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarAnimationHeightSize);
+					animationToolbar->Refresh();
 					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height + toolbarAnimationHeightSize, rcAffichageBitmap.width, toolbarHeightSize);
+					previewToolbar->Refresh();
 				}
 				else
+				{
 					previewToolbar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.height, rcAffichageBitmap.width, toolbarHeightSize);
+					previewToolbar->Refresh();
+				}
 			}
             
             return;
@@ -283,10 +299,13 @@ void CPreviewWnd::Resize()
     if (showBitmapWindow->IsShown())
 	{
         showBitmapWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
-		//showBitmapWindow->SendSizeEvent();
+		showBitmapWindow->Refresh();
 	}
-    else
-        showVideoWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+	else
+	{
+		showVideoWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		showVideoWindow->Refresh();
+	}
 
 }
 

@@ -1031,12 +1031,16 @@ void CMainWindow::Resize()
         rcAffichageBitmap.height = GetWindowHeight() - toolbar->GetNavigatorHeight() - sizeStatusBar.y;
 
         toolbar->SetSize(rcAffichageBitmap.x, 0, rcAffichageBitmap.width, toolbar->GetNavigatorHeight());
+		toolbar->Refresh();
         centralWnd->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y, rcAffichageBitmap.width, rcAffichageBitmap.height);
+		centralWnd->Refresh();
         statusBar->SetSize(rcAffichageBitmap.x, rcAffichageBitmap.y + rcAffichageBitmap.height, rcAffichageBitmap.width, sizeStatusBar.y);
+		statusBar->Refresh();
     }
     else
     {
         centralWnd->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		centralWnd->Refresh();
     }        
 }
 

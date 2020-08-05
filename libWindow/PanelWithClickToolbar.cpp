@@ -169,10 +169,13 @@ void CPanelWithClickToolbar::Resize()
 	if (clickWindow->IsShown())
 	{
 		clickWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		clickWindow->Refresh();
+
 	}
 	else if (paneWindow->IsShown())
 	{
 		paneWindow->SetSize(0, 0, GetWindowWidth(), GetWindowHeight());
+		paneWindow->Refresh();
 	}
 }
 
