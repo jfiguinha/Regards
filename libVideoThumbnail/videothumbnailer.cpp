@@ -51,11 +51,6 @@ int64_t VideoThumbnailer::GetMovieDuration(const string& videoFile)
 	if (pFormatCtx != nullptr)
 	{
 		duration = pFormatCtx->duration;
-	}
-	
-	if(pFormatCtx != nullptr)
-	{
-		duration = pFormatCtx->duration;
 		avformat_close_input(&pFormatCtx);
 		avformat_free_context(pFormatCtx);
 	}
@@ -284,10 +279,6 @@ string VideoThumbnailer::getMimeType(const string& videoFile)
     else if (extension == "wm")
     {
         return "video/x-ms-wm";
-    }
-    else if (extension == "mp4")
-    {
-        return "video/x-ms-wmv";
     }
     else if (extension == "mp4")
     {

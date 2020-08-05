@@ -5,7 +5,11 @@ class CRegardsBitmap;
 class CPictureData
 {
 public:
-	CPictureData(){};
+	CPictureData(){
+		width = 0;
+		height = 0;
+		size = 0;
+	};
 	~CPictureData();
 
 	static CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);

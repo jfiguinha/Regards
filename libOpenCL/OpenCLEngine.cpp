@@ -456,11 +456,20 @@ COpenCLEngine::COpenCLEngine()
 		if (platform == nullptr)
 		{
 			vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
+
+			vector<OpenCLPlatform *>::iterator i = std::find_if(listPlatform.begin(),
+				listPlatform.end(),
+				[&](const auto& val) { return val->platformId == device->platformId; });
+
+			if (i != listPlatform.end())
+				platform = (OpenCLPlatform *)(*i);
+			/*
 			for (OpenCLPlatform * _plateform : listPlatform)
 			{
 				if (device->platformId == _plateform->platformId)
 					platform = _plateform;
 			}
+			*/
 		}
 	}
 
@@ -496,6 +505,13 @@ OpenCLDevice * COpenCLDeviceList::SelectDevice(const wxString &deviceName)
    // OpenCLDevice * openCLDeviceSelect = nullptr;
     //int i = 0;
 
+	vector<OpenCLDevice *>::iterator i = std::find_if(listOfDevice.begin(),
+		listOfDevice.end(),
+		[&](const auto& val) { return val->deviceName == deviceName; });
+
+	if (i != listOfDevice.end())
+		return (OpenCLDevice *)(*i);
+	/*
     for (OpenCLDevice * openCL : listOfDevice)
     {
         if(deviceName == openCL->deviceName)
@@ -503,6 +519,7 @@ OpenCLDevice * COpenCLDeviceList::SelectDevice(const wxString &deviceName)
             return openCL;
         }
     }
+	*/
     return nullptr;
 }
 

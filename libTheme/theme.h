@@ -37,9 +37,9 @@ public:
 	CTheme();
 	virtual ~CTheme();
 
-	virtual void LoadXML(xml_node<> * root_node);
+	virtual void LoadXML(xml_node<> * root_node) override;
 
-	virtual void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition);
+	virtual void SaveXML(xml_document<> & doc, xml_node<>* sectionPosition) override;
     
     
 

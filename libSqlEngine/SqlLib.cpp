@@ -10,6 +10,8 @@ CSqlLib::CSqlLib()
 	pCon = nullptr;
 	m_bConnected = false;
 	readonly = false;
+	pCon = nullptr;				   //SQLite Connection Object
+	pRes = nullptr;
 }
 
 

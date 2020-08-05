@@ -9,6 +9,7 @@ using namespace Regards::Sqlite;
 
 CSqlExecuteRequest::CSqlExecuteRequest(const wxString & databaseName)
 {
+	_sqlLibTransaction = nullptr;
 	useTransaction = false;
 	this->databaseName = databaseName;
 }
@@ -127,8 +128,6 @@ int64_t CSqlExecuteRequest::GetLastId()
 
 int CSqlExecuteRequest::ExecuteRequest(const wxString &requestSQL)
 {
-	int nbResult = 0;			// Error code reporting
-
 	if (useTransaction)
 	{
 		CSqlResult sqlResult;
@@ -136,7 +135,7 @@ int CSqlExecuteRequest::ExecuteRequest(const wxString &requestSQL)
 
 		if (hr)
 		{
-			nbResult = TraitementResult(&sqlResult);
+			int nbResult = TraitementResult(&sqlResult);
 			_sqlLibTransaction->Release();
 			return nbResult;
 		}
@@ -153,7 +152,7 @@ int CSqlExecuteRequest::ExecuteRequest(const wxString &requestSQL)
 
             if (hr)
             {
-                nbResult = TraitementResult(&sqlResult);
+                int nbResult = TraitementResult(&sqlResult);
                 _sqlLib->Release();
                 _sqlLib->unlock();
                 return nbResult;

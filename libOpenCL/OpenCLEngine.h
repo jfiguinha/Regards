@@ -4,6 +4,7 @@
 #else
 #include <CL/cl.h>
 #endif
+#include <algorithm>
 using namespace std;
 
 namespace Regards
@@ -39,11 +40,22 @@ namespace Regards
 				if (listOfPlatform.size() == 0)
 					GetListOfPlatform();
 
+				vector<OpenCLPlatform *>::iterator i = std::find_if(listOfPlatform.begin(),
+					listOfPlatform.end(),
+					[&](const auto& val) { return val->platformName == name; });
+
+				if (i != listOfPlatform.end())
+				{
+					return ((OpenCLPlatform *)*i);
+				}
+
+				/*
 				for (OpenCLPlatform * openCLPlatform : listOfPlatform)
 				{
 					if (name == openCLPlatform->platformName)
 						return openCLPlatform;
 				}
+				*/
 				return nullptr;
 			}
 
@@ -53,11 +65,21 @@ namespace Regards
 				if (listOfPlatform.size() == 0)
 					GetListOfPlatform();
 
+				vector<OpenCLPlatform *>::iterator i = std::find_if(listOfPlatform.begin(),
+					listOfPlatform.end(),
+					[&](const auto& val) { return val->platformIndex == index; });
+
+				if (i != listOfPlatform.end())
+				{
+					return ((OpenCLPlatform *)*i);
+				}
+				/*
 				for (OpenCLPlatform * openCLPlatform : listOfPlatform)
 				{
 					if (openCLPlatform->platformIndex == index)
 						return openCLPlatform;
 				}
+				*/
 				return nullptr;
 			}
 

@@ -31,13 +31,16 @@ HRESULT CMapi::SendEmail(const string &m_szBody, const vector<string> & attachme
 
 
      hModule = LoadLibrary( L"mapi32.dll" ) ;
-     if( hModule==NULL ) {
+     if( hModule==NULL ) 
+	 {
+		 free(mapiAttachment);
           printf("ERROR: Unable to load mapi32.dll\n" ) ;
           return false;
      }
 
      lpfnMAPISendMail = (MAPISENDMAIL *)GetProcAddress( hModule, "MAPISendMail" ) ;
      if( lpfnMAPISendMail==NULL ) {
+		 free(mapiAttachment);
           printf( "ERROR: Unable to locate MAPISendMail entry point\n" ) ;
           return false;
      }

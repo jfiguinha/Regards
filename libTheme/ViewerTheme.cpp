@@ -335,35 +335,35 @@ void CMainTheme::SaveTheme()
         }
         
         local_section = node("DefaultSplitterTheme");
-        if (section != 0)
+        if (local_section != 0)
         {
 			themeSplitter.SaveXML(doc, local_section);
             section->append_node(local_section);
         }
 
 		local_section = node("DefaultScrollTheme");
-		if (section != 0)
+		if (local_section != 0)
 		{
 			themeScroll.SaveXML(doc, local_section);
 			section->append_node(local_section);
 		}
 
 		local_section = node("DefaultPaneTheme");
-		if (section != 0)
+		if (local_section != 0)
 		{
 			themePane.SaveXML(doc, local_section);
 			section->append_node(local_section);
 		}
 
 		local_section = node("DefaultTreeTheme");
-		if (section != 0)
+		if (local_section != 0)
 		{
 			themeTree.SaveXML(doc, local_section);
 			section->append_node(local_section);
 		}
 
 		local_section = node("DefaultClickToolbarTheme");
-		if (section != 0)
+		if (local_section != 0)
 		{
 			themeClickToolbar.SaveXML(doc, local_section);
 			section->append_node(local_section);
@@ -385,14 +385,14 @@ void CMainTheme::SaveTheme()
         
             
         local_section = node("VideoToolbar");
-        if (section != 0)   
+        if (local_section != 0)
         {         
             themeVideoToolbar.SaveXML(doc, local_section);
             section->append_node(local_section);
         }   
         
         local_section = node("SliderVideo");
-        if (section != 0)
+        if (local_section != 0)
         {               
             themeSliderVideo.SaveXML(doc, local_section);
             section->append_node(local_section);

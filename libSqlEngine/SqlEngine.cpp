@@ -1,6 +1,7 @@
 #include "header.h"
 #include "SqlEngine.h"
 #include "SqlLib.h"
+#include <algorithm>
 
 using namespace Regards::Sqlite;
 
@@ -18,10 +19,17 @@ CSqlEngine::~CSqlEngine()
 
 CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 {
+	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
+		_listOfBase.end(),
+		[&](const auto& val) { return val.baseName == baseName; });
 
-	for (DataBase db : _listOfBase)
-		if (db.baseName == baseName)
-			return db._singleton;
+	if (i != _listOfBase.end())
+	{
+		return ((DataBase)*i)._singleton;
+	}
+	//for (DataBase db : _listOfBase)
+	//	if (db.baseName == baseName)
+	//		return db._singleton;
 	return nullptr;
 }
 
@@ -29,10 +37,15 @@ CSqlLib * CSqlEngine::getInstance(const wxString &baseName)
 
 void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName, CSqlLib * sqlLib)
 {
+	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
+		_listOfBase.end(),
+		[&](const auto& val) { return val.baseName == baseName; });
+	if (i == _listOfBase.end())
+		return;
 
-	for (DataBase db : _listOfBase)
-		if (db.baseName == baseName)
-			return;
+	//for (DataBase db : _listOfBase)
+	//	if (db.baseName == baseName)
+	//		return;
 
 	DataBase db;
 	db._singleton = sqlLib;
@@ -54,6 +67,19 @@ void CSqlEngine::Initialize(const wxString & filename, const wxString &baseName,
 
 void CSqlEngine::kill(const wxString &baseName)
 {
+	vector<CSqlEngine::DataBase>::iterator i = std::find_if(_listOfBase.begin(),
+		_listOfBase.end(),
+		[&](const auto& val) { return val.baseName == baseName; });
+
+	if (i != _listOfBase.end())
+	{
+		DataBase db = (DataBase)*i;
+		db._singleton->CloseConnection();
+		delete db._singleton;
+		db._singleton = nullptr;
+	}
+
+	/*
 	for (DataBase db : _listOfBase)
 	{
 		if (db.baseName == baseName)
@@ -68,5 +94,5 @@ void CSqlEngine::kill(const wxString &baseName)
 			break;
 		}
 	}
-		
+	*/	
 }

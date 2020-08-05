@@ -73,12 +73,12 @@ wxImage CCircle::GradientTransparent(const CRgbaquad &m_color, const int &iTaill
 			if (data[i * 3] == 0 && data[i * 3 + 1] == 0 && data[i * 3 + 2] == 0)
 			{
 				float fValue = sqrt((double)((x - rayon) * (x - rayon) + (y - rayon) *  (y - rayon)));
-				alpha[i] = 0;
+				if (image.HasAlpha())
+					alpha[i] = 0;
 				if (fValue <= rayon)
 				{
 					int valeurAlpha = 255 - (int)((fValue / (float)rayon) * 255.0f);
-
-					if (alpha != nullptr)
+					if (image.HasAlpha())
 						alpha[i] = valeurAlpha;
 				}
 				i++;
