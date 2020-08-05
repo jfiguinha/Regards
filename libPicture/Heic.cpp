@@ -8,12 +8,8 @@
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
-#include <tbb/parallel_for.h>
-#include <tbb/task_scheduler_init.h>
 using namespace std;
 using namespace HEIF;
-
-#define TBB
 
 static CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder = nullptr);
 
@@ -832,11 +828,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 			}
 
 
-#ifdef TBB
-
-			//tbb::task_scheduler_init init;  // Automatic number of threads
-			tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
-
+#ifdef USE_TBB
 			std::vector<mytask> tasks;
 			//#pragma omp parallel for
 

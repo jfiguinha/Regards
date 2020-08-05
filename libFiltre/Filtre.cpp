@@ -3,11 +3,7 @@
 #include "RegardsBitmap.h"
 using namespace Regards::FiltreEffet;
 
-#define USE_TBB
-
-#ifdef USE_TBB	
-#include <tbb/parallel_for.h>
-#include <tbb/task_scheduler_init.h>
+#ifdef USE_TBB
 
 struct myFiltreTask {
 	myFiltreTask(const int &x, const int &y, uint8_t * & pBitsSrc, uint8_t * & pBitsDest, CFiltre * pt)
@@ -71,7 +67,7 @@ void CFiltre::Compute()
 
 #ifdef USE_TBB		
 		//tbb::task_scheduler_init init;  // Automatic number of threads
-		tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
+		//tbb::task_scheduler_init init(tbb::task_scheduler_init::default_num_threads());  // Explicit number of threads
 
 		std::vector<myFiltreTask> tasks;
 		//#pragma omp parallel for

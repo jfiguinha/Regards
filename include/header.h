@@ -11,11 +11,14 @@
 #define USECURL
 #define RENDEROPENGL
 #define GLUT
-//#define USE_TBB
+#define USE_TBB
 //#define WX_PRECOMP
 
+#ifdef USE_TBB
 #include <tbb/tbbmalloc_proxy.h>
 #include <tbb/concurrent_vector.h>
+#include <tbb/parallel_for.h>
+#endif
 #include <thread>
 #include <mutex>
 #include <algorithm>
