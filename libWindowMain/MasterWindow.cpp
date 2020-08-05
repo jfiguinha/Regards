@@ -7,8 +7,11 @@
 #include <window_id.h>
 #endif
 
-
 using namespace Regards::Window;
+
+
+
+bool CMasterWindow::stopProcess = false;
 
 void CMasterWindow::ThreadIdle(void * data)
 {
@@ -49,6 +52,7 @@ void CMasterWindow::ProcessOnSizeEvent(wxSizeEvent& event)
 
 CMasterWindow::CMasterWindow(void)
 {
+	processStop = false;
 	windowMainPimpl = new CWindowMainPimpl();
 	processEnd = true;
 	processIdle = false;
@@ -116,7 +120,7 @@ int CMasterWindow::GetWindowWidth()
 
 void CMasterWindow::StartThread()
 {
-	if (processIdle && windowMainPimpl->threadIdle == nullptr && !endProgram)
+	if (processIdle && windowMainPimpl->threadIdle == nullptr && !endProgram && !stopProcess)
 	{
 		windowMainPimpl->threadIdle = new thread(ThreadIdle, this);
 		processEnd = false;
@@ -128,9 +132,22 @@ void CMasterWindow::SetEndProgram()
 	endProgram = true;
 }
 
+void CMasterWindow::SetStopProcess(const bool &state)
+{
+	stopProcess = state;
+}
+
+void CMasterWindow::SetStartProcess()
+{
+	processStop = false;
+}
 
 bool CMasterWindow::GetProcessEnd()
 {
 	return processEnd;
 }
 
+bool CMasterWindow::GetProcessStop()
+{
+	return processStop;
+}

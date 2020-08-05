@@ -90,7 +90,7 @@ void CSqlFacePhoto::RebuildLink()
 	for(int i = 0;i < listFace.size();i++)
 	{
 		numFace = -1;
-		ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ASC LIMIT 1");
+		ExecuteRequest("SELECT numFace FROM FACE_RECOGNITION WHERE NumFaceCompatible = " + to_string(oldNumFace) + " ORDER BY numFace ASC LIMIT 1");
 		if(numFace != -1)
 		{
 			faceLabel.UpdateNumFaceLabel(oldNumFace, numFace);

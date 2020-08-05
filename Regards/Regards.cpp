@@ -12,7 +12,6 @@
 #include <Regards.h>
 #include <wx/filename.h>
 #include <DeepLearning.h>
-#include <tbb/task_scheduler_init.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
@@ -138,6 +137,11 @@ bool MyApp::OnInit()
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif
 
+	int retCode = sqlite3_config(SQLITE_CONFIG_SERIALIZED);
+	if (retCode == SQLITE_OK) {
+		printf("SQLite in serialized mode \n");
+	}
+
 	sqlite3_initialize();
 
 	wxInitAllImageHandlers();
@@ -188,6 +192,7 @@ bool MyApp::OnInit()
 	CParamInit::Initialize(regardsParam);
 
 	bool dataInMemory = regardsParam->GetDatabaseInMemory();
+
 
 	CLibResource::InitializeSQLServerDatabase(resourcePath);
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);

@@ -98,31 +98,33 @@ bool CSQLRemoveData::DeleteFaceDatabase()
 bool CSQLRemoveData::DeleteFolder(const int &numFolder)
 {
 	vector<wxString> listPhoto;
-	//Suppression des critères des photos
-	CSqlCriteria sqlCriteria;
-	sqlCriteria.DeleteCriteriaFolder(numFolder);
 
-	CSqlPhotoCriteria sqlPhotoCriteria;
-	sqlPhotoCriteria.DeleteFolderCriteria(numFolder);
-
-
+	
 	CSqlThumbnail sqlThumbnail;
 	sqlThumbnail.EraseFolderThumbnail(numFolder);
 
 	CSqlThumbnailVideo sqlThumbnailVideo;
 	sqlThumbnailVideo.EraseFolderThumbnail(numFolder);
+	   
+	CSqlPhotoCriteria sqlPhotoCriteria;
+	sqlPhotoCriteria.DeleteFolderCriteria(numFolder);
+	   	
+	//Suppression des répertoires du catalog
+	CSqlFolderCatalog sqlFolderCatalog;
+	sqlFolderCatalog.DeleteFolder(numFolder);
 
 	//Suppression des photos du catalog
 	CSqlPhotos sqlPhoto;
 	listPhoto = sqlPhoto.GetPhotoFromFolder(numFolder);
 	sqlPhoto.DeletePhotoFolder(numFolder);
-	
-	//Suppression des répertoires du catalog
-	CSqlFolderCatalog sqlFolderCatalog;
-	sqlFolderCatalog.DeleteFolder(numFolder);
 
 	CSqlFacePhoto sqlFacePhoto;
 	sqlFacePhoto.DeleteListOfPhoto(listPhoto);
+
+	//Suppression des critères des photos
+	CSqlCriteria sqlCriteria;
+	sqlCriteria.DeleteCriteriaAlone();
+
 
 	CSqlPhotoCategorieUsenet photoCategorie;
 	for(wxString photoPath : listPhoto)

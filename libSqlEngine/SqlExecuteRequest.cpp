@@ -159,7 +159,7 @@ int CSqlExecuteRequest::ExecuteRequest(const wxString &requestSQL)
             }
 			else
 			{
-				throw("Erreur SQL");
+				//throw("Erreur SQL");
 			}
             _sqlLib->unlock();
         }

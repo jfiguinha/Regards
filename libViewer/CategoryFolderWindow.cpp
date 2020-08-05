@@ -170,7 +170,7 @@ void CCategoryFolderWindow::UpdateCriteria(const bool &needToSendMessage)
 
 bool CCategoryFolderWindow::GetProcessEnd()
 {
-	if(numProcess > 0  || !processEnd)
+	if(numProcess > 0)
 		return false;
 	return true;
 }

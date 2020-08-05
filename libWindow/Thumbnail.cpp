@@ -674,32 +674,18 @@ void CThumbnail::UpdateMessage(wxCommandEvent& event)
 	eventChange.SetClientData(thumbnailMessage);
 	mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 
-	//wxString message = L"Picture render missing : " + to_string(nbPhoto);
-
-	//statusbar->SetRangeProgressBar(iconeList->GetNbElement());
-	/*
-	if (statusbar != nullptr)
-	{
-		statusbar->SetText(2, message);
-		
-		statusbar->SetPosProgressBar(thumbnailPos + 1);
-	}
-	*/
 	thumbnailPos++;
 }
 
 void CThumbnail::OnIdle(wxIdleEvent& evt)
 {
-    //TRACE();
-  // if (processIdle && !endProgram)
-   //     ProcessIdle();
 	StartThread();
 }
 
 bool CThumbnail::GetProcessEnd()
 {
     TRACE();
-	if(nbProcess > 0 || !processEnd)
+	if(nbProcess > 0)
 		return false;
 	return true;
 }

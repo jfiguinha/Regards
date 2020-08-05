@@ -119,9 +119,9 @@ bool CSqlLib::OpenConnection(const wxString &databasePath, const bool &readonly,
 	else
 	{
 		if(readonly)
-			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_READONLY, NULL);
+			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX, NULL);
 		else
-			rc = sqlite3_open(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon));
+			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_FULLMUTEX, NULL);
 		m_strLastError = sqlite3_errmsg(pCon);
 	}
 
@@ -243,6 +243,7 @@ bool CSqlLib::ExecuteSQLSelect(const wxString &query, CSqlResult * sqlResult)
      */
 	if (sqlite3_prepare(pCon, CConvertUtility::ConvertToUTF8(query), -1, &pRes, nullptr) != SQLITE_OK)
 	{
+
 		m_strLastError = sqlite3_errmsg(pCon);
 		sqlite3_finalize(pRes);
 		m_bReturn = false;

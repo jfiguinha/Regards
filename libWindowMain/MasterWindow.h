@@ -56,6 +56,9 @@ namespace Regards
 			void StartThread();
 
 			static void SetEndProgram();
+			static void SetStopProcess(const bool &state);
+			
+			void SetStartProcess();
 
 			virtual bool GetProcessEnd();
 
@@ -70,6 +73,8 @@ namespace Regards
             virtual void CallRefresh(wxWindow * window);
 
 			virtual void Resize() = 0;
+
+			virtual bool GetProcessStop();
             
 		protected:
 
@@ -84,11 +89,13 @@ namespace Regards
 			CWindowMainPimpl * windowMainPimpl;
 			wxString name;
 			bool processEnd;
+			bool processStop;
 			bool processIdle;
 		public:
         
             double scaleFactor;
 			static bool endProgram;
+			static bool stopProcess;
 			static vector<CMasterWindow *> listMainWindow;
 		};
 	}

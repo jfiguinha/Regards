@@ -306,7 +306,7 @@ void CListFace::OnIdle(wxIdleEvent& evt)
 bool CListFace::GetProcessEnd()
 {
 	TRACE();
-	if (nbProcessFacePhoto > 0 || isLoadingResource)
+	if (nbProcessFacePhoto > 0)
 		return false;
 	return true;
 }
