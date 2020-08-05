@@ -814,7 +814,7 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 		else
 			video_aspect_ratio = av_q2d(vp->sample_aspect_ratio);
 #ifdef WIN32
-		if (dlg->GetDXVA2Compatible())
+		if (dlg->GetDXVA2HardwareCompatible())
 			dlg->SetData(src_frame, video_aspect_ratio, dxva2);
 		else
 			dlg->SetData(src_frame, video_aspect_ratio, nullptr);
@@ -1560,7 +1560,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 #endif
 
 #ifdef WIN32
-		if (dlg->GetDXVA2Compatible())
+		if (dlg->GetDXVA2HardwareCompatible())
 		{
 			avctx->thread_count = 1;  // Multithreading is apparently not compatible with hardware decoding
 			InputStream *ist = new InputStream();
@@ -1796,7 +1796,7 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 
 #ifdef WIN32
 
-		if (dlg->GetDXVA2Compatible())
+		if (dlg->GetDXVA2HardwareCompatible())
 			dxva2_uninit(avctx);
 #endif
 

@@ -744,6 +744,17 @@ void CVideoControl::SetDXVA2Compatible(const bool &compatible)
 	isDXVA2Compatible = compatible;
 }
 
+bool CVideoControl::GetDXVA2HardwareCompatible()
+{
+	int dxva2 = 0;
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+	if (regardsParam != nullptr)
+	{
+		dxva2 = regardsParam->GetDxva2Actif();
+	}
+	return dxva2;
+}
+
 bool CVideoControl::GetDXVA2Compatible()
 {
 	return isDXVA2Compatible;
@@ -902,7 +913,7 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 
     std::cout<<"Set Data time execution: "<< duration <<'\n';
     
-    this->Refresh();
+    this->ForceRefresh();
 }
 
 #endif

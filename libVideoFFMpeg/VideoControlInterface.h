@@ -32,6 +32,7 @@ public:
 #ifdef WIN32
 	virtual void SetDXVA2Compatible(const bool &compatible) = 0;
 	virtual bool GetDXVA2Compatible() = 0;
+	virtual bool GetDXVA2HardwareCompatible() = 0;
 	virtual HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height) = 0;
 #endif
 

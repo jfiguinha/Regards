@@ -79,45 +79,7 @@ extern "C"
 #define HADAMARD  6
 #define NONE      7
 
-/*
-static int ff_lockmgr(void ** _mutex, enum AVLockOp op)
-{
-	if (NULL == _mutex)
-		return -1;
 
-	switch (op)
-	{
-	case AV_LOCK_CREATE:
-	{
-		*_mutex = NULL;
-		mutex * m = new mutex();
-		*_mutex = static_cast<void*>(m);
-		break;
-	}
-	case AV_LOCK_OBTAIN:
-	{
-		mutex * m = static_cast<mutex*>(*_mutex);
-		m->lock();
-		break;
-	}
-	case AV_LOCK_RELEASE:
-	{
-		mutex * m = static_cast<mutex*>(*_mutex);
-		m->unlock();
-		break;
-	}
-	case AV_LOCK_DESTROY:
-	{
-		mutex * m = static_cast<mutex*>(*_mutex);
-		delete m;
-		break;
-	}
-	default:
-		break;
-	}
-	return 0;
-}
-*/
 #endif
 
 using namespace std;
@@ -200,9 +162,6 @@ public:
 			value[i] = (float)i;
 
 #ifdef FFMPEG
-		//Init FFMPEG
-		//int res = -1;
-		//res = av_lockmgr_register(&ff_lockmgr);
 		avformat_network_init();
 #endif
 

@@ -56,6 +56,10 @@ public:
 	virtual bool GetDXVA2Compatible() {
 		return false;
 	};
+	virtual bool GetDXVA2HardwareCompatible()
+	{
+		return false;
+	};
 	virtual HRESULT InitVideoDevice(char * hwaccel_device, DXVA2Context * ctx, const int &width, const int &height)
 	{
 		return S_OK;

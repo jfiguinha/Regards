@@ -13,6 +13,7 @@ public:
     
     static CVideoControlSoft * CreateWindow(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, IVideoInterface * eventPlayer);
    
+	bool GetDXVA2HardwareCompatible();
 	void SetDXVA2Compatible(const bool &compatible);
 	bool GetDXVA2Compatible();
 #ifdef RENDEROPENGL  
