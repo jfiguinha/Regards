@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="WindowToAdd.cpp"/>
     <File Name="WindowManager.cpp"/>
     <File Name="wxImagePanel.cpp"/>
     <File Name="TreeWithScrollbar.cpp"/>
@@ -76,6 +77,7 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="WindowToAdd.h"/>
     <File Name="WindowManager.h"/>
     <File Name="wxImagePanel.h"/>
     <File Name="TreeWithScrollbar.h"/>
