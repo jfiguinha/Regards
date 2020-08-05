@@ -207,6 +207,7 @@
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
+        <LibraryPath Value="/home/figuinha/developpement/git/Regards/libextern/openexr-2.5.2/build/OpenEXR/IlmImf"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
@@ -287,9 +288,6 @@
         <Library Value="asound"/>
         <Library Value="sndio"/>
         <Library Value="Xv"/>
-        <Library Value="IlmImf"/>
-        <Library Value="IexMath"/>
-        <Library Value="Half"/>
         <Library Value="curl"/>
         <Library Value="dl"/>
         <Library Value="gobject-2.0"/>
@@ -316,6 +314,13 @@
         <Library Value="aom"/>
         <Library Value="webp"/>
         <Library Value="png"/>
+        <Library Value="libHalf-2_5.a"/>
+        <Library Value="libIexMath-2_5.a"/>
+        <Library Value="libIlmImf-2_5.a"/>
+        <Library Value="libIlmImfUtil-2_5.a"/>
+        <Library Value="libIlmThread-2_5.a"/>
+        <Library Value="libImath-2_5.a"/>
+        <Library Value="libIex-2_5.a"/>
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
         <Library Value="opencv_dnn"/>
@@ -500,19 +505,26 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgcodecs.so.4.3 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgproc.so.4.3.0 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_imgproc.so.4.3 ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3.0 ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.3.0 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_objdetect.so.4.3 ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_calib3d.so.4.3 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3 ./Release</Command>
-        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_features2d.so.4.3.0 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3 ./Release</Command>
+        <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_flann.so.4.3.0 ./Release</Command>
+        <Command Enabled="yes"/>
+        <Command Enabled="yes">patchelf --set-rpath "./" RegardsViewer</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" libopencv_face.so.4.3</Command>
+        <Command Enabled="yes">patchelf --set-rpath "./" libopencv_calib3d.so.4.3</Command>
+        <Command Enabled="yes"/>
         <Command Enabled="yes">cp -R ./Release ./Package</Command>
         <Command Enabled="yes">if [ -d ./Package/RegardsViewer ]; then rm -R ./Package/RegardsViewer;fi</Command>
         <Command Enabled="yes">mv ./Package/Release ./Package/RegardsViewer</Command>
         <Command Enabled="yes">rm ./Package/RegardsViewer/*.o</Command>
         <Command Enabled="yes">rm ./Package/RegardsViewer/*.o.d</Command>
+        <Command Enabled="yes"/>
+        <Command Enabled="yes"/>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
