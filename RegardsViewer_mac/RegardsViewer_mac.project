@@ -635,9 +635,11 @@
         <Command Enabled="yes">cp /usr/local/opt/libtiff/lib/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebp.7.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebpmux.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpmux.3.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIMath-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/openexr/lib/libIlmImf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf-2_5.25.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIlmThread-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_5.25.dylib</Command>
         <Command Enabled="no">#cp ../libextern/fftw-3.3.8/.libs/libfftw3f.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfftw3f.3.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/freeimage/lib/libfreeimage.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
