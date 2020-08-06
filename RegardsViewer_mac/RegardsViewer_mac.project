@@ -794,7 +794,7 @@
 		 <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.3.dylib @executable_path/../Frameworks/libopencv_imgproc.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_videoio.4.3.dylib</Command>
 		 <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.3.dylib @executable_path/../Frameworks/libopencv_core.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_videoio.4.3.dylib</Command>	
 		 <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.0.dylib</Command>
-		 <Command Enabled="yes">install_name_tool -change @rpath/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtbbmalloc_proxy.dylib</Command>		 			 	 	 	 
+ 		 <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtiff.5.dylib</Command>		 		<Command Enabled="yes">install_name_tool -change @rpath/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtbbmalloc_proxy.dylib</Command>		 			 	 	 	 
         <Command Enabled="yes">$(shell change_link.sh)</Command>		
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
         <Command Enabled="yes">rm -f ./package/RegardsViewer2.dmg</Command>
