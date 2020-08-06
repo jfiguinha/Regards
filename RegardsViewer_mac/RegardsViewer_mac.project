@@ -637,6 +637,7 @@
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebpmux.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpmux.3.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIMath-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIexMath-2_5.25.dylib</Command>
+        <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIex-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIex-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/openexr/lib/libIlmImf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmImf-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libHalf-2_5.25.dylib</Command>
         <Command Enabled="yes">cp /usr/local/opt/ilmbase/lib/libIlmThread-2_5.25.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libIlmThread-2_5.25.dylib</Command>
