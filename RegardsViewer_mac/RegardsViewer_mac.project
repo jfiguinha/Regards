@@ -651,6 +651,7 @@
         <Command Enabled="yes">cp /usr/local/opt/pcre/lib/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/giflib/lib/libgif.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
+        <Command Enabled="yes">cp /usr/local/opt/giflib/lib/libgif.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/openjpeg/lib/libopenjp2.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgio-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgobject-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
