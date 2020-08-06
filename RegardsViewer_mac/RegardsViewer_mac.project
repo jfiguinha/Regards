@@ -440,7 +440,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libexiv2.26.dylib @executable_path/../Frameworks/libexiv2.26.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /Users/jacques/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.0.dylib @executable_path/../Frameworks/libtesseract.4.1.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -689,7 +689,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libexiv2.26.dylib @executable_path/../Frameworks/libexiv2.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /Users/jacques/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.0.dylib @executable_path/../Frameworks/libtesseract.4.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
