@@ -134,9 +134,9 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int autoRotate = rbAutoRotate->GetSelection();
 	if (autoRotate == 0)
-		regardsParam->SetDectectOrientation(0);
-	else
 		regardsParam->SetDectectOrientation(1);
+	else
+		regardsParam->SetDectectOrientation(0);
 
 	int dxva2Use = rdDxva2Render->GetSelection();
 	if (dxva2Use == 0)
