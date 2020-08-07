@@ -593,8 +593,8 @@ void CSliderVideo::OnPaint(wxPaintEvent& event)
     wxPaintDC dc(this);
     int width = GetWindowWidth();
     int height = GetWindowHeight();
-    if(width == 0 || height == 0)
-        return;
+	if (width <= 0 || height <= 0)
+		return;
     
     wxBitmap memBitmap(width, height);
     wxMemoryDC memDC(memBitmap);

@@ -267,6 +267,8 @@ void CShowBitmap::Resize()
 
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
+	if (width <= 0 || height <= 0)
+		return;    
 
 	if (!showToolbar && fullscreen)
 	{

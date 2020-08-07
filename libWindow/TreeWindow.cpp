@@ -303,7 +303,9 @@ void CTreeWindow::DrawBackgroundRectangle(wxDC * deviceContext, const int &y, co
 	rc.width = GetWindowWidth();
 	rc.y = y;
     rc.height = y + rowHeight;//themeTree.GetRowHeight();
-	deviceContext->GradientFillLinear(rc, color, color);
+    if(deviceContext != nullptr)
+        deviceContext->GradientFillLinear(rc, color, color);
+
 
 }
 
@@ -365,7 +367,8 @@ void CTreeWindow::Resize()
 {
     TRACE();
 	GenerateScreenBuffer();
-	//this->Refresh();
+	this->Refresh();
+    /*
 	wxClientDC dc(this);
 	if (backgroundBuffer.IsOk())
 	{
@@ -373,6 +376,7 @@ void CTreeWindow::Resize()
 		printf("CTreeWindow::OnPaint not bufferUpdate \n");
 		dc.DrawBitmap(backgroundBuffer, 0, 0);
 	}
+    */
 }
 
 void CTreeWindow::OnMouseMove(wxMouseEvent& event)
@@ -514,7 +518,7 @@ void CTreeWindow::GenerateScreenBuffer()
 	TRACE();
 	int width = GetWindowWidth();
 	int height = GetWindowHeight();
-	if (width == 0 || height == 0)
+	if (width <= 0 || height <= 0)
 		return;
 	
 	CalculControlSize();

@@ -59,7 +59,7 @@ public:
 #define WM_UPDATESTATUSBAR 504
 #define WM_LOADTHUMBNAIL 505
 
-bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* Définit une fonction. */
+bool CThumbnail::ItemCompFonct(int xPos, int yPos, CIcone * icone, CWindowMain * parent)   /* DÃ©finit une fonction. */
 {
 	wxRect rc = icone->GetPos();
 	if ((rc.x < xPos && xPos < rc.width) && (rc.y < yPos && yPos < rc.height))
@@ -968,8 +968,8 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
     TRACE();
     int width = GetWindowWidth();
     int height = GetWindowHeight();
-    if(width == 0 || height == 0)
-        return;
+	if (width <= 0 || height <= 0)
+		return;
 
 	TestMaxX();
 	TestMaxY();

@@ -252,8 +252,8 @@ void CThumbnailToolBarZoom::OnPaint(wxPaintEvent& event)
 {
     int width = GetWindowWidth();
     int height = GetWindowHeight();
-    if(width == 0 || height == 0)
-        return;
+	if (width <= 0 || height <= 0)
+		return;
     
 	wxPaintDC dc(this);
 	Draw(&dc);
