@@ -2,6 +2,7 @@
 #include "SqlExecuteRequest.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
+#include "SqlResult.h"
 #include <LibResource.h>
 using namespace Regards::Sqlite;
 

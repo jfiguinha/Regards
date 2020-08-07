@@ -1,12 +1,14 @@
 #pragma once
 
-#include "SqlResult.h"
+#include "sqlite3.h"
 using namespace std;
 
 namespace Regards
 {
 	namespace Sqlite
 	{
+        class CSqlResult;
+        
 		class CSqlLib
 		{
 		public:

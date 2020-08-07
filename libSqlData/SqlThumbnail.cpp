@@ -2,6 +2,7 @@
 #include "SqlThumbnail.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
+#include "SqlResult.h"
 #include <RegardsBitmap.h>
 #include <wx/mstream.h>
 #include <libPicture.h>

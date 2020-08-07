@@ -2,6 +2,7 @@
 #include "SqlOpenCLKernel.h"
 #include "SqlLib.h"
 #include "SqlEngine.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlOpenCLKernel::CSqlOpenCLKernel()

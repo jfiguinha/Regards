@@ -1,5 +1,6 @@
 #include "header.h"
 #include "SqlLib.h"
+#include "SqlResult.h"
 #include <wx/strconv.h>
 #include <ConvertUtility.h>
 using namespace std;

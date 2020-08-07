@@ -16,7 +16,7 @@
 #if defined( __UNIX_LIKE__ ) and not defined(__APPLE__)
 
 #include <sane/saneopts.h>
-
+#include <wx/progdlg.h>
 //////////////////////////////////////////////////////////
 // Class wxScanSane
 //
