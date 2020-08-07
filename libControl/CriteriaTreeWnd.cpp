@@ -3,8 +3,6 @@
 #include "CalendarDialogBox.h"
 #include "MapDialogBox.h"
 #include <RegardsConfigParam.h>
-#include <ParamInit.h>
-#include <ConvertUtility.h>
 #include <TreeWindow.h>
 #include "CriteriaTree.h"
 #if defined(LIBAPPLE)
@@ -22,11 +20,9 @@ using namespace Regards::exiv2;
 #endif
 #include <SqlCriteria.h>
 #include <SqlPhotoCriteria.h>
-#include <Gps.h>
 #include <SqlGps.h>
 #include <PhotoCriteria.h>
 #include <SqlPhotos.h>
-#include <TreeDataLink.h>
 #include <MapSelect.h>
 #include <CalendarSelect.h>
 using namespace Regards::Sqlite;

@@ -1,13 +1,10 @@
 #include <header.h>
 #include "ThumbnailVideo.h"
 #include <Thumbnail.h>
-#include <RegardsBitmap.h>
 #include <ThumbnailDataStorage.h>
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
-#include <FileUtility.h>
 #include <libPicture.h>
-#include <ImageLoadingFormat.h>
 #include <SqlThumbnailVideo.h>
 #include <picture_id.h>
 #include <SqlThumbnail.h>

@@ -1,9 +1,7 @@
 #include "header.h"
 #include "WindowManager.h"
 #include "PanelWithClickToolbar.h"
-#include <LibResource.h>
 #include "MainTheme.h"
-#include "MainThemeInit.h"
 #include "WindowToAdd.h"
 #include "SeparationBar.h"
 using namespace Regards::Window;

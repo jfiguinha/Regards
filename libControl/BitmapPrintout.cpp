@@ -1,7 +1,6 @@
 #include <header.h>
 #include "BitmapPrintout.h"
 #include <ImageLoadingFormat.h>
-#include <LoadingResource.h>
 #include <PrintEngine.h>
 using namespace Regards::Control;
 using namespace Regards::Print;

@@ -1,7 +1,6 @@
 ﻿#include <header.h>
 #include "ThumbnailFolder.h"
 #include "MainWindow.h"
-#include <window_id.h>
 #include <LibResource.h>
 #include <ThumbnailDataSQL.h>
 #include <SqlFindPhotos.h>
@@ -11,7 +10,6 @@
 #include <SqlFindLocalisation.h>
 #include <ConvertUtility.h>
 #include <ScrollbarHorizontalWnd.h>
-#include <ScrollbarVerticalWnd.h>
 #include <ScrollbarWnd.h>
 #include <SqlPhotosWithoutThumbnail.h>
 using namespace Regards::Viewer;

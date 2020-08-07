@@ -4,7 +4,6 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <window_id.h>
-#include <config_id.h>
 #include "MainWindow.h"
 #include <SqlFindFolderCatalog.h>
 #include <SqlPhotoCriteria.h>

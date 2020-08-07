@@ -1,10 +1,8 @@
 #include <header.h>
 #include "OpenCLBm3D.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
-#include <LoadingResource.h>
 
 #define ENABLE_PROFILING 0
 #define UNROLL 1

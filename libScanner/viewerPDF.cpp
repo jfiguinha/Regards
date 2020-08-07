@@ -4,9 +4,7 @@
 #undef fract1
 #include <leptonica/allheaders.h>
 #define fract1
-#include <wx/choicdlg.h> 
 #include <ImageLoadingFormat.h>
-#include <ImageVideoThumbnail.h>
 #include "PanelInfosWnd.h"
 #include <LibResource.h>
 #include "MainTheme.h"
@@ -18,16 +16,8 @@
 #include <ShowBitmap.h>
 #include "ThumbnailMultiPage.h"
 #include <window_id.h>
-#include <ParamInit.h>
-#include <StatusText.h>
-#include <picture_id.h>
-#include "PanelInfosWnd.h"
-//#include "PictureElement.h"
-#include "ThumbnailMessage.h"
-#include <SqlThumbnailVideo.h>
 #include "ScannerFrame.h"
 #include <FileUtility.h>
-#include "CentralWindow.h"
 #include "OcrWnd.h"
 //#include <qpdf/QIntC.hh>
 

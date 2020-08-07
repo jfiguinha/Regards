@@ -10,7 +10,6 @@
 /////////////////////////////////////////////////////////////////////////////
 #include <header.h>
 #include <Regards.h>
-#include <wx/filename.h>
 #include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>

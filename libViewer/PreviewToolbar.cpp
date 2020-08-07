@@ -1,11 +1,9 @@
 #include <header.h>
 #include "PreviewToolbar.h"
 #include "ToolbarSlide.h"
-#include "ViewerParamInit.h"
 #include <ConfigParam.h>
 #include <LibResource.h>
 #include <ToolbarInterface.h>
-#include "ViewerParam.h"
 #include "MainWindow.h"
 #include <window_id.h>
 using namespace Regards::Window;

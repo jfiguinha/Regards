@@ -7,28 +7,18 @@
 #include <SqlFindPhotos.h>
 #include <SqlCatalog.h>
 #include "TreeDataCategory.h"
-#include <SQLRemoveData.h>
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
 #include <TreeElementCheckBox.h>
 #include <SqlFindFolderCatalog.h>
-#include <SqlFolderCatalog.h>
-#include <TreeElementDelete.h>
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <LibResource.h>
 #include <ConvertUtility.h>
 #include <ThumbnailData.h>
-#include <window_id.h>
-#include "MainWindow.h"
-#include <FileGeolocation.h>
-#include "ViewerParamInit.h"
-#include "ViewerParam.h"
 #include <SqlFindCatalog.h>
 #include <theme.h>
-#include <Criteria.h>
 #include <TreeWindow.h>
-#include <TreeDataCategory.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Viewer;
 using namespace Regards::Window;

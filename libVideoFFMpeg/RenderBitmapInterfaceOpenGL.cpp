@@ -7,8 +7,6 @@
 #include "RenderBitmapInterfaceOpenGL.h"
 #include <ConfigParam.h>
 #include <GLSLShader.h>
-#include <ParamInit.h>
-#include <LoadingResource.h>
 #include <RegardsBitmap.h>
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>

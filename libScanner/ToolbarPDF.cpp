@@ -2,8 +2,6 @@
 #include "ToolbarPDF.h"
 #include <ToolbarButton.h>
 #include <LibResource.h>
-#include "FileUtility.h"
-#include <window_id.h>
 #include "ScannerFrame.h"
 
 using namespace Regards::Window;

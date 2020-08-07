@@ -1,9 +1,7 @@
 #include <header.h>
 #include "OpenCLEffectVideoYUV.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
-#include <LoadingResource.h>
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoYUV::COpenCLEffectVideoYUV(COpenCLContext * context)

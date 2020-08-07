@@ -1,6 +1,5 @@
 #include <header.h>
 #include "InfosFile.h"
-#include <ConvertUtility.h>
 #include <libPicture.h>
 #include <TreeData.h>
 #ifdef EXIV2
@@ -23,7 +22,6 @@ using namespace Regards::exiv2;
 #include <TreeElementTriangle.h>
 #include <Gps.h>
 #include <theme.h>
-#include <LibResource.h>
 #include <TreeElementControlInterface.h>
 using namespace Regards::Control;
 using namespace Regards::Window;

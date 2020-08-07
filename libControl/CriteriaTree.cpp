@@ -1,6 +1,5 @@
 #include <header.h>
 #include "CriteriaTree.h"
-#include <ConvertUtility.h>
 #include <TreeElementTexte.h>
 #include <TreeElementTriangle.h>
 #include "TreeElementTexteClick.h"
@@ -11,9 +10,7 @@
 #include <libPicture.h>
 #include <SqlFindFacePhoto.h>
 #include <LibResource.h>
-#include <SqlPhotoCategorieUsenet.h>
 #include <SqlPhotoCategorie.h>
-#include <TreeDataLink.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

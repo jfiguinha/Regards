@@ -1,13 +1,9 @@
 #include "header.h"
 #include "VideoControl_soft.h"
 #include <wx/dcbuffer.h>
-#include <RegardsFloatBitmap.h>
 #include <RegardsBitmap.h>
 #include "ffplaycore.h"
-#include <Interpolation.h>
-#include <config_id.h>
 #include "ffmpegToBitmap.h"
-#include <ImageLoadingFormat.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #include <OpenCL/opencl.h>

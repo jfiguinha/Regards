@@ -4,15 +4,10 @@
 #include "MainWindow.h"
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
-#include <window_id.h>
-#include <LibResource.h>
 #include <SqlFaceThumbnail.h>
 #include <SqlFindFacePhoto.h>
-#include <ConvertUtility.h>
 #include <ScrollbarHorizontalWnd.h>
-#include <ScrollbarVerticalWnd.h>
 #include <ScrollbarWnd.h>
-#include <SqlPhotos.h>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceLabel.h>
 using namespace Regards::Viewer;
@@ -31,7 +26,7 @@ CThumbnailFace::CThumbnailFace(wxWindow* parent, wxWindowID id, const CThemeThum
 
 CThumbnailFace::~CThumbnailFace(void)
 {
-	for (CInfosSeparationBar * infosSeparationBar : listSeparator)
+	for (CInfosSeparationBar* infosSeparationBar : listSeparator)
 	{
 		delete(infosSeparationBar);
 	}
@@ -44,15 +39,6 @@ void CThumbnailFace::OnPictureClick(CThumbnailData * data)
     CMainWindow * mainWindow = (CMainWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
 	if (mainWindow != nullptr)
 	{
-		/*
-		wxString * photoPath = new wxString();
-		wxCommandEvent evt(wxEVENT_FACECLICK);
-		*photoPath = data->GetFilename();
-		evt.SetClientData(photoPath);
-		evt.SetExtraLong(data->GetNumPhotoId());
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-		*/
-		//mainWindow->PictureVideoClick(timePosition);
 		wxCommandEvent evt(wxEVENT_ONPICTURECLICK);
 		evt.SetExtraLong(data->GetNumPhotoId());
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);

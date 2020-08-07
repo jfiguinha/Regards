@@ -1,6 +1,5 @@
 #include "header.h"
 #include "ToolbarTexte.h"
-#include <LibResource.h>
 #include "WindowMain.h"
 using namespace Regards::Window;
 

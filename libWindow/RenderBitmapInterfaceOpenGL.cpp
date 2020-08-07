@@ -7,8 +7,6 @@
 #include "RenderBitmapInterfaceOpenGL.h"
 #include <ConfigParam.h>
 #include <GLSLShader.h>
-#include <ParamInit.h>
-#include <LoadingResource.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <GLUT/glut.h>
@@ -19,9 +17,6 @@
 #include <libPicture.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
-#include <PhotoFiltreEffectParameter.h>
-#include <RgbEffectParameter.h>
-#include <FilterData.h>
 #include <RegardsBitmap.h>
 using namespace Regards::Window;
 

@@ -1,6 +1,5 @@
 #include "header.h"
 #include "TreeElementDelete.h"
-#include "LoadingResource.h"
 #include "WindowMain.h"
 using namespace Regards::Window;
 

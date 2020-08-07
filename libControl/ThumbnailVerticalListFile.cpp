@@ -2,9 +2,7 @@
 #include "ThumbnailVerticalListFile.h"
 #include <ThumbnailDataSQL.h>
 #include <Photos.h>
-#include <FileUtility.h>
 #include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarVerticalWnd.h"
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 

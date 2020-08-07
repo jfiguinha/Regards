@@ -1,15 +1,12 @@
 #include <header.h>
 #include "PanelInfosWnd.h"
-#include "ThumbnailEffect.h"
 #include "ToolbarInfos.h"
 #include <BitmapWndViewer.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <window_id.h>
-#include <config_id.h>
 #include <FileUtility.h>
 #include <LibResource.h>
-#include <ImageLoadingFormat.h>
 #include <FilterData.h>
 #include "OcrWnd.h"
 #include <wx/stdpaths.h>

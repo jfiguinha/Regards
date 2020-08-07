@@ -2,7 +2,6 @@
 #include "ConfigParam.h"
 #include <fstream>
 #include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
 #include <ConvertUtility.h>
 using namespace rapidxml;
 

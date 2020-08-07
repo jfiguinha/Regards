@@ -1,7 +1,6 @@
 #include <header.h>
 #include "IntroTheme.h"
 #include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
 using namespace rapidxml;
 using namespace Regards::Introduction;
 

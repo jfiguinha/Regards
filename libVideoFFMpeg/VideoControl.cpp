@@ -4,19 +4,14 @@
 
 #include "VideoControl.h"
 #include <wx/dcbuffer.h>
-#include <RegardsFloatBitmap.h>
 #include "ffplaycore.h"
-#include <Interpolation.h>
-#include "config_id.h"
 #include <d3d9.h>
 #include <CL/cl_dx9_media_sharing.h>
 #include <CL/cl.h>
 #include <utility.h>
 #include "ffmpegToBitmap.h"
-#include <RegardsBitmap.h>
-#include <ImageLoadingFormat.h>
 #include <ViewerParam.h>
-#include <ViewerParamInit.h>
+
 
 #ifndef RENDEROPENGL
 extern COpenCLEngine * openCLEngine;

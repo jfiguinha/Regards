@@ -1,13 +1,8 @@
 #include "header.h"
 #include "BitmapInfosGps.h"
-#include <FileUtility.h>
-#include <LibResource.h>
-#include <ConvertUtility.h>
 #include <wx/dcbuffer.h>
 #include <RegardsConfigParam.h>
-#include <ParamInit.h>
 #include <wx/sstream.h>
-#include <LoadingResource.h>
 #include <wxSVG/SVGDocument.h>
 using namespace Regards::Window;
 //using namespace Regards::Internet;

@@ -11,7 +11,6 @@
 #include "FileUtility.h"
 #include <MoveFaceDialog.h>
 #include <SqlFacePhoto.h>
-#include <SqlFaceLabel.h>
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
 #include <PictureData.h>

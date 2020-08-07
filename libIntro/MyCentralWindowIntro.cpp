@@ -1,8 +1,5 @@
 #include <header.h>
 #include "MyCentralWindowIntro.h"
-#include <RegardsBitmap.h>
-#include <LibResource.h>
-#include <LoadingResource.h>
 #include <wx/dcbuffer.h>
 #include "IntroTheme.h"
 using namespace Regards::Introduction;

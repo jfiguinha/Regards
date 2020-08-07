@@ -1,8 +1,6 @@
 #include "header.h"
 #include "TreeWindow.h"
 #include "ScrollbarWnd.h"
-#include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarVerticalWnd.h"
 #include <wx/dcbuffer.h>
 #include "TreeControl.h"
 using namespace Regards::Window;

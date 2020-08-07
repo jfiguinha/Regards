@@ -4,7 +4,6 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stddef.h>
 #include <string.h>
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
@@ -16,11 +15,7 @@
 #include "goo/gbasename.h"
 #include "goo/gmem.h"
 #include "Object.h"
-#include "Stream.h"
-#include "Array.h"
 #include "Dict.h"
-#include "XRef.h"
-#include "Catalog.h"
 #include "Page.h"
 #include "Outline.h"
 #include "PDFDoc.h"

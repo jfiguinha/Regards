@@ -9,7 +9,6 @@
 #include <InterpolationFloatBicubic.h>
 #include <turbojpeg.h>
 #include "RegardsJpegPicture.h"
-#include <wx/filename.h>
 #ifdef ROTDETECT
 #include <rotdetect.h>
 #endif

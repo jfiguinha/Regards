@@ -2,10 +2,8 @@
 #include "ToolbarSlide.h"
 #include <LibResource.h>
 #include <ClosedHandCursor.h>
-#include "LoadingResource.h"
 #include "WindowMain.h"
 #include <wxSVG/SVGDocument.h>
-#include <wx/sstream.h>
 #include "SliderInterface.h"
 using namespace Regards::Window;
 

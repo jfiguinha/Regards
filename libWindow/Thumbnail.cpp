@@ -1,15 +1,12 @@
 #include "header.h"
 #include "Thumbnail.h"
-#include <LibResource.h>
 #include <FileUtility.h>
 #include <libPicture.h>
 #include <wxmd5.h>
 #include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarVerticalWnd.h"
 #include "ScrollbarWnd.h"
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include "LoadingResource.h"
 #include <SqlPhotosWithoutThumbnail.h>
 #include <ImageLoadingFormat.h>
 #include <ImageVideoThumbnail.h>
@@ -17,10 +14,6 @@
 #include <wx/dcbuffer.h>
 #include <wx/filename.h>
 #include <ThumbnailData.h>
-#include <ThumbnailDataSQL.h>
-#include <ThumbnailDataStorage.h>
-//#include <ThumbnailDataVideo.h>
-#include <SqlFaceThumbnail.h>
 #include <ThumbnailMessage.h>
 using namespace Regards::Window;
 

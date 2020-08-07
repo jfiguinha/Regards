@@ -2,11 +2,9 @@
 #include "CentralWindow.h"
 #include "AnimationToolbar.h"
 #include "ToolbarSlide.h"
-#include "ViewerParamInit.h"
 #include <ConfigParam.h>
 #include <LibResource.h>
 #include <ToolbarButton.h>
-#include "ViewerParam.h"
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

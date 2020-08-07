@@ -414,9 +414,9 @@ double CFFmfcPimpl::get_video_clock(VideoState *is)
 /* get the current external clock value */
 double CFFmfcPimpl::get_external_clock(VideoState *is)
 {
-	int64_t ti;
-	ti = av_gettime();
-	return is->external_clock + ((ti - is->external_clock_time) * 1e-6);
+	//int64_t ti;
+	//int64_t ti = av_gettime();
+	return is->external_clock + ((av_gettime() - is->external_clock_time) * 1e-6);
 }
 
 /* get the current master clock value */
@@ -749,9 +749,7 @@ void CFFmfcPimpl::video_refresh(VideoState *is)
 potential locking problems */
 void CFFmfcPimpl::alloc_picture(VideoState *is)
 {
-	VideoPicture *vp;
-
-	vp = &is->pictq[is->pictq_windex];
+	VideoPicture * vp = &is->pictq[is->pictq_windex];
 
 	SDL_LockMutex(is->pictq_mutex);
 	vp->allocated = 1;

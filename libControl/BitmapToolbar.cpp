@@ -1,7 +1,6 @@
 #include <header.h>
 #include "BitmapToolbar.h"
 #include <LibResource.h>
-#include <ParamInit.h>
 #include <ConfigParam.h>
 using namespace Regards::Control;
 

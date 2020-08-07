@@ -8,8 +8,6 @@
 #include <libPicture.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
-#include <ThemeInit.h>
-#include <FileUtility.h>
 #include <array>
 #include <ImageLoadingFormat.h>
 #include <DeepLearning.h>

@@ -1,8 +1,5 @@
 #include "header.h"
 #include "ConvertUtility.h"
-#include <sstream>
-#include <locale>
-#include <codecvt>
 using namespace std;
 
 CConvertUtility::CConvertUtility(void)

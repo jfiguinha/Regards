@@ -1,10 +1,8 @@
 ﻿#include <header.h>
 #include "ThumbnailViewerPicture.h"
 #include "MainWindow.h"
-#include <window_id.h>
 #include <ThumbnailDataSQL.h>
 #include <ScrollbarHorizontalWnd.h>
-#include <ScrollbarVerticalWnd.h>
 #include <ScrollbarWnd.h>
 
 using namespace Regards::Viewer;

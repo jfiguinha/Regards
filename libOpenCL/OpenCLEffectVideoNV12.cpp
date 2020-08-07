@@ -1,10 +1,7 @@
 #include <header.h>
 #include "OpenCLEffectVideoNV12.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
-#include <RegardsBitmap.h>
-#include <LoadingResource.h>
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoNV12::COpenCLEffectVideoNV12(COpenCLContext * context)

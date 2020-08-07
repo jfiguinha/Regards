@@ -1,11 +1,9 @@
 #include <header.h>
 #include "OpenCLEffect.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
 #include "RegardsFloatBitmap.h"
-#include <LoadingResource.h>
 #include <MotionBlur.h>
 #include "OpenCLFilter.h"
 #include "utility.h"

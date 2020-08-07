@@ -2,10 +2,7 @@
 #include "Toolbar.h"
 #include <ToolbarButton.h>
 #include <LibResource.h>
-#include "MainWindow.h"
 #include "ViewerFrame.h"
-#include "FileUtility.h"
-#include "CentralWindow.h"
 #include <window_id.h>
 
 using namespace Regards::Window;

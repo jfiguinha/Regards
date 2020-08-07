@@ -5,14 +5,12 @@
 #ifdef __WXMSW__
 #include <ImageAcquisition.h>
 #include <GdiPlusPixelFormats.h>
-#include <iostream>
 #include <gdiplus.h>
 #include <shobjidl.h>
 #include <wx/graphics.h>
 #define USE_WIA_INTERFACE
 #endif
 #include <wx/filedlg.h>
-#include <PrintEngine.h>
 #include "ScannerFrame.h"
 #include <wx/image.h>
 #include <wx/numdlg.h>

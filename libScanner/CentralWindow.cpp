@@ -3,16 +3,13 @@
 #include "ToolbarPDF.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
-#include <ConfigParam.h>
 #include <ImageLoadingFormat.h>
 #include <window_id.h>
 #include <qpdf/QPDF.hh>
 #include <qpdf/QPDFPageDocumentHelper.hh>
 #include <qpdf/QPDFWriter.hh>
-#include <qpdf/QUtil.hh>
 #include "SelectPage.h"
 #include <FileUtility.h>
-#include <ConvertUtility.h>
 #include <libPicture.h>
 #include <picture_id.h>
 #include <wx/progdlg.h>

@@ -1,7 +1,6 @@
 ﻿#include <header.h>
 #include "ListPicture.h"
 #include <FileUtility.h>
-#include <SQLRemoveData.h>
 #include <SqlFindCriteria.h>
 #include <ThumbnailData.h>
 #include "MainTheme.h"
@@ -9,7 +8,6 @@
 #include <LibResource.h>
 #include "MainWindow.h"
 #include "ImageList.h"
-#include <window_id.h>
 #include <picture_id.h>
 #include <ExportFile.h>
 #include <ConvertUtility.h>
@@ -17,14 +15,12 @@
 #include <libPicture.h>
 #include <MapSelect.h>
 #include <CalendarSelect.h>
-#include "SqlFindPhotos.h"
 #include "ViewerParam.h"
 #include "ViewerParamInit.h"
 #include <IndexGenerator.h>
 #include <ThumbnailDataSQL.h>
 #include <SavePicture.h>
 #include <wx/progdlg.h>
-#include <SqlFindCriteria.h>
 #include <SqlCriteria.h>
 #include <SqlGps.h>
 #include <SqlPhotoCriteria.h>
@@ -34,7 +30,6 @@
 #include "ThumbnailToolBar.h"
 #include "ThumbnailToolBarZoom.h"
 #include <WindowMain.h>
-#include "ImageList.h"
 #ifdef EXIV2
 #include <MetadataExiv2.h>
 using namespace Regards::exiv2;

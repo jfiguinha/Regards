@@ -2,10 +2,7 @@
 #include "ThumbnailHorizontal.h"
 #include <ThumbnailDataSQL.h>
 #include <queue>
-#include <deque>
-#include <FileUtility.h>
 #include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarVerticalWnd.h"
 #include "ScrollbarWnd.h"
 using namespace Regards::Control;
 

@@ -10,7 +10,6 @@
 #include "MapSelect.h"
 #include "MapDialogBox.h"
 #include <ConvertUtility.h>
-#include <window_id.h>
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <Gps.h>

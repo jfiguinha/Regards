@@ -5,8 +5,6 @@
 #include <ShowVideo.h>
 #endif
 #include <libPicture.h>
-#include <window_id.h>
-#include "ViewerParam.h"
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
@@ -14,9 +12,6 @@
 #include "PreviewToolbar.h"
 #include "AnimationToolbar.h"
 #include <ShowBitmap.h>
-#include <EffectVideoParameter.h>
-#include <BitmapInterface.h>
-#include <ToolbarInterface.h>
 #include <BitmapInfos.h>
 #include <wx/animate.h>
 #include <FileGeolocation.h>

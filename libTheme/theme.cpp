@@ -3,7 +3,6 @@
 #include <RegardsConfigParam.h>
 #include <ParamInit.h>
 #include <rapidxml.hpp>
-#include <rapidxml_print.hpp>
 #ifndef __WXMSW__
 #include <font_quality.h>
 #endif

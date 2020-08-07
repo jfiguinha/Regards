@@ -1,20 +1,13 @@
 #include "header.h"
 #include "ffmpegToBitmap.h"
 #include <stdexcept>
-#include <algorithm>
 #include <cassert>
-#include <cstring>
 #include <array>
-#include <sstream>
-#include <memory>
 #include <RotateByShearRGB.h>
 extern "C" {
 #include <libavutil/opt.h>
 #include <libavutil/pixfmt.h>
 #include <libswscale/swscale.h>
-#include <libavfilter/avfilter.h>
-#include <libavfilter/buffersink.h>
-#include <libavfilter/buffersrc.h>
 }
 
 #include <RegardsBitmap.h>

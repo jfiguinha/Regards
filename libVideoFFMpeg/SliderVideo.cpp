@@ -1,12 +1,10 @@
 #include "header.h"
 #include "SliderVideo.h"
 #include <LibResource.h>
-#include <ParamInit.h>
 #include <ConfigParam.h>
 #include <ConvertUtility.h>
 #include <ClosedHandCursor.h>
 #include "WindowMain.h"
-#include "LoadingResource.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 using namespace Regards::Video;

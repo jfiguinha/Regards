@@ -1,8 +1,6 @@
 #include <header.h>
 #include "MainWindow.h"
 #include <LibResource.h>
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
 #include "ViewerParamInit.h"
 #include "ViewerParam.h"
 #include <PrintEngine.h>
@@ -12,7 +10,6 @@
 #include "MainTheme.h"
 #include "PanelInfosWnd.h"
 #include "SqlFindPhotos.h"
-#include <SqlPhotos.h>
 #include <wx/progdlg.h>
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
@@ -20,7 +17,6 @@
 #include <StatusBarInterface.h>
 #include "CentralWindow.h"
 #include "FileUtility.h"
-#include <EffectVideoParameter.h>
 #include "CategoryFolderWindow.h"
 #include <ImageLoadingFormat.h>
 #include <wx/dir.h>
@@ -28,19 +24,12 @@
 #include "ImageList.h"
 #include <ConvertUtility.h>
 #include <window_id.h>
-#include <FilterData.h>
 #include <SqlFindFolderCatalog.h>
-#include <wxSVG/SVGDocument.h>
-#include "VideoFilter.h"
 #include <SQLRemoveData.h>
 #include <SqlFolderCatalog.h>
 #include <wx/display.h>
 #include <SqlInsertFile.h>
-#include <ExportFile.h>
-#include <SqlFindCriteria.h>
-#include <ShowVideo.h>
 #include <StatusText.h>
-#include "PictureElement.h"
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"

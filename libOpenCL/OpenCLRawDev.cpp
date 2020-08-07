@@ -1,10 +1,8 @@
 #include <header.h>
 #include "OpenCLRawDev.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "utility.h"
-#include <LoadingResource.h>
 using namespace Regards::OpenCL;
 
 COpenCLRawDev::COpenCLRawDev(COpenCLContext * context)

@@ -1,7 +1,5 @@
 #include "header.h"
 #include "ScrollbarHorizontalWnd.h"
-
-#include <ClosedHandCursor.h>
 #include <window_id.h>
 #include <wx/dcbuffer.h>
 using namespace Regards::Window;

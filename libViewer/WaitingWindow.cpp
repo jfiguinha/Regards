@@ -21,12 +21,13 @@ CWaitingWindow::CWaitingWindow(wxWindow* parent, wxWindowID id) : CWindowMain("C
 	m_animationCtrl->SetBackgroundColour(wxColour("white"));
 #ifdef __WXGTK__
 	m_animationCtrl->Play();
-#else                
+#else
 	m_animationCtrl->Play(true);
 #endif
 };
 
-CWaitingWindow::~CWaitingWindow() {
+CWaitingWindow::~CWaitingWindow()
+{
 	if (m_animationCtrl != nullptr)
 		delete m_animationCtrl;
 };
@@ -66,7 +67,7 @@ void CWaitingWindow::Resize()
 	}
 };
 
-void CWaitingWindow::SetTexte(const wxString &libelle)
+void CWaitingWindow::SetTexte(const wxString& libelle)
 {
 	textToShow = libelle;
 	Refresh();
@@ -91,13 +92,12 @@ void CWaitingWindow::OnPaint(wxPaintEvent& event)
 	this->FillRect(&dc, rc, wxColour("white"));
 	font.SetColorFont(wxColour("black"));
 
-	wxSize size = CWindowMain::GetSizeTexte(&dc, textToShow, font);
+	wxSize size = GetSizeTexte(&dc, textToShow, font);
 	int xPos = (GetWindowWidth() / scale_factor - size.x) / 2;
 
 	wxAnimation animation = m_animationCtrl->GetAnimation();
 	wxSize animationSize = animation.GetSize();
 	int yPos = (GetWindowHeight() / scale_factor - animationSize.GetHeight()) / 2;
 	yPos -= size.y * 2;
-	CWindowMain::DrawTexte(&dc, textToShow, xPos, yPos, font);
-
+	DrawTexte(&dc, textToShow, xPos, yPos, font);
 }

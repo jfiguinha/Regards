@@ -29,7 +29,6 @@ tesseract::TessBaseAPI CExportOcr::api;
 //#include <tesseract/dict.h>
 //#include <tesseract/simddetect.h>
 #include <cerrno>               // for errno
-#include <iostream>
 
 #include <tesseract/renderer.h>
 #include <leptonica/allheaders.h>

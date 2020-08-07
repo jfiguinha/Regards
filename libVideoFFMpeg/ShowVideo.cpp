@@ -3,11 +3,9 @@
 #include "SliderVideo.h"
 #include "VideoControl.h"
 #include "VideoControl_soft.h"
-#include <ThemeInit.h>
 #include <OpenCLContext.h>
 #include <window_id.h>
 #include <ViewerParam.h>
-#include <ViewerParamInit.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
 using namespace Regards::OpenCL;

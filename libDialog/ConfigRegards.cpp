@@ -3,7 +3,6 @@
 #include <RegardsConfigParam.h>
 #include <LibResource.h>
 #include <ParamInit.h>
-#include <config_id.h>
 
 #ifndef WX_PRECOMP
 	//(*InternalHeadersPCH(ConfigRegards)

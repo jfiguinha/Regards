@@ -1,6 +1,5 @@
 #include <header.h>
 #include "InfosSeparationBarFace.h"
-#include <LoadingResource.h>
 #include <WindowMain.h>
 #include <ChangeLabel.h>
 #include <wxSVG/SVGDocument.h>

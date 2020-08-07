@@ -1,8 +1,6 @@
 #include <header.h>
 #include "SavePicture.h"
-#include <RegardsBitmap.h>
 #include <libPicture.h>
-#include <ConvertUtility.h>
 #ifdef __APPLE__
 #include <SaveFileFormat.h>
 #include <SaveFromCFunction.h>
@@ -10,7 +8,6 @@
 #endif
 #include <wx/filename.h>
 #include "SelectPage.h"
-#include <FileUtility.h>
 #include <ImageLoadingFormat.h>
 
 CSavePicture::CSavePicture()

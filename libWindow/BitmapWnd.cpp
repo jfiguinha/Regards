@@ -1,13 +1,9 @@
 #include "header.h"
 #include "BitmapWnd.h"
-#include <IFiltreEffet.h>
 #include <RGBAQuad.h>
 #include <FiltreEffet.h>
 #include "ClosedHandCursor.h"
 #include "ScrollbarWnd.h"
-#include "ScrollbarHorizontalWnd.h"
-#include "ScrollbarVerticalWnd.h"
-#include <LibResource.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <wx/dcbuffer.h>

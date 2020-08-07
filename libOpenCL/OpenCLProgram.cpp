@@ -1,7 +1,6 @@
 #include <header.h>
 #include "OpenCLProgram.h"
 #include "utility.h"
-#include "OpenCLEngine.h"
 #include "OpenCLContext.h"
 #include <LibResource.h>
 #include <SqlOpenCLKernel.h>

@@ -6,8 +6,6 @@
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <ImageLoadingFormat.h>
-#include <window_id.h>
-#include <Gps.h>
 #include <libPicture.h>
 #include <picture_id.h>
 #include <ThumbnailMessage.h>

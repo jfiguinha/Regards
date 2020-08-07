@@ -11,7 +11,6 @@
 #include <FileUtility.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
-#include <wx/txtstrm.h>
 using namespace Regards::Sqlite;
 
 wxString CLibResource::GetPhotoCancel()

@@ -2,12 +2,7 @@
 #include "ToolbarButton.h"
 #include <theme.h>
 #include <LibResource.h>
-#include "LoadingResource.h"
 #include "WindowMain.h"
-#include <RegardsBitmap.h>
-#include <InterpolationBicubic.h>
-#include <FiltreEffet.h>
-#include <config_id.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>

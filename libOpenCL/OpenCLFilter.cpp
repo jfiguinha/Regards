@@ -1,14 +1,10 @@
 #include <header.h>
 #include "OpenCLFilter.h"
-#include "OpenCLEngine.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
-#include <LoadingResource.h>
-#include <MotionBlur.h>
 #include "utility.h"
 #include <RegardsConfigParam.h>
-#include <ParamInit.h>
 using namespace Regards::OpenCL;
 
 

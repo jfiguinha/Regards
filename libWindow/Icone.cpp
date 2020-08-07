@@ -1,13 +1,10 @@
 #include "header.h"
 #include "Icone.h"
 #include <ThumbnailData.h>
-#include <ThumbnailDataStorage.h>
-#include <ThumbnailDataSQL.h>
 #include <ParamInit.h>
 //#include <InterpolationBicubicwxImage.h>
 #include <LibResource.h>
 #include <FileUtility.h>
-#include <FiltreEffet.h>
 #include "LoadingResource.h"
 #include "WindowMain.h"
 #include <config_id.h>
