@@ -21,7 +21,8 @@ Description: RegardsViewer is a picture viewer and video player
 <</CTRL>>
 <<FILES>>
 1
-/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /usr/bin
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /opt
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/debian/RegardsViewer/usr/bin/RegardsViewer* -> RegardsViewer -> /usr/bin
 <</FILES>>
 <<SCRIPTS>>
 <<PREINST>>
@@ -73,7 +74,7 @@ License version 2 can be found in the file
 1
 Name=RegardsViewer
 Version=1.0
-Exec=/usr/bin/env sh -c "/usr/bin/RegardsViewer/RegardsViewer %f"
+Exec=RegardsViewer
 Comment=Picture and Video Viewer
 Icon=/usr/bin/RegardsViewer/Resources/viewer.png
 Type=Application
