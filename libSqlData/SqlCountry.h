@@ -12,13 +12,12 @@ namespace Regards
 		public:
 			CSqlCountry();
 			~CSqlCountry();
-			bool GetCountry(CountryVector * countryVector);
+			bool GetCountry(CountryVector* countryVector);
 
 		private:
 
-			int TraitementResult(CSqlResult * sqlResult);
-			CountryVector * m_countryVector;
+			int TraitementResult(CSqlResult* sqlResult) override;
+			CountryVector* m_countryVector;
 		};
 	}
 }
-

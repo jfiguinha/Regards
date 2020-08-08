@@ -16,9 +16,6 @@
 #include <header.h>
 #include "InMemoryFile.h"
 
-#include <string.h>
-#include <sstream>
-
 InMemoryFile::InMemoryFile()
     : iohead(0)
     , fptr(nullptr)

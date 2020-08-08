@@ -53,15 +53,12 @@
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
-#include <stddef.h>
 #include <ctype.h>
 #include <math.h>
 #include <iostream>
 #include "goo/GooString.h"
 #include "goo/gbasename.h"
 #include "goo/gbase64.h"
-#include "goo/gbasename.h"
 #include "UnicodeMap.h"
 #include "goo/gmem.h"
 #include "Error.h"

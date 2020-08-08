@@ -15,13 +15,15 @@ CSqlCountry::~CSqlCountry()
 /////////////////////////////////////////////////////////////////
 //Chargement des informations sur les attributs
 /////////////////////////////////////////////////////////////////
-bool CSqlCountry::GetCountry(CountryVector * countryVector)
+bool CSqlCountry::GetCountry(CountryVector* countryVector)
 {
 	m_countryVector = countryVector;
-	return (ExecuteRequest("SELECT NumCountry, CodeCountry, LibelleContinent, LibelleCountry FROM COUNTRY") != -1) ? true : false;;
+	return (ExecuteRequest("SELECT NumCountry, CodeCountry, LibelleContinent, LibelleCountry FROM COUNTRY") != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlCountry::TraitementResult(CSqlResult * sqlResult)
+int CSqlCountry::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
@@ -29,7 +31,6 @@ int CSqlCountry::TraitementResult(CSqlResult * sqlResult)
 		CCountry _cCountry;
 		for (auto i = 0; i < sqlResult->GetColumnCount(); i++)
 		{
-
 			switch (i)
 			{
 			case 0:

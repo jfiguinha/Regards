@@ -15,34 +15,43 @@ CSqlCatalog::~CSqlCatalog()
 }
 
 
-bool CSqlCatalog::InsertCatalog(const wxString & libelle)
+bool CSqlCatalog::InsertCatalog(const wxString& libelle)
 {
-	return (ExecuteRequestWithNoResult("INSERT INTO CATALOG (LibelleCatalog) VALUES ('" + libelle + "')") != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("INSERT INTO CATALOG (LibelleCatalog) VALUES ('" + libelle + "')") != -1)
+		       ? true
+		       : false;
 }
 
-bool CSqlCatalog::UpdateCatalog(const int64_t &numCatalog, const wxString & libelle)
+bool CSqlCatalog::UpdateCatalog(const int64_t& numCatalog, const wxString& libelle)
 {
-	return (ExecuteRequestWithNoResult("UPDATE CATALOG SET LibelleCatalog = '" + libelle + "' WHERE NumCatalog = " + to_string(numCatalog)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult(
+			       "UPDATE CATALOG SET LibelleCatalog = '" + libelle + "' WHERE NumCatalog = " + to_string(numCatalog))
+		       != -
+		       1)
+		       ? true
+		       : false;
 }
 
-int64_t CSqlCatalog::GetCatalogId(const wxString & libelle)
+int64_t CSqlCatalog::GetCatalogId(const wxString& libelle)
 {
 	ExecuteRequest("SELECT NumCatalog FROM CATALOG WHERE LibelleCatalog = '" + libelle + "'");
 	return numCatalogId;
 }
 
-wxString CSqlCatalog::GetCatalogLibelle(const int64_t &numCatalog)
+wxString CSqlCatalog::GetCatalogLibelle(const int64_t& numCatalog)
 {
 	ExecuteRequest("SELECT NumCatalog, LibelleCatalog FROM CATALOG WHERE NumCatalog = " + to_string(numCatalog));
 	return libelle;
 }
 
-bool CSqlCatalog::DeleteCatalog(const int64_t &numCatalog)
+bool CSqlCatalog::DeleteCatalog(const int64_t& numCatalog)
 {
-	return (ExecuteRequestWithNoResult("DELETE FROM CATALOG WHERE NumCatalog = " + to_string(numCatalog)) != -1) ? true : false;
+	return (ExecuteRequestWithNoResult("DELETE FROM CATALOG WHERE NumCatalog = " + to_string(numCatalog)) != -1)
+		       ? true
+		       : false;
 }
 
-int CSqlCatalog::TraitementResult(CSqlResult * sqlResult)
+int CSqlCatalog::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
 	while (sqlResult->Next())
