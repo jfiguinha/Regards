@@ -14,12 +14,12 @@ namespace Regards
             void EraseThumbnailList();
             void DestroyCacheThumbnailList();
             void AddElement(CIcone * icone);
-			void Lock();
-			void Unlock();
+			//void Lock();
+			//void Unlock();
 			CIcone * FindElement(const int &xPos, const int &yPos, pItemCompFonct * _pf, CWindowMain * parent);
         private:
             IconeVector pIconeList;
-            mutex muList;
+            //mutex muList;
         };
     }
 }

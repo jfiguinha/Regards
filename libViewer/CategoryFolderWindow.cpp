@@ -97,6 +97,8 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, co
 	//Refresh all 1 minute
 	refreshTimer->Start(60000, wxTIMER_CONTINUOUS);
 	refreshTimer->Start();
+
+	listProcessWindow.push_back(this);
 }
 
 void CCategoryFolderWindow::OnTimerRefresh(wxTimerEvent& event)

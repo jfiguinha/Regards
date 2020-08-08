@@ -98,6 +98,7 @@ namespace Regards
 			static bool endProgram;
 			static bool stopProcess;
 			static vector<CMasterWindow *> listMainWindow;
+			static vector<CMasterWindow *> listProcessWindow;
 		};
 	}
 }

@@ -150,6 +150,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	nbProcessFacePhoto = 0;
 	processIdle = false;
+
+	listProcessWindow.push_back(this);
 }
 
 void CListFace::ClosePane()

@@ -1,7 +1,7 @@
 #include <header.h>
 #include "MasterWindow.h"
 #include "WindowUtility.h"
-#include <wx/progdlg.h>
+#include <wx/busyinfo.h>
 #include <window_id.h>
 using namespace Regards::Window;
 
@@ -13,20 +13,22 @@ void CMasterWindow::StopAllProcess(const wxString &title, const wxString &messag
 {
 	SetStopProcess(true);
 	wxMilliSleep(500);
-
-	wxProgressDialog dialog(title, message, listMainWindow.size(), parentWindow,
-		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	wxBusyInfo * wait = new wxBusyInfo("Please wait, working...");
+	//wxProgressDialog dialog(title, message, listMainWindow.size(), parentWindow,
+	//	wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
 
 	int i = 0;
 	bool allStop = true;
 	do
 	{
+		allStop = true;
 		int j = 0;
-		for (CMasterWindow* window : listMainWindow)
+		for (CMasterWindow* window : listProcessWindow)
 		{
 			wxString message = window->GetWaitingMessage();
-			if (false == dialog.Update(j++, message))
-				break;
+			//if (false == dialog.Update(j++, message))
+			//	break;
+			wxTheApp->Yield();
 
 			if (!window->GetProcessEnd())
 			{
@@ -38,7 +40,10 @@ void CMasterWindow::StopAllProcess(const wxString &title, const wxString &messag
 				break;
 			}
 		}
+		
 	} while (!allStop && i < nbTry);
+
+	delete wait;
 }
 
 void CMasterWindow::ThreadIdle(void * data)

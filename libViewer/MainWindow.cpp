@@ -203,6 +203,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	if (openFirstFile)
 		LoadPicture(true);
+
+	listProcessWindow.push_back(this);
 }
 
 

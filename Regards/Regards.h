@@ -129,6 +129,7 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 
 bool CMasterWindow::endProgram = false;
 vector<CMasterWindow *> CMasterWindow::listMainWindow;
+vector<CMasterWindow *> CMasterWindow::listProcessWindow;
 float value[256];
 
 // Define a new application type, each program should derive a class from wxApp

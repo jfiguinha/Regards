@@ -350,6 +350,8 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CThumbnail::OnLeftPosition));
 	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CThumbnail::OnTopPosition));
 	processIdle = true;
+
+	listProcessWindow.push_back(this);
     
 }
 
@@ -512,18 +514,6 @@ void CThumbnail::EraseThumbnailList()
 			actifFilename = data->GetFilename();
 	}
 
-	/*
-	wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
-	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
-	StopAllProcess(title, message, this);
-
-	iconeList->EraseThumbnailList();
-
-	SetStopProcess(false);
-
-	processIdle = true;  
-	*/
-
 	iconeList->EraseThumbnailList();
 	
 	numSelect = nullptr;
@@ -614,7 +604,7 @@ void CThumbnail::ProcessIdle()
 				
                 bool exitfor = false;
 				CIcone * icone = iconeList->GetElement(i);
-				iconeList->Lock();
+				//iconeList->Lock();
 				
 				if (icone != nullptr)
 				{
@@ -639,7 +629,7 @@ void CThumbnail::ProcessIdle()
                         }
                     }
 				}
-				iconeList->Unlock();
+//				iconeList->Unlock();
 
 				if (exitfor)
 					break;
