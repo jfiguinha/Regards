@@ -1,17 +1,45 @@
 #include <header.h>
 #include "MasterWindow.h"
 #include "WindowUtility.h"
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
+#include <wx/progdlg.h>
 #include <window_id.h>
-#endif
-
 using namespace Regards::Window;
 
 
 
 bool CMasterWindow::stopProcess = false;
+
+void CMasterWindow::StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry)
+{
+	SetStopProcess(true);
+	wxMilliSleep(500);
+
+	wxProgressDialog dialog(title, message, listMainWindow.size(), parentWindow,
+		wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+
+	int i = 0;
+	bool allStop = true;
+	do
+	{
+		int j = 0;
+		for (CMasterWindow* window : listMainWindow)
+		{
+			wxString message = window->GetWaitingMessage();
+			if (false == dialog.Update(j++, message))
+				break;
+
+			if (!window->GetProcessEnd())
+			{
+				//wxString message = window->GetWaitingMessage();
+				//mainWindowWaiting->SetTexte(message);
+				allStop = false;
+				wxMilliSleep(500);
+				i++;
+				break;
+			}
+		}
+	} while (!allStop && i < nbTry);
+}
 
 void CMasterWindow::ThreadIdle(void * data)
 {

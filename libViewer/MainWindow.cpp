@@ -10,7 +10,6 @@
 #include "MainTheme.h"
 #include "PanelInfosWnd.h"
 #include "SqlFindPhotos.h"
-#include <wx/progdlg.h>
 #include <SqlThumbnail.h>
 #include "PreviewWnd.h"
 #include "Toolbar.h"
@@ -1105,51 +1104,10 @@ void CMainWindow::OnRemoveFolder(wxCommandEvent& event)
 	wxString* info = static_cast<wxString*>(event.GetClientData());
 	if (*info != "")
 	{
-		SetStopProcess(true);
-		wxMilliSleep(500);
-
-		wxProgressDialog dialog("Remove Folder", "Process Stop", listMainWindow.size(), this,
-		                        wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-		/*
-		for (int i = 0; i < CMasterWindow::listMainWindow.size(); i++)
-		{
-			int j = i + 1;
-			CThumbnailData * data = listItem.at(i);
-			wxString filename = data->GetFilename();
-			wxString message = text + to_string(j) + "/" + to_string(listItem.size());
-			GeolocalizeFile(filename, mapSelect.GetLatitudeNumber(), mapSelect.GetLongitudeNumber(), mapSelect.GetLatitude(), mapSelect.GetLongitude(), infoGpsLocalisation);
-			if (false == dialog.Update(i, message))
-				break;
-		}
-		*/
-
-		int i = 0;
-		bool allStop = true;
-		do
-		{
-			int j = 0;
-			for (CMasterWindow* window : listMainWindow)
-			{
-				wxString message = window->GetWaitingMessage();
-				if (false == dialog.Update(j++, message))
-					break;
-
-				if (!window->GetProcessEnd())
-				{
-					//wxString message = window->GetWaitingMessage();
-					//mainWindowWaiting->SetTexte(message);
-					allStop = false;
-					wxMilliSleep(500);
-					i++;
-					break;
-				}
-			}
-		}
-		while (!allStop && i < 10);
-
-		//mainWindowWaiting->Show(false);
-
-
+		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+		StopAllProcess(title, message, this);
+		
 		//Indication d'imporation des critères 
 		CSqlFolderCatalog sqlFolderCatalog;
 		int64_t idFolder = sqlFolderCatalog.GetFolderCatalogId(NUMCATALOGID, *info);

@@ -11,6 +11,7 @@
 #include "FileUtility.h"
 #include <MoveFaceDialog.h>
 #include <SqlFacePhoto.h>
+#include <SQLRemoveData.h>
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
 #include <PictureData.h>
@@ -18,6 +19,8 @@
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
+#include "TitleBar.h"
+#include "LibResource.h"
 #include <RegardsConfigParam.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
@@ -111,13 +114,22 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 					position = i;
 			}
 		}
-
+	
 		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(valuePertinence);
 		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
-
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
 		*/
+
+		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
+		
+		titleBar = new CTitleBar(windowManager, wxID_ANY, this);
+		titleBar->SetRefresh(true);
+		titleBar->SetTitle(libelle);
+		titleBar->SetClosable(false);
+		windowManager->AddWindow(titleBar, Pos::wxTOP, true, titleBar->GetHeight(), rect, wxID_ANY, false);
+		
+		
 	}
 
 	
@@ -140,6 +152,28 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	processIdle = false;
 }
 
+void CListFace::ClosePane()
+{
+	
+}
+
+void CListFace::RefreshPane()
+{
+	//Delete all face
+	if (!isLoadingResource)
+	{
+		wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+		wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+		StopAllProcess(title, message, this);
+
+		//Delete all Face data
+		CSQLRemoveData::DeleteFaceDatabase();
+
+		SetStopProcess(false);
+
+		processIdle = true;
+	}
+}
 
 void CListFace::OnResourceLoad(wxCommandEvent& event)
 {
@@ -430,6 +464,7 @@ void CListFace::UpdateScreenRatio()
 
 void CListFace::ForceRefresh()
 {
+	titleBar->ForceRefresh();
 	thumbFaceToolbar->ForceRefresh();
 	thumbnailFace->ForceRefresh();
 }

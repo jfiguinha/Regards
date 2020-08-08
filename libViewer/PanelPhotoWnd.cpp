@@ -8,6 +8,7 @@
 #include <SqlFindFolderCatalog.h>
 #include <SqlPhotoCriteria.h>
 #include <SqlInsertFile.h>
+#include <LibResource.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -114,13 +115,17 @@ void CPanelPhotoWnd::UpdateCriteria(wxCommandEvent& event)
 		}
 		else if (needToSendMessage == 3)
 		{
+			wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+			wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+			StopAllProcess(title, message, this);
+
 			//Suppression de l'ensemble des données
 			CSqlPhotoCriteria sqlPhotoCriteria;
 			sqlPhotoCriteria.DeletePhotoCriteria();
 			CSqlInsertFile insertFile;
 			insertFile.ReinitPhotosToProcess();
 
-
+			SetStopProcess(false);
 			//categoryFolderWnd->UpdateCriteria(true);
 			categoryFolderWnd->RefreshCriteriaSearch();
 		}

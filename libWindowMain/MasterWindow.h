@@ -49,6 +49,7 @@ namespace Regards
 
 			virtual void UpdateScreenRatio() = 0;
 
+			static void StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry = 10);
 
 			virtual int GetWidth() { return this->GetWindowWidth(); };
 			virtual int GetHeight() { return this->GetWindowHeight(); };

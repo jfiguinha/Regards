@@ -148,7 +148,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		if (thumbnailPicture != nullptr)
 			thumbnailPicture->SetListeFile(&photoVector);
 
-		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, false, true);
+		windowManager->AddPanel(scrollPictureWindow, Pos::wxBOTTOM, true, themeThumbnail.themeIcone.GetHeight() + theme.GetHeight() * 2, rect, libelle, "ThumbnailPicturePanel", true, THUMBNAILPICTUREPANEL, true, true);
 
 	}
 

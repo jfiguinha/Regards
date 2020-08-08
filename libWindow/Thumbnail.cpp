@@ -13,6 +13,7 @@
 #include <SqlThumbnailVideo.h>
 #include <wx/dcbuffer.h>
 #include <wx/filename.h>
+#include "LibResource.h"
 #include <ThumbnailData.h>
 #include <ThumbnailMessage.h>
 using namespace Regards::Window;
@@ -74,29 +75,17 @@ CIcone * CThumbnail::FindElement(const int &xPos, const int &yPos)
     TRACE();
 	pItemCompFonct _pf = &ItemCompFonct;
 	return iconeList->FindElement(xPos, yPos, &_pf, this);
-	/*
-    int numElement = iconeList->GetNbElement();
-	for (int i = 0;i < numElement;i++)
-	{
-        CIcone * icone = iconeList->GetElement(i);
-		if (icone != nullptr)
-		{
-			wxRect rc = icone->GetPos();
-			if ((rc.x < xPos && xPos < rc.width) && (rc.y < yPos && yPos < rc.height))
-			{
-				return icone;
-			}
-		}
-	}
-
-	return nullptr;
-	*/
 }
 
 
 void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 {
     TRACE();
+
+	wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+	StopAllProcess(title, message, this);
+	
     CSqlThumbnail sqlThumbnail;
     sqlThumbnail.EraseThumbnail();
     
@@ -121,7 +110,9 @@ void CThumbnail::EraseThumbnail(wxCommandEvent& event)
 	thumbnailPos = 0;
 	CSqlPhotosWithoutThumbnail sqlPhoto;
 	sqlPhoto.GeneratePhotoList();
-    
+
+	SetStopProcess(false);
+	
     processIdle = true;
 }
 
@@ -521,9 +512,20 @@ void CThumbnail::EraseThumbnailList()
 			actifFilename = data->GetFilename();
 	}
 
+	/*
+	wxString title = CLibResource::LoadStringFromResource(L"LBLSTOPALLPROCESS", 1);
+	wxString message = CLibResource::LoadStringFromResource(L"LBLSTOPPROCESS", 1);
+	StopAllProcess(title, message, this);
 
-    iconeList->EraseThumbnailList();
+	iconeList->EraseThumbnailList();
 
+	SetStopProcess(false);
+
+	processIdle = true;  
+	*/
+
+	iconeList->EraseThumbnailList();
+	
 	numSelect = nullptr;
 	numActif = nullptr;
 	loadingIcone = nullptr;

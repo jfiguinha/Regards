@@ -6,6 +6,7 @@
 #include "ThumbnailFaceToolBar.h"
 #include "ThumbnailFacePertinenceToolBar.h"
 */
+#include <TitleBarInterface.h>
 #include <WindowMain.h>
 using namespace Regards::Window;
 using namespace std;
@@ -18,6 +19,7 @@ namespace Regards
 	{
 		class CWindowManager;
 		class CScrollbarWnd;
+		class CTitleBar;
 	}
 
 	namespace Viewer
@@ -26,7 +28,7 @@ namespace Regards
 		class CThumbnailFace;
 		class CThumbnailFaceToolBar;
 
-		class CListFace : public CWindowMain
+		class CListFace : public CWindowMain, public CTitleBarInterface
 		{
 		public:
 			CListFace(wxWindow* parent, wxWindowID idCTreeWithScrollbar);
@@ -36,7 +38,8 @@ namespace Regards
 			int GetThumbnailHeight();
 			void Resize();
 			void ForceRefresh();
-
+			void ClosePane();
+			void RefreshPane();
 		private:
 
 			
@@ -57,7 +60,8 @@ namespace Regards
 			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
-			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
+			//CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
+			CTitleBar * titleBar;
 			CThumbnailFace * thumbnailFace;
 
 			int nbProcessFacePhoto;
