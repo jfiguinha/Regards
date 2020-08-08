@@ -8,7 +8,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="clocktime.c"/>
     <File Name="SaveFileFormat.cpp"/>
     <File Name="SaveFromCFunction.mm"/>
   </VirtualDirectory>
