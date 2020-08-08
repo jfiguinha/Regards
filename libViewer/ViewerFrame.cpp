@@ -201,13 +201,13 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
     menuSizeIcon->Append(ID_SIZEICONMORE, labelEnlargeIconSize_link, labelEnlargeIconSize);
 	menuParameter->Append(ID_Configuration, labelConfiguration_link, labelConfiguration);
 	menuParameter->Append(ID_OpenCL, labelOpenCL_link, labelOpenCL);
-    menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
-	menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
+    //menuParameter->Append(ID_ERASEDATABASE, labelEraseDataBase_link, labelEraseDataBase);
+	//menuParameter->Append(ID_INTERPOLATIONFILTER, "&Filter Interpolation", "Filter Interpolation");
 
 
-	wxMenu *menuFace = new wxMenu;
-	menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
-	menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
+	//wxMenu *menuFace = new wxMenu;
+	//menuFace->Append(ID_FACEDETECTION, "&Face Detection", "Face Detection");
+	//menuFace->Append(ID_CATEGORYDETECTION, "&Category Detection", "Category Detection");
 	//menuFile->Append(ID_SCANNER, "&Scanner", "Scanner");
 	menuFile->Append(ID_EXPORT, "&Export", "Export");
 #ifdef WIN32
@@ -228,7 +228,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	wxMenuBar *menuBar = new wxMenuBar;
 	menuBar->Append(menuFile, labelFile);
 	menuBar->Append(menuParameter, labelParameter);
-	menuBar->Append(menuFace, "Photo Detection");
+	//menuBar->Append(menuFace, "Photo Detection");
     menuBar->Append(menuSizeIcon, labelSizeIcon);
 
 	menuBar->Append(menuHelp, labelHelp);
