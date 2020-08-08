@@ -5,22 +5,10 @@
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Scanner">
-    <File Name="ofxScannerKit.mm"/>
-    <File Name="ofxScannerKit.h"/>
-    <File Name="event_scanner.h"/>
-    <File Name="ScannerWindow.mm" ExcludeProjConfig=""/>
-    <File Name="ScannerWindow.h"/>
-    <File Name="ofxCameraKit.mm" ExcludeProjConfig=""/>
-    <File Name="ofxCameraKit.h" ExcludeProjConfig=""/>
-    <File Name="MyScan.mm"/>
-    <File Name="MyScanInterface.h"/>
-    <File Name="ScanView.cpp"/>
-    <File Name="ScanView.h"/>
-  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="clocktime.c"/>
     <File Name="SaveFileFormat.cpp"/>
     <File Name="SaveFromCFunction.mm"/>
   </VirtualDirectory>
