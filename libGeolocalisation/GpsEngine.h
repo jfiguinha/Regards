@@ -1,6 +1,5 @@
 #pragma once
 #include <WindowMain.h>
-#include "FileGeolocation.h"
 #include <window_id.h>
 using namespace Regards::Window;
 
@@ -8,8 +7,6 @@ namespace Regards
 {
 	namespace Internet
 	{
-		class CFileGeolocation;
-
 		class CListOfWindowGeo
 		{
 		public:
