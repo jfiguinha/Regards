@@ -1,10 +1,7 @@
 #pragma once
+
 #include <Country.h>
-#if defined(__WXMSW__)
-#include "../include/window_id.h"
-#else
-#include <window_id.h>
-#endif
+
 using namespace std;
 
 class CListCriteriaPhoto;
@@ -19,11 +16,16 @@ namespace Regards
 
 			CFileGeolocation(const wxString &urlServer);
 			~CFileGeolocation(void){};
+			CFileGeolocation(const CFileGeolocation &filegeo);
+			
+			wxString GetUrlServer();
+			
             void SetThumbnail(const bool &isThumbnail)
             {
                 this->isThumbnail = isThumbnail;
             }
-			void SetFile(const wxString & filename, const bool &onlyFromFile = false);
+			
+			void SetFile(const wxString & filename);
 			wxString GetLatitude();
 			wxString GetLongitude();
             float GetFLatitude();
@@ -32,16 +34,10 @@ namespace Regards
 			bool HasDateTime();
 			wxString GetGpsInformation();
 			wxString GetDateTimeInfos();
-			wxString GetFilename();
-
-            bool IsThumbnail()
-            {
-                return isThumbnail;
-            }
-            
+			wxString GetFilename();          
             void Geolocalize();
 			bool Geolocalisation(CListCriteriaPhoto * listCriteriaPhoto);
-            void RefreshData();
+           // void RefreshData();
             wxString GenerateGeolocalisationString(const wxString &countryCode, const wxString & region, const wxString &place);
             
 		private:
@@ -58,9 +54,10 @@ namespace Regards
 			wxString filename;
             bool isThumbnail;
 
-            wxString gpsInfos;
+            //wxString gpsInfos;
             wxString urlServer;
-			CountryVector countryVector;
+			static CountryVector countryVector;
+			
 		};
 
 	}

@@ -166,8 +166,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerParam->GetShowInfos(showInfos);
 	}
 
-	fileGeolocalisation = new CFileGeolocation(urlServer);
-
 	if (viewerTheme != nullptr)
 	{
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLINFORMATIONS", 1);
@@ -176,13 +174,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		CThemeToolbar themeClickInfosToolbar;
 		viewerTheme->GetClickToolbarTheme(&themeClickInfosToolbar);
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
-		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID, fileGeolocalisation);
+		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID);
 
 		panelInfosClick = windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 
 	}
 
-	previewWindow = new CPreviewWnd(windowManager, PREVIEWVIEWERID, fileGeolocalisation);
+	previewWindow = new CPreviewWnd(windowManager, PREVIEWVIEWERID);
 	windowManager->AddWindow(previewWindow, Pos::wxCENTRAL, false, 0, rect, PREVIEWVIEWERID, false);
 
 
@@ -492,19 +490,6 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 	if (bitmap != nullptr && bitmap->IsOk())
 	{
 		isVideo = false;
-		bool loadInfo = true;
-
-#if defined(WIN32) && defined(_DEBUG)
-		OutputDebugString(fileGeolocalisation->GetFilename());
-		OutputDebugString(L"\n");
-		OutputDebugString(bitmap->GetFilename());
-		OutputDebugString(L"\n");
-#endif
-
-		if (fileGeolocalisation->GetFilename() != bitmap->GetFilename())
-			fileGeolocalisation->SetFile(bitmap->GetFilename());
-		else
-			loadInfo = false;
 
 		if (isDiaporama)
 		{

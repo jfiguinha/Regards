@@ -17,7 +17,7 @@ namespace Regards
 		{
 		public:
 
-			CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll);
+			CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, const CThemeTree & theme,const CThemeScrollBar & themeScroll);
             ~CCriteriaTreeWnd(void);
             void SetFile(const wxString & filename);
             
@@ -28,9 +28,9 @@ namespace Regards
             wxString GenerateUrl();
             void UpdateTreeData();
 
+			CFileGeolocation * fileGeolocalisation;
             CCriteriaTree * criteriaTree;
             CCriteriaTree * oldCriteriaTree;
-            CFileGeolocation * fileGeolocalisation;
             wxString filename;
             int numPhotoId;
             int mainWindowID;

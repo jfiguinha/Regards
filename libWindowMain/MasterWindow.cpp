@@ -12,7 +12,8 @@ bool CMasterWindow::stopProcess = false;
 void CMasterWindow::StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry)
 {
 	SetStopProcess(true);
-	wxMilliSleep(500);
+	//wxMilliSleep(500);
+	wxWindowDisabler disableAll;
 	wxBusyInfo * wait = new wxBusyInfo("Please wait, working...");
 	//wxProgressDialog dialog(title, message, listMainWindow.size(), parentWindow,
 	//	wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);

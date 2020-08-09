@@ -106,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;EXIV2;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\include;../libResource;../libDatastructure;../libUtility;../libPicture;../libSqlData;../libSqlEngine;../libsqlite;../libexif;../libMediaInfo</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libextern/libRapidXML;..\libTheme;..\libWindowMain;$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\include;../libResource;../libDatastructure;../libUtility;../libPicture;../libSqlData;../libSqlEngine;../libsqlite;../libexif;../libMediaInfo</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -154,7 +154,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>EXIV2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\include;../libResource;../libDatastructure;../libUtility;../libPicture;../libSqlData;../libSqlEngine;../libsqlite;../libexif;../libMediaInfo</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../libextern/libRapidXML;..\libTheme;..\libWindowMain;$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\include\;..\include;../libResource;../libDatastructure;../libUtility;../libPicture;../libSqlData;../libSqlEngine;../libsqlite;../libexif;../libMediaInfo</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -197,6 +197,7 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="FileGeolocation.h" />
     <ClInclude Include="Gps.h" />
+    <ClInclude Include="GpsEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -205,6 +206,7 @@
     </ClCompile>
     <ClCompile Include="FileGeolocation.cpp" />
     <ClCompile Include="Gps.cpp" />
+    <ClCompile Include="GpsEngine.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

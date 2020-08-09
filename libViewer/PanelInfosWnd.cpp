@@ -17,6 +17,7 @@
 #include "ViewerParamInit.h"
 #include <ShowBitmap.h>
 #include <MainParamInit.h>
+#include <GpsEngine.h>
 using namespace Regards::Internet;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -26,7 +27,7 @@ wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATETHUMBNAILTHREAD, wxCommandEvent);
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
-CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation)
+CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelInfosWnd",parent, id)
 {
 	infosFileWnd = nullptr;
@@ -50,8 +51,8 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 	height = 0;
     url = "http://www.google.fr";
 	windowVisible = WM_INFOS;
- 
 
+	
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
 
@@ -141,25 +142,11 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
 		thumbnailEffectWnd = new CThumbnailViewerEffectWnd(this, wxID_ANY, themeScroll, themeThumbnail, PANELINFOSWNDID, checkValidity);
 		
 		thumbnailEffectWnd->Show(false);
-        
-		/*
-        CTabWindowData * tabInfosFileVideo = new CTabWindowData();
-        tabInfosFileVideo->window = thumbnailEffectWnd;
-        tabInfosFileVideo->windowMain = thumbnailEffectWnd;
-        tabInfosFileVideo->windowName = WM_VIDEOEFFECT;
-        listWindow.push_back(tabInfosFileVideo);
-        */
+
         CTabWindowData * tabInfosFileEffect = new CTabWindowData();
 		tabInfosFileEffect->SetWindow(thumbnailEffectWnd);
 		tabInfosFileEffect->SetId(WM_EFFECT);
         listWindow.push_back(tabInfosFileEffect);
-        /*
-        CTabWindowData * tabInfosFileAudioVideo = new CTabWindowData();
-        tabInfosFileAudioVideo->window = thumbnailEffectWnd;
-        tabInfosFileAudioVideo->windowMain = thumbnailEffectWnd;
-        tabInfosFileAudioVideo->windowName = WM_AUDIOVIDEO;
-        listWindow.push_back(tabInfosFileAudioVideo);
-		*/
 	}
     
     if(webBrowser == nullptr)
@@ -188,7 +175,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         
         CThemeTree themeTree;
         viewerTheme->GetTreeTheme(&themeTree);
-        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, fileGeolocalisation, themeTree, themeScroll);
+        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, themeTree, themeScroll);
     
         CTabWindowData * tabInfosFile = new CTabWindowData();
         tabInfosFile->SetWindow(criteriaTreeWnd);
@@ -196,13 +183,11 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id, CFileGeolocation
         listWindow.push_back(tabInfosFile);
     }
 
-
-	this->fileGeolocalisation = fileGeolocalisation;
-
     toolbarWindow = infosToolbar;
     
 	Connect(wxEVENT_APPLYEFFECT, wxCommandEventHandler(CPanelInfosWnd::ApplyEffect));
 	Connect(wxEVENT_SHOWFILTRE, wxCommandEventHandler(CPanelInfosWnd::ShowFiltreEvent));
+
 }
 
 CFiltreEffect * CPanelInfosWnd::GetFilterWindow(int &numFiltre)
@@ -252,8 +237,16 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 	{
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
-        
-		//fileGeolocalisation->SetFile(filename);
+
+		wxString urlServer;
+		CRegardsConfigParam * param = CParamInit::getInstance();
+		if (param != nullptr)
+		{
+			urlServer = param->GetUrlServer();
+		}
+		
+		CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
+		fileGeolocalisation->SetFile(filename);
         
 		if (!this->isVideo)
 		{
@@ -270,8 +263,7 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 			if (!fileGeolocalisation->HasGps())
 			{
 				if (webBrowser->IsShown())
-					if (!fileGeolocalisation->HasGps())
-						infosToolbar->SetInfosActif();
+					infosToolbar->SetInfosActif();
 
 				infosToolbar->SetMapInactif();
 			}
@@ -283,7 +275,7 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
            
 		}
 
-		
+		delete fileGeolocalisation;
 		LoadInfo();
 		this->isVideo = true;
 	}
@@ -300,7 +292,14 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 	if (this->filename != filename)
 	{
 
-
+		wxString urlServer;
+		CRegardsConfigParam * param = CParamInit::getInstance();
+		if (param != nullptr)
+		{
+			urlServer = param->GetUrlServer();
+		}
+		CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
+		
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
 
@@ -313,14 +312,14 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 
 		if (!fileGeolocalisation->HasGps())
 		{
-			if (!fileGeolocalisation->HasGps())
-				infosToolbar->SetMapInactif();
+			infosToolbar->SetMapInactif();
 
 			if (webBrowser->IsShown())
 				if (!fileGeolocalisation->HasGps())
 					infosToolbar->SetInfosActif();
 		}
 
+		delete fileGeolocalisation;
 
 		this->isVideo = false;
 
@@ -481,6 +480,15 @@ void CPanelInfosWnd::LoadInfo()
 
 wxString CPanelInfosWnd::MapsUpdate()
 {
+	wxString urlServer;
+	CRegardsConfigParam * param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetUrlServer();
+	}
+	
+	CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
+	fileGeolocalisation->SetFile(filename);
 	wxString url = L"http://www.openstreetmap.org/?mlat=";
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"&mlon=");
@@ -489,27 +497,11 @@ wxString CPanelInfosWnd::MapsUpdate()
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"/");
 	url.append(fileGeolocalisation->GetLongitude());
-	//DisplayURL(url);
-    return url;
-}
 
-void CPanelInfosWnd::UpdateData()
-{
-	fileGeolocalisation->RefreshData();
 
-    if (!fileGeolocalisation->HasGps())
-    {
-        if (webBrowser->IsShown())
-            if (!fileGeolocalisation->HasGps())
-                infosToolbar->SetInfosActif();
-        
-        infosToolbar->SetMapInactif();
-    }
-    else
-        infosToolbar->SetMapActif();
-    
+	delete fileGeolocalisation;
 	
-    LoadInfo();
+    return url;
 }
 
 void CPanelInfosWnd::DisplayURL(const wxString &url)

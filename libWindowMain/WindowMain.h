@@ -95,5 +95,7 @@ namespace Regards
 			}
 
 		};
+
+		typedef std::vector<CWindowMain *> WindowMainVector;
 	}
 }

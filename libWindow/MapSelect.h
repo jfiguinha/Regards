@@ -7,7 +7,7 @@
 //
 
 #pragma once
-
+#include <Country.h>
 
 namespace Regards
 {
@@ -26,11 +26,11 @@ namespace Regards
             double GetLatitudeNumber();
             double GetLongitudeNumber();
         private:
-        
+
             CMapDialogBox * mapDialog = nullptr;
             wxString latitude;
             wxString longitude;
-            
+
         };
     }
 }

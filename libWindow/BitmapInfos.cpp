@@ -9,82 +9,60 @@
 #include <Gps.h>
 #include <SqlPhotos.h>
 #include <FileGeolocation.h>
-
+#include <GpsEngine.h>
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
 using namespace Regards::Internet;
-wxDEFINE_EVENT(EVENT_ENDINFOSUPDATE, wxCommandEvent);
-#include <thread>
 using namespace std;
 
-#define wxTIMER_GPSINFOS 2000
 
-CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme, CFileGeolocation * fileGeolocalisation)
+CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapInfos & theme)
 	: CWindowMain("CBitmapInfos", parent, id)
 {
     TRACE();
+	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
 	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;
-	this->fileGeolocalisation = fileGeolocalisation;
-    gpsTimer = new wxTimer(this, wxTIMER_GPSINFOS);
+	fileGeolocalisation->AddWindow(this);
+    //gpsTimer = new wxTimer(this, wxTIMER_GPSINFOS);
 	Connect(wxEVT_PAINT, wxPaintEventHandler(CBitmapInfos::OnPaint));
-    Connect(wxTIMER_GPSINFOS, wxEVT_TIMER, wxTimerEventHandler(CBitmapInfos::OnTimerGPSUpdate), nullptr, this);
+    Connect(wxEVENT_UPDATEGPSINFOS, wxCommandEventHandler(CBitmapInfos::OnUpdateGpsInfos));
 }
 
-void CBitmapInfos::OnTimerGPSUpdate(wxTimerEvent& event)
+void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 {
-    
-    printf("CBitmapInfos OnTimerGPSUpdate \n");
-    mufileGeoloc.lock();
-    CSqlPhotos sqlPhotos;
-    int insertValue = sqlPhotos.GetCriteriaInsert(filename);
-    if (insertValue > 0 && fileGeolocalisation->HasGps() && fileGeolocalisation->GetFilename() == filename && gpsInfos == "")
-    {
-        CriteriaVector criteriaList;
-        sqlPhotos.GetPhotoCriteria(&criteriaList, filename);
+	wxString urlServer = "";
+	//Géolocalisation
+	CRegardsConfigParam * param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetUrlServer();
+	}
+	
+	wxString * filename = (wxString *)event.GetClientData();
+	int typeData = event.GetInt();
+	if(filename != nullptr)
+	{
+		if (*filename == this->filename)
+		{
+			CFileGeolocation fileGeolocalisation(urlServer);
+			fileGeolocalisation.SetFile(*filename);
+			if (typeData == 1)
+			{
+				printf("CBitmapInfos OnTimerGPSUpdate \n");
+				gpsInfos = fileGeolocalisation.GetGpsInformation();
+			}
+			else if (typeData == 2)
+			{
+				dateInfos = fileGeolocalisation.GetDateTimeInfos();
+				SetDateInfos(dateInfos, '.');
+			}
+			delete filename;
+		}
+	}
 
-        for (CCriteria criteria : criteriaList)
-        {
-            if (criteria.GetCategorieId() == 1)
-            {
-                gpsInfos = criteria.GetLibelle();
-                break;
-            }
-        }   
-    
-        if(gpsInfos == "")
-        {
-            gpsInfos = "";
-            wxString urlServer = "";
-            CRegardsConfigParam * param = CParamInit::getInstance();
-            if (param != nullptr)
-                urlServer = param->GetUrlServer();
 
-            CGps * gps = new CGps(urlServer);
-            //Execution de la requête de géolocalisation
-            if (gps->GeolocalisationGPS(fileGeolocalisation->GetLatitude(), fileGeolocalisation->GetLongitude()))
-            {
-                GeoPluginVector * geoPluginVector = gps->GetGpsList();
-                for (CGeoPluginValue geoValue : *geoPluginVector)
-                {
-                    gpsInfos.append(geoValue.GetCountryCode());
-                    gpsInfos.append(L".");
-                    gpsInfos.append(geoValue.GetRegion());
-                    gpsInfos.append(L".");
-                    gpsInfos.append(geoValue.GetPlace());
-                    break;
-                }
-            }
-            delete gps;
-        }
-    }
-    
-    mufileGeoloc.unlock();
-    
-    if(gpsInfos == "" && fileGeolocalisation->GetFilename() == filename)
-        gpsTimer->Start(500, wxTIMER_ONE_SHOT);
-    else
-        Refresh();
+    Refresh();
 }
 
 void CBitmapInfos::SetFilename(const wxString &libelle)
@@ -100,11 +78,12 @@ void CBitmapInfos::SetFilename(const wxString &libelle)
 	}
 }
 
+
 void CBitmapInfos::UpdateData()
 {
     printf("UpdateData \n");
     gpsInfos = "";
-	mufileGeoloc.lock();
+
     //Recherche dans la base de données des critères sur le fichier
     CSqlPhotos sqlPhotos;
     int insertValue = sqlPhotos.GetCriteriaInsert(filename);
@@ -126,29 +105,11 @@ void CBitmapInfos::UpdateData()
         }
         SetDateInfos(dateInfos,'.');
     }
-    else if(fileGeolocalisation->GetFilename() == filename)
-    {
-        
-        dateInfos = L"";
-        gpsInfos = fileGeolocalisation->GetGpsInformation();
-        wxString dataInfos = fileGeolocalisation->GetDateTimeInfos();
-        if(dataInfos.Length() > 10)
-            SetDateInfos(dataInfos, dataInfos[4]);
-            
-        if(fileGeolocalisation->HasGps() && gpsInfos == "")
-            gpsTimer->Start(500, wxTIMER_ONE_SHOT);
-    }
-    else
+	else
     {
         dateInfos = L"";
         gpsInfos = "";
     }
-    
-    if(gpsInfos == "" && fileGeolocalisation->HasGps())
-        gpsTimer->Start(500, wxTIMER_ONE_SHOT);
-    
-    processIdle = true;
-	mufileGeoloc.unlock();
     Refresh();
 }
 
@@ -178,15 +139,6 @@ void CBitmapInfos::SetDateInfos(const wxString &dataInfos, char seperator)
 
 CBitmapInfos::~CBitmapInfos()
 {
-    if(gpsTimer != nullptr)
-    {
-        if(gpsTimer->IsRunning())
-            gpsTimer->Stop();
-            
-        delete gpsTimer;        
-    }
-
-	//delete fileGeolocalisation;
 }
 
 int CBitmapInfos::GetHeight()

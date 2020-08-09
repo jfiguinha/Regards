@@ -40,7 +40,7 @@ namespace Regards
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
-			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface, CFileGeolocation * fileGeolocalisation);
+			CPanelInfosWnd(wxWindow* parent, wxWindowID idCTreeWithScrollbarInterface);
 			~CPanelInfosWnd();
 			void OnFiltreOk(const int &numFiltre);
 			void OnFiltreCancel();
@@ -48,7 +48,7 @@ namespace Regards
 			void SetVideoFile(const wxString &filename);
 			void SetAnimationFile(const wxString &filename);
             void ShowFiltre(const wxString &title);
-            void UpdateData();
+           
             CFiltreEffect * GetFilterWindow(int &numFiltre);
 			wxString GetFilename();
 
@@ -80,8 +80,7 @@ namespace Regards
 			bool isVideo;
 			wxString filename;
             wxString url;
-			
-			CFileGeolocation * fileGeolocalisation;			
+		
 		};
 
 	}

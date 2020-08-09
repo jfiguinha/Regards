@@ -158,7 +158,6 @@ namespace Regards
 
 			//Preview
 			CPreviewWnd * previewWindow;
-			CFileGeolocation * fileGeolocalisation;
 
 			//Thumbnail Picture
 			CScrollbarWnd * scrollPictureWindow;

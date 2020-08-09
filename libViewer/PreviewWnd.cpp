@@ -23,7 +23,7 @@ using namespace Regards::Viewer;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
-CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fileGeolocalisation, const bool &horizontal)
+CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal)
 	: CWindowMain("CPreviewWnd",parent, id)
 {
 	showBitmapWindow = nullptr;
@@ -45,7 +45,7 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, CFileGeolocation * fil
 	{
 		CThemeBitmapInfos theme;
 		viewerTheme->GetBitmapInfosTheme(&theme);
-		bitmapInfos = new CBitmapInfos(this, wxID_ANY, theme, fileGeolocalisation);
+		bitmapInfos = new CBitmapInfos(this, wxID_ANY, theme);
 	}
 
 	if (viewerTheme != nullptr)

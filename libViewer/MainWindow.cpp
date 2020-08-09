@@ -420,13 +420,6 @@ void CMainWindow::CriteriaChange(wxCommandEvent& event)
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 
-	//Update Picture Info
-	window = this->FindWindowById(PANELINFOSWNDID);
-	if (window)
-	{
-		CPanelInfosWnd* panelInfo = static_cast<CPanelInfosWnd*>(window);
-		panelInfo->UpdateData();
-	}
 	processIdle = true;
 }
 

@@ -41,7 +41,7 @@ namespace Regards
 			wxString GetSqlRequest();
 
 		private:
-			
+			void OnUpdateGpsInfos(wxCommandEvent& event);
 			void CriteriaPhotoUpdate(wxCommandEvent& event);
 			void RefreshCriteriaSearch(wxCommandEvent& event);
 			void OnIdle(wxIdleEvent& evt);

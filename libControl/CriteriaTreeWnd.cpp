@@ -25,6 +25,8 @@ using namespace Regards::exiv2;
 #include <SqlPhotos.h>
 #include <MapSelect.h>
 #include <CalendarSelect.h>
+#include <ParamInit.h>
+#include <GpsEngine.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Internet;
@@ -34,14 +36,24 @@ using namespace Regards::Control;
 wxDEFINE_EVENT(EVENT_UPDATEINFOSTHREAD, wxCommandEvent);
 
 CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &mainWindowID, 
-	CFileGeolocation * fileGeolocalisation, const CThemeTree & theme,const CThemeScrollBar & themeScroll)
+	const CThemeTree & theme,const CThemeScrollBar & themeScroll)
 : CTreeWithScrollbar("CCriteriaTreeWnd", parent, id, themeScroll, theme)
 {
+	wxString urlServer = "";
+	//Géolocalisation
+	CRegardsConfigParam * param = CParamInit::getInstance();
+	if (param != nullptr)
+	{
+		urlServer = param->GetUrlServer();
+	}
+	
 	criteriaTree = nullptr;
 	oldCriteriaTree = nullptr;
 	numPhotoId = 0;
 	this->mainWindowID = mainWindowID;
-    this->fileGeolocalisation = fileGeolocalisation;
+	fileGeolocalisation = new CFileGeolocation(urlServer);
+
+	
     Connect(wxEVT_SHOWCALENDAR, wxCommandEventHandler(CCriteriaTreeWnd::ShowCalendar));
     Connect(wxEVT_SHOWMAP, wxCommandEventHandler(CCriteriaTreeWnd::ShowMap));
 }
@@ -65,8 +77,11 @@ wxString CCriteriaTreeWnd::GenerateUrl()
 
 void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
 {
+
+	
     CPhotoCriteria * photoCriteria = (CPhotoCriteria *)event.GetClientData();
     CCalendarSelect calendarSelect;
+
     if(calendarSelect.SelectNewDate(this, fileGeolocalisation->GetDateTimeInfos()))
     {
         bool isNew = false;
@@ -84,12 +99,14 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
         metadata.SetDateTime(calendarSelect.GetSelectStringDate());
         
 #endif
-        fileGeolocalisation->RefreshData();
-        
+       
         wxWindow * mainWnd = this->FindWindowById(mainWindowID);
         wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
         wxQueueEvent(mainWnd, eventChange);
     }
+
+	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	fileGeolocalisation->SendMessageToWindow(filename, 2);
     
     if(photoCriteria != nullptr)
         delete photoCriteria;
@@ -153,16 +170,15 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
         metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
         
 #endif
-        fileGeolocalisation->RefreshData();
-        
-        //Update Infos
-        wxWindow * mainWnd = this->FindWindowById(mainWindowID);
-        wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-        wxQueueEvent(mainWnd, eventChange);
+
     }
     
     if(photoCriteria != nullptr)
         delete photoCriteria;
+
+	//Update infos
+	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	fileGeolocalisation->SendMessageToWindow(filename,1);
     
     Refresh();
 }
@@ -189,7 +205,7 @@ void CCriteriaTreeWnd::UpdateTreeData()
 void CCriteriaTreeWnd::SetFile(const wxString &filename)
 {
     this->filename = filename;
-    
+	fileGeolocalisation->SetFile(this->filename);
     CSqlPhotos sqlPhotos;
     numPhotoId = sqlPhotos.GetPhotoId(filename);
     
