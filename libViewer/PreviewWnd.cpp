@@ -537,12 +537,12 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 			oldfilename = filename;
         
 			
-			if (isOldBitmap != isBitmap)
+			if (isOldState != 1)
 			{
 				this->Resize();
 				this->ForceRefresh();
 			}
-			isOldBitmap = isBitmap;
+			isOldState = 1;
 		}
 		else if(!isThumbnail)
 		{
@@ -596,12 +596,12 @@ bool CPreviewWnd::SetVideo(const wxString &filename, const bool &play)
         showVideoWindow->SetVideo(filename, rotation, play);
         oldfilename = filename;
        // 
-		if (isOldVideo != isVideo)
+		if (isOldState != 2)
 		{
 			this->Resize();
 			this->ForceRefresh();
 		}
-		isOldVideo = isVideo;
+		isOldState = 2;
     }
 	return 1;
 
