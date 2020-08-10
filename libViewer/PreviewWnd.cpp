@@ -364,17 +364,20 @@ void CPreviewWnd::HideToolbar(wxCommandEvent& event)
 				if (isVideo)
                 {
                     bitmapInfos->Show(false);
-                    showVideoWindow->HideToolbar();
+                    
                 }
 				else if(isBitmap)
 				{
 					bitmapInfos->Show(false);
-					showBitmapWindow->HideToolbar();
+					
 				}
                 else
                 {
                     bitmapInfos->Show(false);
                 }
+
+				showVideoWindow->HideToolbar();
+				showBitmapWindow->HideToolbar();
 				Resize();
 			}
 		}
@@ -438,9 +441,11 @@ void CPreviewWnd::ShowToolbar(wxCommandEvent& event)
 				if (isAnimation)
 					if (!animationToolbar->IsShown())
 						animationToolbar->Show(true);
-				showBitmapWindow->ShowToolbar();
+				
 			}
 
+			showVideoWindow->ShowToolbar();
+			showBitmapWindow->ShowToolbar();
 			Resize();
 		}
 	}
@@ -515,7 +520,7 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
         
 			if (!isAnimation)
 				animationToolbar->Show(false);
-			else
+			else if(showToolbar)
 				animationToolbar->Show(true);
         
 			if(!showBitmapWindow->IsShown())
@@ -599,9 +604,11 @@ bool CPreviewWnd::SetVideo(const wxString &filename, const bool &play)
 		if (isOldState != 2)
 		{
 			this->Resize();
-			this->ForceRefresh();
+			//this->ForceRefresh();
 		}
 		isOldState = 2;
+
+		wxMicroSleep(100);
     }
 	return 1;
 
