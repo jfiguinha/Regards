@@ -56,7 +56,7 @@ void CPfm::GetDimensions(const wxString & path, int & width, int & height)
 
 }
 
-CRegardsFloatBitmap * CPfm::ReadFilePFM(const wxString & path)
+CRegardsFloatBitmap * CPfm::ReadFilePFM(const wxString & path, const bool &thumbnail)
 {
 	CRegardsFloatBitmap * image = nullptr;
 
@@ -134,9 +134,18 @@ CRegardsFloatBitmap * CPfm::ReadFilePFM(const wxString & path)
 					swapBytes(&vfvalue[2]);
 				}
 				int pos = image->GetPosition(j, i);
-				image->data[pos + 2] = vfvalue[0];
-				image->data[pos + 1] = vfvalue[1];
-				image->data[pos + 0] = vfvalue[2];
+				if(thumbnail)
+				{
+					image->data[pos + 0] = vfvalue[0];
+					image->data[pos + 1] = vfvalue[1];
+					image->data[pos + 2] = vfvalue[2];
+				}
+				else
+				{
+					image->data[pos + 2] = vfvalue[0];
+					image->data[pos + 1] = vfvalue[1];
+					image->data[pos + 0] = vfvalue[2];
+				}
 			}
 		}
 	}

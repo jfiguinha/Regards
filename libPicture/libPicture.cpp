@@ -2202,7 +2202,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 		case PFM:
 		{
-			CRegardsFloatBitmap * test = CPfm::ReadFilePFM(fileName);
+			CRegardsFloatBitmap * test = CPfm::ReadFilePFM(fileName, isThumbnail);
 			bitmap->SetPicture(test);
 			break;
 		}
