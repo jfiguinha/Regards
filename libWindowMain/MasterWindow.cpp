@@ -7,7 +7,9 @@
 using namespace Regards::Window;
 
 
-
+bool CMasterWindow::endProgram = false;
+vector<CMasterWindow *> CMasterWindow::listMainWindow;
+vector<CMasterWindow *> CMasterWindow::listProcessWindow;
 bool CMasterWindow::stopProcess = false;
 
 void CMasterWindow::StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry)
