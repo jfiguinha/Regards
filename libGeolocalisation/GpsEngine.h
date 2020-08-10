@@ -1,26 +1,22 @@
 #pragma once
 #include <WindowMain.h>
-#include "FileGeolocation.h"
-#include <window_id.h>
 using namespace Regards::Window;
 
 namespace Regards
 {
 	namespace Internet
 	{
-		class CFileGeolocation;
-
 		class CListOfWindowGeo
 		{
 		public:
 
 			CListOfWindowGeo();
 
-			void AddWindow(Regards::Window::CWindowMain * windowMain);
+			void AddWindow(CWindowMain * windowMain);
 			void SendMessageToWindow(const wxString &filename, const int &typeData);
 				
 		private:
-			Regards::Window::WindowMainVector listOfWinListener;
+			WindowMainVector listOfWinListener;
 		};
 		
 		class CGpsEngine

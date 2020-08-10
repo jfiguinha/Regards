@@ -3,6 +3,7 @@
 #include "WindowUtility.h"
 #include <wx/busyinfo.h>
 #include <window_id.h>
+#include <LibResource.h>
 using namespace Regards::Window;
 
 
@@ -12,11 +13,12 @@ bool CMasterWindow::stopProcess = false;
 void CMasterWindow::StopAllProcess(const wxString &title, const wxString &message, wxWindow * parentWindow, const int &nbTry)
 {
 	SetStopProcess(true);
-	//wxMilliSleep(500);
+	wxMilliSleep(100);
 	wxWindowDisabler disableAll;
-	wxBusyInfo * wait = new wxBusyInfo("Please wait, working...");
-	//wxProgressDialog dialog(title, message, listMainWindow.size(), parentWindow,
-	//	wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+	wxString libelle = CLibResource::LoadStringFromResource(L"LBLSTOPWORKINGMSG", 1);
+	
+	
+	wxBusyInfo * wait = new wxBusyInfo(libelle);
 
 	int i = 0;
 	bool allStop = true;
@@ -27,14 +29,10 @@ void CMasterWindow::StopAllProcess(const wxString &title, const wxString &messag
 		for (CMasterWindow* window : listProcessWindow)
 		{
 			wxString message = window->GetWaitingMessage();
-			//if (false == dialog.Update(j++, message))
-			//	break;
 			wxTheApp->Yield();
 
 			if (!window->GetProcessEnd())
 			{
-				//wxString message = window->GetWaitingMessage();
-				//mainWindowWaiting->SetTexte(message);
 				allStop = false;
 				wxMilliSleep(500);
 				i++;
