@@ -8,14 +8,14 @@
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
-#include <header.h>
+#include "header.h"
 #include <Regards.h>
-#include <DeepLearning.h>
+//#include <DeepLearning.h>
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
 using namespace tbb;
-using namespace Regards::DeepLearning;
+//using namespace Regards::DeepLearning;
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
