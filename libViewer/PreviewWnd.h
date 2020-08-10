@@ -103,6 +103,8 @@ namespace Regards
             bool showToolbar;
 			bool fullscreen;
 			bool isDiaporama;
+			bool isOldBitmap = false;
+			bool isOldVideo = false;
             wxString oldfilename;
 			CThemeBitmapWindow themeBitmap;
 
