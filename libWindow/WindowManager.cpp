@@ -1248,7 +1248,7 @@ void CWindowManager::SetNewPosition(CSeparationBar * separationBar)
 	}
     
      if (!fastRender)
-         this->Resize();
+         this->ForceRefresh();
 }
 
 

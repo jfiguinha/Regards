@@ -78,7 +78,7 @@ void CThumbnailToolBarZoom::OnLButtonDown(wxMouseEvent& event)
 		evt.SetExtraLong(typeAffichage);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
-	this->Resize();
+	this->ForceRefresh();
 }
 /*
 void CThumbnailToolBarZoom::OnMouseMove(wxMouseEvent& event)

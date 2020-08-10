@@ -220,13 +220,13 @@ void CPanelWithClickToolbar::ShowPanel()
 	{
 		clickWindow->Show(false);
 		paneWindow->Show(true);
-		paneWindow->Resize();
+		paneWindow->ForceRefresh();
 	}
 	else
 	{
 		clickWindow->Show(true);
 		paneWindow->Show(false);
-		clickWindow->Resize();
+		clickWindow->ForceRefresh();
 	}
 }
 

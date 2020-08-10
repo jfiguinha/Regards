@@ -536,16 +536,16 @@ bool CPreviewWnd::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnai
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
 			oldfilename = filename;
         
-			this->Resize();
-			if(isOldBitmap != isBitmap)
+			//this->Resize();
+			//if(isOldBitmap != isBitmap)
 				this->ForceRefresh();
 
-			isOldBitmap = isBitmap;
+			//isOldBitmap = isBitmap;
 		}
 		else if(!isThumbnail)
 		{
 			showBitmapWindow->SetBitmap(bitmap, isThumbnail);
-			this->Resize();
+			this->ForceRefresh();
 		}
 	}
 	return 1;
@@ -593,8 +593,8 @@ bool CPreviewWnd::SetVideo(const wxString &filename, const bool &play)
         libPicture.GetPictureDimensions(filename, width, height, rotation);
         showVideoWindow->SetVideo(filename, rotation, play);
         oldfilename = filename;
-        this->Resize();
-		if (isOldVideo != isVideo)
+       // this->Resize();
+		//if (isOldVideo != isVideo)
 			this->ForceRefresh();
 
 		isOldVideo = isVideo;
