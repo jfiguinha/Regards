@@ -432,6 +432,7 @@
       </PreBuild>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug</Command>
+        <Command Enabled="yes">cp dll/libraw-19.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbz2-1.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcairo-2.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcurl-4.dll ./Debug</Command>
@@ -603,6 +604,7 @@
       <PostBuild>
         <Command Enabled="no">#/bin/bash</Command>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release</Command>
+        <Command Enabled="yes">cp dll/libraw-19.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libbz2-1.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcairo-2.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcurl-4.dll ./Release</Command>
