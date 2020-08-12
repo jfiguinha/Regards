@@ -22,7 +22,7 @@
     <ProjectGuid>{1F3AF1AE-69DB-43AF-92C3-2C58A2B40C37}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libDatastructure</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

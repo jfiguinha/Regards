@@ -22,7 +22,7 @@
     <ProjectGuid>{475D02BB-FBD5-4094-8CD8-D33D9804CD24}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>wxCheckTree</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

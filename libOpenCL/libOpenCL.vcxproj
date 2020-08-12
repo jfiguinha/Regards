@@ -22,7 +22,7 @@
     <ProjectGuid>{FF974E33-5149-453A-95AE-0D584FE6B913}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libOpenCL</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

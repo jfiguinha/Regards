@@ -22,7 +22,7 @@
     <ProjectGuid>{20481AB3-AE31-4D9D-B073-3F56884C741A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libExiv2</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>libExif</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

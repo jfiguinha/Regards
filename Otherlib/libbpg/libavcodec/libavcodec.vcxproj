@@ -22,7 +22,7 @@
     <ProjectGuid>{BCEA1415-C333-4B79-9038-0B9EFD72A4F4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libavcodec</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

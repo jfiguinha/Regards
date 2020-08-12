@@ -22,7 +22,7 @@
     <ProjectGuid>{5E545B46-4112-4C16-B716-9A8CAD576B7E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libGeolocalisation</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

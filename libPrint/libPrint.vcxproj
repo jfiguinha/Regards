@@ -22,7 +22,7 @@
     <ProjectGuid>{79D712AD-2E8D-464B-BC49-7F9051B25E62}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libPrint</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
