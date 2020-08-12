@@ -13,7 +13,7 @@ sudo apt install nasm
 sudo apt install autoconf
 sudo apt install libexif-dev
 sudo apt install libgtk-3-dev
-sudo apt install libwebkit2gtk-4.0
+sudo apt install libwebkit2gtk-4.0-dev
 sudo apt install freeglut3-dev
 sudo apt install mesa-common-dev
 sudo apt install git
@@ -54,9 +54,9 @@ chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
 
-unzip project_linux.zip
-
 sudo cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
+
+unzip project_linux.zip
 
 export PROJECTPATH=$PWD
 make -j$NBPROC
