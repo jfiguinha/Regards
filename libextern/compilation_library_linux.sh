@@ -130,6 +130,8 @@ cd build
 cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DZLIB_ROOT=../../zlib ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
+cd .. 
+cd .. 
 
 #compile opencv
 cd opencv
