@@ -7,7 +7,7 @@ brew update
 brew upgrade
 xcode-select --install
 brew install -v pkgconfig
-brew install -v llvm@7
+brew install -v llvm
 brew install -v pango 
 brew install -v libexif 
 brew install -v OpenEXR

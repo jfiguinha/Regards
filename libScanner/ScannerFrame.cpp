@@ -24,9 +24,6 @@
 #include <FileUtility.h>
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
-#ifdef __APPLE__
-#include <ScannerWindow.h>
-#endif
 #include <ImageLoadingFormat.h>
 using namespace Regards::Print;
 using namespace Regards::Introduction;
