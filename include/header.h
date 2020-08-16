@@ -16,7 +16,9 @@
 //#define WX_PRECOMP
 
 #ifdef USE_TBB
+#ifndef __APPLE__
 #include <tbb/tbbmalloc_proxy.h>
+#endif
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
 #endif
