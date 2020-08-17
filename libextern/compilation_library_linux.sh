@@ -14,6 +14,16 @@ tar xf poppler-0.81.0.tar.xz
 wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
 unzip 4.1.1.zip
 
+#compile leptonica
+tar xf leptonica-1.79.0.tar.gz
+cd leptonica-1.79.0/
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
 
 #compile tesseract
 cd tesseract-4.1.1
@@ -93,6 +103,7 @@ cd ..
 
 #Compile SDL2-2.0.5
 cd SDL2-2.0.5 
+chmod +x configure
 ./configure
 make -j$NBPROC
 cd ..
