@@ -36,6 +36,8 @@ sudo pacman -S mesa-vdpau
 sudo pacman -S unzip
 sudo pacman -S sndio
 sudo pacman -S openexr
+sudo pacman -S pkg-config
+sudo pacman -S patchelf
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
