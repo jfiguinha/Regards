@@ -24,4 +24,7 @@ cd ffmpeg-4.2.2
   --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
 make -j$NBPROC
 #make install
+
+rm VERSION
+
 cd ..
