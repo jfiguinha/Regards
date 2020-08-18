@@ -207,7 +207,6 @@
         <LibraryPath Value="../libextern/qpdf-master/libqpdf/build/.libs"/>
         <LibraryPath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
-        <LibraryPath Value="/home/figuinha/developpement/git/Regards/libextern/openexr-2.5.2/build/OpenEXR/IlmImf"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
@@ -253,7 +252,7 @@
         <Library Value="SqlData"/>
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
-        <Library Value="wx_gtk3u_gl-3.1.a"/>
+        <Library Value="wx_gtk3u_gl-3.1"/>
         <Library Value="GL"/>
         <Library Value="GLU"/>
         <Library Value="glut"/>
@@ -314,13 +313,13 @@
         <Library Value="aom"/>
         <Library Value="webp"/>
         <Library Value="png"/>
-        <Library Value="libHalf-2_5.a"/>
-        <Library Value="libIexMath-2_5.a"/>
-        <Library Value="libIlmImf-2_5.a"/>
-        <Library Value="libIlmImfUtil-2_5.a"/>
-        <Library Value="libIlmThread-2_5.a"/>
-        <Library Value="libImath-2_5.a"/>
-        <Library Value="libIex-2_5.a"/>
+        <Library Value="libHalf-2_5"/>
+        <Library Value="libIexMath-2_5"/>
+        <Library Value="libIlmImf-2_5"/>
+        <Library Value="libIlmImfUtil-2_5"/>
+        <Library Value="libIlmThread-2_5"/>
+        <Library Value="libImath-2_5"/>
+        <Library Value="libIex-2_5"/>
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
         <Library Value="opencv_dnn"/>
