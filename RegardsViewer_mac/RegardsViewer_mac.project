@@ -284,12 +284,10 @@
         <Library Value="qpdf"/>
         <Library Value="tesseract"/>
         <Library Value="lept"/>
+        <Library Value="tbb"/>
         <Library Value="IlmImf"/>
         <Library Value="IexMath"/>
         <Library Value="Half"/>
-        <Library Value="tbb"/>
-        <Library Value="tbbmalloc"/>
-        <Library Value="tbbmalloc_proxy"/>
         <Library Value="aom"/>
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
@@ -412,8 +410,6 @@
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbbmalloc.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbbmalloc_proxy.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_calib3d.4.3.dylib @executable_path/../Frameworks/libopencv_calib3d.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -427,7 +423,6 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_objdetect.4.3.dylib @executable_path/../Frameworks/libopencv_objdetect.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libexif/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.dylib @executable_path/../Frameworks/libtbb.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbbmalloc_proxy.dylib @executable_path/../Frameworks/libtbbmalloc_proxy.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/developpement/git/Regards/libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.1.0.dylib @executable_path/../Frameworks/libGLEW.2.1.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -638,8 +633,6 @@
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">rm ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.0.7.0.dylib</Command>
         <Command Enabled="yes">rm ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.dylib</Command>
@@ -676,7 +669,6 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libexif/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbb.dylib @executable_path/../Frameworks/libtbb.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/tbb/lib/libtbbmalloc_proxy.dylib @executable_path/../Frameworks/libtbbmalloc_proxy.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/developpement/git/Regards/libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.1.0.dylib @executable_path/../Frameworks/libGLEW.2.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -798,7 +790,6 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.3.dylib @executable_path/../Frameworks/libopencv_core.4.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libopencv_videoio.4.3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libpoppler.91.dylib @executable_path/../Frameworks/libpoppler.91.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtiff.5.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change @rpath/libtbbmalloc.dylib @executable_path/../Frameworks/libtbbmalloc.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtbbmalloc_proxy.dylib</Command>
         <Command Enabled="yes">$(shell change_link.sh)</Command>
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
         <Command Enabled="yes">rm -f ./package/RegardsViewer2.dmg</Command>
