@@ -437,7 +437,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.0.dylib @executable_path/../Frameworks/libtesseract.4.1.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.1.dylib @executable_path/../Frameworks/libtesseract.4.1.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -489,7 +489,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libpoppler.91.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libpoppler.91.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libqpdf.26.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libtesseract.4.1.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libtesseract.4.1.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libgobject-2.0.0.dylib @executable_path/../Frameworks/libgobject-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib @executable_path/../Frameworks/libgmodule-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
@@ -683,7 +683,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libSDL2-2.0.0.dylib @executable_path/../Frameworks/libSDL2-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libjasper.4.dylib @executable_path/../Frameworks/libjasper.4.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change $HOME/ffmpeg_build/lib/libqpdf.26.dylib @executable_path/../Frameworks/libqpdf.26.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.0.dylib @executable_path/../Frameworks/libtesseract.4.1.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libtesseract.4.1.1.dylib @executable_path/../Frameworks/libtesseract.4.1.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libRegardsBpg.dylib</Command>
         <Command Enabled="yes">install_name_tool -change ../libextern/libde265-master/libde265/libde265.dylib @executable_path/../Frameworks/libde265.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /opt/libjpeg-turbo/lib/libturbojpeg.0.dylib @executable_path/../Frameworks/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -733,7 +733,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.91.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libtiff/lib/libtiff.5.dylib @executable_path/../Frameworks/libtiff.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler.91.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libqpdf.26.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtesseract.4.1.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/leptonica/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libtesseract.4.1.1.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libgobject-2.0.0.dylib @executable_path/../Frameworks/libgobject-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib @executable_path/../Frameworks/libgmodule-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libgio-2.0.0.dylib</Command>
