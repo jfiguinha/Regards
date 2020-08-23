@@ -467,12 +467,14 @@ COpenCLEngine::COpenCLEngine()
 		}
 	}
 
+#ifdef OPENCV_OPENCL
 	if (platform != nullptr && _singleton != nullptr && device != nullptr)
 	{
 		//Set OpenCV to use OpenCL context
 		cv::ocl::setUseOpenCL(true);
 		cv::ocl::attachContext(platform->platformName.ToStdString(), platform->platformId, _singleton->GetContext(), device->deviceId);
 	}
+#endif
 }
 
 COpenCLContext * COpenCLEngine::GetInstance()

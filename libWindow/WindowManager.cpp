@@ -960,7 +960,7 @@ void CWindowManager::OnLButtonUp()
 	{
 		Resize();
 	}
-	this->Refresh();
+	//this->ForceRefresh();
 }
 
 CWindowManager::~CWindowManager()
@@ -1247,8 +1247,9 @@ void CWindowManager::SetNewPosition(CSeparationBar * separationBar)
 		}
 	}
     
-     if (!fastRender)
-         this->ForceRefresh();
+    // if (!fastRender)
+    //     this->ForceRefresh();
+    this->Resize();
 }
 
 
@@ -1473,8 +1474,8 @@ void CWindowManager::Resize()
 							windowToAdd->separationBar->separationBar->SetSize(rc);
 
 						windowToAdd->separationBar->separationBar->Refresh();
-						//windowToAdd->separationBar->separationBar->Refresh();
-						//windowToAdd->separationBar->separationBar->Update();
+						windowToAdd->separationBar->separationBar->Refresh();
+						windowToAdd->separationBar->separationBar->Update();
 					}
 				}
 			}
