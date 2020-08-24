@@ -422,6 +422,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 }
 
 //Thread
+
 void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
 	CFileGeolocation geoloc(findPhotoCriteria->urlServer);
@@ -490,6 +491,16 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	photoCriteria.InsertPhotoListCriteria(listCriteriaPhoto, findPhotoCriteria->criteriaNew, geoloc.HasGps(),
 	                                      findPhotoCriteria->numFolderId);
 
+	for (CInsertCriteria * criteria : listCriteriaPhoto.listCriteria)
+	{
+		if (criteria != nullptr)
+		{
+			delete criteria;
+			criteria = nullptr;
+		}
+	}
+
+	listCriteriaPhoto.listCriteria.clear();
 
 	if (findPhotoCriteria->mainWindow != nullptr)
 	{

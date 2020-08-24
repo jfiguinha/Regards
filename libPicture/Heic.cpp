@@ -1031,7 +1031,9 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 			}
 #endif
 		}
-		delete[] memoryBuffer;
+
+		if(memoryBuffer != nullptr)
+			delete[] memoryBuffer;
     }
     else
     {

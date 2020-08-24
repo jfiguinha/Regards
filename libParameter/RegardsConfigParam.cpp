@@ -19,7 +19,7 @@ CRegardsConfigParam::CRegardsConfigParam()
 	diaporamaEffect = 0;
 	diaporamaFullscreen = 1;
 	openCLPlatformName = "";
-	dataInMemory = 1;
+	dataInMemory = 0;
 	geolocUrl = "http://www.geoplugin.net";
 	thumbnailQuality = 1;
 	thumbnailIconeCache = 1;

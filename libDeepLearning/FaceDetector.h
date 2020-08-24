@@ -1,6 +1,7 @@
 #pragma once
 
 class CPictureData;
+class CRegardsBitmap;
 
 namespace Regards
 {
@@ -14,6 +15,7 @@ namespace Regards
 
 			static void LoadModel(const string &config_file, const string &weight_file, const string &face_recognition, const string &eye_detection);
 			std::vector<int> FindFace(CPictureData * pictureData);
+			std::vector<int> FindFace(CRegardsBitmap * pBitmap);
 			int FindNbFace(cv::Mat & image, int & angle);
 			void DetectEyes(CRegardsBitmap * pBitmap);
 

@@ -15,6 +15,7 @@
 #include <DeepLearning.h>
 #include <ThumbnailMessage.h>
 #include <PictureData.h>
+#include <RegardsBitmap.h>
 #include <ScrollbarWnd.h>
 #include "ThumbnailFace.h"
 #include "ThumbnailFaceToolBar.h"
@@ -298,13 +299,14 @@ void CListFace::FacialRecognition(void * param)
 	bool pictureOK = false;
 	CLibPicture libPicture;
 	vector<int> listFace;
-	CPictureData * pictureData = libPicture.LoadPictureData(path->filename, pictureOK);
-	int nbFaceFound = 0;
+	CRegardsBitmap * pictureData = CPictureData::LoadPictureToBGRA(path->filename, pictureOK);
 
+	int nbFaceFound = 0;
+	
 	if (pictureData != nullptr)
 	{
-
 		pictureData->SetFilename(path->filename);
+
 		if (pictureOK)
 		{
 			listFace = CDeepLearning::FindFace(pictureData);
@@ -314,9 +316,10 @@ void CListFace::FacialRecognition(void * param)
 		{
 			CDeepLearning::FindFaceCompatible(numFace);
 		}
-
-		delete pictureData;
 	}
+	
+	if (pictureData != nullptr)
+		delete pictureData;
 
 	if (path->mainWindow != nullptr)
 	{
@@ -348,6 +351,7 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
+
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
@@ -364,24 +368,14 @@ void CListFace::ProcessIdle()
 		CSqlFacePhoto sqlFacePhoto;
 		sqlFacePhoto.InsertFaceTreatment(listPhoto.at(0));
 
+		
 		CThreadFace * path = new CThreadFace();
 		path->filename = listPhoto.at(0);
 		path->mainWindow = this;
 		path->thread = new thread(FacialRecognition, path);
-
-		CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
-		thumbnailMessage->nbPhoto = listPhoto.size();
-		thumbnailMessage->typeMessage = 0;
-		wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGEFACE);
-		eventChange.SetClientData(thumbnailMessage);
-		if (mainWnd != nullptr)
-			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-		else
-			delete thumbnailMessage;
-
 		nbProcessFacePhoto++;
 
+		
 		if (sendMessageStatus)
 		{
 			CThumbnailMessage * thumbnailMessage = new CThumbnailMessage();
@@ -394,6 +388,7 @@ void CListFace::ProcessIdle()
 			eventChange.SetClientData(thumbnailMessage);
 			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
 		}
+		
 	}
 
 	//Recognize Face

@@ -192,6 +192,84 @@ int CFaceDetector::FindNbFace(cv::Mat & image, int & angle)
 	return FindFace(image, angle, pointOfFace, listOfFace);
 }
 
+
+std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
+{
+	CSqlFaceDescriptor sqlfaceDescritor;
+	std::vector<int> listFace;
+	int i = 0;
+	bool isLoading = false;
+	muLoading.lock();
+	isLoading = isload;
+	muLoading.unlock();
+
+	if (isLoading)
+	{
+
+		int angle = 0;
+		CSqlFacePhoto facePhoto;
+		cv::Mat dest;
+		std::vector<cv::Mat> listOfFace;
+		std::vector<cv::Rect> pointOfFace;
+		//std::vector<char> data = pictureData->CopyData();
+		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
+		cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
+
+		FindFace(image, angle, pointOfFace, listOfFace);
+		listOfFace.clear();
+		pointOfFace.clear();
+		RotateCorrectly(image, dest, angle);
+		detectFaceOpenCVDNN(dest, listOfFace, pointOfFace);
+
+
+		std::vector<cv_image<rgb_pixel>> faces;
+
+		for (Mat face : listOfFace)
+		{
+
+			std::vector<uchar> buff;
+			ImageToJpegBuffer(face, buff);
+			int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.rows, face.cols, 1.0, reinterpret_cast<uchar*>(buff.data()), buff.size());
+			listFace.push_back(numFace);
+
+			cv::Size size(150, 150);
+			cv::Mat dst;//dst image
+			cv::resize(face, dst, size);
+			//IplImage image2 = cvIplImage(face);
+			cv_image<rgb_pixel> cimg(cvIplImage(dst));
+			faces.push_back(cimg);
+		}
+
+		if (faces.size() == 0)
+		{
+			cout << "No faces found in image!" << endl;
+			return listFace;
+		}
+
+		// This call asks the DNN to convert each face image in faces into a 128D vector.
+		// In this 128D vector space, images from the same person will be close to each other
+		// but vectors from different people will be far apart.  So we can use these vectors to
+		// identify if a pair of images are from the same person or from different people.  
+		std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
+
+		for (int i = 0; i < faces.size(); i++)
+		{
+			matrix<float, 0, 1> face = face_descriptors[i];
+			ostringstream sout;
+			serialize(face, sout);
+
+			string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
+			sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
+			//Write into database
+
+
+		}
+
+	}
+
+	return listFace;
+}
+
 std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 {
 	CSqlFaceDescriptor sqlfaceDescritor;

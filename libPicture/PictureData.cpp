@@ -103,11 +103,44 @@ float CPictureData::CalculPictureRatio(const int &pictureWidth, const int &pictu
 	return newRatio;
 }
 
+CRegardsBitmap * CPictureData::LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
+{
+	CRegardsBitmap * pictureData = nullptr;
+	CLibPicture libPicture;
+	
+	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
+
+	if (imageLoading != nullptr)
+	{
+		if (resizeWidth != 0 && resizeHeight != 0)
+		{
+			float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth, resizeHeight);
+			int width = imageLoading->GetWidth() * ratio;
+			int height = imageLoading->GetHeight() * ratio;
+			imageLoading->Resize(width, height, 1);
+		}
+
+		pictureOK = true;
+		pictureData = imageLoading->GetRegardsBitmap(true);
+	}
+	else
+		pictureOK = false;
+
+
+	if (imageLoading != nullptr)
+		delete imageLoading;
+
+	imageLoading = nullptr;
+	
+	return pictureData;
+}
+
 CPictureData * CPictureData::LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
 {
 	CPictureData * pictureData = nullptr;
 	CLibPicture libPicture;
 	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
+
 	if (imageLoading != nullptr)
 	{
 		pictureOK = imageLoading->IsOk();

@@ -461,7 +461,7 @@ CRegardsBitmap * CImageLoadingFormat::GetRegardsBitmap(const bool &copy)
 	return nullptr;
 }
 
-void CImageLoadingFormat::DestroyJpegData(uint8_t * data, const int & compressMethod)
+void CImageLoadingFormat::DestroyJpegData(uint8_t * & data, const int & compressMethod)
 {
 	if (compressMethod == 1)
 	{

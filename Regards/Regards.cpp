@@ -132,6 +132,7 @@ bool MyApp::OnInit()
 	if (!wxApp::OnInit())
 		return false;
 
+
 #ifdef __APPLE__
 	wxSystemOptions::SetOption(wxOSX_FILEDIALOG_ALWAYS_SHOW_TYPES, 1);
 #endif

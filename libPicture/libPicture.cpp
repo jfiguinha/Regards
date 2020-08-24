@@ -3175,19 +3175,8 @@ void CLibPicture::UninitFreeImage()
 CPictureData * CLibPicture::LoadPictureData(const wxString &filename, bool &pictureOK)
 {
 	CPictureData * pictureData = nullptr;
-	/*
-	CSqlThumbnail sqlThumbnail;
-	if (sqlThumbnail.TestThumbnail(filename))
-	{
-		pictureData = sqlThumbnail.GetJpegThumbnail(filename);
-		if (pictureData != nullptr)
-			pictureOK = true;
-	}
-	else
-	{
-	*/
-		pictureData = CPictureData::LoadPictureToJpeg(filename, pictureOK);
-	//}
-
+	pictureData = CPictureData::LoadPictureToJpeg(filename, pictureOK);
 	return pictureData;
 }
+
+

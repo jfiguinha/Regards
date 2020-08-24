@@ -122,7 +122,7 @@ bool CSqlLib::OpenConnection(const wxString &databasePath, const bool &readonly,
 		if(readonly)
 			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX, NULL);
 		else
-			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_FULLMUTEX, NULL);
+			rc = sqlite3_open_v2(CConvertUtility::ConvertToUTF8(sqLiteDBPath), &(pCon), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL);
 		m_strLastError = sqlite3_errmsg(pCon);
 	}
 
