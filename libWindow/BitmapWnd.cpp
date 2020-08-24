@@ -1678,10 +1678,10 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
      
 		int x = ((GetWidth() * scale_factor) - glTexture->GetWidth()) / 2;
 		int y = ((GetHeight() * scale_factor) - glTexture->GetHeight()) / 2;
-		if (openclContext->IsSharedContextCompatible())
-			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, true);
-		else
-			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
+		//if (openclContext->IsSharedContextCompatible())
+		//	renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, true);
+		//else
+		renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
 
 		xPosImage = x;
 		yPosImage = y;
@@ -1753,7 +1753,7 @@ void CBitmapWnd::RenderToScreenWithoutOpenCLSupport()
 //-----------------------------------------------------------------
 void CBitmapWnd::OnPaint(wxPaintEvent& event)
 {
-    TRACE();
+	TRACE();
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CBitmapWnd::OnPaint");
 	OutputDebugString(L"\n");
@@ -1765,10 +1765,10 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
-        
-    //if(!loadBitmap)
-    //    if (GetWidth() == oldWidth || GetHeight() == oldHeight)
-    //        return;
+
+	//if(!loadBitmap)
+	//    if (GetWidth() == oldWidth || GetHeight() == oldHeight)
+	//        return;
 	oldWidth = GetWidth();
 	oldHeight = GetHeight();
 
@@ -1779,39 +1779,39 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		//Now we have a context, retrieve pointers to OGL functions
 		renderOpenGL->Init(this);
 
-    #ifndef WIN32
-        double scale_factor = GetContentScaleFactor();
-    #else
-        double scale_factor = 1.0f;
-    #endif 
+#ifndef WIN32
+		double scale_factor = GetContentScaleFactor();
+#else
+		double scale_factor = 1.0f;
+#endif 
 
-        renderOpenGL->LoadingResource(scale_factor);
+		renderOpenGL->LoadingResource(scale_factor);
 	}
 
 	// This is normally only necessary if there is more than one wxGLCanvas
 	// or more than one wxGLContext in the application.
 	renderOpenGL->SetCurrent(*this);
-           
-    #if defined(WIN32) && defined(_DEBUG)
-        DWORD tickCount = GetTickCount();
-        OutputDebugString(L"OnPaint\n");
-    #endif
-   
+
+#if defined(WIN32) && defined(_DEBUG)
+	DWORD tickCount = GetTickCount();
+	OutputDebugString(L"OnPaint\n");
+#endif
+
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
-        
-    if(supportOpenCL)
-    {
-        if (openCLEngine == nullptr)
-        {
-            openCLEngine = new COpenCLEngine();
-            if (openCLEngine != nullptr)
-                openclContext = openCLEngine->GetInstance();       
-        }
 
-    }        
+	if (supportOpenCL)
+	{
+		if (openCLEngine == nullptr)
+		{
+			openCLEngine = new COpenCLEngine();
+			if (openCLEngine != nullptr)
+				openclContext = openCLEngine->GetInstance();
+		}
+
+	}
 
 	if (!supportOpenCL)
 		RenderToScreenWithoutOpenCLSupport();
@@ -1821,16 +1821,16 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	AfterRender();
 
 	this->SwapBuffers();
-    
+
 	/*
-    if(source != nullptr)
-    {
-        delete source;
-        source = nullptr;
-    }
+	if(source != nullptr)
+	{
+		delete source;
+		source = nullptr;
+	}
 	*/
 
-    printf("CBitmapWnd End OnPaint \n");
+	printf("CBitmapWnd End OnPaint \n");
 	//scrollbar->SetPosition(posLargeur, posHauteur);
 
 #if defined(WIN32) && defined(_DEBUG)
@@ -1844,11 +1844,17 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-   if (renderOpenGL != nullptr)
-   {
-       delete renderOpenGL;
-       renderOpenGL = nullptr;
-   }
+	//if (openclContext != nullptr)
+	//{
+	//	if (!openclContext->IsSharedContextCompatible())
+	//	{
+			if (renderOpenGL != nullptr)
+			{
+				delete renderOpenGL;
+				renderOpenGL = nullptr;
+			}
+	//	}
+	//}
 }
 
 #else
