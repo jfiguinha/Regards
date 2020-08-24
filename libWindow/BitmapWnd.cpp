@@ -1844,7 +1844,11 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-   
+   if (renderOpenGL != nullptr)
+   {
+       delete renderOpenGL;
+       renderOpenGL = nullptr;
+   }
 }
 
 #else

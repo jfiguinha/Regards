@@ -53,7 +53,7 @@ void CRenderOpenGL::Init(wxGLCanvas * canvas)
         printf("Status: Using GLEW %s\n", glewGetString(GLEW_VERSION)); 
 
         isInit = true;
-    }   
+    }  
 }
 
 GLSLShader * CRenderOpenGL::CreateShader(const wxString &shaderName)
@@ -204,12 +204,17 @@ cl_mem CRenderOpenGL::GetOpenCLTexturePt()
 
 void CRenderOpenGL::CreateScreenRender(const int &width, const int &height, const CRgbaquad &color)
 {
+    
 	if (this->width != width || this->height != height)
 	{
 		this->width = width;
 		this->height = height;	
 		ReSizeGLScene(width, height);
 	}
+    
+    this->width = width;
+    this->height = height;	
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_TEXTURE_2D);
 	glMatrixMode(GL_PROJECTION);
@@ -219,6 +224,8 @@ void CRenderOpenGL::CreateScreenRender(const int &width, const int &height, cons
 	glLoadIdentity();
    
 	glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 0.0f);
 	//glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 
 }
@@ -391,7 +398,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 
 	if(!renderPreview)
 	{
-		
+		/*
 		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
 		if (m_pShader != nullptr)
 		{
@@ -405,11 +412,11 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 				printf("SetParam intensity failed \n ");
 			}
 		}
-
+        */
 
 		RenderQuad(textureDisplay, left, top, inverted);
-		if (m_pShader != nullptr)
-			m_pShader->DisableShader();
+		//if (m_pShader != nullptr)
+		//	m_pShader->DisableShader();
 	}
 
 	textureDisplay->Disable();
