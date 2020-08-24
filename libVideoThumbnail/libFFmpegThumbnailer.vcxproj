@@ -22,7 +22,7 @@
     <ProjectGuid>{4824CB9F-9777-4A3D-8287-671C1407E7A1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libFFmpegThumbnailer</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
