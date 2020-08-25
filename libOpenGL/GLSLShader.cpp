@@ -182,6 +182,8 @@ bool GLSLShader::DisableShader()
 {
    // int nErr = 0;
 	glUseProgram(0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     return true;
 }
 

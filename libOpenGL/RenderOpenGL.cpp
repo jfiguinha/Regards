@@ -15,6 +15,8 @@
 
 using namespace Regards::OpenGL;
 
+bool CRenderOpenGL::iSglewInit = false;
+
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas * canvas)
 	: wxGLContext(canvas)
 {
@@ -42,14 +44,17 @@ void CRenderOpenGL::Init(wxGLCanvas * canvas)
         version = glGetString(GL_VERSION);
         sscanf(CConvertUtility::ConvertToUTF8(version), "%f", &myGLVersion);
 
+
         GLuint err;
         err = glewInit();
 
         if (GLEW_OK != err)
         {
-          /* Problem: glewInit failed, something is seriously wrong. */
+          // Problem: glewInit failed, something is seriously wrong. 
           printf("Error: %s\n", glewGetErrorString(err));
-        }
+        }   
+
+
         printf("Status: Using GLEW %s\n", glewGetString(GLEW_VERSION)); 
 
         isInit = true;
@@ -96,6 +101,14 @@ CRenderOpenGL::~CRenderOpenGL()
 		err = clReleaseMemObject(cl_textureDisplay);
 		Error::CheckError(err);
 	}
+}
+
+void CRenderOpenGL::DeleteShaders()
+{
+     for(COpenGLShader * shader : listShader)
+        delete shader;
+        
+    listShader.clear();   
 }
 
 wxGLContext * CRenderOpenGL::GetGLContext()
@@ -223,9 +236,9 @@ void CRenderOpenGL::CreateScreenRender(const int &width, const int &height, cons
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
    
-	glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 0.0f);
+	glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 0.0f);
+    glClearColor(color.GetFRed() / 255.0f, color.GetFGreen() / 255.0f, color.GetFBlue() / 255.0f, 1.0f);
 	//glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
 
 }
@@ -398,25 +411,7 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 
 	if(!renderPreview)
 	{
-		/*
-		GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
-		if (m_pShader != nullptr)
-		{
-			m_pShader->EnableShader();
-			if (!m_pShader->SetTexture("textureScreen", textureDisplay->GetTextureID()))
-			{
-				printf("SetTexture textureScreen failed \n ");
-			}
-			if (!m_pShader->SetParam("intensity", 100))
-			{
-				printf("SetParam intensity failed \n ");
-			}
-		}
-        */
-
 		RenderQuad(textureDisplay, left, top, inverted);
-		//if (m_pShader != nullptr)
-		//	m_pShader->DisableShader();
 	}
 
 	textureDisplay->Disable();

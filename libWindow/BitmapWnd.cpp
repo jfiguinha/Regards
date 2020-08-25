@@ -1678,10 +1678,10 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
      
 		int x = ((GetWidth() * scale_factor) - glTexture->GetWidth()) / 2;
 		int y = ((GetHeight() * scale_factor) - glTexture->GetHeight()) / 2;
-		//if (openclContext->IsSharedContextCompatible())
-		//	renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, true);
-		//else
-		renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
+		if (openclContext->IsSharedContextCompatible())
+			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, true);
+		else
+            renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, false);
 
 		xPosImage = x;
 		yPosImage = y;
@@ -1761,7 +1761,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
-	wxPaintDC dc(this);
+   //wxGLCanvas::SetCurrent(this);
+    wxPaintDC(this);
 
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
@@ -1820,7 +1821,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	AfterRender();
 
-	this->SwapBuffers();
+    this->SwapBuffers();
 
 	/*
 	if(source != nullptr)
@@ -1844,17 +1845,17 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-	//if (openclContext != nullptr)
-	//{
-	//	if (!openclContext->IsSharedContextCompatible())
-	//	{
-			if (renderOpenGL != nullptr)
-			{
-				delete renderOpenGL;
-				renderOpenGL = nullptr;
-			}
-	//	}
-	//}
+    if(openclContext != nullptr)
+    {
+       if (!openclContext->IsSharedContextCompatible())
+       {
+            if (renderOpenGL != nullptr)
+            {
+                delete renderOpenGL;
+                renderOpenGL = nullptr;
+            }  
+       }   
+    }
 }
 
 #else

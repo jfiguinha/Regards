@@ -105,6 +105,19 @@ void CBitmapWndViewer::RemoveListener()
 {
 	mouseUpdate = nullptr;
 	effectParameter = nullptr;
+    
+	if (openclContext != nullptr)
+	{
+		if (!openclContext->IsSharedContextCompatible())
+		{
+			if (renderOpenGL != nullptr)
+			{
+				delete renderOpenGL;
+				renderOpenGL = nullptr;
+			}
+		}
+	}
+    
 	this->Refresh();
 }
 
@@ -351,13 +364,11 @@ void CBitmapWndViewer::ApplyPreviewEffect(int & widthOutput, int & heightOutput)
 void CBitmapWndViewer::OnFiltreOk()
 {
 	RemoveListener();
-    //RefreshWindow();
 }
 
 void CBitmapWndViewer::OnFiltreCancel()
 {
 	RemoveListener();
-    //RefreshWindow();
 }
 
 wxPoint CBitmapWndViewer::GetMousePosition()
