@@ -15,8 +15,6 @@
 
 using namespace Regards::OpenGL;
 
-bool CRenderOpenGL::iSglewInit = false;
-
 CRenderOpenGL::CRenderOpenGL(wxGLCanvas * canvas)
 	: wxGLContext(canvas)
 {
@@ -101,14 +99,6 @@ CRenderOpenGL::~CRenderOpenGL()
 		err = clReleaseMemObject(cl_textureDisplay);
 		Error::CheckError(err);
 	}
-}
-
-void CRenderOpenGL::DeleteShaders()
-{
-     for(COpenGLShader * shader : listShader)
-        delete shader;
-        
-    listShader.clear();   
 }
 
 wxGLContext * CRenderOpenGL::GetGLContext()
