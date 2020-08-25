@@ -24,6 +24,7 @@
 #include <SavePicture.h>
 #include <ScannerFrame.h>
 #include <OpenCLEngine.h>
+#include <ImageLoadingFormat.h>
 #include "ListFace.h"
 #include "WaitingWindow.h"
 using namespace std;
@@ -373,10 +374,11 @@ void CViewerFrame::OnAssociate(wxCommandEvent& event)
 void CViewerFrame::OnPrint(wxCommandEvent& event)
 {
 	CLibPicture libPicture;
+	CImageLoadingFormat * image = nullptr;
 	wxString filename = mainWindow->GetFilename();
 	if (filename != "")
 	{
-		CImageLoadingFormat * image = libPicture.LoadPicture(filename);
+		image = libPicture.LoadPicture(filename);
 		if (image != nullptr)
 			PrintPreview(image);
 	}
@@ -764,8 +766,9 @@ void CViewerFrame::PrintImagePreview(CRegardsBitmap * imageToPrint)
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
-
-	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), 0, &printDialogData);
+	CRegardsBitmap * bitmapPreview = new CRegardsBitmap();
+	*bitmapPreview = *imageToPrint;
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview), &printDialogData);
 	if (!preview->IsOk())
 	{
 		delete preview;
@@ -789,8 +792,10 @@ void CViewerFrame::PrintPreview(CImageLoadingFormat * imageToPrint)
 	// Pass two printout objects: for preview, and possible printing.
 	wxPrintData * g_printData = CPrintEngine::GetPrintData();
 	wxPrintDialogData printDialogData(*g_printData);
+	CRegardsBitmap * bitmapPreview = imageToPrint->GetRegardsBitmap(true);
 
-	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), 0, &printDialogData);
+
+	wxPrintPreview * preview = new wxPrintPreview(new CBitmapPrintout(imageToPrint), new CBitmapPrintout(bitmapPreview), &printDialogData);
 	if (!preview->IsOk())
 	{
 		delete preview;
