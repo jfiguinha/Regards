@@ -723,6 +723,7 @@ struct mytask {
 		}
 
 		delete[] frame->_memoryBuffer;
+		frame->_memoryBuffer = nullptr;
 	}
 
 	CRegardsBitmap * GetFrame()
@@ -732,6 +733,14 @@ struct mytask {
 
 	void Free()
 	{
+		if (frame->picture != nullptr)
+			delete frame->picture;
+		frame->picture = nullptr;
+
+		if (frame->_memoryBuffer != nullptr)
+			delete[] frame->_memoryBuffer;
+		frame->_memoryBuffer = nullptr;
+
 		if (frame != nullptr)
 			delete frame;
 
@@ -1034,6 +1043,7 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 
 		if(memoryBuffer != nullptr)
 			delete[] memoryBuffer;
+		memoryBuffer = nullptr;
     }
     else
     {

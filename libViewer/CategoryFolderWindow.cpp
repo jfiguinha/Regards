@@ -195,6 +195,7 @@ wxString CCategoryFolderWindow::GetWaitingMessage()
 
 void CCategoryFolderWindow::ProcessIdle()
 {
+
 	TRACE();
 	bool hasSomethingTodo = true;
 	printf("CCategoryFolderWindow::ProcessIdle() \n");
@@ -501,7 +502,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 	}
 
 	listCriteriaPhoto.listCriteria.clear();
-
+	
 	if (findPhotoCriteria->mainWindow != nullptr)
 	{
 		wxCommandEvent* event = new wxCommandEvent(EVENT_CRITERIAPHOTOUPDATE);

@@ -351,7 +351,6 @@ bool CListFace::GetProcessEnd()
 
 void CListFace::ProcessIdle()
 {
-
 	bool sendMessageStatus = true;
 	int nbProcesseur = 1;
 	CRegardsConfigParam * config = CParamInit::getInstance();
