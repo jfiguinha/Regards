@@ -1845,6 +1845,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
+#ifndef __APPLE__
     if(openclContext != nullptr)
     {
        if (!openclContext->IsSharedContextCompatible())
@@ -1856,6 +1857,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
             }  
        }   
     }
+#endif
 }
 
 #else
