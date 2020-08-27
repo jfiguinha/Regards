@@ -36,6 +36,7 @@ sudo apt install libwebp-dev
 sudo apt install libtbb-dev
 sudo apt install libvdpau-dev
 sudo apt install libbz2-dev
+sudo apt install patchelf
 #sudo apt install libopenexr-dev
 #sudo apt install ocl-icd-opencl-dev
 
