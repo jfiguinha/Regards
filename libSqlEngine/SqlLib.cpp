@@ -144,12 +144,12 @@ bool CSqlLib::OpenConnection(const wxString &databasePath, const bool &readonly,
 
 void CSqlLib::lock()
 {
-	sync.lock();
+	//sync.lock();
 }
 
 void CSqlLib::unlock()
 {
-	sync.unlock();
+	//sync.unlock();
 }
 
 void CSqlLib::CloseConnection()
