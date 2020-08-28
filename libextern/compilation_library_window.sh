@@ -82,11 +82,12 @@ make -j$NBPROC
 cd ..
 
 #Compile wxWidgets-master
-unzip wxWidgets-3.1.4.zip
-mv wxWidgets-3.1.4 wxWidgets-master
+mkdir wxWidgets-master
+mv wxWidgets-3.1.4.zip wxWidgets-master
 cd wxWidgets-master
-cp ../wxWidget_modification/src/propgrid/*.* src/propgrid/
-cp ../wxWidget_modification/src/gtk/*.* src/gtk/
+unzip wxWidgets-3.1.4.zip
+cp ../wxWidget_modification/src/propgrid/*.* src/propgrid
+cp ../wxWidget_modification/include/wx/msw/*.* include/wx/msw
 ./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug
 make -j$NBPROC
 cd ..
