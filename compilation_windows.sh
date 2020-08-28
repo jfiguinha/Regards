@@ -29,10 +29,12 @@ pacman -S mingw-w64-x86_64-intel-tbb
 #wget https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases/download/1.0/OCL_SDK_Light_AMD.exe
 
 #Install External Library
-#cd libextern
-#chmod +x compilation_library_window.sh
-#./compilation_library_window.sh
-#cd ..
+cd libextern
+chmod +x compilation_library_window.sh
+./compilation_library_window.sh
+cd ..
+
+cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
 
 # /bin/sh -c '/usr/bin/make -j12 -e -f Makefile'
 #cd libextern/
