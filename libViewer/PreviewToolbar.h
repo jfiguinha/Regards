@@ -48,6 +48,8 @@ namespace Regards
 			CToolbarButton * imageSuiv;
 			CToolbarButton * imageFirst;
 			CToolbarButton * imagePrec;
+            
+            bool navigationButtonEnable = true;
 		};
 	}
 }

@@ -607,7 +607,13 @@ void CVideoControlSoft::OnStop(wxString photoName)
 {
 	exit = true;
 	stopVideo = true;
-	ffmfc->Quit();
+	if (videoStart)
+	{
+		if (!videoEnd)
+		{
+            ffmfc->Quit();
+        }
+    }
 	standByMovie = photoName;
 }
 

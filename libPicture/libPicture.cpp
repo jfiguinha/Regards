@@ -141,15 +141,6 @@ static void MyMessageFunction(FREE_IMAGE_FORMAT fif, const char * msg)
 #endif
 }
 
-FREE_IMAGE_FORMAT ImageFormat(const char* filename)
-{
-	//check the file signature and deduce its format
-	FREE_IMAGE_FORMAT fif = FreeImage_GetFileType(filename, 0);
-	//if still unknown, try to guess the file format from the file extension
-	if (fif == FIF_UNKNOWN)
-		fif = FreeImage_GetFIFFromFilename(filename);
-    return fif;
-}
 
 CLibPicture::CLibPicture()
 {
@@ -181,9 +172,6 @@ bool CLibPicture::TestIsPicture(const wxString & szFileName)
     int numExt = 0;
     wxFileName fichier(szFileName);
     wxString extension = fichier.GetExt();
-    
-    if(ImageFormat(CConvertUtility::ConvertToUTF8(szFileName)) != FIF_UNKNOWN)
-        return true;
     
     numExt = TestExtension(extension.Lower());
     if (numExt < 100 && numExt != ANI && numExt != 0)
@@ -241,16 +229,8 @@ int CLibPicture::TestImageFormat(const wxString & szFileName)
 		if (extension.size() < 3)
             return 0;
             
-        FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
         numExt = TestExtension(extension.Lower());
-        if(numExt == 0)
-        {
-            //Test if I can found a valid extension
-            fif = ImageFormat(CConvertUtility::ConvertToUTF8(szFileName));
-        }
-  		
-        if(numExt == 0 && fif != FIF_UNKNOWN)
-            numExt = fif + 1000;
+
 	}
 	return numExt;
 }

@@ -103,26 +103,35 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 
 void CPreviewToolbar::DisableNavigationButton()
 {
-	imagePlayDiaporama->SetVisible(false);
-	imageStopDiaporama->SetVisible(false);
-	fullscreen->SetVisible(false);
-	imageEnd->SetVisible(false);
-	imageSuiv->SetVisible(false);
-	imageFirst->SetVisible(false);
-	imagePrec->SetVisible(false);
-	this->Refresh();
+    if(navigationButtonEnable)
+    {
+        navigationButtonEnable = false;
+        imagePlayDiaporama->SetVisible(false);
+        imageStopDiaporama->SetVisible(false);
+        fullscreen->SetVisible(false);
+        imageEnd->SetVisible(false);
+        imageSuiv->SetVisible(false);
+        imageFirst->SetVisible(false);
+        imagePrec->SetVisible(false);
+        this->Refresh();  
+    }
+
 }
 
 void CPreviewToolbar::EnableNavigationButton()
 {
-	imagePlayDiaporama->SetVisible(true);
-	imageStopDiaporama->SetVisible(true);
-	fullscreen->SetVisible(true);
-	imageEnd->SetVisible(true);
-	imageSuiv->SetVisible(true);
-	imageFirst->SetVisible(true);
-	imagePrec->SetVisible(true);
-	this->Refresh();
+    if(!navigationButtonEnable)
+    {
+        navigationButtonEnable = true;
+        imagePlayDiaporama->SetVisible(true);
+        imageStopDiaporama->SetVisible(true);
+        fullscreen->SetVisible(true);
+        imageEnd->SetVisible(true);
+        imageSuiv->SetVisible(true);
+        imageFirst->SetVisible(true);
+        imagePrec->SetVisible(true);
+        this->Refresh();
+    }
 }
 
 
@@ -210,7 +219,7 @@ void CPreviewToolbar::DiaporamaStart()
 		imagePlayDiaporama->SetVisible(false);
 		imageStopDiaporama->SetVisible(true);
 		mainWindow->StartDiaporama();
-		Refresh();
+		this->Resize();
 	}
 }
 
@@ -222,7 +231,7 @@ void CPreviewToolbar::DiaporamaStop()
 		imageStopDiaporama->SetVisible(false);
 		imagePlayDiaporama->SetVisible(true);
 		mainWindow->StopDiaporama();
-		Refresh();
+		this->Resize();
 	}
 }
 
