@@ -34,14 +34,14 @@ https://wiki.tiker.net/OpenCLHowTo
 Installation on Windows
 - Run RegardsViewer2Setup.exe
 
-Installation on Mac os X 10.10 and Later
+Installation on Mac os X 10.13 and Later
 - Open DMG file and Copy RegardsViewer to Application Folder.
 
 //**************************************************************************
 //Configuration
 //**************************************************************************
 
-Works on minimum windows 7 and above, Mac OS X 10.11 and above, Ubuntu 18.04 x64, Linux Arch and above. 
+Works on minimum windows 7 and above, Mac OS X 10.13 and above, Ubuntu 20.04 x64, Linux Arch and above. 
 An OpenCL 1.2 compatible device is necessary to use this software.
 
 //**************************************************************************
