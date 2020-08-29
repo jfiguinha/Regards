@@ -82,12 +82,9 @@ make -j$NBPROC
 cd ..
 
 #Compile wxWidgets-master
-mkdir wxWidgets-master
-mv wxWidgets-3.1.4.zip wxWidgets-master
 cd wxWidgets-master
-unzip wxWidgets-3.1.4.zip
-cp ../wxWidget_modification/src/propgrid/*.* src/propgrid
-cp ../wxWidget_modification/include/wx/msw/*.* include/wx/msw
+chmod +x configure
+chmod +x src/stc/gen_iface.py
 ./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug
 make -j$NBPROC
 cd ..
