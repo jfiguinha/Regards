@@ -55,6 +55,27 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.60.5 :
+- Correct bug with FreeImage on format recognition crash
+- Correct display button on Diaporama Mode
+News for 2.60.4 :
+- Correct bug with opengl graphic card without support opencl context
+- Correct bug with heic memory leak
+- Correct bug with window move
+- Correct bug with print button which has disappeared
+News for 2.60.3 :
+- Bug correction
+News for 2.60.2 :
+- Correct crash in linux when change window mode
+- Correct bug on detectRotation selection in configuration window
+- Delete entry unuse on menu
+News for 2.60.1 :
+- Screen Refresh Update
+- Correct Criteria Delete
+- Correct movie player bug
+- Correct crash bug on Face Detection
+- Correct installation package for mac os and Debian
+- Bug correction
 News for 2.60 :
 - Opencv integration for face detection
 - Picture Orientation Detection base on Face Detection in picture
