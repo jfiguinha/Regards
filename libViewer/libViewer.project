@@ -40,6 +40,8 @@
       </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="Panel Infos">
+      <File Name="CriteriaWindow.h"/>
+      <File Name="CriteriaWindow.cpp"/>
       <VirtualDirectory Name="Toolbar">
         <File Name="ToolbarInfos.h"/>
         <File Name="ToolbarInfos.cpp"/>
