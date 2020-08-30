@@ -62,14 +62,21 @@ wxScanSane::~wxScanSane()
 }
 
 /***************************** Sane option stuff *****************************/
-const SANE_Option_Descriptor* wxScanSane::getOptionByName(const std::map<std::string, int>& options, SANE_Handle handle, const std::string& name, int& index)
+const SANE_Option_Descriptor* wxScanSane::getOptionByName(const vectorDataScan& options, SANE_Handle handle, const std::string& name, int& index)
  {
-	std::map<std::string, int>::const_iterator it = options.find(name);
-	if(it != options.end()) {
-		index = it->second;
-		return sane_get_option_descriptor(handle, index);
-	}
-	index = 0;
+     index = 0;
+     for(wxScanDataOption data : options)
+     {
+         if(data.name == name)
+         {
+             index = data.index;
+             break;
+         }
+     }
+     
+     if(index != 0)
+         return sane_get_option_descriptor(handle, index);
+
 	return nullptr;
 }
 
@@ -136,7 +143,7 @@ void wxScanSane::setFixedOption(SANE_Handle handle, const SANE_Option_Descriptor
 	SANE_Status status = sane_control_option(handle, option_index, SANE_ACTION_SET_VALUE, &v_fixed, nullptr);
 	//g_debug("sane_control_option(%d, SANE_ACTION_SET_VALUE, %f) -> (%s, %f)", option_index, value, sane_strstatus(status), SANE_UNFIX(v_fixed));
 
-	if(result) { *result = SANE_UNFIX(v_fixed); }
+	if(result != nullptr) { *result = SANE_UNFIX(v_fixed); }
 }
 
 void wxScanSane::setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result) {
@@ -168,7 +175,7 @@ void wxScanSane::setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* 
 
 	SANE_Status status = sane_control_option(handle, option_index, SANE_ACTION_SET_VALUE, &v, nullptr);
 	//g_debug("sane_control_option(%d, SANE_ACTION_SET_VALUE, %d) -> (%s, %d)", option_index, value, sane_strstatus(status), v);
-	if(result) { *result = v; }
+	if(result != nullptr) { *result = v; }
 }
 
 
@@ -176,7 +183,7 @@ bool wxScanSane::SetDPIModeOption(SANE_Handle & hSaneHandle)
 {
 	int index = 0;
 	const SANE_Option_Descriptor* option;
-	std::map<std::string, int> options;
+	vectorDataScan options;
     
 	/* Build the option table */
 	while((option = sane_get_option_descriptor(hSaneHandle, index)) != nullptr) {
@@ -189,37 +196,41 @@ bool wxScanSane::SetDPIModeOption(SANE_Handle & hSaneHandle)
 		    /* Some options are unnamed (e.g. Option 0) */
 		    option->name != nullptr && strlen(option->name) > 0
 		) {
-			options.insert({option->name, index});
+            wxScanDataOption scanData;
+            scanData.name = option->name;
+            scanData.index = index;
+			options.push_back(scanData);
 		}
 		++index;
 	}  
     
 	/* Set resolution and bit depth */
+    
+    
 	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_RESOLUTION, index);
 	if(option != nullptr) {
 		if(option->type == SANE_TYPE_FIXED)
         {
-			setFixedOption(hSaneHandle, option, index, dpi, &dpi);
+			setFixedOption(hSaneHandle, option, index, dpi, nullptr);
 		} 
         else 
         {
-			int _dpi;
-			setIntOption(hSaneHandle, option, index, dpi, &_dpi);
-			dpi = _dpi;
+			setIntOption(hSaneHandle, option, index, dpi, nullptr);
 		}
+	}
+    
         /*
 		option = getOptionByName(options, hSaneHandle, SANE_NAME_BIT_DEPTH, index);
 		if(option != nullptr && oSaneParameters.depth > 0) {
 			setIntOption(hSaneHandle, option, index, oSaneParameters.depth, nullptr);
 		}*/
-	}
 }
 
 bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hSaneHandle)
 {
 	int index = 0;
 	const SANE_Option_Descriptor* option;
-	std::map<std::string, int> options;
+	vectorDataScan options;
     
 	/* Build the option table */
 	while((option = sane_get_option_descriptor(hSaneHandle, index)) != nullptr) {
@@ -231,27 +242,33 @@ bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hS
 		    (option->cap & SANE_CAP_INACTIVE) == 0 &&
 		    /* Some options are unnamed (e.g. Option 0) */
 		    option->name != nullptr && strlen(option->name) > 0
-		) {
-			options.insert({option->name, index});
+		) 
+        {
+            wxScanDataOption scanData;
+            scanData.name = option->name;
+            scanData.index = index;
+			options.push_back(scanData);
 		}
 		++index;
 	}    
     
 	/* Scan mode (before resolution as it tends to affect that */
 	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_MODE, index);
+    
+    
 	if(option != nullptr) {
-		/* The names of scan modes often used in drivers, as taken from the sane-backends source */
+		// The names of scan modes often used in drivers, as taken from the sane-backends source 
 		std::vector<std::string> color_scan_modes = {
 			SANE_VALUE_SCAN_MODE_COLOR,
 			"Color",
-			"24bit Color" /* Seen in the proprietary brother3 driver */
+			"24bit Color" // Seen in the proprietary brother3 driver 
 		};
 		std::vector<std::string> gray_scan_modes = {
 			SANE_VALUE_SCAN_MODE_GRAY,
 			"Gray",
 			"Grayscale",
 			SANE_I18N("Grayscale"),
-			"True Gray" /* Seen in the proprietary brother3 driver */
+			"True Gray" // Seen in the proprietary brother3 driver 
 		};
 		std::vector<std::string> lineart_scan_modes = {
 			SANE_VALUE_SCAN_MODE_LINEART,
@@ -267,7 +284,7 @@ bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hS
 			"Gray",
 			"Grayscale",
 			SANE_I18N("Grayscale"),
-			"True Gray" /* Seen in the proprietary brother3 driver */
+			"True Gray" // Seen in the proprietary brother3 driver 
 		};
 
 		switch(scan_mode) {
@@ -306,7 +323,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     if( !IsDeviceAvailable() )
     {
         // Log and signal error.
-        wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )
+        printf( wxString( wxT( "bool wxScan::ScanImage() - " ) )
                       + _( "SANE device not available." ) );
         return false;
     }
@@ -316,24 +333,24 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     {
         if( i != m_nDeviceIndex )
         {
-            wxLogMessage( wxT( "SANE DEVICE" ) );
-            wxLogMessage( wxT( "\tname == " )   + GetDeviceName(   i ) );
-            wxLogMessage( wxT( "\tvendor == " ) + GetDeviceVendor( i ) );
-            wxLogMessage( wxT( "\tmodel == " )  + GetDeviceModel(  i ) );
-            wxLogMessage( wxT( "\ttype == " )   + GetDeviceType(   i ) );
-            wxLogMessage( wxT( "============" ) );
+            printf( wxT( "SANE DEVICE" ) );
+            printf( wxT( "\tname == " )   + GetDeviceName(   i ) );
+            printf( wxT( "\tvendor == " ) + GetDeviceVendor( i ) );
+            printf( wxT( "\tmodel == " )  + GetDeviceModel(  i ) );
+            printf( wxT( "\ttype == " )   + GetDeviceType(   i ) );
+            printf( wxT( "============" ) );
         }
     }
     ::wxSafeYield();
 #endif
 
 #if defined( __WXSCANDEBUG__ ) && __WXSCANDEBUG__ >= 1
-    wxLogMessage( wxT( "DEFAULT SANE DEVICE" ));
-    wxLogMessage( wxT( "\tname == " )   + GetDeviceName(   m_nDeviceIndex ) );
-    wxLogMessage( wxT( "\tvendor == " ) + GetDeviceVendor( m_nDeviceIndex ) );
-    wxLogMessage( wxT( "\tmodel == " )  + GetDeviceModel(  m_nDeviceIndex ) );
-    wxLogMessage( wxT( "\ttype == " )   + GetDeviceType(   m_nDeviceIndex ) );
-    wxLogMessage( wxT( "============" ) );
+    printf( wxT( "DEFAULT SANE DEVICE" ));
+    printf( wxT( "\tname == " )   + GetDeviceName(   m_nDeviceIndex ) );
+    printf( wxT( "\tvendor == " ) + GetDeviceVendor( m_nDeviceIndex ) );
+    printf( wxT( "\tmodel == " )  + GetDeviceModel(  m_nDeviceIndex ) );
+    printf( wxT( "\ttype == " )   + GetDeviceType(   m_nDeviceIndex ) );
+    printf( wxT( "============" ) );
     ::wxSafeYield();
 #endif
 
@@ -342,7 +359,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     if( !IsOk() )
     {
         // Log and signal error.
-        wxLogError( GetSaneStatusString() + wxT( " (SANE)" ) );
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
         return false;
     }
     
@@ -351,15 +368,13 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 
     //::sane_get_parameters( hSaneHandle, &oSaneParameters );
     
-    SetDPIModeOption(hSaneHandle);    
-    
-    SetScanModeOption(scanMode, hSaneHandle);
+
     // ... and start scanning.
     m_SaneStatus= ::sane_start( hSaneHandle );
     if( !IsOk() )
     {
         // Log and signal error.
-        wxLogError( GetSaneStatusString() + wxT( " (SANE)" ) );
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
         return false;
     }
 
@@ -369,14 +384,14 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 
 
 #if defined( __WXSCANDEBUG__ ) && __WXSCANDEBUG__ >= 1
-    wxLogMessage( wxT( "SCANNING PARAMETERS" ) );
-    wxLogMessage( wxString::Format( wxT( "\tformat = %d" ), oSaneParameters.format ) );
-    wxLogMessage( wxString::Format( wxT( "\tlast_frame = %d" ), oSaneParameters.last_frame ) );
-    wxLogMessage( wxString::Format( wxT( "\tbytes_per_line = %d" ), oSaneParameters.bytes_per_line ) );
-    wxLogMessage( wxString::Format( wxT( "\tpixels_per_line = %d" ), oSaneParameters.pixels_per_line ) );
-    wxLogMessage( wxString::Format( wxT( "\tlines = %d" ), oSaneParameters.lines ) );
-    wxLogMessage( wxString::Format( wxT( "\tdepth = %d" ), oSaneParameters.depth ) );
-    wxLogMessage( wxT( "============" ) );
+    printf( wxT( "SCANNING PARAMETERS" ) );
+    printf( wxString::Format( wxT( "\tformat = %d" ), oSaneParameters.format ) );
+    printf( wxString::Format( wxT( "\tlast_frame = %d" ), oSaneParameters.last_frame ) );
+    printf( wxString::Format( wxT( "\tbytes_per_line = %d" ), oSaneParameters.bytes_per_line ) );
+    printf( wxString::Format( wxT( "\tpixels_per_line = %d" ), oSaneParameters.pixels_per_line ) );
+    printf( wxString::Format( wxT( "\tlines = %d" ), oSaneParameters.lines ) );
+    printf( wxString::Format( wxT( "\tdepth = %d" ), oSaneParameters.depth ) );
+    printf( wxT( "============" ) );
     ::wxSafeYield();
 #endif
 
@@ -391,15 +406,19 @@ bool wxScanSane::ScanImage( wxImage& oImage )
       )
     {
         // Log and signal error.
-        wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )
+        printf( wxString( wxT( "bool wxScan::ScanImage() - " ) )
                       + _( "Formats other than RGB with 8 bit per pixel are not yet supported." ) );
         return false;
     }
     */
+    SetDPIModeOption(hSaneHandle);    
+    
+    SetScanModeOption(scanMode, hSaneHandle);
+    
     if(!oSaneParameters.last_frame || !( oSaneParameters.format == SANE_FRAME_RGB || oSaneParameters.format == SANE_FRAME_GRAY))
     {
         // Log and signal error.
-        wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )
+        printf( wxString( wxT( "bool wxScan::ScanImage() - " ) )
                       + _( "Formats other than RGB with 8 bit per pixel are not yet supported." ) );
         return false;
     }
@@ -418,7 +437,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
     if( !pScanBuffer )
     {
         // Log and signal error.
-        wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )
+        printf( wxString( wxT( "bool wxScan::ScanImage() - " ) )
                       + _( "Cannot allocate read buffer." ) );
         return false;
     }
@@ -444,7 +463,7 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 	if( ( m_SaneStatus !=  SANE_STATUS_EOF ) )
     {
         // Log, clean up, and signal error.
-        wxLogError( wxString( wxT( "bool wxScan::ScanImage() - " ) )
+        printf( wxString( wxT( "bool wxScan::ScanImage() - " ) )
                       + _( "An error occured while fetching data from scanning device." ) );
         ::sane_cancel( hSaneHandle );
         free( pScanBuffer );
@@ -497,10 +516,10 @@ bool wxScanSane::ScanImage( wxImage& oImage )
             wxString strOption( SANE_STRING_TO_WXSTRING( oSaneOptionDescriptor->name ) );
 
 #if defined( __WXSCANDEBUG__ ) && __WXSCANDEBUG__ >= 2
-            wxLogMessage( wxT( "DEVICE OPTION DESCRIPTOR %d" ), i );
-            wxLogMessage( strOption + wxString::Format( wxT( "(%d):" ), oSaneOptionDescriptor->size ) );
-            wxLogMessage( wxT( "\t" ) + SANE_STRING_TO_WXSTRING( oSaneOptionDescriptor->title ) );
-            wxLogMessage( wxT( "\t" ) + SANE_STRING_TO_WXSTRING( oSaneOptionDescriptor->desc  ) );
+            printf( wxT( "DEVICE OPTION DESCRIPTOR %d" ), i );
+            printf( strOption + wxString::Format( wxT( "(%d):" ), oSaneOptionDescriptor->size ) );
+            printf( wxT( "\t" ) + SANE_STRING_TO_WXSTRING( oSaneOptionDescriptor->title ) );
+            printf( wxT( "\t" ) + SANE_STRING_TO_WXSTRING( oSaneOptionDescriptor->desc  ) );
 #endif
             if( 0 == strOption.CompareTo( wxT( "resolution" ) ) )
             {
@@ -525,11 +544,11 @@ bool wxScanSane::ScanImage( wxImage& oImage )
                                             }
                 }
 #if defined( __WXSCANDEBUG__ ) && __WXSCANDEBUG__ >= 1
-                wxLogMessage( wxT( "\tresolution == %d DPI" ), m_nResolution );
+                printf( wxT( "\tresolution == %d DPI" ), m_nResolution );
 #endif
             }
 #if defined( __WXSCANDEBUG__ ) && __WXSCANDEBUG__ >= 2
-            wxLogMessage( wxT( "============" ) );
+            printf( wxT( "============" ) );
 #endif
     }
 
@@ -580,7 +599,7 @@ bool wxScanSane::Open()
         if( !IsOk() )
         {
             // Log and signal error.
-            wxLogError( GetSaneStatusString() + wxT( " (SANE)" ) );
+            printf( GetSaneStatusString() + wxT( " (SANE)" ) );
             return false;
         }
         isClose = false;
@@ -661,7 +680,7 @@ bool wxScanSane::SelectSource(const wxString &name, const bool &showUI, wxWindow
     if( !IsOk() )
     {
         // Log and signal error.
-        wxLogError( GetSaneStatusString() + wxT( " (SANE)" ) );
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
         return false;
     }
     m_selDevice = sel;       
@@ -678,7 +697,7 @@ bool wxScanSane::SaneGetDevices()
     if( !IsOk() )
     {
         // Log error.
-        wxLogError( GetSaneStatusString() + wxT( " (SANE)" ) );
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
         return false ;
     }
 
