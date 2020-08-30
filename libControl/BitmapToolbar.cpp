@@ -42,11 +42,11 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	save->SetLibelleTooltip(saveLibelle);
 	navElement.push_back(save);
 
-	CToolbarButton * toolexport = new CToolbarButton(themeToolbar.button);
-	toolexport->SetButtonResourceId("IDB_EXPORT");
-	toolexport->SetCommandId(WM_EXPORT);
-	toolexport->SetLibelleTooltip(exportLibelle);
-	navElement.push_back(toolexport);
+	export_button = new CToolbarButton(themeToolbar.button);
+	export_button->SetButtonResourceId("IDB_SAVE");
+	export_button->SetCommandId(WM_EXPORT);
+	export_button->SetLibelleTooltip(exportLibelle);
+	navElement.push_back(export_button);
 
 	email = new CToolbarButton(themeToolbar.button);
 	email->SetButtonResourceId("IDB_EMAIL");
@@ -175,6 +175,29 @@ void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
 	}
 }
 
+void CBitmapToolbar::ShowExportButton()
+{
+  	if (export_button != nullptr)
+	{
+		if (!export_button->IsVisible())
+		{
+			export_button->SetVisible(true);
+			Refresh();
+		}
+	}  
+}
+
+void CBitmapToolbar::HideExportButton()
+{
+  	if (export_button != nullptr)
+	{
+		if (export_button->IsVisible())
+		{
+			export_button->SetVisible(false);
+			Refresh();
+		}
+	}  
+}
 
 void CBitmapToolbar::ShowSaveButton()
 {

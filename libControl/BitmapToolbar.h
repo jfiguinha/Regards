@@ -26,6 +26,8 @@ namespace Regards
 			//void HideCropButton();
 			void ShowSaveButton();
 			void HideSaveButton();
+			void ShowExportButton();
+			void HideExportButton();
 			void SlidePosChange(const int &position, const wxString &key);
 			void MoveSlider(const int64_t &position){};
 			void ZoomPos(const int &position);
@@ -38,6 +40,7 @@ namespace Regards
 			void EventManager(const int &id);
 
 			CToolbarButton * save;
+            CToolbarButton * export_button;
 			//CToolbarButton * crop;
 			CToolbarButton * email;
 			CToolbarSlide * slide;
