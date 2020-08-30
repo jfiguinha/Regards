@@ -176,6 +176,8 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	Connect(wxEVT_ANIMATIONTIMERSTOP, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CMainWindow::StopAnimation));
 	Connect(wxEVENT_SHOWSCANNER, wxCommandEventHandler(CMainWindow::OnScanner));
 	Connect(wxEVENT_ENDVIDEOTHUMBNAIL, wxCommandEventHandler(CMainWindow::OnEndThumbnail));
+    Connect(wxEVENT_PICTUREPREVIOUS, wxCommandEventHandler(CMainWindow::OnPicturePrevious));
+    Connect(wxEVENT_PICTURENEXT, wxCommandEventHandler(CMainWindow::OnPictureNext));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
 
@@ -1391,6 +1393,16 @@ void CMainWindow::OnFaceInfosUpdate(wxCommandEvent& event)
 	updateCriteria = true;
 	printf("OnFaceInfosUpdate /n");
 	processIdle = true;
+}
+
+void CMainWindow::OnPicturePrevious(wxCommandEvent& event)
+{
+    ImagePrecedente();
+}
+
+void CMainWindow::OnPictureNext(wxCommandEvent& event)
+{
+    ImageSuivante();
 }
 
 void CMainWindow::ImageSuivante()

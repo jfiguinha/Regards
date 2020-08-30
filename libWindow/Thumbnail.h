@@ -61,7 +61,7 @@ namespace Regards
 			void StopLoadingPicture(wxCommandEvent& event);
 			void UpdateMessage(wxCommandEvent& event);
 			void OnScrollMove(wxCommandEvent& event);
-
+            void OnKeyUp(wxKeyEvent& event);
 			void TestMaxX();
 			void TestMaxY();
 
@@ -133,7 +133,7 @@ namespace Regards
 			bool preprocess_thumbnail = false;
 
 			int positionSize;
-			
+			bool controlKeyPush = false;
 
 
 			//wxBitmap bitmapFolder;

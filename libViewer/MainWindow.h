@@ -59,6 +59,9 @@ namespace Regards
             bool IsVideo();
             
 		private:
+        
+            void OnPicturePrevious(wxCommandEvent& event);
+            void OnPictureNext(wxCommandEvent& event);
 
 			void SetListeFile(wxCommandEvent& event);
 			void OnUpdateInfos(wxCommandEvent& event);

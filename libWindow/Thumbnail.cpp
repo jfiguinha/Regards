@@ -331,6 +331,7 @@ CThumbnail::CThumbnail(wxWindow* parent, wxWindowID id, const CThemeThumbnail & 
 	Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(CThumbnail::OnLDoubleClick));
 	Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CThumbnail::OnMouseWheel));
 	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CThumbnail::OnKeyDown));
+    Connect(wxEVT_KEY_UP, wxKeyEventHandler(CThumbnail::OnKeyUp));
 	Connect(EVENT_ICONEUPDATE, wxCommandEventHandler(CThumbnail::UpdateRenderIcone));
 	Connect(EVENT_UPDATEMESSAGE, wxCommandEventHandler(CThumbnail::UpdateMessage));
     
@@ -1053,51 +1054,98 @@ void CThumbnail::TestMaxY()
 		posHauteur = 0;
 }
 
-
+void CThumbnail::OnKeyUp(wxKeyEvent& event)
+{
+     switch (event.m_keyCode)
+    {
+    case WXK_CONTROL:
+        controlKeyPush = false;
+        break;
+    }   
+}
 
 void CThumbnail::OnKeyDown(wxKeyEvent& event)
 {
     TRACE();
 
 
-		switch (event.m_keyCode)
-		{
-		case WXK_UP:
-			this->MoveTop();
-			break;
-		case WXK_LEFT:
-			this->MoveLeft();
-			break;
-		case WXK_DOWN:
-			this->MoveBottom();
-			break;
-		case WXK_RIGHT:
-			this->MoveRight();
-			break;
-
-		}
+    switch (event.m_keyCode)
+    {
+    case WXK_UP:
+        this->MoveTop();
+        break;
+    case WXK_LEFT:
+        this->MoveLeft();
+        break;
+    case WXK_DOWN:
+        this->MoveBottom();
+        break;
+    case WXK_RIGHT:
+        this->MoveRight();
+        break;
+    case WXK_CONTROL:
+        controlKeyPush = true;
+        break;
+    }
 
 }
 
 void CThumbnail::OnMouseWheel(wxMouseEvent& event)
 {
     TRACE();
-    
+    int move = 0;
 #ifdef __APPLE__
     
     if (event.m_wheelRotation == 1)
-        this->MoveTop();
+        move = 0;
     else if (event.m_wheelRotation == -1)
-        this->MoveBottom();
+       move = 1;
     
 #else
     
     if (event.m_wheelRotation == 120)
-        this->MoveTop();
+        move = 0;
     else
-        this->MoveBottom();
+        move = 1;
     
 #endif
+
+	if (controlKeyPush)
+		move += 10;
+
+
+
+	switch (move)
+	{
+	case 0:
+		this->MoveTop();
+		break;
+	case 1:
+		this->MoveBottom();
+		break;
+	case 10:
+        {
+            wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+            if (mainWindow != nullptr)
+            {
+                wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
+                evt.SetClientData(bitmap);
+                mainWindow->GetEventHandler()->AddPendingEvent(evt);
+            }
+        }
+		break;
+	case 11:
+        {
+            wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+            if (mainWindow != nullptr)
+            {
+                wxCommandEvent evt(wxEVENT_PICTURENEXT);
+                evt.SetClientData(bitmap);
+                mainWindow->GetEventHandler()->AddPendingEvent(evt);
+            }
+        }
+		break;
+	}
 
 }
 
