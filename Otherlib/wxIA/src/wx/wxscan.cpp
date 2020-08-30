@@ -595,7 +595,7 @@ bool wxScanSane::Open()
     if(!IsSourceSelected() || isClose)
     {
         // Open the sane device...
-        m_SaneStatus= ::sane_open( GetDeviceName( m_nDeviceIndex ).mb_str( wxConvISO8859_1 ), &hSaneHandle );
+        m_SaneStatus= ::sane_open(GetDeviceName(m_nDeviceIndex).ToUTF8(), &hSaneHandle );
         if( !IsOk() )
         {
             // Log and signal error.

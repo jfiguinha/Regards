@@ -19,8 +19,6 @@
 #   define __WXSCANTWAIN__  1
 #endif
 
-
-
 // Include additional headers.
 #if __WXSCANSANE__
 #   include <sane/sane.h>
@@ -30,9 +28,18 @@
 #
 #endif
 #include <wx/arrstr.h>
-#include <map>
+#include <vector>
 #include "Scanner.h"
+using namespace std;
 
+class wxScanDataOption
+{
+public:
+    wxString name;
+    int index;
+};
+
+typedef vector<wxScanDataOption> vectorDataScan;
 
 //////////////////////////////////////////////////////////
 // Class wxScanBase
@@ -256,7 +263,7 @@ private:
 
     bool SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hSaneHandle);
   
-    const SANE_Option_Descriptor* getOptionByName(const std::map<std::string, int>& options, SANE_Handle handle, const std::string& name, int& index);
+    const SANE_Option_Descriptor* getOptionByName(const vectorDataScan& options, SANE_Handle handle, const std::string& name, int& index);
     
     /// Flag ...
     bool m_bOnlyLocalDevices;
