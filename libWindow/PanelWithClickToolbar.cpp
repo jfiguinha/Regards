@@ -113,15 +113,18 @@ void CPanelWithClickToolbar::ClickShowButton(const int &id, const int &refresh)
 	{
 	case PANE_WITHCLICKTOOLBAR:
 		{
-			isPanelVisible = true;
-			clickWindow->Show(false);
-			paneWindow->Show(true);
-			paneWindow->ShowOtherWindow();
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-			event->SetId(this->GetId());
-			event->SetInt(1);
-			event->SetExtraLong(refresh);
-			wxQueueEvent(this->GetParent(), event);
+            if(!isPanelVisible)
+            {
+                isPanelVisible = true;
+                clickWindow->Show(false);
+                paneWindow->Show(true);
+                paneWindow->ShowOtherWindow();
+                wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+                event->SetId(this->GetId());
+                event->SetInt(1);
+                event->SetExtraLong(refresh);
+                wxQueueEvent(this->GetParent(), event);
+            }
 		}
 		break;
 	}
@@ -149,14 +152,18 @@ void CPanelWithClickToolbar::ClosePane(const int &id, const int &refresh)
 	{
 	case PANE_WITHCLICKTOOLBAR:
 		{
-			isPanelVisible = false;
-			paneWindow->Show(false);
-			clickWindow->Show(true);
-			wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
-			event->SetId(this->GetId());
-			event->SetInt(0);
-			event->SetExtraLong(refresh);
-			wxQueueEvent(this->GetParent(), event);
+            if(isPanelVisible)
+            {
+                isPanelVisible = false;
+                paneWindow->Show(false);
+                clickWindow->Show(true);
+                wxCommandEvent* event = new wxCommandEvent(wxEVENT_RESIZE);
+                event->SetId(this->GetId());
+                event->SetInt(0);
+                event->SetExtraLong(refresh);
+                wxQueueEvent(this->GetParent(), event); 
+            }
+
 		}
 		break;
 	}
