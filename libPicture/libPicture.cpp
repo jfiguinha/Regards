@@ -2986,10 +2986,13 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
             wxPoppler poppler;
             poppler.Open(fileName);
             poppler.SetDpi(300);
-            poppler.SelectPage(0);
-            poppler.RenderPage();
-            imageWx = poppler.GetImage();
-            typeImage = TYPE_IMAGE_WXIMAGE;
+            if(poppler.SelectPage(0))
+            {
+                poppler.RenderPage();
+                imageWx = poppler.GetImage();
+                typeImage = TYPE_IMAGE_WXIMAGE; 
+            }
+
         }
         //imageWx.LoadFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF); typeImage = TYPE_IMAGE_WXIMAGE;
         break;            
