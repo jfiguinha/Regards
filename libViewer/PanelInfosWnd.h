@@ -6,7 +6,7 @@
 #include <wx/webview.h>
 #include <ScrollbarWnd.h>
 #include <wx/animate.h>
-#include <CriteriaWindow.h>
+#include "CriteriaWindow.h"
 #include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
 #include "FiltreEffect.h"
