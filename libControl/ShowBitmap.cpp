@@ -471,6 +471,26 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 		if (pictureToolbar != nullptr)
 			pictureToolbar->SetTrackBarPosition(bitmapWindow->GetPosRatio());
 		//bitmapWindow->Refresh();
+        
+        wxString filename = bitmap->GetFilename();
+        CLibPicture libPicture;
+        if(libPicture.GetNbImage(filename) > 1)
+        {
+            if (pictureToolbar != nullptr)
+            {
+                pictureToolbar->ShowExportButton();
+                pictureToolbar->HideSaveButton();
+            }
+			
+        }
+        else
+        {
+            if (pictureToolbar != nullptr)
+            {
+                pictureToolbar->ShowSaveButton();
+                pictureToolbar->HideExportButton();
+            } 
+        }
        
 		return true;
 	}
