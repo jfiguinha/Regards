@@ -173,9 +173,9 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
         CThemeScrollBar themeScroll;
         viewerTheme->GetScrollTheme(&themeScroll);
         
-        CThemeTree themeTree;
-        viewerTheme->GetTreeTheme(&themeTree);
-        criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, themeTree, themeScroll);
+        CThemeSplitter themeSplitter;
+        viewerTheme->GetSplitterTheme(&themeSplitter);
+        criteriaTreeWnd = new CCriteriaWindow(this, wxID_ANY, themeSplitter);
     
         CTabWindowData * tabInfosFile = new CTabWindowData();
         tabInfosFile->SetWindow(criteriaTreeWnd);

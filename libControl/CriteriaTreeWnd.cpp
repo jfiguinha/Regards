@@ -40,7 +40,7 @@ CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &m
 : CTreeWithScrollbar("CCriteriaTreeWnd", parent, id, themeScroll, theme)
 {
 	wxString urlServer = "";
-	//Géolocalisation
+	//GÃ©olocalisation
 	CRegardsConfigParam * param = CParamInit::getInstance();
 	if (param != nullptr)
 	{
@@ -148,28 +148,34 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
         longitude.ToDouble(&dlong);
         
 #if defined(LIBAPPLE)
-        CAppleReadExif appleReadExif;
-        appleReadExif.WriteGps(filename, dlat, dlong);
+        {
+            CAppleReadExif appleReadExif;
+            appleReadExif.WriteGps(filename, dlat, dlong);
+        }
 #else
-        wxString wlatitudeRef = "";
-        wxString wlongitudeRef = "";
-        wxString wlongitude = to_string(abs(dlong));
-        wxString wlatitude = to_string(abs(dlat));
-        
-        if (dlat < 0)
-            wlatitudeRef = "S";
-        else
-            wlatitudeRef = "N";
-        
-        if (dlong < 0)
-            wlongitudeRef = "W";
-        else
-            wlongitudeRef = "E";
-        
-        CMetadataExiv2 metadataExiv2(filename);
-        metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
-        
+        {
+            wxString wlatitudeRef = "";
+            wxString wlongitudeRef = "";
+            wxString wlongitude = to_string(abs(dlong));
+            wxString wlatitude = to_string(abs(dlat));
+            
+            if (dlat < 0)
+                wlatitudeRef = "S";
+            else
+                wlatitudeRef = "N";
+            
+            if (dlong < 0)
+                wlongitudeRef = "W";
+            else
+                wlongitudeRef = "E";
+            
+            CMetadataExiv2 metadataExiv2(filename);
+            metadataExiv2.SetGpsInfos(wlatitudeRef, wlongitudeRef, wlatitude, wlongitude);
+        }
 #endif
+
+        wxCommandEvent evt(wxEVENT_UPDATEURL);
+        this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 
     }
     

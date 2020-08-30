@@ -6,7 +6,7 @@
 #include <wx/webview.h>
 #include <ScrollbarWnd.h>
 #include <wx/animate.h>
-#include <CriteriaTreeWnd.h>
+#include <CriteriaWindow.h>
 #include <FilterWindowParam.h>
 #include <InfosFileWnd.h>
 #include "FiltreEffect.h"
@@ -37,6 +37,7 @@ namespace Regards
 	}
 	namespace Viewer
 	{        
+ 
 		class CPanelInfosWnd : public CTabWindow
 		{
 		public:
@@ -70,7 +71,7 @@ namespace Regards
             CInfoEffectWnd * historyEffectWnd;
 			CThumbnailViewerEffectWnd * thumbnailEffectWnd;
 			CFiltreEffectScrollWnd * filtreEffectWnd;
-            CCriteriaTreeWnd * criteriaTreeWnd;
+            CCriteriaWindow * criteriaTreeWnd;
 
 			wxWebView * webBrowser = nullptr;
 			CToolbarInfos * infosToolbar;
