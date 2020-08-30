@@ -52,6 +52,9 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{8bbf014a-b4f4-4b6c-a5cc-5e3b0ad81160}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{99be6f0d-57d5-445f-80e8-f6b7021b72db}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -144,6 +147,9 @@
     <ClInclude Include="CentralWindow.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="CriteriaWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -232,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="CentralWindow.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="CriteriaWindow.cpp">
+      <Filter>Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

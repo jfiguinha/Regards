@@ -206,6 +206,7 @@
     <ClInclude Include="CategoryFolderWindow.h" />
     <ClInclude Include="CategoryWnd.h" />
     <ClInclude Include="CheckVersion.h" />
+    <ClInclude Include="CriteriaWindow.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="CentralWindow.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="CategoryWnd.cpp" />
     <ClCompile Include="CheckVersion.cpp" />
     <ClCompile Include="CentralWindow.cpp" />
+    <ClCompile Include="CriteriaWindow.cpp" />
     <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InfosSeparationBarFace.cpp" />
