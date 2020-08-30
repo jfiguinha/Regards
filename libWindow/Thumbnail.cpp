@@ -1129,7 +1129,6 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
             if (mainWindow != nullptr)
             {
                 wxCommandEvent evt(wxEVENT_PICTUREPREVIOUS);
-                evt.SetClientData(bitmap);
                 mainWindow->GetEventHandler()->AddPendingEvent(evt);
             }
         }
@@ -1140,7 +1139,6 @@ void CThumbnail::OnMouseWheel(wxMouseEvent& event)
             if (mainWindow != nullptr)
             {
                 wxCommandEvent evt(wxEVENT_PICTURENEXT);
-                evt.SetClientData(bitmap);
                 mainWindow->GetEventHandler()->AddPendingEvent(evt);
             }
         }
