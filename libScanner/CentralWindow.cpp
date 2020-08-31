@@ -60,7 +60,15 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 void CCentralWindow::OnScan(wxCommandEvent& event)
 {
     if(frame != nullptr)
-        frame->ScanPage();
+    {
+    	wxString pdfFile = frame->ScanPage();
+        if (pdfFile != "")
+        {
+            LoadFile(pdfFile);
+        }    
+    }
+        
+
 }
 
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)
