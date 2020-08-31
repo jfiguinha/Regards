@@ -250,6 +250,10 @@ private:
 
     bool Open();
     bool Close();
+    
+    void GetScannerOption();
+    
+    bool SetPageOption(SANE_Handle & hSaneHandle);
 
     void setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result);
 
@@ -295,6 +299,11 @@ private:
     int m_selDevice = 0;
     
     bool isClose = false;
+    
+    double page_width = 0;
+    double page_height = 0;
+    
+    vectorDataScan options;
 
 };
 

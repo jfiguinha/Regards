@@ -309,7 +309,19 @@ wxImage wxScanSaneAcquireDialog::GetImage()
 
 void wxScanSaneAcquireDialog::GetOptionDescriptors()
 {
-   
+/*
+ * [+208,98s] DEBUG: scanner.vala:760: Option 7: name='tl-x' title='Top-left x' type=fixed size=4 unit=mm min=0,677322, max=215,899994, quant=0 cap=soft-select,soft-detect
+[+208,98s] DEBUG: scanner.vala:763:   Description: Top-left x position of scan area.
+[+208,98s] DEBUG: scanner.vala:910: sane_get_option_descriptor (8)
+[+208,98s] DEBUG: scanner.vala:760: Option 8: name='tl-y' title='Top-left y' type=fixed size=4 unit=mm min=0,677322, max=297,010666, quant=0 cap=soft-select,soft-detect
+[+208,98s] DEBUG: scanner.vala:763:   Description: Top-left y position of scan area.
+[+208,98s] DEBUG: scanner.vala:910: sane_get_option_descriptor (9)
+[+208,98s] DEBUG: scanner.vala:760: Option 9: name='br-x' title='Bottom-right x' type=fixed size=4 unit=mm min=0,677322, max=215,899994, quant=0 cap=soft-select,soft-detect
+[+208,98s] DEBUG: scanner.vala:763:   Description: Bottom-right x position of scan area.
+[+208,98s] DEBUG: scanner.vala:910: sane_get_option_descriptor (10)
+[+208,98s] DEBUG: scanner.vala:760: Option 10: name='br-y' title='Bottom-right y' type=fixed size=4 unit=mm min=0,677322, max=297,010666, quant=0 cap=soft-select,soft-detect
+[+208,98s] DEBUG: scanner.vala:763:   Description: Bottom-right y position of scan area.
+*/
     
     const SANE_Option_Descriptor *d;
 
@@ -320,7 +332,7 @@ void wxScanSaneAcquireDialog::GetOptionDescriptors()
     for (unsigned int i = 0; (d = m_sane->SaneGetOptionDescriptor(i)) != NULL; i++)
     {
         m_descriptors.Add(d);
-        wxLogDebug("Descriptor %d: name = %s, title = %s, type = %d, size = %d, "
+        printf("Descriptor %d: name = %s, title = %s, type = %d, size = %d, "
             "capabilities = %d, constraint type = %d, is active: %s, is settable: %s",
             i, d->name, d->title, d->type, d->size,
             d->cap, d->constraint_type, SANE_OPTION_IS_ACTIVE(d->cap) ? "yes" : "no", SANE_OPTION_IS_SETTABLE(d->cap) ? "yes" : "no");
@@ -333,6 +345,12 @@ void wxScanSaneAcquireDialog::GetOptionDescriptors()
             wxLogDebug("Automatic control option for %s not supported", d->name);
         else
             wxLogDebug("Automatic control option error (%d) for %s", auto_status);
+            
+        wxString name = d->name;
+        if(name == "tl-x")
+        {
+            
+        }
     }
 
     //
