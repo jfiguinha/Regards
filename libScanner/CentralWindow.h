@@ -38,6 +38,7 @@ namespace Regards
 			void OnPrint(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);
 			void OnExtractPage(wxCommandEvent& event);
+            void OnScan(wxCommandEvent& event);
 			wxString ProcessExtractFile(const vector<int> & listPage);
 			void ProcessFile(const vector<int> & listPage);
 			wxString ProcessLoadFiles(wxArrayString & listFile);

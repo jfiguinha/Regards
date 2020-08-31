@@ -53,7 +53,14 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id, CScannerFrame * 
 	Connect(wxEVENT_SAVE, wxCommandEventHandler(CCentralWindow::OnSave));
 	Connect(wxEVENT_ADDPAGE, wxCommandEventHandler(CCentralWindow::OnAddPage));
 	Connect(wxEVENT_DELETEPAGE, wxCommandEventHandler(CCentralWindow::OnDeletePage));
+    Connect(wxEVENT_SCANNER, wxCommandEventHandler(CCentralWindow::OnScan));
 	Connect(wxEVENT_EXTRACT, wxCommandEventHandler(CCentralWindow::OnExtractPage));
+}
+
+void CCentralWindow::OnScan(wxCommandEvent& event)
+{
+    if(frame != nullptr)
+        frame->ScanPage();
 }
 
 void CCentralWindow::OnExtractPage(wxCommandEvent& event)

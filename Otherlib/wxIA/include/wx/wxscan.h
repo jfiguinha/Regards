@@ -253,21 +253,17 @@ private:
     
     void GetScannerOption();
     
-    bool SetPageOption(SANE_Handle & hSaneHandle);
+    void setIntOption(const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result);
 
-    void setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result);
+    void setFixedOption(const SANE_Option_Descriptor* option, SANE_Int option_index, double value, double* result);
 
-    void setFixedOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, double value, double* result);
-
-    bool SetDPIModeOption(SANE_Handle & hSaneHandle);
+    void DoSetOptions();
   
-    bool setStringOption(SANE_Handle & handle, const SANE_Option_Descriptor* option, SANE_Int option_index, const std::string& value, std::string* result);
+    bool setStringOption(const SANE_Option_Descriptor* option, SANE_Int option_index, const std::string& value, std::string* result);
   
-    bool setConstrainedStringOption(SANE_Handle & handle, const SANE_Option_Descriptor* option, SANE_Int option_index, const std::vector<std::string>& values, std::string* result);
-
-    bool SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hSaneHandle);
+    bool setConstrainedStringOption(const SANE_Option_Descriptor* option, SANE_Int option_index, const std::vector<std::string>& values, std::string* result);
   
-    const SANE_Option_Descriptor* getOptionByName(const vectorDataScan& options, SANE_Handle handle, const std::string& name, int& index);
+    const SANE_Option_Descriptor* getOptionByName(const vectorDataScan& options, const std::string& name, int& index);
     
     /// Flag ...
     bool m_bOnlyLocalDevices;
@@ -297,6 +293,7 @@ private:
     
     int m_numDevices = 0;
     int m_selDevice = 0;
+    int depth = 0;
     
     bool isClose = false;
     

@@ -62,7 +62,7 @@ wxScanSane::~wxScanSane()
 }
 
 /***************************** Sane option stuff *****************************/
-const SANE_Option_Descriptor* wxScanSane::getOptionByName(const vectorDataScan& options, SANE_Handle handle, const std::string& name, int& index)
+const SANE_Option_Descriptor* wxScanSane::getOptionByName(const vectorDataScan& options, const std::string& name, int& index)
  {
      index = 0;
      for(wxScanDataOption data : options)
@@ -75,26 +75,26 @@ const SANE_Option_Descriptor* wxScanSane::getOptionByName(const vectorDataScan& 
      }
      
      if(index != 0)
-         return sane_get_option_descriptor(handle, index);
+         return sane_get_option_descriptor(hSaneHandle, index);
 
 	return nullptr;
 }
 
-bool wxScanSane::setStringOption(SANE_Handle & handle, const SANE_Option_Descriptor* option, SANE_Int option_index, const std::string& value, std::string* result) {
+bool wxScanSane::setStringOption(const SANE_Option_Descriptor* option, SANE_Int option_index, const std::string& value, std::string* result) {
 	if(option->type != SANE_TYPE_STRING) {
 		return false;
 	}
 
 	char* v = new char[value.size() + 1]; // +1: \0
 	strncpy(v, value.c_str(), value.size() + 1);
-	SANE_Status status = sane_control_option(handle, option_index, SANE_ACTION_SET_VALUE, v, nullptr);
+	SANE_Status status = sane_control_option(hSaneHandle, option_index, SANE_ACTION_SET_VALUE, v, nullptr);
 	
 	if(result) { *result = v; }
 	delete[] v;
 	return status == SANE_STATUS_GOOD;
 }
 
-bool wxScanSane::setConstrainedStringOption(SANE_Handle & handle, const SANE_Option_Descriptor* option, SANE_Int option_index, const std::vector<std::string>& values, std::string* result) {
+bool wxScanSane::setConstrainedStringOption(const SANE_Option_Descriptor* option, SANE_Int option_index, const std::vector<std::string>& values, std::string* result) {
 	if(option->type != SANE_TYPE_STRING) {
 		return false;
 	}
@@ -105,7 +105,7 @@ bool wxScanSane::setConstrainedStringOption(SANE_Handle & handle, const SANE_Opt
 	for(const std::string& value : values) {
 		for(int j = 0; option->constraint.string_list[j] != nullptr; ++j) {
 			if(value == option->constraint.string_list[j]) {
-				return setStringOption(handle, option, option_index, value, result);
+				return setStringOption(option, option_index, value, result);
 			}
 		}
 	}
@@ -113,7 +113,7 @@ bool wxScanSane::setConstrainedStringOption(SANE_Handle & handle, const SANE_Opt
 	return false;
 }
 
-void wxScanSane::setFixedOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, double value, double* result) {
+void wxScanSane::setFixedOption(const SANE_Option_Descriptor* option, SANE_Int option_index, double value, double* result) {
 	if(option->type != SANE_TYPE_FIXED) {
 		return;
 	}
@@ -140,13 +140,14 @@ void wxScanSane::setFixedOption(SANE_Handle handle, const SANE_Option_Descriptor
 	}
 
 	SANE_Fixed v_fixed = SANE_FIX(v);
-	SANE_Status status = sane_control_option(handle, option_index, SANE_ACTION_SET_VALUE, &v_fixed, nullptr);
+	SANE_Status status = sane_control_option(hSaneHandle, option_index, SANE_ACTION_SET_VALUE, &v_fixed, nullptr);
 	//g_debug("sane_control_option(%d, SANE_ACTION_SET_VALUE, %f) -> (%s, %f)", option_index, value, sane_strstatus(status), SANE_UNFIX(v_fixed));
 
 	if(result != nullptr) { *result = SANE_UNFIX(v_fixed); }
 }
 
-void wxScanSane::setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result) {
+void wxScanSane::setIntOption(const SANE_Option_Descriptor* option, SANE_Int option_index, int value, int* result) 
+{
 	if(option->type != SANE_TYPE_INT) {
 		return;
 	}
@@ -173,9 +174,9 @@ void wxScanSane::setIntOption(SANE_Handle handle, const SANE_Option_Descriptor* 
 		v = nearest;
 	}
 
-	SANE_Status status = sane_control_option(handle, option_index, SANE_ACTION_SET_VALUE, &v, nullptr);
+	SANE_Status status = sane_control_option(hSaneHandle, option_index, SANE_ACTION_SET_VALUE, &v, nullptr);
 	//g_debug("sane_control_option(%d, SANE_ACTION_SET_VALUE, %d) -> (%s, %d)", option_index, value, sane_strstatus(status), v);
-	if(result != nullptr) { *result = v; }
+	if(result) { *result = v; }
 }
 
 
@@ -206,103 +207,24 @@ void wxScanSane::GetScannerOption()
     }
 }
 
-bool wxScanSane::SetDPIModeOption(SANE_Handle & hSaneHandle)
+void wxScanSane::SetOption(const int &dpi, const Scanner::ScanMode &scanMode)
+{
+    this->scanMode = scanMode;
+    this->dpi =dpi;
+}
+
+
+void wxScanSane::DoSetOptions()
 {
 	int index = 0;
 	const SANE_Option_Descriptor* option;
-	
+   
     
-    GetScannerOption();
-    
-	/* Set resolution and bit depth */
-    
-    
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_RESOLUTION, index);
-	if(option != nullptr) {
-		if(option->type == SANE_TYPE_FIXED)
-        {
-			setFixedOption(hSaneHandle, option, index, dpi, nullptr);
-		} 
-        else 
-        {
-			setIntOption(hSaneHandle, option, index, dpi, nullptr);
-		}
-	}
-    
-        /*
-		option = getOptionByName(options, hSaneHandle, SANE_NAME_BIT_DEPTH, index);
-		if(option != nullptr && oSaneParameters.depth > 0) {
-			setIntOption(hSaneHandle, option, index, oSaneParameters.depth, nullptr);
-		}*/
-}
-
-double convert_page_size (SANE_Option_Descriptor * option, double size, double dpi)
-{
-    if (option->unit == SANE_UNIT_PIXEL)
-        return dpi * size / 254.0;
-    else if (option->unit == SANE_UNIT_MM)
-        return size / 10.0;
-    else
-    {
-        //warning ("Unable to set unsupported unit type");
-        return 0.0f;
-    }
-}
-
-bool wxScanSane::SetPageOption(SANE_Handle & hSaneHandle)
-{
-   int index = 0;
-	const SANE_Option_Descriptor* option;
-
-    GetScannerOption();
-	/* Always use maximum scan area - some scanners default to using partial areas.  This should be patched in sane-backends */
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_BR_X, index);
-	if(option != nullptr && option->constraint_type == SANE_CONSTRAINT_RANGE) {
-		if(option->type == SANE_TYPE_FIXED) {
-			setFixedOption(hSaneHandle, option, index, SANE_UNFIX(option->constraint.range->max), nullptr);
-		} else {
-			setIntOption(hSaneHandle, option, index, option->constraint.range->max, nullptr);
-		}
-	}
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_BR_Y, index);
-	if(option != nullptr && option->constraint_type == SANE_CONSTRAINT_RANGE) {
-		if(option->type == SANE_TYPE_FIXED) {
-			setFixedOption(hSaneHandle, option, index, SANE_UNFIX(option->constraint.range->max), nullptr);
-		} else {
-			setIntOption(hSaneHandle, option, index, option->constraint.range->max, nullptr);
-		}
-	}
-
-	/* Set page dimensions */
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_PAGE_WIDTH, index);
-	if(option != nullptr && page_width > 0.0) {
-		if(option->type == SANE_TYPE_FIXED) {
-			setFixedOption(hSaneHandle, option, index, page_width / 10.0, nullptr);
-		} else {
-			setIntOption(hSaneHandle, option, index, page_width / 10, nullptr);
-		}
-	}
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_PAGE_HEIGHT, index);
-	if(option != nullptr && page_height > 0.0) {
-		if(option->type == SANE_TYPE_FIXED) {
-			setFixedOption(hSaneHandle, option, index, page_height / 10.0, nullptr);
-		} else {
-			setIntOption(hSaneHandle, option, index, page_height / 10, nullptr);
-		}
-	}
-}
-
-bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hSaneHandle)
-{
-	int index = 0;
-	const SANE_Option_Descriptor* option;
-
-    GetScannerOption();   
+    printf("SetScanModeOption\n");
     
 	/* Scan mode (before resolution as it tends to affect that */
-	option = getOptionByName(options, hSaneHandle, SANE_NAME_SCAN_MODE, index);
-    
-    
+	option = getOptionByName(options, SANE_NAME_SCAN_MODE, index);
+        
 	if(option != nullptr) {
 		// The names of scan modes often used in drivers, as taken from the sane-backends source 
 		std::vector<std::string> color_scan_modes = {
@@ -334,19 +256,19 @@ bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hS
 			"True Gray" // Seen in the proprietary brother3 driver 
 		};
 
-		switch(scan_mode) {
+		switch(scanMode) {
 		case Scanner::ScanMode::COLOR:
-			if(!setConstrainedStringOption(hSaneHandle, option, index, color_scan_modes, nullptr)) {
+			if(!setConstrainedStringOption(option, index, color_scan_modes, nullptr)) {
 				printf("Unable to set Color mode, please file a bug");
 			}
 			break;
 		case Scanner::ScanMode::GRAY:
-			if(!setConstrainedStringOption(hSaneHandle, option, index, gray_scan_modes, nullptr)) {
+			if(!setConstrainedStringOption(option, index, gray_scan_modes, nullptr)) {
 				printf("Unable to set Gray mode, please file a bug");
 			}
 			break;
 		case Scanner::ScanMode::LINEART:
-			if(!setConstrainedStringOption(hSaneHandle, option, index, lineart_scan_modes, nullptr)) {
+			if(!setConstrainedStringOption(option, index, lineart_scan_modes, nullptr)) {
 				printf("Unable to set Lineart mode, please file a bug");
 			}
 			break;
@@ -354,18 +276,88 @@ bool wxScanSane::SetScanModeOption(Scanner::ScanMode scan_mode, SANE_Handle & hS
 			break;
 		}
 	}
-}
 
-void wxScanSane::SetOption(const int &dpi, const Scanner::ScanMode &scanMode)
-{
-    this->scanMode = scanMode;
-    this->dpi =dpi;
+    if( !IsOk() )
+    {
+        // Log and signal error.
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
+        return false;
+    }
+    
+	/* Set resolution and bit depth */
+    printf("SetDPIModeOption \n");
+    
+	option = getOptionByName(options, SANE_NAME_SCAN_RESOLUTION, index);
+	if(option != nullptr) {
+		if(option->type == SANE_TYPE_FIXED) {
+			setFixedOption( option, index, dpi, &dpi);
+		} else {
+			int _local_dpi;
+			setIntOption( option, index, dpi, &_local_dpi);
+			dpi = _local_dpi;
+		}
+		option = getOptionByName(options, SANE_NAME_BIT_DEPTH, index);
+		if(option != nullptr && depth > 0) {
+			setIntOption(option, index, depth, nullptr);
+		}
+	}
+    
+    
+    if( !IsOk() )
+    {
+        // Log and signal error.
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
+        return false;
+    }
+    
+    printf("Set Page OptionToMax \n");
+    
+	/* Always use maximum scan area - some scanners default to using partial areas.  This should be patched in sane-backends */
+	option = getOptionByName(options, SANE_NAME_SCAN_BR_X, index);
+	if(option != nullptr && option->constraint_type == SANE_CONSTRAINT_RANGE) {
+		if(option->type == SANE_TYPE_FIXED) {
+			setFixedOption(option, index, SANE_UNFIX(option->constraint.range->max), nullptr);
+		} else {
+			setIntOption(option, index, option->constraint.range->max, nullptr);
+		}
+	}
+	option = getOptionByName(options, SANE_NAME_SCAN_BR_Y, index);
+	if(option != nullptr && option->constraint_type == SANE_CONSTRAINT_RANGE) {
+		if(option->type == SANE_TYPE_FIXED) {
+			setFixedOption(option, index, SANE_UNFIX(option->constraint.range->max), nullptr);
+		} else {
+			setIntOption(option, index, option->constraint.range->max, nullptr);
+		}
+	}
+
+	/* Set page dimensions */
+	option = getOptionByName(options, SANE_NAME_PAGE_WIDTH, index);
+	if(option != nullptr && page_width > 0.0) {
+		if(option->type == SANE_TYPE_FIXED) {
+			setFixedOption(option, index, page_width / 10.0, nullptr);
+		} else {
+			setIntOption(option, index, page_width / 10, nullptr);
+		}
+	}
+	option = getOptionByName(options, SANE_NAME_PAGE_HEIGHT, index);
+	if(option != nullptr && page_height > 0.0) {
+		if(option->type == SANE_TYPE_FIXED) {
+			setFixedOption(option, index, page_height / 10.0, nullptr);
+		} else {
+			setIntOption(option, index, page_height / 10, nullptr);
+		}
+	}
+    
+        printf("Do Set Options End\n");
+
 }
 
 // Get an image from the scanning device.
 //
 bool wxScanSane::ScanImage( wxImage& oImage )
 {
+
+    
     // Check if there is a proper device index.
     if( !IsDeviceAvailable() )
     {
@@ -402,53 +394,23 @@ bool wxScanSane::ScanImage( wxImage& oImage )
 #endif
 
     Open();
+    
+    if( !IsOk() )
+    {
+        // Log and signal error.
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
+        return false;
+    }
 
-    
+    DoSetOptions();
+     
     if( !IsOk() )
     {
         // Log and signal error.
         printf( GetSaneStatusString() + wxT( " (SANE)" ) );
         return false;
     }
-    
-    SetDPIModeOption(hSaneHandle);  
-
-    if( !IsOk() )
-    {
-        // Log and signal error.
-        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
-        return false;
-    }  
-    
-    SetScanModeOption(scanMode, hSaneHandle);
-    
-    if( !IsOk() )
-    {
-        // Log and signal error.
-        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
-        return false;
-    }
-    
-    SetPageOption(hSaneHandle);
-    
-    if( !IsOk() )
-    {
-        // Log and signal error.
-        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
-        return false;
-    }
-    
-    /*
-    SetOptionToMax(scanMode, hSaneHandle);
-    
-    if( !IsOk() )
-    {
-        // Log and signal error.
-        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
-        return false;
-    }
-     * */
-    
+   
     // Get scanning parameters e. g. width, height, color depth etc.
     SANE_Parameters oSaneParameters;
 
@@ -685,6 +647,8 @@ bool wxScanSane::Open()
             return false;
         }
         isClose = false;
+        
+        GetScannerOption();
     }
     return true;
 }   
