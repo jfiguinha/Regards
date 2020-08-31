@@ -302,6 +302,7 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 		
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
+        fileGeolocalisation->SetFile(filename);
 
 		if (!fileGeolocalisation->HasGps())
 			infosToolbar->SetMapInactif();
