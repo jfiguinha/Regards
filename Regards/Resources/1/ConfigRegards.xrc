@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="ConfigRegards">
 		<title>Dialog</title>
 		<centered>1</centered>
-		<size>363,670</size>
+		<size>363,440</size>
 		<object class="wxRadioBox" name="ID_RBTRANSITIONEFFECT">
 			<label>Transition Effect</label>
 			<style>wxRA_SPECIFY_COLS</style>
@@ -56,7 +56,7 @@
 		<object class="wxSpinCtrl" name="ID_SCTIME">
 			<value>0</value>
 			<pos>56,240</pos>
-			<size>88,21</size>
+			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STTIME">
 			<label>Time :</label>
@@ -76,7 +76,7 @@
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
 			<pos>120,290</pos>
-			<size>88,21</size>
+			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
 			<label>EXIF :</label>
@@ -86,44 +86,15 @@
 		<object class="wxSpinCtrl" name="ID_SCEXIF">
 			<value>0</value>
 			<pos>120,330</pos>
-			<size>88,21</size>
+			<size>120,21</size>
 		</object>	
-		<object class="wxStaticText" name="ID_STFACE">
-			<label>FACE :</label>
-			<pos>16,370</pos>
-			<size>40,24</size>
-		</object>	
-		<object class="wxSpinCtrl" name="ID_SCFACE">
-			<value>0</value>
-			<pos>120,370</pos>
-			<size>88,21</size>
-		</object>		
-		<object class="wxStaticBox" name="sbDiaporama">
-			<label>Face Detection</label>
-			<pos>0,420</pos>
-			<size>360,180</size>
-		</object>	
-		<object class="wxRadioBox" name="ID_PICTUREFACEDETECTION">
-			<label>Picture Size</label>
-			<style>wxRA_SPECIFY_COLS</style>
-			<content>
-				<item>Thumbnail Size</item>
-				<item>Original Size</item>
-				<item>SD Size (480p)</item>
-				<item>HD Size (720p)</item>
-				<item>Full HD Size (1080p)</item>
-			</content>
-			<default>-1</default>
-			<pos>16,440</pos>
-			<size>320,140</size>
-		</object>
 		<object class="wxButton" name="ID_OK">
 			<label>Ok</label>
-			<pos>64,620</pos>
+			<pos>64,380</pos>
 		</object>
 		<object class="wxButton" name="ID_CANCEL">
 			<label>Cancel</label>
-			<pos>192,620</pos>
+			<pos>192,380</pos>
 		</object>		
 	</object>
 </resource>
