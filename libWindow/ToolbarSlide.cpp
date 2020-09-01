@@ -352,7 +352,11 @@ void CToolbarSlide::DrawButton(wxDC * dc, const int &x, const int &y)
 
 		if (!colorBackground)
 		{
-			bitmapBuffer.SetMask(new wxMask(bitmapBuffer, themeSlider.colorBack));
+            wxColour colour = themeSlider.colorBack;
+#ifdef __APPLE__
+           colour.Set(themeSlider.colorBack.Red(),themeSlider.colorBack.Green(), themeSlider.colorBack.Blue(), 0);
+#endif
+            bitmapBuffer.SetMask(new wxMask(bitmapBuffer, colour));
 			dc->DrawBitmap(bitmapBuffer, x, y, true);
 		}
 		else
