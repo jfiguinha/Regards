@@ -251,6 +251,7 @@ CIcone * CThumbnailFileSelection::FindElementWithVScroll(const int &xPos, const 
 
 CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &xPos, const int &yPos)
 {
+    /*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	CInfosSeparationBar * element;
@@ -261,7 +262,9 @@ CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &x
 		element = *it;
 
 	return element;
-	/*/
+*/
+	int x = xPos + posLargeur;
+	int y = yPos + posHauteur;
 	for (CInfosSeparationBar * separatorBar : listSeparator)
 	{
 		if (separatorBar != nullptr)
@@ -274,7 +277,7 @@ CInfosSeparationBar * CThumbnailFileSelection::FindSeparatorElement(const int &x
 		}
 	}
 	return nullptr;
-	*/
+	
 }
 
 

@@ -539,6 +539,7 @@ CIcone * CThumbnailFolder::FindElementWithVScroll(const int &xPos, const int &yP
 
 CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, const int &yPos)
 {
+    /*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	CInfosSeparationBar * element;
@@ -549,8 +550,8 @@ CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, co
 		element = *it;
 
 	return element;
+*/
 
-	/*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
@@ -566,7 +567,7 @@ CInfosSeparationBar * CThumbnailFolder::FindSeparatorElement(const int &xPos, co
 		}
 	}
 	return nullptr;
-	*/
+	
 }
 
 
@@ -799,8 +800,8 @@ void CThumbnailFolder::UpdateScrollWithVScroll()
 			break;
 	}
 
-    printf("CThumbnailFolder::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
-    printf("CThumbnailFolder::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
+    //printf("CThumbnailFolder::UpdateScrollWithVScroll old %d %d \n", oldthumbnailSizeX, oldthumbnailSizeY);
+    //printf("CThumbnailFolder::UpdateScrollWithVScroll new %d %d \n", thumbnailSizeX, thumbnailSizeY);
 
 	//bool refresh = false;
 	if (iconeList->GetNbElement() >= 0)

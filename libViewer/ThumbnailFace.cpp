@@ -340,6 +340,7 @@ void CThumbnailFace::DeleteEmptyFace()
 //-----------------------------------------------------------------
 CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, const int &yPos)
 {
+    /*
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 	CInfosSeparationBar * element;
@@ -350,8 +351,8 @@ CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, cons
 		element = *it;
 
 	return element;
-
-	/*
+*/
+	
 	int x = xPos + posLargeur;
 	int y = yPos + posHauteur;
 
@@ -367,7 +368,7 @@ CInfosSeparationBar * CThumbnailFace::FindSeparatorElement(const int &xPos, cons
 		}
 	}
 	return nullptr;
-	*/
+	
 }
 
 
