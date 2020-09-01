@@ -943,11 +943,6 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 		case PDF:
 			{
-				wxImage * image = bitmap->GetwxImage(true);
-				SaveToPDF(image, fileName, option, quality);
-				delete image;
-				/*
-
 				wxString fileToAdd = "";
 				wxString file = "";
 				wxString documentPath = CFileUtility::GetDocumentFolderPath();
@@ -1013,7 +1008,6 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 				
 				SaveToPDF(&image, fileName, file, option, quality);
 				::wxRemoveFile(file);
-				*/
 			}
 			break;
 
@@ -3178,9 +3172,9 @@ bool CLibPicture::SaveToPDF(wxImage * poImage, const wxString &pdfFile, int opti
 
 	wxString fileToSave;
 	if (option == 0)
-		fileToSave = CFileUtility::GetTempFile("scanner.tif");
-	else
 		fileToSave = CFileUtility::GetTempFile("scanner.jpg");
+	else
+		fileToSave = CFileUtility::GetTempFile("scanner.tif");
 
 	if (wxFileExists(fileToSave))
 		wxRemoveFile(fileToSave);

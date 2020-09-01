@@ -19,7 +19,7 @@
 		</object>
 		<object class="wxSlider" name="ID_SLCOMPRESSION">
 			<pos>40,40</pos>
-			<size>248,24</size>
+			<size>248,48</size>
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT1">
 			<label>High</label>
