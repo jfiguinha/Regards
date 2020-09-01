@@ -66,7 +66,9 @@ public:
     static void Uninitx265Decoder();    
     
     static void InitFreeImage();
-    static void UninitFreeImage();     
+    static void UninitFreeImage();  
+
+    bool SaveToPDF( wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
     
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
@@ -78,7 +80,7 @@ public:
     
 private:
 
-    bool SaveToPDF( wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
+    
 	CRegardsBitmap * LoadFromFreeImage(const char* filename);
 	CRegardsBitmap * LoadThumbnailFromFreeImage(const char* filename);
 	bool PictureDimensionFreeImage(const char* filename, int &width, int &height);

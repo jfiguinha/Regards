@@ -25,6 +25,7 @@
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
 #include <ImageLoadingFormat.h>
+#include <wx/choicdlg.h> 
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;
@@ -376,6 +377,7 @@ wxString CScannerFrame::ScanPage()
     
 #else
 #if __WXSCANSANE__  
+
     scanSane->SelectSource("", true, this);
 
     if(scanSane->IsSourceSelected())
@@ -433,11 +435,41 @@ wxString CScannerFrame::ScanPage()
 	if (image.IsOk())
 	{
         pdfFile = CFileUtility::GetTempFile("scanner.pdf");
-
+        wxString tiffFile = CFileUtility::GetTempFile("scanner.tif");
+        wxString jpegFile = CFileUtility::GetTempFile("scanner.jpg");
+        wxArrayString arrString;
+        arrString.push_back("JPEG");
+        arrString.push_back("TIFF");
+            
+        int option = wxGetSingleChoiceIndex("PDF Compression Format",
+        "Select Compression Format",
+        arrString,
+        this);	
+        
+        if (wxFileExists(pdfFile))
+            wxRemoveFile(pdfFile);
+            
+        if (wxFileExists(tiffFile))
+            wxRemoveFile(tiffFile);
+            
+        if (wxFileExists(jpegFile))
+            wxRemoveFile(jpegFile);
+        
+        if(option == 0)
+            image.SaveFile(jpegFile, wxBITMAP_TYPE_JPEG);
+        else
+            image.SaveFile(tiffFile, wxBITMAP_TYPE_TIFF);
+         
+        //wxString filename = "scanner.tif";
         CLibPicture picture;
-        CImageLoadingFormat imageLoadingFormat;
-        imageLoadingFormat.SetPicture(new wxImage(image));
-        picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
+        if(option == 0)
+            picture.SaveToPDF(&image, pdfFile, jpegFile, 0, 0);
+        else
+            picture.SaveToPDF(&image, pdfFile, tiffFile, 1, 0);
+        //CImageLoadingFormat imageLoadingFormat;
+        //image.SaveFile(tiffFile, );
+        //imageLoadingFormat.SetPicture(new wxImage(image));
+        //picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
 
 	}
 #endif

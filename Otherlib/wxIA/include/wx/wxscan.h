@@ -293,7 +293,7 @@ private:
     
     int m_numDevices = 0;
     int m_selDevice = 0;
-    int depth = 0;
+    int depth = 32;
     
     bool isClose = false;
     

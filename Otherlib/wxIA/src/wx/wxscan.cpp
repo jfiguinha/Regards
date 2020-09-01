@@ -284,6 +284,28 @@ void wxScanSane::DoSetOptions()
         return false;
     }
     
+	/* Disable compression, we will compress after scanning */
+	option = getOptionByName(options, "compression", index);
+	if(option != nullptr) {
+		std::vector<std::string> disable_compression_names = {
+			SANE_I18N("None"),
+			SANE_I18N("none"),
+			"None",
+			"none"
+		};
+
+		if(!setConstrainedStringOption(option, index, disable_compression_names, nullptr)) {
+			printf("Unable to disable compression, please file a bug \n");
+		}
+	}
+    
+    if( !IsOk() )
+    {
+        // Log and signal error.
+        printf( GetSaneStatusString() + wxT( " (SANE)" ) );
+        return false;
+    }
+    
 	/* Set resolution and bit depth */
     printf("SetDPIModeOption \n");
     
