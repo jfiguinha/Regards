@@ -943,6 +943,11 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 
 		case PDF:
 			{
+				wxImage * image = bitmap->GetwxImage(true);
+				SaveToPDF(image, fileName, option, quality);
+				delete image;
+				/*
+
 				wxString fileToAdd = "";
 				wxString file = "";
 				wxString documentPath = CFileUtility::GetDocumentFolderPath();
@@ -956,8 +961,8 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 	#endif
 					// handle the error here
 				}
-
 				//Save
+
 			if (option == 0)
 			{
 #ifdef WIN32
@@ -1008,6 +1013,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 				
 				SaveToPDF(&image, fileName, file, option, quality);
 				::wxRemoveFile(file);
+				*/
 			}
 			break;
 
@@ -3162,4 +3168,29 @@ CPictureData * CLibPicture::LoadPictureData(const wxString &filename, bool &pict
 	return pictureData;
 }
 
+bool CLibPicture::SaveToPDF(wxImage * poImage, const wxString &pdfFile, int option, int quality)
+{
+	int _option = option;
+	int _quality = quality;
 
+	if(_option == -1)
+		SavePictureOption(PDF, _option, _quality);
+
+	wxString fileToSave;
+	if (option == 0)
+		fileToSave = CFileUtility::GetTempFile("scanner.tif");
+	else
+		fileToSave = CFileUtility::GetTempFile("scanner.jpg");
+
+	if (wxFileExists(fileToSave))
+		wxRemoveFile(fileToSave);
+
+	if (option == 0)
+		poImage->SaveFile(fileToSave, wxBITMAP_TYPE_JPEG);
+	else
+		poImage->SaveFile(fileToSave, wxBITMAP_TYPE_TIFF);
+
+	SaveToPDF(poImage, pdfFile, fileToSave, option, _quality);
+
+	return true;
+}

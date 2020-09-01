@@ -14,6 +14,7 @@
 #include <picture_id.h>
 #include <wx/progdlg.h>
 #include <wx/pdfdocument.h>
+
 using namespace Regards::Window;
 
 #define OPENFILE 0

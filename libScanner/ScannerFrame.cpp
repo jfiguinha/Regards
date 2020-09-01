@@ -10,6 +10,7 @@
 #include <wx/graphics.h>
 #define USE_WIA_INTERFACE
 #endif
+#include <picture_id.h>
 #include <wx/filedlg.h>
 #include "ScannerFrame.h"
 #include <wx/image.h>
@@ -434,7 +435,17 @@ wxString CScannerFrame::ScanPage()
 #ifndef __APPLE__
 	if (image.IsOk())
 	{
+		CLibPicture picture;
+		pdfFile = CFileUtility::GetTempFile("scanner.pdf");
+		if (wxFileExists(pdfFile))
+			wxRemoveFile(pdfFile);
+		picture.SaveToPDF(&image, pdfFile);
+		/*
+		int option = 0;
+		int quality = 0;
         pdfFile = CFileUtility::GetTempFile("scanner.pdf");
+		picture.SavePictureOption(PDF, option, quality);
+
         wxString tiffFile = CFileUtility::GetTempFile("scanner.tif");
         wxString jpegFile = CFileUtility::GetTempFile("scanner.jpg");
         wxArrayString arrString;
@@ -459,17 +470,13 @@ wxString CScannerFrame::ScanPage()
             image.SaveFile(jpegFile, wxBITMAP_TYPE_JPEG);
         else
             image.SaveFile(tiffFile, wxBITMAP_TYPE_TIFF);
-         
-        //wxString filename = "scanner.tif";
-        CLibPicture picture;
+
         if(option == 0)
-            picture.SaveToPDF(&image, pdfFile, jpegFile, 0, 0);
+            picture.SaveToPDF(&image, pdfFile, jpegFile, 0, quality);
         else
-            picture.SaveToPDF(&image, pdfFile, tiffFile, 1, 0);
-        //CImageLoadingFormat imageLoadingFormat;
-        //image.SaveFile(tiffFile, );
-        //imageLoadingFormat.SetPicture(new wxImage(image));
-        //picture.SavePicture(pdfFile, &imageLoadingFormat, 0, 0);
+            picture.SaveToPDF(&image, pdfFile, tiffFile, 1, quality);
+
+			*/
 
 	}
 #endif

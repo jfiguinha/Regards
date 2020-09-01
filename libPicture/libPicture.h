@@ -68,7 +68,7 @@ public:
     static void InitFreeImage();
     static void UninitFreeImage();  
 
-    bool SaveToPDF( wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
+	bool SaveToPDF(wxImage * poImage, const wxString &fileName, int option = -1, int quality = -1);
     
 #ifdef LIBBPG
 #if defined(WIN32) && not defined(__MINGW32__)
@@ -80,7 +80,7 @@ public:
     
 private:
 
-    
+	bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
 	CRegardsBitmap * LoadFromFreeImage(const char* filename);
 	CRegardsBitmap * LoadThumbnailFromFreeImage(const char* filename);
 	bool PictureDimensionFreeImage(const char* filename, int &width, int &height);
