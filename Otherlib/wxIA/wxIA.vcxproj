@@ -161,6 +161,7 @@
     <ClInclude Include="include\Scanner.h" />
     <ClInclude Include="include\wx\wxsanedlg.h" />
     <ClInclude Include="include\wx\wxscan.h" />
+    <ClInclude Include="wia2_scanner.h" />
     <ClInclude Include="wia\bitmapUtilities.h" />
     <ClInclude Include="wia\comptr.h" />
     <ClInclude Include="wia\DataClasses.h" />
@@ -173,6 +174,7 @@
     </ClCompile>
     <ClCompile Include="src\wx\wxsanedlg.cpp" />
     <ClCompile Include="src\wx\wxscan.cpp" />
+    <ClCompile Include="wia2_scanner.cpp" />
     <ClCompile Include="wia\bitmapUtilities.cpp" />
     <ClCompile Include="wia\DataClasses.cpp" />
     <ClCompile Include="wia\ImageAcquisition.cpp" />

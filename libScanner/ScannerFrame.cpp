@@ -395,8 +395,9 @@ wxString CScannerFrame::ScanPage()
     }
 #else
 	{
-		DataClasses myData;
 
+		DataClasses myData;
+		
 		LONG sample = myData.getNumDevices();
 		if (sample > 0)
 		{
@@ -412,7 +413,7 @@ wxString CScannerFrame::ScanPage()
 			// Scan the Image into the stream object ppStream
 			HRESULT hr = WiaGetImage(
 				(HWND)this->GetHWND(),
-				StiDeviceTypeDefault,
+				StiDeviceTypeScanner,
 				0,
 				WIA_INTENT_NONE,
 				NULL,

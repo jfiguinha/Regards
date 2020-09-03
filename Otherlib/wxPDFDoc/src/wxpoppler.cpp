@@ -91,14 +91,20 @@ bool wxPoppler::Open( char *pcData, const int nLength)
 //
 bool wxPoppler::SelectPage( int nIndex )
 {
-    poppler::page * pPdfPageTemp = m_pPdfDocument->create_page(nIndex);
+	if (m_pPdfDocument != nullptr)
+	{
+		poppler::page * pPdfPageTemp = m_pPdfDocument->create_page(nIndex);
 
-    if( !pPdfPageTemp )
-    {
-        return false;
-    }
-    m_pPdfPage= pPdfPageTemp;
-    return true;
+		if (!pPdfPageTemp)
+		{
+			return false;
+		}
+		m_pPdfPage = pPdfPageTemp;
+
+		return true;
+	}
+	return false;
+    
 }
 
 // Render the (previously selected) PDF page and store the result in m_oImage.
