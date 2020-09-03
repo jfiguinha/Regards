@@ -92,8 +92,8 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 	if (viewerTheme != nullptr)
 	{
-		std::vector<int> value = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
-		std::vector<int> valuePertinence = { 0, 10, 20, 50, 70, 100, 125, 150, 175, 200, 225, 250, 275, 300 };
+		std::vector<int> value = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+		//std::vector<int> valuePertinence = { 0, 10, 20, 50, 70, 100, 125, 150, 175, 200, 225, 250, 275, 300 };
 
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
@@ -103,25 +103,25 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
 
-		/*
+		
 		int position = 2;
 		if(config != nullptr)
 		{
 			double pertinence = config->GetPertinenceValue();
 			int pertinenceValue = pertinence * 100;
-			for(int i = 0;i < valuePertinence.size();i++)
+			for(int i = 0;i < value.size();i++)
 			{
-				if(pertinenceValue == valuePertinence[i])
+				if(pertinenceValue == value[i])
 					position = i;
 			}
 		}
 	
 		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
-		thumbFacePertinenceToolbar->SetTabValue(valuePertinence);
-		thumbFacePertinenceToolbar->SetTrackBarPosition(2);
+		thumbFacePertinenceToolbar->SetTabValue(value);
+		thumbFacePertinenceToolbar->SetTrackBarPosition(7);
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
-		*/
-
+		
+		/*
 		wxString libelle = CLibResource::LoadStringFromResource(L"LBLFACELIST", 1);
 		
 		titleBar = new CTitleBar(windowManager, wxID_ANY, this);
@@ -129,7 +129,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 		titleBar->SetTitle(libelle);
 		titleBar->SetClosable(false);
 		windowManager->AddWindow(titleBar, Pos::wxTOP, true, titleBar->GetHeight(), rect, wxID_ANY, false);
-		
+		*/
 		
 	}
 
@@ -460,7 +460,8 @@ void CListFace::UpdateScreenRatio()
 
 void CListFace::ForceRefresh()
 {
-	titleBar->ForceRefresh();
+	//titleBar->ForceRefresh();
+	thumbFacePertinenceToolbar->ForceRefresh();
 	thumbFaceToolbar->ForceRefresh();
 	thumbnailFace->ForceRefresh();
 }

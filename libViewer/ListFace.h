@@ -42,7 +42,6 @@ namespace Regards
 			void RefreshPane();
 		private:
 
-			
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);
@@ -60,8 +59,7 @@ namespace Regards
 			CWindowManager * windowManager;
 			CScrollbarWnd * thumbscrollbar;
 			CThumbnailFaceToolBar * thumbFaceToolbar;
-			//CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
-			CTitleBar * titleBar;
+			CThumbnailFacePertinenceToolBar * thumbFacePertinenceToolbar;
 			CThumbnailFace * thumbnailFace;
 
 			int nbProcessFacePhoto;

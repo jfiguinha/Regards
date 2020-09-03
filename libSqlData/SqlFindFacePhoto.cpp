@@ -44,9 +44,9 @@ std::vector<CFaceFilePath> CSqlFindFacePhoto::GetListPhotoFace(const int &numFac
 {
 	type = 3;
 	listFace.clear();
-	wxString value = wxString::Format(wxT("%f"), pertinence);
-	//ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where Pertinence > " + value + " and NumFaceCompatible = " + to_string(numFace));
-	ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where NumFaceCompatible = " + to_string(numFace));
+	wxString value = wxString::Format(wxT("%f"), pertinence / 100.0f);
+	ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where Pertinence > " + value + " and NumFaceCompatible = " + to_string(numFace));
+	//ExecuteRequest("SELECT FACE_RECOGNITION.NumFace, FACEPHOTO.FullPath, NumPhoto  FROM FACE_RECOGNITION INNER JOIN FACEPHOTO ON FACEPHOTO.NumFace = FACE_RECOGNITION.NumFace INNER JOIN PHOTOS ON FACEPHOTO.FullPath = PHOTOS.FullPath where NumFaceCompatible = " + to_string(numFace));
 	return listFace;
 }
 

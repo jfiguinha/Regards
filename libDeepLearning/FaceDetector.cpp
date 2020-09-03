@@ -124,7 +124,7 @@ void CFaceDetector::ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff
 	cv::imencode(".jpg", image, buff, param);
 }
 
-int CFaceDetector::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<cv::Mat> & listOfFace, int typeRotate)
+int CFaceDetector::FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate)
 {
 	cv::Mat dst;      //Mat object for output image file
 	int tab[] = { 0, 270, 90, 180 };
@@ -188,7 +188,7 @@ void CFaceDetector::Rotate(const cv::Mat& image, cv::Mat& dst, int degrees)
 int CFaceDetector::FindNbFace(cv::Mat & image, int & angle)
 {
 	std::vector<cv::Rect> pointOfFace;
-	std::vector<cv::Mat> listOfFace;
+	std::vector<CFace> listOfFace;
 	return FindFace(image, angle, pointOfFace, listOfFace);
 }
 
@@ -209,7 +209,7 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		int angle = 0;
 		CSqlFacePhoto facePhoto;
 		cv::Mat dest;
-		std::vector<cv::Mat> listOfFace;
+		std::vector<CFace> listOfFace;
 		std::vector<cv::Rect> pointOfFace;
 		//std::vector<char> data = pictureData->CopyData();
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
@@ -224,17 +224,17 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
-		for (Mat face : listOfFace)
+		for (CFace face : listOfFace)
 		{
 
 			std::vector<uchar> buff;
-			ImageToJpegBuffer(face, buff);
-			int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.rows, face.cols, 1.0, reinterpret_cast<uchar*>(buff.data()), buff.size());
+			ImageToJpegBuffer(face.croppedImage, buff);
+			int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 			listFace.push_back(numFace);
 
 			cv::Size size(150, 150);
 			cv::Mat dst;//dst image
-			cv::resize(face, dst, size);
+			cv::resize(face.croppedImage, dst, size);
 			//IplImage image2 = cvIplImage(face);
 			cv_image<rgb_pixel> cimg(cvIplImage(dst));
 			faces.push_back(cimg);
@@ -286,7 +286,7 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 		int angle = 0;
 		CSqlFacePhoto facePhoto;
 		cv::Mat dest;
-		std::vector<cv::Mat> listOfFace;
+		std::vector<CFace> listOfFace;
 		std::vector<cv::Rect> pointOfFace;
 		//std::vector<char> data = pictureData->CopyData();
 		cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
@@ -301,17 +301,17 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 
 		std::vector<cv_image<rgb_pixel>> faces;
 
-		for (Mat face : listOfFace)
+		for (CFace face : listOfFace)
 		{
 
 			std::vector<uchar> buff;
-			ImageToJpegBuffer(face, buff);
-			int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.rows, face.cols, 1.0, reinterpret_cast<uchar*>(buff.data()), buff.size());
+			ImageToJpegBuffer(face.croppedImage, buff);
+			int numFace = facePhoto.InsertFace(pictureData->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 			listFace.push_back(numFace);
 
 			cv::Size size(150, 150);
 			cv::Mat dst;//dst image
-			cv::resize(face, dst, size);
+			cv::resize(face.croppedImage, dst, size);
 			//IplImage image2 = cvIplImage(face);
 			cv_image<rgb_pixel> cimg(cvIplImage(dst));
 			faces.push_back(cimg);
@@ -376,16 +376,7 @@ void CFaceDetector::RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox
 			float a = 1.0f - 5.0f*((float)((x - 0.5f*(xmax + xmin))*(x - 0.5f*(xmax + xmin)) + (y - 0.5f*(ymax + ymin))*(y - 0.5f*(ymax + ymin)))) / ((float)((xmax - xmin)*(ymax - ymin)));
 			if (a < 0)
 				a = 0;
-
-			//CRgbaquad * color = pBitmap->GetPtColorValue(x,y);
-			//color->SetRed((uint8_t)(a*min(color->GetGreen(),color->GetBlue())+(1.0f-a)*color->GetRed()));
-			//Vec4b colour = image.at<Vec4b>(Point(x, y));
 			image.at<Vec4b>(Point(x, y))[2] = (uint8_t)(a*min(image.at<Vec4b>(Point(x, y))[1], image.at<Vec4b>(Point(x, y))[0]) + (1.0f - a)*image.at<Vec4b>(Point(x, y))[2]);
-
-			//CRgbaquad color = pBitmap->GetColorValue(x, y);
-			//color.SetRed((uint8_t)(a*min(color.GetGreen(), color.GetBlue()) + (1.0f - a)*color.GetRed()));
-			//color.SetColor(0, 255, 0, 0);
-			//pBitmap->SetColorValue(x, y, color);
 		}
 	}
 }
@@ -405,14 +396,10 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 	if (isLoading)
 	{
 		cv::Mat dest;
-		std::vector<cv::Mat> listOfFace;
-		//std::vector<char> data = pictureData->CopyData();
-		//cv::Mat image = cv::imdecode(cv::Mat(1, pictureData->GetSize(), CV_8UC1, pictureData->GetData()), IMREAD_UNCHANGED);
+		std::vector<CFace> listOfFace;
+
 		cv::Mat image(pBitmap->GetBitmapHeight(), pBitmap->GetBitmapWidth(), CV_8UC4, pBitmap->GetPtBitmap());
-		//dest = image.clone();
-		//cv::flip(dest, dest, -1);
 		cv::cvtColor(image, dest, cv::COLOR_BGRA2BGR);
-		//imwrite("d:\\eye_image.jpg", dest);
 		FindFace(dest, angle, pointOfFace, listOfFace);
 		RotateCorrectly(dest, dest, angle);
 		listOfFace.clear();
@@ -421,52 +408,35 @@ void CFaceDetector::DetectEyes(CRegardsBitmap * pBitmap)
 			   
 		if (listOfFace.size() > 0)
 		{
-			//cv::flip(image, image, -1);
 			RotateCorrectly(image, image, angle);
 
 			for (int i = 0; i < listOfFace.size(); i++)
 			{
-				cv::Mat gray;
-				std::vector<cv::Rect> eyes;
-
-				cv::cvtColor(listOfFace[i], gray, COLOR_BGR2GRAY);
-				eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
-				for (cv::Rect rect : eyes)
+				if (listOfFace[i].confidence > confidenceThreshold)
 				{
-					cv::Rect rectEye;
-					/*
-					wxRect eye;
-					eye.x = rect.x + pointOfFace[i].x;
-					eye.y = rect.y + pointOfFace[i].y;
-					eye.width = rect.width;
-					eye.height = rect.height;
-					listEye.push_back(eye);
-					*/
-					rectEye.x = rect.x + pointOfFace[i].x;
-					rectEye.y = rect.y + pointOfFace[i].y;
-					rectEye.width = rect.width;
-					rectEye.height = rect.height;
-					//cv::rectangle(image, rectEye, cv::Scalar(0, 255, 0), 5);
-					RemoveRedEye(image, rectEye);
+					cv::Mat gray;
+					std::vector<cv::Rect> eyes;
+
+					cv::cvtColor(listOfFace[i].croppedImage, gray, COLOR_BGR2GRAY);
+					eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+					for (cv::Rect rect : eyes)
+					{
+						cv::Rect rectEye;
+
+						rectEye.x = rect.x + pointOfFace[i].x;
+						rectEye.y = rect.y + pointOfFace[i].y;
+						rectEye.width = rect.width;
+						rectEye.height = rect.height;
+						RemoveRedEye(image, rectEye);
+					}
 				}
-
-				
 			}
-
-			
 		}
-		cv::Mat cloneImage;
-		//cv::flip(image, image, -1);
-		RotateCorrectly(image, cloneImage, 360 - angle);
-		//cv::Mat cloneImage = image.clone();
-		//imwrite("d:\\eye_image.jpg", image);
-		//uchar * arr = image.isContinuous() ? image.data : image.clone().data;
-		//uchar * arr = image.clone().data;
-		pBitmap->SetBitmap(cloneImage.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
-		//uint length = image.total()*image.channels();
-	}
 
-	//return listEye;
+		cv::Mat cloneImage;
+		RotateCorrectly(image, cloneImage, 360 - angle);
+		pBitmap->SetBitmap(cloneImage.data, pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
+	}
 }
 
 void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
@@ -496,7 +466,7 @@ void CFaceDetector::RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle)
 //--------------------------------------------------
 //Code From https://github.com/spmallick/learnopencv
 //--------------------------------------------------
-void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<Mat> & listOfFace, std::vector<cv::Rect> & pointOfFace)
+void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace)
 {
 	int frameHeight = frameOpenCVDNN.rows;
 	int frameWidth = frameOpenCVDNN.cols;
@@ -523,25 +493,25 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<Mat> & 
 		{
 			float confidence = detectionMat.at<float>(i, 2);
 
-			if (confidence > confidenceThreshold)
-			{
-				int x1 = static_cast<int>(detectionMat.at<float>(i, 3) * frameWidth);
-				int y1 = static_cast<int>(detectionMat.at<float>(i, 4) * frameHeight);
-				int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
-				int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
+			CFace face;
+			face.confidence = confidence;
 
-				//cv::rectangle(frameOpenCVDNN, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 255, 0), 22, 4);
+			int x1 = static_cast<int>(detectionMat.at<float>(i, 3) * frameWidth);
+			int y1 = static_cast<int>(detectionMat.at<float>(i, 4) * frameHeight);
+			int x2 = static_cast<int>(detectionMat.at<float>(i, 5) * frameWidth);
+			int y2 = static_cast<int>(detectionMat.at<float>(i, 6) * frameHeight);
 
-				// Setup a rectangle to define your region of interest
-				cv::Rect myROI(cv::Point(x1, y1), cv::Point(x2, y2));
+			//cv::rectangle(frameOpenCVDNN, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 255, 0), 22, 4);
 
-				// Crop the full image to that image contained by the rectangle myROI
-				// Note that this doesn't copy the data
-				cv::Mat croppedImage = frameOpenCVDNN(myROI);
+			// Setup a rectangle to define your region of interest
+			cv::Rect myROI(cv::Point(x1, y1), cv::Point(x2, y2));
 
-				listOfFace.push_back(croppedImage);
-				pointOfFace.push_back(myROI);
-			}
+			// Crop the full image to that image contained by the rectangle myROI
+			// Note that this doesn't copy the data
+			face.croppedImage = frameOpenCVDNN(myROI);
+
+			listOfFace.push_back(face);
+			pointOfFace.push_back(myROI);
 		}
 	}
 	catch (cv::Exception& e)

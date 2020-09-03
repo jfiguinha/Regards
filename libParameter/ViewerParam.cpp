@@ -17,6 +17,7 @@ CMainParam::CMainParam()
 	positionPreviewThumbnail = 0;
 	positionFolderCriteria = 0;
 	check = false;
+
 	//Définition des valeurs par défaut
 	positionRegardsViewer.x = 0;
 	positionRegardsViewer.width = 800;
@@ -27,6 +28,7 @@ CMainParam::CMainParam()
 	position = 0;
 	positionCriteriaPreview = 400;
 	positionPreviewFace = POSITION_PREVIEW_FACE;
+	pertinence = 70;
 	showInfos = true;
 	showFilter = true;
 	delai = 3;
@@ -579,12 +581,12 @@ void CMainParam::GetDiaporamaParameter(xml_node<> * diaporama_node)
 
 }
 
-void CMainParam::SetPertinenceValue(const double &value)
+void CMainParam::SetPertinenceValue(const int &value)
 {
 	pertinence = value;
 }
 
-double CMainParam::GetPertinenceValue()
+int CMainParam::GetPertinenceValue()
 {
 	return pertinence;
 }

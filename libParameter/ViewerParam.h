@@ -21,7 +21,7 @@ namespace Regards
 			void SetShowVideoThumbnail(const bool &show);
 			void SetShowInfos(const bool &infos);
 			void SetShowFilter(const bool &infos);
-			void SetPertinenceValue(const double &value);
+			void SetPertinenceValue(const int &value);
 			void SetViewerMode(const int &mode);
 
 			void SetPositionLeftPanel(const wxRect &rc);
@@ -30,7 +30,7 @@ namespace Regards
 			wxRect GetPositionLeftPanel();
 			wxRect GetPositionRightPanel();
 
-			double GetPertinenceValue();
+			int GetPertinenceValue();
 			int GetViewerMode();
 			void GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant);
 			void GetPositionWindow(wxRect &rc);
@@ -101,7 +101,7 @@ namespace Regards
 			void SetPositionParameter(xml_node<>* sectionPosition, const wxRect &pos, const wxString &nodeName);
 			void SetCriteriaParameter(xml_node<>* section);
 
-			double pertinence;
+			int pertinence;
 			wxString folder;
 			wxRect positionRegardsViewer;
 			bool showThumbnail;

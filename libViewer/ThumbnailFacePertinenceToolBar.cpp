@@ -105,7 +105,7 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 	CMainParam * viewerParam = (CMainParam *)CMainParamInit::getInstance();
 	if(viewerParam != nullptr)
 	{
-		viewerParam->SetPertinenceValue((double)(slide->GetPositionValue()) / 100.0f);
+		viewerParam->SetPertinenceValue(slide->GetPositionValue());
 	}
 
 #ifndef __NOFACE_DETECTION__
@@ -116,10 +116,10 @@ void  CThumbnailFacePertinenceToolBar::OnChangeValue()
 		listFace->GetEventHandler()->AddPendingEvent(evt);
 	}
 #endif
-	wxWindow * mainWindow = (wxWindow *)this->FindWindowById(MAINVIEWERWINDOWID);
+	wxWindow * mainWindow = (wxWindow *)this->FindWindowById(LISTFACEID);
 	if(mainWindow != nullptr)
 	{
-		wxCommandEvent evt(wxEVENT_CRITERIASHOWUPDATE);
+		wxCommandEvent evt(wxEVENT_THUMBNAILREFRESH);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 	

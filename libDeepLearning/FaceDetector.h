@@ -7,6 +7,13 @@ namespace Regards
 {
 	namespace OpenCV
 	{
+		class CFace
+		{
+		public:
+			float confidence;
+			cv::Mat croppedImage;
+		};
+
 		class CFaceDetector
 		{
 		public:
@@ -23,8 +30,8 @@ namespace Regards
 			void RemoveRedEye(cv::Mat & image, const cv::Rect & rSelectionBox);
 			void RotateCorrectly(cv::Mat const &src, cv::Mat &dst, int angle);
 			void ImageToJpegBuffer(cv::Mat & image, std::vector<uchar> & buff);
-			void detectFaceOpenCVDNN(cv::Mat &frameOpenCVDNN, std::vector<cv::Mat> & listOfFace, std::vector<cv::Rect> & pointOfFace);
-			int FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<cv::Mat> & listOfFace, int typeRotate = 0);
+			void detectFaceOpenCVDNN(cv::Mat &frameOpenCVDNN, std::vector<CFace> & listOfFace, std::vector<cv::Rect> & pointOfFace);
+			int FindFace(cv::Mat & image, int & angle, std::vector<cv::Rect> & pointOfFace, std::vector<CFace> & listOfFace, int typeRotate = 0);
 			static bool isload;
 			static std::mutex muLoading;
 			void Rotate(const cv::Mat& image, cv::Mat& dst, int degrees);
