@@ -394,39 +394,48 @@ wxString CScannerFrame::ScanPage()
         wxMessageBox("Please select a scanner source !","Informations");
     }
 #else
-	wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
-	gdiplus->CreateContext(this);
-	CComPtrArray<IStream> ppStream;
-	// Register the callback interface
-	DataClasses myData;
-	myData.Register();
-	LONG sample = myData.getNumDevices();
-	CDataCallback callBack(NULL, NULL, &sample, &ppStream);
-
-
-	// Scan the Image into the stream object ppStream
-	HRESULT hr = WiaGetImage(
-		(HWND)this->GetHWND(),
-		StiDeviceTypeDefault,
-		0,
-		WIA_INTENT_NONE,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		&ppStream.Count(),
-		&ppStream
-	);
-
-	if (ppStream.Count() != 0)
 	{
-		//for (int i = 0; i < ppStream.Count(); i++)
-		//{
-			Gdiplus::Image m_Image(*ppStream);
-			image = GdiplusImageTowxImage(&m_Image);
-		//}
+		DataClasses myData;
+
+		LONG sample = myData.getNumDevices();
+		if (sample > 0)
+		{
+			myData.Register();
+			wxGraphicsRenderer * gdiplus = wxGraphicsRenderer::GetGDIPlusRenderer();
+			gdiplus->CreateContext(this);
+			CComPtrArray<IStream> ppStream;
+			// Register the callback interface
+
+			CDataCallback callBack(NULL, NULL, &sample, &ppStream);
+
+
+			// Scan the Image into the stream object ppStream
+			HRESULT hr = WiaGetImage(
+				(HWND)this->GetHWND(),
+				StiDeviceTypeDefault,
+				0,
+				WIA_INTENT_NONE,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				&ppStream.Count(),
+				&ppStream
+			);
+
+			if (ppStream.Count() != 0)
+			{
+				//for (int i = 0; i < ppStream.Count(); i++)
+				//{
+				Gdiplus::Image m_Image(*ppStream);
+				image = GdiplusImageTowxImage(&m_Image);
+				//}
+			}
+		}
+		myData.Release();
 	}
+
 
 	//delete gdiplus;
 #endif

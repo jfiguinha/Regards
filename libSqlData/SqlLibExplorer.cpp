@@ -238,6 +238,13 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,1,'Category');");
 			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,3,'Categoria');");
 		}
+
+		if (sqlVersion.GetVersion() == "2.33.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.60.0.0");
+			hr = ExecuteSQLWithNoResult("UPDATE FACEPHOTO SET Pertinence = 0.7");
+		}
     }
     return hr;
 }
