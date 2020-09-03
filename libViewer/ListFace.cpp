@@ -93,12 +93,12 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	if (viewerTheme != nullptr)
 	{
 		std::vector<int> value = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
-		//std::vector<int> valuePertinence = { 0, 10, 20, 50, 70, 100, 125, 150, 175, 200, 225, 250, 275, 300 };
+		std::vector<int> valueZoom = { 50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700 };
 
 		CThemeToolbar theme;
 		viewerTheme->GetThumbnailToolbarTheme(theme);
 		thumbFaceToolbar = new CThumbnailFaceToolBar(windowManager, wxID_ANY, theme, false);
-		thumbFaceToolbar->SetTabValue(value);
+		thumbFaceToolbar->SetTabValue(valueZoom);
 		thumbFaceToolbar->SetTrackBarPosition(4);
 
 		windowManager->AddWindow(thumbFaceToolbar, Pos::wxBOTTOM, true, thumbFaceToolbar->GetHeight(), rect, wxID_ANY, false);
@@ -118,7 +118,7 @@ CListFace::CListFace(wxWindow* parent, wxWindowID id)
 	
 		thumbFacePertinenceToolbar = new CThumbnailFacePertinenceToolBar(windowManager, wxID_ANY, theme, false);//new CThumbnailFacePertinenceToolBar(this, wxID_ANY, theme);
 		thumbFacePertinenceToolbar->SetTabValue(value);
-		thumbFacePertinenceToolbar->SetTrackBarPosition(7);
+		thumbFacePertinenceToolbar->SetTrackBarPosition(position);
 		windowManager->AddWindow(thumbFacePertinenceToolbar, Pos::wxTOP, true, thumbFacePertinenceToolbar->GetHeight(), rect, wxID_ANY, false);
 		
 		/*

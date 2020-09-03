@@ -487,6 +487,7 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 
 	cv::Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
 
+
 	try
 	{
 		for (int i = 0; i < detectionMat.rows; i++)
@@ -510,8 +511,18 @@ void CFaceDetector::detectFaceOpenCVDNN(Mat &frameOpenCVDNN, std::vector<CFace> 
 			// Note that this doesn't copy the data
 			face.croppedImage = frameOpenCVDNN(myROI);
 
-			listOfFace.push_back(face);
-			pointOfFace.push_back(myROI);
+
+			cv::Mat gray;
+			std::vector<cv::Rect> eyes;
+
+			cv::cvtColor(face.croppedImage, gray, COLOR_BGR2GRAY);
+			eye_cascade.detectMultiScale(gray, eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+			if (eyes.size() > 0)
+			{
+				listOfFace.push_back(face);
+				pointOfFace.push_back(myROI);
+			}
+
 		}
 	}
 	catch (cv::Exception& e)
