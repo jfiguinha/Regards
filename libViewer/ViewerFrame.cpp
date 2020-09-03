@@ -584,6 +584,9 @@ void CViewerFrame::SetWindowTitle(const wxString &libelle)
 
 CViewerFrame::~CViewerFrame()
 {
+	if (mainWindow != nullptr)
+		mainWindow->SaveParameter();
+
 	if (exitTimer->IsRunning())
 		exitTimer->Stop();
 

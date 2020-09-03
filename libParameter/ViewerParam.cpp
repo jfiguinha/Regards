@@ -34,6 +34,39 @@ CMainParam::CMainParam()
 	enAvant = 1;
 	folder = "";
 	showFolder = true;
+	windowMode = 1;
+	leftPanelPos = { 0,0,0,0 };
+	rightPanelPos = { 0,0,0,0 };
+}
+
+void CMainParam::SetPositionLeftPanel(const wxRect &position)
+{
+	leftPanelPos = position;
+}
+
+void CMainParam::SetPositionRightPanel(const wxRect &position)
+{
+	rightPanelPos = position;
+}
+
+wxRect CMainParam::GetPositionLeftPanel()
+{
+	return leftPanelPos;
+}
+
+wxRect CMainParam::GetPositionRightPanel()
+{
+	return rightPanelPos;
+}
+
+void CMainParam::SetViewerMode(const int &mode)
+{
+	windowMode = mode;
+}
+
+int CMainParam::GetViewerMode()
+{
+	return windowMode;
 }
 
 wxString CMainParam::GetLastSqlRequest()
@@ -193,7 +226,7 @@ void CMainParam::SaveParameter()
 	SetWindowParameter(sectionWindow);
 	root->append_node(sectionWindow);
 	xml_node<>* sectionPosition = node("Position");
-	SetPositionParameter(sectionPosition);
+	SetPositionParameter(sectionPosition, positionRegardsViewer, "window");
 	root->append_node(sectionPosition);
 	xml_node<>* sectionCriteria = node("Criteria");
 	SetCriteriaParameter(sectionCriteria);
@@ -239,6 +272,16 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("ThumbnailBottom", to_string(isThumbnailBottom)));
 	sectionWindow->append_node(node("PositionCriteriaFolder", to_string(positionFolderCriteria)));
 	sectionWindow->append_node(node("FacePertinence", to_string(pertinence)));
+	sectionWindow->append_node(node("windowMode", to_string(windowMode)));
+
+	xml_node<>* sectionPosition = node("leftPosPanel");
+	SetPositionParameter(sectionPosition, leftPanelPos, "window");
+	sectionWindow->append_node(sectionPosition);
+
+	sectionPosition = node("rightPosPanel");
+	SetPositionParameter(sectionPosition, rightPanelPos, "window");
+	sectionWindow->append_node(sectionPosition);
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -255,10 +298,10 @@ void CMainParam::SetWindowPositionParameter(xml_node<>* sectionWindowPosition, c
 //////////////////////////////////////////////////////////////////////////////////////////
 //Saving SetParameter
 //////////////////////////////////////////////////////////////////////////////////////////
-void CMainParam::SetPositionParameter(xml_node<>* sectionPosition)
+void CMainParam::SetPositionParameter(xml_node<>* sectionPosition, const wxRect &pos, const wxString &nodeName)
 {
-	xml_node<>* sectionWindowPosition = node("Window");
-	SetWindowPositionParameter(sectionWindowPosition, positionRegardsViewer);
+	xml_node<>* sectionWindowPosition = node(nodeName);
+	SetWindowPositionParameter(sectionWindowPosition, pos);
 	sectionPosition->append_node(sectionWindowPosition);
 }
 
@@ -281,7 +324,7 @@ void CMainParam::LoadParameter()
 
 	child_node = root_node->first_node("Position");
 	if (child_node != 0)
-		GetPositionParameter(child_node);
+		GetPositionParameter(child_node, positionRegardsViewer);
 
 	child_node = root_node->first_node("Criteria");
 	if (child_node != 0)
@@ -300,10 +343,11 @@ void CMainParam::GetCriteriaParameter(xml_node<> * position_node)
 }
 
 
-void CMainParam::GetPositionParameter(xml_node<> * position_node)
+void CMainParam::GetPositionParameter(xml_node<> * position_node, wxRect & position)
 {
-	xml_node<> * child_node = position_node->first_node("Window");
-	positionRegardsViewer = GetWindowPositionParameter(child_node);
+	xml_node<> * child_node = position_node->first_node("window");
+	if(child_node != nullptr)
+		position = GetWindowPositionParameter(child_node);
 }
 
 wxRect CMainParam::GetWindowPositionParameter(xml_node<> * position_node)
@@ -470,6 +514,30 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
         nodeName = child_node->name();
         pertinence = atoi(child_node->value());
     }
+
+	child_node = window_node->first_node("windowMode");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		windowMode = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("leftPosPanel");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		GetPositionParameter(child_node, leftPanelPos);
+	}
+
+	child_node = window_node->first_node("rightPosPanel");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		GetPositionParameter(child_node, rightPanelPos);
+	}
 
 }
 

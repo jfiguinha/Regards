@@ -57,9 +57,13 @@ namespace Regards
 
 			wxString GetFilename();
             bool IsVideo();
+
+			void SaveParameter();
             
 		private:
         
+			
+
             void OnPicturePrevious(wxCommandEvent& event);
             void OnPictureNext(wxCommandEvent& event);
 

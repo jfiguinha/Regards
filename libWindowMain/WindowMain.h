@@ -42,6 +42,11 @@ namespace Regards
 			}
 
 
+			virtual void SaveParameter()
+			{
+
+			}
+
 			virtual void OnResize(wxCommandEvent& event)
 			{
 				this->Resize();

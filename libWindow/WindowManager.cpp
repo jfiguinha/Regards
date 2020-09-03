@@ -233,6 +233,32 @@ void CWindowManager::HidePaneWindow(Pos position, const int &refresh)
 	}
 }
 
+int CWindowManager::GetPaneState(Pos position)
+{
+	int paneState = 0;
+	CWindowToAdd * window = FindWindow(position);
+
+	if (window != nullptr)
+	{
+		if (window->isPanel)
+		{
+			CPanelWithClickToolbar * panel = (CPanelWithClickToolbar *)window->GetPanel();
+			if (panel != nullptr)
+			{
+				if (!panel->IsPanelVisible())
+				{
+					paneState = 0;
+				}
+				else
+				{
+					paneState = 1;
+				}
+			}
+		}
+	}
+	return paneState;
+}
+
 void CWindowManager::ShowPaneWindow(Pos position, const int &refresh)
 {
 	CWindowToAdd * window = FindWindow(position);
@@ -751,6 +777,18 @@ void CWindowManager::Init_right()
 		}
 	}
 }
+
+wxRect CWindowManager::GetWindowSize(Pos position)
+{
+	wxRect pos = { 0,0,0,0 };
+	CWindowToAdd * window = FindWindow(position);
+	if (window != nullptr)
+	{
+		return window->rect;
+	}
+	return pos;
+}
+
 void CWindowManager::ResetPosition()
 {
 	int width = GetSize().x;

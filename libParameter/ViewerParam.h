@@ -22,8 +22,16 @@ namespace Regards
 			void SetShowInfos(const bool &infos);
 			void SetShowFilter(const bool &infos);
 			void SetPertinenceValue(const double &value);
+			void SetViewerMode(const int &mode);
+
+			void SetPositionLeftPanel(const wxRect &rc);
+			void SetPositionRightPanel(const wxRect &rc);
+
+			wxRect GetPositionLeftPanel();
+			wxRect GetPositionRightPanel();
 
 			double GetPertinenceValue();
+			int GetViewerMode();
 			void GetOptionDiaporama(bool &fullscreen, int &effect, int &delai, bool &enAvant);
 			void GetPositionWindow(wxRect &rc);
 			void GetPositionSplitter(int &position);
@@ -83,14 +91,14 @@ namespace Regards
 			void GetDiaporamaParameter(xml_node<> * diaporama_node);
 			void GetWindowParameter(xml_node<> * window_node);
 			wxRect GetWindowPositionParameter(xml_node<> * position_node);
-			void GetPositionParameter(xml_node<> * position_node);
+			void GetPositionParameter(xml_node<> * position_node, wxRect & position);
 			void GetCriteriaParameter(xml_node<> * position_node);
 
 			//Saving
 			void SetDiaporamaParameter(xml_node<>* sectionDiaporama);
 			void SetWindowParameter(xml_node<>* sectionWindow);
 			void SetWindowPositionParameter(xml_node<> * sectionWindowPosition, const wxRect &rc);
-			void SetPositionParameter(xml_node<>* sectionPosition);
+			void SetPositionParameter(xml_node<>* sectionPosition, const wxRect &pos, const wxString &nodeName);
 			void SetCriteriaParameter(xml_node<>* section);
 
 			double pertinence;
@@ -116,7 +124,9 @@ namespace Regards
 			int positionFolderCriteria;
 			int positionPreviewFace;
 			bool check;
-			
+			int windowMode;
+			wxRect leftPanelPos;
+			wxRect rightPanelPos;
 		};
 	}
 }

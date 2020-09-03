@@ -111,9 +111,11 @@ namespace Regards
 			void LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
 			void OnEndThumbnail();
             bool IsVideo();
+			void SaveParameter();
 
 		private:
 
+			
 			void OnLoadPicture(wxCommandEvent& event);
 			bool GetProcessEnd();
             //void OnShowWindow(wxShowEvent& event);

@@ -31,6 +31,7 @@ namespace Regards
 			void ShowWindow(Pos position, const bool &refresh = true);
 			void HidePaneWindow(Pos position, const int &refresh = 1);
 			void ShowPaneWindow(Pos position, const int &refresh = 1);
+			int GetPaneState(Pos position);
 			bool OnLButtonDown();
 			void OnLButtonUp();
 			void UpdateScreenRatio();
@@ -39,7 +40,8 @@ namespace Regards
 			virtual void Resize();
 			void UnInit();
 			void Init();
-             void ResetPosition();
+            void ResetPosition();
+			wxRect GetWindowSize(Pos position);
 
 		protected:
 

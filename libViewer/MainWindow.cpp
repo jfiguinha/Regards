@@ -36,6 +36,7 @@
 #include <wx/mimetype.h>
 #include <ShowBitmap.h>
 #include "WaitingWindow.h"
+#include <wx/stdpaths.h>
 //#include <jpge.h>
 //using namespace jpge;
 using namespace Regards::Control;
@@ -959,23 +960,7 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 CMainWindow::~CMainWindow()
 {
 	TRACE();
-	bool showInfos;
-	bool showThumbnail;
 
-	if (centralWnd != nullptr)
-	{
-		//showInfos = centralWnd->IsPanelInfosVisible();
-		//showThumbnail = centralWnd->IsPanelThumbnailVisible();
-	}
-
-
-	if (viewerParam != nullptr)
-	{
-		viewerParam->SetShowInfos(showInfos);
-		viewerParam->SetShowThumbnail(showThumbnail);
-		wxRect rc = this->GetWindowRect();
-		viewerParam->SetPositionWindow(rc);
-	}
 
 	if (diaporamaTimer->IsRunning())
 		diaporamaTimer->Stop();
@@ -988,6 +973,29 @@ CMainWindow::~CMainWindow()
 	//delete(refreshTimer);
 	delete(centralWnd);
 	delete(toolbar);
+}
+
+void CMainWindow::SaveParameter()
+{
+	bool showInfos;
+	bool showThumbnail;
+
+	if (centralWnd != nullptr)
+	{
+		centralWnd->SaveParameter();
+		//showInfos = centralWnd->IsPanelInfosVisible();
+		//showThumbnail = centralWnd->IsPanelThumbnailVisible();
+	}
+
+	/*
+	if (viewerParam != nullptr)
+	{
+		viewerParam->SetShowInfos(showInfos);
+		viewerParam->SetShowThumbnail(showThumbnail);
+		wxRect rc = this->GetWindowRect();
+		viewerParam->SetPositionWindow(rc);
+	}
+	*/
 }
 
 void CMainWindow::Resize()
@@ -1353,6 +1361,20 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 bool CMainWindow::OpenFolder()
 {
 	TRACE();
+	//wxStandardPaths stdPath("");
+	wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
+	if (viewerParam != nullptr)
+		viewerParam->SetCatalogCriteria("");
+
+	AddFolder(path);
+
+	updateCriteria = true;
+	updateFolder = true;
+
+	processIdle = true;
+
+	return true;
+/*
 	wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
 	if (dlg.ShowModal() == wxID_OK)
@@ -1369,6 +1391,7 @@ bool CMainWindow::OpenFolder()
 		processIdle = true;
 	}
 	return false;
+*/
 }
 
 bool CMainWindow::IsFullscreen()

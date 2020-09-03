@@ -38,6 +38,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, CImageList * imageList, const bool &horizontal)
 	: CWindowMain("CentralWindow", parent, id)
 {
+
 	oldWindowMode = 1;
 	panelPhotoWnd = nullptr;
 	viewerconfig = nullptr;
@@ -45,7 +46,13 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	isDiaporama = false;
 	showToolbar = true;
 	videoStart = false;
+
+	bool showInfos = true;
+	bool showThumbnail = true;
+	bool showFolder = true;
 	wxRect rect;
+	wxRect left;
+	wxRect right;
     int widthInfosWindow = 0;//wxDisplay().GetGeometry().GetWidth() / 4;
 
 	CMainParam* config = CMainParamInit::getInstance();
@@ -58,6 +65,19 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	windowManager = new CWindowManager(this, wxID_ANY, theme);
 
+	if (config != nullptr)
+	{
+		windowMode = config->GetViewerMode();
+		left = config->GetPositionLeftPanel();
+		right = config->GetPositionRightPanel();
+		config->GetShowInfos(showInfos);
+		config->GetShowThumbnail(showThumbnail);
+		config->GetShowFolder(showFolder);
+	}
+	else
+	{
+		windowMode = 1;
+	}
 
 	//Add Criteria Window
 	if (viewerTheme != nullptr)
@@ -74,7 +94,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		viewerTheme->GetClickToolbarTheme(&themetoolbar);
 		
 		panelPhotoWnd = new CPanelPhotoWnd(windowManager, CRITERIAFOLDERWINDOWID);
-		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, widthInfosWindow, rect, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true, true);
+		windowManager->AddPanel(panelPhotoWnd, Pos::wxLEFT, false, widthInfosWindow, left, libelle, "PanelPhotoSearch", true, PHOTOSEEARCHPANEL, true, true);
 
 	}
 
@@ -152,7 +172,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
 	}
 
-	bool showInfos = true;
 	wxString urlServer;
 	CRegardsConfigParam * param = CParamInit::getInstance();
 	if (param != nullptr)
@@ -160,11 +179,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		urlServer = param->GetUrlServer();
 	}
 
-	CMainParam * viewerParam = CMainParamInit::getInstance();
-	if (viewerParam != nullptr)
-	{
-		viewerParam->GetShowInfos(showInfos);
-	}
 
 	if (viewerTheme != nullptr)
 	{
@@ -176,7 +190,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		//paneInfos = new CPanelWithClickToolbar(this, "CPictureInfosPanel", PANELCLICKINFOSWNDID, theme, themeClickInfosToolbar, libelle, showInfos, false, true);
 		panelInfosWindow = new CPanelInfosWnd(windowManager, PANELINFOSWNDID);
 
-		panelInfosClick = windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, rect, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
+		panelInfosClick = windowManager->AddPanel(panelInfosWindow, Pos::wxRIGHT, false, widthInfosWindow, right, libelle, "PictureInfosPanel", true, PANELCLICKINFOSWNDID, false);
 
 	}
 
@@ -212,8 +226,26 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	animationTimer = new wxTimer(this, wxTIMER_ANIMATION);
 	processLoadPicture = false;
     windowManager->HideWindow(Pos::wxTOP, false);
-	windowMode = 1;
+
     stopVideo = false;
+
+	if(!showInfos)
+		windowManager->HidePaneWindow(Pos::wxLEFT);
+	if (!showThumbnail)
+	{
+		windowManager->HidePaneWindow(Pos::wxBOTTOM);
+		windowManager->HidePaneWindow(Pos::wxTOP);
+	}
+	if (!showFolder)
+		windowManager->HidePaneWindow(Pos::wxRIGHT);
+
+	if (windowMode != 1)
+	{
+		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+		event.SetInt(windowMode);
+		wxPostEvent(this, event);
+	}
+
 }
 
 
@@ -751,9 +783,36 @@ void CCentralWindow::SetListeFile(wxCommandEvent& event)
 
 CCentralWindow::~CCentralWindow()
 {
+
+
 	if (windowManager != nullptr)
 		delete windowManager;
+}
 
+void CCentralWindow::SaveParameter()
+{
+	int showInfos;
+	int showThumbnail;
+	int showFolder;
+	//Save Window Mode
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+	{
+		wxRect left = windowManager->GetWindowSize(Pos::wxLEFT);
+		wxRect right = windowManager->GetWindowSize(Pos::wxRIGHT);
+		config->SetViewerMode(windowMode);
+		config->SetPositionLeftPanel(left);
+		config->SetPositionRightPanel(right);
+
+		showInfos = windowManager->GetPaneState(Pos::wxLEFT);
+		showThumbnail = windowManager->GetPaneState(Pos::wxBOTTOM);
+		showFolder = windowManager->GetPaneState(Pos::wxRIGHT);
+
+		config->SetShowInfos(showInfos);
+		config->SetShowThumbnail(showThumbnail);
+		config->SetShowFolder(showFolder);
+
+	}
 }
 
 bool CCentralWindow::IsVideo()
