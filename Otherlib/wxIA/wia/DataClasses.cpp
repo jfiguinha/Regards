@@ -16,7 +16,8 @@ DataClasses::DataClasses()
 			CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
 			IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
-		return;
+		if(hr != S_OK)
+			return;
 	}
 
 	WiaGetNumDevices(pWiaDevMgr, &m_nNumDevices);
