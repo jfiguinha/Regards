@@ -197,6 +197,7 @@ namespace Regards
 			bool videoStart;
             bool stopVideo;
             bool init = false;
+			bool windowInit = true;
 		};
 	}
 }

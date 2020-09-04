@@ -47,9 +47,7 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 	showToolbar = true;
 	videoStart = false;
 
-	bool showInfos = true;
-	bool showThumbnail = true;
-	bool showFolder = true;
+
 	wxRect rect;
 	wxRect left;
 	wxRect right;
@@ -70,9 +68,6 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 		windowMode = config->GetViewerMode();
 		left = config->GetPositionLeftPanel();
 		right = config->GetPositionRightPanel();
-		config->GetShowInfos(showInfos);
-		config->GetShowThumbnail(showThumbnail);
-		config->GetShowFolder(showFolder);
 	}
 	else
 	{
@@ -229,22 +224,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 
     stopVideo = false;
 
-	if(!showInfos)
-		windowManager->HidePaneWindow(Pos::wxLEFT);
-	if (!showThumbnail)
-	{
-		windowManager->HidePaneWindow(Pos::wxBOTTOM);
-		windowManager->HidePaneWindow(Pos::wxTOP);
-	}
-	if (!showFolder)
-		windowManager->HidePaneWindow(Pos::wxRIGHT);
 
-	if (windowMode != 1)
-	{
-		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
-		event.SetInt(windowMode);
-		wxPostEvent(this, event);
-	}
+
+	wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+	event.SetInt(windowMode);
+	wxPostEvent(this, event);
 
 }
 
@@ -827,10 +811,25 @@ bool CCentralWindow::IsVideo()
 
 void CCentralWindow::SetMode(wxCommandEvent& event)
 {
+	bool showInfos = true;
+	bool showThumbnail = true;
+	bool showFolder = true;
 	windowMode = event.GetInt();
-	if (oldWindowMode == windowMode)
-		return;
-	oldWindowMode = windowMode;
+	//if (oldWindowMode == windowMode)
+	//	return;
+
+	if (windowInit)
+	{
+		CMainParam* config = CMainParamInit::getInstance();
+
+		if (config != nullptr)
+		{
+			config->GetShowInfos(showInfos);
+			config->GetShowThumbnail(showThumbnail);
+			config->GetShowFolder(showFolder);
+		}
+	}
+
 	previewWindow->SetNormalMode();
 	//previewWindow->Show(false);
 	panelInfosClick->Show(false);
@@ -840,52 +839,98 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 
 	switch (windowMode)
 	{
-		
+
 	case 1:
+		windowManager->ShowWindow(Pos::wxLEFT);
 		windowManager->ShowWindow(Pos::wxBOTTOM);
-		windowManager->ShowPaneWindow(Pos::wxLEFT);
-		windowManager->ShowPaneWindow(Pos::wxRIGHT);
-		windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+		windowManager->ShowWindow(Pos::wxTOP);
+		windowManager->ShowWindow(Pos::wxRIGHT);
+		if (windowInit)
+		{
+			if (!showInfos)
+				windowManager->HidePaneWindow(Pos::wxLEFT);
+			else
+				windowManager->ShowPaneWindow(Pos::wxLEFT);
+
+			if (!showThumbnail)
+			{
+				windowManager->HidePaneWindow(Pos::wxBOTTOM);
+			}
+			else
+			{
+				windowManager->ShowPaneWindow(Pos::wxBOTTOM);
+			}
+		}
+		else
+		{
+
+		}
+		if (isVideo || isAnimation)
+		{
+			windowManager->ShowPaneWindow(Pos::wxTOP);
+		}
+		else
+		{
+			windowManager->HidePaneWindow(Pos::wxTOP);
+		}
+
 		panelInfosClick->Show(true);
 		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
 		//windowManager->Update();
 		break;
-		
+
 #ifndef __NOFACE_DETECTION__
 	case 2:
 		previewWindow->SetFaceMode();
 		listFace->Show(true);
+		windowManager->ShowWindow(Pos::wxLEFT);
+		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->HideWindow(Pos::wxBOTTOM);
-		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		if (windowInit)
+		{
+			if (!showFolder)
+				windowManager->HidePaneWindow(Pos::wxLEFT);
+			else
+				windowManager->ShowPaneWindow(Pos::wxLEFT);
+		}
 		windowManager->ChangeWindow(listFace, Pos::wxRIGHT, false);
 		listFace->ForceRefresh();
-		//windowManager->Update();
 		break;
 #endif
 	case 3:
 		listPicture->Show(true);
+		windowManager->ShowWindow(Pos::wxLEFT);
+		windowManager->ShowWindow(Pos::wxRIGHT);
 		windowManager->HideWindow(Pos::wxBOTTOM);
 		windowManager->HideWindow(Pos::wxTOP);
-		windowManager->ShowPaneWindow(Pos::wxLEFT);
 		windowManager->ShowPaneWindow(Pos::wxRIGHT);
+		if (windowInit)
+		{
+			if (!showFolder)
+				windowManager->HidePaneWindow(Pos::wxLEFT);
+			else
+				windowManager->ShowPaneWindow(Pos::wxLEFT);
+		}
+		
 		windowManager->ChangeWindow(listPicture, Pos::wxRIGHT, false);
 		listPicture->ForceRefresh();
 		//windowManager->Update();
 		break;
 	case 4:
-		panelInfosClick->Show(true);
-		windowManager->ShowWindow(Pos::wxBOTTOM);
-		windowManager->HidePaneWindow(Pos::wxLEFT);
-		windowManager->HidePaneWindow(Pos::wxBOTTOM);
-		windowManager->HidePaneWindow(Pos::wxTOP);
-		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
-		windowManager->HidePaneWindow(Pos::wxRIGHT);
-		//windowManager->Update();
+		windowManager->HideWindow(Pos::wxLEFT);
+		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->HideWindow(Pos::wxTOP);
+		windowManager->HideWindow(Pos::wxRIGHT);
 		break;
 
 	}
+	windowInit = false;
+	
+
+	oldWindowMode = windowMode;
+
 	windowManager->Resize();
 }
 
@@ -920,14 +965,9 @@ void CCentralWindow::ScreenMode()
 	if (isFullscreen)
 	{
 		isFullscreen = false;
-		windowManager->ShowWindow(Pos::wxLEFT);
-		windowManager->ShowWindow(Pos::wxRIGHT);
-		if (!showToolbar)
-			windowManager->ShowWindow(Pos::wxBOTTOM);
-		if(!isPicture)
-			windowManager->ShowWindow(Pos::wxTOP);
-
-		windowManager->Resize();
+		wxCommandEvent event(wxEVENT_SETMODEVIEWER);
+		event.SetInt(windowMode);
+		wxPostEvent(this, event);
 	}
 }
 

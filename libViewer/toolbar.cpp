@@ -36,6 +36,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	wxString lblViewerMode = CLibResource::LoadStringFromResource(L"LBLVIEWERMODE", 1);
 	wxString lblPictureMode = CLibResource::LoadStringFromResource(L"LBLPICTUREMODE", 1);
 
+	/*
 	CToolbarButton * screen = new CToolbarButton(themeToolbar.button);
 	screen->SetButtonResourceId(L"IDB_FOLDER");
 	screen->SetCommandId(IDM_WINDOWSEARCH);
@@ -47,7 +48,7 @@ CToolbar::CToolbar(wxWindow* parent, wxWindowID id, const CThemeToolbar & theme,
 	infos->SetLibelle(lblInfos);
 	infos->SetCommandId(IDM_SHOWINFOS);
 	navElement.push_back(infos);
-
+	*/
 #ifndef __NOFACE_DETECTION__
 	CToolbarButton * thumbnailFace = new CToolbarButton(themeToolbar.button);
 	thumbnailFace->SetButtonResourceId(L"IDB_PEOPLE_FACE");

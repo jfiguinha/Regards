@@ -35,7 +35,6 @@ CMainParam::CMainParam()
 	fullscreen = 1;
 	enAvant = 1;
 	folder = "";
-	showFolder = true;
 	windowMode = 1;
 	leftPanelPos = { 0,0,0,0 };
 	rightPanelPos = { 0,0,0,0 };
