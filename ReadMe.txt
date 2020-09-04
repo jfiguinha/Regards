@@ -55,6 +55,25 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.60.9 :
+- Correct crash bug on pdf incorrect file
+- Add saving window position
+- Regards start on Pictures Folder as Default folder in first time
+- Correct bug on slider element
+- Correct crash bug on scan option in windows
+News for 2.60.8 :
+- Correct bug on PDF saving.
+- Correct bug on Scan PDF Save in color mode in Linux
+News for 2.60.7 :
+- Correct bug in map show
+- Correct bug on scan button in scan module
+- Correct Scanner functionnality for linux
+News for 2.60.6 :
+- Correct scan crash on linux
+- Add Web browser in criteria
+- Update button save management in bitmap toolbar
+- Update for mouse wheel management in thumbnail. Mouse Wheel and CTRL for navigate in thumbnail
+- Correct bug with Infos and File toolbar button
 News for 2.60.5 :
 - Correct bug with FreeImage on format recognition crash
 - Correct display button on Diaporama Mode
