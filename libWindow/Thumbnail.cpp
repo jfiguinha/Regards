@@ -969,8 +969,8 @@ void CThumbnail::OnPaint(wxPaintEvent& event)
 
     
 	render = true;
-    printf("CThumbnail::OnPaint \n");   
-    printf("CThumbnail::OnPaint not buffered \n");
+    //printf("CThumbnail::OnPaint \n");   
+    //printf("CThumbnail::OnPaint not buffered \n");
     
     wxBufferedPaintDC dc(this);
     wxRect rc = GetWindowRect();

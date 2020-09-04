@@ -26,27 +26,19 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	//(*Initialize(ConfigRegards)
 	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
-	//rdPreviewRender = (wxRadioBox*)FindWindow(XRCID("ID_RDPREVIEWRENDER"));
-	//rbRenderVideo = (wxRadioBox*)FindWindow(XRCID("ID_RBRENDERVIDEO"));
-	//rbEffectLibrary = (wxRadioBox*)FindWindow(XRCID("ID_RBEFFECTLIBRARY"));
 	rbTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBTRANSITIONEFFECT"));
 	sbDiaporama = (wxStaticBox*)FindWindow(XRCID("ID_SBDIAPORAMA"));
 	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
 	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
 	stTime = (wxStaticText*)FindWindow(XRCID("ID_STTIME"));
-    scProcessFace = (wxSpinCtrl*)FindWindow(XRCID("ID_SCFACE"));
     scProcessExif = (wxSpinCtrl*)FindWindow(XRCID("ID_SCEXIF"));
     scProcessThumbnail= (wxSpinCtrl*)FindWindow(XRCID("ID_SCTHUMBNAIL"));
-	//rbFullscreen = (wxRadioBox*)FindWindow(XRCID("ID_RBFULLSCREEN"));
-	//rbDiaporamaTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBDIAPORAMATRANSITIONEFFECT"));
 	btCancel = (wxButton*)FindWindow(XRCID("ID_CANCEL"));
 	sbThumbnail = (wxStaticBox*)FindWindow(XRCID("ID_STATICBOX2"));
 	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
-	rbPictureFaceDetectionSize = (wxRadioBox*)FindWindow(XRCID("ID_PICTUREFACEDETECTION"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
-	//rbThumbnailQuality = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILQUALITY"));
-	//rbThumbnailCache = (wxRadioBox*)FindWindow(XRCID("ID_RDTHUMBNAILCACHE"));
+
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
@@ -84,10 +76,7 @@ void ConfigRegards::Init()
     
     int thumbnailProcess = regardsParam->GetThumbnailProcess();
     scProcessThumbnail->SetValue(thumbnailProcess);
-    
-    int faceProcess = regardsParam->GetFaceProcess();
-    scProcessFace->SetValue(faceProcess);
-    
+       
     int exifProcess = regardsParam->GetExifProcess();
     scProcessExif->SetValue(exifProcess);
 
@@ -96,27 +85,13 @@ void ConfigRegards::Init()
 		rdDxva2Render->SetSelection(1);
 	else
 		rdDxva2Render->SetSelection(0);
-/*
-	int effectDiaporama = regardsParam->GetDiaporamaTransitionEffect();
-	if (effectDiaporama == 0)
-		rbDiaporamaTransitionEffect->SetSelection(1);
-	else
-		rbDiaporamaTransitionEffect->SetSelection(0);
 
-	int fullscreenDiaporama = regardsParam->GetDiaporamaFullscreen();
-	if (fullscreenDiaporama == 0)
-		rbFullscreen->SetSelection(1);
-	else
-		rbFullscreen->SetSelection(0);
-*/
 	int dataInMemory = regardsParam->GetDatabaseInMemory();
 	if (dataInMemory == 0)
 		rbDatabaseInMemory->SetSelection(1);
 	else
 		rbDatabaseInMemory->SetSelection(0);
 
-	int pictureSize = regardsParam->GetFaceDetectionPictureSize();
-	rbPictureFaceDetectionSize->SetSelection(pictureSize);
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -148,7 +123,7 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	regardsParam->SetDiaporamaTime(timeDiaporama);
  
     int thumbnailProcess = scProcessThumbnail->GetValue();
-    int faceProcess = scProcessFace->GetValue();
+    int faceProcess = 1;
     int exifProcess = scProcessExif->GetValue();
     
     if(thumbnailProcess == 0 || faceProcess == 0 || exifProcess == 0)
@@ -174,9 +149,6 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
             regardsParam->SetDatabaseInMemory(1);
         else
             regardsParam->SetDatabaseInMemory(0);
-
-        int pictureSize = rbPictureFaceDetectionSize->GetSelection();
-        regardsParam->SetFaceDetectionPictureSize(pictureSize);
 
         this->Close();        
     }

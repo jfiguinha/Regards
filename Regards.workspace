@@ -69,7 +69,7 @@
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
-    <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project"/>
+    <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">

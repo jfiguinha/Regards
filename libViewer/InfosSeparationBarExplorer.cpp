@@ -28,6 +28,10 @@ CInfosSeparationBarExplorer::CInfosSeparationBarExplorer(const CThemeInfosSepara
 
 void CInfosSeparationBarExplorer::OnClick(const int &x, const int &y)
 {
+    printf("CInfosSeparationBarExplorer OnClick \n");
+    printf("Click on x : %d and y : %d \n",x,y);
+    printf("rcSelect  on x : %d and y : %d \n",rcSelect.x,rcSelect.y);
+    printf("rcSelect  on width : %d and height : %d \n",rcSelect.width,rcSelect.height);
 	if ((rcSelect.x < x && x < (rcSelect.x + rcSelect.width)) && (rcSelect.y < y && y < (rcSelect.y + rcSelect.height)))
 	{
 		isSelected = !isSelected;

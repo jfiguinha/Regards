@@ -23,11 +23,8 @@ class ConfigRegards: public wxDialog
 
 		//(*Declarations(ConfigRegards)
 		wxButton* btOk;
-		//wxRadioBox* rbDiaporamaTransitionEffect;
-		//wxRadioBox* rbFullscreen;
 		wxStaticBox* sbDiaporama;
 		wxSpinCtrl* scTime;
-        wxSpinCtrl* scProcessFace;
         wxSpinCtrl* scProcessExif;
         wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;
@@ -41,7 +38,6 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbThumbnailQuality;
 		wxRadioBox* rbThumbnailCache;
 		wxRadioBox* rbDatabaseInMemory;
-		wxRadioBox* rbPictureFaceDetectionSize;
 		wxRadioBox* rbAutoRotate;
 		//*)
 
