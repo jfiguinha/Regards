@@ -801,12 +801,17 @@ void CCentralWindow::SaveParameter()
 		wxRect left = windowManager->GetWindowSize(Pos::wxLEFT);
 		wxRect right = windowManager->GetWindowSize(Pos::wxRIGHT);
 		config->SetViewerMode(windowMode);
-		config->SetPositionLeftPanel(left);
-		config->SetPositionRightPanel(right);
+		
+		
 
 		showInfos = windowManager->GetPaneState(Pos::wxLEFT);
+		if(showInfos)
+			config->SetPositionLeftPanel(left);
+
 		showThumbnail = windowManager->GetPaneState(Pos::wxBOTTOM);
 		showFolder = windowManager->GetPaneState(Pos::wxRIGHT);
+		if(showFolder)
+			config->SetPositionRightPanel(right);
 
 		config->SetShowInfos(showInfos);
 		config->SetShowThumbnail(showThumbnail);
