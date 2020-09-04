@@ -57,8 +57,7 @@ void CThumbnailFaceToolBar::ZoomOn()
 		if (dwPos >= slide->GetNbValue())
 			dwPos = slide->GetNbValue() - 1;
 		SetTrackBarPosition(dwPos);
-
-        Refresh();
+		this->ForceRefresh();
 	}
 }
 
@@ -71,7 +70,7 @@ void CThumbnailFaceToolBar::ZoomOff()
 		if (dwPos < 0)
 			dwPos = 0;
 		SetTrackBarPosition(dwPos);
-        Refresh();
+		this->ForceRefresh();
 	}
 }
 
@@ -87,7 +86,7 @@ void CThumbnailFaceToolBar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-        Refresh();
+		ForceRefresh();
 	}
 }
 

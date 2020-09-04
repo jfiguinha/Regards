@@ -53,7 +53,7 @@ CThumbnailFacePertinenceToolBar::~CThumbnailFacePertinenceToolBar()
 
 void CThumbnailFacePertinenceToolBar::ZoomOn()
 {
-	OnChangeValue();
+	//OnChangeValue();
 	if (slide != nullptr)
 	{
 		int dwPos = slide->GetPosition();
@@ -61,13 +61,14 @@ void CThumbnailFacePertinenceToolBar::ZoomOn()
 		if (dwPos >= slide->GetNbValue())
 			dwPos = slide->GetNbValue() - 1;
 		SetTrackBarPosition(dwPos);
-        Refresh();
+		this->ForceRefresh();
 	}
+	OnChangeValue();
 }
 
 void CThumbnailFacePertinenceToolBar::ZoomOff()
 {
-	OnChangeValue();
+	//OnChangeValue();
 	if (slide != nullptr)
 	{
 		int dwPos = slide->GetPosition();
@@ -75,8 +76,9 @@ void CThumbnailFacePertinenceToolBar::ZoomOff()
 		if (dwPos < 0)
 			dwPos = 0;
 		SetTrackBarPosition(dwPos);
-        Refresh();
+		this->ForceRefresh();
 	}
+	OnChangeValue();
 }
 
 void CThumbnailFacePertinenceToolBar::SetTabValue(vector<int> value)
@@ -91,7 +93,7 @@ void CThumbnailFacePertinenceToolBar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-        Refresh();
+        ForceRefresh();
 	}
 }
 

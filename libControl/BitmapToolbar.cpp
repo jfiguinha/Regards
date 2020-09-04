@@ -170,7 +170,7 @@ void CBitmapToolbar::SetTrackBarPosition(const int &iPos)
 	if (slide != nullptr)
 	{
 		slide->SetPosition(positionTrackBar);
-		Refresh();
+		ForceRefresh();
 		//this->Update();
 	}
 }

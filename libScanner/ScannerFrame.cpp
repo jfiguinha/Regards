@@ -434,6 +434,12 @@ wxString CScannerFrame::ScanPage()
 				//}
 			}
 		}
+		else
+		{
+			wxMessageBox("No scanner detected !", "Informations", wxICON_ERROR);
+		}
+
+
 		myData.Release();
 	}
 
