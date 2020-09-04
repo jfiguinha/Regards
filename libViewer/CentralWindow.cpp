@@ -847,19 +847,22 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		windowManager->ShowWindow(Pos::wxRIGHT);
 		if (windowInit)
 		{
-			if (!showInfos)
+			if (!showFolder)
 				windowManager->HidePaneWindow(Pos::wxLEFT);
 			else
 				windowManager->ShowPaneWindow(Pos::wxLEFT);
+            
+			if (!showInfos)
+				windowManager->HidePaneWindow(Pos::wxRIGHT);
+			else
+				windowManager->ShowPaneWindow(Pos::wxRIGHT);
 
 			if (!showThumbnail)
-			{
 				windowManager->HidePaneWindow(Pos::wxBOTTOM);
-			}
 			else
-			{
 				windowManager->ShowPaneWindow(Pos::wxBOTTOM);
-			}
+			
+            
 		}
 		else
 		{
