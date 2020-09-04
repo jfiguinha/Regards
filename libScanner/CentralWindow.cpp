@@ -210,16 +210,20 @@ void CCentralWindow::OnOpen(const int &type)
 
 		}
 
-		wxCopyFile(file, filename);
+		if (wxFileExists(file))
+			wxCopyFile(file, filename);
 
 		position = libPicture.GetNbImage(file) - 1;
 		
 	}
 
-	if (previewWindow != nullptr)
-		previewWindow->LoadFile(filename);
+	if (wxFileExists(filename))
+	{
+		if (previewWindow != nullptr)
+			previewWindow->LoadFile(filename);
 
-	previewWindow->SetPosition(position);
+		previewWindow->SetPosition(position);
+	}
 }
 
 void CCentralWindow::OnAddPage(wxCommandEvent& event)

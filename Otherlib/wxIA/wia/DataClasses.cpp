@@ -16,12 +16,7 @@ DataClasses::DataClasses()
 			CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER,
 			IID_IWiaDevMgr, (void**)&pWiaDevMgr);
 
-		//hr = pWiaDevMgr.CoCreateInstance(CLSID_WiaDevMgr, NULL, CLSCTX_LOCAL_SERVER);
-
-		if (FAILED(hr))
-		{
-			delete(this);
-		}
+		return;
 	}
 
 	WiaGetNumDevices(pWiaDevMgr, &m_nNumDevices);
@@ -142,7 +137,7 @@ STDMETHODIMP_(ULONG) DataClasses::Release()
 
 	if (cRef == 0)
 	{
-		delete this;
+		//delete pWiaDevMgr;
 	}
 	return cRef;
 }
@@ -275,7 +270,7 @@ STDMETHODIMP_(ULONG) CDataCallback::Release()
 
 	if (cRef == 0)
 	{
-		delete this;
+		//delete this;
 	}
 
 	return cRef;
