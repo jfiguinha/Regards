@@ -25,9 +25,6 @@
     <Filter Include="wia\source">
       <UniqueIdentifier>{be04c935-6cdb-4866-b5d0-4f5271fee5e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="wia2">
-      <UniqueIdentifier>{cc8d5d63-e3af-4359-9a2c-01863bd8cf4b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\header.h">
@@ -57,9 +54,6 @@
     <ClInclude Include="include\Scanner.h">
       <Filter>header</Filter>
     </ClInclude>
-    <ClInclude Include="wia2_scanner.h">
-      <Filter>wia2</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\include\header.cpp">
@@ -82,9 +76,6 @@
     </ClCompile>
     <ClCompile Include="src\wx\wxscan.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="wia2_scanner.cpp">
-      <Filter>wia2</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
