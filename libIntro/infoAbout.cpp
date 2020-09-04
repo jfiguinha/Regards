@@ -51,6 +51,12 @@ void CInfoAbout::Init()
 	treeDataFileName->SetValue("Figuinha Jacques");
 	tr.append_child(child, treeDataFileName);
 
+	CTreeData * treeDataTest = new CTreeData();
+	treeDataTest->SetIsParent(false);
+	treeDataTest->SetKey("Test By");
+	treeDataTest->SetValue("Sebastien SPADOTTO");
+	tr.append_child(child, treeDataTest);
+
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
