@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\bitstream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\box.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\error.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_context.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_file.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_image.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_hevc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_avif.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_colorconversion.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin_registry.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\nclx.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_libde265.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_aom.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_encoder_aom.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\bitstream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\box.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_api_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_cxx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_hevc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_avif.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_colorconversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin_registry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_limits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\nclx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\heif_version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_libde265.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_aom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_encoder_aom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{0BD48274-1080-3C00-8627-8BBA0A0E6225}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6AA493C4-C5DB-398F-8C9F-2DA61633830B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

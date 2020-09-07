@@ -1,0 +1,361 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0B9460E5-FAC7-3698-8B52-731CB529312D}</ProjectGuid>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>heif</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141_xp</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">heif.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">heif</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">heif.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">heif</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)libextern\libheif-1.8.0\build;$(SolutionDir)libextern\libheif-1.8.0;$(SolutionDir)libextern\libheif-1.8.0\include\libheif;$(SolutionDir)libextern\libheif-1.8.0\include;$(SolutionDir)libextern\aom;$(SolutionDir)libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;LIBHEIF_STATIC_BUILD;_WINDOWS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR=\"Debug\";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>C:\developpement\git\Regards\x64\Release\libx265.dll;C:\developpement\git\Regards\libextern\aom\build\Release\aom.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/Debug/heif.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/Debug/heif.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)libextern\aom;$(SolutionDir)libextern\libheif-1.8.0\build;$(SolutionDir)libextern\libheif-1.8.0;$(SolutionDir)libextern\libheif-1.8.0\include\libheif;$(SolutionDir)libextern\libheif-1.8.0\include;$(SolutionDir)libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;LIBHEIF_STATIC_BUILD;_CRT_SECURE_NO_WARNINGS;_WINDOWS;NDEBUG;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR=\"Release\";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>C:\developpement\git\Regards\x64\Release\libx265.dll;C:\developpement\git\Regards\libextern\aom\build\Release\aom.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/Release/heif.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/Release/heif.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR="MinSizeRel";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR=\"MinSizeRel\";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>C:\developpement\git\Regards\x64\Release\libx265.dll;C:\developpement\git\Regards\libextern\aom\build\Release\aom.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/MinSizeRel/heif.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/MinSizeRel/heif.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR="RelWithDebInfo";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LIBHEIF_EXPORTS;HAVE_VISIBILITY;HAVE_LIBDE265=1;HAVE_AOM=1;CMAKE_INTDIR=\"RelWithDebInfo\";heif_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\developpement\git\Regards\libextern\libheif-1.8.0\build;C:\developpement\git\Regards\libextern\libheif-1.8.0;C:\developpement\git\Regards\libextern\libheif-1.8.0\include\libheif;C:\developpement\git\Regards\libextern\libheif-1.8.0\include;C:\developpement\git\Regards\libextern\libde265-master;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>C:\developpement\git\Regards\x64\Release\libx265.dll;C:\developpement\git\Regards\libextern\aom\build\Release\aom.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/RelWithDebInfo/heif.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/RelWithDebInfo/heif.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\CMakeLists.txt">
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/libheif-1.8.0/libheif/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/libheif-1.8.0 -BC:/developpement/git/Regards/libextern/libheif-1.8.0/build --check-stamp-file C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.18\Modules\BasicConfigVersion-ExactVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.18\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.18\Modules\WriteBasicConfigVersionFile.cmake;C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_version.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/libheif-1.8.0/libheif/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/libheif-1.8.0 -BC:/developpement/git/Regards/libextern/libheif-1.8.0/build --check-stamp-file C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.18\Modules\BasicConfigVersion-ExactVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.18\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.18\Modules\WriteBasicConfigVersionFile.cmake;C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_version.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/libheif-1.8.0/libheif/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/libheif-1.8.0 -BC:/developpement/git/Regards/libextern/libheif-1.8.0/build --check-stamp-file C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.18\Modules\BasicConfigVersion-ExactVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.18\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.18\Modules\WriteBasicConfigVersionFile.cmake;C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_version.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/developpement/git/Regards/libextern/libheif-1.8.0/libheif/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/developpement/git/Regards/libextern/libheif-1.8.0 -BC:/developpement/git/Regards/libextern/libheif-1.8.0/build --check-stamp-file C:/developpement/git/Regards/libextern/libheif-1.8.0/build/libheif/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.18\Modules\BasicConfigVersion-ExactVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.18\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.18\Modules\WriteBasicConfigVersionFile.cmake;C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_version.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\bitstream.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\box.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\error.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_context.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_file.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_image.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_hevc.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_avif.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_colorconversion.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin_registry.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin.cc" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\nclx.cc" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\bitstream.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\box.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\error.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_api_structs.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_context.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_cxx.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_file.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_image.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_hevc.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_avif.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_colorconversion.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin_registry.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_limits.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_plugin.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\nclx.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\logging.h" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\build\libheif\heif_version.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_libde265.cc" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_libde265.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_aom.cc" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_decoder_aom.h" />
+    <ClCompile Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_encoder_aom.cc" />
+    <ClInclude Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\libheif\heif_encoder_aom.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\developpement\git\Regards\libextern\libheif-1.8.0\build\ZERO_CHECK.vcxproj">
+      <Project>{A8EFEE28-0BB0-3EB2-8241-61A437745D76}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
