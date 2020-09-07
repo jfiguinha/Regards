@@ -197,6 +197,8 @@ void CAvif::SavePicture(const string &filenameOut, const int & type, CRegardsBit
 			heif_encoder* encoder;
 			if(type == AVIF)
 				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
+			else if(type == HEIC)
+				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);
 
@@ -215,6 +217,7 @@ void CAvif::SavePicture(const string &filenameOut, const int & type, CRegardsBit
 			int stride;
 			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 			uint8_t * data = source->GetPtBitmap();
+			source->ConvertToBgr();
 			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
 			{
 				int position = source->GetPosition(0, y);

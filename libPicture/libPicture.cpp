@@ -592,9 +592,12 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	}
 
+	case HEIC:
 	case AVIF:
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		//regards->SetOrientation(bitmap->GetOrientation());
+		regards->RotateRawExif(bitmap->GetOrientation());
 		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
 		delete regards;
 		break;
