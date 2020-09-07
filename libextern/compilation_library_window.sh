@@ -25,7 +25,7 @@ tar xf  leptonica-1.79.0.tar.gz
 cd leptonica-1.79.0
 mkdir build
 cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cmake ../ -G "MSYS Makefiles"  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 sudo make install
 cd ..
@@ -72,6 +72,7 @@ mkdir build
 cd build
 cmake -G "MSYS Makefiles" ../
 make -j$NBPROC
+make install
 cd ..
 cd ..
 
@@ -155,3 +156,11 @@ cd ..
 
 #Compille ffmpeg
 ./ffmpeg_build_windows.sh
+
+cd libheif-1.8.0
+mkdir build
+cd build
+cmake ../ -G "MSYS Makefiles"  -DAOM_INCLUDE_DIR="../../aom" -DLIBDE265_INCLUDE_DIR="../../libde265-master" 
+make -j$NBPROC
+cd ..
+cd ..

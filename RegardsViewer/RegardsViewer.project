@@ -202,6 +202,7 @@
         <LibraryPath Value="../libextern/libOpenCL/lib/x86_64/"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build"/>
         <LibraryPath Value="../libextern/poppler-0.81.0/build/cpp"/>
+        <LibraryPath Value="../libextern/libheif-1.8.0/build/libheif"/>
         <LibraryPath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/lib"/>
         <LibraryPath Value="../libDeepLearning"/>
         <Library Value="Viewer"/>
@@ -344,6 +345,7 @@
         <Library Value="IexMath"/>
         <Library Value="Half"/>
         <Library Value="Bcrypt"/>
+        <Library Value="libheif"/>
         <Library Value="libheif_shared"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
@@ -482,6 +484,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Debug</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Debug/libRegardsBpg.dll ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/libheif-1.8.0/build/libheif/libheif.dll ./Debug</Command>
         <Command Enabled="yes">cp ../FaceRecognition_windows/Release/libFaceRecognition.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Debug</Command>
@@ -657,6 +660,7 @@
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
+        <Command Enabled="yes">cp ../libextern/libheif-1.8.0/build/libheif/libheif.dll ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
