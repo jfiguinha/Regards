@@ -14,6 +14,7 @@
 #ifdef wxUSE_PDF
 #include <wx/wxpoppler.h>
 #endif
+
 using namespace tbb;
 //using namespace Regards::DeepLearning;
 
@@ -229,63 +230,8 @@ bool MyApp::OnInit()
 #ifdef WIN32
 
     wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage());
-	
-	/*
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CategoryDetection.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\FaceDetection.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ConfigRegards.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CopyFileDlg.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\OpenCLDialog.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\GifOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JpegOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\TiffOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PngOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\CompressionOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ExportFile.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\WebpOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\bpgOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ChangeLabel.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\MoveFace.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PertinenceValue.xrc");
-    wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\IndexGenerator.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\InterpolationFilter.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\bm3d.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\BmpOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\ExrOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\J2kOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\JxrOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\PDFOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "\\Association.xrc");
-	*/
 #else
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
-	/*
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CategoryDetection.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/FaceDetection.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ConfigRegards.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CopyFileDlg.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/OpenCLDialog.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/GifOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/JpegOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/TiffOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PngOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/SaveFileFormat.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/CompressionOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ExportFile.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/webpoption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/bpgoption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ChangeLabel.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/MoveFace.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PertinenceValue.xrc");
-    wxXmlResource::Get()->Load(resourcePath + numIdLang + "/IndexGenerator.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/InterpolationFilter.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/bm3d.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/BmpOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/ExrOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/J2kOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/JxrOption.xrc");
-	wxXmlResource::Get()->Load(resourcePath + numIdLang + "/PDFOption.xrc");
-	*/
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 	

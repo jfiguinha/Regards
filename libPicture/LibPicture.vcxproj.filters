@@ -48,6 +48,9 @@
     <ClInclude Include="PictureData.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="avif.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ScaleThumbnail.cpp">
@@ -69,6 +72,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PictureData.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="avif.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

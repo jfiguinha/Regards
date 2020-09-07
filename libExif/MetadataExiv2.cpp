@@ -16,7 +16,7 @@ CMetadataExiv2::CMetadataExiv2(const wxString &filename)
 	CLibPicture libPicture;
 	this->filename = filename;
 	int type = libPicture.TestImageFormat(filename);
-	if (type == HEIC)
+	if (type == HEIC || type == AVIF)
 	{
 		buffer = nullptr;
 		long size = 0;
@@ -50,7 +50,7 @@ int CMetadataExiv2::GetOrientation()
 CMetadataExiv2::~CMetadataExiv2()
 {
 	if (buffer != nullptr)
-		delete buffer;
+		delete[] buffer;
 
 	if(metaExiv != nullptr)
 		delete metaExiv;

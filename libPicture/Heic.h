@@ -8,6 +8,7 @@ class CHeic
 public:
 	CHeic();
 	~CHeic();
+	
     static void Initx265Decoder();
     static void Uninitx265Decoder();
 	static int GetNbFrame(const string &filename);

@@ -30,6 +30,7 @@
 #include "pfm.h"
 #ifdef LIBHEIC
 #include <Heic.h>
+#include <avif.h>
 #endif
 #ifdef LIBBPG
 #if defined(WIN32)
@@ -499,7 +500,8 @@ int CLibPicture::SavePictureOption(const int &format, int &option, int &quality)
 	break;
 
 
-
+	case HEIC:
+	case AVIF:
 	case JPEG2000:
 	{
 		CompressionOption jpegOption(nullptr);
@@ -589,6 +591,23 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		delete regards;
 		break;
 	}
+
+	case HEIC:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
+		delete regards;
+		break;
+	}
+
+	case AVIF:
+	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
+		delete regards;
+		break;
+	}
+
 	case BMP:
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
@@ -1523,6 +1542,11 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 			return CHeic::GetNbFrame(szFileName.ToStdString());
 		}
 		break;
+		case AVIF:
+		{
+			return CAvif::GetNbFrame(szFileName.ToStdString());
+		}
+		break;
 #endif
 
 		case PDF:
@@ -1774,6 +1798,15 @@ int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & 
 			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
+	else if(iFormat == AVIF)
+	{
+		CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		if (size > 0)
+		{
+			data = new uint8_t[size + 1];
+			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		}
+	}
 	return size;
 }
 
@@ -1834,6 +1867,21 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 	else if (iFormat == HEIC)
 	{
 		CRegardsBitmap * bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
+		if (bitmap != nullptr)
+		{
+			imageLoading = new CImageLoadingFormat();
+			bitmap->SetFilename(fileName);
+			imageLoading->SetPicture(bitmap);
+			if (imageLoading != nullptr && imageLoading->IsOk())
+			{
+				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
+				imageLoading->ApplyExifOrientation();
+			}
+		}
+	}
+	else if (iFormat == AVIF)
+	{
+		CRegardsBitmap * bitmap = CAvif::GetThumbnailPicture(fileName.ToStdString());
 		if (bitmap != nullptr)
 		{
 			imageLoading = new CImageLoadingFormat();
@@ -2178,6 +2226,26 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				}
 			}
 			break;
+
+		case AVIF:
+		{
+			CRegardsBitmap * picture = nullptr;
+
+			if (isThumbnail)
+				picture = CAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+			else
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+
+
+			if (picture != nullptr)
+			{
+				CMetadataExiv2 metadata(fileName);
+				bitmap->SetOrientation(metadata.GetOrientation());
+				bitmap->SetPicture(picture);
+				bitmap->SetFilename(fileName);
+			}
+		}
+		break;
 #endif
 
 		case PFM:
@@ -3108,6 +3176,13 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
+	case AVIF:
+	{
+		typeImage = TYPE_IMAGE_REGARDSIMAGE;
+		CAvif::GetPictureDimension(CConvertUtility::ConvertToUTF8(fileName), width, height);
+		//video.GetVideoDimensions(fileName, width, height, rotation);
+	}
+	break;
 #endif
 
     default:

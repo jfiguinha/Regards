@@ -27,6 +27,7 @@
 #define WEBP 25
 #ifdef LIBHEIC
 #define HEIC 26
+#define AVIF 35
 #endif
 #define JBIG 27
 #define EXR 28

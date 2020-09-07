@@ -30,6 +30,8 @@ CHeic::~CHeic()
 {
 }
 
+
+
 void CHeic::Initx265Decoder()
 {
     de265_multithread_init();
