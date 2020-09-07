@@ -121,6 +121,7 @@
     <Project Name="wxPDFDoc"/>
     <Project Name="libScanner"/>
     <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -337,7 +338,6 @@
         <Library Value="Secur32"/>
         <Library Value="avicap32"/>
         <Library Value="winpthread"/>
-        <Library Value="liblibde265.dll"/>
         <Library Value="zen"/>
         <Library Value="curl"/>
         <Library Value="RegardsBpg"/>
@@ -346,6 +346,7 @@
         <Library Value="Half"/>
         <Library Value="Bcrypt"/>
         <Library Value="libheif"/>
+        <Library Value="liblibde265.dll"/>
         <Library Value="libheif_shared"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
@@ -417,6 +418,7 @@
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
         <LibraryPath Value="../libScanner/Debug"/>
         <LibraryPath Value="../libDeepLearning/Debug"/>
+        <LibraryPath Value="../Otherlib/libheif/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -589,6 +591,7 @@
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
+        <LibraryPath Value="../Otherlib/libheif/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -660,7 +663,6 @@
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/msys/8bit/libx265.dll ./Release/libx265.dll</Command>
-        <Command Enabled="yes">cp ../libextern/libheif-1.8.0/build/libheif/libheif.dll ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_windows/Release/libRegardsBpg.dll ./Release/libRegardsBpg.dll</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/build/libde265/liblibde265.dll ./Release/liblibde265.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>

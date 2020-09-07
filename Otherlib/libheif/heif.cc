@@ -46,11 +46,7 @@
 #if defined(HAVE_UNISTD_H)
 #include <unistd.h>
 #endif
-
-#if defined(_MSC_VER)
-// for _write
 #include <io.h>
-#endif
 
 using namespace heif;
 

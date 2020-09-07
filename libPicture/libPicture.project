@@ -83,6 +83,7 @@
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <IncludePath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/include"/>
         <IncludePath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
+        <IncludePath Value="../Otherlib"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
