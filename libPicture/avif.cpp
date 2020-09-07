@@ -195,9 +195,7 @@ void CAvif::SavePicture(const string &filenameOut, const int & type, CRegardsBit
 		{
 			// get the default encoder
 			heif_encoder* encoder;
-			if(type == HEIC)
-				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
-			else
+			if(type == AVIF)
 				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
 			// set the encoder parameters
 			heif_encoder_set_lossy_quality(encoder, compression);

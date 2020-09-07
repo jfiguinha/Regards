@@ -592,14 +592,6 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	}
 
-	case HEIC:
-	{
-		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
-		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
-		delete regards;
-		break;
-	}
-
 	case AVIF:
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
