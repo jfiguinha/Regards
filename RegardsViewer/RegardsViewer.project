@@ -206,6 +206,7 @@
         <LibraryPath Value="../libextern/libheif-1.8.0/build/libheif"/>
         <LibraryPath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/lib"/>
         <LibraryPath Value="../libDeepLearning"/>
+        <LibraryPath Value="../libextern/x265_2.5/build/msys/8bit"/>
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
@@ -348,6 +349,7 @@
         <Library Value="libheif"/>
         <Library Value="liblibde265.dll"/>
         <Library Value="libheif_shared"/>
+        <Library Value="x265"/>
         <Library Value="fftw3f"/>
         <Library Value="exif"/>
         <Library Value="wxia"/>
