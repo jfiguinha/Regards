@@ -1532,11 +1532,14 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 	switch (iFormat)
 	{
 #ifdef LIBHEIC
+		/*
 		case HEIC:
 		{
 			return CHeic::GetNbFrame(szFileName.ToStdString());
 		}
 		break;
+		*/
+		case HEIC:
 		case AVIF:
 		{
 			return CAvif::GetNbFrame(szFileName.ToStdString());
@@ -1614,6 +1617,7 @@ uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
 	switch (iFormat)
 	{
 	#ifdef LIBHEIC
+		case AVIF:
 		case HEIC:
 		{
 			return CHeic::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
@@ -1784,6 +1788,13 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & size)
 {
 	int iFormat = TestImageFormat(filename);
+	CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+	if (size > 0)
+	{
+		data = new uint8_t[size + 1];
+		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+	}
+	/*
 	if (iFormat == HEIC)
 	{
 		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
@@ -1802,6 +1813,7 @@ int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & 
 			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
+	*/
 	return size;
 }
 
@@ -2234,8 +2246,6 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 			if (picture != nullptr)
 			{
-				CMetadataExiv2 metadata(fileName);
-				bitmap->SetOrientation(metadata.GetOrientation());
 				bitmap->SetPicture(picture);
 				bitmap->SetFilename(fileName);
 			}
@@ -3164,6 +3174,7 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		}
 		break;
 #ifdef LIBHEIC
+		/*
 	case HEIC:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
@@ -3171,6 +3182,8 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
+		*/
+	case HEIC:
 	case AVIF:
 	{
 		typeImage = TYPE_IMAGE_REGARDSIMAGE;

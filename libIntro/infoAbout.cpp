@@ -54,13 +54,13 @@ void CInfoAbout::Init()
 	CTreeData * treeDataTest = new CTreeData();
 	treeDataTest->SetIsParent(false);
 	treeDataTest->SetKey("Test By");
-	treeDataTest->SetValue("Sebastien SPADOTTO");
+	treeDataTest->SetValue("SPADOTTO Sebastien");
 	tr.append_child(child, treeDataTest);
 
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.61.0");
+	treeDataWidth->SetValue("2.61.1");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
