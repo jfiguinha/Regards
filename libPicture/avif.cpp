@@ -22,13 +22,7 @@ int CAvif::GetNbFrame(const string &filename)
 	if (ctx)
 	{
 		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
-
 		num_images = heif_context_get_number_of_top_level_images(ctx);
-		if (num_images == 0) {
-			fprintf(stderr, "File doesn't contain any images\n");
-			return num_images;
-		}
-
 		heif_context_free(ctx);
 	}
 	return num_images;
@@ -101,7 +95,7 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);
 			}
-
+			heif_image_handle_release(handle);
 		}
 
 		heif_context_free(ctx);
@@ -130,7 +124,7 @@ void CAvif::GetPictureDimension(const string &filename, int &width, int &height)
 				height = heif_image_handle_get_height(handle);
 				heif_image_release(img);
 			}
-
+			heif_image_handle_release(handle);
 		}
 
 		heif_context_free(ctx);
@@ -177,7 +171,7 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename)
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);
 			}
-
+			heif_image_handle_release(handle);
 		}
 
 		heif_context_free(ctx);
@@ -258,6 +252,7 @@ bool CAvif::HasExifMetaData(const string &filename)
 			heif_item_id metadata_id;
 			count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
 				&metadata_id, 1);
+			heif_image_handle_release(handle);
 		}
 		heif_context_free(ctx);
 	}
@@ -295,6 +290,7 @@ void CAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
 				else
 					size = datasize;
 			}
+			heif_image_handle_release(handle);
 		}
 	}
 }
