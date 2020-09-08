@@ -68,10 +68,15 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 			decode_options->convert_hdr_to_8bit = true;
 
 			int bit_depth = 8;
-
+			int has_alpha = heif_image_handle_has_alpha_channel(handle);
 			struct heif_image* image = NULL;
 			heif_image* img;
-			heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+			struct heif_error error = heif_decode_image(handle,
+				&img,
+				heif_colorspace_RGB,
+				has_alpha ? heif_chroma_interleaved_32bit :
+				heif_chroma_interleaved_24bit,
+				NULL);
 			if (img)
 			{
 				int stride;
@@ -91,6 +96,8 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 						dataOut[pos + 2] = data[iPos++];
 						dataOut[pos + 1] = data[iPos++];
 						dataOut[pos] = data[iPos++];
+						if(has_alpha)
+							dataOut[pos + 3] = data[iPos++];
 					}
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);
@@ -146,8 +153,15 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename)
 		if (handle)
 		{
 			// decode the image and convert colorspace to RGB, saved as 24bit interleaved
+			int has_alpha = heif_image_handle_has_alpha_channel(handle);
+			struct heif_image* image = NULL;
 			heif_image* img;
-			heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
+			struct heif_error error = heif_decode_image(handle,
+				&img,
+				heif_colorspace_RGB,
+				has_alpha ? heif_chroma_interleaved_32bit :
+				heif_chroma_interleaved_24bit,
+				NULL);
 			if (img)
 			{
 				int stride;
@@ -157,7 +171,7 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename)
 				int image_height = heif_image_handle_get_height(handle);
 
 				int iPos = 0;
-
+				
 				outputBitmap = new CRegardsBitmap(image_width, image_height);
 				uint8_t * dataOut = outputBitmap->GetPtBitmap();
 				for (int y = 0; y < image_height; y++)
@@ -167,8 +181,11 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename)
 						dataOut[pos + 2] = data[iPos++];
 						dataOut[pos + 1] = data[iPos++];
 						dataOut[pos] = data[iPos++];
+						if(has_alpha)
+							dataOut[pos+3] = data[iPos++];
 					}
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
+				
 				heif_image_release(img);
 			}
 			heif_image_handle_release(handle);
@@ -292,5 +309,6 @@ void CAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
 			}
 			heif_image_handle_release(handle);
 		}
+		heif_context_free(ctx);
 	}
 }

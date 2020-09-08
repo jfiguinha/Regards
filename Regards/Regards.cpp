@@ -15,6 +15,7 @@
 #include <wx/wxpoppler.h>
 #endif
 
+
 using namespace tbb;
 //using namespace Regards::DeepLearning;
 
@@ -235,6 +236,9 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 	
+#ifndef NDEBUG
+	::wxMessageBox("toto");
+#endif
 
 #ifdef PREPARE_DATA_TRAINING
 	//Create image learning

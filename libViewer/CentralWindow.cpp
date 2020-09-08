@@ -1228,19 +1228,6 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 
 		delete pictureData;
 	}
-    
-	/*
-    if(localPicture != "" && localPicture != this->filename)
-    {
-        CPictureElement * pictureElement = new CPictureElement();
-		pictureElement->filename = filename;
-		pictureElement->numElement = numElement;
-		pictureElement->first = false;
-		wxCommandEvent evt(wxEVENT_LOADPICTURE);
-		evt.SetClientData(pictureElement);
-		this->GetEventHandler()->AddPendingEvent(evt);
-    }
-	*/
 }
 
 
