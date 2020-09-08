@@ -2187,7 +2187,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
     printf("CLibPicture LoadPicture \n");
-
+	bool applyExif = true;
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
@@ -2201,48 +2201,27 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 		switch (iFormat)
 		{
 #ifdef LIBHEIC
+
 		case HEIC:
-			{
-				CRegardsBitmap * picture = nullptr;
-
-				if (numPicture == 0)
-				{
-					
-					if (isThumbnail)
-					{
-						picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-					}
-					else
-						picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-
-				}
-				else
-				{
-					int delay = 4;
-					bool isMaster;
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay, numPicture);
-				}
-
-
-				if (picture != nullptr)
-				{
-					CMetadataExiv2 metadata(fileName);
-					bitmap->SetOrientation(metadata.GetOrientation());
-					bitmap->SetPicture(picture);
-					bitmap->SetFilename(fileName);
-				}
-			}
-			break;
-
 		case AVIF:
 		{
 			CRegardsBitmap * picture = nullptr;
 
-			if (isThumbnail)
-				picture = CAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-			else
-				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+			if (numPicture == 0)
+			{
+				if (isThumbnail)
+					picture = CAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+				else
+					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 
+				applyExif = false;
+			}
+			else if(iFormat == HEIC)
+			{
+				int delay = 4;
+				bool isMaster;
+				picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay, numPicture);
+			}
 
 			if (picture != nullptr)
 			{
@@ -2816,7 +2795,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #endif
 
 		int orientation = -1;
-		if(TestIsExifCompatible(fileName))
+		if(TestIsExifCompatible(fileName) && applyExif)
 		{
 			CMetadataExiv2 metadata(fileName);
 			orientation = metadata.GetOrientation();
