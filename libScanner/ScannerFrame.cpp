@@ -156,7 +156,7 @@ void CScannerFrame::OnExportText(wxCommandEvent& event)
 	if (filename != "")
 	{
 
-		wxFileDialog saveFileDialog(this, filename, "", "",
+		wxFileDialog saveFileDialog(nullptr, filename, "", "",
 			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
@@ -176,7 +176,7 @@ void CScannerFrame::OnExportHTML(wxCommandEvent& event)
 	if (filename != "")
 	{
 
-		wxFileDialog saveFileDialog(this, filename, "", "",
+		wxFileDialog saveFileDialog(nullptr, filename, "", "",
 			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)

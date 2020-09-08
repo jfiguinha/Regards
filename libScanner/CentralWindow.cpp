@@ -76,13 +76,13 @@ void CCentralWindow::OnExtractPage(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		CSelectFileDlg selectFile(this, -1, filename, _("Select Page To Extract"));
+		CSelectFileDlg selectFile(nullptr, -1, filename, _("Select Page To Extract"));
 		if (selectFile.ShowModal() == wxID_OK)
 		{
 			vector<int> listPage = selectFile.GetSelectItem();
 			wxString fileExtract = ProcessExtractFile(listPage);
 
-			wxFileDialog saveFileDialog(this, _("Save Extract PDF page"), "", "",
+			wxFileDialog saveFileDialog(nullptr, _("Save Extract PDF page"), "", "",
 				"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			if (saveFileDialog.ShowModal() == wxID_CANCEL)
 				return;     // the user changed idea...
@@ -147,7 +147,7 @@ void CCentralWindow::OnOpen(const int &type)
 				std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
 				szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
 
-				wxFileDialog openFileDialog(this, _("Open Picture file"), "", "",
+				wxFileDialog openFileDialog(nullptr, _("Open Picture file"), "", "",
 					szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 				if (openFileDialog.ShowModal() == wxID_CANCEL)
@@ -242,7 +242,7 @@ void CCentralWindow::OnSave(wxCommandEvent& event)
 {
 	if (filename != "")
 	{
-		wxFileDialog saveFileDialog(this, _("Save PDF file"), "", "",
+		wxFileDialog saveFileDialog(nullptr, _("Save PDF file"), "", "",
 			"PDF files (*.pdf)|*.pdf", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)
 			return;     // the user changed idea...
@@ -500,7 +500,7 @@ wxString CCentralWindow::LoadFile()
 	std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm" };
 	szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm";
 
-	wxFileDialog openFileDialog(this, _("Open Picture file"), "", "",
+	wxFileDialog openFileDialog(nullptr, _("Open Picture file"), "", "",
 		szFilter, wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 	if (openFileDialog.ShowModal() == wxID_CANCEL)
 		return "";     // the user changed idea..
