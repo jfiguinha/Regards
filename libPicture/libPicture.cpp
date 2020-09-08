@@ -597,7 +597,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
 		//regards->SetOrientation(bitmap->GetOrientation());
-		regards->RotateRawExif(bitmap->GetOrientation());
+		regards->RotateExif(bitmap->GetOrientation());
 		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
 		delete regards;
 		break;

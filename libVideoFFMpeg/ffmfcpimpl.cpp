@@ -1372,7 +1372,7 @@ int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wan
 		fprintf(stderr, "Invalid sample rate or channel count!\n");
 		return -1;
 	}
-	wanted_spec.format = AUDIO_S16SYS;
+	wanted_spec.format = AUDIO_F32SYS;
 	wanted_spec.silence = 0;
 	wanted_spec.samples = SDL_AUDIO_BUFFER_SIZE;
 	wanted_spec.callback = sdl_audio_callback;
@@ -1386,7 +1386,7 @@ int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wan
 		}
 		wanted_channel_layout = av_get_default_channel_layout(wanted_spec.channels);
 	}
-	if (spec.format != AUDIO_S16SYS) {
+	if (spec.format != AUDIO_F32SYS) {
 		fprintf(stderr, "SDL advised audio format %d is not supported!\n", spec.format);
 		return -1;
 	}
@@ -1398,7 +1398,7 @@ int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wan
 		}
 	}
 
-	audio_hw_params->fmt = AV_SAMPLE_FMT_S16;
+	audio_hw_params->fmt = AV_SAMPLE_FMT_FLT;
 	audio_hw_params->freq = spec.freq;
 	audio_hw_params->channel_layout = wanted_channel_layout;
 	audio_hw_params->channels = spec.channels;
