@@ -317,8 +317,6 @@
       <File Name="include/wxSVGXML/svgxmlhelpr.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++14;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-Wno-narrowing;-fopenmp" C_Options="-Wall;" Assembler="">
@@ -412,4 +410,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

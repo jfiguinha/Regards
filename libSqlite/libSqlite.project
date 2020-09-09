@@ -35,8 +35,6 @@
     <File Name="sqlite3.h"/>
     <File Name="sqlite3ext.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options="$(shell ../libextern/wxWidgets-master/wx-config --cflags)" Assembler="">
@@ -127,4 +125,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

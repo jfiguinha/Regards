@@ -157,10 +157,10 @@ cd ..
 #Compille ffmpeg
 ./ffmpeg_build_windows.sh
 
-cd libheif-1.8.0
+cd libavif-master
 mkdir build
 cd build
-cmake ../ -G "MSYS Makefiles"  -DAOM_INCLUDE_DIR="../../aom" -DLIBDE265_INCLUDE_DIR="../../libde265-master" 
+cmake ../ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC
 cd ..
 cd ..

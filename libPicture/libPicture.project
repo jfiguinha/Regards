@@ -74,10 +74,10 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libwebp-0.6.0/src"/>
         <IncludePath Value="../libextern/libde265-master/libde265"/>
-        <IncludePath Value="../libextern/libheif-1.8.0"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/reader"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/common"/>
         <IncludePath Value="../libextern/libde265-master"/>
+        <IncludePath Value="../Otherlib/libavif/include"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>

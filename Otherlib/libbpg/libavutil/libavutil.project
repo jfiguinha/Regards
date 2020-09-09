@@ -106,8 +106,6 @@
     <File Name="xga_font_data.h"/>
     <File Name="xtea.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="" C_Options="-std=c99;-Wall;-fPIC;-pthread" Assembler="">
@@ -204,4 +202,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -56,8 +56,6 @@
     <File Name="internal/dcraw_fileio.cpp"/>
     <File Name="internal/demosaic_packs.cpp"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++14;-Wall;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-Wno-narrowing" C_Options="$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;" Assembler="">
@@ -165,4 +163,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

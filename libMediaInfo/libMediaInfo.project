@@ -13,8 +13,6 @@
   <VirtualDirectory Name="include">
     <File Name="MediaInfo.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp" C_Options=";-Wall;" Assembler="">
@@ -109,4 +107,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
