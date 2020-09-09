@@ -592,17 +592,6 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	}
 
-	case HEIC:
-	case AVIF:
-	{
-		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
-		//regards->SetOrientation(bitmap->GetOrientation());
-		regards->RotateExif(bitmap->GetOrientation());
-		CAvif::SavePicture(fileName.ToStdString(), iFormat, regards, quality);
-		delete regards;
-		break;
-	}
-
 	case BMP:
 	{
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
@@ -1532,14 +1521,11 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 	switch (iFormat)
 	{
 #ifdef LIBHEIC
-		/*
 		case HEIC:
 		{
 			return CHeic::GetNbFrame(szFileName.ToStdString());
 		}
 		break;
-		*/
-		case HEIC:
 		case AVIF:
 		{
 			return CAvif::GetNbFrame(szFileName.ToStdString());
@@ -1618,11 +1604,11 @@ uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
 	{
 	#ifdef LIBHEIC
 		case AVIF:
+			return CAvif::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
+
 		case HEIC:
-		{
 			return CHeic::GetDelay(CConvertUtility::ConvertToStdString(szFileName));
-		}
-		break;
+
 	#endif
 
 		case GIF:
@@ -1788,13 +1774,6 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & size)
 {
 	int iFormat = TestImageFormat(filename);
-	CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-	if (size > 0)
-	{
-		data = new uint8_t[size + 1];
-		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-	}
-	/*
 	if (iFormat == HEIC)
 	{
 		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
@@ -1813,7 +1792,6 @@ int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & 
 			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
-	*/
 	return size;
 }
 
@@ -1886,26 +1864,11 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 			}
 		}
 	}
-	else if (iFormat == AVIF)
-	{
-		CRegardsBitmap * bitmap = CAvif::GetThumbnailPicture(fileName.ToStdString());
-		if (bitmap != nullptr)
-		{
-			imageLoading = new CImageLoadingFormat();
-			bitmap->SetFilename(fileName);
-			imageLoading->SetPicture(bitmap);
-			if (imageLoading != nullptr && imageLoading->IsOk())
-			{
-				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-				imageLoading->ApplyExifOrientation();
-			}
-		}
-	}
     else
     {
 #endif		
 
-         printf("CLibPicture::LoadThumbnai \n");
+         printf("CLibPicture::LoadThumbnail \n");
         int orientation = -1;
         wxString extension;
 		CxMemFile * memFile = nullptr;
@@ -2203,24 +2166,42 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #ifdef LIBHEIC
 
 		case HEIC:
-		case AVIF:
 		{
 			CRegardsBitmap * picture = nullptr;
 
 			if (numPicture == 0)
 			{
 				if (isThumbnail)
-					picture = CAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-
-				applyExif = false;
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
-			else if(iFormat == HEIC)
+			else
 			{
 				int delay = 4;
 				bool isMaster;
 				picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName), isMaster, delay, numPicture);
+			}
+
+			if (picture != nullptr)
+			{
+				bitmap->SetPicture(picture);
+				bitmap->SetFilename(fileName);
+			}
+			break;
+		}
+		case AVIF:
+		{
+			CRegardsBitmap * picture = nullptr;
+
+			if (numPicture == 0)
+			{
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+			}
+			else
+			{
+				int delay = 4;
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName), delay, numPicture);
 			}
 
 			if (picture != nullptr)
@@ -3153,7 +3134,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 		}
 		break;
 #ifdef LIBHEIC
-		/*
 	case HEIC:
 		{
 			typeImage = TYPE_IMAGE_REGARDSIMAGE;
@@ -3161,8 +3141,6 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 			//video.GetVideoDimensions(fileName, width, height, rotation);
 		}
 		break;
-		*/
-	case HEIC:
 	case AVIF:
 	{
 		typeImage = TYPE_IMAGE_REGARDSIMAGE;

@@ -7,10 +7,12 @@ public:
 	CAvif();
 	~CAvif();
 	static CRegardsBitmap * GetPicture(const string &filename);
-	static void SavePicture(const string &filenameOut, const int & type, CRegardsBitmap * source, const int &compression = 50);
+	static CRegardsBitmap * GetPicture(const string &filename, int &delay, const int &numPicture);
+	static vector<CRegardsBitmap *> GetAllPicture(const string &filename, int &delay);
 	static void GetPictureDimension(const string &filename, int &width, int &height);
 	static int GetNbFrame(const string &filename);
-	static CRegardsBitmap * GetThumbnailPicture(const string &filename);
 	static bool HasExifMetaData(const string &filename);
 	static void GetMetadata(const string &filename, uint8_t * & data, long & size);
+	static int GetDelay(const string &filename);
+
 };

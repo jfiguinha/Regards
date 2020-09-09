@@ -1,9 +1,8 @@
 #include <header.h>
 #include "avif.h"
-#include <libheif/heif.h>
 #include <RegardsBitmap.h>
 #include <picture_id.h>
-static const char kMetadataTypeExif[] = "Exif";
+#include <avif/avif.h>
 
 CAvif::CAvif()
 {
@@ -15,300 +14,268 @@ CAvif::~CAvif()
 
 }
 
+void LoadDataFromFile(const string &filename, avifRWData & raw)
+{
+	FILE * f = fopen(filename.c_str(), "rb");
+	if (!f)
+		return;
+	fseek(f, 0, SEEK_END);
+	uint32_t size = ftell(f);
+	fseek(f, 0, SEEK_SET);
+	
+	avifRWDataRealloc(&raw, size);
+	fread(raw.data, 1, size, f);
+	fclose(f);
+}
+
+int CAvif::GetDelay(const string &filename)
+{
+	int delay = 0;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+	// Decode it
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
+	{
+		delay = decoder->duration / decoder->imageCount;
+		avifDecoderDestroy(decoder);
+	}
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
+	return delay;
+}
+
 int CAvif::GetNbFrame(const string &filename)
 {
-	int num_images = 0;
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
+	int nbFrame = 0;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+	// Decode it
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
 	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
-		num_images = heif_context_get_number_of_top_level_images(ctx);
-		heif_context_free(ctx);
+		nbFrame = decoder->imageCount;
+		avifDecoderDestroy(decoder);
 	}
-	return num_images;
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
+	return nbFrame;
 }
 
-CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
-{
-	CRegardsBitmap * outputBitmap = nullptr;
-	struct heif_error err;
-	bool thumbnail_from_primary_image_only = true;
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
-	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
-
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-		if (handle)
-		{
-			// --- if image has a thumbnail, use that instead
-
-			if (!thumbnail_from_primary_image_only) {
-				heif_item_id thumbnail_ID;
-				int nThumbnails = heif_image_handle_get_list_of_thumbnail_IDs(handle, &thumbnail_ID, 1);
-				if (nThumbnails > 0) {
-					struct heif_image_handle* thumbnail_handle;
-					err = heif_image_handle_get_thumbnail(handle, thumbnail_ID, &thumbnail_handle);
-					if (err.code) {
-						std::cerr << "Could not read HEIF image : " << err.message << "\n";
-						return outputBitmap;
-					}
-
-					// replace image handle with thumbnail handle
-
-					heif_image_handle_release(handle);
-					handle = thumbnail_handle;
-				}
-			}
-
-			// --- decode the image (or its thumbnail)
-			struct heif_decoding_options* decode_options = heif_decoding_options_alloc();
-			decode_options->convert_hdr_to_8bit = true;
-
-			int bit_depth = 8;
-			int has_alpha = heif_image_handle_has_alpha_channel(handle);
-			struct heif_image* image = NULL;
-			heif_image* img;
-			struct heif_error error = heif_decode_image(handle,
-				&img,
-				heif_colorspace_RGB,
-				has_alpha ? heif_chroma_interleaved_32bit :
-				heif_chroma_interleaved_24bit,
-				NULL);
-			if (img)
-			{
-				int stride;
-				const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-
-				int image_width = heif_image_handle_get_width(handle);
-				int image_height = heif_image_handle_get_height(handle);
-
-				int iPos = 0;
-
-				outputBitmap = new CRegardsBitmap(image_width, image_height);
-				uint8_t * dataOut = outputBitmap->GetPtBitmap();
-				for (int y = 0; y < image_height; y++)
-					for (int x = 0; x < image_width; x++)
-					{
-						int pos = outputBitmap->GetPosition(x, image_height - y - 1);
-						dataOut[pos + 2] = data[iPos++];
-						dataOut[pos + 1] = data[iPos++];
-						dataOut[pos] = data[iPos++];
-						if(has_alpha)
-							dataOut[pos + 3] = data[iPos++];
-					}
-				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
-				heif_image_release(img);
-			}
-			heif_image_handle_release(handle);
-		}
-
-		heif_context_free(ctx);
-	}
-	return outputBitmap;
-}
 
 void CAvif::GetPictureDimension(const string &filename, int &width, int &height)
 {
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
-	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
 
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-		if (handle)
+	// Decode it
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
+	{
+		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
+
+		if (decodeResult == AVIF_RESULT_OK)
 		{
-			// decode the image and convert colorspace to RGB, saved as 24bit interleaved
-			heif_image* img;
-			heif_decode_image(handle, &img, heif_colorspace_RGB, heif_chroma_interleaved_RGB, nullptr);
-			if (img)
-			{
-				width = heif_image_handle_get_width(handle);
-				height = heif_image_handle_get_height(handle);
-				heif_image_release(img);
-			}
-			heif_image_handle_release(handle);
+			width = decoded->width;
+			height = decoded->height;
 		}
 
-		heif_context_free(ctx);
+		avifDecoderDestroy(decoder);
 	}
+
+
+
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
+}
+CRegardsBitmap * CAvif::GetPicture(const string &filename, int &delay, const int &numPicture)
+{
+	CRegardsBitmap * out = nullptr;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+
+	// Decode it
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
+	{
+		int frameIndex = 0;
+		delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
+		for (;;)
+		{
+			avifResult nextImageResult = avifDecoderNextImage(decoder);
+			if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
+				// No more images, bail out. Verify that you got the expected amount of images decoded.
+				break;
+			}
+			else if (nextImageResult != AVIF_RESULT_OK) {
+				printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
+				break;
+			}
+			else if (nextImageResult == AVIF_RESULT_OK && numPicture == frameIndex)
+			{
+
+				avifRGBImage dstRGB;
+				avifRGBImageSetDefaults(&dstRGB, decoder->image);
+				dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
+				dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
+				avifRGBImageAllocatePixels(&dstRGB);
+
+				if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
+				{
+					int image_width = dstRGB.width;
+					int image_height = dstRGB.height;
+					out = new CRegardsBitmap(image_width, image_height);
+					uint8_t * dataOut = out->GetPtBitmap();
+					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
+					out->VertFlipBuf();
+				}
+				avifRGBImageFreePixels(&dstRGB);
+			}
+			frameIndex++;
+		}
+		avifDecoderDestroy(decoder);
+	}
+	avifRWDataFree(&raw);
+	return out;
+}
+
+vector<CRegardsBitmap *> CAvif::GetAllPicture(const string &filename, int &delay)
+{
+	vector<CRegardsBitmap *> listPicture;
+	
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+
+	// Decode it
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
+	{
+		int frameIndex = 0;
+		avifBool firstImage = AVIF_TRUE;
+		delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
+		for (;;)
+		{
+			avifResult nextImageResult = avifDecoderNextImage(decoder);
+			if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
+				// No more images, bail out. Verify that you got the expected amount of images decoded.
+				break;
+			}
+			else if (nextImageResult != AVIF_RESULT_OK) {
+				printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
+				break;
+			}
+			else if (nextImageResult == AVIF_RESULT_OK)
+			{
+
+				avifRGBImage dstRGB;
+				avifRGBImageSetDefaults(&dstRGB, decoder->image);
+				dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
+				dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
+				avifRGBImageAllocatePixels(&dstRGB);
+
+				if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
+				{
+					int image_width = dstRGB.width;
+					int image_height = dstRGB.height;
+					CRegardsBitmap * out = new CRegardsBitmap(image_width, image_height);
+					uint8_t * dataOut = out->GetPtBitmap();
+					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
+					out->VertFlipBuf();
+					listPicture.push_back(out);
+				}
+				avifRGBImageFreePixels(&dstRGB);
+			}
+		}
+		avifDecoderDestroy(decoder);
+	}
+	avifRWDataFree(&raw);
+	return listPicture;
 }
 
 CRegardsBitmap * CAvif::GetPicture(const string &filename)
 {
-	CRegardsBitmap * outputBitmap = nullptr;
 
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
+	CRegardsBitmap * out = nullptr;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+
+	// Decode it
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
 	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
+		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
 
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-		if (handle)
+		if (decodeResult == AVIF_RESULT_OK)
 		{
-			// decode the image and convert colorspace to RGB, saved as 24bit interleaved
-			int has_alpha = heif_image_handle_has_alpha_channel(handle);
-			struct heif_image* image = NULL;
-			heif_image* img;
-			struct heif_error error = heif_decode_image(handle,
-				&img,
-				heif_colorspace_RGB,
-				has_alpha ? heif_chroma_interleaved_32bit :
-				heif_chroma_interleaved_24bit,
-				NULL);
-			if (img)
+			avifRGBImage dstRGB;
+			avifRGBImageSetDefaults(&dstRGB, decoded);
+			dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
+			dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
+			avifRGBImageAllocatePixels(&dstRGB);
+
+			if (avifImageYUVToRGB(decoded, &dstRGB) == AVIF_RESULT_OK)
 			{
-				int stride;
-				const uint8_t* data = heif_image_get_plane_readonly(img, heif_channel_interleaved, &stride);
-
-				int image_width = heif_image_handle_get_width(handle);
-				int image_height = heif_image_handle_get_height(handle);
-
-				int iPos = 0;
-				
-				outputBitmap = new CRegardsBitmap(image_width, image_height);
-				uint8_t * dataOut = outputBitmap->GetPtBitmap();
-				for (int y = 0; y < image_height; y++)
-					for (int x = 0; x < image_width; x++)
-					{
-						int pos = outputBitmap->GetPosition(x, image_height - y - 1);
-						dataOut[pos + 2] = data[iPos++];
-						dataOut[pos + 1] = data[iPos++];
-						dataOut[pos] = data[iPos++];
-						if(has_alpha)
-							dataOut[pos+3] = data[iPos++];
-					}
-				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
-				
-				heif_image_release(img);
+				int image_width = dstRGB.width;
+				int image_height = dstRGB.height;
+				out = new CRegardsBitmap(image_width, image_height);
+				uint8_t * dataOut = out->GetPtBitmap();
+				memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
+				out->VertFlipBuf();
 			}
-			heif_image_handle_release(handle);
+			avifRGBImageFreePixels(&dstRGB);
 		}
-
-		heif_context_free(ctx);
+		avifDecoderDestroy(decoder);
 	}
-	return outputBitmap;
-}
-
-void CAvif::SavePicture(const string &filenameOut, const int & type, CRegardsBitmap * source, const int & compression)
-{
-	struct heif_error err;
-	if (source)
-	{
-		heif_context* ctx = heif_context_alloc();
-		if (ctx)
-		{
-			// get the default encoder
-			heif_encoder* encoder;
-			if(type == AVIF)
-				heif_context_get_encoder_for_format(ctx, heif_compression_AV1, &encoder);
-			else if(type == HEIC)
-				heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
-			// set the encoder parameters
-			heif_encoder_set_lossy_quality(encoder, compression);
-
-			// encode the image
-			heif_image* image; // code to fill in the image omitted in this example
-
-			err = heif_image_create((int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
-				heif_colorspace_RGB,
-				heif_chroma_interleaved_RGBA,
-				&image);
-			(void)err;
-
-			heif_image_add_plane(image, heif_channel_interleaved, (int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
-				32);
-
-			int stride;
-			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
-			uint8_t * data = source->GetPtBitmap();
-			source->ConvertToBgr();
-			//source->HorzFlipBuf();
-			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
-			{
-				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
-				memcpy(p + y * stride, data + position, source->GetBitmapWidth() * 4);
-			}
-
-			heif_context_encode_image(ctx, image, encoder, nullptr, nullptr);
-
-			heif_encoder_release(encoder);
-
-			heif_context_write_to_file(ctx, filenameOut.c_str());
-
-			if (image)
-			{
-				heif_image_release(image);
-			}
-
-			heif_context_free(ctx);
-		}
-	}
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
+	return out;
 }
 
 // static
 bool CAvif::HasExifMetaData(const string &filename)
 {
-	int count = 0;
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
+	bool exifData = false;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
 	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
-
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-		if (handle)
-		{
-			heif_item_id metadata_id;
-			count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
-				&metadata_id, 1);
-			heif_image_handle_release(handle);
-		}
-		heif_context_free(ctx);
+		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
+		if (decoded->exif.size > 0)
+			exifData = true;
+		avifDecoderDestroy(decoder);
 	}
-	return count > 0;
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
+	return exifData;
+
 }
 
 // static
 void CAvif::GetMetadata(const string &filename, uint8_t * & data, long & size)
 {
-	int count = 0;
-	heif_context* ctx = heif_context_alloc();
-	if (ctx)
+	bool exifData = false;
+	avifRWData raw = AVIF_DATA_EMPTY;
+	LoadDataFromFile(filename, raw);
+	avifImage * decoded = avifImageCreateEmpty();
+	avifDecoder * decoder = avifDecoderCreate();
+	if (decoder != nullptr)
 	{
-		heif_context_read_from_file(ctx, filename.c_str(), nullptr);
-
-		// get a handle to the primary image
-		heif_image_handle* handle;
-		heif_context_get_primary_image_handle(ctx, &handle);
-		if (handle)
+		avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
+		if (decoded->exif.size > 0)
 		{
-			heif_item_id metadata_id;
-			int count = heif_image_handle_get_list_of_metadata_block_IDs(handle, kMetadataTypeExif,
-				&metadata_id, 1);
-
-			if (count > 0)
-			{
-				size_t datasize = heif_image_handle_get_metadata_size(handle, metadata_id);
-				if (size > 0)
-				{
-					if (data)
-					{
-						heif_error error = heif_image_handle_get_metadata(handle, metadata_id, data);
-					}
-				}
-				else
-					size = datasize;
-			}
-			heif_image_handle_release(handle);
+			if (size > 0)
+				memcpy(data, decoded->exif.data, size);
+			else
+				size = decoded->exif.size;
 		}
-		heif_context_free(ctx);
+		avifDecoderDestroy(decoder);
 	}
+	avifImageDestroy(decoded);
+	avifRWDataFree(&raw);
 }
