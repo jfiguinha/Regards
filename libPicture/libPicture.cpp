@@ -1869,7 +1869,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
         {
 			imageLoading = new CImageLoadingFormat();
 			imageLoading->SetFilename(fileName);
-			CRegardsBitmap * thumbnail = LoadThumbnailFromFreeImage(fileName);
+			CRegardsBitmap * thumbnail = nullptr;//LoadThumbnailFromFreeImage(fileName);
 			if (thumbnail == nullptr)
 			{
 				imageLoading = LoadPicture(fileName, true);
@@ -2011,69 +2011,6 @@ bool CLibPicture::PictureDimensionFreeImage(const char* filename, int &width, in
 	return true;
 }
 
-
-
-CRegardsBitmap * CLibPicture::LoadThumbnailFromFreeImage(const char* filename)
-{
-	CRegardsBitmap * bitmap = nullptr;
-#ifdef __FREEIMAGE__
-	//image format
-	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
-	//pointer to the image, once loaded
-	FIBITMAP *dib(0);
-	FIBITMAP *dibRgba(0);
-	//pointer to the image data
-	BYTE* bits(0);
-	//image width and height
-	unsigned int width(0), height(0);
-
-
-	//check the file signature and deduce its format
-	fif = FreeImage_GetFileType(filename, 0);
-	//if still unknown, try to guess the file format from the file extension
-	if (fif == FIF_UNKNOWN)
-		fif = FreeImage_GetFIFFromFilename(filename);
-	//if still unkown, return failure
-	if (fif == FIF_UNKNOWN)
-		return bitmap;
-
-	//check that the plugin has reading capabilities and load the file
-	if (FreeImage_FIFSupportsReading(fif))
-		dib = FreeImage_Load(fif, filename);
-	//if the image failed to load, return failure
-	if (!dib)
-		return bitmap;
-
-	// check for a possible embedded thumbnail
-	if (FreeImage_GetThumbnail(dib))
-	{
-		// thumbnail is present
-		FIBITMAP *thumbnail = FreeImage_GetThumbnail(dib);
-		dibRgba = FreeImage_ConvertTo32Bits(thumbnail);
-		
-
-		//retrieve the image data
-		bits = FreeImage_GetBits(dibRgba);
-		//get the image width and height
-		width = FreeImage_GetWidth(dibRgba);
-		height = FreeImage_GetHeight(dibRgba);
-		//if this somehow one of these failed (they shouldn't), return failure
-		if ((bits == 0) || (width == 0) || (height == 0))
-			return bitmap;
-
-		bitmap = new CRegardsBitmap();
-		bitmap->SetBitmap(bits, width, height);
-		bitmap->SetFilename(filename);
-		FreeImage_Unload(dibRgba);
-	}
-	   
-	//Free FreeImage's copy of the data
-	FreeImage_Unload(dib);
-#endif
-	//return success
-	return bitmap;
-}
-
 CRegardsBitmap * CLibPicture::LoadFromFreeImage(const char* filename)
 {
 	CRegardsBitmap * bitmap = nullptr;
@@ -2184,14 +2121,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			if (numPicture == 0)
 			{
 				bool isOk = false;
-				if (isThumbnail)
-				{
-					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-					if(picture == nullptr)
-						picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-				}
-				else
-					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
 			else
 			{
