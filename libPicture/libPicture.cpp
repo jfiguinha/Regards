@@ -1193,23 +1193,6 @@ int CLibPicture::SavePicture(const wxString & fileNameIn, const wxString & fileN
 		}
 	}
 	
-
-	/*
-	wxString wxfileName;
-
-	wxfileName = fileName;
-
-	int option = 0;
-	int quality = 0;
-
-	if (SavePictureOption(iFormat, option, quality) == 1)
-	{
-		if (!TestIsExifCompatible(fileName))
-			bitmap->ApplyExifOrientation(bitmap->GetOrientation());
-
-		SavePicture(wxfileName, bitmap, option, quality);
-	}
-	*/
 	return 0;
 }
 
@@ -1651,11 +1634,16 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 		switch (iFormat)
 		{
 #ifdef LIBHEIC
+			case AVIF:
 			case HEIC:
 			{
 				int delay = 4;
 				bool isMaster;
-				vector<CRegardsBitmap *> listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), isMaster, delay);
+				vector<CRegardsBitmap *> listPicture;
+				if(iFormat == HEIC)
+					listPicture = CHeic::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), isMaster, delay);
+				else if (iFormat == AVIF)
+					listPicture = CAvif::GetAllPicture(CConvertUtility::ConvertToStdString(szFileName), delay);
 				for (auto i = 0; i < listPicture.size(); i++)
 				{
 					CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
@@ -2150,7 +2138,6 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
     printf("CLibPicture LoadPicture \n");
-	bool applyExif = true;
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
@@ -2776,7 +2763,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #endif
 
 		int orientation = -1;
-		if(TestIsExifCompatible(fileName) && applyExif)
+		if(TestIsExifCompatible(fileName) )
 		{
 			CMetadataExiv2 metadata(fileName);
 			orientation = metadata.GetOrientation();
