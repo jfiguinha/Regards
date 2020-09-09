@@ -152,15 +152,5 @@ cd ..
 cd ..
 cd ..
 
-
-
 #Compille ffmpeg
 ./ffmpeg_build_windows.sh
-
-cd libavif-master
-mkdir build
-cd build
-cmake ../ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-cd ..
-cd ..
