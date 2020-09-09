@@ -35,6 +35,100 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+  </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libavutil"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="libavif"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -196,6 +290,7 @@
         <Library Value="IlmImf"/>
         <Library Value="IexMath"/>
         <Library Value="Half"/>
+        <Library Value="avif"/>
         <Library Value="aom"/>
         <Library Value="opencv_calib3d"/>
         <Library Value="opencv_core"/>
@@ -248,6 +343,7 @@
         <LibraryPath Value="../libAppleFunction/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
+        <LibraryPath Value="../Otherlib/libavif/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -469,6 +565,7 @@
         <LibraryPath Value="../libAppleFunction/Release"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
+        <LibraryPath Value="../Otherlib/libavif/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -740,96 +837,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libavutil"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="wxIA"/>
-    <Project Name="libScanner"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-  </Dependencies>
 </CodeLite_Project>
