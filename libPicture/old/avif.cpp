@@ -1,14 +1,10 @@
 #include <header.h>
-#include <heifreader.h>
-using namespace std;
-using namespace HEIF;
 #include "avif.h"
 #include <RegardsBitmap.h>
 #include <picture_id.h>
-#include <cstdint>
 #include <avif/avif.h>
-#include <iostream>
-#include <fstream>
+#include <heifreader.h>
+
 CAvif::CAvif()
 {
 
@@ -91,13 +87,9 @@ void CAvif::GetPictureDimension(const string &filename, int &width, int &height)
 		avifDecoderDestroy(decoder);
 	}
 
-
-
 	avifImageDestroy(decoded);
 	avifRWDataFree(&raw);
 }
-
-
 
 CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 {
@@ -106,7 +98,7 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 	uint64_t itemSize = 1024 * 1024;
 	uint8_t* itemData = new uint8_t[itemSize];
 	Array<ImageId> itemIds;
-
+	
 
 	if (reader->initialize(filename.c_str()) == ErrorCode::OK)
 	{
@@ -138,6 +130,7 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 				memcpy(&raw, itemData, itemSize);
 				// Decode it
 				avifImage * decoded = avifImageCreateEmpty();
+				avifDecoder * decoder = avifDecoderCreate();
 				if (decoder != nullptr)
 				{
 					avifResult decodeResult = avifDecoderRead(decoder, decoded, (avifROData *)&raw);
@@ -186,7 +179,7 @@ CRegardsBitmap * CAvif::GetThumbnailPicture(const string &filename)
 
 	delete[] itemData;
 	Reader::Destroy(reader);
-
+	
 	return picture;
 
 }
@@ -201,140 +194,50 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename, int &delay, const int
 	avifDecoder * decoder = avifDecoderCreate();
 	if (decoder != nullptr)
 	{
-		int frameIndex = 0;
-		delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
-		for (;;)
+		avifResult decodeResult = avifDecoderParse(decoder, (avifROData *)&raw);
+		if (decodeResult == AVIF_RESULT_OK)
 		{
-			avifResult nextImageResult = avifDecoderNextImage(decoder);
-			if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
-				// No more images, bail out. Verify that you got the expected amount of images decoded.
-				break;
-			}
-			else if (nextImageResult != AVIF_RESULT_OK) {
-				printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
-				break;
-			}
-			else if (nextImageResult == AVIF_RESULT_OK && numPicture == frameIndex)
+			int frameIndex = 0;
+			delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
+			for (;;)
 			{
-
-				avifRGBImage dstRGB;
-				avifRGBImageSetDefaults(&dstRGB, decoder->image);
-				dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
-				dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
-				avifRGBImageAllocatePixels(&dstRGB);
-
-				if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
-				{
-					int image_width = dstRGB.width;
-					int image_height = dstRGB.height;
-					out = new CRegardsBitmap(image_width, image_height);
-					uint8_t * dataOut = out->GetPtBitmap();
-					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
-					out->VertFlipBuf();
+				avifResult nextImageResult = avifDecoderNextImage(decoder);
+				if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
+					// No more images, bail out. Verify that you got the expected amount of images decoded.
+					break;
 				}
-				avifRGBImageFreePixels(&dstRGB);
+				else if (nextImageResult != AVIF_RESULT_OK) {
+					printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
+					break;
+				}
+				else if (nextImageResult == AVIF_RESULT_OK && numPicture == frameIndex)
+				{
+
+					avifRGBImage dstRGB;
+					avifRGBImageSetDefaults(&dstRGB, decoder->image);
+					dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
+					dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
+					avifRGBImageAllocatePixels(&dstRGB);
+
+					if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
+					{
+						int image_width = dstRGB.width;
+						int image_height = dstRGB.height;
+						out = new CRegardsBitmap(image_width, image_height);
+						uint8_t * dataOut = out->GetPtBitmap();
+						memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
+						out->VertFlipBuf();
+					}
+					avifRGBImageFreePixels(&dstRGB);
+				}
+				frameIndex++;
 			}
-			frameIndex++;
 		}
 		avifDecoderDestroy(decoder);
 	}
 	avifRWDataFree(&raw);
 	return out;
 }
-
-
-void CAvif::SavePicture(const string &filename, CRegardsBitmap * source)
-{
-	int width = 32;
-	int height = 32;
-	int depth = 8;
-	avifPixelFormat format = AVIF_PIXEL_FORMAT_YUV420;
-	avifImage * image = avifImageCreate(width, height, depth, format);
-	if (image != nullptr && source != nullptr)
-	{
-		// (Semi-)optional: Describe the color profile, YUV<->RGB conversion, and range.
-		// These default to "unspecified" and full range. You should at least set the
-		// matrixCoefficients to indicate how you would like YUV<->RGB conversion to be done.
-		image->colorPrimaries = AVIF_COLOR_PRIMARIES_BT709;
-		image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
-		image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT709;
-		image->yuvRange = AVIF_RANGE_FULL;
-
-		// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
-		avifRGBImage rgb;
-		avifRGBImageSetDefaults(&rgb, image);
-		rgb.depth = 8;   // [8, 10, 12, 16]; Does not need to match image->depth.
-		rgb.format = AVIF_RGB_FORMAT_BGRA;  // See choices in avif.h
-		avifRGBImageAllocatePixels(&rgb);
-		memcpy(rgb.pixels, source->GetPtBitmap(), source->GetBitmapSize());
-		rgb.rowBytes = source->GetWidthSize();
-
-		avifImageRGBToYUV(image, &rgb); // if alpha is present, it will also be copied/converted
-		avifRGBImageFreePixels(&rgb);
-
-		/*
-		// Optional: Set Exif and/or XMP metadata
-		uint8_t * exif = ...;  // raw Exif payload
-		size_t exifSize = ...; // Length of raw Exif payload
-		avifImageSetMetadataExif(image, exif, exifSize);
-		*/
-
-		avifRWData output = AVIF_DATA_EMPTY;
-		avifEncoder * encoder = avifEncoderCreate();
-		encoder->maxThreads = 8; // Choose max encoder threads, 1 to disable multithreading
-		encoder->minQuantizer = AVIF_QUANTIZER_LOSSLESS;
-		encoder->maxQuantizer = AVIF_QUANTIZER_LOSSLESS;
-		avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
-		if (encodeResult == AVIF_RESULT_OK)
-		{
-			ifstream file(filename, ios::in | ios::binary | ios::ate);
-			if (file.is_open())
-			{
-				file.seekg(0, ios::beg);
-				file.read((char *)output.data, output.size);
-				file.close();
-			}
-		}
-		else {
-			printf("ERROR: Failed to encode: %s\n", avifResultToString(encodeResult));
-		}
-
-		avifImageDestroy(image);
-		avifRWDataFree(&output);
-		avifEncoderDestroy(encoder);
-	}
-
-	/*
-	// Optional: Set Exif and/or XMP metadata
-	uint8_t * exif = ...;  // raw Exif payload
-	size_t exifSize = ...; // Length of raw Exif payload
-	avifImageSetMetadataExif(image, exif, exifSize);
-	uint8_t * xmp = ...;  // raw XMP document
-	size_t xmpSize = ...; // Length of raw XMP document
-	avifImageSetMetadataXMP(image, xmp, xmpSize);
-
-	avifRWData output = AVIF_DATA_EMPTY;
-	avifEncoder * encoder = avifEncoderCreate();
-	encoder->maxThreads = ...; // Choose max encoder threads, 1 to disable multithreading
-	encoder->minQuantizer = AVIF_QUANTIZER_LOSSLESS;
-	encoder->maxQuantizer = AVIF_QUANTIZER_LOSSLESS;
-	avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
-	if (encodeResult == AVIF_RESULT_OK)
-	{
-		// output contains a valid .avif file's contents
-		... output.data;
-		... output.size;
-	}
-	else {
-		printf("ERROR: Failed to encode: %s\n", avifResultToString(encodeResult));
-	}
-
-	avifImageDestroy(image);
-	avifRWDataFree(&output);
-	avifEncoderDestroy(encoder);
-	*/
-}
-
 
 vector<CRegardsBitmap *> CAvif::GetAllPicture(const string &filename, int &delay)
 {
@@ -347,40 +250,45 @@ vector<CRegardsBitmap *> CAvif::GetAllPicture(const string &filename, int &delay
 	avifDecoder * decoder = avifDecoderCreate();
 	if (decoder != nullptr)
 	{
-		int frameIndex = 0;
-		avifBool firstImage = AVIF_TRUE;
-		delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
-		for (;;)
+		avifResult decodeResult = avifDecoderParse(decoder, (avifROData *)&raw);
+		if (decodeResult == AVIF_RESULT_OK) 
 		{
-			avifResult nextImageResult = avifDecoderNextImage(decoder);
-			if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
-				// No more images, bail out. Verify that you got the expected amount of images decoded.
-				break;
-			}
-			else if (nextImageResult != AVIF_RESULT_OK) {
-				printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
-				break;
-			}
-			else if (nextImageResult == AVIF_RESULT_OK)
+			int frameIndex = 0;
+			avifBool firstImage = AVIF_TRUE;
+			delay = decoder->duration / decoder->imageCount;   // Duration of entire sequence (seconds)
+			for (;;)
 			{
-
-				avifRGBImage dstRGB;
-				avifRGBImageSetDefaults(&dstRGB, decoder->image);
-				dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
-				dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
-				avifRGBImageAllocatePixels(&dstRGB);
-
-				if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
-				{
-					int image_width = dstRGB.width;
-					int image_height = dstRGB.height;
-					CRegardsBitmap * out = new CRegardsBitmap(image_width, image_height);
-					uint8_t * dataOut = out->GetPtBitmap();
-					memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
-					out->VertFlipBuf();
-					listPicture.push_back(out);
+				avifResult nextImageResult = avifDecoderNextImage(decoder);
+				if (nextImageResult == AVIF_RESULT_NO_IMAGES_REMAINING) {
+					// No more images, bail out. Verify that you got the expected amount of images decoded.
+					break;
 				}
-				avifRGBImageFreePixels(&dstRGB);
+				else if (nextImageResult != AVIF_RESULT_OK) {
+					printf("ERROR: Failed to decode all frames: %s\n", avifResultToString(nextImageResult));
+					break;
+				}
+				else if (nextImageResult == AVIF_RESULT_OK)
+				{
+
+					avifRGBImage dstRGB;
+					avifRGBImageSetDefaults(&dstRGB, decoder->image);
+					dstRGB.format = AVIF_RGB_FORMAT_BGRA;                 // See choices in avif.h
+					dstRGB.depth = 8;                  // [8, 10, 12, 16]; Does not need to match image->depth.
+					avifRGBImageAllocatePixels(&dstRGB);
+
+					if (avifImageYUVToRGB(decoder->image, &dstRGB) == AVIF_RESULT_OK)
+					{
+						int image_width = dstRGB.width;
+						int image_height = dstRGB.height;
+						CRegardsBitmap * out = new CRegardsBitmap(image_width, image_height);
+						uint8_t * dataOut = out->GetPtBitmap();
+						memcpy(dataOut, dstRGB.pixels, out->GetBitmapSize());
+						out->VertFlipBuf();
+						listPicture.push_back(out);
+					}
+					avifRGBImageFreePixels(&dstRGB);
+				}
+		
 			}
 		}
 		avifDecoderDestroy(decoder);
