@@ -196,6 +196,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="avif.h" />
+    <ClInclude Include="avif_heif.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="libPicture.h" />
     <ClInclude Include="pfm.h" />
@@ -211,6 +212,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="avif.cpp" />
+    <ClCompile Include="avif_heif.cpp" />
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="pfm.cpp" />

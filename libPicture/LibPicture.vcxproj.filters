@@ -51,6 +51,9 @@
     <ClInclude Include="avif.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="avif_heif.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ScaleThumbnail.cpp">
@@ -75,6 +78,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="avif.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="avif_heif.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

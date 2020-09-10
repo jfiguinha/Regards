@@ -390,6 +390,9 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"
     <ProjectReference Include="..\otherlib\libbpg\Dllbpg\Dllbpg.vcxproj">
       <Project>{9d83fe59-48c2-430d-8fc9-25ca5bb575a8}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Otherlib\libheif\libheif.vcxproj">
+      <Project>{27ae55ec-bd2c-4843-8333-26b52bf4fbba}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\otherlib\libjbig\jbig.vcxproj">
       <Project>{764c3a2d-fb0f-428e-b1c7-62d1dd2ce239}</Project>
     </ProjectReference>

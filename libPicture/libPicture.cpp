@@ -56,7 +56,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 #include <wx/wxpoppler.h>
 
 
-
+#include "avif_heif.h"
 #include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)
