@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\canonmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\casiomn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\cr2header_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\crwimage_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\fujimn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\helper_functions.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\image_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\makernote_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\minoltamn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\nikonmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\olympusmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\orfimage_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\panasonicmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\pentaxmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\rw2image_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\samsungmn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\sigmamn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\sonymn_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\tags_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\tiffcomposite_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\tiffimage_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\tiffvisitor_int.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\src\pngchunk_int.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\canonmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\casiomn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\cr2header_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\crwimage_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\fujimn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\helper_functions.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\image_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\makernote_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\minoltamn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\nikonmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\olympusmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\orfimage_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\panasonicmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\pentaxmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\rw2image_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\safe_op.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\samsungmn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\sigmamn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\sonymn_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\tags_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\tiffcomposite_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\tiffimage_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\tiffvisitor_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\tifffwd_int.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\timegm.h" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\src\unused.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7F5C7279-8127-394C-B466-0454F09B4D3D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F559B6A9-418B-37C2-9C9F-5140E0D4B500}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

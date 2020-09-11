@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\ExpatAdapter.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\MD5.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\ParseRDF.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\UnicodeConversions.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\WXMPIterator.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\WXMPMeta.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\WXMPUtils.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XML_Node.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPCore_Impl.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPIterator.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPMeta-GetSet.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPMeta-Parse.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPMeta-Serialize.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPMeta.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPUtils-FileInfo.cpp" />
+    <ClCompile Include="$(ProjectDir)..\..\..\..\xmpsdk\src\XMPUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\MD5.h" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\TXMPIterator.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\TXMPMeta.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\TXMPUtils.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\XMP_Const.h" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\XMP_Environment.h" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\XMPSDK.hpp" />
+    <ClInclude Include="$(ProjectDir)..\..\..\..\xmpsdk\include\XMP_Version.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(ProjectDir)..\..\..\..\xmpsdk\include\XMP.incl_cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7F5C7279-8127-394C-B466-0454F09B4D3D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F559B6A9-418B-37C2-9C9F-5140E0D4B500}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

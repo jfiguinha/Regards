@@ -1,10 +1,11 @@
 #include "header.h"
-#include "PictureMetadataExiv.h"
 #include <ximage.h>
 #include <xfile.h>
 #include <xiofile.h>
 #include <ConvertUtility.h>
 #include <error.hpp>
+#include "PictureMetadataExiv.h"
+
 using namespace Regards::exiv2;
 
 CPictureMetadataExiv::CPictureMetadataExiv(const wxString &filename)
@@ -232,7 +233,7 @@ bool CPictureMetadataExiv::HasThumbnail()
         Exiv2::ExifData &exifData = exif->exifData();
 		if (!exifData.empty())
 		{
-			Exiv2::ExifThumb thumb = exifData;
+			Exiv2::ExifThumb thumb(exifData);
 			Exiv2::DataBuf data = thumb.copy();
 			if (data.size_ > 0 && data.pData_ != nullptr)
 				return true;
@@ -674,26 +675,27 @@ vector<CMetadata> CPictureMetadataExiv::GetMetadata()
 CxMemFile * CPictureMetadataExiv::LoadThumbnailFromExif(Exiv2::ExifData * dataIn, wxString &extension, int &orientation)
 {
 	CxMemFile * cxMemFile = nullptr;
-	Exiv2::ExifThumb thumb = *dataIn;
-	extension = thumb.extension();
-	extension = extension.substr(1,extension.size() - 1);
-	Exiv2::DataBuf data = thumb.copy();
-	if (data.size_ > 0 && data.pData_ != nullptr)
+	if (dataIn != nullptr)
 	{
-		Exiv2::ExifKey orientationKey("Exif.Image.Orientation");
-		Exiv2::ExifData::const_iterator md = dataIn->findKey(orientationKey);
-		if (dataIn->end() != md)
+		Exiv2::ExifThumb thumb(*dataIn);
+		extension = thumb.extension();
+		extension = extension.substr(1, extension.size() - 1);
+		Exiv2::DataBuf data = thumb.copy();
+		if (data.size_ > 0 && data.pData_ != nullptr)
 		{
-			wxString value = md->value().toString();
-			orientation = atoi(value.c_str());
+			Exiv2::ExifKey orientationKey("Exif.Image.Orientation");
+			Exiv2::ExifData::const_iterator md = dataIn->findKey(orientationKey);
+			if (dataIn->end() != md)
+			{
+				wxString value = md->value().toString();
+				orientation = atoi(value.c_str());
+			}
+
+			uint8_t * dataPt = new uint8_t[data.size_];
+			memcpy(dataPt, data.pData_, data.size_);
+			cxMemFile = new CxMemFile(dataPt, data.size_);
 		}
-
-		uint8_t * dataPt = new uint8_t[data.size_];
-		memcpy(dataPt, data.pData_, data.size_);
-		cxMemFile = new CxMemFile(dataPt, data.size_);
 	}
-
-
 	return cxMemFile;
 }
 
