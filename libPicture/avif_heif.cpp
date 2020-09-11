@@ -162,7 +162,7 @@ CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
 				int image_width = heif_image_handle_get_width(handle);
 				int image_height = heif_image_handle_get_height(handle);
 
-				//int iPos = 0;
+				int iPos = 0;
 
 				outputBitmap = new CRegardsBitmap(image_width, image_height);
 				uint8_t * dataOut = outputBitmap->GetPtBitmap();
@@ -170,9 +170,10 @@ CRegardsBitmap * CHeifAvif::GetPicture(const string &filename)
 					for (int x = 0; x < image_width; x++)
 					{
 						int pos = outputBitmap->GetPosition(x, image_height - y - 1);
-						dataOut[pos + 2] = data[3 * (x + y * stride) + 0];
-						dataOut[pos + 1] = data[3 * (x + y * stride) + 1];
-						dataOut[pos] = data[3 * (x + y * stride) + 2];
+						dataOut[pos + 2] = data[iPos++];
+						dataOut[pos + 1] = data[iPos++];
+						dataOut[pos] = data[iPos++];
+
 					}
 				//outputBitmap->SetBitmap((uint8_t *)data, image_width, image_height);
 				heif_image_release(img);

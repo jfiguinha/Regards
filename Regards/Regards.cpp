@@ -236,16 +236,16 @@ bool MyApp::OnInit()
     wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage());
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
-	/*
+
 	for (int i = 0; i < 10000; i++)
 	{
 		CLibPicture libPicture;
 		CImageLoadingFormat * image = libPicture.LoadPicture("C:\\developpement\\images\\rere.avif");
 		delete image;
 	}
-	*/
+
 #ifndef NDEBUG
-	//::wxMessageBox("toto");
+	::wxMessageBox("toto");
 #endif
 
 #ifdef PREPARE_DATA_TRAINING

@@ -109,7 +109,7 @@ struct heif_error aom_new_decoder(void** dec)
 void aom_free_decoder(void* decoder_raw)
 {
   struct aom_decoder* decoder = (aom_decoder*) decoder_raw;
-
+  aom_codec_destroy(&decoder->codec);
   //de265_error err = de265_free_decoder(decoder->ctx);
   //(void)err;
 
