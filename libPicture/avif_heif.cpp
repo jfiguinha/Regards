@@ -219,7 +219,7 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
 			uint8_t * data = source->GetPtBitmap();
 			source->ConvertToBgr();
-			source->HorzFlipBuf();
+			//source->HorzFlipBuf();
 			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
 			{
 				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
