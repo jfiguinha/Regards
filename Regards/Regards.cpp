@@ -237,17 +237,6 @@ bool MyApp::OnInit()
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
 
-	for (int i = 0; i < 10000; i++)
-	{
-		CLibPicture libPicture;
-		CImageLoadingFormat * image = libPicture.LoadPicture("C:\\developpement\\images\\rere.avif");
-		delete image;
-	}
-
-#ifndef NDEBUG
-	::wxMessageBox("toto");
-#endif
-
 #ifdef PREPARE_DATA_TRAINING
 	//Create image learning
 	//int i = 0;
