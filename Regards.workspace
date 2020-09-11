@@ -29,6 +29,7 @@
     </VirtualDirectory>
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
     <Project Name="libavif" Path="Otherlib/libavif/libavif.project" Active="No"/>
+    <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Video">
     <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project" Active="No"/>
@@ -60,7 +61,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -142,6 +143,7 @@
       <Project Name="libDeepLearning" ConfigName="Debug"/>
       <Project Name="libavif" ConfigName="Debug"/>
       <Project Name="libavif" ConfigName="Debug"/>
+      <Project Name="libheif" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -212,6 +214,7 @@
       <Project Name="libDeepLearning" ConfigName="Release"/>
       <Project Name="libavif" ConfigName="Release"/>
       <Project Name="libavif" ConfigName="Release"/>
+      <Project Name="libheif" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

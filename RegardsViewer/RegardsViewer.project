@@ -184,7 +184,7 @@
         <LibraryPath Value="../libextern/glew-2.1.0/lib"/>
         <LibraryPath Value="../libextern/jasper-1.900.1/src/libjasper/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
-        <LibraryPath Value="../libextern/exiv2-0.26/src/.libs"/>
+        <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavcodec"/>
@@ -291,9 +291,9 @@
         <Library Value="freeglut"/>
         <Library Value="glu32"/>
         <Library Value="glew32"/>
-        <Library Value="exiv2"/>
+        <Library Value="libexiv2.dll.a"/>
+        <Library Value="libexiv2-xmp.a"/>
         <Library Value="cairo"/>
-        <Library Value="iconv"/>
         <Library Value="expat"/>
         <Library Value="jasper"/>
         <Library Value="Jbig"/>
@@ -308,6 +308,7 @@
         <Library Value="swresample"/>
         <Library Value="swscale"/>
         <Library Value="postproc"/>
+        <Library Value="iconv"/>
         <Library Value="glib-2.0"/>
         <Library Value="turbojpeg"/>
         <Library Value="webp"/>

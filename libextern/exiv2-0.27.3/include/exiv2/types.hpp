@@ -575,7 +575,7 @@ namespace Exiv2 {
         // This is abs() - given the existence of broken compilers with Koenig
         // lookup issues and other problems, I code this explicitly. (Remember,
         // IntType may be a user-defined type).
-#ifdef _MSC_VER
+#ifdef __WXMSW__
 #pragma warning( disable : 4146 )
 #undef max
 #undef min
