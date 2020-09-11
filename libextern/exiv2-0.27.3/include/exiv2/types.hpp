@@ -577,9 +577,10 @@ namespace Exiv2 {
         // IntType may be a user-defined type).
 #ifdef __WXMSW__
 #pragma warning( disable : 4146 )
+#endif
 #undef max
 #undef min
-#endif
+
         if (n < zero) {
             if (n == std::numeric_limits<IntType>::min()) {
                 n = std::numeric_limits<IntType>::max();

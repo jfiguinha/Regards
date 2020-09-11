@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libheif" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -63,9 +68,11 @@
         <IncludePath Value="../../libextern/libde265-master"/>
         <IncludePath Value="../../libextern/x265_2.5/source"/>
         <IncludePath Value="../../libextern/x265_2.5/build/msys/8bit"/>
+        <IncludePath Value="../../libextern/x265_2.5/build/linux/8bit"/>
         <Preprocessor Value="HAVE_AOM"/>
         <Preprocessor Value="HAVE_X265"/>
         <Preprocessor Value="HAVE_LIBDE265"/>
+        <Preprocessor Value="HAVE_UNISTD_H"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

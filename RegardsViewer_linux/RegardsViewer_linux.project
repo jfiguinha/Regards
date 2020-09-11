@@ -35,6 +35,54 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="RegardsRaw"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libRegardsBpg_unix"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="FaceRecognition_unix"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++14;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
@@ -97,7 +145,7 @@
         <LibraryPath Value="../libextern/jasper-2.0.14/build/src/libjasper/"/>
         <LibraryPath Value="../libextern/fftw-3.3.8/.libs"/>
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
-        <LibraryPath Value="../libextern/exiv2-0.26/src/.libs"/>
+        <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavcodec"/>
@@ -137,6 +185,7 @@
         <Library Value="Sqlite"/>
         <Library Value="Compress"/>
         <Library Value="Utility"/>
+        <Library Value="heif"/>
         <Library Value="heif_static"/>
         <Library Value="de265"/>
         <Library Value="Picture"/>
@@ -167,6 +216,7 @@
         <Library Value="GLEW"/>
         <Library Value="cairo"/>
         <Library Value="exiv2"/>
+        <Library Value="exiv2-xmp"/>
         <Library Value="expat"/>
         <Library Value="Jbig"/>
         <Library Value="xml2"/>
@@ -238,6 +288,7 @@
         <Library Value="opencv_highgui"/>
         <Library Value="opencv_face"/>
         <Library Value="opencv_objdetect"/>
+        <Library Value="x265"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -287,6 +338,7 @@
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
         <LibraryPath Value="../libScanner/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
+        <LibraryPath Value="../Otherlib/libheif/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -302,11 +354,11 @@
       <PreBuild/>
       <PostBuild>
         <Command Enabled="yes">cp -R ../Regards/Resources ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/x265_2.5/build/linux/8bit/libx265.so.130 ./Debug/libx265.so.130</Command>
-        <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Debug/libmediainfo.so.0</Command>
-        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Debug/libRegardsBpg.so ./Debug/libRegardsBpg.so</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Debug/libexiv2.so.26</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Debug/libde265.so</Command>
+        <Command Enabled="yes">cp ../libextern/x265_2.5/build/linux/8bit/libx265.so.130 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Debug</Command>
+        <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Debug/libRegardsBpg.so ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/qpdf-master/libqpdf/build/.libs/libqpdf.so.* ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libjasper* ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libpoppler* ./Debug</Command>
@@ -382,6 +434,7 @@
         <LibraryPath Value="../Otherlib/wxPDFDoc/Release"/>
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../Otherlib/libavif/Release"/>
+        <LibraryPath Value="../Otherlib/libheif/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -400,7 +453,7 @@
         <Command Enabled="yes">cp ../libextern/x265_2.5/build/linux/8bit/libx265.so.130 ./Release</Command>
         <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.so.0 ./Release</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_unix/Release/libRegardsBpg.so ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/exiv2-0.26/src/.libs/libexiv2.so.26 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Release</Command>
@@ -506,52 +559,6 @@
     <Project Name="wxPDFDoc"/>
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="RegardsRaw"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libRegardsBpg_unix"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="FaceRecognition_unix"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
+    <Project Name="libheif"/>
   </Dependencies>
 </CodeLite_Project>
