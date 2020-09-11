@@ -29,6 +29,7 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="avif_heif.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="PictureData.cpp"/>
     <File Name="pfm.cpp"/>
@@ -38,6 +39,7 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="avif_heif.h"/>
     <File Name="avif.h"/>
     <File Name="PictureData.h"/>
     <File Name="pfm.h"/>
