@@ -889,8 +889,9 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 			}
 			else if (iFormat == AVIF)
 			{
-				CAvif::SavePicture(fileName.ToStdString(), image, 100 - quality);
-				image->DeleteMemory(false);
+				CHeifAvif::SavePicture(fileName.ToStdString(), iFormat, image, 100 - quality);
+				//CAvif::SavePicture(fileName.ToStdString(), image, 100 - quality);
+				//image->DeleteMemory(false);
 			}
 			delete image;
 			break;

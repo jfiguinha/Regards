@@ -222,7 +222,7 @@ void CHeifAvif::SavePicture(const string &filenameOut, const int & type, CRegard
 			source->HorzFlipBuf();
 			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
 			{
-				int position = source->GetPosition(0, y);
+				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
 				memcpy(p + y * stride, data + position, source->GetBitmapWidth() * 4);
 			}
 
