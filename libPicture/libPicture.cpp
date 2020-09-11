@@ -2131,7 +2131,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			{
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-				else
+
+				if(!isThumbnail || picture == nullptr)
 					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 
 			}
