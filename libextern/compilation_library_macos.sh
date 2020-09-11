@@ -71,11 +71,13 @@ tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 tar xf  fftw-3.3.8.tar.gz
 
 
-#Compile exiv2-0.26 :
-cd exiv2-0.26 
-chmod +x configure
-./configure --enable-video
+#Compile exiv2-0.27.3 :
+cd exiv2-0.27.3
+mkdir build
+cd build 
+cmake ../
 make -j$NBPROC
+cd ..
 cd ..
 
 

@@ -75,11 +75,13 @@ chmod +x install-sh
 sudo make install
 cd ..
 
-#Compile exiv2-0.26 :
-cd exiv2-0.26 
-chmod +x configure
-./configure --enable-video --enable-webready
+#Compile exiv2-0.27.3 :
+cd exiv2-0.27.3
+mkdir build
+cd build 
+cmake ../
 make -j$NBPROC
+cd ..
 cd ..
 
 #Compile heif-master
