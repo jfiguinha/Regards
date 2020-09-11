@@ -878,6 +878,15 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	#endif
 
+		case HEIC:
+		case AVIF:
+		{
+			CRegardsBitmap * image = bitmap->GetRegardsBitmap();
+			CHeifAvif::SavePicture(fileName.ToStdString(), iFormat, image, 100 - quality);
+			delete image;
+			break;
+		}
+
 		case JPEG:
 		{
 			CxImage * image = bitmap->GetCxImage();
@@ -1504,14 +1513,10 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 	switch (iFormat)
 	{
 #ifdef LIBHEIC
+		case AVIF:
 		case HEIC:
 		{
-			return CHeic::GetNbFrame(szFileName.ToStdString());
-		}
-		break;
-		case AVIF:
-		{
-			return CAvif::GetNbFrame(szFileName.ToStdString());
+			return CHeifAvif::GetNbFrame(szFileName.ToStdString());
 		}
 		break;
 #endif
@@ -1762,22 +1767,13 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & size)
 {
 	int iFormat = TestImageFormat(filename);
-	if (iFormat == HEIC)
+	if (iFormat == HEIC || iFormat == AVIF)
 	{
-		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		CHeifAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		if (size > 0)
 		{
 			data = new uint8_t[size + 1];
-			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-		}
-	}
-	else if(iFormat == AVIF)
-	{
-		CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-		if (size > 0)
-		{
-			data = new uint8_t[size + 1];
-			CAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+			CHeifAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
 	return size;
@@ -1837,9 +1833,9 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 		if(imageLoading != nullptr && imageLoading->IsOk())
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
     }
-	else if (iFormat == HEIC)
+	else if (iFormat == HEIC || iFormat == AVIF)
 	{
-		CRegardsBitmap * bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
+		CRegardsBitmap * bitmap = CHeifAvif::GetThumbnailPicture(fileName.ToStdString());
 		if (bitmap != nullptr)
 		{
 			imageLoading = new CImageLoadingFormat();
@@ -2096,9 +2092,9 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			if (numPicture == 0)
 			{
 				if (isThumbnail)
-					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
-					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
 			else
 			{
@@ -2120,8 +2116,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 			if (numPicture == 0)
 			{
-				bool isOk = false;
-				picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+				if (isThumbnail)
+					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+				else
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
 			else
 			{
