@@ -242,14 +242,19 @@ CRegardsBitmap::CRegardsBitmap()
 //////////////////////////////////////////////////////////////////////////////////////////
 CRegardsBitmap::~CRegardsBitmap()
 {
-	if (data != nullptr)
-		delete[] data;
+	if (keepMem)
+	{
+		if (data != nullptr)
+			delete[] data;
 
-	data = nullptr;
-
+		data = nullptr;
+	}
 }
 
-
+void CRegardsBitmap::DeleteMemory(const bool &keepMem)
+{
+	this->keepMem = keepMem;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //

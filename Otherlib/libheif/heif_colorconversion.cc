@@ -293,7 +293,7 @@ Op_RGB_to_RGB24_32::convert_colorspace(const std::shared_ptr<const HeifPixelImag
 }
 
 
-static inline uint8_t clip(int x)
+static inline uint8_t clip_int_u8(int x)
 {
   if (x < 0) return 0;
   if (x > 255) return 255;
@@ -301,17 +301,9 @@ static inline uint8_t clip(int x)
 }
 
 
-static inline uint16_t clip(float fx, int32_t maxi)
+static inline uint16_t clip_f_u16(float fx, int32_t maxi)
 {
-  int x = static_cast<int>(fx);
-  if (x < 0) return 0;
-  if (x > maxi) return (uint16_t) maxi;
-  return static_cast<uint16_t>(x);
-}
-
-
-static inline uint16_t clip(int32_t x, int32_t maxi)
-{
+  long x = lroundf(fx + 0.5f);
   if (x < 0) return 0;
   if (x > maxi) return (uint16_t) maxi;
   return static_cast<uint16_t>(x);
@@ -414,7 +406,7 @@ Op_YCbCr_to_RGB<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
   }
 
 
-  auto colorProfile = std::dynamic_pointer_cast<const color_profile_nclx>(input->get_color_profile());
+  auto colorProfile = input->get_color_profile_nclx();
 
   int width = input->get_width();
   int height = input->get_height();
@@ -495,9 +487,9 @@ Op_YCbCr_to_RGB<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
           out_b[y * out_b_stride + x] = in_cb[cy * in_cb_stride + cx];
         }
         else {
-          out_r[y * out_r_stride + x] = Pixel(((in_cr[cy * in_cr_stride + cx] * 219) >> 8) + 16);
-          out_g[y * out_g_stride + x] = Pixel(((in_y[y * in_y_stride + x] * 219) >> 8) + 16);
-          out_b[y * out_b_stride + x] = Pixel(((in_cb[cy * in_cb_stride + cx] * 219) >> 8) + 16);
+          out_r[y * out_r_stride + x] = Pixel(((in_cr[cy * in_cr_stride + cx] * 219 + 128) >> 8) + 16);
+          out_g[y * out_g_stride + x] = Pixel(((in_y[y * in_y_stride + x] * 219 + 128) >> 8) + 16);
+          out_b[y * out_b_stride + x] = Pixel(((in_cb[cy * in_cb_stride + cx] * 219 + 128) >> 8) + 16);
         }
       }
       else if (matrix_coeffs == 8) {
@@ -508,9 +500,9 @@ Op_YCbCr_to_RGB<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
         int cb = in_cb[cy * in_cb_stride + cx] - halfRange;
         int cr = in_cr[cy * in_cr_stride + cx] - halfRange;
 
-        out_r[y * out_r_stride + x] = (Pixel) (clip(yv - cb + cr));
-        out_g[y * out_g_stride + x] = (Pixel) (clip(yv + cb));
-        out_b[y * out_b_stride + x] = (Pixel) (clip(yv - cb - cr));
+        out_r[y * out_r_stride + x] = (Pixel) (clip_int_u8(yv - cb + cr));
+        out_g[y * out_g_stride + x] = (Pixel) (clip_int_u8(yv + cb));
+        out_b[y * out_b_stride + x] = (Pixel) (clip_int_u8(yv - cb - cr));
       }
       else {
         float yv, cb, cr;
@@ -524,9 +516,9 @@ Op_YCbCr_to_RGB<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
           cr = cr * 1.1429f;
         }
 
-        out_r[y * out_r_stride + x] = (Pixel) (clip(yv + coeffs.r_cr * cr, fullRange));
-        out_g[y * out_g_stride + x] = (Pixel) (clip(yv + coeffs.g_cb * cb + coeffs.g_cr * cr, fullRange));
-        out_b[y * out_b_stride + x] = (Pixel) (clip(yv + coeffs.b_cb * cb, fullRange));
+        out_r[y * out_r_stride + x] = (Pixel) (clip_f_u16(yv + coeffs.r_cr * cr, fullRange));
+        out_g[y * out_g_stride + x] = (Pixel) (clip_f_u16(yv + coeffs.g_cb * cb + coeffs.g_cr * cr, fullRange));
+        out_b[y * out_b_stride + x] = (Pixel) (clip_f_u16(yv + coeffs.b_cb * cb, fullRange));
       }
     }
 
@@ -688,7 +680,8 @@ Op_RGB_to_YCbCr<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
           out_y[y * out_y_stride + x] = in_g[y * in_g_stride + x];
         }
         else {
-          out_y[y * out_y_stride + x] = (Pixel) (((in_g[y * in_g_stride + x] * 219) >> 8) + 16);
+          float v = (((in_g[y * in_g_stride + x] * 219.0f) / 256) + 16);
+          out_y[y * out_y_stride + x] = (Pixel) clip_f_u16(v, fullRange);
         }
       }
       else {
@@ -696,12 +689,12 @@ Op_RGB_to_YCbCr<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
         float g = in_g[y * in_g_stride + x];
         float b = in_b[y * in_b_stride + x];
 
-        Pixel pix = (Pixel) clip(
-            (int32_t) (r * coeffs.c[0][0] + g * coeffs.c[0][1] + b * coeffs.c[0][2]), fullRange);
-
+        float v = r * coeffs.c[0][0] + g * coeffs.c[0][1] + b * coeffs.c[0][2];
         if (!full_range_flag) {
-          pix = (Pixel) (((pix * 219) >> 8) + 16);
+          v = (((v * 219) / 256) + 16);
         }
+
+        Pixel pix = (Pixel) clip_f_u16(v, fullRange);
 
         out_y[y * out_y_stride + x] = pix;
       }
@@ -716,8 +709,10 @@ Op_RGB_to_YCbCr<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
           out_cr[(y / subV) * out_cb_stride + (x / subH)] = in_r[y * in_b_stride + x];
         }
         else {
-          out_cb[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) (((in_b[y * in_b_stride + x] * 219) >> 8) + 16);
-          out_cr[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) (((in_r[y * in_b_stride + x] * 219) >> 8) + 16);
+          out_cb[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) clip_f_u16(
+              ((in_b[y * in_b_stride + x] * 219.0f) / 256) + 16, fullRange);
+          out_cr[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) clip_f_u16(
+              ((in_r[y * in_b_stride + x] * 219.0f) / 256) + 16, fullRange);
         }
       }
       else {
@@ -725,18 +720,18 @@ Op_RGB_to_YCbCr<Pixel>::convert_colorspace(const std::shared_ptr<const HeifPixel
         float g = in_g[y * in_g_stride + x];
         float b = in_b[y * in_b_stride + x];
 
-        int32_t cb, cr;
+        float cb, cr;
 
-        cb = (int32_t) (r * coeffs.c[1][0] + g * coeffs.c[1][1] + b * coeffs.c[1][2]);
-        cr = (int32_t) (r * coeffs.c[2][0] + g * coeffs.c[2][1] + b * coeffs.c[2][2]);
+        cb = r * coeffs.c[1][0] + g * coeffs.c[1][1] + b * coeffs.c[1][2];
+        cr = r * coeffs.c[2][0] + g * coeffs.c[2][1] + b * coeffs.c[2][2];
 
         if (!full_range_flag) {
-          cb = (cb * 224) >> 8;
-          cr = (cb * 224) >> 8;
+          cb = (cb * 224) / 256;
+          cr = (cb * 224) / 256;
         }
 
-        out_cb[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) clip(cb + halfRange, fullRange);
-        out_cr[(y / subV) * out_cr_stride + (x / subH)] = (Pixel) clip(cr + halfRange, fullRange);
+        out_cb[(y / subV) * out_cb_stride + (x / subH)] = (Pixel) clip_f_u16(cb + halfRange, fullRange);
+        out_cr[(y / subV) * out_cr_stride + (x / subH)] = (Pixel) clip_f_u16(cr + halfRange, fullRange);
       }
     }
   }
@@ -830,7 +825,7 @@ Op_YCbCr420_to_RGB24::convert_colorspace(const std::shared_ptr<const HeifPixelIm
 
   outimg->add_plane(heif_channel_interleaved, width, height, 8);
 
-  auto colorProfile = std::dynamic_pointer_cast<const color_profile_nclx>(input->get_color_profile());
+  auto colorProfile = input->get_color_profile_nclx();
   YCbCr_to_RGB_coefficients coeffs = YCbCr_to_RGB_coefficients::defaults();
   if (colorProfile) {
     coeffs = heif::get_YCbCr_to_RGB_coefficients(colorProfile->get_matrix_coefficients(),
@@ -860,9 +855,9 @@ Op_YCbCr420_to_RGB24::convert_colorspace(const std::shared_ptr<const HeifPixelIm
       int cb = (in_cb[y / 2 * in_cb_stride + x / 2] - 128);
       int cr = (in_cr[y / 2 * in_cr_stride + x / 2] - 128);
 
-      out_p[y * out_p_stride + 3 * x + 0] = clip(yv + ((r_cr * cr) >> 8));
-      out_p[y * out_p_stride + 3 * x + 1] = clip(yv + ((g_cb * cb + g_cr * cr) >> 8));
-      out_p[y * out_p_stride + 3 * x + 2] = clip(yv + ((b_cb * cb) >> 8));
+      out_p[y * out_p_stride + 3 * x + 0] = clip_int_u8(yv + ((r_cr * cr + 128) >> 8));
+      out_p[y * out_p_stride + 3 * x + 1] = clip_int_u8(yv + ((g_cb * cb + g_cr * cr + 128) >> 8));
+      out_p[y * out_p_stride + 3 * x + 2] = clip_int_u8(yv + ((b_cb * cb + 128) >> 8));
     }
   }
 
@@ -951,7 +946,7 @@ Op_YCbCr420_to_RGB32::convert_colorspace(const std::shared_ptr<const HeifPixelIm
 
   // --- get conversion coefficients
 
-  auto colorProfile = std::dynamic_pointer_cast<const color_profile_nclx>(input->get_color_profile());
+  auto colorProfile = input->get_color_profile_nclx();
   YCbCr_to_RGB_coefficients coeffs = YCbCr_to_RGB_coefficients::defaults();
   if (colorProfile) {
     coeffs = heif::get_YCbCr_to_RGB_coefficients(colorProfile->get_matrix_coefficients(),
@@ -989,9 +984,9 @@ Op_YCbCr420_to_RGB32::convert_colorspace(const std::shared_ptr<const HeifPixelIm
       int cb = (in_cb[y / 2 * in_cb_stride + x / 2] - 128);
       int cr = (in_cr[y / 2 * in_cr_stride + x / 2] - 128);
 
-      out_p[y * out_p_stride + 4 * x + 0] = clip(yv + ((r_cr * cr) >> 8));
-      out_p[y * out_p_stride + 4 * x + 1] = clip(yv + ((g_cb * cb + g_cr * cr) >> 8));
-      out_p[y * out_p_stride + 4 * x + 2] = clip(yv + ((b_cb * cb) >> 8));
+      out_p[y * out_p_stride + 4 * x + 0] = clip_int_u8(yv + ((r_cr * cr + 128) >> 8));
+      out_p[y * out_p_stride + 4 * x + 1] = clip_int_u8(yv + ((g_cb * cb + g_cr * cr + 128) >> 8));
+      out_p[y * out_p_stride + 4 * x + 2] = clip_int_u8(yv + ((b_cb * cb + 128) >> 8));
 
 
       if (with_alpha) {
@@ -1808,7 +1803,7 @@ Op_mono_to_RGB24_32::convert_colorspace(const std::shared_ptr<const HeifPixelIma
 }
 
 
-class Op_RGB24_32_to_YCbCr420 : public ColorConversionOperation
+class Op_RGB24_32_to_YCbCr : public ColorConversionOperation
 {
 public:
   std::vector<ColorStateWithCost>
@@ -1824,15 +1819,21 @@ public:
 
 
 std::vector<ColorStateWithCost>
-Op_RGB24_32_to_YCbCr420::state_after_conversion(ColorState input_state,
-                                                ColorState target_state,
-                                                ColorConversionOptions options)
+Op_RGB24_32_to_YCbCr::state_after_conversion(ColorState input_state,
+                                             ColorState target_state,
+                                             ColorConversionOptions options)
 {
   // Note: no input alpha channel required. It will be filled up with 0xFF.
 
   if (input_state.colorspace != heif_colorspace_RGB ||
       (input_state.chroma != heif_chroma_interleaved_RGB &&
        input_state.chroma != heif_chroma_interleaved_RGBA)) {
+    return {};
+  }
+
+  if (target_state.chroma != heif_chroma_420 &&
+      target_state.chroma != heif_chroma_422 &&
+      target_state.chroma != heif_chroma_444) {
     return {};
   }
 
@@ -1847,11 +1848,12 @@ Op_RGB24_32_to_YCbCr420::state_after_conversion(ColorState input_state,
   ColorState output_state;
   ColorConversionCosts costs;
 
+
   // --- convert RGB24
 
   if (input_state.chroma == heif_chroma_interleaved_RGB) {
     output_state.colorspace = heif_colorspace_YCbCr;
-    output_state.chroma = heif_chroma_420;
+    output_state.chroma = target_state.chroma;
     output_state.has_alpha = false;
     output_state.bits_per_pixel = 8;
 
@@ -1865,7 +1867,7 @@ Op_RGB24_32_to_YCbCr420::state_after_conversion(ColorState input_state,
 
   if (input_state.chroma == heif_chroma_interleaved_RGBA) {
     output_state.colorspace = heif_colorspace_YCbCr;
-    output_state.chroma = heif_chroma_420;
+    output_state.chroma = target_state.chroma;
     output_state.has_alpha = true;
     output_state.bits_per_pixel = 8;
 
@@ -1878,9 +1880,9 @@ Op_RGB24_32_to_YCbCr420::state_after_conversion(ColorState input_state,
 }
 
 
-static inline uint8_t clip(float fx)
+static inline uint8_t clip_f_u8(float fx)
 {
-  int x = static_cast<int>(fx);
+  long x = lroundf(fx + 0.5f);
   if (x < 0) return 0;
   if (x > 255) return 255;
   return static_cast<uint8_t>(x);
@@ -1888,19 +1890,23 @@ static inline uint8_t clip(float fx)
 
 
 std::shared_ptr<HeifPixelImage>
-Op_RGB24_32_to_YCbCr420::convert_colorspace(const std::shared_ptr<const HeifPixelImage>& input,
-                                            ColorState target_state,
-                                            ColorConversionOptions options)
+Op_RGB24_32_to_YCbCr::convert_colorspace(const std::shared_ptr<const HeifPixelImage>& input,
+                                         ColorState target_state,
+                                         ColorConversionOptions options)
 {
   int width = input->get_width();
   int height = input->get_height();
 
   auto outimg = std::make_shared<HeifPixelImage>();
 
-  outimg->create(width, height, heif_colorspace_YCbCr, heif_chroma_420);
+  auto chroma = target_state.chroma;
+  uint8_t chromaSubH = chroma_h_subsampling(chroma);
+  uint8_t chromaSubV = chroma_v_subsampling(chroma);
 
-  int chroma_width = (width + 1) / 2;
-  int chroma_height = (height + 1) / 2;
+  outimg->create(width, height, heif_colorspace_YCbCr, chroma);
+
+  int chroma_width = (width + chromaSubH - 1) / chromaSubH;
+  int chroma_height = (height + chromaSubV - 1) / chromaSubV;
 
   const bool has_alpha = (input->get_chroma_format() == heif_chroma_interleaved_32bit);
 
@@ -1952,33 +1958,33 @@ Op_RGB24_32_to_YCbCr420::convert_colorspace(const std::shared_ptr<const HeifPixe
       float yv = r * coeffs.c[0][0] + g * coeffs.c[0][1] + b * coeffs.c[0][2];
 
       if (full_range_flag) {
-        out_y[y * out_y_stride + x] = clip(yv);
+        out_y[y * out_y_stride + x] = clip_f_u8(yv);
       }
       else {
-        out_y[y * out_y_stride + x] = (uint8_t) (clip(yv * 0.85547f, 219) + 16);
+        out_y[y * out_y_stride + x] = (uint8_t) (clip_f_u16(yv * 0.85547f, 219) + 16);
       }
     }
   }
 
-  for (int y = 0; y < height; y += 2) {
+  for (int y = 0; y < height; y += chromaSubV) {
     const uint8_t* p = &in_p[y * in_stride];
 
-    for (int x = 0; x < width; x += 2) {
+    for (int x = 0; x < width; x += chromaSubH) {
       uint8_t r = p[0];
       uint8_t g = p[1];
       uint8_t b = p[2];
-      p += bytes_per_pixel * 2;
+      p += bytes_per_pixel * chromaSubH;
 
       float cb = r * coeffs.c[1][0] + g * coeffs.c[1][1] + b * coeffs.c[1][2];
       float cr = r * coeffs.c[2][0] + g * coeffs.c[2][1] + b * coeffs.c[2][2];
 
       if (full_range_flag) {
-        out_cb[(y / 2) * out_cb_stride + (x / 2)] = clip(cb + 128);
-        out_cr[(y / 2) * out_cr_stride + (x / 2)] = clip(cr + 128);
+        out_cb[(y / chromaSubV) * out_cb_stride + (x / chromaSubH)] = clip_f_u8(cb + 128);
+        out_cr[(y / chromaSubV) * out_cr_stride + (x / chromaSubH)] = clip_f_u8(cr + 128);
       }
       else {
-        out_cb[(y / 2) * out_cb_stride + (x / 2)] = (uint8_t) clip(cb * 0.875f + 128.0f);
-        out_cr[(y / 2) * out_cr_stride + (x / 2)] = (uint8_t) clip(cr * 0.875f + 128.0f);
+        out_cb[(y / chromaSubV) * out_cb_stride + (x / chromaSubH)] = (uint8_t) clip_f_u8(cb * 0.875f + 128.0f);
+        out_cr[(y / chromaSubV) * out_cr_stride + (x / chromaSubH)] = (uint8_t) clip_f_u8(cr * 0.875f + 128.0f);
       }
     }
   }
@@ -2034,7 +2040,7 @@ Op_RGB24_32_to_YCbCr444_GBR::state_after_conversion(ColorState input_state,
     return {};
   }
 
-  if (!input_state.nclx_profile->get_full_range_flag()) {
+  if (input_state.nclx_profile && !input_state.nclx_profile->get_full_range_flag()) {
     return {};
   }
 
@@ -2414,7 +2420,7 @@ Op_to_sdr_planes::convert_colorspace(const std::shared_ptr<const HeifPixelImage>
       for (int y = 0; y < height; y++)
         for (int x = 0; x < width; x++) {
           int in = p_in[y * stride_in + x];
-          p_out[y * stride_out + x] = (uint8_t) (in >> shift);
+          p_out[y * stride_out + x] = (uint8_t) (in >> shift); // TODO: I think no rounding here, but am not sure.
         }
     }
   }
@@ -2451,6 +2457,17 @@ Op_RRGGBBxx_HDR_to_YCbCr420::state_after_conversion(ColorState input_state,
       input_state.bits_per_pixel == 8) {
     return {};
   }
+
+  if (input_state.nclx_profile) {
+    int matrix = input_state.nclx_profile->get_matrix_coefficients();
+    if (matrix == 0 || matrix == 8 || matrix == 11 || matrix == 14) {
+      return {};
+    }
+    if (!input_state.nclx_profile->get_full_range_flag()) {
+      return {};
+    }
+  }
+
 
   std::vector<ColorStateWithCost> states;
 
@@ -2531,16 +2548,31 @@ Op_RRGGBBxx_HDR_to_YCbCr420::convert_colorspace(const std::shared_ptr<const Heif
   int le = (input->get_chroma_format() == heif_chroma_interleaved_RRGGBBAA_LE ||
             input->get_chroma_format() == heif_chroma_interleaved_RRGGBB_LE) ? 1 : 0;
 
+  auto colorProfile = input->get_color_profile_nclx();
+  RGB_to_YCbCr_coefficients coeffs = RGB_to_YCbCr_coefficients::defaults();
+  bool full_range_flag = true;
+  if (colorProfile) {
+    full_range_flag = target_state.nclx_profile->get_full_range_flag();
+    coeffs = heif::get_RGB_to_YCbCr_coefficients(colorProfile->get_matrix_coefficients(),
+                                                 colorProfile->get_colour_primaries());
+  }
+
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
 
       const uint8_t* in = &in_p[y * in_p_stride + bytesPerPixel * x];
 
-      int r = (in[0 + le] << 8) | in[1 - le];
-      int g = (in[2 + le] << 8) | in[3 - le];
-      int b = (in[4 + le] << 8) | in[5 - le];
+      float r = static_cast<float>((in[0 + le] << 8) | in[1 - le]);
+      float g = static_cast<float>((in[2 + le] << 8) | in[3 - le]);
+      float b = static_cast<float>((in[4 + le] << 8) | in[5 - le]);
 
-      out_y[y * out_y_stride + x] = clip((r * 4899 + g * 9617 + b * 1868) >> 14, fullRange);
+      float v = r * coeffs.c[0][0] + g * coeffs.c[0][1] + b * coeffs.c[0][2];
+
+      if (!full_range_flag) {
+        v = v * 0.85547f + 16;  // 0.85547 = 219/256
+      }
+
+      out_y[y * out_y_stride + x] = clip_f_u16(v, fullRange);
 
       if (has_alpha) {
         uint16_t a = (uint16_t) ((in[6 + le] << 8) | in[7 - le]);
@@ -2553,14 +2585,20 @@ Op_RRGGBBxx_HDR_to_YCbCr420::convert_colorspace(const std::shared_ptr<const Heif
     for (int x = 0; x < width; x += 2) {
       const uint8_t* in = &in_p[y * in_p_stride + bytesPerPixel * x];
 
-      int r = (in[0 + le] << 8) | in[1 - le];
-      int g = (in[2 + le] << 8) | in[3 - le];
-      int b = (in[4 + le] << 8) | in[5 - le];
+      float r = static_cast<float>((in[0 + le] << 8) | in[1 - le]);
+      float g = static_cast<float>((in[2 + le] << 8) | in[3 - le]);
+      float b = static_cast<float>((in[4 + le] << 8) | in[5 - le]);
 
-      out_cb[(y / 2) * out_cb_stride + (x / 2)] = clip(halfRange + ((-r * 2765 - g * 5427 + (b << 13)) >> 14),
-                                                       fullRange);
-      out_cr[(y / 2) * out_cr_stride + (x / 2)] = clip(halfRange + (((r << 13) - g * 6860 - b * 1332) >> 14),
-                                                       fullRange);
+      float cb = r * coeffs.c[1][0] + g * coeffs.c[1][1] + b * coeffs.c[1][2];
+      float cr = r * coeffs.c[2][0] + g * coeffs.c[2][1] + b * coeffs.c[2][2];
+
+      if (!full_range_flag) {
+        cb = cb * 0.85547f;  // 0.85547 = 219/256
+        cr = cr * 0.85547f;  // 0.85547 = 219/256
+      }
+
+      out_cb[(y / 2) * out_cb_stride + (x / 2)] = clip_f_u16(halfRange + cb, fullRange);
+      out_cr[(y / 2) * out_cr_stride + (x / 2)] = clip_f_u16(halfRange + cr, fullRange);
     }
   }
 
@@ -2593,6 +2631,13 @@ Op_YCbCr420_to_RRGGBBaa::state_after_conversion(ColorState input_state,
       input_state.chroma != heif_chroma_420 ||
       input_state.bits_per_pixel == 8) {
     return {};
+  }
+
+  if (input_state.nclx_profile) {
+    int matrix = input_state.nclx_profile->get_matrix_coefficients();
+    if (matrix == 0 || matrix == 8 || matrix == 11 || matrix == 14) {
+      return {};
+    }
   }
 
   std::vector<ColorStateWithCost> states;
@@ -2669,17 +2714,32 @@ Op_YCbCr420_to_RRGGBBaa::convert_colorspace(const std::shared_ptr<const HeifPixe
 
   int maxval = (1 << bpp) - 1;
 
+  bool full_range_flag = true;
+  YCbCr_to_RGB_coefficients coeffs = YCbCr_to_RGB_coefficients::defaults();
+
+  auto colorProfile = input->get_color_profile_nclx();
+  if (colorProfile) {
+    full_range_flag = colorProfile->get_full_range_flag();
+    coeffs = heif::get_YCbCr_to_RGB_coefficients(colorProfile->get_matrix_coefficients(),
+                                                 colorProfile->get_colour_primaries());
+  }
+
   for (int y = 0; y < height; y++) {
     for (int x = 0; x < width; x++) {
 
-      int y_ = in_y[y * in_y_stride / 2 + x];
-      int cb = in_cb[y / 2 * in_cb_stride / 2 + x / 2] - (1 << (bpp - 1));
-      int cr = in_cr[y / 2 * in_cr_stride / 2 + x / 2] - (1 << (bpp - 1));
+      float y_ = in_y[y * in_y_stride / 2 + x];
+      float cb = static_cast<float>(in_cb[y / 2 * in_cb_stride / 2 + x / 2] - (1 << (bpp - 1)));
+      float cr = static_cast<float>(in_cr[y / 2 * in_cr_stride / 2 + x / 2] - (1 << (bpp - 1)));
 
-      int r = clip((int16_t) (y_ + 1.40200 * cr), maxval);
-      int g = clip((int16_t) (y_ - 0.34414 * cb - 0.71414 * cr), maxval);
-      int b = clip(int16_t(y_ + 1.77200 * cb), maxval);
+      if (!full_range_flag) {
+        y_ = (y_ - 16) * 1.1689f;
+        cb = cb * 1.1429f;
+        cr = cr * 1.1429f;
+      }
 
+      int r = clip_f_u16(y_ + coeffs.r_cr * cr, maxval);
+      int g = clip_f_u16(y_ + coeffs.g_cb * cb - coeffs.g_cr * cr, maxval);
+      int b = clip_f_u16(y_ + coeffs.b_cb * cb, maxval);
 
       out_p[y * out_p_stride + bytesPerPixel * x + 0 + le] = (uint8_t) (r >> 8);
       out_p[y * out_p_stride + bytesPerPixel * x + 2 + le] = (uint8_t) (g >> 8);
@@ -2752,7 +2812,7 @@ bool ColorConversionPipeline::construct_pipeline(ColorState input_state,
   ops.push_back(std::make_shared<Op_mono_to_RGB24_32>());
   ops.push_back(std::make_shared<Op_RRGGBBaa_swap_endianness>());
   ops.push_back(std::make_shared<Op_RRGGBBaa_BE_to_RGB_HDR>());
-  ops.push_back(std::make_shared<Op_RGB24_32_to_YCbCr420>());
+  ops.push_back(std::make_shared<Op_RGB24_32_to_YCbCr>());
   ops.push_back(std::make_shared<Op_RGB24_32_to_YCbCr444_GBR>());
   ops.push_back(std::make_shared<Op_RGB_to_YCbCr<uint8_t>>());
   ops.push_back(std::make_shared<Op_RGB_to_YCbCr<uint16_t>>());
@@ -2911,6 +2971,11 @@ std::shared_ptr<HeifPixelImage> ColorConversionPipeline::convert_image(const std
       return nullptr; // TODO: we should return a proper error
     }
 
+    // --- pass the color profiles to the new image
+
+    out->set_color_profile_nclx(m_target_state.nclx_profile);
+    out->set_color_profile_icc(in->get_color_profile_icc());
+
     in = out;
   }
 
@@ -2955,7 +3020,7 @@ std::shared_ptr<HeifPixelImage> heif::convert_colorspace(const std::shared_ptr<H
   input_state.colorspace = input->get_colorspace();
   input_state.chroma = input->get_chroma_format();
   input_state.has_alpha = input->has_channel(heif_channel_Alpha) || is_chroma_with_alpha(input->get_chroma_format());
-  input_state.nclx_profile = std::dynamic_pointer_cast<const color_profile_nclx>(input->get_color_profile());
+  input_state.nclx_profile = input->get_color_profile_nclx();
 
   std::set<enum heif_channel> channels = input->get_channel_set();
   assert(!channels.empty());

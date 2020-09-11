@@ -882,7 +882,16 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		case AVIF:
 		{
 			CRegardsBitmap * image = bitmap->GetRegardsBitmap();
-			CHeifAvif::SavePicture(fileName.ToStdString(), iFormat, image, 100 - quality);
+			if (iFormat == HEIC)
+			{
+				CHeifAvif::SavePicture(fileName.ToStdString(), iFormat, image, 100 - quality);
+				
+			}
+			else if (iFormat == AVIF)
+			{
+				CAvif::SavePicture(fileName.ToStdString(), image, 100 - quality);
+				image->DeleteMemory(false);
+			}
 			delete image;
 			break;
 		}

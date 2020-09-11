@@ -15,6 +15,7 @@ public:
 	CRegardsBitmap(const int &iWidth, const int &iHeight, const int &iDepth = 32);
 	CRegardsBitmap();
 	virtual ~CRegardsBitmap();
+	void DeleteMemory(const bool &keepMem);
 
 	CRegardsBitmap& operator=(const CRegardsBitmap& other);
 
@@ -102,6 +103,7 @@ protected:
 	bool transparent;
 	uint8_t * data;
 	int orientation;
+	bool keepMem = true;
 	//bool needRotate;
 
 };

@@ -243,96 +243,68 @@ CRegardsBitmap * CAvif::GetPicture(const string &filename, int &delay, const int
 }
 
 
-void CAvif::SavePicture(const string &filename, CRegardsBitmap * source)
+void CAvif::SavePicture(const string &filename, CRegardsBitmap * source, const int &compression)
 {
-	int width = 32;
-	int height = 32;
-	int depth = 8;
-	avifPixelFormat format = AVIF_PIXEL_FORMAT_YUV420;
-	avifImage * image = avifImageCreate(width, height, depth, format);
-	if (image != nullptr && source != nullptr)
+
+	if (source != nullptr)
 	{
-		// (Semi-)optional: Describe the color profile, YUV<->RGB conversion, and range.
-		// These default to "unspecified" and full range. You should at least set the
-		// matrixCoefficients to indicate how you would like YUV<->RGB conversion to be done.
-		image->colorPrimaries = AVIF_COLOR_PRIMARIES_BT709;
-		image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
-		image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT709;
-		image->yuvRange = AVIF_RANGE_FULL;
-
-		// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
-		avifRGBImage rgb;
-		avifRGBImageSetDefaults(&rgb, image);
-		rgb.depth = 8;   // [8, 10, 12, 16]; Does not need to match image->depth.
-		rgb.format = AVIF_RGB_FORMAT_BGRA;  // See choices in avif.h
-		avifRGBImageAllocatePixels(&rgb);
-		memcpy(rgb.pixels, source->GetPtBitmap(), source->GetBitmapSize());
-		rgb.rowBytes = source->GetWidthSize();
-
-		avifImageRGBToYUV(image, &rgb); // if alpha is present, it will also be copied/converted
-		avifRGBImageFreePixels(&rgb);
-
-		/*
-		// Optional: Set Exif and/or XMP metadata
-		uint8_t * exif = ...;  // raw Exif payload
-		size_t exifSize = ...; // Length of raw Exif payload
-		avifImageSetMetadataExif(image, exif, exifSize);
-		*/
-
-		avifRWData output = AVIF_DATA_EMPTY;
-		avifEncoder * encoder = avifEncoderCreate();
-		encoder->maxThreads = 8; // Choose max encoder threads, 1 to disable multithreading
-		encoder->minQuantizer = AVIF_QUANTIZER_LOSSLESS;
-		encoder->maxQuantizer = AVIF_QUANTIZER_LOSSLESS;
-		avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
-		if (encodeResult == AVIF_RESULT_OK)
+		int width = source->GetBitmapWidth();
+		int height = source->GetBitmapHeight();
+		int depth = 8;
+		avifPixelFormat format = AVIF_PIXEL_FORMAT_YUV420;
+		avifImage * image = avifImageCreate(width, height, depth, format);
+		if (image != nullptr)
 		{
-			ifstream file(filename, ios::in | ios::binary | ios::ate);
-			if (file.is_open())
+			// (Semi-)optional: Describe the color profile, YUV<->RGB conversion, and range.
+			// These default to "unspecified" and full range. You should at least set the
+			// matrixCoefficients to indicate how you would like YUV<->RGB conversion to be done.
+			image->colorPrimaries = AVIF_COLOR_PRIMARIES_BT709;
+			image->transferCharacteristics = AVIF_TRANSFER_CHARACTERISTICS_SRGB;
+			image->matrixCoefficients = AVIF_MATRIX_COEFFICIENTS_BT709;
+			image->yuvRange = AVIF_RANGE_FULL;
+			source->VertFlipBuf();
+			// Option 2: Convert from interleaved RGB(A)/BGR(A) using a libavif-allocated buffer.
+			avifRGBImage rgb;
+			avifRGBImageSetDefaults(&rgb, image);
+			rgb.depth = 8;   // [8, 10, 12, 16]; Does not need to match image->depth.
+			rgb.format = AVIF_RGB_FORMAT_BGRA;  // See choices in avif.h
+			rgb.pixels = source->GetPtBitmap();  // Point at your RGB(A)/BGR(A) pixels here
+			rgb.rowBytes = source->GetWidthSize();
+			//memcpy(&rgb.pixels, source->GetPtBitmap(), rgb.rowBytes);
+			
+
+			avifImageRGBToYUV(image, &rgb); // if alpha is present, it will also be copied/converted
+			avifRGBImageFreePixels(&rgb);
+
+			/*
+			// Optional: Set Exif and/or XMP metadata
+			uint8_t * exif = ...;  // raw Exif payload
+			size_t exifSize = ...; // Length of raw Exif payload
+			avifImageSetMetadataExif(image, exif, exifSize);
+			*/
+
+			avifRWData output = AVIF_DATA_EMPTY;
+			avifEncoder * encoder = avifEncoderCreate();
+			encoder->maxThreads = 8; // Choose max encoder threads, 1 to disable multithreading
+			encoder->minQuantizer = compression;
+			encoder->maxQuantizer = compression;
+			avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
+			if (encodeResult == AVIF_RESULT_OK)
 			{
-				file.seekg(0, ios::beg);
-				file.read((char *)output.data, output.size);
+				ofstream file(filename, std::ofstream::binary);
+				file.write((char *)output.data, output.size);
 				file.close();
 			}
+			else {
+				printf("ERROR: Failed to encode: %s\n", avifResultToString(encodeResult));
+			}
+
+			avifImageDestroy(image);
+			avifRWDataFree(&output);
+			avifEncoderDestroy(encoder);
 		}
-		else {
-			printf("ERROR: Failed to encode: %s\n", avifResultToString(encodeResult));
-		}
 
-		avifImageDestroy(image);
-		avifRWDataFree(&output);
-		avifEncoderDestroy(encoder);
 	}
-
-	/*
-	// Optional: Set Exif and/or XMP metadata
-	uint8_t * exif = ...;  // raw Exif payload
-	size_t exifSize = ...; // Length of raw Exif payload
-	avifImageSetMetadataExif(image, exif, exifSize);
-	uint8_t * xmp = ...;  // raw XMP document
-	size_t xmpSize = ...; // Length of raw XMP document
-	avifImageSetMetadataXMP(image, xmp, xmpSize);
-
-	avifRWData output = AVIF_DATA_EMPTY;
-	avifEncoder * encoder = avifEncoderCreate();
-	encoder->maxThreads = ...; // Choose max encoder threads, 1 to disable multithreading
-	encoder->minQuantizer = AVIF_QUANTIZER_LOSSLESS;
-	encoder->maxQuantizer = AVIF_QUANTIZER_LOSSLESS;
-	avifResult encodeResult = avifEncoderWrite(encoder, image, &output);
-	if (encodeResult == AVIF_RESULT_OK)
-	{
-		// output contains a valid .avif file's contents
-		... output.data;
-		... output.size;
-	}
-	else {
-		printf("ERROR: Failed to encode: %s\n", avifResultToString(encodeResult));
-	}
-
-	avifImageDestroy(image);
-	avifRWDataFree(&output);
-	avifEncoderDestroy(encoder);
-	*/
 }
 
 

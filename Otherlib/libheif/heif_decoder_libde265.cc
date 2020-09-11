@@ -240,6 +240,8 @@ static struct heif_error libde265_v2_decode_image(void* decoder_raw,
 
   int action = de265_get_action(decoder->ctx, 1);
 
+  // TODO: read NCLX from h265 bitstream
+
   // TODO(farindk): Set "err" if no image was decoded.
   if (action==de265_action_get_image) {
     const de265_image* img = de265_get_next_picture(decoder->ctx);
@@ -315,6 +317,8 @@ static struct heif_error libde265_v1_decode_image(void* decoder_raw,
       break;
     }
 
+    // TODO: read NCLX from h265 bitstream
+
     const struct de265_image* image = de265_get_next_picture(decoder->ctx);
     if (image) {
       // TODO(farindk): Should we return the first image instead?
@@ -322,6 +326,15 @@ static struct heif_error libde265_v1_decode_image(void* decoder_raw,
         heif_image_release(*out_img);
       }
       err = convert_libde265_image_to_heif_image(decoder, image, out_img);
+
+      auto nclx = std::make_shared<color_profile_nclx>();
+#if LIBDE265_NUMERIC_VERSION >= 0x01000700
+      nclx->set_full_range_flag(de265_get_image_full_range_flag(image));
+      nclx->set_matrix_coefficients((uint16_t)de265_get_image_matrix_coefficients(image));
+      nclx->set_colour_primaries((uint16_t)de265_get_image_colour_primaries(image));
+      nclx->set_transfer_characteristics((uint16_t)de265_get_image_transfer_characteristics(image));
+#endif
+      (*out_img)->image->set_color_profile_nclx(nclx);
 
       de265_release_next_picture(decoder->ctx);
     }

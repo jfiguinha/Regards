@@ -187,13 +187,12 @@ static const char* x265_plugin_name()
 {
   strcpy(plugin_name, "x265 HEVC encoder");
 
-  /*
   if (strlen(x265_version_str) + strlen(plugin_name) + 4 < MAX_PLUGIN_NAME_LENGTH) {
     strcat(plugin_name, " (");
     strcat(plugin_name, x265_version_str);
     strcat(plugin_name, ")");
   }
-  */
+
   return plugin_name;
 }
 
@@ -785,7 +784,31 @@ static struct heif_error x265_encode_image(void* encoder_raw, const struct heif_
   api->param_parse(param, "psy-rd", "1.0");
   api->param_parse(param, "psy-rdoq", "1.0");
 
-  api->param_parse(param, "range", "full");
+  auto nclx = image->image->get_color_profile_nclx();
+  if (nclx) {
+    api->param_parse(param, "range", nclx->get_full_range_flag() ? "full" : "limited");
+  }
+  else {
+    api->param_parse(param, "range", "full");
+  }
+
+  if (nclx) {
+    std::stringstream sstr;
+    sstr << nclx->get_colour_primaries();
+    api->param_parse(param, "colorprim", sstr.str().c_str());
+  }
+
+  if (nclx) {
+    std::stringstream sstr;
+    sstr << nclx->get_transfer_characteristics();
+    api->param_parse(param, "transfer", sstr.str().c_str());
+  }
+
+  if (nclx) {
+    std::stringstream sstr;
+    sstr << nclx->get_matrix_coefficients();
+    api->param_parse(param, "colormatrix", sstr.str().c_str());
+  }
 
 
   for (const auto& p : encoder->parameters) {

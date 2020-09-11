@@ -15,5 +15,5 @@ public:
 	static void GetMetadata(const string &filename, uint8_t * & data, long & size);
 	static int GetDelay(const string &filename);
 	static CRegardsBitmap * GetThumbnailPicture(const string &filename);
-	void SavePicture(const string &filename, CRegardsBitmap * source);
+	static void SavePicture(const string &filename, CRegardsBitmap * source, const int &compression = 0);
 };
