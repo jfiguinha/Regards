@@ -20,6 +20,7 @@
 using namespace tbb;
 //using namespace Regards::DeepLearning;
 
+
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 {
 	parser.SetDesc(g_cmdLineDesc);
@@ -130,6 +131,7 @@ int MyApp::Close()
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
+	std::set_terminate(onTerminate);
 	// call the base class initialization method, currently it only parses a
 	// few common command-line options but it could be do more in the future
 	if (!wxApp::OnInit())

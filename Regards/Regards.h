@@ -128,6 +128,30 @@ const char *pick_option(int *c, char **v, const char *o, const char *d) {
 }
 
 
+[[noreturn]] void onTerminate() noexcept
+{
+	if (auto exc = std::current_exception()) {
+		// we have an exception
+		try
+		{
+			rethrow_exception(exc); // throw to recognize the type
+		}
+		catch (const std::runtime_error &err) {
+			std::cout << "caught a runtime_error. what(): " <<
+				err.what() << std::endl;
+		}
+		catch (std::exception const& exc) {
+			std::cout << "caught an exception. what(): " <<
+				exc.what() << std::endl;
+		}
+		catch (...) {
+			std::cout << "unknown exception occured." << std::endl;
+		}
+	}
+
+	std::_Exit(EXIT_FAILURE);
+}
+
 float value[256];
 
 // Define a new application type, each program should derive a class from wxApp
@@ -203,6 +227,7 @@ public:
 		SetTopWindow(frame);
 		frame->Show();
 #else
+		
 		frameViewer = new CViewerFrame("Regards Viewer", wxDefaultPosition, wxDefaultSize, this, fileToOpen);
 		frameViewer->Centre(wxBOTH);
 		frameViewer->Show(true);
