@@ -16,7 +16,8 @@ CPictureMetadataExiv::CPictureMetadataExiv(const wxString &filename)
 	//Read exif info from source file
 	try
 	{
-		exif = Exiv2::ImageFactory::open(filename.ToStdString().c_str());
+		exif = Exiv2::ImageFactory::open(filename.ToStdString());
+        assert(exif.get() != 0);
 		exif->readMetadata();
 		isExif = true;
 
@@ -38,6 +39,7 @@ CPictureMetadataExiv::CPictureMetadataExiv(uint8_t * data, const long & size)
 	try
 	{
 		exif = Exiv2::ImageFactory::open(data, size);
+        assert(exif.get() != 0);
 		exif->readMetadata();
 		isExif = true;
 

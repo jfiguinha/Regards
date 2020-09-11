@@ -15,7 +15,7 @@
     <File Name="heif_hevc.cc"/>
     <File Name="heif_file.cc"/>
     <File Name="heif_encoder_x265.cc"/>
-    <File Name="heif_encoder_rav1e.cc" ExcludeProjConfig="Release;"/>
+    <File Name="heif_encoder_rav1e.cc" ExcludeProjConfig="Debug;Release;"/>
     <File Name="heif_encoder_aom.cc"/>
     <File Name="heif_decoder_libde265.cc"/>
     <File Name="heif_decoder_aom.cc"/>
@@ -42,7 +42,7 @@
     <File Name="heif_hevc.h"/>
     <File Name="heif_file.h"/>
     <File Name="heif_encoder_x265.h"/>
-    <File Name="heif_encoder_rav1e.h" ExcludeProjConfig="Release;"/>
+    <File Name="heif_encoder_rav1e.h" ExcludeProjConfig="Debug;Release;"/>
     <File Name="heif_encoder_aom.h"/>
     <File Name="heif_emscripten.h"/>
     <File Name="heif_decoder_libde265.h"/>

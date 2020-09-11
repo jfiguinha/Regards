@@ -27,7 +27,7 @@ const char* CThemeXml::stralloc(xml_document<> & doc, const wxString & str)
 
 CTheme::CTheme()
 {
-	colorBack.Set(128, 128, 128);
+	colorBack.Set(128, 128, 128, 255);
 };
 CTheme::~CTheme()
 {

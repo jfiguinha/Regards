@@ -1779,11 +1779,11 @@ int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & 
 	int iFormat = TestImageFormat(filename);
 	if (iFormat == HEIC || iFormat == AVIF)
 	{
-		CHeifAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		if (size > 0)
 		{
 			data = new uint8_t[size + 1];
-			CHeifAvif::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
+			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
 	return size;
@@ -2084,6 +2084,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
 	int iFormat = TestImageFormat(fileName);
 	bitmap->SetFilename(fileName);
+    bool applyExif = true;
 	//bool value = true;
 	//int rotation = 0;
 	try
@@ -2105,6 +2106,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
 					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+                    
+                applyExif = false;
 			}
 			else
 			{
@@ -2130,6 +2133,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
 					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+                applyExif = false;
 			}
 			else
 			{
@@ -2709,7 +2713,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 #endif
 
 		int orientation = -1;
-		if(TestIsExifCompatible(fileName) )
+		if(TestIsExifCompatible(fileName) && applyExif)
 		{
 			CMetadataExiv2 metadata(fileName);
 			orientation = metadata.GetOrientation();

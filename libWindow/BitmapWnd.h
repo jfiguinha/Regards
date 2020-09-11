@@ -271,7 +271,7 @@ namespace Regards
 			int oldHeight = 0;
 			bool loadBitmap = false;
 			int isMoving;
-
+            bool destroyOpenGLRender = false;
 			IMouseUpdate * mouseUpdate;
 			CEffectParameter * effectParameter;
 		};

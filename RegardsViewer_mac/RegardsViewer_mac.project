@@ -421,9 +421,12 @@
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.0.27.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+		<Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_calib3d.4.3.dylib @executable_path/../Frameworks/libopencv_calib3d.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.3.dylib @executable_path/../Frameworks/libopencv_core.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_dnn.4.3.dylib @executable_path/../Frameworks/libopencv_dnn.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_features2d.4.3.dylib @executable_path/../Frameworks/libopencv_features2d.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -456,6 +459,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libIexMath-2_5.25.dylib @executable_path/../Frameworks/libIexMath-2_5.25.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/ilmbase/lib/libHalf-2_5.25.dylib @executable_path/../Frameworks/libHalf-2_5.25.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libcairo.2.dylib @executable_path/../Frameworks/libcairo.2.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Debug/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libc++.1.dylib @executable_path/../Frameworks/libc++.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
