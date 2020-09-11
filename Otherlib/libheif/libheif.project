@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libheif" Version="11000" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="nclx.cc"/>
+    <File Name="heif_plugin_registry.cc"/>
+    <File Name="heif_plugin.cc"/>
+    <File Name="heif_image.cc"/>
+    <File Name="heif_hevc.cc"/>
+    <File Name="heif_file.cc"/>
+    <File Name="heif_encoder_x265.cc"/>
+    <File Name="heif_encoder_rav1e.cc" ExcludeProjConfig="Release;"/>
+    <File Name="heif_encoder_aom.cc"/>
+    <File Name="heif_decoder_libde265.cc"/>
+    <File Name="heif_decoder_aom.cc"/>
+    <File Name="heif_context.cc"/>
+    <File Name="heif_colorconversion.cc"/>
+    <File Name="heif_avif.cc"/>
+    <File Name="heif.cc"/>
+    <File Name="file_fuzzer.cc"/>
+    <File Name="error.cc"/>
+    <File Name="encoder_fuzzer.cc"/>
+    <File Name="color_conversion_fuzzer.cc"/>
+    <File Name="box_fuzzer.cc"/>
+    <File Name="box.cc"/>
+    <File Name="bitstream.cc"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="nclx.h"/>
+    <File Name="logging.h"/>
+    <File Name="heif_version.h"/>
+    <File Name="heif_plugin_registry.h"/>
+    <File Name="heif_plugin.h"/>
+    <File Name="heif_limits.h"/>
+    <File Name="heif_image.h"/>
+    <File Name="heif_hevc.h"/>
+    <File Name="heif_file.h"/>
+    <File Name="heif_encoder_x265.h"/>
+    <File Name="heif_encoder_rav1e.h" ExcludeProjConfig="Release;"/>
+    <File Name="heif_encoder_aom.h"/>
+    <File Name="heif_emscripten.h"/>
+    <File Name="heif_decoder_libde265.h"/>
+    <File Name="heif_decoder_aom.h"/>
+    <File Name="heif_cxx.h"/>
+    <File Name="heif_context.h"/>
+    <File Name="heif_colorconversion.h"/>
+    <File Name="heif_avif.h"/>
+    <File Name="heif_api_structs.h"/>
+    <File Name="heif.h"/>
+    <File Name="error.h"/>
+    <File Name="box.h"/>
+    <File Name="bitstream.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-fopenmp;-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="include"/>
+        <IncludePath Value="../"/>
+        <IncludePath Value="../../libextern/libde265-master"/>
+        <IncludePath Value="../../libextern/x265_2.5/source"/>
+        <IncludePath Value="../../libextern/x265_2.5/build/msys/8bit"/>
+        <Preprocessor Value="HAVE_AOM"/>
+        <Preprocessor Value="HAVE_X265"/>
+        <Preprocessor Value="HAVE_LIBDE265"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g" C_Options="-g" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="-s" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
