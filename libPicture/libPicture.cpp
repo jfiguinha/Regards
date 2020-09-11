@@ -2103,11 +2103,11 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			if (numPicture == 0)
 			{
 				if (isThumbnail)
-					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
                     
-                applyExif = false;
+                
 			}
 			else
 			{
@@ -2132,8 +2132,8 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				else
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-                applyExif = false;
+					picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+
 			}
 			else
 			{
