@@ -1138,7 +1138,7 @@ bool CLibPicture::SaveToPDF( wxImage* poImage, const wxString &fileName, const w
 bool CLibPicture::TestIsExifCompatible(const wxString &filename)
 {
 	int iFormat = TestImageFormat(filename);
-	if ((iFormat == JPEG || iFormat == PNG || iFormat == TIFF || iFormat == WEBP || iFormat == RAWFILE || iFormat == HEIC))
+	if ((iFormat == JPEG || iFormat == PNG || iFormat == TIFF || iFormat == WEBP || iFormat == RAWFILE || iFormat == HEIC || iFormat == AVIF))
 		return true;
 	return false;
 }
