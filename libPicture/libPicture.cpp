@@ -2104,10 +2104,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			{
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-				else
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-                    
-				applyExif = false;
+				
+                
+                if(picture == nullptr)
+                {
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName)); 
+                    applyExif = false;
+                }
 			}
 			else
 			{
@@ -2132,10 +2135,11 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 
-				if(!isThumbnail || picture == nullptr)
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-				
-				applyExif = false;
+                if(picture == nullptr)
+                {
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName)); 
+                    applyExif = false;
+                }
 			}
 			else
 			{
