@@ -1365,12 +1365,15 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 bool CMainWindow::OpenFolder()
 {
 	TRACE();
-	/*
+
+	//Select by default images folder
+
 	//wxStandardPaths stdPath("");
 	wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
-	if (viewerParam != nullptr)
-		viewerParam->SetCatalogCriteria("");
+	//if (viewerParam != nullptr)
+	//	viewerParam->SetCatalogCriteria("");
 
+	/*
 	AddFolder(path);
 
 	updateCriteria = true;
@@ -1381,7 +1384,7 @@ bool CMainWindow::OpenFolder()
 	return true;
 	*/
 	wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-
+	dlg.SetPath(path);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		wxString path = dlg.GetPath();
