@@ -54,7 +54,7 @@ namespace Regards
 			void SetSelectFile(const wxString &filename);
 			bool GetProcessEnd();
 			void OnAddFolder(wxCommandEvent& event);
-
+            void OnOpenFileOrFolder(wxCommandEvent& event);
 			wxString GetFilename();
             bool IsVideo();
 

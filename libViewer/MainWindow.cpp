@@ -181,6 +181,7 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
     Connect(wxEVENT_PICTURENEXT, wxCommandEventHandler(CMainWindow::OnPictureNext));
 	statusBar = new wxStatusBar(this, wxID_ANY, wxSTB_DEFAULT_STYLE, "wxStatusBar");
 	Connect(wxEVENT_SETLISTPICTURE, wxCommandEventHandler(CMainWindow::SetListeFile));
+    Connect(wxEVENT_OPENFILEORFOLDER, wxCommandEventHandler(CMainWindow::OnOpenFileOrFolder));
 
 	int tabWidth[] = {100, 300, 300, 300};
 	statusBar->SetFieldsCount(4);
@@ -1315,6 +1316,21 @@ void CMainWindow::OnExit(wxCommandEvent& event)
 {
 	TRACE();
 	statusBarViewer->Exit();
+}
+
+void CMainWindow::OnOpenFileOrFolder(wxCommandEvent& event)
+{
+    wxString * file = (wxString *)event.GetClientData();
+    if(file != nullptr)
+    {
+        int type = event.GetInt();
+        if(type == 1)
+            OpenFile(*file);
+        else
+            OpenFolder(*file);
+            
+        delete file;
+    }
 }
 
 void CMainWindow::OpenFile(const wxString& fileToOpen)

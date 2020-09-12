@@ -324,12 +324,23 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 	if (fileToOpen != "")
 	{
-		mainWindow->OpenFile(fileToOpen);
+        
+        wxString * file = new wxString(fileToOpen);
+        wxCommandEvent evt(wxEVENT_OPENFILEORFOLDER);
+        evt.SetInt(1);
+        evt.SetClientData(file);
+        mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 	else
 	{
 		if (folderList.size() == 0)
-			mainWindow->OpenFolder(dirpath);
+        {
+            wxString * file = new wxString(dirpath);
+            wxCommandEvent evt(wxEVENT_OPENFILEORFOLDER);
+            evt.SetInt(2);
+            evt.SetClientData(file);
+            mainWindow->GetEventHandler()->AddPendingEvent(evt);
+        }
             
 	}
     
