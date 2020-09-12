@@ -56,7 +56,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 #include <wx/wxpoppler.h>
 
 
-#include "avif_heif.h"
+//#include "avif_heif.h"
 #include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)
@@ -878,9 +878,14 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	#endif
 
-		case HEIC:
+		//case HEIC:
 		case AVIF:
 		{
+			CRegardsBitmap * image = bitmap->GetRegardsBitmap();
+			CAvif::SavePicture(fileName.ToStdString(), image, 100 - quality);
+            image->DeleteMemory(false);
+			delete image;
+            /*
 			CRegardsBitmap * image = bitmap->GetRegardsBitmap();
 			if (iFormat == HEIC)
 			{
@@ -894,6 +899,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 				//image->DeleteMemory(false);
 			}
 			delete image;
+            */
 			break;
 		}
 
@@ -1524,9 +1530,13 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 	{
 #ifdef LIBHEIC
 		case AVIF:
+		{
+			return CAvif::GetNbFrame(szFileName.ToStdString());
+		}
+		break;
 		case HEIC:
 		{
-			return CHeifAvif::GetNbFrame(szFileName.ToStdString());
+			return CHeic::GetNbFrame(szFileName.ToStdString());
 		}
 		break;
 #endif
@@ -1843,9 +1853,9 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 		if(imageLoading != nullptr && imageLoading->IsOk())
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
     }
-	else if (iFormat == HEIC || iFormat == AVIF)
+	else if (iFormat == HEIC)
 	{
-		CRegardsBitmap * bitmap = CHeifAvif::GetThumbnailPicture(fileName.ToStdString());
+		CRegardsBitmap * bitmap = CHeic::GetThumbnailPicture(fileName.ToStdString());
 		if (bitmap != nullptr)
 		{
 			imageLoading = new CImageLoadingFormat();
@@ -1854,7 +1864,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 			if (imageLoading != nullptr && imageLoading->IsOk())
 			{
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-				//imageLoading->ApplyExifOrientation();
+				imageLoading->ApplyExifOrientation();
 			}
 		}
 	}
@@ -2103,12 +2113,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 			if (numPicture == 0)
 			{
 				if (isThumbnail)
-					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
+					picture = CHeic::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				
                 if(picture == nullptr)
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-                    
-				applyExif = false;
+					picture = CHeic::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
 			else
 			{
@@ -2130,13 +2138,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 			if (numPicture == 0)
 			{
-				if (isThumbnail)
-					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
-
-				if(!isThumbnail || picture == nullptr)
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
-				
-				applyExif = false;
+                picture = CAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 			}
 			else
 			{
