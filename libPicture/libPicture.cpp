@@ -1854,7 +1854,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 			if (imageLoading != nullptr && imageLoading->IsOk())
 			{
 				imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-				imageLoading->ApplyExifOrientation();
+				//imageLoading->ApplyExifOrientation();
 			}
 		}
 	}
@@ -2105,12 +2105,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 				
-                
                 if(picture == nullptr)
-                {
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName)); 
-                    applyExif = false;
-                }
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+                    
+				applyExif = false;
 			}
 			else
 			{
@@ -2135,11 +2133,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 				if (isThumbnail)
 					picture = CHeifAvif::GetThumbnailPicture(CConvertUtility::ConvertToStdString(fileName));
 
-                if(picture == nullptr)
-                {
-					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName)); 
-                    applyExif = false;
-                }
+				if(!isThumbnail || picture == nullptr)
+					picture = CHeifAvif::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+				
+				applyExif = false;
 			}
 			else
 			{
