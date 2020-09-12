@@ -401,8 +401,12 @@ void CMainWindow::OnEndPictureLoad(wxCommandEvent& event)
 		diaporamaTimer->Start(timeDelai * 1000, wxTIMER_ONE_SHOT);
 	}
 
-	if (*threadFilename != firstFileToShow)
+	bool isValid = false;
+	CPhotos photo = imageList->GetElement(numElement, isValid);
+
+	if (*threadFilename != photo.GetPath())
 	{
+		filename = photo.GetPath();
 		UpdatePicture();
 		//processIdle = true;
 	}
@@ -1361,6 +1365,7 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 bool CMainWindow::OpenFolder()
 {
 	TRACE();
+	/*
 	//wxStandardPaths stdPath("");
 	wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
 	if (viewerParam != nullptr)
@@ -1374,7 +1379,7 @@ bool CMainWindow::OpenFolder()
 	processIdle = true;
 
 	return true;
-/*
+	*/
 	wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
 
 	if (dlg.ShowModal() == wxID_OK)
@@ -1390,8 +1395,8 @@ bool CMainWindow::OpenFolder()
 
 		processIdle = true;
 	}
-	return false;
-*/
+	return true;
+
 }
 
 bool CMainWindow::IsFullscreen()

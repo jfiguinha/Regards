@@ -878,38 +878,43 @@ CRegardsBitmap * CHeic::GetPicture(const string &filename)
 				reader->getHeight(itemId, _heigth);
 
 				CRegardsBitmap * bitmapSrc = tasks[0].GetFrame();
-				int boxWidth = bitmapSrc->GetBitmapWidth();
-				int boxHeight = bitmapSrc->GetBitmapHeight();
-
-				int nbItemWidth = _width / boxWidth;
-				if (nbItemWidth * boxWidth < _width)
-					nbItemWidth++;
-
-				int nbItemHeight = _heigth / boxHeight;
-				if (nbItemHeight * boxHeight < _heigth)
-					nbItemHeight++;
-
-				CRegardsBitmap * out = new CRegardsBitmap(boxWidth * nbItemWidth, boxHeight * nbItemHeight);
-				int x = 0;
-				int y = (nbItemHeight * boxHeight) - boxHeight;
-
-				for (mytask task : tasks)
+				if (bitmapSrc != nullptr)
 				{
-					out->InsertBitmap(task.GetFrame(), x, y, false);
-					x += boxWidth;
+					int boxWidth = bitmapSrc->GetBitmapWidth();
+					int boxHeight = bitmapSrc->GetBitmapHeight();
 
-					if (x > _width)
+					int nbItemWidth = _width / boxWidth;
+					if (nbItemWidth * boxWidth < _width)
+						nbItemWidth++;
+
+					int nbItemHeight = _heigth / boxHeight;
+					if (nbItemHeight * boxHeight < _heigth)
+						nbItemHeight++;
+
+					CRegardsBitmap * out = new CRegardsBitmap(boxWidth * nbItemWidth, boxHeight * nbItemHeight);
+					int x = 0;
+					int y = (nbItemHeight * boxHeight) - boxHeight;
+
+					for (mytask task : tasks)
 					{
-						x = 0;
-						y -= boxHeight;
+						out->InsertBitmap(task.GetFrame(), x, y, false);
+						x += boxWidth;
+
+						if (x > _width)
+						{
+							x = 0;
+							y -= boxHeight;
+						}
 					}
+
+					picture = out->CropBitmap(0, boxHeight * nbItemHeight - _heigth, _width, _heigth);
+
+					delete out;
+					listPicture.clear();
+					picture->SetFilename(filename);
 				}
 
-				picture = out->CropBitmap(0, boxHeight * nbItemHeight - _heigth, _width, _heigth);
 
-				delete out;
-				listPicture.clear();
-				picture->SetFilename(filename);
 
 			}
 

@@ -120,7 +120,7 @@ namespace Regards
 			bool GetProcessEnd();
             //void OnShowWindow(wxShowEvent& event);
 			void LoadPictureInThread(CPictureElement * pictureElement);
-			void LoadingPicture(const wxString &filenameToShow);
+			void LoadingPicture(const wxString &filenameToShow, const int &numElement);
 			void EndPictureThread(wxCommandEvent& event);
 			void StartLoadingPicture(const int &numElement);
 			void OnVideoEnd(wxCommandEvent& event);

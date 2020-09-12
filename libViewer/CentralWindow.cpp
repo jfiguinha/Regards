@@ -375,12 +375,13 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 {
     printf("CCentralWindow::OnShowPicture \n");
 	TRACE();
-
+	bool needToReload = false;
+	bool isThumbnail = false;
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CCentralWindow::OnShowPicture : ");
 	OutputDebugString(L"\n");
 #endif
-
+	wxString * _filename = new wxString();
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
 	if (pictureData != nullptr)
 	{
@@ -393,8 +394,6 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 		OutputDebugString(L"\n");
 #endif
 
-		if (pictureData->bitmap->GetFilename() == filename)
-		{
 #if defined(WIN32) && defined(_DEBUG)
 			OutputDebugString(L"CCentralWindow::OnShowPicture : Display File");
 			OutputDebugString(L"\n");
@@ -402,19 +401,30 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 			SetPicture(pictureData->bitmap, pictureData->isThumbnail);
 
-
-
 			if (!pictureData->isThumbnail)
 			{
 				StopLoadingPicture();
 			}
+			else
+				isThumbnail = true;
 
-		}
-		else
-			delete pictureData->bitmap;
+			*_filename = pictureData->bitmap->GetFilename();
 
 		delete pictureData;
 	}
+
+	
+	if (!isThumbnail)
+	{
+		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
+		evt.SetClientData(_filename);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+
+
+
 }
 
 void CCentralWindow::StopLoadingPicture()
@@ -1077,7 +1087,7 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 	else
 	{
 		StartLoadingPicture(numElement);
-		LoadingPicture(localFile);
+		LoadingPicture(localFile, numElement);
 	}
 	//windowManager->Resize();
 }
@@ -1173,7 +1183,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 
 }
 
-void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
+void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &numElement)
 {
 #if defined(WIN32) && defined(_DEBUG)
 	OutputDebugString(L"CCentralWindow::LoadingPicture");
@@ -1181,11 +1191,12 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
 	OutputDebugString(filenameToShow);
 	OutputDebugString(L"\n");
 #endif
-
+	filename = filenameToShow;
+	this->numElement = numElement;
     printf("CCentralWindow::LoadingPicture \n");
 	TRACE();
-	//if (!processLoadPicture)
-	//{
+	if (!processLoadPicture)
+	{
 #if defined(WIN32) && defined(_DEBUG)
 		OutputDebugString(L"CCentralWindow::LoadingPicture OK Loading : ");
 		OutputDebugString(L"\n");
@@ -1200,7 +1211,21 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow)
 		thread * threadloadPicture = new thread(LoadingNewPicture, pictureData);
 		pictureData->myThread = threadloadPicture;
 		processLoadPicture = true;
-	//}
+	}
+	else
+	{
+		if (listPicture != nullptr)
+		{
+			listPicture->SetActifItem(numElement, true);
+			listPicture->ForceRefresh();
+		}
+
+		if (thumbnailPicture != nullptr)
+		{
+			thumbnailPicture->SetActifItem(numElement, true);
+			thumbnailPicture->ForceRefresh();
+		}
+	}
 }
 
 void CCentralWindow::EndPictureThread(wxCommandEvent& event)
@@ -1225,12 +1250,7 @@ void CCentralWindow::EndPictureThread(wxCommandEvent& event)
 			delete pictureData->myThread;
 		}
         localPicture = pictureData->picture;
-		wxString * filename = new wxString();
-		*filename = pictureData->picture;
-		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
-		evt.SetClientData(filename);
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
+
 
 		delete pictureData;
 	}
@@ -1315,7 +1335,9 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 		wxQueueEvent(pictureData->mainWindow, event);
 	}
 
+	
 	wxCommandEvent * event = new wxCommandEvent(EVENT_ENDNEWPICTURETHREAD);
 	event->SetClientData(pictureData);
 	wxQueueEvent(pictureData->mainWindow, event);
+	
 }
