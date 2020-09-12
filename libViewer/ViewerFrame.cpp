@@ -27,6 +27,7 @@
 #include <ImageLoadingFormat.h>
 #include "ListFace.h"
 #include "WaitingWindow.h"
+#include <wx/stdpaths.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
@@ -162,6 +163,26 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	//SetIcon(wxIcon(wxT("regards.xpm")));
 	if (fileToOpen != "")
 		openFirstFile = false;
+        
+
+    wxString dirpath = "";
+	if (fileToOpen == "")
+    {
+        if (folderList.size() == 0)
+        {
+            wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
+            wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+            dlg.SetPath(path);
+            if (dlg.ShowModal() == wxID_OK)
+            {
+                dirpath = dlg.GetPath();
+            } 
+        }
+
+    }
+
+
+        
 	mainWindow = new CMainWindow(this, MAINVIEWERWINDOWID, this, openFirstFile);
 	
 	//mainWindow->Show(true);
@@ -308,7 +329,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 	else
 	{
 		if (folderList.size() == 0)
-			mainWindow->OpenFolder();
+			mainWindow->OpenFolder(dirpath);
             
 	}
     

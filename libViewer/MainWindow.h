@@ -41,7 +41,7 @@ namespace Regards
 			void SetScreen();
 			void TransitionEnd();
 			void VideoEnd();
-			bool OpenFolder();
+			bool OpenFolder(const wxString &path);
 			bool IsFullscreen();
 			void ShowToolbar();
 			

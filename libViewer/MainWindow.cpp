@@ -1362,33 +1362,12 @@ void CMainWindow::OpenFile(const wxString& fileToOpen)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ///Gestion des événements du menu
 ////////////////////////////////////////////////////////////////////////////////////////////////
-bool CMainWindow::OpenFolder()
+bool CMainWindow::OpenFolder(const wxString &path)
 {
 	TRACE();
-
-	//Select by default images folder
-
-	//wxStandardPaths stdPath("");
-	wxString path = wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Pictures);
-	//if (viewerParam != nullptr)
-	//	viewerParam->SetCatalogCriteria("");
-
-	/*
-	AddFolder(path);
-
-	updateCriteria = true;
-	updateFolder = true;
-
-	processIdle = true;
-
-	return true;
-	*/
-	wxDirDialog dlg(nullptr, "Choose image directory", "", wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
-	dlg.SetPath(path);
-	if (dlg.ShowModal() == wxID_OK)
-	{
-		wxString path = dlg.GetPath();
-		if (viewerParam != nullptr)
+    if(wxDirExists(path))
+    {
+        if (viewerParam != nullptr)
 			viewerParam->SetCatalogCriteria("");
 
 		AddFolder(path);
@@ -1397,7 +1376,8 @@ bool CMainWindow::OpenFolder()
 		updateFolder = true;
 
 		processIdle = true;
-	}
+    } 
+
 	return true;
 
 }
