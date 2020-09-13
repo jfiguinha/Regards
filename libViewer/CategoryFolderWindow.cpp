@@ -253,13 +253,6 @@ void CCategoryFolderWindow::ProcessIdle()
 			wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
 			eventChange.SetClientData(thumbnailMessage);
 		}
-		
-		/*
-		if (mainWnd != nullptr)
-			mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-		else
-			delete thumbnailMessage;
-		*/
 
 		for (CFolderCatalog folder : catalogfolderVector)
 		{

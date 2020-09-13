@@ -33,15 +33,10 @@ int CSqlThumbnailVideo::GetNbThumbnail(const wxString & path)
 bool CSqlThumbnailVideo::TestThumbnail(const wxString & path, const int &numVideo)
 {
 	type = 2;
+	find = false;
 	wxString fullpath = path;
 	fullpath.Replace("'", "''");
 	ExecuteRequest("SELECT FullPath FROM VIDEOTHUMBNAIL WHERE FullPath = '" + fullpath + "' and numVideo = " + to_string(numVideo));
-	/*
-    if (!find)
-	{
-		DeleteThumbnail(path);
-	}
-    */
 	return find;
 }
 
