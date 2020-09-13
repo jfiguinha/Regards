@@ -1321,6 +1321,7 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
 				delete bitmap;
 
 			bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+			bitmap->SetFilename(pictureData->picture);
 		}
 	}
 

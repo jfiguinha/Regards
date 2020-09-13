@@ -394,7 +394,8 @@ void CCategoryWnd::LoadCategorie(const int &numCategorie, tree<CTreeData *>::ite
 				{
                     wchar_t * pEnd;
                     long numMonth = wcstol(token,&pEnd,10);
-					treeData->SetKey(MonthName.at(numMonth - 1));
+					if(numMonth > 0 && numMonth <= 12)
+						treeData->SetKey(MonthName.at(numMonth - 1));
 				}
 				else
 					treeData->SetKey(token);
