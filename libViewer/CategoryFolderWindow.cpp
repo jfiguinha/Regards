@@ -204,20 +204,7 @@ void CCategoryFolderWindow::ProcessIdle()
 	CSqlInsertFile sqlInsertFile;
 	nbPhotos = sqlInsertFile.GetNbPhotosToProcess();
 	wxWindow* mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-	/*
-	CThumbnailMessage* thumbnailMessage = new CThumbnailMessage();
-	thumbnailMessage->nbPhoto = nbPhotos;
-	thumbnailMessage->typeMessage = 0;
-	
-	
-	wxCommandEvent eventChange(wxEVENT_UPDATEMESSAGECRITERIA);
-	eventChange.SetClientData(thumbnailMessage);
 
-	if (mainWnd != nullptr)
-		mainWnd->GetEventHandler()->AddPendingEvent(eventChange);
-	else
-		delete thumbnailMessage;
-	*/
 	if (nbPhotos > 0 && numProcess < nbProcesseur && threadDataProcess)
 	{
 		//Put in a thread

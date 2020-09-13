@@ -1,6 +1,8 @@
 #pragma once
 #include <GeoPluginValue.h>
 
+class CGpscurl;
+
 namespace Regards
 {
 	namespace Internet
@@ -23,7 +25,7 @@ namespace Regards
             float GetFLongitude();
             
 		private:
-            static size_t write_data(void *ptr, size_t size, size_t nmemb, struct url_data *data);
+            
 			bool ImportationGeoPlugin(const wxString &xml);
 			wxString FindElement(const wxString &xml, const wxString &baliseBegin, const wxString &baliseEnd);
 			GeoPluginVector geoPluginVector;
@@ -31,7 +33,7 @@ namespace Regards
 			wxString serverHttp;
             wxString latitude;
             wxString longitude;
-
+			CGpscurl * gpsUrl;
 		};
 	}
 }
