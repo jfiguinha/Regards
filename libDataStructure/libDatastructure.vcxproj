@@ -235,7 +235,9 @@
     <ClInclude Include="TreeData.h" />
     <ClInclude Include="TreeDataCategory.h" />
     <ClInclude Include="TreeDataEffect.h" />
+    <ClInclude Include="TreeDataKeyWord.h" />
     <ClInclude Include="TreeDataLink.h" />
+    <ClInclude Include="TreeDataStars.h" />
     <ClInclude Include="TreeElementValue.h" />
     <ClInclude Include="videothumbnail.h" />
   </ItemGroup>
@@ -265,7 +267,9 @@
     <ClCompile Include="TreeData.cpp" />
     <ClCompile Include="TreeDataCategory.cpp" />
     <ClCompile Include="TreeDataEffect.cpp" />
+    <ClCompile Include="TreeDataKeyWord.cpp" />
     <ClCompile Include="TreeDataLink.cpp" />
+    <ClCompile Include="TreeDataStars.cpp" />
     <ClCompile Include="videothumbnail.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -22,7 +22,7 @@ CScrollbarVerticalWnd::CScrollbarVerticalWnd(const wxString &windowName, wxWindo
 	:CWindowMain(windowName, parent, id)
 {
 	scrollMoving = false;
-
+	showTriangle = true;
 	triangleTop = nullptr;
 	triangleBottom = nullptr;
 	pageTop = nullptr;

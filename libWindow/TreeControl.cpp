@@ -8,6 +8,7 @@
 #include "TreeElementTexteClick.h"
 #include "TreeElementCheckBox.h"
 #include "TreeElementListBox.h"
+#include "TreeElementStar.h"
 #include <TreeData.h>
 using namespace Regards::Window;
 
@@ -210,6 +211,15 @@ CTreeElementTexte * CTreeControl::CreateTexteElement(const int &width, const int
 	treeElementTexte->SetZoneSize(width, height);
 	treeElementTexte->SetLibelle(libelle);
 	return treeElementTexte;
+}
+
+CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value)
+{
+	CTreeElementStar * treeElementStar= new CTreeElementStar();
+	treeElementStar->SetTheme(&themeTree.themeTriangle);
+	treeElementStar->SetZoneSize(width, height);
+	treeElementStar->SetValue(atoi(libelle));
+	return treeElementStar;
 }
 
 CTreeElementTexteClick * CTreeControl::CreateTexteLinkElement(const int &width, const int &height, const wxString &libelle, const wxString &link, const int &linkType)

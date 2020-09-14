@@ -245,6 +245,18 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			sqlVersion.InsertVersion("2.60.0.0");
 			hr = ExecuteSQLWithNoResult("UPDATE FACEPHOTO SET Pertinence = 0.7");
 		}
+
+		if (sqlVersion.GetVersion() == "2.60.0.0")
+		{
+			sqlVersion.DeleteVersion();
+			sqlVersion.InsertVersion("2.62.0.0");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,2,'Etoiles');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,1,'Stars');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,3,'Estrella');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,2,'Mots Cles');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,1,'Keyword');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,3,'Palabra llave');");
+		}
     }
     return hr;
 }
@@ -375,7 +387,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (1,2,'Géographique');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (1,2,'Geographique');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -393,7 +405,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 		goto Exit;
 	}
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (2,2,'Répertoire');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (2,2,'Repertoire');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -460,6 +472,42 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	}
 
 	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (5,3,'Categoria');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,2,'Etoiles');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,1,'Stars');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (6,3,'Estrella');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,2,'Mots Cles');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,1,'Keyword');");
+	if (hr == -1)
+	{
+		goto Exit;
+	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,3,'Palabra llave');");
 	if (hr == -1)
 	{
 		goto Exit;

@@ -156,6 +156,12 @@
     <ClInclude Include="MouseUpdate.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="TreeDataKeyWord.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataStars.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Country.cpp">
@@ -229,6 +235,12 @@
     </ClCompile>
     <ClCompile Include="ModificationManager.cpp">
       <Filter>ModificationManager</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataKeyWord.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataStars.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

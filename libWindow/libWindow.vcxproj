@@ -238,6 +238,7 @@
     <ClInclude Include="TreeElementListBox.h" />
     <ClInclude Include="TreeElementSlide.h" />
     <ClInclude Include="TreeElementSlideInterface.h" />
+    <ClInclude Include="TreeElementStar.h" />
     <ClInclude Include="TreeElementTexte.h" />
     <ClInclude Include="TreeElementTexteClick.h" />
     <ClInclude Include="TreeElementTriangle.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="TreeElementDelete.cpp" />
     <ClCompile Include="TreeElementListBox.cpp" />
     <ClCompile Include="TreeElementSlide.cpp" />
+    <ClCompile Include="TreeElementStar.cpp" />
     <ClCompile Include="TreeElementTexte.cpp" />
     <ClCompile Include="TreeElementTexteClick.cpp" />
     <ClCompile Include="TreeElementTriangle.cpp" />

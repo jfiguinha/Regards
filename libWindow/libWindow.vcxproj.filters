@@ -186,6 +186,9 @@
     <ClInclude Include="WindowToAdd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="TreeElementStar.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -324,6 +327,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="WindowToAdd.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeElementStar.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

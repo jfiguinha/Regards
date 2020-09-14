@@ -38,7 +38,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	wxInitAllImageHandlers();
 
 	//sqlResource.InsertVector(L"IDB_EXTRACT", L"C:\\developpement\\git\\Regards\\Resource\\res\\vector\\extract.svg");
-
+	sqlResource.InsertVector(L"IDB_STAREMPTY", L"C:\\developpement\\git\\svg\\star.svg");
+	sqlResource.InsertVector(L"IDB_STARYELLOW", L"C:\\developpement\\git\\svg\\star_yellow.svg");
+	/*
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BLUR.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_BOXBLUR", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_BOXBLUR.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_EDGE", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_EDGE.cl");
@@ -49,7 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SHARPEN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SHARPEN.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SHARPENSTRONG", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SHARPENSTRONG.cl");
 	sqlResource.InsertOpenCLUchar(L"IDR_OPENCL_SOFTEN", L"OPENCL_CODE", L"C:\\developpement\\git\\Regards\\resource\\res\\shader\\opencl_uchar\\IDR_OPENCL_SOFTEN.cl");
-
+	*/
 /*
 List des shaders 
 //IDR_GLSL_SHADER_PHOTOFILTRE

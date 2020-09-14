@@ -22,7 +22,7 @@ CScrollbarHorizontalWnd::CScrollbarHorizontalWnd(const wxString &windowName, wxW
 	: CWindowMain(windowName, parent, id)
 {
 
-
+	showTriangle = true;
 	scrollMoving = false;
 	m_bTracking = false;
 	captureBar = false;

@@ -15,6 +15,7 @@ namespace Regards
 		#define ELEMENT_SLIDE 7
 		#define ELEMENT_THUMBNAIL 8
 		#define ELEMENT_LISTBOX 9
+		#define ELEMENT_STAR 10
 
 		class CPositionElement
 		{
