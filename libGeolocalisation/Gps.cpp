@@ -59,7 +59,7 @@ public:
 			curl_easy_setopt(curl, CURLOPT_URL, httpAdress);
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, data);
-			curl_share_setopt(curl, CURLSHOPT_LOCKFUNC);
+			//curl_share_setopt(curl, CURLSHOPT_LOCKFUNC);
 			res = curl_easy_perform(curl); /* ignores error */
 			if (res != CURLE_OK)
 			{
@@ -67,7 +67,7 @@ public:
 				wxMessageBox(error);
 				printf("curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 			}
-			curl_share_setopt(curl, CURLSHOPT_UNLOCKFUNC);
+			//curl_share_setopt(curl, CURLSHOPT_UNLOCKFUNC);
 		}
 	}
 
