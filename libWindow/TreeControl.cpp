@@ -213,9 +213,10 @@ CTreeElementTexte * CTreeControl::CreateTexteElement(const int &width, const int
 	return treeElementTexte;
 }
 
-CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value)
+CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value, const int &numPhotoId)
 {
 	CTreeElementStar * treeElementStar= new CTreeElementStar();
+	treeElementStar->SetNumPhoto(numPhotoId);
 	treeElementStar->SetTheme(&themeTree.themeTriangle);
 	treeElementStar->SetZoneSize(width * 5, height);
 	treeElementStar->SetValue(atoi(value));

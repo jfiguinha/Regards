@@ -29,7 +29,7 @@ bool CSqlCriteria::InsertCriteria(const int64_t& numCatalog, const int64_t& numC
 void CSqlCriteria::RemoveUnusedCriteria()
 {
 	ExecuteRequestWithNoResult(
-		"DELETE FROM CRITERIA WHERE NumCriteria not in (select distinct NumCriteria from PHOTOSCRITERIA)");
+		"DELETE FROM CRITERIA WHERE NumCriteria not in (select distinct NumCriteria from PHOTOSCRITERIA) and NumCategory < 5");
 }
 
 int64_t CSqlCriteria::GetCriteriaId(const int& numCriteria, const int& numFolder)
@@ -78,7 +78,7 @@ int64_t CSqlCriteria::GetOrInsertCriteriaId(const int64_t& numCatalog, const int
 bool CSqlCriteria::DeleteCriteriaAlone()
 {
 	return (ExecuteRequestWithNoResult(
-		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA)") != -1)
+		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategory < 5") != -1)
 		       ? true
 		       : false;
 }
@@ -104,7 +104,7 @@ int64_t CSqlCriteria::GetNumCategorieId(const int64_t& numCatalog, const wxStrin
 bool CSqlCriteria::DeleteCriteriaFolder(const int64_t& numFolder)
 {
 	wxString sql;
-	sql = "DELETE FROM CRITERIA WHERE NumCriteria in (";
+	sql = "DELETE FROM CRITERIA WHERE NumCategory < 5 and NumCriteria in (";
 	sql.append(
 		"SELECT DISTINCT NumCriteria FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as CR ON CR.NumPHOTO = PH.NumPHOTO WHERE PH.NumFolderCatalog = "
 		+ to_string(numFolder) + " AND NumCriteria NOT IN(");

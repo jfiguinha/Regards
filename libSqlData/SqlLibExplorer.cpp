@@ -256,6 +256,11 @@ bool CSqlLibExplorer::CheckVersion(const wxString &lpFilename)
 			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,2,'Mots Cles');");
 			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,1,'Keyword');");
 			hr = ExecuteSQLWithNoResult("INSERT INTO CATEGORIE (NumCategorie, NumLangue, Libelle) VALUES (7,3,'Palabra llave');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'1 Star');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'2 Star');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'3 Star');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'4 Star');");
+			hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'5 Star');");
 		}
     }
     return hr;
@@ -329,7 +334,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 
 	BeginTransaction();
 
-	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.33.0.0');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO VERSION (libelle) VALUES ('2.62.0.0');");
 	if (hr == -1)
 	{
 		goto Exit;
@@ -859,6 +864,12 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	{
 		goto Exit;
 	}
+
+	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'1 Star');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'2 Star');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'3 Star');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'4 Star');");
+	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'5 Star');");
 
 	//Ajout de la valeur Non geolocalise
 	libelle = CLibResource::LoadStringFromResource("LBLNOTGEO",1);

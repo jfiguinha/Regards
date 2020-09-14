@@ -3,6 +3,9 @@
 #include "LibResource.h"
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
+#include <SqlCriteria.h>
+#include <SqlPhotoCriteria.h>
+using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
 CTreeElementStar::CTreeElementStar()
@@ -43,6 +46,10 @@ void CTreeElementStar::CreateStar()
 	starYellow = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
 }
 
+void CTreeElementStar::SetNumPhoto(const int &numPhotoId)
+{
+	this->numPhotoId = numPhotoId;
+}
 
 void CTreeElementStar::SetTheme(CThemeTreeTriangle * theme)
 {
@@ -81,6 +88,13 @@ void CTreeElementStar::DrawStar(wxDC * dc, const int &x, const int &y)
 
 void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &y)
 {
+	CSqlPhotoCriteria sqlPhotoCriteria;
+	CSqlCriteria sqlCriteria;
+	bool isNew = false;
+	wxString libelle = to_string(value) + " Star";
+	int oldCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
+	sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteria);
+
 	int maxX = 5 * starYellow.GetWidth() + localx;
 	int maxY = localy + starYellow.GetHeight();
 	if (x > localx && x < maxX)
@@ -88,5 +102,9 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 		value = (x - localx) / starYellow.GetWidth();
 		value++;
 	}
-	//printf("toto \n");
+	libelle = to_string(value) + " Star";
+	int newCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
+
+	
+	sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, newCriteria);
 }

@@ -17,7 +17,7 @@ namespace Regards
 			void DrawElement(wxDC * deviceContextc, const int &x, const int &y);
 			void ClickElement(wxWindow * window, const int &x, const int &y);
 			void SetTheme(CThemeTreeTriangle * theme);
-
+			void SetNumPhoto(const int &numPhotoId);
 			void SetZoneSize(const int &width, const int &height)
 			{
 				themeTriangle.SetWidth(width);
@@ -47,6 +47,7 @@ namespace Regards
 			wxImage starYellow;
 			int localx;
 			int localy;
+			int numPhotoId;
 		};
 	}
 }

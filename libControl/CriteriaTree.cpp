@@ -221,6 +221,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 		{
 			wxString libelleCategorie = photoCategorie.GetLibelle();
 			CTreeDataStars * treeDataFileName = new CTreeDataStars();
+			treeDataFileName->SetNumPhotoId(numPhotoId);
 			treeDataFileName->SetIsParent(false);
 			treeDataFileName->SetKey(libelleCategorie);
 			treeDataFileName->SetValue("0");
@@ -302,6 +303,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 					wxString value = criteria.GetLibelle();
 
 					CTreeDataStars * treeDataFileName = new CTreeDataStars();
+					treeDataFileName->SetNumPhotoId(numPhotoId);
 					treeDataFileName->SetIsParent(false);
 					treeDataFileName->SetKey(libelleCategorie);
 					treeDataFileName->SetValue(value);
@@ -390,7 +392,7 @@ void CCriteriaTree::CreateElement()
 			else if (data->GetType() == 6)
 			{
 				CTreeDataStars * datastar = (CTreeDataStars *)data;
-				treeElementStar = CreateStarElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), data->GetValue());
+				treeElementStar = CreateStarElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), data->GetValue(), datastar->GetNumPhotoId());
 			}
 			/*
 			else if (data->GetType() == 7)
@@ -440,6 +442,13 @@ void CCriteriaTree::ClickOnElement(CPositionElement * element, wxWindow * window
 		CTreeElementStar * treeElementStar = (CTreeElementStar *)treeElement;
 		treeElementStar->ClickElement(window, x, y);
 		window->Refresh();
+		wxWindow* window = window->FindWindowById(CRITERIAFOLDERWINDOWID);
+		if (window)
+		{
+			wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, wxEVENT_UPDATECRITERIA);
+			evt.SetExtraLong(2);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
     else if (element->GetType() == ELEMENT_TEXTEVALUE)
     {
@@ -546,7 +555,7 @@ void CCriteriaTree::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 				else if (data->GetType() == 6)
 				{
 					CTreeDataStars * treedataStar = (CTreeDataStars *)data;
-					treeElementStar = CreateStarElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), data->GetValue());
+					treeElementStar = CreateStarElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey(), data->GetValue(), treedataStar->GetNumPhotoId());
 				}
                 else
                     treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());

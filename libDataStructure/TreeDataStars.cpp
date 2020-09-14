@@ -16,3 +16,13 @@ CTreeDataStars::CTreeDataStars(void)
 CTreeDataStars::~CTreeDataStars(void)
 {
 }
+
+int CTreeDataStars::GetNumPhotoId()
+{
+	return numPhotoId;
+}
+
+void CTreeDataStars::SetNumPhotoId(const int & numPhotoId)
+{
+	this->numPhotoId = numPhotoId;
+}

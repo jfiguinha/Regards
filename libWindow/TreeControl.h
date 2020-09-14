@@ -75,7 +75,7 @@ namespace Regards
 			CTreeElementTexte * CreateTexteElement(const int &width, const int &height, const wxString &libelle);
 			CTreeElementSlide * CreateSlideElement(const int &width, const int &height, CTreeElementValue * position, vector<CTreeElementValue *> * value, const wxString &exifKey);
 			CTreeElementCheckBox * CreateCheckBoxElement(const int &width, const int &height, const bool &check);
-			CTreeElementStar * CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value);
+			CTreeElementStar * CreateStarElement(const int &width, const int &height, const wxString &libelle, const wxString &value, const int &numPhotoId);
 
 
 			//Element de rendu pour l'arbre
