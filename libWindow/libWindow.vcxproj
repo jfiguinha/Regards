@@ -202,6 +202,7 @@
     <ClInclude Include="CalendarSelect.h" />
     <ClInclude Include="ClickToolbar.h" />
     <ClInclude Include="EmptyWindow.h" />
+    <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="Icone.cpp" />
     <ClCompile Include="IconeList.cpp" />
     <ClCompile Include="InfosSeparationBar.cpp" />
+    <ClCompile Include="KeywordDialogBox.cpp" />
     <ClCompile Include="MapDialogBox.cpp" />
     <ClCompile Include="MapSelect.cpp" />
     <ClCompile Include="Pane.cpp" />

@@ -5,6 +5,7 @@
 #include <RegardsConfigParam.h>
 #include <TreeWindow.h>
 #include "CriteriaTree.h"
+#include "KeywordDialogBox.h"
 #if defined(LIBAPPLE)
 #include <AppleReadExif.h>
 #endif
@@ -56,6 +57,7 @@ CCriteriaTreeWnd::CCriteriaTreeWnd(wxWindow* parent, wxWindowID id, const int &m
 	
     Connect(wxEVT_SHOWCALENDAR, wxCommandEventHandler(CCriteriaTreeWnd::ShowCalendar));
     Connect(wxEVT_SHOWMAP, wxCommandEventHandler(CCriteriaTreeWnd::ShowMap));
+	Connect(wxEVT_SHOWKEYWORD, wxCommandEventHandler(CCriteriaTreeWnd::ShowKeyWord));
 }
 
 wxString CCriteriaTreeWnd::GenerateUrl()
@@ -190,6 +192,24 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
 }
 
 
+void CCriteriaTreeWnd::ShowKeyWord(wxCommandEvent &event)
+{
+	CPhotoCriteria * photoCriteria = (CPhotoCriteria *)event.GetClientData();
+	CKeywordDialogBox keywordDialog(this);
+	keywordDialog.ShowModal();
+	bool isOk = false;
+	if (isOk)
+	{
+		wxWindow * mainWnd = this->FindWindowById(mainWindowID);
+		wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+		wxQueueEvent(mainWnd, eventChange);
+	}
+
+	if (photoCriteria != nullptr)
+		delete photoCriteria;
+
+	Refresh();
+}
 
 CCriteriaTreeWnd::~CCriteriaTreeWnd(void)
 {

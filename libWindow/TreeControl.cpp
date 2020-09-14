@@ -217,8 +217,8 @@ CTreeElementStar * CTreeControl::CreateStarElement(const int &width, const int &
 {
 	CTreeElementStar * treeElementStar= new CTreeElementStar();
 	treeElementStar->SetTheme(&themeTree.themeTriangle);
-	treeElementStar->SetZoneSize(width, height);
-	treeElementStar->SetValue(atoi(libelle));
+	treeElementStar->SetZoneSize(width * 5, height);
+	treeElementStar->SetValue(atoi(value));
 	return treeElementStar;
 }
 
@@ -319,6 +319,7 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	if(vectorPosElementDynamic.size() == 0)
 		return nullptr;
 
+	/*
 	CPositionElement * treeElement = nullptr;
 	PositionElementVector::iterator it;
 	it = find_if(vectorPosElementDynamic.begin(), vectorPosElementDynamic.end(), treeElementPos(x, y, this));
@@ -326,7 +327,7 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 		treeElement = *it;
 
 	return treeElement;
-	/*
+*/
 	for (CPositionElement * value : vectorPosElementDynamic)
 	{
 		if (value != nullptr)
@@ -343,9 +344,9 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 							xPos = GetWidthRow(value->GetRow() - 1);
 
 						int x1 = value->GetX() + xPos;
-						int x2 = value->GetX() + xPos + treeElement->GetWidth();
+						int x2 = value->GetX() + xPos + value->GetWidth();
 						int y1 = value->GetY();
-						int y2 = value->GetY() + treeElement->GetHeight();
+						int y2 = value->GetY() + value->GetHeight();
 						if ((x1 <= x && x <= x2) && (y1 <= y && y <= y2))
 						{
 							return value;
@@ -361,7 +362,7 @@ CPositionElement * CTreeControl::FindElement(const int &x, const int &y)
 	}
 	
 	return nullptr;
-	*/
+	
 }
 
 CPositionElement * CTreeControl::CreatePositionElement(const int &x, const int &y, const int &numColumn, const int &numRow, const int &width, const int &height, const int &type, CTreeElement * treeElement, CTreeData * treeData, const bool &dynamic)

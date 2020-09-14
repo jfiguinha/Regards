@@ -45,6 +45,8 @@ namespace Regards
 			CThemeTreeTriangle themeTriangle;
 			wxImage starEmpty;
 			wxImage starYellow;
+			int localx;
+			int localy;
 		};
 	}
 }

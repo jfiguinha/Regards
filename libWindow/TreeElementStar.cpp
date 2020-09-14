@@ -8,6 +8,7 @@ using namespace Regards::Window;
 CTreeElementStar::CTreeElementStar()
 {
 	value = 0;
+	CreateStar();
 }
 
 
@@ -37,9 +38,9 @@ wxImage CTreeElementStar::CreateFromSVG(const int & buttonWidth, const int & but
 void CTreeElementStar::CreateStar()
 {
 	wxString star = CLibResource::GetVector(L"IDB_STAREMPTY");
-	starEmpty = CreateFromSVG(themeTriangle.GetWidth(), themeTriangle.GetHeight(), star);
+	starEmpty = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
 	star = CLibResource::GetVector(L"IDB_STARYELLOW");
-	starYellow = CreateFromSVG(themeTriangle.GetWidth(), themeTriangle.GetHeight(), star);
+	starYellow = CreateFromSVG(themeTriangle.GetWidth() * 2, themeTriangle.GetHeight() * 2, star);
 }
 
 
@@ -60,6 +61,8 @@ int CTreeElementStar::GetValue()
 
 void CTreeElementStar::DrawElement(wxDC * deviceContext, const int &x, const int &y)
 {
+	localx = x;
+	localy = y;
 	DrawStar(deviceContext, x, y);
 }
 
@@ -69,12 +72,21 @@ void CTreeElementStar::DrawStar(wxDC * dc, const int &x, const int &y)
 	for (int i = 0; i < 5; i++)
 	{
 		if(value > i)
-		dc->DrawBitmap(starEmpty, xPos, y);
+			dc->DrawBitmap(starYellow, xPos, y);
+		else
+			dc->DrawBitmap(starEmpty, xPos, y);
 		xPos += starEmpty.GetWidth();
 	}
 }
 
 void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &y)
 {
-
+	int maxX = 5 * starYellow.GetWidth() + localx;
+	int maxY = localy + starYellow.GetHeight();
+	if (x > localx && x < maxX)
+	{
+		value = (x - localx) / starYellow.GetWidth();
+		value++;
+	}
+	//printf("toto \n");
 }

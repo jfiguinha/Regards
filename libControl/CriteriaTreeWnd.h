@@ -27,6 +27,7 @@ namespace Regards
             void ShowMap(wxCommandEvent &event);
             wxString GenerateUrl();
             void UpdateTreeData();
+			void ShowKeyWord(wxCommandEvent &event);
 
 			CFileGeolocation * fileGeolocalisation;
             CCriteriaTree * criteriaTree;
