@@ -91,9 +91,14 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 	CSqlPhotoCriteria sqlPhotoCriteria;
 	CSqlCriteria sqlCriteria;
 	bool isNew = false;
-	wxString libelle = to_string(value) + " Star";
-	int oldCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
-	sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteria);
+	wxString libelle = "";
+	if (value > 0 && value <= 5)
+	{
+		wxString libelle = to_string(value) + " Star";
+		int oldCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
+		sqlPhotoCriteria.DeletePhotoCriteria(numPhotoId, oldCriteria);
+	}
+
 
 	int maxX = 5 * starYellow.GetWidth() + localx;
 	int maxY = localy + starYellow.GetHeight();
@@ -102,9 +107,12 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 		value = (x - localx) / starYellow.GetWidth();
 		value++;
 	}
-	libelle = to_string(value) + " Star";
-	int newCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
 
-	
-	sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, newCriteria);
+	if (value > 0 && value <= 5)
+	{
+		libelle = to_string(value) + " Star";
+		int newCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);
+		sqlPhotoCriteria.InsertPhotoCriteria(numPhotoId, newCriteria);
+	}
+
 }
