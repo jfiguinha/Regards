@@ -1,5 +1,6 @@
 #include <header.h>
 #include "CriteriaWindow.h"
+#include "KeywordWndToolbar.h"
 #include <CriteriaTreeWnd.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
@@ -15,9 +16,6 @@ CCriteriaWindow::CCriteriaWindow(wxWindow* parent, wxWindowID id,
 	const CThemeSplitter & theme, const bool &horizontal)
 	: CSplitter(parent, id, theme)
 {
-    
-    url = "http://www.google.fr";
-    
 	//CRegardsConfigParam * config = CParamInit::getInstance();
 	CMainTheme * viewerTheme = CMainThemeInit::getInstance();
     
@@ -31,54 +29,18 @@ CCriteriaWindow::CCriteriaWindow(wxWindow* parent, wxWindowID id,
         criteriaTreeWnd = new CCriteriaTreeWnd(this, wxID_ANY, MAINVIEWERWINDOWID, themeTree, themeScroll);
     }
     
-    if(webBrowser == nullptr)
-    {
-        webBrowser = wxWebView::New(this, wxID_ANY);
-        webBrowser->Show(true);   
- 
-    }
+	if (viewerTheme != nullptr)
+	{
+		keywordWnd = new CKeywordWndToolbar(this, KEYWORDTOOLBARWINDOWID);
+		keywordWnd->Show(true);
+	}
     
 	SetHorizontal(horizontal);
-
-	this->SetWindow(criteriaTreeWnd, webBrowser);
-    
-    Connect(wxEVENT_UPDATEURL, wxCommandEventHandler(CCriteriaWindow::UpdateURL));
+	this->SetWindow1FixPosition(true, 160);
+	this->SetWindow(criteriaTreeWnd, keywordWnd);
 
 }
 
-wxString CCriteriaWindow::MapsUpdate(const wxString &filename)
-{
-	wxString urlServer;
-	CRegardsConfigParam * param = CParamInit::getInstance();
-	if (param != nullptr)
-	{
-		urlServer = param->GetUrlServer();
-	}
-	
-	CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
-	fileGeolocalisation->SetFile(filename);
-	wxString url = L"http://www.openstreetmap.org/?mlat=";
-	url.append(fileGeolocalisation->GetLatitude());
-	url.append(L"&mlon=");
-	url.append(fileGeolocalisation->GetLongitude());
-	url.append(L"#map=15/");
-	url.append(fileGeolocalisation->GetLatitude());
-	url.append(L"/");
-	url.append(fileGeolocalisation->GetLongitude());
-
-
-	delete fileGeolocalisation;
-	
-    return url;
-}
-
-void CCriteriaWindow::UpdateURL(wxCommandEvent& event)
-{
-    wxString newUrl = MapsUpdate(filename);
-    if(url != newUrl)
-        webBrowser->LoadURL(newUrl);    
-    url = newUrl;
-}
 
 void CCriteriaWindow::SetFile(const wxString &filename)
 {
@@ -86,10 +48,8 @@ void CCriteriaWindow::SetFile(const wxString &filename)
         criteriaTreeWnd->SetFile(filename);
         
     this->filename = filename;
-    wxString newUrl = MapsUpdate(filename);
-    if(url != newUrl)
-        webBrowser->LoadURL(newUrl);
-    url = newUrl;
+	if (keywordWnd != nullptr)
+		keywordWnd->Init(filename);
     
     
 }
@@ -99,8 +59,8 @@ CCriteriaWindow::~CCriteriaWindow()
  	if (criteriaTreeWnd != nullptr)
 		delete(criteriaTreeWnd);
 
-    if(webBrowser != nullptr)
-        delete(webBrowser);   
+    if(keywordWnd != nullptr)
+        delete(keywordWnd);
 }
 
 
@@ -108,5 +68,6 @@ void CCriteriaWindow::UpdateScreenRatio()
 {
  	if (criteriaTreeWnd != nullptr)
 		criteriaTreeWnd->UpdateScreenRatio();
- 
+	if (keywordWnd != nullptr)
+		keywordWnd->UpdateScreenRatio();
 }

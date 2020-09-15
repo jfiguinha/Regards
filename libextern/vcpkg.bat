@@ -5,3 +5,4 @@ vcpkg install ffmpeg:x64-windows --recurse
 vcpkg install freeimage:x64-windows --recurse
 vcpkg install tesseract:x64-windows --recurse
 vcpkg install tbb:x64-windows --recurse
+vcpkg install libmagic-dev:x64-windows --recurse

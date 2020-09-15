@@ -239,6 +239,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 				wxString value = "";
 				if (photoCategorie.GetId() == 7)
 				{
+					/*
 					CTreeDataLink * treeDataFileName = new CTreeDataLink();
 					treeDataFileName->SetIsParent(false);
 					treeDataFileName->SetKey(libelleCategorie);
@@ -248,6 +249,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 					treeDataFileName->SetId(photoCategorie.GetId());
 					treeDataFileName->SetLinkPath("");
 					tr.append_child(child, treeDataFileName);
+					*/
 				}
 				else
 				{
@@ -312,6 +314,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 				}
 				else if (photoCategorie.GetId() == 7)
 				{
+					/*
 					CCriteria criteria = criteriaVector.at(0);
 					wxString libelleCategorie = photoCategorie.GetLibelle();
 					wxString value = criteria.GetLibelle();
@@ -325,6 +328,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 					treeDataFileName->SetId(criteria.GetId());
 					treeDataFileName->SetLinkPath("");
 					tr.append_child(child, treeDataFileName);
+					*/
 				}
 				else
 				{

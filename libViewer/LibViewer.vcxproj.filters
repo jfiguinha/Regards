@@ -55,6 +55,9 @@
     <Filter Include="Window">
       <UniqueIdentifier>{99be6f0d-57d5-445f-80e8-f6b7021b72db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Window\Keyword Management">
+      <UniqueIdentifier>{0cb48d58-8402-42b1-a7b6-ef33346be6c3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ViewerFrame.h">
@@ -150,6 +153,18 @@
     <ClInclude Include="CriteriaWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
+    <ClInclude Include="KeywordManagementWindow.h">
+      <Filter>Window\Keyword Management</Filter>
+    </ClInclude>
+    <ClInclude Include="KeywordWnd.h">
+      <Filter>Window\Keyword Management</Filter>
+    </ClInclude>
+    <ClInclude Include="KeywordWndToolbar.h">
+      <Filter>Window\Keyword Management</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolbarKeyword.h">
+      <Filter>Window\Keyword Management</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">
@@ -241,6 +256,18 @@
     </ClCompile>
     <ClCompile Include="CriteriaWindow.cpp">
       <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="KeywordManagementWindow.cpp">
+      <Filter>Window\Keyword Management</Filter>
+    </ClCompile>
+    <ClCompile Include="KeywordWnd.cpp">
+      <Filter>Window\Keyword Management</Filter>
+    </ClCompile>
+    <ClCompile Include="KeywordWndToolbar.cpp">
+      <Filter>Window\Keyword Management</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolbarKeyword.cpp">
+      <Filter>Window\Keyword Management</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

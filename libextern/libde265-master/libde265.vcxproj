@@ -22,7 +22,7 @@
     <ProjectGuid>{B2A389C1-2895-4FBF-9AEB-3F7689EFEE23}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libde265</RootNamespace>
-    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

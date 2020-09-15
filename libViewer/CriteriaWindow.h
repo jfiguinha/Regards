@@ -17,6 +17,7 @@ namespace Regards
     
     namespace Viewer
 	{
+		class CKeywordWndToolbar;
 
 		class CCriteriaWindow : public CSplitter
 		{
@@ -29,11 +30,8 @@ namespace Regards
 
 		private:
 
-            void UpdateURL(wxCommandEvent& event);
-            wxString MapsUpdate(const wxString &filename);
-
 			CCriteriaTreeWnd * criteriaTreeWnd;
-            wxWebView * webBrowser = nullptr;
+			CKeywordWndToolbar * keywordWnd = nullptr;
             wxString url = "";
             wxString filename = "";
 

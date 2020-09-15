@@ -1732,6 +1732,8 @@ typedef struct x265_api
 /* Force a link error in the case of linking against an incompatible API version.
  * Glue #defines exist to force correct macro expansion; the final output of the macro
  * is x265_api_get_##X265_BUILD (for purposes of dlopen). */
+
+
 #define x265_api_glue1(x, y) x ## y
 #define x265_api_glue2(x, y) x265_api_glue1(x, y)
 #define x265_api_get x265_api_glue2(x265_api_get_, X265_BUILD)

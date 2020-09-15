@@ -208,6 +208,9 @@
     <ClInclude Include="CheckVersion.h" />
     <ClInclude Include="CriteriaWindow.h" />
     <ClInclude Include="FaceInfosUpdate.h" />
+    <ClInclude Include="KeywordManagementWindow.h" />
+    <ClInclude Include="KeywordWnd.h" />
+    <ClInclude Include="KeywordWndToolbar.h" />
     <ClInclude Include="PictureElement.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ImageList.h" />
@@ -229,6 +232,7 @@
     <ClInclude Include="ThumbnailViewerVideo.h" />
     <ClInclude Include="Toolbar.h" />
     <ClInclude Include="ToolbarInfos.h" />
+    <ClInclude Include="ToolbarKeyword.h" />
     <ClInclude Include="ToolbarPhoto.h" />
     <ClInclude Include="ViewerFrame.h" />
     <ClInclude Include="WaitingWindow.h" />
@@ -248,6 +252,9 @@
     <ClCompile Include="ImageList.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InfosSeparationBarFace.cpp" />
+    <ClCompile Include="KeywordManagementWindow.cpp" />
+    <ClCompile Include="KeywordWnd.cpp" />
+    <ClCompile Include="KeywordWndToolbar.cpp" />
     <ClCompile Include="ListFace.cpp" />
     <ClCompile Include="ListPicture.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -265,6 +272,7 @@
     <ClCompile Include="ThumbnailViewerVideo.cpp" />
     <ClCompile Include="toolbar.cpp" />
     <ClCompile Include="ToolbarInfos.cpp" />
+    <ClCompile Include="ToolbarKeyword.cpp" />
     <ClCompile Include="ToolbarPhoto.cpp" />
     <ClCompile Include="ViewerFrame.cpp" />
     <ClCompile Include="WaitingWindow.cpp" />
