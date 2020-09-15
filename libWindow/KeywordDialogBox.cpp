@@ -8,18 +8,29 @@
 //
 
 #include "KeywordDialogBox.h"
+#include <SqlFindCriteria.h>
+#include <SqlCriteria.h>
+#include <SqlPhotoCriteria.h>
+using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
 CKeywordDialogBox::CKeywordDialogBox(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 : wxDialog(parent, id, title, pos, size, style)
 {
-  
+	CSqlFindCriteria sqlCriteria;
+	CriteriaVector criteriaVector;
+	sqlCriteria.SearchCriteria(&criteriaVector, 7, 1);
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     this->SetSizer(mainSizer);
-	wxString choices[8] = { "0", "1", "2", "3", "4", "5", "6", "7" };
-	//wxArrayString choices;
+	//wxString choices[8] = { "0", "1", "2", "3", "4", "5", "6", "7" };
+	wxArrayString choices;
+	for (CCriteria criteria : criteriaVector)
+	{
+		choices.push_back(criteria.GetLibelle());
+	}
+	wxCArrayString helper(choices);
 
-	m_listKeyword = new wxCheckListBox(this, wxID_ANY, wxPoint(40, 250), wxSize(260, 150), 8, choices, wxLB_SINGLE | wxLB_HSCROLL, wxDefaultValidator);
+	m_listKeyword = new wxCheckListBox(this, wxID_ANY, wxPoint(40, 250), wxSize(260, 150), criteriaVector.size(), helper.GetStrings(), wxLB_SINGLE | wxLB_HSCROLL, wxDefaultValidator);
     
     mainSizer->Add(m_listKeyword, 0, wxLEFT|wxRIGHT|wxTOP|wxBOTTOM|wxEXPAND, 0);
     
@@ -46,24 +57,53 @@ CKeywordDialogBox::CKeywordDialogBox(wxWindow* parent, wxWindowID id, const wxSt
     SetSize(wxSize(300,230));
     Centre();
     // Connect events
-	Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CKeywordDialogBox::OnOk));
-	Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CKeywordDialogBox::OnCancel));
+	m_buttonOK->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CKeywordDialogBox::OnOk));
+	m_buttonCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(CKeywordDialogBox::OnCancel));
+}
+
+void CKeywordDialogBox::DeleteItemChecked()
+{
+	if (isOk)
+	{
+		CSqlPhotoCriteria photoCriteria;
+		CSqlFindCriteria sqlFindCriteria;
+		CSqlCriteria sqlCriteria;
+		CSqlPhotoCriteria sqlPhotoCriteria;
+		CriteriaVector criteriaVector;
+		wxArrayInt listItem;
+		m_listKeyword->GetCheckedItems(listItem);
+		sqlFindCriteria.SearchCriteria(&criteriaVector, 7, 1);
+
+		for (int i : listItem)
+		{
+			if (i < criteriaVector.size())
+			{
+				int numCriteria = criteriaVector[i].GetId();
+				sqlCriteria.DeletePhotoCriteria(1, numCriteria);
+				sqlPhotoCriteria.DeleteCriteria(numCriteria);
+			}
+		}
+
+
+	}
 }
 
 bool CKeywordDialogBox::IsOk()
 {
-	return false;
+	return isOk;
 }
-
 
 void CKeywordDialogBox::OnOk(wxCommandEvent& event)
 {
+	isOk = true;
+	DeleteItemChecked();
 	this->Close();
 	this->EndDialog(0);
 }
 
 void CKeywordDialogBox::OnCancel(wxCommandEvent& event)
 {
+	isOk = false;
 	this->Close();
 	this->EndDialog(0);
 }

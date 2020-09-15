@@ -29,7 +29,7 @@ bool CSqlCriteria::InsertCriteria(const int64_t& numCatalog, const int64_t& numC
 void CSqlCriteria::RemoveUnusedCriteria()
 {
 	ExecuteRequestWithNoResult(
-		"DELETE FROM CRITERIA WHERE NumCriteria not in (select distinct NumCriteria from PHOTOSCRITERIA) and NumCategory < 5");
+		"DELETE FROM CRITERIA WHERE NumCriteria not in (select distinct NumCriteria from PHOTOSCRITERIA) and NumCategory != 5");
 }
 
 int64_t CSqlCriteria::GetCriteriaId(const int& numCriteria, const int& numFolder)
@@ -48,6 +48,15 @@ int64_t CSqlCriteria::GetCriteriaIdByCategorie(const int& numPhoto, const int& n
 		"select PHOTOSCRITERIA.NumCriteria From PHOTOSCRITERIA inner join CRITERIA on PHOTOSCRITERIA.NumCriteria = CRITERIA.NumCriteria  where NumPhoto = "
 		+ to_string(numPhoto) + " and NumCategorie = " + to_string(numCategorie));
 	return criteriaId;
+}
+
+bool CSqlCriteria::UpdateCriteria(const int64_t &numCatalog, const int64_t &numCategorie, const wxString & libelle)
+{
+	return (ExecuteRequestWithNoResult(
+		"UPDATE CRITERIA SET Libelle = '" + libelle + "' WHERE NumCatalog = " + to_string(numCatalog) + " and NumCriteria = " + to_string(
+			numCategorie)) != -1)
+		? true
+		: false;
 }
 
 int64_t CSqlCriteria::GetCriteriaId(const int64_t& numCatalog, const int64_t& numCategorie, const wxString& libelle)
@@ -78,7 +87,7 @@ int64_t CSqlCriteria::GetOrInsertCriteriaId(const int64_t& numCatalog, const int
 bool CSqlCriteria::DeleteCriteriaAlone()
 {
 	return (ExecuteRequestWithNoResult(
-		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategory < 5") != -1)
+		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategory != 5") != -1)
 		       ? true
 		       : false;
 }

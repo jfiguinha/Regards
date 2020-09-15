@@ -38,7 +38,7 @@ namespace Regards
 			void SlidePosChange(CTreeElement * treeElement, const int &position, CTreeElementValue * value, const wxString &key){};
 		
 		protected:
-
+			void Resize();
 			void ClickOnElement(CPositionElement * element, wxWindow * window, const int &x, const int &y, const int& posLargeur, const int &posHauteur);
 
 		private:
@@ -66,7 +66,7 @@ namespace Regards
 			wxString stateTriangleValue;
 			int widthPosition;
 			CWindowMain * windowMain;
-
+			int numPhotoId;
 		};
 
 

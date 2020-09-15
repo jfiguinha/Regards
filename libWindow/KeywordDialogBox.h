@@ -25,11 +25,14 @@ namespace Regards
             wxButton* m_buttonOK;
             wxButton* m_buttonCancel;
 			wxCheckListBox  * m_listKeyword;
-            
+			bool isOk = false;
+			void DeleteItemChecked();
+
         public:
-			CKeywordDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Select Keyword"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,200), long style = wxDEFAULT_DIALOG_STYLE);
+			CKeywordDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Remove Keyword"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,200), long style = wxDEFAULT_DIALOG_STYLE);
             virtual ~CKeywordDialogBox();
 			bool IsOk();
+
             void OnOk(wxCommandEvent& event);
 			void OnCancel(wxCommandEvent& event);
         };

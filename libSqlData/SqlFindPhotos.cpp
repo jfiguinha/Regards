@@ -96,7 +96,7 @@ wxString CSqlFindPhotos::GetSearchSQL(vector<int> list)
 	return req;
 }
 
-wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, vector<int> & listStarSelected, vector<int> & listStarNotSelected, const double & pertinence)
+wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, vector<int> & listStarSelected, vector<int> & listStarNotSelected, vector<int> & listKeywordSelected, vector<int> & listKeywordNotSelected, const double & pertinence)
 {
     //Request In
 	time_t t = time(0);   // get time now
@@ -145,11 +145,14 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
             reqSQIn.append("))");
 		}
 
-		if (listStarSelected.size() < 5)
+		if (listStarNotSelected.size()  != 0 || listKeywordNotSelected.size() != 0)
 		{
 			reqSQIn.append(" and PH.NumPhoto in (");
 			reqSQIn.append("SELECT distinct PH.NumPhoto FROM PHOTOS as PH INNER JOIN PHOTOSCRITERIA as PHCR ON PH.NumPhoto = PHCR.NumPhoto INNER JOIN CRITERIA as CR ON CR.NumCriteria = PHCR.NumCriteria WHERE CR.NumCriteria in (");
-			reqSQIn.append(GetSearchSQL(listStarSelected));
+			if (listStarNotSelected.size() != 0)
+				reqSQIn.append(GetSearchSQL(listStarSelected));
+			if(listKeywordNotSelected.size() != 0)
+				reqSQIn.append(GetSearchSQL(listKeywordSelected));
 			reqSQIn.append(")");
 		}
 

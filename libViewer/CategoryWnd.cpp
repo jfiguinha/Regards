@@ -460,6 +460,8 @@ wxString CCategoryWnd::GetSqlRequest()
     vector<int> listCriteriaNotIn;
 	vector<int> listStarSelected;
 	vector<int> listStarNotSelected;
+	vector<int> listKeywordSelected;
+	vector<int> listKeywordNotSelected;
 	double pertinence = 0.0;
     
 	for (CPositionElement * value : vectorPosElementDynamic)
@@ -471,7 +473,7 @@ wxString CCategoryWnd::GetSqlRequest()
             
             if (!checkBox->GetCheckState())
             {
-                if (treeData->GetNumCategorie() != 2 && treeData->GetNumCategorie() != 4 && treeData->GetIdElement() != -1)
+                if ((treeData->GetNumCategorie() != 2 && treeData->GetNumCategorie() != 4 && treeData->GetNumCategorie() != 6 && treeData->GetNumCategorie() != 7) && treeData->GetIdElement() != -1)
                     listCriteriaNotIn.push_back(treeData->GetIdElement());
 				else if(treeData->GetNumCategorie() == 2)
 					listFolderNotSelected.push_back(treeData->GetIdElement());
@@ -479,6 +481,8 @@ wxString CCategoryWnd::GetSqlRequest()
 					listFaceNotSelected.push_back(treeData->GetIdElement());
 				else if(treeData->GetNumCategorie() == 6)
 					listStarNotSelected.push_back(treeData->GetIdElement());
+				else if (treeData->GetNumCategorie() == 7)
+					listKeywordNotSelected.push_back(treeData->GetIdElement());
             }
 			else if(treeData->GetIdElement() != -1)
 			{
@@ -486,6 +490,8 @@ wxString CCategoryWnd::GetSqlRequest()
 					listFaceSelected.push_back(treeData->GetIdElement());
 				else if (treeData->GetNumCategorie() == 6)
 					listStarSelected.push_back(treeData->GetIdElement());
+				else if (treeData->GetNumCategorie() == 7)
+					listKeywordSelected.push_back(treeData->GetIdElement());
 			}
 
         }
@@ -507,7 +513,7 @@ wxString CCategoryWnd::GetSqlRequest()
 		pertinence = viewerParam->GetPertinenceValue();
 
     CSqlFindPhotos sqlFindPhotos;
-    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, pertinence);
+    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, listKeywordSelected, listKeywordNotSelected, pertinence);
 
     viewerParam->SetLastSqlRequest(sqlRequest);
     

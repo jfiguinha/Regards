@@ -66,8 +66,6 @@ void CToolbarKeyword::EventManager(const int &id)
 					wxWindow * keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
 					wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
 					wxQueueEvent(keyword, eventRefresh);
-
-					
 				}
 			}
 		}
@@ -77,8 +75,7 @@ void CToolbarKeyword::EventManager(const int &id)
 		{
 			CKeywordDialogBox keywordDialog(this);
 			keywordDialog.ShowModal();
-			bool isOk = false;
-			if (isOk)
+			if (keywordDialog.IsOk())
 			{
 				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
 				wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
