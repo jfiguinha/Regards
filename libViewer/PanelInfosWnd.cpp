@@ -31,7 +31,7 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	: CTabWindow("CPanelInfosWnd",parent, id)
 {
 	infosFileWnd = nullptr;
-         
+	firstTime = true;
     historyEffectWnd = nullptr;
 	thumbnailEffectWnd = nullptr;
 	filtreEffectWnd = nullptr;
@@ -309,7 +309,8 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 		else
 			infosToolbar->SetMapActif();
 
-		infosToolbar->SetInfosActif();
+		if(windowVisible == WM_INFOS)
+			infosToolbar->SetInfosActif();
 
 		if (!fileGeolocalisation->HasGps())
 		{
@@ -430,14 +431,17 @@ void CPanelInfosWnd::LoadInfo()
 		case WM_INFOS:
 			InfosUpdate();
             infosToolbar->SetInfosPush();
+			windowVisible = WM_INFOS;
 			break;
         case WM_CRITERIA:
             criteriaTreeWnd->SetFile(filename);
             infosToolbar->SetCriteriaPush();
+			windowVisible = WM_CRITERIA;
             break;
 		case WM_HISTORY:
 			HistoryUpdate();
             infosToolbar->SetHistoryPush();
+			windowVisible = WM_INFOS;
 			break;
 		case WM_EFFECT:
             if (!thumbnailEffectWnd->IsShown())
@@ -445,6 +449,7 @@ void CPanelInfosWnd::LoadInfo()
 			EffectUpdate();
             infosToolbar->SetEffectPush();
             thumbnailEffectWnd->Refresh();
+			windowVisible = WM_INFOS;
 			break;
 		case WM_AUDIOVIDEO:
             if (!thumbnailEffectWnd->IsShown())
@@ -453,6 +458,7 @@ void CPanelInfosWnd::LoadInfo()
 			AudioVideoUpdate();
             infosToolbar->SetAudioVideoPush();
             thumbnailEffectWnd->Refresh();
+			windowVisible = WM_INFOS;
 			break;
 		case WM_VIDEOEFFECT:
             if (!thumbnailEffectWnd->IsShown())
@@ -461,6 +467,7 @@ void CPanelInfosWnd::LoadInfo()
 			VideoEffectUpdate();
             infosToolbar->SetVideoEffectPush();
             thumbnailEffectWnd->Refresh();
+			windowVisible = WM_INFOS;
 			break;
 
 		case WM_MAPS:
@@ -470,6 +477,7 @@ void CPanelInfosWnd::LoadInfo()
                     DisplayURL(newUrl);
                 url = newUrl;
                 infosToolbar->SetMapPush();
+				windowVisible = WM_INFOS;
             }
 			break;
 		}

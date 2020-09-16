@@ -13,6 +13,7 @@
 #include <libPicture.h>
 #include <SqlFindFacePhoto.h>
 #include <LibResource.h>
+#include <SqlPhotoCriteria.h>
 #include <SqlPhotoCategorie.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
@@ -219,12 +220,23 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 		}
 		else if (photoCategorie.GetId() == 6)
 		{
+			//Find Value
+			CriteriaVector criteriaVector;
+			CSqlPhotos sqlPhotos;
+			sqlPhotos.GetPhotoCriteriaByCategorie(&criteriaVector, picture, photoCategorie.GetId());
+
 			wxString libelleCategorie = photoCategorie.GetLibelle();
 			CTreeDataStars * treeDataFileName = new CTreeDataStars();
 			treeDataFileName->SetNumPhotoId(numPhotoId);
 			treeDataFileName->SetIsParent(false);
 			treeDataFileName->SetKey(libelleCategorie);
-			treeDataFileName->SetValue("0");
+			if(criteriaVector.size() == 0)
+				treeDataFileName->SetValue("0");
+			else
+			{
+				CCriteria criteria = criteriaVector[0];
+				treeDataFileName->SetValue(criteria.GetLibelle());
+			}
 			treeDataFileName->SetType(6);
 			tr.append_child(child, treeDataFileName);
 		}

@@ -124,6 +124,10 @@ int MyApp::Close()
 	avformat_network_deinit();
     //av_lockmgr_register(nullptr);
 #endif
+
+#if defined(__WXMSW__) && defined(_DEBUG)
+	_CrtDumpMemoryLeaks();
+#endif
 	return 0;
 }
 

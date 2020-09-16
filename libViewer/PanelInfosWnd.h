@@ -81,7 +81,7 @@ namespace Regards
 			bool isVideo;
 			wxString filename;
             wxString url;
-		
+			bool firstTime;
 		};
 
 	}

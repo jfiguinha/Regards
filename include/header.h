@@ -14,6 +14,11 @@
 #define USE_TBB
 
 //#define WX_PRECOMP
+#if defined(__WXMSW__) && defined(_DEBUG)
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
