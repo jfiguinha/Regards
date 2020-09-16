@@ -631,7 +631,7 @@ class CThemeScrollBar : public CTheme
 public:
 	CThemeScrollBar()
 	{
-		rectangleSize = 10;
+		rectangleSize = 12;
 		colorBack = wxColour(29, 29, 29);
 		colorTriangle = wxColour(74, 74, 74);
 		colorTriangleActif = wxColour(128, 128, 128);
