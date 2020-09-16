@@ -561,6 +561,8 @@ void CFiltreEffect::CreateElement()
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	bool isVisible = true;
 
 	while (it != itend) {

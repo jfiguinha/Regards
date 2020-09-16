@@ -981,6 +981,8 @@ void CCategoryWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CCategoryWnd::CreateElement()
 {
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	tree<CTreeData *>::sibling_iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;

@@ -368,7 +368,8 @@ void CInfosFile::CreateElement()
     
 	bool isVisible = true;
 	widthPosition = 0;
-
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	tree<CTreeData *>::sibling_iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;

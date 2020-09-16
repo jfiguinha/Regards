@@ -270,6 +270,8 @@ void CInfoEffect::AddEvent(const wxString &libelle, const wxString &key)
 
 void CInfoEffect::CreateElement()
 {
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	tree<CTreeData *>::sibling_iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;

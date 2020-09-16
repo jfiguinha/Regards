@@ -158,7 +158,8 @@ void COcrLabel::CreateElement()
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;
 	nbRow = 0;
-
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	while (it != itend) {
 		CTreeData * data = *it;
 		int profondeur = tr.depth(it);

@@ -5,6 +5,7 @@
 #include <wx/sstream.h>
 #include <SqlCriteria.h>
 #include <SqlPhotoCriteria.h>
+#include <WindowMain.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 
@@ -105,10 +106,13 @@ void CTreeElementStar::ClickElement(wxWindow * window, const int &x, const int &
 	if (x > localx && x < maxX)
 	{
 		value = (x - localx) / starYellow.GetWidth();
-		value++;
+		if ((x - localx) < starYellow.GetWidth() / 2)
+			value = 0;
+		else
+			value++;
 	}
 
-	if (value > 0 && value <= 5)
+	if (value >= 0 && value <= 5)
 	{
 		libelle = to_string(value) + " Star";
 		int newCriteria = sqlCriteria.GetOrInsertCriteriaId(1, 6, libelle, isNew);

@@ -310,6 +310,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 					treeDataFileName->SetId(criteria.GetId());
 					tr.append_child(child, treeDataFileName);
 				}
+				/*
 				else if (photoCategorie.GetId() == 6)
 				{
 					CCriteria criteria = criteriaVector.at(0);
@@ -323,7 +324,7 @@ void CCriteriaTree::SetFile(const wxString & picture, const int &numPhotoId)
 					treeDataFileName->SetValue(value);
 					treeDataFileName->SetType(6);
 					tr.append_child(child, treeDataFileName);
-				}
+				}*/
 				else if (photoCategorie.GetId() == 7)
 				{
 					/*
@@ -373,7 +374,8 @@ void CCriteriaTree::CreateElement()
 {
     bool isVisible = true;
     widthPosition = 0;
-    
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
     tree<CTreeData *>::sibling_iterator it = tr.begin();
     tree<CTreeData *>::iterator itend = tr.end();
     yPos = 0;

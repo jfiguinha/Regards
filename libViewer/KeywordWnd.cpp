@@ -324,6 +324,8 @@ void CKeywordWnd::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 
 void CKeywordWnd::CreateElement()
 {
+	vectorPosElement.clear();
+	vectorPosElementDynamic.clear();
 	tree<CTreeData *>::sibling_iterator it = tr.begin();
 	tree<CTreeData *>::iterator itend = tr.end();
 	yPos = 0;
