@@ -29,6 +29,8 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="TreeElementStar.cpp"/>
+    <File Name="KeywordDialogBox.cpp"/>
     <File Name="WindowToAdd.cpp"/>
     <File Name="WindowManager.cpp"/>
     <File Name="wxImagePanel.cpp"/>
@@ -77,6 +79,8 @@
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="TreeElementStar.h"/>
+    <File Name="KeywordDialogBox.h"/>
     <File Name="WindowToAdd.h"/>
     <File Name="WindowManager.h"/>
     <File Name="wxImagePanel.h"/>

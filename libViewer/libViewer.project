@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Keyword">
+    <File Name="ToolbarKeyword.cpp"/>
+    <File Name="KeywordWndToolbar.cpp"/>
+    <File Name="KeywordWnd.cpp"/>
+    <File Name="KeywordManagementWindow.cpp"/>
+    <File Name="ToolbarKeyword.h"/>
+    <File Name="KeywordWndToolbar.h"/>
+    <File Name="KeywordWnd.h"/>
+    <File Name="KeywordManagementWindow.h"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -73,6 +83,10 @@
     <File Name="AnimationToolbar.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="ViewerTheme.h"/>
+    <File Name="PictureElement.h"/>
+    <File Name="myFrame.h"/>
+    <File Name="FaceInfosUpdate.h"/>
     <File Name="WaitingWindow.h"/>
     <File Name="CentralWindow.h"/>
     <File Name="MainWindow.h"/>
