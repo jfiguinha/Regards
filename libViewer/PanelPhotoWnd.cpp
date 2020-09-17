@@ -85,6 +85,8 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	Connect(wxEVENT_SELCHANGED, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::OnSelChanged));
 	Connect(wxEVENT_UPDATECRITERIA, wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(CPanelPhotoWnd::UpdateCriteria));
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CPanelPhotoWnd::OnRefreshData));
+
+	categoryFolderWnd->UpdateCriteria(0);
 }
 
 CPanelPhotoWnd::~CPanelPhotoWnd()

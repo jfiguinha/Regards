@@ -221,7 +221,7 @@ void CCriteriaTreeWnd::UpdateTreeData()
 {
     CCriteriaTree * criteriaTree = new CCriteriaTree(treeWindow->GetTheme(), treeWindow);
     criteriaTree->SetFile(filename, numPhotoId);
-    criteriaTree->CreateElement();
+    //criteriaTree->CreateElement();
     treeWindow->SetTreeControl(criteriaTree);
     if(oldCriteriaTree != nullptr)
         delete(oldCriteriaTree);
@@ -230,12 +230,15 @@ void CCriteriaTreeWnd::UpdateTreeData()
 
 void CCriteriaTreeWnd::SetFile(const wxString &filename)
 {
-    this->filename = filename;
-	fileGeolocalisation->SetFile(this->filename);
-    CSqlPhotos sqlPhotos;
-    numPhotoId = sqlPhotos.GetPhotoId(filename);
-    
-    UpdateTreeData();
-    
-    Refresh();
+	if (this->filename != filename)
+	{
+		fileGeolocalisation->SetFile(this->filename);
+		CSqlPhotos sqlPhotos;
+		numPhotoId = sqlPhotos.GetPhotoId(filename);
+		this->filename = filename;
+		UpdateTreeData();
+
+		Refresh();
+	}
+
 }
