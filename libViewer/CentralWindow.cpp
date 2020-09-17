@@ -1195,6 +1195,26 @@ void CCentralWindow::LoadingPicture(const wxString &filenameToShow, const int &n
 	this->numElement = numElement;
     printf("CCentralWindow::LoadingPicture \n");
 	TRACE();
+
+	//--------------------------------------------------------------------------------
+	//Load Thumbnail
+	//--------------------------------------------------------------------------------
+
+	CSqlThumbnail sqlThumbnail;
+	CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
+	CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(filenameToShow);
+	if (bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
+	{
+		_loadingPicture->SetPicture(bitmapThumbnail);
+		CBitmapReturn * bitmapReturn = new CBitmapReturn();
+		bitmapReturn->myThread = nullptr;
+		bitmapReturn->isThumbnail = true;
+		bitmapReturn->bitmap = _loadingPicture;
+		wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
+		event->SetClientData(bitmapReturn);
+		wxQueueEvent(this, event);
+}
+
 	if (!processLoadPicture)
 	{
 #if defined(WIN32) && defined(_DEBUG)
@@ -1271,58 +1291,15 @@ void CCentralWindow::LoadingNewPicture(CThreadPictureData * pictureData)
     printf("CCentralWindow::LoadingNewPicture \n");
 	TRACE();
 	CLibPicture libPicture;
-	CImageLoadingFormat * bitmap = nullptr;
+	CImageLoadingFormat * bitmap = libPicture.LoadPicture(pictureData->picture);
 
-	if (pictureData != nullptr)
+	if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
 	{
-#if defined(WIN32) && defined(_DEBUG)
-		OutputDebugString(pictureData->picture);
-		OutputDebugString(L"\n");
-#endif
+		if (bitmap != nullptr)
+			delete bitmap;
 
-		CSqlThumbnail sqlThumbnail;
-		CImageLoadingFormat * _loadingPicture = new CImageLoadingFormat();
-		CRegardsBitmap * bitmapThumbnail = sqlThumbnail.GetPictureThumbnail(pictureData->picture);
-		if (bitmapThumbnail != nullptr && bitmapThumbnail->IsValid())
-		{
-			_loadingPicture->SetPicture(bitmapThumbnail);
-			CBitmapReturn * bitmapReturn = new CBitmapReturn();
-			bitmapReturn->myThread = nullptr;
-			bitmapReturn->isThumbnail = true;
-			bitmapReturn->bitmap = _loadingPicture;
-			wxCommandEvent * event = new wxCommandEvent(EVENT_SHOWPICTURE);
-			event->SetClientData(bitmapReturn);
-			wxQueueEvent(pictureData->mainWindow, event);
-		}
-
-		clock_t tStart = clock();
-		bitmap = libPicture.LoadPicture(pictureData->picture);
-		int timeToLoad = (int)((clock() - tStart) / (CLOCKS_PER_SEC / 1000));
-
-		if (timeToLoad < 300)
-		{
-			CRegardsConfigParam * config;
-			config = CParamInit::getInstance();
-			//Test si transition
-			if (config != nullptr)
-			{
-				int numEffect = config->GetEffect();
-				if (numEffect > 0)
-				{
-					std::this_thread::sleep_for(std::chrono::milliseconds(300 - timeToLoad));
-				}
-
-			}
-		}
-
-		if (bitmap == nullptr || (bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0))
-		{
-			if (bitmap != nullptr)
-				delete bitmap;
-
-			bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
-			bitmap->SetFilename(pictureData->picture);
-		}
+		bitmap = libPicture.LoadPicture(CLibResource::GetPhotoCancel());
+		bitmap->SetFilename(pictureData->picture);
 	}
 
 	if (bitmap != nullptr)
