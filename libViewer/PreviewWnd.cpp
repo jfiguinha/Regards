@@ -79,8 +79,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 	animationToolbar->Show(false);
 	showVideoWindow->Show(false);
 	filtreToolbar->Show(false);
-	bitmapInfos->Show(false);
-	previewToolbar->Show(false);
+	bitmapInfos->Show(true);
+	previewToolbar->Show(true);
 
 	Connect(wxEVENT_HIDETOOLBAR, wxCommandEventHandler(CPreviewWnd::HideToolbar));
 	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
