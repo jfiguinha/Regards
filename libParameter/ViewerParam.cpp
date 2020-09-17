@@ -680,7 +680,7 @@ wxString CMainParam::GetLastShowPicture()
 
 void CMainParam::SetLastShowPicture(const wxString &filepath)
 {
-	this->filepath = filepath
+	this->filepath = filepath;
 }
 
 void CMainParam::SetPositionPreviewFace(const int &pos)

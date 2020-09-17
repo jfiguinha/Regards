@@ -204,13 +204,27 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 
 	updateFolder = true;
 	//processIdle = true;
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		filename = config->GetLastShowPicture();
+	if (filename != "")
+	{
+		for (int i = 0; i < imageList->GetNbElement(); i++)
+		{
+			bool isValid = false;
+			if (imageList->GetFilePath(i, isValid) == filename)
+			{
+				numElement = i;
+				break;
+			}
+		}
+	}
+
 
 	if (openFirstFile)
 		LoadPicture(true);
 
-	CMainParam* config = CMainParamInit::getInstance();
-	if (config != nullptr)
-		filename = config->GetLastShowPicture();
+
 
 
 	listProcessWindow.push_back(this);
@@ -1204,7 +1218,7 @@ void CMainWindow::LoadPicture(const bool& first)
 
 		CMainParam* config = CMainParamInit::getInstance();
 		if (config != nullptr)
-			config->SetLastShowPicture(firstFileToShow);
+			config->SetLastShowPicture(filename);
 	}
 }
 
