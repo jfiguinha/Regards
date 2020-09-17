@@ -55,6 +55,31 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.61.6 :
+- Saving last file view
+- Correct bug on showing star in criteria
+News for 2.61.5 :
+- Correct bug on star<br>
+- Panel fix on Infos or Criteria<br>
+News for 2.61.4 :
+- Add support for picture and video notation
+- Add support for picture and video keyword
+News for 2.61.3 :
+- Correct bug on invalid picture
+- Correct crash bug on category date detection
+News for 2.61.2 :
+- Update exiv2 to 0.27.3
+- Add avif saving
+- Correct left and right panel position if the position is incorrect
+- Optimize picture navigation on thumbnail
+News for 2.61.1 :
+- Correct bug with dialog box on Windows
+- Correct memory leak with HEIC format
+- Correct crash with thumbnail on linux
+- Add Support avif format read only
+<b>News for 2.61.0 :
+- Correct scan crash on windows
+- Correct RegardsViewer option dialog crash
 News for 2.60.9 :
 - Correct crash bug on pdf incorrect file
 - Add saving window position
