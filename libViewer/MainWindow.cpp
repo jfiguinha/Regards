@@ -208,6 +208,11 @@ CMainWindow::CMainWindow(wxWindow* parent, wxWindowID id, IStatusBarInterface* s
 	if (openFirstFile)
 		LoadPicture(true);
 
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		filename = config->GetLastShowPicture();
+
+
 	listProcessWindow.push_back(this);
 }
 
@@ -1196,6 +1201,10 @@ void CMainWindow::LoadPicture(const bool& first)
 			firstFileToShow = this->filename;
 			centralWnd->LoadPicture(firstFileToShow, numElement, first);
 		}
+
+		CMainParam* config = CMainParamInit::getInstance();
+		if (config != nullptr)
+			config->SetLastShowPicture(firstFileToShow);
 	}
 }
 

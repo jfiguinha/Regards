@@ -3,6 +3,7 @@
 #include <rapidxml.hpp>
 #include <rapidxml_print.hpp>
 #include <ConvertUtility.h>
+#include <window_id.h>
 using namespace rapidxml;
 using namespace Regards::Viewer;
 
@@ -38,6 +39,9 @@ CMainParam::CMainParam()
 	windowMode = 1;
 	leftPanelPos = { 0,0,0,0 };
 	rightPanelPos = { 0,0,0,0 };
+
+	filepath = "";
+	windowVisible = WM_INFOS;
 }
 
 void CMainParam::SetPositionLeftPanel(const wxRect &position)
@@ -274,6 +278,8 @@ void CMainParam::SetWindowParameter(xml_node<>* sectionWindow)
 	sectionWindow->append_node(node("PositionCriteriaFolder", to_string(positionFolderCriteria)));
 	sectionWindow->append_node(node("FacePertinence", to_string(pertinence)));
 	sectionWindow->append_node(node("windowMode", to_string(windowMode)));
+	sectionWindow->append_node(node("windowVisible", to_string(windowVisible)));
+	sectionWindow->append_node(node("LastFilepath", filepath));
 
 	xml_node<>* sectionPosition = node("leftPosPanel");
 	SetPositionParameter(sectionPosition, leftPanelPos, "window");
@@ -524,6 +530,22 @@ void CMainParam::GetWindowParameter(xml_node<> * window_node)
 		windowMode = atoi(child_node->value());
 	}
 
+	child_node = window_node->first_node("windowVisible");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		windowVisible = atoi(child_node->value());
+	}
+
+	child_node = window_node->first_node("LastFilepath");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		filepath = child_node->value();
+	}
+
 	child_node = window_node->first_node("leftPosPanel");
 	if (child_node != 0)
 	{
@@ -638,6 +660,27 @@ int CMainParam::GetPositionPreviewFace()
 {
 
 	return positionPreviewFace;
+}
+
+
+int CMainParam::GetVisibleWindowPanelInfos()
+{
+	return windowVisible;
+}
+
+void CMainParam::SetVisibleWindowPanelInfos(const int &windowVisible)
+{
+	this->windowVisible = windowVisible;
+}
+
+wxString CMainParam::GetLastShowPicture()
+{
+	return filepath;
+}
+
+void CMainParam::SetLastShowPicture(const wxString &filepath)
+{
+	this->filepath = filepath
 }
 
 void CMainParam::SetPositionPreviewFace(const int &pos)

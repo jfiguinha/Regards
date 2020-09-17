@@ -82,6 +82,12 @@ namespace Regards
 			int GetPositionPreviewFace();
 			void SetPositionPreviewFace(const int &pos);
 
+			int GetVisibleWindowPanelInfos();
+			void SetVisibleWindowPanelInfos(const int &windowVisible);
+
+			wxString GetLastShowPicture();
+			void SetLastShowPicture(const wxString &filepath);
+
 		private:
 
 			void LoadParameter();
@@ -125,8 +131,11 @@ namespace Regards
 			int positionPreviewFace;
 			bool check;
 			int windowMode;
+			int windowVisible;
+			wxString lastShowPicture;
 			wxRect leftPanelPos;
 			wxRect rightPanelPos;
+			wxString filepath;
 		};
 	}
 }

@@ -50,7 +50,12 @@ CPanelInfosWnd::CPanelInfosWnd(wxWindow* parent, wxWindowID id)
 	width = 0;
 	height = 0;
     url = "http://www.google.fr";
-	windowVisible = WM_INFOS;
+
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		windowVisible = config->GetVisibleWindowPanelInfos();
+	else
+		windowVisible = WM_INFOS;
 
 	
 	//CRegardsConfigParam * config = CParamInit::getInstance();
@@ -485,6 +490,10 @@ void CPanelInfosWnd::LoadInfo()
 	//this->ForceRefresh();
 	//this->Refresh();
 	//this->Update();
+
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetVisibleWindowPanelInfos(windowVisible);
 }
 
 wxString CPanelInfosWnd::MapsUpdate()
