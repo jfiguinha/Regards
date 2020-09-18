@@ -1595,7 +1595,7 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 
 CImageLoadingFormat * CLibPicture::LoadThumbnailFromRawPicture(const wxString & szFilename, const int &width, const int &height, int &returnValue)
 {
-	CImageLoadingFormat * image = CRaw::GetThumbnail(szFilename);
+	CImageLoadingFormat * image = CRaw::GetThumbnail(szFilename, true);
 	if (image == nullptr)
 	{
 		return nullptr;
@@ -1836,7 +1836,7 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 	{
 		CMetadataExiv2 pictureMetadata(fileName);
 		int orientation = pictureMetadata.GetOrientation();
-		imageLoading = CRaw::GetThumbnail(fileName);
+		imageLoading = CRaw::GetThumbnail(fileName,true);
 		if(imageLoading != nullptr && imageLoading->IsOk())
 		{
 			imageLoading->Resize(widthThumbnail, heightThumbnail, 0);
@@ -2279,7 +2279,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 #if defined(LIBRAW)
 		case RAWFILE:
-			bitmap = CRaw::GetThumbnail(fileName);
+			bitmap = CRaw::GetThumbnail(fileName, false);
 			break;
 #endif
                 

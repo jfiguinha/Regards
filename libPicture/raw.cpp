@@ -9,7 +9,7 @@
 #include <ConvertUtility.h>
 #include <RegardsBitmap.h>
 
-CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &rgb)
+CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &thumbnail)
 {
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);
     CImageLoadingFormat * picture = nullptr;
@@ -35,9 +35,9 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 
 			image = new CRegardsBitmap(width, height);
 
-			if (rgb)
-				tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
-			else
+			//if (thumbnail)
+			//	tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
+			//else
 				tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
 
 			tjDestroy(_jpegDecompressor);
@@ -66,7 +66,10 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
 		CxImage * image = CRegardsRaw::GetPicture(CConvertUtility::ConvertToStdString(fileName));
 		picture->SetPicture(image);
 		picture->SetFilename(fileName);
-		
+		if (thumbnail)
+		{
+			picture->ConvertToBGR(true);
+		}
 	}
 
         
