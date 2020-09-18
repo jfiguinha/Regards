@@ -15,49 +15,60 @@ CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &
     CImageLoadingFormat * picture = nullptr;
     int type = 0;
     CxMemFile * memFile = CRegardsRaw::GetThumbnail(CConvertUtility::ConvertToStdString(fileName), type);
-       
-    if(type == JPEGOUTPUT)
-    {
-		picture = new CImageLoadingFormat();
+	if (memFile != nullptr)
+	{
+		if (type == JPEGOUTPUT)
+		{
+			picture = new CImageLoadingFormat();
 #ifdef TURBOJPEG
 
-		long unsigned int _jpegSize; //!< _jpegSize from above
-		//unsigned char* _compressedImage; //!< _compressedImage from above
-		CRegardsBitmap * image;
-		int jpegSubsamp, width, height;
-		uint8_t * _compressedImage = memFile->GetBuffer(false);
-		_jpegSize = memFile->Size();
+			long unsigned int _jpegSize; //!< _jpegSize from above
+			//unsigned char* _compressedImage; //!< _compressedImage from above
+			CRegardsBitmap * image;
+			int jpegSubsamp, width, height;
+			uint8_t * _compressedImage = memFile->GetBuffer(false);
+			_jpegSize = memFile->Size();
 
-		tjhandle _jpegDecompressor = tjInitDecompress();
+			tjhandle _jpegDecompressor = tjInitDecompress();
 
-		tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height, &jpegSubsamp);
+			tjDecompressHeader2(_jpegDecompressor, _compressedImage, _jpegSize, &width, &height, &jpegSubsamp);
 
-		image = new CRegardsBitmap(width, height);
+			image = new CRegardsBitmap(width, height);
 
-		if(rgb)
-			tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
-		else
-			tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
+			if (rgb)
+				tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_RGBX, TJFLAG_FASTDCT);
+			else
+				tjDecompress2(_jpegDecompressor, _compressedImage, _jpegSize, image->GetPtBitmap(), width, 0, height, TJPF_BGRX, TJFLAG_FASTDCT | TJFLAG_BOTTOMUP);
 
-		tjDestroy(_jpegDecompressor);
+			tjDestroy(_jpegDecompressor);
 
-		picture->SetPicture(image);
-		picture->SetFilename(fileName);			
+			picture->SetPicture(image);
+			picture->SetFilename(fileName);
 #else
-		CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("jpg"));
-		picture->SetPicture(image);
-		picture->SetFilename(fileName);	
+			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("jpg"));
+			picture->SetPicture(image);
+			picture->SetFilename(fileName);
 #endif
-    }
-    else
-    {
-		picture = new CImageLoadingFormat();
-        CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("ppm"));
-		picture->SetPicture(image);
-		picture->SetFilename(fileName);	
-    }
+		}
+		else
+		{
+			picture = new CImageLoadingFormat();
+			CxImage * image = new CxImage(memFile, CxImage::GetTypeIdFromName("ppm"));
+			picture->SetPicture(image);
+			picture->SetFilename(fileName);
+		}
 
-    delete memFile;
+		delete memFile;
+	}
+	else
+	{
+		picture = new CImageLoadingFormat();
+		CxImage * image = CRegardsRaw::GetPicture(CConvertUtility::ConvertToStdString(fileName));
+		picture->SetPicture(image);
+		picture->SetFilename(fileName);
+		
+	}
+
         
     return picture;
 }

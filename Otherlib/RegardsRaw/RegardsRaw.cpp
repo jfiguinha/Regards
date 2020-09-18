@@ -48,6 +48,37 @@ void write_ppm(libraw_processed_image_t *img, std::vector<uint8_t> *p)
     p->insert(p->end(), (uint8_t *)img->data, img->data + img->data_size);
 }
 
+CxImage * CRegardsRaw::GetPicture(const string & fileName)
+{
+	LibRaw RawProcessor;
+	int  ret;//, output_thumbs = 0;
+	CxImage * image = nullptr;
+
+	if (RawProcessor.open_file(fileName.c_str()) == LIBRAW_SUCCESS)
+	{
+		if ((ret = RawProcessor.unpack()) == LIBRAW_SUCCESS)
+		{
+			ret = RawProcessor.dcraw_process();
+			if (LIBRAW_SUCCESS == ret)
+			{
+				int width = 0;
+				int height = 0;
+				image = new CxImage();
+				int raw_color, raw_bitsize;
+				RawProcessor.get_mem_image_format(&width, &height, &raw_color, &raw_bitsize);
+				int flip = RawProcessor.imgdata.sizes.flip;
+				image->Create(width, height, raw_bitsize*raw_color);
+				int iTaille = raw_color * (raw_bitsize / 8);
+				int stride = ((iTaille * width + iTaille) & ~iTaille);
+				RawProcessor.copy_mem_image(image->GetBits(), stride, 1);
+				
+			}
+		}
+		RawProcessor.recycle();
+	}
+
+	return image;
+}
 
 CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat)
 {
@@ -57,7 +88,7 @@ CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat
 	// step one: Open file
 	LibRaw RawProcessor;
 	int  ret;//, output_thumbs = 0;
-
+	outputFormat = BITMAPOUTPUT;
 	if (RawProcessor.open_file(fileName.c_str()) == LIBRAW_SUCCESS)
 	{
 			if (RawProcessor.unpack_thumb() == LIBRAW_SUCCESS)
@@ -71,21 +102,23 @@ CxMemFile * CRegardsRaw::GetThumbnail(const string & fileName, int &outputFormat
 					{
 						dataPt = new uint8_t[thumb->data_size];
 						memcpy(dataPt, thumb->data, thumb->data_size);
-                        outputFormat = JPEGOUTPUT;
+						outputFormat = JPEGOUTPUT;
 						size = thumb->data_size;
 						//memPicture = new CxMemFile(thumb->data,thumb->data_size);
 					}
-                    else if (thumb->type == LIBRAW_IMAGE_BITMAP)
-                    {
+					else if (thumb->type == LIBRAW_IMAGE_BITMAP)
+					{
 						std::vector<uint8_t> data;
-                        outputFormat = BITMAPOUTPUT;
-                        write_ppm(thumb, &data);
+						outputFormat = BITMAPOUTPUT;
+						write_ppm(thumb, &data);
 						dataPt = new uint8_t[data.size()];
 						size = data.size();
 						memcpy(dataPt, &data[0], data.size());
-                    }				
+					}
 					memPicture = new CxMemFile(dataPt, size);
 				}
+				else
+					outputFormat = NOTHUMBNAIL;
 			}
 			RawProcessor.recycle();
 	}
