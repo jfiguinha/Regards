@@ -60,7 +60,7 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.61.6");
+	treeDataWidth->SetValue("2.61.7");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
@@ -84,7 +84,7 @@ void CInfoAbout::Init()
 	CTreeData * treeSQLite = new CTreeData();
 	treeSQLite->SetIsParent(false);
 	treeSQLite->SetKey("SQLite");
-	treeSQLite->SetValue("3.26.0");
+	treeSQLite->SetValue("3.30.0");
 	tr.append_child(child, treeSQLite);
 
 	CTreeData * treeRapipXML = new CTreeData();
@@ -115,13 +115,13 @@ void CInfoAbout::Init()
 	CTreeData * treelibRaw = new CTreeData();
 	treelibRaw->SetIsParent(false);
 	treelibRaw->SetKey("Libraw");
-	treelibRaw->SetValue("0.18.7");
+	treelibRaw->SetValue("0.20.0");
 	tr.append_child(child, treelibRaw);
 
 	CTreeData * treelibExiv = new CTreeData();
 	treelibExiv->SetIsParent(false);
 	treelibExiv->SetKey("Exiv 2");
-	treelibExiv->SetValue("0.26");
+	treelibExiv->SetValue("0.28.3");
 	tr.append_child(child, treelibExiv);
 
 	CTreeData * treelibFFmpeg = new CTreeData();
@@ -145,7 +145,7 @@ void CInfoAbout::Init()
 	CTreeData * treelibDlib = new CTreeData();
 	treelibDlib->SetIsParent(false);
 	treelibDlib->SetKey("dlib");
-	treelibDlib->SetValue("19.7");
+	treelibDlib->SetValue("19.20");
 	tr.append_child(child, treelibDlib);    
 
 	CTreeData * treelibGlew = new CTreeData();
