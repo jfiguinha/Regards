@@ -68,7 +68,9 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 	rawProcessor->imgdata.params.dcb_iterations = decodeRawParameter->dcb_iterations;
 	rawProcessor->imgdata.params.dcb_enhance_fl = decodeRawParameter->dcb_enhance_fl;
 	rawProcessor->imgdata.params.fbdd_noiserd = decodeRawParameter->fbdd_noiserd;
+	/*
 	rawProcessor->imgdata.params.eeci_refine = decodeRawParameter->eeci_refine;
+
 	rawProcessor->imgdata.params.es_med_passes = decodeRawParameter->es_med_passes;
 	rawProcessor->imgdata.params.ca_correc = decodeRawParameter->ca_correc;
 	rawProcessor->imgdata.params.cared = decodeRawParameter->cared;
@@ -80,14 +82,17 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 	rawProcessor->imgdata.params.cclean = decodeRawParameter->cclean;
 	rawProcessor->imgdata.params.cfa_green = decodeRawParameter->cfa_green; 
 	rawProcessor->imgdata.params.green_thresh = decodeRawParameter->green_thresh;
+	*/
 	rawProcessor->imgdata.params.exp_correc = decodeRawParameter->exp_correc; 
 	rawProcessor->imgdata.params.exp_shift = decodeRawParameter->exp_shift;
 	rawProcessor->imgdata.params.exp_preser = decodeRawParameter->exp_preser;
+	/*
 	rawProcessor->imgdata.params.wf_debanding = decodeRawParameter->wf_debanding; 
 	rawProcessor->imgdata.params.wf_deband_treshold[0] = decodeRawParameter->wf_deband_tresholdRed;
 	rawProcessor->imgdata.params.wf_deband_treshold[1]  = decodeRawParameter->wf_deband_tresholdGreen;
 	rawProcessor->imgdata.params.wf_deband_treshold[2]  = decodeRawParameter->wf_deband_tresholdBlue;
 	rawProcessor->imgdata.params.wf_deband_treshold[3]  = decodeRawParameter->wf_deband_tresholdOther;
+	*/
 	rawProcessor->imgdata.params.use_rawspeed = 0;
 
 	try

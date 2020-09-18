@@ -106,7 +106,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_ZLIB;USE_RAWSPEED;LIBRAW_NODLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;JAS_WIN_MSVC_BUILD;USE_JPEG;USE_JASPER;WX_PRECOMP;LIBRAW_DEMOSAIC_PACK_GPL2;LIBRAW_DEMOSAIC_PACK_GPL3;_OPENMP;;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>USE_ZLIB;USE_RAWSPEED;LIBRAW_NODLL;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;JAS_WIN_MSVC_BUILD;USE_JASPER;WX_PRECOMP;LIBRAW_DEMOSAIC_PACK_GPL2;LIBRAW_DEMOSAIC_PACK_GPL3;_OPENMP;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>../../libFiltre;../../libextern/libxml2/include;../../libextern/libjpeg;../../include;demoisaic_pack/gpl2;demoisaic_pack/gpl3;../include;../;.;..\..\CxImage;..\..\libDataStructure;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
