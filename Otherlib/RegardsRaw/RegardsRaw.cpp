@@ -71,6 +71,7 @@ CxImage * CRegardsRaw::GetPicture(const string & fileName)
 				int iTaille = raw_color * (raw_bitsize / 8);
 				int stride = ((iTaille * width + iTaille) & ~iTaille);
 				RawProcessor.copy_mem_image(image->GetBits(), stride, 1);
+				image->Flip();
 				
 			}
 		}
