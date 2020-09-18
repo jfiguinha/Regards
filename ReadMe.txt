@@ -55,6 +55,12 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.61.7 :
+- Update libRaw to 0.20
+- Update Sqlite to 3.30
+- Show preview thumbnail on display
+- Correct bug on display video at startup
+- Correct bug on raw display
 News for 2.61.6 :
 - Saving last file view
 - Correct bug on showing star in criteria
