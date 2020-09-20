@@ -1438,11 +1438,18 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
     int m_ani_images = 0;
 	if (bitmapType == PDF)
 	{
-		bool isValid = poppler.Open(szFileName);
-		if (isValid)
+		try
 		{
-			m_ani_images = poppler.GetPageCount();
-			poppler.SetDpi(75);
+			bool isValid = poppler.Open(szFileName);
+			if (isValid)
+			{
+				m_ani_images = poppler.GetPageCount();
+				poppler.SetDpi(75);
+			}
+		}
+		catch (...)
+		{
+
 		}
 
 	}
@@ -1574,9 +1581,17 @@ int CLibPicture::GetNbImage(const  wxString & szFileName)
 
 		case PDF:
 		{
-			wxPoppler poppler;
-			poppler.Open(szFileName);
-			return poppler.GetPageCount();
+			try
+			{
+				wxPoppler poppler;
+				bool isValid = poppler.Open(szFileName);
+				if(isValid)
+					return poppler.GetPageCount();
+			}
+			catch (...)
+			{
+			}
+			return 0;
 		}
 		
         
@@ -2605,23 +2620,27 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
 		case PDF:
 		{
-			bool value = false;
-			wxPoppler poppler;
-			value = poppler.Open(fileName);
-			if (value)
-				value = poppler.SelectPage(numPicture);
-
-			//if (value)
-			//	value = poppler.SetDpi(300);
-
-			if (value)
-				value = poppler.RenderPage();
-
-			if (value)
+			try
 			{
-				wxImage * image = new wxImage(poppler.GetImage());
-				bitmap->SetPicture(image);
+				bool value = false;
+				wxPoppler poppler;
+				value = poppler.Open(fileName);
+				if (value)
+					value = poppler.SelectPage(numPicture);
+
+				if (value)
+					value = poppler.RenderPage();
+
+				if (value)
+				{
+					wxImage * image = new wxImage(poppler.GetImage());
+					bitmap->SetPicture(image);
+				}
 			}
+			catch (...)
+			{
+			}
+
 		}
 		break;
 
@@ -2996,18 +3015,28 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
             
     case PDF:
         {
-            wxPoppler poppler;
-            poppler.Open(fileName);
-            poppler.SetDpi(300);
-            if(poppler.SelectPage(0))
-            {
-                poppler.RenderPage();
-                imageWx = poppler.GetImage();
-                typeImage = TYPE_IMAGE_WXIMAGE; 
-            }
+			try
+			{
+				wxPoppler poppler;
+				bool isValid = poppler.Open(fileName);
+				if (isValid)
+					isValid = poppler.SetDpi(300);
+				if (isValid)
+					isValid = poppler.SelectPage(0);
+				if (isValid)
+					isValid = poppler.RenderPage();
+				if (isValid)
+				{
+					imageWx = poppler.GetImage();
+					typeImage = TYPE_IMAGE_WXIMAGE;
+				}
+			}
+			catch (...)
+			{
+			}
 
         }
-        //imageWx.LoadFile(fileName, (wxBitmapType)wxBITMAP_TYPE_PDF); typeImage = TYPE_IMAGE_WXIMAGE;
+
         break;            
             
     case IFF:
