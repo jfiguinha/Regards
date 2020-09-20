@@ -1438,9 +1438,13 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
     int m_ani_images = 0;
 	if (bitmapType == PDF)
 	{
-		poppler.Open(szFileName);
-		m_ani_images = poppler.GetPageCount();
-		poppler.SetDpi(75);
+		bool isValid = poppler.Open(szFileName);
+		if (isValid)
+		{
+			m_ani_images = poppler.GetPageCount();
+			poppler.SetDpi(75);
+		}
+
 	}
 	else
 	{
@@ -1454,56 +1458,12 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 	if (m_ani_images == 0)
 	{
 		wxLogError(wxT("No ANI-format images found"));
-	}
-
-    for (auto i = 0; i < m_ani_images; i++)
-    {
-        bool returnValue = false;
-        image.Destroy();
-		if (bitmapType == PDF)
+		CImageLoadingFormat * photo_cancel = LoadPicture(CLibResource::GetPhotoCancel());
+		if (photo_cancel->IsOk())
 		{
-			returnValue = poppler.SelectPage(i);
-			if (returnValue)
-				returnValue = poppler.RenderPage();
-
-			if (returnValue)
-				image = poppler.GetImage();
-		}
-		else
-		{
-			returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
-		}
-           
-        
-        if (!returnValue)
-        {
-            wxString tmp = wxT("Can't load image number ");
-            tmp << i;
-            wxLogError(tmp);
-        }
-        else
-        {
-			CRegardsBitmap * bitmap = nullptr;
-            //wxMemoryDC memdc;
-			if (isThumbnail)
-			{
-				int bx, by, bw, bh;
-
-				float scale_x = float(width) / float(image.GetWidth());
-				float scale_y = float(height) / float(image.GetHeight());
-
-				double m_zoomFactor = min(scale_x, scale_y);
-				bw = (int)(image.GetWidth() * m_zoomFactor);
-				bh = (int)(image.GetHeight() * m_zoomFactor);
-				wxImage bitmapResize = image.ResampleBicubic(bw, bh);
-				bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
-			}
-			else
-				bitmap = ConvertwxImageToRegardsBitmap(image);
-			//bitmap->SetFilename(szFileName);
-            //CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
-            CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
-            imageVideoThumbnail->image = new CImageLoadingFormat();
+			CRegardsBitmap * bitmap = photo_cancel->GetRegardsBitmap();
+			CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+			imageVideoThumbnail->image = new CImageLoadingFormat();
 			if (compressJpeg)
 			{
 				imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
@@ -1512,14 +1472,85 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 			else
 				imageVideoThumbnail->image->SetPicture(bitmap);
 			imageVideoThumbnail->image->SetFilename(szFileName);
-            
-            imageVideoThumbnail->rotation = 0;
-            imageVideoThumbnail->delay = 4;
-            imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
-            imageVideoThumbnail->timePosition = i;
-            listThumbnail->push_back(imageVideoThumbnail);
-        }
-    }  
+
+			imageVideoThumbnail->rotation = 0;
+			imageVideoThumbnail->delay = 4;
+			imageVideoThumbnail->percent = 100.0f;
+			imageVideoThumbnail->timePosition = 0;
+			listThumbnail->push_back(imageVideoThumbnail);
+			bitmap->SetFilename(szFileName);
+			
+		}
+		delete photo_cancel;
+	}
+	else
+	{
+		for (auto i = 0; i < m_ani_images; i++)
+		{
+			bool returnValue = false;
+			image.Destroy();
+			if (bitmapType == PDF)
+			{
+				returnValue = poppler.SelectPage(i);
+				if (returnValue)
+					returnValue = poppler.RenderPage();
+
+				if (returnValue)
+					image = poppler.GetImage();
+			}
+			else
+			{
+				returnValue = image.LoadFile(szFileName, bitmapTypeWxWidget, i);
+			}
+
+
+			if (!returnValue)
+			{
+				wxString tmp = wxT("Can't load image number ");
+				tmp << i;
+				wxLogError(tmp);
+			}
+			else
+			{
+				CRegardsBitmap * bitmap = nullptr;
+				//wxMemoryDC memdc;
+				if (isThumbnail)
+				{
+					int bx, by, bw, bh;
+
+					float scale_x = float(width) / float(image.GetWidth());
+					float scale_y = float(height) / float(image.GetHeight());
+
+					double m_zoomFactor = min(scale_x, scale_y);
+					bw = (int)(image.GetWidth() * m_zoomFactor);
+					bh = (int)(image.GetHeight() * m_zoomFactor);
+					wxImage bitmapResize = image.ResampleBicubic(bw, bh);
+					bitmap = ConvertwxImageToRegardsBitmap(bitmapResize);
+				}
+				else
+					bitmap = ConvertwxImageToRegardsBitmap(image);
+				//bitmap->SetFilename(szFileName);
+				//CScaleThumbnail::CreateScaleBitmap(bitmap, width, height);
+				CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+				imageVideoThumbnail->image = new CImageLoadingFormat();
+				if (compressJpeg)
+				{
+					imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+					delete bitmap;
+				}
+				else
+					imageVideoThumbnail->image->SetPicture(bitmap);
+				imageVideoThumbnail->image->SetFilename(szFileName);
+
+				imageVideoThumbnail->rotation = 0;
+				imageVideoThumbnail->delay = 4;
+				imageVideoThumbnail->percent = (int)((float)i / (float)m_ani_images) * 100.0f;
+				imageVideoThumbnail->timePosition = i;
+				listThumbnail->push_back(imageVideoThumbnail);
+			}
+		}
+	}
+
 }
 
 int CLibPicture::GetNbImage(const  wxString & szFileName)
@@ -2775,6 +2806,13 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 	OutputDebugString(L"\n");
 	*/
 #endif
+
+	if (!bitmap->IsOk())
+	{
+		delete bitmap;
+		bitmap = LoadPicture(CLibResource::GetPhotoCancel());
+		bitmap->SetFilename(fileName);
+	}
 
 	return bitmap;
 }
