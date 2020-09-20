@@ -307,6 +307,8 @@
         <Library Value="opencv_face"/>
         <Library Value="opencv_objdetect"/>
         <Library Value="x265"/>
+        <Library Value="tiff"/>
+        <Library Value="png"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -422,7 +424,7 @@
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.0.27.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Debug/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">chmod ugo+rw ./Debug/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_calib3d.4.3.dylib @executable_path/../Frameworks/libopencv_calib3d.4.3.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -611,7 +613,7 @@
         <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Project/GNU/Library/.libs/libzen.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.0.27.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-		<Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+        <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -693,7 +695,7 @@
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgproc.4.3.dylib @executable_path/../Frameworks/libopencv_imgproc.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_imgcodecs.4.3.dylib @executable_path/../Frameworks/libopencv_imgcodecs.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_highgui.4.3.dylib @executable_path/../Frameworks/libopencv_highgui.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-		<Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change @rpath/libx265.130.dylib @executable_path/../Frameworks/libx265.130.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_face.4.3.dylib @executable_path/../Frameworks/libopencv_face.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_objdetect.4.3.dylib @executable_path/../Frameworks/libopencv_objdetect.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
