@@ -127,10 +127,9 @@ make -j$NBPROC
 cd ..
 
 #Compile wxWidgets-master
+unzip wxWidgets-master.zip
 cd wxWidgets-master
-chmod +x configure
-chmod +x src/stc/gen_iface.py
-./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug --with-cxx=11
+./configure --enable-unicode --disable-log --disable-debug --with-cxx=11
 make -j$NBPROC
 cd ..
 
