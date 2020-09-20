@@ -246,25 +246,33 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 			return listFace;
 		}
 
-		// This call asks the DNN to convert each face image in faces into a 128D vector.
-		// In this 128D vector space, images from the same person will be close to each other
-		// but vectors from different people will be far apart.  So we can use these vectors to
-		// identify if a pair of images are from the same person or from different people.  
-		std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
-
-		for (int i = 0; i < faces.size(); i++)
+		try
 		{
-			matrix<float, 0, 1> face = face_descriptors[i];
-			ostringstream sout;
-			serialize(face, sout);
+			// This call asks the DNN to convert each face image in faces into a 128D vector.
+			// In this 128D vector space, images from the same person will be close to each other
+			// but vectors from different people will be far apart.  So we can use these vectors to
+			// identify if a pair of images are from the same person or from different people.  
+			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
 
-			string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
-			sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
-			//Write into database
+			for (int i = 0; i < faces.size(); i++)
+			{
+				matrix<float, 0, 1> face = face_descriptors[i];
+				ostringstream sout;
+				serialize(face, sout);
+
+				string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
+				sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
+				//Write into database
 
 
+			}
 		}
-
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
 	}
 
 	return listFace;
@@ -323,24 +331,35 @@ std::vector<int> CFaceDetector::FindFace(CPictureData * pictureData)
 			return listFace;
 		}
 
-		// This call asks the DNN to convert each face image in faces into a 128D vector.
-		// In this 128D vector space, images from the same person will be close to each other
-		// but vectors from different people will be far apart.  So we can use these vectors to
-		// identify if a pair of images are from the same person or from different people.  
-		std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
-
-		for (int i = 0; i < faces.size(); i++)
+		try
 		{
-			matrix<float, 0, 1> face = face_descriptors[i];
-			ostringstream sout;
-			serialize(face, sout);
 
-			string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
-			sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
-			//Write into database
+			// This call asks the DNN to convert each face image in faces into a 128D vector.
+			// In this 128D vector space, images from the same person will be close to each other
+			// but vectors from different people will be far apart.  So we can use these vectors to
+			// identify if a pair of images are from the same person or from different people.  
+			std::vector<matrix<float, 0, 1>> face_descriptors = anet(faces);
+
+			for (int i = 0; i < faces.size(); i++)
+			{
+				matrix<float, 0, 1> face = face_descriptors[i];
+				ostringstream sout;
+				serialize(face, sout);
+
+				string base64_data = base64_encode(reinterpret_cast<const unsigned char*>(sout.str().c_str()), sout.str().size());
+				sqlfaceDescritor.InsertFaceDescriptor(listFace[i], base64_data.c_str(), base64_data.size());
+				//Write into database
 
 
+			}
 		}
+		catch (cv::Exception& e)
+		{
+			const char* err_msg = e.what();
+			std::cout << "exception caught: " << err_msg << std::endl;
+			std::cout << "wrong file format, please input the name of an IMAGE file" << std::endl;
+		}
+
 
 	}
 
