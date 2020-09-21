@@ -29,6 +29,7 @@
     <Project Name="CxImage" Path="CxImage/CxImage.project" Active="No"/>
     <Project Name="libavif" Path="Otherlib/libavif/libavif.project" Active="No"/>
     <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
+    <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Video">
     <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project" Active="No"/>
@@ -142,6 +143,7 @@
       <Project Name="libavif" ConfigName="Debug"/>
       <Project Name="libavif" ConfigName="Debug"/>
       <Project Name="libheif" ConfigName="Debug"/>
+      <Project Name="RegardsRaw" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -212,6 +214,7 @@
       <Project Name="libavif" ConfigName="Release"/>
       <Project Name="libavif" ConfigName="Release"/>
       <Project Name="libheif" ConfigName="Release"/>
+      <Project Name="RegardsRaw" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

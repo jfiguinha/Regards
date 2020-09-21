@@ -222,7 +222,6 @@
         <Library Value="Utility"/>
         <Library Value="Dialog"/>
         <Library Value="Picture"/>
-        <Library Value="raw"/>
         <Library Value="Resource"/>
         <Library Value="SqlData"/>
         <Library Value="DataStructure"/>
@@ -274,6 +273,7 @@
         <Library Value="Print"/>
         <Library Value="Filtre"/>
         <Library Value="Picture"/>
+        <Library Value="RegardsRaw"/>
         <Library Value="Theme"/>
         <Library Value="DataStructure"/>
         <Library Value="Utility"/>
@@ -423,6 +423,7 @@
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -597,6 +598,7 @@
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>

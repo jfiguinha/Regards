@@ -27,6 +27,12 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RegardsRaw.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="DecodeRawPicture.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
     <ClInclude Include="libraw\libraw.h">
       <Filter>libraw\header files</Filter>
     </ClInclude>
@@ -62,6 +68,12 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="RegardsRaw.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeRawPicture.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
     <ClCompile Include="internal\dcraw_common.cpp">
       <Filter>libraw\source files</Filter>
     </ClCompile>
