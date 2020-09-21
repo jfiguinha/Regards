@@ -90,6 +90,7 @@
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
+        <IncludePath Value="../Otherlib"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
