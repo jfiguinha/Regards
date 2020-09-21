@@ -1,1 +1,0 @@
-./Release/ScaleThumbnail.cpp.o ./Release/raw.cpp.o ./Release/libPicture.cpp.o ./Release/pfm.cpp.o ./Release/PictureData.cpp.o ./Release/Heic.cpp.o ./Release/avif_heif.cpp.o ./Release/avif.cpp.o
