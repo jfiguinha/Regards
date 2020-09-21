@@ -4,6 +4,7 @@ using namespace std;
 
 #define JPEGOUTPUT 1
 #define BITMAPOUTPUT 2
+#define NOTHUMBNAIL 3
 
 class CxMemFile;
 class CxImage;
