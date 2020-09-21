@@ -197,11 +197,13 @@
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="avif.h" />
     <ClInclude Include="avif_heif.h" />
+    <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="Heic.h" />
     <ClInclude Include="libPicture.h" />
     <ClInclude Include="pfm.h" />
     <ClInclude Include="PictureData.h" />
     <ClInclude Include="raw.h" />
+    <ClInclude Include="RegardsRaw.h" />
     <ClInclude Include="ScaleThumbnail.h" />
     <ClInclude Include="yuv420.h" />
     <ClInclude Include="yuv422.h" />
@@ -213,11 +215,13 @@
     </ClCompile>
     <ClCompile Include="avif.cpp" />
     <ClCompile Include="avif_heif.cpp" />
+    <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="Heic.cpp" />
     <ClCompile Include="libPicture.cpp" />
     <ClCompile Include="pfm.cpp" />
     <ClCompile Include="PictureData.cpp" />
     <ClCompile Include="raw.cpp" />
+    <ClCompile Include="RegardsRaw.cpp" />
     <ClCompile Include="ScaleThumbnail.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
