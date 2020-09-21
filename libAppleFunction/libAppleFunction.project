@@ -5,10 +5,6 @@
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="utils">
-    <File Name="../libextern/wxWidgets-master/src/osx/cocoa/utils_base.mm"/>
-    <File Name="../libextern/wxWidgets-master/src/osx/cocoa/utils.mm"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Directory">
     <File Name="../libextern/wxWidgets-master/src/osx/cocoa/dirdlg.mm"/>
   </VirtualDirectory>
