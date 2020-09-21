@@ -27,6 +27,10 @@
     </Plugin>
   </Plugins>
   <VirtualDirectory Name="Raw">
+    <File Name="RegardsRaw.h"/>
+    <File Name="RegardsRaw.cpp"/>
+    <File Name="DecodeRawPicture.h"/>
+    <File Name="DecodeRawPicture.cpp"/>
     <File Name="raw.cpp"/>
     <File Name="raw.h"/>
   </VirtualDirectory>
@@ -85,7 +89,7 @@
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>

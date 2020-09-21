@@ -35,9 +35,103 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libavutil"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
+    <Project Name="libavif"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
+      <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
@@ -91,6 +185,7 @@
         <LibraryPath Value="../libextern/SDL2-2.0.5/build/.libs"/>
         <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
+        <LibraryPath Value="../libextern/LibRaw-0.20.0/lib/.libs"/>
         <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavcodec"/>
         <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavformat"/>
         <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavdevice"/>
@@ -149,7 +244,6 @@
         <Library Value="Parameter"/>
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
-        <Library Value="RegardsRaw"/>
         <Library Value="wx_osx_cocoau_gl-3.1"/>
         <Library Value="GLEW"/>
         <Library Value="RegardsGL"/>
@@ -213,6 +307,7 @@
         <Library Value="x265"/>
         <Library Value="tiff"/>
         <Library Value="png"/>
+        <Library Value="raw_r"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -243,7 +338,6 @@
         <LibraryPath Value="../libTheme/Debug"/>
         <LibraryPath Value="../libScanner/Debug"/>
         <LibraryPath Value="../libParameter/Debug"/>
-        <LibraryPath Value="../Otherlib/RegardsRaw/Debug"/>
         <LibraryPath Value="../libOpenCL/Debug"/>
         <LibraryPath Value="../libVideoFFMpeg/Debug"/>
         <LibraryPath Value="../libEmail/Debug"/>
@@ -256,7 +350,8 @@
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
-        <LibraryPath Value="../Otherlib/libheif/Release"/>
+        <LibraryPath Value="../Otherlib/libheif/Debug"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -442,7 +537,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="clang++" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -470,7 +565,6 @@
         <LibraryPath Value="../libControl/Release"/>
         <LibraryPath Value="../libTheme/Release"/>
         <LibraryPath Value="../libParameter/Release"/>
-        <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
         <LibraryPath Value="../libOpenCL/Release"/>
         <LibraryPath Value="../libVideoFFMpeg/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
@@ -484,6 +578,7 @@
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../Otherlib/libavif/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
+        <LibraryPath Value="../Otherlib/RegardsRaw/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -518,7 +613,7 @@
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.0.27.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
+		 <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.20.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">cp /usr/local/opt/cairo/lib/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
@@ -559,6 +654,7 @@
         <Command Enabled="yes">cp /usr/local/opt/glib/lib/libgmodule-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/libffi/lib/libffi.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/tbb/lib/libtbb.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
+        <Command Enabled="yes">cp /usr/local/opt/xz/lib/liblzma.5.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">rm ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.0.7.0.dylib</Command>
         <Command Enabled="yes">rm ./Release/RegardsViewer.app/Contents/Frameworks/libpoppler-cpp.dylib</Command>
@@ -583,6 +679,7 @@
         <Command Enabled="yes">chmod ugo+rw ./Release/RegardsViewer.app/Contents/Frameworks/*.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libexif.12.dylib @executable_path/../Frameworks/libexif.12.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+		        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libraw_r.20.dylib @executable_path/../Frameworks/libraw.20.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libfreeimage.3.dylib @executable_path/../Frameworks/libfreeimage.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/liblept.5.dylib @executable_path/../Frameworks/liblept.5.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libIlmImf-2_5.25.dylib @executable_path/../Frameworks/libIlmImf-2_5.25.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
@@ -657,6 +754,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/giflib/lib/libgif.7.dylib @executable_path/../Frameworks/libgif.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libraw_r.20.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebpmux.3.dylib @executable_path/../Frameworks/libwebpmux.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/webp/1.1.0/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpmux.3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/giflib/lib/libgif.dylib @executable_path/../Frameworks/libgif.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
@@ -757,98 +855,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libavutil"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="wxIA"/>
-    <Project Name="libScanner"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libheif"/>
-    <Project Name="libavif"/>
-  </Dependencies>
 </CodeLite_Project>

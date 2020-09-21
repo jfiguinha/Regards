@@ -136,7 +136,7 @@ cd ..
 #Compile wxWidgets-master
 unzip wxWidgets-master.zip
 cd wxWidgets-master
-./configure --enable-unicode --disable-log --disable-debug --with-cxx=11
+./configure --enable-unicode --enable-monolithic --disable-log --disable-debug --disable-shared --with-cxx=14
 make -j$NBPROC
 cd ..
 
