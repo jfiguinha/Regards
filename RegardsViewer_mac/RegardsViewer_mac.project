@@ -755,6 +755,8 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/giflib/lib/libgif.7.dylib @executable_path/../Frameworks/libgif.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libraw_r.20.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/little-cms2/lib/liblcms2.2.dylib @executable_path/../Frameworks/liblcms2.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libraw_r.20.dylib</Command>
+		<Command Enabled="yes">install_name_tool -change /usr/local/opt/little-cms2/lib/liblcms2.2.dylib @executable_path/../Frameworks/liblcms2.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libraw.20.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/webp/lib/libwebpmux.3.dylib @executable_path/../Frameworks/libwebpmux.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/Cellar/webp/1.1.0/lib/libwebp.7.dylib @executable_path/../Frameworks/libwebp.7.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libwebpmux.3.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/giflib/lib/libgif.dylib @executable_path/../Frameworks/libgif.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
