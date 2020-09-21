@@ -28,12 +28,6 @@
     <ClCompile Include="ScaleThumbnail.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DecodeRawPicture.cpp">
-      <Filter>libraw</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsRaw.cpp">
-      <Filter>libraw</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -68,12 +62,6 @@
     </ClInclude>
     <ClInclude Include="yuv422.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DecodeRawPicture.h">
-      <Filter>libraw</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsRaw.h">
-      <Filter>libraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
