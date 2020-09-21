@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libPicture" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Raw">
+    <File Name="RegardsRaw.h"/>
+    <File Name="RegardsRaw.cpp"/>
+    <File Name="DecodeRawPicture.h"/>
+    <File Name="DecodeRawPicture.cpp"/>
+    <File Name="raw.cpp"/>
+    <File Name="raw.h"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -35,7 +43,6 @@
     <File Name="pfm.cpp"/>
     <File Name="libPicture.cpp"/>
     <File Name="ScaleThumbnail.cpp"/>
-    <File Name="raw.cpp"/>
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
@@ -45,11 +52,12 @@
     <File Name="pfm.h"/>
     <File Name="libPicture.h"/>
     <File Name="ScaleThumbnail.h"/>
-    <File Name="raw.h"/>
     <File Name="yuv420.h"/>
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
@@ -61,7 +69,7 @@
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib/libbpg/Bpg/libRegardsBpg"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="../libFiltre"/>
@@ -81,8 +89,6 @@
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
-        <IncludePath Value="../libextern/FreeImage3180/pkg/mingw-w64-x86_64-freeimage/mingw64/include"/>
-        <IncludePath Value="../libextern/FreeImage3180/FreeImage/Dist"/>
         <IncludePath Value="../Otherlib"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
@@ -170,6 +176,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

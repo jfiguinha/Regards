@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libViewer" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Keyword">
-    <File Name="ToolbarKeyword.cpp"/>
-    <File Name="KeywordWndToolbar.cpp"/>
-    <File Name="KeywordWnd.cpp"/>
-    <File Name="KeywordManagementWindow.cpp"/>
-    <File Name="ToolbarKeyword.h"/>
-    <File Name="KeywordWndToolbar.h"/>
-    <File Name="KeywordWnd.h"/>
-    <File Name="KeywordManagementWindow.h"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -36,6 +26,16 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Keyword">
+    <File Name="ToolbarKeyword.cpp"/>
+    <File Name="KeywordWndToolbar.cpp"/>
+    <File Name="KeywordWnd.cpp"/>
+    <File Name="KeywordManagementWindow.cpp"/>
+    <File Name="ToolbarKeyword.h"/>
+    <File Name="KeywordWndToolbar.h"/>
+    <File Name="KeywordWnd.h"/>
+    <File Name="KeywordManagementWindow.h"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="CheckVersion">
     <File Name="CheckVersion.h"/>
     <File Name="CheckVersion.cpp"/>

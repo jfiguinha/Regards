@@ -29,13 +29,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="RegardsRaw.cpp"/>
-    <File Name="DecodeRawPicture.cpp"/>
-    <VirtualDirectory Name="src">
-      <File Name="src/libraw_c_api.cpp"/>
-      <File Name="src/libraw_cxx.cpp"/>
-      <File Name="src/libraw_datastream.cpp"/>
-    </VirtualDirectory>
     <VirtualDirectory Name="include">
       <File Name="libraw/libraw.h"/>
       <File Name="libraw/libraw_alloc.h"/>
@@ -46,10 +39,6 @@
       <File Name="libraw/libraw_types.h"/>
       <File Name="libraw/libraw_version.h"/>
     </VirtualDirectory>
-  </VirtualDirectory>
-  <VirtualDirectory Name="include">
-    <File Name="RegardsRaw.h"/>
-    <File Name="DecodeRawPicture.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="internal">
     <File Name="internal/dcraw_common.cpp"/>

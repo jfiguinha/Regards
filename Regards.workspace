@@ -17,7 +17,6 @@
   <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
   <VirtualDirectory Name="Picture">
     <Project Name="libPicture" Path="libPicture/libPicture.project" Active="No"/>
-    <Project Name="RegardsRaw" Path="Otherlib/RegardsRaw/RegardsRaw.project" Active="No"/>
     <Project Name="libJbig" Path="Otherlib/libJbig/libJbig.project" Active="No"/>
     <VirtualDirectory Name="libbpg">
       <Project Name="libavutil" Path="Otherlib/libbpg/libavutil/libavutil.project" Active="No"/>
@@ -68,7 +67,7 @@
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
-    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="Yes"/>
+    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
@@ -99,7 +98,6 @@
       <Project Name="libViewer" ConfigName="Debug"/>
       <Project Name="libWindow" ConfigName="Debug"/>
       <Project Name="include" ConfigName="Debug"/>
-      <Project Name="RegardsRaw" ConfigName="Debug"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Debug"/>
       <Project Name="libWindowMain" ConfigName="Debug"/>
       <Project Name="libVideoFFMpeg" ConfigName="Debug"/>
@@ -170,7 +168,6 @@
       <Project Name="libViewer" ConfigName="Release"/>
       <Project Name="libWindow" ConfigName="Release"/>
       <Project Name="include" ConfigName="Release"/>
-      <Project Name="RegardsRaw" ConfigName="Release"/>
       <Project Name="RegardsViewer_Windows" ConfigName="Release"/>
       <Project Name="libWindowMain" ConfigName="Release"/>
       <Project Name="libVideoFFMpeg" ConfigName="Release"/>

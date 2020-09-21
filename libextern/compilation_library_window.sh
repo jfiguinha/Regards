@@ -84,6 +84,13 @@ cd SDL2-2.0.5
 make -j$NBPROC
 cd ..
 
+#Compile LibRaw
+unzip LibRaw-0.20.0.zip
+cd LibRaw-0.20.0
+./configure
+make -j$NBPROC
+cd ..
+
 #Compile wxWidgets-master
 unzip wxWidgets-master.zip
 cd wxWidgets-master
