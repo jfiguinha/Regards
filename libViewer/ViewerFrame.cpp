@@ -286,7 +286,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 				int indexDevice = -1;
 				OpenCLPlatform * openCLPlatformSelected = nullptr;
 				vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
-
+				bool findGpuDevice = false;
 				for (OpenCLPlatform * openCLPlatform : listPlatform)
 				{
 
@@ -301,9 +301,24 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 
 					for (OpenCLDevice * openCLDevice : listDevice)
 					{
-						indexDevice = openCLDevice->deviceIndex;
-						deviceName = openCLDevice->deviceName;
-						break;
+						if (openCLDevice->deviceType == CL_DEVICE_TYPE_GPU)
+						{
+							indexDevice = openCLDevice->deviceIndex;
+							deviceName = openCLDevice->deviceName;
+							findGpuDevice = true;
+							break;
+						}
+
+					}
+
+					if (!findGpuDevice)
+					{
+						for (OpenCLDevice * openCLDevice : listDevice)
+						{
+							indexDevice = openCLDevice->deviceIndex;
+							deviceName = openCLDevice->deviceName;
+							break;
+						}
 					}
 				}
 
@@ -313,7 +328,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 				if (config != nullptr)
 				{
 					config->SetOpenCLPlatformIndex(indexDevice);
-					config->SetOpenCLPlatformName(platformName);
+					config->SetOpenCLPlatformName(openCLPlatformSelected->platformName);
 				}
 
 				//ShowOpenCLConfiguration(false);
