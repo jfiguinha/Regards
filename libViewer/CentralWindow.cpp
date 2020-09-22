@@ -374,6 +374,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	OutputDebugString(L"\n");
 #endif
 	
+	wxString * _filename = new wxString();
 	bool isPictureToShow = false;
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
 	if (pictureData->bitmap != nullptr)
@@ -384,7 +385,7 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 	if (isPictureToShow)
 	{
-		wxString * _filename = new wxString();
+		
 		if (pictureData != nullptr)
 		{
 			SetPicture(pictureData->bitmap, pictureData->isThumbnail);
@@ -400,15 +401,6 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 			delete pictureData;
 		}
-
-
-		if (!isThumbnail)
-		{
-			wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
-			wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
-			evt.SetClientData(_filename);
-			mainWindow->GetEventHandler()->AddPendingEvent(evt);
-		}
 	}
 	else
 	{
@@ -417,6 +409,14 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 			StopLoadingPicture();
 		}
 		delete pictureData;
+	}
+
+	if (!isThumbnail)
+	{
+		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
+		evt.SetClientData(_filename);
+		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
 
