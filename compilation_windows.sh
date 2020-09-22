@@ -20,6 +20,7 @@ pacman -S mingw-w64-x86_64-openjpeg2
 #pacman -S mingw-w64-x86_64-freeimage
 pacman -S unzip
 pacman -S zip
+pacman -S mingw-w64-x86_64-libraw
 pacman -S mingw-w64-x86_64-qpdf
 pacman -S mingw-w64-x86_64-libexif
 pacman -S mingw-w64-x86_64-gnutls
