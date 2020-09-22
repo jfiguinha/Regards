@@ -127,13 +127,13 @@ void CInfoAbout::Init()
 	CTreeData * treelibFFmpeg = new CTreeData();
 	treelibFFmpeg->SetIsParent(false);
 	treelibFFmpeg->SetKey("FFMpeg");
-	treelibFFmpeg->SetValue("4.1");
+	treelibFFmpeg->SetValue("4.4.0");
 	tr.append_child(child, treelibFFmpeg);
 	
 	CTreeData * treelibBPG = new CTreeData();
 	treelibBPG->SetIsParent(false);
 	treelibBPG->SetKey("wxWidget");
-	treelibBPG->SetValue("3.1.3");
+	treelibBPG->SetValue("3.1.5");
 	tr.append_child(child, treelibBPG);
 
 	CTreeData * treelibTurboJpeg = new CTreeData();
