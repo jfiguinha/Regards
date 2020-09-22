@@ -23,6 +23,8 @@
 #include "Utilities.h"
 #include "../Metadata/FreeImageTag.h"
 
+#ifdef _WIN32
+
 #include "../LibJXR/jxrgluelib/JXRGlue.h"
 
 // ==========================================================
@@ -1473,3 +1475,4 @@ InitJXR(Plugin *plugin, int format_id) {
 	plugin->supports_no_pixels_proc = SupportsNoPixels;
 }
 
+#endif
