@@ -23,7 +23,7 @@ brew install -v tbb
 brew install -v libtiff
 brew install -v libpng
 brew install -v libjpeg
-brew install -v freeimage
+#brew install -v freeimage
 #brew install -v fftw
 #Install External Library
 cd libextern

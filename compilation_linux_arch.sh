@@ -17,7 +17,7 @@ sudo pacman -S freeglut
 sudo pacman -S mesa
 sudo pacman -S git
 sudo pacman -S libjpeg-turbo
-sudo pacman -S freeimage
+#sudo pacman -S freeimage
 sudo pacman -S tiff
 sudo pacman -S sdl2
 sudo pacman -S glew
