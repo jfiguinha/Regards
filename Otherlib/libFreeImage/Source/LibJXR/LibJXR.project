@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="LibJXR" Version="11000" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <VirtualDirectory Name="jxrgluelib">
+      <File Name="jxrgluelib/JXRMeta.c"/>
+      <File Name="jxrgluelib/JXRGluePFC.c"/>
+      <File Name="jxrgluelib/JXRGlueJxr.c"/>
+      <File Name="jxrgluelib/JXRGlue.c"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="image">
+      <VirtualDirectory Name="sys">
+        <File Name="image/sys/strTransform.c"/>
+        <File Name="image/sys/strPredQuant.c"/>
+        <File Name="image/sys/strcodec.c"/>
+        <File Name="image/sys/image.c"/>
+        <File Name="image/sys/adapthuff.c"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="encode">
+        <File Name="image/encode/strPredQuantEnc.c"/>
+        <File Name="image/encode/strFwdTransform.c"/>
+        <File Name="image/encode/strenc_x86.c"/>
+        <File Name="image/encode/strenc.c"/>
+        <File Name="image/encode/segenc.c"/>
+        <File Name="image/encode/encode.c"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="decode">
+        <File Name="image/decode/strPredQuantDec.c"/>
+        <File Name="image/decode/strInvTransform.c"/>
+        <File Name="image/decode/strdec_x86.c"/>
+        <File Name="image/decode/strdec.c"/>
+        <File Name="image/decode/segdec.c"/>
+        <File Name="image/decode/postprocess.c"/>
+        <File Name="image/decode/JXRTranscode.c"/>
+        <File Name="image/decode/decode.c"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <VirtualDirectory Name="jxrgluelib">
+      <File Name="jxrgluelib/JXRGlue.h"/>
+      <File Name="jxrgluelib/JXRMeta.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="image">
+      <VirtualDirectory Name="x86">
+        <File Name="image/x86/x86.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="sys">
+        <File Name="image/sys/xplatform_image.h"/>
+        <File Name="image/sys/windowsmediaphoto.h"/>
+        <File Name="image/sys/strTransform.h"/>
+        <File Name="image/sys/strcodec.h"/>
+        <File Name="image/sys/perfTimer.h"/>
+        <File Name="image/sys/common.h"/>
+        <File Name="image/sys/ansi.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="encode">
+        <File Name="image/encode/encode.h"/>
+      </VirtualDirectory>
+      <VirtualDirectory Name="decode">
+        <File Name="image/decode/decode.h"/>
+      </VirtualDirectory>
+    </VirtualDirectory>
+    <VirtualDirectory Name="common">
+      <File Name="common/include/wmspecstrings_undef.h"/>
+      <File Name="common/include/wmspecstrings_strict.h"/>
+      <File Name="common/include/wmspecstrings_adt.h"/>
+      <File Name="common/include/wmspecstring.h"/>
+      <File Name="common/include/wmsal.h"/>
+      <File Name="common/include/guiddef.h"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="../LibJXR/image/sys"/>
+        <IncludePath Value="../LibJXR/jxrgluelib"/>
+        <IncludePath Value="../LibJXR/common/include"/>
+        <Preprocessor Value="DISABLE_PERF_MEASUREMENT"/>
+        <Preprocessor Value="_LIB"/>
+        <Preprocessor Value="__MINGW64_TOOLCHAIN__"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

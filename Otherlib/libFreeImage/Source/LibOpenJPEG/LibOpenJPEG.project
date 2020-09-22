@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="LibOpenJPEG" Version="11000" InternalType="Library">
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="tgt.c"/>
+    <File Name="tcd.c"/>
+    <File Name="t2.c"/>
+    <File Name="t1.c"/>
+    <File Name="raw.c"/>
+    <File Name="pi.c"/>
+    <File Name="opj_clock.c"/>
+    <File Name="openjpeg.c"/>
+    <File Name="mqc.c"/>
+    <File Name="mct.c"/>
+    <File Name="jp2.c"/>
+    <File Name="j2k.c"/>
+    <File Name="invert.c"/>
+    <File Name="image.c"/>
+    <File Name="function_list.c"/>
+    <File Name="event.c"/>
+    <File Name="dwt.c"/>
+    <File Name="cio.c"/>
+    <File Name="bio.c"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="tgt.h"/>
+    <File Name="tcd.h"/>
+    <File Name="t2.h"/>
+    <File Name="t1_luts.h"/>
+    <File Name="t1.h"/>
+    <File Name="raw.h"/>
+    <File Name="pi.h"/>
+    <File Name="opj_stdint.h"/>
+    <File Name="opj_malloc.h"/>
+    <File Name="opj_inttypes.h"/>
+    <File Name="opj_intmath.h"/>
+    <File Name="opj_includes.h"/>
+    <File Name="opj_config_private.h"/>
+    <File Name="opj_config.h"/>
+    <File Name="opj_codec.h"/>
+    <File Name="opj_clock.h"/>
+    <File Name="openjpeg.h"/>
+    <File Name="mqc.h"/>
+    <File Name="mct.h"/>
+    <File Name="jp2.h"/>
+    <File Name="j2k.h"/>
+    <File Name="invert.h"/>
+    <File Name="indexbox_manager.h"/>
+    <File Name="image.h"/>
+    <File Name="function_list.h"/>
+    <File Name="event.h"/>
+    <File Name="dwt.h"/>
+    <File Name="cio.h"/>
+    <File Name="bio.h"/>
+  </VirtualDirectory>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
+        <IncludePath Value="."/>
+        <Preprocessor Value="_LIB"/>
+        <Preprocessor Value="OPJ_STATIC"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>

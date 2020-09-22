@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="libFreeImage" Version="11000" InternalType="Library">
+  <VirtualDirectory Name="Toolkit Files">
+    <File Name="Source/FreeImageToolkit/Resize.h"/>
+    <File Name="Source/FreeImageToolkit/Resize.cpp"/>
+    <File Name="Source/FreeImageToolkit/Rescale.cpp"/>
+    <File Name="Source/FreeImageToolkit/MultigridPoissonSolver.cpp"/>
+    <File Name="Source/FreeImageToolkit/Flip.cpp"/>
+    <File Name="Source/FreeImageToolkit/Filters.h"/>
+    <File Name="Source/FreeImageToolkit/Display.cpp"/>
+    <File Name="Source/FreeImageToolkit/CopyPaste.cpp"/>
+    <File Name="Source/FreeImageToolkit/Colors.cpp"/>
+    <File Name="Source/FreeImageToolkit/ClassicRotate.cpp"/>
+    <File Name="Source/FreeImageToolkit/Channels.cpp"/>
+    <File Name="Source/FreeImageToolkit/BSplineRotate.cpp"/>
+    <File Name="Source/FreeImageToolkit/Background.cpp"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="Source/FreeImage/ColorLookup.cpp"/>
+    <File Name="Source/FreeImage/BitmapAccess.cpp"/>
+    <File Name="Source/FreeImage/PixelAccess.cpp"/>
+    <File Name="Source/FreeImage/MemoryIO.cpp"/>
+    <File Name="Source/FreeImage/GetType.cpp"/>
+    <File Name="Source/FreeImage/FreeImageIO.cpp"/>
+    <File Name="Source/FreeImage/FreeImage.cpp"/>
+    <VirtualDirectory Name="Quantizers">
+      <File Name="Source/FreeImage/WuQuantizer.cpp"/>
+      <File Name="Source/FreeImage/NNQuantizer.cpp"/>
+      <File Name="Source/FreeImage/LFPQuantizer.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Plugins">
+      <File Name="Source/FreeImage/TIFFLogLuv.cpp"/>
+      <File Name="Source/FreeImage/PSDParser.cpp"/>
+      <File Name="Source/FreeImage/MNGHelper.cpp"/>
+      <File Name="Source/FreeImage/J2KHelper.cpp"/>
+      <File Name="Source/FreeImage/PluginXPM.cpp"/>
+      <File Name="Source/FreeImage/PluginXBM.cpp"/>
+      <File Name="Source/FreeImage/PluginWBMP.cpp"/>
+      <File Name="Source/FreeImage/PluginTARGA.cpp"/>
+      <File Name="Source/FreeImage/PluginSGI.cpp"/>
+      <File Name="Source/FreeImage/PluginRAS.cpp"/>
+      <File Name="Source/FreeImage/PluginPSD.cpp"/>
+      <File Name="Source/FreeImage/PluginPNM.cpp"/>
+      <File Name="Source/FreeImage/PluginPICT.cpp"/>
+      <File Name="Source/FreeImage/PluginPFM.cpp"/>
+      <File Name="Source/FreeImage/PluginPCX.cpp"/>
+      <File Name="Source/FreeImage/PluginPCD.cpp"/>
+      <File Name="Source/FreeImage/PluginMNG.cpp"/>
+      <File Name="Source/FreeImage/PluginKOALA.cpp"/>
+      <File Name="Source/FreeImage/PluginJXR.cpp"/>
+      <File Name="Source/FreeImage/PluginJP2.cpp"/>
+      <File Name="Source/FreeImage/PluginJNG.cpp"/>
+      <File Name="Source/FreeImage/PluginJ2K.cpp"/>
+      <File Name="Source/FreeImage/PluginIFF.cpp"/>
+      <File Name="Source/FreeImage/PluginICO.cpp"/>
+      <File Name="Source/FreeImage/PluginHDR.cpp"/>
+      <File Name="Source/FreeImage/PluginGIF.cpp"/>
+      <File Name="Source/FreeImage/PluginG3.cpp"/>
+      <File Name="Source/FreeImage/PluginDDS.cpp"/>
+      <File Name="Source/FreeImage/PluginCUT.cpp"/>
+      <File Name="Source/FreeImage/PluginBMP.cpp"/>
+      <File Name="Source/FreeImage/Plugin.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Multipaging">
+      <File Name="Source/FreeImage/ZLibInterface.cpp"/>
+      <File Name="Source/FreeImage/MultiPage.cpp"/>
+      <File Name="Source/FreeImage/CacheFile.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Conversion">
+      <File Name="Source/FreeImage/ToneMapping.cpp"/>
+      <File Name="Source/FreeImage/tmoReinhard05.cpp"/>
+      <File Name="Source/FreeImage/tmoFattal02.cpp"/>
+      <File Name="Source/FreeImage/tmoDrago03.cpp"/>
+      <File Name="Source/FreeImage/tmoColorConvert.cpp"/>
+      <File Name="Source/FreeImage/Halftoning.cpp"/>
+      <File Name="Source/FreeImage/ConversionUINT16.cpp"/>
+      <File Name="Source/FreeImage/ConversionType.cpp"/>
+      <File Name="Source/FreeImage/ConversionRGBF.cpp"/>
+      <File Name="Source/FreeImage/ConversionRGBAF.cpp"/>
+      <File Name="Source/FreeImage/ConversionRGBA16.cpp"/>
+      <File Name="Source/FreeImage/ConversionRGB16.cpp"/>
+      <File Name="Source/FreeImage/ConversionFloat.cpp"/>
+      <File Name="Source/FreeImage/Conversion32.cpp"/>
+      <File Name="Source/FreeImage/Conversion24.cpp"/>
+      <File Name="Source/FreeImage/Conversion16_565.cpp"/>
+      <File Name="Source/FreeImage/Conversion16_555.cpp"/>
+      <File Name="Source/FreeImage/Conversion8.cpp"/>
+      <File Name="Source/FreeImage/Conversion4.cpp"/>
+      <File Name="Source/FreeImage/Conversion.cpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="Metadata">
+      <File Name="Source/Metadata/XTIFF.cpp"/>
+      <File Name="Source/Metadata/TagLib.cpp"/>
+      <File Name="Source/Metadata/TagConversion.cpp"/>
+      <File Name="Source/Metadata/IPTC.cpp"/>
+      <File Name="Source/Metadata/FreeImageTag.h"/>
+      <File Name="Source/Metadata/FreeImageTag.cpp"/>
+      <File Name="Source/Metadata/FIRational.h"/>
+      <File Name="Source/Metadata/FIRational.cpp"/>
+      <File Name="Source/Metadata/Exif.cpp"/>
+    </VirtualDirectory>
+  </VirtualDirectory>
+  <VirtualDirectory Name="include">
+    <File Name="Source/FreeImage/PSDParser.h"/>
+    <File Name="Source/FreeImage/J2KHelper.h"/>
+    <File Name="Source/Utilities.h"/>
+    <File Name="Source/ToneMapping.h"/>
+    <File Name="Source/Quantizers.h"/>
+    <File Name="Source/Plugin.h"/>
+    <File Name="Source/MapIntrospector.h"/>
+    <File Name="Source/FreeImageIO.h"/>
+    <File Name="Source/FreeImage.h"/>
+    <File Name="Source/CacheFile.h"/>
+  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+  <Settings Type="Static Library">
+    <GlobalSettings>
+      <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall;-fpermissive" C_Options="-Wall" Assembler="">
+        <IncludePath Value="."/>
+        <IncludePath Value="source"/>
+        <IncludePath Value="../../libextern/wxWidgets-master/src/tiff/libtiff"/>
+        <IncludePath Value="../../libextern/wxWidgets-master/src/tiff"/>
+        <IncludePath Value="../../libextern/zlib"/>
+        <IncludePath Value="../../Otherlib/libFreeImage/Source/LibJXR/jxrgluelib"/>
+        <IncludePath Value="../../Otherlib/libFreeImage/Source/LibJXR/image/sys"/>
+        <IncludePath Value="../../Otherlib/libFreeImage/Source/LibJXR/common/include"/>
+        <Preprocessor Value="OPJ_STATIC"/>
+        <Preprocessor Value="FREEIMAGE_LIB"/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName).a" IntermediateDirectory="$(ConfigurationName)" Command="$(OutputFile)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <BuildSystem Name="Default"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName/>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
