@@ -318,15 +318,7 @@ void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement
 #endif
 
     printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
-	//if (this->filename != filename)
-	//{
-		RefreshPicture(filename, numElement, first);
-	//}
-	/*
-	LoadPictureInThread(filename, numElement);
-	if (thumbnailPicture != nullptr)
-		thumbnailPicture->SetActifItem(numElement, true);
-	*/
+	RefreshPicture(filename, numElement, first);
 }
 
 void CCentralWindow::HideToolbar()
@@ -381,24 +373,20 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	OutputDebugString(L"CCentralWindow::OnShowPicture : ");
 	OutputDebugString(L"\n");
 #endif
-	wxString * _filename = new wxString();
+	
+	bool isPictureToShow = false;
 	CBitmapReturn * pictureData = (CBitmapReturn *)event.GetClientData();
-	if (pictureData != nullptr)
+	if (pictureData->bitmap != nullptr)
 	{
-#if defined(WIN32) && defined(_DEBUG)
-		OutputDebugString(L"pictureData->bitmap->GetFilename() : ");
-		OutputDebugString(pictureData->bitmap->GetFilename());
-		OutputDebugString(L"\n");
-		OutputDebugString(L"filename : ");
-		OutputDebugString(filename);
-		OutputDebugString(L"\n");
-#endif
+		if (filename == pictureData->bitmap->GetFilename())
+			isPictureToShow = true;
+	}
 
-#if defined(WIN32) && defined(_DEBUG)
-			OutputDebugString(L"CCentralWindow::OnShowPicture : Display File");
-			OutputDebugString(L"\n");
-#endif
-
+	if (isPictureToShow)
+	{
+		wxString * _filename = new wxString();
+		if (pictureData != nullptr)
+		{
 			SetPicture(pictureData->bitmap, pictureData->isThumbnail);
 
 			if (!pictureData->isThumbnail)
@@ -410,21 +398,26 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 
 			*_filename = pictureData->bitmap->GetFilename();
 
+			delete pictureData;
+		}
+
+
+		if (!isThumbnail)
+		{
+			wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
+			wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
+			evt.SetClientData(_filename);
+			mainWindow->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+	else
+	{
+		if (!pictureData->isThumbnail)
+		{
+			StopLoadingPicture();
+		}
 		delete pictureData;
 	}
-
-	
-	if (!isThumbnail)
-	{
-		wxWindow * mainWindow = this->FindWindowById(MAINVIEWERWINDOWID);
-		wxCommandEvent evt(EVENT_ENDNEWPICTURETHREAD);
-		evt.SetClientData(_filename);
-		mainWindow->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-
-
-
 }
 
 void CCentralWindow::StopLoadingPicture()
