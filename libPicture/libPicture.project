@@ -91,9 +91,12 @@
         <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib"/>
+        <IncludePath Value="../Otherlib/libFreeImage/Source"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
+        <Preprocessor Value="OPJ_STATIC"/>
+        <Preprocessor Value="FREEIMAGE_LIB"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

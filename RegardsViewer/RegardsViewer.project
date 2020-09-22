@@ -35,49 +35,6 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_windows"/>
-    <Project Name="wxIA"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libScanner"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libavif"/>
-  </Dependencies>
   <Dependencies Name="Release">
     <Project Name="include"/>
     <Project Name="CxImage"/>
@@ -122,6 +79,55 @@
     <Project Name="libScanner"/>
     <Project Name="libDeepLearning"/>
     <Project Name="libavif"/>
+    <Project Name="LibJXR"/>
+    <Project Name="libheif"/>
+    <Project Name="libFreeImage"/>
+  </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_windows"/>
+    <Project Name="wxIA"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libScanner"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libavif"/>
+    <Project Name="LibJXR"/>
+    <Project Name="libheif"/>
+    <Project Name="libFreeImage"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -374,6 +380,8 @@
         <Library Value="opencv_highgui430"/>
         <Library Value="opencv_face430"/>
         <Library Value="opencv_objdetect430"/>
+        <Library Value="JXR"/>
+        <Library Value="openjp2"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
@@ -423,6 +431,9 @@
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
+        <LibraryPath Value="../Otherlib/libfreeimage/Debug"/>
+        <LibraryPath Value="../Otherlib/libFreeImage/Source/LibJXR/Debug"/>
+        <LibraryPath Value="../Otherlib/libFreeImage/Source/LibOpenJPEG/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
@@ -484,7 +495,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libcrypto-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libssl-1_1-x64.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libturbojpeg.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Debug</Command>
@@ -498,7 +508,7 @@
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libgnutls-30.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Debug</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-19.dll ./Debug</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw_r-20.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Debug</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Debug</Command>
@@ -597,6 +607,8 @@
         <LibraryPath Value="../libScanner/Release"/>
         <LibraryPath Value="../libDeepLearning/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
+        <LibraryPath Value="../Otherlib/libfreeimage/Release"/>
+        <LibraryPath Value="../Otherlib/libFreeImage/Source/LibJXR/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer.exe" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -664,7 +676,6 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/tbbmalloc_proxy.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern//exiv2-0.27.3/build/bin/libexiv2.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libfreeimage-3.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/SDL2-2.0.5/build/.libs/SDL2.dll ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/bin/glew32.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjasper-4.dll ./Release/libjasper-4.dll</Command>
@@ -674,7 +685,7 @@
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libexif-12.dll ./Release/libexif-12.dll</Command>
         <Command Enabled="yes">cp ../libextern/heif-master/srcs/lib/libheif_shared.dll ./Release/libheif_shared.dll</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjxrglue.dll ./Release</Command>
-        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw-20.dll ./Release</Command>
+        <Command Enabled="yes">cp C:/msys64/mingw64/bin/libraw_r-20.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebp-7.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libwebpmux-3.dll ./Release</Command>
         <Command Enabled="yes">cp C:/msys64/mingw64/bin/libjpegxr.dll ./Release</Command>
