@@ -2,7 +2,7 @@
 // G3 Fax Loader
 //
 // Design and implementation by
-// - Hervé Drolon (drolon@infonie.fr)
+// - HervÃ© Drolon (drolon@infonie.fr)
 // - Petr Pytelka (pyta@lightcomp.com)
 //
 // This file is part of FreeImage 3

@@ -31,8 +31,6 @@
     <Project Name="libheif" Path="Otherlib/libheif/libheif.project" Active="No"/>
     <VirtualDirectory Name="Freeimage">
       <Project Name="libFreeImage" Path="Otherlib/libFreeImage/libFreeImage.project" Active="No"/>
-      <Project Name="LibJXR" Path="Otherlib/libFreeImage/Source/LibJXR/LibJXR.project" Active="No"/>
-      <Project Name="LibOpenJPEG" Path="Otherlib/libFreeImage/Source/LibOpenJPEG/LibOpenJPEG.project" Active="No"/>
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="Video">
@@ -66,13 +64,13 @@
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
-    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+    <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="Yes"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
@@ -148,8 +146,6 @@
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="RegardsRaw" ConfigName="Debug"/>
       <Project Name="libFreeImage" ConfigName="Debug"/>
-      <Project Name="LibJXR" ConfigName="Debug"/>
-      <Project Name="LibOpenJPEG" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -221,8 +217,6 @@
       <Project Name="libheif" ConfigName="Release"/>
       <Project Name="RegardsRaw" ConfigName="Release"/>
       <Project Name="libFreeImage" ConfigName="Release"/>
-      <Project Name="LibJXR" ConfigName="Release"/>
-      <Project Name="LibOpenJPEG" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>
