@@ -39,6 +39,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbThumbnailCache;
 		wxRadioBox* rbDatabaseInMemory;
 		wxRadioBox* rbAutoRotate;
+		wxRadioBox* rbInterpolation;
 		//*)
 
 		bool IsOk();

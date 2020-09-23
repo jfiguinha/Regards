@@ -85,9 +85,6 @@ namespace Regards
 			bool GetShrinkImage();
 			void ShrinkImage(const bool& redraw = true);
 
-			void SetInterpolation(int interpolation);
-			int GetInterpolation();
-
 			float GetRatio();
 
 			void SetTool(const int& tool);
@@ -240,7 +237,7 @@ namespace Regards
 
 
 			CFiltreEffet * filtreEffet;
-			int filterInterpolation;
+			//int filterInterpolation;
 #ifdef RENDEROPENGL
 			CRenderBitmapInterfaceOpenGL * renderOpenGL;
 			GLTexture * glTexture;

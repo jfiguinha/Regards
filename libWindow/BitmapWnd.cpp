@@ -105,7 +105,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 	bitmapLoad = false;
 
 	themeBitmap.colorBack = themeBitmap.colorScreen;
-	filterInterpolation = CUBICFILTER;
+	//filterInterpolation = CUBICFILTER;
 }
 
 void CBitmapWnd::OnScrollMove(wxCommandEvent& event)
@@ -160,13 +160,6 @@ void CBitmapWnd::OnUpdateBitmap(wxCommandEvent& event)
 	CImageLoadingFormat * picture = (CImageLoadingFormat *)event.GetClientData();
 	if (picture != nullptr)
 		UpdateBitmap(picture, false);
-}
-
-void CBitmapWnd::SetFilterInterpolation(const int &filter)
-{
-    TRACE();
-	filterInterpolation = filter;
-    RefreshWindow();
 }
 
 
@@ -589,24 +582,6 @@ bool CBitmapWnd::GetShowScroll()
 wxString CBitmapWnd::GetFilename()
 {
 	return filename;
-}
-
-//-----------------------------------------------------------------
-//Définition de la méthode d'interpolation
-//-----------------------------------------------------------------
-void CBitmapWnd::SetInterpolation(int interpolation)
-{
-    TRACE();
-	this->interpolation = interpolation;
-}
-
-//-----------------------------------------------------------------
-//Obtention des dimensions du bitmap
-//-----------------------------------------------------------------
-int CBitmapWnd::GetInterpolation()
-{
-    TRACE();
-	return interpolation;
 }
 
 //-----------------------------------------------------------------
@@ -1521,10 +1496,14 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 #else
 	double scale_factor = 1.0f;
 #endif 
-    
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 	int localAngle = angle;
 	int localflipHorizontal = flipHorizontal;
 	int localflipVertical = flipVertical;
+	int filterInterpolation = 0;
+	
+	if(regardsParam != nullptr)
+		regardsParam->GetInterpolationType();
 	//if(raw)
 	//	GenerateExifRawPosition(localAngle, localflipHorizontal, localflipVertical);
 	//else

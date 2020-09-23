@@ -38,7 +38,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
-
+	rbInterpolation = (wxRadioBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
@@ -92,6 +92,8 @@ void ConfigRegards::Init()
 	else
 		rbDatabaseInMemory->SetSelection(0);
 
+	int interpolation = regardsParam->GetInterpolationType();
+	rbInterpolation->SetSelection(interpolation);
 }
 
 void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
@@ -118,6 +120,11 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 		regardsParam->SetDxva2Actif(1);
 	else
 		regardsParam->SetDxva2Actif(0);
+
+
+	int interpolation = rbInterpolation->GetSelection();
+	regardsParam->SetInterpolationType(interpolation);
+	
 
 	int timeDiaporama = scTime->GetValue();
 	regardsParam->SetDiaporamaTime(timeDiaporama);

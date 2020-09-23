@@ -35,7 +35,32 @@
 			</content>
 			<default>-1</default>
 			<pos>0,74</pos>
-			<size>360,70</size>
+			<size>180,70</size>
+		</object>	
+		<object class="wxStaticBox" name="sbInterpolation">
+			<label>Interpolation Filter</label>
+			<pos>180,74</pos>
+			<size>180,70</size>
+		</object>
+		<object class="wxComboBox" name="ID_CBINTERPOLATIONFILTER">
+			<pos>185,94</pos>
+			<size>170,60</size>
+			<value>CubicFilter</value>
+			<content>
+				<item>CubicFilter</item>
+				<item>BboxFilter</item>
+				<item>HermiteFilter</item>
+				<item>HanningFilter</item>
+				<item>CatromFilter</item>
+				<item>MitchellFilter</item>
+				<item>TriangleFilter</item>
+				<item>QuadraticFilter</item>
+				<item>BlackmanFilter</item>
+				<item>HammingFilter</item>
+				<item>GaussianFilter</item>
+				<item>BilinearFilter</item>
+				<item>None</item>
+			</content>
 		</object>		
 		<object class="wxRadioBox" name="ID_RBDATAINMEMORY">
 			<label>Database in memory</label>
@@ -46,8 +71,8 @@
 			</content>
 			<default>-1</default>
 			<pos>0,148</pos>
-			<size>360,70</size>
-		</object>		
+			<size>180,70</size>
+		</object>			
 		<object class="wxStaticBox" name="sbDiaporama">
 			<label>Sequence</label>
 			<pos>0,220</pos>
