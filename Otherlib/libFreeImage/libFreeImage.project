@@ -31,7 +31,7 @@
       <File Name="Source/FreeImage/LFPQuantizer.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="Plugins">
-      <File Name="Source/FreeImage/PluginJXR.cpp" ExcludeProjConfig="Release;"/>
+      <File Name="Source/FreeImage/PluginJXR.cpp" ExcludeProjConfig=""/>
       <File Name="Source/FreeImage/TIFFLogLuv.cpp"/>
       <File Name="Source/FreeImage/PSDParser.cpp"/>
       <File Name="Source/FreeImage/MNGHelper.cpp"/>
