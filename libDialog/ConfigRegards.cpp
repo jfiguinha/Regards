@@ -38,7 +38,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rdDxva2Render = (wxRadioBox*)FindWindow(XRCID("ID_RBDXVA2"));
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
-	rbInterpolation = (wxRadioBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
+	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
 
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
