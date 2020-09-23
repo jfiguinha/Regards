@@ -1503,7 +1503,7 @@ void CBitmapWnd::GenerateScreenBitmap(CFiltreEffet * filtreEffet, int &widthOutp
 	int filterInterpolation = 0;
 	
 	if(regardsParam != nullptr)
-		regardsParam->GetInterpolationType();
+		filterInterpolation = regardsParam->GetInterpolationType();
 	//if(raw)
 	//	GenerateExifRawPosition(localAngle, localflipHorizontal, localflipVertical);
 	//else
@@ -1792,6 +1792,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 		}
 
 	}
+	else
+		openclContext = nullptr;
 
 	if (!supportOpenCL)
 		RenderToScreenWithoutOpenCLSupport();
