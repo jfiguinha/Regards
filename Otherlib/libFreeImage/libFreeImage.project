@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libFreeImage" Version="11000" InternalType="Library">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Toolkit Files">
     <File Name="Source/FreeImageToolkit/Resize.h"/>
     <File Name="Source/FreeImageToolkit/Resize.cpp"/>
@@ -120,7 +125,7 @@
     <GlobalSettings>
       <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="source"/>
+        <IncludePath Value="Source"/>
         <IncludePath Value="../../libextern/zlib"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff/libtiff"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff"/>
