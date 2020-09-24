@@ -14,11 +14,6 @@ public:
 			supportOpenCL = config->GetIsOpenCLSupport();
 
 		effectEnable = 0;
-		//Median value
-		bSize = 3;
-		fSize = 3;
-		sigmaX = 8.0;
-		sigmaP = 8.0;
 		//Video Parameter
 		sharpness = 1.5f;
 		//Sky Light
@@ -48,16 +43,29 @@ public:
         enableOpenCL = supportOpenCL;
 		denoiseEnable = 0;
         bandcEnable = 1;
+
+		uSigma = 11.0;
+		uThreshold = 0.180;
+		uKSigma = 2;
+
+		/*
+		GLfloat sigma = 11.0f, threshold = .180f, slider = 0.f; //running
+		// GLfloat sigma = 7.0f, threshold = .180f, slider = 0.f; //running
+		GLfloat kSigma = 2.f;
+
+		GLfloat aSigma[3] = {9.f, 7.f, 7.f};
+		GLfloat aThreshold[3] = {.180f, .195f, .180f};
+		GLfloat aKSigma[3] = {3.f, 3.f, 2.f};
+		*/
 	};
 	~CVideoEffectParameter()
 	{
 	};
 
 	//Video Denoising Parameter
-	int bSize;
-	int fSize;
-	float sigmaP;
-	float sigmaX;
+	float uSigma;
+	float uThreshold;
+	float uKSigma;
 	float exponent;
 
 	//Video Parameter
@@ -89,5 +97,8 @@ public:
 	int   streamAudioUpdate;
 	int   streamVideoUpdate;
 	int   streamSubtitleUpdate;
+
+
+
 };
 

@@ -13,7 +13,25 @@ uniform float brightness;
 uniform float red;
 uniform float green;
 uniform float blue;
-uniform float exponent;
+
+uniform float sigma;
+uniform float threshold;
+uniform float kSigma;
+
+
+#define INV_SQRT_OF_2PI 0.39894228040143267793994605993439  // 1.0/SQRT_OF_2PI
+#define INV_PI 0.31830988618379067153776752674503
+//  smartDeNoise - parameters
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//  sampler2D tex     - sampler image / texture
+//  vec2 uv           - actual fragment coord
+//  float sigma  >  0 - sigma Standard Deviation
+//  float kSigma >= 0 - sigma coefficient 
+//      kSigma * sigma  -->  radius of the circular kernel
+//  float threshold   - edge sharpening threshold 
+
+
 
 vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 {
@@ -21,6 +39,46 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	float texelSizeY = 1.0 / fHeight; //size of one texel 
 	vec2 resolution = vec2(texelSizeX, texelSizeY); 
 	return texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
+}
+
+vec4 smartDeNoise(sampler2D tex)
+{
+    float radius = round(kSigma*sigma);
+    float radQ = radius * radius;
+
+    float invSigmaQx2 = .5 / (sigma * sigma);      // 1.0 / (sigma^2 * 2.0)
+    float invSigmaQx2PI = INV_PI * invSigmaQx2;    // // 1/(2 * PI * sigma^2)
+
+    float invThresholdSqx2 = .5 / (threshold * threshold);     // 1.0 / (sigma^2 * 2.0)
+    float invThresholdSqrt2PI = INV_SQRT_OF_2PI / threshold;   // 1.0 / (sqrt(2*PI) * sigma)
+
+    //vec4 centrPx = texture(tex,uv); 
+	vec2 tex_coord = gl_TexCoord[0].st;
+	vec4 centrPx = texture2D(texUnit, tex_coord).rgba;
+
+    float zBuff = 0.0;
+    vec4 aBuff = vec4(0.0);
+	
+	float texelSizeX = 1.0 / fWidth; //size of one texel 
+	float texelSizeY = 1.0 / fHeight; //size of one texel 
+	float posX = gl_TexCoord[0].s;
+	float posY = gl_TexCoord[0].t;	
+
+    vec2 d;
+    for (d.x=-radius; d.x <= radius; d.x++) {
+        float pt = sqrt(radQ-d.x*d.x);       // pt = yRadius: have circular trend
+        for (d.y=-pt; d.y <= pt; d.y++) {
+            float blurFactor = exp( -dot(d , d) * invSigmaQx2 ) * invSigmaQx2PI;
+
+			vec4 walkPx = TextureValue(posX, posY, d.x, d.y);
+            vec4 dC = walkPx-centrPx;
+            float deltaFactor = exp( -dot(dC, dC) * invThresholdSqx2) * invThresholdSqrt2PI * blurFactor;
+
+            zBuff += deltaFactor;
+            aBuff += deltaFactor*walkPx;
+        }
+    }
+    return aBuff/zBuff;
 }
 
 vec4 ContrastFilter(vec4 color,float contrast, float offset)
@@ -70,6 +128,11 @@ void main(void)
 		gl_FragColor = src_color;
 		return;
 	}
+	
+	if(denoise == 1)
+	{
+		src_color = smartDeNoise(texUnit);
+	}
 
 	if(sharpenMasking == 1)
 	{
@@ -88,25 +151,6 @@ void main(void)
 		vec4 blur = sum / vec4(9.0,9.0,9.0,9.0);
 		src_color = src_color + (src_color - blur) * sharpness;		
 	}
-
-	if(denoise == 1)
-	{
-		vec4 center = src_color;
-		vec4 color = vec4(0.0);
-		float posX = gl_TexCoord[0].s;
-		float posY = gl_TexCoord[0].t;			
-		float total = 0.0;
-		for (float x = -4.0; x <= 4.0; x += 1.0) {
-			for (float y = -4.0; y <= 4.0; y += 1.0) {	
-				vec4 sample = TextureValue(posX, posY, x, y);
-				float weight = 1.0 - abs(dot(sample.rgb - center.rgb, vec3(0.25)));
-				weight = pow(weight, exponent);
-				color += sample * weight;
-				total += weight;
-			}
-		}
-		src_color = color / total;	
-	}		
 
 	if(tone == 1)
 	{

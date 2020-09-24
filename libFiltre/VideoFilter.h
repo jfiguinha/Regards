@@ -40,9 +40,9 @@ namespace Regards
 			wxString effectSharpenLevel;
 			wxString toneConstrastLevel;
 			wxString toneBrightnessLevel;
-			wxString effectDenoisingSigmaX;
-			wxString effectDenoisingSigmaP;
-			wxString effectDenoisingFSize;
+			wxString effectDenoisingSigmaU;
+			wxString effectDenoisingSigmaK;
+			wxString effectDenoisingThreshold;
 			wxString colorBoostRed;
 			wxString colorBoostGreen;
 			wxString colorBoostBlue;
@@ -53,6 +53,7 @@ namespace Regards
 			wxString enableSubtitle;
             wxString enableBicubicInterpolation;
             wxString enableOpenCL;
+			wxString threshold;
         };
     }
 }

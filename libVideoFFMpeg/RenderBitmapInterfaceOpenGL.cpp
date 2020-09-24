@@ -41,7 +41,6 @@ CRenderBitmapInterfaceOpenGL::~CRenderBitmapInterfaceOpenGL()
 
 void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted)
 {
-
 	glTexture->Enable();
     if(effectParameter->effectEnable)
     {
@@ -109,10 +108,18 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
             {
                 printf( "SetParam blue failed \n " );
             } 
-            if (!m_pShader->SetIntegerParam("exponent", effectParameter->exponent))
+            if (!m_pShader->SetParam("uSigma", effectParameter->uSigma))
             {
-                printf( "SetParam colorboost failed \n " );
+                printf( "SetParam uSigma failed \n " );
             } 
+			if (!m_pShader->SetParam("uThreshold", effectParameter->uThreshold / 100.0f))
+			{
+				printf("SetParam uThreshold failed \n ");
+			}
+			if (!m_pShader->SetParam("uKSigma", effectParameter->uKSigma))
+			{
+				printf("SetParam uKSigma failed \n ");
+			}
         }
 
         RenderQuad(glTexture, flipH, flipV, left, top, inverted);
@@ -138,8 +145,9 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
         if(m_pShader != nullptr)
             m_pShader->DisableShader();
     }
-
+	
 	glTexture->Disable();
+
 }
 
 void CRenderBitmapInterfaceOpenGL::SetSubtitle(CRegardsBitmap * subtitle)

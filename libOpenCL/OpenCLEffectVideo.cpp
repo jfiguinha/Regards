@@ -495,7 +495,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 			paramOutput = new COpenCLParameterClMem();
 			paramOutput->SetValue(output);
 		}
-	
+		/*
 		if(videoEffectParameter->MedianEnable)
 		{
 			cl_mem output = nullptr;
@@ -510,7 +510,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 			paramOutput = new COpenCLParameterClMem();
 			paramOutput->SetValue(output);
 		}
-
+		*/
 		if(videoEffectParameter->grayEnable)
 		{
 			cl_mem output = nullptr;
