@@ -593,6 +593,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libglib-2.0.dylib @executable_path/../Frameworks/libglib-2.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_calib3d.4.3.dylib @executable_path/../Frameworks/libopencv_calib3d.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libopenjp2.7.dylib @executable_path/../Frameworks/libopenjp2.7.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_core.4.3.dylib @executable_path/../Frameworks/libopencv_core.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_dnn.4.3.dylib @executable_path/../Frameworks/libopencv_dnn.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libopencv_features2d.4.3.dylib @executable_path/../Frameworks/libopencv_features2d.4.3.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>

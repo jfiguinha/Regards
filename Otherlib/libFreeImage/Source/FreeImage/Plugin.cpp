@@ -272,7 +272,9 @@ FreeImage_Initialise(BOOL load_local_plugins_only) {
 			s_plugins->AddNode(InitPICT);
 			//s_plugins->AddNode(InitRAW);
 			//s_plugins->AddNode(InitWEBP);
+#ifdef _WIN32
 			s_plugins->AddNode(InitJXR);
+#endif
 			
 			// external plugin initialization
 
