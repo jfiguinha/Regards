@@ -43,7 +43,8 @@ namespace Regards
 			}
             
             void RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted = false);
-          
+			void RenderWithoutEffect(const int &left, const int &top, GLTexture * glTexture, const bool & flipH, const bool & flipV, const bool & inverted = false);
+
             bool IsCopyDirect()
             {
                 return directcopytexture;

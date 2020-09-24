@@ -499,7 +499,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 		if(videoEffectParameter->denoiseEnable)
 		{
 			cl_mem output = nullptr;
-			output = openclFilter.Denoise("Denoise", videoEffectParameter->uSigma, videoEffectParameter->uThreshold, videoEffectParameter->uKSigma, paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.Denoise("Denoise", videoEffectParameter->uSigma, videoEffectParameter->uThreshold / 100.0f, videoEffectParameter->uKSigma, paramOutput->GetValue(), widthOut, heightOut);
 
 			if(paramOutput != nullptr)
 			{

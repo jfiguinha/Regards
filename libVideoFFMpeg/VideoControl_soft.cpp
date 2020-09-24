@@ -419,11 +419,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     #endif        
     }
 
-
-
     nbFrame++;
-    //printf("Nb Frame per Seconds : %d \n",nbFrame);
-
 
     if (videoRenderStart && initStart)
     {
@@ -436,8 +432,6 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if(videoRenderStart)
 	{
         glTexture = RenderToGLTexture();
-        //if(glTexture != nullptr)
-        //    printf("glTexture id : %d \n",glTexture->GetTextureID());
     }
     
     if(videoRenderStart && glTexture != nullptr)
@@ -461,15 +455,20 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
                 
             if(isffmpegDecode)
                 inverted = 1;
-                
-            //printf("Inverted %d Enable OpenCL %d \n",inverted, enableopenCL);
-            //printf("flipH : %d flipV : %d inverted : %d \n", flipH, flipV, inverted);
-            muVideoEffect.lock();
-            renderBitmapOpenGL->RenderWithEffect(x,y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
-           // printf("Rotation : %d \n",videoEffectParameter.rotation);
-            muVideoEffect.unlock();
             
-             
+			muVideoEffect.lock();
+			renderBitmapOpenGL->RenderWithEffect(x, y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
+			muVideoEffect.unlock();
+			/*
+			if (IsSupportOpenCL() && videoEffectParameter.enableOpenCL)
+				renderBitmapOpenGL->RenderWithoutEffect(x, y, glTexture, flipH, flipV, inverted);
+			else
+			{
+				muVideoEffect.lock();
+				renderBitmapOpenGL->RenderWithEffect(x, y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
+				muVideoEffect.unlock();
+			}
+			*/
         }
 
         muVideoEffect.lock();
@@ -793,6 +792,14 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
 	}
 
+	/*
+	if (IsSupportOpenCL() && videoEffectParameter.enableOpenCL)
+	{
+		muVideoEffect.lock();
+		openclEffect->ApplyVideoEffect(&videoEffectParameter);
+		muVideoEffect.unlock();
+	}
+	*/
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())
 	{

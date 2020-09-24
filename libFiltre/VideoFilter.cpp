@@ -37,6 +37,7 @@ CVideoFilter::CVideoFilter()
     enableBicubicInterpolation = CLibResource::LoadStringFromResource(L"LBLEFFECTBICUBICINTERPOLATION", 1);//LBLEFFECTBICUBICINTERPOLATION
     enableOpenCL = CLibResource::LoadStringFromResource(L"LBLEFFECTOPENCL", 1);//LBLEFFECTOPENCL
 	showFPS = CLibResource::LoadStringFromResource(L"LBLshowFPS",1);//L"Effect.Show FPS";
+	enableFilmgrain = CLibResource::LoadStringFromResource(L"LBLFILMGRAIN", 1);
 }
 
 CVideoFilter::~CVideoFilter()
@@ -75,7 +76,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
     filtreInterface->AddTreeInfos(enableBicubicInterpolation, new CTreeElementValueInt(videoEffectParameter->BicubicEnable), &videoEffectParameter->BicubicEnable, 2, 2);
 	filtreInterface->AddTreeInfos(showFPS, new CTreeElementValueInt(videoEffectParameter->showFPS), &videoEffectParameter->showFPS, 2, 2);
 	filtreInterface->AddTreeInfos(enableEffect, new CTreeElementValueInt(videoEffectParameter->effectEnable), &videoEffectParameter->effectEnable, 2, 2);
-
+	filtreInterface->AddTreeInfos(enableFilmgrain, new CTreeElementValueInt(videoEffectParameter->filmgrainenable), &videoEffectParameter->filmgrainenable, 2, 2);
 	filtreInterface->AddTreeInfos(enableGrayScale, new CTreeElementValueInt(videoEffectParameter->grayEnable), &videoEffectParameter->grayEnable, 2, 2);
 	filtreInterface->AddTreeInfos(enableBandCEffect, new CTreeElementValueInt(videoEffectParameter->bandcEnable), &videoEffectParameter->bandcEnable, 2, 2);
     filtreInterface->AddTreeInfos(toneConstrastLevel,new CTreeElementValueInt(videoEffectParameter->contrast), &elementContrast);
@@ -111,7 +112,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold * 100), &elementSigma, 4);
-	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementExponent, 4);
+	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);
 
@@ -162,6 +163,10 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->enableOpenCL = value;
 	}    
+	else if (key == enableFilmgrain)
+	{
+		videoEffectParameter->filmgrainenable = value;
+	}
 	else if (key == enableBicubicInterpolation)
 	{
 		videoEffectParameter->BicubicEnable = value;

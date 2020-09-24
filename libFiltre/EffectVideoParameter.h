@@ -48,6 +48,7 @@ public:
 		uThreshold = 0.180;
 		uKSigma = 2;
 
+		filmgrainenable = 0;
 		/*
 		GLfloat sigma = 11.0f, threshold = .180f, slider = 0.f; //running
 		// GLfloat sigma = 7.0f, threshold = .180f, slider = 0.f; //running
@@ -97,7 +98,7 @@ public:
 	int   streamAudioUpdate;
 	int   streamVideoUpdate;
 	int   streamSubtitleUpdate;
-
+	int	  filmgrainenable;	
 
 
 };

@@ -1669,7 +1669,7 @@ cl_mem COpenCLFilter::Denoise(const wxString &functionName, const float &sigma, 
 		{
 			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
 			program->SetKeepOutput(true);
-			program->ExecuteProgram1D(programCL->GetProgram(), functionName);
+			program->ExecuteProgram(programCL->GetProgram(), functionName);
 			outputValue = program->GetOutput();
 		}
 		catch (...)

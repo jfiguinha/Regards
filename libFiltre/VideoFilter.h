@@ -54,6 +54,7 @@ namespace Regards
             wxString enableBicubicInterpolation;
             wxString enableOpenCL;
 			wxString threshold;
+			wxString enableFilmgrain;
         };
     }
 }

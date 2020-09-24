@@ -47,6 +47,9 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
         GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO");
         if(m_pShader != nullptr)
         {
+			srand(time(NULL));
+			float timer = rand() % 1000 + 1;
+
             m_pShader->EnableShader(); 
             if (!m_pShader->SetTexture("texUnit", glTexture->GetTextureID()))
             {
@@ -84,6 +87,10 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
             {
                 printf( "SetParam colorboost failed \n " );
             } 
+			if (!m_pShader->SetIntegerParam("filmgrain", effectParameter->filmgrainenable))
+			{
+				printf("SetParam colorboost failed \n ");
+			}
             if (!m_pShader->SetParam("sharpness", effectParameter->sharpness))
             {
                 printf( "SetParam sharpness failed \n " );
@@ -108,15 +115,19 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
             {
                 printf( "SetParam blue failed \n " );
             } 
-            if (!m_pShader->SetParam("uSigma", effectParameter->uSigma))
+            if (!m_pShader->SetParam("sigma", effectParameter->uSigma))
             {
                 printf( "SetParam uSigma failed \n " );
             } 
-			if (!m_pShader->SetParam("uThreshold", effectParameter->uThreshold / 100.0f))
+			if (!m_pShader->SetParam("threshold", effectParameter->uThreshold / 100.0f))
 			{
 				printf("SetParam uThreshold failed \n ");
 			}
-			if (!m_pShader->SetParam("uKSigma", effectParameter->uKSigma))
+			if (!m_pShader->SetParam("kSigma", effectParameter->uKSigma))
+			{
+				printf("SetParam uKSigma failed \n ");
+			}
+			if (!m_pShader->SetParam("timer", timer))
 			{
 				printf("SetParam uKSigma failed \n ");
 			}
@@ -148,6 +159,14 @@ void CRenderBitmapInterfaceOpenGL::RenderWithEffect(const int &left, const int &
 	
 	glTexture->Disable();
 
+}
+
+
+void CRenderBitmapInterfaceOpenGL::RenderWithoutEffect(const int &left, const int &top, GLTexture * glTexture, const bool & flipH, const bool & flipV, const bool & inverted)
+{
+	glTexture->Enable();
+	RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+	glTexture->Disable();
 }
 
 void CRenderBitmapInterfaceOpenGL::SetSubtitle(CRegardsBitmap * subtitle)
