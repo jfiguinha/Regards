@@ -1541,8 +1541,6 @@ cl_mem COpenCLFilter::Rotate(const wxString &functionName, const int &widthOut, 
 	return outputValue;
 }
 
-
-
 cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, const wxString &functionName, const int& method, cl_mem inputData, int width, int height, int flipH, int flipV, int angle)
 {
 	cl_mem outputValue = nullptr;
@@ -1617,6 +1615,73 @@ cl_mem COpenCLFilter::Interpolation(const int &widthOut, const int &heightOut, c
 		for (COpenCLParameter * parameter : vecParam)
 		{
 			if(!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+	}
+	return outputValue;
+}
+
+cl_mem COpenCLFilter::Denoise(const wxString &functionName, const float &sigma, const float &threshold, const float &kSigma, cl_mem inputData, int width, int height)
+{
+	cl_mem outputValue = nullptr;
+	COpenCLProgram * programCL = GetProgram("IDR_OPENCL_DENOISE");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter *> vecParam;
+		COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+		COpenCLParameterClMem * input = new COpenCLParameterClMem(true);
+		input->SetValue(inputData);
+		input->SetLibelle("input");
+		input->SetNoDelete(true);
+		vecParam.push_back(input);
+
+		COpenCLParameterInt * paramWidth = new COpenCLParameterInt();
+		paramWidth->SetValue(width);
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		COpenCLParameterInt * paramHeight = new COpenCLParameterInt();
+		paramHeight->SetValue(height);
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterFloat * paramsigma = new COpenCLParameterFloat();
+		paramsigma->SetLibelle("sigma");
+		paramsigma->SetValue(sigma);
+		vecParam.push_back(paramsigma);
+
+		COpenCLParameterFloat * paramthreshold = new COpenCLParameterFloat();
+		paramthreshold->SetLibelle("threshold");
+		paramthreshold->SetValue(threshold);
+		vecParam.push_back(paramthreshold);
+
+		COpenCLParameterFloat * paramkSigma = new COpenCLParameterFloat();
+		paramkSigma->SetLibelle("kSigma");
+		paramkSigma->SetValue(kSigma);
+		vecParam.push_back(paramkSigma);
+
+		try
+		{
+			program->SetParameter(&vecParam, width, height, GetSizeData() * width * height);
+			program->SetKeepOutput(true);
+			program->ExecuteProgram1D(programCL->GetProgram(), functionName);
+			outputValue = program->GetOutput();
+		}
+		catch (...)
+		{
+			outputValue = nullptr;
+		}
+
+		delete program;
+
+		for (COpenCLParameter * parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
 			{
 				delete parameter;
 				parameter = nullptr;

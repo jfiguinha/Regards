@@ -32,7 +32,9 @@ uniform float kSigma;
 //  float threshold   - edge sharpening threshold 
 
 
-
+//------------------------------------------------------------
+//TextureValue													   
+//------------------------------------------------------------
 vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 {
 	float texelSizeX = 1.0 / fWidth; //size of one texel 
@@ -41,7 +43,10 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	return texture2D(texUnit, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
 }
 
-vec4 smartDeNoise(sampler2D tex)
+//------------------------------------------------------------
+//Denoise													   
+//------------------------------------------------------------
+vec4 Denoise(vec4 centrPx, sampler2D tex)
 {
     float radius = round(kSigma*sigma);
     float radQ = radius * radius;
@@ -52,15 +57,9 @@ vec4 smartDeNoise(sampler2D tex)
     float invThresholdSqx2 = .5 / (threshold * threshold);     // 1.0 / (sigma^2 * 2.0)
     float invThresholdSqrt2PI = INV_SQRT_OF_2PI / threshold;   // 1.0 / (sqrt(2*PI) * sigma)
 
-    //vec4 centrPx = texture(tex,uv); 
-	vec2 tex_coord = gl_TexCoord[0].st;
-	vec4 centrPx = texture2D(texUnit, tex_coord).rgba;
-
     float zBuff = 0.0;
     vec4 aBuff = vec4(0.0);
 	
-	float texelSizeX = 1.0 / fWidth; //size of one texel 
-	float texelSizeY = 1.0 / fHeight; //size of one texel 
 	float posX = gl_TexCoord[0].s;
 	float posY = gl_TexCoord[0].t;	
 
@@ -70,7 +69,7 @@ vec4 smartDeNoise(sampler2D tex)
         for (d.y=-pt; d.y <= pt; d.y++) {
             float blurFactor = exp( -dot(d , d) * invSigmaQx2 ) * invSigmaQx2PI;
 
-			vec4 walkPx = TextureValue(posX, posY, d.x, d.y);
+			vec4 walkPx = ApplyFilter(TextureValue(posX, posY, d.x, d.y));
             vec4 dC = walkPx-centrPx;
             float deltaFactor = exp( -dot(dC, dC) * invThresholdSqx2) * invThresholdSqrt2PI * blurFactor;
 
@@ -81,6 +80,9 @@ vec4 smartDeNoise(sampler2D tex)
     return aBuff/zBuff;
 }
 
+//------------------------------------------------------------
+//ContrastFilter													   
+//------------------------------------------------------------
 vec4 ContrastFilter(vec4 color,float contrast, float offset)
 {
 	float csupp = contrast * (offset - 256.0) + 128.0;
@@ -104,36 +106,28 @@ vec4 ContrastFilter(vec4 color,float contrast, float offset)
 		green = 255.0;
 
 	return vec4(red / 255.0, green / 255.0, blue / 255.0, color.a);		
-	
-	
+
 }
 
+//------------------------------------------------------------
+//LightnessFilter													   
+//------------------------------------------------------------
 vec4 LightnessFilter(vec4 color)
 {
 	float nChange = (2.55 * brightness) / 255.0;
 	return vec4(color.r + nChange, color.g + nChange, color.b + nChange, color.a);
 }
 
-
-void main(void)
-{																   
+//------------------------------------------------------------
+//ApplyFilter													   
+//------------------------------------------------------------
+vec4 ApplyFilter(vec4 src_color)
+{
 	//------------------------------------------------------------
 	//Variable													   
 	//------------------------------------------------------------
 	vec2 tex_coord = gl_TexCoord[0].st;
-	vec4 src_color = texture2D(texUnit, tex_coord).rgba;
-	
-	if(effectenable == 0)
-	{
-		gl_FragColor = src_color;
-		return;
-	}
-	
-	if(denoise == 1)
-	{
-		src_color = smartDeNoise(texUnit);
-	}
-
+		
 	if(sharpenMasking == 1)
 	{
 		vec4 sum;
@@ -207,17 +201,39 @@ void main(void)
 		src_color = vec4(_localred, _localgreen, _localblue, src_color.a);
 	}
 
-
-
 	if(grayscale == 1)
 	{
 		float sum = src_color.r * 0.299 + src_color.b * 0.114 + src_color.g * 0.587;
 		src_color = vec4(sum, sum, sum, src_color.a);
 	}
+	
+	return src_color;
+}
 
+
+//------------------------------------------------------------
+//Main code													   
+//------------------------------------------------------------
+void main(void)
+{																   
+
+	vec2 tex_coord = gl_TexCoord[0].st;
+	vec4 src_color = texture2D(texUnit, tex_coord).rgba;
+	
+	if(effectenable == 0)
+	{
+		gl_FragColor = src_color;
+		return;
+	}
+	
+	src_color = ApplyFilter(src_color);
+
+	if(denoise == 1)
+	{
+		src_color = smartDeNoise(src_color, texUnit);
+	}
 
 	gl_FragColor = src_color;
-
 }
 
 

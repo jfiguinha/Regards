@@ -69,6 +69,8 @@ namespace Regards
 			int Median();
 			int Dilate();
 
+
+			int Denoise(const float &sigma, const float &threshold, const float &kSigma);
 			int RotateFree(const double &angle, const int &widthOut, const int &heightOut);
 			int Posterize(const float &level, const float &gamma);
 			int Solarize(const long &threshold);
@@ -77,6 +79,7 @@ namespace Regards
 			int BrightnessAndContrast(const double &brightness, const double &contrast);
 			int RGBFilter(const int &red, const int &green, const int &blue);
 			int Swirl(const float &radius, const float &angle);
+			
 			
 			int MotionBlur(const double &radius, const double &sigma, const double &angle);
 			int CloudsFilter(const CRgbaquad &color1, const CRgbaquad &color2, const float &amplitude, const float &frequence, const int &octave, const int &intensity) { return -1; };

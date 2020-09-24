@@ -1696,6 +1696,31 @@ int COpenCLEffect::Emboss()
 	return 0;
 }
 
+int COpenCLEffect::Denoise(const float &sigma, const float &threshold, const float &kSigma)
+{
+	int _width = 0;
+	int _height = 0;
+	cl_mem output = nullptr;
+	if (context != nullptr)
+	{
+		COpenCLFilter openclFilter(context);
+		if (preview && paramOutput != nullptr)
+		{
+			_width = widthOut;
+			_height = heightOut;
+			output = openclFilter.Denoise("Denoise", sigma, threshold, kSigma, paramOutput->GetValue(), widthOut, heightOut);
+		}
+		else
+		{
+			_width = width;
+			_height = height;
+			output = openclFilter.Denoise("Denoise", sigma, threshold, kSigma, input->GetValue(), width, height);
+		}
+		SetOutputValue(output, _width, _height);
+	}
+	return 0;
+}
+
 int COpenCLEffect::SharpenStrong()
 {
 	int _width = 0;

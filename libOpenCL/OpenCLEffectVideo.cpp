@@ -495,11 +495,11 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 			paramOutput = new COpenCLParameterClMem();
 			paramOutput->SetValue(output);
 		}
-		/*
-		if(videoEffectParameter->MedianEnable)
+		
+		if(videoEffectParameter->denoiseEnable)
 		{
 			cl_mem output = nullptr;
-			output = openclFilter.bilat2(videoEffectParameter->fSize, videoEffectParameter->sigmaX, videoEffectParameter->sigmaP, paramOutput->GetValue(), widthOut, heightOut);
+			output = openclFilter.Denoise("Denoise", videoEffectParameter->uSigma, videoEffectParameter->uThreshold, videoEffectParameter->uKSigma, paramOutput->GetValue(), widthOut, heightOut);
 
 			if(paramOutput != nullptr)
 			{
@@ -510,7 +510,7 @@ void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectPar
 			paramOutput = new COpenCLParameterClMem();
 			paramOutput->SetValue(output);
 		}
-		*/
+		
 		if(videoEffectParameter->grayEnable)
 		{
 			cl_mem output = nullptr;

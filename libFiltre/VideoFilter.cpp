@@ -102,12 +102,8 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	vector<int> elementExponent;
 	for (auto i = 0; i < 10; i++)
 		elementExponent.push_back(i);    
-    filtreInterface->AddTreeInfos(enableBlurEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
-    //filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->exponent), &elementExponent);
-	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->exponent), &elementExponent);
-	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->exponent), &elementExponent);
-	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->exponent), &elementExponent);
-
+   
+	filtreInterface->AddTreeInfos(enableBlurEffect, new CTreeElementValueInt(videoEffectParameter->denoiseEnable), &videoEffectParameter->denoiseEnable, 2, 2);
 
 	vector<float> elementSigma;
 	for (float i = 0; i < 100; i+=1)
@@ -115,7 +111,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold * 100), &elementSigma, 4);
-	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
+	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementExponent, 4);
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);
 
