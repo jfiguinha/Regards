@@ -45,7 +45,7 @@ public:
         bandcEnable = 1;
 
 		uSigma = 11.0;
-		uThreshold = 0.180;
+		uThreshold = 18;
 		uKSigma = 2;
 
 		filmgrainenable = 0;
