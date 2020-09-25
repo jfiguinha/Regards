@@ -209,26 +209,11 @@ void CDecodeRaw::Filter(CEffectParameter * effectParameter, CRegardsBitmap * sou
 	filtreInterface->AddTreeInfos(libelledcb_iterations, new CTreeElementValueInt(decodeParameter->dcb_iterations), &elementValue);
 	filtreInterface->AddTreeInfos(libelledcb_enhance_fl, new CTreeElementValueInt(decodeParameter->dcb_enhance_fl), &elementValue);
 	filtreInterface->AddTreeInfos(libellefbdd_noiserd, new CTreeElementValueInt(decodeParameter->fbdd_noiserd), &elementNoiseReduction, 3, 3);
-	filtreInterface->AddTreeInfos(libelleeeci_refine, new CTreeElementValueInt(decodeParameter->eeci_refine), &elementValue);
 	filtreInterface->AddTreeInfos(libellees_med_passes, new CTreeElementValueInt(decodeParameter->medPasses), &elementValue);
-	filtreInterface->AddTreeInfos(libelleca_correc, new CTreeElementValueInt(decodeParameter->ca_correc), &decodeParameter->ca_correc,2,2);
-	filtreInterface->AddTreeInfos(libellecared, new CTreeElementValueFloat(decodeParameter->cared,1), &elementchromatic,4);
-	filtreInterface->AddTreeInfos(libellecablue, new CTreeElementValueFloat(decodeParameter->cablue,1), &elementchromatic,4);
-	filtreInterface->AddTreeInfos(libellecfaline, new CTreeElementValueInt(decodeParameter->cfaline), &decodeParameter->cfaline,2,2);
-	filtreInterface->AddTreeInfos(libellelinenoise, new CTreeElementValueFloat(decodeParameter->linenoise,3), &elementlinenoise, 4);
-	filtreInterface->AddTreeInfos(libellecfa_clean, new CTreeElementValueInt(decodeParameter->cfa_clean), &decodeParameter->cfa_clean,2,2);
-	filtreInterface->AddTreeInfos(libellelclean, new CTreeElementValueFloat(decodeParameter->lclean,3), &elementcclean,4);
-	filtreInterface->AddTreeInfos(libellecclean, new CTreeElementValueFloat(decodeParameter->cclean,3), &elementcclean,4);
-	filtreInterface->AddTreeInfos(libellecfa_green, new CTreeElementValueInt(decodeParameter->cfa_green), &decodeParameter->cfa_green,2,2);
-	filtreInterface->AddTreeInfos(libellegreen_thresh, new CTreeElementValueFloat(decodeParameter->green_thresh,2), &elementgreentresh,4);
 	filtreInterface->AddTreeInfos(libelleexp_correc, new CTreeElementValueInt(decodeParameter->exp_correc), &decodeParameter->exp_correc,2,2);
 	filtreInterface->AddTreeInfos(libelleexp_shift, new CTreeElementValueFloat(decodeParameter->exp_shift,2), &elementexp_shift,4);
 	filtreInterface->AddTreeInfos(libelleexp_preser, new CTreeElementValueFloat(decodeParameter->exp_preser,1), &elementexp_preser,4);
-	filtreInterface->AddTreeInfos(libellewf_debanding, new CTreeElementValueInt(decodeParameter->wf_debanding), &decodeParameter->wf_debanding,2,2);
-	filtreInterface->AddTreeInfos(libellewf_deband_tresholdRed, new CTreeElementValueInt(decodeParameter->wf_deband_tresholdRed), &elementValue);
-	filtreInterface->AddTreeInfos(libellewf_deband_tresholdGreen, new CTreeElementValueInt(decodeParameter->wf_deband_tresholdGreen), &elementValue);
-	filtreInterface->AddTreeInfos(libellewf_deband_tresholdBlue, new CTreeElementValueInt(decodeParameter->wf_deband_tresholdBlue), &elementValue);
-	filtreInterface->AddTreeInfos(libellewf_deband_tresholdOther, new CTreeElementValueInt(decodeParameter->wf_deband_tresholdOther), &elementValue);
+
 }
 
 void CDecodeRaw::FilterChangeParam(CEffectParameter * effectParameter,  CTreeElementValue * valueData, const wxString &key)
@@ -386,42 +371,9 @@ void CDecodeRaw::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEle
 	else if (key == libellefbdd_noiserd)
 	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
 		int value = valueInt->GetValue();decodeParameter->fbdd_noiserd= value;}
-	else if (key == libelleeeci_refine)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->eeci_refine= value;}
 	else if (key == libellees_med_passes)
 	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
 		int value = valueInt->GetValue();decodeParameter->medPasses= value;}
-	else if (key == libelleca_correc)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->ca_correc= value;}
-	else if (key == libellecared)
-	{		CTreeElementValueFloat * valueInt = (CTreeElementValueFloat *)valueData;
-		float value = valueInt->GetValue();decodeParameter->cared= value;}
-	else if (key == libellecablue)
-	{		CTreeElementValueFloat * valueInt = (CTreeElementValueFloat *)valueData;
-		float value = valueInt->GetValue();decodeParameter->cablue= value;}
-	else if (key == libellecfaline)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->cfaline= value;}
-	else if (key == libellelinenoise)
-	{		CTreeElementValueFloat * valueInt = (CTreeElementValueFloat *)valueData;
-		float value = valueInt->GetValue();decodeParameter->linenoise= value;}
-	else if (key == libellecfa_clean)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->cfa_clean= value;}
-	else if (key == libellelclean)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->lclean= value;}
-	else if (key == libellecclean)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->cclean= value;}
-	else if (key == libellecfa_green)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->cfa_green= value;}
-	else if (key == libellegreen_thresh)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->green_thresh= value;}
 	else if (key == libelleexp_correc)
 	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
 		int value = valueInt->GetValue();decodeParameter->exp_correc= value;}
@@ -431,21 +383,7 @@ void CDecodeRaw::FilterChangeParam(CEffectParameter * effectParameter,  CTreeEle
 	else if (key == libelleexp_preser)
 	{		CTreeElementValueFloat * valueInt = (CTreeElementValueFloat *)valueData;
 		float value = valueInt->GetValue();decodeParameter->exp_preser= value;}
-	else if (key == libellewf_debanding)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->wf_debanding= value;}
-	else if (key == libellewf_deband_tresholdRed)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->wf_deband_tresholdRed= value;}
-	else if (key == libellewf_deband_tresholdGreen)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->wf_deband_tresholdGreen= value;}
-	else if (key == libellewf_deband_tresholdBlue)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->wf_deband_tresholdBlue= value;}
-	else if (key == libellewf_deband_tresholdOther)
-	{		CTreeElementValueInt * valueInt = (CTreeElementValueInt *)valueData;
-		int value = valueInt->GetValue();decodeParameter->wf_deband_tresholdOther= value;}
+
 	decodeParameter->update = true;
 }
 
@@ -483,12 +421,6 @@ void CDecodeRaw::ApplyPreviewEffect(CEffectParameter * effectParameter, IBitmapD
 			{
 				bitmapViewer->UpdateBitmap(imageLoad, false);
 			}
-			//int orientation = bitmapViewer->GetOrientation();
-			//imageLoad->ApplyExifOrientation(orientation);
-			//imageLoad->SetOrientation(4);
-			//wxCommandEvent eventChange(wxEVENT_UPDATEBITMAP);
-			//eventChange.SetClientData(imageLoad);
-			//bitmapViewer->GetEventHandler()->AddPendingEvent(eventChange);
 		}
 		rawParameter->update = false;
 	}

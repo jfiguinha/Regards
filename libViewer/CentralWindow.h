@@ -1,20 +1,4 @@
 #pragma once
-/*
-#include <Splitter.h>
-#include "PanelPhotoWnd.h"
-#include "ListPicture.h"
-#include "WindowManager.h"
-#include "ThumbnailViewerVideo.h"
-#include "ThumbnailViewerPicture.h"
-#ifndef __NOFACE_DETECTION__
-#include "ListFace.h"
-#endif
-#include "ViewerParam.h"
-#include "PanelInfosWnd.h"
-#include <PanelWithClickToolbar.h>
-#include "PreviewWnd.h"
-*/
-
 #include <Photos.h>
 #include <WindowMain.h>
 using namespace std;
