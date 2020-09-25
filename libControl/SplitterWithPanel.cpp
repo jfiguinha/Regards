@@ -213,7 +213,6 @@ void CSplitterWithPanel::ShowWindow(const int &id, const bool &show)
 
 						SetWindow1FixPosition(false, posBarInfos);
 					}
-					
 				}
 				else
 				{

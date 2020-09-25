@@ -27,6 +27,7 @@ namespace Regards
 			void ShowWindow();
 			int GetPosition(const int &panel);
 			void FixWindow(const int &numWindow, const int &size);
+
 		protected:
 
 			//void ShowWindow(const bool & showInfos);

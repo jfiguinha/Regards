@@ -16,82 +16,90 @@ class CVideoEffectParameter;
 class CVideoControlSoft;
 
 
-class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
+namespace Regards
 {
-public:
-	CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
-	~CShowVideo();
-	bool SetVideo(const wxString &filename, const int &rotation, const bool &play);
+	namespace Video
+	{
+		class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
+		{
+		public:
+			CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain, CThemeParam * config);
+			~CShowVideo();
+			bool SetVideo(const wxString &filename, const int &rotation, const bool &play);
 
-	void SetPosition(const int64_t &timePosition);
-	void SetVideoDuration(const int64_t &position);
-	void SetTimePosition(const int64_t &timePosition);
-			
-	void ShowToolbar();
-	void HideToolbar();
-			
-	void Resize();
+			void SetPosition(const int64_t &timePosition);
+			void SetVideoDuration(const int64_t &position);
+			void SetTimePosition(const int64_t &timePosition);
 
-	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
-	CEffectParameter * GetParameter();
-	void UpdateFiltre(CEffectParameter * effectParameter);
+			void ShowToolbar();
+			void HideToolbar();
 
-	void SlidePosChange(const int &position, const wxString &key){};
-	void ZoomPos(const int &position){};
-	void MoveSlider(const int64_t &position);
-	void ClickButton(const int &id);
-	void SetTrackBarPosition(const int &iPos){};
-	void Rotate90();
-	void Rotate270();
-	void FlipVertical();
-	void FlipHorizontal();
-	CVideoControlSoft * GetVideoControl();
+			void Resize();
 
-	void StopVideo(wxString photoName);
-	void PlayVideo();
-	void PauseVideo();
-			
-	void ChangeAudio(const int &langue);
-	bool IsToolbarMouseOver();
+			void SetVideoPreviewEffect(CEffectParameter * effectParameter);
+			CEffectParameter * GetParameter();
+			void UpdateFiltre(CEffectParameter * effectParameter);
 
-	void SetDiaporamaMode();
-	void SetNormalMode();
-    
-    void UpdateScreenRatio();
-	void SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle);
+			void SlidePosChange(const int &position, const wxString &key) {};
+			void ZoomPos(const int &position) {};
+			void MoveSlider(const int64_t &position);
+			void ClickButton(const int &id);
+			void SetTrackBarPosition(const int &iPos) {};
+			void Rotate90();
+			void Rotate270();
+			void FlipVertical();
+			void FlipHorizontal();
+			CVideoControlSoft * GetVideoControl();
 
-protected:
+			void StopVideo(wxString photoName);
+			void PlayVideo();
+			void PauseVideo();
 
-	//Interface Video
-	void OnVideoEnd();
-	void OnVideoStart();
-	void OnVideoStop();
-	void OnVideoPause();
-	void OnAfterOpenVideo();
-	void OnPositionVideo(const int64_t &position);
+			void ChangeAudio(const int &langue);
+			bool IsToolbarMouseOver();
 
-private:
+			void SetDiaporamaMode();
+			void SetNormalMode();
 
-	void OnSize(wxSizeEvent& event);
-	//bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
+			void UpdateScreenRatio();
+			void SetStreamInfo(vector<CStreamInfo> & listAudio, vector<CStreamInfo> & listVideo, vector<CStreamInfo> & listSubtitle);
 
-	void ShowSliderToolbar(const bool &show);
-	void ShowSlider(const bool &show);
-	void InitControl();
+		protected:
 
-	CSliderVideo * videoSlider;
-	CVideoControlSoft * videoWindow;
-	CVideoEffectParameter * videoEffectParameter;
-	CWindowMain * windowMain;
-	bool play;
-	bool toolbarOutside;
-	int height;
-	int width;
-	int videoPosOld;
-	bool isDiaporama;
-    bool softRender = false;
-	int64_t videoTotalTime = 0;
-	vector<CStreamInfo> listStream;
-};
+			//Interface Video
+			void OnVideoEnd();
+			void OnVideoStart();
+			void OnVideoStop();
+			void OnVideoPause();
+			void OnAfterOpenVideo();
+			void OnPositionVideo(const int64_t &position);
+
+		private:
+
+			void OnSize(wxSizeEvent& event);
+			//bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
+
+			void ShowSliderToolbar(const bool &show);
+			void ShowSlider(const bool &show);
+			void InitControl();
+
+			CSliderVideo * videoSlider;
+			CVideoControlSoft * videoWindow;
+			CVideoEffectParameter * videoEffectParameter;
+			CWindowMain * windowMain;
+			bool play;
+			bool toolbarOutside;
+			int height;
+			int width;
+			int videoPosOld;
+			bool isDiaporama;
+			bool softRender = false;
+			int64_t videoTotalTime = 0;
+			vector<CStreamInfo> listStream;
+		};
+	}
+}
+
+
 
 #endif

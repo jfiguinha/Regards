@@ -1,9 +1,6 @@
 #include <header.h>
 #include "PreviewWnd.h"
 #include "MainWindow.h"
-#ifdef FFMPEG
-#include <ShowVideo.h>
-#endif
 #include <libPicture.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"

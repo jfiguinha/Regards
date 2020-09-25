@@ -1001,25 +1001,8 @@ CMainWindow::~CMainWindow()
 
 void CMainWindow::SaveParameter()
 {
-	bool showInfos;
-	bool showThumbnail;
-
 	if (centralWnd != nullptr)
-	{
 		centralWnd->SaveParameter();
-		//showInfos = centralWnd->IsPanelInfosVisible();
-		//showThumbnail = centralWnd->IsPanelThumbnailVisible();
-	}
-
-	/*
-	if (viewerParam != nullptr)
-	{
-		viewerParam->SetShowInfos(showInfos);
-		viewerParam->SetShowThumbnail(showThumbnail);
-		wxRect rc = this->GetWindowRect();
-		viewerParam->SetPositionWindow(rc);
-	}
-	*/
 }
 
 void CMainWindow::Resize()

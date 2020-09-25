@@ -17,12 +17,8 @@ using namespace Regards::Control;
 #include <WindowMain.h>
 #include <BitmapInterface.h>
 #include <ToolbarInterface.h>
-#ifndef FFMPEG
 #include <ShowVideo.h>
 using namespace Regards::Video;
-#else
-class CShowVideo;
-#endif
 
 class CRegardsBitmap;
 class CImageLoadingFormat;

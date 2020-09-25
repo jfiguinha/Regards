@@ -329,6 +329,7 @@ void CCentralWindow::HideToolbar()
 	{
 		windowManager->HideWindow(Pos::wxTOP);
 		windowManager->HideWindow(Pos::wxBOTTOM);
+		windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->Resize();
 	}
 
@@ -347,6 +348,9 @@ void CCentralWindow::ShowToolbar()
 	showToolbar = true;
 
 	windowManager->ShowWindow(Pos::wxBOTTOM);
+
+	if (isFullscreen)
+		windowManager->ShowWindow(Pos::wxRIGHT);
 
 	if (isFullscreen && !isPicture)
 	{
@@ -975,7 +979,7 @@ void CCentralWindow::FullscreenMode()
 	{
 		isFullscreen = true;
 		windowManager->HideWindow(Pos::wxLEFT);
-		windowManager->HideWindow(Pos::wxRIGHT);
+		//windowManager->HideWindow(Pos::wxRIGHT);
 		windowManager->Resize();
 	}
 }
