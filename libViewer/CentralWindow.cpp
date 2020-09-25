@@ -787,6 +787,7 @@ void CCentralWindow::SaveParameter()
 	int showInfos;
 	int showThumbnail;
 	int showFolder;
+	int showVideoThumbnail;
 	//Save Window Mode
 	CMainParam* config = CMainParamInit::getInstance();
 	if (config != nullptr)
@@ -801,6 +802,7 @@ void CCentralWindow::SaveParameter()
 		if(showInfos)
 			config->SetPositionLeftPanel(left);
 
+		showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
 		showThumbnail = windowManager->GetPaneState(Pos::wxBOTTOM);
 		showFolder = windowManager->GetPaneState(Pos::wxRIGHT);
 		if(showFolder)
@@ -808,6 +810,7 @@ void CCentralWindow::SaveParameter()
 
 		config->SetShowInfos(showInfos);
 		config->SetShowThumbnail(showThumbnail);
+		config->SetShowVideoThumbnail(showVideoThumbnail);
 		config->SetShowFolder(showFolder);
 
 	}
@@ -823,20 +826,25 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 	bool showInfos = true;
 	bool showThumbnail = true;
 	bool showFolder = true;
+	bool showVideoThumbnail = true;
 	windowMode = event.GetInt();
+	CMainParam* config = CMainParamInit::getInstance();
 	//if (oldWindowMode == windowMode)
 	//	return;
 
 	if (windowInit)
 	{
-		CMainParam* config = CMainParamInit::getInstance();
-
 		if (config != nullptr)
 		{
 			config->GetShowInfos(showInfos);
 			config->GetShowThumbnail(showThumbnail);
 			config->GetShowFolder(showFolder);
 		}
+	}
+
+	if (config != nullptr)
+	{
+		config->GetShowVideoThumbnail(showVideoThumbnail);
 	}
 
 	previewWindow->SetNormalMode();
@@ -873,11 +881,7 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			
             
 		}
-		else
-		{
-
-		}
-		if (isVideo || isAnimation)
+		if ((isVideo || isAnimation) && showVideoThumbnail)
 		{
 			windowManager->ShowPaneWindow(Pos::wxTOP);
 		}
@@ -961,6 +965,11 @@ void CCentralWindow::StartAnimation()
 
 void CCentralWindow::FullscreenMode()
 {
+	bool showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetShowVideoThumbnail(showVideoThumbnail);
+
 	previewWindow->SetFullscreen(true);
 	if (!isFullscreen)
 	{
@@ -973,6 +982,11 @@ void CCentralWindow::FullscreenMode()
 
 void CCentralWindow::ScreenMode()
 {
+	bool showVideoThumbnail = windowManager->GetPaneState(Pos::wxTOP);
+	CMainParam* config = CMainParamInit::getInstance();
+	if (config != nullptr)
+		config->SetShowVideoThumbnail(showVideoThumbnail);
+
 	previewWindow->SetFullscreen(false);
 	if (isFullscreen)
 	{
