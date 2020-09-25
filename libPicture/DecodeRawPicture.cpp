@@ -85,13 +85,7 @@ CImageLoadingFormat * CDecodeRawPicture::DecodePicture(CDecodeRawParameter * dec
 	rawProcessor->imgdata.params.exp_correc = decodeRawParameter->exp_correc; 
 	rawProcessor->imgdata.params.exp_shift = decodeRawParameter->exp_shift;
 	rawProcessor->imgdata.params.exp_preser = decodeRawParameter->exp_preser;
-    /*
-	rawProcessor->imgdata.params.wf_debanding = decodeRawParameter->wf_debanding; 
-	rawProcessor->imgdata.params.wf_deband_treshold[0] = decodeRawParameter->wf_deband_tresholdRed;
-	rawProcessor->imgdata.params.wf_deband_treshold[1]  = decodeRawParameter->wf_deband_tresholdGreen;
-	rawProcessor->imgdata.params.wf_deband_treshold[2]  = decodeRawParameter->wf_deband_tresholdBlue;
-	rawProcessor->imgdata.params.wf_deband_treshold[3]  = decodeRawParameter->wf_deband_tresholdOther;
-     * */
+
 	rawProcessor->imgdata.params.use_rawspeed = 0;
 
 	try

@@ -111,7 +111,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 		elementSigma.push_back(i);
 
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaU, new CTreeElementValueFloat(videoEffectParameter->uSigma), &elementSigma, 4);
-	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold * 100), &elementSigma, 4);
+	filtreInterface->AddTreeInfos(effectDenoisingThreshold, new CTreeElementValueFloat(videoEffectParameter->uThreshold), &elementSigma, 4);
 	filtreInterface->AddTreeInfos(effectDenoisingSigmaK, new CTreeElementValueFloat(videoEffectParameter->uKSigma), &elementSigma, 4);
 	//filtreInterface->AddTreeInfos(effectDenoisingBSize, new CTreeElementValueInt(videoEffectParameter->bSize), &elementNbTimes);
 	//filtreInterface->AddTreeInfos(effectDenoisingFSize, new CTreeElementValueInt(videoEffectParameter->fSize), &elementNbTimes);

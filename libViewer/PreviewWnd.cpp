@@ -13,6 +13,8 @@
 #include <wx/animate.h>
 #include <FileGeolocation.h>
 #include "PanelInfosWnd.h"
+#include <ShowVideo.h>
+using namespace Regards::Video;
 using namespace Regards::Control;
 using namespace Regards::Internet;
 using namespace Regards::Viewer;

@@ -1,24 +1,8 @@
 #pragma once
-
-/*
-#include "FiltreToolbar.h"
-#include "PreviewToolbar.h"
-#include "AnimationToolbar.h"
-#include <ShowBitmap.h>
-#include <EffectVideoParameter.h>
-#include <BitmapInterface.h>
-#include <ToolbarInterface.h>
-#include <BitmapInfos.h>
-#include <wx/animate.h>
-using namespace std;
-using namespace Regards::Window;
-using namespace Regards::Control;
-*/
 #include <WindowMain.h>
 #include <BitmapInterface.h>
 #include <ToolbarInterface.h>
-#include <ShowVideo.h>
-using namespace Regards::Video;
+;
 
 class CRegardsBitmap;
 class CImageLoadingFormat;
@@ -30,6 +14,12 @@ namespace Regards
 		class CBitmapInfos;
 	}
 	using namespace Regards::Window;
+    
+	namespace Video
+	{
+		class CShowVideo;
+	}
+	using namespace Regards::Video;
 
 	namespace Control
 	{
