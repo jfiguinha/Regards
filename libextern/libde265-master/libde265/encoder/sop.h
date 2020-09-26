@@ -23,9 +23,8 @@
 
 #include "libde265/image.h"
 #include "libde265/sps.h"
-#include "libde265/configparam.h"
-//#include "libde265/encoder/encoder-context.h"
 #include "libde265/encoder/encpicbuf.h"
+#include "libde265/configparam.h"
 
 #include <deque>
 #include <vector>
@@ -37,9 +36,6 @@ struct refpic_set
   std::vector<int> l1;
 };
 */
-
-class encoder_context;
-
 
 class pic_order_counter
 {

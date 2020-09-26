@@ -67,7 +67,7 @@ de265_image* ImageSource_YUV::read_next_image()
 
   de265_image* img = new de265_image;
   img->alloc_image(width,height,de265_chroma_420, NULL, false,
-                   NULL, /*NULL,*/ 0, NULL, false);
+                   NULL, NULL, 0, NULL, false);
   assert(img); // TODO: error handling
 
   // --- load image ---
@@ -161,20 +161,17 @@ void ImageSink_YUV::send_image(const de265_image* img)
 
   p = img->get_image_plane(0);  stride = img->get_image_stride(0);
   for (int y=0;y<height;y++) {
-    size_t n = fwrite(p+y*stride,1,width,mFH);
-    (void)n;
+    fwrite(p+y*stride,1,width,mFH);
   }
 
   p = img->get_image_plane(1);  stride = img->get_image_stride(1);
   for (int y=0;y<height/2;y++) {
-    size_t n = fwrite(p+y*stride,1,width/2,mFH);
-    (void)n;
+    fwrite(p+y*stride,1,width/2,mFH);
   }
 
   p = img->get_image_plane(2);  stride = img->get_image_stride(2);
   for (int y=0;y<height/2;y++) {
-    size_t n = fwrite(p+y*stride,1,width/2,mFH);
-    (void)n;
+    fwrite(p+y*stride,1,width/2,mFH);
   }
 }
 
@@ -209,12 +206,7 @@ LIBDE265_API void PacketSink_File::send_packet(const uint8_t* data, int n)
   startCode[1] = 0;
   startCode[2] = 1;
 
-  size_t dummy;
-  dummy = fwrite(startCode,1,3,mFH);
-  (void)dummy;
-
-  dummy = fwrite(data,1,n,mFH);
-  (void)dummy;
-
+  fwrite(startCode,1,3,mFH);
+  fwrite(data,1,n,mFH);
   fflush(mFH);
 }

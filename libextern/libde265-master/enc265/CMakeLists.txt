@@ -1,15 +1,16 @@
-add_executable (enc265 
+set (enc265_sources
   enc265.cc
   image-io-png.cc
 )
 
 if(MSVC)
-  target_sources(enc265 PRIVATE
+  set (enc265_sources
+    ${enc265_sources}
     ../extra/getopt.c
     ../extra/getopt_long.c
   )
 endif()
 
-target_link_libraries (enc265 PRIVATE ${PROJECT_NAME})
+add_executable (enc265 ${enc265_sources})
 
-install (TARGETS enc265 DESTINATION ${CMAKE_INSTALL_BINDIR})
+target_link_libraries (enc265 ${LIBDE265_LIBRARY_NAME})

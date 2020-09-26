@@ -9,6 +9,8 @@ public:
 	CHeic();
 	~CHeic();
 	
+    static void Initx265Decoder();
+    static void Uninitx265Decoder();
 	static int GetNbFrame(const string &filename);
 	static uint32_t GetDelay(const string &filename);
 	static CRegardsBitmap * GetPicture(const string &filename, bool &isMasterSequence, int &delay, const int &numPicture);

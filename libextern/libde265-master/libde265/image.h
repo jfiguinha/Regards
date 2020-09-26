@@ -35,14 +35,13 @@
 #endif
 
 #include "libde265/de265.h"
+#include "libde265/en265.h"
 #include "libde265/sps.h"
 #include "libde265/pps.h"
 #include "libde265/motion.h"
 #include "libde265/threads.h"
 #include "libde265/slice.h"
 #include "libde265/nal.h"
-
-struct en265_encoder_context;
 
 enum PictureState {
   UnusedForReference,
@@ -228,7 +227,7 @@ struct de265_image {
                           std::shared_ptr<const seq_parameter_set> sps,
                           bool allocMetadata,
                           decoder_context* dctx,
-                          //class encoder_context* ectx,
+                          class encoder_context* ectx,
                           de265_PTS pts, void* user_data,
                           bool useCustomAllocFunctions);
 
@@ -397,7 +396,7 @@ public:
   //std::shared_ptr<const pic_parameter_set> get_shared_pps() const { return pps; }
 
   decoder_context*    decctx;
-  //class encoder_context*    encctx;
+  class encoder_context*    encctx;
 
   int number_of_ctbs() const { return ctb_info.size(); }
 
@@ -424,12 +423,9 @@ public:
   void*     user_data;
   void*     plane_user_data[3];  // this is logically attached to the pixel data pointers
   de265_image_allocation image_allocation_functions; // the functions used for memory allocation
-
-  /*
   void (*encoder_image_release_func)(en265_encoder_context*,
                                      de265_image*,
                                      void* userdata);
-  */
 
   uint8_t integrity; /* Whether an error occured while the image was decoded.
                         When generated, this is initialized to INTEGRITY_CORRECT,

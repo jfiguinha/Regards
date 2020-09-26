@@ -24,7 +24,6 @@
 #include "libde265/encoder/algo/cb-mergeindex.h"
 #include "libde265/encoder/encoder-context.h"
 #include "libde265/encoder/encoder-syntax.h"
-#include "libde265/encoder/encoder-motion.h"
 #include <assert.h>
 #include <limits>
 #include <math.h>

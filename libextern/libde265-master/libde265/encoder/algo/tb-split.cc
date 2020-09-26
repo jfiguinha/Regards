@@ -24,7 +24,6 @@
 #include "libde265/encoder/encoder-core.h"
 #include "libde265/encoder/encoder-context.h"
 #include "libde265/encoder/encoder-syntax.h"
-#include "libde265/encoder/encoder-intrapred.h"
 #include "libde265/encoder/algo/coding-options.h"
 #include <assert.h>
 #include <limits>

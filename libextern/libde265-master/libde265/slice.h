@@ -33,7 +33,6 @@
 
 #include <vector>
 #include <string.h>
-#include <memory>
 
 #define MAX_NUM_REF_PICS    16
 
@@ -146,7 +145,7 @@ public:
 
 
   int  slice_index; // index through all slices in a picture  (internal only)
-  std::shared_ptr<const pic_parameter_set> pps;
+  const pic_parameter_set* pps;
 
 
   char first_slice_segment_in_pic_flag;

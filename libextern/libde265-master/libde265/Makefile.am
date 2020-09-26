@@ -11,8 +11,7 @@ libde265_la_CFLAGS = \
   -DLIBDE265_EXPORTS
 libde265_la_CXXFLAGS = \
   $(CFLAG_VISIBILITY) \
-  -DLIBDE265_EXPORTS \
-  -I$(top_srcdir)
+  -DLIBDE265_EXPORTS
 
 if HAVE_VISIBILITY
  libde265_la_CFLAGS += -DHAVE_VISIBILITY
@@ -38,6 +37,8 @@ libde265_la_SOURCES = \
   deblock.h \
   decctx.cc \
   decctx.h \
+  en265.h \
+  en265.cc \
   fallback.cc \
   fallback.h \
   fallback-dct.h \
@@ -89,14 +90,8 @@ libde265_la_SOURCES = \
   vui.cc \
   vui.h
 
-SUBDIRS =
-libde265_la_LIBADD =
-
-if ENABLE_ENCODER
-  libde265_la_SOURCES += en265.h en265.cc
-  SUBDIRS += encoder
-  libde265_la_LIBADD += encoder/libde265_encoder.la
-endif
+SUBDIRS = encoder
+libde265_la_LIBADD = encoder/libde265_encoder.la
 
 if ENABLE_SSE_OPT
   SUBDIRS += x86

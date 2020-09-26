@@ -103,6 +103,8 @@ int MyApp::Close()
 	this->Exit();
 
 	CWindowMain::listMainWindow.clear();
+    
+    CLibPicture::Uninitx265Decoder();
 
     CLibPicture::UninitFreeImage();
 	
@@ -179,6 +181,8 @@ bool MyApp::OnInit()
     
     printf("Document Path %s \n",CConvertUtility::ConvertToUTF8(documentPath));
     printf("Resource Path %s \n",CConvertUtility::ConvertToUTF8(resourcePath));
+
+    CLibPicture::Initx265Decoder();
 
 #if not defined(WIN32) && defined(LIBBPG)
     printf("LoadBpgDll\n");
