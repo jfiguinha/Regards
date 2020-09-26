@@ -192,21 +192,19 @@ LIBDE265_API de265_error de265_init()
 
 
   // do initializations
-	/*
-  init_scan_orders();
 
+  init_scan_orders();
 
   if (!alloc_and_init_significant_coeff_ctxIdx_lookupTable()) {
     de265_init_count--;
     return DE265_ERROR_LIBRARY_INITIALIZATION_FAILED;
-  }*/
+  }
 
   return DE265_OK;
 }
 
 LIBDE265_API de265_error de265_free()
 {
-	
   std::lock_guard<std::mutex> lock(de265_init_mutex());
 
   if (de265_init_count<=0) {
@@ -215,27 +213,11 @@ LIBDE265_API de265_error de265_free()
 
   de265_init_count--;
 
-  /*
   if (de265_init_count==0) {
     free_significant_coeff_ctxIdx_lookupTable();
   }
-  */
+
   return DE265_OK;
-}
-
-LIBDE265_API void de265_multithread_init(void)
-{
-  std::lock_guard<std::mutex> lock(de265_init_mutex());
-  init_scan_orders();
-  alloc_and_init_significant_coeff_ctxIdx_lookupTable();
-}
-
-LIBDE265_API void de265_multithread_uninit(void)
-{
-	std::lock_guard<std::mutex> lock(de265_init_mutex());
-	//int cnt = de265_sync_sub_and_fetch(&de265_init_count,1);
-	if (de265_init_count==0)
-		free_significant_coeff_ctxIdx_lookupTable();
 }
 
 

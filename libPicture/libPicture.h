@@ -60,10 +60,7 @@ public:
 	CRegardsBitmap * ConvertCXImageToScaleRegardsBitmapBGR(CxImage * image, const int &width, const int &height);
 	CRegardsBitmap * ConvertCXImageToScaleRegardsBitmapCRgbaquad(CxImage * image, const int &width, const int &height);
 	wxImage * ConvertRegardsBitmapToWXImage(CRegardsBitmap * image, const bool &loadAlpha = false);
-	static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height);
-	
-    static void Initx265Decoder();
-    static void Uninitx265Decoder();    
+	static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &width, const int &height); 
     
     static void InitFreeImage();
     static void UninitFreeImage();  
