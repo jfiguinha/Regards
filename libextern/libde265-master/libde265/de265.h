@@ -196,7 +196,9 @@ LIBDE265_API int de265_get_image_matrix_coefficients(const struct de265_image*);
 
 typedef void de265_decoder_context; // private structure
 
-
+/* Get a new decoder context. Must be freed with de265_free_decoder(). */
+LIBDE265_API void de265_multithread_init(void);
+LIBDE265_API void de265_multithread_uninit(void);
 
 /* Get a new decoder context. Must be freed with de265_free_decoder(). */
 LIBDE265_API de265_decoder_context* de265_new_decoder(void);

@@ -1490,23 +1490,27 @@ void CLibPicture::LoadwxImageThumbnail(const wxString & szFileName, vector<CImag
 		if (photo_cancel->IsOk())
 		{
 			CRegardsBitmap * bitmap = photo_cancel->GetRegardsBitmap();
-			CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
-			imageVideoThumbnail->image = new CImageLoadingFormat();
-			if (compressJpeg)
+			if (bitmap != nullptr)
 			{
-				imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
-				delete bitmap;
-			}
-			else
-				imageVideoThumbnail->image->SetPicture(bitmap);
-			imageVideoThumbnail->image->SetFilename(szFileName);
+				CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+				imageVideoThumbnail->image = new CImageLoadingFormat();
+				if (compressJpeg)
+				{
+					imageVideoThumbnail->image->SetPicturToJpeg(bitmap);
+					delete bitmap;
+				}
+				else
+					imageVideoThumbnail->image->SetPicture(bitmap);
+				imageVideoThumbnail->image->SetFilename(szFileName);
 
-			imageVideoThumbnail->rotation = 0;
-			imageVideoThumbnail->delay = 4;
-			imageVideoThumbnail->percent = 100.0f;
-			imageVideoThumbnail->timePosition = 0;
-			listThumbnail->push_back(imageVideoThumbnail);
-			bitmap->SetFilename(szFileName);
+				imageVideoThumbnail->rotation = 0;
+				imageVideoThumbnail->delay = 4;
+				imageVideoThumbnail->percent = 100.0f;
+				imageVideoThumbnail->timePosition = 0;
+				listThumbnail->push_back(imageVideoThumbnail);
+				bitmap->SetFilename(szFileName);
+			}
+
 			
 		}
 		delete photo_cancel;
@@ -1859,7 +1863,7 @@ int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & 
 		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		if (size > 0)
 		{
-			data = new uint8_t[size + 1];
+			data = new uint8_t[size + 256];
 			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
 		}
 	}
