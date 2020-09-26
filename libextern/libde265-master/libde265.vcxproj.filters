@@ -219,5 +219,11 @@
     <ClCompile Include="extra\win32cond.c">
       <Filter>Extra</Filter>
     </ClCompile>
+    <ClCompile Include="libde265\encoder\encoder-intrapred.cc">
+      <Filter>x265\libde265\encoder</Filter>
+    </ClCompile>
+    <ClCompile Include="libde265\encoder\encoder-motion.cc">
+      <Filter>x265\libde265\encoder</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

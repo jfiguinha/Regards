@@ -18,12 +18,23 @@
  * along with libde265.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBDE265_VERSION_H
-#define LIBDE265_VERSION_H
+#ifndef DE265_ENCODER_INTRAPRED_H
+#define DE265_ENCODER_INTRAPRED_H
 
-/* Numeric representation of the version */
-#define LIBDE265_NUMERIC_VERSION 0x01000700
+#include "libde265/decctx.h"
 
-#define LIBDE265_VERSION "1.0.7"
+
+void fillIntraPredModeCandidates(enum IntraPredMode candModeList[3],
+                                 int x,int y,
+                                 bool availableA, // left
+                                 bool availableB, // top
+                                 const class CTBTreeMatrix& ctbs,
+                                 const seq_parameter_set* sps);
+
+void decode_intra_prediction_from_tree(const de265_image* img,
+                                       const class enc_tb* tb,
+                                       const class CTBTreeMatrix& ctbs,
+                                       const class seq_parameter_set& sps,
+                                       int cIdx);
 
 #endif

@@ -4,6 +4,8 @@ set (encoder_sources
   encoder-params.h encoder-params.cc
   encoder-context.h encoder-context.cc
   encoder-syntax.h encoder-syntax.cc
+  encoder-intrapred.h encoder-intrapred.cc
+  encoder-motion.h encoder-motion.cc
   encpicbuf.h encpicbuf.cc
   sop.h sop.cc
 )
@@ -11,7 +13,3 @@ set (encoder_sources
 add_subdirectory (algo)
 add_library(encoder OBJECT ${encoder_sources})
 set(ENCODER_OBJECTS $<TARGET_OBJECTS:encoder> ${ALGO_OBJECTS} PARENT_SCOPE)
-
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")
-  SET_TARGET_PROPERTIES(encoder PROPERTIES COMPILE_FLAGS "-fPIC")
-endif(CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64")

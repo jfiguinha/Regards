@@ -79,8 +79,10 @@ public:
   uint8_t explicit_rdpcm_flag;
   uint8_t explicit_rdpcm_dir;
 
-  ALIGNED_16(int16_t) _coeffBuf[(32*32)+8]; // alignment required for SSE code !
-  int16_t *coeffBuf;
+  // we need 16 bytes of extra memory (8*int16) to shift the base for the
+  // alignment required for SSE code !
+  int16_t _coeffBuf[(32*32)+8];
+  int16_t *coeffBuf; // the base pointer for into _coeffBuf, aligned to 16 bytes
 
   int16_t coeffList[3][32*32];
   int16_t coeffPos[3][32*32];
@@ -298,6 +300,9 @@ class decoder_context : public base_context {
 
   bool has_sps(int id) const { return (bool)sps[id]; }
   bool has_pps(int id) const { return (bool)pps[id]; }
+
+  std::shared_ptr<const seq_parameter_set> get_shared_sps(int id) { return sps[id]; }
+  std::shared_ptr<const pic_parameter_set> get_shared_pps(int id) { return pps[id]; }
 
   /* */ seq_parameter_set* get_sps(int id)       { return sps[id].get(); }
   const seq_parameter_set* get_sps(int id) const { return sps[id].get(); }

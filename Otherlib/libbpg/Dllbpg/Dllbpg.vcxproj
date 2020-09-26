@@ -108,8 +108,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Debug;$(VC_LibraryPath_x64);$(WindowsSdk_71A_LibraryPath_x64);$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64)onecore\x64;$(WindowsSDK_LibraryPath_x64)\um\x64;$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64\Debug;$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\lib\</LibraryPath>
     <IncludePath>$(SolutionDir)libextern\x265_2.5\build\vc15-x86_64;$(SolutionDir)libextern\x265_2.5\source;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <ExcludePath />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -174,7 +175,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlibd.lib;libx265.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>zlibd.lib;libx265.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

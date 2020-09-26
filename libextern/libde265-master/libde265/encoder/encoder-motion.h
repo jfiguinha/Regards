@@ -18,12 +18,15 @@
  * along with libde265.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBDE265_VERSION_H
-#define LIBDE265_VERSION_H
+#ifndef DE265_ENCODER_MOTION_H
+#define DE265_ENCODER_MOTION_H
 
-/* Numeric representation of the version */
-#define LIBDE265_NUMERIC_VERSION 0x01000700
+#include "libde265/motion.h"
 
-#define LIBDE265_VERSION "1.0.7"
+void get_merge_candidate_list_from_tree(class encoder_context* ectx,
+                                        const slice_segment_header* shdr,
+                                        int xC,int yC, int xP,int yP,
+                                        int nCS, int nPbW,int nPbH, int partIdx,
+                                        PBMotion* mergeCandList);
 
 #endif

@@ -384,9 +384,9 @@ de265_error slice_segment_header::read(bitreader* br, decoder_context* ctx,
     return DE265_OK;
   }
 
-  pps = ctx->get_pps(slice_pic_parameter_set_id);
+  pps = ctx->get_shared_pps(slice_pic_parameter_set_id);
 
-  const seq_parameter_set* sps = pps->sps;
+  const seq_parameter_set* sps = pps->sps.get();
   if (!sps->sps_read) {
     ctx->add_warning(DE265_WARNING_NONEXISTING_SPS_REFERENCED, false);
     *continueDecoding = false;
@@ -872,7 +872,7 @@ de265_error slice_segment_header::read(bitreader* br, decoder_context* ctx,
   }
 
 
-  compute_derived_values(pps);
+  compute_derived_values(pps.get());
 
   *continueDecoding = true;
   return DE265_OK;
@@ -3156,7 +3156,7 @@ int residual_coding(thread_context* tctx,
             (tctx->cu_transquant_bypass_flag || tctx->transform_skip_flag[cIdx])) {
           ctxInc = ( cIdx == 0 ) ? 42 : (16+27);
         }
-        else if(ctxIdxMap != nullptr){
+        else {
           ctxInc = ctxIdxMap[xC+(yC<<log2TrafoSize)];
         }
 
@@ -3189,7 +3189,7 @@ int residual_coding(thread_context* tctx,
                 (tctx->cu_transquant_bypass_flag || tctx->transform_skip_flag[cIdx])) {
               ctxInc = ( cIdx == 0 ) ? 42 : (16+27);
             }
-            else if(ctxIdxMap != nullptr){
+            else {
               ctxInc = ctxIdxMap[x0+(y0<<log2TrafoSize)];
             }
 

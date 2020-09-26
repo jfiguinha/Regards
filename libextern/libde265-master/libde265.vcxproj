@@ -229,6 +229,8 @@
     <ClCompile Include="libde265\encoder\algo\tb-transform.cc" />
     <ClCompile Include="libde265\encoder\encoder-context.cc" />
     <ClCompile Include="libde265\encoder\encoder-core.cc" />
+    <ClCompile Include="libde265\encoder\encoder-intrapred.cc" />
+    <ClCompile Include="libde265\encoder\encoder-motion.cc" />
     <ClCompile Include="libde265\encoder\encoder-params.cc" />
     <ClCompile Include="libde265\encoder\encoder-syntax.cc" />
     <ClCompile Include="libde265\encoder\encoder-types.cc" />

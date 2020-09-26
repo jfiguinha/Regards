@@ -2,16 +2,22 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
-AC_INIT([libde265], [1.0.2], [farin@struktur.de])
+AC_INIT([libde265], [1.0.7], [farin@struktur.de])
 AC_CONFIG_SRCDIR([libde265/de265.cc])
 AC_CONFIG_HEADERS([config.h])
 
-NUMERIC_VERSION=0x01000200 # Numeric representation of the version (A.B.C[.D] = 0xAABBCCDD)
+NUMERIC_VERSION=0x01000700 # Numeric representation of the version (A.B.C[.D] = 0xAABBCCDD)
 AC_SUBST(NUMERIC_VERSION)
 
-LIBDE265_CURRENT=0
-LIBDE265_REVISION=10
-LIBDE265_AGE=0
+# From https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html:
+# If the library source code has changed at all since the last update, then increment revision (‘c:r:a’ becomes ‘c:r+1:a’).
+# If any interfaces have been added, removed, or changed since the last update, increment current, and set revision to 0.
+# If any interfaces have been added since the last public release, then increment age.
+# If any interfaces have been removed or changed since the last public release, then set age to 0.
+
+LIBDE265_CURRENT=1
+LIBDE265_REVISION=0
+LIBDE265_AGE=1
 
 # ---------------------------------------------------------------------------
 
@@ -138,15 +144,17 @@ if eval "test x$has_std_shared_ptr = xno"; then
 fi
 AC_LANG_POP(C++)
 
-# Check if "std::move" is available
+# Check if "std::move" is available (assume always available with clang)
 AC_MSG_CHECKING([for std::move])
 AC_LANG_PUSH(C++)
 AC_TRY_COMPILE([
 #include <utility>
 ],[
+#if !defined(__clang__)
 class A {};
 A* a = new A();
 A* b = std::move(a);
+#endif
 ],[has_std_move=yes],[has_std_move=no]);
 AC_LANG_POP(C++)
 if eval "test x$has_std_move = xno"; then
@@ -167,6 +175,14 @@ if eval "test x$has_nullptr = xno"; then
   AC_DEFINE(NEED_NULLPTR_FALLBACK,1,[Define to 1 if a fallback for "nullptr" is required.])
 fi
 AC_MSG_RESULT([$has_nullptr])
+
+
+
+AC_ARG_ENABLE([encoder], AS_HELP_STRING([--disable-encoder], [Do not build encoder.]))
+if eval "test x$enable_encoder = x"      ; then enable_encoder=yes ; fi
+
+AM_CONDITIONAL([ENABLE_ENCODER], [test x"$enable_encoder" = x"yes"])
+
 
 # --- machine dependent optimizations ---
 
@@ -355,6 +371,7 @@ AM_CONDITIONAL([ENABLE_SHERLOCK265], [test "x$enable_sherlock265" != "xno"])
 AC_MSG_NOTICE([---------------------------------------])
 AC_MSG_NOTICE([Building dec265 example: $enable_dec265])
 AC_MSG_NOTICE([Building sherlock265 example: $enable_sherlock265])
+AC_MSG_NOTICE([Building encoder: $enable_encoder])
 AC_MSG_NOTICE([---------------------------------------])
 
 AC_CONFIG_FILES([Makefile])

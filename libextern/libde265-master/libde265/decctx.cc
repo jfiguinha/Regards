@@ -124,9 +124,12 @@ thread_context::thread_context()
 
   //memset(this,0,sizeof(thread_context));
 
-  // some compilers/linkers don't align struct members correctly,
-  // adjust if necessary
-  int offset = (uintptr_t)_coeffBuf & 0x0f;
+  // There is a interesting issue here. When aligning _coeffBuf to 16 bytes offset with
+  // __attribute__((align(16))), the following statement is optimized away since the
+  // compiler assumes that the pointer would be 16-byte aligned. However, this is not the
+  // case when the structure has been dynamically allocated. In this case, the base can
+  // also be at 8 byte offsets (at least with MingW,32 bit).
+  int offset = ((uintptr_t)_coeffBuf) & 0xf;
 
   if (offset == 0) {
     coeffBuf = _coeffBuf;  // correctly aligned already
@@ -1565,7 +1568,7 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
   // (old 8-99) / (new 8-106)
   // 1.
 
-  std::vector<bool> picInAnyList(dpb.size(), false);
+  std::vector<char> picInAnyList(dpb.size(), false);
 
 
   dpb.log_dpb_content();
@@ -1586,6 +1589,8 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
       // We do not know the correct MSB
       int concealedPicture = generate_unavailable_reference_picture(current_sps.get(),
                                                                     PocLtCurr[i], true);
+      picInAnyList.resize(dpb.size(), false); // adjust size of array to hold new picture
+
       RefPicSetLtCurr[i] = k = concealedPicture;
       picInAnyList[concealedPicture]=true;
     }
@@ -1610,6 +1615,8 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
     else {
       int concealedPicture = k = generate_unavailable_reference_picture(current_sps.get(),
                                                                         PocLtFoll[i], true);
+      picInAnyList.resize(dpb.size(), false); // adjust size of array to hold new picture
+
       RefPicSetLtFoll[i] = concealedPicture;
       picInAnyList[concealedPicture]=true;
     }
@@ -1640,7 +1647,9 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
       int concealedPicture = generate_unavailable_reference_picture(current_sps.get(),
                                                                     PocStCurrBefore[i], false);
       RefPicSetStCurrBefore[i] = k = concealedPicture;
-      picInAnyList[concealedPicture]=true;
+
+      picInAnyList.resize(dpb.size(), false); // adjust size of array to hold new picture
+      picInAnyList[concealedPicture] = true;
 
       //printf("  concealed: %d\n", concealedPicture);
     }
@@ -1661,6 +1670,9 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
       int concealedPicture = generate_unavailable_reference_picture(current_sps.get(),
                                                                     PocStCurrAfter[i], false);
       RefPicSetStCurrAfter[i] = k = concealedPicture;
+
+
+      picInAnyList.resize(dpb.size(), false); // adjust size of array to hold new picture
       picInAnyList[concealedPicture]=true;
 
       //printf("  concealed: %d\n", concealedPicture);
@@ -1682,7 +1694,7 @@ void decoder_context::process_reference_picture_set(slice_segment_header* hdr)
   // 4. any picture that is not marked for reference is put into the "UnusedForReference" state
 
   for (int i=0;i<dpb.size();i++)
-    if (!picInAnyList[i])        // no reference
+    if (i>=picInAnyList.size() || !picInAnyList[i])        // no reference
       {
         de265_image* dpbimg = dpb.get_image(i);
         if (dpbimg != img &&  // not the current picture
