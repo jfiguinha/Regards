@@ -132,16 +132,6 @@ cd ..
 cd .. 
 cd .. 
 
-unzip openexr-2.5.2.zip
-cd openexr-2.5.2
-mkdir build
-cd build
-cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DZLIB_ROOT=../../zlib ../ -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd .. 
-cd .. 
-
 #compile opencv
 cd opencv
 unzip opencv-4.3.0.zip
