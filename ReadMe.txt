@@ -55,6 +55,14 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.62.0 :
+- New denoise filter for video playback
+- Add right panel in fullscreen mode for filter effect
+News for 2.61.9 :
+- Add Interpolation Filter selection for picture display
+- libfreeimage integration to prevent crash
+News for 2.61.8 :
+- Correct crash bug with libRaw on mac os
 News for 2.61.7 :
 - Update libRaw to 0.20
 - Update Sqlite to 3.30
