@@ -1,12 +1,14 @@
 #pragma once
 #include "FilterWindowParam.h"
-#include <DecodeRawPicture.h>
+
 class CMetadata;
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Filter
 	{
+		class CDecodeRawPicture;
+
 		class CDecodeRaw: public CFilterWindowParam
 		{
 		public:

@@ -10,7 +10,7 @@
 #include <wx/filename.h>
 #include "SelectPage.h"
 #include <ImageLoadingFormat.h>
-
+using namespace Regards::Picture;
 CSavePicture::CSavePicture()
 {
 }

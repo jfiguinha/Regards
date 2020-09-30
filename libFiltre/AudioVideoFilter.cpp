@@ -14,7 +14,7 @@
 #include <Metadata.h>
 #include <videostream.h>
 #include <RegardsBitmap.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 using namespace Regards::Video;
 
 CAudioVideoFilter::CAudioVideoFilter()

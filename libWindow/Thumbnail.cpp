@@ -1,7 +1,6 @@
 #include "header.h"
 #include "Thumbnail.h"
 #include <FileUtility.h>
-#include <libPicture.h>
 #include <wxmd5.h>
 #include "ScrollbarHorizontalWnd.h"
 #include "ScrollbarWnd.h"
@@ -16,6 +15,8 @@
 #include "LibResource.h"
 #include <ThumbnailData.h>
 #include <ThumbnailMessage.h>
+#include <libPicture.h>
+using namespace Regards::Picture;
 using namespace Regards::Window;
 
 

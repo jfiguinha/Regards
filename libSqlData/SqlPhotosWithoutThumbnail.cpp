@@ -5,7 +5,7 @@
 #include "libPicture.h"
 #include "SqlResult.h"
 using namespace Regards::Sqlite;
-
+using namespace Regards::Picture;
 CSqlPhotosWithoutThumbnail::CSqlPhotosWithoutThumbnail()
 	: CSqlExecuteRequest(L"RegardsDB")
 {

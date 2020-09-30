@@ -34,15 +34,6 @@
     <Filter Include="interface\source">
       <UniqueIdentifier>{da7dea52-797c-46e1-9da6-2c647f02b1e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="interpolation">
-      <UniqueIdentifier>{f2ac2d64-f86b-4552-9186-f719ec6af509}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="interpolation\include">
-      <UniqueIdentifier>{a1e15f43-ed7c-4fa6-89dd-81f342eaca2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="interpolation\source">
-      <UniqueIdentifier>{ad0ceced-fde0-4376-af9a-2c09367ddcad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="window">
       <UniqueIdentifier>{c6ff931b-ae35-4b98-9749-29b2165c8848}</UniqueIdentifier>
     </Filter>
@@ -66,6 +57,9 @@
     </Filter>
     <Filter Include="window\Drawing">
       <UniqueIdentifier>{01302cae-ea1e-4f01-bbd4-ba8a5dc27d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main">
+      <UniqueIdentifier>{712230a6-6eee-4f04-814e-a7e1f37bfab8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,9 +97,6 @@
       <Filter>Filter\include</Filter>
     </ClInclude>
     <ClInclude Include="PerlinNoise.h">
-      <Filter>Filter\include</Filter>
-    </ClInclude>
-    <ClInclude Include="PiccanteFilter.h">
       <Filter>Filter\include</Filter>
     </ClInclude>
     <ClInclude Include="RedEye.h">
@@ -147,30 +138,6 @@
     <ClInclude Include="Filtre.h">
       <Filter>interface\include</Filter>
     </ClInclude>
-    <ClInclude Include="FiltreEffet.h">
-      <Filter>interface\include</Filter>
-    </ClInclude>
-    <ClInclude Include="FiltreEffetCPU.h">
-      <Filter>interface\include</Filter>
-    </ClInclude>
-    <ClInclude Include="IFiltreEffet.h">
-      <Filter>interface\include</Filter>
-    </ClInclude>
-    <ClInclude Include="Interpolation.h">
-      <Filter>interpolation\include</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationBicubic.h">
-      <Filter>interpolation\include</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationBilinear.h">
-      <Filter>interpolation\include</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationFilters.h">
-      <Filter>interpolation\include</Filter>
-    </ClInclude>
-    <ClInclude Include="InterpolationFloatBicubic.h">
-      <Filter>interpolation\include</Filter>
-    </ClInclude>
     <ClInclude Include="BestExposureEffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
@@ -196,9 +163,6 @@
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="DecodeRawParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectVideoParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="FreeRotateEffectParameter.h">
@@ -235,9 +199,6 @@
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="WaveEffectParameter.h">
-      <Filter>window\datastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="EffectParameter.h">
       <Filter>window\datastructure</Filter>
     </ClInclude>
     <ClInclude Include="RedEyeParameter.h">
@@ -339,8 +300,17 @@
     <ClInclude Include="BitmapDisplay.h">
       <Filter>window\main</Filter>
     </ClInclude>
-    <ClInclude Include="FiltreEffectInterface.h">
-      <Filter>interface\include</Filter>
+    <ClInclude Include="DecodeRawPicture.h">
+      <Filter>window\raw</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffet.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="FiltreEffetCPU.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCLEffect.h">
+      <Filter>Main</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -389,9 +359,6 @@
     <ClCompile Include="PerlinNoise.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
-    <ClCompile Include="PiccanteFilter.cpp">
-      <Filter>Filter\source</Filter>
-    </ClCompile>
     <ClCompile Include="RedEye.cpp">
       <Filter>Filter\source</Filter>
     </ClCompile>
@@ -412,24 +379,6 @@
     </ClCompile>
     <ClCompile Include="Filtre.cpp">
       <Filter>interface\source</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreEffet.cpp">
-      <Filter>interface\source</Filter>
-    </ClCompile>
-    <ClCompile Include="FiltreEffetCPU.cpp">
-      <Filter>interface\source</Filter>
-    </ClCompile>
-    <ClCompile Include="Interpolation.cpp">
-      <Filter>interpolation\source</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationBicubic.cpp">
-      <Filter>interpolation\source</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationBilinear.cpp">
-      <Filter>interpolation\source</Filter>
-    </ClCompile>
-    <ClCompile Include="InterpolationFloatBicubic.cpp">
-      <Filter>interpolation\source</Filter>
     </ClCompile>
     <ClCompile Include="FilterWindowParam.cpp">
       <Filter>window\main</Filter>
@@ -511,6 +460,18 @@
     </ClCompile>
     <ClCompile Include="BitmapFusionFilter.cpp">
       <Filter>window\picture</Filter>
+    </ClCompile>
+    <ClCompile Include="DecodeRawPicture.cpp">
+      <Filter>window\raw</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffet.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="FiltreEffetCPU.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenCLEffect.cpp">
+      <Filter>Main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

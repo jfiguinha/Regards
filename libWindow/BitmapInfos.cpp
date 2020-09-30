@@ -20,7 +20,7 @@ CBitmapInfos::CBitmapInfos(wxWindow* parent, wxWindowID id, const CThemeBitmapIn
 	: CWindowMain("CBitmapInfos", parent, id)
 {
     TRACE();
-	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
 	gpsInfosUpdate = false;
 	bitmapInfosTheme = theme;
 	fileGeolocalisation->AddWindow(this);

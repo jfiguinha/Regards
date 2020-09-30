@@ -23,6 +23,7 @@
 #include "TitleBar.h"
 #include "LibResource.h"
 #include <RegardsConfigParam.h>
+using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
@@ -299,7 +300,7 @@ void CListFace::FacialRecognition(void * param)
 	bool pictureOK = false;
 	CLibPicture libPicture;
 	vector<int> listFace;
-	CRegardsBitmap * pictureData = CPictureData::LoadPictureToBGRA(path->filename, pictureOK);
+	CRegardsBitmap * pictureData = libPicture.LoadPictureToBGRA(path->filename, pictureOK);
 
 	int nbFaceFound = 0;
 	

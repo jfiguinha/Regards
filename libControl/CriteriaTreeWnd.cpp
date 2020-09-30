@@ -11,7 +11,6 @@
 #endif
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
-using namespace Regards::exiv2;
 #endif
 
 #if defined(__WXMSW__)
@@ -28,6 +27,7 @@ using namespace Regards::exiv2;
 #include <CalendarSelect.h>
 #include <ParamInit.h>
 #include <GpsEngine.h>
+using namespace Regards::exiv2;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Internet;
@@ -107,7 +107,7 @@ void CCriteriaTreeWnd::ShowCalendar(wxCommandEvent &event)
         wxQueueEvent(mainWnd, eventChange);
     }
 
-	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->SendMessageToWindow(filename, 2);
     
     if(photoCriteria != nullptr)
@@ -185,7 +185,7 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
         delete photoCriteria;
 
 	//Update infos
-	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->SendMessageToWindow(filename,1);
     
     Refresh();

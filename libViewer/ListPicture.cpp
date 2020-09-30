@@ -32,20 +32,20 @@
 #include <GpsEngine.h>
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
+#include <ImageLoadingFormat.h>
 #include <WindowMain.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
-using namespace Regards::exiv2;
+
 #elif defined(WIN32)
 #include <SetMetadataGps.h>
 #include <SetMetadataDate.h>
 #endif
-
-
+using namespace Regards::exiv2;
+using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-using namespace Regards::Internet;
 
 CListPicture::CListPicture(wxWindow* parent, wxWindowID id)
 	: CWindowMain("CListPicture", parent, id)
@@ -323,7 +323,7 @@ void CListPicture::GeolocalizeFile(const wxString& filename, const float& latitu
 	sqlGps.DeleteGps(filename);
 	sqlGps.InsertGps(filename, lat, lng);
 
-	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->SendMessageToWindow(filename, 1);
 }
 

@@ -23,6 +23,7 @@
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
+using namespace Regards::Picture;
 #define TAILLEMAX 4096
 
 PhotoCategorieVector CCriteriaTree::photoCategorieVector;

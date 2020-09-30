@@ -13,9 +13,11 @@
 #include <SqlPhotoCriteria.h>
 #include <LibResource.h>
 #include <MediaInfo.h>
+#include <libPicture.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
-
+using namespace Regards::Picture;
+using namespace Regards::exiv2;
 CountryVector CFileGeolocation::countryVector;
 
 CFileGeolocation::CFileGeolocation(const wxString &urlServer)
@@ -283,25 +285,12 @@ void CFileGeolocation::SetFile(const wxString & picture)
 	}
 	else
 	{
-        exiv2::CMetadataExiv2 pictureMetadata(filename);
+        CMetadataExiv2 pictureMetadata(filename);
 		pictureMetadata.ReadPicture(hasGps, hasDataTime, dateTimeInfos, latitudeGps, longitudeGps);
 	}
 
     if(hasGps)
     {
-		/*
-    {
-        PhotoGpsVector photogpsVector;
-        CSqlGps sqlGps;
-        sqlGps.GetGps(&photogpsVector, filename);
-        if(photogpsVector.size() == 0)
-        {
-            sqlGps.InsertGps(filename, latitudeGps, longitudeGps);
-        }
-    }
-    else if(onlyFromFile)
-    {
-    */
         PhotoGpsVector photogpsVector;
         CriteriaVector criteriaVector;
         //Recherche des données dans la base

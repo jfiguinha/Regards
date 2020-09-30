@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{79eab594-02fc-4e08-bcfe-ac414a06e272}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{de635d77-5ee6-4242-ac4e-8c48cae4fa13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -39,6 +42,12 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="RenderBitmapOpenGL.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderVideoOpenGL.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLSLParameter.cpp">
@@ -55,6 +64,12 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderBitmapOpenGL.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderVideoOpenGL.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

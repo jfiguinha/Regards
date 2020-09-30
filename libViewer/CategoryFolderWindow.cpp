@@ -60,7 +60,7 @@ CCategoryFolderWindow::CCategoryFolderWindow(wxWindow* parent, wxWindowID id, co
 	: CTreeWithScrollbar("CCategoryFolderWindow", parent, id, themeScroll, theme)
 {
 
-	CListOfWindowGeo * fileGeolocalisation = CGpsEngine::getInstance();
+	CListOfWindow * fileGeolocalisation = CGpsEngine::getInstance();
 	fileGeolocalisation->AddWindow(this);
 	
 	catalogWndOld = nullptr;
@@ -362,7 +362,7 @@ void CCategoryFolderWindow::RefreshThreadFolder(CFolderCatalog* folder)
 void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
 
-	CListOfWindowGeo * geoloc = CGpsEngine::getInstance();
+	CListOfWindow * geoloc = CGpsEngine::getInstance();
 	CSqlPhotoCriteria photoCriteria;
 
 	wxString urlServer = "";
@@ -466,7 +466,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 			insertCriteria->type = CATEGORIE_DATE;
 			insertCriteria->value = datetime;
 			listCriteriaPhoto.listCriteria.push_back(insertCriteria);
-			CListOfWindowGeo * geoloc = CGpsEngine::getInstance();
+			CListOfWindow * geoloc = CGpsEngine::getInstance();
 			if (geoloc != nullptr)
 				geoloc->SendMessageToWindow(listCriteriaPhoto.photoPath, 2);
 		}

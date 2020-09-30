@@ -16,6 +16,12 @@
     <Filter Include="header">
       <UniqueIdentifier>{4837547f-b9ae-4351-8d6d-dd26751a1f75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="datastructure">
+      <UniqueIdentifier>{392b864e-09aa-4a24-9ba8-2c4386d51220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ExecuteRequest">
+      <UniqueIdentifier>{0e76815a-5e01-46ac-829d-018194508321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -120,6 +126,15 @@
     <ClInclude Include="SqlPhotoCategorieUsenet.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="ThumbnailDataSQL.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlExecuteRequest.h">
+      <Filter>ExecuteRequest</Filter>
+    </ClInclude>
+    <ClInclude Include="SqlResource.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlCatalog.cpp">
@@ -219,6 +234,15 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SqlPhotoCategorieUsenet.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailDataSQL.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="SqlExecuteRequest.cpp">
+      <Filter>ExecuteRequest</Filter>
+    </ClCompile>
+    <ClCompile Include="SqlResource.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -13,10 +13,10 @@
 #include <DeepLearning.h>
 #include <PictureData.h>
 #include <MetadataExiv2.h>
-using namespace Regards::exiv2;
+using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Control;
-
+using namespace Regards::exiv2;
 class CThreadRotate
 {
 public:

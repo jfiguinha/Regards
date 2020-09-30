@@ -4,7 +4,6 @@
 #include "OpenCLProgram.h"
 #include "RegardsBitmap.h"
 #include "utility.h"
-#include <RegardsConfigParam.h>
 using namespace Regards::OpenCL;
 
 

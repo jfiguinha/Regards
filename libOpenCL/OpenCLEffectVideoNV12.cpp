@@ -2,6 +2,7 @@
 #include "OpenCLEffectVideoNV12.h"
 #include "OpenCLExecuteProgram.h"
 #include "OpenCLProgram.h"
+#include "OpenCLContext.h"
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideoNV12::COpenCLEffectVideoNV12(COpenCLContext * context)

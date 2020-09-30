@@ -16,14 +16,8 @@
     <Filter Include="Configuration">
       <UniqueIdentifier>{948e2cd0-2003-4dc5-a5a0-6ede8766feca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Picture Save Option">
-      <UniqueIdentifier>{a3933aee-cede-4ba9-b8be-64c2331cf5cb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Export file">
       <UniqueIdentifier>{0f6f9183-d4b0-41c0-a344-5e120f86eca5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Compression">
-      <UniqueIdentifier>{bd6e5f49-3431-46e7-ab9e-7bb7421bfdab}</UniqueIdentifier>
     </Filter>
     <Filter Include="ChangeLabel">
       <UniqueIdentifier>{289c9075-c58a-4495-b060-027574fe439b}</UniqueIdentifier>
@@ -66,29 +60,8 @@
     <ClCompile Include="ConfigRegards.cpp">
       <Filter>Configuration</Filter>
     </ClCompile>
-    <ClCompile Include="GifOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="JpegOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="PngOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="TiffOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
     <ClCompile Include="ExportFile.cpp">
       <Filter>Export file</Filter>
-    </ClCompile>
-    <ClCompile Include="CompressionOption.cpp">
-      <Filter>Compression</Filter>
-    </ClCompile>
-    <ClCompile Include="webpOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="bpgoption.cpp">
-      <Filter>Picture Save Option</Filter>
     </ClCompile>
     <ClCompile Include="ChangeLabel.cpp">
       <Filter>ChangeLabel</Filter>
@@ -114,18 +87,6 @@
     <ClCompile Include="InterpolationFilterSelect.cpp">
       <Filter>InterpolationFiltre</Filter>
     </ClCompile>
-    <ClCompile Include="BmpOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="ExrOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="J2kOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
-    <ClCompile Include="JxrOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
     <ClCompile Include="SelectPage.cpp">
       <Filter>SelectPage</Filter>
     </ClCompile>
@@ -141,9 +102,6 @@
     <ClCompile Include="InfosSeparationBarExplorer.cpp">
       <Filter>SelectPage</Filter>
     </ClCompile>
-    <ClCompile Include="PDFOption.cpp">
-      <Filter>Picture Save Option</Filter>
-    </ClCompile>
     <ClCompile Include="Association.cpp">
       <Filter>Association</Filter>
     </ClCompile>
@@ -155,29 +113,8 @@
     <ClInclude Include="ConfigRegards.h">
       <Filter>Configuration</Filter>
     </ClInclude>
-    <ClInclude Include="GifOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="JpegOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="PngOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="TiffOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
     <ClInclude Include="ExportFile.h">
       <Filter>Export file</Filter>
-    </ClInclude>
-    <ClInclude Include="CompressionOption.h">
-      <Filter>Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="webpOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="bpgoption.h">
-      <Filter>Picture Save Option</Filter>
     </ClInclude>
     <ClInclude Include="ChangeLabel.h">
       <Filter>ChangeLabel</Filter>
@@ -203,18 +140,6 @@
     <ClInclude Include="InterpolationFilterSelect.h">
       <Filter>InterpolationFiltre</Filter>
     </ClInclude>
-    <ClInclude Include="BmpOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="ExrOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="J2kOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
-    <ClInclude Include="JxrOption.h">
-      <Filter>Picture Save Option</Filter>
-    </ClInclude>
     <ClInclude Include="SelectPage.h">
       <Filter>SelectPage</Filter>
     </ClInclude>
@@ -229,9 +154,6 @@
     </ClInclude>
     <ClInclude Include="InfosSeparationBarExplorer.h">
       <Filter>SelectPage</Filter>
-    </ClInclude>
-    <ClInclude Include="PDFOption.h">
-      <Filter>Picture Save Option</Filter>
     </ClInclude>
     <ClInclude Include="Association.h">
       <Filter>Association</Filter>

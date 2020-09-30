@@ -13,7 +13,6 @@
 #include <ShowVideo.h>
 #include <wx/display.h>
 #include "AnimationToolbar.h"
-#include <Splitter.h>
 #include "PanelPhotoWnd.h"
 #include "ListPicture.h"
 #include "WindowManager.h"
@@ -27,6 +26,10 @@
 #include "PanelInfosWnd.h"
 #include <PanelWithClickToolbar.h>
 #include "PreviewWnd.h"
+#include <ParamInit.h>
+#include <RegardsConfigParam.h>
+#include <libPicture.h>
+using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
 

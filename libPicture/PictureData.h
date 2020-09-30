@@ -5,15 +5,15 @@ class CRegardsBitmap;
 class CPictureData
 {
 public:
-	CPictureData(){
+	CPictureData() {
 		width = 0;
 		height = 0;
 		size = 0;
 	};
 	~CPictureData();
 
-	static CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
-	static CRegardsBitmap * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+	//static CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
+	//static CRegardsBitmap * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 	static float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight, const int &widthOutput, const int &heightOutput);
 
 	int GetWidth();
@@ -26,7 +26,9 @@ public:
 	void CopyData(CRegardsBitmap * & bitmap);
 	uint8_t * GetData();
 	int GetSize();
-	//std::vector<char> CopyData();
+
+	void SetJpegData(uint8_t * & extdata, const int &outputsize);
+
 private:
 
 
@@ -37,5 +39,4 @@ private:
 	int	size;
 
 };
-
 

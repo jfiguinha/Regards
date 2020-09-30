@@ -10,7 +10,7 @@
 #include "yuv422.h"
 using namespace std;
 using namespace HEIF;
-
+using namespace Regards::Picture;
 static CRegardsBitmap * DecodeFrame(void * data, int length, void * externDecoder = nullptr);
 
 typedef struct x265Frame

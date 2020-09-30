@@ -1,7 +1,7 @@
 #pragma once
 #include <theme.h>
-#include <OpenCLEngine.h>
-using namespace Regards::OpenCL;
+//#include <OpenCLEngine.h>
+//using namespace Regards::OpenCL;
 
 class CThumbnailData;
 class CRegardsConfigParam;

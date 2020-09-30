@@ -12,7 +12,7 @@
 #include <ImageLoadingFormat.h>
 #include <FiltreEffet.h>
 #include <RegardsBitmap.h>
-#include <PiccanteFilter.h>
+#include <PiccanteHDR.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
 #include <ParamInit.h>
@@ -80,13 +80,13 @@ void CFilterWindowParam::ApplyPreviewEffect(CEffectParameter * effectParameter, 
 		switch (GetTypeFilter())
 		{
 		case IDM_BEST_EXPOSURE:
-			CPiccanteFilter::BestExposure(test);
+			CPiccanteHDR::BestExposure(test);
 			break;
 		case IDM_FILTER_KUWAHARA:
-			CPiccanteFilter::FilterKuwahara(test);
+			CPiccanteHDR::FilterKuwahara(test);
 			break;
 		case IDM_FILTER_BILATERAL2DS:
-			CPiccanteFilter::FilterBilateral2DS(test);
+			CPiccanteHDR::FilterBilateral2DS(test);
 			break;
 		}
 
@@ -172,13 +172,13 @@ CImageLoadingFormat * CFilterWindowParam::RenderEffect(CEffectParameter * effect
 		switch (numFiltre)
 		{
 		case IDM_BEST_EXPOSURE:
-			CPiccanteFilter::BestExposure(bitmap);
+			CPiccanteHDR::BestExposure(bitmap);
 			break;
 		case IDM_FILTER_KUWAHARA:
-			CPiccanteFilter::FilterKuwahara(bitmap);
+			CPiccanteHDR::FilterKuwahara(bitmap);
 			break;
 		case IDM_FILTER_BILATERAL2DS:
-			CPiccanteFilter::FilterBilateral2DS(bitmap);
+			CPiccanteHDR::FilterBilateral2DS(bitmap);
 			break;
 		}
 		CImageLoadingFormat imageLoadFormat(true);

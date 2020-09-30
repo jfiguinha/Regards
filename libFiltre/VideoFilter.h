@@ -15,7 +15,7 @@ class CMetadata;
 
 namespace Regards
 {
-    namespace Viewer
+	namespace Filter
     {
         class CVideoFilter : public CFilterWindowParam
         {

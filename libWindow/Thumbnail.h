@@ -7,8 +7,8 @@
 
 #include "WindowMain.h"
 #include <wx/animate.h>
-#include <OpenCLEngine.h>
-using namespace Regards::OpenCL;
+//#include <OpenCLEngine.h>
+//using namespace Regards::OpenCL;
 using namespace std;
 using namespace Regards::Sqlite;
 using namespace Regards::Window;

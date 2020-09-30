@@ -19,7 +19,7 @@
 using namespace Regards::Window;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Control;
-
+using namespace Regards::Picture;
 wxDEFINE_EVENT(EVENT_ICONEUPDATE, wxCommandEvent);
 
 

@@ -12,11 +12,12 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
+#include <OpenCLEngine.h>
 #include <Metadata.h>
 #include <videostream.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 using namespace Regards::Video;
-
+using namespace Regards::OpenCL;
 CVideoFilter::CVideoFilter()
 {
 	effectDenoisingSigmaU = CLibResource::LoadStringFromResource(L"LBLeffectDenoisingSigmaU",1);//L"Effect.Denoising.Sigma P";
@@ -60,10 +61,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * s
 
 void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface)
 {   
-	int supportOpenCL = 0;
-	CRegardsConfigParam* config = CParamInit::getInstance();
-	if (config != nullptr)
-		supportOpenCL = config->GetIsOpenCLSupport();
+	int supportOpenCL = COpenCLEngine::SupportOpenCL();
 
 	CVideoEffectParameter * videoEffectParameter = (CVideoEffectParameter *)effectParameter;
 	vector<int> elementContrast;

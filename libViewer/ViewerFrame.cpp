@@ -23,17 +23,18 @@
 #include <libPicture.h>
 #include <SavePicture.h>
 #include <ScannerFrame.h>
-#include <OpenCLEngine.h>
 #include <ImageLoadingFormat.h>
 #include "ListFace.h"
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
+#include <OpenCLEngine.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 using namespace Regards::Sqlite;
 using namespace Regards::OpenCL;
+using namespace Regards::Picture;
 #define TIMER_LOADPICTURE 2
 #if !wxUSE_PRINTING_ARCHITECTURE
 #error "You must set wxUSE_PRINTING_ARCHITECTURE to 1 in setup.h, and recompile the library."
@@ -282,57 +283,7 @@ CViewerFrame::CViewerFrame(const wxString& title, const wxPoint& pos, const wxSi
 			//OpenCL auto selected
 			if (platformName == "")
 			{
-				wxString deviceName = "";
-				int indexDevice = -1;
-				OpenCLPlatform * openCLPlatformSelected = nullptr;
-				vector<OpenCLPlatform *> listPlatform = COpenCLPlatformList::GetPlatform();
-				bool findGpuDevice = false;
-				for (OpenCLPlatform * openCLPlatform : listPlatform)
-				{
-
-					platformName == openCLPlatform->platformName;
-					openCLPlatformSelected = openCLPlatform;
-					break;
-				}
-
-				if (openCLPlatformSelected != nullptr)
-				{
-					vector<OpenCLDevice *> listDevice = COpenCLDeviceList::GetPlatformDevice(openCLPlatformSelected);
-
-					for (OpenCLDevice * openCLDevice : listDevice)
-					{
-						if (openCLDevice->deviceType == CL_DEVICE_TYPE_GPU)
-						{
-							indexDevice = openCLDevice->deviceIndex;
-							deviceName = openCLDevice->deviceName;
-							findGpuDevice = true;
-							break;
-						}
-
-					}
-
-					if (!findGpuDevice)
-					{
-						for (OpenCLDevice * openCLDevice : listDevice)
-						{
-							indexDevice = openCLDevice->deviceIndex;
-							deviceName = openCLDevice->deviceName;
-							break;
-						}
-					}
-				}
-
-
-
-				CRegardsConfigParam* config = CParamInit::getInstance();
-				if (config != nullptr)
-				{
-					config->SetOpenCLPlatformIndex(indexDevice);
-					config->SetOpenCLPlatformName(openCLPlatformSelected->platformName);
-				}
-
-				//ShowOpenCLConfiguration(false);
-				//Exit();
+				COpenCLEngine::GetDefaultGpuDeviceInformation();
 			}
 		}
     }

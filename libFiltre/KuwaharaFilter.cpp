@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <FilterData.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CKuwaharaFilter::CKuwaharaFilter()
 {

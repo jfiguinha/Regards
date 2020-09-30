@@ -9,7 +9,7 @@
 #include "ThumbnailViewerEffectWnd.h"
 #include <libPicture.h>
 using namespace Regards::Control;
-
+using namespace Regards::Picture;
 CThumbnailViewerEffectWnd::CThumbnailViewerEffectWnd(wxWindow* parent, wxWindowID id, 
 	const CThemeScrollBar & themeScroll, const CThemeThumbnail & themeThumbnail, int panelInfosId, bool checkValidity)
 : CWindowMain("CThumbnailViewerEffectWnd",parent, id)

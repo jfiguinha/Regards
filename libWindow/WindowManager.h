@@ -81,6 +81,7 @@ namespace Regards
 			wxBitmap renderBitmap;
 			bool showSeparationBar;
 			CThemeSplitter themeSplitter;
+			int separationBarSize = 0;
 		};
 	}
 }

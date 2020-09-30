@@ -27,6 +27,7 @@
 #include <wx/filefn.h> 
 #include <ImageLoadingFormat.h>
 #include <wx/choicdlg.h> 
+using namespace Regards::Picture;
 using namespace Regards::Print;
 using namespace Regards::Introduction;
 using namespace Regards::Scanner;

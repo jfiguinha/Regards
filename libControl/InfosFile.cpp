@@ -4,7 +4,6 @@
 #include <TreeData.h>
 #ifdef EXIV2
 #include <MetadataExiv2.h>
-using namespace Regards::exiv2;
 #else
 #ifdef __APPLE__
 #include <AppleReadExif.h>
@@ -26,6 +25,8 @@ using namespace Regards::exiv2;
 using namespace Regards::Control;
 using namespace Regards::Window;
 using namespace Regards::Internet;
+using namespace Regards::Picture;
+using namespace Regards::exiv2;
 #define TAILLEMAX 4096
 
 CInfosFile::CInfosFile(CThemeTree * theme, CTreeElementControlInterface * interfaceControl)

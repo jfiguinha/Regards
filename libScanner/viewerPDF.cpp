@@ -19,8 +19,8 @@
 #include "ScannerFrame.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
-//#include <qpdf/QIntC.hh>
-
+#include <libPicture.h>
+using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Scanner;
 #define PANE_PICTURETHUMBNAIL 1

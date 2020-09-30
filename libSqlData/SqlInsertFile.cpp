@@ -5,6 +5,7 @@
 #include <ConvertUtility.h>
 #include "SqlResult.h"
 #include <algorithm>
+using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
 

@@ -3,7 +3,7 @@
 
 namespace Regards
 {
-	namespace Viewer
+	namespace Filter
 	{
 		class CGaussianBlurFilter : public CFilterWindowParam
 		{

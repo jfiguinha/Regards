@@ -5,11 +5,11 @@
 #include "SqlResult.h"
 #include <RegardsBitmap.h>
 #include <wx/mstream.h>
-#include <libPicture.h>
 #include <turbojpeg.h>
 #include <ConvertUtility.h>
 #include <PictureData.h>
 using namespace Regards::Sqlite;
+
 
 CSqlThumbnail::CSqlThumbnail()
 	: CSqlExecuteRequest(L"RegardsDB")
@@ -84,7 +84,6 @@ wxImage CSqlThumbnail::GetThumbnail(const wxString & path)
 
 CRegardsBitmap * CSqlThumbnail::GetPictureThumbnail(const wxString & path)
 {
-	CLibPicture libPicture;
 	type = 3;
 	wxString fullpath(path);
 	fullpath.Replace("'", "''");

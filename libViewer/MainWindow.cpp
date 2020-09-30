@@ -39,6 +39,7 @@
 #include <wx/stdpaths.h>
 //#include <jpge.h>
 //using namespace jpge;
+using namespace Regards::Picture;
 using namespace Regards::Control;
 using namespace Regards::Viewer;
 //const long ONE_MSEC = 1000;

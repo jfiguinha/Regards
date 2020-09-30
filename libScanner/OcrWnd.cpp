@@ -32,7 +32,7 @@ enum
 
 using namespace Regards::Scanner;
 using namespace Regards::Control;
-
+using namespace Regards::Picture;
 COcrWnd::COcrWnd(wxWindow* parent, wxWindowID id)
 	: CWindowMain("OCR Window", parent, id)
 {

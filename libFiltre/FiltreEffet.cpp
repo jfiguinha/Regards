@@ -4,7 +4,6 @@
 #include "FiltreEffetCPU.h"
 #include "OpenCLEffect.h"
 #include "InterpolationBicubic.h"
-#include <DecodeRawPicture.h>
 #include <LibResource.h>
 #include "Rotate.h"
 #include "RedEye.h"
@@ -14,7 +13,8 @@
 #include "WaveFilter.h"
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
-#include <PiccanteFilter.h>
+#include <PiccanteHDR.h>
+#include <OpenCLContext.h>
 #include <config_id.h>
 extern float value[256];
 
@@ -51,7 +51,7 @@ int CFiltreEffet::FilterBilateral2DS(const float & sigma_s, const float & sigma_
 {
     CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
     printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-    CPiccanteFilter::FilterBilateral2DS(test,sigma_s,sigma_r);
+	CPiccanteHDR::FilterBilateral2DS(test,sigma_s,sigma_r);
     CImageLoadingFormat imageLoadFormat(true);
     imageLoadFormat.SetPicture(test);
     filtreEffet->SetBitmap(&imageLoadFormat);  
@@ -72,7 +72,7 @@ int CFiltreEffet::FilterKuwahara(const int &kernelSize)
 {
     CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
     printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-    CPiccanteFilter::FilterKuwahara(test,kernelSize);
+	CPiccanteHDR::FilterKuwahara(test,kernelSize);
     CImageLoadingFormat imageLoadFormat(true);
     imageLoadFormat.SetPicture(test);
     filtreEffet->SetBitmap(&imageLoadFormat);  
@@ -89,7 +89,7 @@ int CFiltreEffet::BestExposure(const float &tmoValue)
 {
     CRegardsFloatBitmap * test = filtreEffet->GetFloatBitmap(true);
     printf("Infos Float Bitmap Width : %d Height : %d \n",test->GetWidth(), test->GetHeight());
-    CPiccanteFilter::BestExposure(test,tmoValue);
+	CPiccanteHDR::BestExposure(test,tmoValue);
     CImageLoadingFormat imageLoadFormat(true);
     imageLoadFormat.SetPicture(test);
     filtreEffet->SetBitmap(&imageLoadFormat);    

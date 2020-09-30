@@ -1,5 +1,5 @@
 #pragma once
-#include <IFiltreEffet.h>
+#include <Rgbaquad.h>
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "OpenCLParameter.h"

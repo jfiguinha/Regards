@@ -5,6 +5,7 @@
 #include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <libPicture.h>
+using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
 #define SQL_CREATE_VERSION_TABLE "CREATE TABLE VERSION (libelle NVARCHAR(255) PRIMARY KEY)"

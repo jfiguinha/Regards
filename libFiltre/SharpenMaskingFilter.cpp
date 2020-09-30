@@ -5,7 +5,7 @@
 #include <RegardsBitmap.h>
 #include <LibResource.h>
 #include <RenderOpenGL.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CSharpenMaskingFilter::CSharpenMaskingFilter()
 {

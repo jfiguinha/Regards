@@ -1,6 +1,7 @@
 #include <header.h>
 #include "OpenCLEffectVideoYUV.h"
 #include "OpenCLExecuteProgram.h"
+#include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 using namespace Regards::OpenCL;
 

@@ -16,7 +16,7 @@
 #include <FiltreEffet.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CLensFlareFilter::CLensFlareFilter()
 {

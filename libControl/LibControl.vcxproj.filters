@@ -1,15 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="BitmapPrintout.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapToolbar.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="BitmapWndViewer.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="CriteriaTree.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -40,47 +31,74 @@
     <ClCompile Include="InfosSeparationBarEffect.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ShowBitmap.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="SplitterWithPanel.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailEffect.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailHorizontal.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailVertical.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailVerticalListFile.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailVideo.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailViewerEffect.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
     </ClCompile>
+    <ClCompile Include="ModificationManager.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailEffect.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailHorizontal.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVertical.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVerticalListFile.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailVideo.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffect.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailViewerEffectWnd.cpp">
+      <Filter>Thumbnail\source</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowBitmap.cpp">
+      <Filter>Bitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapWndViewer.cpp">
+      <Filter>Bitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapPrintout.cpp">
+      <Filter>Bitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="BitmapToolbar.cpp">
+      <Filter>Bitmap</Filter>
+    </ClCompile>
+    <ClCompile Include="ShowVideo.cpp">
+      <Filter>Video</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmfcpimpl.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpeg_dxva2.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ffmpegToBitmap.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="ffplaycore.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="SliderVideo.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoControl.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoControl_soft.cpp">
+      <Filter>Video\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BitmapPrintout.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapToolbar.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="BitmapWndViewer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="CriteriaTree.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -114,35 +132,80 @@
     <ClInclude Include="InfosSeparationBarEffect.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ShowBitmap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="SplitterWithPanel.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailEffect.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailHorizontal.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailVertical.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailVerticalListFile.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailVideo.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffect.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailViewerEffectWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="ModificationManager.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailEffect.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailHorizontal.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVertical.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVerticalListFile.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailVideo.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffect.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailViewerEffectWnd.h">
+      <Filter>Thumbnail\header</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowBitmap.h">
+      <Filter>Bitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapWndViewer.h">
+      <Filter>Bitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapPrintout.h">
+      <Filter>Bitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="BitmapToolbar.h">
+      <Filter>Bitmap</Filter>
+    </ClInclude>
+    <ClInclude Include="ShowVideo.h">
+      <Filter>Video</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoInterface.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmfcpimpl.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpeg_dxva2.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffmpegToBitmap.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="ffplaycore.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderVideo.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoControl.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoControl_soft.h">
+      <Filter>Video\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoControlInterface.h">
+      <Filter>Video\Core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +220,27 @@
     </Filter>
     <Filter Include="header">
       <UniqueIdentifier>{4deebe3d-795c-4ab3-ab13-d0c086e405e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Datastructure">
+      <UniqueIdentifier>{0f6d7271-c723-44bd-bf34-e70edb676320}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bitmap">
+      <UniqueIdentifier>{ca4654b8-bd4a-4383-96a7-1a0e7dfff490}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail">
+      <UniqueIdentifier>{85e3451b-c8a9-4cbf-87d4-43fb2fc76eb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail\source">
+      <UniqueIdentifier>{c5d4a621-92e8-4964-83a3-28dd97b11a66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thumbnail\header">
+      <UniqueIdentifier>{918476ea-db05-4541-be35-2a762c0aa555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video">
+      <UniqueIdentifier>{8b974128-3648-4928-a3eb-800f9391c06d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video\Core">
+      <UniqueIdentifier>{6ec769ae-45fc-4f13-99f6-25114263c154}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

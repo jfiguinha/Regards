@@ -1,6 +1,7 @@
 #pragma once
 
 class CImageLoadingFormat;
+class CPictureData;
 
 namespace Regards
 {

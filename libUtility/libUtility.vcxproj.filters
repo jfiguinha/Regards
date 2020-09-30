@@ -33,9 +33,6 @@
     <ClInclude Include="wxmd5.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="LoadingResource.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
@@ -51,9 +48,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="wxmd5.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="LoadingResource.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">

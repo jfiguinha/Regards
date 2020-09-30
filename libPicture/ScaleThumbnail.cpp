@@ -3,7 +3,7 @@
 #include <RegardsBitmap.h>
 #include <InterpolationBicubic.h>
 
-
+using namespace Regards::Picture;
 CScaleThumbnail::CScaleThumbnail(void)
 {
 }

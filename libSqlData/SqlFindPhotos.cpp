@@ -4,6 +4,7 @@
 #include <LibResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
+using namespace Regards::Picture;
 using namespace Regards::Sqlite;
 
 CSqlFindPhotos::CSqlFindPhotos()

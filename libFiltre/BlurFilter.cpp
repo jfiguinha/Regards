@@ -13,7 +13,7 @@
 #include <LibResource.h>
 #include <FilterData.h>
 
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CBlurFilter::CBlurFilter()
 {

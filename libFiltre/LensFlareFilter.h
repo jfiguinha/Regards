@@ -11,7 +11,7 @@
 
 namespace Regards
 {
-    namespace Viewer
+	namespace Filter
     {
         class CLensFlareFilter : public CFilterWindowParam
         {

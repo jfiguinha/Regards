@@ -1,9 +1,5 @@
 #pragma once
 
-#include <queue>
-#include <deque>
-using namespace std;
-
 class CRegardsBitmap;
 
 #define TYPEPHOTO 1

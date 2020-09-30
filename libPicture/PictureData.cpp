@@ -1,8 +1,8 @@
 #include "header.h"
 #include "PictureData.h"
-#include <ImageLoadingFormat.h>
-#include "libPicture.h"
+//#include <ImageLoadingFormat.h>
 #include <RegardsBitmap.h>
+
 
 CPictureData::~CPictureData()
 {
@@ -103,6 +103,14 @@ float CPictureData::CalculPictureRatio(const int &pictureWidth, const int &pictu
 	return newRatio;
 }
 
+void CPictureData::SetJpegData(uint8_t * & extdata, const int &outputsize)
+{
+	data = new uint8_t[outputsize];
+	memcpy(data, extdata, outputsize);
+	size = outputsize;
+}
+
+/*
 CRegardsBitmap * CPictureData::LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
 {
 	CRegardsBitmap * pictureData = nullptr;
@@ -134,51 +142,4 @@ CRegardsBitmap * CPictureData::LoadPictureToBGRA(const wxString &filename, bool 
 	
 	return pictureData;
 }
-
-CPictureData * CPictureData::LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
-{
-	CPictureData * pictureData = nullptr;
-	CLibPicture libPicture;
-	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
-
-	if (imageLoading != nullptr)
-	{
-		pictureOK = imageLoading->IsOk();
-		if (pictureOK)
-		{
-			imageLoading->ApplyExifOrientation(1);
-			imageLoading->ConvertToRGB24(true);
-			//Calcul Resize Size
-			pictureData = new CPictureData();
-			if (resizeWidth != 0 && resizeHeight != 0)
-			{
-				float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth, resizeHeight);
-				pictureData->width = imageLoading->GetWidth() * ratio;
-				pictureData->height = imageLoading->GetHeight() * ratio;
-				imageLoading->Resize(pictureData->width, pictureData->height, 1);
-			}
-			else
-			{
-				pictureData->width = imageLoading->GetWidth();
-				pictureData->height = imageLoading->GetHeight();
-			}
-
-			unsigned long outputsize = 0;
-			int compressMethod = 0;
-			uint8_t * data = imageLoading->GetJpegData(outputsize, compressMethod);
-			pictureData->data = new uint8_t[outputsize];
-			memcpy(pictureData->data, data, outputsize);
-			imageLoading->DestroyJpegData(data, compressMethod);
-
-			pictureData->size = outputsize;
-
-		}
-	}
-
-	if (imageLoading != nullptr)
-		delete imageLoading;
-
-	imageLoading = nullptr;
-
-	return pictureData;
-}
+*/

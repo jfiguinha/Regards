@@ -4,7 +4,6 @@
 #include "BitmapToolbar.h"
 #include "ScrollbarWnd.h"
 #include "BitmapWndViewer.h"
-#include <OpenCLContext.h>
 #include <wx/gauge.h>
 using namespace Regards::OpenCL;
 using namespace Regards::Window;

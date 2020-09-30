@@ -223,7 +223,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libUtility;..\libResource;..\libsqlite;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libsqlite;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -264,8 +264,8 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="SqlEngine.h" />
-    <ClInclude Include="SqlExecuteRequest.h" />
     <ClInclude Include="SqlLib.h" />
+    <ClInclude Include="SqlLibResource.h" />
     <ClInclude Include="SqlResult.h" />
   </ItemGroup>
   <ItemGroup>
@@ -275,8 +275,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="SqlEngine.cpp" />
-    <ClCompile Include="SqlExecuteRequest.cpp" />
     <ClCompile Include="SqlLib.cpp" />
+    <ClCompile Include="SqlLibResource.cpp" />
     <ClCompile Include="SqlResult.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

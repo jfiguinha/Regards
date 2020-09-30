@@ -8,7 +8,7 @@
 #endif
 #include <ConvertUtility.h>
 #include <RegardsBitmap.h>
-
+using namespace Regards::Picture;
 CImageLoadingFormat * CRaw::GetThumbnail(const wxString & fileName, const bool &thumbnail)
 {
     //const char * fichier = CConvertUtility::ConvertFromwxString(fileName);

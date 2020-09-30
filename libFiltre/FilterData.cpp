@@ -62,7 +62,7 @@
 #include <Selection.h>
 #include <BitmapFusionFilter.h>
 #include <BitmapFusionEffectParameter.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
 
 CFiltreData::CFiltreData(){}
@@ -391,7 +391,7 @@ CFilterWindowParam * CFiltreData::CreateEffectPointer(const int &numFilter)
 		break;
 
 	case IDM_DECODE_RAW:
-        filterEffect = new Regards::Viewer::CDecodeRaw();
+        filterEffect = new CDecodeRaw();
         //filterEffect->Filter(effectParameter, source, this);
 		break;
         

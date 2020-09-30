@@ -15,7 +15,7 @@
 #include <GLTexture.h>
 #include <RenderOpenGL.h>
 using namespace Regards::OpenGL;
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CColorBalanceFilter::CColorBalanceFilter()
 {

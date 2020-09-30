@@ -11,7 +11,7 @@
 #include <SqlPhotosWithoutThumbnail.h>
 using namespace Regards::Control;
 using namespace Regards::Window;
-
+using namespace Regards::Picture;
 #define wxTIMER_PROCESS 1001
 
 CThumbnailVideo::CThumbnailVideo(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)

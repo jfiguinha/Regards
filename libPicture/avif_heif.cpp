@@ -4,7 +4,7 @@
 #include <RegardsBitmap.h>
 #include <picture_id.h>
 static const char kMetadataTypeExif[] = "Exif";
-
+using namespace Regards::Picture;
 CHeifAvif::CHeifAvif()
 {
 

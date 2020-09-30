@@ -17,7 +17,10 @@
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
 #include <RegardsBitmap.h>
+#include <OpenCLContext.h>
 #include <wx/mimetype.h>
+#include <GLTexture.h>
+#include <RenderBitmapOpenGL.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -28,12 +31,12 @@
 #else
     #include "email.h"
 #endif
-#include <utility.h>
 #include <config_id.h>
 
 using namespace Regards::Control;
 using namespace Regards::OpenCL;
-using namespace Regards::exiv2;
+using namespace Regards::OpenGL;
+using namespace Regards::Window;
 enum
 {
 	TIMER_TRANSITION = 1,

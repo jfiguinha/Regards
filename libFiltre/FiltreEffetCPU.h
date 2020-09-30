@@ -1,5 +1,5 @@
 #pragma once
-#include <IFiltreEffet.h>
+#include "IFiltreEffet.h"
 class CRegardsBitmap;
 
 class CFiltreEffetCPU : public IFiltreEffet

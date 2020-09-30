@@ -16,7 +16,7 @@
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
 #include <Draw.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CWaveFilter::CWaveFilter()
 {

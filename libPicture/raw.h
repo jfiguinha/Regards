@@ -2,11 +2,19 @@
 
 class CImageLoadingFormat;
 
-class CRaw
+namespace Regards
 {
-public:
+	namespace Picture
+	{
+		
 
-    static void GetDimensions(const wxString & fileName, int & width, int & height);
-    static CImageLoadingFormat * GetThumbnail(const wxString & fileName, const bool &thumbnail);
+		class CRaw
+		{
+		public:
 
-};
+			static void GetDimensions(const wxString & fileName, int & width, int & height);
+			static CImageLoadingFormat * GetThumbnail(const wxString & fileName, const bool &thumbnail);
+
+		};
+	}
+}

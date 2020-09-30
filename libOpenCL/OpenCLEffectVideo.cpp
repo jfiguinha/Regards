@@ -4,9 +4,10 @@
 #include "OpenCLProgram.h"
 #include <RegardsBitmap.h>
 #include "utility.h"
+#include "EffectVideoParameter.h"
 #include "OpenCLFilter.h"
-#include <RegardsConfigParam.h>
-#include <ParamInit.h>
+//#include <RegardsConfigParam.h>
+//#include <ParamInit.h>
 using namespace Regards::OpenCL;
 
 COpenCLEffectVideo::COpenCLEffectVideo(COpenCLContext * context)
@@ -123,11 +124,12 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int& angle, const int& bicubic)
 {
 
-	int filtre = 0;
+	//int filtre = 0;
+	/*
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		filtre = config->GetInterpolationType();
-
+	*/
 	widthOut = widthOutput;
 	heightOut = heightOutput;
 	cl_mem memvalue = nullptr;
@@ -173,7 +175,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 
 		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
 		paramtype->SetLibelle("type");
-		paramtype->SetValue(filtre);
+		paramtype->SetValue(bicubic);
 		vecParam.push_back(paramtype);
 
 		try

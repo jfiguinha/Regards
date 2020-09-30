@@ -16,14 +16,18 @@
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #endif
-#include <utility.h>
+
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
+#include <OpenCLContext.h>
+#include <OpenCLEngine.h>
+#include "RenderBitmapOpenGL.h"
+#include <utility.h>
 
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
 using namespace Regards::exiv2;
-
+using namespace Regards::OpenCL;
 const float CBitmapWnd::TabRatio[] = { 0.01f, 0.02f, 0.03f, 0.04f, 0.05f, 0.06f, 0.08f, 0.12f, 0.16f, 0.25f, 0.33f, 0.5f, 0.66f, 0.75f, 1.0f, 1.33f, 1.5f, 1.66f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 12.0f, 16.0f};
 const long CBitmapWnd::Max = 26;
 
@@ -1754,7 +1758,7 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 	if (renderOpenGL == nullptr)
 	{
-		renderOpenGL = new CRenderBitmapInterfaceOpenGL(this);
+		renderOpenGL = new CRenderBitmapOpenGL(this);
 
 		//Now we have a context, retrieve pointers to OGL functions
 		renderOpenGL->Init(this);

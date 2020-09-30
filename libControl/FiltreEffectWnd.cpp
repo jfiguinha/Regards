@@ -6,7 +6,7 @@
 //  Copyright © 2015 figuinha jacques. All rights reserved.
 //
 #include <header.h>
-#include <PiccanteFilter.h>
+#include <PiccanteHDR.h>
 #include "FiltreEffectWnd.h"
 #include <FiltreEffet.h>
 #include "InfoEffectWnd.h"
@@ -30,7 +30,7 @@
 #include <LibResource.h>
 #include "BitmapWndViewer.h"
 #include "ShowBitmap.h"
-#include <ShowVideo.h>
+#include "ShowVideo.h"
 #include <window_id.h>
 #include <config_id.h>
 #include <FilterData.h>

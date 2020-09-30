@@ -72,9 +72,6 @@
     <ClInclude Include="PositionElement.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="RenderBitmapInterfaceOpenGL.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ScrollbarHorizontalWnd.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -192,6 +189,9 @@
     <ClInclude Include="KeywordDialogBox.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPreviewBitmap.h">
+      <Filter>Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -231,9 +231,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PositionElement.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderBitmapInterfaceOpenGL.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="ScrollbarHorizontalWnd.cpp">
@@ -337,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="KeywordDialogBox.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPreviewBitmap.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

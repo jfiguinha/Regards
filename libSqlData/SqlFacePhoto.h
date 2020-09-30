@@ -1,7 +1,8 @@
 #pragma once
 #include "SqlExecuteRequest.h"
-class CPictureData;
+
 class CRegardsBitmap;
+class CPictureData;
 
 namespace Regards
 {
@@ -19,7 +20,7 @@ namespace Regards
 			int GetNumFace(const wxString & path, const int &numberface);
 			vector<wxString> GetPhotoList();
 			vector<wxString> GetPhotoListTreatment();
-			vector<CPictureData *> GetAllFace();
+			vector <CPictureData * > GetAllFace();
 			vector<CPictureData *> GetAllFace(const int &numFace);
 			CPictureData * GetFacePicture(const int &numFace);
 			vector<int> GetAllNumFace();

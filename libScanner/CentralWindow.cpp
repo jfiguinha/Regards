@@ -16,7 +16,7 @@
 #include <wx/pdfdocument.h>
 
 using namespace Regards::Window;
-
+using namespace Regards::Picture;
 #define OPENFILE 0
 #define ADDFILE 1
 

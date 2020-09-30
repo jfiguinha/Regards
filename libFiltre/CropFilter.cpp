@@ -8,7 +8,7 @@
 #include <Draw.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CCropFilter::CCropFilter()
 {

@@ -2,8 +2,8 @@
 //
 #include "header.h"
 #include "LibResource.h"
-#include "SqlResource.h"
-#include "SqlLibResource.h"
+#include <SqlResource.h>
+#include <SqlLibResource.h>
 #include <SqlEngine.h>
 #include <ConvertUtility.h>
 #include <RegardsConfigParam.h>

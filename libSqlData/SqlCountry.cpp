@@ -1,5 +1,6 @@
 #include <header.h>
 #include "SqlCountry.h"
+#include "SqlResult.h"
 using namespace Regards::Sqlite;
 
 CSqlCountry::CSqlCountry()

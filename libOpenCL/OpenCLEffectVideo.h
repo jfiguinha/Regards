@@ -1,23 +1,26 @@
 #pragma once
-#include "OpenCLContext.h"
-#include "OpenCLProgram.h"
-#include "OpenCLParameter.h"
-#include <EffectVideoParameter.h>
-#include <RGBAQuad.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #else
 #include <CL/cl.h>
 #endif
 
-using namespace Regards::OpenCL;
 class CRegardsBitmap;
 class CRegardsFloatBitmap;
+class CVideoEffectParameter;
 
 namespace Regards
 {
 	namespace OpenCL
 	{
+
+		class COpenCLContext;
+		class COpenCLProgram;
+		class COpenCLParameter;
+		class COpenCLParameterInt;
+		class COpenCLParameterByteArray;
+		class COpenCLParameterClMem;
+
 		class COpenCLEffectVideo
 		{
 		public:

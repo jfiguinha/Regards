@@ -19,13 +19,14 @@
 #include <OpenCLEffectVideo.h>
 #include <GLTexture.h>
 #include <BitmapDisplay.h>
+#include <OpenCLContext.h>
 #ifdef __APPLE__
 #include <OpenCL/cl.h>
 #include <opencl/cl_gl.h>
 #else
 #include <CL/cl.h>
 #endif
-using namespace Regards::Viewer;
+using namespace Regards::Filter;
 
 CBitmapFusionFilter::CBitmapFusionFilter()
 {

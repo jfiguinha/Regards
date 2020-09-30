@@ -11,7 +11,7 @@
 #include <ImageVideoThumbnail.h>
 using namespace Regards::Scanner;
 using namespace Regards::Sqlite;
-
+using namespace Regards::Picture;
 CThumbnailFileSelection::CThumbnailFileSelection(wxWindow* parent, wxWindowID id, const CThemeThumbnail & themeThumbnail, const bool &testValidity)
 	: CThumbnailVertical(parent, id, themeThumbnail, testValidity)
 {

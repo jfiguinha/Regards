@@ -7,12 +7,8 @@
 #include "WindowOpenGLMain.h"
 #endif
 #include <RegardsConfigParam.h>
-#include <OpenCLEngine.h>
 #include <theme.h>
 
-#ifdef RENDEROPENGL
-#include "RenderBitmapInterfaceOpenGL.h"
-#endif
 #include "SliderInterface.h"
 #include <BitmapDisplay.h>
 using namespace std;
@@ -22,10 +18,32 @@ class CRegardsBitmap;
 class CFiltreEffet;
 class CImageLoadingFormat;
 class CRegardsFloatBitmap;
+class IMouseUpdate;
+class CEffectParameter;
 
 #define MOVEPICTURE 2
 #define ZOOMPICTURE 3
 
+namespace Regards
+{
+	namespace OpenCL
+	{
+
+		class COpenCLEngine;
+		class COpenCLContext;
+
+	}
+
+	namespace OpenGL
+	{
+
+		class GLTexture;
+		class CRenderBitmapOpenGL;
+	}
+}
+using namespace Regards::OpenGL;
+using namespace Regards::OpenCL;
+using namespace Regards::Window;
 namespace Regards
 {
 	namespace Window
@@ -55,7 +73,6 @@ namespace Regards
 			}
 
 			void UpdateScreenRatio();
-			void SetFilterInterpolation(const int& filter);
 			void SetIsBitmapThumbnail(const bool& isThumbnail);
 			void UpdateBitmap(CImageLoadingFormat* bitmap, const bool& updateAll);
 			void SetBitmap(CImageLoadingFormat* bitmap, const bool& copy = false);
@@ -239,7 +256,7 @@ namespace Regards
 			CFiltreEffet * filtreEffet;
 			//int filterInterpolation;
 #ifdef RENDEROPENGL
-			CRenderBitmapInterfaceOpenGL * renderOpenGL;
+			CRenderBitmapOpenGL * renderOpenGL;
 			GLTexture * glTexture;
 			COpenCLEngine * openCLEngine;
 			COpenCLContext * openclContext;

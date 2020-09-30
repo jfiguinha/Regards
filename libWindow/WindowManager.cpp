@@ -24,6 +24,7 @@ CWindowManager::CWindowManager(wxWindow* parent, wxWindowID id, const CThemeSpli
 	oldWidth = 0;
 	oldHeight = 0;
 	init = false;
+	separationBarSize = themeSplitter.themeSeparation.size;
 	Connect(wxEVENT_REFRESHDATA, wxCommandEventHandler(CWindowManager::OnRefreshData));
 	Connect(wxEVENT_RESIZE, wxCommandEventHandler(CWindowManager::OnResize));
     
@@ -884,11 +885,22 @@ void CWindowManager::Init_Central()
 			if (!right->isHide)
 			{
 				width -= right->rect.width;
+				
+				right->rect.x = width + x;
+
 				if (right->separationBar != nullptr && !right->fixe)
 				{
 					width -= right->separationBar->size;
 				}
+
+				//Correct x pos for right
+				
 			}
+			else
+			{
+				right->rect.x = width + x;
+			}
+			
 		}
 
 		central->rect.x = x;

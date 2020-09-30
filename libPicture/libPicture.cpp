@@ -4,6 +4,7 @@
 #include "libPicture.h"
 #define __FREEIMAGE__
 #include <FreeImage.h>
+#include "MetadataExiv2.h"
 #include <OpenEXR/ImfRgbaFile.h>
 #include <OpenEXR/ImfArray.h>
 #include <webp/decode.h>
@@ -22,7 +23,7 @@
 #include <ImageLoadingFormat.h>
 #include <ConvertUtility.h>
 #include <picture_id.h>
-#include <PiccanteFilter.h>
+#include "PiccanteHDR.h"
 #include <LibResource.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
@@ -95,7 +96,7 @@ using namespace Regards::exiv2;
 #define OR ||
 
 //using namespace Regards::Sqlite;
-
+using namespace Regards::Picture;
 
 #if defined(LIBBPG) && not defined(WIN32)
 
@@ -161,6 +162,39 @@ CLibPicture::CLibPicture()
 
 CLibPicture::~CLibPicture()
 {
+}
+
+
+CRegardsBitmap * CLibPicture::LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
+{
+	CRegardsBitmap * pictureData = nullptr;
+	CLibPicture libPicture;
+
+	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
+
+	if (imageLoading != nullptr)
+	{
+		if (resizeWidth != 0 && resizeHeight != 0)
+		{
+			float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth, resizeHeight);
+			int width = imageLoading->GetWidth() * ratio;
+			int height = imageLoading->GetHeight() * ratio;
+			imageLoading->Resize(width, height, 1);
+		}
+
+		pictureOK = true;
+		pictureData = imageLoading->GetRegardsBitmap(true);
+	}
+	else
+		pictureOK = false;
+
+
+	if (imageLoading != nullptr)
+		delete imageLoading;
+
+	imageLoading = nullptr;
+
+	return pictureData;
 }
 
 int CLibPicture::TestExtension(const wxString & ext)
@@ -1851,21 +1885,6 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
 }
 
 
-int CLibPicture::GetMetadata(const wxString &filename, uint8_t * & data, long & size)
-{
-	int iFormat = TestImageFormat(filename);
-	if (iFormat == HEIC || iFormat == AVIF)
-	{
-		CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-		if (size > 0)
-		{
-			data = new uint8_t[size + 1];
-			CHeic::GetMetadata(CConvertUtility::ConvertToUTF8(filename), data, size);
-		}
-	}
-	return size;
-}
-
 //--------------------------------------------------------------------------------------------
 //Obtention d'un thumbnail à partir des informations exif
 //--------------------------------------------------------------------------------------------
@@ -2231,7 +2250,7 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 
         case HDR:
             {
-               CPiccanteFilter::LoadPicture(fileName, isThumbnail,bitmap);
+               CPiccanteHDR::LoadPicture(fileName, isThumbnail,bitmap);
             }
             break; 
 
@@ -2373,10 +2392,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					{
 						for (int j = 0; j < width; j++, k += 4)
 						{
-							float rvalue = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							float gvalue = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							float bvalue = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							float avalue = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+							float rvalue = CPiccanteHDR::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							float gvalue = CPiccanteHDR::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							float bvalue = CPiccanteHDR::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							float avalue = CPiccanteHDR::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 
 							data[k] = (int)(bvalue * 255.0);
 							data[k + 1] = (int)(gvalue * 255.0);
@@ -2418,10 +2437,10 @@ CImageLoadingFormat * CLibPicture::LoadPicture(const wxString & fileName, const 
 					{
 						for (int j = 0; j < width; j++, k += 4)
 						{
-							data[k] = CPiccanteFilter::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
-							data[k + 1] = CPiccanteFilter::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
-							data[k + 2] = CPiccanteFilter::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
-							data[k + 3] = CPiccanteFilter::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
+							data[k] = CPiccanteHDR::clamp(float(pixels[i][j].r), 0.0f, 1.0f);
+							data[k + 1] = CPiccanteHDR::clamp(float(pixels[i][j].g), 0.0f, 1.0f);
+							data[k + 2] = CPiccanteHDR::clamp(float(pixels[i][j].b), 0.0f, 1.0f);
+							data[k + 3] = CPiccanteHDR::clamp(float(pixels[i][j].a), 0.0f, 1.0f);
 						}
 					}
 					bitmap->SetPicture(picture);
@@ -2972,7 +2991,7 @@ int CLibPicture::GetPictureDimensions(const wxString & fileName, int & width, in
 
     case HDR:
         {
-            CPiccanteFilter::GetPictureDimensions(fileName,width,height);
+            CPiccanteHDR::GetPictureDimensions(fileName,width,height);
         }
         break;        
 
@@ -3225,10 +3244,55 @@ void CLibPicture::UninitFreeImage()
     FreeImage_DeInitialise();
 }
 
+
+CPictureData * CLibPicture::LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth, const int &resizeHeight)
+{
+	CPictureData * pictureData = nullptr;
+	CLibPicture libPicture;
+	CImageLoadingFormat * imageLoading = libPicture.LoadPicture(filename);
+
+	if (imageLoading != nullptr)
+	{
+		pictureOK = imageLoading->IsOk();
+		if (pictureOK)
+		{
+			imageLoading->ApplyExifOrientation(1);
+			imageLoading->ConvertToRGB24(true);
+			//Calcul Resize Size
+			pictureData = new CPictureData();
+			if (resizeWidth != 0 && resizeHeight != 0)
+			{
+				float ratio = CalculPictureRatio(imageLoading->GetWidth(), imageLoading->GetHeight(), resizeWidth, resizeHeight);
+				pictureData->SetWidth(imageLoading->GetWidth() * ratio);
+				pictureData->SetHeight(imageLoading->GetHeight() * ratio);
+				imageLoading->Resize(pictureData->GetWidth(), pictureData->GetHeight(), 1);
+			}
+			else
+			{
+				pictureData->SetWidth(imageLoading->GetWidth());
+				pictureData->SetHeight(imageLoading->GetHeight());
+			}
+
+			unsigned long outputsize = 0;
+			int compressMethod = 0;
+			uint8_t * data = imageLoading->GetJpegData(outputsize, compressMethod);
+			pictureData->SetJpegData(data, outputsize);
+			imageLoading->DestroyJpegData(data, compressMethod);
+		}
+	}
+
+	if (imageLoading != nullptr)
+		delete imageLoading;
+
+	imageLoading = nullptr;
+
+	return pictureData;
+}
+
 CPictureData * CLibPicture::LoadPictureData(const wxString &filename, bool &pictureOK)
 {
 	CPictureData * pictureData = nullptr;
-	pictureData = CPictureData::LoadPictureToJpeg(filename, pictureOK);
+	pictureData = LoadPictureToJpeg(filename, pictureOK);
 	return pictureData;
 }
 

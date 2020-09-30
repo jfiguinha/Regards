@@ -181,7 +181,7 @@ void CInfoAbout::Init()
 	CTreeData * treelibde265 = new CTreeData();
 	treelibde265->SetIsParent(false);
 	treelibde265->SetKey("libde265");
-	treelibde265->SetValue("1.0.7");
+	treelibde265->SetValue("1.0.0");
 	tr.append_child(child, treelibde265); 
 
 	CTreeData * treelibheif = new CTreeData();

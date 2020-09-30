@@ -282,7 +282,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libextern\poppler_windows-master\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCL;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libextern\poppler_windows-master\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -376,9 +376,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"
     <ProjectReference Include="..\libEmail\libEmail.vcxproj">
       <Project>{b9f8de9e-8e05-4455-955d-dc31f55d87bd}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libExif\libExiv2.vcxproj">
-      <Project>{20481ab3-ae31-4d9d-b073-3f56884c741a}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libextern\exiv2-0.27.3\contrib\vs2019\solution\src\exiv2lib.vcxproj">
       <Project>{8f05b0e7-6d03-3f78-a470-0e20bf6c6191}</Project>
     </ProjectReference>
@@ -412,17 +409,14 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"
     <ProjectReference Include="..\libMediaInfo\libMediaInfo.vcxproj">
       <Project>{eb3343b0-c0ff-4840-afee-433fd2e4aa92}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libOpenCLEngine\libOpenCLEngine.vcxproj">
+      <Project>{e9b03d35-95a4-4669-80bf-275b587b44a6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libScanner\libScanner.vcxproj">
       <Project>{b9fab389-b14f-493d-89a4-bac998a11299}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libsqlite\libsqlite.vcxproj">
       <Project>{c9f9bf26-e1a1-48ed-81db-d1f2144791bb}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libVideoFFMpeg\libFFmpegPlayer.vcxproj">
-      <Project>{9871112b-fa13-4003-a586-03914ab568b9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libVideoThumbnail\libFFmpegThumbnailer.vcxproj">
-      <Project>{4824cb9f-9777-4a3d-8287-671c1407e7a1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libFiltre\libFiltre.vcxproj">
       <Project>{67274429-0b74-48ab-9b74-0d3e15c825be}</Project>

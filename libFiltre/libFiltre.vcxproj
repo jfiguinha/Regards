@@ -214,7 +214,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libPicture;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\libControl;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <SDLCheck>false</SDLCheck>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
@@ -283,13 +283,11 @@
     <ClInclude Include="CropFilter.h" />
     <ClInclude Include="DecodeRaw.h" />
     <ClInclude Include="DecodeRawParameter.h" />
+    <ClInclude Include="DecodeRawPicture.h" />
     <ClInclude Include="Draw.h" />
-    <ClInclude Include="EffectParameter.h" />
-    <ClInclude Include="EffectVideoParameter.h" />
     <ClInclude Include="FilterData.h" />
     <ClInclude Include="FilterWindowParam.h" />
     <ClInclude Include="Filtre.h" />
-    <ClInclude Include="FiltreEffectInterface.h" />
     <ClInclude Include="FiltreEffet.h" />
     <ClInclude Include="FiltreEffetCPU.h" />
     <ClInclude Include="FiltreUpdate.h" />
@@ -298,12 +296,6 @@
     <ClInclude Include="GaussianBlurEffectParameter.h" />
     <ClInclude Include="GaussianBlurFilter.h" />
     <ClInclude Include="Histogramme.h" />
-    <ClInclude Include="IFiltreEffet.h" />
-    <ClInclude Include="Interpolation.h" />
-    <ClInclude Include="InterpolationBicubic.h" />
-    <ClInclude Include="InterpolationBilinear.h" />
-    <ClInclude Include="InterpolationFilters.h" />
-    <ClInclude Include="InterpolationFloatBicubic.h" />
     <ClInclude Include="KuwaharaEffectParameter.h" />
     <ClInclude Include="KuwaharaFilter.h" />
     <ClInclude Include="LensFlare.h" />
@@ -316,10 +308,10 @@
     <ClInclude Include="MotionBlurFilter.h" />
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="NlmeansFilter.h" />
+    <ClInclude Include="OpenCLEffect.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
     <ClInclude Include="PhotoFiltreFilter.h" />
-    <ClInclude Include="PiccanteFilter.h" />
     <ClInclude Include="PosterisationEffectParameter.h" />
     <ClInclude Include="PosterisationFilter.h" />
     <ClInclude Include="RedEye.h" />
@@ -367,6 +359,7 @@
     <ClCompile Include="Crop.cpp" />
     <ClCompile Include="CropFilter.cpp" />
     <ClCompile Include="DecodeRaw.cpp" />
+    <ClCompile Include="DecodeRawPicture.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="FilterData.cpp" />
     <ClCompile Include="FilterWindowParam.cpp" />
@@ -376,10 +369,6 @@
     <ClCompile Include="GaussianBlur.cpp" />
     <ClCompile Include="GaussianBlurFilter.cpp" />
     <ClCompile Include="Histogramme.cpp" />
-    <ClCompile Include="Interpolation.cpp" />
-    <ClCompile Include="InterpolationBicubic.cpp" />
-    <ClCompile Include="InterpolationBilinear.cpp" />
-    <ClCompile Include="InterpolationFloatBicubic.cpp" />
     <ClCompile Include="KuwaharaFilter.cpp" />
     <ClCompile Include="LensFlare.cpp" />
     <ClCompile Include="LensFlareFilter.cpp" />
@@ -388,9 +377,9 @@
     <ClCompile Include="MotionBlur.cpp" />
     <ClCompile Include="MotionBlurFilter.cpp" />
     <ClCompile Include="NlmeansFilter.cpp" />
+    <ClCompile Include="OpenCLEffect.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
-    <ClCompile Include="PiccanteFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />
     <ClCompile Include="RedEye.cpp" />
     <ClCompile Include="Rotate.cpp" />

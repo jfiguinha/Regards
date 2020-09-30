@@ -42,6 +42,7 @@ namespace Regards
 			void RefreshPane();
 		private:
 
+			
 			void OnIdle(wxIdleEvent& evt);
 			void ThumbnailFolderAdd(wxCommandEvent& event);
 			void ThumbnailZoomOn(wxCommandEvent& event);

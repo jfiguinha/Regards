@@ -5,7 +5,6 @@
 #include "Filtre.h"
 #include <RegardsBitmap.h>
 #include <DeepLearning.h>
-#include <libPicture.h>
 #include <PictureData.h>
 using namespace std;
 using namespace Regards::FiltreEffet;

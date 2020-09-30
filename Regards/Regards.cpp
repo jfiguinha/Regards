@@ -16,7 +16,7 @@
 #endif
 #include <ImageLoadingFormat.h>
 
-
+using namespace Regards::Picture;
 using namespace tbb;
 //using namespace Regards::DeepLearning;
 

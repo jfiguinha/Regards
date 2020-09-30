@@ -4,7 +4,7 @@
 #include <ximage.h>
 #include <vector>
 #define SWAP(a,b) { a ^= b; a ^= (b ^= a); }
-
+using namespace Regards::Picture;
 
 CRegardsRaw::CRegardsRaw()
 {

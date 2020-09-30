@@ -13,8 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ModificationManager">
-      <UniqueIdentifier>{1d231297-09ff-4926-acb7-a1647b4dec40}</UniqueIdentifier>
+    <Filter Include="header">
+      <UniqueIdentifier>{b2281521-60f2-4bae-bcab-ebfe72cf2cfc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,9 +30,6 @@
     <ClInclude Include="Criteria.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="CxImageVideoThumbnail.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="FaceDescriptor.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -46,12 +43,6 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="GeoPluginValue.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageLoadingFormat.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageVideoThumbnail.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="ListCriteriaPhoto.h">
@@ -81,18 +72,6 @@
     <ClInclude Include="PictureDataFormat.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="RegardsBitmap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsFloatBitmap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsJpegPicture.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="RegardsVideoThumbnail.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="RGBAQuad.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -105,13 +84,7 @@
     <ClInclude Include="StreamInfo.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadData.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="ThumbnailData.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailDataStorage.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Tree.h">
@@ -132,13 +105,7 @@
     <ClInclude Include="TreeElementValue.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="videothumbnail.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\header.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ThumbnailDataSQL.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="ThumbnailMessage.h">
@@ -149,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="PhotoCategorieUsenet.h">
       <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="ModificationManager.h">
-      <Filter>ModificationManager</Filter>
     </ClInclude>
     <ClInclude Include="MouseUpdate.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -176,9 +140,6 @@
     <ClCompile Include="GeoPluginValue.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="ImageLoadingFormat.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="PhotoCategorie.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -191,22 +152,10 @@
     <ClCompile Include="Photos.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="RegardsBitmap.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsFloatBitmap.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="RegardsJpegPicture.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="RGBAQuad.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="ThumbnailData.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailDataStorage.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="TreeData.cpp">
@@ -221,20 +170,11 @@
     <ClCompile Include="TreeDataLink.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="videothumbnail.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ThumbnailDataSQL.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PhotoCatalog.cpp">
       <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="ModificationManager.cpp">
-      <Filter>ModificationManager</Filter>
     </ClCompile>
     <ClCompile Include="TreeDataKeyWord.cpp">
       <Filter>Fichiers sources</Filter>

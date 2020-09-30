@@ -1,8 +1,6 @@
 #pragma once
-
-class CPictureData;
 class CRegardsBitmap;
-
+class CPictureData;
 namespace Regards
 {
 	namespace OpenCV

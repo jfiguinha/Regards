@@ -3,11 +3,8 @@
 #include <RenderPreviewBitmap.h>
 #include <BitmapInterface.h>
 #include <Draw.h>
-#include <FiltreUpdate.h>
-#include <OpenCLContext.h>
-#include <OpenCLEffectVideo.h>
 #include <AfterEffect.h>
-
+#include <FiltreUpdate.h>
 using namespace Regards::OpenCL;
 class CDecodeRawPicture;
 class CEffectParameter;
@@ -15,10 +12,35 @@ class IMouseUpdate;
 class CImageLoadingFormat;
 using namespace Regards::FiltreEffet;
 using namespace Regards::Window;
-using namespace Regards::OpenCL;
 
 namespace Regards
 {
+	namespace OpenCL
+	{
+
+		class COpenCLEngine;
+		class COpenCLContext;
+
+	}
+
+	namespace OpenGL
+	{
+
+		class GLTexture;
+	}
+
+	namespace Window
+	{
+		class CRenderBitmapInterfaceOpenGL;
+	}
+}
+using namespace Regards::OpenGL;
+using namespace Regards::OpenCL;
+using namespace Regards::Window;
+namespace Regards
+{
+
+
 	namespace Control
 	{
 		class CBitmapWndViewer : public CBitmapWnd, public IFiltreUpdate
@@ -107,7 +129,7 @@ namespace Regards
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
 #ifdef RENDEROPENGL
-			GLTexture * pictureNext;
+			Regards::OpenGL::GLTexture * pictureNext;
 #endif
 			
 

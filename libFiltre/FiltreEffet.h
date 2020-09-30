@@ -1,13 +1,20 @@
 #pragma once
-#include <EffectParameter.h>
-#include <IFiltreEffet.h>
-#include <OpenCLContext.h>
+#include <Rgbaquad.h>
+namespace Regards
+{
+	namespace OpenCL
+	{
+		class COpenCLContext;
+	}
+}
 
 using namespace Regards::OpenCL;
 
 class CImageLoadingFormat;
 class CRegardsFloatBitmap;
 class CRegardsBitmap;
+class CEffectParameter;
+class IFiltreEffet;
 
 class CFiltreEffet
 {

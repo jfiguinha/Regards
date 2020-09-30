@@ -4,7 +4,7 @@
 
 namespace Regards
 {
-    namespace Viewer
+	namespace Filter
     {
         class CBm3dWindowFilter : public CFilterWindowParam
         {

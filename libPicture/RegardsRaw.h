@@ -9,13 +9,20 @@ using namespace std;
 class CxMemFile;
 class CxImage;
 
-class CRegardsRaw
+namespace Regards
 {
-public:
-	CRegardsRaw();
-	~CRegardsRaw();
-	static CxImage * GetPicture(const string & fileName);
-	static void GetDimensions(const string & fileName, int & width, int & height);
-	static CxMemFile * GetThumbnail(const string & fileName, int &outputFormat);
-};
+	namespace Picture
+	{
+
+		class CRegardsRaw
+		{
+		public:
+			CRegardsRaw();
+			~CRegardsRaw();
+			static CxImage * GetPicture(const string & fileName);
+			static void GetDimensions(const string & fileName, int & width, int & height);
+			static CxMemFile * GetThumbnail(const string & fileName, int &outputFormat);
+		};
+	}
+}
 

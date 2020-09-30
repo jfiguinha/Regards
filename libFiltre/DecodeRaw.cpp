@@ -9,7 +9,8 @@
 #include <FiltreEffet.h>
 #include <ImageLoadingFormat.h>
 #include <BitmapDisplay.h>
-using namespace Regards::Viewer;
+#include "DecodeRawPicture.h"
+using namespace Regards::Filter;
 
 CDecodeRaw::CDecodeRaw()
 {

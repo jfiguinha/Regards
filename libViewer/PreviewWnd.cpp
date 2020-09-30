@@ -18,7 +18,7 @@ using namespace Regards::Video;
 using namespace Regards::Control;
 using namespace Regards::Internet;
 using namespace Regards::Viewer;
-
+using namespace Regards::Picture;
 #define PANE_INFOS 2
 #define PANE_PREVIEW 3
 
