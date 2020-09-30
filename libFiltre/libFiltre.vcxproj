@@ -164,7 +164,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libPicture;..\libDeepLearning;..\libOpenGL;..\libTheme;..\libextern\librapidxml;..\libControl;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -179,7 +179,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libPicture;..\libDeepLearning;..\libOpenGL;..\libTheme;..\libextern\librapidxml;..\libControl;..\libParameter;..\otherlib\RegardsRaw;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;..\libVideoFFMpeg;.;..\include;..\libUtility;..\libResource;..\wxCheckTree;..\dllDataStructure;..\libDatastructure;..\libExtern\fftw\include;..\libOpenCL;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libUtility;..\libOpenCLEngine;..\libPicture;..\libOpenCL;..\CxImage;..\libDeepLearning;..\libOpenGL;..\libextern\librapidxml;..\libParameter;..\libVideoThumbnail;..\libextern\piccante-master\include;..\otherlib\wxsvg\include;.;..\include;..\libResource;..\libDatastructure;..\libExtern\fftw\include;..\libFiltreInterface;D:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OpenMP>GenerateParallelCode</OpenMP>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
     </ClCompile>

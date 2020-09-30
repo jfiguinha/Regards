@@ -108,12 +108,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\SDL2-2.0.5\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswu;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)libextern\SDL2-2.0.5\include;$(SolutionDir)\libExtern\glew-2.1.0\include;$(SolutionDir)\libExtern\libOpenCL\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath);$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -159,8 +159,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libPicture;$(SolutionDir)libextern\json-3.8.0\include;$(SolutionDir)\libextern\FunctionalPlus-0.2.8-p0\include;$(SolutionDir)\libextern\eigen;$(SolutionDir)libextern\frugally-deep\include;../libDeepLearning;../libDialog;../CxImage;../otherlib/RegardsRaw;../libExif;..\include;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPicture;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libextern/librapidxml;../libWindow;../libTheme;../libDatastructure;../libVideoThumbnail;../libEmail;../libVideoFFmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;DXVA2;OPENCL;YUV;FFMPEG;SDL2;TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libEmail;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -175,8 +175,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libPicture;$(SolutionDir)libextern\json-3.8.0\include;$(SolutionDir)\libextern\FunctionalPlus-0.2.8-p0\include;$(SolutionDir)\libextern\eigen;$(SolutionDir)libextern\frugally-deep\include;../libDeepLearning;../libDialog;../CxImage;../otherlib/RegardsRaw;../libExif;..\include;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPicture;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libsqlite;..\libSqlEngine;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libextern/librapidxml;../libWindow;../libTheme;../libDatastructure;../libVideoThumbnail;../libEmail;../libVideoFFmpeg;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>OPENGL;GLEW_STATIC;DXVA2;OPENCL;YUV;FFMPEG;SDL2;TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;EXIV2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\libDeepLearning;..\libPicture;../libDialog;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libCompress;..\libPrint;..\libRenderBitmap;..\otherlib\libglew;..\libOpenGL;..\libFiltreInterface;..\libFiltre;..\libSqlData;..\libParameter;..\libTheme;..\libResource;..\libGeolocalisation;..\libUtility;../libWindow;../libTheme;../libDatastructure;../libEmail;../libextern/libRapidXML;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>

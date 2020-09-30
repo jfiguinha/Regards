@@ -154,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libTheme;..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libTheme;..\include;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libParameter;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -170,7 +170,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>TURBOJPEG;FFMPEG;OPENGL;GLEW_STATIC;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\libTheme;..\libExif;..\otherlib\RegardsRaw;..\include;..\libOpenCL;..\libWindowMain;..\libMediaFoundation;..\libVideoInterface;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libRenderBitmap;..\libCursor;..\libParameter;..\libSqlite;..\libSqlEngine;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libTheme;..\include;..\libOpenCLEngine;..\libOpenCL;..\libWindowMain;..\libFiltre;..\libPicture;..\libOpenGL;..\libFiltreInterface;..\libParameter;..\libSqlData;..\libConfig;..\libextern\librapidxml;..\libDatastructure;..\libGeolocalisation;..\libUtility;..\libResource</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
