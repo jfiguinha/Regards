@@ -169,10 +169,3 @@ cd ..
 #Compille ffmpeg
 ./ffmpeg_build_macos.sh
 
-cd libheif-1.8.0
-mkdir build
-cd build
-cmake ../ -DAOM_INCLUDE_DIR="../../aom" -DLIBDE265_INCLUDE_DIR="../../libde265-master"
-make -j$NBPROC
-cd ..
-cd ..
