@@ -345,7 +345,6 @@
         <LibraryPath Value="../wxCheckTree/Debug"/>
         <LibraryPath Value="../libSqlite/Debug"/>
         <LibraryPath Value="../libViewer/Debug"/>
-        <LibraryPath Value="../libExplorer/Debug"/>
         <LibraryPath Value="../libIntro/Debug"/>
         <LibraryPath Value="../libSqlEngine/Debug"/>
         <LibraryPath Value="../libResource/Debug"/>
@@ -356,33 +355,26 @@
         <LibraryPath Value="../libUtility/Debug"/>
         <LibraryPath Value="../libGeolocalisation/Debug"/>
         <LibraryPath Value="../libSqlData/Debug"/>
-        <LibraryPath Value="../libVideoThumbnail/Debug"/>
-        <LibraryPath Value="../Otherlib/RawSpeed/Debug"/>
         <LibraryPath Value="../libFiltre/Debug"/>
-        <LibraryPath Value="../libFiltreInterface/Debug"/>
         <LibraryPath Value="../libWindow/Debug"/>
         <LibraryPath Value="../libControl/Debug"/>
         <LibraryPath Value="../libTheme/Debug"/>
         <LibraryPath Value="../libParameter/Debug"/>
-        <LibraryPath Value="../Otherlib/RegardsRaw/Debug"/>
-        <LibraryPath Value="../libRenderBitmap/Debug"/>
         <LibraryPath Value="../libOpenCL/Debug"/>
-        <LibraryPath Value="../libVideoFFMpeg/Debug"/>
         <LibraryPath Value="../libEmail/Debug"/>
-        <LibraryPath Value="../libExif/Debug"/>
         <LibraryPath Value="../libWindowMain/Debug"/>
         <LibraryPath Value="../Otherlib/wxSVG/Debug"/>
         <LibraryPath Value="../Otherlib/libPsd/Debug"/>
         <LibraryPath Value="../Otherlib/libJbig/Debug"/>
         <LibraryPath Value="../libDeepLearning/Debug"/>
         <LibraryPath Value="../Otherlib/libbpg/libRegardsBpg_unix/Debug"/>
-        <LibraryPath Value="../libPiccante/Debug"/>
         <LibraryPath Value="../Otherlib/wxIA/Debug"/>
         <LibraryPath Value="../Otherlib/wxPDFDoc/Debug"/>
         <LibraryPath Value="../libScanner/Debug"/>
         <LibraryPath Value="../Otherlib/libavif/Debug"/>
         <LibraryPath Value="../Otherlib/libheif/Debug"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Debug"/>
+        <LibraryPath Value="../libOpenCLEngine/Debug"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Debug" Command="./RegardsViewer" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="yes" IsEnabled="yes"/>
