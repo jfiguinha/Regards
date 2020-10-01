@@ -353,7 +353,7 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
-        <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp header.h Debug/header.h;fi</Command>
+        <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp ../include/header.h Debug/header.h;fi</Command>
         <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild>
@@ -577,7 +577,7 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
-        <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp header.h Release/header.h;fi</Command>
+        <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp ../include/header.h Release/header.h;fi</Command>
         <Command Enabled="yes"/>
         <Command Enabled="yes"/>
       </PreBuild>
