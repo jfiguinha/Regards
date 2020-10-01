@@ -398,7 +398,7 @@
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libtesseract* ./Debug</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Debug</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Debug</Command>
-        <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw.so.20 ./Debug</Command>
+        <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Debug</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -486,7 +486,7 @@
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.so.* ./Release</Command>
         <Command Enabled="yes">cp ../libextern/libde265-master/libde265/libde265.so ./Release</Command>
         <Command Enabled="yes">cp ../libextern/glew-2.1.0/lib/libGLEW.so.* ./Release</Command>
-        <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw.so.20 ./Release</Command>
+        <Command Enabled="yes">cp ../libextern/LibRaw-0.20.0/lib/.libs/libraw_r.so.20 ./Release</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/*.so.* ./Release</Command>
         <Command Enabled="yes">rm ./Release/libopencv*</Command>
         <Command Enabled="yes">cp $HOME/ffmpeg_build/lib/libopencv_core.so.4.3 ./Release</Command>
