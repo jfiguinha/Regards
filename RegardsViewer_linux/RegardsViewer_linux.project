@@ -226,6 +226,7 @@
         <Library Value="SqlEngine"/>
         <Library Value="Picture"/>
         <Library Value="DeepLearning"/>
+        <Library Value="wxIA"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Utility"/>
@@ -237,14 +238,11 @@
         <Library Value="heif"/>
         <Library Value="heif_static"/>
         <Library Value="de265"/>
-        <Library Value="Picture"/>
-        <Library Value="Dialog"/>
         <Library Value="Geolocalisation"/>
         <Library Value="RegardsMediaInfo"/>
         <Library Value="mediainfo"/>
         <Library Value="Print"/>
         <Library Value="Theme"/>
-        <Library Value="DataStructure"/>
         <Library Value="Utility"/>
         <Library Value="Resource"/>
         <Library Value="Parameter"/>
@@ -264,7 +262,7 @@
         <Library Value="xml2"/>
         <Library Value="jasper"/>
         <Library Value="turbojpeg"/>
-        <Library Value="raw"/>
+        <Library Value="raw_r"/>
         <Library Value="gomp"/>
         <Library Value="avformat"/>
         <Library Value="avfilter"/>
@@ -296,10 +294,7 @@
         <Library Value="pango-1.0"/>
         <Library Value="pangocairo-1.0"/>
         <Library Value="fftw3f"/>
-        <Library Value="exif"/>
         <Library Value="webkit2gtk-4.0"/>
-        <Library Value="wxIA"/>
-        <Library Value="Window"/>
         <Library Value="wxPDFDoc"/>
         <Library Value="poppler"/>
         <Library Value="poppler-cpp"/>
@@ -336,6 +331,7 @@
         <Library Value="wayland-client"/>
         <Library Value="EGL"/>
         <Library Value="openjp2"/>
+        <Library Value="exif"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
