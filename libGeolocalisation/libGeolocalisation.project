@@ -36,23 +36,16 @@
     <File Name="FileGeolocation.h"/>
     <File Name="Gps.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
-        <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="."/>
-        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libExif"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libResource"/>
         <IncludePath Value="../libMediaInfo"/>
       </Compiler>
       <Linker Options="">
@@ -137,6 +130,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

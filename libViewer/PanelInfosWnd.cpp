@@ -250,8 +250,9 @@ void CPanelInfosWnd::SetVideoFile(const wxString &filename)
 			urlServer = param->GetUrlServer();
 		}
 		
+        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 		CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
-		fileGeolocalisation->SetFile(filename);
+		fileGeolocalisation->SetFile(filename, notGeo);
         
 		if (!this->isVideo)
 		{
@@ -296,7 +297,7 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 
 	if (this->filename != filename)
 	{
-
+        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 		wxString urlServer;
 		CRegardsConfigParam * param = CParamInit::getInstance();
 		if (param != nullptr)
@@ -307,7 +308,7 @@ void CPanelInfosWnd::SetBitmapFile(const wxString &filename, const bool &isThumb
 		
 		infosToolbar->SetEffectParameterInactif();
 		this->filename = filename;
-        fileGeolocalisation->SetFile(filename);
+        fileGeolocalisation->SetFile(filename, notGeo);
 
 		if (!fileGeolocalisation->HasGps())
 			infosToolbar->SetMapInactif();
@@ -505,8 +506,9 @@ wxString CPanelInfosWnd::MapsUpdate()
 		urlServer = param->GetUrlServer();
 	}
 	
+    wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 	CFileGeolocation * fileGeolocalisation = new CFileGeolocation(urlServer);
-	fileGeolocalisation->SetFile(filename);
+	fileGeolocalisation->SetFile(filename, notGeo);
 	wxString url = L"http://www.openstreetmap.org/?mlat=";
 	url.append(fileGeolocalisation->GetLatitude());
 	url.append(L"&mlon=");

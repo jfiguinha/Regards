@@ -1,7 +1,7 @@
 #include <header.h>
 #include "SqlFindPhotos.h"
 #include "SqlResult.h"
-#include <LibResource.h>
+//#include <LibResource.h>
 #include <libPicture.h>
 #include <ConvertUtility.h>
 using namespace Regards::Picture;
@@ -97,7 +97,7 @@ wxString CSqlFindPhotos::GetSearchSQL(vector<int> list)
 	return req;
 }
 
-wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, vector<int> & listStarSelected, vector<int> & listStarNotSelected, vector<int> & listKeywordSelected, vector<int> & listKeywordNotSelected, const double & pertinence)
+wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> & listFolder, vector<int> & listCriteriaNotIn, vector<int> & listFaceNotIn, vector<int> & listFaceSelected, vector<int> & listStarSelected, vector<int> & listStarNotSelected, vector<int> & listKeywordSelected, vector<int> & listKeywordNotSelected, const wxString &libelleNotGeo, const double & pertinence)
 {
     //Request In
 	time_t t = time(0);   // get time now
@@ -110,7 +110,7 @@ wxString CSqlFindPhotos::GenerateSqlRequest(const int &numCatalog, vector<int> &
 		day = "0" + day;
 
 	wxString createDate = to_string(now->tm_year + 1900) + "." + month + "." + day;
-	wxString libelle = CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
+	wxString libelle = libelleNotGeo;//CLibResource::LoadStringFromResource("LBLNOTGEO", 1);
 	wxString reqSQIn = "INSERT INTO PHOTOSSEARCHCRITERIA (NumPhoto,FullPath, CreateDate, GeoGps) ";
 	reqSQIn += "SELECT NumPhoto, FullPath, \"" + createDate + "\" as CreateDate, \"" + libelle + "\" as GeoGps FROM PHOTOS WHERE CriteriaInsert = 0";
 	reqSQIn += " UNION ";

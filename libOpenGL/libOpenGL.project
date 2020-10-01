@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libOpenGL" InternalType="Library" Version="11000">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Render">
     <File Name="RenderVideoOpenGL.h"/>
     <File Name="RenderBitmapOpenGL.h"/>
     <File Name="RenderVideoOpenGL.cpp"/>
     <File Name="RenderBitmapOpenGL.cpp"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-  </Plugins>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -26,8 +26,6 @@
     <File Name="GLTexture.h"/>
     <File Name="RenderOpenGL.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;" C_Options=";-Wall;" Assembler="">
@@ -127,4 +125,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>

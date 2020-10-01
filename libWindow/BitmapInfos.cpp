@@ -45,8 +45,9 @@ void CBitmapInfos::OnUpdateGpsInfos(wxCommandEvent& event)
 	{
 		if (*filename == this->filename)
 		{
+            wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 			CFileGeolocation fileGeolocalisation(urlServer);
-			fileGeolocalisation.SetFile(*filename);
+			fileGeolocalisation.SetFile(*filename, notGeo);
 			if (typeData == 1)
 			{
 				printf("CBitmapInfos OnTimerGPSUpdate \n");

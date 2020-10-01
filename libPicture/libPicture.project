@@ -152,8 +152,6 @@
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libPiccante"/>
-        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
@@ -161,11 +159,7 @@
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib/libbpg/Bpg/libRegardsBpg"/>
         <IncludePath Value="../CxImage"/>
-        <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libVideoThumbnail"/>
-        <IncludePath Value="../libExif"/>
-        <IncludePath Value="../libDialog"/>
         <IncludePath Value="../Otherlib/libbpg/libRegardsBpg"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>

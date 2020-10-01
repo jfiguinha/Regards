@@ -512,8 +512,9 @@ wxString CCategoryWnd::GetSqlRequest()
 	if(viewerParam != nullptr)
 		pertinence = viewerParam->GetPertinenceValue();
 
+    wxString libelleNotGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
     CSqlFindPhotos sqlFindPhotos;
-    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, listKeywordSelected, listKeywordNotSelected, pertinence);
+    sqlRequest = sqlFindPhotos.GenerateSqlRequest(NUMCATALOGID, listFolder, listCriteriaNotIn, listFaceNotSelected, listFaceSelected, listStarSelected, listStarNotSelected, listKeywordSelected, listKeywordNotSelected, libelleNotGeo, pertinence);
 
     viewerParam->SetLastSqlRequest(sqlRequest);
     

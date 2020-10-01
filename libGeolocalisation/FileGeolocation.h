@@ -25,7 +25,7 @@ namespace Regards
                 this->isThumbnail = isThumbnail;
             }
 			
-			void SetFile(const wxString & filename);
+			void SetFile(const wxString & filename, const wxString &libNotGeo);
 			wxString GetLatitude();
 			wxString GetLongitude();
             float GetFLatitude();

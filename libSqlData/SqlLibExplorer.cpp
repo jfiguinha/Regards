@@ -1,7 +1,7 @@
 #include <header.h>
 #include "SqlLibExplorer.h"
 #include "SqlVersion.h"
-#include <LibResource.h>
+//#include <LibResource.h>
 #include <SqlFindPhotos.h>
 #include <SqlThumbnail.h>
 #include <libPicture.h>
@@ -78,11 +78,12 @@ using namespace Regards::Sqlite;
 #define SQL_CREATE_OPENCLKERNEL_TABLE "CREATE TABLE OPENCLKERNEL (numProgram NVARCHAR(255), platformName NVARCHAR(255), numDevice INT, typeData INT, openCLKernel BLOB)"
 #define SQL_DROP_OPENCLKERNEL_TABLE "DROP TABLE OPENCLKERNEL"
 
-CSqlLibExplorer::CSqlLibExplorer(const bool &readOnly, const bool &load_inmemory)
+CSqlLibExplorer::CSqlLibExplorer(const bool &readOnly, const wxString &libelleNotGeo, const bool &load_inmemory)
  : CSqlLib()
 {
 	this->readonly = readOnly;
 	this->load_inmemory = load_inmemory;
+    this->libelleNotGeo = libelleNotGeo;
 }
 
 
@@ -108,7 +109,7 @@ bool CSqlLibExplorer::InitDatabase(const wxString &lpFilename)
 
 	if (!wxFileExists(lpFilename))
 	{
-		hr = CreateDatabase(lpFilename,load_inmemory);
+		hr = CreateDatabase(lpFilename ,load_inmemory);
 	}
 	else
 	{
@@ -873,7 +874,7 @@ bool CSqlLibExplorer::CreateDatabase(const wxString &databasePath, const bool &l
 	hr = ExecuteSQLWithNoResult("INSERT INTO CRITERIA (NumCatalog,NumCategorie,Libelle) VALUES (1,6,'5 Star');");
 
 	//Ajout de la valeur Non geolocalise
-	libelle = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+	libelle = libelleNotGeo;//CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 	query = "INSERT INTO CRITERIA (NumCatalog, NumCategorie, Libelle) VALUES (1,1,'";
 	query.append(libelle.begin(), libelle.end());
 	query.append("');");

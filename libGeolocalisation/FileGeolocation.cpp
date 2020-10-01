@@ -11,9 +11,8 @@
 #include <SqlGps.h>
 #include <window_id.h>
 #include <SqlPhotoCriteria.h>
-#include <LibResource.h>
+//#include <LibResource.h>
 #include <MediaInfo.h>
-#include <libPicture.h>
 using namespace Regards::Internet;
 using namespace Regards::Sqlite;
 using namespace Regards::Picture;
@@ -219,7 +218,7 @@ wxString CFileGeolocation::GenerateGeolocalisationString(const wxString &country
 }
 
 
-void CFileGeolocation::SetFile(const wxString & picture)
+void CFileGeolocation::SetFile(const wxString & picture, const wxString &libNotGeo)
 {
     CLibPicture libPicture;
 	filename = picture;
@@ -299,9 +298,9 @@ void CFileGeolocation::SetFile(const wxString & picture)
         if(criteriaVector.size() > 0)
         {
             //Gps Infos
-            wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+            //wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
             wxString libelle = criteriaVector.at(0).GetLibelle();
-            if(libelle != notGeo)
+            if(libelle != libNotGeo)
             {
                 infoGpsLocalisation = libelle;
                 //Recherche des infos GPS dans la base de données

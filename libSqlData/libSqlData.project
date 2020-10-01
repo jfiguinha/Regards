@@ -112,15 +112,11 @@
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>
         <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../libResource"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libFiltre"/>
-        <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
-        <IncludePath Value="../libextern/libRapidXML"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

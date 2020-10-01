@@ -12,7 +12,7 @@
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
 #endif
-
+#include <libResource.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else
@@ -232,7 +232,8 @@ void CCriteriaTreeWnd::SetFile(const wxString &filename)
 {
 	if (this->filename != filename)
 	{
-		fileGeolocalisation->SetFile(this->filename);
+        wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+		fileGeolocalisation->SetFile(this->filename, notGeo);
 		CSqlPhotos sqlPhotos;
 		numPhotoId = sqlPhotos.GetPhotoId(filename);
 		this->filename = filename;

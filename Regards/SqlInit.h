@@ -2,6 +2,7 @@
 #include <SqlEngine.h>
 #include <SqlLibExplorer.h>
 #include <FileUtility.h>
+#include <libResource.h>
 using namespace Regards::Sqlite;
 
 namespace Regards
@@ -20,7 +21,8 @@ namespace Regards
 
 			static void InitializeSQLServerDatabase(const wxString &folder, const bool &load_inmemory)
 			{
-				CSqlLibExplorer * libExplorer = new CSqlLibExplorer(false,load_inmemory);
+                wxString libelleNotGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
+				CSqlLibExplorer * libExplorer = new CSqlLibExplorer(false,libelleNotGeo,load_inmemory);
                 wxString filename = folder;
 
 #ifdef WIN32

@@ -6,8 +6,6 @@
 #include <SqlLibResource.h>
 #include <SqlEngine.h>
 #include <ConvertUtility.h>
-#include <RegardsConfigParam.h>
-#include "ParamInit.h"
 #include <FileUtility.h>
 #include <wxSVG/SVGDocument.h>
 #include <wx/sstream.h>
@@ -74,10 +72,10 @@ CPictureData * CLibResource::LoadBitmapFromResource(const wxString &idName)
 wxString CLibResource::LoadStringFromResource(const wxString &idName, const int &idLang)
 {
 	CSqlResource sqlResource;
-    CRegardsConfigParam * config = (CRegardsConfigParam*)CParamInit::getInstance();
+    //CRegardsConfigParam * config = (CRegardsConfigParam*)CParamInit::getInstance();
     int numLanguage = idLang;
-    if(config != nullptr)
-        numLanguage = config->GetNumLanguage();
+    //if(config != nullptr)
+    //    numLanguage = config->GetNumLanguage();
 	wxString libelle = sqlResource.GetLibelle(idName, numLanguage);
 	return libelle;
 }

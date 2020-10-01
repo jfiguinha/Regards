@@ -373,6 +373,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 		urlServer = param->GetUrlServer();
 	}
 	
+     wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 	CListCriteriaPhoto listCriteriaPhoto;
 	CFileGeolocation fileGeolocalisation(urlServer);
 	listCriteriaPhoto.numCatalog = NUMCATALOGID;
@@ -381,7 +382,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 
 	printf("FindGPSPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8(listCriteriaPhoto.photoPath));
 
-	fileGeolocalisation.SetFile(listCriteriaPhoto.photoPath);
+	fileGeolocalisation.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
 
 	if (fileGeolocalisation.HasGps())
@@ -410,6 +411,7 @@ void CCategoryFolderWindow::FindGPSPhotoCriteria(CFindPhotoCriteria* findPhotoCr
 
 void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCriteria)
 {
+     wxString notGeo = CLibResource::LoadStringFromResource("LBLNOTGEO",1);
 	CFileGeolocation geoloc(findPhotoCriteria->urlServer);
 	CSqlPhotoCriteria photoCriteria;
 
@@ -420,7 +422,7 @@ void CCategoryFolderWindow::FindPhotoCriteria(CFindPhotoCriteria* findPhotoCrite
 
 	printf("FindPhotoCriteria %s \n ", CConvertUtility::ConvertToUTF8((listCriteriaPhoto.photoPath)));
 
-	geoloc.SetFile(listCriteriaPhoto.photoPath);
+	geoloc.SetFile(listCriteriaPhoto.photoPath, notGeo);
 
 	if (!geoloc.HasGps())
 	{

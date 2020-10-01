@@ -119,8 +119,6 @@
     <File Name="Source/FreeImage.h"/>
     <File Name="Source/CacheFile.h"/>
   </VirtualDirectory>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
@@ -216,4 +214,6 @@
       </Completion>
     </Configuration>
   </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
 </CodeLite_Project>
