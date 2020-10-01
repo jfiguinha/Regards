@@ -52,6 +52,8 @@
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="" Assembler="">
@@ -106,6 +108,7 @@
         <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
         <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
         <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
@@ -194,6 +197,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

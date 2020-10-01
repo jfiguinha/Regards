@@ -44,23 +44,10 @@
   <Dependencies/>
   <VirtualDirectory Name="src">
     <File Name="Association.cpp"/>
-    <File Name="PDFOption.cpp"/>
-    <File Name="JxrOption.cpp"/>
-    <File Name="J2kOption.cpp"/>
-    <File Name="ExrOption.cpp"/>
-    <File Name="BmpOption.cpp"/>
-    <File Name="SaveFileFormat.cpp"/>
     <File Name="InterpolationFilterSelect.cpp"/>
-    <File Name="CompressionOption.cpp"/>
     <File Name="ConfigRegards.cpp"/>
     <File Name="ExportFile.cpp"/>
-    <File Name="GifOption.cpp"/>
-    <File Name="JpegOption.cpp"/>
-    <File Name="PngOption.cpp"/>
-    <File Name="TiffOption.cpp"/>
     <File Name="OpenCLDialog.cpp"/>
-    <File Name="bpgoption.cpp"/>
-    <File Name="webpOption.cpp"/>
     <File Name="ChangeLabel.cpp"/>
     <File Name="MoveFaceDialog.cpp"/>
     <File Name="PertinenceValue.cpp"/>
@@ -68,33 +55,19 @@
     <File Name="SavePicture.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="SavePicture.h"/>
     <File Name="Association.h"/>
-    <File Name="PDFOption.h"/>
-    <File Name="JxrOption.h"/>
-    <File Name="J2kOption.h"/>
-    <File Name="ExrOption.h"/>
-    <File Name="BmpOption.h"/>
-    <File Name="SaveFromCFunction.h"/>
-    <File Name="SaveFileFormat.h"/>
     <File Name="InterpolationFilterSelect.h"/>
-    <File Name="CompressionOption.h"/>
     <File Name="ConfigRegards.h"/>
     <File Name="ExportFile.h"/>
-    <File Name="GifOption.h"/>
-    <File Name="JpegOption.h"/>
-    <File Name="PngOption.h"/>
-    <File Name="TiffOption.h"/>
-    <File Name="wx_pch.h"/>
     <File Name="OpenCLDialog.h"/>
-    <File Name="bpgoption.h"/>
-    <File Name="webpOption.h"/>
     <File Name="ChangeLabel.h"/>
     <File Name="MoveFaceDialog.h"/>
     <File Name="PertinenceValue.h"/>
     <File Name="IndexGenerator.h"/>
-    <File Name="SavePicture.h"/>
   </VirtualDirectory>
-  <VirtualDirectory Name="Apple"/>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++14" C_Options=";-Wall;" Assembler="">
@@ -109,6 +82,7 @@
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libOpenCL"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libextern/libRapidXML"/>
@@ -209,6 +183,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

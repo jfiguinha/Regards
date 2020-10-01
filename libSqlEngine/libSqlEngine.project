@@ -29,15 +29,15 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="SqlLibResource.cpp"/>
     <File Name="SqlEngine.cpp"/>
-    <File Name="SqlExecuteRequest.cpp"/>
     <File Name="SqlLib.cpp"/>
     <File Name="SqlResult.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="SqlLibResource.h"/>
     <File Name="header.h"/>
     <File Name="SqlEngine.h"/>
-    <File Name="SqlExecuteRequest.h"/>
     <File Name="SqlLib.h"/>
     <File Name="SqlResult.h"/>
   </VirtualDirectory>

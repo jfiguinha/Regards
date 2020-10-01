@@ -29,12 +29,10 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="GpsEngine.cpp"/>
     <File Name="FileGeolocation.cpp"/>
     <File Name="Gps.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="GpsEngine.h"/>
     <File Name="FileGeolocation.h"/>
     <File Name="Gps.h"/>
   </VirtualDirectory>

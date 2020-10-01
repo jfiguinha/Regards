@@ -1,7 +1,6 @@
 #include "header.h"
 #include "FaceRecognition.h"
 #include <SqlFacePhoto.h>
-#include <PictureData.h>
 #include <opencv2/face.hpp>
 #include <SqlFaceRecognition.h>
 #include <SqlFaceDescriptor.h>

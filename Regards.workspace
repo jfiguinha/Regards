@@ -4,7 +4,6 @@
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
   <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project" Active="No"/>
   <Project Name="libIntro" Path="libIntro/libIntro.project" Active="No"/>
-  <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
   <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
   <Project Name="libResource" Path="libResource/libResource.project" Active="No"/>
   <Project Name="libTheme" Path="libTheme/libTheme.project" Active="No"/>
@@ -14,7 +13,6 @@
   </Environment>
   <Project Name="include" Path="include/include.project" Active="No"/>
   <Project Name="libEmail" Path="libEmail/libEmail.project" Active="No"/>
-  <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
   <VirtualDirectory Name="Picture">
     <Project Name="libPicture" Path="libPicture/libPicture.project" Active="No"/>
     <Project Name="libJbig" Path="Otherlib/libJbig/libJbig.project" Active="No"/>
@@ -33,10 +31,6 @@
       <Project Name="libFreeImage" Path="Otherlib/libFreeImage/libFreeImage.project" Active="No"/>
     </VirtualDirectory>
   </VirtualDirectory>
-  <VirtualDirectory Name="Video">
-    <Project Name="libVideoFFMpeg" Path="libVideoFFMpeg/libVideoFFMpeg.project" Active="No"/>
-    <Project Name="libVideoThumbnail" Path="libVideoThumbnail/libVideoThumbnail.project" Active="No"/>
-  </VirtualDirectory>
   <VirtualDirectory Name="Database">
     <Project Name="libSqlData" Path="libSqlData/libSqlData.project" Active="No"/>
     <Project Name="libSqlEngine" Path="libSqlEngine/libSqlEngine.project" Active="No"/>
@@ -44,7 +38,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Exif">
     <Project Name="libMediaInfo" Path="libMediaInfo/libMediaInfo.project" Active="No"/>
-    <Project Name="libExif" Path="libExif/libExif.project" Active="No"/>
     <Project Name="libGeolocalisation" Path="libGeolocalisation/libGeolocalisation.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="wxWidgetComponent">
@@ -63,7 +56,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -71,9 +64,15 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+    <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="OpenCL - OpenGL">
+    <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
+    <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
+    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
@@ -146,6 +145,8 @@
       <Project Name="libheif" ConfigName="Debug"/>
       <Project Name="RegardsRaw" ConfigName="Debug"/>
       <Project Name="libFreeImage" ConfigName="Debug"/>
+      <Project Name="libOpenCLEngine" ConfigName="Debug"/>
+      <Project Name="libFiltreInterface" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -217,6 +218,8 @@
       <Project Name="libheif" ConfigName="Release"/>
       <Project Name="RegardsRaw" ConfigName="Release"/>
       <Project Name="libFreeImage" ConfigName="Release"/>
+      <Project Name="libOpenCLEngine" ConfigName="Release"/>
+      <Project Name="libFiltreInterface" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

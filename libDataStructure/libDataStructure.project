@@ -33,13 +33,9 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="videothumbnail.cpp"/>
     <File Name="TreeDataStars.cpp"/>
     <File Name="TreeDataKeyWord.cpp"/>
-    <File Name="ModificationManager.cpp"/>
     <File Name="PhotoCatalog.cpp"/>
-    <File Name="ThumbnailDataSQL.cpp"/>
-    <File Name="RegardsJpegPicture.cpp"/>
     <File Name="Country.cpp"/>
     <File Name="Criteria.cpp"/>
     <File Name="FolderCatalog.cpp"/>
@@ -47,32 +43,24 @@
     <File Name="PhotoCategorie.cpp"/>
     <File Name="PhotoCriteria.cpp"/>
     <File Name="Photos.cpp"/>
-    <File Name="RegardsBitmap.cpp"/>
     <File Name="RGBAQuad.cpp"/>
     <File Name="ThumbnailData.cpp"/>
-    <File Name="ThumbnailDataStorage.cpp"/>
     <File Name="TreeData.cpp"/>
     <File Name="TreeDataEffect.cpp"/>
     <File Name="TreeDataLink.cpp"/>
     <File Name="PhotoGps.cpp"/>
     <File Name="TreeDataCategory.cpp"/>
-    <File Name="ImageLoadingFormat.cpp"/>
-    <File Name="RegardsFloatBitmap.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="videothumbnail.h"/>
     <File Name="TreeDataStars.h"/>
     <File Name="TreeDataKeyWord.h"/>
     <File Name="FaceName.h"/>
     <File Name="FaceFilePath.h"/>
     <File Name="FaceDescriptor.h"/>
-    <File Name="ModificationManager.h"/>
     <File Name="PhotoCategorieUsenet.h"/>
     <File Name="PhotoCatalog.h"/>
     <File Name="ThumbnailMessage.h"/>
-    <File Name="ThumbnailDataSQL.h"/>
     <File Name="StatusText.h"/>
-    <File Name="RegardsJpegPicture.h"/>
     <File Name="Country.h"/>
     <File Name="Criteria.h"/>
     <File Name="FolderCatalog.h"/>
@@ -83,29 +71,19 @@
     <File Name="PhotoCategorie.h"/>
     <File Name="PhotoCriteria.h"/>
     <File Name="Photos.h"/>
-    <File Name="RegardsBitmap.h"/>
     <File Name="RGBAQuad.h"/>
     <File Name="SliderInterface.h"/>
     <File Name="ThumbnailData.h"/>
-    <File Name="ThumbnailDataStorage.h"/>
     <File Name="Tree.h"/>
     <File Name="TreeData.h"/>
     <File Name="TreeDataEffect.h"/>
-    <File Name="ImageVideoThumbnail.h"/>
     <File Name="Metadata.h"/>
     <File Name="TreeDataLink.h"/>
-    <File Name="CxImageVideoThumbnail.h"/>
     <File Name="PhotoGps.h"/>
-    <File Name="RegardsVideoThumbnail.h"/>
     <File Name="TreeDataCategory.h"/>
-    <File Name="ThreadData.h"/>
     <File Name="BitmapYUV.h"/>
     <File Name="TreeElementValue.h"/>
-    <File Name="PictureDataFormat.h"/>
-    <File Name="ImageLoadingFormat.h"/>
-    <File Name="ReadMe.txt"/>
     <File Name="StreamInfo.h"/>
-    <File Name="RegardsFloatBitmap.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">
     <GlobalSettings>

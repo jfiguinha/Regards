@@ -31,13 +31,11 @@
   <VirtualDirectory Name="src">
     <File Name="ConvertUtility.cpp"/>
     <File Name="FileUtility.cpp"/>
-    <File Name="LoadingResource.cpp"/>
     <File Name="wxmd5.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
     <File Name="ConvertUtility.h"/>
     <File Name="FileUtility.h"/>
-    <File Name="LoadingResource.h"/>
     <File Name="wxmd5.h"/>
   </VirtualDirectory>
   <Settings Type="Static Library">

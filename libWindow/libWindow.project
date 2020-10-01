@@ -75,7 +75,6 @@
     <File Name="MapSelect.cpp"/>
     <File Name="RenderPreviewBitmap.cpp"/>
     <File Name="TreeElementListBox.cpp"/>
-    <File Name="RenderBitmapInterfaceOpenGL.cpp"/>
     <File Name="IconeList.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
@@ -133,13 +132,14 @@
     <File Name="MapSelect.h"/>
     <File Name="RenderPreviewBitmap.h"/>
     <File Name="TreeElementListBox.h"/>
-    <File Name="RenderBitmapInterfaceOpenGL.h"/>
     <File Name="IconeList.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
+        <IncludePath Value="../include"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libSqlite"/>
@@ -151,7 +151,6 @@
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
@@ -165,6 +164,7 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libOpenCL"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libExif"/>
         <IncludePath Value="../libPiccante"/>
@@ -252,6 +252,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

@@ -29,37 +29,23 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="OpenCLFilter.cpp"/>
     <File Name="OpenCLBm3D.cpp"/>
-    <File Name="OpenCLContext.cpp"/>
-    <File Name="OpenCLEffect.cpp"/>
-    <File Name="OpenCLEngine.cpp"/>
-    <File Name="OpenCLExecuteProgram.cpp"/>
-    <File Name="OpenCLInfos.cpp"/>
-    <File Name="OpenCLParameter.cpp"/>
-    <File Name="OpenCLProgram.cpp"/>
     <File Name="OpenCLEffectVideoNV12.cpp"/>
     <File Name="OpenCLEffectVideoYUV.cpp"/>
     <File Name="OpenCLRawDev.cpp"/>
     <File Name="OpenCLEffectVideo.cpp"/>
-    <File Name="OpenCLFilter.cpp"/>
-    <File Name="utility.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="OpenCLFilter.h"/>
     <File Name="OpenCLBm3D.h"/>
-    <File Name="OpenCLContext.h"/>
-    <File Name="OpenCLEffect.h"/>
-    <File Name="OpenCLEngine.h"/>
-    <File Name="OpenCLExecuteProgram.h"/>
-    <File Name="OpenCLInfos.h"/>
-    <File Name="OpenCLParameter.h"/>
-    <File Name="OpenCLProgram.h"/>
-    <File Name="utility.h"/>
     <File Name="OpenCLEffectVideoNV12.h"/>
     <File Name="OpenCLEffectVideoYUV.h"/>
     <File Name="OpenCLRawDev.h"/>
     <File Name="OpenCLEffectVideo.h"/>
-    <File Name="OpenCLFilter.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="-Wall;" Assembler="">
@@ -77,7 +63,9 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
+        <IncludePath Value="../libPicture"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -161,6 +149,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

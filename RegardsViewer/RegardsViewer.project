@@ -79,6 +79,7 @@
     <Project Name="libavif"/>
     <Project Name="libheif"/>
     <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
   </Dependencies>
   <Dependencies Name="Release">
     <Project Name="include"/>
@@ -107,7 +108,6 @@
     <Project Name="libEmail"/>
     <Project Name="libDialog"/>
     <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
     <Project Name="wxSVG"/>
     <Project Name="libOpenGL"/>
@@ -126,11 +126,13 @@
     <Project Name="libavif"/>
     <Project Name="libheif"/>
     <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
@@ -141,7 +143,7 @@
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../include"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
@@ -172,10 +174,6 @@
         <IncludePath Value="../libextern/wxWidgets-master/include"/>
         <IncludePath Value="../libextern/wxWidgets-master/lib/wx/include/msw-unicode-static-3.1"/>
         <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
-        <IncludePath Value="../libextern/json-3.8.0/include"/>
-        <IncludePath Value="../libextern/frugally-deep/include"/>
-        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
-        <IncludePath Value="../libextern/eigen"/>
         <IncludePath Value="../libDeepLearning"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
@@ -214,23 +212,21 @@
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
-        <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
         <Library Value="Control"/>
         <Library Value="Email"/>
-        <Library Value="Exif_regards"/>
         <Library Value="DeepLearning"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
         <Library Value="Geolocalisation"/>
         <Library Value="Utility"/>
         <Library Value="Dialog"/>
-        <Library Value="Picture"/>
         <Library Value="Resource"/>
         <Library Value="SqlData"/>
         <Library Value="DataStructure"/>
         <Library Value="SqlEngine"/>
         <Library Value="Sqlite"/>
+        <Library Value="Picture"/>
         <Library Value="wx_mswu_gl-3.1"/>
         <Library Value="wx_mswu-3.1"/>
         <Library Value="wxscintilla-3.1"/>
@@ -270,7 +266,6 @@
         <Library Value="Utility"/>
         <Library Value="Dialog"/>
         <Library Value="Geolocalisation"/>
-        <Library Value="Exif_regards"/>
         <Library Value="RegardsMediaInfo"/>
         <Library Value="MediaInfo"/>
         <Library Value="SqlData"/>
@@ -288,7 +283,7 @@
         <Library Value="wxSVG"/>
         <Library Value="RegardsGL"/>
         <Library Value="RegardsCL"/>
-        <Library Value="VideoThumbnail"/>
+        <Library Value="OpenCLEngine"/>
         <Library Value="SqlData"/>
         <Library Value="freeglut"/>
         <Library Value="glu32"/>
@@ -568,7 +563,6 @@
         <LibraryPath Value="../wxCheckTree/Release"/>
         <LibraryPath Value="../libSqlite/Release"/>
         <LibraryPath Value="../libViewer/Release"/>
-        <LibraryPath Value="../libExplorer/Release"/>
         <LibraryPath Value="../libIntro/Release"/>
         <LibraryPath Value="../libSqlEngine/Release"/>
         <LibraryPath Value="../libResource/Release"/>
@@ -579,20 +573,14 @@
         <LibraryPath Value="../libUtility/Release"/>
         <LibraryPath Value="../libGeolocalisation/Release"/>
         <LibraryPath Value="../libSqlData/Release"/>
-        <LibraryPath Value="../libVideoThumbnail/Release"/>
-        <LibraryPath Value="../Otherlib/RawSpeed/Release"/>
         <LibraryPath Value="../libFiltre/Release"/>
-        <LibraryPath Value="../libFiltreInterface/Release"/>
         <LibraryPath Value="../libWindow/Release"/>
         <LibraryPath Value="../libControl/Release"/>
         <LibraryPath Value="../libTheme/Release"/>
         <LibraryPath Value="../libParameter/Release"/>
-        <LibraryPath Value="../libRenderBitmap/Release"/>
         <LibraryPath Value="../libOpenCL/Release"/>
-        <LibraryPath Value="../libVideoFFMpeg/Release"/>
+        <LibraryPath Value="../libOpenCLEngine/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
-        <LibraryPath Value="../libExif/Release"/>
-        <LibraryPath Value="../libPiccante/Release"/>
         <LibraryPath Value="../libWindowMain/Release"/>
         <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libPsd/Release"/>

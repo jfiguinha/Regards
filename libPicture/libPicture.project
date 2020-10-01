@@ -26,11 +26,100 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="interpolation">
+    <File Name="InterpolationBilinear.cpp"/>
+    <File Name="InterpolationBicubic.h"/>
+    <File Name="InterpolationBicubic.cpp"/>
+    <File Name="Interpolation.h"/>
+    <File Name="Interpolation.cpp"/>
+    <File Name="InterpolationBilinear.h"/>
+    <File Name="InterpolationFloatBicubic.cpp"/>
+    <File Name="InterpolationFilters.h"/>
+    <File Name="InterpolationFloatBicubic.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="ThumbnailVideo">
+    <File Name="ifilter.h"/>
+    <File Name="histogram.h"/>
+    <File Name="grayscalefilter.h"/>
+    <File Name="filmstripfilter.h"/>
+    <File Name="filmstripfilter.cpp"/>
+    <File Name="filmstrip.h"/>
+    <File Name="config.h"/>
+    <File Name="cximagewriter.h"/>
+    <File Name="cximagewriter.cpp"/>
+    <File Name="imagewriter.h"/>
+    <File Name="ImageVideoThumbnail.h"/>
+    <File Name="imagetypes.h"/>
+    <File Name="imagewriterfactory.h"/>
+    <File Name="moviestreaminfo.h"/>
+    <File Name="moviestreaminfo.cpp"/>
+    <File Name="moviedecoder.h"/>
+    <File Name="moviedecoder.cpp"/>
+    <File Name="stringoperations.cpp"/>
+    <File Name="stringoperations.h"/>
+    <File Name="videothumbnailer.h"/>
+    <File Name="videothumbnailer.cpp"/>
+    <File Name="videothumbnail.h"/>
+    <File Name="videothumbnail.cpp"/>
+    <File Name="videothumb.h"/>
+    <File Name="videothumb.cpp"/>
+    <File Name="videostream.h"/>
+    <File Name="videostream.cpp"/>
+    <File Name="videoframe.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="libhdr">
+    <File Name="PiccanteHDR.h"/>
+    <File Name="PiccanteHDR.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="libexif">
+    <File Name="MetadataExiv2.h"/>
+    <File Name="MetadataExiv2.cpp"/>
+    <File Name="PictureMetadataExiv.h"/>
+    <File Name="PictureMetadataExiv.cpp"/>
+    <File Name="PictureMetadata.h"/>
+    <File Name="PictureMetadata.cpp"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="Dialog">
+    <File Name="GifOption.h"/>
+    <File Name="GifOption.cpp"/>
+    <File Name="ExrOption.h"/>
+    <File Name="ExrOption.cpp"/>
+    <File Name="CompressionOption.h"/>
+    <File Name="CompressionOption.cpp"/>
+    <File Name="bpgoption.h"/>
+    <File Name="bpgoption.cpp"/>
+    <File Name="BmpOption.h"/>
+    <File Name="BmpOption.cpp"/>
+    <File Name="JxrOption.h"/>
+    <File Name="JxrOption.cpp"/>
+    <File Name="JpegOption.h"/>
+    <File Name="JpegOption.cpp"/>
+    <File Name="J2kOption.h"/>
+    <File Name="J2kOption.cpp"/>
+    <File Name="PDFOption.cpp"/>
+    <File Name="PDFOption.h"/>
+    <File Name="PngOption.cpp"/>
+    <File Name="PngOption.h"/>
+    <File Name="TiffOption.cpp"/>
+    <File Name="TiffOption.h"/>
+    <File Name="webpOption.cpp"/>
+    <File Name="webpOption.h"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="datastructure">
+    <File Name="ThumbnailDataStorage.h"/>
+    <File Name="ThumbnailDataStorage.cpp"/>
+    <File Name="RegardsJpegPicture.h"/>
+    <File Name="RegardsJpegPicture.cpp"/>
+    <File Name="RegardsFloatBitmap.h"/>
+    <File Name="RegardsFloatBitmap.cpp"/>
+    <File Name="RegardsBitmap.h"/>
+    <File Name="RegardsBitmap.cpp"/>
+    <File Name="ImageLoadingFormat.h"/>
+    <File Name="ImageLoadingFormat.cpp"/>
+  </VirtualDirectory>
   <VirtualDirectory Name="Raw">
     <File Name="RegardsRaw.h"/>
     <File Name="RegardsRaw.cpp"/>
-    <File Name="DecodeRawPicture.h"/>
-    <File Name="DecodeRawPicture.cpp"/>
     <File Name="raw.cpp"/>
     <File Name="raw.h"/>
   </VirtualDirectory>
@@ -56,17 +145,19 @@
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
+        <IncludePath Value="../include"/>
         <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib/libbpg/Bpg/libRegardsBpg"/>
         <IncludePath Value="../CxImage"/>
@@ -90,11 +181,20 @@
         <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../Otherlib/libFreeImage/Source"/>
+        <IncludePath Value="../libextern/piccante-master/include"/>
+        <IncludePath Value="../libextern/exiv2-0.27.3/build"/>
+        <IncludePath Value="../libextern/exiv2-0.27.3/xmpsdk/include"/>
+        <IncludePath Value="../libextern/exiv2-0.27.3/include/exiv2"/>
+        <IncludePath Value="../libextern/exiv2-0.27.3/include"/>
+        <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
+        <IncludePath Value="../libMediaInfo"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
         <Preprocessor Value="OPJ_STATIC"/>
         <Preprocessor Value="FREEIMAGE_LIB"/>
+        <Preprocessor Value="LATEST_GREATEST_FFMPEG"/>
+        <Preprocessor Value="FFMPEG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -178,6 +278,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

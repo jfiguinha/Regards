@@ -26,7 +26,6 @@
  }]]]>
     </Plugin>
   </Plugins>
-  <VirtualDirectory Name="Dialog"/>
   <VirtualDirectory Name="bm3d">
     <File Name="bm3dfilter.h"/>
     <File Name="bm3dfilter.cpp"/>
@@ -44,7 +43,6 @@
       <File Name="Selection.cpp"/>
       <File Name="Rotation.cpp"/>
       <File Name="Rotate.cpp"/>
-      <File Name="PiccanteFilter.cpp"/>
       <File Name="PerlinNoise.cpp"/>
       <File Name="MotionBlur.cpp"/>
       <File Name="Line.cpp"/>
@@ -65,7 +63,6 @@
       <File Name="RotateByShearRGB.h"/>
       <File Name="RotateByShear.h"/>
       <File Name="Rotate.h"/>
-      <File Name="PiccanteFilter.h"/>
       <File Name="PerlinNoise.h"/>
       <File Name="MotionBlur.h"/>
       <File Name="Line.h"/>
@@ -109,8 +106,6 @@
       <File Name="LensFlareEffectParameter.h"/>
       <File Name="GaussianBlurEffectParameter.h"/>
       <File Name="FreeRotateEffectParameter.h"/>
-      <File Name="EffectVideoParameter.h"/>
-      <File Name="EffectParameter.h"/>
       <File Name="DecodeRawParameter.h"/>
       <File Name="CloudsEffectParameter.h"/>
       <File Name="ClaheEffectParameter.h"/>
@@ -120,6 +115,8 @@
       <File Name="BilateralEffectParameter.h"/>
     </VirtualDirectory>
     <VirtualDirectory Name="raw">
+      <File Name="DecodeRawPicture.h"/>
+      <File Name="DecodeRawPicture.cpp"/>
       <File Name="DecodeRaw.h"/>
       <File Name="DecodeRaw.cpp"/>
     </VirtualDirectory>
@@ -176,13 +173,14 @@
   </VirtualDirectory>
   <VirtualDirectory Name="interface">
     <VirtualDirectory Name="src">
+      <File Name="OpenCLEffect.h"/>
       <File Name="FiltreEffetCPU.cpp"/>
       <File Name="FiltreEffet.cpp"/>
       <File Name="Filtre.cpp"/>
       <File Name="FilterData.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="include">
-      <File Name="IFiltreEffet.h"/>
+      <File Name="OpenCLEffect.cpp"/>
       <File Name="FiltreEffetCPU.h"/>
       <File Name="FiltreEffet.h"/>
       <File Name="Filtre.h"/>
@@ -191,33 +189,17 @@
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
-  <VirtualDirectory Name="Interpolation">
-    <VirtualDirectory Name="src">
-      <File Name="Interpolation.cpp"/>
-      <File Name="InterpolationBicubic.cpp"/>
-      <File Name="InterpolationBilinear.cpp"/>
-      <File Name="InterpolationFloatBicubic.cpp"/>
-    </VirtualDirectory>
-    <VirtualDirectory Name="include">
-      <File Name="Interpolation.h"/>
-      <File Name="InterpolationBicubic.h"/>
-      <File Name="InterpolationBilinear.h"/>
-      <File Name="InterpolationFilters.h"/>
-      <File Name="InterpolationFloatBicubic.h"/>
-    </VirtualDirectory>
-  </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
-        <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libVideoFFMpeg"/>
-        <IncludePath Value="../libVideoThumbnail"/>
         <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/piccante-master/include"/>
+        <IncludePath Value="../CxImage"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libSqlite"/>
@@ -225,7 +207,6 @@
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../include"/>
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libPiccante"/>
@@ -235,10 +216,8 @@
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../libextern/json-3.8.0/include"/>
-        <IncludePath Value="../libextern/frugally-deep/include"/>
-        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
-        <IncludePath Value="../libextern/eigen"/>
+        <IncludePath Value="../libOpenCLEngine"/>
+        <IncludePath Value="../libDeepLearning"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -322,6 +301,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

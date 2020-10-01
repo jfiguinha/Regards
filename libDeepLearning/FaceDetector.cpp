@@ -2,7 +2,6 @@
 #include "FaceDetector.h"
 #include <SqlFaceDescriptor.h>
 #include <SqlFacePhoto.h>
-#include <PictureData.h>
 #include <dlib/dnn.h>
 #include <dlib/clustering.h>
 #include <dlib/image_io.h>

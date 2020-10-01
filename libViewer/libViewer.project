@@ -124,14 +124,15 @@
       <File Name="ThumbnailViewerVideo.h"/>
     </VirtualDirectory>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall" Assembler="">
+        <IncludePath Value="../include"/>
         <IncludePath Value="../libDeepLearning"/>
         <IncludePath Value="../libScanner"/>
-        <IncludePath Value="../libExif"/>
         <IncludePath Value="../wxCheckTree"/>
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libTheme"/>
@@ -140,7 +141,6 @@
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
@@ -173,10 +173,7 @@
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../Otherlib/wxIA/include"/>
-        <IncludePath Value="../libextern/json-3.8.0/include"/>
-        <IncludePath Value="../libextern/frugally-deep/include"/>
-        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
-        <IncludePath Value="../libextern/eigen"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
@@ -263,6 +260,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
