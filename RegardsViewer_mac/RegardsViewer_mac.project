@@ -35,6 +35,103 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
+    <Project Name="libavif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+  </Dependencies>
+  <Dependencies Name="Debug">
+    <Project Name="include"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libResource"/>
+    <Project Name="libPrint"/>
+    <Project Name="libPicture"/>
+    <Project Name="libParameter"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libIntro"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libDataStructure"/>
+    <Project Name="libCompress"/>
+    <Project Name="CxImage"/>
+    <Project Name="libControl"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libMediaInfo"/>
+    <Project Name="libPsd"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libavutil"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="wxIA"/>
+    <Project Name="libScanner"/>
+    <Project Name="libavif"/>
+    <Project Name="libheif"/>
+    <Project Name="libOpenCLEngine"/>
+  </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
       <Compiler Options=";-std=gnu++14;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread" C_Options=";-Wall;" Assembler="">
@@ -73,15 +170,11 @@
         <IncludePath Value="../libExplorer"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libWindowMain"/>
-        <IncludePath Value="../libVideoFFMpeg"/>
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
-        <IncludePath Value="../libextern/json-3.8.0/include"/>
-        <IncludePath Value="../libextern/frugally-deep/include"/>
-        <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
-        <IncludePath Value="../libextern/eigen"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -110,50 +203,39 @@
         <Library Value="Viewer"/>
         <Library Value="Scanner"/>
         <Library Value="Intro"/>
-        <Library Value="VideoFFMpeg"/>
         <Library Value="wxCheckTree"/>
         <Library Value="Control"/>
         <Library Value="Email"/>
-        <Library Value="Exif_regards"/>
+        <Library Value="Resource"/>
+        <Library Value="Geolocalisation"/>
+        <Library Value="Filtre"/>
+        <Library Value="RegardsCL"/>
+        <Library Value="RegardsGL"/>
+        <Library Value="OpenCLEngine"/>
+        <Library Value="SqlData"/>
+        <Library Value="SqlEngine"/>
         <Library Value="Picture"/>
         <Library Value="DeepLearning"/>
         <Library Value="Window"/>
         <Library Value="WindowMain"/>
-        <Library Value="Geolocalisation"/>
         <Library Value="Utility"/>
         <Library Value="Dialog"/>
-        <Library Value="Resource"/>
-        <Library Value="SqlData"/>
         <Library Value="DataStructure"/>
-        <Library Value="SqlEngine"/>
         <Library Value="Sqlite"/>
-        <Library Value="dl"/>
-        <Library Value="z"/>
-        <Library Value="expat"/>
-        <Library Value="z"/>
         <Library Value="Compress"/>
         <Library Value="Utility"/>
-        <Library Value="Picture"/>
-        <Library Value="VideoThumbnail"/>
-        <Library Value="Dialog"/>
         <Library Value="Geolocalisation"/>
-        <Library Value="Exif_regards"/>
         <Library Value="RegardsMediaInfo"/>
         <Library Value="mediainfo"/>
-        <Library Value="SqlData"/>
         <Library Value="Print"/>
         <Library Value="Filtre"/>
         <Library Value="Theme"/>
-        <Library Value="DataStructure"/>
-        <Library Value="Utility"/>
         <Library Value="Resource"/>
         <Library Value="Parameter"/>
         <Library Value="CxImage"/>
         <Library Value="wxSVG"/>
         <Library Value="wx_osx_cocoau_gl-3.1"/>
         <Library Value="GLEW"/>
-        <Library Value="RegardsGL"/>
-        <Library Value="RegardsCL"/>
         <Library Value="exiv2"/>
         <Library Value="exiv2-xmp"/>
         <Library Value="avif"/>
@@ -443,7 +525,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="clang++" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="" Required="yes">
@@ -464,16 +546,13 @@
         <LibraryPath Value="../libUtility/Release"/>
         <LibraryPath Value="../libGeolocalisation/Release"/>
         <LibraryPath Value="../libSqlData/Release"/>
-        <LibraryPath Value="../libVideoThumbnail/Release"/>
         <LibraryPath Value="../libFiltre/Release"/>
         <LibraryPath Value="../libWindow/Release"/>
         <LibraryPath Value="../libControl/Release"/>
         <LibraryPath Value="../libTheme/Release"/>
         <LibraryPath Value="../libParameter/Release"/>
         <LibraryPath Value="../libOpenCL/Release"/>
-        <LibraryPath Value="../libVideoFFMpeg/Release"/>
         <LibraryPath Value="../libEmail/Release"/>
-        <LibraryPath Value="../libExif/Release"/>
         <LibraryPath Value="../libWindowMain/Release"/>
         <LibraryPath Value="../Otherlib/wxSVG/Release"/>
         <LibraryPath Value="../Otherlib/libJbig/Release"/>
@@ -484,6 +563,7 @@
         <LibraryPath Value="../Otherlib/libavif/Release"/>
         <LibraryPath Value="../Otherlib/libheif/Release"/>
         <LibraryPath Value="../Otherlib/libFreeImage/Release"/>
+        <LibraryPath Value="../libOpenCLEngine/Release"/>
       </Linker>
       <ResourceCompiler Options="$(shell wx-config --rcflags)" Required="no"/>
       <General OutputFile="$(IntermediateDirectory)/RegardsViewer" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
@@ -496,7 +576,9 @@
         <PostConnectCommands/>
         <StartupCommands/>
       </Debugger>
-      <PreBuild/>
+      <PreBuild>
+        <Command Enabled="yes">if [ -d Release ]; then echo "Exists"; else mkdir Release;cp ../include/header.h Release/header.h;fi</Command>
+      </PreBuild>
       <PostBuild>
         <Command Enabled="yes">SetFile -t APPL ./Release/RegardsViewer</Command>
         <Command Enabled="yes">mkdir -p ./Release/RegardsViewer.app/Contents</Command>
@@ -765,99 +847,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="include"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libParameter"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libCompress"/>
-    <Project Name="CxImage"/>
-    <Project Name="libControl"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libPsd"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libavutil"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="wxIA"/>
-    <Project Name="libScanner"/>
-    <Project Name="libavif"/>
-    <Project Name="libheif"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libResource"/>
-    <Project Name="libPrint"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libheif"/>
-    <Project Name="libavif"/>
-    <Project Name="libFreeImage"/>
-  </Dependencies>
 </CodeLite_Project>
