@@ -194,7 +194,6 @@
         <Preprocessor Value="OPJ_STATIC"/>
         <Preprocessor Value="FREEIMAGE_LIB"/>
         <Preprocessor Value="LATEST_GREATEST_FFMPEG"/>
-        <Preprocessor Value="FFMPEG"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

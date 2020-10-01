@@ -175,7 +175,6 @@
         <Preprocessor Value="DXVA2"/>
         <Preprocessor Value="OPENCL"/>
         <Preprocessor Value="YUV"/>
-        <Preprocessor Value="FFMPEG"/>
         <Preprocessor Value="SDL2"/>
       </Compiler>
       <Linker Options="">
