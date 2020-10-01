@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #pragma once
-#include "RGBAQuad.h"
+#include <RGBAQuad.h>
 #define DEPTHDEFO 32
 #define SIZE_PATH 1024
 

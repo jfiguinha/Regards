@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libControl" InternalType="Library" Version="11000">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
+    </Plugin>
+    <Plugin Name="CMakePlugin">
+      <![CDATA[[{
+  "name": "Debug",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }, {
+  "name": "Release",
+  "enabled": false,
+  "buildDirectory": "build",
+  "sourceDirectory": "$(ProjectPath)",
+  "generator": "",
+  "buildType": "",
+  "arguments": [],
+  "parentProject": ""
+ }]]]>
+    </Plugin>
+  </Plugins>
   <VirtualDirectory Name="Video">
     <File Name="ShowVideo.cpp"/>
     <File Name="ShowVideo.h"/>
@@ -27,32 +53,6 @@
     <File Name="ModificationManager.h"/>
     <File Name="ModificationManager.cpp"/>
   </VirtualDirectory>
-  <Plugins>
-    <Plugin Name="qmake">
-      <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
-    </Plugin>
-    <Plugin Name="CMakePlugin">
-      <![CDATA[[{
-  "name": "Debug",
-  "enabled": false,
-  "buildDirectory": "build",
-  "sourceDirectory": "$(ProjectPath)",
-  "generator": "",
-  "buildType": "",
-  "arguments": [],
-  "parentProject": ""
- }, {
-  "name": "Release",
-  "enabled": false,
-  "buildDirectory": "build",
-  "sourceDirectory": "$(ProjectPath)",
-  "generator": "",
-  "buildType": "",
-  "arguments": [],
-  "parentProject": ""
- }]]]>
-    </Plugin>
-  </Plugins>
   <VirtualDirectory Name="Criteria">
     <File Name="CriteriaTreeWnd.cpp"/>
     <File Name="CriteriaTree.cpp"/>
@@ -146,12 +146,8 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libRenderBitmap"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libDataStructure"/>
@@ -170,7 +166,6 @@
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libDialog"/>
         <IncludePath Value="../libAppleFunction"/>
-        <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
         <IncludePath Value="../libDeepLearning"/>

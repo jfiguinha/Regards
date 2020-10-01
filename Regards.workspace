@@ -56,7 +56,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -64,7 +64,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
-    <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
@@ -72,7 +71,7 @@
   <VirtualDirectory Name="OpenCL - OpenGL">
     <Project Name="libOpenCL" Path="libOpenCL/libOpenCL.project" Active="No"/>
     <Project Name="libOpenGL" Path="libOpenGL/libOpenGL.project" Active="No"/>
-    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project" Active="No"/>
+    <Project Name="libOpenCLEngine" Path="libOpenCLEngine/libOpenCLEngine.project"/>
   </VirtualDirectory>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="no">
@@ -147,6 +146,7 @@
       <Project Name="libFreeImage" ConfigName="Debug"/>
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
+      <Project Name="libOpenCLEngine" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -220,6 +220,7 @@
       <Project Name="libFreeImage" ConfigName="Release"/>
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
+      <Project Name="libOpenCLEngine" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

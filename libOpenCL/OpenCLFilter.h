@@ -1,5 +1,5 @@
 #pragma once
-#include <Rgbaquad.h>
+#include <RGBAQuad.h>
 #include "OpenCLContext.h"
 #include "OpenCLProgram.h"
 #include "OpenCLParameter.h"

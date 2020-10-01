@@ -1,5 +1,5 @@
 #pragma once
-#include <Rgbaquad.h>
+#include <RGBAQuad.h>
 namespace Regards
 {
 	namespace OpenCL

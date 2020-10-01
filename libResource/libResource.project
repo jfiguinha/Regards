@@ -50,10 +50,10 @@
         <IncludePath Value="."/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libdatastructure"/>
+        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libcompress"/>
-        <IncludePath Value="../Otherlib/wxsvg/include"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>

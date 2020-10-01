@@ -197,7 +197,7 @@
         <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libDataStructure"/>
+        <IncludePath Value="../libDatastructure"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="."/>
@@ -209,7 +209,6 @@
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
-        <IncludePath Value="../libPiccante"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libextern/fftw-3.3.8/api"/>
         <IncludePath Value="../libTheme"/>
@@ -218,6 +217,7 @@
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libDeepLearning"/>
+        <IncludePath Value="../libextern/LibRaw-0.20.0"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
