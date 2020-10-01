@@ -25,6 +25,8 @@
     <File Name="DeepLearning.h"/>
     <File Name="base64.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
@@ -49,7 +51,7 @@
       <ResourceCompiler Options=""/>
     </GlobalSettings>
     <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="Debug/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
       </Compiler>
       <Linker Options="" Required="yes"/>
@@ -64,7 +66,10 @@
         <PostConnectCommands/>
         <StartupCommands/>
       </Debugger>
-      <PreBuild/>
+      <PreBuild>
+        <Command Enabled="yes">if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp header.h Debug/header.h</Command>
+        <Command Enabled="yes"/>
+      </PreBuild>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -88,7 +93,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
@@ -104,7 +109,9 @@
         <PostConnectCommands/>
         <StartupCommands/>
       </Debugger>
-      <PreBuild/>
+      <PreBuild>
+        <Command Enabled="yes">if [ -d Release ]; then echo "Exists"; else mkdir Release;fi;cp header.h Release/header.h</Command>
+      </PreBuild>
       <PostBuild/>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
@@ -128,6 +135,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
