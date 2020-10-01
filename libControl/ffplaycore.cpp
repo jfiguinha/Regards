@@ -443,11 +443,17 @@ void CFFmfc::Seek_bar(int pos){
 //#define __MINGW32__
 int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 {
+	//Save volume infos;
+	int volume = 100;
+
 	if (_pimpl != nullptr)
+	{
+		volume = _pimpl->volume;
 		delete _pimpl;
+	}
 
 	_pimpl = new CFFmfcPimpl();
-
+	_pimpl->volume = volume;
 	_pimpl->dlg = control;
 	_pimpl->parent = this;
 	Reset_index();
