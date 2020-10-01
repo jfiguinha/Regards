@@ -632,7 +632,7 @@ void CMainWindow::ProcessIdle()
 				wxString information = CLibResource::LoadStringFromResource("LBLINFORMATIONS", 1);
 				wxString newVersionAvailable = CLibResource::LoadStringFromResource("LBLNEWVERSIONAVAILABLE", 1);
 
-				int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, this);
+				int answer = wxMessageBox(newVersionAvailable, information, wxYES_NO | wxCANCEL, nullptr);
 				if (answer == wxYES)
 				{
 					wxString siteweb = CLibResource::LoadStringFromResource("SITEWEB", 1);
