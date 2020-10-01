@@ -201,7 +201,6 @@
         <IncludePath Value="../CxImage"/>
         <IncludePath Value="."/>
         <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libResource"/>
@@ -209,8 +208,6 @@
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libextern/fftw-3.3.8/api"/>
-        <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../libWindowMain"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libDeepLearning"/>
