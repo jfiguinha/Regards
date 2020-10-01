@@ -39,6 +39,7 @@ public:
 	virtual void ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID);
 	virtual void DisableOpenGLShader();
 	virtual bool IsOpenGLCompatible();
+    static void SetOpenCLCompatible(const bool & openCLCompatible);
 
 protected:
 

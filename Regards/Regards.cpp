@@ -15,7 +15,7 @@
 #include <wx/wxpoppler.h>
 #endif
 #include <ImageLoadingFormat.h>
-
+#include <FilterWindowParam.h>
 using namespace Regards::Picture;
 using namespace tbb;
 //using namespace Regards::DeepLearning;
@@ -217,12 +217,12 @@ bool MyApp::OnInit()
 	if (listPlatform.size() == 0)
 	{
 		regardsParam->SetIsOpenCLSupport(false);
+        CFilterWindowParam::SetOpenCLCompatible(false);
 	}
 	else
 	{
-		regardsParam->SetIsOpenCLSupport(true);
-
-
+		regardsParam->SetIsOpenCLSupport(true);     
+        CFilterWindowParam::SetOpenCLCompatible(true);
 	}
 
 
