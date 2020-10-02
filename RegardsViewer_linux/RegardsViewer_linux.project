@@ -458,7 +458,6 @@
     <Project Name="libSqlite"/>
     <Project Name="libSqlEngine"/>
     <Project Name="libSqlData"/>
-    <Project Name="libPrint"/>
     <Project Name="libPicture"/>
     <Project Name="libParameter"/>
     <Project Name="libOpenCL"/>
@@ -508,7 +507,6 @@
     <Project Name="libSqlite"/>
     <Project Name="libTheme"/>
     <Project Name="libSqlData"/>
-    <Project Name="libPrint"/>
     <Project Name="libPicture"/>
     <Project Name="libOpenCL"/>
     <Project Name="libParameter"/>

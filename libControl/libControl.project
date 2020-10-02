@@ -66,6 +66,8 @@
     <File Name="InfosFile.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Print">
+    <File Name="PrintEngine.h"/>
+    <File Name="PrintEngine.cpp"/>
     <File Name="BitmapPrintout.cpp"/>
     <File Name="BitmapPrintout.h"/>
   </VirtualDirectory>

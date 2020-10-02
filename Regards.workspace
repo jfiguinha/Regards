@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Regards" Database="" Version="10.0.0">
-  <Project Name="libPrint" Path="libPrint/libPrint.project" Active="No"/>
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
   <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project" Active="No"/>
   <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
@@ -76,7 +75,6 @@
     <WorkspaceConfiguration Name="Debug" Selected="no">
       <Environment/>
       <Project Name="Regards" ConfigName="Debug"/>
-      <Project Name="libPrint" ConfigName="Debug"/>
       <Project Name="CxImage" ConfigName="Debug"/>
       <Project Name="libCompress" ConfigName="Debug"/>
       <Project Name="libControl" ConfigName="Debug"/>
@@ -149,7 +147,6 @@
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
       <Project Name="Regards" ConfigName="Release"/>
-      <Project Name="libPrint" ConfigName="Release"/>
       <Project Name="CxImage" ConfigName="Release"/>
       <Project Name="libCompress" ConfigName="Release"/>
       <Project Name="libControl" ConfigName="Release"/>
