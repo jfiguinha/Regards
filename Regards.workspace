@@ -52,7 +52,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
-    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
+    <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="Yes"/>
     <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
@@ -60,7 +60,6 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
-    <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>

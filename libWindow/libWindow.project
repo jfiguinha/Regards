@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libWindow" InternalType="Library" Version="11000">
-  <VirtualDirectory Name="Datastructure">
-    <File Name="TreeDataStars.cpp"/>
-    <File Name="TreeDataLink.cpp"/>
-    <File Name="TreeDataKeyWord.cpp"/>
-    <File Name="TreeDataEffect.cpp"/>
-    <File Name="TreeDataCategory.cpp"/>
-    <File Name="TreeData.cpp"/>
-    <File Name="TreeDataStars.h"/>
-    <File Name="TreeDataLink.h"/>
-    <File Name="TreeDataKeyWord.h"/>
-    <File Name="TreeDataEffect.h"/>
-    <File Name="TreeDataCategory.h"/>
-    <File Name="TreeData.h"/>
-    <File Name="Tree.h"/>
-    <File Name="ThumbnailMessage.h"/>
-    <File Name="SliderInterface.h"/>
-  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -43,6 +26,23 @@
  }]]]>
     </Plugin>
   </Plugins>
+  <VirtualDirectory Name="Datastructure">
+    <File Name="TreeDataStars.cpp"/>
+    <File Name="TreeDataLink.cpp"/>
+    <File Name="TreeDataKeyWord.cpp"/>
+    <File Name="TreeDataEffect.cpp"/>
+    <File Name="TreeDataCategory.cpp"/>
+    <File Name="TreeData.cpp"/>
+    <File Name="TreeDataStars.h"/>
+    <File Name="TreeDataLink.h"/>
+    <File Name="TreeDataKeyWord.h"/>
+    <File Name="TreeDataEffect.h"/>
+    <File Name="TreeDataCategory.h"/>
+    <File Name="TreeData.h"/>
+    <File Name="Tree.h"/>
+    <File Name="ThumbnailMessage.h"/>
+    <File Name="SliderInterface.h"/>
+  </VirtualDirectory>
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
@@ -168,6 +168,8 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libWindowMain"/>

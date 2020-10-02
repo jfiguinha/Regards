@@ -12,7 +12,7 @@
 #if defined(EXIV2)
 #include <MetadataExiv2.h>
 #endif
-#include <libResource.h>
+#include <LibResource.h>
 #if defined(__WXMSW__)
 #include "../include/window_id.h"
 #else

@@ -2,7 +2,7 @@
 #include <SqlEngine.h>
 #include <SqlLibExplorer.h>
 #include <FileUtility.h>
-#include <libResource.h>
+#include <LibResource.h>
 using namespace Regards::Sqlite;
 
 namespace Regards

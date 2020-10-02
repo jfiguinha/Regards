@@ -52,9 +52,9 @@
         <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libOpenGL"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/lOpenCL-Headers"/>
         <IncludePath Value="../libResource"/>
       </Compiler>
       <Linker Options="">
