@@ -155,6 +155,7 @@
         <IncludePath Value="../Otherlib/wxIA/WIA"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../wxCheckTree"/>
+        <IncludePath Value="../libextern/libOpenCL/include"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
