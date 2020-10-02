@@ -282,7 +282,7 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Debug\bin\*.dll"  
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>GLEW_STATIC;OPENGL;SDL2;FFMPEG;VIEWER;SQLITE_THREADSAFE=2;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>false</SDLCheck>
-      <AdditionalIncludeDirectories>..\libextern\poppler_windows-master\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libIntro;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libextern\poppler_windows-master\cpp;..\Otherlib\wxPDFDoc\include;..\Regards;..\libextern\glew-2.1.0;..\include;..\libWindowMain;..\libDialog;..\libExplorer;..\libViewer;..\libOpenGL;..\libOpenCLEngine;..\libPrint;..\libSqlEngine;..\libSqlData;..\libUtility;..\libResource;..\libDatastructure;..\libTheme;..\libextern\librapidxml;..\libWindow;..\libParameter;..\libPicture;..\libsqlite</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -423,9 +423,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"
     </ProjectReference>
     <ProjectReference Include="..\libGeolocalisation\libGeolocalisation.vcxproj">
       <Project>{5e545b46-4112-4c16-b716-9a8cad576b7e}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libIntro\libIntro.vcxproj">
-      <Project>{9281f5f5-a7f0-4a82-8fdb-81fc254243cb}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libOpenCL\libOpenCL.vcxproj">
       <Project>{ff974e33-5149-453a-95ae-0d584fe6b913}</Project>

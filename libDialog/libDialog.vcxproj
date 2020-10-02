@@ -267,15 +267,20 @@
     <ClCompile Include="ConfigRegards.cpp" />
     <ClCompile Include="ExportFile.cpp" />
     <ClCompile Include="IndexGenerator.cpp" />
+    <ClCompile Include="infoAbout.cpp" />
     <ClCompile Include="InfosSeparationBarExplorer.cpp" />
     <ClCompile Include="InterpolationFilterSelect.cpp" />
+    <ClCompile Include="IntroTheme.cpp" />
     <ClCompile Include="MoveFaceDialog.cpp" />
+    <ClCompile Include="MyCentralWindowIntro.cpp" />
+    <ClCompile Include="MyFrameIntro.cpp" />
     <ClCompile Include="OpenCLDialog.cpp" />
     <ClCompile Include="PertinenceValue.cpp" />
     <ClCompile Include="SavePicture.cpp" />
     <ClCompile Include="SelectPage.cpp" />
     <ClCompile Include="ThumbnailFileSelection.cpp" />
     <ClCompile Include="ThumbnailSelection.cpp" />
+    <ClCompile Include="TitleIntro.cpp" />
     <ClCompile Include="ValidationToolbar.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -285,15 +290,20 @@
     <ClInclude Include="ConfigRegards.h" />
     <ClInclude Include="ExportFile.h" />
     <ClInclude Include="IndexGenerator.h" />
+    <ClInclude Include="infoAbout.h" />
     <ClInclude Include="InfosSeparationBarExplorer.h" />
     <ClInclude Include="InterpolationFilterSelect.h" />
+    <ClInclude Include="IntroTheme.h" />
     <ClInclude Include="MoveFaceDialog.h" />
+    <ClInclude Include="MyCentralWindowIntro.h" />
+    <ClInclude Include="MyFrameIntro.h" />
     <ClInclude Include="OpenCLDialog.h" />
     <ClInclude Include="PertinenceValue.h" />
     <ClInclude Include="SavePicture.h" />
     <ClInclude Include="SelectPage.h" />
     <ClInclude Include="ThumbnailFileSelection.h" />
     <ClInclude Include="ThumbnailSelection.h" />
+    <ClInclude Include="TitleIntro.h" />
     <ClInclude Include="ValidationToolbar.h" />
     <ClInclude Include="wx_pch.h" />
   </ItemGroup>

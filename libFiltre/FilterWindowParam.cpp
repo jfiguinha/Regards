@@ -15,21 +15,15 @@
 #include <PiccanteHDR.h>
 #include <Draw.h>
 #include <BitmapDisplay.h>
-//#include <ParamInit.h>
-//#include <RegardsConfigParam.h>
 #include <RenderOpenGL.h>
+#include <OpenCLEngine.h>
+using namespace Regards::OpenCL;
+
 bool CFilterWindowParam::supportOpenCL = false;
 
 CFilterWindowParam::CFilterWindowParam()
 {
-	//CRegardsConfigParam* config = CParamInit::getInstance();
-	//if (config != nullptr)
-	//	supportOpenCL = config->GetIsOpenCLSupport();
-}
-
-void CFilterWindowParam::SetOpenCLCompatible(const bool & openCLCompatible)
-{
-    supportOpenCL = openCLCompatible;
+	supportOpenCL = COpenCLEngine::SupportOpenCL();
 }
 
 CFilterWindowParam::~CFilterWindowParam()

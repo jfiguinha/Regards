@@ -52,6 +52,9 @@
     <Filter Include="Association">
       <UniqueIdentifier>{5f38767f-bec3-4d4b-854c-19ecd32b88ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Intro">
+      <UniqueIdentifier>{b8ab152f-3298-4557-94e2-596ff5da631f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -105,6 +108,21 @@
     <ClCompile Include="Association.cpp">
       <Filter>Association</Filter>
     </ClCompile>
+    <ClCompile Include="infoAbout.cpp">
+      <Filter>Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="IntroTheme.cpp">
+      <Filter>Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="MyCentralWindowIntro.cpp">
+      <Filter>Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFrameIntro.cpp">
+      <Filter>Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleIntro.cpp">
+      <Filter>Intro</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wx_pch.h">
@@ -157,6 +175,21 @@
     </ClInclude>
     <ClInclude Include="Association.h">
       <Filter>Association</Filter>
+    </ClInclude>
+    <ClInclude Include="infoAbout.h">
+      <Filter>Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="IntroTheme.h">
+      <Filter>Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="MyCentralWindowIntro.h">
+      <Filter>Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFrameIntro.h">
+      <Filter>Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleIntro.h">
+      <Filter>Intro</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
