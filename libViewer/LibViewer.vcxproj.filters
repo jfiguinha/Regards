@@ -165,6 +165,9 @@
     <ClInclude Include="ToolbarKeyword.h">
       <Filter>Window\Keyword Management</Filter>
     </ClInclude>
+    <ClInclude Include="StatusText.h">
+      <Filter>DataStructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ViewerFrame.cpp">

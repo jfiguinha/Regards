@@ -236,6 +236,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="GpsEngine.h" />
+    <ClInclude Include="MainInterface.h" />
     <ClInclude Include="MasterWindow.h" />
     <ClInclude Include="WindowMain.h" />
     <ClInclude Include="WindowOpenGLMain.h" />

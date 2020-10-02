@@ -309,6 +309,7 @@
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="NlmeansFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
+    <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
     <ClInclude Include="PhotoFiltreFilter.h" />

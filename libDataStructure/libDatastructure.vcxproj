@@ -259,39 +259,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
-    <ClInclude Include="BitmapYUV.h" />
-    <ClInclude Include="Country.h" />
-    <ClInclude Include="Criteria.h" />
-    <ClInclude Include="FaceDescriptor.h" />
-    <ClInclude Include="FaceFilePath.h" />
-    <ClInclude Include="FaceName.h" />
-    <ClInclude Include="FolderCatalog.h" />
-    <ClInclude Include="GeoPluginValue.h" />
-    <ClInclude Include="ListCriteriaPhoto.h" />
-    <ClInclude Include="MainInterface.h" />
-    <ClInclude Include="Metadata.h" />
-    <ClInclude Include="MouseUpdate.h" />
-    <ClInclude Include="PenDrawInfo.h" />
-    <ClInclude Include="PhotoCatalog.h" />
-    <ClInclude Include="PhotoCategorie.h" />
-    <ClInclude Include="PhotoCategorieUsenet.h" />
-    <ClInclude Include="PhotoCriteria.h" />
-    <ClInclude Include="PhotoGps.h" />
-    <ClInclude Include="Photos.h" />
-    <ClInclude Include="PictureDataFormat.h" />
-    <ClInclude Include="RGBAQuad.h" />
-    <ClInclude Include="SliderInterface.h" />
-    <ClInclude Include="StatusText.h" />
-    <ClInclude Include="StreamInfo.h" />
-    <ClInclude Include="ThumbnailData.h" />
-    <ClInclude Include="ThumbnailMessage.h" />
-    <ClInclude Include="Tree.h" />
-    <ClInclude Include="TreeData.h" />
-    <ClInclude Include="TreeDataCategory.h" />
-    <ClInclude Include="TreeDataEffect.h" />
-    <ClInclude Include="TreeDataKeyWord.h" />
-    <ClInclude Include="TreeDataLink.h" />
-    <ClInclude Include="TreeDataStars.h" />
     <ClInclude Include="TreeElementValue.h" />
   </ItemGroup>
   <ItemGroup>
@@ -300,23 +267,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Country.cpp" />
-    <ClCompile Include="Criteria.cpp" />
-    <ClCompile Include="FolderCatalog.cpp" />
-    <ClCompile Include="GeoPluginValue.cpp" />
-    <ClCompile Include="PhotoCatalog.cpp" />
-    <ClCompile Include="PhotoCategorie.cpp" />
-    <ClCompile Include="PhotoCriteria.cpp" />
-    <ClCompile Include="PhotoGps.cpp" />
-    <ClCompile Include="Photos.cpp" />
-    <ClCompile Include="RGBAQuad.cpp" />
-    <ClCompile Include="ThumbnailData.cpp" />
-    <ClCompile Include="TreeData.cpp" />
-    <ClCompile Include="TreeDataCategory.cpp" />
-    <ClCompile Include="TreeDataEffect.cpp" />
-    <ClCompile Include="TreeDataKeyWord.cpp" />
-    <ClCompile Include="TreeDataLink.cpp" />
-    <ClCompile Include="TreeDataStars.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

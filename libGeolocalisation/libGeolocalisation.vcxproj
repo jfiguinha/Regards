@@ -260,6 +260,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
     <ClInclude Include="FileGeolocation.h" />
+    <ClInclude Include="GeoPluginValue.h" />
     <ClInclude Include="Gps.h" />
   </ItemGroup>
   <ItemGroup>
@@ -269,6 +270,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="FileGeolocation.cpp" />
+    <ClCompile Include="GeoPluginValue.cpp" />
     <ClCompile Include="Gps.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

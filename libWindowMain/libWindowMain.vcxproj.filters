@@ -42,6 +42,9 @@
     <ClInclude Include="GpsEngine.h">
       <Filter>Gps Engine</Filter>
     </ClInclude>
+    <ClInclude Include="MainInterface.h">
+      <Filter>header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowUtility.cpp">

@@ -133,6 +133,15 @@
     <ClCompile Include="PictureData.cpp">
       <Filter>datastructure</Filter>
     </ClCompile>
+    <ClCompile Include="MediaInfo.cpp">
+      <Filter>libexif</Filter>
+    </ClCompile>
+    <ClCompile Include="ThumbnailData.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="RGBAQuad.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raw.h">
@@ -304,6 +313,21 @@
       <Filter>Dialog</Filter>
     </ClInclude>
     <ClInclude Include="PictureData.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="StreamInfo.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="MediaInfo.h">
+      <Filter>libexif</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailData.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Metadata.h">
+      <Filter>libexif</Filter>
+    </ClInclude>
+    <ClInclude Include="RGBAQuad.h">
       <Filter>datastructure</Filter>
     </ClInclude>
   </ItemGroup>

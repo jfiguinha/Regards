@@ -265,6 +265,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\header.h" />
+    <ClInclude Include="Country.h" />
+    <ClInclude Include="Criteria.h" />
+    <ClInclude Include="FaceDescriptor.h" />
+    <ClInclude Include="FaceFilePath.h" />
+    <ClInclude Include="FaceName.h" />
+    <ClInclude Include="FolderCatalog.h" />
+    <ClInclude Include="ListCriteriaPhoto.h" />
+    <ClInclude Include="PhotoCatalog.h" />
+    <ClInclude Include="PhotoCategorie.h" />
+    <ClInclude Include="PhotoCategorieUsenet.h" />
+    <ClInclude Include="PhotoCriteria.h" />
+    <ClInclude Include="PhotoGps.h" />
+    <ClInclude Include="Photos.h" />
     <ClInclude Include="SqlCatalog.h" />
     <ClInclude Include="SqlCountry.h" />
     <ClInclude Include="SqlCriteria.h" />
@@ -307,6 +320,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Country.cpp" />
+    <ClCompile Include="Criteria.cpp" />
+    <ClCompile Include="FolderCatalog.cpp" />
+    <ClCompile Include="PhotoCatalog.cpp" />
+    <ClCompile Include="PhotoCategorie.cpp" />
+    <ClCompile Include="PhotoCriteria.cpp" />
+    <ClCompile Include="PhotoGps.cpp" />
+    <ClCompile Include="Photos.cpp" />
     <ClCompile Include="SqlCatalog.cpp" />
     <ClCompile Include="SqlCountry.cpp" />
     <ClCompile Include="SqlCriteria.cpp" />

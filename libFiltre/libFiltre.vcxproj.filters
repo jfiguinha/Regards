@@ -312,6 +312,9 @@
     <ClInclude Include="OpenCLEffect.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="PenDrawInfo.h">
+      <Filter>Drawing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm3d.cpp">

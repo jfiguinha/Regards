@@ -78,6 +78,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +128,8 @@
     <ClInclude Include="EffectVideoParameter.h" />
     <ClInclude Include="FiltreEffectInterface.h" />
     <ClInclude Include="IFiltreEffet.h" />
+    <ClInclude Include="MouseUpdate.h" />
+    <ClInclude Include="TreeElementValue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

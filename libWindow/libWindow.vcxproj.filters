@@ -19,6 +19,9 @@
     <Filter Include="Render">
       <UniqueIdentifier>{d79d6a29-b792-48b2-b0bc-2f0c8aacab14}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Datastructure">
+      <UniqueIdentifier>{b4a78db2-1d2f-4333-9726-03360137dcea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -192,6 +195,33 @@
     <ClInclude Include="RenderPreviewBitmap.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="Tree.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeData.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataCategory.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataEffect.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataKeyWord.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataLink.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="TreeDataStars.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="SliderInterface.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="ThumbnailMessage.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitmapInfos.cpp">
@@ -337,6 +367,24 @@
     </ClCompile>
     <ClCompile Include="RenderPreviewBitmap.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeData.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataCategory.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataEffect.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataKeyWord.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataLink.cpp">
+      <Filter>Datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="TreeDataStars.cpp">
+      <Filter>Datastructure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

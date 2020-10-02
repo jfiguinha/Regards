@@ -295,6 +295,7 @@
     <ClInclude Include="PanelPhotoWnd.h" />
     <ClInclude Include="PreviewToolbar.h" />
     <ClInclude Include="PreviewWnd.h" />
+    <ClInclude Include="StatusText.h" />
     <ClInclude Include="ThumbnailFace.h" />
     <ClInclude Include="ThumbnailFacePertinenceToolBar.h" />
     <ClInclude Include="ThumbnailFaceToolBar.h" />

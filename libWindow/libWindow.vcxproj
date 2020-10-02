@@ -269,6 +269,7 @@
     <ClInclude Include="KeywordDialogBox.h" />
     <ClInclude Include="PanelWithClickToolbar.h" />
     <ClInclude Include="RenderPreviewBitmap.h" />
+    <ClInclude Include="SliderInterface.h" />
     <ClInclude Include="TabWindow.h" />
     <ClInclude Include="Icone.h" />
     <ClInclude Include="IconeList.h" />
@@ -287,6 +288,7 @@
     <ClInclude Include="Splitter.h" />
     <ClInclude Include="StatusBarInterface.h" />
     <ClInclude Include="Thumbnail.h" />
+    <ClInclude Include="ThumbnailMessage.h" />
     <ClInclude Include="TitleBar.h" />
     <ClInclude Include="TitleBarInterface.h" />
     <ClInclude Include="ToolbarButton.h" />
@@ -295,7 +297,14 @@
     <ClInclude Include="ToolbarSlide.h" />
     <ClInclude Include="ToolbarTexte.h" />
     <ClInclude Include="ToolbarWindow.h" />
+    <ClInclude Include="Tree.h" />
     <ClInclude Include="TreeControl.h" />
+    <ClInclude Include="TreeData.h" />
+    <ClInclude Include="TreeDataCategory.h" />
+    <ClInclude Include="TreeDataEffect.h" />
+    <ClInclude Include="TreeDataKeyWord.h" />
+    <ClInclude Include="TreeDataLink.h" />
+    <ClInclude Include="TreeDataStars.h" />
     <ClInclude Include="TreeElement.h" />
     <ClInclude Include="TreeElementCheckBox.h" />
     <ClInclude Include="TreeElementControlInterface.h" />
@@ -352,6 +361,12 @@
     <ClCompile Include="ToolbarTexte.cpp" />
     <ClCompile Include="ToolbarWindow.cpp" />
     <ClCompile Include="TreeControl.cpp" />
+    <ClCompile Include="TreeData.cpp" />
+    <ClCompile Include="TreeDataCategory.cpp" />
+    <ClCompile Include="TreeDataEffect.cpp" />
+    <ClCompile Include="TreeDataKeyWord.cpp" />
+    <ClCompile Include="TreeDataLink.cpp" />
+    <ClCompile Include="TreeDataStars.cpp" />
     <ClCompile Include="TreeElement.cpp" />
     <ClCompile Include="TreeElementCheckBox.cpp" />
     <ClCompile Include="TreeElementDelete.cpp" />

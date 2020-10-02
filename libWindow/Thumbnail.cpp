@@ -14,7 +14,7 @@
 #include <wx/filename.h>
 #include "LibResource.h"
 #include <ThumbnailData.h>
-#include <ThumbnailMessage.h>
+#include "ThumbnailMessage.h"
 #include <libPicture.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;

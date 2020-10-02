@@ -16,6 +16,9 @@
     <Filter Include="header">
       <UniqueIdentifier>{7f9102a8-d033-434f-bfd8-680cf245ed50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Datastructure">
+      <UniqueIdentifier>{93be4205-1971-4cf4-926e-f6fc2a63a37c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,6 +33,9 @@
     <ClInclude Include="..\include\header.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="GeoPluginValue.h">
+      <Filter>Datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Gps.cpp">
@@ -40,6 +46,9 @@
     </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>header</Filter>
+    </ClCompile>
+    <ClCompile Include="GeoPluginValue.cpp">
+      <Filter>Datastructure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

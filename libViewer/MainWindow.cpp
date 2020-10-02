@@ -28,7 +28,7 @@
 #include <SqlFolderCatalog.h>
 #include <wx/display.h>
 #include <SqlInsertFile.h>
-#include <StatusText.h>
+#include "StatusText.h"
 #include <ThumbnailMessage.h>
 #include <SqlThumbnailVideo.h>
 #include "FaceInfosUpdate.h"

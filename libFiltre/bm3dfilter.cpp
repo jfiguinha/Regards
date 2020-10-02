@@ -12,7 +12,6 @@
 #include "bm3d.h"
 #include "utilities.h"
 #include "window_id.h"
-#include <StatusText.h>
 
 #define YUV       0
 #define YCBCR     1

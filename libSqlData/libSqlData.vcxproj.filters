@@ -135,6 +135,45 @@
     <ClInclude Include="SqlResource.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="Photos.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoGps.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoCriteria.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoCategorieUsenet.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoCategorie.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="PhotoCatalog.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="FolderCatalog.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceName.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceFilePath.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="FaceDescriptor.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Criteria.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Country.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="ListCriteriaPhoto.h">
+      <Filter>datastructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SqlCatalog.cpp">
@@ -244,6 +283,30 @@
     </ClCompile>
     <ClCompile Include="SqlResource.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Photos.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoGps.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCriteria.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCategorie.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="PhotoCatalog.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="FolderCatalog.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="Criteria.cpp">
+      <Filter>datastructure</Filter>
+    </ClCompile>
+    <ClCompile Include="Country.cpp">
+      <Filter>datastructure</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

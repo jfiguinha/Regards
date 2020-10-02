@@ -1,5 +1,5 @@
 #pragma once
-#include <GeoPluginValue.h>
+#include "GeoPluginValue.h"
 
 class CGpscurl;
 
