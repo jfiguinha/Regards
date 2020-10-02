@@ -323,11 +323,9 @@
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
         <LibraryPath Value="../libOpenGL/Debug"/>
-        <LibraryPath Value="../libMediaInfo/Debug"/>
         <LibraryPath Value="../wxCheckTree/Debug"/>
         <LibraryPath Value="../libSqlite/Debug"/>
         <LibraryPath Value="../libViewer/Debug"/>
-        <LibraryPath Value="../libIntro/Debug"/>
         <LibraryPath Value="../libSqlEngine/Debug"/>
         <LibraryPath Value="../libResource/Debug"/>
         <LibraryPath Value="../libCompress/Debug"/>
