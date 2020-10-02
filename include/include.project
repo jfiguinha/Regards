@@ -30,6 +30,8 @@
     <File Name="font_quality.h"/>
     <File Name="window_id.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14" C_Options="" Assembler="">
@@ -68,7 +70,7 @@
         <StartupCommands/>
       </Debugger>
       <PreBuild>
-        <Command Enabled="yes">if [ -f Release/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp ../include/header.h Debug/header.h;fi</Command>
+        <Command Enabled="yes">if [ -f Debug/header.h ]; then echo "Exists"; else if [ -d Debug ]; then echo "Exists"; else mkdir Debug;fi;cp ../include/header.h Debug/header.h;fi</Command>
         <Command Enabled="yes"/>
       </PreBuild>
       <PostBuild/>
@@ -136,6 +138,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
