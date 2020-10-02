@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Regards" Database="" Version="10.0.0">
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
-  <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project" Active="No"/>
   <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
   <Project Name="libResource" Path="libResource/libResource.project" Active="No"/>
   <Project Name="libTheme" Path="libTheme/libTheme.project" Active="No"/>
@@ -35,7 +34,6 @@
     <Project Name="libSqlite" Path="libSqlite/libSqlite.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Exif">
-    <Project Name="libMediaInfo" Path="libMediaInfo/libMediaInfo.project" Active="No"/>
     <Project Name="libGeolocalisation" Path="libGeolocalisation/libGeolocalisation.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="wxWidgetComponent">
@@ -62,6 +60,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Filter">
     <Project Name="libFiltre" Path="libFiltre/libFiltre.project" Active="No"/>
+    <Project Name="libFiltreInterface" Path="libFiltreInterface/libFiltreInterface.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="DeepLearning">
     <Project Name="libDeepLearning" Path="libDeepLearning/libDeepLearning.project" Active="No"/>
@@ -78,7 +77,6 @@
       <Project Name="CxImage" ConfigName="Debug"/>
       <Project Name="libCompress" ConfigName="Debug"/>
       <Project Name="libControl" ConfigName="Debug"/>
-      <Project Name="libDataStructure" ConfigName="Debug"/>
       <Project Name="libDialog" ConfigName="Debug"/>
       <Project Name="libFiltre" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
@@ -106,7 +104,6 @@
       <Project Name="wxSVG" ConfigName="Debug"/>
       <Project Name="libOpenGL" ConfigName="Debug"/>
       <Project Name="test" ConfigName="Debug"/>
-      <Project Name="libMediaInfo" ConfigName="Debug"/>
       <Project Name="FaceRecognition" ConfigName="Debug"/>
       <Project Name="libJbig" ConfigName="Debug"/>
       <Project Name="libPsd" ConfigName="Debug"/>
@@ -143,6 +140,7 @@
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
       <Project Name="libFiltreInterface" ConfigName="Debug"/>
       <Project Name="libOpenCLEngine" ConfigName="Debug"/>
+      <Project Name="libFiltreInterface" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release" Selected="yes">
       <Environment/>
@@ -150,7 +148,6 @@
       <Project Name="CxImage" ConfigName="Release"/>
       <Project Name="libCompress" ConfigName="Release"/>
       <Project Name="libControl" ConfigName="Release"/>
-      <Project Name="libDataStructure" ConfigName="Release"/>
       <Project Name="libDialog" ConfigName="Release"/>
       <Project Name="libFiltre" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
@@ -178,7 +175,6 @@
       <Project Name="wxSVG" ConfigName="Release"/>
       <Project Name="libOpenGL" ConfigName="Release"/>
       <Project Name="test" ConfigName="Release"/>
-      <Project Name="libMediaInfo" ConfigName="Release"/>
       <Project Name="FaceRecognition" ConfigName="Release"/>
       <Project Name="libJbig" ConfigName="Release"/>
       <Project Name="libPsd" ConfigName="Release"/>
@@ -215,6 +211,7 @@
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
       <Project Name="libFiltreInterface" ConfigName="Release"/>
       <Project Name="libOpenCLEngine" ConfigName="Release"/>
+      <Project Name="libFiltreInterface" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

@@ -466,14 +466,12 @@
     <Project Name="libExif"/>
     <Project Name="libEmail"/>
     <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
     <Project Name="libCompress"/>
     <Project Name="CxImage"/>
     <Project Name="libControl"/>
     <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
     <Project Name="wxSVG"/>
-    <Project Name="libMediaInfo"/>
     <Project Name="libPsd"/>
     <Project Name="libOpenGL"/>
     <Project Name="libJbig"/>
@@ -515,12 +513,10 @@
     <Project Name="libExif"/>
     <Project Name="libEmail"/>
     <Project Name="libDialog"/>
-    <Project Name="libDataStructure"/>
     <Project Name="libFiltreInterface"/>
     <Project Name="wxCheckTree"/>
     <Project Name="wxSVG"/>
     <Project Name="libOpenGL"/>
-    <Project Name="libMediaInfo"/>
     <Project Name="libJbig"/>
     <Project Name="libPsd"/>
     <Project Name="libavutil"/>

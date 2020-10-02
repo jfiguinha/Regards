@@ -72,6 +72,11 @@
     <File Name="PiccanteHDR.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="libexif">
+    <File Name="ThumbnailData.h"/>
+    <File Name="Metadata.h"/>
+    <File Name="MediaInfo.h"/>
+    <File Name="ThumbnailData.cpp"/>
+    <File Name="MediaInfo.cpp"/>
     <File Name="MetadataExiv2.h"/>
     <File Name="MetadataExiv2.cpp"/>
     <File Name="PictureMetadataExiv.h"/>
@@ -106,6 +111,10 @@
     <File Name="webpOption.h"/>
   </VirtualDirectory>
   <VirtualDirectory Name="datastructure">
+    <File Name="StreamInfo.h"/>
+    <File Name="BitmapYUV.h"/>
+    <File Name="RGBAQuad.h"/>
+    <File Name="RGBAQuad.cpp"/>
     <File Name="ThumbnailDataStorage.h"/>
     <File Name="ThumbnailDataStorage.cpp"/>
     <File Name="RegardsJpegPicture.h"/>
@@ -145,6 +154,8 @@
     <File Name="yuv422.h"/>
     <File Name="Heic.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
@@ -179,7 +190,8 @@
         <IncludePath Value="../libextern/exiv2-0.27.3/include/exiv2"/>
         <IncludePath Value="../libextern/exiv2-0.27.3/include"/>
         <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
-        <IncludePath Value="../libMediaInfo"/>
+        <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
+        <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
         <Preprocessor Value="LIBRAW"/>
         <Preprocessor Value="LIBHEIC"/>
         <Preprocessor Value="LIBBPG"/>
@@ -269,6 +281,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

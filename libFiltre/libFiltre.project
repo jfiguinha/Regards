@@ -82,6 +82,7 @@
       <File Name="CropFilter.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="main">
+      <File Name="PenDrawInfo.h"/>
       <File Name="BitmapDisplay.h"/>
       <File Name="AfterEffect.h"/>
       <File Name="FiltreUpdate.h"/>
