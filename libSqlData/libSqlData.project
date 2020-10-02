@@ -126,13 +126,14 @@
     <File Name="SqlFindFacePhoto.h"/>
     <File Name="SqlPhotoGPS.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libUtility"/>
@@ -221,6 +222,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

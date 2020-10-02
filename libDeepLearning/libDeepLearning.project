@@ -25,6 +25,8 @@
     <File Name="DeepLearning.h"/>
     <File Name="base64.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-fopenmp;-std=gnu++14;-Wall;-fpermissive;" C_Options=";-Wall;" Assembler="">
@@ -33,9 +35,6 @@
         <IncludePath Value="../libextern/dlib-19.20"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libextern/json-3.8.0/include"/>
         <IncludePath Value="../libextern/frugally-deep/include"/>
         <IncludePath Value="../libextern/FunctionalPlus-0.2.8-p0/include"/>
@@ -135,6 +134,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

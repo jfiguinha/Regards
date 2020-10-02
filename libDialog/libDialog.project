@@ -89,10 +89,8 @@
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libControl"/>
         <IncludePath Value="../libWindowMain"/>
-        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libResource"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libPicture"/>
@@ -101,14 +99,10 @@
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libExif"/>
         <IncludePath Value="../libAppleFunction"/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libextern/"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../FaceRecognition"/>
         <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libFiltreInterface"/>

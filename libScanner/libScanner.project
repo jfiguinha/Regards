@@ -52,61 +52,47 @@
     <File Name="viewerPDF.h"/>
     <File Name="ScannerFrame.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
-        <IncludePath Value="../wxCheckTree"/>
-        <IncludePath Value="../Otherlib/RegardsRaw"/>
-        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
-        <IncludePath Value="."/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libGeolocalisation"/>
-        <IncludePath Value="../libParameter"/>
-        <IncludePath Value="../libUtility"/>
-        <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../libResource"/>
-        <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libRenderBitmap"/>
-        <IncludePath Value="../libSqlEngine"/>
-        <IncludePath Value="../libSqlite"/>
-        <IncludePath Value="../libFiltre"/>
-        <IncludePath Value="../include"/>
-        <IncludePath Value="../libDataStructure"/>
-        <IncludePath Value="../Otherlib/wxSVG/include"/>
-        <IncludePath Value="../Otherlib/wxIA/WIA"/>
-        <IncludePath Value="../Otherlib/wxIA/include"/>
-        <IncludePath Value="../libWindow"/>
-        <IncludePath Value="../libPrint"/>
-        <IncludePath Value="../libPicture"/>
-        <IncludePath Value="../libTheme"/>
-        <IncludePath Value="../libGeolocalisation"/>
-        <IncludePath Value="../libControl"/>
-        <IncludePath Value="../libIntro"/>
-        <IncludePath Value="../libDialog"/>
-        <IncludePath Value="../libWindowMain"/>
-        <IncludePath Value="../libVideoFFMpeg"/>
-        <IncludePath Value="../libOpenCL"/>
-        <IncludePath Value="../libOpenGL"/>
-        <IncludePath Value="../libVideoThumbnail"/>
-        <IncludePath Value="../FaceRecognition"/>
-        <IncludePath Value="../libCompress"/>
         <IncludePath Value="../libAppleFunction"/>
+        <IncludePath Value="../libCompress"/>
+        <IncludePath Value="../libControl"/>
+        <IncludePath Value="../libDialog"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../libextern/libOpenCL/include"/>
-        <IncludePath Value="../Otherlib/wxIA/include"/>
         <IncludePath Value="../libextern/libpng"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/utils"/>
+        <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libextern/poppler-0.81.0/"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
         <IncludePath Value="../libextern/poppler-0.81.0/goo"/>
         <IncludePath Value="../libextern/poppler-0.81.0/poppler"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/build/poppler"/>
+        <IncludePath Value="../libextern/poppler-0.81.0/utils"/>
+        <IncludePath Value="../libFiltre"/>
+        <IncludePath Value="../libFiltreInterface"/>
+        <IncludePath Value="../libGeolocalisation"/>
+        <IncludePath Value="../libIntro"/>
+        <IncludePath Value="../libOpenCL"/>
         <IncludePath Value="../libOpenCLEngine"/>
+        <IncludePath Value="../libOpenGL"/>
+        <IncludePath Value="../libParameter"/>
+        <IncludePath Value="../libPicture"/>
+        <IncludePath Value="../libResource"/>
+        <IncludePath Value="../libSqlData"/>
+        <IncludePath Value="../libTheme"/>
+        <IncludePath Value="../libUtility"/>
+        <IncludePath Value="../libWindow"/>
+        <IncludePath Value="../libWindowMain"/>
+        <IncludePath Value="../Otherlib/wxIA/include"/>
+        <IncludePath Value="../Otherlib/wxIA/WIA"/>
+        <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
+        <IncludePath Value="../Otherlib/wxSVG/include"/>
+        <IncludePath Value="../wxCheckTree"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="WEBVIEWER"/>
@@ -195,6 +181,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

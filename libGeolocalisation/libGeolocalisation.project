@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Project Name="libGeolocalisation" InternalType="Library" Version="11000">
+  <VirtualDirectory Name="Datastructure">
+    <File Name="GeoPluginValue.h"/>
+    <File Name="GeoPluginValue.cpp"/>
+  </VirtualDirectory>
   <Plugins>
     <Plugin Name="qmake">
       <![CDATA[00020001N0005Debug0000000000000001N0007Release000000000000]]>
@@ -36,15 +40,15 @@
     <File Name="FileGeolocation.h"/>
     <File Name="Gps.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libSqlData"/>
-        <IncludePath Value="../libMediaInfo"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -128,6 +132,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

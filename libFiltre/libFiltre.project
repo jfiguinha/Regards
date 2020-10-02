@@ -190,15 +190,16 @@
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wno-narrowing" C_Options=";-Wall;" Assembler="">
+        <IncludePath Value="."/>
         <IncludePath Value="../include"/>
         <IncludePath Value="../libOpenGL"/>
-        <IncludePath Value="../libDatastructure"/>
         <IncludePath Value="../libextern/glew-2.1.0/include"/>
         <IncludePath Value="../CxImage"/>
-        <IncludePath Value="."/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
         <IncludePath Value="../libOpenCL"/>
@@ -294,6 +295,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

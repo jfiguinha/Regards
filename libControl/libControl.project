@@ -133,11 +133,13 @@
     <File Name="InfosSeparationBarEffect.h"/>
     <File Name="SplitterWithPanel.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-std=gnu++14;-fpermissive" C_Options=";-Wall;" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libSqlite"/>
+        <IncludePath Value="../include"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
         <IncludePath Value="../libGeolocalisation"/>
@@ -145,15 +147,12 @@
         <IncludePath Value="../libExif"/>
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../libFiltreInterface"/>
-        <IncludePath Value="../include"/>
         <IncludePath Value="../libResource"/>
         <IncludePath Value="../libSqlData"/>
         <IncludePath Value="../libFiltre"/>
         <IncludePath Value="../include"/>
-        <IncludePath Value="../libDataStructure"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
         <IncludePath Value="../libWindow"/>
-        <IncludePath Value="../libPrint"/>
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libGeolocalisation"/>
@@ -259,6 +258,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
