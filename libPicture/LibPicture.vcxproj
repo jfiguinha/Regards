@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_windows10|Win32">
+      <Configuration>Debug_windows10</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug_windows10|x64">
+      <Configuration>Debug_windows10</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -32,7 +40,19 @@
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141_xp</PlatformToolset>
@@ -58,7 +78,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,7 +101,15 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'">
+    <IncludePath>$(SolutionDir)\libextern\libjpeg-turbo-1.5.1\include;$(SolutionDir)\libExtern\wxsvg\include;C:\developpement\boost\1.52\include\boost-1_52;$(SolutionDir)\libExtern\wxWidgets-master\include\msvc;$(SolutionDir)\libExtern\wxWidgets-master\include;$(ICInstallDir)compiler\include;$(ICInstallDir)compiler\include\Intel64;$(ICInstallDir)compiler\lib\Intel64;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(MSBuildToolsPath);$(MSBuildToolsPath32);$(VCInstallDir)atlmfc\lib\amd64;$(VCInstallDir)lib\amd64;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\otherlib\CxImage7\mng;$(SolutionDir)\otherlib\CxImage7\libpsd;$(SolutionDir)\libExtern\wxWidgets-master\src\png;$(SolutionDir)\otherlib\CxImage7\jasper\include;$(SolutionDir)\otherlib\CxImage7\jbig;$(SolutionDir)\libExtern\wxWidgets-master\src\zlib;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)Otherlib\libFreeImage\Source;$(SolutionDir)Otherlib\libheif;$(SolutionDir)Otherlib;$(SolutionDir)\libExtern\tbb\include;$(SolutionDir)\Otherlib\libbpg\libRegardsBpg;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)\otherlib\libbpg\Dllbpg;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <IncludePath>$(SolutionDir)Otherlib\libFreeImage\Source;$(SolutionDir)Otherlib\libheif;$(SolutionDir)Otherlib;$(SolutionDir)\libExtern\tbb\include;$(SolutionDir)\Otherlib\libbpg\libRegardsBpg;$(SolutionDir)\libExtern\wxWidgets-master\lib\vc_x64_lib\mswud;$(SolutionDir)\libExtern\wxWidgets-master\include;$(SolutionDir)\Otherlib\wxsvg\include;$(SolutionDir)\libextern\heif-master\srcs\api\common;$(SolutionDir)\libextern\heif-master\srcs\api\reader;$(SolutionDir)\otherlib\libbpg\Dllbpg;$(VC_IncludePath);$(WindowsSDK_71A_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -101,13 +135,43 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>TURBOJPEG;EXIV2;FFMPEG;_CRT_SECURE_NO_WARNINGS;LIBRAW;WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\libFFMPEGThumbnailer;..\otherlib\libRaw;..\libFiltreInterface;..\include;..\libDialog;..\libUtility;..\libFiltre;..\libDataStructure;..\otherlib\CxImage7\CxImage;D:\Program Files (x86)\Visual Leak Detector\include;..\otherlib\libExiv2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>;LATEST_GREATEST_FFMPEG;FFMPEG;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;FFMPEG;_CRT_SECURE_NO_WARNINGS;LIBRAW;_CRT_SECURE_NO_WARNINGS;TURBOJPEG;EXIV2;FFMPEG;LIBRAW;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)libextern\piccante-master\include;$(SolutionDir)libMediaInfo;.\;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\exiv2-0.27.3\contrib\vs2019\solution;$(SolutionDir)libextern\exiv2-0.27.3\build;$(SolutionDir)libextern\exiv2-0.27.3\xmpsdk\include;$(SolutionDir)libextern\exiv2-0.27.3\include\exiv2;$(SolutionDir)libextern\exiv2-0.27.3\include;$(SolutionDir)libextern\libde265-master;$(SolutionDir)libextern\libde265-master\libde265;..\libResource;$(SolutionDir)libDataStructure;..\libFiltreInterface;..\include;..\libUtility;..\CxImage;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)\libextern\poppler_windows-master\cpp;$(SolutionDir)packages\openexr-msvc14-x64.2.2.0.7784\build\native\include\OpenEXR;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\include;$(SolutionDir)\libextern\MediaInfo_DLL_GNU_FromSource\MediaInfoLib\Source;$(SolutionDir)\libextern\MediaInfo_DLL_GNU_FromSource\ZenLib\Source;$(SolutionDir)libextern\piccante-master\include;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\exiv2-0.27.3\contrib\vs2019\solution;$(SolutionDir)libextern\exiv2-0.27.3\build;$(SolutionDir)libextern\exiv2-0.27.3\xmpsdk\include;$(SolutionDir)libextern\exiv2-0.27.3\include\exiv2;$(SolutionDir)libextern\exiv2-0.27.3\include;$(SolutionDir)libextern\libde265-master;$(SolutionDir)libextern\libde265-master\libde265;..\libResource;$(SolutionDir)libDataStructure;..\libFiltreInterface;..\libUtility;..\CxImage;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)\libextern\poppler_windows-master\cpp;$(SolutionDir)packages\openexr-msvc14-x64.2.2.0.7784\build\native\include\OpenEXR;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>;LATEST_GREATEST_FFMPEG;FFMPEG;LIBRAW_NO_WINSOCK2;OPJ_STATIC;FREEIMAGE_LIB;LIBHEIF_STATIC_BUILD;__STDC_LIMIT_MACROS;LIBDE265_STATIC_BUILD;OPENEXR;PICCANTE;LIBHEIC;LIBBPG;TURBOJPEG;EXIV2;FFMPEG;_CRT_SECURE_NO_WARNINGS;LIBRAW;_CRT_SECURE_NO_WARNINGS;TURBOJPEG;EXIV2;FFMPEG;LIBRAW;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;..\include;$(SolutionDir)\libextern\MediaInfo_DLL_GNU_FromSource\MediaInfoLib\Source;$(SolutionDir)\libextern\MediaInfo_DLL_GNU_FromSource\ZenLib\Source;$(SolutionDir)libextern\piccante-master\include;$(SolutionDir)Otherlib\libavif\include;$(SolutionDir)Otherlib\wxPDFDoc\include;$(SolutionDir)libextern\exiv2-0.27.3\contrib\vs2019\solution;$(SolutionDir)libextern\exiv2-0.27.3\build;$(SolutionDir)libextern\exiv2-0.27.3\xmpsdk\include;$(SolutionDir)libextern\exiv2-0.27.3\include\exiv2;$(SolutionDir)libextern\exiv2-0.27.3\include;$(SolutionDir)libextern\libde265-master;$(SolutionDir)libextern\libde265-master\libde265;..\libResource;$(SolutionDir)libDataStructure;..\libFiltreInterface;..\libUtility;..\CxImage;D:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)\libextern\poppler_windows-master\cpp;$(SolutionDir)packages\openexr-msvc14-x64.2.2.0.7784\build\native\include\OpenEXR;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeaderFile>header.h</PrecompiledHeaderFile>
@@ -262,6 +326,7 @@
     <ClCompile Include="..\include\header.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="avif.cpp" />
     <ClCompile Include="avif_heif.cpp" />
