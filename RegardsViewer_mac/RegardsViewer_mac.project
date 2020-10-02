@@ -760,7 +760,6 @@
     <Project Name="libPicture"/>
     <Project Name="libParameter"/>
     <Project Name="libOpenCL"/>
-    <Project Name="libIntro"/>
     <Project Name="libGeolocalisation"/>
     <Project Name="libFiltre"/>
     <Project Name="libExif"/>
@@ -812,7 +811,6 @@
     <Project Name="libPicture"/>
     <Project Name="libOpenCL"/>
     <Project Name="libParameter"/>
-    <Project Name="libIntro"/>
     <Project Name="libGeolocalisation"/>
     <Project Name="libFiltre"/>
     <Project Name="libExif"/>

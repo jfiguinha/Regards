@@ -3,7 +3,6 @@
   <Project Name="libPrint" Path="libPrint/libPrint.project" Active="No"/>
   <Project Name="libCompress" Path="libCompress/libCompress.project" Active="No"/>
   <Project Name="libDataStructure" Path="libDataStructure/libDataStructure.project" Active="No"/>
-  <Project Name="libIntro" Path="libIntro/libIntro.project" Active="No"/>
   <Project Name="libParameter" Path="libParameter/libParameter.project" Active="No"/>
   <Project Name="libResource" Path="libResource/libResource.project" Active="No"/>
   <Project Name="libTheme" Path="libTheme/libTheme.project" Active="No"/>
@@ -57,7 +56,7 @@
   <VirtualDirectory Name="RegardsViewer_exe">
     <Project Name="RegardsViewer" Path="RegardsViewer/RegardsViewer.project" Active="No"/>
     <Project Name="RegardsViewer_linux" Path="RegardsViewer_linux/RegardsViewer_linux.project" Active="No"/>
-    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="Yes"/>
+    <Project Name="RegardsViewer_mac" Path="RegardsViewer_mac/RegardsViewer_mac.project" Active="No"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Apple">
     <Project Name="libAppleFunction" Path="libAppleFunction/libAppleFunction.project" Active="No"/>
@@ -85,7 +84,6 @@
       <Project Name="libDialog" ConfigName="Debug"/>
       <Project Name="libFiltre" ConfigName="Debug"/>
       <Project Name="libGeolocalisation" ConfigName="Debug"/>
-      <Project Name="libIntro" ConfigName="Debug"/>
       <Project Name="libOpenCL" ConfigName="Debug"/>
       <Project Name="libParameter" ConfigName="Debug"/>
       <Project Name="libPicture" ConfigName="Debug"/>
@@ -159,7 +157,6 @@
       <Project Name="libDialog" ConfigName="Release"/>
       <Project Name="libFiltre" ConfigName="Release"/>
       <Project Name="libGeolocalisation" ConfigName="Release"/>
-      <Project Name="libIntro" ConfigName="Release"/>
       <Project Name="libOpenCL" ConfigName="Release"/>
       <Project Name="libParameter" ConfigName="Release"/>
       <Project Name="libPicture" ConfigName="Release"/>

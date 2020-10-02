@@ -28,7 +28,6 @@
   </Plugins>
   <VirtualDirectory Name="Filter">
     <File Name="MouseUpdate.h"/>
-    <File Name="FiltreEffectInterface.h"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>
