@@ -41,8 +41,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libParameter", "libParamete
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libFiltre", "libFiltre\libFiltre.vcxproj", "{67274429-0B74-48AB-9B74-0D3E15C825BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPrint", "libPrint\libPrint.vcxproj", "{79D712AD-2E8D-464B-BC49-7F9051B25E62}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cximage", "CxImage\cximage.vcxproj", "{C739151F-5384-41DF-A1A6-F089E2C1AD56}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jbig", "Otherlib\libJbig\jbig.vcxproj", "{764C3A2D-FB0F-428E-B1C7-62D1DD2CE239}"
@@ -346,18 +344,6 @@ Global
 		{67274429-0B74-48AB-9B74-0D3E15C825BE}.Release|Win32.Build.0 = Release|Win32
 		{67274429-0B74-48AB-9B74-0D3E15C825BE}.Release|x64.ActiveCfg = Release|x64
 		{67274429-0B74-48AB-9B74-0D3E15C825BE}.Release|x64.Build.0 = Release|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug_windows10|Win32.ActiveCfg = Debug|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug_windows10|Win32.Build.0 = Debug|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug_windows10|x64.ActiveCfg = Debug_windows10|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug_windows10|x64.Build.0 = Debug_windows10|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug|Win32.ActiveCfg = Debug|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug|Win32.Build.0 = Debug|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug|x64.ActiveCfg = Debug|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Debug|x64.Build.0 = Debug|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Release|Win32.ActiveCfg = Release|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Release|Win32.Build.0 = Release|Win32
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Release|x64.ActiveCfg = Release|x64
-		{79D712AD-2E8D-464B-BC49-7F9051B25E62}.Release|x64.Build.0 = Release|x64
 		{C739151F-5384-41DF-A1A6-F089E2C1AD56}.Debug_windows10|Win32.ActiveCfg = Debug_windows10|Win32
 		{C739151F-5384-41DF-A1A6-F089E2C1AD56}.Debug_windows10|Win32.Build.0 = Debug_windows10|Win32
 		{C739151F-5384-41DF-A1A6-F089E2C1AD56}.Debug_windows10|x64.ActiveCfg = Debug_windows10|x64

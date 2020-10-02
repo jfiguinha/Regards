@@ -284,6 +284,7 @@
     <ClInclude Include="InfosFileWnd.h" />
     <ClInclude Include="InfosSeparationBarEffect.h" />
     <ClInclude Include="ModificationManager.h" />
+    <ClInclude Include="PrintEngine.h" />
     <ClInclude Include="ShowBitmap.h" />
     <ClInclude Include="ShowVideo.h" />
     <ClInclude Include="SliderVideo.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="InfosFileWnd.cpp" />
     <ClCompile Include="InfosSeparationBarEffect.cpp" />
     <ClCompile Include="ModificationManager.cpp" />
+    <ClCompile Include="PrintEngine.cpp" />
     <ClCompile Include="ShowBitmap.cpp" />
     <ClCompile Include="ShowVideo.cpp" />
     <ClCompile Include="SliderVideo.cpp" />

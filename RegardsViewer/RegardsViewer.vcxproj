@@ -436,9 +436,6 @@ XCOPY /Y "$(SolutionDir)libextern\vcpkg\installed\x64-windows\Release\bin\*.dll"
     <ProjectReference Include="..\LibPicture\LibPicture.vcxproj">
       <Project>{ab7507f9-2d5b-4627-bec3-209ae7a3d0cb}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\libPrint\libPrint.vcxproj">
-      <Project>{79d712ad-2e8d-464b-bc49-7f9051b25e62}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\libResource\libResource.vcxproj">
       <Project>{ae3f398c-b13b-4c98-99e6-6ec349823995}</Project>
     </ProjectReference>
