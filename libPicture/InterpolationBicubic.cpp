@@ -2,7 +2,6 @@
 #include "InterpolationBicubic.h"
 #include "RegardsBitmap.h"
 #include "Interpolation.h"
-#include <omp.h>
 
 CInterpolationBicubic::CInterpolationBicubic(const double & dWidth)
 {

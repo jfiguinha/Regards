@@ -565,8 +565,8 @@ void allocate_plan_2d(
 ,   const fftwf_r2r_kind kind
 ,   const unsigned nb
 ){
-    int            nb_table[2]   = {N, N};
-    int            nembed[2]     = {N, N};
+    int            nb_table[2]   = {(int)N, (int)N};
+    int            nembed[2]     = {(int)N, (int)N};
     fftwf_r2r_kind kind_table[2] = {kind, kind};
 
     float* vec = (float*) fftwf_malloc(N * N * nb * sizeof(float));
@@ -592,8 +592,8 @@ void allocate_plan_1d(
 ,   const fftwf_r2r_kind kind
 ,   const unsigned nb
 ){
-    int nb_table[1] = {N};
-    int nembed[1]   = {N * nb};
+    int nb_table[1] = {(int)N};
+    int nembed[1]   = {(int)N * (int)nb};
     fftwf_r2r_kind kind_table[1] = {kind};
 
     float* vec = (float*) fftwf_malloc(N * nb * sizeof(float));
