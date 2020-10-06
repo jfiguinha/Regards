@@ -182,7 +182,7 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 {
 	//filtreraw = nullptr;
 #ifdef RENDEROPENGL
-	pictureNext = nullptr;
+	pictureNext = new GLTexture();
 #endif
 	mouseUpdate = nullptr;
 	etape = 0;
@@ -457,10 +457,9 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 				etape = 0;
 
 #ifdef RENDEROPENGL
+
 				if (renderOpenGL != nullptr && afterEffect != nullptr)
 				{
-					if (pictureNext == nullptr)
-						pictureNext = new GLTexture();
 
 					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 						afterEffect->GenerateTexture(pictureNext, nextPicture);
@@ -624,7 +623,7 @@ void CBitmapWndViewer::AfterRender()
 				{
 					wxRect out;
 					//Génération de la texture
-					if (renderOpenGL != nullptr && afterEffect != nullptr)
+					if (renderOpenGL != nullptr && afterEffect != nullptr && pictureNext != nullptr)
 					{
 						
 						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
