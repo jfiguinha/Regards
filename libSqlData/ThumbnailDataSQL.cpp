@@ -7,9 +7,6 @@
 #include <ConvertUtility.h>
 using namespace Regards::Sqlite;
 #include <ImageLoadingFormat.h>
-#ifdef TURBOJPEG
-#include <turbojpeg.h>
-#endif
 #include <wx/dir.h>
 #include <wx/filename.h>
 using namespace Regards::Picture;

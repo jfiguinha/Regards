@@ -2,11 +2,12 @@
 #include "ToolbarPhoto.h"
 #include <ScrollbarWnd.h>
 #include "TabWindow.h"
-#include <directoryctrl.h>
 #include "CategoryFolderWindow.h"
 using namespace std;
 using namespace Regards::Window;
 //using namespace Regards::Control;
+
+class wxGenericDirCtrl;
 
 namespace Regards
 {

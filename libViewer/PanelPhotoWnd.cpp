@@ -9,6 +9,7 @@
 #include <SqlPhotoCriteria.h>
 #include <SqlInsertFile.h>
 #include <LibResource.h>
+#include <directoryctrl.h>
 using namespace Regards::Sqlite;
 using namespace Regards::Window;
 using namespace Regards::Viewer;

@@ -11,10 +11,9 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef _WX_DIRCTRL_H_
-#define _WX_DIRCTRL_H_
+#pragma once
 
-#if wxUSE_DIRDLG
+#ifdef wxUSE_DIRDLG
 
 using namespace std;
 //#include "wx/treectrl.h"
@@ -278,7 +277,7 @@ protected:
 // wxFileIconsTable - use wxTheFileIconsTable which is created as necessary
 //-------------------------------------------------------------------------
 
-#if wxUSE_DIRDLG || wxUSE_FILEDLG || wxUSE_FILECTRL
+#ifdef wxUSE_DIRDLG
 
 class WXDLLIMPEXP_FWD_CORE wxImageList;
 
@@ -325,6 +324,3 @@ extern WXDLLIMPEXP_DATA_CORE(wxFileIconsTable *) wxTheFileIconsTable;
 // old wxEVT_COMMAND_* constants
 #define wxEVT_COMMAND_DIRCTRL_SELECTIONCHANGED wxEVT_DIRCTRL_SELECTIONCHANGED
 #define wxEVT_COMMAND_DIRCTRL_FILEACTIVATED   wxEVT_DIRCTRL_FILEACTIVATED
-
-#endif
-    // _WX_DIRCTRLG_H_
