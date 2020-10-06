@@ -464,6 +464,10 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 						afterEffect->GenerateTexture(pictureNext, nextPicture);
 				}
+                else
+                {
+                    
+                }
 #endif
 
 				//renderNext.Destroy();
@@ -619,11 +623,11 @@ void CBitmapWndViewer::AfterRender()
 
 			default:
 			{
-				if (numEffect != 0 && etape < 100)
+				if (numEffect != 0 && etape < 110)
 				{
 					wxRect out;
 					//Génération de la texture
-					if (renderOpenGL != nullptr && afterEffect != nullptr && pictureNext != nullptr)
+					if (renderOpenGL != nullptr && afterEffect != nullptr)
 					{
 						
 						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
@@ -633,15 +637,11 @@ void CBitmapWndViewer::AfterRender()
 								renderOpenGL->ShowSecondBitmap(pictureNext, out.width * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 						}
 						else
-						{
+						{                            
 							CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, etape, this, out);
 							if (bitmapOut != nullptr)
 							{
-								if (pictureNext->GetHeight() != bitmapOut->GetBitmapHeight() || pictureNext->GetWidth() != bitmapOut->GetBitmapWidth())
-									pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-								else
-									pictureNext->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
-								glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
+                                pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 								delete bitmapOut;
 
 								if (renderOpenGL != nullptr)
