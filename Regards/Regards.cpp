@@ -15,10 +15,13 @@
 #include <wx/wxpoppler.h>
 #endif
 #include <ImageLoadingFormat.h>
+#include <wx/window.h>
 //#include <FilterWindowParam.h>
 using namespace Regards::Picture;
 using namespace tbb;
 //using namespace Regards::DeepLearning;
+
+
 
 
 void MyApp::OnInitCmdLine(wxCmdLineParser& parser)

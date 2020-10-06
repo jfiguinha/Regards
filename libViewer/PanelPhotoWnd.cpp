@@ -29,8 +29,11 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 	{
         CThemeTree themeTree;
 		folderWnd = new wxGenericDirCtrl(this, FOLDERWINDOWID, wxDirDialogDefaultFolderStr, wxDefaultPosition, wxDefaultSize, wxDIRCTRL_DIR_ONLY);
-		folderWnd->GetTreeCtrl()->SetBackgroundColour(themeTree.bgColorOne);
-		folderWnd->GetTreeCtrl()->SetForegroundColour(themeTree.bgColorBackground);
+		if(folderWnd->GetTreeCtrl() != nullptr)
+		{
+			folderWnd->GetTreeCtrl()->SetBackgroundColour(themeTree.bgColorOne);
+			folderWnd->GetTreeCtrl()->SetForegroundColour(themeTree.bgColorBackground);	
+		}
         folderWnd->Show(true);
         
         FolderCatalogVector folderList;
@@ -39,9 +42,13 @@ CPanelPhotoWnd::CPanelPhotoWnd(wxWindow* parent, wxWindowID id)
 
         for (CFolderCatalog folderCatalog : folderList)
         {
+			wxTreeItemId treeitem;
             folderWnd->SetPath(folderCatalog.GetFolderPath());
-            wxTreeItemId treeitem = folderWnd->GetTreeCtrl()->GetSelection();
-            folderWnd->GetTreeCtrl()->Check(treeitem);
+			if(folderWnd->GetTreeCtrl() != nullptr)
+            {
+				treeitem = folderWnd->GetTreeCtrl()->GetSelection();
+            	folderWnd->GetTreeCtrl()->Check(treeitem);
+			}
         }
 
         
@@ -138,10 +145,14 @@ void CPanelPhotoWnd::SetFolder(wxCommandEvent& folderEvent)
 {
 	if (folderEvent.GetClientData() != nullptr)
 	{
+		wxTreeItemId treeitem;
 		wxString * folder = (wxString *)folderEvent.GetClientData();
 		folderWnd->SetPath(*folder);
-		wxTreeItemId treeitem = folderWnd->GetTreeCtrl()->GetSelection();
-		folderWnd->GetTreeCtrl()->Check(treeitem);
+		if(folderWnd->GetTreeCtrl() != nullptr)
+		{
+			treeitem = folderWnd->GetTreeCtrl()->GetSelection();
+			folderWnd->GetTreeCtrl()->Check(treeitem);			
+		}
 		delete folder;
 	}
 }

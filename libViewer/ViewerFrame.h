@@ -85,7 +85,7 @@ namespace Regards
 			void OnClose(wxCloseEvent& event);
 			void OnConfiguration(wxCommandEvent& event);
 			void OnEraseDatabase(wxCommandEvent& event);
-			void OnInterpolationFilter(wxCommandEvent& event);
+			//void OnInterpolationFilter(wxCommandEvent& event);
 			void OnOpenCLConfiguration(wxCommandEvent& event);
 			void OnScanner(wxCommandEvent& event);
 			void OnExit(wxCommandEvent& event);

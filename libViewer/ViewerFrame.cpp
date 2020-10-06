@@ -426,6 +426,7 @@ void CViewerFrame::OnHelp(wxCommandEvent& event)
     wxLaunchDefaultApplication(helpFile);
 }
 
+/*
 void CViewerFrame::OnInterpolationFilter(wxCommandEvent& event)
 {
 	CRegardsConfigParam* config = CParamInit::getInstance();
@@ -437,7 +438,7 @@ void CViewerFrame::OnInterpolationFilter(wxCommandEvent& event)
 			config->SetInterpolationType(filterDialog.GetFilterIndex());
 	}
 }
-
+*/
 void CViewerFrame::CheckAllProcessEnd(wxTimerEvent& event)
 {
 	nbTime++;
@@ -926,7 +927,7 @@ EVT_MENU(ID_SIZEICONMORE, CViewerFrame::OnIconSizeMore)
 EVT_MENU(ID_FACEDETECTION, CViewerFrame::OnFaceDetection)
 EVT_MENU(ID_CATEGORYDETECTION, CViewerFrame::OnCategoryDetection)
 EVT_MENU(ID_ERASEDATABASE, CViewerFrame::OnEraseDatabase)
-EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
+//EVT_MENU(ID_INTERPOLATIONFILTER, CViewerFrame::OnInterpolationFilter)
 EVT_MENU(wxID_ABOUT, CViewerFrame::OnAbout)
 EVT_MENU(WXPRINT_PAGE_SETUP, CViewerFrame::OnPageSetup)
 EVT_MENU(wxID_EXIT, CViewerFrame::OnExit)
