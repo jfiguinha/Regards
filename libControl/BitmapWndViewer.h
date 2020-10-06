@@ -74,6 +74,7 @@ namespace Regards
 			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 #ifdef RENDEROPENGL
 			virtual void AfterRender();
+            virtual void DeleteTexture();
 #else
 			void LoadingResource(const double & scale_factor);
 			virtual void AfterRender(wxDC * dc);

@@ -646,6 +646,8 @@ void CBitmapWndViewer::AfterRender()
 
 								if (renderOpenGL != nullptr)
 									renderOpenGL->ShowSecondBitmap(pictureNext, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+                                    
+                                
 							}
 						}
 
@@ -670,6 +672,13 @@ void CBitmapWndViewer::AfterRender()
 
 	}
 }
+
+void CBitmapWndViewer::DeleteTexture()
+{
+    if(pictureNext != nullptr)
+        pictureNext->Delete();
+}
+
 #else
 
 void CBitmapWndViewer::LoadingResource(const double & scale_factor)

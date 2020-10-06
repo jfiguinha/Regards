@@ -1835,6 +1835,8 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
     {
        if (!openclContext->IsSharedContextCompatible())
        {
+            DeleteTexture();
+           
             if (renderOpenGL != nullptr)
             {
                 delete renderOpenGL;

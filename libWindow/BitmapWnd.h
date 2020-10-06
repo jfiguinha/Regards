@@ -194,6 +194,7 @@ namespace Regards
 			virtual int GetRawBitmapWidth();
 			virtual int GetRawBitmapHeight();
 			virtual int GetOrientation();
+            virtual void DeleteTexture() {};
 
 			float CalculRatio(const int &pictureWidth, const int &pictureHeight);
 
