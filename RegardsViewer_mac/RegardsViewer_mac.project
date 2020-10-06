@@ -35,6 +35,51 @@
     <File Name="../Regards/Regards.h"/>
     <File Name="../Regards/SqlInit.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Release">
+    <Project Name="include"/>
+    <Project Name="CxImage"/>
+    <Project Name="libCompress"/>
+    <Project Name="libControl"/>
+    <Project Name="libWindowMain"/>
+    <Project Name="libWindow"/>
+    <Project Name="libViewer"/>
+    <Project Name="libVideoThumbnail"/>
+    <Project Name="libVideoFFMpeg"/>
+    <Project Name="libUtility"/>
+    <Project Name="libSqlEngine"/>
+    <Project Name="libSqlite"/>
+    <Project Name="libTheme"/>
+    <Project Name="libSqlData"/>
+    <Project Name="libPicture"/>
+    <Project Name="libOpenCL"/>
+    <Project Name="libParameter"/>
+    <Project Name="libGeolocalisation"/>
+    <Project Name="libFiltre"/>
+    <Project Name="libExif"/>
+    <Project Name="libEmail"/>
+    <Project Name="libDialog"/>
+    <Project Name="libFiltreInterface"/>
+    <Project Name="wxCheckTree"/>
+    <Project Name="wxSVG"/>
+    <Project Name="libOpenGL"/>
+    <Project Name="libJbig"/>
+    <Project Name="libPsd"/>
+    <Project Name="libavcodec"/>
+    <Project Name="libbpg"/>
+    <Project Name="FaceRecognition"/>
+    <Project Name="libavutil"/>
+    <Project Name="libRegardsBpg_mac"/>
+    <Project Name="wxPDFDoc"/>
+    <Project Name="libAppleFunction"/>
+    <Project Name="libScanner"/>
+    <Project Name="FaceRecognition_mac"/>
+    <Project Name="libDeepLearning"/>
+    <Project Name="libheif"/>
+    <Project Name="libavif"/>
+    <Project Name="libFreeImage"/>
+    <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
+  </Dependencies>
   <Dependencies Name="Debug">
     <Project Name="include"/>
     <Project Name="libWindowMain"/>
@@ -79,6 +124,7 @@
     <Project Name="libOpenCLEngine"/>
     <Project Name="libFreeImage"/>
     <Project Name="libDeepLearning"/>
+    <Project Name="libResource"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -238,7 +284,7 @@
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
-    <Configuration Name="Debug" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Debug" CompilerType="clang++" DebuggerType="LLDB Debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-ggdb;-O0" C_Options="-ggdb;-O0" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="1"/>
       <Linker Options="" Required="yes">
         <LibraryPath Value="../CxImage/Debug"/>
@@ -777,49 +823,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Release">
-    <Project Name="include"/>
-    <Project Name="CxImage"/>
-    <Project Name="libCompress"/>
-    <Project Name="libControl"/>
-    <Project Name="libWindowMain"/>
-    <Project Name="libWindow"/>
-    <Project Name="libViewer"/>
-    <Project Name="libVideoThumbnail"/>
-    <Project Name="libVideoFFMpeg"/>
-    <Project Name="libUtility"/>
-    <Project Name="libSqlEngine"/>
-    <Project Name="libSqlite"/>
-    <Project Name="libTheme"/>
-    <Project Name="libSqlData"/>
-    <Project Name="libPicture"/>
-    <Project Name="libOpenCL"/>
-    <Project Name="libParameter"/>
-    <Project Name="libGeolocalisation"/>
-    <Project Name="libFiltre"/>
-    <Project Name="libExif"/>
-    <Project Name="libEmail"/>
-    <Project Name="libDialog"/>
-    <Project Name="libFiltreInterface"/>
-    <Project Name="wxCheckTree"/>
-    <Project Name="wxSVG"/>
-    <Project Name="libOpenGL"/>
-    <Project Name="libJbig"/>
-    <Project Name="libPsd"/>
-    <Project Name="libavcodec"/>
-    <Project Name="libbpg"/>
-    <Project Name="FaceRecognition"/>
-    <Project Name="libavutil"/>
-    <Project Name="libRegardsBpg_mac"/>
-    <Project Name="wxPDFDoc"/>
-    <Project Name="libAppleFunction"/>
-    <Project Name="libScanner"/>
-    <Project Name="FaceRecognition_mac"/>
-    <Project Name="libDeepLearning"/>
-    <Project Name="libheif"/>
-    <Project Name="libavif"/>
-    <Project Name="libFreeImage"/>
-    <Project Name="libOpenCLEngine"/>
-    <Project Name="libResource"/>
-  </Dependencies>
 </CodeLite_Project>
