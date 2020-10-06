@@ -456,13 +456,13 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
 			}
 			else
 			{
-				//if (transitionEnd)
-				//{
+				if (transitionEnd)
+				{
 					bitmapWindow->StopTransition();
 					bitmapWindow->SetBitmap(bitmap, false);
-				//}
-				//else
-				//	tempImage = bitmap;
+				}
+				else
+					tempImage = bitmap;
 			}
 		}
 		else

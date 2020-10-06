@@ -626,6 +626,7 @@ void CBitmapWndViewer::AfterRender()
 					//Génération de la texture
 					if (renderOpenGL != nullptr && afterEffect != nullptr)
 					{
+						
 						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
 						{
 							afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, etape, this, out);

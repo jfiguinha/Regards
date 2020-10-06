@@ -894,11 +894,13 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 		}
 		else
 		{
-			windowManager->HidePaneWindow(Pos::wxTOP);
+			//windowManager->HidePaneWindow(Pos::wxTOP);
+			windowManager->HideWindow(Pos::wxTOP);
 		}
 
 		panelInfosClick->Show(true);
 		windowManager->ChangeWindow(panelInfosClick, Pos::wxRIGHT, true);
+
 		//windowManager->Update();
 		break;
 
