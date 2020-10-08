@@ -71,6 +71,8 @@ namespace Regards
 			wxPoint GetMousePosition();
 
 		private:
+
+			virtual void RenderTexture(const bool &invertPos);
 			virtual void ApplyPreviewEffect(int & widthOutput, int & heightOutput);
 #ifdef RENDEROPENGL
 			virtual void AfterRender();

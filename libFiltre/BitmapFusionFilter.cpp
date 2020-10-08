@@ -49,11 +49,11 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
-CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
+CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	CRegardsBitmap * bitmapOut = nullptr;
 
-	if (etape == 0)
+	if (bitmapTemp == nullptr)
 	{
 		bitmapTemp = nextPicture->GetRegardsBitmap(true);
 		int orientation = nextPicture->GetOrientation();
@@ -89,11 +89,6 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 		*bitmapOut = *bitmapOutCopy;
 	}
 
-	if (bitmapOut != nullptr)
-		bitmapOut->SetAlphaValue(etape);
-
-	
-
 	rcOut.width = widthOutput;
 	rcOut.height = heightOutput;
 	rcOut.x = (bmpViewer->GetWidth() - widthOutput) / 2;
@@ -117,7 +112,7 @@ void  CBitmapFusionFilter::GenerateTexture(GLTexture * glPicture, CImageLoadingF
 	delete bitmapTemp;
 }
 
-void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, int etape, IBitmapDisplay * bmpViewer, wxRect &rcOut)
+void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	COpenCLEffectVideo * openclEffectVideo = nullptr;
 	cl_mem cl_nextPicture = nullptr;
@@ -131,14 +126,15 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		{
 			cl_int err;
             cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, glPicture->GetTextureID(), &err);
+			/*
 			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
 			Error::CheckError(err);
-			openclEffectVideo->SetAlphaValue(cl_nextPicture, glPicture->GetWidth(), glPicture->GetHeight(), etape);
+			openclEffectVideo->SetAlphaValue(cl_nextPicture, glPicture->GetWidth(), glPicture->GetHeight(), 100);
 			err = clEnqueueReleaseGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
 			Error::CheckError(err);
 			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
 			Error::CheckError(err);
-
+			*/
 			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
 			Error::CheckError(err);
 			openclEffectVideo->GetRgbaBitmap(cl_nextPicture);

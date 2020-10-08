@@ -24,7 +24,9 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
+#ifdef _MSC_VER 
 #include <tbb/tbbmalloc_proxy.h>
+#endif
 #endif
 #include <thread>
 #include <mutex>

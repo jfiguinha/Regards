@@ -81,8 +81,16 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 		vector<COpenCLParameter*> vecParam;
 		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
 
+		if (paramOutput == nullptr)
+		{
+			paramOutput = new COpenCLParameterClMem();
+			paramOutput->SetValue(cl_image);
+			paramOutput->SetNoDelete(true);
+		}
+		else
+			paramOutput->SetNoDelete(false);
 		paramOutput->SetLibelle("input");
-		paramOutput->SetNoDelete(false);
+		
 		vecParam.push_back(paramOutput);
 
 		COpenCLParameterInt* paramWidth = new COpenCLParameterInt();

@@ -141,6 +141,7 @@ namespace Regards
 			void CalculScreenPosFromReal(const int& xReal, const int& yReal, int& xScreen, int& yScreen);
 			void CalculRealPosFromScreen(const int& xScreen, const int& yScreen, int& xReal, int& yReal);
 			
+			virtual void RenderTexture(const bool &invertPos);
 
 			//void OnLoading(wxTimerEvent& event);
 			void OnMouseCaptureLost(wxMouseEvent& event) {};

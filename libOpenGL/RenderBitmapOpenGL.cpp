@@ -63,6 +63,32 @@ void CRenderBitmapOpenGL::LoadingResource(const double & scale_factor)
 	}
 }
 
+void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top,const bool & flipH, const bool & flipV, const bool & inverted)
+{
+	glTexture->Enable();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("textureScreen", glTexture->GetTextureID()))
+		{
+			printf("SetTexture textureScreen failed \n ");
+		}
+		if (!m_pShader->SetParam("intensity", alpha))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+	RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+
+	glDisable(GL_BLEND);
+	glTexture->Disable();
+}
+
 void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top)
 {
 	textureTransition->Enable();
@@ -110,6 +136,33 @@ void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const 
 	textureTransition->Disable();
 
 }
+
+
+void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture * textureTransition,const int &alpha, const int &width, const int &height, const int &left, const int &top)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	textureTransition->Enable();
+	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("textureScreen", textureTransition->GetTextureID()))
+		{
+			printf("SetTexture textureScreen failed \n ");
+		}
+		if (!m_pShader->SetParam("intensity", alpha))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+	ShowSecondBitmap(textureTransition, width, height, left, top);
+
+	textureTransition->Disable();
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+}
+
 
 
 CRenderBitmapOpenGL::~CRenderBitmapOpenGL()

@@ -29,6 +29,8 @@ namespace Regards
 			void ShowArrowNext();
 			void ShowArrowPrevious();
 			void ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top);
+			void RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top, const bool & flipH, const bool & flipV, const bool & inverted);
+			void ShowSecondBitmapWithAlpha(GLTexture * textureTransition, const int &alpha, const int &width, const int &height, const int &left, const int &top);
 
 		private:
 

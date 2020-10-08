@@ -518,6 +518,7 @@ IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
 {
 	switch (numFilter)
 	{
+	case IDM_AFTEREFFECT_MOVE:
 	case IDM_AFTEREFFECT_FUSION:
 		return new CBitmapFusionFilter();
 		break;
@@ -843,6 +844,7 @@ CEffectParameter * CFiltreData::GetEffectPointer(const int &numItem)
 			return new CGaussianBlurEffectParameter();
 			break;
 
+		case IDM_AFTEREFFECT_MOVE:
 		case IDM_AFTEREFFECT_FUSION:
 			return new CBitmapFusionEffectParameter();
 

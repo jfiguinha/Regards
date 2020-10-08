@@ -193,6 +193,9 @@ public:
 #ifdef SDL2
 
 		//putenv("SDL_AUDIO_CHANNELS=2");
+#ifdef WIN32
+		putenv("SDL_AUDIODRIVER=DirectSound");
+#endif
 		int flags = SDL_INIT_AUDIO | SDL_INIT_TIMER;
 		//------SDL------------------------
 		//³õÊ¼»¯
