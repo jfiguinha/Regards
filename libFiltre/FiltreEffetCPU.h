@@ -61,6 +61,7 @@ public:
 	virtual int GetWidth();
 	virtual int GetHeight();
 	static wxImage GetwxImage(CRegardsBitmap * bitmap);
+	int BrightnessAndContrastAuto(float clipHistPercent);
 
 private:
 	CRegardsBitmap * bitmapOut;

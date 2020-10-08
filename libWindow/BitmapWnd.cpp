@@ -1572,8 +1572,12 @@ void CBitmapWnd::RenderToScreenWithOpenCLSupport()
 		if (filtreEffet != nullptr)
 			delete filtreEffet;
 
+
+
+
 		filtreEffet = new CFiltreEffet(color, openclContext, source);
 
+		
 		loadBitmap = false;
 	}
 

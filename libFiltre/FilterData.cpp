@@ -88,6 +88,10 @@ int CFiltreData::RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, 
         case IDM_FILTRE_SOFTEN:
             filtreEffet->Soften();
             break;
+
+		case IDM_BRIGHTNESSCONTRAST_AUTO:
+			filtreEffet->BrightnessAndContrastAuto(0);
+			break;
             
         case IDM_HISTOGRAMNORMALIZE:
             filtreEffet->HistogramNormalize();
@@ -577,6 +581,7 @@ bool CFiltreData::IsOpenCLCompatible(const int &numFilter)
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
         case IDM_HISTOGRAMNORMALIZE:
+		case IDM_BRIGHTNESSCONTRAST_AUTO:
 		case IDM_FILTRE_CLOUDS:
 		case IDM_CROP:
 		case IDM_REDEYE:
@@ -720,6 +725,7 @@ int CFiltreData::GetTypeEffect(const int &numFilter)
             return CONVOLUTION_EFFECT;
             break;
             
+		case IDM_BRIGHTNESSCONTRAST_AUTO:
 		case IDM_FILTRE_CLAHE:
         case IDM_HISTOGRAMLOG:
         case IDM_HISTOGRAMEQUALIZE:
@@ -1130,5 +1136,6 @@ void CFiltreData::InitFilterListLabel()
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_KUWAHARA, "LBLFILTERKUWAHARA"));
     //labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BILATERAL2DS, "LBLFILTERBILATERAL"));
     labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_FILTER_BM3D, "LBLFILTREBM3D"));
+	labelFilterList.push_back(CLabelFilter::CreateLabelFilter(IDM_BRIGHTNESSCONTRAST_AUTO, "LBLBRIGHTNESSCONTRASTAUTO"));
     
 }

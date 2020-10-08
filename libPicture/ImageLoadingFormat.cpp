@@ -42,25 +42,7 @@ CImageLoadingFormat::~CImageLoadingFormat()
 {
 	if(memoryDelete)
 	{
-		if(_image != nullptr)
-			delete _image;
-		_image = nullptr;
-
-		if(_cxImage != nullptr)
-			delete _cxImage;
-		_cxImage = nullptr;
-
-		if(_wxImage != nullptr)
-			delete _wxImage;
-		_wxImage = nullptr;
-
-		if(_floatImage != nullptr)
-			delete _floatImage;
-		_floatImage = nullptr;
-
-		if (_jpegImage != nullptr)
-			delete _jpegImage;
-		_jpegImage = nullptr;
+		DeletePicture();
 	}
 }
 
@@ -69,7 +51,28 @@ int CImageLoadingFormat::GetFormat()
 	return format;
 }
 
+void CImageLoadingFormat::DeletePicture()
+{
+	if (_image != nullptr)
+		delete _image;
+	_image = nullptr;
 
+	if (_cxImage != nullptr)
+		delete _cxImage;
+	_cxImage = nullptr;
+
+	if (_wxImage != nullptr)
+		delete _wxImage;
+	_wxImage = nullptr;
+
+	if (_floatImage != nullptr)
+		delete _floatImage;
+	_floatImage = nullptr;
+
+	if (_jpegImage != nullptr)
+		delete _jpegImage;
+	_jpegImage = nullptr;
+}
 
 int CImageLoadingFormat::GetWidth()
 {
@@ -300,13 +303,18 @@ void CImageLoadingFormat::SetPicturToJpeg(CRegardsBitmap * image)
 		filename = image->GetFilename();
 	}
 }
-
+void CImageLoadingFormat::UpdatePicture(CRegardsBitmap * image)
+{
+	DeletePicture();
+	_image = image;
+}
 
 void CImageLoadingFormat::SetPicture(CRegardsBitmap * image, const bool &convertToRGB24)
 {
 	if(image != nullptr)
 	{
 		format = TYPE_IMAGE_REGARDSIMAGE;
+		
 		_image = image;
 		orientation = image->GetOrientation();
 		if (orientation < 0)

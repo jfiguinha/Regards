@@ -29,10 +29,11 @@
 #include <ParamInit.h>
 #include <RegardsConfigParam.h>
 #include <libPicture.h>
+#include <FiltreEffet.h>
 using namespace Regards::Picture;
 using namespace Regards::Window;
 using namespace Regards::Viewer;
-
+using namespace Regards::FiltreEffet;
 
 #define DELAY_ANIMATION 20
 
@@ -457,6 +458,18 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 		OutputDebugString(L"\n");
 #endif
 
+
+		if (!isThumbnail)
+		{
+			CRgbaquad color;
+			//CImageLoadingFormat * imageAutoContrast = new CImageLoadingFormat();
+			CFiltreEffet * filtreLocal = new CFiltreEffet(color, nullptr, bitmap);
+			filtreLocal->BrightnessAndContrastAuto(1);
+			bitmap->UpdatePicture(filtreLocal->GetBitmap(true));
+			delete filtreLocal;
+		}
+
+
 		//filename = bitmap->GetFilename();
 		SetBitmap(bitmap, isThumbnail);
 		//UpdateInfos(bitmap);
@@ -516,6 +529,8 @@ bool CCentralWindow::SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumb
 	OutputDebugString(L"CCentralWindow::SetBitmap");
 	OutputDebugString(L"\n");
 #endif
+
+
 
     printf("CCentralWindow::SetBitmap \n");
 	TRACE();

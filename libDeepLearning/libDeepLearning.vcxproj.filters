@@ -39,6 +39,9 @@
     <ClCompile Include="..\libextern\dlib-19.20\dlib\all\source.cpp">
       <Filter>dlib</Filter>
     </ClCompile>
+    <ClCompile Include="OpenCVEffect.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DetectRotation.h">
@@ -57,6 +60,9 @@
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="base64.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenCVEffect.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

@@ -93,6 +93,7 @@ public:
 
     int GetWidth();
 	int GetHeight();
+	int BrightnessAndContrastAuto(float clipHistPercent);
 
 private:
 

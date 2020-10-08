@@ -12,6 +12,7 @@
 #define RENDEROPENGL
 #define GLUT
 #define USE_TBB
+#define OPENCV_OPENCL
 
 //#define WX_PRECOMP
 #if defined(__WXMSW__) && defined(_DEBUG)
@@ -23,6 +24,7 @@
 #ifdef USE_TBB
 #include <tbb/concurrent_vector.h>
 #include <tbb/parallel_for.h>
+#include <tbb/tbbmalloc_proxy.h>
 #endif
 #include <thread>
 #include <mutex>

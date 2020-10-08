@@ -47,6 +47,7 @@ public:
 	void SetPicture(CRegardsBitmap * image, const bool &convertToRGB24 = false);
 	void SetPicture(CxImage * image);
 	void SetPicture(wxImage * image);
+	void UpdatePicture(CRegardsBitmap * image);
 	void SetPicture(CRegardsFloatBitmap * image);
 	bool IsOk();
 	void ConvertToRGB24(const bool &convert);
@@ -55,7 +56,7 @@ public:
 	void ApplyExifOrientation();
 protected:
 
-
+	void DeletePicture();
 	float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight);
 	uint8_t * CompressRegardsBitmapToJpeg(unsigned char * buffer, int width, int height, unsigned long & outputsize);
 	CRegardsBitmap * _image;

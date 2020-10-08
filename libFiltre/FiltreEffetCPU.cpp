@@ -17,9 +17,12 @@
 #include "clahe.h"
 #include <FilterData.h>
 #include <ImageLoadingFormat.h>
+#include <OpenCVEffect.h>
 #include <RegardsBitmap.h>
 //BM3D
 #include "bm3dfilter.h"
+
+using namespace Regards::OpenCV;
 
 extern float value[256];
 using namespace Regards::FiltreEffet;
@@ -1259,4 +1262,17 @@ CRegardsBitmap * CFiltreEffetCPU::GetBitmap(const bool &source)
 		copy->SetBitmap(pBitmap->GetPtBitmap(), pBitmap->GetBitmapWidth(), pBitmap->GetBitmapHeight());
 	}
 	return copy;
+}
+
+int CFiltreEffetCPU::BrightnessAndContrastAuto(float clipHistPercent)
+{
+	CRegardsBitmap* bitmap = nullptr;
+	if (preview)
+		bitmap = bitmapOut;
+	else
+		bitmap = pBitmap;
+
+	COpenCVEffect::BrightnessAndContrastAuto(bitmap, clipHistPercent);
+
+	return 0;
 }

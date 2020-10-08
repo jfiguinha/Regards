@@ -71,6 +71,7 @@ public:
     virtual void SetBitmap(CImageLoadingFormat * bitmap) = 0;
 	virtual int GetWidth() = 0;
 	virtual int GetHeight() = 0;
+	virtual int BrightnessAndContrastAuto(float clipHistPercent) = 0;
 protected:
 	//CRegardsBitmap * pBitmap;
 	CRgbaquad backColor;

@@ -115,6 +115,8 @@ namespace Regards
 			virtual int GetWidth();
 			virtual int GetHeight();
 
+			int BrightnessAndContrastAuto(float clipHistPercent) { return  -1; }
+
 		protected:
 
 			int GetSizeData();
