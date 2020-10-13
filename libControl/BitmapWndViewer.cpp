@@ -767,7 +767,7 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, this, out);
 					if (bitmapOut != nullptr)
 						bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
-					//bitmapNext->SetAlphaValue(100);
+					delete bitmapOut;
 					pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
 				}
 			}
@@ -793,7 +793,7 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(source, this, out);
 					if (bitmapOut != nullptr)
 						bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
-					//bitmapNext->SetAlphaValue(100);
+					delete bitmapOut;
 					pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
 				}
 			}
