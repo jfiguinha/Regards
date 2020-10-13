@@ -183,6 +183,7 @@ CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInter
 	//filtreraw = nullptr;
 #ifdef RENDEROPENGL
 	pictureNext = new GLTexture();
+	pictureFirst = new GLTexture();
 #endif
 	mouseUpdate = nullptr;
 	etape = 0;
@@ -246,6 +247,7 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	delete(m_cDessin);
 #ifdef RENDEROPENGL
 	delete(pictureNext);
+	delete(pictureFirst);
 #endif
 	if (afterEffect != nullptr)
 		delete afterEffect;
@@ -441,6 +443,22 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 		}
 	break;
 
+	case 4:
+	{
+		initTexture = true;
+		startTransition = true;
+		m_bTransition = true;
+		nextPicture = bmpSecond;
+		etape = 0;
+
+		if (afterEffect != nullptr)
+			delete afterEffect;
+
+		afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
+
+		transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+		break;
+	}
 
 	default:
 		{
@@ -571,6 +589,7 @@ int CBitmapWndViewer::GetOrientation()
 	return orientation; 
 }
 
+
 CDraw * CBitmapWndViewer::GetDessinPt()
 {
 	return m_cDessin;
@@ -616,9 +635,13 @@ void CBitmapWndViewer::AfterRender()
 				break;
 			}
 
+			case 4:
+				break;
+
+
 			case 3:
 			{
-				if (etape < 110)
+				if (etape > 0 && etape < 110)
 				{
 					wxRect out;
 					//Génération de la texture
@@ -650,7 +673,7 @@ void CBitmapWndViewer::AfterRender()
 
 			default:
 			{
-				if (numEffect != 0 && etape < 110 && nextPicture != nullptr)
+				if (numEffect != 0 && etape < 110 && nextPicture != nullptr && afterEffect != nullptr)
 				{
 					wxRect out;
 
@@ -721,7 +744,68 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 				break;
 		}
 
-		renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
+		if (numEffect == 4 && (etape > 0 && etape < 110))
+		{
+			wxRect out;
+			{
+				bool init = false;
+				if (bitmapNext == nullptr)
+				{
+					bitmapNext = new CRegardsBitmap(GetWidth(), GetHeight());
+					init = true;
+				}
+				else if (initTexture || (bitmapNext->GetBitmapWidth() != GetWidth() && bitmapNext->GetBitmapHeight() != GetHeight()))
+				{
+					delete bitmapNext;
+					bitmapNext = new CRegardsBitmap(GetWidth(), GetHeight());
+					init = true;
+				}
+
+				if (init)
+				{
+					bitmapNext->SetBackgroundColor(CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue(), 255));
+					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, this, out);
+					if (bitmapOut != nullptr)
+						bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
+					//bitmapNext->SetAlphaValue(100);
+					pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
+				}
+			}
+
+			//Show First Bitmap
+			{
+				bool init = false;
+				if (bitmapFirst == nullptr)
+				{
+					bitmapFirst = new CRegardsBitmap(GetWidth(), GetHeight());
+					init = true;
+				}
+				else if (initTexture || (bitmapFirst->GetBitmapWidth() != GetWidth() && bitmapFirst->GetBitmapHeight() != GetHeight()))
+				{
+					delete bitmapFirst;
+					bitmapFirst = new CRegardsBitmap(GetWidth(), GetHeight());
+					init = true;
+				}
+
+				if (init)
+				{
+					bitmapFirst->SetBackgroundColor(CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue(), 255));
+					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(source, this, out);
+					if (bitmapOut != nullptr)
+						bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
+					//bitmapNext->SetAlphaValue(100);
+					pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
+				}
+			}
+			//renderOpenGL->ShowSecondBitmap(pictureNext,  GetWidth(), GetHeight(), 0, 0);
+			renderOpenGL->RenderWithPageCurl(pictureFirst, pictureNext, etape, false, GetWidth(), GetHeight(), 0, 0);
+			initTexture = false;
+		}
+		else
+			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
+
+
+		
 
 		xPosImage = x;
 		yPosImage = y;
@@ -732,6 +816,8 @@ void CBitmapWndViewer::DeleteTexture()
 {
     if(pictureNext != nullptr)
         pictureNext->Delete();
+	if (pictureFirst != nullptr)
+		pictureFirst->Delete();
 }
 
 #else

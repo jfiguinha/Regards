@@ -16,7 +16,8 @@
 #endif
 #include <ImageLoadingFormat.h>
 #include <wx/window.h>
-//#include <FilterWindowParam.h>
+#include <libPicture.h>
+
 using namespace Regards::Picture;
 using namespace tbb;
 //using namespace Regards::DeepLearning;
@@ -208,10 +209,6 @@ bool MyApp::OnInit()
 
 	CLibResource::InitializeSQLServerDatabase(resourcePath);
 	CSqlInit::InitializeSQLServerDatabase(documentPath, dataInMemory);
-
-
-
-
 
 	//Chargement des ressources
 	wxXmlResource::Get()->InitAllHandlers();

@@ -16,7 +16,6 @@
 #ifdef __APPLE__
 #include <OpenCL/OpenCL.h>
 #endif
-
 #include <ImageLoadingFormat.h>
 #include <RegardsFloatBitmap.h>
 #include <OpenCLContext.h>
@@ -52,6 +51,7 @@ CBitmapWnd::CBitmapWnd(wxWindow* parent, wxWindowID id, CSliderInterface * slide
 #endif
 {
 #ifdef RENDEROPENGL
+	pageCurlOpenGL = nullptr;
 	glTexture = nullptr;
 	openCLEngine = nullptr;
 	renderOpenGL = nullptr;
@@ -1738,19 +1738,19 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	OutputDebugString(L"\n");
 #endif
 
-	// This is a dummy, to avoid an endless succession of paint messages.
-	// OnPaint handlers must always create a wxPaintDC.
-   //wxGLCanvas::SetCurrent(this);
-    wxPaintDC(this);
+	//bool isPageCurl = false;
+
+	wxPaintDC(this);
 
 	if (GetWidth() == 0 || GetHeight() == 0)
 		return;
 
-	//if(!loadBitmap)
-	//    if (GetWidth() == oldWidth || GetHeight() == oldHeight)
-	//        return;
-	oldWidth = GetWidth();
-	oldHeight = GetHeight();
+
+
+#if defined(WIN32) && defined(_DEBUG)
+	DWORD tickCount = GetTickCount();
+	OutputDebugString(L"OnPaint\n");
+#endif
 
 	if (renderOpenGL == nullptr)
 	{
@@ -1767,15 +1767,6 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 
 		renderOpenGL->LoadingResource(scale_factor);
 	}
-
-	// This is normally only necessary if there is more than one wxGLCanvas
-	// or more than one wxGLContext in the application.
-	renderOpenGL->SetCurrent(*this);
-
-#if defined(WIN32) && defined(_DEBUG)
-	DWORD tickCount = GetTickCount();
-	OutputDebugString(L"OnPaint\n");
-#endif
 
 	int supportOpenCL = 0;
 	CRegardsConfigParam* config = CParamInit::getInstance();
@@ -1795,25 +1786,62 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
 	else
 		openclContext = nullptr;
 
-	if (!supportOpenCL)
-		RenderToScreenWithoutOpenCLSupport();
-	else
-		RenderToScreenWithOpenCLSupport();
+/*********************************************************
+Page CURL Effect
+********************************************************
+	if (isPageCurl)
+	{
+		if (pageCurlOpenGL == nullptr)
+		{
+			pageCurlOpenGL = new CRenderPageCurlOpenGL(this);
+			pageCurlOpenGL->Init(this);
+			pageCurlOpenGL->InitPageCurl(this->GetWidth(), this->GetHeight());
 
-	AfterRender();
+		}
+
+		if (pageCurlOpenGL != nullptr)
+		{
+
+			pageCurlOpenGL->SetCurrent(*this);
+			pageCurlOpenGL->EnableFlip();
+			pageCurlOpenGL->Render();
+		}
+	}
+	else
+	{
+		if (renderOpenGL != nullptr)
+		{
+			renderOpenGL->SetCurrent(*this);
+
+			if (!supportOpenCL)
+				RenderToScreenWithoutOpenCLSupport();
+			else
+				RenderToScreenWithOpenCLSupport();
+
+			AfterRender();
+		}
+
+	}
+
+*******************************************************
+End Page CURL Effect
+********************************************************/
+
+	if (renderOpenGL != nullptr)
+	{
+		renderOpenGL->SetCurrent(*this);
+
+		if (!supportOpenCL)
+			RenderToScreenWithoutOpenCLSupport();
+		else
+			RenderToScreenWithOpenCLSupport();
+
+		AfterRender();
+	}
 
     this->SwapBuffers();
 
-	/*
-	if(source != nullptr)
-	{
-		delete source;
-		source = nullptr;
-	}
-	*/
-
 	printf("CBitmapWnd End OnPaint \n");
-	//scrollbar->SetPosition(posLargeur, posHauteur);
 
 #if defined(WIN32) && defined(_DEBUG)
 	DWORD LasttickCount = GetTickCount();				// Get The Tick Count
@@ -1841,6 +1869,9 @@ void CBitmapWnd::OnPaint(wxPaintEvent& event)
        }   
     }
 #endif
+
+	oldWidth = GetWidth();
+	oldHeight = GetHeight();
 }
 
 #else

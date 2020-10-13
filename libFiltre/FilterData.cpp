@@ -518,8 +518,7 @@ IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
 {
 	switch (numFilter)
 	{
-	case IDM_AFTEREFFECT_MOVE:
-	case IDM_AFTEREFFECT_FUSION:
+	default:
 		return new CBitmapFusionFilter();
 		break;
 	}

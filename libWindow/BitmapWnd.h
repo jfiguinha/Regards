@@ -36,7 +36,7 @@ namespace Regards
 
 	namespace OpenGL
 	{
-
+		class CRenderPageCurlOpenGL;
 		class GLTexture;
 		class CRenderBitmapOpenGL;
 	}
@@ -259,6 +259,7 @@ namespace Regards
 			//int filterInterpolation;
 #ifdef RENDEROPENGL
 			CRenderBitmapOpenGL * renderOpenGL;
+			CRenderPageCurlOpenGL * pageCurlOpenGL;
 			GLTexture * glTexture;
 			COpenCLEngine * openCLEngine;
 			COpenCLContext * openclContext;

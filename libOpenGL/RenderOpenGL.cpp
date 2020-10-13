@@ -407,6 +407,11 @@ void CRenderOpenGL::RenderToScreen(IMouseUpdate * mousUpdate, CEffectParameter *
 	textureDisplay->Disable();
 }
 
+GLTexture * CRenderOpenGL::GetGLTexture()
+{
+	return textureDisplay;
+}
+
 GLTexture * CRenderOpenGL::GetDisplayTexture()
 {
 	if (textureDisplay == nullptr || (textureDisplay->GetWidth() != width || textureDisplay->GetHeight() != height))

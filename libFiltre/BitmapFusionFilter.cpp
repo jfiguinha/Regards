@@ -51,6 +51,15 @@ int CBitmapFusionFilter::GetTypeFilter()
 
 CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
+	
+	if (bitmapTemp != nullptr)
+		delete bitmapTemp;
+	bitmapTemp = nullptr;
+
+	if (bitmapOutCopy != nullptr)
+		delete bitmapOutCopy;
+	bitmapOutCopy = nullptr;
+
 	CRegardsBitmap * bitmapOut = nullptr;
 
 	if (bitmapTemp == nullptr)

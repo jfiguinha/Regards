@@ -23,14 +23,17 @@ namespace Regards
 		{
 		public:
 
+
+
 			CRenderBitmapOpenGL(wxGLCanvas *canvas);
 			virtual ~CRenderBitmapOpenGL();
             void LoadingResource(const double & scale_factor);
 			void ShowArrowNext();
 			void ShowArrowPrevious();
-			void ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top);
+			void ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const bool &blend = true);
 			void RenderWithAlphaChannel(GLTexture * glTexture, const int &alpha, const int &left, const int &top, const bool & flipH, const bool & flipV, const bool & inverted);
 			void ShowSecondBitmapWithAlpha(GLTexture * textureTransition, const int &alpha, const int &width, const int &height, const int &left, const int &top);
+			void RenderWithPageCurl(GLTexture * glTexture, GLTexture * textureTransition, const float &time, const float &invert, const int &width, const int &height, const int &left, const int &top);
 
 		private:
 

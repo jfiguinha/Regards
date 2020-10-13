@@ -105,6 +105,7 @@ namespace Regards
 			void OnTransition(wxTimerEvent& event);
 			
             void LoadingResource();
+
             
 			wxCursor hCursorCross;
 			CDraw * m_cDessin;
@@ -133,6 +134,10 @@ namespace Regards
 			wxTimer * selectEffectTimer;
 #ifdef RENDEROPENGL
 			Regards::OpenGL::GLTexture * pictureNext;
+			Regards::OpenGL::GLTexture * pictureFirst;
+			CRegardsBitmap * bitmapNext = nullptr;
+			CRegardsBitmap * bitmapFirst = nullptr;
+			bool initTexture = false;
 #endif
 			
 

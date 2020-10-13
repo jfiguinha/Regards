@@ -68,6 +68,7 @@ class CEffectParameter;
 #define IDM_HDR_DEBLURRING 46
 #define FILTER_END 45
 #define IDM_OCR 99
+#define IDM_FILTRE_PAGECURL 47
 
 #define IDM_AFTEREFFECT_START 300
 #define IDM_AFTEREFFECT_FUSION 301

@@ -42,6 +42,7 @@ namespace Regards
 			virtual ~CRenderOpenGL();
 			wxGLContext * GetGLContext();
             GLTexture * GetDisplayTexture();
+			GLTexture * GetGLTexture();
             GLTexture * GetDisplayTexture(const int &width, const int &height);
 			void CreateScreenRender(const int &width, const int &height, const CRgbaquad &color);
 			GLTexture * GetDisplayTexture(const int &width, const int &height, cl_context context);

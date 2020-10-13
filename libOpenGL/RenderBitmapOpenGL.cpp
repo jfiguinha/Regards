@@ -89,11 +89,52 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const in
 	glTexture->Disable();
 }
 
-void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top)
+void CRenderBitmapOpenGL::RenderWithPageCurl(GLTexture * glTexture, GLTexture * textureTransition, const float &time, const float &invert, const int &width, const int &height, const int &left, const int &top)
+{
+	glTexture->Enable();
+	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_PAGECURL");
+	if (m_pShader != nullptr)
+	{
+		m_pShader->EnableShader();
+		if (!m_pShader->SetTexture("textureScreen", glTexture->GetTextureID()))
+		{
+			printf("SetTexture sourceTex failed \n ");
+		}
+		if (!m_pShader->SetTexture("targetTex", textureTransition->GetTextureID()))
+		{
+			printf("SetTexture sourceTex failed \n ");
+		}
+		if (!m_pShader->SetParam("time", time))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+		if (!m_pShader->SetParam("invert", invert))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+		if (!m_pShader->SetParam("height", height))
+		{
+			printf("SetParam intensity failed \n ");
+		}
+	}
+
+	ShowSecondBitmap(textureTransition, width, height, left, top, true);
+	
+	if (m_pShader != nullptr)
+		m_pShader->DisableShader();
+
+	//glDisable(GL_BLEND);
+	glTexture->Disable();
+}
+
+void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const int &width, const int &height, const int &left, const int &top, const bool &blend)
 {
 	textureTransition->Enable();
-	glEnable (GL_BLEND);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	if (blend)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
 
 	glPushMatrix();
 
@@ -104,7 +145,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const 
 #endif
     glEnableClientState(GL_VERTEX_ARRAY);
     
-    GLfloat vertices[] = {
+	GLfloat vertices[] = {
         static_cast<GLfloat>(left), static_cast<GLfloat>(top),
         static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
         static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
@@ -115,6 +156,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const 
 		1, 0,
 		1, 1,
 		0, 1 };
+
 
 	glVertexPointer(2, GL_FLOAT, 0, vertices);
 	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
@@ -131,7 +173,8 @@ void CRenderBitmapOpenGL::ShowSecondBitmap(GLTexture * textureTransition, const 
 
 	glPopMatrix();
 
-	glDisable (GL_BLEND);
+	if (blend)
+		glDisable (GL_BLEND);
 
 	textureTransition->Disable();
 
