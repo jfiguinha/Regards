@@ -309,6 +309,7 @@
     <ClInclude Include="NlmeansEffectParameter.h" />
     <ClInclude Include="NlmeansFilter.h" />
     <ClInclude Include="OpenCLEffect.h" />
+    <ClInclude Include="PageCurlFilter.h" />
     <ClInclude Include="PenDrawInfo.h" />
     <ClInclude Include="PerlinNoise.h" />
     <ClInclude Include="PhotoFiltreEffectParameter.h" />
@@ -379,6 +380,7 @@
     <ClCompile Include="MotionBlurFilter.cpp" />
     <ClCompile Include="NlmeansFilter.cpp" />
     <ClCompile Include="OpenCLEffect.cpp" />
+    <ClCompile Include="PageCurlFilter.cpp" />
     <ClCompile Include="PerlinNoise.cpp" />
     <ClCompile Include="PhotoFiltreFilter.cpp" />
     <ClCompile Include="PosterisationFilter.cpp" />

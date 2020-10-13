@@ -21,9 +21,14 @@ public:
     virtual ~IAfterEffect(){};
 
 	virtual int GetTypeFilter() = 0;
-	virtual CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
+	virtual void GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
+
 #ifdef RENDEROPENGL
-	virtual void GenerateBitmapOpenCLEffect(Regards::OpenGL::GLTexture * glPicture, CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
-	virtual void GenerateTexture(Regards::OpenGL::GLTexture * glPicture, CImageLoadingFormat * nextPicture) = 0;
+	virtual void GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut) = 0;
+	virtual void GenerateTexture(CImageLoadingFormat * nextPicture) = 0;
+	virtual GLTexture * GetTexture(const int &numTexture) = 0;
+	virtual void DeleteTexture() = 0;
 #endif
+
+	
 };

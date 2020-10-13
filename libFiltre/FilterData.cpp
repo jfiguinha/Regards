@@ -61,6 +61,7 @@
 #include <Crop.h>
 #include <Selection.h>
 #include <BitmapFusionFilter.h>
+#include <PageCurlFilter.h>
 #include <BitmapFusionEffectParameter.h>
 using namespace Regards::Filter;
 vector<CFiltreData::CLabelFilter> CFiltreData::labelFilterList;
@@ -508,16 +509,33 @@ CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int
     return labelFilter;
 }
 
-void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
+void CFiltreData::DeleteAfterEffectPt(const int &numFilter,  IAfterEffect * filter)
 {
-	if (filter != nullptr)
-		delete filter;
+	switch (numFilter)
+	{
+	case IDM_AFTEREFFECT_PAGECURL:
+	{
+		CPageCurlFilter * pageCurl = (CPageCurlFilter *)filter;
+		delete pageCurl;
+		break;
+	}
+	default:
+	{
+		CBitmapFusionFilter * fusionFilter = (CBitmapFusionFilter *)filter;
+		delete fusionFilter;
+		break;
+	}
+	}
+
 }
+
 
 IAfterEffect * CFiltreData::AfterEffectPt(const int &numFilter)
 {
 	switch (numFilter)
 	{
+	case IDM_AFTEREFFECT_PAGECURL:
+		return new CPageCurlFilter();
 	default:
 		return new CBitmapFusionFilter();
 		break;

@@ -133,11 +133,13 @@ namespace Regards
 			wxTimer * transitionTimer;
 			wxTimer * selectEffectTimer;
 #ifdef RENDEROPENGL
+			/*
 			Regards::OpenGL::GLTexture * pictureNext;
 			Regards::OpenGL::GLTexture * pictureFirst;
 			CRegardsBitmap * bitmapNext = nullptr;
 			CRegardsBitmap * bitmapFirst = nullptr;
 			bool initTexture = false;
+			*/
 #endif
 			
 

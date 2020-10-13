@@ -21,6 +21,7 @@
 #include <wx/mimetype.h>
 #include <GLTexture.h>
 #include <RenderBitmapOpenGL.h>
+#include <PageCurlFilter.h>
 #ifdef __APPLE__
     #include <SaveFromCFunction.h>
     #include <SaveFileFormat.h>
@@ -32,7 +33,7 @@
     #include "email.h"
 #endif
 #include <config_id.h>
-
+using namespace Regards::Filter;
 using namespace Regards::Control;
 using namespace Regards::OpenCL;
 using namespace Regards::OpenGL;
@@ -180,11 +181,7 @@ void CBitmapWndViewer::LoadingResource()
 CBitmapWndViewer::CBitmapWndViewer(wxWindow* parent, wxWindowID id, CSliderInterface * slider, wxWindowID mainViewerId, const CThemeBitmapWindow & theme, CBitmapInterface * bitmapInterface)
 	: CBitmapWnd(parent, id, slider, mainViewerId, theme)
 {
-	//filtreraw = nullptr;
-#ifdef RENDEROPENGL
-	pictureNext = new GLTexture();
-	pictureFirst = new GLTexture();
-#endif
+
 	mouseUpdate = nullptr;
 	etape = 0;
 	preview = 0;
@@ -245,12 +242,8 @@ CBitmapWndViewer::~CBitmapWndViewer()
 	//delete(openclEffectVideo);
 	delete(transitionTimer);
 	delete(m_cDessin);
-#ifdef RENDEROPENGL
-	delete(pictureNext);
-	delete(pictureFirst);
-#endif
-	if (afterEffect != nullptr)
-		delete afterEffect;
+
+
 }
 
 void CBitmapWndViewer::AfterSetBitmap()
@@ -397,7 +390,21 @@ void CBitmapWndViewer::StopTransition()
 
 void CBitmapWndViewer::EndTransition()
 {
-	//SetBitmap(nextPicture, false);
+	int numEffect = 0;
+
+	if (isDiaporama)
+		numEffect = config->GetDiaporamaTransitionEffect();
+	else if (config != nullptr)
+		numEffect = config->GetEffect();
+
+	if (!bitmapLoad)
+		numEffect = 0;
+
+	if (afterEffect != nullptr)
+	{
+		CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
+		afterEffect = nullptr;
+	}
 	startTransition = false;
 	bitmapInterface->TransitionEnd();
 }
@@ -444,26 +451,30 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 	break;
 
 	case 4:
-	{
-		initTexture = true;
-		startTransition = true;
-		m_bTransition = true;
-		nextPicture = bmpSecond;
-		etape = 0;
+		{
+			startTransition = true;
+			m_bTransition = true;
+			nextPicture = bmpSecond;
+			etape = 0;
 
-		if (afterEffect != nullptr)
-			delete afterEffect;
+			if (afterEffect != nullptr)
+			{
+				CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
+				afterEffect = nullptr;
+			}
 
-		afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
-
-		transitionTimer->Start(TIMER_TRANSITION_TIME, true);
-		break;
-	}
+			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
+			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
+			break;
+		}
 
 	default:
 		{
 			if (afterEffect != nullptr)
-				delete afterEffect;
+			{
+				CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
+				afterEffect = nullptr;
+			}
 
 			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
 
@@ -475,17 +486,13 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 				etape = 0;
 
 #ifdef RENDEROPENGL
-
 				if (renderOpenGL != nullptr && afterEffect != nullptr)
 				{
 
 					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-						afterEffect->GenerateTexture(pictureNext, nextPicture);
+						afterEffect->GenerateTexture(nextPicture);
 				}
-
 #endif
-
-				//renderNext.Destroy();
 				transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			}
 			else
@@ -497,9 +504,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 			}
 		}
 		break;
-
 	}
-
 
 }
 
@@ -638,7 +643,6 @@ void CBitmapWndViewer::AfterRender()
 			case 4:
 				break;
 
-
 			case 3:
 			{
 				if (etape > 0 && etape < 110)
@@ -647,25 +651,15 @@ void CBitmapWndViewer::AfterRender()
 					//Génération de la texture
 					if (renderOpenGL != nullptr && nextPicture != nullptr)
 					{
-
 						if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-						{
-							afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, this, out);
-						}
+							afterEffect->GenerateBitmapOpenCLEffect(nextPicture, this, out);
 						else
-						{
-							CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, this, out);
-							if (bitmapOut != nullptr)
-							{
-								pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-								delete bitmapOut;
-							}
-						}
+							afterEffect->GenerateBitmapEffect(nextPicture, this, out);
 
 						int xtexture = (float)(this->GetWidth() - (out.x * scale_factor));
 						int pos = (out.x * scale_factor) + xtexture * ((float)(100 - etape) / 100.0f);
 						if (renderOpenGL != nullptr)
-							renderOpenGL->ShowSecondBitmap(pictureNext, out.width  * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
+							renderOpenGL->ShowSecondBitmap(afterEffect->GetTexture(0), out.width  * scale_factor, out.height * scale_factor, pos, out.y * scale_factor);
 					}
 				}
 				break;
@@ -678,28 +672,16 @@ void CBitmapWndViewer::AfterRender()
 					wxRect out;
 
 					if (openclContext->IsSharedContextCompatible() && filtreEffet->GetLib() == LIBOPENCL)
-					{
-						afterEffect->GenerateBitmapOpenCLEffect(pictureNext, nextPicture, this, out);
-					}
+						afterEffect->GenerateBitmapOpenCLEffect(nextPicture, this, out);
 					else
-					{
-						CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, this, out);
-						if (bitmapOut != nullptr)
-						{
-							pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-							delete bitmapOut;
-						}
-					}
+						afterEffect->GenerateBitmapEffect(nextPicture, this, out);
 
 					if (renderOpenGL != nullptr)
-						renderOpenGL->ShowSecondBitmapWithAlpha(pictureNext, etape, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
+						renderOpenGL->ShowSecondBitmapWithAlpha(afterEffect->GetTexture(0), etape, out.width  * scale_factor, out.height * scale_factor, out.x * scale_factor, out.y * scale_factor);
 				}
 				break;
 			}
-
 		}
-
-
 	}
 
 	if (!isDiaporama)
@@ -746,66 +728,15 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 
 		if (numEffect == 4 && (etape > 0 && etape < 110))
 		{
-			wxRect out;
+			CPageCurlFilter * afterEffectNext = (CPageCurlFilter *)afterEffect;
+			if (afterEffectNext != nullptr)
 			{
-				bool init = false;
-				if (bitmapNext == nullptr)
-				{
-					bitmapNext = new CRegardsBitmap(GetWidth(), GetHeight());
-					init = true;
-				}
-				else if (initTexture || (bitmapNext->GetBitmapWidth() != GetWidth() && bitmapNext->GetBitmapHeight() != GetHeight()))
-				{
-					delete bitmapNext;
-					bitmapNext = new CRegardsBitmap(GetWidth(), GetHeight());
-					init = true;
-				}
-
-				if (init)
-				{
-					bitmapNext->SetBackgroundColor(CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue(), 255));
-					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(nextPicture, this, out);
-					if (bitmapOut != nullptr)
-						bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
-					delete bitmapOut;
-					pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
-				}
+				afterEffectNext->GenerateTexture(nextPicture, source, this);
+				renderOpenGL->RenderWithPageCurl(afterEffectNext->GetTexture(0), afterEffectNext->GetTexture(1), etape, false, GetWidth(), GetHeight(), 0, 0);
 			}
-
-			//Show First Bitmap
-			{
-				bool init = false;
-				if (bitmapFirst == nullptr)
-				{
-					bitmapFirst = new CRegardsBitmap(GetWidth(), GetHeight());
-					init = true;
-				}
-				else if (initTexture || (bitmapFirst->GetBitmapWidth() != GetWidth() && bitmapFirst->GetBitmapHeight() != GetHeight()))
-				{
-					delete bitmapFirst;
-					bitmapFirst = new CRegardsBitmap(GetWidth(), GetHeight());
-					init = true;
-				}
-
-				if (init)
-				{
-					bitmapFirst->SetBackgroundColor(CRgbaquad(themeBitmap.colorBack.Red(), themeBitmap.colorBack.Green(), themeBitmap.colorBack.Blue(), 255));
-					CRegardsBitmap * bitmapOut = afterEffect->GenerateBitmapEffect(source, this, out);
-					if (bitmapOut != nullptr)
-						bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
-					delete bitmapOut;
-					pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
-				}
-			}
-			//renderOpenGL->ShowSecondBitmap(pictureNext,  GetWidth(), GetHeight(), 0, 0);
-			renderOpenGL->RenderWithPageCurl(pictureFirst, pictureNext, etape, false, GetWidth(), GetHeight(), 0, 0);
-			initTexture = false;
 		}
 		else
 			renderOpenGL->RenderToScreen(mouseUpdate, effectParameter, x, y, invertPos);
-
-
-		
 
 		xPosImage = x;
 		yPosImage = y;
@@ -814,10 +745,8 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 
 void CBitmapWndViewer::DeleteTexture()
 {
-    if(pictureNext != nullptr)
-        pictureNext->Delete();
-	if (pictureFirst != nullptr)
-		pictureFirst->Delete();
+	if (afterEffect != nullptr)
+		afterEffect->DeleteTexture();
 }
 
 #else

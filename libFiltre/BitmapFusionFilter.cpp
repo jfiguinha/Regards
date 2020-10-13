@@ -32,6 +32,7 @@ CBitmapFusionFilter::CBitmapFusionFilter()
 {
 	bitmapTemp = nullptr;
 	bitmapOutCopy = nullptr;
+	pictureNext = new GLTexture();
 }
 
 CBitmapFusionFilter::~CBitmapFusionFilter()
@@ -42,6 +43,8 @@ CBitmapFusionFilter::~CBitmapFusionFilter()
 	if (bitmapOutCopy != nullptr)
 		delete bitmapOutCopy;
 
+	if (pictureNext != nullptr)
+		delete(pictureNext);
 }
 
 int CBitmapFusionFilter::GetTypeFilter()
@@ -49,17 +52,8 @@ int CBitmapFusionFilter::GetTypeFilter()
 	return IDM_AFTEREFFECT_FUSION;
 }
 
-CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
+CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapTexture(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
-	
-	if (bitmapTemp != nullptr)
-		delete bitmapTemp;
-	bitmapTemp = nullptr;
-
-	if (bitmapOutCopy != nullptr)
-		delete bitmapOutCopy;
-	bitmapOutCopy = nullptr;
-
 	CRegardsBitmap * bitmapOut = nullptr;
 
 	if (bitmapTemp == nullptr)
@@ -77,7 +71,7 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 	{
 		if (bitmapOutCopy->GetBitmapWidth() != widthOutput || bitmapOutCopy->GetBitmapHeight() != heightOutput)
 		{
-			bitmapOut  = new CRegardsBitmap(widthOutput, heightOutput);
+			bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 			CInterpolationBicubic interpolation;
 			interpolation.Execute(bitmapTemp, bitmapOut);
 		}
@@ -86,7 +80,7 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 			bitmapOut = new CRegardsBitmap();
 			*bitmapOut = *bitmapOutCopy;
 		}
-		
+
 	}
 	else
 	{
@@ -102,26 +96,35 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat *
 	rcOut.height = heightOutput;
 	rcOut.x = (bmpViewer->GetWidth() - widthOutput) / 2;
 	rcOut.y = (bmpViewer->GetHeight() - heightOutput) / 2;
-	
-	return bitmapOut;
 
+	return bitmapOut;
+}
+
+void CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
+{
+	CRegardsBitmap * bitmapOut = GenerateBitmapTexture(nextPicture, bmpViewer, rcOut);
+	if (bitmapOut != nullptr)
+	{
+		pictureNext->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+		delete bitmapOut;
+	}
 }
 
 #ifdef RENDEROPENGL
 
-void  CBitmapFusionFilter::GenerateTexture(GLTexture * glPicture, CImageLoadingFormat * nextPicture)
+void  CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat * nextPicture)
 {
 	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
 	int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);
 	width = bitmapTemp->GetBitmapWidth();
 	height = bitmapTemp->GetBitmapHeight();
-	glPicture->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
-	glBindTexture(GL_TEXTURE_2D, glPicture->GetTextureID());
+	pictureNext->Create(bitmapTemp->GetBitmapWidth(), bitmapTemp->GetBitmapHeight(), bitmapTemp->GetPtBitmap());
+	glBindTexture(GL_TEXTURE_2D, pictureNext->GetTextureID());
 	delete bitmapTemp;
 }
 
-void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
+void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
 	COpenCLEffectVideo * openclEffectVideo = nullptr;
 	cl_mem cl_nextPicture = nullptr;
@@ -134,16 +137,7 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		try
 		{
 			cl_int err;
-            cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, glPicture->GetTextureID(), &err);
-			/*
-			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-			Error::CheckError(err);
-			openclEffectVideo->SetAlphaValue(cl_nextPicture, glPicture->GetWidth(), glPicture->GetHeight(), 100);
-			err = clEnqueueReleaseGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
-			Error::CheckError(err);
-			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
-			Error::CheckError(err);
-			*/
+            cl_nextPicture = clCreateFromGLTexture(bmpViewer->GetOpenCLContext()->GetContext(), CL_MEM_READ_WRITE, GL_TEXTURE_2D, 0, pictureNext->GetTextureID(), &err);
 			err = clEnqueueAcquireGLObjects(bmpViewer->GetOpenCLContext()->GetCommandQueue(), 1, &cl_nextPicture, 0, 0, 0);
 			Error::CheckError(err);
 			openclEffectVideo->GetRgbaBitmap(cl_nextPicture);
@@ -151,9 +145,6 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 			Error::CheckError(err);
 			err = clFlush(bmpViewer->GetOpenCLContext()->GetCommandQueue());
 			Error::CheckError(err);
-          
-            
-            
 		}
 		catch (...)
 		{
@@ -176,6 +167,19 @@ void CBitmapFusionFilter::GenerateBitmapOpenCLEffect(GLTexture * glPicture, CIma
 		clReleaseMemObject(cl_nextPicture);
 		cl_nextPicture = nullptr;
 	}
+
+}
+
+void CBitmapFusionFilter::DeleteTexture()
+{
+	if (pictureNext != nullptr)
+		delete(pictureNext);
+	pictureNext = nullptr;
+}
+
+GLTexture * CBitmapFusionFilter::GetTexture(const int &numTexture)
+{
+	return pictureNext;
 }
 
 #endif

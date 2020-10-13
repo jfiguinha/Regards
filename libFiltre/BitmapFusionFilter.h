@@ -11,18 +11,21 @@ namespace Regards
 		public:
 			CBitmapFusionFilter();
 			~CBitmapFusionFilter();
-			int GetTypeFilter();
-			CRegardsBitmap * GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut);
+			virtual int GetTypeFilter();
+			virtual void GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut);
 
 #ifdef RENDEROPENGL
-			void GenerateBitmapOpenCLEffect(GLTexture * glPicture, CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut);
-			void GenerateTexture(GLTexture * glPicture, CImageLoadingFormat * nextPicture);
+			virtual void GenerateBitmapOpenCLEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut);
+			virtual void GenerateTexture(CImageLoadingFormat * nextPicture);
+			virtual GLTexture * GetTexture(const int &numTexture);
+			virtual void DeleteTexture();
 #endif
-		private:
 
+		protected:
+			virtual CRegardsBitmap * GenerateBitmapTexture(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut);
+			Regards::OpenGL::GLTexture * pictureNext;
 			CRegardsBitmap * bitmapOutCopy;
-			CRegardsBitmap * bitmapTemp;
-
+			CRegardsBitmap * bitmapTemp;		
 			int width;
 			int height;
 		};
