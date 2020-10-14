@@ -77,6 +77,10 @@
     </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="window">
+    <VirtualDirectory Name="Transition">
+      <File Name="PageCurlFilter.h"/>
+      <File Name="PageCurlFilter.cpp"/>
+    </VirtualDirectory>
     <VirtualDirectory Name="drawing">
       <File Name="CropFilter.h"/>
       <File Name="CropFilter.cpp"/>
