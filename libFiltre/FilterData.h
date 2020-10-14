@@ -70,10 +70,12 @@ class CEffectParameter;
 #define IDM_OCR 99
 #define IDM_FILTRE_PAGECURL 47
 
-#define IDM_AFTEREFFECT_START 300
+#define IDM_AFTEREFFECT_NONE 300
 #define IDM_AFTEREFFECT_FUSION 301
-#define IDM_AFTEREFFECT_MOVE 303
-#define IDM_AFTEREFFECT_PAGECURL 304
+#define IDM_AFTEREFFECT_MOVE 302
+#define IDM_AFTEREFFECT_PAGECURL 303
+
+#define IDM_DIAPORAMA_TRANSITION 100
 
 #define IDM_DECODE_RAW 100
 #define IDM_FILTRE_VIDEO 200
@@ -123,7 +125,7 @@ public:
     static int TypeApplyFilter(const int &numFiltre);
 	static CDraw * GetDrawingPt(const int &numFilter);
 	static IAfterEffect * AfterEffectPt(const int &numFilter);
-	static void DeleteAfterEffectPt(const int &numFilter, IAfterEffect * filter);
+	static void DeleteAfterEffectPt(IAfterEffect * filter);
     static int RenderEffect(const int &numEffect, CFiltreEffet * filtreEffet, CEffectParameter * effectParameter, const bool &preview = false);
 private:
     

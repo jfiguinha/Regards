@@ -29,7 +29,7 @@ class ConfigRegards: public wxDialog
         wxSpinCtrl* scProcessThumbnail;
 		wxRadioBox* rdPreviewRender;
 		wxRadioBox* rdDxva2Render;
-		wxRadioBox* rbTransitionEffect;
+		wxComboBox* rbTransitionEffect;
 		wxRadioBox* rbRenderVideo;
 		wxRadioBox* rbEffectLibrary;
 		wxButton* btCancel;
@@ -39,6 +39,7 @@ class ConfigRegards: public wxDialog
 		wxRadioBox* rbThumbnailCache;
 		wxRadioBox* rbDatabaseInMemory;
 		wxRadioBox* rbAutoRotate;
+		wxRadioBox* rbContrastCorrection;
 		wxComboBox* rbInterpolation;
 		//*)
 

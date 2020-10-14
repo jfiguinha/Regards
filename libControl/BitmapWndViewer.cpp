@@ -402,7 +402,7 @@ void CBitmapWndViewer::EndTransition()
 
 	if (afterEffect != nullptr)
 	{
-		CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
+		CFiltreData::DeleteAfterEffectPt(afterEffect);
 		afterEffect = nullptr;
 	}
 	startTransition = false;
@@ -429,10 +429,16 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 
 	if(!bitmapLoad)
 		numEffect = 0;
+
+	if (afterEffect != nullptr)
+	{
+		CFiltreData::DeleteAfterEffectPt(afterEffect);
+		afterEffect = nullptr;
+	}
 	
 	switch (numEffect)
 	{
-	case 0: //Pas d'effet
+	case IDM_AFTEREFFECT_NONE: //Pas d'effet
 		{
 			SetBitmap(bmpSecond, false);
 			startTransition = false;
@@ -440,7 +446,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 		}
 		break;
 
-	case 2:
+	case IDM_DIAPORAMA_TRANSITION:
 		{
 			SetBitmap(bmpSecond, false);
 			startTransition = true;
@@ -450,33 +456,21 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 		}
 	break;
 
-	case 4:
+	case IDM_AFTEREFFECT_PAGECURL:
 		{
 			startTransition = true;
 			m_bTransition = true;
 			nextPicture = bmpSecond;
 			etape = 0;
 
-			if (afterEffect != nullptr)
-			{
-				CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
-				afterEffect = nullptr;
-			}
-
-			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
+			afterEffect = CFiltreData::AfterEffectPt(numEffect);
 			transitionTimer->Start(TIMER_TRANSITION_TIME, true);
 			break;
 		}
 
 	default:
 		{
-			if (afterEffect != nullptr)
-			{
-				CFiltreData::DeleteAfterEffectPt(IDM_AFTEREFFECT_START + numEffect, afterEffect);
-				afterEffect = nullptr;
-			}
-
-			afterEffect = CFiltreData::AfterEffectPt(IDM_AFTEREFFECT_START + numEffect);
+			afterEffect = CFiltreData::AfterEffectPt(numEffect);
 
 			if (bitmapLoad && !startTransition && filename != bmpSecond->GetFilename())
 			{
@@ -630,7 +624,7 @@ void CBitmapWndViewer::AfterRender()
 
 		switch (numEffect)
 		{
-			case 2:
+			case IDM_DIAPORAMA_TRANSITION:
 			{
 				if (etape < 100)
 				{
@@ -640,10 +634,10 @@ void CBitmapWndViewer::AfterRender()
 				break;
 			}
 
-			case 4:
+			case IDM_AFTEREFFECT_PAGECURL:
 				break;
 
-			case 3:
+			case IDM_AFTEREFFECT_MOVE:
 			{
 				if (etape > 0 && etape < 110)
 				{
@@ -720,13 +714,13 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 
 		switch (numEffect)
 		{
-			case 3:
+			case IDM_AFTEREFFECT_MOVE:
 				if(etape < 100)
 					x = x - ((float)(x + glTexture->GetWidth()) * ((float)(etape) / 100.0f));
 				break;
 		}
 
-		if (numEffect == 4 && (etape > 0 && etape < 110))
+		if (numEffect == IDM_AFTEREFFECT_PAGECURL && (etape > 0 && etape < 110))
 		{
 			CPageCurlFilter * afterEffectNext = (CPageCurlFilter *)afterEffect;
 			if (afterEffectNext != nullptr)

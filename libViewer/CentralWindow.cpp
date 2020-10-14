@@ -461,12 +461,19 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 
 		if (!isThumbnail)
 		{
-			CRgbaquad color;
-			//CImageLoadingFormat * imageAutoContrast = new CImageLoadingFormat();
-			CFiltreEffet * filtreLocal = new CFiltreEffet(color, nullptr, bitmap);
-			filtreLocal->BrightnessAndContrastAuto(1);
-			bitmap->UpdatePicture(filtreLocal->GetBitmap(true));
-			delete filtreLocal;
+			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+			if (regardsParam != nullptr)
+			{
+				if (regardsParam->GetAutoConstrast())
+				{
+					CRgbaquad color;
+					CFiltreEffet * filtreLocal = new CFiltreEffet(color, nullptr, bitmap);
+					filtreLocal->BrightnessAndContrastAuto(1);
+					bitmap->UpdatePicture(filtreLocal->GetBitmap(true));
+					delete filtreLocal;
+				}
+			}
+
 		}
 
 

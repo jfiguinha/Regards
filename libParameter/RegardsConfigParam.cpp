@@ -33,6 +33,17 @@ CRegardsConfigParam::CRegardsConfigParam()
 	openCLSupport = 0;
 	useDxva2 = 0;
 	detectOrientation = 0;
+	autoContrast = 0;
+}
+
+int CRegardsConfigParam::GetAutoConstrast()
+{
+	return autoContrast;
+}
+
+void CRegardsConfigParam::SetAutoConstrast(const int &autoContrast)
+{
+	this->autoContrast = autoContrast;
 }
 
 void CRegardsConfigParam::SetDxva2Actif(const int &useDxva2)
@@ -231,6 +242,8 @@ void CRegardsConfigParam::SetOpenCLPlatformName(const wxString &platformName)
 
 int CRegardsConfigParam::GetEffect()
 {
+	if (numEffect < 300)
+		return 0;
 	return numEffect;
 }
 
@@ -264,6 +277,7 @@ void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
 	sectionPosition->append_node(node("NumInterpolation", to_string(numInterpolation)));
 	sectionPosition->append_node(node("OpenCLSupport", to_string(openCLSupport)));
 	sectionPosition->append_node(node("detectOrientation", to_string(detectOrientation)));
+	sectionPosition->append_node(node("autoContrast", to_string(autoContrast)));
 }
 
 
@@ -409,6 +423,14 @@ void CRegardsConfigParam::GetImageLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		detectOrientation = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("autoContrast");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		autoContrast = atoi(child_node->value());
 	}
 }
 
@@ -602,7 +624,7 @@ void CRegardsConfigParam::SetDectectOrientation(const int& detectOrientation)
 
 int CRegardsConfigParam::GetDiaporamaTransitionEffect()
 {
-	return 2;// diaporamaEffect;
+	return 100;// diaporamaEffect;
 }
 
 void CRegardsConfigParam::SetDiaporamaTransitionEffect(const int &diaporamaEffect)

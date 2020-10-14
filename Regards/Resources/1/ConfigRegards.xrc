@@ -4,6 +4,7 @@
 		<title>Dialog</title>
 		<centered>1</centered>
 		<size>363,440</size>
+<!--
 		<object class="wxRadioBox" name="ID_RBTRANSITIONEFFECT">
 			<label>Transition Effect</label>
 			<style>wxRA_SPECIFY_COLS</style>
@@ -14,6 +15,24 @@
 			<default>-1</default>
 			<pos>0,0</pos>
 			<size>180,70</size>
+		</object>
+-->
+		<object class="wxStaticBox" name="sbInterpolation">
+			<label>Transition Effect</label>
+			<pos>0,0</pos>
+			<size>180,70</size>
+		</object>
+		<object class="wxComboBox" name="ID_RBTRANSITIONEFFECT">
+			<default>0</default>
+			<pos>5,20</pos>
+			<size>170,60</size>
+			<value>Transition Effect</value>
+			<content>
+				<item>None</item>
+				<item>Fading</item>
+				<item>Move</item>
+				<item>Page Curl</item>
+			</content>
 		</object>
 		<object class="wxRadioBox" name="ID_RBROTATEAUTO">
 			<label>Use Rotate Auto</label>
@@ -71,6 +90,17 @@
 			</content>
 			<default>-1</default>
 			<pos>0,148</pos>
+			<size>180,70</size>
+		</object>		
+		<object class="wxRadioBox" name="ID_RBAUTOCONTRAST">
+			<label>Constrast Correction</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>Yes</item>
+				<item>No</item>
+			</content>
+			<default>-1</default>
+			<pos>180,148</pos>
 			<size>180,70</size>
 		</object>			
 		<object class="wxStaticBox" name="sbDiaporama">

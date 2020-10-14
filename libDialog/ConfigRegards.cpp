@@ -26,7 +26,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	//(*Initialize(ConfigRegards)
 	SetTitle("Regards Configuration");
 	wxXmlResource::Get()->LoadObject(this,parent,_T("ConfigRegards"),_T("wxDialog"));
-	rbTransitionEffect = (wxRadioBox*)FindWindow(XRCID("ID_RBTRANSITIONEFFECT"));
+	rbTransitionEffect = (wxComboBox*)FindWindow(XRCID("ID_RBTRANSITIONEFFECT"));
 	sbDiaporama = (wxStaticBox*)FindWindow(XRCID("ID_SBDIAPORAMA"));
 	btOk = (wxButton*)FindWindow(XRCID("ID_OK"));
 	scTime = (wxSpinCtrl*)FindWindow(XRCID("ID_SCTIME"));
@@ -39,7 +39,7 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	rbDatabaseInMemory = (wxRadioBox*)FindWindow(XRCID("ID_RBDATAINMEMORY"));
 	rbAutoRotate = (wxRadioBox*)FindWindow(XRCID("ID_RBROTATEAUTO"));
 	rbInterpolation = (wxComboBox*)FindWindow(XRCID("ID_CBINTERPOLATIONFILTER"));
-
+	rbContrastCorrection = (wxRadioBox*)FindWindow(XRCID("ID_RBAUTOCONTRAST"));
 	Connect(XRCID("ID_OK"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnbtnOkClick);
 	Connect(XRCID("ID_CANCEL"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&ConfigRegards::OnBtnCancelClick);
 	//*)
@@ -59,17 +59,23 @@ void ConfigRegards::Init()
 	this->SetTitle("Configuration");
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 
-	int transition = regardsParam->GetEffect();
+	int transition = max((regardsParam->GetEffect() - 300),0);
 	if (transition == 0)
-		rbTransitionEffect->SetSelection(1);
-	else
 		rbTransitionEffect->SetSelection(0);
+	else
+		rbTransitionEffect->SetSelection(transition);
 
 	int autoRotate = regardsParam->GetDetectOrientation();
 	if (autoRotate == 0)
 		rbAutoRotate->SetSelection(1);
 	else
 		rbAutoRotate->SetSelection(0);
+
+	int autoContrast = regardsParam->GetAutoConstrast();
+	if (autoContrast == 0)
+		rbContrastCorrection->SetSelection(1);
+	else
+		rbContrastCorrection->SetSelection(0);
 
 	int timeDiaporama = regardsParam->GetDiaporamaTime();
 	scTime->SetValue(timeDiaporama);
@@ -105,9 +111,9 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 
 	int transition = rbTransitionEffect->GetSelection();
 	if (transition == 0)
-		regardsParam->SetEffect(1);
-	else
 		regardsParam->SetEffect(0);
+	else
+		regardsParam->SetEffect(transition + 300);
 
 	int autoRotate = rbAutoRotate->GetSelection();
 	if (autoRotate == 0)
@@ -115,11 +121,18 @@ void ConfigRegards::OnbtnOkClick(wxCommandEvent& event)
 	else
 		regardsParam->SetDectectOrientation(0);
 
+	int autoContrast = rbContrastCorrection->GetSelection();
+	if (autoContrast == 0)
+		regardsParam->SetAutoConstrast(1);
+	else
+		regardsParam->SetAutoConstrast(0);
+
 	int dxva2Use = rdDxva2Render->GetSelection();
 	if (dxva2Use == 0)
 		regardsParam->SetDxva2Actif(1);
 	else
 		regardsParam->SetDxva2Actif(0);
+
 
 
 	int interpolation = rbInterpolation->GetSelection();

@@ -24,6 +24,9 @@ public:
     
     float GetIconSizeRatio();
     void SetIconSizeRatio(const float &ratio);
+
+	int GetAutoConstrast();
+	void SetAutoConstrast(const int &autoContrast);
     
 	int GetVideoLibrary();
 	void SetVideoLibrary(const int &numLib);
@@ -146,5 +149,7 @@ protected:
     int loadFromBinaries = 0;
 	int openCLSupport = 0;
 	int useDxva2 = 0;
+
+	int autoContrast = 0;
 };
 

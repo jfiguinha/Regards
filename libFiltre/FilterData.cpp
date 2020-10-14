@@ -509,9 +509,11 @@ CFiltreData::CLabelFilter CFiltreData::CLabelFilter::CreateLabelFilter(const int
     return labelFilter;
 }
 
-void CFiltreData::DeleteAfterEffectPt(const int &numFilter,  IAfterEffect * filter)
+void CFiltreData::DeleteAfterEffectPt(IAfterEffect * filter)
 {
-	switch (numFilter)
+	int type = filter->GetTypeFilter();
+
+	switch (type)
 	{
 	case IDM_AFTEREFFECT_PAGECURL:
 	{
