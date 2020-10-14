@@ -102,6 +102,9 @@ CRegardsBitmap * CBitmapFusionFilter::GenerateBitmapTexture(CImageLoadingFormat 
 
 void CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture, IBitmapDisplay * bmpViewer, wxRect &rcOut)
 {
+    if(pictureNext == nullptr)
+        pictureNext = new GLTexture();
+    
 	CRegardsBitmap * bitmapOut = GenerateBitmapTexture(nextPicture, bmpViewer, rcOut);
 	if (bitmapOut != nullptr)
 	{
@@ -114,6 +117,9 @@ void CBitmapFusionFilter::GenerateBitmapEffect(CImageLoadingFormat * nextPicture
 
 void  CBitmapFusionFilter::GenerateTexture(CImageLoadingFormat * nextPicture)
 {
+    if(pictureNext == nullptr)
+        pictureNext = new GLTexture();
+        
 	CRegardsBitmap * bitmapTemp = nextPicture->GetRegardsBitmap();
 	int orientation = nextPicture->GetOrientation();
 	bitmapTemp->RotateExif(orientation);

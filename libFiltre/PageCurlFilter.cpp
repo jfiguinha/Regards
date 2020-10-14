@@ -55,6 +55,12 @@ void CPageCurlFilter::DeleteTexture()
 
 void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer)
 {
+    if(pictureNext == nullptr)
+        pictureNext = new GLTexture();
+    
+    if(pictureFirst == nullptr)
+        pictureFirst = new GLTexture();
+    
 	wxRect out;
 	{
 		bool init = false;
