@@ -40,6 +40,7 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 	isDXVA2Compatible = true;
 	openclEffectNV12 = nullptr;
 
+	
     d3dlib = LoadLibrary(L"d3d9.dll");
     if (!d3dlib) {
         throw("Failed to load D3D9 library\n");
@@ -543,10 +544,11 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
     std::clock_t start;
     start = std::clock();    
     
-	int supportOpenCL = 0;
-	muVideoEffect.lock();
-	supportOpenCL = videoEffectParameter.enableOpenCL;
-	muVideoEffect.unlock();
+	int supportOpenCL = COpenCLEngine::SupportOpenCL();
+	//muVideoEffect.lock();
+	//supportOpenCL = videoEffectParameter.enableOpenCL;
+	//enableOpenCL = COpenCLEngine::SupportOpenCL();
+	//muVideoEffect.unlock();
 
 
     int width = GetWindowWidth();

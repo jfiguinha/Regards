@@ -398,12 +398,12 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if (quitWindow)
         return;
 
-    int supportOpenCL = 0;
+	int supportOpenCL = COpenCLEngine::SupportOpenCL();
     if(IsSupportOpenCL())
     {
-        muVideoEffect.lock();
-        supportOpenCL = videoEffectParameter.enableOpenCL;
-        muVideoEffect.unlock();
+       // muVideoEffect.lock();
+       
+       // muVideoEffect.unlock();
 
     #ifdef RENDEROPENGL 
         if (openclEffectYUV == nullptr)
@@ -923,11 +923,7 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
     bool isCPU = true;
     if(IsSupportOpenCL())
     {    
-    
-        muVideoEffect.lock();
-        enableopenCL = videoEffectParameter.enableOpenCL;
-        muVideoEffect.unlock();
-
+		enableopenCL = COpenCLEngine::SupportOpenCL();
         isCPU = IsCPUContext();
     }
     else

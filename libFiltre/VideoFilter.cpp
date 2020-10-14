@@ -61,15 +61,15 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, CRegardsBitmap * s
 
 void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & filename, IFiltreEffectInterface * filtreInterface)
 {   
-	int supportOpenCL = COpenCLEngine::SupportOpenCL();
+	//int supportOpenCL = COpenCLEngine::SupportOpenCL();
 
 	CVideoEffectParameter * videoEffectParameter = (CVideoEffectParameter *)effectParameter;
 	vector<int> elementContrast;
     for (auto i = -100; i < 101; i++)
         elementContrast.push_back(i);
 
-	if(supportOpenCL)
-		filtreInterface->AddTreeInfos(enableOpenCL, new CTreeElementValueInt(videoEffectParameter->enableOpenCL), &videoEffectParameter->enableOpenCL, 2, 2);
+	//if(supportOpenCL)
+	//	filtreInterface->AddTreeInfos(enableOpenCL, new CTreeElementValueInt(videoEffectParameter->enableOpenCL), &videoEffectParameter->enableOpenCL, 2, 2);
 
     filtreInterface->AddTreeInfos(enableBicubicInterpolation, new CTreeElementValueInt(videoEffectParameter->BicubicEnable), &videoEffectParameter->BicubicEnable, 2, 2);
 	filtreInterface->AddTreeInfos(showFPS, new CTreeElementValueInt(videoEffectParameter->showFPS), &videoEffectParameter->showFPS, 2, 2);
@@ -157,10 +157,11 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->uSigma = value;
 	}
+	/*
 	else if (key == enableOpenCL)
 	{
 		videoEffectParameter->enableOpenCL = value;
-	}    
+	}    */
 	else if (key == enableFilmgrain)
 	{
 		videoEffectParameter->filmgrainenable = value;

@@ -35,7 +35,7 @@ public:
 		streamAudioUpdate = 0;
 		streamVideoUpdate = 0;
 		streamSubtitleUpdate = 0;
-        enableOpenCL = 0;
+        //enableOpenCL = 0;
 		denoiseEnable = 0;
         bandcEnable = 1;
 
@@ -44,6 +44,8 @@ public:
 		uKSigma = 2;
 
 		filmgrainenable = 0;
+
+		
 		/*
 		GLfloat sigma = 11.0f, threshold = .180f, slider = 0.f; //running
 		// GLfloat sigma = 7.0f, threshold = .180f, slider = 0.f; //running
@@ -79,7 +81,7 @@ public:
 	int	  denoiseEnable;
 	int	  ColorBoostEnable;
 	int	  BicubicEnable;
-    int   enableOpenCL;
+    //int   enableOpenCL;
 	int	  rotation;
 	int	  bandcEnable;
 	int	  showFPS;
