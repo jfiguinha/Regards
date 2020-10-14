@@ -55,11 +55,8 @@ void CPageCurlFilter::DeleteTexture()
 
 void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageLoadingFormat * source, IBitmapDisplay * bmpViewer)
 {
-    if(pictureNext == nullptr)
-        pictureNext = new GLTexture();
-    
-    if(pictureFirst == nullptr)
-        pictureFirst = new GLTexture();
+
+
     
 	wxRect out;
 	{
@@ -84,8 +81,16 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 			if (bitmapOut != nullptr)
 				bitmapNext->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;
+            if(pictureNext == nullptr)
+               pictureNext = new GLTexture();
 			pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
 		}
+        
+        if(pictureNext == nullptr)
+        {
+            pictureNext = new GLTexture();
+            pictureNext->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
+        }
 	}
 
 	{
@@ -118,8 +123,16 @@ void CPageCurlFilter::GenerateTexture(CImageLoadingFormat * nextPicture, CImageL
 			if (bitmapOut != nullptr)
 				bitmapFirst->InsertBitmap(bitmapOut, out.x, out.y);
 			delete bitmapOut;
+            if(pictureFirst == nullptr)
+                pictureFirst = new GLTexture();
 			pictureFirst->Create(bitmapFirst->GetBitmapWidth(), bitmapFirst->GetBitmapHeight(), bitmapFirst->GetPtBitmap());
 		}
+        
+        if(pictureFirst == nullptr)
+        {
+            pictureFirst = new GLTexture();
+            pictureFirst->Create(bitmapNext->GetBitmapWidth(), bitmapNext->GetBitmapHeight(), bitmapNext->GetPtBitmap());
+        }
 	}
 
 	initTexture = false;
