@@ -495,6 +495,7 @@ void CBitmapWndViewer::SetTransitionBitmap(CImageLoadingFormat * bmpSecond)
 				m_bTransition = false;
 				SetBitmap(bmpSecond, false);
 				startTransition = false;
+				EndTransition();
 			}
 		}
 		break;

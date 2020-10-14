@@ -96,7 +96,7 @@ void CRenderBitmapOpenGL::RenderWithPageCurl(GLTexture * glTexture, GLTexture * 
 	if (m_pShader != nullptr)
 	{
 		m_pShader->EnableShader();
-		if (!m_pShader->SetTexture("textureScreen", glTexture->GetTextureID()))
+		if (!m_pShader->SetTexture("sourceTex", glTexture->GetTextureID()))
 		{
 			printf("SetTexture sourceTex failed \n ");
 		}
@@ -108,11 +108,7 @@ void CRenderBitmapOpenGL::RenderWithPageCurl(GLTexture * glTexture, GLTexture * 
 		{
 			printf("SetParam intensity failed \n ");
 		}
-		if (!m_pShader->SetParam("invert", invert))
-		{
-			printf("SetParam intensity failed \n ");
-		}
-		if (!m_pShader->SetParam("height", height))
+		if (!m_pShader->SetParam("invertTex", invert))
 		{
 			printf("SetParam intensity failed \n ");
 		}
