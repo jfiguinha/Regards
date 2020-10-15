@@ -1,6 +1,12 @@
 #include <header.h>
 #include "ffmfcpimpl.h"
 #include <WindowMain.h>
+#include <mutex>
+using namespace std;
+
+bool exit_video = false;
+std::mutex abortMutex;
+
 //Calcul du pourcentage
 using namespace Regards::Window;
 
@@ -41,6 +47,13 @@ int CFFmfcPimpl::percentageToDb(int p, int maxValue) {
 int CFFmfcPimpl::packet_queue_put_private(PacketQueue *q, AVPacket *pkt)
 {
 	AVPacketList *pkt1;
+
+	bool abort = false;
+	abortMutex.lock();
+	abort = exit_video;
+	abortMutex.unlock();
+	if (abort)
+		return -1;
 
 	if (q->abort_request)
 		return -1;
@@ -145,6 +158,17 @@ int CFFmfcPimpl::packet_queue_get(PacketQueue *q, AVPacket *pkt, int block)
 	SDL_LockMutex(q->mutex);
 
 	for (;;) {
+
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+		if (abort)
+		{
+			ret = -1;
+			break;
+		}
+
 		if (q->abort_request) {
 			ret = -1;
 			break;
@@ -235,14 +259,52 @@ void CFFmfcPimpl::video_audio_display(VideoState *s)
 	}
 }
 
+void CFFmfcPimpl::StopStream()
+{
+	abortMutex.lock();
+	exit_video = 1;
+	abortMutex.unlock();
+}
+
 void CFFmfcPimpl::stream_close(VideoState *is)
 {
 	VideoPicture *vp;
 	int i;
 	/* XXX: use a special url_shutdown call to abort parse cleanly */
 	is->abort_request = 1;
-	SDL_WaitThread(is->read_tid, nullptr);
-	SDL_WaitThread(is->refresh_tid, nullptr);
+
+
+	if (is->read_tid != nullptr)
+	{
+		if (is->read_tid->joinable())
+			is->read_tid->join();
+
+		delete is->read_tid;
+		is->read_tid = nullptr;
+	}
+
+	if (is->refresh_tid != nullptr)
+	{
+		if (is->refresh_tid->joinable())
+			is->refresh_tid->join();
+
+		delete is->refresh_tid;
+		is->refresh_tid = nullptr;
+	}
+
+	/* close each stream */
+	if (is->audio_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->audio_stream);
+	if (is->video_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->video_stream);
+	if (is->subtitle_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->subtitle_stream);
+	if (is->ic) {
+		avformat_close_input(&is->ic);
+	}
+
+	//SDL_WaitThread(is->read_tid, nullptr);
+	//SDL_WaitThread(is->refresh_tid, nullptr);
 	packet_queue_destroy(&is->videoq);
 	packet_queue_destroy(&is->audioq);
 	packet_queue_destroy(&is->subtitleq);
@@ -259,6 +321,14 @@ void CFFmfcPimpl::stream_close(VideoState *is)
 	SDL_DestroyCond(is->subpq_cond);
 	SDL_DestroyCond(is->continue_read_thread);
 	av_free(is);
+
+	
+	wxCommandEvent evt(FF_QUIT_EVENT);
+	parent->GetEventHandler()->AddPendingEvent(evt);
+	
+	abortMutex.lock();
+	exit_video = 0;
+	abortMutex.unlock();
 }
 
 //ÍË³ö
@@ -355,8 +425,15 @@ void CFFmfcPimpl::video_display(VideoState *is)
 int CFFmfcPimpl::refresh_thread(void *opaque)
 {
 	VideoState *is = (VideoState *)opaque;
-	while (!is->abort_request) 
+	while (1) 
 	{
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+		if (abort)
+			break;
+
 		wxCommandEvent evt(FF_REFRESH_EVENT);
 		evt.SetClientData(opaque);
 		if (is->ic != nullptr)
@@ -366,20 +443,6 @@ int CFFmfcPimpl::refresh_thread(void *opaque)
 				is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
-		
-		/*
-		SDL_Event event;
-		event.type = FF_REFRESH_EVENT;
-		event.user.data1 = opaque;
-		if (is->ic != nullptr)
-		{
-			if (!is->refresh && (!is->paused || is->force_refresh)) {
-				is->refresh = 1;
-				SDL_PushEvent(&event);
-			}
-		}
-		*/
-
 
 		if (CMasterWindow::endProgram)
 			return 0;
@@ -789,6 +852,15 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 	/* keep the last already displayed picture in the queue */
 	while (is->pictq_size >= VIDEO_PICTURE_QUEUE_SIZE - 2 &&
 		!is->videoq.abort_request) {
+
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+
+		if (abort)
+			break;
+
 		SDL_CondWait(is->pictq_cond, is->pictq_mutex);
 	}
 	SDL_UnlockMutex(is->pictq_mutex);
@@ -896,7 +968,16 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		for (i = 0; i < VIDEO_PICTURE_QUEUE_SIZE; i++) {
 			is->pictq[i].skip = 1;
 		}
-		while (is->pictq_size && !is->videoq.abort_request) {
+		while (is->pictq_size && !is->videoq.abort_request)
+		{
+			bool abort = false;
+			abortMutex.lock();
+			abort = exit_video;
+			abortMutex.unlock();
+
+			if (abort)
+				break;
+
 			SDL_CondWait(is->pictq_cond, is->pictq_mutex);
 		}
 		is->video_current_pos = -1;
@@ -970,15 +1051,24 @@ int CFFmfcPimpl::video_thread(void *arg)
 
 	for (;;)
 	{
-		while (is->paused && !is->videoq.abort_request)
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+		if (abort)
+			goto the_end;
+
+		while (is->paused)
 		{
+			abortMutex.lock();
+			abort = exit_video;
+			abortMutex.unlock();
+			if (abort)
+				goto the_end;
+
 			SDL_Delay(10);
 
 		}
-
-
-
-
 		//avcodec_get_frame_defaults(frame);
 		av_frame_unref(frame);
 		av_free_packet(&pkt);
@@ -999,6 +1089,8 @@ int CFFmfcPimpl::video_thread(void *arg)
 
 		if (is->step)
 			is->_pimpl->stream_toggle_pause(is);
+
+		SDL_Delay(10);
 	}
 the_end:
 	avcodec_flush_buffers(is->video_st->codec);
@@ -1019,6 +1111,14 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 	//int r, g, b, y, u, v, a;
 
 	for (;;) {
+
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+		if (abort)
+			break;
+
 		while (is->paused && !is->subtitleq.abort_request) {
 			SDL_Delay(10);
 		}
@@ -1032,6 +1132,14 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 		SDL_LockMutex(is->subpq_mutex);
 		while (is->subpq_size >= SUBPICTURE_QUEUE_SIZE &&
 			!is->subtitleq.abort_request) {
+
+			bool abort = false;
+			abortMutex.lock();
+			abort = exit_video;
+			abortMutex.unlock();
+			if (abort)
+				break;
+
 			SDL_CondWait(is->subpq_cond, is->subpq_mutex);
 		}
 		SDL_UnlockMutex(is->subpq_mutex);
@@ -1821,11 +1929,14 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 		is->subtitle_stream = stream_index;
 		is->subtitle_st = ic->streams[stream_index];
 		CFFmfcPimpl::packet_queue_start(&is->subtitleq);
+		/*
 #ifdef SDL2
 		is->subtitle_tid = SDL_CreateThread(subtitle_thread, "Subtitle Thread", is);
 #else
 		is->subtitle_tid = SDL_CreateThread(subtitle_thread, is);
 #endif
+*/
+		is->subtitle_tid = new std::thread(subtitle_thread, is);
 
 		break;
 
@@ -1838,11 +1949,14 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 		CFFmfcPimpl::packet_queue_start(&is->videoq);
 		//ÊÓÆµÏß³Ì
+		/*
 #ifdef SDL2
 		is->video_tid = SDL_CreateThread(video_thread, "Video Thread", is);
 #else
 		is->video_tid = SDL_CreateThread(video_thread, is);
 #endif
+		*/
+		is->video_tid = new std::thread(video_thread, is);
 
 		int32_t* matrix = reinterpret_cast<int32_t*>(av_stream_get_side_data(is->video_st, AV_PKT_DATA_DISPLAYMATRIX, nullptr));
 		if (matrix)
@@ -1903,7 +2017,16 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 		SDL_CondSignal(is->pictq_cond);
 		SDL_UnlockMutex(is->pictq_mutex);
 
-		SDL_WaitThread(is->video_tid, nullptr);
+		if (is->video_tid != nullptr)
+		{
+			if (is->video_tid->joinable())
+				is->video_tid->join();
+
+			delete is->video_tid;
+			is->video_tid = nullptr;
+		}
+		
+		//SDL_WaitThread(is->video_tid, nullptr);
 
 		packet_queue_flush(&is->videoq);
 
@@ -1925,7 +2048,15 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 		SDL_CondSignal(is->subpq_cond);
 		SDL_UnlockMutex(is->subpq_mutex);
 
-		SDL_WaitThread(is->subtitle_tid, nullptr);
+		//SDL_WaitThread(is->subtitle_tid, nullptr);
+		if (is->subtitle_tid != nullptr)
+		{
+			if (is->subtitle_tid->joinable())
+				is->subtitle_tid->join();
+
+			delete is->subtitle_tid;
+			is->subtitle_tid = nullptr;
+		}
 
 		packet_queue_flush(&is->subtitleq);
 		break;
@@ -1954,10 +2085,15 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 	}
 }
 
+
 int CFFmfcPimpl::decode_interrupt_cb(void *ctx)
 {
 	VideoState *is = (VideoState *)ctx;
-	return is->abort_request;
+	bool abort = false;
+	abortMutex.lock();
+	abort = is->abort_request;
+	abortMutex.unlock();
+	return abort;
 }
 
 int CFFmfcPimpl::is_realtime(AVFormatContext *s)
@@ -2162,11 +2298,14 @@ int CFFmfcPimpl::read_thread(void *arg)
 		ret = is->_pimpl->stream_component_open(is, st_index[AVMEDIA_TYPE_VIDEO]);
 	}
 
+	/*
 #ifdef SDL2
 	is->refresh_tid = SDL_CreateThread(refresh_thread, "refresh thread", is);
 #else
 	is->refresh_tid = SDL_CreateThread(refresh_thread, is);
 #endif
+*/
+	is->refresh_tid = new std::thread(refresh_thread, is);
 
 	if (is->show_mode == SHOW_MODE_NONE)
 		is->show_mode = ret >= 0 ? (VideoState::ShowMode)SHOW_MODE_VIDEO : (VideoState::ShowMode)SHOW_MODE_RDFT;
@@ -2190,7 +2329,13 @@ int CFFmfcPimpl::read_thread(void *arg)
 	is->_pimpl->dlg->SetVideoDuration(is->ic->duration);
 
 	for (;;) {
-		if (is->abort_request)
+
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+
+		if (abort)
 			break;
 
 		if (is->paused != is->last_paused) {
@@ -2334,12 +2479,45 @@ int CFFmfcPimpl::read_thread(void *arg)
 		}
 	}
 	/* wait until the end */
-	while (!is->abort_request) {
+	while (1) 
+	{
+		bool abort = false;
+		abortMutex.lock();
+		abort = exit_video;
+		abortMutex.unlock();
+		if (abort)
+			break;
 		SDL_Delay(100);
 	}
 
 	ret = 0;
+
+
+
 fail:
+
+	//wxCommandEvent evt(CLOSESTREAM_EVENT);
+	//is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
+
+	/*
+	// close each stream 
+	if (is->audio_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->audio_stream);
+	if (is->video_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->video_stream);
+	if (is->subtitle_stream >= 0)
+		is->_pimpl->stream_component_close(is, is->subtitle_stream);
+	if (is->ic) {
+		avformat_close_input(&is->ic);
+	}
+	*/
+
+	SDL_DestroyMutex(wait_mutex);
+	return 0;
+}
+
+void CFFmfcPimpl::CloseStream(VideoState *is)
+{
 	/* close each stream */
 	if (is->audio_stream >= 0)
 		is->_pimpl->stream_component_close(is, is->audio_stream);
@@ -2350,22 +2528,8 @@ fail:
 	if (is->ic) {
 		avformat_close_input(&is->ic);
 	}
-
-	if (ret != 0) 
-	{
-		wxCommandEvent evt(FF_QUIT_EVENT);
-		evt.SetClientData(is);
-		is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
-		/*
-		SDL_Event event;
-		event.type = FF_QUIT_EVENT;
-		event.user.data1 = is;
-		SDL_PushEvent(&event);
-		*/
-	}
-	SDL_DestroyMutex(wait_mutex);
-	return 0;
 }
+
 //ÉèÖÃ¸÷ÖÖSDLÐÅºÅ£¬¿ªÊ¼½âÂëÏß³Ì
 CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInputFormat *iformat)
 {
@@ -2397,12 +2561,15 @@ CFFmfcPimpl::VideoState * CFFmfcPimpl::stream_open(const char *filename, AVInput
 	is->av_sync_type = av_sync_type;
 	//½âÂëÏß³Ì
 
+	/*
 #ifdef SDL2
 	is->read_tid = SDL_CreateThread(read_thread, "Read Thread", is);
 #else
 	is->read_tid = SDL_CreateThread(read_thread, is);
 #endif
+*/
 
+	is->read_tid = new std::thread(read_thread, is);
 
 	if (!is->read_tid) {
 		av_free(is);

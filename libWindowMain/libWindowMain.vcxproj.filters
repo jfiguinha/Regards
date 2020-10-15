@@ -19,6 +19,9 @@
     <Filter Include="Gps Engine">
       <UniqueIdentifier>{85d7eb6a-1d6c-4041-b192-830dcb547e25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="WorkerThread">
+      <UniqueIdentifier>{f9dd32db-5eb3-4867-9ebc-aced48ab1904}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -45,6 +48,9 @@
     <ClInclude Include="MainInterface.h">
       <Filter>header</Filter>
     </ClInclude>
+    <ClInclude Include="WorkerThread.h">
+      <Filter>WorkerThread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WindowUtility.cpp">
@@ -58,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="GpsEngine.cpp">
       <Filter>Gps Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread.cpp">
+      <Filter>WorkerThread</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

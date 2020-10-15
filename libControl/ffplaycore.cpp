@@ -7,6 +7,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	: wxWindow(parent, id, wxPoint(0, 0), wxSize(0, 0), 0)
 {
 	_pimpl = nullptr;
+	Connect(FF_EXIT_EVENT, wxCommandEventHandler(CFFmfc::ExitEvent));
 	Connect(FF_QUIT_EVENT, wxCommandEventHandler(CFFmfc::QuitEvent));
 	Connect(FF_STEP_EVENT, wxCommandEventHandler(CFFmfc::StepEvent));
 	Connect(FF_PAUSE_EVENT, wxCommandEventHandler(CFFmfc::PauseEvent));
@@ -20,6 +21,7 @@ CFFmfc::CFFmfc(wxWindow* parent, wxWindowID id)
 	Connect(SET_SEEKPOSITION, wxCommandEventHandler(CFFmfc::PositionSeekEvent));
 	Connect(SEEK_BAR_EVENT, wxCommandEventHandler(CFFmfc::SeekBarEvent));
 	Connect(FF_REFRESH_EVENT, wxCommandEventHandler(CFFmfc::RefreshEvent));
+	Connect(CLOSESTREAM_EVENT, wxCommandEventHandler(CFFmfc::CloseStreamEvent));
 }
 
 CFFmfc::~CFFmfc()
@@ -219,11 +221,13 @@ void CFFmfc::AspectEvent(wxCommandEvent& event)
 	}
 }
 
-void CFFmfc::QuitEvent(wxCommandEvent& event)
+void CFFmfc::ExitEvent(wxCommandEvent& event)
 {
 	_pimpl->do_exit(cur_stream);
-	//cur_stream = nullptr;
+}
 
+void CFFmfc::QuitEvent(wxCommandEvent& event)
+{
 	wxCommandEvent evt(wxEVENT_ENDVIDEOTHREAD);
 	this->GetParent()->GetEventHandler()->AddPendingEvent(evt);
 }
@@ -236,6 +240,7 @@ void CFFmfc::StepEvent(wxCommandEvent& event)
 void CFFmfc::PauseEvent(wxCommandEvent& event)
 {
 	_pimpl->toggle_pause(cur_stream);
+
 }
 
 void CFFmfc::PlayEvent(wxCommandEvent& event)
@@ -283,16 +288,28 @@ bool CFFmfc::Quit()
 	bool isExitNow = false;
 	if (_pimpl->g_is)
 	{
-		wxCommandEvent evt(FF_QUIT_EVENT);
+		_pimpl->StopStream();
+		wxSleep(1);
+		wxCommandEvent evt(FF_EXIT_EVENT);
 		evt.SetClientData(cur_stream);
 		this->GetEventHandler()->AddPendingEvent(evt);
+
 	}
 	else
 	{
+		_pimpl->StopStream();
 		_pimpl->do_exit(nullptr);
 		isExitNow = true;
 	}
 	return isExitNow;
+}
+
+void CFFmfc::CloseStreamEvent(wxCommandEvent& event)
+{
+	if (_pimpl->g_is)
+	{
+		_pimpl->CloseStream(_pimpl->g_is);
+	}
 }
 
 //·¢ËÍ¡°ÖðÖ¡¡±ÃüÁî
@@ -474,18 +491,6 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 
 	_pimpl->autoexit=1;
 	
-	/*
-#ifndef SDL2
-	SDL_EventState(SDL_ACTIVEEVENT, SDL_IGNORE);
-#endif
-	SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
-	SDL_EventState(SDL_USEREVENT, SDL_IGNORE);
-
-	if (av_lockmgr_register(_pimpl->lockmgr)) {
-		_pimpl->do_exit(nullptr);
-	}
-	*/
-
 	av_init_packet(&_pimpl->flush_pkt);
 	_pimpl->flush_pkt.data = (uint8_t *)(intptr_t)"FLUSH";
 	cur_stream = _pimpl->g_is = _pimpl->stream_open(filename.c_str(), _pimpl->file_iformat);
@@ -498,13 +503,6 @@ int CFFmfc::SetFile(CVideoControlInterface * control, string filename)
 
     wxCommandEvent event(EVENT_VIDEOSTART);
     wxPostEvent(_pimpl->parent, event);
-
-	//_pimpl->event_loop(_pimpl->g_is);
-    
-	//_pimpl->g_is = nullptr;
-
-	//wxCommandEvent event(EVENT_VIDEOSTOP);
-    //wxPostEvent(dlg, event);
 
 	return 0;
 }

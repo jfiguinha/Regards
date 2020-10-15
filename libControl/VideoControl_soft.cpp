@@ -17,7 +17,7 @@
 #include <ConvertUtility.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
-
+wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
 
 AVFrame * copyFrameBuffer = nullptr;
 
@@ -81,8 +81,10 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
     fpsTimer = new wxTimer(this, TIMER_FPS);
+	playStartTimer = new wxTimer(this, TIMER_PLAYSTART);
 	Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnRButtonDown));
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
+	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
     Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
 	pause = false;
 	videoEnd = true;
@@ -208,6 +210,11 @@ void CVideoControlSoft::OnShowFPS(wxTimerEvent& event)
 	nbFrame = 0;
 }
 
+void CVideoControlSoft::OnPlayStart(wxTimerEvent& event)
+{
+	ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+}
+
 void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 {
     videoEnd = true;
@@ -229,7 +236,10 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 
 CVideoControlSoft::~CVideoControlSoft()
 {
-    
+	if(playStartTimer->IsRunning())
+		playStartTimer->Stop();
+
+	delete playStartTimer;
 	delete fpsTimer;
 #ifdef RENDEROPENGL   
 	if (renderBitmapOpenGL != nullptr)
@@ -303,9 +313,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-        if(play)
-            ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
-
+		playStartTimer->Start(1000, true);
 	}
 	else if(movie != filename)
 	{

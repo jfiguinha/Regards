@@ -71,6 +71,8 @@ public:
 
 private:
 
+	void CloseStreamEvent(wxCommandEvent& event);
+	void ExitEvent(wxCommandEvent& event);
 	void RefreshEvent(wxCommandEvent& event);
 	void SeekBarEvent(wxCommandEvent& event);
 	void PositionSeekEvent(wxCommandEvent& event);

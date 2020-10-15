@@ -104,6 +104,7 @@ protected:
 	void VideoRotation(wxCommandEvent& event);
 	void OnIdle(wxIdleEvent& evt);
 	void OnShowFPS(wxTimerEvent& event);
+	void OnPlayStart(wxTimerEvent& event);
     void Resize();
 	void calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height);
 	GLTexture * RenderToGLTexture();
@@ -132,6 +133,7 @@ protected:
 	wxString msgFrame;
 	CWindowMain * windowMain;
 	wxTimer * fpsTimer;
+	wxTimer * playStartTimer;
 	bool initStart;
 	bool videoRenderStart;
 	wxString standByMovie;

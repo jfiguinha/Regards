@@ -91,6 +91,8 @@ A/V sync as SDL does not have hardware buffer fullness info. */
 #define FF_PLAY_EVENT	FF_QUIT_EVENT + 3
 #define FF_ASPECT_EVENT	FF_QUIT_EVENT + 4
 #define FF_AUDIODISPLAY_EVENT	FF_QUIT_EVENT + 5
+#define FF_EXIT_EVENT FF_QUIT_EVENT + 6
+#define CLOSESTREAM_EVENT FF_QUIT_EVENT + 7
 
 //×Ô¶¨ÒåÒ»¸öÊÂ¼þ£¬ÓÃÓÚµ÷Õû²¥·Å½ø¶È
 #define SEEK_BAR_EVENT    (SDL_USEREVENT + 4)
@@ -213,9 +215,12 @@ public:
 	};
 
 	typedef struct VideoState {
-		SDL_Thread *read_tid = nullptr;
-		SDL_Thread *video_tid = nullptr;
-		SDL_Thread *refresh_tid = nullptr;
+		std::thread *read_tid = nullptr;
+		std::thread *video_tid = nullptr;
+		std::thread *refresh_tid = nullptr;
+		std::thread *subtitle_tid = nullptr;
+
+
 		AVInputFormat *iformat = nullptr;
 		int no_background = 0;
 		int abort_request = 0;
@@ -274,7 +279,7 @@ public:
 		FFTSample *rdft_data = nullptr;
 		int xpos = 0;
 
-		SDL_Thread *subtitle_tid = nullptr;
+		
 		int subtitle_stream = 0;
 		int subtitle_stream_changed = 0;
 		AVStream *subtitle_st = nullptr;
@@ -337,7 +342,7 @@ public:
 	static AVPixelFormat GetHwFormat(AVCodecContext *s, const AVPixelFormat *pix_fmts);
 #endif
 	//Calcul du pourcentage
-
+	void StopStream();
 	int percentageToDb(int p, int maxValue);
 	int packet_queue_put_private(PacketQueue *q, AVPacket *pkt);
 	int packet_queue_put(PacketQueue *q, AVPacket *pkt);
@@ -366,7 +371,7 @@ public:
 	/* display the current picture, if any */
 	void video_display(VideoState *is);
 
-	
+	void CloseStream(VideoState *is);
 
 
 	/* get the current audio clock value */

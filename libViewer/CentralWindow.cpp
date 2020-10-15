@@ -283,31 +283,35 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
 void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElement, const bool &first)
 {
     printf("CCentralWindow::RefreshPicture \n");
-	this->filename = filename;
-	this->numElement = numElement;
-
-	if (videoStart)
+	if (filename != this->filename)
 	{
-		loadPicture = true;
+		this->filename = filename;
+		this->numElement = numElement;
 
-		if (previewWindow != nullptr && !stopVideo)
-        {
-            stopVideo = true;
-            previewWindow->StopVideo();
-        }
-			
+		if (videoStart)
+		{
+			loadPicture = true;
+
+			if (previewWindow != nullptr && !stopVideo)
+			{
+				stopVideo = true;
+				previewWindow->StopVideo();
+			}
+
+		}
+		else
+		{
+			loadPicture = false;
+			CPictureElement * pictureElement = new CPictureElement();
+			pictureElement->filename = filename;
+			pictureElement->numElement = numElement;
+			pictureElement->first = first;
+			wxCommandEvent evt(wxEVENT_LOADPICTURE);
+			evt.SetClientData(pictureElement);
+			this->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
-	else
-	{
-		loadPicture = false;
-		CPictureElement * pictureElement = new CPictureElement();
-		pictureElement->filename = filename;
-		pictureElement->numElement = numElement;
-		pictureElement->first = first;
-		wxCommandEvent evt(wxEVENT_LOADPICTURE);
-		evt.SetClientData(pictureElement);
-		this->GetEventHandler()->AddPendingEvent(evt);
-	}
+
 }
 
 void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
@@ -1226,7 +1230,7 @@ void CCentralWindow::SetVideo(const wxString &path, const bool &first)
 	}
 
 	if (previewWindow != nullptr)
-		previewWindow->SetVideo(path, !first);
+		previewWindow->SetVideo(path, false);
 
 	SetPanelInfos(false);
 

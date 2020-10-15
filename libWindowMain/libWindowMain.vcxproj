@@ -241,6 +241,7 @@
     <ClInclude Include="WindowMain.h" />
     <ClInclude Include="WindowOpenGLMain.h" />
     <ClInclude Include="WindowUtility.h" />
+    <ClInclude Include="WorkerThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\include\header.cpp">
@@ -251,6 +252,7 @@
     <ClCompile Include="GpsEngine.cpp" />
     <ClCompile Include="MasterWindow.cpp" />
     <ClCompile Include="WindowUtility.cpp" />
+    <ClCompile Include="WorkerThread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -40,7 +40,7 @@ namespace Regards
 			CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal = true);
 			~CPreviewWnd();
 			bool SetBitmap(CImageLoadingFormat * bitmap, const bool &isThumbnail, const bool &isAnimation = false);
-			bool SetVideo(const wxString &filename, const bool &play = true);
+			bool SetVideo(const wxString &filename, const bool &play = false);
 			void SetEffect(const bool &effect);
 			void StopVideo();
 			void TransitionEnd();
