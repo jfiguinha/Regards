@@ -111,6 +111,17 @@ bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
     
 	if (!check_shader_compile_status(m_hShaderHandle))
     {
+        GLint maxLength = 0;
+        glGetShaderiv(m_hShaderHandle, GL_INFO_LOG_LENGTH, &maxLength);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> errorLog(maxLength);
+        glGetShaderInfoLog(m_hShaderHandle, maxLength, &maxLength, &errorLog[0]);
+        std::string s(begin(errorLog), end(errorLog));
+        cout << s.c_str() << endl;
+        // Provide the infolog in whatever manor you deem best.
+        // Exit with failure.
+        glDeleteShader(m_hShaderHandle); // Don't leak the shader.
 		return false;
     }
 	glAttachShader(m_hProgramObject, m_hShaderHandle);

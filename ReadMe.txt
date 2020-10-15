@@ -55,6 +55,16 @@ HOTPICKS LINUX FORMAT JUNE 2020
 //**************************************************************************
 //What's New
 //**************************************************************************
+News for 2.62.4 :
+- Add new transition effect : none, fading, move, page curl.
+- Add auto contrast correction on picture display.
+- All this option is available on Regards configuration dialog.
+- Correct DXVA2 video playback on windows.
+News for 2.62.3 :
+- Correct bug on window position
+News for 2.62.1 :
+- Correct bug on window position
+- Prevent crash bug with update notification on linux
 News for 2.62.0 :
 - New denoise filter for video playback
 - Add right panel in fullscreen mode for filter effect
