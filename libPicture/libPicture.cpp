@@ -1383,25 +1383,13 @@ CImageLoadingFormat * CLibPicture::LoadVideoThumbnail(const  wxString & szFileNa
 	}
 	catch (...)
 	{
-		return nullptr;
+
 	}
 
 
 	if(bitmap == nullptr || bitmap->GetWidth() == 0 || bitmap->GetHeight() == 0)
 	{
-#ifdef WIN32
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-
-		if (bitmap != nullptr)
-			delete bitmap;
-
-		bitmap = new CImageLoadingFormat();
-		bitmap = LoadPicture(photoCancel);
-		bitmap->Resize(widthThumbnail, heightThumbnail, 0);
-		bitmap->SetFilename(szFileName);
+		bitmap = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
 	}
 
 	return bitmap;
@@ -1735,6 +1723,23 @@ uint32_t CLibPicture::GetFrameDelay(const  wxString & szFileName)
 	return delay;
 }
 
+CImageLoadingFormat * CLibPicture::GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail, const int &heightThumbnail)
+{
+#ifdef WIN32
+	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
+#else
+	wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
+#endif
+
+	CImageLoadingFormat * bitmap = new CImageLoadingFormat();
+	bitmap = LoadPicture(photoCancel);
+	if(widthThumbnail > 0 && heightThumbnail > 0)
+		bitmap->Resize(widthThumbnail, heightThumbnail, 0);
+	bitmap->SetFilename(szFileName);
+
+	return bitmap;
+}
+
 void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CImageVideoThumbnail *> * listThumbnail, const bool &compressJpeg, const bool &isThumbnail)
 {
 	int iFormat = TestImageFormat(szFileName);
@@ -1880,10 +1885,35 @@ void CLibPicture::LoadAllVideoThumbnail(const  wxString & szFileName, vector<CIm
     }
     catch (...)
 	{
+
+		CImageLoadingFormat * bitmap = GetCancelPhoto(szFileName, widthThumbnail, heightThumbnail);
+
+		CImageVideoThumbnail * imageVideoThumbnail = new CImageVideoThumbnail();
+		imageVideoThumbnail->image = bitmap;
+		imageVideoThumbnail->image->SetFilename(szFileName);
+		imageVideoThumbnail->rotation = 0;
+		imageVideoThumbnail->delay = 0;
+		imageVideoThumbnail->percent = 0;
+		imageVideoThumbnail->timePosition = 0;
+		listThumbnail->push_back(imageVideoThumbnail);
 	}
 
 }
 
+bool CLibPicture::TestIsVideoValid(const wxString & szFileName)
+{
+	bool isValid = true;
+	int rotation = 0;
+	CThumbnailVideo video;
+	//CConvertUtility::ConvertToStdString
+	CRegardsBitmap * bitmap = video.GetVideoFrame(szFileName, 200, 200, rotation);
+	if (bitmap == nullptr)
+		isValid = false;
+	else
+		delete bitmap;
+	return isValid;
+
+}
 
 //--------------------------------------------------------------------------------------------
 //Obtention d'un thumbnail à partir des informations exif
@@ -2023,19 +2053,10 @@ CImageLoadingFormat * CLibPicture::LoadThumbnail(const wxString & fileName, cons
 
 	if(imageLoading == nullptr || !imageLoading->IsOk())
 	{
-#ifdef WIN32
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "\\photo_cancel.png";
-#else
-		wxString photoCancel = CFileUtility::GetResourcesFolderPath() + "/photo_cancel.png";
-#endif
-
 		if (imageLoading != nullptr)
 			delete imageLoading;
 
-		imageLoading = new CImageLoadingFormat();
-		imageLoading = LoadPicture(photoCancel);
-		imageLoading->Resize(widthThumbnail, heightThumbnail, 1);
-		imageLoading->SetFilename(fileName);
+		imageLoading = GetCancelPhoto(fileName, widthThumbnail, heightThumbnail);
 	}
 	
 

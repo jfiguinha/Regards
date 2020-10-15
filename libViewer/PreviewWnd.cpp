@@ -568,46 +568,58 @@ bool CPreviewWnd::SetVideo(const wxString &filename, const bool &play)
     if(oldfilename != filename)
     {
         CLibPicture libPicture;
-        filtreToolbar->Show(false);
 
-        if(isBitmap)
-        {
-            showBitmapWindow->StopTransition();
-        }
-        
-        if(animationToolbar->IsShown())
-			animationToolbar->Show(false);
-        
-        if(showBitmapWindow->IsShown())
-            showBitmapWindow->Show(false);
-        
-        if(!showVideoWindow->IsShown())
-            showVideoWindow->Show(true);
-        
-        isVideo = true;
-        isBitmap = false;
-		isAnimation = false;
-		int width = 0, height = 0;
-        //Initialisation du player Video
-        if(showToolbar && !bitmapInfos->IsShown())
-            bitmapInfos->Show(true);
-        
-        bitmapInfos->SetFilename(filename);
-        bitmapInfos->Refresh();
-        
-		int rotation = 0;
-        libPicture.GetPictureDimensions(filename, width, height, rotation);
-        showVideoWindow->SetVideo(filename, rotation, play);
-        oldfilename = filename;
-       // 
-		if (isOldState != 2)
+		//Test if video is valid
+		bool iValid = libPicture.TestIsVideoValid(filename);
+		if (iValid)
 		{
-			this->Resize();
-			//this->ForceRefresh();
-		}
-		isOldState = 2;
+			filtreToolbar->Show(false);
 
-		wxMicroSleep(100);
+			if (isBitmap)
+			{
+				showBitmapWindow->StopTransition();
+			}
+
+			if (animationToolbar->IsShown())
+				animationToolbar->Show(false);
+
+			if (showBitmapWindow->IsShown())
+				showBitmapWindow->Show(false);
+
+			if (!showVideoWindow->IsShown())
+				showVideoWindow->Show(true);
+
+			isVideo = true;
+			isBitmap = false;
+			isAnimation = false;
+			int width = 0, height = 0;
+			//Initialisation du player Video
+			if (showToolbar && !bitmapInfos->IsShown())
+				bitmapInfos->Show(true);
+
+			bitmapInfos->SetFilename(filename);
+			bitmapInfos->Refresh();
+
+			int rotation = 0;
+			libPicture.GetPictureDimensions(filename, width, height, rotation);
+			showVideoWindow->SetVideo(filename, rotation, play);
+			oldfilename = filename;
+			// 
+			if (isOldState != 2)
+			{
+				this->Resize();
+				//this->ForceRefresh();
+			}
+			isOldState = 2;
+
+			wxMicroSleep(100);
+		}
+		else
+		{
+			CImageLoadingFormat * image = libPicture.GetCancelPhoto(filename);
+			SetBitmap(image, false);
+		}
+
     }
 	return 1;
 

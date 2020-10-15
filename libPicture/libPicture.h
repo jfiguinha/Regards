@@ -26,6 +26,7 @@ namespace Regards
 			CLibPicture();
 			virtual ~CLibPicture();
 
+			bool TestIsVideoValid(const wxString & szFileName);
 			void DefineSVGSize(const int &width, const int &height);
 			bool HasThumbnail(const wxString &filename);
 			int GetNbImage(const  wxString & szFileName);
@@ -81,11 +82,12 @@ namespace Regards
 			static void UnloadBpgDll();
 #endif
 #endif
-
+			CImageLoadingFormat * GetCancelPhoto(const wxString &szFileName, const int &widthThumbnail = 0, const int &heightThumbnail = 0);
 			CRegardsBitmap * LoadPictureToBGRA(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 
 		private:
 
+			
 			CPictureData * LoadPictureToJpeg(const wxString &filename, bool &pictureOK, const int &resizeWidth = 0, const int &resizeHeight = 0);
 			bool SaveToPDF(wxImage* poImage, const wxString &fileName, const wxString &pictureName, int option, int quality);
 			CRegardsBitmap * LoadFromFreeImage(const char* filename);

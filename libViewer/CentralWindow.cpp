@@ -1104,12 +1104,23 @@ void CCentralWindow::LoadPictureInThread(CPictureElement * pictureElement)
 	//	filename = pictureElement->filename;
 
 	CLibPicture libPicture;
+	bool isVideoValid = true;
 
 	if (libPicture.TestIsVideo(localFile))
+	{
+		isVideoValid = libPicture.TestIsVideoValid(localFile);
+	}
+
+	if (libPicture.TestIsVideo(localFile) && isVideoValid)
 	{
 		//StartLoadingPicture(numElement);
 		SetVideo(localFile, pictureElement->first);
 		
+	}
+	else if (libPicture.TestIsVideo(localFile) && !isVideoValid)
+	{
+		CImageLoadingFormat * bitmap = libPicture.GetCancelPhoto(localFile);
+		SetBitmap(bitmap, false, false);
 	}
 	else if (libPicture.TestIsAnimation(localFile))
 	{
