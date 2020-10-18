@@ -50,6 +50,7 @@
         <IncludePath Value="../libPicture"/>
         <IncludePath Value="../libcompress"/>
         <IncludePath Value="../libSqlEngine"/>
+        <IncludePath Value="../libSqlite"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
       </Compiler>
       <Linker Options="">
