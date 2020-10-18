@@ -63,13 +63,14 @@ protected:
 
 			// <vho> - end
 		}
-		static int32_t JasRead(jas_stream_obj_t *obj, char *buf, int32_t cnt)
+		
+		static int JasRead(jas_stream_obj_t *obj, char *buf, unsigned cnt)
 		{		return ((CxFile*)obj)->Read(buf,1,cnt); }
-		static int32_t JasWrite(jas_stream_obj_t *obj, char *buf, int32_t cnt)
+		static int JasWrite(jas_stream_obj_t *obj, const char *buf, unsigned cnt)
 		{		return ((CxFile*)obj)->Write(buf,1,cnt); }
-		static long JasSeek(jas_stream_obj_t *obj, long offset, int32_t origin)
+		static long JasSeek(jas_stream_obj_t *obj, long offset, int origin)
 		{		return ((CxFile*)obj)->Seek(offset,origin); }
-		static int32_t JasClose(jas_stream_obj_t * /*obj*/)
+		static int JasClose(jas_stream_obj_t * /*obj*/)
 		{		return 1; }
 
 	// <vho>

@@ -48,7 +48,7 @@ bool CxImageJAS::Decode(CxFile *hFile, uint32_t imagetype)
 
 	char szfmt[4];
 	*szfmt = '\0';
-    char * jasper_fmt = jas_image_fmttostr(fmt); 
+    const char * jasper_fmt = jas_image_fmttostr(fmt); 
     printf("jasper_fmt : %s \n",jasper_fmt);
     if(jasper_fmt != NULL && strlen(jasper_fmt) >= 3)
         strncpy(szfmt,jasper_fmt,3);
