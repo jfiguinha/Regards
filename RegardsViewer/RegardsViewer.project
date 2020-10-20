@@ -117,6 +117,7 @@
     <Project Name="libheif"/>
     <Project Name="libFreeImage"/>
     <Project Name="libOpenCLEngine"/>
+    <Project Name="libResource"/>
   </Dependencies>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -312,11 +313,12 @@
         <Library Value="opencv_highgui430"/>
         <Library Value="opencv_face430"/>
         <Library Value="opencv_objdetect430"/>
-        <Library Value="JXR"/>
         <Library Value="openjp2"/>
         <Library Value="winmm"/>
         <Library Value="winspool"/>
         <Library Value="Compress"/>
+        <Library Value="jpegxr"/>
+        <Library Value="jxrglue"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
