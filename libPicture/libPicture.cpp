@@ -57,7 +57,7 @@ using namespace IMATH_INTERNAL_NAMESPACE;
 #include <wx/wxpoppler.h>
 
 
-//#include "avif_heif.h"
+#include "avif_heif.h"
 #include "ScaleThumbnail.h"
 
 #if defined(FFMPEG)
@@ -933,7 +933,16 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		break;
 	#endif
 
-		//case HEIC:
+		case HEIC:
+			{
+				CRegardsBitmap * image = bitmap->GetRegardsBitmap();
+				if (iFormat == HEIC)
+				{
+					CHeifAvif::SavePicture(fileName.ToStdString(), iFormat, image, 100 - quality);
+
+				}
+				break;
+			}
 		case AVIF:
 		{
 			CRegardsBitmap * image = bitmap->GetRegardsBitmap();
