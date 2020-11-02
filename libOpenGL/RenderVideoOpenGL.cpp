@@ -138,6 +138,7 @@ void CRenderVideoOpenGL::RenderWithEffect(const int &left, const int &top, GLTex
     }
     else
     {
+		/*
         GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
         if(m_pShader != nullptr)
         {
@@ -154,6 +155,9 @@ void CRenderVideoOpenGL::RenderWithEffect(const int &left, const int &top, GLTex
         RenderQuad(glTexture, flipH, flipV, left, top, inverted);
         if(m_pShader != nullptr)
             m_pShader->DisableShader();
+
+		*/
+		RenderQuad(glTexture, flipH, flipV, left, top, inverted);
     }
 	
 	glTexture->Disable();

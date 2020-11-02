@@ -8,6 +8,7 @@
 #include <de265.h>
 #include "yuv420.h"
 #include "yuv422.h"
+#include <libheif/heif.h>
 using namespace std;
 using namespace HEIF;
 using namespace Regards::Picture;
@@ -482,6 +483,58 @@ END:
 	return listPicture;
 }
 
+void CHeic::SavePicture(const string &filenameOut, CRegardsBitmap * source, const int &compression)
+{
+	struct heif_error err;
+	if (source)
+	{
+		heif_context* ctx = heif_context_alloc();
+		if (ctx)
+		{
+			// get the default encoder
+			heif_encoder* encoder;
+			heif_context_get_encoder_for_format(ctx, heif_compression_HEVC, &encoder);
+			// set the encoder parameters
+			heif_encoder_set_lossy_quality(encoder, compression);
+
+			// encode the image
+			heif_image* image; // code to fill in the image omitted in this example
+
+			err = heif_image_create((int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+				heif_colorspace_RGB,
+				heif_chroma_interleaved_RGBA,
+				&image);
+			(void)err;
+
+			heif_image_add_plane(image, heif_channel_interleaved, (int)source->GetBitmapWidth(), (int)source->GetBitmapHeight(),
+				32);
+
+			int stride;
+			uint8_t* p = heif_image_get_plane(image, heif_channel_interleaved, &stride);
+			uint8_t * data = source->GetPtBitmap();
+			source->ConvertToBgr();
+			//source->HorzFlipBuf();
+			for (uint32_t y = 0; y < source->GetBitmapHeight(); y++)
+			{
+				int position = source->GetPosition(0, source->GetBitmapHeight() - y - 1);
+				memcpy(p + y * stride, data + position, source->GetBitmapWidth() * 4);
+			}
+
+			heif_context_encode_image(ctx, image, encoder, nullptr, nullptr);
+
+			heif_encoder_release(encoder);
+
+			heif_context_write_to_file(ctx, filenameOut.c_str());
+
+			if (image)
+			{
+				heif_image_release(image);
+			}
+
+			heif_context_free(ctx);
+		}
+	}
+}
 
 uint32_t CHeic::GetDelay(const string &filename)
 {

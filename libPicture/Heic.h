@@ -23,6 +23,7 @@ namespace Regards
 			static CRegardsBitmap * GetThumbnailPicture(const string &filename);
 			static void GetPictureDimension(const string &filename, int &width, int &height);
 			static void GetMetadata(const string &filename, uint8_t * & data, long & size);
+			static void SavePicture(const string &filenameOut, CRegardsBitmap * source, const int &compression = 50);
 
 		private:
 
