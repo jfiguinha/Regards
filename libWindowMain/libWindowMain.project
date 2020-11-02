@@ -33,11 +33,13 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
+    <File Name="WorkerThread.cpp"/>
     <File Name="Tracing.cpp"/>
     <File Name="WindowUtility.cpp"/>
     <File Name="MasterWindow.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
+    <File Name="WorkerThread.h"/>
     <File Name="Tracing.h"/>
     <File Name="WindowMain.h"/>
     <File Name="WindowUtility.h"/>
@@ -100,7 +102,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3;-msse4.1" C_Options="-O3;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="-s;" Required="yes"/>

@@ -135,7 +135,6 @@
   <Description/>
   <Dependencies/>
   <VirtualDirectory Name="src">
-    <File Name="avif_heif.cpp"/>
     <File Name="avif.cpp"/>
     <File Name="PictureData.cpp"/>
     <File Name="pfm.cpp"/>
@@ -144,7 +143,6 @@
     <File Name="Heic.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="include">
-    <File Name="avif_heif.h"/>
     <File Name="avif.h"/>
     <File Name="PictureData.h"/>
     <File Name="pfm.h"/>
@@ -241,7 +239,7 @@
       </Completion>
     </Configuration>
     <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Static Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
-      <Compiler Options="-O2;-fopenmp;-msse4.1" C_Options="-O2;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
+      <Compiler Options="-O3;-fopenmp;-msse4.1" C_Options="-O3;-msse4.1" Assembler="" Required="yes" PreCompiledHeader="../include/Release/header.h" PCHInCommandLine="yes" PCHFlags="" PCHFlagsPolicy="1">
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
       <Linker Options="-s;" Required="yes"/>
