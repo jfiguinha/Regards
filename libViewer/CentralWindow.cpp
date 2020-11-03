@@ -246,8 +246,11 @@ CCentralWindow::CCentralWindow(wxWindow* parent, wxWindowID id,
 void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
 {
     printf("CCentralWindow::OnVideoEnd \n");
+
     stopVideo = false;
 	videoStart = false;
+
+
     if(loadPicture)
     {
         CPictureElement * pictureElement = new CPictureElement();
@@ -259,6 +262,7 @@ void CCentralWindow::OnVideoEnd(wxCommandEvent& event)
         this->GetEventHandler()->AddPendingEvent(evt); 
         loadPicture = false;   
     }
+
 }
 
 void CCentralWindow::OnEndThumbnail()
@@ -280,7 +284,7 @@ void CCentralWindow::OnVideoStart(wxCommandEvent& event)
     }
 }
 
-void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElement, const bool &first)
+int CCentralWindow::RefreshPicture(const wxString &filename, const int &numElement, const bool &first)
 {
     printf("CCentralWindow::RefreshPicture \n");
 	if (filename != this->filename)
@@ -298,6 +302,7 @@ void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElem
 				previewWindow->StopVideo();
 			}
 
+			return 1;
 		}
 		else
 		{
@@ -309,12 +314,13 @@ void CCentralWindow::RefreshPicture(const wxString &filename, const int &numElem
 			wxCommandEvent evt(wxEVENT_LOADPICTURE);
 			evt.SetClientData(pictureElement);
 			this->GetEventHandler()->AddPendingEvent(evt);
+
 		}
 	}
-
+	return 0;
 }
 
-void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
+int CCentralWindow::LoadPicture(const wxString &filename, const int &numElement, const bool &first)
 {
 	TRACE();
 
@@ -326,7 +332,7 @@ void CCentralWindow::LoadPicture(const wxString &filename, const int &numElement
 #endif
 
     printf("CMainWindow::LoadPicture %s \n", filename.ToStdString().c_str());
-	RefreshPicture(filename, numElement, first);
+	return RefreshPicture(filename, numElement, first);
 }
 
 void CCentralWindow::HideToolbar()

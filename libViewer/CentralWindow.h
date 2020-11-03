@@ -91,8 +91,8 @@ namespace Regards
 			void SetPosition(const long& timePosition);
 			void StopAnimation();
 			void StartAnimation();
-			void RefreshPicture(const wxString &filename, const int &numElement, const bool &first = false);
-			void LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
+			int RefreshPicture(const wxString &filename, const int &numElement, const bool &first = false);
+			int LoadPicture(const wxString &filename, const int &numElement, const bool &first = false);
 			void OnEndThumbnail();
             bool IsVideo();
 			void SaveParameter();
@@ -182,6 +182,7 @@ namespace Regards
             bool stopVideo;
             bool init = false;
 			bool windowInit = true;
+
 		};
 	}
 }

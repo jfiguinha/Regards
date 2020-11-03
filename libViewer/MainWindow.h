@@ -101,7 +101,7 @@ namespace Regards
             void StopAnimation(wxCommandEvent& event);
             void SetScreenEvent(wxCommandEvent& event);
 			void Resize();
-			void LoadPicture(const bool &first = false);
+			int LoadPicture(const bool &first = false);
 			void UpdatePicture();
 			void ProcessIdle();
 			void OnIdle(wxIdleEvent& evt);
@@ -145,6 +145,7 @@ namespace Regards
             bool isInit = false;
             bool setViewerMode = false;
 			wxString lastFileToShow = "";
+			bool blockImage = false;
 		};
 	}
 
