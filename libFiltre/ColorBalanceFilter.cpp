@@ -79,6 +79,7 @@ void CColorBalanceFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 	CRgbEffectParameter * rgbEffectParameter = (CRgbEffectParameter *)effectParameter;
 	if (rgbEffectParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_SHADER_RGB \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_RGB");
 		if (m_pShader != nullptr)
 		{

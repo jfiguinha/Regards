@@ -97,7 +97,7 @@ uniform float left;
 uniform float top;
 
 */
-
+        printf("GLSLShader IDR_GLSL_SHADER_MOTIONBLUR \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_MOTIONBLUR");
 		if (m_pShader != nullptr)
 		{

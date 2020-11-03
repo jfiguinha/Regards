@@ -75,6 +75,7 @@ void CPosterisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffe
 	CPosterisationEffectParameter * posterisationEffectParameter = (CPosterisationEffectParameter *)effectParameter;
 	if (posterisationEffectParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_SHADER_POSTERIZE \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_POSTERIZE");
 		if (m_pShader != nullptr)
 		{

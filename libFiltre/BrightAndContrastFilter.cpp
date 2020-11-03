@@ -67,6 +67,7 @@ void CBrightAndContrastFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, C
 	CBrightAndContrastEffectParameter * brightAndContrastEffectParameter = (CBrightAndContrastEffectParameter *)effectParameter;
 	if (brightAndContrastEffectParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_BRIGHTANDCONTRAST_SHADER \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_BRIGHTANDCONTRAST_SHADER");
 		if (m_pShader != nullptr)
 		{

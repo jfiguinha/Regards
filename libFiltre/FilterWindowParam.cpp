@@ -225,6 +225,7 @@ CImageLoadingFormat * CFilterWindowParam::ApplyEffect(CEffectParameter * effectP
 
 void CFilterWindowParam::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffectParameter * effectParameter, const int &textureID)
 {
+    printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n " );
 	GLSLShader * m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_ALPHA_SHADER");
 	if (m_pShader != nullptr)
 	{

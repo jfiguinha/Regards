@@ -68,6 +68,7 @@ void CRenderBitmapOpenGL::RenderWithAlphaChannel(GLTexture * glTexture, const in
 	glTexture->Enable();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n " );
 	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
 	if (m_pShader != nullptr)
 	{
@@ -182,6 +183,7 @@ void CRenderBitmapOpenGL::ShowSecondBitmapWithAlpha(GLTexture * textureTransitio
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	textureTransition->Enable();
+    printf("GLSLShader IDR_GLSL_ALPHA_SHADER \n " );
 	GLSLShader * m_pShader = FindShader(L"IDR_GLSL_ALPHA_SHADER");
 	if (m_pShader != nullptr)
 	{

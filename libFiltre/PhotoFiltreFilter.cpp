@@ -83,6 +83,7 @@ void CPhotoFiltreFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffect
 	CPhotoFiltreEffectParameter * photoEffectParameter = (CPhotoFiltreEffectParameter *)effectParameter;
 	if (photoEffectParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_SHADER_PHOTOFILTER \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_PHOTOFILTER");
 		if (m_pShader != nullptr)
 		{

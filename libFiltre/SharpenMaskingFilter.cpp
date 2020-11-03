@@ -54,6 +54,7 @@ void CSharpenMaskingFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEff
 	CSharpenMaskingEffectParameter * sharpenMaskingParameter = (CSharpenMaskingEffectParameter *)effectParameter;
 	if (sharpenMaskingParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_SHADER_SHARPENMASKING \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SHARPENMASKING");
 		if (m_pShader != nullptr)
 		{

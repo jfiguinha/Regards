@@ -65,6 +65,7 @@ void CSolarisationFilter::ApplyOpenGLShader(CRenderOpenGL * renderOpenGL, CEffec
 	CSolarisationEffectParameter * solarisationEffectParameter = (CSolarisationEffectParameter *)effectParameter;
 	if (solarisationEffectParameter != nullptr)
 	{
+        printf("GLSLShader IDR_GLSL_SHADER_SOLARIZE \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SOLARIZE");
 		if (m_pShader != nullptr)
 		{

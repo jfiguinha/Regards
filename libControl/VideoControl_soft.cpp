@@ -313,7 +313,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		playStartTimer->Start(1000, true);
+		playStartTimer->Start(100, true);
 	}
 	else if(movie != filename)
 	{

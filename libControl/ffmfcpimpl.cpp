@@ -1288,14 +1288,29 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			if (flush_complete)
 				break;
 			new_packet = 0;
-			try
-			{
-				len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
-			}
-			catch (...)
-			{
-				len1 = 0;
-			}
+            
+            
+            bool decodeAudio = true;
+#ifdef __WXGTK__
+#ifndef NDEBUG
+            decodeAudio = false;
+#endif
+#endif
+
+            if(decodeAudio)
+            {
+                try
+                {
+                    len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
+                }
+                catch (...)
+                {
+                    len1 = 0;
+                }        
+            }
+            else
+                len1 = 0;
+
 			if (len1 < 0) {
 				/* if error, we skip the frame */
 				pkt_temp->size = 0;

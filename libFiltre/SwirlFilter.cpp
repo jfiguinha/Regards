@@ -87,7 +87,7 @@ uniform float top;
 uniform float radius;
 uniform float angleDegree;
 		*/
-
+        printf("GLSLShader IDR_GLSL_SHADER_SWIRL \n " );
 		m_pShader = renderOpenGL->FindShader(L"IDR_GLSL_SHADER_SWIRL");
 		if (m_pShader != nullptr)
 		{
