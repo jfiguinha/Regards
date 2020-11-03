@@ -1,6 +1,6 @@
 # Maintainer: Jacques Figuinha <appt.jf@outlook.fr>
 pkgname=regardsviewer-bin
-pkgver=2.62.5
+pkgver=2.62.6
 pkgrel=1
 pkgdesc="Regards is a modern photo viewer. (official precompiled binary)"
 arch=('x86_64')
