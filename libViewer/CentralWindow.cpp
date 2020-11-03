@@ -292,6 +292,9 @@ int CCentralWindow::RefreshPicture(const wxString &filename, const int &numEleme
 		this->filename = filename;
 		this->numElement = numElement;
 
+		if (stopVideo)
+			return 0;
+
 		if (videoStart)
 		{
 			loadPicture = true;

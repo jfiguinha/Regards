@@ -975,7 +975,7 @@ void CMainWindow::OnVideoEnd(wxCommandEvent& event)
 	TRACE();
 	if (centralWnd != nullptr)
 	{
-		blockImage = false;
+		//blockImage = false;
 		wxCommandEvent evt(VIDEO_END_ID);
 		centralWnd->GetEventHandler()->AddPendingEvent(evt);
 	}
@@ -1212,9 +1212,6 @@ int CMainWindow::LoadPicture(const bool& first)
 void CMainWindow::OnPictureClick(wxCommandEvent& event)
 {
 	TRACE();
-	if (blockImage)
-		return;
-
 	int photoId = event.GetExtraLong();
 	numElement = imageList->FindFileIndex(photoId);
 	LoadPicture();
@@ -1448,34 +1445,25 @@ void CMainWindow::OnPictureNext(wxCommandEvent& event)
 void CMainWindow::ImageSuivante()
 {
 	TRACE();
-	if (blockImage)
-		return;
-
 	numElement++;
 	if (numElement >= imageList->GetNbElement())
 		numElement = 0;
 
-	int valueReturn = LoadPicture();
+	LoadPicture();
 
-	if (valueReturn == 1)
-		blockImage = true;
 
 }
 
 void CMainWindow::ImagePrecedente()
 {
 	TRACE();
-	if (blockImage)
-		return;
 
 	numElement--;
 	if (numElement < 0)
 		numElement = static_cast<int>(imageList->GetNbElement()) - 1;
 
-	int valueReturn = LoadPicture();
+	LoadPicture();
 
-	if (valueReturn == 1)
-		blockImage = true;
 }
 
 
@@ -1487,9 +1475,6 @@ void CMainWindow::OnRefreshPicture(wxCommandEvent& event)
 
 void CMainWindow::ImageFin()
 {
-	if (blockImage)
-		return;
-
 	TRACE();
 	this->numElement = static_cast<int>(imageList->GetNbElement()) - 1;
 	LoadPicture();
@@ -1497,9 +1482,6 @@ void CMainWindow::ImageFin()
 
 void CMainWindow::ImageDebut()
 {
-	if (blockImage)
-		return;
-
 	TRACE();
 	this->numElement = 0;
 	LoadPicture();

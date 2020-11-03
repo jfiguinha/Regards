@@ -145,7 +145,7 @@ namespace Regards
             bool isInit = false;
             bool setViewerMode = false;
 			wxString lastFileToShow = "";
-			bool blockImage = false;
+			//bool blockImage = false;
 		};
 	}
 
