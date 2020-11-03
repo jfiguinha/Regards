@@ -32,6 +32,8 @@ namespace Regards
 
 		private:
 
+			wxString GetOpenCLIncludeDir();
+
 			int CreateAndBuildProgram(const wxString &programId, const wxString &programData, const wxString &buildOption);
             
             bool LoadProgramFromBinaries(const wxString &programId);

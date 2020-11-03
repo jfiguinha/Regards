@@ -416,11 +416,19 @@ void CCentralWindow::OnShowPicture(wxCommandEvent& event)
 	}
 	else
 	{
-		if (!pictureData->isThumbnail)
+		if (pictureData != nullptr)
 		{
-			StopLoadingPicture();
+			if (!pictureData->isThumbnail)
+			{
+				StopLoadingPicture();
+			}
+
+			if (pictureData->bitmap != nullptr)
+				delete pictureData->bitmap;
+
+			delete pictureData;
 		}
-		delete pictureData;
+
 	}
 
 	if (!isThumbnail)

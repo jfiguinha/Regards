@@ -166,6 +166,8 @@ wxString CSqlResource::GetOpenCLUchar(const wxString& idName)
 	return text;
 }
 
+
+
 wxString CSqlResource::GetOpenCLFloatFromFile(const wxString& idName)
 {
 	text = "";
