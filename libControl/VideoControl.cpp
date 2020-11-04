@@ -539,6 +539,18 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 #endif
 
+	if (videoRenderStart && initStart)
+	{
+		if (!fpsTimer->IsRunning())
+			fpsTimer->Start(1000);
+#ifdef RENDEROPENGL 
+		UnbindTexture();
+#endif
+
+		dxva2ToOpenGLWorking = true;
+		initStart = false;
+	}
+
     printf("OnPaint CVideoControl begin \n"); 
        
     std::clock_t start;
@@ -579,6 +591,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 #endif
 
+	/*
     if (videoRenderStart && initStart)
     {
         if(!fpsTimer->IsRunning())
@@ -590,6 +603,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 		dxva2ToOpenGLWorking = true;	
 		initStart = false;
 	}
+	*/
 
 #ifdef RENDEROPENGL 
 	if (videoRenderStart)

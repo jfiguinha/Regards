@@ -1483,7 +1483,15 @@ void CFFmfcPimpl::sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 
 int CFFmfcPimpl::audio_open(void *opaque, int64_t wanted_channel_layout, int wanted_nb_channels, int wanted_sample_rate, AudioParams *audio_hw_params)
 {
+	// Make sure sound is shut down first.
+	SDL_PauseAudio(1);
 
+	// Shut down SDL audio.
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+	// Attempt to initialize SDL audio.
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
+		return -1;
 	/*
 #ifdef _MSC_VER > 1900
 	SDL_AudioSpec wanted_spec, spec;
