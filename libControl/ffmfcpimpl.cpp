@@ -994,6 +994,7 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 	//½âÂë
 	//if (avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
 	//	return 0;
+	
 	int ret = avcodec_receive_frame(is->video_st->codec, frame);
 	if (ret == 0)
 		got_picture = true;
@@ -1007,7 +1008,7 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		return ret;
 	//else
 	//	len1 = pkt->size;
-
+	
 
 	if (got_picture) {
 		//×¢Òâ£º´Ë´¦ÉèÖÃMFC²ÎÊý£¡
@@ -1320,6 +1321,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 	            //len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
 				
 				//ret = avcodec_decode_audio4(ctx, frame, &got_frame, pkt);
+				
 				int ret = avcodec_receive_frame(dec, is->frame);
 				if (ret == 0)
 					got_frame = true;
@@ -1330,9 +1332,10 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 				if (ret == AVERROR(EAGAIN))
 					ret = 0;
 				else if (ret < 0)
-					return ret;
+					len1 = ret;
 				else
 					len1 = pkt->size;
+				
             }
             else
                 len1 = 0;
@@ -1470,7 +1473,7 @@ void CFFmfcPimpl::sdl_audio_callback(void *opaque, Uint8 *stream, int len)
 	int audio_size, len1;
 	int bytes_per_sec;
 	int frame_size = av_samples_get_buffer_size(nullptr, is->audio_tgt.channels, 1, is->audio_tgt.fmt, 1);
-	double pts;
+	double pts = 0;
 
 	is->_pimpl->audio_callback_time = av_gettime();
 
