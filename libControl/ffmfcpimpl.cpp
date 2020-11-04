@@ -92,7 +92,7 @@ int CFFmfcPimpl::packet_queue_put(PacketQueue *q, AVPacket *pkt)
 	SDL_UnlockMutex(q->mutex);
 
 	if (pkt != &flush_pkt && ret < 0)
-		av_free_packet(pkt);
+		av_packet_unref(pkt);
 
 	return ret;
 }
@@ -113,7 +113,7 @@ void CFFmfcPimpl::packet_queue_flush(PacketQueue *q)
 	SDL_LockMutex(q->mutex);
 	for (pkt = q->first_pkt; pkt != nullptr; pkt = pkt1) {
 		pkt1 = pkt->next;
-		av_free_packet(&pkt->pkt);
+		av_packet_unref(&pkt->pkt);
 		av_freep(&pkt);
 	}
 	q->last_pkt = nullptr;
@@ -989,9 +989,25 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 
 		return 0;
 	}
+
+	got_picture = false;
 	//½âÂë
-	if (avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
-		return 0;
+	//if (avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
+	//	return 0;
+	int ret = avcodec_receive_frame(is->video_st->codec, frame);
+	if (ret == 0)
+		got_picture = true;
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	if (ret == 0)
+		ret = avcodec_send_packet(is->video_st->codec, pkt);
+	if (ret == AVERROR(EAGAIN))
+		ret = 0;
+	else if (ret < 0)
+		return ret;
+	//else
+	//	len1 = pkt->size;
+
 
 	if (got_picture) {
 		//×¢Òâ£º´Ë´¦ÉèÖÃMFC²ÎÊý£¡
@@ -1071,7 +1087,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 		}
 		//avcodec_get_frame_defaults(frame);
 		av_frame_unref(frame);
-		av_free_packet(&pkt);
+		av_packet_unref(&pkt);
 		//½âÂëÒ»Ö¡ÊÓÆµ
 		ret = is->_pimpl->get_video_frame(is, frame, &pts_int, &pkt);
 		if (ret < 0)
@@ -1094,7 +1110,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 	}
 the_end:
 	avcodec_flush_buffers(is->video_st->codec);
-	av_free_packet(&pkt);
+	av_packet_unref(&pkt);
 	av_frame_free(&frame);
 	//avcodec_free_frame(&frame);
 	return 0;
@@ -1182,7 +1198,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 			is->subpq_size++;
 			SDL_UnlockMutex(is->subpq_mutex);
 		}
-		av_free_packet(pkt);
+		av_packet_unref(pkt);
 	}
 	return 0;
 }
@@ -1260,12 +1276,13 @@ int CFFmfcPimpl::synchronize_audio(VideoState *is, int nb_samples)
 /* decode one audio frame and returns its uncompressed size */
 int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 {
+	AVCodecContext *audio_ctx = is->audio_st->codec;
 	AVPacket *pkt_temp = &is->audio_pkt_temp;
 	AVPacket *pkt = &is->audio_pkt;
 	AVCodecContext *dec = is->audio_st->codec;
 	int len1, len2, data_size, resampled_data_size;
 	int64_t dec_channel_layout;
-	int got_frame;
+	int got_frame = 0;
 	double pts;
 	int new_packet = 0;
 	int flush_complete = 0;
@@ -1273,7 +1290,8 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 
 	for (;;) {
 		/* NOTE: the audio packet can contain several frames */
-		while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) {
+		while (pkt_temp->size > 0 || (!pkt_temp->data && new_packet)) 
+		{
 			if (!is->frame) {
 				if (!(is->frame = av_frame_alloc()))//avcodec_alloc_frame()))
 					return AVERROR(ENOMEM);
@@ -1299,14 +1317,22 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 
             if(decodeAudio)
             {
-                try
-                {
-                    len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
-                }
-                catch (...)
-                {
-                    len1 = 0;
-                }        
+	            //len1 = avcodec_decode_audio4(dec, is->frame, &got_frame, pkt_temp);
+				
+				//ret = avcodec_decode_audio4(ctx, frame, &got_frame, pkt);
+				int ret = avcodec_receive_frame(dec, is->frame);
+				if (ret == 0)
+					got_frame = true;
+				if (ret == AVERROR(EAGAIN))
+					ret = 0;
+				if (ret == 0)
+					ret = avcodec_send_packet(dec, pkt_temp);
+				if (ret == AVERROR(EAGAIN))
+					ret = 0;
+				else if (ret < 0)
+					return ret;
+				else
+					len1 = pkt->size;
             }
             else
                 len1 = 0;
@@ -1408,7 +1434,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 
 		/* free the current packet */
 		if (pkt->data)
-			av_free_packet(pkt);
+			av_packet_unref(pkt);
 		memset(pkt_temp, 0, sizeof(*pkt_temp));
 
 		if (is->paused || is->audioq.abort_request) {
@@ -1434,6 +1460,7 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 			is->audio_clock = av_q2d(is->audio_st->time_base)*pkt->pts;
 		}
 	}
+
 }
 
 /* prepare a new audio buffer */
@@ -2017,7 +2044,7 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 		SDL_CloseAudio();
 
 		packet_queue_flush(&is->audioq);
-		av_free_packet(&is->audio_pkt);
+		av_packet_unref(&is->audio_pkt);
 		swr_free(&is->swr_ctx);
 		av_freep(&is->audio_buf1);
 		is->audio_buf = nullptr;
@@ -2498,7 +2525,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 			is->_pimpl->packet_queue_put(&is->subtitleq, pkt);
 		}
 		else {
-			av_free_packet(pkt);
+			av_packet_unref(pkt);
 		}
 	}
 	/* wait until the end */
