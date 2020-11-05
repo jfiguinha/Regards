@@ -21,7 +21,6 @@
 #include <libPicture.h>
 #include "CentralWindow.h"
 #include <MyFrameIntro.h>
-#include "ExportPDF.h"
 #include <FileUtility.h>
 #include "OcrWnd.h"
 #include <wx/filefn.h> 
@@ -110,8 +109,8 @@ CScannerFrame::CScannerFrame(const wxString &title, IMainInterface * mainInterfa
 	Connect(wxID_EXIT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnQuit));
 	Connect(wxID_ABOUT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAbout));
 	Connect(ID_EXPORT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExport));
-	Connect(ID_EXPORTHTML, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportHTML));
-	Connect(ID_EXPORTTXT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportText));
+	//Connect(ID_EXPORTHTML, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportHTML));
+	//Connect(ID_EXPORTTXT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnExportText));
 	Connect(ID_ACQUIREIMAGE, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnAcquireImage));
 	Connect(ID_PRINT, wxEVT_MENU, wxCommandEventHandler(CScannerFrame::OnPrint));
 	Connect(wxID_ANY, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(CScannerFrame::OnUpdateUI));
@@ -149,6 +148,7 @@ void CScannerFrame::OnOpen()
 		centralWindow->OnOpen(0);
 }
 
+/*
 void CScannerFrame::OnExportText(wxCommandEvent& event)
 {
 	wxString szFilter = "Files TEXT(*.txt) | *.txt";
@@ -188,7 +188,7 @@ void CScannerFrame::OnExportHTML(wxCommandEvent& event)
 		CExportPDF::ExportPDFToHTML(filename, file);
 	}
 }
-
+*/
 void CScannerFrame::OnExport(wxCommandEvent& event)
 {
 	wxString filename = centralWindow->GetFilename();

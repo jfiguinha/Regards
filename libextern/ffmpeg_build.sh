@@ -7,7 +7,6 @@ tar xf ffmpeg-4.2.2.tar.xz
 # libaom
 git clone https://aomedia.googlesource.com/aom
 cd aom
-mkdir build
 cd build
 cmake ../../aom -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
 make -j$NBPROC

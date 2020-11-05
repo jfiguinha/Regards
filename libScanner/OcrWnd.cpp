@@ -1,11 +1,12 @@
 #include <header.h>
+#include <tesseract/renderer.h>
+#include "ExportOcr.h"
 #include "OcrWnd.h"
 #include <wx/gbsizer.h>
 #include <FileUtility.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <ShowBitmap.h>
-#include <tesseract/renderer.h>
 #include "MainTheme.h"
 #include "MainThemeInit.h"
 #include <libPicture.h>
@@ -14,7 +15,7 @@
 #include <FiltreEffet.h>
 #include <FilterData.h>
 #include <wx/progdlg.h>
-#include "ExportOcr.h"
+
 #include <wx/filefn.h>
 #include <ConvertUtility.h>
 //#include "ExportOdt.h"

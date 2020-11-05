@@ -12,16 +12,8 @@
     <File Name="OcrLabel.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Export">
-    <File Name="ExportOCr.cpp"/>
-    <File Name="ExportOcr.h"/>
-    <File Name="../libextern/poppler_windows-master/build/config.h"/>
-    <File Name="../libextern/poppler_windows-master/utils/InMemoryFile.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/ImageOutputDev.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlOutputDev.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlLinks.cc"/>
-    <File Name="../libextern/poppler_windows-master/utils/HtmlFonts.cc"/>
-    <File Name="ExportPDF.cpp"/>
-    <File Name="ExportPDF.h"/>
+    <File Name="ExportOCr.cpp" ExcludeProjConfig=""/>
+    <File Name="ExportOcr.h" ExcludeProjConfig=""/>
   </VirtualDirectory>
   <VirtualDirectory Name="Panel">
     <File Name="PanelInfosWnd.h"/>

@@ -15,10 +15,9 @@
  ** limitations under the License.
  *
  **********************************************************************/
-
 #include <header.h>
-#include "ExportOcr.h"
 #include <tesseract/ocrclass.h>
+#include "ExportOcr.h"
 #include <wx/progdlg.h>
 using namespace Regards::Scanner;
 tesseract::TessBaseAPI CExportOcr::api;
@@ -53,6 +52,7 @@ tesseract::TessBaseAPI CExportOcr::api;
 #if defined(HAVE_TIFFIO_H)
 
 #include <tiffio.h>
+
 
 static void Win32ErrorHandler(const char* module, const char* fmt,
 	va_list ap) {

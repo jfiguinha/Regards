@@ -71,8 +71,8 @@ private:
 	void OnExport(wxCommandEvent& event);
     void OnAcquireImage(wxCommandEvent& event);
 	void OnCloseWindow(wxCloseEvent &event);
-	void OnExportText(wxCommandEvent& event);
-	void OnExportHTML(wxCommandEvent& event);
+	//void OnExportText(wxCommandEvent& event);
+	//void OnExportHTML(wxCommandEvent& event);
 #ifdef __WXMSW__
 	wxImage GdiplusImageTowxImage(Gdiplus::Image * img, Gdiplus::Color bkgd = Gdiplus::Color::Transparent);
 #endif

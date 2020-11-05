@@ -1,6 +1,6 @@
 #include <header.h>
-#include "viewerPDF.h"
 #include <tesseract/baseapi.h>
+#include "viewerPDF.h"
 #undef fract1
 #include <leptonica/allheaders.h>
 #define fract1
