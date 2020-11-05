@@ -2,69 +2,6 @@
 NBPROC=$(sysctl -n hw.ncpu)
 echo $NBPROC
 
-#Get libjasper
-wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
-tar xf jasper-2.0.14.tar.gz
-
-#get lib poppler
-wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
-tar xf poppler-0.81.0.tar.xz
-
-#get Tesseract
-wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
-unzip 4.1.1.zip
-
-#install leptonica
-tar xf  leptonica-1.79.0.tar.gz
-cd leptonica-1.79.0
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DCMAKE_C_FLAGS="-I /usr/local/opt/openjpeg/include/openjpeg-2.3"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
-#compile tesseract
-cd tesseract-4.1.1
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
-#Compile libpoppler
-cd poppler-0.81.0
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
-#compile jasper
-cd jasper-2.0.14
-mkdir build
-cd build
-cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-make -j$NBPROC
-sudo make install
-cd ..
-cd ..
-
-#Compile qpdf
-cd qpdf-master
-chmod +x configure
-./configure --prefix="$HOME/ffmpeg_build"
-make -j$NBPROC
-chmod +x mkinstalldirs
-chmod +x install-sh
-sudo make install
-cd ..
-
 
 #decompression
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
@@ -86,12 +23,6 @@ cd heif-master/srcs
 cmake ../srcs 
 make -j$NBPROC
 cd ..
-cd ..
-
-#Compile glew-2.1.0
-cd glew-2.1.0
-chmod +x config/config.guess
-make -j$NBPROC
 cd ..
 
 #Compile libde265-master
@@ -119,13 +50,6 @@ cd ..
 cd ..
 cd ..
 
-#Compile SDL2-2.0.5
-cd SDL2-2.0.5 
-chmod +x configure
-./configure
-make -j$NBPROC
-cd ..
-
 #Compile LibRaw
 unzip LibRaw-0.20.0.zip
 cd LibRaw-0.20.0
@@ -139,13 +63,6 @@ cd wxWidgets-master
 ./configure --enable-unicode --enable-monolithic --disable-log --disable-debug --disable-shared --with-cxx=14
 make -j$NBPROC
 cd ..
-
-#Compile x265_2.5
-cd x265_2.5/source 
-cmake ../source
-make -j$NBPROC
-cd .. 
-cd .. 
 
 cd fftw-3.3.8
 ./configure --enable-float
