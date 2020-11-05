@@ -61,13 +61,6 @@ cd wxWidgets-master
 make -j$NBPROC
 cd ..
 
-#Compile x265_2.5
-cd x265_2.5/build/linux
-chmod +x multilib.sh
-./multilib.sh
-cd .. 
-cd .. 
-cd .. 
 
 #compile opencv
 cd opencv
