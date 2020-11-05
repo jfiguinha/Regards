@@ -38,6 +38,11 @@ sudo pacman -S sndio
 sudo pacman -S openexr
 sudo pacman -S pkg-config
 sudo pacman -S patchelf
+sudo pacman -S x265
+sudo pacman -S tesseract
+sudo pacman -S poppler
+sudo pacman -S qpdf
+sudo pacman -S openexr
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
