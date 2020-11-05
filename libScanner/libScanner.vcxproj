@@ -33,13 +33,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">header.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlFonts.cc" />
-    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlLinks.cc" />
-    <ClCompile Include="..\libextern\poppler_windows-master\utils\HtmlOutputDev.cc" />
-    <ClCompile Include="..\libextern\poppler_windows-master\utils\InMemoryFile.cc" />
     <ClCompile Include="CentralWindow.cpp" />
     <ClCompile Include="ExportOCr.cpp" />
-    <ClCompile Include="ExportPDF.cpp" />
     <ClCompile Include="OcrLabel.cpp" />
     <ClCompile Include="OcrLabelWnd.cpp" />
     <ClCompile Include="OcrWnd.cpp" />
@@ -55,7 +50,6 @@
     <ClInclude Include="BboxText.h" />
     <ClInclude Include="CentralWindow.h" />
     <ClInclude Include="ExportOcr.h" />
-    <ClInclude Include="ExportPDF.h" />
     <ClInclude Include="OcrLabel.h" />
     <ClInclude Include="OcrLabelWnd.h" />
     <ClInclude Include="OcrWnd.h" />
