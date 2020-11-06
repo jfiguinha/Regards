@@ -27,7 +27,7 @@ void CInfoAbout::UpdateScreenRatio()
 
 CInfoAbout::~CInfoAbout()
 {
-	
+
 }
 
 void CInfoAbout::Init()
@@ -60,7 +60,7 @@ void CInfoAbout::Init()
 	CTreeData * treeDataWidth = new CTreeData();
 	treeDataWidth->SetIsParent(false);
 	treeDataWidth->SetKey("Version");
-	treeDataWidth->SetValue("2.62.6");
+	treeDataWidth->SetValue("2.62.7");
 	tr.append_child(child, treeDataWidth);
 
 	CTreeData * treeDataAnnee = new CTreeData();
@@ -129,7 +129,7 @@ void CInfoAbout::Init()
 	treelibFFmpeg->SetKey("FFMpeg");
 	treelibFFmpeg->SetValue("4.4.0");
 	tr.append_child(child, treelibFFmpeg);
-	
+
 	CTreeData * treelibBPG = new CTreeData();
 	treelibBPG->SetIsParent(false);
 	treelibBPG->SetKey("wxWidget");
@@ -141,72 +141,72 @@ void CInfoAbout::Init()
 	treelibTurboJpeg->SetKey("Turbo JPEG");
 	treelibTurboJpeg->SetValue("1.5.1");
 	tr.append_child(child, treelibTurboJpeg);
-    
+
 	CTreeData * treelibDlib = new CTreeData();
 	treelibDlib->SetIsParent(false);
 	treelibDlib->SetKey("dlib");
 	treelibDlib->SetValue("19.20");
-	tr.append_child(child, treelibDlib);    
+	tr.append_child(child, treelibDlib);
 
 	CTreeData * treelibGlew = new CTreeData();
 	treelibGlew->SetIsParent(false);
 	treelibGlew->SetKey("glew");
 	treelibGlew->SetValue("2.1.0");
-	tr.append_child(child, treelibGlew);  
-    
+	tr.append_child(child, treelibGlew);
+
 	CTreeData * treelibWebp = new CTreeData();
 	treelibWebp->SetIsParent(false);
 	treelibWebp->SetKey("FreeImage");
 	treelibWebp->SetValue("3.2");
-	tr.append_child(child, treelibWebp);   
+	tr.append_child(child, treelibWebp);
 
 	CTreeData * treelib265 = new CTreeData();
 	treelib265->SetIsParent(false);
 	treelib265->SetKey("x265");
 	treelib265->SetValue("2.5");
-	tr.append_child(child, treelib265);     
-    
+	tr.append_child(child, treelib265);
+
 	CTreeData * treelibSDL = new CTreeData();
 	treelibSDL->SetIsParent(false);
 	treelibSDL->SetKey("SDL 2");
 	treelibSDL->SetValue("2.0.5");
-	tr.append_child(child, treelibSDL);     
-    
+	tr.append_child(child, treelibSDL);
+
 	CTreeData * treelibJasper = new CTreeData();
 	treelibJasper->SetIsParent(false);
 	treelibJasper->SetKey("jasper");
 	treelibJasper->SetValue("1.900.1");
-	tr.append_child(child, treelibJasper);       
-   
+	tr.append_child(child, treelibJasper);
+
 	CTreeData * treelibde265 = new CTreeData();
 	treelibde265->SetIsParent(false);
 	treelibde265->SetKey("libde265");
 	treelibde265->SetValue("1.0.0");
-	tr.append_child(child, treelibde265); 
+	tr.append_child(child, treelibde265);
 
 	CTreeData * treelibheif = new CTreeData();
 	treelibheif->SetIsParent(false);
 	treelibheif->SetKey("heif");
 	treelibheif->SetValue("1.0");
-	tr.append_child(child, treelibheif); 
+	tr.append_child(child, treelibheif);
 
     CTreeData * treePiccante = new CTreeData();
 	treePiccante->SetIsParent(false);
 	treePiccante->SetKey("Piccante");
 	treePiccante->SetValue("0.4");
-	tr.append_child(child, treePiccante);    
-    
+	tr.append_child(child, treePiccante);
+
     CTreeData * treeOpenEXR = new CTreeData();
 	treeOpenEXR->SetIsParent(false);
 	treeOpenEXR->SetKey("QPDF");
 	treeOpenEXR->SetValue("9.0.2");
-	tr.append_child(child, treeOpenEXR);     
+	tr.append_child(child, treeOpenEXR);
 
     CTreeData * treewxSVG = new CTreeData();
 	treewxSVG->SetIsParent(false);
 	treewxSVG->SetKey("wxSVG");
 	treewxSVG->SetValue("1.5.15");
-	tr.append_child(child, treewxSVG);  
+	tr.append_child(child, treewxSVG);
 
 	CTreeData * poppler = new CTreeData();
 	poppler->SetIsParent(false);
@@ -256,7 +256,7 @@ void CInfoAbout::CreateElement()
             }
             else
                 treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-            
+
 			treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
@@ -283,7 +283,7 @@ void CInfoAbout::ClickOnElement(CPositionElement * element, wxWindow * window, c
         CTreeElementTexteClick * treeElementTexte= (CTreeElementTexteClick *)treeElement;
         treeElementTexte->ClickElement(window, x, y);
     }
-    
+
 }
 
 void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
@@ -292,7 +292,7 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 	tree<CTreeData *>::sibling_iterator it = tr.begin(parent);
 	//tree<CTreeData *>::iterator itend = tr.end(parent);
 	bool isVisible = true;
-	//int i = 
+	//int i =
 
 	for (int i = 0; i < parent.number_of_children(); i++)
 	{
@@ -313,7 +313,7 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
             }
             else
                 treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-			
+
             treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
@@ -322,7 +322,7 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
 			if (data->GetValue() != "")
 			{
 				xPos = themeTree.GetMargeX();
-                
+
                 if(data->GetType() == 2)
                 {
                     CTreeDataLink * dataLink = (CTreeDataLink *)data;
@@ -330,7 +330,7 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
                 }
                 else
                     treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetValue());
-				
+
                 treeElementTexte->SetVisible(isVisible);
 				posElement = CreatePositionElement(xPos, yPos, nbRow, 1, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTEVALUE, treeElementTexte, data, (data->GetType() == 2));
 				widthElementColumn2 = xPos + posElement->GetWidth() + themeTree.GetMargeX();
@@ -364,7 +364,7 @@ void CInfoAbout::CreateChildTree(tree<CTreeData *>::sibling_iterator &parent)
             }
             else
                 treeElementTexte = CreateTexteElement(themeTree.GetRowWidth(), themeTree.GetRowHeight(), data->GetKey());
-            
+
 			treeElementTexte->SetVisible(isVisible);
 			posElement = CreatePositionElement(xPos, yPos, nbRow, 0, treeElementTexte->GetWidth(), treeElementTexte->GetHeight(), ELEMENT_TEXTE, treeElementTexte, data, false);
 
