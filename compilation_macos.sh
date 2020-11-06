@@ -29,7 +29,7 @@ brew install -v tesseract
 brew install -v poppler
 brew install -v qpdf
 brew install -v openexr
-brew install -v libjasper
+brew install -v jasper
 #brew install -v freeimage
 #brew install -v fftw
 #Install External Library
@@ -37,7 +37,5 @@ cd libextern
 chmod +x compilation_library_macos.sh
 ./compilation_library_macos.sh
 cd ..
-
-sudo cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
 
 #/bin/sh -c '/usr/bin/make -j12 -e -f Makefile.macos'
