@@ -727,7 +727,9 @@ void CBitmapWndViewer::RenderTexture(const bool &invertPos)
 			if (afterEffectNext != nullptr)
 			{
 				afterEffectNext->GenerateTexture(nextPicture, source, this);
-				renderOpenGL->RenderWithPageCurl(afterEffectNext->GetTexture(0), afterEffectNext->GetTexture(1), etape, false, GetWidth(), GetHeight(), 0, 0);
+                int widthOutput = GetWidth() * scale_factor;
+                int heightOutput = GetHeight() * scale_factor;
+				renderOpenGL->RenderWithPageCurl(afterEffectNext->GetTexture(0), afterEffectNext->GetTexture(1), etape, false, widthOutput, heightOutput, 0, 0);
 			}
 		}
 		else

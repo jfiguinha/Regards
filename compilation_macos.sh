@@ -29,6 +29,7 @@ brew install -v tesseract
 brew install -v poppler
 brew install -v qpdf
 brew install -v openexr
+brew install -v libjasper
 #brew install -v freeimage
 #brew install -v fftw
 #Install External Library
