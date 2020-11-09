@@ -32,7 +32,7 @@ pacman -S mingw-w64-x86_64-ffmpeg
 pacman -S mingw-w64-x86_64-poppler
 pacman -S mingw-w64-x86_64-tesseract-ocr
 pacman -S mingw-w64-x86_64-jasper
-pacman -S mingw-w64-x86_64-glew
+pacman -S mingw-w64-x86_64-opencv
 #install OpenCL SDK
 #wget https://github.com/GPUOpen-LibrariesAndSDKs/OCL-SDK/releases/download/1.0/OCL_SDK_Light_AMD.exe
 
