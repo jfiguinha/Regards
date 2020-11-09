@@ -2,64 +2,18 @@
 NBPROC=$(nproc)
 echo $NBPROC
 
-#decompression
-pacman -S unzip
-#Get libjasper
-#wget http://www.ece.uvic.ca/~frodo/jasper/software/jasper-2.0.14.tar.gz
-#tar xf jasper-2.0.14.tar.gz
-
-#get lib poppler
-#wget https://poppler.freedesktop.org/poppler-0.81.0.tar.xz
-#tar xf poppler-0.81.0.tar.xz
-
 tar xf  MediaInfo_DLL_GNU_FromSource.tar.gz
 
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
-
-#get Tesseract
-#wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip
-#unzip 4.1.1.zip
-
-#install leptonica
-#tar xf  leptonica-1.79.0.tar.gz
-#cd leptonica-1.79.0
-#mkdir build
-#cd build
-#cmake ../ -G "MSYS Makefiles"  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-#make -j$NBPROC
-#sudo make install
-#cd ..
-#cd ..
-
-#compile tesseract
-#cd tesseract-4.1.1
-#./autogen.sh
-#./configure --prefix="$HOME/ffmpeg_build"
-#make -j$NBPROC
-#make install
-#cd ..
 
 #Compile exiv2-0.27.3 :
 cd exiv2-0.27.3
 mkdir build
 cd build 
-cmake ../
+cmake -G "MSYS Makefiles" ../
 make -j$NBPROC
 cd ..
 cd ..
-
-#Compile glew-2.1.0
-#cd glew-2.1.0
-#mkdir -p lib
-#mkdir -p bin
-#cd build/cmake/
-#cmake ./ -G"MSYS Makefiles" 
-#make -j$NBPROC
-#cp lib/*.* ../../lib
-#cp bin/*.* ../../bin
-#cd ..
-#cd ..
-#cd ..
 
 #Compile heif-master
 cd heif-master/srcs 
@@ -78,46 +32,12 @@ make install
 cd ..
 cd ..
 
-#Compile SDL2-2.0.5
-#cd SDL2-2.0.5 
-#./configure
-#make -j$NBPROC
-#cd ..
-
 #Compile wxWidgets-master
 unzip wxWidgets-master.zip
 cd wxWidgets-master
 ./configure --enable-monolithic --enable-unicode --disable-shared --disable-log --disable-debug
 make -j$NBPROC
 cd ..
-
-#Compile x265_2.5
-#cd x265_2.5/build/msys
-#chmod +x multilib.sh
-#./multilib.sh
-#cd .. 
-#cd .. 
-#cd .. 
-
-#compile jasper
-#cd jasper-2.0.14
-#mkdir build
-#cd build
-#cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-#make -j$NBPROC
-#make install
-#cd ..
-#cd ..
-
-#Compile libpoppler
-#cd poppler-0.81.0
-#mkdir build
-#cd build
-#cmake ../ -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
-#make -j$NBPROC
-#make install
-#cd ..
-#cd ..
 
 #Compile Zen From MediaInfo_DLL_GNU_FromSource
 cd MediaInfo_DLL_GNU_FromSource/ZenLib/Project/CMake
@@ -138,20 +58,3 @@ cd ..
 cd ..
 cd ..
 cd ..
-
-#compile opencv
-cd opencv
-unzip opencv-4.3.0.zip
-unzip opencv_contrib-4.3.0.zip
-cd opencv-4.3.0
-mkdir build
-cd build
-cmake -G "MSYS Makefiles" -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build" -DBUILD_opencv_python=OFF -DOPENCV_EXTRA_MODULES_PATH:PATH="../../opencv_contrib-4.3.0/modules" -DBUILD_opencv_freetype=OFF -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_PERF_TESTS=OFF -DBUILD_TESTS=OFF -DBUILD_opencv_apps=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-std=gnu++14 -I ../../../eigen/Eigen" -DOPENCV_ALLOCATOR_STATS_COUNTER_TYPE=int64_t ../
-make -j$NBPROC
-make install
-cd ..
-cd ..
-cd ..
-
-#Compille ffmpeg
-#./ffmpeg_build_windows.sh
