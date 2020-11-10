@@ -37,6 +37,14 @@ inline int compute_mod(int a, int b)
 	return a < 0 ? a % b + b : a % b;
 }
 
+AVCodecContext * GetCodec(AVStream * avStream)
+{
+	AVCodec * pCodec = avcodec_find_decoder(avStream->codecpar->codec_id);
+	AVCodecContext * pCodecCtx = avcodec_alloc_context3(pCodec);
+	avcodec_parameters_to_context(pCodecCtx, avStream->codecpar);
+	return pCodecCtx;
+}
+
 int CFFmfcPimpl::percentageToDb(int p, int maxValue) {
 	if (p == 0)
 		return 0;
@@ -774,8 +782,8 @@ void CFFmfcPimpl::video_refresh(VideoState *is)
 				aqsize / 1024,
 				vqsize / 1024,
 				sqsize,
-				is->video_st ? is->video_st->codec->pts_correction_num_faulty_dts : 0,
-				is->video_st ? is->video_st->codec->pts_correction_num_faulty_pts : 0);
+				is->video_st ? is->videoCtx->pts_correction_num_faulty_dts : 0,
+				is->video_st ? is->videoCtx->pts_correction_num_faulty_pts : 0);
 #endif
 			//int pos=1000*get_master_clock(is)/(is->ic->duration/1000000);
 			dlg->SetPos(get_master_clock(is) * 1000);
@@ -835,7 +843,7 @@ int CFFmfcPimpl::queue_picture(VideoState *is, AVFrame *src_frame, double pts1, 
 		pts = is->video_clock;
 	}
 	/* update video clock for next frame */
-	frame_delay = av_q2d(is->video_st->codec->time_base);
+	frame_delay = av_q2d(is->video_st->time_base);
 	/* for MPEG2, the frame can be repeated, so we update the
 	clock accordingly */
 	frame_delay += src_frame->repeat_pict * (frame_delay * 0.5);
@@ -961,7 +969,7 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 		return -1;
 
 	if (pkt->data == flush_pkt.data) {
-		avcodec_flush_buffers(is->video_st->codec);
+		avcodec_flush_buffers(is->videoCtx);
 
 		SDL_LockMutex(is->pictq_mutex);
 		// Make sure there are no long delay timers (ideally we should just flush the que but thats harder)
@@ -992,16 +1000,16 @@ int CFFmfcPimpl::get_video_frame(VideoState *is, AVFrame *frame, int64_t *pts, A
 
 	got_picture = false;
 	//½âÂë
-	//if (avcodec_decode_video2(is->video_st->codec, frame, &got_picture, pkt) < 0)
+	//if (avcodec_decode_video2(is->videoCtx, frame, &got_picture, pkt) < 0)
 	//	return 0;
 	
-	int ret = avcodec_receive_frame(is->video_st->codec, frame);
+	int ret = avcodec_receive_frame(is->videoCtx, frame);
 	if (ret == 0)
 		got_picture = true;
 	if (ret == AVERROR(EAGAIN))
 		ret = 0;
 	if (ret == 0)
-		ret = avcodec_send_packet(is->video_st->codec, pkt);
+		ret = avcodec_send_packet(is->videoCtx, pkt);
 	if (ret == AVERROR(EAGAIN))
 		ret = 0;
 	else if (ret < 0)
@@ -1064,7 +1072,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 	int64_t pts_int = AV_NOPTS_VALUE, pos = -1;
 	double pts;
 	int ret;
-
+	//is->videoCtx = GetCodec(is->video_st);
 
 	for (;;)
 	{
@@ -1110,7 +1118,7 @@ int CFFmfcPimpl::video_thread(void *arg)
 		SDL_Delay(10);
 	}
 the_end:
-	avcodec_flush_buffers(is->video_st->codec);
+	avcodec_flush_buffers(is->videoCtx);
 	av_packet_unref(&pkt);
 	av_frame_free(&frame);
 	//avcodec_free_frame(&frame);
@@ -1125,6 +1133,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 	int got_subtitle;
 	double pts;
 	int i, j;
+	//is->subtitleCtx = GetCodec(is->subtitle_st);
 	//int r, g, b, y, u, v, a;
 
 	for (;;) {
@@ -1143,7 +1152,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 			break;
 
 		if (pkt->data == is->_pimpl->flush_pkt.data) {
-			avcodec_flush_buffers(is->subtitle_st->codec);
+			avcodec_flush_buffers(is->subtitleCtx);
 			continue;
 		}
 		SDL_LockMutex(is->subpq_mutex);
@@ -1172,7 +1181,7 @@ int CFFmfcPimpl::subtitle_thread(void *arg)
 		if (pkt->pts != AV_NOPTS_VALUE)
 			pts = av_q2d(is->subtitle_st->time_base) * pkt->pts;
 
-		avcodec_decode_subtitle2(is->subtitle_st->codec, &sp->sub,
+		avcodec_decode_subtitle2(is->subtitleCtx, &sp->sub,
 			&got_subtitle, pkt);
 		if (got_subtitle && sp->sub.format == 0) {
 			if (sp->sub.pts != AV_NOPTS_VALUE)
@@ -1277,10 +1286,10 @@ int CFFmfcPimpl::synchronize_audio(VideoState *is, int nb_samples)
 /* decode one audio frame and returns its uncompressed size */
 int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 {
-	AVCodecContext *audio_ctx = is->audio_st->codec;
+	AVCodecContext *audio_ctx = is->audioCtx;
 	AVPacket *pkt_temp = &is->audio_pkt_temp;
 	AVPacket *pkt = &is->audio_pkt;
-	AVCodecContext *dec = is->audio_st->codec;
+	AVCodecContext *dec = is->audioCtx;
 	int len1, len2, data_size, resampled_data_size;
 	int64_t dec_channel_layout;
 	int got_frame = 0;
@@ -1778,7 +1787,7 @@ AVDictionary ** CFFmfcPimpl::setup_find_stream_info_opts(AVFormatContext *s,
 		return nullptr;
 	}
 	for (i = 0; i < s->nb_streams; i++)
-		opts[i] = filter_codec_opts(codec_opts, s->streams[i]->codec->codec_id,
+		opts[i] = filter_codec_opts(codec_opts, s->streams[i]->codecpar->codec_id,
 			s, s->streams[i], nullptr);
 	return opts;
 }
@@ -1804,7 +1813,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 	if (stream_index < 0 || stream_index >= ic->nb_streams)
 		return -1;
-	avctx = ic->streams[stream_index]->codec;
+	avctx = GetCodec(ic->streams[stream_index]);
 	// ÎªÊÓÆµÁ÷Ñ°ÕÒ½âÂëÆ÷
 	//×¢Òâ£º´Ë´¦¿ÉÒÔÖ¸¶¨½âÂëÆ÷
 	codec = avcodec_find_decoder(avctx->codec_id);
@@ -1842,8 +1851,8 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 			ist->hwaccel_device = "dxva2";
 			ist->dec = codec;
 			ist->dec_ctx = avctx;
-			avctx->coded_height = ic->streams[stream_index]->codec->height;
-			avctx->coded_width = ic->streams[stream_index]->codec->width;
+			avctx->coded_height = ic->streams[stream_index]->codecpar->height;
+			avctx->coded_width = ic->streams[stream_index]->codecpar->width;
 
 
 			//printf("ÊÓÆµ¸ß£º%d\n",ic->streams[video_index]->codec->height);
@@ -1949,6 +1958,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 			return -1;
 		is->audio_hw_buf_size = audio_hw_buf_size;
 		is->audio_tgt = is->audio_src;
+		
 	}
 
 	ic->streams[stream_index]->discard = AVDISCARD_DEFAULT;
@@ -1957,6 +1967,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 	{
 		//ÉèÖÃis½á¹¹Ìå
 	case AVMEDIA_TYPE_AUDIO:
+		is->audioCtx = avctx;
 		is->audio_stream = stream_index;
 		is->audio_st = ic->streams[stream_index];
 		is->audio_buf_size = 0;
@@ -1979,6 +1990,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 
 	case AVMEDIA_TYPE_SUBTITLE:
+		is->subtitleCtx = avctx;
 		is->subtitle_stream = stream_index;
 		is->subtitle_st = ic->streams[stream_index];
 		CFFmfcPimpl::packet_queue_start(&is->subtitleq);
@@ -1997,6 +2009,7 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 
 	case AVMEDIA_TYPE_VIDEO:
 	{
+		is->videoCtx = avctx;
 		is->video_stream = stream_index;
 		is->video_st = ic->streams[stream_index];
 
@@ -2031,16 +2044,17 @@ int CFFmfcPimpl::stream_component_open(VideoState *is, int stream_index)
 void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 {
 	AVFormatContext *ic = is->ic;
-	AVCodecContext *avctx;
+	//AVCodecContext *avctx;
 
 
 	if (stream_index < 0 || stream_index >= ic->nb_streams)
 		return;
-	avctx = ic->streams[stream_index]->codec;
+	//avctx = ic->streams[stream_index]->codec;
 
 
 
-	switch (avctx->codec_type) {
+	switch (ic->streams[stream_index]->codecpar->codec_type)
+	{
 	case AVMEDIA_TYPE_AUDIO:
 		packet_queue_abort(&is->audioq);
 
@@ -2060,6 +2074,7 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 			is->rdft = nullptr;
 			is->rdft_bits = 0;
 		}
+		avcodec_close(is->audioCtx);
 		break;
 	case AVMEDIA_TYPE_VIDEO:
 		packet_queue_abort(&is->videoq);
@@ -2078,17 +2093,15 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 			delete is->video_tid;
 			is->video_tid = nullptr;
 		}
-		
-		//SDL_WaitThread(is->video_tid, nullptr);
 
 		packet_queue_flush(&is->videoq);
 
 #ifdef WIN32
 
 		if (dlg->GetDXVA2Compatible())
-			dxva2_uninit(avctx);
+			dxva2_uninit(is->videoCtx);
 #endif
-
+		avcodec_close(is->videoCtx);
 		break;
 	case AVMEDIA_TYPE_SUBTITLE:
 		packet_queue_abort(&is->subtitleq);
@@ -2112,15 +2125,16 @@ void CFFmfcPimpl::stream_component_close(VideoState *is, int stream_index)
 		}
 
 		packet_queue_flush(&is->subtitleq);
+		avcodec_close(is->subtitleCtx);
 		break;
 	default:
 		break;
 	}
 
 	ic->streams[stream_index]->discard = AVDISCARD_ALL;
-	avcodec_close(avctx);
+	
 
-	switch (avctx->codec_type) {
+	switch (ic->streams[stream_index]->codecpar->codec_type) {
 	case AVMEDIA_TYPE_AUDIO:
 		is->audio_st = nullptr;
 		is->audio_stream = -1;
@@ -2276,24 +2290,24 @@ int CFFmfcPimpl::read_thread(void *arg)
 	{
 		AVDictionaryEntry * tag = nullptr;
 
-		const char * stream_type = av_get_media_type_string(ic->streams[i]->codec->codec_type);
+		const char * stream_type = av_get_media_type_string(ic->streams[i]->codecpar->codec_type);
 
 
-		if (ic->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO)
+		if (ic->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
 		{
 			while ((tag = av_dict_get(ic->streams[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
 			{
 				printf("STREAM_%s_%s=%s\n", stream_type, tag->key, tag->value);
 			}
 		}
-		else if (ic->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+		else if (ic->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
 		{
 			while ((tag = av_dict_get(ic->streams[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
 			{
 				printf("STREAM_%s_%s=%s\n", stream_type, tag->key, tag->value);
 			}
 		}
-		else if (ic->streams[i]->codec->codec_type == AVMEDIA_TYPE_SUBTITLE)
+		else if (ic->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE)
 		{
 			while ((tag = av_dict_get(ic->streams[i]->metadata, "", tag, AV_DICT_IGNORE_SUFFIX)))
 			{
@@ -2467,7 +2481,7 @@ int CFFmfcPimpl::read_thread(void *arg)
 				is->_pimpl->packet_queue_put(&is->videoq, pkt);
 			}
 			if (is->audio_stream >= 0 &&
-				is->audio_st->codec->codec->capabilities & AV_CODEC_CAP_DELAY) {
+				is->audioCtx->codec->capabilities & AV_CODEC_CAP_DELAY) {
 				av_init_packet(pkt);
 				pkt->data = nullptr;
 				pkt->size = 0;
@@ -2667,12 +2681,12 @@ void CFFmfcPimpl::stream_cycle_channel(VideoState *is, int codec_type)
 		if (stream_index == start_index)
 			return;
 		st = ic->streams[stream_index];
-		if (st->codec->codec_type == codec_type) {
+		if (st->codecpar->codec_id == codec_type) {
 			/* check that parameters are OK */
 			switch (codec_type) {
 			case AVMEDIA_TYPE_AUDIO:
-				if (st->codec->sample_rate != 0 &&
-					st->codec->channels != 0)
+				if (st->codecpar->sample_rate != 0 &&
+					st->codecpar->channels != 0)
 					goto the_end;
 				break;
 			case AVMEDIA_TYPE_VIDEO:

@@ -313,7 +313,8 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         filename = movie;
 		standByMovie = "";
         pause = false;
-		playStartTimer->Start(100, true);
+		//playStartTimer->Start(100, true);
+		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
 	}
 	else if(movie != filename)
 	{

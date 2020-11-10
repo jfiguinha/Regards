@@ -157,11 +157,11 @@ wxString wxFfmpegMediaDecoder::GetCodecName(unsigned int streamIndex) {
 }
 
 int wxFfmpegMediaDecoder::GetChannelNumber(unsigned int streamIndex) {
-	return m_formatCtx ? m_formatCtx->streams[streamIndex]->codec->channels : -1;
+	return m_formatCtx ? m_formatCtx->streams[streamIndex]->codecpar->channels : -1;
 }
 
 int wxFfmpegMediaDecoder::GetSampleRate(unsigned int streamIndex) {
-	return m_formatCtx ? m_formatCtx->streams[streamIndex]->codec->sample_rate : -1;
+	return m_formatCtx ? m_formatCtx->streams[streamIndex]->codecpar->sample_rate : -1;
 }
 
 int wxFfmpegMediaDecoder::GetBitrate(unsigned int streamIndex) {
@@ -180,7 +180,7 @@ bool wxFfmpegMediaDecoder::OpenVideoDecoder() {
 	
 	m_videoStream = -1;
 	for (int i=0; i<(int)m_formatCtx->nb_streams; i++) {
-		if (m_formatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
+		if (m_formatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
 			m_videoStream = i;
 			break;
 		}
@@ -309,10 +309,10 @@ wxString wxFfmpegMediaDecoder::GetCodecTag(unsigned int streamIndex) {
 	if (m_formatCtx == NULL)
 		return wxT("");
 	AVStream *st = m_formatCtx->streams[streamIndex];
-	if (st->codec == NULL || st->codec->codec_tag == 0)
+	if (st->codec == NULL || st->codecpar->codec_tag == 0)
 		return wxT("");
 	char buf[32];
-	if (av_get_codec_tag_string(buf, sizeof(buf), st->codec->codec_tag) <= 0)
+	if (av_get_codec_tag_string(buf, sizeof(buf), st->codecpar->codec_tag) <= 0)
 		return wxT("");
 	return wxString(buf, wxConvLocal);
 }

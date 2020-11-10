@@ -289,10 +289,11 @@ bool CFFmfc::Quit()
 	if (_pimpl->g_is)
 	{
 		_pimpl->StopStream();
-		wxSleep(1);
-		wxCommandEvent evt(FF_EXIT_EVENT);
-		evt.SetClientData(cur_stream);
-		this->GetEventHandler()->AddPendingEvent(evt);
+		_pimpl->do_exit(cur_stream);
+		//wxSleep(1);
+		//wxCommandEvent evt(FF_EXIT_EVENT);
+		//evt.SetClientData(cur_stream);
+		//this->GetEventHandler()->AddPendingEvent(evt);
 
 	}
 	else
@@ -362,8 +363,8 @@ void CFFmfc::Aspectratio(int num, int den) {
 //·¢ËÍ¡°´óÐ¡¡±ÃüÁî
 //Send Command "WindowSize"
 void CFFmfc::Size(int percentage){
-	int w= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codec->width;
-	int h= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codec->height;
+	int w= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->width;
+	int h= _pimpl->g_is->ic->streams[_pimpl->g_is->video_stream]->codecpar->height;
     
 	wxSize * size = new wxSize();
 	size->x = w;

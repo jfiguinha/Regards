@@ -220,7 +220,9 @@ public:
 		std::thread *refresh_tid = nullptr;
 		std::thread *subtitle_tid = nullptr;
 
-
+		AVCodecContext * videoCtx = nullptr;
+		AVCodecContext * audioCtx = nullptr;
+		AVCodecContext * subtitleCtx = nullptr;
 		AVInputFormat *iformat = nullptr;
 		int no_background = 0;
 		int abort_request = 0;

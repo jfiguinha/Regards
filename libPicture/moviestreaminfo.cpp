@@ -135,7 +135,7 @@ AVDictionary ** MovieStreamInfo::setup_find_stream_info_opts(AVFormatContext *s,
         return nullptr;
     }
     for (i = 0; i < s->nb_streams; i++)
-        opts[i] = filter_codec_opts(codec_opts, s->streams[i]->codec->codec_id,
+        opts[i] = filter_codec_opts(codec_opts, s->streams[i]->codecpar->codec_id,
                                     s, s->streams[i], nullptr);
     return opts;
 }
@@ -219,7 +219,7 @@ void MovieStreamInfo::initializeVideo()
 		//const char * stream_type = av_get_media_type_string(m_pFormatContext->streams[i]->codec->codec_type);
 
 
-		if(m_pFormatContext->streams[i]->codec->codec_type == 	AVMEDIA_TYPE_AUDIO)
+		if(m_pFormatContext->streams[i]->codecpar->codec_type == 	AVMEDIA_TYPE_AUDIO)
 		{
 			AVDictionaryEntry * tag = nullptr;
 			CStreamInfo streamInfo;
@@ -241,7 +241,7 @@ void MovieStreamInfo::initializeVideo()
 			streamInfo.typeStream = 1;
 			listStream.push_back(streamInfo);
 		}
-		else if(m_pFormatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+		else if(m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
 		{
 			AVDictionaryEntry * tag = nullptr;
 			CStreamInfo streamInfo;
@@ -262,7 +262,7 @@ void MovieStreamInfo::initializeVideo()
 			streamInfo.typeStream = 2;
 			listStream.push_back(streamInfo);
 		}
-		else if(m_pFormatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_SUBTITLE)
+		else if(m_pFormatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE)
 		{
 			AVDictionaryEntry * tag = nullptr;
 			CStreamInfo streamInfo;
