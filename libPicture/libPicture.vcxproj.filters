@@ -7,9 +7,6 @@
     <ClCompile Include="avif.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="avif_heif.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\include\header.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -148,9 +145,6 @@
       <Filter>libraw</Filter>
     </ClInclude>
     <ClInclude Include="avif.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="avif_heif.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\include\header.h">

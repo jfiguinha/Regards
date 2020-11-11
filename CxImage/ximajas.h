@@ -64,11 +64,9 @@ protected:
 			// <vho> - end
 		}
 		
-#define unsigned int
-
 		static int JasRead(jas_stream_obj_t *obj, char *buf, unsigned cnt)
 		{		return ((CxFile*)obj)->Read(buf,1,cnt); }
-		static int JasWrite(jas_stream_obj_t *obj, char *buf, unsigned cnt)
+		static int JasWrite(jas_stream_obj_t *obj, const char *buf, unsigned cnt)
 		{		return ((CxFile*)obj)->Write(buf,1,cnt); }
 		static long JasSeek(jas_stream_obj_t *obj, long offset, int origin)
 		{		return ((CxFile*)obj)->Seek(offset,origin); }

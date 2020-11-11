@@ -6,3 +6,5 @@ vcpkg install freeimage:x64-windows --recurse
 vcpkg install tesseract:x64-windows --recurse
 vcpkg install tbb:x64-windows --recurse
 vcpkg install libmagic-dev:x64-windows --recurse
+vcpkg install SDL:x64-windows --recurse
+vcpkg install x265:x64-windows --recurse
