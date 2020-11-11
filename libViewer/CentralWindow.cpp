@@ -931,9 +931,12 @@ void CCentralWindow::SetMode(wxCommandEvent& event)
 			
             
 		}
-		if ((isVideo || isAnimation) && showVideoThumbnail)
+		if (isVideo || isAnimation)
 		{
-			windowManager->ShowPaneWindow(Pos::wxTOP);
+			if(showVideoThumbnail)
+				windowManager->ShowPaneWindow(Pos::wxTOP);
+			else
+				windowManager->HidePaneWindow(Pos::wxTOP);
 		}
 		else
 		{
