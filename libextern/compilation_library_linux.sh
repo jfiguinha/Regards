@@ -76,6 +76,22 @@ cd ..
 cd ..
 cd ..
 
+# libaom
+git clone https://aomedia.googlesource.com/aom
+cd aom
+cd build
+cmake ../../aom -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
 #Compille ffmpeg
-./ffmpeg_build.sh
+tar xf ffmpeg-4.3.1.tar.xz
+mv ffmpeg-4.3.1 ffmpeg-master
+cd ffmpeg-master
+export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
+./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
+
+
 
