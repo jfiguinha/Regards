@@ -129,7 +129,6 @@
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs);-std=gnu++14;-pthread;-finstrument-functions" C_Options=";-Wall;$(shell ../libextern/wxWidgets-master/wx-config --cppflags --libs)" Assembler="">
         <IncludePath Value="."/>
-        <IncludePath Value="../libextern/fftw-3.3.8/api"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/png"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/tiff/libtiff"/>
         <IncludePath Value="../libextern/wxWidgets-master/src/jpeg"/>
@@ -137,9 +136,7 @@
         <IncludePath Value="../libOpenCLEngine"/>
         <IncludePath Value="../libTheme"/>
         <IncludePath Value="../libextern/libRapidXML"/>
-        <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
-        <IncludePath Value="../libextern/glew-2.1.0/include"/>
-        <IncludePath Value="../libextern/SDL2-2.0.5/include"/>
+        <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libGeolocalisation"/>
         <IncludePath Value="../libParameter"/>
         <IncludePath Value="../libUtility"/>
@@ -173,7 +170,6 @@
         <IncludePath Value="../Regards"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
         <IncludePath Value="../libDeepLearning"/>
-        <IncludePath Value="../libextern/poppler-0.81.0/cpp"/>
         <Preprocessor Value="VIEWER"/>
         <Preprocessor Value="OPENGL"/>
         <Preprocessor Value="SDL2"/>
@@ -184,14 +180,14 @@
         <LibraryPath Value="../libextern/exiv2-0.27.3/build/lib"/>
         <LibraryPath Value="../libextern/wxWidgets-master/lib"/>
         <LibraryPath Value="../libextern/libmng-2.0.3/.libs"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavcodec"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavformat"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavdevice"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavfilter"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libavutil"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libswresample"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libswscale"/>
-        <LibraryPath Value="../libextern/ffmpeg-4.2.2/libpostproc"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libavcodec"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libavformat"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libavdevice"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libavfilter"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libavutil"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libswresample"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libswscale"/>
+        <LibraryPath Value="../libextern/ffmpeg-master/libpostproc"/>
         <LibraryPath Value="../libextern/libde265-master/libde265"/>
         <LibraryPath Value="../libextern/heif-master/srcs/lib"/>
         <LibraryPath Value="../libextern/LibRaw-0.20.0/lib/.libs"/>

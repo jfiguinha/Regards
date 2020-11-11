@@ -61,8 +61,6 @@ chmod +x compilation_library_linux.sh
 ./compilation_library_linux.sh
 cd ..
 
-sudo cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
-
 unzip project_linux.zip
 
 export PROJECTPATH=$PWD

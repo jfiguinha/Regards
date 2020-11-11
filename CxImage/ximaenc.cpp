@@ -4,7 +4,7 @@
  */
 
 #include "ximage.h"
-//#include <tmmintrin.h>
+#include <tmmintrin.h>
 
 #if CXIMAGE_SUPPORT_JPG
 #include "ximajpg.h"

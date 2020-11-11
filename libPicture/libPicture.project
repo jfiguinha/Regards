@@ -168,17 +168,12 @@
         <IncludePath Value="../libUtility"/>
         <IncludePath Value="../Otherlib/libbpg/libRegardsBpg"/>
         <IncludePath Value="../Otherlib/wxSVG/include"/>
-        <IncludePath Value="../libextern/libjpeg-turbo-1.5.1"/>
-        <IncludePath Value="../libextern/libwebp-0.6.0/src"/>
         <IncludePath Value="../libextern/libde265-master/libde265"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/reader"/>
         <IncludePath Value="../libextern/heif-master/srcs/api/common"/>
         <IncludePath Value="../libextern/libde265-master"/>
         <IncludePath Value="../Otherlib/libavif/include"/>
         <IncludePath Value="../Otherlib/wxPDFDoc/include"/>
-        <IncludePath Value="../libextern/poppler_windows-master/poppler"/>
-        <IncludePath Value="../libextern/poppler_windows-master/cpp"/>
-        <IncludePath Value="../libextern/LibRaw-0.20.0"/>
         <IncludePath Value="../Otherlib"/>
         <IncludePath Value="../Otherlib/libFreeImage/Source"/>
         <IncludePath Value="../libextern/piccante-master/include"/>
@@ -186,7 +181,7 @@
         <IncludePath Value="../libextern/exiv2-0.27.3/xmpsdk/include"/>
         <IncludePath Value="../libextern/exiv2-0.27.3/include/exiv2"/>
         <IncludePath Value="../libextern/exiv2-0.27.3/include"/>
-        <IncludePath Value="../libextern/ffmpeg-4.2.2"/>
+        <IncludePath Value="../libextern/ffmpeg-master"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Source"/>
         <IncludePath Value="../libextern/MediaInfo_DLL_GNU_FromSource/ZenLib/Source"/>
         <Preprocessor Value="LIBRAW"/>
