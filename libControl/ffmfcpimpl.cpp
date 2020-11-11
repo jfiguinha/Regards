@@ -1307,7 +1307,10 @@ int CFFmfcPimpl::audio_decode_frame(VideoState *is, double *pts_ptr)
 					return AVERROR(ENOMEM);
 			}
 			else
-				av_frame_unref(is->frame);
+            {
+                 av_frame_unref(is->frame);
+            }
+				
 			//avcodec_get_frame_defaults(is->frame);
 
 			if (is->paused)
