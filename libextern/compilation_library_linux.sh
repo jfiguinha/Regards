@@ -107,7 +107,7 @@ cd ..
 
 #Compile libpoppler
 tar xf poppler-20.11.0.tar.xz
-cd oppler-20.11.0
+cd poppler-20.11.0
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
