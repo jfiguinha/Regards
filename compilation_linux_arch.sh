@@ -35,14 +35,14 @@ sudo pacman -S bzip2
 sudo pacman -S mesa-vdpau
 sudo pacman -S unzip
 sudo pacman -S sndio
-sudo pacman -S openexr
+#sudo pacman -S openexr
 sudo pacman -S pkg-config
 sudo pacman -S patchelf
-sudo pacman -S x265
-sudo pacman -S tesseract
-sudo pacman -S poppler
-sudo pacman -S qpdf
-sudo pacman -S openexr
+#sudo pacman -S x265
+#sudo pacman -S tesseract
+#sudo pacman -S poppler
+#sudo pacman -S qpdf
+#sudo pacman -S openexr
 #sudo pacman -S ocl-icd-opencl
 
 #Get AMD SDK
@@ -62,8 +62,6 @@ chmod +x compilation_library_linux.sh
 cd ..
 
 unzip project_linux.zip
-
-sudo cp libextern/tesseract-4.1.0/tesscallback.h ~/ffmpeg_build/include/tesseract
 
 export PROJECTPATH=$PWD
 make -j$NBPROC
