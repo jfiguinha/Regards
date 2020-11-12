@@ -283,6 +283,94 @@ void CRenderOpenGL::RenderQuad(GLTexture * texture, int left, int top, bool inve
 }
 
 
+void CRenderOpenGL::RenderQuad(GLTexture * texture, const int &width, const int &height, const bool & flipH, const bool & flipV, int left, int top, bool inverted)
+{
+	glPushMatrix();
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	GLfloat vertices[] = {
+		static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(top),
+		static_cast<GLfloat>(width) + static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top),
+		static_cast<GLfloat>(left), static_cast<GLfloat>(height) + static_cast<GLfloat>(top) };
+
+	GLfloat texVertices[8];
+
+	if (inverted)
+	{
+		GLfloat vertices[] = {
+				0, 1,
+				1, 1,
+				1, 0,
+				0, 0 };
+
+		if (flipV)
+		{
+			vertices[1] = 0;
+			vertices[3] = 0;
+			vertices[5] = 1;
+			vertices[7] = 1;
+
+		}
+
+		if (flipH)
+		{
+			vertices[0] = 1;
+			vertices[2] = 0;
+			vertices[4] = 0;
+			vertices[6] = 1;
+		}
+
+		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
+
+	}
+	else
+	{
+		GLfloat vertices[] = {
+			0, 0,
+			1, 0,
+			1, 1,
+			0, 1 };
+
+		if (flipV)
+		{
+			vertices[1] = 1;
+			vertices[3] = 1;
+			vertices[5] = 0;
+			vertices[7] = 0;
+
+		}
+
+		if (flipH)
+		{
+			vertices[0] = 1;
+			vertices[2] = 0;
+			vertices[4] = 0;
+			vertices[6] = 1;
+		}
+
+		memcpy(&texVertices, &vertices, sizeof(GLfloat) * 8);
+
+	}
+
+	glVertexPointer(2, GL_FLOAT, 0, vertices);
+	glTexCoordPointer(2, GL_FLOAT, 0, texVertices);
+
+	glDrawArrays(GL_QUADS, 0, 4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glPopMatrix();
+
+	glFlush();
+
+	glEnd();
+
+}
+
+
 void CRenderOpenGL::RenderQuad(GLTexture * texture, const bool & flipH,const bool & flipV, int left, int top, bool inverted)
 {
     glPushMatrix();

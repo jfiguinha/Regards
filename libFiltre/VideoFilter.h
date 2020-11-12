@@ -55,6 +55,8 @@ namespace Regards
             wxString enableOpenCL;
 			wxString threshold;
 			wxString enableFilmgrain;
+			wxString libelleScale;
+			wxString libelleZoom;
         };
     }
 }

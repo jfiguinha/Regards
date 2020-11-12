@@ -39,6 +39,8 @@ CVideoFilter::CVideoFilter()
     enableOpenCL = CLibResource::LoadStringFromResource(L"LBLEFFECTOPENCL", 1);//LBLEFFECTOPENCL
 	showFPS = CLibResource::LoadStringFromResource(L"LBLshowFPS",1);//L"Effect.Show FPS";
 	enableFilmgrain = CLibResource::LoadStringFromResource(L"LBLFILMGRAIN", 1);
+	libelleScale = "Effect.Picture Format";
+	libelleZoom = "Effect.Zoom Picture";
 }
 
 CVideoFilter::~CVideoFilter()
@@ -68,9 +70,28 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
     for (auto i = -100; i < 101; i++)
         elementContrast.push_back(i);
 
+	/*
+			tabRatio.push_back(1.1f);
+		tabRatio.push_back(1.33f);
+		tabRatio.push_back(1.66f);
+		tabRatio.push_back(1.85f);
+		tabRatio.push_back(2.35f);
+	*/
+	vector<CMetadata> formatPicture;
+	AddMetadataElement(formatPicture, "auto", 0);
+	AddMetadataElement(formatPicture, "1.33", 1);
+	AddMetadataElement(formatPicture, "1.66", 2);
+	AddMetadataElement(formatPicture, "1.85", 3);
+	AddMetadataElement(formatPicture, "2.35", 4);
+
+	vector<CMetadata> zoomPicture;
+	for(int i = 0;i < videoEffectParameter->tabZoom.size();i++)
+		AddMetadataElement(zoomPicture, to_string(videoEffectParameter->tabZoom[i]), i);
+
 	//if(supportOpenCL)
 	//	filtreInterface->AddTreeInfos(enableOpenCL, new CTreeElementValueInt(videoEffectParameter->enableOpenCL), &videoEffectParameter->enableOpenCL, 2, 2);
-
+	filtreInterface->AddTreeInfos(libelleScale, new CTreeElementValueInt(videoEffectParameter->ratioSelect), &formatPicture, 3, 3);
+	filtreInterface->AddTreeInfos(libelleZoom, new CTreeElementValueInt(videoEffectParameter->zoomSelect), &zoomPicture, 3, 3);
     filtreInterface->AddTreeInfos(enableBicubicInterpolation, new CTreeElementValueInt(videoEffectParameter->BicubicEnable), &videoEffectParameter->BicubicEnable, 2, 2);
 	filtreInterface->AddTreeInfos(showFPS, new CTreeElementValueInt(videoEffectParameter->showFPS), &videoEffectParameter->showFPS, 2, 2);
 	filtreInterface->AddTreeInfos(enableEffect, new CTreeElementValueInt(videoEffectParameter->effectEnable), &videoEffectParameter->effectEnable, 2, 2);
@@ -162,6 +183,14 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	{
 		videoEffectParameter->enableOpenCL = value;
 	}    */
+	else if (key == libelleScale)
+	{
+		videoEffectParameter->ratioSelect = value;
+	}
+	else if (key == libelleZoom)
+	{
+		videoEffectParameter->zoomSelect = value;
+	}
 	else if (key == enableFilmgrain)
 	{
 		videoEffectParameter->filmgrainenable = value;

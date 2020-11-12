@@ -63,6 +63,7 @@ namespace Regards
 
 			GLvoid ReSizeGLScene(GLsizei width, GLsizei height);
 			void RenderQuad(GLTexture * texture, int left = 0, int top = 0, bool inverted = false);
+			void RenderQuad(GLTexture * texture, const int &width, const int &height, const bool & flipH, const bool & flipV, int left = 0, int top = 0, bool inverted = false);
             void RenderQuad(GLTexture * texture, const bool & flipH,const bool & flipV, int left = 0, int top = 0, bool inverted = false);
 			GLTexture * textureDisplay;
 			int width;

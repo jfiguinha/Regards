@@ -41,6 +41,42 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 void CRenderVideoOpenGL::RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted)
 {
 	glTexture->Enable();
+
+	int width_local = glTexture->GetWidth();
+	int height_local = glTexture->GetHeight();
+
+	
+	//if (effectParameter->ratioSelect == 1)
+	//	width_local = width;
+
+	if (effectParameter->ratioSelect > 0)
+	{
+		//uint8_t * data = glTexture->GetData();
+		width_local =(int)((float)height_local * (float)effectParameter->tabRatio[effectParameter->ratioSelect]);
+		if(width_local > width)
+		{
+			width_local = width;
+			height_local = (int)((float)width_local / (float)effectParameter->tabRatio[effectParameter->ratioSelect]);
+		}
+		if (height_local < height && width_local < width)
+		{
+			height_local = height;
+			width_local = (int)((float)height_local * (float)effectParameter->tabRatio[effectParameter->ratioSelect]);
+			if (width_local > width)
+			{
+				width_local = width;
+				height_local = (int)((float)width_local / (float)effectParameter->tabRatio[effectParameter->ratioSelect]);
+			}
+		}
+		//height_local = height_local;
+	}
+
+	width_local = width_local * effectParameter->tabZoom[effectParameter->zoomSelect];
+	height_local = height_local * effectParameter->tabZoom[effectParameter->zoomSelect];
+	
+	int left_local = (width - width_local) / 2;
+	int top_local = (height - height_local) / 2;
+
     if(effectParameter->effectEnable)
     {
         GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO");
@@ -132,13 +168,13 @@ void CRenderVideoOpenGL::RenderWithEffect(const int &left, const int &top, GLTex
 			}
         }
 
-        RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+		RenderQuad(glTexture, width_local, height_local, flipH, flipV, left_local, top_local, inverted);
         if(m_pShader != nullptr)
             m_pShader->DisableShader();
     }
     else
     {
-		RenderQuad(glTexture, flipH, flipV, left, top, inverted);
+		RenderQuad(glTexture, width_local, height_local, flipH, flipV, left_local, top_local, inverted);
     }
 	
 	glTexture->Disable();
