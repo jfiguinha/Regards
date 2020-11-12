@@ -93,5 +93,53 @@ cd ffmpeg-master
 export PKG_CONFIG_PATH=$HOME/ffmpeg_build/lib/pkgconfig
 ./configure --prefix="$HOME/ffmpeg_build" --extra-cflags="-I$HOME/ffmpeg_build/include" --extra-ldflags="-L$HOME/ffmpeg_build/lib" --bindir="/usr/bin" --enable-gpl --enable-nonfree --enable-libaom
 
+#compile tesseract
+unzip tesseract-4.1.1.zip
+cd tesseract-4.1.1
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+#Compile libpoppler
+tar xf poppler-20.11.0.tar.xz
+cd oppler-20.11.0
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+cd ..
+
+#Compile qpdf
+tar xf qpdf-10.0.3.tar.gz
+cd qpdf-10.0.3
+./configure --prefix="$HOME/ffmpeg_build"
+make -j$NBPROC
+sudo make install
+cd ..
+
+#compile x265
+tar xf x265_3.2.tar.gz
+cd x265_3.2/source
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+cd .. 
+cd .. 
+cd .. 
+
+#compile OpenEXR
+unzip openexr-2.5.2.zip
+cd openexr-2.5.2
+mkdir build
+cd build
+cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+
+
 
 

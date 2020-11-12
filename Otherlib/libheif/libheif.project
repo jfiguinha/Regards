@@ -57,6 +57,8 @@
     <File Name="box.h"/>
     <File Name="bitstream.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-std=gnu++14;-Wall;-pthread;-Wno-narrowing" C_Options="-Wall;-pthread" Assembler="">
@@ -64,9 +66,9 @@
         <IncludePath Value="include"/>
         <IncludePath Value="../"/>
         <IncludePath Value="../../libextern/libde265-master"/>
-        <IncludePath Value="../../libextern/x265_2.5/source"/>
-        <IncludePath Value="../../libextern/x265_2.5/build/msys/8bit"/>
-        <IncludePath Value="../../libextern/x265_2.5/build/linux/8bit"/>
+        <IncludePath Value="../../libextern/x265_3.2/source"/>
+        <IncludePath Value="../../libextern/x265_3.2/build/msys/8bit"/>
+        <IncludePath Value="../../libextern/x265_3.2/build/linux/8bit"/>
         <Preprocessor Value="HAVE_AOM"/>
         <Preprocessor Value="HAVE_X265"/>
         <Preprocessor Value="HAVE_LIBDE265"/>
@@ -156,6 +158,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>

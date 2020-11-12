@@ -114,13 +114,14 @@
     <File Name="src/pdfbarcode.cpp"/>
     <File Name="src/pdfannotation.cpp"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-fopenmp;-Wall;-std=gnu++14;$(shell ../../libextern/wxWidgets-master/wx-config --cppflags);-pthread;-Wno-narrowing;-fpermissive" C_Options="" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../../include"/>
         <IncludePath Value="include"/>
-        <IncludePath Value="../../libextern/poppler-0.81.0/cpp"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -207,6 +208,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
