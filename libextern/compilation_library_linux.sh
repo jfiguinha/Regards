@@ -130,6 +130,7 @@ cd x265_3.2/source
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+sudo make install
 cd .. 
 cd .. 
 cd .. 
@@ -140,6 +141,7 @@ cd openexr-2.5.2
 mkdir build
 cd build
 cmake ../  -DCMAKE_INSTALL_PREFIX:PATH="$HOME/ffmpeg_build"
+sudo make install
 cd .. 
 cd .. 
 
