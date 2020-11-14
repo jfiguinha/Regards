@@ -12,8 +12,8 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
-
-
+#include "ScrollbarWnd.h"
+#include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
@@ -86,6 +86,14 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
     Connect(TIMER_FPS, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnShowFPS), nullptr, this);
 	Connect(TIMER_PLAYSTART, wxEVT_TIMER, wxTimerEventHandler(CVideoControlSoft::OnPlayStart), nullptr, this);
     Connect(wxEVENT_REFRESH, wxCommandEventHandler(CVideoControlSoft::OnRefresh));
+	Connect(wxEVENT_SCROLLMOVE, wxCommandEventHandler(CVideoControlSoft::OnScrollMove));
+	Connect(wxEVT_MOTION, wxMouseEventHandler(CVideoControlSoft::OnMouseMove));
+	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(CVideoControlSoft::OnLButtonDown));
+	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(CVideoControlSoft::OnLButtonUp));
+	Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(CVideoControlSoft::OnKeyDown));
+	Connect(wxEVT_KEY_UP, wxKeyEventHandler(CVideoControlSoft::OnKeyUp));
+	Connect(wxEVENT_LEFTPOSITION, wxCommandEventHandler(CVideoControlSoft::OnLeftPosition));
+	Connect(wxEVENT_TOPPOSITION, wxCommandEventHandler(CVideoControlSoft::OnTopPosition));
 	pause = false;
 	videoEnd = true;
 	this->windowMain = windowMain;
@@ -96,9 +104,380 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 #endif
 	openclEffectYUV = nullptr;
 	
-
+	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
 }
+
+
+//-----------------------------------------------------------------
+//Gestion du click de souris
+//-----------------------------------------------------------------
+void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
+{
+	TRACE();
+	this->SetFocus();
+	int xPos = event.GetX();
+	int yPos = event.GetY();
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+	mouseBlock = true;
+	mouseScrollX = xPos;
+	mouseScrollY = yPos;
+	CaptureMouse();
+	wxSetCursor(hCursorHand);
+}
+
+//-----------------------------------------------------------------
+//Obtention des dimensions du bitmap
+//-----------------------------------------------------------------
+void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
+{
+	TRACE();
+	if (event.LeftDClick())
+		return;
+
+	int xPos = event.GetX();
+	int yPos = event.GetY();
+
+	mouseBlock = false;
+	mouseScrollX = xPos;
+	mouseScrollY = yPos;
+	if (HasCapture())
+		ReleaseMouse();
+}
+
+//------------------------------------------------------------------------------------
+//Déplacement de la souris
+//------------------------------------------------------------------------------------
+void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
+{
+	TRACE();
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+	int xPos = event.GetX();
+	int yPos = event.GetY();
+
+	::wxSetCursor(hCursorHand);
+
+	if (mouseBlock)
+	{
+		int diffX = mouseScrollX - xPos;
+		int diffY = mouseScrollY - yPos;
+		posLargeur += diffX;
+		posHauteur += diffY;
+
+		mouseScrollX = xPos;
+		mouseScrollY = yPos;
+
+		TestMaxX();
+		TestMaxY();
+
+		UpdateScrollBar();
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+void CVideoControlSoft::TestMaxX()
+{
+	float bitmapRatioWidth = GetBitmapWidth();
+	float screenWidth = float(GetWidth());
+	float posLargeurMax = bitmapRatioWidth - screenWidth;
+
+	TRACE();
+	int xValue = posLargeurMax;
+
+	if (posLargeur >= xValue)
+		posLargeur = xValue;
+
+	if (posLargeur < 0)
+		posLargeur = 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+////////////////////////////////////////////////////////////////////////////////
+void CVideoControlSoft::TestMaxY()
+{
+	float bitmapRatioHeight = GetBitmapHeight();
+	float screenHeight = float(GetHeight());
+	float posHauteurMax = bitmapRatioHeight - screenHeight;
+
+	TRACE();
+	int yValue = posHauteurMax;
+
+	if (posHauteur >= yValue)
+		posHauteur = yValue;
+
+	if (posHauteur < 0)
+		posHauteur = 0;
+}
+
+void CVideoControlSoft::OnLeftPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posLargeur = pos;
+	this->Refresh();
+}
+
+void CVideoControlSoft::OnTopPosition(wxCommandEvent& event)
+{
+	int pos = event.GetInt();
+	posHauteur = pos;
+	this->Refresh();
+}
+
+void CVideoControlSoft::OnScrollMove(wxCommandEvent& event)
+{
+	int isMoving = event.GetInt();
+	printf("Is moving !!");
+}
+
+void CVideoControlSoft::OnKeyUp(wxKeyEvent& event)
+{
+	switch (event.GetKeyCode())
+	{
+	case WXK_CONTROL:
+		controlKeyPush = false;
+		break;
+	}
+}
+
+void CVideoControlSoft::MoveTop()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVETOP);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CVideoControlSoft::MoveLeft()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVELEFT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CVideoControlSoft::MoveBottom()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVEBOTTOM);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+vector<int> CVideoControlSoft::GetZoomValue()
+{
+	vector<int> listValue;
+	muVideoEffect.lock();
+	for(int i = 0;i < videoEffectParameter.tabZoom.size();i++)
+		listValue.push_back(videoEffectParameter.tabZoom[i] * 100.0f);
+	muVideoEffect.unlock();
+	return listValue;
+}
+
+int CVideoControlSoft::GetZoomIndex()
+{
+	int zoomIndex = 0;
+	muVideoEffect.lock();
+	zoomIndex = videoEffectParameter.zoomSelect;
+	muVideoEffect.unlock();
+	return zoomIndex;
+}
+
+void CVideoControlSoft::ChangeVideoFormat()
+{
+	int zoomSelect = 0;
+	muVideoEffect.lock();
+	videoEffectParameter.ratioSelect++;
+	if (videoEffectParameter.ratioSelect >= videoEffectParameter.tabRatio.size())
+		videoEffectParameter.ratioSelect = 0;
+
+	muVideoEffect.unlock();
+
+	this->Refresh();
+
+}
+
+void CVideoControlSoft::ShrinkVideo()
+{
+	int zoomSelect = 0;
+	muVideoEffect.lock();
+
+	for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
+	{
+		if (videoEffectParameter.tabZoom[i] == 1.0f)
+			zoomSelect = i;
+	}
+
+	muVideoEffect.unlock();
+	SetZoomIndex(zoomSelect);
+}
+
+void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
+{
+
+	int width_local = widthVideo;
+	int height_local = heightVideo;
+	int width = GetWidth();
+	int height = GetHeight();
+	float zoom = 1.0f;
+	float ratio = 1.0f;
+
+	muVideoEffect.lock();
+	ratio = (float)videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
+	zoom = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+	muVideoEffect.unlock();
+
+	if (ratio == 1.0f)	
+		ratio = (float)widthVideo / (float)heightVideo;
+	
+	//uint8_t * data = glTexture->GetData();
+	width_local = (int)((float)height_local * ratio);
+	if (width_local > GetWidth())
+	{
+		width_local = width;
+		height_local = (int)((float)width_local / ratio);
+	}
+	if (height_local < height && width_local < width)
+	{
+		height_local = height;
+		width_local = (int)((float)height_local * ratio);
+		if (width_local > width)
+		{
+			width_local = width;
+			height_local = (int)((float)width_local / ratio);
+		}
+	}
+
+	widthOut = width_local * zoom;
+	heightOut = height_local * zoom;
+}
+
+void CVideoControlSoft::UpdateScrollBar()
+{
+	int widthOut = 0;
+	int heightOut = 0;
+	wxWindow * parent = this->GetParent();
+	CalculTextureSize(widthOut, heightOut);
+	if (parent != nullptr)
+	{
+		CControlSize * controlSize = new CControlSize();
+		wxCommandEvent evt(wxEVENT_SETCONTROLSIZE);
+		controlSize->controlWidth = widthOut;
+		controlSize->controlHeight = heightOut;
+		evt.SetClientData(controlSize);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+
+	if (parent != nullptr)
+	{
+		wxSize * size = new wxSize();
+		wxCommandEvent evt(wxEVENT_SETPOSITION);
+		size->x = posLargeur;
+		size->y = posHauteur;
+		evt.SetClientData(size);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+	this->Refresh();
+}
+
+void CVideoControlSoft::MoveRight()
+{
+	wxWindow * parent = this->GetParent();
+
+	if (parent != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_MOVERIGHT);
+		parent->GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+
+void CVideoControlSoft::ZoomOn()
+{
+	CalculCenterPicture();
+
+	muVideoEffect.lock();
+	videoEffectParameter.zoomSelect++;
+	muVideoEffect.unlock();
+
+	CalculPositionPicture(centerX, centerY);
+
+	UpdateScrollBar();
+}
+
+void CVideoControlSoft::ZoomOut()
+{
+	CalculCenterPicture();
+
+	muVideoEffect.lock();
+	videoEffectParameter.zoomSelect--;
+	muVideoEffect.unlock();
+
+	CalculPositionPicture(centerX, centerY);
+
+	UpdateScrollBar();
+}
+
+void CVideoControlSoft::OnKeyDown(wxKeyEvent& event)
+{
+	switch (event.GetKeyCode())
+	{
+	case WXK_UP:
+		MoveTop();
+		break;
+	case WXK_LEFT:
+		MoveLeft();
+		break;
+	case WXK_DOWN:
+		MoveBottom();
+		break;
+	case WXK_RIGHT:
+		MoveRight();
+		break;
+
+	case WXK_CONTROL:
+		controlKeyPush = true;
+		break;
+
+	case WXK_NUMPAD_ADD:
+	case WXK_ADD:
+	{
+		this->ZoomOn();
+	}
+	break;
+
+	case WXK_NUMPAD_SUBTRACT:
+	case WXK_SUBTRACT:
+	{
+		this->ZoomOut();
+	}
+	break;
+
+	}
+	
+
+}
+
 
 void CVideoControlSoft::OnRefresh(wxCommandEvent& event)
 {
@@ -125,6 +504,7 @@ void CVideoControlSoft::VideoRotation(wxCommandEvent& event)
 
 void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
 {
+	bool updateScroll = false;
 	CVideoEffectParameter * videoParameter = (CVideoEffectParameter *)effectParameter;
 	if(videoParameter->streamAudioUpdate)
 	{
@@ -142,10 +522,26 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
 		videoParameter->streamSubtitleUpdate = 0;
 	}
 
+	if (videoParameter->zoomUpdate)
+	{
+		videoParameter->zoomUpdate = false;
+		updateScroll = true;
+	}
+
+	if (updateScroll)
+	{
+		CalculCenterPicture();
+	}
+
 	muVideoEffect.lock();
 	videoEffectParameter = *videoParameter;
 	muVideoEffect.unlock();
 
+	if (updateScroll)
+	{
+		CalculPositionPicture(centerX, centerY);
+		UpdateScrollBar();
+	}
 	//Refresh();
 }
 
@@ -466,18 +862,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
                 inverted = 1;
             
 			muVideoEffect.lock();
-			renderBitmapOpenGL->RenderWithEffect(x, y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
+			renderBitmapOpenGL->RenderWithEffect(posLargeur, posHauteur, glTexture, &videoEffectParameter, flipH, flipV, inverted);
 			muVideoEffect.unlock();
-			/*
-			if (IsSupportOpenCL() && videoEffectParameter.enableOpenCL)
-				renderBitmapOpenGL->RenderWithoutEffect(x, y, glTexture, flipH, flipV, inverted);
-			else
-			{
-				muVideoEffect.lock();
-				renderBitmapOpenGL->RenderWithEffect(x, y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
-				muVideoEffect.unlock();
-			}
-			*/
         }
 
         muVideoEffect.lock();
@@ -625,6 +1011,155 @@ void CVideoControlSoft::OnStop(wxString photoName)
 	standByMovie = photoName;
 }
 
+
+void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
+{
+	TRACE();
+
+	float bitmapRatioWidth = GetBitmapWidth();
+	float bitmapRatioHeight = GetBitmapHeight();
+	float screenWidth = float(GetWidth());
+	float screenHeight = float(GetHeight());
+
+	float posLargeurMax = bitmapRatioWidth - screenWidth;
+	float posHauteurMax = bitmapRatioHeight - screenHeight;
+
+	float ratio = 1.0f;
+
+	muVideoEffect.lock();
+	ratio = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+	muVideoEffect.unlock();
+
+	float middleScreenWidth = screenWidth / 2.0f;
+	float middleScreenHeight = screenHeight / 2.0f;
+
+	if (screenWidth > bitmapRatioWidth)
+	{
+		posLargeur = 0;
+	}
+	else
+	{
+		posLargeur = x * posLargeurMax;
+	}
+
+	if (screenHeight > bitmapRatioHeight)
+	{
+		posHauteur = 0;
+	}
+	else
+	{
+		posHauteur = y * posHauteurMax;
+	}
+}
+
+
+int CVideoControlSoft::GetBitmapWidth()
+{
+	TRACE();
+	int localAngle = angle;
+	int widthOut = 0;
+	int heightOut = 0;
+	CalculTextureSize(widthOut, heightOut);
+
+	if (localAngle == 90 || localAngle == 270)
+		return heightOut;
+	else
+		return widthOut;
+
+	return 0;
+}
+
+int CVideoControlSoft::GetBitmapHeight()
+{
+	TRACE();
+	int localAngle = angle;
+	int widthOut = 0;
+	int heightOut = 0;
+	CalculTextureSize(widthOut, heightOut);
+
+	if (localAngle == 90 || localAngle == 270)
+		return widthOut;
+	else
+		return heightOut;
+
+	return 0;
+}
+
+//-----------------------------------------------------------------
+//Obtention des dimensions du bitmap
+//-----------------------------------------------------------------
+void CVideoControlSoft::MouseClick(const int &xPos, const int &yPos)
+{
+	TRACE();
+	mouseScrollX = xPos;
+	mouseScrollY = yPos;
+	mouseBlock = true;
+	CaptureMouse();
+	SetFocus();
+}
+
+//-----------------------------------------------------------------
+//Obtention des dimensions du bitmap
+//-----------------------------------------------------------------
+void CVideoControlSoft::MouseRelease(const int &xPos, const int &yPos)
+{
+	TRACE();
+	mouseBlock = false;
+	wxSetCursor(wxCursor(wxCURSOR_ARROW));
+	if (HasCapture())
+		ReleaseMouse();
+}
+
+void CVideoControlSoft::CalculCenterPicture()
+{
+	TRACE();
+
+	float bitmapRatioWidth = GetBitmapWidth();
+	float bitmapRatioHeight = GetBitmapHeight();
+	float screenWidth = float(GetWidth());
+	float screenHeight = float(GetHeight());
+
+
+	float middleScreenWidth = screenWidth / 2.0f;
+	float middleScreenHeight = screenHeight / 2.0f;
+
+	float posLargeurMax = bitmapRatioWidth - screenWidth;
+	float posHauteurMax = bitmapRatioHeight - screenHeight;
+
+	float ratio = 1.0f;
+
+	muVideoEffect.lock();
+	ratio = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+	muVideoEffect.unlock();
+
+	if (screenWidth > bitmapRatioWidth)
+	{
+		centerX = 0;
+	}
+	else
+	{
+		if (centerX == 0)
+			centerX = 0.5f;
+		else
+			centerX = ((float)posLargeur ) / posLargeurMax;
+	}
+
+	if (screenHeight > bitmapRatioHeight)
+	{
+		centerY = 0;
+	}
+	else
+	{
+		if (centerY == 0)
+			centerY = 0.5f;
+		else
+			centerY =((float)posHauteur) / posHauteurMax;
+	}
+
+	centerX = min(max(centerX, 0.0f), 1.0f);
+	centerY = min(max(centerY, 0.0f), 1.0f);
+}
+
 void CVideoControlSoft::OnPause()
 {
 	if (videoStart)
@@ -659,6 +1194,11 @@ void CVideoControlSoft::SetPos(int64_t pos)
 	if (eventPlayer != nullptr)
 		eventPlayer->OnPositionVideo(pos);
 	//Refresh();
+}
+
+void CVideoControlSoft::SetVolume(const int &pos)
+{
+	ffmfc->SetVolume(pos);
 }
 
 void CVideoControlSoft::VolumeUp()
@@ -711,6 +1251,8 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 
     widthVideo = src_frame->width;
     heightVideo = src_frame->height;  
+	ratioVideo =(float) src_frame->width / (float)src_frame->height;
+
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
     //std::cout<<"CVideoControlSoft::SetData : "<< duration <<'\n';
@@ -747,14 +1289,19 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 
 	float aspect_ratio = video_aspect_ratio;
 	int width, height, x, y;
+	float ratio = 1.0f;
+	float zoom = 1.0f;
 
+	muVideoEffect.lock();
+	aspect_ratio = (float)videoEffectParameter.tabRatio[videoEffectParameter.ratioSelect];
+	zoom = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+	muVideoEffect.unlock();
 
-	if (aspect_ratio <= 0.0)
-		aspect_ratio = 1.0;
-	aspect_ratio *= (float)widthVideo / (float)heightVideo;
+	if (aspect_ratio == 1.0)
+		aspect_ratio = (float)widthVideo / (float)heightVideo;
 
 	/* XXX: we suppose the screen has a 1.0 pixel ratio */
-	height = scr_height;
+	height = scr_height * zoom;
 	width = ((int)rint(height * aspect_ratio)) & ~1;
 	if (width > scr_width) {
 		width = scr_width;
@@ -777,6 +1324,20 @@ GLTexture * CVideoControlSoft::RenderToTexture(CRegardsBitmap * bitmap)
 	return glTexture;
 }
 
+void CVideoControlSoft::SetZoomIndex(const int &pos)
+{
+	CalculCenterPicture();
+
+	muVideoEffect.lock();
+	videoEffectParameter.zoomSelect = pos;
+	muVideoEffect.unlock();
+
+	CalculPositionPicture(centerX, centerY);
+
+	UpdateScrollBar();
+
+
+}
 
 
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
@@ -784,31 +1345,68 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
     if(openclEffect == nullptr)
         return nullptr;
     
+	float zoomRatio = 1.0f;
 	muVideoEffect.lock();
 	int bicubic = videoEffectParameter.BicubicEnable;
+	zoomRatio = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
 	muVideoEffect.unlock();
 	GLTexture * glTexture = nullptr;
 	wxRect rect;
 
-	if (angle == 90 || angle == 270)
+	openclEffect->TranscodePicture(widthVideo, heightVideo);
+
+	if (zoomRatio == 1.0f)
 	{
-		calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-		openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
+		if (angle == 90 || angle == 270)
+		{
+			calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+			openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
+		}
+		else
+		{
+			calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+			openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
+		}
+
 	}
 	else
 	{
-		calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-		openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
+		int widthOut = 0;
+		int heightOut = 0;
+		CalculTextureSize(widthOut, heightOut);
+
+		wxRect posrect;
+		posrect.x = posLargeur;
+		posrect.y = posHauteur;
+		posrect.width = widthOut;
+		posrect.height = heightOut;
+
+		if (angle == 90 || angle == 270)
+		{
+			rect.height = getHeight();
+			rect.width = getWidth();
+			if (rect.height > widthOut)
+				rect.height = widthOut;
+			if (rect.width > heightOut)
+				rect.width = heightOut;
+			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, bicubic);
+		}
+		else
+		{
+			rect.height = getHeight();
+			rect.width = getWidth();
+
+			if (rect.height > heightOut)
+				rect.height = heightOut;
+			if (rect.width > widthOut)
+				rect.width = widthOut;
+
+			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, bicubic);
+		}
 	}
 
-	/*
-	if (IsSupportOpenCL() && videoEffectParameter.enableOpenCL)
-	{
-		muVideoEffect.lock();
-		openclEffect->ApplyVideoEffect(&videoEffectParameter);
-		muVideoEffect.unlock();
-	}
-	*/
+
+
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())
 	{

@@ -56,6 +56,7 @@ public:
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
+	void SetVolume(const int &pos);
 	void SetTimePosition(int64_t time);
 	//Main function
 	int SetFile(CVideoControlInterface * control, string filename);

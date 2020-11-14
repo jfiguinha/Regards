@@ -5,6 +5,7 @@
 #include "SliderVideo.h"
 #include "SliderInterface.h"
 #include "VideoInterface.h"
+#include "ScrollbarWnd.h"
 #include <ThemeParam.h>
 #include <OpenCLContext.h>
 #include <FiltreUpdate.h>
@@ -20,6 +21,8 @@ namespace Regards
 {
 	namespace Video
 	{
+		class CSlideToolbar;
+
 		class CShowVideo : public wxWindow, public CSliderInterface, public IVideoInterface, public IFiltreUpdate
 		{
 		public:
@@ -75,18 +78,22 @@ namespace Regards
 			void OnPositionVideo(const int64_t &position);
 
 		private:
-
+			void OnClose(wxCommandEvent& event);
+			void OnShrink(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
+			void OnValueChange(wxCommandEvent& event);
 			//bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
 
 			void ShowSliderToolbar(const bool &show);
 			void ShowSlider(const bool &show);
 			void InitControl();
-
+			CSlideToolbar * slideToolbar;
+			CScrollbarWnd * scrollbar;
 			CSliderVideo * videoSlider;
 			CVideoControlSoft * videoWindow;
 			CVideoEffectParameter * videoEffectParameter;
 			CWindowMain * windowMain;
+			bool showToolbarSup = false;
 			bool play;
 			bool toolbarOutside;
 			int height;
@@ -96,6 +103,7 @@ namespace Regards
 			bool softRender = false;
 			int64_t videoTotalTime = 0;
 			vector<CStreamInfo> listStream;
+			std::vector<int> value;
 		};
 	}
 }

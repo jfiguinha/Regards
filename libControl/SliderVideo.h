@@ -7,8 +7,9 @@ using namespace Regards::Window;
 
 #define PLAYBUTTONID 1
 #define PAUSEBUTTONID 2
-#define VOLUMEUPBUTTONID 3
-#define VOLUMEDOWNBUTTONID 4
+#define SPEAKERBUTTONID 3
+#define ZOOMBUTTONID 4
+#define SCREENFORMATID 5
 
 class CRegardsBitmap;
 
@@ -27,7 +28,6 @@ namespace Regards
 
 			void SetPlay();
 			void SetPause();
-			void SetVolumePos(const long &volume);
 
 			void SetTotalSecondTime(const int64_t &millisecondTime);
 			void SetPastSecondTime(const int64_t &millisecondTime);
@@ -69,8 +69,8 @@ namespace Regards
 			int DrawTotalTimeLibelle(wxDC * context, const wxString &libelle, const int &volumePos);
 			void InsertPlayButton(wxDC * context);
 			void InsertSpeakerButton(const int &xStart, wxDC * context);
-			void InsertVolumeDownButton(const int &xStart, wxDC * context);
-			void InsertVolumeUpButton(const int &xStart, wxDC * context);
+			void InsertZoomButton(const int &xStart, wxDC * context);
+			void InsertScreenFormatButton(const int &xStart, wxDC * context);
 
 			wxImage buttonPlay;
 			wxImage buttonPause;
@@ -94,19 +94,18 @@ namespace Regards
 
 			bool buttonPlayActif;
 			bool buttonPauseActif;
-			bool buttonVolumeUpActif;
-			bool buttonVolumeDownActif;
+			bool buttonScreenActif;
+			bool buttonZoomActif;
+			bool buttonSpeakerActif;
 			bool isPlay;
 			bool m_bMouseOver;
 			bool m_bTracking;
-            wxString libelleVolume;
 
 			wxRect positionButton;
 			wxRect positionPlayOrPauseButton;
-			wxRect positionVolumeUpButton;
+			wxRect positionZoomButton;
 			wxRect positionSpeakerButton;
-			wxRect positionVolumeDownButton;
-			wxRect positionTexteVolume;
+			wxRect positionScreenFormatButton;
 			wxRect positionTextePast;
 			wxRect positionTexteTotal;
 			wxRect positionSlider;
@@ -119,8 +118,6 @@ namespace Regards
 			bool mouseBlock;
 			int positionXSlider;
 			int positionYSlider;
-
-			long volume;
 			
 			CThemeSliderVideo themeSlider;
 		};

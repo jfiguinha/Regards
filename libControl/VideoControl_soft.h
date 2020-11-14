@@ -36,6 +36,12 @@ public:
 	void VolumeUp();
 	void VolumeDown();
 	int GetVolume();
+	void SetVolume(const int &pos);
+	void ChangeVideoFormat();
+	int GetZoomIndex();
+	void SetZoomIndex(const int &pos);
+	void ShrinkVideo();
+	vector<int> GetZoomValue();
 
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
@@ -94,6 +100,17 @@ public:
 	void FlipHorizontal();
 
 protected:
+	void CalculTextureSize(int &widthOut, int &heightOut);
+	void UpdateScrollBar();
+	void MoveTop();
+	void MoveLeft();
+	void MoveBottom();
+	void MoveRight();
+	void OnKeyUp(wxKeyEvent& event);
+	void OnKeyDown(wxKeyEvent& event);
+	void OnLeftPosition(wxCommandEvent& event);
+	void OnTopPosition(wxCommandEvent& event);
+	void CalculPositionPicture(const float &x, const float &y);
 
     int IsSupportOpenCL();
     void OnRefresh(wxCommandEvent& event);
@@ -111,11 +128,28 @@ protected:
 	GLTexture * RenderToTexture(CRegardsBitmap * bitmap);
 	GLTexture * RenderToTexture(COpenCLEffectVideo * openclEffect);
 	GLTexture * RenderFFmpegToTexture();
-
+	void OnScrollMove(wxCommandEvent& event);
+	void ZoomOn();
+	void ZoomOut();
+	void CalculCenterPicture();
 	bool IsCPUContext();
 	void SetFrameData(AVFrame * src_frame);
 	void CopyFrame(AVFrame * frame);
+	int GetBitmapWidth();
+	int GetBitmapHeight();
+	void MouseClick(const int &xPos, const int &yPos);
+	void MouseRelease(const int &xPos, const int &yPos);
+	void OnMouseMove(wxMouseEvent& event);
+	void OnLButtonDown(wxMouseEvent& event);
+	void OnLButtonUp(wxMouseEvent& event);
+	void TestMaxX();
+	void TestMaxY();
 
+	int mouseScrollX = 0;
+	int mouseScrollY = 0;
+	bool mouseBlock = false;
+	float centerX = 0;
+	float centerY = 0;
 	bool subtilteUpdate;
 	int volumeStart;
 	int old_width;
@@ -138,7 +172,7 @@ protected:
 	bool videoRenderStart;
 	wxString standByMovie;
 	CFFmfc * ffmfc;
-
+	wxCursor hCursorHand;
 	mutex muBitmap;
 	mutex muVideoEffect;
 	mutex muSubtitle;
@@ -169,4 +203,9 @@ protected:
 	CRegardsBitmap * pictureSubtitle;
 	int videoPosition;
 	bool updateContext = true;
+	bool controlKeyPush = false;
+	float ratioVideo = 1.0f;
+	int posLargeur = 0;
+	int posHauteur = 0;
+
 };

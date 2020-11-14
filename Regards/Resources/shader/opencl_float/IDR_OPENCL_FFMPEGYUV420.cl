@@ -144,6 +144,74 @@ float4 ExecuteBicubicYUV(int x, int y, const __global uchar *inputY, const __glo
 	return color;
 } 
 
+//----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32
+//----------------------------------------------------
+float4 ExecuteBicubicYUVZoom(int x, int y, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int width, int height, int angle, int bicubic, int pitch, float left, float top, float bitmapWidth, float bitmapHeight) 
+{ 
+	float ratioX = (float)widthIn / bitmapWidth;
+	float ratioY = (float)heightIn / bitmapHeight;
+	if (angle == 90)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;
+	}
+	else if(angle == 270)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;	
+	}
+
+	/*
+	float ratioX = (float)widthIn / (float)width;
+	float ratioY = (float)heightIn / (float)height;
+	if (angle == 90 || angle == 270)
+	{
+		ratioX = (float)widthIn / (float)height;
+		ratioY = (float)heightIn / (float)width;
+	}
+	
+	float posY = (float)y * ratioY;
+	float posX = (float)x * ratioX;
+	*/
+	
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
+
+	if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+	
+	float4 color;
+	if(bicubic)
+		color = BiCubicYUV(posX, posY, inputY, inputU, inputV, widthIn, heightIn, pitch);
+	else
+		color = GetColorFromYUV(inputY, inputU, inputV, posX,  posY, widthIn, heightIn, pitch);
+	
+	return color;
+} 
 
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
@@ -155,5 +223,29 @@ __kernel void BicubicYUVtoRegardsBitmap(__global float4 *output, const __global 
 	int position = x + y * widthOut;
 
 	output[position]  = ExecuteBicubicYUV(x, y, inputY, inputU, inputV, widthIn, heightIn, widthOut, heightOut, angle, bicubic, pitch);
+} 
+
+//----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32
+//----------------------------------------------------
+__kernel void BicubicYUVtoRegardsBitmapZoom(__global float4 *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int angle, int bicubic, int pitch) 
+{ 
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * widthOut;
+
+	output[position]  = ExecuteBicubicYUVZoom(x, y, inputY, inputU, inputV, widthIn, heightIn, widthOut, heightOut, angle, bicubic, pitch, left, top, bitmapWidth, bitmapHeight);
+} 
+
+//----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32
+//----------------------------------------------------
+__kernel void Convert(__global float4 *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch) 
+{ 
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * widthOut;
+
+	output[position] = GetColorFromYUV(inputY, inputU, inputV, x,  y, widthIn, heightIn, pitch);
 } 
 

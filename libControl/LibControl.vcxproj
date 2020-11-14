@@ -288,6 +288,7 @@
     <ClInclude Include="ShowBitmap.h" />
     <ClInclude Include="ShowVideo.h" />
     <ClInclude Include="SliderVideo.h" />
+    <ClInclude Include="SlideToolbar.h" />
     <ClInclude Include="SplitterWithPanel.h" />
     <ClInclude Include="ThumbnailEffect.h" />
     <ClInclude Include="ThumbnailHorizontal.h" />
@@ -330,6 +331,7 @@
     <ClCompile Include="ShowBitmap.cpp" />
     <ClCompile Include="ShowVideo.cpp" />
     <ClCompile Include="SliderVideo.cpp" />
+    <ClCompile Include="SlideToolbar.cpp" />
     <ClCompile Include="SplitterWithPanel.cpp" />
     <ClCompile Include="ThumbnailEffect.cpp" />
     <ClCompile Include="ThumbnailHorizontal.cpp" />

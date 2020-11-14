@@ -307,6 +307,7 @@ void CShowBitmap::Resize()
 		}
 	}
  
+	
 }
 
 void CShowBitmap::SetBitmapPreviewEffect(const int &effect)

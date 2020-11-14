@@ -71,8 +71,13 @@ void CScrollbarHorizontalWnd::SetIsMoving()
 {
 	if (stopMoving->IsRunning())
 		stopMoving->Stop();
+
 	scrollMoving = true;
 	stopMoving->Start(1000);
+
+	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
+	evt.SetInt(1);
+	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 
 
 }
@@ -392,12 +397,6 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 {
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-	//wxClientDC dc(this);
-	SetIsMoving();
-
-	wxCommandEvent evt(wxEVENT_SCROLLMOVE);
-	evt.SetInt(1);
-	GetParent()->GetEventHandler()->AddPendingEvent(evt);
 
 	if (captureBar)
 	{
@@ -412,6 +411,8 @@ void CScrollbarHorizontalWnd::OnMouseMove(wxMouseEvent& event)
 
         //scrollInterface->SetLeftPosition(currentXPos);
 		PaintNow();
+
+		SetIsMoving();
     }
 }
 

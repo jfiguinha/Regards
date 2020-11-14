@@ -100,6 +100,9 @@
     <ClCompile Include="PrintEngine.cpp">
       <Filter>Print</Filter>
     </ClCompile>
+    <ClCompile Include="SlideToolbar.cpp">
+      <Filter>Video\Core\Toolbar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CriteriaTree.h">
@@ -213,6 +216,9 @@
     <ClInclude Include="PrintEngine.h">
       <Filter>Print</Filter>
     </ClInclude>
+    <ClInclude Include="SlideToolbar.h">
+      <Filter>Video\Core\Toolbar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -250,6 +256,9 @@
     </Filter>
     <Filter Include="Print">
       <UniqueIdentifier>{d10bf0af-3aa1-481a-ab02-93fc78e6dc9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Video\Core\Toolbar">
+      <UniqueIdentifier>{30e1353a-0406-4166-852a-626720695f48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

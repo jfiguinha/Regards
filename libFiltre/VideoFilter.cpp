@@ -91,7 +91,7 @@ void CVideoFilter::Filter(CEffectParameter * effectParameter, const wxString & f
 	//if(supportOpenCL)
 	//	filtreInterface->AddTreeInfos(enableOpenCL, new CTreeElementValueInt(videoEffectParameter->enableOpenCL), &videoEffectParameter->enableOpenCL, 2, 2);
 	filtreInterface->AddTreeInfos(libelleScale, new CTreeElementValueInt(videoEffectParameter->ratioSelect), &formatPicture, 3, 3);
-	filtreInterface->AddTreeInfos(libelleZoom, new CTreeElementValueInt(videoEffectParameter->zoomSelect), &zoomPicture, 3, 3);
+	filtreInterface->AddTreeInfos(libelleZoom, new CTreeElementValueInt(videoEffectParameter->zoomSelect), &zoomPicture,3,3);
     filtreInterface->AddTreeInfos(enableBicubicInterpolation, new CTreeElementValueInt(videoEffectParameter->BicubicEnable), &videoEffectParameter->BicubicEnable, 2, 2);
 	filtreInterface->AddTreeInfos(showFPS, new CTreeElementValueInt(videoEffectParameter->showFPS), &videoEffectParameter->showFPS, 2, 2);
 	filtreInterface->AddTreeInfos(enableEffect, new CTreeElementValueInt(videoEffectParameter->effectEnable), &videoEffectParameter->effectEnable, 2, 2);
@@ -185,10 +185,12 @@ void CVideoFilter::FilterChangeParam(CEffectParameter * effectParameter,  CTreeE
 	}    */
 	else if (key == libelleScale)
 	{
+		videoEffectParameter->zoomUpdate = true;
 		videoEffectParameter->ratioSelect = value;
 	}
 	else if (key == libelleZoom)
 	{
+		videoEffectParameter->zoomUpdate = true;
 		videoEffectParameter->zoomSelect = value;
 	}
 	else if (key == enableFilmgrain)

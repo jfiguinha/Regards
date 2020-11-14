@@ -412,6 +412,15 @@ void CFFmfc::VolumeUp()
 	this->GetEventHandler()->AddPendingEvent(evt);
 }
 
+void CFFmfc::SetVolume(const int &pos)
+{
+	_pimpl->volume = pos;
+
+	wxCommandEvent evt(VOLUME_EVENT);
+	evt.SetInt(_pimpl->volume);
+	this->GetEventHandler()->AddPendingEvent(evt);
+}
+
 int CFFmfc::GetVolume()
 {
 	return _pimpl->volume;

@@ -217,6 +217,113 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 	}
 }
 
+void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int& angle, const int& bicubic)
+{
+
+	//int filtre = 0;
+	/*
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		filtre = config->GetInterpolationType();
+	*/
+	widthOut = widthOutput;
+	heightOut = heightOutput;
+	cl_mem memvalue = nullptr;
+	COpenCLProgram* programCL = GetProgram("IDR_OPENCL_INTERPOLATION");
+	if (programCL != nullptr)
+	{
+		vector<COpenCLParameter*> vecParam;
+		COpenCLExecuteProgram* program = new COpenCLExecuteProgram(context, flag);
+
+		paramOutput->SetLibelle("input");
+		vecParam.push_back(paramOutput);
+
+		paramWidth->SetLibelle("width");
+		vecParam.push_back(paramWidth);
+
+		paramHeight->SetLibelle("height");
+		vecParam.push_back(paramHeight);
+
+		COpenCLParameterInt* paramWidthOut = new COpenCLParameterInt();
+		paramWidthOut->SetLibelle("widthOutput");
+		paramWidthOut->SetValue(widthOutput);
+		vecParam.push_back(paramWidthOut);
+
+		COpenCLParameterInt* paramHeightOut = new COpenCLParameterInt();
+		paramHeightOut->SetLibelle("heightOutput");
+		paramHeightOut->SetValue(heightOutput);
+		vecParam.push_back(paramHeightOut);
+
+		COpenCLParameterFloat * left = new COpenCLParameterFloat();
+		left->SetLibelle("left");
+		left->SetValue(rc.x);
+		vecParam.push_back(left);
+
+		COpenCLParameterFloat * top = new COpenCLParameterFloat();
+		top->SetLibelle("top");
+		top->SetValue(rc.y);
+		vecParam.push_back(top);
+
+		COpenCLParameterFloat * bitmapWidth = new COpenCLParameterFloat();
+		bitmapWidth->SetLibelle("bitmapWidth");
+		bitmapWidth->SetValue(rc.width);
+		vecParam.push_back(bitmapWidth);
+
+		COpenCLParameterFloat * bitmapHeight = new COpenCLParameterFloat();
+		bitmapHeight->SetLibelle("bitmapHeight");
+		bitmapHeight->SetValue(rc.height);
+		vecParam.push_back(bitmapHeight);
+
+		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+		paramflipH->SetLibelle("flipH");
+		paramflipH->SetValue(0);
+		vecParam.push_back(paramflipH);
+
+		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+		paramflipV->SetLibelle("flipV");
+		paramflipV->SetValue(0);
+		vecParam.push_back(paramflipV);
+
+		COpenCLParameterInt* paramangle = new COpenCLParameterInt();
+		paramangle->SetLibelle("angle");
+		paramangle->SetValue(angle);
+		vecParam.push_back(paramangle);
+
+		COpenCLParameterInt* paramtype = new COpenCLParameterInt();
+		paramtype->SetLibelle("type");
+		paramtype->SetValue(bicubic);
+		vecParam.push_back(paramtype);
+
+		try
+		{
+			program->SetParameter(&vecParam, widthOutput, heightOutput, widthOutput * heightOutput * GetSizeData());
+			program->SetKeepOutput(true);
+			program->ExecuteProgram(programCL->GetProgram(), "InterpolationZone");
+			memvalue = program->GetOutput();
+		}
+		catch (...)
+		{
+			memvalue = nullptr;
+		}
+
+		delete program;
+
+
+		for (COpenCLParameter* parameter : vecParam)
+		{
+			if (!parameter->GetNoDelete())
+			{
+				delete parameter;
+				parameter = nullptr;
+			}
+		}
+		vecParam.clear();
+
+
+		paramOutput = new COpenCLParameterClMem();
+		paramOutput->SetValue(memvalue);
+	}
+}
 
 CRegardsBitmap* COpenCLEffectVideo::GetBitmap(cl_mem input, const int& width, const int& height)
 {

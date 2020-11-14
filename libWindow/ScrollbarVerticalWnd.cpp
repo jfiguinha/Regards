@@ -551,7 +551,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 	//wxClientDC dc(this);
-	SetIsMoving();
+	
 
 	if (captureBar)
 	{
@@ -564,6 +564,7 @@ void CScrollbarVerticalWnd::OnMouseMove(wxMouseEvent& event)
 		MoveBar(currentYPos, themeScroll.colorBarActif);
 		SendTopPosition(currentYPos);
 		PaintNow();
+		SetIsMoving();
     }
 }
 
@@ -657,21 +658,21 @@ void CScrollbarVerticalWnd::OnLButtonDown(wxMouseEvent& event)
 	}
 	else if (showTriangle && FindBottomTriangle(yPos, xPos))
 	{
-		SetIsMoving();
+		//SetIsMoving();
 		//initTimer = true;
 		ClickBottomTriangle();
 		triangleBottom->Start(100);
 	}
 	else if (FindRectangleBar(yPos, xPos))
 	{
-		SetIsMoving();
+		//SetIsMoving();
 		yPositionStartMove = yPositionStart = yPos;
 		CaptureMouse();
 		captureBar = true;	
 	}
 	else if (yPos > rcPosBar.height)
 	{
-		SetIsMoving();
+		//SetIsMoving();
 		//initTimer = true;
 		ClickBottomPage();
 		pageBottom->Start(100);
@@ -681,7 +682,7 @@ void CScrollbarVerticalWnd::OnLButtonDown(wxMouseEvent& event)
 		//initTimer = true;
 		ClickTopPage();
 		pageTop->Start(100);
-		SetIsMoving();
+		//SetIsMoving();
 	}
 }
 

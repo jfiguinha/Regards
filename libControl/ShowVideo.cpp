@@ -5,6 +5,7 @@
 #include "VideoControl_soft.h"
 #include <OpenCLContext.h>
 #include <window_id.h>
+#include "SlideToolbar.h"
 #include <ViewerParam.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
@@ -56,10 +57,14 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		softRender = true;
 	}
 
+
+
 	if (softRender)
 		videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 	else
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
+
+	scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
 
 #else
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
@@ -69,12 +74,54 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 		CThemeSlider theme;
 		config->GetVideoSliderTheme(&theme);
 	}
+
+	CThemeToolbar themeToolbar;
+	if (config != nullptr)
+	{
+		config->GetBitmapToolbarTheme(&themeToolbar);
+	}
+
+
 	videoSlider = new CSliderVideo(this, wxID_ANY, this, themeSlider);
+	slideToolbar = new CSlideToolbar(this, wxID_ANY, themeToolbar);
+	
+	for (int i = 0; i < 101; i++)
+		value.push_back(i);
+	slideToolbar->SetTabValue(value);
 	play = false;
 
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowVideo::OnSize));
-
+	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
+	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
+	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
+}
+
+void CShowVideo::OnClose(wxCommandEvent& event)
+{
+	slideToolbar->Show(false);
+	showToolbarSup = false;
+	this->Resize();
+}
+
+void CShowVideo::OnShrink(wxCommandEvent& event)
+{
+	videoWindow->ShrinkVideo();
+	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
+}
+
+void CShowVideo::OnValueChange(wxCommandEvent& event)
+{
+	int value = event.GetInt();
+	int mode = slideToolbar->GetMode();
+	if (mode == SPEAKER_MODE)
+	{
+		videoWindow->SetVolume(value);
+	}
+	else
+	{
+		videoWindow->SetZoomIndex(value);
+	}
 }
 
 CVideoControlSoft * CShowVideo::GetVideoControl()
@@ -116,6 +163,29 @@ void CShowVideo::ClickButton(const int &id)
 	case PAUSEBUTTONID:
 		PauseVideo();
 		break;
+	case SPEAKERBUTTONID:
+		slideToolbar->Show(true);
+		showToolbarSup = true;
+		slideToolbar->SetSpeakerMode();
+		slideToolbar->SetTabValue(value);
+		slideToolbar->SetTrackBarPosition(videoWindow->GetVolume());
+		this->Resize();
+		break;
+	case ZOOMBUTTONID:
+		slideToolbar->Show(true);
+		showToolbarSup = true;
+		slideToolbar->SetZoomMode();
+		slideToolbar->SetTabValue(videoWindow->GetZoomValue());
+		slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
+		this->Resize();
+		break;
+	case SCREENFORMATID:
+		slideToolbar->Show(false);
+		showToolbarSup = false;
+		videoWindow->ChangeVideoFormat();
+		this->Resize();
+		break;
+		/*
 	case VOLUMEUPBUTTONID:
 		videoWindow->VolumeUp();
 		videoSlider->SetVolumePos(videoWindow->GetVolume());
@@ -124,6 +194,7 @@ void CShowVideo::ClickButton(const int &id)
 		videoWindow->VolumeDown();
 		videoSlider->SetVolumePos(videoWindow->GetVolume());
 		break;
+		*/
 	}
     
 #ifdef __APPLE__
@@ -135,8 +206,10 @@ void CShowVideo::ClickButton(const int &id)
 
 CShowVideo::~CShowVideo()
 {
+	delete(scrollbar);
 	delete(videoWindow);
 	delete(videoSlider);
+	delete(slideToolbar);
 }
 
 void CShowVideo::SetDiaporamaMode()
@@ -246,7 +319,7 @@ void CShowVideo::OnAfterOpenVideo()
 	videoSlider->SetPastSecondTime(0);
 	ShowSlider(false);
 	PlayVideo();
-	videoSlider->SetVolumePos(videoWindow->GetVolume());
+	//videoSlider->SetVolumePos(videoWindow->GetVolume());
 #ifdef __APPLE__
     videoSlider->CallRefresh(videoSlider);
 #else
@@ -340,6 +413,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
 
 void CShowVideo::UpdateScreenRatio()
 {
+	scrollbar->UpdateScreenRatio();
     videoSlider->UpdateScreenRatio();
     videoWindow->UpdateScreenRatio();
     this->Resize();
@@ -458,32 +532,44 @@ void CShowVideo::Resize()
 	{
 		videoSlider->SetSize(0, 0, 0, 0);
 		videoSlider->Refresh();
-		videoWindow->GetWindow()->SetSize(0, 0, width, height);
-		videoWindow->GetWindow()->Refresh();
+		scrollbar->SetSize(0, 0, width, height);
+		scrollbar->Refresh();
 	}
 	else if(videoSlider != nullptr)
 	{
 		//CDeferPos deferpos;
 		int posHeight = 0;
+		int posHeightSup = 0;
 		if (videoSlider->IsShown())
 			posHeight += videoSlider->GetHeight();
 
-		int positionHeight = height - posHeight;
+		if(showToolbarSup)
+			posHeightSup = posHeight;
 
-		videoWindow->GetWindow()->SetSize(0, 0, width, positionHeight);
-		videoWindow->GetWindow()->Refresh();
+		int positionHeight = height - posHeight - posHeightSup;
+
+		scrollbar->SetSize(0, 0, width, positionHeight);
+		scrollbar->Refresh();
 
 		if (videoSlider->IsShown())
 		{
-			videoSlider->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
+			if (showToolbarSup)
+			{
+				slideToolbar->SetSize(0, positionHeight, width, videoSlider->GetHeight(), TRUE);
+				slideToolbar->Refresh();
+			}
+
+			videoSlider->SetSize(0, positionHeight + posHeightSup, width, videoSlider->GetHeight(), TRUE);
 			videoSlider->Refresh();
 		}
 	}
     else
     {
-		videoWindow->GetWindow()->SetSize(0, 0, width, height);
-		videoWindow->GetWindow()->Refresh();
+		scrollbar->SetSize(0, 0, width, height);
+		scrollbar->Refresh();
     }
+
+	
 }
 
 void CShowVideo::OnSize(wxSizeEvent& event)
