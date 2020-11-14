@@ -168,3 +168,17 @@ __kernel void BicubicYUVtoRegardsBitmap(__global uint *output, const __global uc
 	output[position]  = rgbaFloat4ToUint(color,1.0f);
 } 
 
+//----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32
+//----------------------------------------------------
+__kernel void Convert(__global uint *output, const __global uchar *inputY, const __global uchar *inputU, const __global uchar *inputV, int widthIn, int heightIn, int widthOut, int heightOut, int pitch) 
+{ 
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * widthOut;
+
+	float4 color = GetColorFromYUV(inputY, inputU, inputV, x,  y, widthIn, heightIn, pitch); 
+	output[position] = rgbaFloat4ToUint(color,1.0f);
+} 
+
+

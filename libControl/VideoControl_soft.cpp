@@ -15,6 +15,7 @@
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
+#include <InterpolationBicubic.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
 wxDEFINE_EVENT(TIMER_PLAYSTART, wxTimerEvent);
@@ -1352,20 +1353,26 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	muVideoEffect.unlock();
 	GLTexture * glTexture = nullptr;
 	wxRect rect;
+	int filterInterpolation = 0;
+	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+
+	if (regardsParam != nullptr)
+		filterInterpolation = regardsParam->GetInterpolationType();
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
-
+	//CRegardsBitmap * data = openclEffect->GetRgbaBitmap();
+	//data->SaveToBmp("d:\\test.bmp");
 	if (zoomRatio == 1.0f)
 	{
 		if (angle == 90 || angle == 270)
 		{
 			calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-			openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
+			openclEffect->InterpolationBicubic(rect.height, rect.width, angle, filterInterpolation);
 		}
 		else
 		{
 			calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-			openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
+			openclEffect->InterpolationBicubic(rect.width, rect.height, angle, filterInterpolation);
 		}
 
 	}
@@ -1389,7 +1396,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 				rect.height = widthOut;
 			if (rect.width > heightOut)
 				rect.width = heightOut;
-			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, bicubic);
+			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, filterInterpolation);
 		}
 		else
 		{
@@ -1401,7 +1408,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			if (rect.width > widthOut)
 				rect.width = widthOut;
 
-			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, bicubic);
+			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, filterInterpolation);
 		}
 	}
 
@@ -1464,9 +1471,85 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
-	//printf("CVideoControlSoft decode by ffmpeg 1 \n");   
+	float zoomRatio = 1.0f;
+	muVideoEffect.lock();
+	int bicubic = videoEffectParameter.BicubicEnable;
+	zoomRatio = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+	muVideoEffect.unlock();
+	GLTexture * glTexture = nullptr;
+	wxRect rect;
+	CRegardsBitmap * bitmapOut = nullptr;
+	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+	CInterpolationBicubic interpolationCubic;
 
-	GLTexture * glTexture = ffmpegToBitmap->ConvertFrameToOpenGLTexutreWithInterpolation(angle);
+	if (bitmap != nullptr)
+	{
+		if (zoomRatio == 1.0f)
+		{
+			if (angle == 90 || angle == 270)
+			{
+				bitmapOut = new CRegardsBitmap(rect.height, rect.width);
+				calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+				interpolationCubic.Execute(bitmap, bitmapOut, 0, 0, angle);
+				//openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
+			}
+			else
+			{
+				bitmapOut = new CRegardsBitmap(rect.width, rect.height);
+				calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+				interpolationCubic.Execute(bitmap, bitmapOut, 0, 0, angle);
+				//openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
+			}
+
+		}
+		else
+		{
+			int widthOut = 0;
+			int heightOut = 0;
+			CalculTextureSize(widthOut, heightOut);
+
+			wxRect posrect;
+			posrect.x = posLargeur;
+			posrect.y = posHauteur;
+			posrect.width = widthOut;
+			posrect.height = heightOut;
+
+			if (angle == 90 || angle == 270)
+			{
+				bitmapOut = new CRegardsBitmap(rect.height, rect.width);
+				rect.height = getHeight();
+				rect.width = getWidth();
+				if (rect.height > widthOut)
+					rect.height = widthOut;
+				if (rect.width > heightOut)
+					rect.width = heightOut;
+				//openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, bicubic);
+
+				interpolationCubic.Execute(bitmap, bitmapOut, posrect, 0, 0, angle);
+			}
+			else
+			{
+				bitmapOut = new CRegardsBitmap(rect.width, rect.height);
+
+				rect.height = getHeight();
+				rect.width = getWidth();
+
+				if (rect.height > heightOut)
+					rect.height = heightOut;
+				if (rect.width > widthOut)
+					rect.width = widthOut;
+
+				interpolationCubic.Execute(bitmap, bitmapOut, posrect, 0, 0, angle);
+				//openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, bicubic);
+			}
+		}
+
+		glTexture = new GLTexture();
+		glTexture->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
+
+		delete bitmap;
+		delete bitmapOut;
+	}
 
 	deleteTexture = true;
 
@@ -1674,7 +1757,7 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 		muBitmap.lock();
 		glTexture = RenderFFmpegToTexture();
 		muBitmap.unlock();
-		deleteTexture = false;
+		//deleteTexture = false;
 	}
 	/*
 	if(bitmap != nullptr)

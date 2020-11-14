@@ -179,7 +179,7 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 		}
 	}
 }
-
+/*
 void COpenCLEffectVideoYUV::InterpolationYuvBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic)
 {
 	if(context != nullptr)
@@ -243,7 +243,7 @@ void COpenCLEffectVideoYUV::InterpolationYuvBicubic(const int &widthOut, const i
 		}
 	}
 }
-
+*/
 void COpenCLEffectVideoYUV::DeleteData()
 {
 	if (paramWidth != nullptr)

@@ -25,13 +25,16 @@ public:
     void DeleteData();
     void InitContext(AVFrame * src_frame, const bool & bicubic, const int & thumbnailWidth, const int & thumbnailHeight);
     void Preconvert(AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
+	CRegardsBitmap * ConvertFrameToRgba32();
+	/*
 #ifdef RENDEROPENGL
     GLTexture * ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle);
+	
 #else
 	void ConvertFrameWithInterpolation(wxImage * imageToDisplay, AVFrame *src_frame, const int & thumbnailWidth, const int & thumbnailHeight);
 	CRegardsBitmap * ConvertFrameToBitmapWithInterpolation(const int &angle);
 #endif
-    
+    */
 private:
  
     //void rotate90(uint8_t * buffer, const unsigned int width, const unsigned int height);
@@ -46,6 +49,6 @@ private:
     int width;
     int height;
 #ifdef RENDEROPENGL
-    GLTexture * glTexture = nullptr;
+   // GLTexture * glTexture = nullptr;
 #endif
 };

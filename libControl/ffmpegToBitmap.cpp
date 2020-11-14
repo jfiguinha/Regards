@@ -17,7 +17,7 @@ AVPixelFormat pixelFormat = AV_PIX_FMT_RGB24;
  CffmpegToBitmap::CffmpegToBitmap(const bool & rgba)
  {
 #ifdef RENDEROPENGL  
-     glTexture = new GLTexture();
+    // glTexture = new GLTexture();
 #endif
      if(rgba)
          pixelFormat = AV_PIX_FMT_BGRA;
@@ -105,8 +105,8 @@ void CffmpegToBitmap::DeleteData()
 CffmpegToBitmap::~CffmpegToBitmap()
 {
 #ifdef RENDEROPENGL  
-    if(glTexture != nullptr)
-        delete glTexture;    
+  //  if(glTexture != nullptr)
+   //     delete glTexture;    
 #endif
 }
 
@@ -144,7 +144,22 @@ void CffmpegToBitmap::Preconvert(AVFrame *src_frame, const int & thumbnailWidth,
           
 
 }
+CRegardsBitmap * CffmpegToBitmap::ConvertFrameToRgba32()
+{
+	CRegardsBitmap * bitmap = nullptr;
+	if (convertedFrame != nullptr)
+	{
+		uint8_t * data = convertedFrame->data[0];
+		bitmap = new CRegardsBitmap();
+		bitmap->SetBitmap(data, videoFrameOutputWidth, videoFrameOutputHeight);
+	}
+	return bitmap;
+}
+
+/*
 #ifdef RENDEROPENGL  
+
+
 GLTexture * CffmpegToBitmap::ConvertFrameToOpenGLTexutreWithInterpolation(const int &angle)
 {
     int localAngle = angle % 360;
@@ -249,4 +264,5 @@ CRegardsBitmap * CffmpegToBitmap::ConvertFrameToBitmapWithInterpolation(const in
 
 	return picture;
 }
-#endif
+*/
+//#endif

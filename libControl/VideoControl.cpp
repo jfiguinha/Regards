@@ -447,6 +447,68 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 
+				float zoomRatio = 1.0f;
+				muVideoEffect.lock();
+				int bicubic = videoEffectParameter.BicubicEnable;
+				zoomRatio = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+				muVideoEffect.unlock();
+				int filterInterpolation = 0;
+				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+
+				if (regardsParam != nullptr)
+					filterInterpolation = regardsParam->GetInterpolationType();
+
+				if (zoomRatio == 1.0f)
+				{
+					if (angle == 90 || angle == 270)
+					{
+						calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, angle, filterInterpolation);
+					}
+					else
+					{
+						calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, filterInterpolation);
+					}
+
+				}
+				else
+				{
+					int widthOut = 0;
+					int heightOut = 0;
+					CalculTextureSize(widthOut, heightOut);
+
+					wxRect posrect;
+					posrect.x = posLargeur;
+					posrect.y = posHauteur;
+					posrect.width = widthOut;
+					posrect.height = heightOut;
+
+					if (angle == 90 || angle == 270)
+					{
+						rect.height = getHeight();
+						rect.width = getWidth();
+						if (rect.height > widthOut)
+							rect.height = widthOut;
+						if (rect.width > heightOut)
+							rect.width = heightOut;
+						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, posrect, angle, filterInterpolation);
+					}
+					else
+					{
+						rect.height = getHeight();
+						rect.width = getWidth();
+
+						if (rect.height > heightOut)
+							rect.height = heightOut;
+						if (rect.width > widthOut)
+							rect.width = widthOut;
+
+						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, posrect, angle, filterInterpolation);
+					}
+				}
+
+				/*
 				if(angle == 90 || angle == 270)
 				{
 					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
@@ -457,7 +519,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
 					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, bicubic);
 				}
-
+				*/
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 				err = clFlush(openclContext->GetCommandQueue());
@@ -494,8 +556,6 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 
 					}
 				}
-
-
 			}
 		}
 	}
@@ -828,8 +888,8 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 
 
 			}
-			else
-				dxva2ToOpenGLWorking = false;
+			//else
+			//	dxva2ToOpenGLWorking = false;
 
             muBitmap.unlock();	
 

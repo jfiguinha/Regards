@@ -188,7 +188,85 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t
 	formatData = format;
 }
 
+void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut)
+{
+	if (context != nullptr)
+	{
+		COpenCLProgram * programCL;
+		paramOutput = new COpenCLParameterClMem();
 
+		this->widthOut = widthOut;
+		this->heightOut = heightOut;
+
+		programCL = GetProgram("IDR_OPENCL_FFMPEGDXVA2YUV420");
+
+		if (programCL != nullptr)
+		{
+			vector<COpenCLParameter *> vecParam;
+			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
+
+			if (typeData == 1)
+			{
+				vecParam.push_back(inputY);
+				vecParam.push_back(inputUV);
+
+			}
+			else
+			{
+				vecParam.push_back(input);
+			}
+
+			vecParam.push_back(paramWidth);
+			vecParam.push_back(paramHeight);
+
+			COpenCLParameterInt * paramwidthOut = new COpenCLParameterInt();
+			paramwidthOut->SetLibelle("widthOut");
+			paramwidthOut->SetValue(widthOut);
+			vecParam.push_back(paramwidthOut);
+
+			COpenCLParameterInt * paramheightOut = new COpenCLParameterInt();
+			paramheightOut->SetLibelle("heightOut");
+			paramheightOut->SetValue(heightOut);
+			vecParam.push_back(paramheightOut);
+
+			COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
+			paramAngle->SetLibelle("angle");
+			paramAngle->SetValue(0);
+			vecParam.push_back(paramAngle);
+
+			COpenCLParameterInt * paramBicubic = new COpenCLParameterInt();
+			paramBicubic->SetLibelle("bicubic");
+			paramBicubic->SetValue(0);
+			vecParam.push_back(paramBicubic);
+
+			vecParam.push_back(paramwidthPitch);
+
+			if (typeData == 2)
+			{
+
+				vecParam.push_back(paramsurfaceHeight);
+			}
+
+			program->SetParameter(&vecParam, widthOut, heightOut);
+			program->SetKeepOutput(true);
+			program->ExecuteProgram(programCL->GetProgram(), "BicubicNV12toRegardsBitmap");
+			paramOutput->SetValue(program->GetOutput());
+			delete program;
+
+			for (COpenCLParameter * parameter : vecParam)
+			{
+				if (!parameter->GetNoDelete())
+				{
+					delete parameter;
+					parameter = nullptr;
+				}
+			}
+			vecParam.clear();
+		}
+	}
+}
+
+/*
 void COpenCLEffectVideoNV12::InterpolationBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic)
 {
 	if(context != nullptr)
@@ -266,3 +344,4 @@ void COpenCLEffectVideoNV12::InterpolationBicubic(const int &widthOut, const int
 		}
 	}
 }
+*/

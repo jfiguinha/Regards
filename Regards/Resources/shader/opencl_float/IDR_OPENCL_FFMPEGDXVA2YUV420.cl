@@ -156,3 +156,15 @@ __kernel void BicubicNV12toRegardsBitmap(__global float4 *output, const __global
 
 	output[position]  = BicubicNV12(x, y, input, widthIn, heightIn, widthOut, heightOut, angle, bicubic, pitch, surfaceHeight);
 } 
+
+//----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32
+//----------------------------------------------------
+__kernel void Convert(__global float4 *output, const __global uchar *input, int widthIn, int heightIn, int widthOut, int heightOut, int pitch, int surfaceHeight) 
+{ 
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * widthOut;
+
+	output[position] = GetColorFromNV12(input, x,  y, widthIn, heightIn, pitch,surfaceHeight);
+} 

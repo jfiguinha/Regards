@@ -139,6 +139,66 @@ __kernel void InterpolationFromOpenGLTexture(__global float4 *output, __read_onl
 } 
 
 //----------------------------------------------------
+// Conversion Special Effect Video du NV12 vers le RGB32 Par zone
+//---------------------------------------------------- 
+__kernel void InterpolationZone(__global float4 *output, __read_only image2d_t input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int angle, int bicubic)
+{
+    int x = get_global_id(0);
+	int y = get_global_id(1);
+	int position = x + y * widthOut;
+	
+	float ratioX = (float)widthIn / bitmapWidth;
+	float ratioY = (float)heightIn / bitmapHeight;
+	if (angle == 90)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;
+	}
+	else if(angle == 270)
+	{
+		ratioX = (float)widthIn / (float)bitmapHeight;
+		ratioY = (float)heightIn / (float)bitmapWidth;	
+	}
+
+	float posX = (float)x * ratioX + left * ratioX;
+	float posY = (float)y * ratioY + top * ratioY;
+
+	if (angle == 90)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posX = widthIn - posX - 1;
+	}
+	else if (angle == 180)
+	{
+		posX = widthIn - posX - 1;
+		posY = heightIn - posY - 1;
+	}
+	else if (angle == 270)
+	{
+		int srcx = posY;
+		int srcy = posX;
+
+		posX = srcx;
+		posY = srcy;
+
+		posY = heightIn - posY - 1;
+	}
+	
+	float4 color;
+	if(bicubic)
+		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn);
+	else
+		color = GetColorFromOpenGLTexture(input, posX,  posY, widthIn, heightIn);
+	
+	output[position] = color;
+}
+
+//----------------------------------------------------
 //Change la valeur de la couche alpha
 //----------------------------------------------------
 __kernel void SetAlphaValueFromOpenGLTexture(__global float4 *output, __read_only image2d_t input, int width, int height, float alphaValue) 

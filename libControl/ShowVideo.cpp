@@ -206,8 +206,9 @@ void CShowVideo::ClickButton(const int &id)
 
 CShowVideo::~CShowVideo()
 {
-	delete(scrollbar);
 	delete(videoWindow);
+	delete(scrollbar);
+	
 	delete(videoSlider);
 	delete(slideToolbar);
 }

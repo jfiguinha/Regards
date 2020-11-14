@@ -14,8 +14,8 @@ namespace Regards
 			virtual ~COpenCLEffectVideoNV12();
 			void SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &widthPitch, const int &format = 0);
 			void SetMemoryData(uint8_t * buffer, int size, const int &width, const int &height, const int &widthPitch, const int &heightSurface, const int &format = 0);
-			void InterpolationBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic);
-
+			//void InterpolationBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic);
+			void TranscodePicture(const int &widthOut, const int &heightOut);
 		protected:
 
 			int typeData;
