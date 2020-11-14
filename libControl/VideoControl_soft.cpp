@@ -1133,6 +1133,12 @@ void CVideoControlSoft::CalculCenterPicture()
 	ratio = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
 	muVideoEffect.unlock();
 
+	if (ratio == 1.0)
+	{
+		centerX = 0;
+		centerY = 0;
+	}
+
 	if (screenWidth > bitmapRatioWidth)
 	{
 		centerX = 0;
