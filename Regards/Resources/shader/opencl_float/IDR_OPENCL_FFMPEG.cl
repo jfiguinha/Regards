@@ -2,19 +2,261 @@
 // Conversion du 
 //----------------------------------------------------
 
-float Cubic( float f )
+#define FILTER_PI 3.1415926535f
+#define FILTER_2PI 2.0f * 3.1415926535f
+#define FILTER_4PI 4.0f * 3.1415926535f
+
+float BilinearFilter( float x)
 {
-	if (f < -2.0f)
+	return (x < 1.0f ? 1.0f - x : 0.0); 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float GaussianFilter( float x)
+{
+	if (fabs (x) > 1.25) 
+	{
+		return (float)0.0;
+	}
+	return (float)exp((float)(-x * x) / (float)2.0) / sqrt(FILTER_2PI); 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float HammingFilter( float x)
+{
+	if (x > 1.0f) 
+	{
+		return 0.0; 
+	}
+	float dWindow = 0.54 + 0.46 * cos (FILTER_2PI * x); 
+	float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x); 
+	return dWindow * dSinc;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float CubicFilter( float x) 
+{
+	if (x > 2.0) 
+	{
+		return 0.0; 
+	}
+
+	if (x < -2.0)
+		return(0.0);
+	if (x < -1.0)
+		return((2.0+x)*(2.0+x)*(2.0+x)/6.0);
+	if (x < 0.0)
+		return((4.0+x*x*(-6.0-3.0*x))/6.0);
+	if (x < 1.0)
+		return((4.0+x*x*(-6.0+3.0*x))/6.0);
+	if (x < 2.0)
+		return((2.0-x)*(2.0-x)*(2.0-x)/6.0);
+	return(0.0);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float BlackmanFilter( float x) 
+{
+	if (x > 1.0f) 
+	{
+		return 0.0; 
+	}
+	float dN = 2.0 * 1.0f + 1.0; 
+	return 0.42 + 0.5 * (float)cos((float)(FILTER_2PI * x) / (float)( dN - 1.0 )) + (float)0.08 * (float)cos((float)(FILTER_4PI * x) / (float)( dN - 1.0 )); 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+ 
+float QuadraticFilter( float x) 
+{
+	if (x > 1.5f) 
+	{
+		return 0.0f; 
+	}
+
+	if (x < -1.5)
+		return(0.0);
+	if (x < -0.5)
+		return(0.5*(x+1.5)*(x+1.5));
+	if (x < 0.5)
+		return(0.75-x*x);
+	if (x < 1.5)
+		return(0.5*(x-1.5)*(x-1.5));
+	return(0.0);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float MitchellFilter( float x) 
+{
+	if (x > 2.0f) 
+		return 0.0; 
+
+	#define B   (1.0/3.0)
+	#define C   (1.0/3.0)
+	#define P0  ((  6.0- 2.0*B       )/6.0)
+	#define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
+	#define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
+	#define Q0  ((       8.0*B+24.0*C)/6.0)
+	#define Q1  ((     -12.0*B-48.0*C)/6.0)
+	#define Q2  ((       6.0*B+30.0*C)/6.0)
+	#define Q3  ((     - 1.0*B- 6.0*C)/6.0)
+
+	if (x < -2.0)
+		return(0.0);
+	if (x < -1.0)
+		return(Q0-x*(Q1-x*(Q2-x*Q3)));
+	if (x < 0.0)
+		return(P0+x*x*(P2-x*P3));
+	if (x < 1.0)
+		return(P0+x*x*(P2+x*P3));
+	if (x < 2.0)
+		return(Q0+x*(Q1+x*(Q2+x*Q3)));
+	return(0.0);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float TriangleFilter( float x) 
+{
+	if (x > 1.0f) 
+		return 0.0f; 
+	if (x < -1.0f)
 		return(0.0f);
-	if (f < -1.0f)
-		return((2.0f+f)*(2.0f+f)*(2.0f+f)/6.0f);
-	if (f < 0.0f)
-		return((4.0f+f*f*(-6.0f-3.0f*f))/6.0f);
-	if (f < 1.0f)
-		return((4.0f+f*f*(-6.0f+3.0f*f))/6.0f);
-	if (f < 2.0f)
-		return((2.0f-f)*(2.0f-f)*(2.0f-f)/6.0f);
+	if (x < 0.0f)
+		return(1.0f+x);
+	if (x < 1.0f)
+		return(1.0f-x);
 	return(0.0f);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float CatromFilter( float x )
+{
+	float m_dWidth = 2.0f;
+	if (x > m_dWidth) 
+	{
+		return 0.0f; 
+	}
+
+	if (x < -2.0f)
+		return(0.0f);
+	if (x < -1.0f)
+		return(0.5f*(4.0f+x*(8.0f+x*(5.0f+x))));
+	if (x < 0.0f)
+		return(0.5f*(2.0f+x*x*(-5.0f-3.0f*x)));
+	if (x < 1.0f)
+		return(0.5f*(2.0f+x*x*(-5.0f+3.0f*x)));
+	if (x < 2.0f)
+		return(0.5f*(4.0f+x*(-8.0f+x*(5.0f-x))));
+	return(0.0f);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float HanningFilter( float x )
+{
+	if (x > 1.0f) 
+	{
+		return 0.0f; 
+	}
+
+	return(0.54f+0.46f*(float)cos((float)FILTER_PI*x));
+}
+		
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float HermiteFilter( float x )
+{
+	float m_dWidth = 1.5f;
+	if (x > m_dWidth) 
+		return 0.0; 
+
+	if (x < -1.0)
+		return(0.0);
+	if (x < 0.0)
+		return((2.0*(-x)-3.0)*(-x)*(-x)+1.0);
+	if (x < 1.0)
+		return((2.0*x-3.0)*x*x+1.0);
+	return(0.0);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float BboxFilter( float f )
+{
+	float width = 0.5f;
+	return (f <= width ? 1.0f : 0.0f);
+}
+
+
+float KernelFilter_selection( float f, int type)
+{
+	if(type == 1)
+	{
+		return BboxFilter(f);
+	}
+	else if(type == 2)
+	{
+		return HermiteFilter(f);
+	}
+	else if(type == 3)
+	{
+		return HanningFilter(f);
+	}	
+	else if(type == 4)
+	{
+		return CatromFilter(f);
+	}		
+	else if(type == 5)
+	{
+		return MitchellFilter(f);
+	}	
+	else if(type == 6)
+	{
+		return TriangleFilter(f);
+	}	
+	else if(type == 7)
+	{
+		return QuadraticFilter(f);
+	}	
+	else if(type == 8)
+	{
+		return BlackmanFilter(f);
+	}	
+	else if(type == 9)
+	{
+		return HammingFilter(f);
+	}	
+	else if(type == 10)
+	{
+		return GaussianFilter(f);
+	}
+	else if(type == 11)
+	{
+		return BilinearFilter(f);
+	}	
+	else
+	{
+		return CubicFilter(f);
+	}
 }
 
 __constant sampler_t sampler =
@@ -40,7 +282,7 @@ float4 GetColorFromOpenGLTexture( __read_only image2d_t input, int x, int y, int
 	return 0.0f;
 }
 
-float4 BiCubicFromOpenGLTexture(float x, float y, __read_only image2d_t input, int width, int height)
+float4 BiCubicFromOpenGLTexture(float x, float y, __read_only image2d_t input, int width, int height, int type)
 {
 	float4 nDenom = 0.0f;
 	int valueA = (int)x;
@@ -48,13 +290,13 @@ float4 BiCubicFromOpenGLTexture(float x, float y, __read_only image2d_t input, i
 	float realA = x - valueA;
 	float realB = y - valueB;
 	
-	float4 fy1 = Cubic(-(-1.0f - realB));
-	float4 fy2 = Cubic(realB);
-	float4 fy3 = Cubic(-(1.0f - realB));
+	float4 fy1 = KernelFilter_selection(-(-1.0f - realB), type);
+	float4 fy2 = KernelFilter_selection(realB, type);
+	float4 fy3 = KernelFilter_selection(-(1.0f - realB), type);
 	
-	float4 fx1 = Cubic(-1.0f - realA);
-	float4 fx2 = Cubic(- realA);
-	float4 fx3 = Cubic(1.0f - realA);
+	float4 fx1 = KernelFilter_selection(-1.0f - realA, type);
+	float4 fx2 = KernelFilter_selection(- realA, type);
+	float4 fx3 = KernelFilter_selection(1.0f - realA, type);
 	
 	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
 
@@ -117,8 +359,8 @@ float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input
 	}
 	
 	float4 color;
-	if(bicubic)
-		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn);
+	if(bicubic != 0)
+		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn, bicubic);
 	else
 		color = GetColorFromOpenGLTexture(input, posX,  posY, widthIn, heightIn);
 	
@@ -190,8 +432,8 @@ __kernel void InterpolationZone(__global float4 *output, __read_only image2d_t i
 	}
 	
 	float4 color;
-	if(bicubic)
-		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn);
+	if(bicubic != 0)
+		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn, bicubic);
 	else
 		color = GetColorFromOpenGLTexture(input, posX,  posY, widthIn, heightIn);
 	
