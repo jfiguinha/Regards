@@ -30,6 +30,8 @@
     <File Name="ShowVideo.cpp"/>
     <File Name="ShowVideo.h"/>
     <VirtualDirectory Name="Core">
+      <File Name="SlideToolbar.h"/>
+      <File Name="SlideToolbar.cpp"/>
       <File Name="ffmfcpimpl.cpp"/>
       <File Name="ffplaycore.cpp"/>
       <File Name="ffmpegToBitmap.h"/>
