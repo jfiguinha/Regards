@@ -229,16 +229,6 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			paramheightOut->SetValue(heightOut);
 			vecParam.push_back(paramheightOut);
 
-			COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-			paramAngle->SetLibelle("angle");
-			paramAngle->SetValue(0);
-			vecParam.push_back(paramAngle);
-
-			COpenCLParameterInt * paramBicubic = new COpenCLParameterInt();
-			paramBicubic->SetLibelle("bicubic");
-			paramBicubic->SetValue(0);
-			vecParam.push_back(paramBicubic);
-
 			vecParam.push_back(paramwidthPitch);
 
 			if (typeData == 2)
@@ -249,7 +239,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 
 			program->SetParameter(&vecParam, widthOut, heightOut);
 			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "BicubicNV12toRegardsBitmap");
+			program->ExecuteProgram(programCL->GetProgram(), "Convert");
 			paramOutput->SetValue(program->GetOutput());
 			delete program;
 
