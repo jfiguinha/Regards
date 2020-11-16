@@ -125,10 +125,47 @@ float pnoise3D(in vec3 p)
 
 // Inline device function to convert 32-bit unsigned integer to floating point rgba color 
 //*****************************************************************
-float KernelFilter_selection(float x)
+
+float BilinearFilter( float x)
+{
+	return (x < 1.0 ? 1.0 - x : 0.0); 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float GaussianFilter( float x)
+{
+	if (abs(x) > 1.25) 
+	{
+		return 0.0;
+	}
+	return exp(-x * x / 2.0) / sqrt (FILTER_2PI); 
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float HammingFilter( float x)
+{
+	if (x > 1.0) 
+	{
+		return 0.0; 
+	}
+	float dWindow = 0.54 + 0.46 * cos (FILTER_2PI * x); 
+	float dSinc = (x == 0) ? 1.0 : sin (FILTER_PI * x) / (FILTER_PI * x); 
+	return dWindow * dSinc;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float CubicFilter( float x) 
 {
 	if (x > 2.0) 
+	{
 		return 0.0; 
+	}
+
 	if (x < -2.0)
 		return(0.0);
 	if (x < -1.0)
@@ -140,7 +177,211 @@ float KernelFilter_selection(float x)
 	if (x < 2.0)
 		return((2.0-x)*(2.0-x)*(2.0-x)/6.0);
 	return(0.0);
+
 }
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float BlackmanFilter( float x) 
+{
+	if (x > 1.0) 
+	{
+		return 0.0; 
+	}
+	float dN = 2.0 * 1.0 + 1.0; 
+	return 0.42 + 0.5 * cos(FILTER_2PI * x / ( dN - 1.0 )) + 0.08 * cos (FILTER_4PI * x / ( dN - 1.0 )); 
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+ 
+float QuadraticFilter( float x) 
+{
+	if (x > 1.5) 
+	{
+		return 0.0; 
+	}
+
+	if (x < -1.5)
+		return(0.0);
+	if (x < -0.5)
+		return(0.5*(x+1.5)*(x+1.5));
+	if (x < 0.5)
+		return(0.75-x*x);
+	if (x < 1.5)
+		return(0.5*(x-1.5)*(x-1.5));
+	return(0.0);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+float MitchellFilter( float x) 
+{
+	if (x > 2.0) 
+		return 0.0; 
+
+	#define B   (1.0/3.0)
+	#define C   (1.0/3.0)
+	#define P0  ((  6.0- 2.0*B       )/6.0)
+	#define P2  ((-18.0+12.0*B+ 6.0*C)/6.0)
+	#define P3  (( 12.0- 9.0*B- 6.0*C)/6.0)
+	#define Q0  ((       8.0*B+24.0*C)/6.0)
+	#define Q1  ((     -12.0*B-48.0*C)/6.0)
+	#define Q2  ((       6.0*B+30.0*C)/6.0)
+	#define Q3  ((     - 1.0*B- 6.0*C)/6.0)
+
+	if (x < -2.0)
+		return(0.0);
+	if (x < -1.0)
+		return(Q0-x*(Q1-x*(Q2-x*Q3)));
+	if (x < 0.0)
+		return(P0+x*x*(P2-x*P3));
+	if (x < 1.0)
+		return(P0+x*x*(P2+x*P3));
+	if (x < 2.0)
+		return(Q0+x*(Q1+x*(Q2+x*Q3)));
+	return(0.0);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float TriangleFilter( float x) 
+{
+	if (x > 1.0) 
+		return 0.0; 
+	if (x < -1.0)
+		return(0.0);
+	if (x < 0.0)
+		return(1.0+x);
+	if (x < 1.0)
+		return(1.0-x);
+	return(0.0);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float CatromFilter( float x )
+{
+	float m_dWidth = 2.0;
+	if (x > m_dWidth) 
+	{
+		return 0.0; 
+	}
+
+	if (x < -2.0)
+		return(0.0);
+	if (x < -1.0)
+		return(0.5*(4.0+x*(8.0+x*(5.0+x))));
+	if (x < 0.0)
+		return(0.5*(2.0+x*x*(-5.0-3.0*x)));
+	if (x < 1.0)
+		return(0.5*(2.0+x*x*(-5.0+3.0*x)));
+	if (x < 2.0)
+		return(0.5*(4.0+x*(-8.0+x*(5.0-x))));
+	return(0.0);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float HanningFilter( float x )
+{
+	if (x > 1.0) 
+	{
+		return 0.0; 
+	}
+
+	return(0.54+0.46*cos(FILTER_PI*x));
+}
+		
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float HermiteFilter( float x )
+{
+	float m_dWidth = 1.5;
+	if (x > m_dWidth) 
+		return 0.0; 
+
+	if (x < -1.0)
+		return(0.0);
+	if (x < 0.0)
+		return((2.0*(-x)-3.0)*(-x)*(-x)+1.0);
+	if (x < 1.0)
+		return((2.0*x-3.0)*x*x+1.0);
+	return(0.0);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+float BboxFilter( float f )
+{
+	float width = 0.5;
+	return (f <= width ? 1.0 : 0.0);
+}
+
+
+float KernelFilter_selection(float f)
+{
+/*
+	if(type == 1)
+	{
+		return BboxFilter(f);
+	}
+	else if(type == 2)
+	{
+		return HermiteFilter(f);
+	}
+	else if(type == 3)
+	{
+		return HanningFilter(f);
+	}	
+	else if(type == 4)
+	{
+		return CatromFilter(f);
+	}		
+	else if(type == 5)
+	{
+		return MitchellFilter(f);
+	}	
+	else if(type == 6)
+	{
+		return TriangleFilter(f);
+	}	
+	else if(type == 7)
+	{
+		return QuadraticFilter(f);
+	}	
+	else if(type == 8)
+	{
+		return BlackmanFilter(f);
+	}	
+	else if(type == 9)
+	{
+		return HammingFilter(f);
+	}	
+	else if(type == 10)
+	{
+		return GaussianFilter(f);
+	}
+	else if(type == 11)
+	{
+		return BilinearFilter(f);
+	}	
+	else
+	{
+		return CubicFilter(f);
+	}
+*/
+	return TriangleFilter(f);
+}
+
 
 //------------------------------------------------------------
 //TextureValue													   
@@ -153,6 +394,7 @@ vec4 GetColorSrc(float posX, float posY, float xDiff, float yDiff)
 	return texture2D(texUnitSrc, vec2(posX,posY) + resolution * vec2(xDiff, yDiff));
 }
 
+
 //------------------------------------------------------------
 //TextureValue													   
 //------------------------------------------------------------
@@ -164,45 +406,45 @@ vec4 CalculInterpolation(float ratioX, float ratioY, vec2 positionTexture)
 	vec2 resolution = vec2(texelSizeX, texelSizeY); 
 	vec2 posResolution = resolution * vec2(left, top);
 
-	float posX = positionTexture.x * ratioX + posResolution.x * ratioX;
-	float posY = positionTexture.y * ratioY + posResolution.y * ratioY;
+	float x = positionTexture.x * ratioX + posResolution.x * ratioX;
+	float y = positionTexture.y * ratioY + posResolution.y * ratioY;
 
 	if (angle == 270)
 	{
-		float srcx = posY;
-		float srcy = posX;
+		float srcx = y;
+		float srcy = x;
 
-		posX = srcx;
-		posY = srcy;
+		x = srcx;
+		y = srcy;
 
-		posX = 1.0 - posX;
+		x = 1.0 - x;
 	}
 	else if (angle == 180)
 	{
-		posX = 1.0 - posX;
-		posY = 1.0 - posY;
+		x = 1.0 - x;
+		y = 1.0 - y;
 	}
 	else if (angle == 90)
 	{
-		float srcx = posY;
-		float srcy = posX;
+		float srcx = y;
+		float srcy = x;
 
-		posX = srcx;
-		posY = srcy;
+		x = srcx;
+		y = srcy;
 
-		posY = 1.0 - posY;
+		y = 1.0 - y;
 	}
 	
 	if(angle == 90 || angle == 270)
 	{
 		if (flipV == 1)
 		{
-			posX = 1.0 - posX;
+			x = 1.0 - x;
 		}
 
 		if (flipH == 1)
 		{
-			posY = 1.0 - posY;
+			y = 1.0 - y;
 		}
 	
 	}
@@ -210,21 +452,18 @@ vec4 CalculInterpolation(float ratioX, float ratioY, vec2 positionTexture)
 	{
 		if (flipH == 1)
 		{
-			posX = 1.0 - posX;
+			x = 1.0 - x;
 		}
 
 		if (flipV == 1)
 		{
-			posY = 1.0 - posY;
+			y = 1.0 - y;
 		}
 	}
-
 	
 	if(type == 12)
-		return GetColorSrc(posX, posY, 0.0, 0.0);
+		return GetColorSrc(x, y, 0.0, 0.0);
 
-	float x = posX;
-	float y = posY;
 
 	vec4 nDenom = vec4(0.0);
 	float valueA = x;
@@ -256,6 +495,11 @@ vec4 CalculInterpolation(float ratioX, float ratioY, vec2 positionTexture)
 	sum += GetColorSrc(x, y, 1.0, 1.0) * (fy3 * fx3);
 	
     return sum / nDenom;
+	
+	//if(type == 12)
+	//	return GetColorSrc(posX, posY, 0.0, 0.0);
+	//return KernelExecution(posX, posY);
+	//return GetColorSrc(posX, posY, 0.0, 0.0);
 }
 
 //------------------------------------------------------------
