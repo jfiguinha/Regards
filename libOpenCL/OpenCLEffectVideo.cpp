@@ -695,6 +695,21 @@ int COpenCLEffectVideo::InterpolationBicubicZoneOpenGLTexture(cl_mem cl_openglTe
 	return 0;
 }
 
+void COpenCLEffectVideo::FlipVertical()
+{
+	COpenCLFilter openclFilter(context);
+	cl_mem output = nullptr;
+	output = openclFilter.Flip("FlipVertical", paramOutput->GetValue(), widthOut, heightOut);
+
+	if (paramOutput != nullptr)
+	{
+		paramOutput->Release();
+		delete paramOutput;
+	}
+
+	paramOutput = new COpenCLParameterClMem();
+	paramOutput->SetValue(output);
+}
 
 void COpenCLEffectVideo::ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter)
 {

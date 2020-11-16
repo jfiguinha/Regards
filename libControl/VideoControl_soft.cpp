@@ -1331,10 +1331,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 		if (glTexture != nullptr)
 		{
 			muVideoEffect.lock();
-            if(openclContext->IsSharedContextCompatible())
-                renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
-            else
-                renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
+            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1525,6 +1522,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			}
 		}
 	}
+	
 	if (!isOpenGLOpenCL)
 	{
 		if (angle == 90 || angle == 270)
@@ -1534,7 +1532,9 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 		if (glTexture != nullptr)
 		{
+			openclEffect->FlipVertical();
 			CRegardsBitmap * bitmap = openclEffect->GetRgbaBitmap();
+			//bitmap->VertFlipBuf();
 			glTexture->SetData(bitmap->GetPtBitmap(), bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight());
 			delete bitmap;
 		}
