@@ -770,6 +770,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
+	GLTexture * glTextureOutput = nullptr;
 
 	if (renderBitmapOpenGL == nullptr)
 	{
@@ -804,13 +805,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	if (quitWindow)
         return;
 
-	int supportOpenCL = COpenCLEngine::SupportOpenCL();
     if(IsSupportOpenCL())
     {
-       // muVideoEffect.lock();
-       
-       // muVideoEffect.unlock();
-
     #ifdef RENDEROPENGL 
         if (openclEffectYUV == nullptr)
         {
@@ -843,29 +839,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     if(videoRenderStart && glTexture != nullptr)
     {       
         renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
-
-        if(glTexture != nullptr)
-        {          
-            int inverted = 1;
-            int x = (width - glTexture->GetWidth()) / 2;
-            int y = (height  - glTexture->GetHeight()) / 2;
-            
-            if(IsSupportOpenCL())
-            {
-                if(openclContext->IsSharedContextCompatible())
-                    inverted = 0;
-            }
-   
-            if(!supportOpenCL)
-                inverted = 1;
-                
-            if(isffmpegDecode)
-                inverted = 1;
-            
-			muVideoEffect.lock();
-			renderBitmapOpenGL->RenderWithEffect(posLargeur, posHauteur, glTexture, &videoEffectParameter, flipH, flipV, inverted);
-			muVideoEffect.unlock();
-        }
+              
+		glTextureOutput = DisplayTexture(glTexture);
 
         muVideoEffect.lock();
         if(videoEffectParameter.showFPS)
@@ -907,6 +882,9 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
     if(deleteTexture && glTexture != nullptr)
         delete glTexture;
+
+	if (glTextureOutput != nullptr)
+		delete glTextureOutput;
 #else
 
 	wxPaintDC dc(this);
@@ -1273,6 +1251,95 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 #endif 
 }
 
+GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
+{
+	GLTexture * glTextureOutput = nullptr;
+
+	if (displaywithInterpolation)
+	{
+		if (glTexture != nullptr)
+		{
+
+			float zoomRatio = 1.0f;
+			muVideoEffect.lock();
+			int bicubic = videoEffectParameter.BicubicEnable;
+			zoomRatio = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
+			muVideoEffect.unlock();
+			wxRect posrect;
+			wxRect rect;
+			int filterInterpolation = 0;
+			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
+
+			if (regardsParam != nullptr)
+				filterInterpolation = regardsParam->GetInterpolationType();
+
+			if (zoomRatio == 1.0f)
+			{
+
+				if (angle == 90 || angle == 270)
+				{
+					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
+					glTextureOutput = new GLTexture(rect.height, rect.width);
+				}
+				else
+				{
+					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
+					glTextureOutput = new GLTexture(rect.width, rect.height);
+				}
+			}
+			else
+			{
+				int widthOut = 0;
+				int heightOut = 0;
+				CalculTextureSize(widthOut, heightOut);
+
+
+				posrect.x = posLargeur;
+				posrect.y = posHauteur;
+				posrect.width = widthOut;
+				posrect.height = heightOut;
+
+				if (angle == 90 || angle == 270)
+				{
+					rect.height = getHeight();
+					rect.width = getWidth();
+					if (rect.height > widthOut)
+						rect.height = widthOut;
+					if (rect.width > heightOut)
+						rect.width = heightOut;
+
+					glTextureOutput = new GLTexture(rect.height, rect.width);
+				}
+				else
+				{
+					rect.height = getHeight();
+					rect.width = getWidth();
+
+					if (rect.height > heightOut)
+						rect.height = heightOut;
+					if (rect.width > widthOut)
+						rect.width = widthOut;
+
+					glTextureOutput = new GLTexture(rect.width, rect.height);
+				}
+			}
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, posrect, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
+		}
+	}
+	else
+	{
+		if (glTexture != nullptr)
+		{
+			muVideoEffect.lock();
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+			muVideoEffect.unlock();
+		}
+	}
+
+
+	return glTextureOutput;
+}
+
 void CVideoControlSoft::Resize()
 {
 	if (!stopVideo)
@@ -1351,7 +1418,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 {
     if(openclEffect == nullptr)
         return nullptr;
-    
+
 	float zoomRatio = 1.0f;
 	muVideoEffect.lock();
 	int bicubic = videoEffectParameter.BicubicEnable;
@@ -1373,12 +1440,12 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		if (angle == 90 || angle == 270)
 		{
 			calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-			openclEffect->InterpolationBicubic(rect.height, rect.width, angle, filterInterpolation);
+			openclEffect->InterpolationBicubic(rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
 		}
 		else
 		{
 			calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-			openclEffect->InterpolationBicubic(rect.width, rect.height, angle, filterInterpolation);
+			openclEffect->InterpolationBicubic(rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
 		}
 
 	}
@@ -1402,7 +1469,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 				rect.height = widthOut;
 			if (rect.width > heightOut)
 				rect.width = heightOut;
-			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, filterInterpolation);
+			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
 		}
 		else
 		{
@@ -1414,7 +1481,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			if (rect.width > widthOut)
 				rect.width = widthOut;
 
-			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, filterInterpolation);
+			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 		}
 	}
 
@@ -1471,94 +1538,16 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		else
 			printf("CVideoControl glTexture Error \n");
 	}
-
 	return glTexture;
 }
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
-	float zoomRatio = 1.0f;
-	muVideoEffect.lock();
-	int bicubic = videoEffectParameter.BicubicEnable;
-	zoomRatio = videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
-	muVideoEffect.unlock();
-	GLTexture * glTexture = nullptr;
-	wxRect rect;
-	CRegardsBitmap * bitmapOut = nullptr;
+	GLTexture * glTexture = new GLTexture(widthVideo, heightVideo);
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
-	CInterpolationBicubic interpolationCubic;
-
-	if (bitmap != nullptr)
-	{
-		if (zoomRatio == 1.0f)
-		{
-			if (angle == 90 || angle == 270)
-			{
-				bitmapOut = new CRegardsBitmap(rect.height, rect.width);
-				calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-				interpolationCubic.Execute(bitmap, bitmapOut, 0, 0, angle);
-				//openclEffect->InterpolationBicubic(rect.height, rect.width, angle, bicubic);
-			}
-			else
-			{
-				bitmapOut = new CRegardsBitmap(rect.width, rect.height);
-				calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-				interpolationCubic.Execute(bitmap, bitmapOut, 0, 0, angle);
-				//openclEffect->InterpolationBicubic(rect.width, rect.height, angle, bicubic);
-			}
-
-		}
-		else
-		{
-			int widthOut = 0;
-			int heightOut = 0;
-			CalculTextureSize(widthOut, heightOut);
-
-			wxRect posrect;
-			posrect.x = posLargeur;
-			posrect.y = posHauteur;
-			posrect.width = widthOut;
-			posrect.height = heightOut;
-
-			if (angle == 90 || angle == 270)
-			{
-				bitmapOut = new CRegardsBitmap(rect.height, rect.width);
-				rect.height = getHeight();
-				rect.width = getWidth();
-				if (rect.height > widthOut)
-					rect.height = widthOut;
-				if (rect.width > heightOut)
-					rect.width = heightOut;
-				//openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, angle, bicubic);
-
-				interpolationCubic.Execute(bitmap, bitmapOut, posrect, 0, 0, angle);
-			}
-			else
-			{
-				bitmapOut = new CRegardsBitmap(rect.width, rect.height);
-
-				rect.height = getHeight();
-				rect.width = getWidth();
-
-				if (rect.height > heightOut)
-					rect.height = heightOut;
-				if (rect.width > widthOut)
-					rect.width = widthOut;
-
-				interpolationCubic.Execute(bitmap, bitmapOut, posrect, 0, 0, angle);
-				//openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, angle, bicubic);
-			}
-		}
-
-		glTexture = new GLTexture();
-		glTexture->SetData(bitmapOut->GetPtBitmap(), bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight());
-
-		delete bitmap;
-		delete bitmapOut;
-	}
-
+	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	deleteTexture = true;
-
+	delete bitmap;
 	return glTexture;
 }
 #endif
@@ -1627,65 +1616,34 @@ void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
 
 	if (!enableopenCL || isCPU || src_frame->format != 0)
 	{
+		SwsContext* scaleContext = nullptr;
 		bool deleteData = false;
 		isffmpegDecode = true;
-		muVideoEffect.lock();
-		int bicubic = videoEffectParameter.BicubicEnable;
-		muVideoEffect.unlock();
-
-		muBitmap.lock();
-
-		wxRect rect;
-		if (angle == 90 || angle == 270)
-		{
-			calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-		}
-		else
-		{
-			calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-		}
-
-		if (ffmpegToBitmap != nullptr)
-		{
-			if (ffmpegToBitmap->GetVideoWidth() != src_frame->width || ffmpegToBitmap->GetVideoHeight() != src_frame->height)
-			{
-				deleteData = true;
-			}
-		}
-
-		if (ffmpegToBitmap != nullptr)
-		{
-			if (ffmpegToBitmap->GetThumbnailWidth() != rect.width || ffmpegToBitmap->GetThumbnailHeight() != rect.height)
-			{
-				deleteData = true;
-			}
-		}
-
-		if (oldBicubic != bicubic)
-		{
-			if (ffmpegToBitmap != nullptr)
-			{
-				deleteData = true;
-			}
-			oldBicubic = bicubic;
-		}
 
 		//deleteData = true;
-
-		if (ffmpegToBitmap == nullptr)
+		if (widthVideo != 0 && heightVideo != 0)
 		{
-			ffmpegToBitmap = new CffmpegToBitmap(true);
-			ffmpegToBitmap->InitContext(src_frame, bicubic, rect.width, rect.height);
-		}
-		else if (deleteData)
-		{
-			ffmpegToBitmap->DeleteData();
-			ffmpegToBitmap->InitContext(src_frame, bicubic, rect.width, rect.height);
+			muBitmap.lock();
+
+			if (ffmpegToBitmap == nullptr)
+			{
+				ffmpegToBitmap = new CffmpegToBitmap(true);
+				ffmpegToBitmap->InitContext(src_frame, 0, widthVideo, heightVideo);
+			}
+
+			if (ffmpegToBitmap->GetThumbnailWidth() != widthVideo || ffmpegToBitmap->GetThumbnailHeight() != heightVideo)
+				deleteData = true;
+
+			if (deleteData)
+			{
+				ffmpegToBitmap->DeleteData();
+				ffmpegToBitmap->InitContext(src_frame, 0, widthVideo, heightVideo);
+			}
+			ffmpegToBitmap->Preconvert(src_frame, widthVideo, heightVideo);
+			muBitmap.unlock();
 		}
 
-		ffmpegToBitmap->Preconvert(src_frame, rect.width, rect.height);
 
-		muBitmap.unlock();
 	}
 	else
 	{
@@ -1751,6 +1709,7 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 		//  printf("VideoControl Is use_opencl \n");               
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
+			displaywithInterpolation = false;
 			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
 			muBitmap.unlock();
@@ -1760,29 +1719,14 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	}
 	else
 	{
+		displaywithInterpolation = true;
 		muBitmap.lock();
 		glTexture = RenderFFmpegToTexture();
 		muBitmap.unlock();
-		//deleteTexture = false;
-	}
-	/*
-	if(bitmap != nullptr)
-	{
-		printf("VideoControl Is use_opencl \n");
-		muBitmap.lock();
-		glTexture = RenderToTexture(bitmap);
-		muBitmap.unlock();
-	}
-	else
-	{
-		muBitmap.lock();
-		glTexture = RenderFFmpegToTexture();
-		muBitmap.unlock();
-	}
-	*/
-	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
-	//std::cout<<"RenderToBitmap Time Execution: "<< duration <<'\n';
+	}
+
+	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
 	return glTexture;
 }

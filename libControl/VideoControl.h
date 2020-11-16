@@ -37,7 +37,7 @@ protected:
 #ifdef RENDEROPENGL 
 	bool UnbindTexture();
 #endif
-	COpenCLEffectVideoNV12 * openclEffectNV12;
+
 	LPDIRECT3DSURFACE9 surface;
 	DXVA2Context * dxva2;
 	HANDLE hTexture;
@@ -54,7 +54,7 @@ protected:
 	int windowHeight;
 	bool dxva2ToOpenGLWorking;
 	HANDLE hDevice;
-
+	COpenCLEffectVideoNV12 * openclEffectNV12;
 };
 
 #endif

@@ -33,7 +33,7 @@ namespace Regards
 			cl_mem GetOpenCLVideoTexturePt();
 #endif
             GLTexture * GetVideoTexturePt();
-
+			GLTexture * GetVideoTextureCopyPt();
 			void SetSubtitle(CRegardsBitmap * subtitle);
 			void ShowSubtitle();
 			void DeleteSubtitle();
@@ -42,8 +42,10 @@ namespace Regards
 				return myGLVersion;
 			}
             
-            void RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted = false);
-			void RenderWithoutEffect(const int &left, const int &top, GLTexture * glTexture, const bool & flipH, const bool & flipV, const bool & inverted = false);
+			void RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & inverted);
+			void RenderWithEffectInterpolation(GLTexture * glTexture, GLTexture * glTextureOutput, const wxRect & rect, CVideoEffectParameter * videoEffectParameter, const int & flipH, const int & flipV, const int & angle, const int & filterInterpolation, const float & zoomRatio, const bool & inverted = false);
+            //void RenderWithEffect(const int &left, const int &top, GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & flipH,const bool & flipV, const bool & inverted = false);
+			//void RenderWithoutEffect(const int &left, const int &top, GLTexture * glTexture, const bool & flipH, const bool & flipV, const bool & inverted = false);
 
             bool IsCopyDirect()
             {

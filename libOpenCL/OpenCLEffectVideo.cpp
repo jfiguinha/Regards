@@ -129,7 +129,7 @@ void COpenCLEffectVideo::GetRgbaBitmap(cl_mem cl_image, int rgba)
 }
 
 
-void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int& angle, const int& bicubic)
+void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int& heightOutput, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
 {
 
 	//int filtre = 0;
@@ -168,12 +168,12 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 
 		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
 		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(0);
+		paramflipH->SetValue(flipH);
 		vecParam.push_back(paramflipH);
 
 		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
 		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(0);
+		paramflipV->SetValue(flipV);
 		vecParam.push_back(paramflipV);
 
 		COpenCLParameterInt* paramangle = new COpenCLParameterInt();
@@ -217,7 +217,7 @@ void COpenCLEffectVideo::InterpolationBicubic(const int& widthOutput, const int&
 	}
 }
 
-void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int& angle, const int& bicubic)
+void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic)
 {
 
 	//int filtre = 0;
@@ -276,12 +276,12 @@ void COpenCLEffectVideo::InterpolationZoomBicubic(const int& widthOutput, const 
 
 		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
 		paramflipH->SetLibelle("flipH");
-		paramflipH->SetValue(0);
+		paramflipH->SetValue(flipH);
 		vecParam.push_back(paramflipH);
 
 		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
 		paramflipV->SetLibelle("flipV");
-		paramflipV->SetValue(0);
+		paramflipV->SetValue(flipV);
 		vecParam.push_back(paramflipV);
 
 		COpenCLParameterInt* paramangle = new COpenCLParameterInt();
@@ -466,7 +466,7 @@ int COpenCLEffectVideo::SetAlphaValue(cl_mem cl_openglTexture, const int& width,
 }
 
 
-int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const int& angle, const int& bicubic)
+int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const int & flipH, const int &flipV, const int& angle, const int& bicubic)
 {
 
 	widthOut = widthOutput;
@@ -524,6 +524,16 @@ int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTextur
 		paramHeightOut->SetValue(heightOutput);
 		vecParam.push_back(paramHeightOut);
 
+		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+		paramflipH->SetLibelle("flipH");
+		paramflipH->SetValue(flipH);
+		vecParam.push_back(paramflipH);
+
+		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+		paramflipV->SetLibelle("flipV");
+		paramflipV->SetValue(flipV);
+		vecParam.push_back(paramflipV);
+
 		COpenCLParameterInt* paramAngle = new COpenCLParameterInt();
 		paramAngle->SetLibelle("angle");
 		paramAngle->SetValue(angle);
@@ -561,7 +571,7 @@ int COpenCLEffectVideo::InterpolationBicubicOpenGLTexture(cl_mem cl_openglTextur
 }
 
 
-int COpenCLEffectVideo::InterpolationBicubicZoneOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const wxRect &rc, const int& angle, const int& bicubic)
+int COpenCLEffectVideo::InterpolationBicubicZoneOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const wxRect &rc, const int & flipH, const int &flipV, const int& angle, const int& bicubic)
 {
 
 	widthOut = widthOutput;
@@ -638,6 +648,16 @@ int COpenCLEffectVideo::InterpolationBicubicZoneOpenGLTexture(cl_mem cl_openglTe
 		bitmapHeight->SetLibelle("bitmapHeight");
 		bitmapHeight->SetValue(rc.height);
 		vecParam.push_back(bitmapHeight);
+
+		COpenCLParameterInt* paramflipH = new COpenCLParameterInt();
+		paramflipH->SetLibelle("flipH");
+		paramflipH->SetValue(flipH);
+		vecParam.push_back(paramflipH);
+
+		COpenCLParameterInt* paramflipV = new COpenCLParameterInt();
+		paramflipV->SetLibelle("flipV");
+		paramflipV->SetValue(flipV);
+		vecParam.push_back(paramflipV);
 
 		COpenCLParameterInt* paramAngle = new COpenCLParameterInt();
 		paramAngle->SetLibelle("angle");

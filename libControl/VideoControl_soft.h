@@ -144,6 +144,7 @@ protected:
 	void OnLButtonUp(wxMouseEvent& event);
 	void TestMaxX();
 	void TestMaxY();
+	GLTexture * DisplayTexture(GLTexture * glTexture);
 
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
@@ -177,7 +178,7 @@ protected:
 	mutex muVideoEffect;
 	mutex muSubtitle;
 
-
+	GLTexture * glTextureSrc = nullptr;
 	CRegardsBitmap * bitmap = nullptr;
 	COpenCLEffectVideoYUV * openclEffectYUV = nullptr;
 	CffmpegToBitmap * ffmpegToBitmap = nullptr;
@@ -196,7 +197,7 @@ protected:
 	bool oldBicubic = 0;
 	AVFrame * copyFrameBuffer = nullptr;
 	int isCPU = -1;
-	bool isffmpegDecode = false;
+	bool isffmpegDecode = true;
 	bool deleteTexture = false;
 	int nbFrame;
 	wxString message;
@@ -207,5 +208,6 @@ protected:
 	float ratioVideo = 1.0f;
 	int posLargeur = 0;
 	int posHauteur = 0;
+	bool displaywithInterpolation = false;
 
 };

@@ -51,7 +51,7 @@ __kernel void Convert(__global float4 *output, const __global uchar *inputY, con
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x + y * widthOut;
+	int position = x + (heightIn - y - 1) * widthOut;
 
 	output[position] = GetColorFromYUV(inputY, inputU, inputV, x,  y, widthIn, heightIn, pitch);
 } 

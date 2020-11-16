@@ -31,15 +31,13 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 	windowWidth = 0;
 	windowHeight = 0;
 	dxva2ToOpenGLWorking = true;
-
+	openclEffectNV12 = nullptr;
 	initDevice = true;
 	dxva2 = nullptr;
     d3d9devmgr = nullptr;
 	d3d9device = nullptr;
 	m_pRenderTargetSurface = nullptr;
 	isDXVA2Compatible = true;
-	openclEffectNV12 = nullptr;
-
 	
     d3dlib = LoadLibrary(L"d3d9.dll");
     if (!d3dlib) {
@@ -96,13 +94,9 @@ CVideoControl::~CVideoControl()
     if (dxva2lib)
         FreeLibrary(dxva2lib);
 
-	
 
-	if(openclEffectNV12 != nullptr)
+	if (openclEffectNV12 != nullptr)
 		delete openclEffectNV12;
-
-
-	
 }
 
 IDirect3D9Ex * CVideoControl::GetDirectd3d9()
@@ -398,13 +392,8 @@ CVideoControlSoft * CVideoControl::CreateWindow(wxWindow* parent, wxWindowID id,
 GLTexture * CVideoControl::RenderFromOpenGLTexture()
 {
     GLTexture * glTexture = nullptr;
-    muVideoEffect.lock();
-    int bicubic = videoEffectParameter.BicubicEnable;
-    muVideoEffect.unlock();    
-    if(bicubic)
-        printf("Bicubic Enable \n");
-    //printf("RenderFromOpenGLTexture \n");
-    
+	GLTexture * glTextureCopy = nullptr;
+	displaywithInterpolation = false;
 	if (WGLEW_NV_DX_interop)
 	{
 		if(dxva2 != nullptr && hDevice == nullptr)
@@ -426,24 +415,23 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 					if(regardsParam != nullptr)
 						regardsParam->SetDxva2Actif(0);
 				}
-				
 			}
+
+			
 		}
 
-		if(hDevice != nullptr)
+		if (hDevice != nullptr)
 		{
 			muBitmap.lock();
 			cl_mem cl_textureVideoCopy = 0;
 			wglDXLockObjectsNV(hDevice, 1, &hTexture);
 			cl_textureVideoCopy = renderBitmapOpenGL->GetCopyVideoTexture(openclContext->GetContext());
-			wglDXUnlockObjectsNV(hDevice, 1, &hTexture);	
+			wglDXUnlockObjectsNV(hDevice, 1, &hTexture);
 			muBitmap.unlock();
-
-			
 			wxRect rect;
-			if(cl_textureVideoCopy != nullptr)
+			if (cl_textureVideoCopy != nullptr)
 			{
-				cl_int err ;
+				cl_int err;
 				err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 
@@ -463,12 +451,12 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 					if (angle == 90 || angle == 270)
 					{
 						calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
 					}
 					else
 					{
 						calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
 					}
 
 				}
@@ -492,7 +480,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 							rect.height = widthOut;
 						if (rect.width > heightOut)
 							rect.width = heightOut;
-						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, posrect, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
 					}
 					else
 					{
@@ -504,37 +492,25 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 						if (rect.width > widthOut)
 							rect.width = widthOut;
 
-						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, posrect, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 					}
 				}
 
-				/*
-				if(angle == 90 || angle == 270)
-				{
-					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, angle, bicubic);
-				}
-				else
-				{
-					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-					openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, angle, bicubic);
-				}
-				*/
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 				err = clFlush(openclContext->GetCommandQueue());
 				Error::CheckError(err);
 			}
 
-			if(cl_textureVideoCopy != nullptr)
+			if (cl_textureVideoCopy != nullptr)
 			{
-				
-				if(angle == 90 || angle == 270)
+
+				if (angle == 90 || angle == 270)
 					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width, openclContext->GetContext());
 				else
 					glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height, openclContext->GetContext());
-				
-				if(glTexture != nullptr)
+
+				if (glTexture != nullptr)
 				{
 					try
 					{
@@ -542,16 +518,16 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 						cl_mem cl_image = renderBitmapOpenGL->GetOpenCLTexturePt();
 						err = clEnqueueAcquireGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
 						Error::CheckError(err);
-                        if(!renderBitmapOpenGL->IsCopyDirect())
-                            openclEffectNV12->GetRgbaBitmap(cl_image,1);
-                        else
-                            openclEffectNV12->GetRgbaBitmap(cl_image,0);
+						if (!renderBitmapOpenGL->IsCopyDirect())
+							openclEffectNV12->GetRgbaBitmap(cl_image, 1);
+						else
+							openclEffectNV12->GetRgbaBitmap(cl_image, 0);
 						err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_image, 0, 0, 0);
 						Error::CheckError(err);
 						err = clFlush(openclContext->GetCommandQueue());
 						Error::CheckError(err);
 					}
-					catch(...)
+					catch (...)
 					{
 
 					}
@@ -573,6 +549,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 
 #ifdef RENDEROPENGL 
     GLTexture * glTexture = nullptr;
+	GLTexture * glTextureOutput = nullptr;
 #endif
 
 
@@ -617,12 +594,6 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
     start = std::clock();    
     
 	int supportOpenCL = COpenCLEngine::SupportOpenCL();
-	//muVideoEffect.lock();
-	//supportOpenCL = videoEffectParameter.enableOpenCL;
-	//enableOpenCL = COpenCLEngine::SupportOpenCL();
-	//muVideoEffect.unlock();
-
-
     int width = GetWindowWidth();
     int height = GetWindowHeight();
 	if (width <= 0 || height <= 0)
@@ -632,83 +603,38 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
         return;
 
 #ifdef RENDEROPENGL 
-    renderBitmapOpenGL->SetCurrent(*this);
+	renderBitmapOpenGL->SetCurrent(*this);
 
 	if (openclEffectNV12 == nullptr)
-    {
+	{
 		openclEffectNV12 = new COpenCLEffectVideoNV12(openclContext);
 		hDevice = nullptr;
 		hTexture = nullptr;
 		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-    }
+	}
 #else
 
-	if(openclEffectNV12 == nullptr)
+	if (openclEffectNV12 == nullptr)
 		openclEffectNV12 = new COpenCLEffectVideoNV12(openclContext);
 
-	if(openclEffectYUV == nullptr)
+	if (openclEffectYUV == nullptr)
 		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 
 #endif
 
-	/*
-    if (videoRenderStart && initStart)
-    {
-        if(!fpsTimer->IsRunning())
-            fpsTimer->Start(1000);
-#ifdef RENDEROPENGL 
-		UnbindTexture();
-#endif
-
-		dxva2ToOpenGLWorking = true;	
-		initStart = false;
-	}
-	*/
-
 #ifdef RENDEROPENGL 
 	if (videoRenderStart)
 	{
-		if (isDXVA2Compatible && dxva2ToOpenGLWorking && supportOpenCL)
+		if (dxva2ToOpenGLWorking)
 			glTexture = RenderFromOpenGLTexture();
 		else
-		{
-			if (isDXVA2Compatible && supportOpenCL)
-			{
-				if (openclEffectNV12->IsOk())
-				{
-					muBitmap.lock();
-					glTexture = RenderToTexture(openclEffectNV12);
-					muBitmap.unlock();
-				}
-			}
-			else
-			{
-				glTexture = RenderToGLTexture();
-			}
-		}
+			glTexture = RenderToGLTexture();
 	}
 	if (videoRenderStart && glTexture != nullptr)
 	{
 		renderBitmapOpenGL->CreateScreenRender(GetWindowWidth(), GetWindowHeight(), CRgbaquad(0, 0, 0, 0));
-
-		if (glTexture != nullptr)
-		{
-			int inverted = 1;
-			int x = (GetWindowWidth() - glTexture->GetWidth()) / 2;
-			int y = (GetWindowHeight() - glTexture->GetHeight()) / 2;
-			if (openclContext->IsSharedContextCompatible())
-				inverted = 0;
-
-			if (!supportOpenCL)
-				inverted = 1;
-
-			if (isDXVA2Compatible)
-				inverted = 0;
-
-			printf("glTexture info id : %d width %d height %d \n", glTexture->GetTextureID(), glTexture->GetWidth(), glTexture->GetHeight());
-			renderBitmapOpenGL->RenderWithEffect(x, y, glTexture, &videoEffectParameter, flipH, flipV, inverted);
-
-		}
+		
+		glTextureOutput = DisplayTexture(glTexture);
 
 		printf("Nb Frame per Seconds : %s \n", CConvertUtility::ConvertToUTF8(msgFrame));
 
@@ -754,6 +680,9 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 	if (deleteTexture)
 		if (glTexture != nullptr)
 			delete glTexture;
+
+	if (glTextureOutput != nullptr)
+		delete glTextureOutput;
 #else
 	wxPaintDC dc(this);
 	wxBitmap localmemBitmap(width, height);
@@ -843,27 +772,27 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 
 #ifdef RENDEROPENGL  
 
-    if(isDXVA2Compatible)
-    {
-        bool glewExist = WGLEW_NV_DX_interop ? true : false;
-        
-        if (glewExist)
-        {            
-            if(dxva2Context != nullptr)	
-                this->dxva2 = (DXVA2Context *)dxva2Context;
+	if (isDXVA2Compatible)
+	{
+		bool glewExist = WGLEW_NV_DX_interop ? true : false;
 
-            muBitmap.lock();
-            LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
-            widthVideo = src_frame->width;
-            heightVideo = src_frame->height;
+		if (glewExist)
+		{
+			if (dxva2Context != nullptr)
+				this->dxva2 = (DXVA2Context *)dxva2Context;
 
-            int widthSize = (widthVideo % 128);
-            if (widthSize == 0)
-                widthSize = widthVideo;
-            else
-                widthSize = (128 - widthSize) + widthVideo;
+			muBitmap.lock();
+			LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
+			widthVideo = src_frame->width;
+			heightVideo = src_frame->height;
 
-            int heightSize = heightVideo;
+			int widthSize = (widthVideo % 128);
+			if (widthSize == 0)
+				widthSize = widthVideo;
+			else
+				widthSize = (128 - widthSize) + widthVideo;
+
+			int heightSize = heightVideo;
 
 			if (hTexture != nullptr && hDevice != nullptr)
 			{
@@ -891,45 +820,45 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 			//else
 			//	dxva2ToOpenGLWorking = false;
 
-            muBitmap.unlock();	
+			muBitmap.unlock();
 
 
-        }
-        else
-        {
-            dxva2ToOpenGLWorking = false;
-            printf("dxva2ToOpenGLWorking false \n");
-        }	
-        if (!dxva2ToOpenGLWorking && openclEffectNV12 != nullptr)
-        {
-             printf("copy surface LPDIRECT3DSURFACE9 \n");
-             
-            LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
-            D3DSURFACE_DESC    surfaceDesc;
-            D3DLOCKED_RECT     LockedRect;
-            HRESULT            hr;
+		}
+		else
+		{
+			dxva2ToOpenGLWorking = false;
+			printf("dxva2ToOpenGLWorking false \n");
+		}
+		if (!dxva2ToOpenGLWorking && openclEffectNV12 != nullptr)
+		{
+			printf("copy surface LPDIRECT3DSURFACE9 \n");
 
-            IDirect3DSurface9_GetDesc(surface, &surfaceDesc);
-            muBitmap.lock();
-            hr = IDirect3DSurface9_LockRect(surface, &LockedRect, NULL, D3DLOCK_READONLY);
-            if (FAILED(hr)) {
-                av_log(NULL, AV_LOG_ERROR, "Unable to lock DXVA2 surface\n");
-                return;
-            }
+			LPDIRECT3DSURFACE9 surface = (LPDIRECT3DSURFACE9)src_frame->data[3];
+			D3DSURFACE_DESC    surfaceDesc;
+			D3DLOCKED_RECT     LockedRect;
+			HRESULT            hr;
 
-            int size = LockedRect.Pitch * surfaceDesc.Height + (LockedRect.Pitch * (surfaceDesc.Height / 2));
+			IDirect3DSurface9_GetDesc(surface, &surfaceDesc);
+			muBitmap.lock();
+			hr = IDirect3DSurface9_LockRect(surface, &LockedRect, NULL, D3DLOCK_READONLY);
+			if (FAILED(hr)) {
+				av_log(NULL, AV_LOG_ERROR, "Unable to lock DXVA2 surface\n");
+				return;
+			}
 
-            openclEffectNV12->SetMemoryData((uint8_t *)LockedRect.pBits, size, src_frame->width, src_frame->height, LockedRect.Pitch, surfaceDesc.Height, src_frame->format);
+			int size = LockedRect.Pitch * surfaceDesc.Height + (LockedRect.Pitch * (surfaceDesc.Height / 2));
 
-            IDirect3DSurface9_UnlockRect(surface);
-            muBitmap.unlock();
-            widthVideo = src_frame->width;
-            heightVideo = src_frame->height;
-        }
+			openclEffectNV12->SetMemoryData((uint8_t *)LockedRect.pBits, size, src_frame->width, src_frame->height, LockedRect.Pitch, surfaceDesc.Height, src_frame->format);
 
-    }
-    else
-    {
+			IDirect3DSurface9_UnlockRect(surface);
+			muBitmap.unlock();
+			widthVideo = src_frame->width;
+			heightVideo = src_frame->height;
+		}
+
+	}
+	else
+	{
 		if (dxva2Context == nullptr)
 		{
 			SetFrameData(src_frame);
@@ -938,7 +867,7 @@ void CVideoControl::SetData(void * data, const float & sample_aspect_ratio, void
 				CopyFrame(src_frame);
 		}
 
-    }
+	}
 
 #else
 	if (isDXVA2Compatible)

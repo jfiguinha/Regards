@@ -319,7 +319,7 @@ float4 BiCubicFromOpenGLTexture(float x, float y, __read_only image2d_t input, i
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input, int widthIn, int heightIn, int width, int height, int angle, int bicubic) 
+float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input, int widthIn, int heightIn, int width, int height, int flipH, int flipV, int angle, int bicubic) 
 { 
 	float ratioX = (float)widthIn / (float)width;
 	float ratioY = (float)heightIn / (float)height;
@@ -358,6 +358,33 @@ float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input
 		posY = heightIn - posY - 1;
 	}
 	
+	
+	if(angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	}
+	
 	float4 color;
 	if(bicubic != 0)
 		color = BiCubicFromOpenGLTexture(posX, posY, input, widthIn, heightIn, bicubic);
@@ -370,20 +397,20 @@ float4 ExecuteBicubicFromOpenGLTexture(int x, int y, __read_only image2d_t input
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32
 //----------------------------------------------------
-__kernel void InterpolationFromOpenGLTexture(__global float4 *output, __read_only image2d_t input, int width, int height, int widthOut, int heightOut, int angle, int bicubic) 
+__kernel void InterpolationFromOpenGLTexture(__global float4 *output, __read_only image2d_t input, int width, int height, int widthOut, int heightOut, int flipH, int flipV, int angle, int bicubic) 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
 	int position = x + y * widthOut;
 
-	output[position] = ExecuteBicubicFromOpenGLTexture(x, y, input, width, height, widthOut, heightOut, angle, bicubic);
+	output[position] = ExecuteBicubicFromOpenGLTexture(x, y, input, width, height, widthOut, heightOut, flipH, flipV, angle, bicubic);
 
 } 
 
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32 Par zone
 //---------------------------------------------------- 
-__kernel void InterpolationZone(__global float4 *output, __read_only image2d_t input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int angle, int bicubic)
+__kernel void InterpolationZone(__global float4 *output, __read_only image2d_t input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int bicubic)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
@@ -429,6 +456,33 @@ __kernel void InterpolationZone(__global float4 *output, __read_only image2d_t i
 		posY = srcy;
 
 		posY = heightIn - posY - 1;
+	}
+	
+		
+	if(angle == 90 || angle == 270)
+	{
+		if (flipV == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipH == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
+	
+	}
+	else
+	{
+		if (flipH == 1)
+		{
+			posX = widthIn - posX - 1;
+		}
+
+		if (flipV == 1)
+		{
+			posY = heightIn - posY - 1;
+		}
 	}
 	
 	float4 color;
