@@ -1599,7 +1599,7 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 
-	return supportOpenCL;
+	return 0;
 }
 
 void CVideoControlSoft::SetFrameData(AVFrame * src_frame)

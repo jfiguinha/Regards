@@ -171,10 +171,6 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 		float timer = rand() % 1000 + 1;
 
         m_pShader->EnableShader(); 
-        if (!m_pShader->SetTexture("texUnit", glTexture->GetTextureID()))
-        {
-            printf( "SetTexture texUnit failed \n " );
-        } 
         if (!m_pShader->SetParam("fWidth", glTexture->GetWidth()))
         {
             printf( "SetParam sharpness failed \n " );
