@@ -57,6 +57,35 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 
 }
 
+void CVideoControl::SavePicture()
+{
+	if (dxva2ToOpenGLWorking)
+	{
+		muBitmap.lock();
+		CRegardsBitmap * bitmap = openclEffectNV12->GetRgbaBitmap(true);
+		bitmap->ConvertToBgr();
+		bitmap->VertFlipBuf();
+		ExportPicture(bitmap);
+		muBitmap.unlock();
+	}
+	else
+	{
+		if (isffmpegDecode)
+		{
+			muBitmap.lock();
+			ExportPicture(ffmpegToBitmap->ConvertFrameToRgba32());
+			muBitmap.unlock();
+		}
+		else
+		{
+			muBitmap.lock();
+			ExportPicture(openclEffectYUV->GetRgbaBitmap(true));
+			muBitmap.unlock();
+		}
+	}
+
+}
+
 
 CVideoControl::~CVideoControl()
 {
@@ -443,6 +472,8 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				int filterInterpolation = 0;
 				CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 
+				openclEffectNV12->CopyOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo);
+
 				if (regardsParam != nullptr)
 					filterInterpolation = regardsParam->GetInterpolationType();
 
@@ -451,12 +482,12 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 					if (angle == 90 || angle == 270)
 					{
 						calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubic(rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
 					}
 					else
 					{
 						calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-						openclEffectNV12->InterpolationBicubicOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
+						openclEffectNV12->InterpolationBicubic(rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
 					}
 
 				}
@@ -480,7 +511,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 							rect.height = widthOut;
 						if (rect.width > heightOut)
 							rect.width = heightOut;
-						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
+						openclEffectNV12->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
 					}
 					else
 					{
@@ -492,7 +523,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 						if (rect.width > widthOut)
 							rect.width = widthOut;
 
-						openclEffectNV12->InterpolationBicubicZoneOpenGLTexture(cl_textureVideoCopy, widthVideo, heightVideo, rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
+						openclEffectNV12->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 					}
 				}
 
@@ -526,6 +557,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 						Error::CheckError(err);
 						err = clFlush(openclContext->GetCommandQueue());
 						Error::CheckError(err);
+						inverted = false;
 					}
 					catch (...)
 					{

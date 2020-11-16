@@ -68,6 +68,12 @@ void CShowBitmap::UpdateScreenRatio()
     this->Resize();
 }
 
+void CShowBitmap::SavePicture()
+{
+	if (bitmapWindow != nullptr)
+		bitmapWindow->SavePicture();
+}
+
 CShowBitmap::CShowBitmap(wxWindow* parent, wxWindowID id, wxWindowID bitmapViewerId,
 	wxWindowID mainViewerId, CBitmapInterface * bitmapInterface, CThemeParam * config)
 	: CWindowMain("ShowBitmap", parent, id)

@@ -38,6 +38,7 @@ namespace Regards
 			void UpdateScreenRatio();
 			void SetDiaporamaMode();
 			void SetNormalMode();
+			void SavePicture();
 
 		private:
 

@@ -107,6 +107,12 @@ void CShowVideo::OnClose(wxCommandEvent& event)
 	this->Resize();
 }
 
+void CShowVideo::SavePicture()
+{
+	if (videoWindow != nullptr)
+		videoWindow->SavePicture();
+}
+
 void CShowVideo::OnShrink(wxCommandEvent& event)
 {
 	videoWindow->ShrinkVideo();

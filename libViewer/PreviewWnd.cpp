@@ -162,6 +162,14 @@ void CPreviewWnd::ClickShowButton(const int &id, const int &refresh)
 			else
 				showBitmapWindow->FlipHorizontal();
 		}
+
+		case WM_SAVE:
+		{
+			if (isVideo)
+				showVideoWindow->SavePicture();
+			else
+				showBitmapWindow->SavePicture();
+		}
 		break;
 
 	}

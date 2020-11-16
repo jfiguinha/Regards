@@ -12,6 +12,8 @@
 #include <CL/cl.h>
 #include <utility.h>
 #endif
+#include <SavePicture.h>
+#include <ImageLoadingFormat.h>
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
@@ -109,6 +111,30 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	ffmfc = new CFFmfc(this, wxID_ANY);
 }
 
+void CVideoControlSoft::SavePicture()
+{
+	if (isffmpegDecode)
+	{
+		muBitmap.lock();
+		ExportPicture(ffmpegToBitmap->ConvertFrameToRgba32());
+		muBitmap.unlock();
+	}
+	else
+	{
+		muBitmap.lock();
+		ExportPicture(openclEffectYUV->GetRgbaBitmap(true));
+		muBitmap.unlock();
+	}
+}
+
+void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
+{
+	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
+	imageLoading->SetPicture(bitmap);
+	CSavePicture::SavePicture(this, imageLoading, filename);
+	if (imageLoading != nullptr)
+		delete imageLoading;
+}
 
 //-----------------------------------------------------------------
 //Gestion du click de souris
@@ -1331,7 +1357,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 		if (glTexture != nullptr)
 		{
 			muVideoEffect.lock();
-            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, inverted);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1541,6 +1567,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		else
 			printf("CVideoControl glTexture Error \n");
 	}
+	inverted = true;
 	return glTexture;
 }
 

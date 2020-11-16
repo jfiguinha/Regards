@@ -63,6 +63,12 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * buffer, int size, const int
 		paramOutput->Release();
 		delete paramOutput;
 	}
+
+	if (paramSrc != nullptr)
+	{
+		paramSrc->Release();
+		delete paramSrc;
+	}
 		
 	if (paramHeight != nullptr)
 	{
@@ -127,10 +133,16 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t
 		delete paramWidth;
 	}
 
-	if(paramOutput != nullptr)
+	if (paramOutput != nullptr)
 	{
 		paramOutput->Release();
 		delete paramOutput;
+	}
+
+	if (paramSrc != nullptr)
+	{
+		paramSrc->Release();
+		delete paramSrc;
 	}
 		
 	if (paramHeight != nullptr)
@@ -190,10 +202,32 @@ void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t
 
 void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut)
 {
+	srcwidth = widthOut;
+	srcheight = heightOut;
+
+	if (paramSrc != nullptr)
+	{
+		paramSrc->Release();
+		delete paramSrc;
+	}
+
+	if (paramSrcHeight != nullptr)
+	{
+		paramSrcHeight->Release();
+		delete paramSrcHeight;
+	}
+
+	if (paramSrcWidth != nullptr)
+	{
+		paramSrcWidth->Release();
+		delete paramSrcWidth;
+	}
+
+
 	if (context != nullptr)
 	{
 		COpenCLProgram * programCL;
-		paramOutput = new COpenCLParameterClMem();
+		paramSrc = new COpenCLParameterClMem();
 
 		this->widthOut = widthOut;
 		this->heightOut = heightOut;
@@ -219,15 +253,17 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);
 
-			COpenCLParameterInt * paramwidthOut = new COpenCLParameterInt();
-			paramwidthOut->SetLibelle("widthOut");
-			paramwidthOut->SetValue(widthOut);
-			vecParam.push_back(paramwidthOut);
+			paramSrcWidth = new COpenCLParameterInt();
+			paramSrcWidth->SetLibelle("widthOut");
+			paramSrcWidth->SetNoDelete(true);
+			paramSrcWidth->SetValue(widthOut);
+			vecParam.push_back(paramSrcWidth);
 
-			COpenCLParameterInt * paramheightOut = new COpenCLParameterInt();
-			paramheightOut->SetLibelle("heightOut");
-			paramheightOut->SetValue(heightOut);
-			vecParam.push_back(paramheightOut);
+			paramSrcHeight = new COpenCLParameterInt();
+			paramSrcHeight->SetLibelle("heightOut");
+			paramSrcHeight->SetValue(heightOut);
+			paramSrcHeight->SetNoDelete(true);
+			vecParam.push_back(paramSrcHeight);
 
 			vecParam.push_back(paramwidthPitch);
 
@@ -240,7 +276,7 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			program->SetParameter(&vecParam, widthOut, heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Convert");
-			paramOutput->SetValue(program->GetOutput());
+			paramSrc->SetValue(program->GetOutput());
 			delete program;
 
 			for (COpenCLParameter * parameter : vecParam)
@@ -254,84 +290,6 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			vecParam.clear();
 		}
 	}
+
+	paramOutput = nullptr;
 }
-
-/*
-void COpenCLEffectVideoNV12::InterpolationBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic)
-{
-	if(context != nullptr)
-	{
-		COpenCLProgram * programCL;
-		paramOutput = new COpenCLParameterClMem();
-
-		this->widthOut = widthOut;
-		this->heightOut = heightOut;
-        
-		programCL = GetProgram("IDR_OPENCL_FFMPEGDXVA2YUV420");
-
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			if(typeData == 1)
-			{
-				vecParam.push_back(inputY);
-				vecParam.push_back(inputUV);
-
-			}
-			else
-			{
-				vecParam.push_back(input);
-			}
-
-			vecParam.push_back(paramWidth);
-			vecParam.push_back(paramHeight);
-
-			COpenCLParameterInt * paramwidthOut = new COpenCLParameterInt();
-			paramwidthOut->SetLibelle("widthOut");
-			paramwidthOut->SetValue(widthOut);
-			vecParam.push_back(paramwidthOut);
-
-			COpenCLParameterInt * paramheightOut = new COpenCLParameterInt();
-			paramheightOut->SetLibelle("heightOut");
-			paramheightOut->SetValue(heightOut);
-			vecParam.push_back(paramheightOut);
-
-			COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-			paramAngle->SetLibelle("angle");
-			paramAngle->SetValue(angle);
-			vecParam.push_back(paramAngle);
-
-			COpenCLParameterInt * paramBicubic = new COpenCLParameterInt();
-			paramBicubic->SetLibelle("bicubic");
-			paramBicubic->SetValue(bicubic);
-			vecParam.push_back(paramBicubic);
-
-			vecParam.push_back(paramwidthPitch);
-
-			if(typeData == 2)
-			{
-			
-				vecParam.push_back(paramsurfaceHeight);
-			}
-
-			program->SetParameter(&vecParam, widthOut, heightOut);
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "BicubicNV12toRegardsBitmap");
-			paramOutput->SetValue(program->GetOutput());
-			delete program;
-
-            for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-}
-*/

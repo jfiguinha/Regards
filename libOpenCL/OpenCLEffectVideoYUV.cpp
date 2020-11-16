@@ -34,6 +34,12 @@ COpenCLEffectVideoYUV::~COpenCLEffectVideoYUV()
 		inputY->Release();
 		delete inputY;
 	}
+
+	if (paramSrc != nullptr)
+	{
+		paramSrc->Release();
+		delete paramSrc;
+	}
 		
 	if (inputV != nullptr)
 	{
@@ -62,12 +68,6 @@ void COpenCLEffectVideoYUV::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t 
 		delete paramLineSize;
 	}
 
-	if(paramOutput != nullptr)
-	{
-		paramOutput->Release();
-		delete paramOutput;
-	}
-	
 	if (inputU != nullptr)
 	{
 		inputU->Release();
@@ -128,6 +128,27 @@ int COpenCLEffectVideoYUV::GetSizeData()
 
 void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &heightOut)
 {
+	srcwidth = widthOut;
+	srcheight = heightOut;
+
+	if (paramSrc != nullptr)
+	{
+		paramSrc->Release();
+		delete paramSrc;
+	}
+
+	if (paramSrcHeight != nullptr)
+	{
+		paramSrcHeight->Release();
+		delete paramSrcHeight;
+	}
+
+	if (paramSrcWidth != nullptr)
+	{
+		paramSrcWidth->Release();
+		delete paramSrcWidth;
+	}
+
 	if (context != nullptr)
 	{
 
@@ -147,24 +168,26 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 			vecParam.push_back(inputV);
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);
-			paramOutput = new COpenCLParameterClMem();
+			paramSrc = new COpenCLParameterClMem();
 
-			COpenCLParameterInt * paramwidthOut = new COpenCLParameterInt();
-			paramwidthOut->SetLibelle("widthOut");
-			paramwidthOut->SetValue(widthOut);
-			vecParam.push_back(paramwidthOut);
+			paramSrcWidth = new COpenCLParameterInt();
+			paramSrcWidth->SetLibelle("widthOut");
+			paramSrcWidth->SetNoDelete(true);
+			paramSrcWidth->SetValue(widthOut);
+			vecParam.push_back(paramSrcWidth);
 
-			COpenCLParameterInt * paramheightOut = new COpenCLParameterInt();
-			paramheightOut->SetLibelle("heightOut");
-			paramheightOut->SetValue(heightOut);
-			vecParam.push_back(paramheightOut);
+			paramSrcHeight = new COpenCLParameterInt();
+			paramSrcHeight->SetLibelle("heightOut");
+			paramSrcHeight->SetValue(heightOut);
+			paramSrcHeight->SetNoDelete(true);
+			vecParam.push_back(paramSrcHeight);
 
 			vecParam.push_back(paramLineSize);
 
 			program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Convert");
-			paramOutput->SetValue(program->GetOutput());
+			paramSrc->SetValue(program->GetOutput());
 			delete program;
 
 			for (COpenCLParameter * parameter : vecParam)
@@ -178,72 +201,10 @@ void COpenCLEffectVideoYUV::TranscodePicture(const int &widthOut, const int &hei
 			vecParam.clear();
 		}
 	}
+
+	paramOutput = nullptr;
 }
-/*
-void COpenCLEffectVideoYUV::InterpolationYuvBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic)
-{
-	if(context != nullptr)
-	{
 
-		COpenCLProgram * programCL = nullptr;
-		programCL = GetProgram("IDR_OPENCL_FFMPEGYUV420");
-
-		if (programCL != nullptr)
-		{
-			vector<COpenCLParameter *> vecParam;
-			COpenCLExecuteProgram * program = new COpenCLExecuteProgram(context, flag);
-
-			this->widthOut = widthOut;
-			this->heightOut = heightOut;
-
-			vecParam.push_back(inputY);
-			vecParam.push_back(inputU);
-			vecParam.push_back(inputV);
-			vecParam.push_back(paramWidth);
-			vecParam.push_back(paramHeight);
-			paramOutput = new COpenCLParameterClMem();
-
-			COpenCLParameterInt * paramwidthOut = new COpenCLParameterInt();
-			paramwidthOut->SetLibelle("widthOut");
-			paramwidthOut->SetValue(widthOut);
-			vecParam.push_back(paramwidthOut);
-
-			COpenCLParameterInt * paramheightOut = new COpenCLParameterInt();
-			paramheightOut->SetLibelle("heightOut");
-			paramheightOut->SetValue(heightOut);
-			vecParam.push_back(paramheightOut);
-
-			COpenCLParameterInt * paramAngle = new COpenCLParameterInt();
-			paramAngle->SetLibelle("angle");
-			paramAngle->SetValue(angle);
-			vecParam.push_back(paramAngle);
-
-			COpenCLParameterInt * paramBicubic = new COpenCLParameterInt();
-			paramBicubic->SetLibelle("bicubic");
-			paramBicubic->SetValue(bicubic);
-			vecParam.push_back(paramBicubic);
-
-			vecParam.push_back(paramLineSize);
-
-			program->SetParameter(&vecParam, widthOut, heightOut, widthOut * heightOut * GetSizeData());
-			program->SetKeepOutput(true);
-			program->ExecuteProgram(programCL->GetProgram(), "BicubicYUVtoRegardsBitmap");
-			paramOutput->SetValue(program->GetOutput());
-			delete program;
-
-            for (COpenCLParameter * parameter : vecParam)
-			{
-				if(!parameter->GetNoDelete())
-				{
-					delete parameter;
-					parameter = nullptr;
-				}
-			}
-			vecParam.clear();
-		}
-	}
-}
-*/
 void COpenCLEffectVideoYUV::DeleteData()
 {
 	if (paramWidth != nullptr)

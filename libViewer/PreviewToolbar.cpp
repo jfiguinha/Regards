@@ -28,12 +28,20 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	wxString libelleFlipHorizontal = CLibResource::LoadStringFromResource(L"LBLFLIPH",1);
 	wxString libelleNext = CLibResource::LoadStringFromResource(L"LBLNEXT",1);
 	wxString libelleEnd = CLibResource::LoadStringFromResource(L"LBLEND",1);
+	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE", 1);// "Save";
+
 
 	fullscreen = new CToolbarButton(themeToolbar.button);
 	fullscreen->SetButtonResourceId(L"IDB_SCREENPNG");
 	fullscreen->SetCommandId(IDM_SETFULLSCREEN);
 	fullscreen->SetLibelle(libelleFullscreen);
 	navElement.push_back(fullscreen);
+
+	save = new CToolbarButton(themeToolbar.button);
+	save->SetButtonResourceId("IDB_SAVE");
+	save->SetCommandId(WM_SAVE);
+	save->SetLibelle(saveLibelle);
+	navElement.push_back(save);
 
 
 	imageFirst = new CToolbarButton(themeToolbar.button);
@@ -177,6 +185,11 @@ void CPreviewToolbar::FlipHorizontal()
 		toolbarInterface->ClickShowButton(WM_FLIPHORIZONTAL);
 }
 
+void CPreviewToolbar::Save()
+{
+	if (toolbarInterface != nullptr)
+		toolbarInterface->ClickShowButton(WM_SAVE);
+}
 
 void CPreviewToolbar::Fullscreen()
 {
@@ -246,6 +259,10 @@ void CPreviewToolbar::EventManager(const int &id)
 {
 	switch (id)
 	{
+	case WM_SAVE:
+		Save();
+		break;
+
 	case WM_DIAPORAMA_PLAY:
 		DiaporamaStart();
 		break;

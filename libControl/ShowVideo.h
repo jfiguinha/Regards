@@ -33,7 +33,7 @@ namespace Regards
 			void SetPosition(const int64_t &timePosition);
 			void SetVideoDuration(const int64_t &position);
 			void SetTimePosition(const int64_t &timePosition);
-
+			void SavePicture();
 			void ShowToolbar();
 			void HideToolbar();
 

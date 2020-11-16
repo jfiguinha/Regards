@@ -46,18 +46,8 @@ CSliderVideo::CSliderVideo(wxWindow* parent, wxWindowID id, CSliderInterface * s
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(CSliderVideo::OnMouseCaptureLost));
 	Connect(wxEVT_ENTER_WINDOW, wxMouseEventHandler(CSliderVideo::OnMouseHover));
 	Connect(wxEVT_LEAVE_WINDOW, wxMouseEventHandler(CSliderVideo::OnMouseLeave));
-
-    //button = loadingResource.LoadImageResource(L"IDB_BOULESLIDER");
-
-        button.Create(0,0);
-		/*
-        buttonVector = CLibResource::GetVector(L"IDB_BOULESLIDER");
-        buttonPlayVector = CLibResource::GetVector(L"IDB_PLAY_VIDEO");
-        buttonPauseVector = CLibResource::GetVector(L"IDB_PAUSE_VIDEO");
-        buttonVolumeUpVector = CLibResource::GetVector(L"IDB_PLUS");
-        buttonVolumeDownVector = CLibResource::GetVector(L"IDB_MINUS");
-        buttonSpeakerVector = CLibResource::GetVector(L"IDB_VOLUME_UP_VIDEO");
-		*/
+	
+	button.Create(0,0);
 
 }
 
@@ -235,8 +225,6 @@ void CSliderVideo::InsertPlayButton(wxDC * context)
 		positionPlayOrPauseButton.y = yPosBitmap;
 		positionPlayOrPauseButton.height = bmp.GetHeight();
 	}
-
-
 }
 
 void CSliderVideo::InsertSpeakerButton(const int &xStart, wxDC * context)

@@ -4,7 +4,6 @@
 #include <ConfigParam.h>
 using namespace Regards::Control;
 
-#define WM_SAVE 3
 #define WM_EMAIL 4
 #define WM_IMPRIMER 5
 #define WM_CROP 6
@@ -27,7 +26,7 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	slide = nullptr;
 	this->parentId = viewerId;
 
-	wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
+	//wxString saveLibelle = CLibResource::LoadStringFromResource("LBLSAVE",1);// "Save";
 	wxString exportLibelle = CLibResource::LoadStringFromResource("LBLEXPORT", 1);// "Save";
 	wxString emailLibelle = CLibResource::LoadStringFromResource("LBLEMAIL",1);//"Emai";
 	wxString printLibelle = CLibResource::LoadStringFromResource("LBLPRINT",1);//"Print";
@@ -36,11 +35,13 @@ CBitmapToolbar::CBitmapToolbar(wxWindow* parent, wxWindowID id, wxWindowID viewe
 	wxString zoomOn = CLibResource::LoadStringFromResource("LBLZOOMON",1);// "Zoom On";
 	wxString zoomOff = CLibResource::LoadStringFromResource("LBLZOOMOFF",1);// "Zoom Off";
 
+	/*
 	save = new CToolbarButton(themeToolbar.button);
 	save->SetButtonResourceId("IDB_SAVE");
 	save->SetCommandId(WM_SAVE);
 	save->SetLibelleTooltip(saveLibelle);
 	navElement.push_back(save);
+	*/
 
 	export_button = new CToolbarButton(themeToolbar.button);
 	export_button->SetButtonResourceId("IDB_SAVE");
@@ -252,12 +253,12 @@ void CBitmapToolbar::EventManager(const int &id)
 				bitmapWindow->ExportPicture();
 			break;
 		}
-
+		/*
 		case WM_SAVE:
 			if (bitmapWindow != nullptr)
 				bitmapWindow->SavePicture();
 			break;
-
+*/
 		case WM_EMAIL:
 			if (bitmapWindow != nullptr)
 				bitmapWindow->SendEmail();

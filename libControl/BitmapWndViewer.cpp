@@ -151,6 +151,7 @@ void CBitmapWndViewer::SetNormalMode()
 	this->ShrinkImage();
 }
 
+
 void CBitmapWndViewer::PrintPicture()
 {
 	CRegardsBitmap * bitmap = CBitmapWnd::GetBitmap(true);

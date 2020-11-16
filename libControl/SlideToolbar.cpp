@@ -4,7 +4,6 @@
 #include <ConfigParam.h>
 using namespace Regards::Video;
 
-#define WM_SAVE 3
 #define WM_EMAIL 4
 #define WM_IMPRIMER 5
 #define WM_CROP 6

@@ -42,6 +42,7 @@ public:
 	void SetZoomIndex(const int &pos);
 	void ShrinkVideo();
 	vector<int> GetZoomValue();
+	virtual void SavePicture();
 
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
@@ -100,6 +101,9 @@ public:
 	void FlipHorizontal();
 
 protected:
+
+	void ExportPicture(CRegardsBitmap * bitmap);
+
 	void CalculTextureSize(int &widthOut, int &heightOut);
 	void UpdateScrollBar();
 	void MoveTop();
@@ -145,6 +149,7 @@ protected:
 	void TestMaxX();
 	void TestMaxY();
 	GLTexture * DisplayTexture(GLTexture * glTexture);
+	
 
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
@@ -209,5 +214,6 @@ protected:
 	int posLargeur = 0;
 	int posHauteur = 0;
 	bool displaywithInterpolation = false;
+	bool inverted = true;
 
 };

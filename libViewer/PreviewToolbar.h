@@ -38,6 +38,7 @@ namespace Regards
 			void PreviousPicture();
 			void FirstPicture();
 			void LastPicture();
+			void Save();
 			void EventManager(const int &id);
             
 			CToolbarInterface * toolbarInterface;
@@ -48,6 +49,7 @@ namespace Regards
 			CToolbarButton * imageSuiv;
 			CToolbarButton * imageFirst;
 			CToolbarButton * imagePrec;
+			CToolbarButton * save;
             
             bool navigationButtonEnable = true;
 		};
