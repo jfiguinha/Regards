@@ -398,17 +398,17 @@ __kernel void InterpolationFromOpenGLTexture(__global uint *output, __read_only 
 { 
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x + y * widthOut;
+	int position = x + (heightOut - y - 1) * widthOut;
 	output[position] = rgbaFloat4ToUint(ExecuteBicubicFromOpenGLTexture(x, y, input, width, height, widthOut, heightOut, angle, bicubic),1.0f);
 } 
 //----------------------------------------------------
 // Conversion Special Effect Video du NV12 vers le RGB32 Par zone
 //---------------------------------------------------- 
-__kernel void InterpolationZone(__global float4 *output, __read_only image2d_t input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int flipH, int flipV, int angle, int bicubic)
+__kernel void InterpolationZone(__global float4 *output, __read_only image2d_t input, int widthIn, int heightIn, int widthOut, int heightOut, float left, float top, float bitmapWidth, float bitmapHeight, int angle, int bicubic)
 {
     int x = get_global_id(0);
 	int y = get_global_id(1);
-	int position = x + y * widthOut;
+	int position = x + (heightOut - y - 1) * widthOut;
 	
 	float ratioX = (float)widthIn / bitmapWidth;
 	float ratioY = (float)heightIn / bitmapHeight;
