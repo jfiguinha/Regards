@@ -164,6 +164,7 @@ void CRenderVideoOpenGL::RenderWithEffectInterpolation(GLTexture * glTextureSrc,
 	int left_local = (width - width_local) / 2;
 	int top_local = (height - height_local) / 2;
 
+
     GLSLShader * m_pShader = FindShader(L"IDR_GLSL_SHADER_VIDEO_INTERPOLATION");
     if(m_pShader != nullptr)
     {

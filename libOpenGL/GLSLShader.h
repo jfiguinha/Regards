@@ -36,7 +36,7 @@ namespace Regards
 
 		private:
 
-
+			bool CreateComputeProgram(const wxString & nProgramID_i);
 			bool CreateShaderProgram(const wxString & nProgramID_i);
 			bool CreateVertexProgram(const wxString & nProgramID_i);
 			bool check_shader_compile_status(GLuint obj);
@@ -47,6 +47,7 @@ namespace Regards
 			GLhandleARB m_hProgramObject;
 			GLhandleARB m_hShaderHandle;
 			GLhandleARB m_hVertexHandle;
+			GLhandleARB m_hComputeHandle;
 
 		};
 	}

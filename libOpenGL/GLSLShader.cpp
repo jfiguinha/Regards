@@ -78,9 +78,13 @@ bool GLSLShader::CreateProgram(const wxString & nProgramID_i, GLenum glSlShaderT
 		m_hProgramObject = glCreateProgram();
 
 	if (glSlShaderType_i == GL_VERTEX_SHADER)
+	{
 		return CreateVertexProgram(nProgramID_i);
-	else
-		return CreateShaderProgram(nProgramID_i);
+	}
+	else if(glSlShaderType_i == GL_COMPUTE_SHADER)
+		return CreateComputeProgram(nProgramID_i);
+
+	return CreateShaderProgram(nProgramID_i);
 }
 
 bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
@@ -129,6 +133,33 @@ bool GLSLShader::CreateShaderProgram(const wxString & nProgramID_i)
     return true;
 }
 
+bool GLSLShader::CreateComputeProgram(const wxString & nProgramID_i)
+{
+	m_hComputeHandle = glCreateShader(GL_COMPUTE_SHADER);
+
+	if (0 == m_hVertexHandle)
+	{
+		return false;
+	}
+
+	wxString dataProgram = CLibResource::GetOpenGLShaderProgram(nProgramID_i);
+
+	int length = (int)dataProgram.size() + 1;
+	char * data = new char[length];
+	strcpy(data, CConvertUtility::ConvertToUTF8(dataProgram));
+	glShaderSourceARB(m_hComputeHandle, 1, (const GLcharARB **)&data, &length);
+
+	glCompileShader(m_hComputeHandle);
+
+	if (!check_shader_compile_status(m_hComputeHandle))
+		return false;
+
+	glAttachShader(m_hProgramObject, m_hComputeHandle);
+	delete[] data;
+	return true;
+}
+
+
 bool GLSLShader::CreateVertexProgram(const wxString & nProgramID_i)
 {
 	m_hVertexHandle = glCreateShader(GL_VERTEX_SHADER);
@@ -157,12 +188,17 @@ bool GLSLShader::CreateVertexProgram(const wxString & nProgramID_i)
 
 bool GLSLShader::DeleteShader()
 {
-
 	if (m_hVertexHandle)
 	{
 		glDetachShader(m_hProgramObject, m_hVertexHandle);
 		glDeleteShader(m_hVertexHandle);
 		m_hVertexHandle = 0;
+	}
+	if (m_hComputeHandle)
+	{
+		glDetachShader(m_hProgramObject, m_hComputeHandle);
+		glDeleteShader(m_hComputeHandle);
+		m_hComputeHandle = 0;
 	}
     if( m_hShaderHandle )
     {

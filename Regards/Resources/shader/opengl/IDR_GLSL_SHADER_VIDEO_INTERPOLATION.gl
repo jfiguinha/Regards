@@ -119,28 +119,7 @@ float pnoise3D(in vec3 p)
 //Interpolation Code												   
 //------------------------------------------------------------
 //------------------------------------------------------------
-#define FILTER_PI 3.1415926535
-#define FILTER_2PI 2.0 * 3.1415926535
-#define FILTER_4PI 4.0 * 3.1415926535
 
-// Inline device function to convert 32-bit unsigned integer to floating point rgba color 
-//*****************************************************************
-float KernelFilter_selection(float x)
-{
-	if (x > 2.0) 
-		return 0.0; 
-	if (x < -2.0)
-		return(0.0);
-	if (x < -1.0)
-		return((2.0+x)*(2.0+x)*(2.0+x)/6.0);
-	if (x < 0.0)
-		return((4.0+x*x*(-6.0-3.0*x))/6.0);
-	if (x < 1.0)
-		return((4.0+x*x*(-6.0+3.0*x))/6.0);
-	if (x < 2.0)
-		return((2.0-x)*(2.0-x)*(2.0-x)/6.0);
-	return(0.0);
-}
 
 //------------------------------------------------------------
 //TextureValue													   
@@ -219,43 +198,7 @@ vec4 CalculInterpolation(float ratioX, float ratioY, vec2 positionTexture)
 		}
 	}
 
-	
-	if(type == 12)
-		return GetColorSrc(posX, posY, 0.0, 0.0);
-
-	float x = posX;
-	float y = posY;
-
-	vec4 nDenom = vec4(0.0);
-	float valueA = x;
-	float valueB = y;
-	float realA = x - valueA;
-	float realB = y - valueB;
-	
-	vec4 fy1 = vec4(KernelFilter_selection(-(-1.0 - realB)));
-	vec4 fy2 = vec4(KernelFilter_selection(realB));
-	vec4 fy3 = vec4(KernelFilter_selection(-(1.0 - realB)));
-	
-	vec4 fx1 = vec4(KernelFilter_selection(-1.0 - realA));
-	vec4 fx2 = vec4(KernelFilter_selection(- realA));
-	vec4 fx3 = vec4(KernelFilter_selection(1.0 - realA));
-	
-	nDenom += fy1 * (fx1 + fx2 + fx3) + fy2 * (fx1 + fx2 + fx3) + fy3 * (fx1 + fx2 + fx3);
-
-	
-	vec4 sum = GetColorSrc(x, y, -1.0, -1.0) * (fy1 * fx1);
-	sum += GetColorSrc(x, y, 0.0, -1.0) * (fy1 * fx2);
-	sum += GetColorSrc(x, y, 1.0, -1.0) * (fy1 * fx3);
-	
-	sum += GetColorSrc(x, y, -1.0, 0.0) * (fy2 * fx1);
-	sum += GetColorSrc(x, y, 0.0, 0.0) * (fy2 * fx2);
-	sum += GetColorSrc(x, y, 1.0, 0.0) * (fy2 * fx3);
-
-	sum += GetColorSrc(x, y, -1.0, 1.0) * (fy3 * fx1);
-	sum += GetColorSrc(x, y, 0.0, 1.0) * (fy3 * fx2);
-	sum += GetColorSrc(x, y, 1.0, 1.0) * (fy3 * fx3);
-	
-    return sum / nDenom;
+	return GetColorSrc(posX, posY, 0.0, 0.0);
 }
 
 //------------------------------------------------------------

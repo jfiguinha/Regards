@@ -59,14 +59,14 @@ void CRenderOpenGL::Init(wxGLCanvas * canvas)
     }  
 }
 
-GLSLShader * CRenderOpenGL::CreateShader(const wxString &shaderName)
+GLSLShader * CRenderOpenGL::CreateShader(const wxString &shaderName, GLenum glSlShaderType_i)
 {
     GLSLShader * m_pShader = new GLSLShader();
-    m_pShader->CreateProgram(shaderName, GL_FRAGMENT_PROGRAM_ARB);
+    m_pShader->CreateProgram(shaderName, glSlShaderType_i);
     return m_pShader;
 }
 
-GLSLShader * CRenderOpenGL::FindShader(const wxString &shaderName)
+GLSLShader * CRenderOpenGL::FindShader(const wxString &shaderName, GLenum glSlShaderType_i)
 {
     for(COpenGLShader * shader : listShader)
     {
@@ -75,7 +75,7 @@ GLSLShader * CRenderOpenGL::FindShader(const wxString &shaderName)
     }
     
     COpenGLShader * openGLShader = new COpenGLShader();
-    openGLShader->m_pShader = CreateShader(shaderName);
+    openGLShader->m_pShader = CreateShader(shaderName, glSlShaderType_i);
     openGLShader->shaderName = shaderName;
     
     listShader.push_back(openGLShader);

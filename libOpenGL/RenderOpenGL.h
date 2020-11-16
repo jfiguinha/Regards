@@ -55,8 +55,8 @@ namespace Regards
             bool IsInit();
 			int GetWidth();
 			int GetHeight();
-			GLSLShader * CreateShader(const wxString &shaderName);
-			GLSLShader * FindShader(const wxString &shaderName);
+			GLSLShader * CreateShader(const wxString &shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
+			GLSLShader * FindShader(const wxString &shaderName, GLenum glSlShaderType_i = GL_FRAGMENT_PROGRAM_ARB);
 
 		protected:
 			void RenderToTexture();
