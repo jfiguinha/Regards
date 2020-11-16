@@ -42,7 +42,7 @@ namespace Regards
 			void ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter);
 			int InterpolationBicubicOpenGLTexture(cl_mem cl_image, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const int & flipH, const int &flipV, const int& angle, const int& bicubic);
 			int InterpolationBicubicZoneOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height, const int& widthOutput, const int& heightOutput, const wxRect &rc, const int & flipH, const int &flipV, const int& angle, const int& bicubic);
-
+            //void FlipVertical();
 			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
 			int GetWidth();
 			int GetHeight();

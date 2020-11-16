@@ -152,7 +152,7 @@ void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 }
 
 //------------------------------------------------------------------------------------
-//Déplacement de la souris
+//DÃ©placement de la souris
 //------------------------------------------------------------------------------------
 void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 {
@@ -1323,15 +1323,18 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 					glTextureOutput = new GLTexture(rect.width, rect.height);
 				}
 			}
-			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, posrect, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
-		}
+            renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, posrect, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
+ 		}
 	}
 	else
 	{
 		if (glTexture != nullptr)
 		{
 			muVideoEffect.lock();
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+            if(openclContext->IsSharedContextCompatible())
+                renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+            else
+                renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
 			muVideoEffect.unlock();
 		}
 	}

@@ -64,11 +64,14 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	else
 		videoWindow = CVideoControl::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 
-	scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
+	
 
 #else
      videoWindow = CVideoControlSoft::CreateWindow(this, VIDEOCONTROL, windowMain, this);
 #endif
+
+    scrollbar = new CScrollbarWnd(this, videoWindow, wxID_ANY, "VideoScroll");
+
 	if (config != nullptr)
 	{
 		CThemeSlider theme;
