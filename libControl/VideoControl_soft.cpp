@@ -399,7 +399,8 @@ void CVideoControlSoft::ShrinkVideo()
 	//CalculCenterPicture();
 
 	int zoomSelect = 0;
-
+	posLargeur = 0;
+	posHauteur = 0;
 	muVideoEffect.lock();
 	float ratio = 1.0f;
 
