@@ -511,6 +511,13 @@ void CCentralWindow::SetPicture(CImageLoadingFormat * bitmap, const bool &isThum
 		evt.SetClientData(pictureInfos);
 		mainWindow->GetEventHandler()->AddPendingEvent(evt);
 
+		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 	}
 }
 
@@ -1225,6 +1232,14 @@ bool CCentralWindow::SetAnimation(const wxString &filename)
 
 
 	SetPanelInfos(false);
+
+	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 	return result;
 }
 

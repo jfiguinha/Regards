@@ -738,6 +738,13 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         pause = false;
 		//playStartTimer->Start(100, true);
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
+
+		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
 	}
 	else if(movie != filename)
 	{
@@ -988,11 +995,19 @@ void CVideoControlSoft::OnPlay()
 		if (pause && !videoEnd)
 		{
 			ffmfc->Pause();
+			wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
 		}
 		else if (videoEnd)
 		{
 			PlayMovie(filename, true);
 		}
+		
+
 	}
 	else
 	{
@@ -1000,6 +1015,8 @@ void CVideoControlSoft::OnPlay()
 	}
 
 	pause = false;
+
+
 }
 
 void CVideoControlSoft::OnStop(wxString photoName)
@@ -1014,6 +1031,13 @@ void CVideoControlSoft::OnStop(wxString photoName)
         }
     }
 	standByMovie = photoName;
+
+	wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
 }
 
 
@@ -1178,6 +1202,13 @@ void CVideoControlSoft::OnPause()
 		if (!pause)
 		{
 			ffmfc->Pause();
+
+			wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+			if (window != nullptr)
+			{
+				wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
+				window->GetEventHandler()->AddPendingEvent(evt);
+			}
 		}
 		pause = true;
 	}

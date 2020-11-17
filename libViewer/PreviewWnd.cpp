@@ -81,6 +81,8 @@ CPreviewWnd::CPreviewWnd(wxWindow* parent, wxWindowID id, const bool &horizontal
 	bitmapInfos->Show(true);
 	previewToolbar->Show(true);
 
+	Connect(wxEVENT_SHOWSAVEBUTTON, wxCommandEventHandler(CPreviewWnd::ShowSaveButton));
+	Connect(wxEVENT_HIDESAVEBUTTON, wxCommandEventHandler(CPreviewWnd::HideSaveButton));
 	Connect(wxEVENT_HIDETOOLBAR, wxCommandEventHandler(CPreviewWnd::HideToolbar));
 	Connect(wxEVENT_SHOWTOOLBAR, wxCommandEventHandler(CPreviewWnd::ShowToolbar));
 	Connect(wxEVENT_FILTREOK, wxCommandEventHandler(CPreviewWnd::OnFiltreOK));
@@ -98,6 +100,18 @@ CPreviewWnd::~CPreviewWnd()
 	delete(bitmapInfos);
 	delete(filtreToolbar);
 
+}
+
+void CPreviewWnd::HideSaveButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->DisableSaveButton();
+}
+
+void CPreviewWnd::ShowSaveButton(wxCommandEvent& event)
+{
+	if (previewToolbar != nullptr)
+		previewToolbar->EnableSaveButton();
 }
 
 void CPreviewWnd::OnShowToolbar(wxCommandEvent& event)

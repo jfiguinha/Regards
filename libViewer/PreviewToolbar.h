@@ -24,6 +24,8 @@ namespace Regards
             void SetScreen();
 			void DisableNavigationButton();
 			void EnableNavigationButton();
+			void EnableSaveButton();
+			void DisableSaveButton();
 
 		private:
 

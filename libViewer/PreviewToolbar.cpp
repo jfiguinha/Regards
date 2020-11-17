@@ -109,6 +109,19 @@ CPreviewToolbar::CPreviewToolbar(wxWindow* parent, wxWindowID id, const CThemeTo
 	this->toolbarInterface = toolbarInterface;
 }
 
+void  CPreviewToolbar::EnableSaveButton()
+{
+	save->SetVisible(true);
+	this->Refresh();
+}
+
+
+void  CPreviewToolbar::DisableSaveButton()
+{
+	save->SetVisible(false);
+	this->Refresh();
+}
+
 void CPreviewToolbar::DisableNavigationButton()
 {
     if(navigationButtonEnable)

@@ -63,10 +63,12 @@ namespace Regards
 			void SetFaceMode();
 
             void UpdateInfos();
+
             
 		protected:
 
-
+			void HideSaveButton(wxCommandEvent& event);
+			void ShowSaveButton(wxCommandEvent& event);
 			void OnFiltreOK(wxCommandEvent& event);
 			void OnFiltreCancel(wxCommandEvent& event);
 			void ShowToolbar(wxCommandEvent& event);
