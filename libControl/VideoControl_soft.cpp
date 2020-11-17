@@ -1406,22 +1406,6 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			if (regardsParam != nullptr)
 				filterInterpolation = regardsParam->GetInterpolationType();
 
-			if (zoomRatio == 1.0f)
-			{
-
-				if (angle == 90 || angle == 270)
-				{
-					calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-					glTextureOutput = new GLTexture(rect.height, rect.width);
-				}
-				else
-				{
-					calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-					glTextureOutput = new GLTexture(rect.width, rect.height);
-				}
-			}
-			else
-			{
 				int widthOut = 0;
 				int heightOut = 0;
 				CalculTextureSize(widthOut, heightOut);
@@ -1455,7 +1439,6 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 
 					glTextureOutput = new GLTexture(rect.width, rect.height);
 				}
-			}
             renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, posrect, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
  		}
 	}
@@ -1546,22 +1529,6 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 	{
 		CalculPositionPicture(centerX, centerY);
 		UpdateScrollBar();
-
-		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_SHOWSCROLLBAR);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
-	}
-	else
-	{
-		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
-		if (window != nullptr)
-		{
-			wxCommandEvent evt(wxEVENT_HIDESCROLLBAR);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
 	}
 }
 
@@ -1585,23 +1552,6 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	//CRegardsBitmap * data = openclEffect->GetRgbaBitmap();
 	//data->SaveToBmp("d:\\test.bmp");
 
-
-	if (zoomRatio == 1.0f)
-	{
-		if (angle == 90 || angle == 270)
-		{
-			calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-			openclEffect->InterpolationBicubic(rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
-		}
-		else
-		{
-			calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-			openclEffect->InterpolationBicubic(rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
-		}
-
-	}
-	else
-	{
 		int widthOut = 0;
 		int heightOut = 0;
 		CalculTextureSize(widthOut, heightOut);
@@ -1634,7 +1584,6 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 		}
-	}
 
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())

@@ -97,52 +97,7 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
-	Connect(wxEVENT_SHOWSCROLLBAR, wxCommandEventHandler(CShowVideo::OnShowScrollbar));
-	Connect(wxEVENT_HIDESCROLLBAR, wxCommandEventHandler(CShowVideo::OnHideScrollbar));
 	this->windowMain = windowMain;
-}
-
-void CShowVideo::OnShowScrollbar(wxCommandEvent& event)
-{
-	bool resize = false;
-
-	if (!scrollbar->GetShowingScrollV())
-	{
-		scrollbar->ShowVerticalScroll();
-		resize = true;
-	}
-
-
-	if (!scrollbar->GetShowingScrollH())
-	{
-		scrollbar->ShowHorizontalScroll();
-		resize = true;
-	}
-		
-	if(resize)
-		scrollbar->Resize();
-}
-
-void CShowVideo::OnHideScrollbar(wxCommandEvent& event)
-{
-	bool resize = false;
-
-	if (scrollbar->GetShowingScrollV())
-	{
-		scrollbar->HideVerticalScroll();
-		resize = true;
-	}
-
-
-	if (scrollbar->GetShowingScrollH())
-	{
-		scrollbar->HideHorizontalScroll();
-		resize = true;
-	}
-
-	if (resize)
-		scrollbar->Resize();
-
 }
 
 void CShowVideo::OnClose(wxCommandEvent& event)
@@ -162,7 +117,7 @@ void CShowVideo::OnShrink(wxCommandEvent& event)
 {
 	videoWindow->ShrinkVideo();
 	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
-	OnHideScrollbar(event);
+	//OnHideScrollbar(event);
 }
 
 void CShowVideo::OnValueChange(wxCommandEvent& event)

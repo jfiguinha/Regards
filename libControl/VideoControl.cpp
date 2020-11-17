@@ -476,54 +476,37 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				if (regardsParam != nullptr)
 					filterInterpolation = regardsParam->GetInterpolationType();
 
-				if (zoomRatio == 1.0f)
-				{
-					if (angle == 90 || angle == 270)
-					{
-						calculate_display_rect(&rect, 0, 0, getHeight(), getWidth());
-						openclEffectNV12->InterpolationBicubic(rect.height, rect.width, flipH, flipV, angle, filterInterpolation);
-					}
-					else
-					{
-						calculate_display_rect(&rect, 0, 0, getWidth(), getHeight());
-						openclEffectNV12->InterpolationBicubic(rect.width, rect.height, flipH, flipV, angle, filterInterpolation);
-					}
+				int widthOut = 0;
+				int heightOut = 0;
+				CalculTextureSize(widthOut, heightOut);
 
+				wxRect posrect;
+				posrect.x = std::max((double)posLargeur, (double)0);
+				posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1, (double)0);
+				posrect.width = widthOut;
+				posrect.height = heightOut;
+
+				if (angle == 90 || angle == 270)
+				{
+					rect.height = getHeight();
+					rect.width = getWidth();
+					if (rect.height > widthOut)
+						rect.height = widthOut;
+					if (rect.width > heightOut)
+						rect.width = heightOut;
+					openclEffectNV12->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
 				}
 				else
 				{
-					int widthOut = 0;
-					int heightOut = 0;
-					CalculTextureSize(widthOut, heightOut);
+					rect.height = getHeight();
+					rect.width = getWidth();
 
-					wxRect posrect;
-					posrect.x = std::max((double)posLargeur, (double)0);
-					posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1, (double)0);
-					posrect.width = widthOut;
-					posrect.height = heightOut;
+					if (rect.height > heightOut)
+						rect.height = heightOut;
+					if (rect.width > widthOut)
+						rect.width = widthOut;
 
-					if (angle == 90 || angle == 270)
-					{
-						rect.height = getHeight();
-						rect.width = getWidth();
-						if (rect.height > widthOut)
-							rect.height = widthOut;
-						if (rect.width > heightOut)
-							rect.width = heightOut;
-						openclEffectNV12->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
-					}
-					else
-					{
-						rect.height = getHeight();
-						rect.width = getWidth();
-
-						if (rect.height > heightOut)
-							rect.height = heightOut;
-						if (rect.width > widthOut)
-							rect.width = widthOut;
-
-						openclEffectNV12->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
-					}
+					openclEffectNV12->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 				}
 
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
