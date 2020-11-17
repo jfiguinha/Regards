@@ -82,6 +82,7 @@ namespace Regards
 			void OnShrink(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnValueChange(wxCommandEvent& event);
+			void OnValueShrinkChange(wxCommandEvent& event);
 
 			void ShowSliderToolbar(const bool &show);
 			void ShowSlider(const bool &show);

@@ -94,10 +94,16 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	play = false;
 
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowVideo::OnSize));
+	Connect(wxEVENT_SHRINKPOS, wxCommandEventHandler(CShowVideo::OnValueShrinkChange));
 	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
 	Connect(wxEVENT_SHRINK, wxCommandEventHandler(CShowVideo::OnShrink));
 	Connect(wxEVENT_CLOSE, wxCommandEventHandler(CShowVideo::OnClose));
 	this->windowMain = windowMain;
+}
+
+void CShowVideo::OnValueShrinkChange(wxCommandEvent& event)
+{
+	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
 }
 
 void CShowVideo::OnClose(wxCommandEvent& event)
@@ -119,6 +125,7 @@ void CShowVideo::OnShrink(wxCommandEvent& event)
 	slideToolbar->SetTrackBarPosition(videoWindow->GetZoomIndex());
 	//OnHideScrollbar(event);
 }
+
 
 void CShowVideo::OnValueChange(wxCommandEvent& event)
 {

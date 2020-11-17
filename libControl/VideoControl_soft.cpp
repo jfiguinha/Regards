@@ -1470,6 +1470,35 @@ void CVideoControlSoft::Resize()
 			SetFrameData(copyFrameBuffer);
 		}
 
+		muVideoEffect.lock();
+		float ratio = 1.0f;
+		int zoomSelect = 0;
+		float newRatio = CalculPictureRatio(widthVideo, heightVideo);
+		//Calcul Zoom Index
+		if (newRatio != 0.0)
+		{
+			for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
+			{
+				if (newRatio < videoEffectParameter.tabZoom[i])
+				{
+					ratio = videoEffectParameter.tabZoom[i];
+					zoomSelect = i;
+					break;
+				}
+			}
+		}
+
+		videoEffectParameter.zoomSelect = zoomSelect;
+
+		muVideoEffect.unlock();
+
+		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SHRINKPOS);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+
 		Refresh();
 	}
 
