@@ -38,7 +38,7 @@ namespace Regards
 			virtual void InterpolationBicubic(const int& widthOut, const int& heightOut, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void InterpolationZoomBicubic(const int& widthOutput, const int& heightOutput, const wxRect &rc, const int &flipH, const int &flipV, const int& angle, const int& bicubic);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut) {};
-			void ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter);
+
             void FlipVertical();
 			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
 			int GetSrcWidth();
