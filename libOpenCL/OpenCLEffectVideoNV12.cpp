@@ -48,156 +48,96 @@ COpenCLEffectVideoNV12::~COpenCLEffectVideoNV12()
 		paramsurfaceHeight->Release();
 		delete paramsurfaceHeight;
 	}
-}
 
-void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * buffer, int size, const int &width, const int &height, const int &widthPitch, const int &heightSurface, const int &format)
-{
 	if (paramWidth != nullptr)
 	{
 		paramWidth->Release();
 		delete paramWidth;
 	}
 
-	if(paramOutput != nullptr)
-	{
-		paramOutput->Release();
-		delete paramOutput;
-	}
-
-	if (paramSrc != nullptr)
-	{
-		paramSrc->Release();
-		delete paramSrc;
-	}
-		
 	if (paramHeight != nullptr)
 	{
 		paramHeight->Release();
 		delete paramHeight;
 	}
+}
 
-	if (input != nullptr)
-	{
-		input->Release();
-		delete input;
-	}
-
-	if (paramwidthPitch != nullptr)
-	{
-		paramwidthPitch->Release();
-		delete paramwidthPitch;
-	}
-	
-	if (paramsurfaceHeight != nullptr)
-	{
-		paramsurfaceHeight->Release();
-		delete paramsurfaceHeight;
-	}
-		
-
-	input = new COpenCLParameterByteArray();
+void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * buffer, int size, const int &width, const int &height, const int &widthPitch, const int &heightSurface, const int &format)
+{
+	if(input != nullptr)
+		input = new COpenCLParameterByteArray();
 	input->SetLibelle("input");
 	input->SetNoDelete(true);
 	input->SetValue(context->GetContext(), buffer, size, flag);
 	
-	paramWidth = new COpenCLParameterInt();
+	if (paramWidth != nullptr)
+		paramWidth = new COpenCLParameterInt();
 	paramWidth->SetNoDelete(true);
 	paramWidth->SetLibelle("widthIn");
 	paramWidth->SetValue(width);
 
-	paramHeight = new COpenCLParameterInt();
+	if (paramHeight != nullptr)
+		paramHeight = new COpenCLParameterInt();
 	paramHeight->SetNoDelete(true);
 	paramHeight->SetLibelle("heightIn");
 	paramHeight->SetValue(height);
 
-	paramwidthPitch = new COpenCLParameterInt();
+	if (paramwidthPitch != nullptr)
+		paramwidthPitch = new COpenCLParameterInt();
 	paramwidthPitch->SetNoDelete(true);
 	paramwidthPitch->SetLibelle("widthPitch");
 	paramwidthPitch->SetValue(widthPitch);
 
-	paramsurfaceHeight = new COpenCLParameterInt();
+	if (paramsurfaceHeight != nullptr)
+		paramsurfaceHeight = new COpenCLParameterInt();
 	paramsurfaceHeight->SetNoDelete(true);
 	paramsurfaceHeight->SetLibelle("heightSurface");
 	paramsurfaceHeight->SetValue(heightSurface);
 
-	dataIsOk = true;
 	typeData = 2;
 	formatData = format;
 }
 
 void COpenCLEffectVideoNV12::SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferUV, int sizeUV, const int &width, const int &height, const int &widthPitch, const int &format)
 {
-	if (paramWidth != nullptr)
-	{
-		paramWidth->Release();
-		delete paramWidth;
-	}
-
-	if (paramOutput != nullptr)
-	{
-		paramOutput->Release();
-		delete paramOutput;
-	}
-
-	if (paramSrc != nullptr)
-	{
-		paramSrc->Release();
-		delete paramSrc;
-	}
-		
-	if (paramHeight != nullptr)
-	{
-		paramHeight->Release();
-		delete paramHeight;
-	}
-
-	if (paramwidthPitch != nullptr)
-	{
-		paramwidthPitch->Release();
-		delete paramwidthPitch;
-	}
-	
-	if (inputUV != nullptr)
-	{
-		inputUV->Release();
-		delete inputUV;
-	}
-
 	if (inputY != nullptr)
-	{
-		inputY->Release();
-		delete inputY;
-	}
-		
-
-	inputY = new COpenCLParameterByteArray();
+		inputY = new COpenCLParameterByteArray();
 	inputY->SetLibelle("inputY");
 	inputY->SetNoDelete(true);
 	inputY->SetValue(context->GetContext(), bufferY, sizeY, flag);
 	
-	inputUV = new COpenCLParameterByteArray();
+	if (inputUV != nullptr)
+		inputUV = new COpenCLParameterByteArray();
 	inputUV->SetLibelle("inputU");
 	inputUV->SetNoDelete(true);
 	inputUV->SetValue(context->GetContext(), bufferUV, sizeUV, flag);
 
-	paramWidth = new COpenCLParameterInt();
+	if (paramWidth != nullptr)
+		paramWidth = new COpenCLParameterInt();
 	paramWidth->SetNoDelete(true);
 	paramWidth->SetLibelle("widthIn");
 	paramWidth->SetValue(width);
 
-	paramHeight = new COpenCLParameterInt();
+	if (paramHeight != nullptr)
+		paramHeight = new COpenCLParameterInt();
 	paramHeight->SetNoDelete(true);
 	paramHeight->SetLibelle("heightIn");
 	paramHeight->SetValue(height);
 
-	paramwidthPitch = new COpenCLParameterInt();
+	if (paramwidthPitch != nullptr)
+		paramwidthPitch = new COpenCLParameterInt();
 	paramwidthPitch->SetNoDelete(true);
 	paramwidthPitch->SetLibelle("widthPitch");
 	paramwidthPitch->SetValue(widthPitch);
-
-	dataIsOk = true;
+	isOk = true;
 	typeData = 1;
 	formatData = format;
+}
+
+
+bool COpenCLEffectVideoNV12::IsOk()
+{
+	return isOk;
 }
 
 void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &heightOut)
@@ -205,29 +145,9 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 	srcwidth = widthOut;
 	srcheight = heightOut;
 
-	if (paramSrc != nullptr)
-	{
-		paramSrc->Release();
-		delete paramSrc;
-	}
-
-	if (paramSrcHeight != nullptr)
-	{
-		paramSrcHeight->Release();
-		delete paramSrcHeight;
-	}
-
-	if (paramSrcWidth != nullptr)
-	{
-		paramSrcWidth->Release();
-		delete paramSrcWidth;
-	}
-
-
 	if (context != nullptr)
 	{
 		COpenCLProgram * programCL;
-		paramSrc = new COpenCLParameterClMem();
 
 		this->widthOut = widthOut;
 		this->heightOut = heightOut;
@@ -253,13 +173,15 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			vecParam.push_back(paramWidth);
 			vecParam.push_back(paramHeight);
 
-			paramSrcWidth = new COpenCLParameterInt();
+			if (paramSrcWidth == nullptr)
+				paramSrcWidth = new COpenCLParameterInt();
 			paramSrcWidth->SetLibelle("widthOut");
 			paramSrcWidth->SetNoDelete(true);
 			paramSrcWidth->SetValue(widthOut);
 			vecParam.push_back(paramSrcWidth);
 
-			paramSrcHeight = new COpenCLParameterInt();
+			if (paramSrcHeight == nullptr)
+				paramSrcHeight = new COpenCLParameterInt();
 			paramSrcHeight->SetLibelle("heightOut");
 			paramSrcHeight->SetValue(heightOut);
 			paramSrcHeight->SetNoDelete(true);
@@ -276,6 +198,10 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 			program->SetParameter(&vecParam, widthOut, heightOut);
 			program->SetKeepOutput(true);
 			program->ExecuteProgram(programCL->GetProgram(), "Convert");
+
+
+			if (paramSrc == nullptr)
+				paramSrc = new COpenCLParameterClMem();
 			paramSrc->SetValue(program->GetOutput());
 			delete program;
 
@@ -291,5 +217,4 @@ void COpenCLEffectVideoNV12::TranscodePicture(const int &widthOut, const int &he
 		}
 	}
 
-	paramOutput = nullptr;
 }

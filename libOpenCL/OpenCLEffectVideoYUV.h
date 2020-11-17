@@ -14,20 +14,21 @@ namespace Regards
 			COpenCLEffectVideoYUV(COpenCLContext * context);
 			virtual ~COpenCLEffectVideoYUV();
 			void SetMemoryData(uint8_t * bufferY, int sizeY, uint8_t * bufferU, int sizeU, uint8_t * bufferV, int sizeV, const int &width, const int &height, const int &lineSize, const int &format = 0);
-			//void InterpolationYuvBicubic(const int &widthOut, const int &heightOut, const int &angle, const int &bicubic);
 			virtual void TranscodePicture(const int &widthOut, const int &heightOut);
-            void DeleteData();
+			bool IsOk();
 
 		protected:
 
 			int GetSizeData();
-
+			bool isOk = false;
 			int formatData;
 			//Bitmap Memory Buffer
-			COpenCLParameterByteArray * inputY;
-			COpenCLParameterByteArray * inputU;
-			COpenCLParameterByteArray * inputV;
-			COpenCLParameterInt * paramLineSize;
+			COpenCLParameterInt * paramWidth = nullptr;
+			COpenCLParameterInt * paramHeight = nullptr;
+			COpenCLParameterByteArray * inputY = nullptr;
+			COpenCLParameterByteArray * inputU = nullptr;
+			COpenCLParameterByteArray * inputV = nullptr;
+			COpenCLParameterInt * paramLineSize = nullptr;
 		};
 
 	}

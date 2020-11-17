@@ -130,6 +130,8 @@ void CVideoControlSoft::SavePicture()
 void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
 {
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
+	if (isffmpegDecode)
+		bitmap->VertFlipBuf();
 	imageLoading->SetPicture(bitmap);
 	CSavePicture::SavePicture(this, imageLoading, filename);
 	if (imageLoading != nullptr)
@@ -1388,7 +1390,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 		if (glTexture != nullptr)
 		{
 			muVideoEffect.lock();
-            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, inverted);
+            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1492,6 +1494,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 	//CRegardsBitmap * data = openclEffect->GetRgbaBitmap();
 	//data->SaveToBmp("d:\\test.bmp");
+
+
 	if (zoomRatio == 1.0f)
 	{
 		if (angle == 90 || angle == 270)
@@ -1541,8 +1545,6 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 		}
 	}
-
-
 
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())

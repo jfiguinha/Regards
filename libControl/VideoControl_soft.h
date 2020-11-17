@@ -214,6 +214,6 @@ protected:
 	int posLargeur = 0;
 	int posHauteur = 0;
 	bool displaywithInterpolation = false;
-	bool inverted = true;
+	//bool inverted = true;
 
 };

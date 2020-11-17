@@ -41,8 +41,8 @@ namespace Regards
 			void ApplyVideoEffect(CVideoEffectParameter * videoEffectParameter);
             void FlipVertical();
 			void GetRgbaBitmap(cl_mem cl_image, int rgba = 0);
-			int GetWidth();
-			int GetHeight();
+			int GetSrcWidth();
+			int GetSrcHeight();
 			int GetThumbnailWidth();
 			int GetThumbnailHeight();
 			int CopyOpenGLTexture(cl_mem cl_openglTexture, const int& width, const int& height);
@@ -56,23 +56,22 @@ namespace Regards
 
 			COpenCLProgram * openCLProgram;
 			COpenCLContext * context;
-			bool dataIsOk;
+			//bool dataIsOk;
 			//Bitmap Memory Buffer
-			COpenCLParameterInt * paramWidth;
-			COpenCLParameterInt * paramHeight;
-			COpenCLParameterByteArray * paramInput;
+
+			//COpenCLParameterByteArray * paramInput;
 
 			int widthOut;
 			int heightOut;
-			int width;
-			int height;
 			int srcwidth;
 			int srcheight;
-			COpenCLParameterClMem * paramOutput;
+			COpenCLParameterClMem * paramOutput = nullptr;
+			COpenCLParameterInt * paramOutWidth = nullptr;
+			COpenCLParameterInt * paramOutHeight = nullptr;
 
-			COpenCLParameterInt * paramSrcWidth;
-			COpenCLParameterInt * paramSrcHeight;
-			COpenCLParameterClMem * paramSrc;
+			COpenCLParameterInt * paramSrcWidth = nullptr;
+			COpenCLParameterInt * paramSrcHeight = nullptr;
+			COpenCLParameterClMem * paramSrc = nullptr;
 		};
 
 	}

@@ -44,7 +44,7 @@ void COpenCLParameterFloat::Add(cl_kernel kernelHandle, int numArg)
 
 void COpenCLParameterByteArray::SetValue(cl_context context, uint8_t * value, int size, cl_mem_flags flag)
 {
-    
+	Release();
 	cl_int err;
 	cl_buffer = clCreateBuffer(context, memory_flags | flag, size, value, &err);
 	Error::CheckError(err);;
@@ -146,6 +146,9 @@ void COpenCLParameterColorData::Add(cl_kernel kernelHandle, int numArg)
 
 void COpenCLParameterClMem::SetValue(cl_mem memValue)
 {
+	if (cl_buffer != nullptr)
+		Release();
+	cl_buffer = nullptr;
 	cl_buffer = memValue;
 }
 

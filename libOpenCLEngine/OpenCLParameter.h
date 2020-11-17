@@ -61,7 +61,7 @@ namespace Regards
 			}
 
 		protected:
-			cl_mem cl_buffer;
+			cl_mem cl_buffer = nullptr;
 			cl_command_queue queue;
 			int dataType;
 			bool noDelete;
@@ -213,7 +213,10 @@ namespace Regards
 				dataType = 8;
 				noDeleteClMem = noDeleteMem;
 			};
-			~COpenCLParameterClMem(){};
+			~COpenCLParameterClMem()
+			{
+
+			};
 
 			void SetValue(cl_mem memValue);
 			void Add(cl_kernel kernelHandle, int numArg);
