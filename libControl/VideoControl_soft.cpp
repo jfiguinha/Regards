@@ -396,7 +396,7 @@ float CVideoControlSoft::GetZoomRatio()
 
 void CVideoControlSoft::ShrinkVideo()
 {
-	CalculCenterPicture();
+	//CalculCenterPicture();
 
 	int zoomSelect = 0;
 
@@ -424,7 +424,7 @@ void CVideoControlSoft::ShrinkVideo()
 
 	shrinkVideo = true;
 
-	CalculPositionPicture(centerX, centerY);
+	//CalculPositionPicture(centerX, centerY);
 
 	UpdateScrollBar();
 
@@ -1160,6 +1160,9 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 	{
 		posHauteur = y * posHauteurMax;
 	}
+
+	TestMaxY();
+	TestMaxX();
 }
 
 
@@ -1341,7 +1344,7 @@ void CVideoControlSoft::OnRButtonDown(wxMouseEvent& event)
 	//wxWindow * window = this->FindWindowById(idWindowMain);
 	if (windowMain != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, TOOLBAR_UPDATE_ID);
+		wxCommandEvent evt(TOOLBAR_UPDATE_ID);
 		windowMain->GetEventHandler()->AddPendingEvent(evt);
 	}
 }
@@ -1459,6 +1462,9 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 
 void CVideoControlSoft::Resize()
 {
+	float screenWidth = float(GetWidth());
+	float screenHeight = float(GetHeight());
+
 	if (!stopVideo)
 	{
 		updateContext = true;
@@ -1471,38 +1477,37 @@ void CVideoControlSoft::Resize()
 			SetFrameData(copyFrameBuffer);
 		}
 
-		muVideoEffect.lock();
-		float ratio = 1.0f;
-		int zoomSelect = 0;
-		float newRatio = CalculPictureRatio(widthVideo, heightVideo);
-		//Calcul Zoom Index
-		if (newRatio != 0.0)
+		if (shrinkVideo)
 		{
-			for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
-			{
-				if (newRatio < videoEffectParameter.tabZoom[i])
-				{
-					ratio = videoEffectParameter.tabZoom[i];
-					zoomSelect = i;
-					break;
-				}
-			}
+			ShrinkVideo();
 		}
-
-		videoEffectParameter.zoomSelect = zoomSelect;
-
-		muVideoEffect.unlock();
-
-		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
-		if (window != nullptr)
+		else if(oldWidth != 0 && oldHeight != 0)
 		{
-			wxCommandEvent evt(wxEVENT_SHRINKPOS);
-			window->GetEventHandler()->AddPendingEvent(evt);
-		}
+			float bitmapRatioWidth = GetBitmapWidth();
+			float bitmapRatioHeight = GetBitmapHeight();
 
+			float posLargeurMax = bitmapRatioWidth - oldWidth;
+			float posHauteurMax = bitmapRatioHeight - oldHeight;
+
+			float posX = posLargeur / posLargeurMax;
+			float posY = posHauteur / posHauteurMax;
+
+			posLargeurMax = bitmapRatioWidth - screenWidth;
+			posHauteurMax = bitmapRatioHeight - screenHeight;
+
+			posLargeur = posX * posLargeurMax;
+			posHauteur = posY * posHauteurMax;
+
+			TestMaxY();
+			TestMaxX();
+
+			UpdateScrollBar();
+		}
+			
 		Refresh();
 	}
-
+	oldWidth = screenWidth;
+	oldHeight = screenHeight;
 	
 }
 

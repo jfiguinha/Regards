@@ -964,7 +964,7 @@ void CBitmapWnd::OnRButtonDown(wxMouseEvent& event)
 	wxWindow * window = this->FindWindowById(idWindowMain);
 	if (window != nullptr)
 	{
-		wxCommandEvent evt(wxEVT_COMMAND_TEXT_UPDATED, TOOLBAR_UPDATE_ID);
+		wxCommandEvent evt(TOOLBAR_UPDATE_ID);
 		window->GetEventHandler()->AddPendingEvent(evt);
 	}
 }

@@ -521,7 +521,10 @@ void CShowVideo::ShowToolbar()
 	{
 		if (!videoSlider->IsShown())
 			videoSlider->Show(true);
+		if (!slideToolbar->IsShown() && showToolbarSup)
+			slideToolbar->Show(true);
 	}
+	this->Resize();
 }
 
 void CShowVideo::HideToolbar()
@@ -532,8 +535,11 @@ void CShowVideo::HideToolbar()
 		{
 			if (videoSlider->IsShown())
 				videoSlider->Show(false);
+			if (slideToolbar->IsShown())
+				slideToolbar->Show(false);
 		}
 	}
+	this->Resize();
 }
 
 bool CShowVideo::IsToolbarMouseOver()
@@ -548,6 +554,8 @@ void CShowVideo::Resize()
 {
 	if (isDiaporama && videoSlider != nullptr && videoWindow != nullptr)
 	{
+		slideToolbar->SetSize(0, 0, 0, 0);
+		slideToolbar->Refresh();
 		videoSlider->SetSize(0, 0, 0, 0);
 		videoSlider->Refresh();
 		scrollbar->SetSize(0, 0, width, height);
@@ -561,7 +569,7 @@ void CShowVideo::Resize()
 		if (videoSlider->IsShown())
 			posHeight += videoSlider->GetHeight();
 
-		if(showToolbarSup)
+		if(showToolbarSup && slideToolbar->IsShown())
 			posHeightSup = posHeight;
 
 		int positionHeight = height - posHeight - posHeightSup;

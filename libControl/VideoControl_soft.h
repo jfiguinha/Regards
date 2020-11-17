@@ -221,5 +221,6 @@ protected:
 	bool displaywithInterpolation = false;
 	bool shrinkVideo = false;
 	//bool inverted = true;
-
+	int oldWidth = 0;
+	int oldHeight = 0;
 };
