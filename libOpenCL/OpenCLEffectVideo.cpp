@@ -411,9 +411,6 @@ CRegardsBitmap* COpenCLEffectVideo::GetRgbaBitmap(const bool &src)
 		Error::CheckError(err);
 	}
 
-	//paramOutput->Release();
-	//delete paramOutput;
-	//paramOutput = nullptr;
 	return bitmap;
 
 }

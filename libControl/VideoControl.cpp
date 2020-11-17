@@ -64,7 +64,6 @@ void CVideoControl::SavePicture()
 		muBitmap.lock();
 		CRegardsBitmap * bitmap = openclEffectNV12->GetRgbaBitmap(true);
 		bitmap->ConvertToBgr();
-		bitmap->VertFlipBuf();
 		ExportPicture(bitmap);
 		muBitmap.unlock();
 	}
@@ -557,7 +556,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 						Error::CheckError(err);
 						err = clFlush(openclContext->GetCommandQueue());
 						Error::CheckError(err);
-						inverted = false;
+						//inverted = false;
 					}
 					catch (...)
 					{

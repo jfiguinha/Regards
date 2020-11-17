@@ -1567,7 +1567,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		else
 			printf("CVideoControl glTexture Error \n");
 	}
-	inverted = true;
+	//inverted = true;
 	return glTexture;
 }
 
