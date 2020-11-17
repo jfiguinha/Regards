@@ -34,6 +34,9 @@ public:
 	int GetEffectLibrary();
 	void SetEffectLibrary(const int &numLib);
 
+	int GetSoundVolume();
+	void SetSoundVolume(const int &soundVolume);
+
 	int GetOpenCLPlatformIndex();
 	void SetOpenCLPlatformIndex(const int &numIndex);
 
@@ -151,5 +154,6 @@ protected:
 	int useDxva2 = 0;
 
 	int autoContrast = 0;
+	int soundVolume = 100;
 };
 

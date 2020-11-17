@@ -206,6 +206,16 @@ int CRegardsConfigParam::GetEffectLibrary()
 	return numLibEffect;
 }
 
+int CRegardsConfigParam::GetSoundVolume()
+{
+	return soundVolume;
+}
+
+void CRegardsConfigParam::SetSoundVolume(const int &soundVolume)
+{
+	this->soundVolume = soundVolume;
+}
+
 void CRegardsConfigParam::SetEffectLibrary(const int &numLib)
 {
 	numLibEffect = numLib;
@@ -266,6 +276,7 @@ void CRegardsConfigParam::SetVideoLibrary(xml_node<>* sectionPosition)
 {
 	sectionPosition->append_node(node("NumLibrary", to_string(numLibVideo)));
 	sectionPosition->append_node(node("UseDXVA2", to_string(useDxva2)));
+	sectionPosition->append_node(node("SoundVolume", to_string(soundVolume)));
 }
 
 void CRegardsConfigParam::SetImageLibrary(xml_node<>* sectionPosition)
@@ -309,6 +320,14 @@ void CRegardsConfigParam::GetVideoLibrary(xml_node<> * position_node)
 		value = child_node->value();
 		nodeName = child_node->name();
 		useDxva2 = atoi(child_node->value());
+	}
+
+	child_node = position_node->first_node("SoundVolume");
+	if (child_node != 0)
+	{
+		value = child_node->value();
+		nodeName = child_node->name();
+		soundVolume = atoi(child_node->value());
 	}
 }
 

@@ -152,6 +152,8 @@ protected:
 	void TestMaxY();
 	GLTexture * DisplayTexture(GLTexture * glTexture);
 	
+	void SetSoundVolume(const int &soundVolume);
+	int GetSoundVolume();
 
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
@@ -159,7 +161,6 @@ protected:
 	float centerX = 0;
 	float centerY = 0;
 	bool subtilteUpdate;
-	int volumeStart;
 	int old_width;
 	int old_height;
 	bool pause;

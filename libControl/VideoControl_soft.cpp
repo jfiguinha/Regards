@@ -60,7 +60,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	widthVideo = 0;
 	heightVideo = 0;
 	subtilteUpdate = false;
-	volumeStart = 64;
+
 	old_width = 0;
 	old_height = 0;
 	pause = false;
@@ -109,6 +109,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 	hCursorHand = CResourceCursor::GetClosedHand();
 	ffmfc = new CFFmfc(this, wxID_ANY);
+	
 }
 
 void CVideoControlSoft::SavePicture()
@@ -740,7 +741,7 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
         pause = false;
 		//playStartTimer->Start(100, true);
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
-
+		ffmfc->SetVolume(GetSoundVolume());
 		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
@@ -1256,6 +1257,7 @@ void CVideoControlSoft::SetPos(int64_t pos)
 void CVideoControlSoft::SetVolume(const int &pos)
 {
 	ffmfc->SetVolume(pos);
+	SetSoundVolume(pos);
 }
 
 void CVideoControlSoft::VolumeUp()
@@ -1666,6 +1668,23 @@ bool CVideoControlSoft::IsCPUContext()
 	//printf("IsCPUContext CPU : %d \n", isCPU);
 
 	return (isCPU == 1 ? true : false);
+}
+
+void CVideoControlSoft::SetSoundVolume(const int &soundVolume)
+{
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		config->SetSoundVolume(soundVolume);
+}
+
+int CVideoControlSoft::GetSoundVolume()
+{
+	int soundVolume = 0;
+	CRegardsConfigParam* config = CParamInit::getInstance();
+	if (config != nullptr)
+		soundVolume = config->GetSoundVolume();
+
+	return soundVolume;
 }
 
 int CVideoControlSoft::IsSupportOpenCL()
