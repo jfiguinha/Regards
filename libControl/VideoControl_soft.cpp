@@ -1042,6 +1042,19 @@ void CVideoControlSoft::OnStop(wxString photoName)
 	}
 }
 
+float CVideoControlSoft::GetLargeurMax()
+{
+	float bitmapRatioWidth = GetBitmapWidth();
+	float screenWidth = float(GetWidth());
+	return bitmapRatioWidth - screenWidth;
+}
+
+float CVideoControlSoft::GetHauteurMax()
+{
+	float bitmapRatioHeight = GetBitmapHeight();
+	float screenHeight = float(GetHeight());
+	return bitmapRatioHeight - screenHeight;
+}
 
 void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 {
@@ -1518,7 +1531,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 		wxRect posrect;
 		posrect.x = posLargeur;
-		posrect.y = posHauteur;
+		posrect.y = GetHauteurMax() - posHauteur - 1;
 		posrect.width = widthOut;
 		posrect.height = heightOut;
 

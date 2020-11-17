@@ -102,6 +102,8 @@ public:
 
 protected:
 
+	float GetHauteurMax();
+	float GetLargeurMax();
 	void ExportPicture(CRegardsBitmap * bitmap);
 
 	void CalculTextureSize(int &widthOut, int &heightOut);
