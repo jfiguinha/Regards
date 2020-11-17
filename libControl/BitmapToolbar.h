@@ -22,10 +22,6 @@ namespace Regards
 			void SetTabValue(vector<int> value);
 			void ZoomOn();
 			void ZoomOut();
-			//void ShowCropButton();
-			//void HideCropButton();
-			void ShowSaveButton();
-			void HideSaveButton();
 			void ShowExportButton();
 			void HideExportButton();
 			void SlidePosChange(const int &position, const wxString &key);

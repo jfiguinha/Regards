@@ -200,29 +200,6 @@ void CBitmapToolbar::HideExportButton()
 	}  
 }
 
-void CBitmapToolbar::ShowSaveButton()
-{
-	if (save != nullptr)
-	{
-		if (!save->IsVisible())
-		{
-			save->SetVisible(true);
-			Refresh();
-		}
-	}
-}
-void CBitmapToolbar::HideSaveButton()
-{
-	if (save != nullptr)
-	{
-		if (save->IsVisible())
-		{
-			save->SetVisible(false);
-			Refresh();
-		}
-	}
-}
-
 void CBitmapToolbar::SlidePosChange(const int &position, const wxString &key)
 {
 	CBitmapWndViewer* bitmapWindow = (CBitmapWndViewer*)this->FindWindowById(parentId);

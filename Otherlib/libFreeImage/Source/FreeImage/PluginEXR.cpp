@@ -635,6 +635,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 				// insert luminance channel
 				header.channels().insert ("Y", Imf::Channel(pixelType));
 				break;
+				
 			case FIT_RGBF:
 				components = 3;
 				for(int c = 0; c < components; c++) {
@@ -642,6 +643,7 @@ Save(FreeImageIO *io, FIBITMAP *dib, fi_handle handle, int page, int flags, void
 					header.channels().insert (channel_name[c], Imf::Channel(pixelType));
 				}
 				break;
+
 			case FIT_RGBAF:
 				components = 4;
 				for(int c = 0; c < components; c++) {

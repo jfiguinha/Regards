@@ -486,7 +486,12 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
             if (pictureToolbar != nullptr)
             {
                 pictureToolbar->ShowExportButton();
-                pictureToolbar->HideSaveButton();
+				wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+				if (window != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
             }
 			
         }
@@ -494,7 +499,12 @@ bool CShowBitmap::SetBitmap(CImageLoadingFormat * bitmap, const bool & isThumbna
         {
             if (pictureToolbar != nullptr)
             {
-                pictureToolbar->ShowSaveButton();
+				wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
+				if (window != nullptr)
+				{
+					wxCommandEvent evt(wxEVENT_SHOWSAVEBUTTON);
+					window->GetEventHandler()->AddPendingEvent(evt);
+				}
                 pictureToolbar->HideExportButton();
             } 
         }
