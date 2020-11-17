@@ -151,9 +151,11 @@ protected:
 	void TestMaxX();
 	void TestMaxY();
 	GLTexture * DisplayTexture(GLTexture * glTexture);
-	
+
+	float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight);
 	void SetSoundVolume(const int &soundVolume);
 	int GetSoundVolume();
+	float GetZoomRatio();
 
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
@@ -217,6 +219,7 @@ protected:
 	int posLargeur = 0;
 	int posHauteur = 0;
 	bool displaywithInterpolation = false;
+	bool shrinkVideo = false;
 	//bool inverted = true;
 
 };

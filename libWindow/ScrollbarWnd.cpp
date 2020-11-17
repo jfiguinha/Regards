@@ -310,6 +310,7 @@ void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
 			controlWidth = controlSize->controlWidth;
 			controlHeight = controlSize->controlHeight;
 			_useScaleFactor = controlSize->useScaleFactor;
+			this->Resize();
 			
 		}
 		delete controlSize;

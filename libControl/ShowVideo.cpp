@@ -605,7 +605,7 @@ void CShowVideo::Resize()
 		int positionHeight = height - posHeight - posHeightSup;
 
 		scrollbar->SetSize(0, 0, width, positionHeight);
-		scrollbar->Refresh();
+		scrollbar->Resize();
 
 		if (videoSlider->IsShown())
 		{
