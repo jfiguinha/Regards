@@ -384,7 +384,6 @@ FI_ENUM(FREE_IMAGE_FORMAT) {
 	FIF_UNKNOWN = -1,
 	FIF_BMP		= 0,
 	FIF_ICO		= 1,
-	//FIF_JPEG	= 2,
 	FIF_JNG		= 2,
 	FIF_KOALA	= 3,
 	FIF_LBM		= 4,
@@ -396,7 +395,6 @@ FI_ENUM(FREE_IMAGE_FORMAT) {
 	FIF_PCX		= 9,
 	FIF_PGM		= 10,
 	FIF_PGMRAW	= 11,
-	//FIF_PNG		= 13,
 	FIF_PPM		= 12,
 	FIF_PPMRAW	= 13,
 	FIF_RAS		= 14,
@@ -416,12 +414,14 @@ FI_ENUM(FREE_IMAGE_FORMAT) {
 	FIF_PFM		= 28,
 	FIF_PICT	= 29,
 	FIF_RAW		= 30,
-	//FIF_WEBP	= 31,
 	FIF_JPEG	= 31,
 	FIF_TIFF	= 32,
 	FIF_EXR		= 33,
 	FIF_PNG		= 34,
 	FIF_JXR		= 35
+	//FIF_PNG		= 13,
+	//FIF_JPEG	= 2,
+	//FIF_WEBP	= 31,
 };
 
 /** Image type used in FreeImage.
@@ -842,8 +842,6 @@ DLL_API BOOL DLL_CALLCONV FreeImage_SaveMultiBitmapToMemory(FREE_IMAGE_FORMAT fi
 
 // Plugin Interface ---------------------------------------------------------
 
-DLL_API FREE_IMAGE_FORMAT DLL_CALLCONV FreeImage_RegisterLocalPlugin(FI_InitProc proc_address, const char *format FI_DEFAULT(0), const char *description FI_DEFAULT(0), const char *extension FI_DEFAULT(0), const char *regexpr FI_DEFAULT(0));
-DLL_API FREE_IMAGE_FORMAT DLL_CALLCONV FreeImage_RegisterExternalPlugin(const char *path, const char *format FI_DEFAULT(0), const char *description FI_DEFAULT(0), const char *extension FI_DEFAULT(0), const char *regexpr FI_DEFAULT(0));
 DLL_API int DLL_CALLCONV FreeImage_GetFIFCount(void);
 DLL_API int DLL_CALLCONV FreeImage_SetPluginEnabled(FREE_IMAGE_FORMAT fif, BOOL enable);
 DLL_API int DLL_CALLCONV FreeImage_IsPluginEnabled(FREE_IMAGE_FORMAT fif);
