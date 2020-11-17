@@ -207,7 +207,7 @@ protected:
 	bool oldBicubic = 0;
 	AVFrame * copyFrameBuffer = nullptr;
 	int isCPU = -1;
-	bool isffmpegDecode = true;
+	bool isffmpegDecode = false;
 	bool deleteTexture = false;
 	int nbFrame;
 	wxString message;

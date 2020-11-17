@@ -275,6 +275,18 @@
     <ClCompile Include="..\FreeImage\ConversionRGBA16.cpp">
       <Filter>Source Files\Conversion</Filter>
     </ClCompile>
+    <ClCompile Include="..\FreeImage\PluginEXR.cpp">
+      <Filter>Source Files\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FreeImage\PluginTIFF.cpp">
+      <Filter>Source Files\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FreeImage\PluginJPEG.cpp">
+      <Filter>Source Files\Plugins</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FreeImage\PluginPNG.cpp">
+      <Filter>Source Files\Plugins</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CacheFile.h">

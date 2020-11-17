@@ -149,8 +149,8 @@ wxString CSavePicture::SelectExternalFormat(wxWindow * window, const wxString &f
 		std::vector<wxString> v = { ".pdf",".pnm",".bmp",".bpg",".pcx",".jpg",".tif",".gif",".png",".tga",".jp2",".jpc",".ppm",".mng",".webp",".iff",".xpm",".jxr",".exr",".j2k",".pfm",".avif",".heic" };
 		szFilter = "Files PDF(*.PDF) | *.pdf|Files PNM (*.PNM)|*.pnm|Files BMP(*.BMP)|*.bmp|Files BPG(*.BPG)|*.bpg|Files PCX(*.PCX)|*.pcx|Files JPEG(*.JPG)|*.jpg|Files TIFF(*.TIF)|*.tif|Files GIF(*.GIF)|*.gif| Files PNG(*.PNG)|*.png|Files TGA(*.TGA)|*.tga|Files JPEG2000(*.JP2)|*.jp2|Files JPC(*.JPC)|*.jpc|Files PPM(*.PPM)|*.ppm|Files MNG(*.MNG)|*.mng|Files WEBP (*.WEBP)|*.webp|Files IFF (*.IFF)|*.iff|Files XPM (*.XPM)|*.xpm|Files JXR (*.JXR)|*.jxr|Files EXR (*.EXR)|*.exr|Files J2K (*.J2K)|*.j2k|Files PFM (*.PFM)|*.pfm|Files AVIF (*.avif)|*.avif|Files HEIC (*.heic)|*.heic";
 
-
-		wxFileDialog saveFileDialog(nullptr, filename, "", "",
+		wxFileName bmpFilename(filename);
+		wxFileDialog saveFileDialog(nullptr, filename, "", bmpFilename.GetName(),
 			szFilter, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 		if (saveFileDialog.ShowModal() == wxID_CANCEL)

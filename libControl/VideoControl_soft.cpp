@@ -131,6 +131,7 @@ void CVideoControlSoft::SavePicture()
 void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
 {
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
+	bitmap->SetFilename(this->filename);
 	if (isffmpegDecode)
 		bitmap->VertFlipBuf();
 	imageLoading->SetPicture(bitmap);

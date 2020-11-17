@@ -34,7 +34,7 @@ JpegOption::JpegOption(wxWindow* parent)
 	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&JpegOption::OnbtnCancelClick);
 	Connect(XRCID("ID_SLCOMPRESSION"),wxEVT_SCROLL_TOP|wxEVT_SCROLL_BOTTOM|wxEVT_SCROLL_LINEUP|wxEVT_SCROLL_LINEDOWN|wxEVT_SCROLL_PAGEUP|wxEVT_SCROLL_PAGEDOWN|wxEVT_SCROLL_THUMBTRACK|wxEVT_SCROLL_THUMBRELEASE|wxEVT_SCROLL_CHANGED,(wxObjectEventFunction)&JpegOption::OnslCompressionCmdScroll);
 	//*)
-    
+	slCompression->SetValue(70);
     SetTitle("Jpeg Saving Option");
 }
 

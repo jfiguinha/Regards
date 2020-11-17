@@ -782,6 +782,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 			_option = EXR_LC;
 			break;
 		}
+
 		int pitch = regards->GetBitmapWidth() * 4;
 		FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE);
 		FIBITMAP * floatImage = FreeImage_ConvertToFloat(Image);
@@ -791,12 +792,44 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
         }
 		FreeImage_Unload(floatImage);
 		FreeImage_Unload(Image);
-		delete regards;
+	
+		//delete regards;
 	}
 	break;
 
 	case WEBP:
 	{
+		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
+
+		int _option = quality;
+		switch (option)
+		{
+		case 1:
+			_option = WEBP_DEFAULT;
+			break;
+		case 2:
+			_option = WEBP_LOSSLESS;
+			break;
+		default:
+			_option = 100 - quality;
+			break;
+		}
+
+		//float quality_factor = 100 - quality;
+		uint8_t * output = nullptr;
+
+		regards->VertFlipBuf();
+
+		size_t size = WebPEncodeBGRA(regards->GetPtBitmap(),
+			regards->GetBitmapWidth(), regards->GetBitmapHeight(), regards->GetWidthSize(),
+			_option, &output);
+		writefile(fileName, output, size);
+
+		delete regards;
+		free(output);
+		break;
+		/*
+		
 		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
 		int _option = quality;
 		switch (option)
@@ -818,7 +851,8 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
             wxMessageBox("Unable to save WEBP file", "Error", wxICON_ERROR);
         }
         FreeImage_Unload(Image);
-		delete regards;
+		
+		
 		
 	}
 		break;

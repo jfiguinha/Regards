@@ -134,6 +134,11 @@ void DLL_CALLCONV InitJP2(Plugin *plugin, int format_id);
 void DLL_CALLCONV InitPFM(Plugin *plugin, int format_id);
 void DLL_CALLCONV InitPICT(Plugin *plugin, int format_id);
 void DLL_CALLCONV InitJNG(Plugin *plugin, int format_id);
+void DLL_CALLCONV InitEXR(Plugin *plugin, int format_id);
+void DLL_CALLCONV InitPNG(Plugin *plugin, int format_id);
+//void DLL_CALLCONV InitWEBP(Plugin *plugin, int format_id);
+void DLL_CALLCONV InitJPEG(Plugin *plugin, int format_id);
+void DLL_CALLCONV InitTIFF(Plugin *plugin, int format_id);
 void DLL_CALLCONV InitJXR(Plugin *plugin, int format_id);
 
 #endif //!PLUGIN_H

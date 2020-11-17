@@ -111,7 +111,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\libExtern\libpng;$(SolutionDir)\libExtern\wxWidgets-master\src\jpeg;$(SolutionDir)libextern\vcpkg\installed\x64-windows\include;$(SolutionDir)\libExtern\zlib;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff\libtiff;$(SolutionDir)\libExtern\wxWidgets-master\src\tiff;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_windows10|x64'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -201,8 +201,8 @@ copy ..\FreeImage.h ..\..\Dist\x32
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)libExtern\vcpkg\installed\x64-windows\include;..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..;..\DeprecationManager;..\LibJXR\jxrgluelib;..\LibJXR\image\sys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;OPJ_STATIC;FREEIMAGE_LIB;_CRT_SECURE_NO_DEPRECATE;LIBRAW_NODLL;BITS_IN_JSAMPLE=8;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -360,6 +360,10 @@ copy ..\FreeImage.h ..\..\Dist\x64
     <ClCompile Include="..\FreeImage\MemoryIO.cpp" />
     <ClCompile Include="..\FreeImage\PixelAccess.cpp" />
     <ClCompile Include="..\FreeImage\NNQuantizer.cpp" />
+    <ClCompile Include="..\FreeImage\PluginEXR.cpp" />
+    <ClCompile Include="..\FreeImage\PluginJPEG.cpp" />
+    <ClCompile Include="..\FreeImage\PluginPNG.cpp" />
+    <ClCompile Include="..\FreeImage\PluginTIFF.cpp" />
     <ClCompile Include="..\FreeImage\WuQuantizer.cpp" />
     <ClCompile Include="..\FreeImage\Conversion.cpp" />
     <ClCompile Include="..\FreeImage\Conversion16_555.cpp" />

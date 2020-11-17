@@ -33,6 +33,7 @@ CompressionOption::CompressionOption(wxWindow* parent)
 	Connect(XRCID("ID_BTOK"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionOption::OnButton1Click);
 	Connect(XRCID("ID_BTCANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CompressionOption::OnButton2Click);
 	//*)
+	slCompression->SetValue(70);
 }
 
 CompressionOption::~CompressionOption()

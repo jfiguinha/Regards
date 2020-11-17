@@ -238,7 +238,7 @@ FreeImage_Initialise(BOOL load_local_plugins_only) {
 			*/
 			s_plugins->AddNode(InitBMP);
 			s_plugins->AddNode(InitICO);
-			//s_plugins->AddNode(InitJPEG);
+			s_plugins->AddNode(InitJPEG);
 			s_plugins->AddNode(InitJNG);
 			s_plugins->AddNode(InitKOALA);
 			s_plugins->AddNode(InitIFF);
@@ -249,12 +249,12 @@ FreeImage_Initialise(BOOL load_local_plugins_only) {
 			s_plugins->AddNode(InitPCX);
 			s_plugins->AddNode(InitPNM, NULL, "PGM", "Portable Greymap (ASCII)", "pgm", "^P2");
 			s_plugins->AddNode(InitPNM, NULL, "PGMRAW", "Portable Greymap (RAW)", "pgm", "^P5");
-			//s_plugins->AddNode(InitPNG);
+			s_plugins->AddNode(InitPNG);
 			s_plugins->AddNode(InitPNM, NULL, "PPM", "Portable Pixelmap (ASCII)", "ppm", "^P3");
 			s_plugins->AddNode(InitPNM, NULL, "PPMRAW", "Portable Pixelmap (RAW)", "ppm", "^P6");
 			s_plugins->AddNode(InitRAS);
 			s_plugins->AddNode(InitTARGA);
-			//s_plugins->AddNode(InitTIFF);
+			s_plugins->AddNode(InitTIFF);
 			s_plugins->AddNode(InitWBMP);
 			s_plugins->AddNode(InitPSD);
 			s_plugins->AddNode(InitCUT);
@@ -265,7 +265,7 @@ FreeImage_Initialise(BOOL load_local_plugins_only) {
 	        s_plugins->AddNode(InitHDR);
 			s_plugins->AddNode(InitG3);
 			s_plugins->AddNode(InitSGI);
-			//s_plugins->AddNode(InitEXR);
+			s_plugins->AddNode(InitEXR);
 			s_plugins->AddNode(InitJ2K);
 			s_plugins->AddNode(InitJP2);
 			s_plugins->AddNode(InitPFM);
