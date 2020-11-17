@@ -38,6 +38,9 @@ namespace Regards
 			void ShowHorizontalScroll();
 			
 
+			int GetShowingScrollV();
+			int GetShowingScrollH();
+
 			int GetBarWidth();
 			int GetBarHeight();
 

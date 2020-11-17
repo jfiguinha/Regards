@@ -82,6 +82,8 @@ namespace Regards
 			void OnShrink(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
 			void OnValueChange(wxCommandEvent& event);
+			void OnShowScrollbar(wxCommandEvent& event);
+			void OnHideScrollbar(wxCommandEvent& event);
 			//bool MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result);
 
 			void ShowSliderToolbar(const bool &show);

@@ -742,12 +742,21 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 		//playStartTimer->Start(100, true);
 		ffmfc->SetFile(this, CConvertUtility::ConvertToStdString(filename));
 		ffmfc->SetVolume(GetSoundVolume());
+
 		wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
 		if (window != nullptr)
 		{
 			wxCommandEvent evt(wxEVENT_HIDESAVEBUTTON);
 			window->GetEventHandler()->AddPendingEvent(evt);
 		}
+
+
+		
+		muVideoEffect.lock();
+		videoEffectParameter.ratioSelect = 0;
+		muVideoEffect.unlock();
+
+
 	}
 	else if(movie != filename)
 	{
@@ -766,6 +775,14 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
     videoEnd = false;
     videoStart =true;
     fpsTimer->Start(1000);
+
+	wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SHRINK);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 }
 
 int CVideoControlSoft::getWidth()
@@ -1075,6 +1092,25 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 	ratio = (float)videoEffectParameter.tabZoom[videoEffectParameter.zoomSelect];
 	muVideoEffect.unlock();
 
+	if (ratio != 1.0f)
+	{
+		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_SHOWSCROLLBAR);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+	else
+	{
+		wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
+		if (window != nullptr)
+		{
+			wxCommandEvent evt(wxEVENT_HIDESCROLLBAR);
+			window->GetEventHandler()->AddPendingEvent(evt);
+		}
+	}
+
 	float middleScreenWidth = screenWidth / 2.0f;
 	float middleScreenHeight = screenHeight / 2.0f;
 
@@ -1368,8 +1404,8 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 				CalculTextureSize(widthOut, heightOut);
 
 
-				posrect.x = posLargeur;
-				posrect.y = posHauteur;
+				posrect.x = std::max((double)posLargeur, (double)0);
+				posrect.y = std::max((double)posHauteur, (double)0);
 				posrect.width = widthOut;
 				posrect.height = heightOut;
 
@@ -1427,9 +1463,11 @@ void CVideoControlSoft::Resize()
 		{
 			SetFrameData(copyFrameBuffer);
 		}
-
+		//UpdateScrollBar();
 		Refresh();
 	}
+
+	
 }
 
 void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int scr_ytop, int scr_width, int scr_height)
@@ -1532,8 +1570,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		CalculTextureSize(widthOut, heightOut);
 
 		wxRect posrect;
-		posrect.x = posLargeur;
-		posrect.y = GetHauteurMax() - posHauteur - 1;
+		posrect.x = std::max((double)posLargeur, (double)0);
+		posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1,(double)0);
 		posrect.width = widthOut;
 		posrect.height = heightOut;
 

@@ -497,8 +497,8 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 					CalculTextureSize(widthOut, heightOut);
 
 					wxRect posrect;
-					posrect.x = posLargeur;
-					posrect.y = GetHauteurMax() - posHauteur - 1;
+					posrect.x = std::max((double)posLargeur, (double)0);
+					posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1, (double)0);
 					posrect.width = widthOut;
 					posrect.height = heightOut;
 

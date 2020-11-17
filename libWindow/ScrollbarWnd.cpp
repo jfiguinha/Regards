@@ -310,7 +310,7 @@ void CScrollbarWnd::OnControlSize(wxCommandEvent& event)
 			controlWidth = controlSize->controlWidth;
 			controlHeight = controlSize->controlHeight;
 			_useScaleFactor = controlSize->useScaleFactor;
-			Resize();
+			
 		}
 		delete controlSize;
 	}
@@ -351,6 +351,16 @@ int CScrollbarWnd::GetPosHauteur()
 	posHauteur = min(posHauteur, maxPosHeight);
 
 	return posHauteur;
+}
+
+
+int CScrollbarWnd::GetShowingScrollV()
+{
+	return showV;
+}
+int CScrollbarWnd::GetShowingScrollH()
+{
+	return showH;
 }
 
 void CScrollbarWnd::ShowVerticalScroll()
