@@ -57,14 +57,15 @@ CVideoControl::CVideoControl(wxWindow* parent, wxWindowID id, CWindowMain * wind
 
 }
 
-void CVideoControl::SavePicture()
+CRegardsBitmap * CVideoControl::SavePicture()
 {
+	CRegardsBitmap * bitmap = nullptr;
 	if (dxva2ToOpenGLWorking)
 	{
 		muBitmap.lock();
-		CRegardsBitmap * bitmap = openclEffectNV12->GetRgbaBitmap(true);
+		bitmap = openclEffectNV12->GetRgbaBitmap(true);
 		bitmap->ConvertToBgr();
-		ExportPicture(bitmap);
+		//ExportPicture(bitmap);
 		muBitmap.unlock();
 	}
 	else
@@ -72,17 +73,17 @@ void CVideoControl::SavePicture()
 		if (isffmpegDecode)
 		{
 			muBitmap.lock();
-			ExportPicture(ffmpegToBitmap->ConvertFrameToRgba32());
+			bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 			muBitmap.unlock();
 		}
 		else
 		{
 			muBitmap.lock();
-			ExportPicture(openclEffectYUV->GetRgbaBitmap(true));
+			bitmap = openclEffectYUV->GetRgbaBitmap(true);
 			muBitmap.unlock();
 		}
 	}
-
+	return bitmap;
 }
 
 
