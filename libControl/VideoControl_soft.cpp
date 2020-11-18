@@ -17,6 +17,7 @@
 #include "ScrollbarWnd.h"
 #include "ClosedHandCursor.h"
 #include <ConvertUtility.h>
+#include <libPicture.h>
 #include <InterpolationBicubic.h>
 //#include "LoadingResource.h"
 wxDEFINE_EVENT(TIMER_FPS,  wxTimerEvent);
@@ -949,6 +950,16 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
         glTexture = RenderToGLTexture();
     }
     
+//#ifdef __APPLE__
+/*
+    if(videoRenderStart && glTexture != nullptr)
+    {  
+        renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
+        renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, false);
+    }
+*/
+//#else
+    
     if(videoRenderStart && glTexture != nullptr)
     {       
         renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
@@ -988,8 +999,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	}
 	else
 	{
+        printf("renderBitmapOpenGL->CreateScreenRender \n");
 		renderBitmapOpenGL->CreateScreenRender(width * scale_factor, height * scale_factor, CRgbaquad(0,0,0,0));
 	}
+//#endif
 
 	this->SwapBuffers();
 
@@ -1405,7 +1418,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 	{
 		if (glTexture != nullptr)
 		{
-
+            printf("displaywithInterpolation");
 			float zoomRatio = GetZoomRatio();
 			muVideoEffect.lock();
 			int bicubic = videoEffectParameter.BicubicEnable;
@@ -1458,6 +1471,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 	{
 		if (glTexture != nullptr)
 		{
+            printf("RenderWithEffect");
 			muVideoEffect.lock();
             renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
 			muVideoEffect.unlock();
@@ -1688,6 +1702,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
+    printf("RenderFFmpegToTexture \n");
+    
 	GLTexture * glTexture = new GLTexture(widthVideo, heightVideo);
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
@@ -1889,7 +1905,22 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	}
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
-
+    /*
+    if(glTexture != nullptr)
+    {
+        CRegardsBitmap * bitmap = new CRegardsBitmap(glTexture->GetWidth(), glTexture->GetHeight());
+        printf("glTexture 0");
+        glTexture->GetData(bitmap->GetPtBitmap());
+         printf("glTexture 1");
+        CImageLoadingFormat imageLoad;
+        imageLoad.SetPicture(bitmap);
+        Regards::Picture::CLibPicture libPicture;
+         printf("glTexture 2");
+        libPicture.SavePicture("/Users/toto/Pictures/test.bmp", &imageLoad,0,0);
+         printf("glTexture 3");
+        //wxMessageBox("test","saving texture");
+    }
+    */
 	return glTexture;
 }
 #else
