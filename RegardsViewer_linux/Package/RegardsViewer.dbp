@@ -1,3 +1,5 @@
+[DEBREATE-0.7.13]
+<<CTRL>>
 Package: RegardsViewer
 Version: 2.62.8
 Maintainer: Figuinha Jacques <appt.jf@outlook.fr>
@@ -15,3 +17,76 @@ Description: RegardsViewer is a picture viewer and video player
  Support GPS informations from Photo and Apple Iphone Video.
  Hi Quality display interpolation.
  OpenGL Picture display and OpenCL post Effect.
+
+<</CTRL>>
+<<FILES>>
+1
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/RegardsViewer -> RegardsViewer -> /opt
+/home/figuinha/developpement/git/Regards/RegardsViewer_linux/Package/debian/RegardsViewer/usr/bin/RegardsViewer* -> RegardsViewer -> /usr/bin
+<</FILES>>
+<<SCRIPTS>>
+<<PREINST>>
+0
+<</PREINST>>
+<<POSTINST>>
+0
+<</POSTINST>>
+<<PRERM>>
+0
+<</PRERM>>
+<<POSTRM>>
+0
+<</POSTRM>>
+<</SCRIPTS>>
+<<CHANGELOG>>
+<<DEST>>DEFAULT<</DEST>>
+
+<</CHANGELOG>>
+<<COPYRIGHT>>
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Figuinha 
+Upstream-Contact: Figuinha Jacques <appt.jf@outlook.fr>
+Source: http://jfiguinha.pagesperso-orange.fr/
+
+Copyright: 2015-2020 Figuinha Jacques <appt.jf@outlook.fr>
+License: GPL-2+
+
+License: GPL-2+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version. 
+.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+.
+You should have received a copy of the GNU General Public License along
+with this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+.
+On Debian systems, the full text of the GNU General Public
+License version 2 can be found in the file
+'/usr/share/common-licenses/GPL-2'.
+<</COPYRIGHT>>
+<<MENU>>
+1
+Name=RegardsViewer
+Version=1.0
+Exec=RegardsViewer
+Comment=Picture and Video Viewer
+Icon=/opt/RegardsViewer/Resources/viewer.png
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=2DGraphics;Graphics;
+MimeType=image/bmp;image/gif;image/jpeg;image/jpg;image/pjpeg;image/png;image/svg;image/tiff;image/x-bmp;image/x-gray;image/x-icb;image/x-ico;image/x-png;image/x-portable-anymap;image/x-portable-bitmap;image/x-portable-graymap;image/x-portable-pixmap;image/x-xbitmap;image/x-xpixmap;image/x-pcx;image/x-targa;image/x-tga;image/heic;video/mp4;application/mpeg4-iod;application/mpeg4-muxcodetable;application/mxf;application/ogg;application/ram;application/sdp;application/streamingmedia;application/vnd.apple.mpegurl;application/vnd.ms-asf;application/vnd.rn-realmedia;application/vnd.rn-realmedia-vbr;application/x-extension-m4a;application/x-extension-mp4;application/x-flac;application/x-flash-video;application/x-matroska;application/x-ogg;application/x-streamingmedia;video/3gp;video/3gpp;video/3gpp2;video/divx;video/dv;video/fli;video/flv;video/mp2t;video/mp4;video/mp4v-es;video/mpeg;video/mpeg-system;video/msvideo;video/ogg;video/quicktime;video/vnd.mpegurl;video/vnd.rn-realvideo;video/webm;video/x-avi;video/x-flc;video/x-fli;video/x-flv;video/x-m4v;video/x-matroska;video/x-mpeg;video/x-mpeg-system;video/x-mpeg2;video/x-ms-asf;video/x-ms-wm;video/x-ms-wmv;video/x-ms-wmx;video/x-msvideo;video/x-nsv;video/x-ogm+ogg;video/x-theora;video/x-theora+ogg;image/pdf;image/pnm;image/bmp;image/bpg;image/pcx;image/jpg;image/tif;image/gif;image/png;image/tga;image/jp2;image/jpc;image/ppm;image/mng;image/webp;image/iff;image/xpm;image/jxr;image/exr;image/j2k;image/pfm;image/heic;image/avif
+<</MENU>>
+<<BUILD>>
+1
+1
+1
+strip
+<</BUILD>>
