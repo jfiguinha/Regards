@@ -274,6 +274,7 @@
         <Library Value="png"/>
         <Library Value="raw_r"/>
         <Library Value="openjp2"/>
+        <Library Value="Iex"/>
       </Linker>
       <ResourceCompiler Options=""/>
     </GlobalSettings>
