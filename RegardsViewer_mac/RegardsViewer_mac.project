@@ -676,7 +676,7 @@
         <Command Enabled="yes">cp ../libextern/MediaInfo_DLL_GNU_FromSource/MediaInfoLib/Project/GNU/Library/.libs/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libmediainfo.0.dylib @executable_path/../Frameworks/libmediainfo.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/glew/lib/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/lib/libGLEW.2.2.dylib @executable_path/../Frameworks/libGLEW.2.2.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp ../libextern/exiv2-0.27.3/build/lib/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change @rpath/libexiv2.27.dylib @executable_path/../Frameworks/libexiv2.27.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/cairo/lib/libcairo.2.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
