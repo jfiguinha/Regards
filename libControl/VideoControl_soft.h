@@ -42,8 +42,8 @@ public:
 	void SetZoomIndex(const int &pos);
 	void ShrinkVideo();
 	vector<int> GetZoomValue();
-	virtual void SavePicture();
-
+	virtual CRegardsBitmap * SavePicture();
+    bool IsFFmpegDecode();
 	void VideoStart(wxCommandEvent& event);
 	void SetVideoPreviewEffect(CEffectParameter * effectParameter);
 	void UpdateFiltre(CEffectParameter * effectParameter);

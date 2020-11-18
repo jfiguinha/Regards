@@ -78,6 +78,7 @@ namespace Regards
 			void OnPositionVideo(const int64_t &position);
 
 		private:
+            void OnSave(wxCommandEvent& event);
 			void OnClose(wxCommandEvent& event);
 			void OnShrink(wxCommandEvent& event);
 			void OnSize(wxSizeEvent& event);
@@ -104,6 +105,7 @@ namespace Regards
 			int64_t videoTotalTime = 0;
 			vector<CStreamInfo> listStream;
 			std::vector<int> value;
+            wxString filename;
 		};
 	}
 }

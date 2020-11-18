@@ -7,6 +7,8 @@
 #include <window_id.h>
 #include "SlideToolbar.h"
 #include <ViewerParam.h>
+#include <SavePicture.h>
+#include <ImageLoadingFormat.h>
 using namespace Regards::Video;
 using namespace Regards::Window;
 using namespace Regards::OpenCL;
@@ -93,6 +95,8 @@ CShowVideo::CShowVideo(wxWindow* parent, wxWindowID id, CWindowMain * windowMain
 	slideToolbar->SetTabValue(value);
 	play = false;
 
+
+    Connect(wxEVENT_SAVE, wxCommandEventHandler(CShowVideo::OnSave));
 	Connect(wxEVT_SIZE, wxSizeEventHandler(CShowVideo::OnSize));
 	Connect(wxEVENT_SHRINKPOS, wxCommandEventHandler(CShowVideo::OnValueShrinkChange));
 	Connect(wxEVENT_ZOOMPOS, wxCommandEventHandler(CShowVideo::OnValueChange));
@@ -113,10 +117,28 @@ void CShowVideo::OnClose(wxCommandEvent& event)
 	this->Resize();
 }
 
+void CShowVideo::OnSave(wxCommandEvent& event)
+{
+    if (videoWindow != nullptr)
+    {
+        CRegardsBitmap * bitmap = videoWindow->SavePicture();
+        CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
+        bitmap->SetFilename(this->filename);
+        if (videoWindow->IsFFmpegDecode())
+            bitmap->VertFlipBuf();
+        imageLoading->SetPicture(bitmap);
+        CSavePicture::SavePicture(nullptr, imageLoading, filename);
+        if (imageLoading != nullptr)
+            delete imageLoading;
+    }
+
+	
+}
+
 void CShowVideo::SavePicture()
 {
-	if (videoWindow != nullptr)
-		videoWindow->SavePicture();
+    wxCommandEvent evt(wxEVENT_SAVE);
+    this->GetEventHandler()->AddPendingEvent(evt);
 }
 
 void CShowVideo::OnShrink(wxCommandEvent& event)
@@ -422,6 +444,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
 	videoTotalTime = 0;
 	videoPosOld = 0;
 	bool value = false;
+    this->filename = filename;
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
 		value = videoWindow->PlayMovie(filename, play);

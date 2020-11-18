@@ -112,20 +112,27 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
 	
 }
 
-void CVideoControlSoft::SavePicture()
+CRegardsBitmap * CVideoControlSoft::SavePicture()
 {
+    CRegardsBitmap * bitmap = nullptr;
 	if (isffmpegDecode)
 	{
 		muBitmap.lock();
-		ExportPicture(ffmpegToBitmap->ConvertFrameToRgba32());
+		bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 		muBitmap.unlock();
 	}
 	else
 	{
 		muBitmap.lock();
-		ExportPicture(openclEffectYUV->GetRgbaBitmap(true));
+		bitmap = openclEffectYUV->GetRgbaBitmap(true);
 		muBitmap.unlock();
 	}
+    return bitmap;
+}
+
+bool CVideoControlSoft::IsFFmpegDecode()
+{
+    return isffmpegDecode;
 }
 
 void CVideoControlSoft::ExportPicture(CRegardsBitmap * bitmap)
