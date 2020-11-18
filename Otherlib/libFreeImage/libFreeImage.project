@@ -36,6 +36,11 @@
       <File Name="Source/FreeImage/LFPQuantizer.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="Plugins">
+      <File Name="Source/FreeImage/PluginWebP.cpp"/>
+      <File Name="Source/FreeImage/PluginTIFF.cpp"/>
+      <File Name="Source/FreeImage/PluginPNG.cpp"/>
+      <File Name="Source/FreeImage/PluginJPEG.cpp"/>
+      <File Name="Source/FreeImage/PluginEXR.cpp"/>
       <File Name="Source/FreeImage/PluginJXR.cpp" ExcludeProjConfig=""/>
       <File Name="Source/FreeImage/TIFFLogLuv.cpp"/>
       <File Name="Source/FreeImage/PSDParser.cpp"/>
@@ -119,16 +124,20 @@
     <File Name="Source/FreeImage.h"/>
     <File Name="Source/CacheFile.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
   <Settings Type="Static Library">
     <GlobalSettings>
       <Compiler Options="-Wall;-pthread;;-fopenmp;-std=gnu++14;-Wall" C_Options="-Wall" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="Source"/>
         <IncludePath Value="../../libextern/zlib"/>
+        <IncludePath Value="../../libextern/wxWidgets-master/src/jpeg"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff/libtiff"/>
         <IncludePath Value="../../libextern/wxWidgets-master/src/tiff"/>
         <Preprocessor Value="OPJ_STATIC"/>
         <Preprocessor Value="FREEIMAGE_LIB"/>
+        <Preprocessor Value="BITS_IN_JSAMPLE=8"/>
       </Compiler>
       <Linker Options="">
         <LibraryPath Value="."/>
@@ -214,6 +223,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug"/>
-  <Dependencies Name="Release"/>
 </CodeLite_Project>
