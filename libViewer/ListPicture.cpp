@@ -241,7 +241,7 @@ void CListPicture::GenerateIndexFile(wxCommandEvent& event)
 
 			CImageLoadingFormat* imageLoad = new CImageLoadingFormat();
 			imageLoad->SetPicture(&picture);
-			CSavePicture::SavePicture(this, imageLoad, "photoindex.png");
+			CSavePicture::SavePicture(nullptr, imageLoad, "photoindex.png");
 			delete imageLoad;
 		}
 	}

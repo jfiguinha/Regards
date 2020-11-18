@@ -350,7 +350,7 @@ void CViewerFrame::OnExport(wxCommandEvent& event)
 	wxString filename = mainWindow->GetFilename();
 	if (filename != "")
 	{
-		CSavePicture::SavePicture(this, nullptr, filename);
+		CSavePicture::SavePicture(nullptr, nullptr, filename);
 	}
 }
 #ifdef WIN32

@@ -265,7 +265,7 @@ void CBitmapWndViewer::SavePicture()
 	CRegardsBitmap * bitmap = GetBitmap(true);
 	CImageLoadingFormat * imageLoading = new CImageLoadingFormat();
 	imageLoading->SetPicture(bitmap);
-	CSavePicture::SavePicture(this, imageLoading, filename);
+	CSavePicture::SavePicture(nullptr, imageLoading, filename);
 	if (imageLoading != nullptr)
 		delete imageLoading;
 }
