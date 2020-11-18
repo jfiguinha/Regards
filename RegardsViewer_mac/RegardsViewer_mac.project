@@ -686,8 +686,6 @@
         <Command Enabled="yes">cp /usr/local/opt/llvm/lib/libomp.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/llvm/lib/libomp.dylib @executable_path/../Frameworks/libomp.dylib ./Release/RegardsViewer</Command>
         <Command Enabled="yes">cp ../Otherlib/libbpg/libRegardsBpg_mac/Release/libRegardsBpg.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">cp /usr/local/opt/glib/lib/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/glib/lib/libglib-2.0.0.dylib @executable_path/../Frameworks/libglib-2.0.0.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg/lib/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/jpeg-turbo/lib/libturbojpeg.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks/</Command>
@@ -768,8 +766,8 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libcairo.2.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libexif.12.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/freetype/lib/libfreetype.6.dylib @executable_path/../Frameworks/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfontconfig.1.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/pcre/lib/libpcre.1.dylib @executable_path/../Frameworks/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
-        <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/pcre/lib/libpcre.1.dylib @executable_path/../Frameworks/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.dylib</Command>
+        <Command Enabled="yes">install_name_tool -change /usr/local/opt/gettext/lib/libintl.8.dylib @executable_path/../Frameworks/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libglib-2.0.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libfreetype.6.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjasper.4.dylib</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/libpng/lib/libpng16.16.dylib @executable_path/../Frameworks/libpng16.16.dylib ./Release/RegardsViewer.app/Contents/Frameworks/liblept.5.dylib</Command>
