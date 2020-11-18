@@ -229,8 +229,8 @@ vec4 TextureValue(float posX, float posY, float xDiff, float yDiff)
 	}
 	else
 	{
-		float ratioX = fWidthSrc / bitmapWidth;
-		float ratioY = fHeightSrc / bitmapHeight;
+		float ratioX = fWidthSrc / float(bitmapWidth);
+		float ratioY = fHeightSrc / float(bitmapHeight);
 		color = CalculInterpolation(ratioX, ratioY, positionTexture);
 	}
 	return color;
@@ -366,7 +366,7 @@ vec4 ApplyFilter(vec4 src_color)
 //------------------------------------------------------------
 vec4 Denoise(vec4 centrPx)
 {
-    float radius = round(kSigma*sigma);
+    float radius = floor(kSigma*sigma);
     float radQ = radius * radius;
 
     float invSigmaQx2 = .5 / (sigma * sigma);      // 1.0 / (sigma^2 * 2.0)
