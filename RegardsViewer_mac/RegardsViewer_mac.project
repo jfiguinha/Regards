@@ -864,7 +864,7 @@
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/jpeg/lib/libjpeg.9.dylib @executable_path/../Frameworks/libjpeg.9.dylib ./Release/RegardsViewer.app/Contents/Frameworks/libjasper.5.0.0.dylib</Command>
         <Command Enabled="yes">cp -r ./Release/RegardsViewer.app ./package/RegardsViewer2/</Command>
         <Command Enabled="yes">rm -f ./package/RegardsViewer2.dmg</Command>
-        <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2.dmg</Command>
+        <Command Enabled="yes">hdiutil create -fs HFS+ -srcfolder ./package/RegardsViewer2 -volname RegardsViewer2 ./package/RegardsViewer2_highsierra.dmg</Command>
       </PostBuild>
       <CustomBuild Enabled="no">
         <RebuildCommand/>
