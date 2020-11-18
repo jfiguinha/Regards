@@ -645,11 +645,9 @@
         <Command Enabled="yes">cp -R ../Regards/Resources ./Release/RegardsViewer.app/Contents/</Command>
         <Command Enabled="yes">cp ../Resource/theme/RegardsViewer.viewer.theme ./Release/RegardsViewer.app/Contents/MacOs/RegardsViewer.viewer.theme</Command>
         <Command Enabled="yes">cp /usr/local/opt/pixman/lib/libpixman-1.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/freetype/lib/libfreetype.6.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/pcre/lib/libpcre.1.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/giflib/lib/libgif.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebpmux.3.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/jasper/lib/libjasper.5.0.0.dylib ./Release/RegardsViewer.app/Contents/Frameworks</Command>
