@@ -245,7 +245,7 @@ vec4 ApplyFilter(vec4 src_color)
 //------------------------------------------------------------
 vec4 Denoise(vec4 centrPx, sampler2D tex)
 {
-    float radius = round(kSigma*sigma);
+    float radius = floor(kSigma*sigma);
     float radQ = radius * radius;
 
     float invSigmaQx2 = .5 / (sigma * sigma);      // 1.0 / (sigma^2 * 2.0)
