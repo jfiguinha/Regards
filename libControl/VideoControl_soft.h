@@ -158,6 +158,9 @@ protected:
 	int GetSoundVolume();
 	float GetZoomRatio();
 
+	int GetVideoWidth();
+	int GetVideoHeight();
+
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;
 	bool mouseBlock = false;

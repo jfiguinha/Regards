@@ -391,7 +391,7 @@ float CVideoControlSoft::GetZoomRatio()
 	float zoom = 1.0f;
 	if (shrinkVideo)
 	{
-		zoom = CalculPictureRatio(widthVideo, heightVideo);
+		zoom = CalculPictureRatio(GetVideoWidth(), GetVideoHeight());
 	}
 	else
 	{
@@ -413,7 +413,7 @@ void CVideoControlSoft::ShrinkVideo()
 	muVideoEffect.lock();
 	float ratio = 1.0f;
 
-	float newRatio = CalculPictureRatio(widthVideo, heightVideo);
+	float newRatio = CalculPictureRatio(GetVideoWidth(), GetVideoHeight());
 	//Calcul Zoom Index
 	if (newRatio != 0.0)
 	{
@@ -448,8 +448,8 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 #else
     double scale_factor = 1.0f;
 #endif
-	int width_local = widthVideo;
-	int height_local = heightVideo;
+	int width_local = GetVideoWidth();
+	int height_local = GetVideoHeight();
 	float zoom = GetZoomRatio();
 	float ratio = 1.0f;
 
@@ -458,7 +458,7 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 	muVideoEffect.unlock();
 
 	if (ratio == 1.0f)	
-		ratio = (float)widthVideo / (float)heightVideo;
+		ratio = (float)GetVideoWidth() / (float)GetVideoHeight();
 	else
 	{
 		width_local = (int)((float)height_local * ratio);
@@ -1610,7 +1610,7 @@ void CVideoControlSoft::calculate_display_rect(wxRect *rect, int scr_xleft, int 
 	muVideoEffect.unlock();
 
 	if (aspect_ratio == 1.0)
-		aspect_ratio = (float)widthVideo / (float)heightVideo;
+		aspect_ratio = (float)GetVideoWidth() / (float)GetVideoHeight();
 
 	/* XXX: we suppose the screen has a 1.0 pixel ratio */
 	height = scr_height * zoom;
@@ -1785,11 +1785,26 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	return glTexture;
 }
 
+int CVideoControlSoft::GetVideoWidth()
+{
+	if (angle == 90 | angle == 180)
+		return heightVideo;
+
+	return widthVideo;
+}
+int CVideoControlSoft::GetVideoHeight()
+{
+	if (angle == 90 | angle == 180)
+		return widthVideo;
+
+	return heightVideo;
+}
+
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
     printf("RenderFFmpegToTexture \n");
     
-	GLTexture * glTexture = new GLTexture(widthVideo, heightVideo);
+	GLTexture * glTexture = new GLTexture(GetVideoWidth(), GetVideoHeight());
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
 	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	deleteTexture = true;
