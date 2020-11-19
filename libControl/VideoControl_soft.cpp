@@ -399,7 +399,7 @@ float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &picture
 	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
     int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
-	
+	printf("Ratio %f \n",newRatio);
 	muVideoEffect.lock();
 	
 	//Calcul Zoom Index
@@ -407,6 +407,7 @@ float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &picture
 	{
 		for (int i = 0; i < videoEffectParameter.tabZoom.size(); i++)
 		{
+            printf("Ratio %f \n",videoEffectParameter.tabZoom[i]);
 			if (newRatio < videoEffectParameter.tabZoom[i])
 			{
 				//ratio = videoEffectParameter.tabZoom[i];
@@ -416,9 +417,20 @@ float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &picture
 		}
 	}
 
+    printf("Ratio index %d \n",zoomSelect);
+
 	videoEffectParameter.zoomSelect = zoomSelect;
 
 	muVideoEffect.unlock();
+    
+    wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
+	if (window != nullptr)
+	{
+		wxCommandEvent evt(wxEVENT_SHRINKPOS);
+        evt.SetInt(zoomSelect);
+		window->GetEventHandler()->AddPendingEvent(evt);
+	}
+
 
 	return newRatio;
 }
@@ -1766,13 +1778,13 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 
-        CImageLoadingFormat imageLoad;
-        imageLoad.SetPicture(bitmapOut);
-        Regards::Picture::CLibPicture libPicture;
-         printf("glTexture 2");
-        libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
+        //CImageLoadingFormat imageLoad;
+        //imageLoad.SetPicture(bitmapOut);
+       // Regards::Picture::CLibPicture libPicture;
+         //printf("glTexture 2");
+        //libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
 
-		//delete bitmapOut;
+		delete bitmapOut;
 	}
 	else
 		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
