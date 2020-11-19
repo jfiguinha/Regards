@@ -161,6 +161,8 @@ protected:
 	void CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc);
 	int GetVideoWidth();
 	int GetVideoHeight();
+	int GetSrcBitmapWidth();
+	int GetSrcBitmapHeight();
 
 	int mouseScrollX = 0;
 	int mouseScrollY = 0;

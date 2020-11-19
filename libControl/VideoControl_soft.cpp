@@ -396,7 +396,8 @@ float CVideoControlSoft::GetZoomRatio()
 float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &pictureHeight)
 {
    TRACE();
-	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
+
+	float newRatio = CalculPictureRatio(GetSrcBitmapWidth(), GetSrcBitmapHeight());
     int zoomSelect = 0;
 	//Détermination du ration par rapport au tableau
 	printf("Ratio %f \n",newRatio);
@@ -423,15 +424,6 @@ float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &picture
 
 	muVideoEffect.unlock();
     
-    wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
-	if (window != nullptr)
-	{
-		wxCommandEvent evt(wxEVENT_SHRINKPOS);
-        evt.SetInt(zoomSelect);
-		window->GetEventHandler()->AddPendingEvent(evt);
-	}
-
-
 	return newRatio;
 }
 
@@ -1213,6 +1205,30 @@ int CVideoControlSoft::GetBitmapHeight()
 	CalculTextureSize(widthOut, heightOut);
 	return heightOut;
 }
+
+int CVideoControlSoft::GetSrcBitmapWidth()
+{
+	TRACE();
+	int localAngle = angle;
+
+	if (localAngle == 90 || localAngle == 270)
+		return heightVideo;
+	else
+		return widthVideo;
+	return 0;
+}
+
+int CVideoControlSoft::GetSrcBitmapHeight()
+{
+	TRACE();
+	int localAngle = angle;
+	if (localAngle == 90 || localAngle == 270)
+		return widthVideo;
+	else
+		return heightVideo;
+	return 0;
+}
+
 
 //-----------------------------------------------------------------
 //Obtention des dimensions du bitmap
