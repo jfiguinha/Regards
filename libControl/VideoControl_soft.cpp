@@ -1688,18 +1688,11 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 	bool isOpenGLOpenCL = false;
     
-#ifndef __APPLE__
-
 	if (openclContext->IsSharedContextCompatible())
 	{
         
         printf("RenderToTexture IsSharedContextCompatible 3\n");
-        
-		if (angle == 90 || angle == 270)
-			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width, openclContext->GetContext());
-		else
-			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height, openclContext->GetContext());
-
+		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput, openclContext->GetContext());
 
 		if (glTexture != nullptr)
 		{
@@ -1727,15 +1720,12 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			}
 		}
 	}
-#endif
+
 	if (!isOpenGLOpenCL)
 	{
         printf("RenderToTexture !isOpenGLOpenCL\n");
         
-		if (angle == 90 || angle == 270)
-			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width);
-		else
-			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.width, rect.height);
+		glTexture = renderBitmapOpenGL->GetDisplayTexture(widthOutput, heightOutput);
 
 		if (glTexture != nullptr)
 		{
