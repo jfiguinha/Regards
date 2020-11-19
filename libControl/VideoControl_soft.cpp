@@ -159,7 +159,7 @@ void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -197,7 +197,7 @@ void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 {
 	TRACE();
 #ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
+	double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
 	double scale_factor = 1.0f;
 #endif
@@ -443,11 +443,13 @@ void CVideoControlSoft::ShrinkVideo()
 
 void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 {
-
+#ifndef WIN32
+    double scale_factor = 1.0f;//GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
 	int width_local = widthVideo;
 	int height_local = heightVideo;
-	int width = GetWidth();
-	int height = GetHeight();
 	float zoom = GetZoomRatio();
 	float ratio = 1.0f;
 
@@ -888,7 +890,7 @@ void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 int CVideoControlSoft::getWidth()
 {
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
@@ -897,7 +899,7 @@ int CVideoControlSoft::getWidth()
 int CVideoControlSoft::getHeight()
 {
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
@@ -914,9 +916,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	// This is a dummy, to avoid an endless succession of paint messages.
 	// OnPaint handlers must always create a wxPaintDC.
 	wxPaintDC dc(this);
+    printf("CVideoControlSoft::OnPaint \n");
 
 #ifndef WIN32
-    double scale_factor = GetContentScaleFactor();
+    double scale_factor = 1.0f;//GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
@@ -950,8 +953,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     start = std::clock();    
     
 
-    int width = GetWindowWidth() * scale_factor;
-    int height = GetWindowHeight() * scale_factor;
+    int width = GetWindowWidth();
+    int height = GetWindowHeight();
     if(width == 0 || height == 0)
         return;
 	
@@ -960,18 +963,10 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
     if(IsSupportOpenCL())
     {
-    #ifdef RENDEROPENGL 
         if (openclEffectYUV == nullptr)
         {
             openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-        }
-    #else
-
-        if (openclEffectYUV == nullptr)
-        {
-            openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-        }
-    #endif        
+        }  
     }
 
     nbFrame++;
@@ -1039,7 +1034,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 	else
 	{
         printf("renderBitmapOpenGL->CreateScreenRender \n");
-		renderBitmapOpenGL->CreateScreenRender(width * scale_factor, height * scale_factor, CRgbaquad(0,0,0,0));
+		renderBitmapOpenGL->CreateScreenRender(width, height, CRgbaquad(0,0,0,0));
 	}
 //#endif
 
@@ -1234,15 +1229,21 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 int CVideoControlSoft::GetBitmapWidth()
 {
 	TRACE();
+#ifndef WIN32
+    double scale_factor = 1.0f;//GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+    
 	int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
 
 	if (localAngle == 90 || localAngle == 270)
-		return heightOut;
+		return heightOut * scale_factor;
 	else
-		return widthOut;
+		return widthOut * scale_factor;
 
 	return 0;
 }
@@ -1250,15 +1251,21 @@ int CVideoControlSoft::GetBitmapWidth()
 int CVideoControlSoft::GetBitmapHeight()
 {
 	TRACE();
+    
+#ifndef WIN32
+    double scale_factor = 1.0f;//GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
 	int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
 
 	if (localAngle == 90 || localAngle == 270)
-		return widthOut;
+		return widthOut* scale_factor;
 	else
-		return heightOut;
+		return heightOut* scale_factor;
 
 	return 0;
 }
@@ -1428,7 +1435,8 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
     bool isCPU = 1;
     if(IsSupportOpenCL())
        isCPU = IsCPUContext();
-   // printf("Set Data Begin \n");
+    
+    printf("Set Data Begin \n");
      
 	videoRenderStart = true; 
 
@@ -1454,8 +1462,16 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
     wxCommandEvent event(wxEVENT_REFRESH);
     wxPostEvent(this, event);  
 #else
-   this->Refresh();
+#if defined(__APPLE__)
+    wxCommandEvent event(wxEVENT_REFRESH);
+    wxPostEvent(this, event);  
+#else
+    this->Refresh();
+    wxCommandEvent event(wxEVENT_REFRESH);
+    wxPostEvent(this, event);  
 #endif 
+#endif
+
 }
 
 GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
@@ -1640,6 +1656,14 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
+    printf("RenderToTexture 1\n");
+    
+#ifndef WIN32
+    double scale_factor = 1.0f;//GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+    
     if(openclEffect == nullptr)
         return nullptr;
 
@@ -1650,12 +1674,16 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	int filterInterpolation = 0;
 	CRegardsConfigParam * regardsParam = CParamInit::getInstance();
 
+    printf("RenderToTexture 2\n");
+
 	if (regardsParam != nullptr)
 		filterInterpolation = regardsParam->GetInterpolationType();
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
 	//CRegardsBitmap * data = openclEffect->GetRgbaBitmap();
 	//data->SaveToBmp("d:\\test.bmp");
+
+    printf("RenderToTexture 3\n");
 
 		int widthOut = 0;
 		int heightOut = 0;
@@ -1666,6 +1694,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1,(double)0);
 		posrect.width = widthOut;
 		posrect.height = heightOut;
+        
+    printf("RenderToTexture 4\n");
 
 		if (angle == 90 || angle == 270)
 		{
@@ -1693,6 +1723,9 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())
 	{
+        
+        printf("RenderToTexture IsSharedContextCompatible 3\n");
+        
 		if (angle == 90 || angle == 270)
 			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width, openclContext->GetContext());
 		else
@@ -1701,7 +1734,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 		if (glTexture != nullptr)
 		{
-
+            printf("RenderToTexture glTexture is not null 3\n");
 			try
 			{
 				cl_int err;
@@ -1728,6 +1761,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	
 	if (!isOpenGLOpenCL)
 	{
+        printf("RenderToTexture !isOpenGLOpenCL\n");
+        
 		if (angle == 90 || angle == 270)
 			glTexture = renderBitmapOpenGL->GetDisplayTexture(rect.height, rect.width);
 		else
@@ -1744,6 +1779,8 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		else
 			printf("CVideoControl glTexture Error \n");
 	}
+    
+    printf("RenderToTexture End\n");
 	//inverted = true;
 	return glTexture;
 }
@@ -1932,15 +1969,16 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	if (!isffmpegDecode)
 	{
 
-		//  printf("VideoControl Is use_opencl \n");               
+		printf("VideoControl Is use_opencl 1\n");               
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
+            printf("VideoControl Is use_opencl 2\n"); 
 			displaywithInterpolation = false;
 			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
 			muBitmap.unlock();
 		}
-
+        printf("VideoControl Is use_opencl 3\n"); 
 		deleteTexture = false;
 	}
 	else
@@ -1953,6 +1991,7 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	}
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+    
     /*
     if(glTexture != nullptr)
     {
@@ -1964,11 +2003,12 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
         imageLoad.SetPicture(bitmap);
         Regards::Picture::CLibPicture libPicture;
          printf("glTexture 2");
-        libPicture.SavePicture("/Users/toto/Pictures/test.bmp", &imageLoad,0,0);
+        libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
          printf("glTexture 3");
         //wxMessageBox("test","saving texture");
     }
-    */
+     * */
+    
 	return glTexture;
 }
 #else
