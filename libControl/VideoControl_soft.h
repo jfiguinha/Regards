@@ -223,11 +223,11 @@ protected:
 	float ratioVideo = 1.0f;
 	int posLargeur = 0;
 	int posHauteur = 0;
-	bool displaywithInterpolation = false;
 	bool shrinkVideo = false;
 	//bool inverted = true;
 	int oldWidth = 0;
 	int oldHeight = 0;
 	bool startVideo = false;
 	bool processVideoEnd = false;
+	bool openGLDecoding = false;
 };

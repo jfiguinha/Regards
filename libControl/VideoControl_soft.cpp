@@ -1472,10 +1472,9 @@ void CVideoControlSoft::SetData(void * data, const float & sample_aspect_ratio, 
 GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 {
 	GLTexture * glTextureOutput = nullptr;
-
-	if (displaywithInterpolation)
+	if (glTexture != nullptr)
 	{
-		if (glTexture != nullptr)
+		if (openGLDecoding)
 		{
 			float zoomRatio = GetZoomRatio();
 			int filterInterpolation = 0;
@@ -1484,28 +1483,17 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			wxRect rc(0, 0, 0, 0);
 			CalculPositionVideo(widthOutput, heightOutput, rc);
 			glTextureOutput = new GLTexture(rc.width, rc.height);
-            renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
- 		}
-	}
-	else
-	{
-		if (glTexture != nullptr)
+			renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
+		}
+		else
 		{
-            printf("RenderWithEffect");
+			printf("RenderWithEffect");
 			muVideoEffect.lock();
-            renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
 			muVideoEffect.unlock();
 		}
 	}
-	/*
-	if (glTexture != nullptr)
-	{
-		printf("RenderWithEffect");
-		muVideoEffect.lock();
-		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
-		muVideoEffect.unlock();
-	}
-	*/
+
 	return glTextureOutput;
 }
 
@@ -1819,24 +1807,28 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
     
 	GLTexture * glTexture = new GLTexture(GetVideoWidth(), GetVideoHeight());
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
-	/*
-	int widthOutput = 0;
-	int heightOutput = 0;
-	wxRect rc(0, 0, 0, 0);
-	CalculPositionVideo(widthOutput, heightOutput, rc);
+	if (!openGLDecoding)
+	{
+		int widthOutput = 0;
+		int heightOutput = 0;
+		wxRect rc(0, 0, 0, 0);
+		CalculPositionVideo(widthOutput, heightOutput, rc);
 
-	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
-	//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
+		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+		//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
-	CInterpolation interpolation;
-	interpolation.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+		CInterpolation interpolation;
+		interpolation.Execute(bitmap, bitmapOut, flipH, flipV, angle);
 
-	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
-	*/
-	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+
+		delete bitmapOut;
+	}
+	else
+		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
+
 	deleteTexture = true;
 	delete bitmap;
-	//delete bitmapOut;
 	return glTexture;
 }
 #endif
@@ -2020,7 +2012,6 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 		if (openclEffectYUV != nullptr && openclEffectYUV->IsOk())
 		{
             printf("VideoControl Is use_opencl 2\n"); 
-			displaywithInterpolation = false;
 			muBitmap.lock();
 			glTexture = RenderToTexture(openclEffectYUV);
 			muBitmap.unlock();
@@ -2030,7 +2021,6 @@ GLTexture * CVideoControlSoft::RenderToGLTexture()
 	}
 	else
 	{
-		displaywithInterpolation = true;
 		muBitmap.lock();
 		glTexture = RenderFFmpegToTexture();
 		muBitmap.unlock();

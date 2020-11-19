@@ -422,7 +422,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 {
     GLTexture * glTexture = nullptr;
 	GLTexture * glTextureCopy = nullptr;
-	displaywithInterpolation = false;
+
 	if (WGLEW_NV_DX_interop)
 	{
 		if(dxva2 != nullptr && hDevice == nullptr)
