@@ -1477,53 +1477,14 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 	{
 		if (glTexture != nullptr)
 		{
-            printf("displaywithInterpolation");
 			float zoomRatio = GetZoomRatio();
-			muVideoEffect.lock();
-			int bicubic = videoEffectParameter.BicubicEnable;
-			muVideoEffect.unlock();
-			wxRect posrect;
-			wxRect rect;
 			int filterInterpolation = 0;
-			CRegardsConfigParam * regardsParam = CParamInit::getInstance();
-
-			if (regardsParam != nullptr)
-				filterInterpolation = regardsParam->GetInterpolationType();
-
-				int widthOut = 0;
-				int heightOut = 0;
-				CalculTextureSize(widthOut, heightOut);
-
-
-				posrect.x = std::max((double)posLargeur, (double)0);
-				posrect.y = std::max((double)posHauteur, (double)0);
-				posrect.width = widthOut;
-				posrect.height = heightOut;
-
-				if (angle == 90 || angle == 270)
-				{
-					rect.height = getHeight();
-					rect.width = getWidth();
-					if (rect.height > widthOut)
-						rect.height = widthOut;
-					if (rect.width > heightOut)
-						rect.width = heightOut;
-
-					glTextureOutput = new GLTexture(rect.height, rect.width);
-				}
-				else
-				{
-					rect.height = getHeight();
-					rect.width = getWidth();
-
-					if (rect.height > heightOut)
-						rect.height = heightOut;
-					if (rect.width > widthOut)
-						rect.width = widthOut;
-
-					glTextureOutput = new GLTexture(rect.width, rect.height);
-				}
-            renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, posrect, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
+			int widthOutput = 0;
+			int heightOutput = 0;
+			wxRect rc(0, 0, 0, 0);
+			CalculPositionVideo(widthOutput, heightOutput, rc);
+			glTextureOutput = new GLTexture(rc.width, rc.height);
+            renderBitmapOpenGL->RenderWithEffectInterpolation(glTexture, glTextureOutput, rc, &videoEffectParameter, flipH, flipV, angle, filterInterpolation, zoomRatio, true);
  		}
 	}
 	else
@@ -1536,8 +1497,15 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 			muVideoEffect.unlock();
 		}
 	}
-
-
+	/*
+	if (glTexture != nullptr)
+	{
+		printf("RenderWithEffect");
+		muVideoEffect.lock();
+		renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+		muVideoEffect.unlock();
+	}
+	*/
 	return glTextureOutput;
 }
 
@@ -1711,8 +1679,8 @@ void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutpu
 	double scale_factor = 1.0f;
 #endif
 
-	int widthOutput = int(GetBitmapWidth());
-	int heightOutput = int(GetBitmapHeight());
+	widthOutput = int(GetBitmapWidth());
+	heightOutput = int(GetBitmapHeight());
 
 	int left = 0, top = 0;
 	int tailleAffichageWidth = widthOutput;
@@ -1728,7 +1696,7 @@ void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutpu
 	else
 		top = 0;
 
-	wxRect rc(0, 0, 0, 0);
+	//wxRect rc(0, 0, 0, 0);
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
 }
 
@@ -1851,9 +1819,24 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
     
 	GLTexture * glTexture = new GLTexture(GetVideoWidth(), GetVideoHeight());
 	CRegardsBitmap * bitmap = ffmpegToBitmap->ConvertFrameToRgba32();
+	/*
+	int widthOutput = 0;
+	int heightOutput = 0;
+	wxRect rc(0, 0, 0, 0);
+	CalculPositionVideo(widthOutput, heightOutput, rc);
+
+	CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
+	//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
+
+	CInterpolation interpolation;
+	interpolation.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+
+	glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
+	*/
 	glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());
 	deleteTexture = true;
 	delete bitmap;
+	//delete bitmapOut;
 	return glTexture;
 }
 #endif

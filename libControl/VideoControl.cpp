@@ -477,6 +477,13 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 				if (regardsParam != nullptr)
 					filterInterpolation = regardsParam->GetInterpolationType();
 
+				int widthOutput = 0;
+				int heightOutput = 0;
+				wxRect rc(0, 0, 0, 0);
+				CalculPositionVideo(widthOutput, heightOutput, rc);
+				openclEffectNV12->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
+
+				/*
 				int widthOut = 0;
 				int heightOut = 0;
 				CalculTextureSize(widthOut, heightOut);
@@ -509,7 +516,7 @@ GLTexture * CVideoControl::RenderFromOpenGLTexture()
 
 					openclEffectNV12->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
 				}
-
+				*/
 				err = clEnqueueReleaseGLObjects(openclContext->GetCommandQueue(), 1, &cl_textureVideoCopy, 0, 0, 0);
 				Error::CheckError(err);
 				err = clFlush(openclContext->GetCommandQueue());
@@ -617,7 +624,6 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 	if (quitWindow)
         return;
 
-#ifdef RENDEROPENGL 
 	renderBitmapOpenGL->SetCurrent(*this);
 
 	if (openclEffectNV12 == nullptr)
@@ -627,15 +633,7 @@ void CVideoControl::OnPaint(wxPaintEvent& event)
 		hTexture = nullptr;
 		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
 	}
-#else
 
-	if (openclEffectNV12 == nullptr)
-		openclEffectNV12 = new COpenCLEffectVideoNV12(openclContext);
-
-	if (openclEffectYUV == nullptr)
-		openclEffectYUV = new COpenCLEffectVideoYUV(openclContext);
-
-#endif
 
 #ifdef RENDEROPENGL 
 	if (videoRenderStart)
