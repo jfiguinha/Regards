@@ -1687,6 +1687,9 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
 	bool isOpenGLOpenCL = false;
+    
+#ifndef __APPLE__
+
 	if (openclContext->IsSharedContextCompatible())
 	{
         
@@ -1724,7 +1727,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 			}
 		}
 	}
-	
+#endif
 	if (!isOpenGLOpenCL)
 	{
         printf("RenderToTexture !isOpenGLOpenCL\n");
@@ -1878,11 +1881,9 @@ int CVideoControlSoft::IsSupportOpenCL()
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
-#ifdef __APPLE__
-	return 0;
-#else
+
     return supportOpenCL;
-#endif
+
 }
 
 void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
