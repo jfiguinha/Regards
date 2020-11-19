@@ -1879,7 +1879,7 @@ int CVideoControlSoft::IsSupportOpenCL()
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
 #ifdef __APPLE__
-	return 0;// supportOpenCL;
+	return supportOpenCL;
 #else
     return supportOpenCL;
 #endif
