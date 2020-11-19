@@ -1230,7 +1230,6 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 	TestMaxX();
 }
 
-
 int CVideoControlSoft::GetBitmapWidth()
 {
 	TRACE();
@@ -1245,12 +1244,8 @@ int CVideoControlSoft::GetBitmapWidth()
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
 
-	if (localAngle == 90 || localAngle == 270)
-		return heightOut * scale_factor;
-	else
-		return widthOut * scale_factor;
+	return widthOut * scale_factor;
 
-	return 0;
 }
 
 int CVideoControlSoft::GetBitmapHeight()
@@ -1267,12 +1262,7 @@ int CVideoControlSoft::GetBitmapHeight()
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
 
-	if (localAngle == 90 || localAngle == 270)
-		return widthOut* scale_factor;
-	else
-		return heightOut* scale_factor;
-
-	return 0;
+	return heightOut* scale_factor;
 }
 
 //-----------------------------------------------------------------
@@ -1659,6 +1649,89 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 }
 
 
+void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
+{
+	TRACE();
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+
+	int widthOutput = int(GetBitmapWidth()) * scale_factor;
+	int heightOutput = int(GetBitmapHeight()) * scale_factor;
+	int xValue = 0;
+	int yValue = 0;
+
+
+	if (widthOutput > GetWidth()* scale_factor)
+	{
+		left = 0;
+		xValue = posLargeur * scale_factor;
+	}
+	else
+	{
+		xValue = 0;
+		left = (GetWidth()* scale_factor - widthOutput) / 2;
+	}
+
+	widthInterpolationSize = GetWidth()* scale_factor - (left * 2);
+
+
+	if (heightOutput > GetHeight()* scale_factor)
+	{
+		top = 0;
+		yValue = posHauteur * scale_factor;
+	}
+	else
+	{
+		yValue = 0;
+		top = (GetHeight()* scale_factor - heightOutput) / 2;
+	}
+
+	heightInterpolationSize = GetHeight()* scale_factor - (top * 2);
+
+	rc.x = max(xValue, 0);
+	if (invert)
+	{
+		int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+		rc.y = max(heightmax, 0);
+	}
+	else
+		rc.y = max(yValue, 0);
+	rc.width = widthOutput;
+	rc.height = heightOutput;
+}
+
+void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc)
+{
+#ifndef WIN32
+	double scale_factor = 1.0f;//GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif
+
+	int widthOutput = int(GetBitmapWidth());
+	int heightOutput = int(GetBitmapHeight());
+
+	int left = 0, top = 0;
+	int tailleAffichageWidth = widthOutput;
+	int tailleAffichageHeight = heightOutput;
+
+	if (GetWidth() * scale_factor > tailleAffichageWidth)
+		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+	else
+		left = 0;
+
+	if (GetHeight() * scale_factor > tailleAffichageHeight)
+		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+	else
+		top = 0;
+
+	wxRect rc(0, 0, 0, 0);
+	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
+}
+
 GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect)
 {
     printf("RenderToTexture 1\n");
@@ -1685,45 +1758,12 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 		filterInterpolation = regardsParam->GetInterpolationType();
 
 	openclEffect->TranscodePicture(widthVideo, heightVideo);
-	//CRegardsBitmap * data = openclEffect->GetRgbaBitmap();
-	//data->SaveToBmp("d:\\test.bmp");
 
-    printf("RenderToTexture 3\n");
-
-		int widthOut = 0;
-		int heightOut = 0;
-		CalculTextureSize(widthOut, heightOut);
-
-		wxRect posrect;
-		posrect.x = std::max((double)posLargeur, (double)0);
-		posrect.y = std::max((double)GetHauteurMax() - posHauteur - 1,(double)0);
-		posrect.width = widthOut;
-		posrect.height = heightOut;
-        
-    printf("RenderToTexture 4\n");
-
-		if (angle == 90 || angle == 270)
-		{
-			rect.height = getHeight();
-			rect.width = getWidth();
-			if (rect.height > widthOut)
-				rect.height = widthOut;
-			if (rect.width > heightOut)
-				rect.width = heightOut;
-			openclEffect->InterpolationZoomBicubic(rect.height, rect.width, posrect, flipH, flipV, angle, filterInterpolation);
-		}
-		else
-		{
-			rect.height = getHeight();
-			rect.width = getWidth();
-
-			if (rect.height > heightOut)
-				rect.height = heightOut;
-			if (rect.width > widthOut)
-				rect.width = widthOut;
-
-			openclEffect->InterpolationZoomBicubic(rect.width, rect.height, posrect, flipH, flipV, angle, filterInterpolation);
-		}
+	int widthOutput = 0;
+	int heightOutput = 0;
+	wxRect rc(0, 0, 0, 0);
+	CalculPositionVideo(widthOutput, heightOutput, rc);
+	openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
 	bool isOpenGLOpenCL = false;
 	if (openclContext->IsSharedContextCompatible())
@@ -1822,22 +1862,16 @@ void CVideoControlSoft::Rotate90()
 {
 	angle += 90;
 	angle = angle % 360;
-	if (pause)
-	{
-		CalculPositionPicture(centerX, centerY);
-		UpdateScrollBar();
-	}
+	CalculPositionPicture(centerX, centerY);
+	UpdateScrollBar();
 }
 
 void CVideoControlSoft::Rotate270()
 {
 	angle += 270;
 	angle = angle % 360;
-	if (pause)
-	{
-		CalculPositionPicture(centerX, centerY);
-		UpdateScrollBar();
-	}
+	CalculPositionPicture(centerX, centerY);
+	UpdateScrollBar();
 }
 void CVideoControlSoft::FlipVertical()
 {
