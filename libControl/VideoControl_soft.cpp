@@ -158,12 +158,6 @@ void CVideoControlSoft::OnLButtonDown(wxMouseEvent& event)
 	this->SetFocus();
 	int xPos = event.GetX();
 	int yPos = event.GetY();
-#ifndef WIN32
-	double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	mouseBlock = true;
 	mouseScrollX = xPos;
 	mouseScrollY = yPos;
@@ -196,11 +190,7 @@ void CVideoControlSoft::OnLButtonUp(wxMouseEvent& event)
 void CVideoControlSoft::OnMouseMove(wxMouseEvent& event)
 {
 	TRACE();
-#ifndef WIN32
-	double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
+
 	int xPos = event.GetX();
 	int yPos = event.GetY();
 
@@ -361,7 +351,7 @@ void CVideoControlSoft::ChangeVideoFormat()
 
 float CVideoControlSoft::CalculPictureRatio(const int &pictureWidth, const int &pictureHeight)
 {
-	TRACE();
+    TRACE();
 	if (pictureWidth == 0 && pictureHeight == 0)
 		return 1.0f;
 
@@ -384,8 +374,8 @@ float CVideoControlSoft::CalculPictureRatio(const int &pictureWidth, const int &
 	}
 
 	return newRatio;
-}
-
+ }
+   
 float CVideoControlSoft::GetZoomRatio()
 {
 	float zoom = 1.0f;
@@ -403,17 +393,15 @@ float CVideoControlSoft::GetZoomRatio()
 	return zoom;
 }
 
-void CVideoControlSoft::ShrinkVideo()
+float CVideoControlSoft::CalculRatio(const int &pictureWidth, const int &pictureHeight)
 {
-	//CalculCenterPicture();
-
-	int zoomSelect = 0;
-	posLargeur = 0;
-	posHauteur = 0;
+   TRACE();
+	float newRatio = CalculPictureRatio(pictureWidth, pictureHeight);
+    int zoomSelect = 0;
+	//Détermination du ration par rapport au tableau
+	
 	muVideoEffect.lock();
-	float ratio = 1.0f;
-
-	float newRatio = CalculPictureRatio(GetVideoWidth(), GetVideoHeight());
+	
 	//Calcul Zoom Index
 	if (newRatio != 0.0)
 	{
@@ -421,7 +409,7 @@ void CVideoControlSoft::ShrinkVideo()
 		{
 			if (newRatio < videoEffectParameter.tabZoom[i])
 			{
-				ratio = videoEffectParameter.tabZoom[i];
+				//ratio = videoEffectParameter.tabZoom[i];
 				zoomSelect = i;
 				break;
 			}
@@ -432,22 +420,28 @@ void CVideoControlSoft::ShrinkVideo()
 
 	muVideoEffect.unlock();
 
-	shrinkVideo = true;
+	return newRatio;
+}
 
-	//CalculPositionPicture(centerX, centerY);
+void CVideoControlSoft::ShrinkVideo()
+{
+    TRACE();
+
+	float ratio = CalculRatio(GetBitmapWidth(), GetBitmapHeight());
+
+	//Calcul position largeur et hauteur initial
+	posLargeur = 0;
+	posHauteur = 0;
+	centerX = float(GetBitmapWidth()) / 2.0f;
+	centerY = float(GetBitmapHeight()) / 2.0f;
 
 	UpdateScrollBar();
 
-
+	shrinkVideo = true;
 }
 
 void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 {
-#ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
 	int width_local = GetVideoWidth();
 	int height_local = GetVideoHeight();
 	float zoom = GetZoomRatio();
@@ -464,11 +458,13 @@ void CVideoControlSoft::CalculTextureSize(int &widthOut, int &heightOut)
 		width_local = (int)((float)height_local * ratio);
 	}
 	widthOut = width_local * zoom;
-	heightOut = height_local * zoom;
+	heightOut = height_local * zoom; 
 }
 
 void CVideoControlSoft::UpdateScrollBar()
 {
+
+    
 	int widthOut = 0;
 	int heightOut = 0;
 	wxWindow * parent = this->GetParent();
@@ -1050,52 +1046,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
 
 	if (glTextureOutput != nullptr)
 		delete glTextureOutput;
-#else
-
-	wxPaintDC dc(this);
-    
-	wxBitmap localmemBitmap(width,height);
-	wxRect rc;
-	rc.x = 0;
-	rc.y = 0;
-	rc.width = width;
-	rc.height = height;
-	wxMemoryDC memDC(localmemBitmap);    
-	FillRect(&memDC, rc, wxColor(0, 0, 0));
-	if (videoRenderStart)
-	{
-		CRegardsBitmap * bitmap = RenderToBitmap();
-		if(bitmap != nullptr)
-        {
-            CImageLoadingFormat image;
-            image.SetPicture(bitmap);
-            wxImage * picture = image.GetwxImage();
-
-            int x = (width - picture->GetWidth()) / 2;
-            int y = (height - picture->GetHeight()) / 2;
-
-			if (picture->IsOk())
-				memDC.DrawBitmap(picture->Mirror(false), x, y);
-            //memDC.DrawBitmap(*picture, x, y);
-
-            delete picture;
-        }
-	}
-    
-	memDC.SelectObject(wxNullBitmap);
-
-    if(scale_factor != 1.0)
-    {
-        wxImage image = localmemBitmap.ConvertToImage();
-        wxBitmap resized(image, wxBITMAP_SCREEN_DEPTH, scale_factor);
-		if (resized.IsOk())
-			dc.DrawBitmap(resized, 0, 0);
-    }
-    else if(localmemBitmap.IsOk())
-        dc.DrawBitmap(localmemBitmap, 0, 0);
 
 #endif
-
     double duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
 
@@ -1232,37 +1184,22 @@ void CVideoControlSoft::CalculPositionPicture(const float &x, const float &y)
 
 int CVideoControlSoft::GetBitmapWidth()
 {
-	TRACE();
-#ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
-    
+	TRACE();    
 	int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
-
-	return widthOut * scale_factor;
+	return widthOut;
 
 }
 
 int CVideoControlSoft::GetBitmapHeight()
 {
-	TRACE();
-    
-#ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-    double scale_factor = 1.0f;
-#endif
 	int localAngle = angle;
 	int widthOut = 0;
 	int heightOut = 0;
 	CalculTextureSize(widthOut, heightOut);
-
-	return heightOut* scale_factor;
+	return heightOut;
 }
 
 //-----------------------------------------------------------------
@@ -1489,7 +1426,7 @@ GLTexture * CVideoControlSoft::DisplayTexture(GLTexture * glTexture)
 		{
 			printf("RenderWithEffect");
 			muVideoEffect.lock();
-			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, true);
+			renderBitmapOpenGL->RenderWithEffect(glTexture, &videoEffectParameter, inverted);
 			muVideoEffect.unlock();
 		}
 	}
@@ -1608,49 +1545,43 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
 {
 	TRACE();
-#ifndef WIN32
-	double scale_factor = GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif 
-
-	int widthOutput = int(GetBitmapWidth()) * scale_factor;
-	int heightOutput = int(GetBitmapHeight()) * scale_factor;
+	int widthOutput = int(GetBitmapWidth());
+	int heightOutput = int(GetBitmapHeight());
 	int xValue = 0;
 	int yValue = 0;
 
 
-	if (widthOutput > GetWidth()* scale_factor)
+	if (widthOutput > GetWidth())
 	{
 		left = 0;
-		xValue = posLargeur * scale_factor;
+		xValue = posLargeur;
 	}
 	else
 	{
 		xValue = 0;
-		left = (GetWidth()* scale_factor - widthOutput) / 2;
+		left = (GetWidth() - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = GetWidth()* scale_factor - (left * 2);
+	widthInterpolationSize = GetWidth() - (left * 2);
 
 
-	if (heightOutput > GetHeight()* scale_factor)
+	if (heightOutput > GetHeight())
 	{
 		top = 0;
-		yValue = posHauteur * scale_factor;
+		yValue = posHauteur;
 	}
 	else
 	{
 		yValue = 0;
-		top = (GetHeight()* scale_factor - heightOutput) / 2;
+		top = (GetHeight() - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = GetHeight()* scale_factor - (top * 2);
+	heightInterpolationSize = GetHeight() - (top * 2);
 
 	rc.x = max(xValue, 0);
 	if (invert)
 	{
-		int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+		int heightmax = heightOutput - (GetHeight()) - yValue;
 		rc.y = max(heightmax, 0);
 	}
 	else
@@ -1661,12 +1592,6 @@ void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInt
 
 void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc)
 {
-#ifndef WIN32
-	double scale_factor = 1.0f;//GetContentScaleFactor();
-#else
-	double scale_factor = 1.0f;
-#endif
-
 	widthOutput = int(GetBitmapWidth());
 	heightOutput = int(GetBitmapHeight());
 
@@ -1674,13 +1599,13 @@ void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutpu
 	int tailleAffichageWidth = widthOutput;
 	int tailleAffichageHeight = heightOutput;
 
-	if (GetWidth() * scale_factor > tailleAffichageWidth)
-		left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+	if (GetWidth() > tailleAffichageWidth)
+		left = ((GetWidth() - tailleAffichageWidth) / 2);
 	else
 		left = 0;
 
-	if (GetHeight() * scale_factor > tailleAffichageHeight)
-		top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+	if (GetHeight()  > tailleAffichageHeight)
+		top = ((GetHeight() - tailleAffichageHeight) / 2);
 	else
 		top = 0;
 
@@ -1693,7 +1618,7 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
     printf("RenderToTexture 1\n");
     
 #ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
+    double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
@@ -1803,6 +1728,13 @@ int CVideoControlSoft::GetVideoHeight()
 
 GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 {
+#ifndef WIN32
+    double scale_factor = GetContentScaleFactor();
+#else
+    double scale_factor = 1.0f;
+#endif
+    
+    
     printf("RenderFFmpegToTexture \n");
     
 	GLTexture * glTexture = new GLTexture(GetVideoWidth(), GetVideoHeight());
@@ -1813,7 +1745,7 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		int heightOutput = 0;
 		wxRect rc(0, 0, 0, 0);
 		CalculPositionVideo(widthOutput, heightOutput, rc);
-
+        inverted = false;
 		CRegardsBitmap * bitmapOut = new CRegardsBitmap(widthOutput, heightOutput);
 		//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
@@ -1900,8 +1832,11 @@ int CVideoControlSoft::IsSupportOpenCL()
 	CRegardsConfigParam* config = CParamInit::getInstance();
 	if (config != nullptr)
 		supportOpenCL = config->GetIsOpenCLSupport();
-
-	return supportOpenCL;
+#ifdef __APPLE__
+	return 0;// supportOpenCL;
+#else
+    return supportOpenCL;
+#endif
 }
 
 void CVideoControlSoft::SetFrameData(AVFrame * src_frame)
