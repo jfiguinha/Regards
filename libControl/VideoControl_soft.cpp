@@ -636,6 +636,11 @@ void CVideoControlSoft::UpdateFiltre(CEffectParameter * effectParameter)
 		CalculPositionPicture(centerX, centerY);
 		UpdateScrollBar();
 	}
+	else
+	{
+		if (pause)
+			Refresh();
+	}
 	//Refresh();
 }
 
@@ -1787,14 +1792,14 @@ GLTexture * CVideoControlSoft::RenderToTexture(COpenCLEffectVideo * openclEffect
 
 int CVideoControlSoft::GetVideoWidth()
 {
-	if (angle == 90 | angle == 180)
+	if (angle == 90 | angle == 270)
 		return heightVideo;
 
 	return widthVideo;
 }
 int CVideoControlSoft::GetVideoHeight()
 {
-	if (angle == 90 | angle == 180)
+	if (angle == 90 | angle == 270)
 		return widthVideo;
 
 	return heightVideo;
@@ -1817,25 +1822,35 @@ void CVideoControlSoft::Rotate90()
 {
 	angle += 90;
 	angle = angle % 360;
-	//ffmfc_SetVideoParameter(angle, flipV, flipH);
+	if (pause)
+	{
+		CalculPositionPicture(centerX, centerY);
+		UpdateScrollBar();
+	}
 }
 
 void CVideoControlSoft::Rotate270()
 {
 	angle += 270;
 	angle = angle % 360;
-	//ffmfc_SetVideoParameter(angle, flipV, flipH);
+	if (pause)
+	{
+		CalculPositionPicture(centerX, centerY);
+		UpdateScrollBar();
+	}
 }
 void CVideoControlSoft::FlipVertical()
 {
 	flipV = !flipV;
-	//ffmfc_SetVideoParameter(angle, flipV, flipH);
+	if (pause)
+		this->Refresh();
 }
 
 void CVideoControlSoft::FlipHorizontal()
 {
 	flipH = !flipH;
-	//ffmfc_SetVideoParameter(angle, flipV, flipH);
+	if (pause)
+		this->Refresh();
 }
 
 bool CVideoControlSoft::IsCPUContext()
