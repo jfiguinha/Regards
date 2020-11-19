@@ -93,6 +93,7 @@ A/V sync as SDL does not have hardware buffer fullness info. */
 #define FF_AUDIODISPLAY_EVENT	FF_QUIT_EVENT + 5
 #define FF_EXIT_EVENT FF_QUIT_EVENT + 6
 #define CLOSESTREAM_EVENT FF_QUIT_EVENT + 7
+#define FF_STOP_EVENT FF_QUIT_EVENT + 8
 
 //×Ô¶¨ÒåÒ»¸öÊÂ¼þ£¬ÓÃÓÚµ÷Õû²¥·Å½ø¶È
 #define SEEK_BAR_EVENT    (SDL_USEREVENT + 4)

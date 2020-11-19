@@ -72,6 +72,7 @@ public:
 
 private:
 
+	void StopEvent(wxCommandEvent& event);
 	void CloseStreamEvent(wxCommandEvent& event);
 	void ExitEvent(wxCommandEvent& event);
 	void RefreshEvent(wxCommandEvent& event);

@@ -81,6 +81,7 @@ CVideoControlSoft::CVideoControlSoft(wxWindow* parent, wxWindowID id, CWindowMai
     Connect(wxEVT_PAINT, wxPaintEventHandler(CVideoControlSoft::OnPaint));
     Connect(wxEVT_SIZE, wxSizeEventHandler(CVideoControlSoft::OnSize));
     Connect(wxEVENT_ENDVIDEOTHREAD, wxCommandEventHandler(CVideoControlSoft::EndVideoThread));
+	Connect(wxEVENT_STOPVIDEO, wxCommandEventHandler(CVideoControlSoft::StopVideoThread));
     Connect(EVENT_VIDEOSTART, wxCommandEventHandler(CVideoControlSoft::VideoStart));
 	Connect(wxEVT_IDLE, wxIdleEventHandler(CVideoControlSoft::OnIdle));
 	Connect(EVENT_VIDEOROTATION, wxCommandEventHandler(CVideoControlSoft::VideoRotation));
@@ -661,6 +662,19 @@ CEffectParameter * CVideoControlSoft::GetParameter()
 
 bool CVideoControlSoft::GetProcessEnd()
 {
+	if(!videoEnd)
+	{
+		if (stopVideo && !processVideoEnd)
+		{
+			if (!videoEnd)
+			{
+				ffmfc->Quit();
+				processVideoEnd = true;
+			}
+		}
+	}
+
+
 	return videoEnd;
 }
 
@@ -716,8 +730,27 @@ void CVideoControlSoft::EndVideoThread(wxCommandEvent& event)
 
 	if(standByMovie != "")
 	{
-		PlayMovie(standByMovie, true);
+		PlayMovie(standByMovie, false);
 	}
+}
+
+
+void CVideoControlSoft::StopVideoThread(wxCommandEvent& event)
+{
+	//OnStop(filename);
+	if (!stopVideo)
+	{
+		//this->OnPause();
+		if (eventPlayer != nullptr)
+		{
+			eventPlayer->OnPositionVideo(0);
+			eventPlayer->OnVideoEnd();
+		}
+		fpsTimer->Stop();
+		videoRenderStart = false;
+		stopVideo = true;
+	}
+
 }
 
 
@@ -787,8 +820,9 @@ void CVideoControlSoft::DeleteSubtitulePicture()
 
 int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 {
-	if (videoEnd)
+	if (videoEnd || stopVideo)
 	{
+		startVideo = play;
 		stopVideo = false;
 		angle = 0;
 		flipV = false;
@@ -831,11 +865,16 @@ int CVideoControlSoft::PlayMovie(const wxString &movie, const bool &play)
 void CVideoControlSoft::VideoStart(wxCommandEvent& event)
 {
 	eventPlayer->OnVideoStart();
-	ffmfc->Play();
-	pause = false;
-    videoEnd = false;
-    videoStart =true;
-    fpsTimer->Start(1000);
+	if (startVideo)
+	{
+		ffmfc->Play();
+		pause = false;
+		videoEnd = false;
+		videoStart = true;
+		fpsTimer->Start(1000);
+	}
+
+
 
 	wxWindow * window = this->FindWindowById(SHOWVIDEOVIEWERID);
 	if (window != nullptr)
@@ -1085,7 +1124,12 @@ void CVideoControlSoft::OnPlay()
 {
 	if (videoStart)
 	{
-		if (pause && !videoEnd)
+		bool _videoEnd = videoEnd;
+		if(!_videoEnd)
+			if (stopVideo)
+				_videoEnd = true;
+
+		if (pause && !_videoEnd)
 		{
 			ffmfc->Pause();
 			wxWindow * window = this->FindWindowById(PREVIEWVIEWERID);
@@ -1095,7 +1139,7 @@ void CVideoControlSoft::OnPlay()
 				window->GetEventHandler()->AddPendingEvent(evt);
 			}
 		}
-		else if (videoEnd)
+		else if (videoEnd || stopVideo)
 		{
 			PlayMovie(filename, true);
 		}
@@ -1333,9 +1377,13 @@ void CVideoControlSoft::SetCurrentclock(wxString message)
 
 void CVideoControlSoft::SetPos(int64_t pos)
 {
-	videoPosition = pos;
-	if (eventPlayer != nullptr)
-		eventPlayer->OnPositionVideo(pos);
+	if (!videoEnd)
+	{
+		videoPosition = pos;
+		if (eventPlayer != nullptr)
+			eventPlayer->OnPositionVideo(pos);
+	}
+
 	//Refresh();
 }
 

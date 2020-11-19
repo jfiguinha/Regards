@@ -369,7 +369,7 @@ void CShowVideo::OnAfterOpenVideo()
 
 void CShowVideo::OnPositionVideo(const int64_t &position)
 {
-	if (position > 0 && position <= videoTotalTime)
+	if (position >= 0 && position <= videoTotalTime)
 	{
 
 		if (videoSlider != nullptr)
@@ -447,7 +447,7 @@ bool CShowVideo::SetVideo(const wxString &filename, const int &rotation, const b
     this->filename = filename;
 	if (videoWindow != nullptr && videoSlider != nullptr)
 	{
-		value = videoWindow->PlayMovie(filename, play);
+		value = videoWindow->PlayMovie(filename, true);
 	}
 	return value;
 }

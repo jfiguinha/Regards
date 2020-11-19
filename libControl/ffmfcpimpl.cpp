@@ -750,7 +750,9 @@ void CFFmfcPimpl::video_refresh(VideoState *is)
 	currentclockstr = wxString::Format(_T("%02d:%02d:%02d FPS : %0.3f"),thh,tmm,tss, avgFrame);
 
 	dlg->SetCurrentclock(currentclockstr);*/
-	dlg->SetPos(get_master_clock(is) * 1000);
+
+	if(!is->paused)
+		dlg->SetPos(get_master_clock(is) * 1000);
 
 	/*
 	if (show_status)
@@ -2186,7 +2188,7 @@ int CFFmfcPimpl::is_realtime(AVFormatContext *s)
 //½âÂëÏß³Ì£¬»ñµÃÊÓÒôÆµPacket²¢·ÅÈë¶ÓÁÐ
 int CFFmfcPimpl::read_thread(void *arg)
 {
-
+	bool cleanup = false;
 	VideoState *is = (VideoState *)arg;
 	AVFormatContext *ic = nullptr;
 	int err, i, ret;
@@ -2503,6 +2505,13 @@ int CFFmfcPimpl::read_thread(void *arg)
 				}
 			}
 			eof = 0;
+
+			wxCommandEvent evt(FF_STOP_EVENT);
+			is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
+			is->paused = true;
+			is->seek_pos = 0;
+			cleanup = true;
+			goto fail;
 			continue;
 		}
 
@@ -2569,18 +2578,21 @@ fail:
 	//wxCommandEvent evt(CLOSESTREAM_EVENT);
 	//is->_pimpl->parent->GetEventHandler()->AddPendingEvent(evt);
 
-	/*
-	// close each stream 
-	if (is->audio_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->audio_stream);
-	if (is->video_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->video_stream);
-	if (is->subtitle_stream >= 0)
-		is->_pimpl->stream_component_close(is, is->subtitle_stream);
-	if (is->ic) {
-		avformat_close_input(&is->ic);
+	if (cleanup)
+	{
+		// close each stream 
+		if (is->audio_stream >= 0)
+			is->_pimpl->stream_component_close(is, is->audio_stream);
+		if (is->video_stream >= 0)
+			is->_pimpl->stream_component_close(is, is->video_stream);
+		if (is->subtitle_stream >= 0)
+			is->_pimpl->stream_component_close(is, is->subtitle_stream);
+		if (is->ic) {
+			avformat_close_input(&is->ic);
+		}
 	}
-	*/
+
+
 
 	SDL_DestroyMutex(wait_mutex);
 	return 0;
