@@ -545,7 +545,7 @@ void CTreeWindow::GenerateScreenBuffer()
 		posHauteur = controlHeight - GetWindowHeight();
 	}
 
-		printf("CTreeWindow::OnPaint bufferUpdate \n");
+		//printf("CTreeWindow::OnPaint bufferUpdate \n");
 
 		wxBitmap background = wxBitmap(width, height);
 
@@ -592,12 +592,12 @@ void CTreeWindow::GenerateScreenBuffer()
 
 void CTreeWindow::OnPaint(wxPaintEvent& event)
 {
-	printf("CTreeWindow::OnPaint \n");
+	//printf("CTreeWindow::OnPaint \n");
 	wxPaintDC dc(this);
 	if (backgroundBuffer.IsOk())
 	{
 		
-		printf("CTreeWindow::OnPaint not bufferUpdate \n");
+		//printf("CTreeWindow::OnPaint not bufferUpdate \n");
 		dc.DrawBitmap(backgroundBuffer, 0, 0);
 	}
 }

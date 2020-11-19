@@ -152,6 +152,7 @@ CRegardsBitmap * CffmpegToBitmap::ConvertFrameToRgba32()
 		uint8_t * data = convertedFrame->data[0];
 		bitmap = new CRegardsBitmap();
 		bitmap->SetBitmap(data, videoFrameOutputWidth, videoFrameOutputHeight);
+
 	}
 	return bitmap;
 }

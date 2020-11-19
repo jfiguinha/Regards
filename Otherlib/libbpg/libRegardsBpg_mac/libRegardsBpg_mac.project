@@ -18,14 +18,22 @@
     <File Name="../libRegardsBpg/bpgenc.h"/>
     <File Name="../libRegardsBpg/DllBpg.h"/>
   </VirtualDirectory>
+  <Dependencies Name="Debug">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
+  <Dependencies Name="Release">
+    <Project Name="libavcodec"/>
+    <Project Name="libavutil"/>
+    <Project Name="libbpg"/>
+  </Dependencies>
   <Settings Type="Dynamic Library">
     <GlobalSettings>
-      <Compiler Options="-fopenmp;-std=gnu++11;-Wall;-fPIC" C_Options="-std=c99;-Wall;-fPIC" Assembler="">
+      <Compiler Options="-std=gnu++11;-Wall;-fPIC" C_Options="-std=c99;-Wall;-fPIC" Assembler="">
         <IncludePath Value="."/>
         <IncludePath Value="../"/>
         <IncludePath Value="../libbpg"/>
-        <IncludePath Value="../../../libextern/x265_2.5/source"/>
-        <IncludePath Value="../../../libextern/x265_2.5/build/msys/8bit"/>
         <IncludePath Value="../../../libextern/dlib-19.20/dlib/external/libpng"/>
         <Preprocessor Value="USE_VAR_BIT_DEPTH"/>
         <Preprocessor Value="_ISOC99_SOURCE"/>
@@ -38,7 +46,6 @@
       </Compiler>
       <Linker Options="-headerpad_max_install_names">
         <LibraryPath Value="."/>
-        <LibraryPath Value="../../../libextern/x265_2.5/source"/>
         <Library Value="x265"/>
         <Library Value="bpg"/>
         <Library Value="avcodec"/>
@@ -91,7 +98,7 @@
         <SearchPaths/>
       </Completion>
     </Configuration>
-    <Configuration Name="Release" CompilerType="MinGW 64bit ( MSYS2 64bit )" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+    <Configuration Name="Release" CompilerType="clang++" DebuggerType="GNU gdb debugger" Type="Dynamic Library" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
       <Compiler Options="-O3" C_Options="-O3" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
         <IncludePath Value="."/>
         <Preprocessor Value="NDEBUG"/>
@@ -136,14 +143,4 @@
       </Completion>
     </Configuration>
   </Settings>
-  <Dependencies Name="Debug">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
-  <Dependencies Name="Release">
-    <Project Name="libavcodec"/>
-    <Project Name="libavutil"/>
-    <Project Name="libbpg"/>
-  </Dependencies>
 </CodeLite_Project>

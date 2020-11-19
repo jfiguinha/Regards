@@ -59,7 +59,7 @@ wxImage CThumbnailDataSQL::GetwxImage()
     if(numFrame == 0 && nbFrame == 0)
     {
         CSqlThumbnail sqlThumbnail;
-        printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
+        //printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 		frameOut = sqlThumbnail.GetThumbnail(filename.Clone());
     }
     else

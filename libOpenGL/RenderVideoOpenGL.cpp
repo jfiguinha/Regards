@@ -38,6 +38,7 @@ CRenderVideoOpenGL::~CRenderVideoOpenGL()
 
 }
 
+
 void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectParameter * effectParameter, const bool & inverted)
 {
 	glTexture->Enable();
@@ -46,7 +47,7 @@ void CRenderVideoOpenGL::RenderWithEffect(GLTexture * glTexture, CVideoEffectPar
 	int height_local = glTexture->GetHeight();
 
 	int left_local = (width - width_local) / 2;
-	int top_local = (height - height_local) / 2;
+	int top_local = (height  - height_local) / 2;
 
 	if (effectParameter->effectEnable)
 	{

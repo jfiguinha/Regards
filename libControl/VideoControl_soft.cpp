@@ -920,7 +920,7 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     printf("CVideoControlSoft::OnPaint \n");
 
 #ifndef WIN32
-    double scale_factor = 1.0f;//GetContentScaleFactor();
+    double scale_factor = GetContentScaleFactor();
 #else
     double scale_factor = 1.0f;
 #endif
@@ -954,8 +954,8 @@ void CVideoControlSoft::OnPaint(wxPaintEvent& event)
     start = std::clock();    
     
 
-    int width = GetWindowWidth();
-    int height = GetWindowHeight();
+    int width = GetWindowWidth() * scale_factor;
+    int height = GetWindowHeight()* scale_factor;
     if(width == 0 || height == 0)
         return;
 	
@@ -1544,54 +1544,66 @@ void CVideoControlSoft::SetZoomIndex(const int &pos)
 
 void CVideoControlSoft::CalculRectPictureInterpolation(wxRect &rc, int &widthInterpolationSize, int &heightInterpolationSize, int &left, int &top, const bool &invert)
 {
-	TRACE();
-	int widthOutput = int(GetBitmapWidth());
-	int heightOutput = int(GetBitmapHeight());
+   TRACE();
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+   
+	int widthOutput = int(GetBitmapWidth()) * scale_factor;
+	int heightOutput = int(GetBitmapHeight()) * scale_factor;
 	int xValue = 0;
 	int yValue = 0;
 
 
-	if (widthOutput > GetWidth())
+	if (widthOutput > GetWidth()* scale_factor)
 	{
 		left = 0;
-		xValue = posLargeur;
+		xValue = posLargeur * scale_factor;
 	}
 	else
 	{
 		xValue = 0;
-		left = (GetWidth() - widthOutput) / 2;
+		left = (GetWidth()* scale_factor - widthOutput) / 2;
 	}
 
-	widthInterpolationSize = GetWidth() - (left * 2);
+	widthInterpolationSize = GetWidth()* scale_factor - (left * 2);
 
 
-	if (heightOutput > GetHeight())
+	if (heightOutput > GetHeight()* scale_factor)
 	{
 		top = 0;
-		yValue = posHauteur;
+		yValue = posHauteur* scale_factor;
 	}
 	else
 	{
 		yValue = 0;
-		top = (GetHeight() - heightOutput) / 2;
+		top = (GetHeight()* scale_factor - heightOutput) / 2;
 	}
 
-	heightInterpolationSize = GetHeight() - (top * 2);
+	heightInterpolationSize = GetHeight()* scale_factor - (top * 2);
 
-	rc.x = max(xValue, 0);
+	rc.x = max(xValue,0);
 	if (invert)
-	{
-		int heightmax = heightOutput - (GetHeight()) - yValue;
-		rc.y = max(heightmax, 0);
-	}
+    {
+        int heightmax = heightOutput - (GetHeight() * scale_factor) - yValue;
+        rc.y = max(heightmax, 0);
+    }
 	else
-		rc.y = max(yValue, 0);
+		rc.y = max(yValue,0);
 	rc.width = widthOutput;
 	rc.height = heightOutput;
 }
 
 void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutput, wxRect & rc)
 {
+#ifndef WIN32
+	double scale_factor = GetContentScaleFactor();
+#else
+	double scale_factor = 1.0f;
+#endif 
+    
 	widthOutput = int(GetBitmapWidth());
 	heightOutput = int(GetBitmapHeight());
 
@@ -1599,15 +1611,15 @@ void CVideoControlSoft::CalculPositionVideo(int & widthOutput, int & heightOutpu
 	int tailleAffichageWidth = widthOutput;
 	int tailleAffichageHeight = heightOutput;
 
-	if (GetWidth() > tailleAffichageWidth)
-		left = ((GetWidth() - tailleAffichageWidth) / 2);
-	else
-		left = 0;
+    if (GetWidth() * scale_factor > tailleAffichageWidth)
+        left = ((GetWidth() * scale_factor - tailleAffichageWidth) / 2);
+    else
+        left = 0;
 
-	if (GetHeight()  > tailleAffichageHeight)
-		top = ((GetHeight() - tailleAffichageHeight) / 2);
-	else
-		top = 0;
+    if (GetHeight() * scale_factor > tailleAffichageHeight)
+        top = ((GetHeight() * scale_factor - tailleAffichageHeight) / 2);
+    else
+        top = 0;
 
 	//wxRect rc(0, 0, 0, 0);
 	CalculRectPictureInterpolation(rc, widthOutput, heightOutput, left, top, true);
@@ -1750,11 +1762,17 @@ GLTexture * CVideoControlSoft::RenderFFmpegToTexture()
 		//openclEffect->InterpolationZoomBicubic(widthOutput, heightOutput, rc, flipH, flipV, angle, filterInterpolation);
 
 		CInterpolation interpolation;
-		interpolation.Execute(bitmap, bitmapOut, flipH, flipV, angle);
+		interpolation.Execute(bitmap, bitmapOut, rc, flipH, flipV, angle);
 
 		glTexture->Create(bitmapOut->GetBitmapWidth(), bitmapOut->GetBitmapHeight(), bitmapOut->GetPtBitmap());
 
-		delete bitmapOut;
+        CImageLoadingFormat imageLoad;
+        imageLoad.SetPicture(bitmapOut);
+        Regards::Picture::CLibPicture libPicture;
+         printf("glTexture 2");
+        libPicture.SavePicture("/Users/jacques/Pictures/test.bmp", &imageLoad,0,0);
+
+		//delete bitmapOut;
 	}
 	else
 		glTexture->Create(bitmap->GetBitmapWidth(), bitmap->GetBitmapHeight(), bitmap->GetPtBitmap());

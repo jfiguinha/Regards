@@ -51,12 +51,14 @@ namespace Regards
             {
                 return directcopytexture;
             }
+            
 		private:
 
             bool directcopytexture = true;
 #ifdef WIN32
             void CopyTexture();
 #endif
+
 			GLTexture * textureSubtitle;
 			GLTexture * textureVideo;
 			GLTexture * textureVideoCopy;

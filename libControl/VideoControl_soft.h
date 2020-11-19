@@ -152,7 +152,7 @@ protected:
 	void TestMaxY();
 	GLTexture * DisplayTexture(GLTexture * glTexture);
 	void StopVideoThread(wxCommandEvent& event);
-
+    float CalculRatio(const int &pictureWidth, const int &pictureHeight);
 	float CalculPictureRatio(const int &pictureWidth, const int &pictureHeight);
 	void SetSoundVolume(const int &soundVolume);
 	int GetSoundVolume();
@@ -224,7 +224,7 @@ protected:
 	int posLargeur = 0;
 	int posHauteur = 0;
 	bool shrinkVideo = false;
-	//bool inverted = true;
+	bool inverted = true;
 	int oldWidth = 0;
 	int oldHeight = 0;
 	bool startVideo = false;

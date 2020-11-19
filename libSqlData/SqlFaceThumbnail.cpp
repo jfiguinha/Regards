@@ -17,7 +17,7 @@ CSqlFaceThumbnail::~CSqlFaceThumbnail(void)
 wxImage CSqlFaceThumbnail::GetwxImage()
 {
 	CSqlFacePhoto sqlThumbnail;
-    printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
+   // printf("Filename : %s \n",CConvertUtility::ConvertToUTF8(filename));
 	return sqlThumbnail.GetFace(numFace);
 }
 
