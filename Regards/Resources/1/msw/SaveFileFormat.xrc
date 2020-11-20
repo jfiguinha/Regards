@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="SaveFileFormat">
+		<title>File Save</title>
+		<centered>1</centered>
+		<size>400,440</size>
+		<object class="wxRadioBox" name="ID_RBSELECTFORMAT">
+			<label>Select Save Format</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>BMP</item>
+				<item>TGA</item>
+				<item>PCX</item>
+				<item>MNG</item>
+				<item>TIFF</item>
+				<item>PNG</item>
+				<item>GIF</item>
+				<item>JPEG</item>
+				<item>PNM</item>
+				<item>JPC</item>
+				<item>JPEG 2000</item>
+				<item>PPM</item>
+				<item>XPM</item>
+				<item>WEBP</item>
+				<item>PDF</item>
+				<item>JXR</item>
+				<item>IFF</item>
+				<item>EXR</item>
+                <item>BPG</item>
+				<item>PFM</item>
+			</content>
+			<default>-1</default>
+			<pos>8,0</pos>
+			<size>384,414</size>
+		</object>
+		<object class="wxButton" name="ID_BTNOK">
+			<label>OK</label>
+			<pos>80,425</pos>
+		</object>
+		<object class="wxButton" name="ID_BTNCANCEL">
+			<label>Cancel</label>
+			<pos>224,425</pos>
+		</object>
+	</object>
+</resource>

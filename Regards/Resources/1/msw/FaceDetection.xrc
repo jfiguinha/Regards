@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="CFaceDetectionDlg">
+		<title>Face Detection</title>
+		<centered>1</centered>
+		<size>400,167</size>
+		<object class="wxGauge" name="ID_GAUGE1">
+			<pos>24,64</pos>
+			<size>344,28</size>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT1">
+			<label>File :</label>
+			<pos>32,32</pos>
+			<size>72,13</size>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT2">
+			<label>Label</label>
+			<pos>96,32</pos>
+			<size>248,16</size>
+		</object>
+		<object class="wxButton" name="ID_BUTTON1">
+			<label>Cancel</label>
+			<pos>152,120</pos>
+		</object>
+	</object>
+</resource>

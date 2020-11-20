@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="OpenCLDialog">
+		<title>Dialog</title>
+		<centered>1</centered>
+		<size>340,280</size>
+		<object class="wxComboBox" name="ID_COMBOBOX2">
+			<pos>16,50</pos>
+			<size>248,30</size>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT1">
+			<label>OpenCL Platform Selection :</label>
+			<pos>24,24</pos>
+			<size>240,20</size>
+		</object>
+		<object class="wxComboBox" name="ID_COMBOBOX3">
+			<pos>16,110</pos>
+			<size>248,30</size>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT2">
+			<label>OpenCL Device Selection :</label>
+			<pos>24,85</pos>
+			<size>240,20</size>
+		</object>
+		<object class="wxRadioBox" name="ID_RBKERNELINMEMORY">
+			<label>OpenCL Kernel in memory</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>No</item>
+				<item>Yes</item>
+			</content>
+			<default>-1</default>
+			<pos>20,150</pos>
+			<size>300,70</size>
+		</object>	
+		<object class="wxButton" name="ID_BUTTON1">
+			<label>OK</label>
+			<pos>48,230</pos>
+		</object>
+		<object class="wxButton" name="ID_BUTTON2">
+			<label>Cancel</label>
+			<pos>200,230</pos>
+		</object>
+	</object>
+</resource>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="ChangeLabel">
+		<title>Change Face Name</title>
+		<centered>1</centered>
+		<size>467,194</size>
+		<object class="wxTextCtrl" name="ID_TXTFACENAME">
+			<pos>128,48</pos>
+			<size>312,27</size>
+		</object>
+		<object class="wxButton" name="ID_BUTTON1">
+			<label>OK</label>
+			<pos>48,112</pos>
+		</object>
+		<object class="wxButton" name="ID_BTCANCEL">
+			<label>Cancel</label>
+			<pos>240,112</pos>
+		</object>
+		<object class="wxStaticText" name="ID_STFACENAME">
+			<label>Face Name</label>
+			<pos>32,48</pos>
+		</object>
+	</object>
+</resource>

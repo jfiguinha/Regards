@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="BmpOption">
+		<title>BMP Compression</title>
+		<centered>1</centered>
+		<size>400,356</size>
+		<object class="wxRadioBox" name="ID_RBCODEC">
+			<label>Codec Option</label>
+			<style>wxRA_SPECIFY_COLS</style>
+			<content>
+				<item>DEFAULT</item>
+				<item>RLE</item>
+			</content>
+			<default>-1</default>
+			<pos>0,0</pos>
+			<size>400,216</size>
+		</object>
+		<object class="wxButton" name="ID_OK">
+			<label>OK</label>
+			<pos>88,312</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>224,312</pos>
+		</object>
+	</object>
+</resource>

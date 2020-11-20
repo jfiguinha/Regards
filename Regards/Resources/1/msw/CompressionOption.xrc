@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="CompressionOption">
+		<title>Compression Option</title>
+		<centered>1</centered>
+		<size>343,146</size>
+		<object class="wxStaticBox" name="ID_STATICBOX1">
+			<label>Compression Level</label>
+			<pos>0,0</pos>
+			<size>336,88</size>
+		</object>
+		<object class="wxButton" name="ID_BTOK">
+			<label>OK</label>
+			<pos>32,104</pos>
+		</object>
+		<object class="wxButton" name="ID_BTCANCEL">
+			<label>Cancel</label>
+			<pos>240,104</pos>
+		</object>
+		<object class="wxSlider" name="ID_SLCOMPRESSION">
+			<pos>40,40</pos>
+			<size>248,48</size>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT1">
+			<label>High</label>
+			<pos>16,48</pos>
+		</object>
+		<object class="wxStaticText" name="ID_STATICTEXT2">
+			<label>Low</label>
+			<pos>304,48</pos>
+		</object>
+	</object>
+</resource>
