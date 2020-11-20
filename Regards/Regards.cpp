@@ -236,12 +236,12 @@ bool MyApp::OnInit()
 #endif
 
 #ifdef WIN32
-    wxString numIdLang = "\\msx\\" + to_string(regardsParam->GetNumLanguage());
+    wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msx";
 #else
 #ifdef __APPLE__
-	wxString numIdLang = "/osx/" + to_string(regardsParam->GetNumLanguage());
+	wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/osx";
 #else
-    wxString numIdLang = "/linux/" + to_string(regardsParam->GetNumLanguage());
+    wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/linux";
 #endif
 #endif
 	wxXmlResource::Get()->LoadAllFiles(resourcePath + numIdLang);
