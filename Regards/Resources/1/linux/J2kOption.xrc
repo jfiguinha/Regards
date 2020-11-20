@@ -13,7 +13,7 @@
 			</content>
 			<default>-1</default>
 			<pos>0,0</pos>
-			<size>400,216</size>
+			<size>400,150</size>
 		</object>
 		<object class="wxButton" name="ID_OK">
 			<label>OK</label>
@@ -25,21 +25,21 @@
 		</object>
 		<object class="wxStaticBox" name="ID_SBCOMPRESSION">
 			<label>Compression Level</label>
-			<pos>0,224</pos>
-			<size>400,72</size>
+			<pos>0,180</pos>
+			<size>400,100</size>
 		</object>
 		<object class="wxSlider" name="ID_SLCOMPRESSION">
-			<pos>48,248</pos>
-			<size>304,24</size>
+			<pos>48,208</pos>
+			<size>304,80</size>
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT2">
 			<label>High</label>
-			<pos>24,248</pos>
-			<size>24,16</size>
+			<pos>24,208</pos>
+			<size>36,16</size>
 		</object>
 		<object class="wxStaticText" name="ID_STATICTEXT1">
 			<label>Low</label>
-			<pos>352,248</pos>
+			<pos>352,208</pos>
 			<size>32,24</size>
 		</object>
 	</object>

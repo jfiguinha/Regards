@@ -125,12 +125,12 @@
 		</object>
 		<object class="wxStaticText" name="ID_STTHUMBNAIL">
 			<label>THUMBNAIL :</label>
-			<pos>16,290</pos>
+			<pos>16,300</pos>
 			<size>100,24</size>
 		</object>		
 		<object class="wxSpinCtrl" name="ID_SCTHUMBNAIL">
 			<value>0</value>
-			<pos>120,290</pos>
+			<pos>120,300</pos>
 			<size>120,21</size>
 		</object>
 		<object class="wxStaticText" name="ID_STEXIF">
