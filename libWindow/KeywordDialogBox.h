@@ -1,40 +1,48 @@
-//
-//  CalendarDialogBox.hpp
-//  Regards.libExplorer
-//
-//  Created by figuinha jacques on 28/09/2015.
-//  Copyright © 2015 figuinha jacques. All rights reserved.
-//
-
 #pragma once
-#include <wx/dialog.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
+
+#ifndef WX_PRECOMP
+//(*HeadersPCH(KeywordDialogBox)
+#include <wx/stattext.h>
+#include <wx/radiobox.h>
+#include <wx/statbox.h>
 #include <wx/button.h>
-#include <wx/checklst.h>
+#include <wx/dialog.h>
+//*)
+#endif
+//(*Headers(KeywordDialogBox)
+#include <wx/spinctrl.h>
+//*)
 
-namespace Regards
+class KeywordDialogBox : public wxDialog
 {
-    namespace Window
-    {
+public:
 
-        class CKeywordDialogBox : public wxDialog
-        {
-        protected:
-            wxStaticLine* m_staticLine15;
-            wxButton* m_buttonOK;
-            wxButton* m_buttonCancel;
-			wxCheckListBox  * m_listKeyword;
-			bool isOk = false;
-			void DeleteItemChecked();
+	KeywordDialogBox(wxWindow* parent);
+	virtual ~KeywordDialogBox();
 
-        public:
-			CKeywordDialogBox(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Remove Keyword"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize(300,200), long style = wxDEFAULT_DIALOG_STYLE);
-            virtual ~CKeywordDialogBox();
-			bool IsOk();
+	//(*Declarations(ConfigRegards)
+	wxButton* btOk;
+	wxButton* btCancel;
+	wxCheckListBox * m_listKeyword;
+	//*)
 
-            void OnOk(wxCommandEvent& event);
-			void OnCancel(wxCommandEvent& event);
-        };
-    }
-}
+	bool IsOk();
+
+protected:
+
+	//(*Identifiers(ConfigRegards)
+	//*)
+	void DeleteItemChecked();
+
+private:
+
+	//(*Handlers(ConfigRegards)
+	//void Init();
+	void OnbtnOkClick(wxCommandEvent& event);
+	void OnBtnCancelClick(wxCommandEvent& event);
+	//*)
+	bool isOk;
+	wxArrayString choices;
+	DECLARE_EVENT_TABLE()
+};
+

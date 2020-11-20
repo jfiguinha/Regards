@@ -1,5 +1,5 @@
 #include <header.h>
-// DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
+// DllPicture.cpp : définit les fonctions exportées pour l'application DLL.
 //
 #include "libPicture.h"
 #define __FREEIMAGE__
@@ -829,7 +829,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		delete regards;
 		free(output);
 		break;
-    }
+	}
 
 	case TGA:
 	{

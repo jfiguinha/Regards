@@ -13,7 +13,7 @@ namespace Regards
 		public:
 			CSqlCriteria(CSqlLib * _sqlLibTransaction = nullptr, const bool &useTransaction = 0);
 			~CSqlCriteria();
-
+			bool DeleteCriteria(const int &numCriteria, const int &numCategory);
 			int64_t GetCriteriaId(const int &numCriteria, const int &numFolder);
             int64_t GetCriteriaIdByCategorie(const int &numPhoto, const int &numCategorie);
 			int64_t GetOrInsertCriteriaId(const int64_t &numCatalog, const int64_t &numCategorie, const wxString & libelle, bool &isNew);

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc">
+	<object class="wxDialog" name="KeywordDialogBox">
+		<title>Keyword List</title>
+		<centered>1</centered>
+		<size>400,306</size>
+		<object class="wxCheckListBox" name="ID_CHECKLIST">
+			<label>Extension Option</label>
+			<style>wxLB_SINGLE | wxLB_HSCROLL</style>
+			<content>
+			</content>
+			<default>-1</default>
+			<pos>5,20</pos>
+			<size>390,216</size>
+		</object>
+		<object class="wxButton" name="ID_OK">
+			<label>OK</label>
+			<pos>88,280</pos>
+		</object>
+		<object class="wxButton" name="ID_CANCEL">
+			<label>Cancel</label>
+			<pos>224,280</pos>
+		</object>
+	</object>
+</resource>

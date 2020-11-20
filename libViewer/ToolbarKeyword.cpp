@@ -73,7 +73,7 @@ void CToolbarKeyword::EventManager(const int &id)
 
 		case WM_REMOVEKEYWORD:
 		{
-			CKeywordDialogBox keywordDialog(this);
+			KeywordDialogBox keywordDialog(this);
 			keywordDialog.ShowModal();
 			if (keywordDialog.IsOk())
 			{

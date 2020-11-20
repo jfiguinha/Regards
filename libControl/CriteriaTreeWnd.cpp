@@ -195,7 +195,7 @@ void CCriteriaTreeWnd::ShowMap(wxCommandEvent &event)
 void CCriteriaTreeWnd::ShowKeyWord(wxCommandEvent &event)
 {
 	CPhotoCriteria * photoCriteria = (CPhotoCriteria *)event.GetClientData();
-	CKeywordDialogBox keywordDialog(this);
+	KeywordDialogBox keywordDialog(this);
 	keywordDialog.ShowModal();
 	bool isOk = false;
 	if (isOk)
