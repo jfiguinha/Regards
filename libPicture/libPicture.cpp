@@ -829,34 +829,7 @@ int CLibPicture::SavePicture(const  wxString & fileName, CImageLoadingFormat * b
 		delete regards;
 		free(output);
 		break;
-		/*
-		
-		CRegardsBitmap * regards = bitmap->GetRegardsBitmap();
-		int _option = quality;
-		switch (option)
-		{
-		case 1:
-			_option = WEBP_DEFAULT;
-			break;
-		case 2:
-			_option = WEBP_LOSSLESS;
-			break;
-		default:
-			_option = 100 - quality;
-			break;
-		}
-        int pitch = regards->GetBitmapWidth() * 4;
-        FIBITMAP * Image = FreeImage_ConvertFromRawBits(regards->GetPtBitmap(), regards->GetBitmapWidth(), regards->GetBitmapHeight(), pitch, 32, FI_RGBA_RED_MASK, FI_RGBA_GREEN_MASK, FI_RGBA_BLUE_MASK, FALSE); 
-		if(!FreeImage_Save(FIF_WEBP, Image, fileName, _option))
-        {
-            wxMessageBox("Unable to save WEBP file", "Error", wxICON_ERROR);
-        }
-        FreeImage_Unload(Image);
-		
-		
-		
-	}
-		break;
+    }
 
 	case TGA:
 	{
