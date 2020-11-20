@@ -84,10 +84,16 @@ int64_t CSqlCriteria::GetOrInsertCriteriaId(const int64_t& numCatalog, const int
 	return id;
 }
 
+bool CSqlCriteria::DeleteCriteria(const int &numCriteria, const int &numCategory)
+{
+	wxString request = "Delete from CRITERIA where NumCriteria = " + to_string(numCriteria) + " and NumCategorie = " + to_string(numCategory);
+	return (ExecuteRequestWithNoResult(request)) != -1 ? true : false;
+}
+
 bool CSqlCriteria::DeleteCriteriaAlone()
 {
 	return (ExecuteRequestWithNoResult(
-		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategorie not in(5,6)") != -1)
+		       "Delete from CRITERIA where NumCriteria not in (select NumCriteria From PhotosCRITERIA) and NumCategorie not in(5,6,7)") != -1)
 		       ? true
 		       : false;
 }

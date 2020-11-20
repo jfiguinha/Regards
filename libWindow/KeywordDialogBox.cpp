@@ -76,10 +76,11 @@ void KeywordDialogBox::DeleteItemChecked()
 				int numCriteria = criteriaVector[i].GetId();
 				sqlCriteria.DeletePhotoCriteria(1, numCriteria);
 				sqlPhotoCriteria.DeleteCriteria(numCriteria);
+				sqlCriteria.DeleteCriteria(numCriteria, 7);
 			}
 		}
 
-		sqlCriteria.DeleteCriteriaAlone();
+		
 	}
 }
 
