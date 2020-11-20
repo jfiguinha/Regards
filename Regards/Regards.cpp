@@ -236,7 +236,7 @@ bool MyApp::OnInit()
 #endif
 
 #ifdef WIN32
-    wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msx";
+    wxString numIdLang = "\\" + to_string(regardsParam->GetNumLanguage()) + "\\msw";
 #else
 #ifdef __APPLE__
 	wxString numIdLang = "/" + to_string(regardsParam->GetNumLanguage()) + "/osx";

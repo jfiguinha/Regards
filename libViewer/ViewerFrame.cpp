@@ -28,6 +28,7 @@
 #include "WaitingWindow.h"
 #include <wx/stdpaths.h>
 #include <OpenCLEngine.h>
+#include <KeywordDialogBox.h>
 using namespace std;
 using namespace Regards::Print;
 using namespace Regards::Control;
