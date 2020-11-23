@@ -45,6 +45,8 @@ ConfigRegards::ConfigRegards(wxWindow* parent)
 	//*)
     
     Init();
+    
+    SetAutoLayout( TRUE );
 }
 
 ConfigRegards::~ConfigRegards()

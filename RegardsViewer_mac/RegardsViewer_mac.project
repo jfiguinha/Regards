@@ -348,7 +348,6 @@
         <Command Enabled="yes">cp /usr/local/opt/freetype/lib/libfreetype.6.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/pcre/lib/libpcre.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
-        <Command Enabled="yes">cp /usr/local/opt/gettext/lib/libintl.8.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/giflib/lib/libgif.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebpmux.3.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">cp /usr/local/opt/webp/lib/libwebp.7.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
@@ -395,7 +394,6 @@
         <Command Enabled="yes">cp /usr/local/opt/poppler/lib/libpoppler-cpp.0.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/poppler/lib/libpoppler.104.dylib @executable_path/../Frameworks/libpoppler.104.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/poppler/lib/libpoppler-cpp.0.dylib @executable_path/../Frameworks/libpoppler-cpp.0.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
-        <Command Enabled="yes">cp /usr/local/opt/fontconfig/lib/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/lib/libfontconfig.1.dylib @executable_path/../Frameworks/libfontconfig.1.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>
         <Command Enabled="yes">cp /usr/local/opt/qpdf/lib/libqpdf.28.dylib ./Debug/RegardsViewer.app/Contents/Frameworks</Command>
         <Command Enabled="yes">install_name_tool -change /usr/local/opt/qpdf/lib/libqpdf.28.dylib @executable_path/../Frameworks/libqpdf.28.dylib ./Debug/RegardsViewer.app/Contents/MacOS/RegardsViewer</Command>

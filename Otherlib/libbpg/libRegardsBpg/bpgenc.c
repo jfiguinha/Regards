@@ -3043,14 +3043,14 @@ int SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossle
 	enc_ctx = bpg_encoder_open(p);
 	if (!enc_ctx) {
 		fprintf(stderr, "Could not open BPG encoder\n");
-		exit(1);
+        return -1;
 	}
 
 	img = load_image(&md, buf, buf_len, color_space, bit_depth, limited_range,
 		premultiplied_alpha);
 	if (!img) {
 		//fprintf(stderr, "Could not read '%s'\n", infilename);
-		exit(1);
+        return -1;
 	}
 
 	if (!keep_metadata && md) {
@@ -3061,7 +3061,7 @@ int SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossle
 	f = fopen(outfilename, "wb");
 	if (!f) {
 		perror(outfilename);
-		exit(1);
+        return -1;
 	}
 
 	bpg_encoder_set_extension_data(enc_ctx, md);
@@ -3074,4 +3074,6 @@ int SavePNGPicture(uint8_t * buf, size_t buf_len, int compress_level, int lossle
 	bpg_encoder_close(enc_ctx);
 
 	bpg_encoder_param_free(p);
+    
+    return 0;
 }

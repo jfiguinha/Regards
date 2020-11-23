@@ -27,7 +27,7 @@
 #include <math.h>
 #include <getopt.h>
 #include <inttypes.h>
-
+#include <string.h>
 /* define it to include PNG output */
 #define USE_PNG
 
@@ -102,7 +102,7 @@ static void png_write_data_buffer(png_structp png_ptr, png_bytep data,
 		png_error(png_ptr, "Write Error");
 
 	/* copy new bytes to end of buffer */
-	memcpy(p->buffer + p->size, data, length);
+	memcpy((p->buffer + p->size), data, length);
 	p->size += length;
 }
 
