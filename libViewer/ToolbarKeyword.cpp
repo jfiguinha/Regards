@@ -5,6 +5,7 @@
 #include <window_id.h>
 #include <SqlCriteria.h>
 #include <KeywordDialogBox.h>
+#include <ToolbarTexte.h>
 using namespace Regards::Viewer;
 using namespace Regards::Window;
 using namespace Regards::Sqlite;
@@ -17,7 +18,7 @@ CToolbarKeyword::CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeTo
 {
 	themeToolbar = theme;
     wxString addkeyword = CLibResource::LoadStringFromResource(L"LBLADDKEYWORD",1);//L"History";
-    wxString removekeyword = CLibResource::LoadStringFromResource(L"LBLREMOVEKEYWORD",1);
+    //wxString removekeyword = CLibResource::LoadStringFromResource(L"LBLREMOVEKEYWORD",1);
 
 	CToolbarButton * add = new CToolbarButton(themeToolbar.button);
 	add->SetButtonResourceId(L"IDB_PLUS");
@@ -25,11 +26,19 @@ CToolbarKeyword::CToolbarKeyword(wxWindow* parent, wxWindowID id, const CThemeTo
 	add->SetLibelleTooltip(addkeyword);
 	navElement.push_back(add);
 
+	CToolbarTexte * libelle = new CToolbarTexte(themeToolbar.texte);
+	libelle->SetLibelle(addkeyword);
+	libelle->SetCommandId(WM_ADDKEYWORD);
+	libelle->SetLibelleTooltip(addkeyword);
+	navElement.push_back(libelle);
+
+	/*
 	CToolbarButton * moins = new CToolbarButton(themeToolbar.button);
 	moins->SetButtonResourceId(L"IDB_MINUS");
 	moins->SetCommandId(WM_REMOVEKEYWORD);
     moins->SetLibelleTooltip(removekeyword);
 	navElement.push_back(moins);
+	*/
 
 
 }
@@ -45,29 +54,33 @@ void CToolbarKeyword::EventManager(const int &id)
 	{
 		case WM_ADDKEYWORD:
 		{
+			/*
 			wxTextEntryDialog dlg(this, wxT("New Keyword : \n"),
 				wxT("Create a new keyword"), 
 				"", wxOK | wxCANCEL);
 
 			if (dlg.ShowModal() == wxID_OK)
 			{
-				bool isNew = false;
-				// We can be certain that this string contains letters only.
-				wxString value = dlg.GetValue();
-				CSqlCriteria sqlCriteria;
-				int id = sqlCriteria.GetOrInsertCriteriaId(1, 7, value, isNew);
+			*/
+			bool isNew = false;
+			// We can be certain that this string contains letters only.
+			wxString value = "New Keyword";// dlg.GetValue();
+			CSqlCriteria sqlCriteria;
+			int lastId = sqlCriteria.GetLastId() + 1;
+			value = value + " " + to_string(lastId);
+			int id = sqlCriteria.GetOrInsertCriteriaId(1, 7, value, isNew);
 
-				if (isNew)
-				{
-					wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
-					wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
-					wxQueueEvent(mainWnd, eventChange);
+			if (isNew)
+			{
+				wxWindow * mainWnd = this->FindWindowById(MAINVIEWERWINDOWID);
+				wxCommandEvent * eventChange = new wxCommandEvent(wxEVT_CRITERIACHANGE);
+				wxQueueEvent(mainWnd, eventChange);
 					
-					wxWindow * keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
-					wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
-					wxQueueEvent(keyword, eventRefresh);
-				}
+				wxWindow * keyword = this->FindWindowById(KEYWORDCRITERIAWINDOWID);
+				wxCommandEvent * eventRefresh = new wxCommandEvent(wxEVENT_REFRESHDATA);
+				wxQueueEvent(keyword, eventRefresh);
 			}
+			//}
 		}
 		break;
 

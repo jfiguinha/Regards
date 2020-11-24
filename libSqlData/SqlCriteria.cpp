@@ -136,6 +136,13 @@ bool CSqlCriteria::DeleteCriteriaCatalog(const int64_t& numCatalog)
 		       : false;
 }
 
+int CSqlCriteria::GetLastId()
+{
+	criteriaId = 0;
+	ExecuteRequest("select numcriteria from criteria order by numcriteria desc limit 1");
+	return criteriaId;
+}
+
 int CSqlCriteria::TraitementResult(CSqlResult* sqlResult)
 {
 	int nbResult = 0;
