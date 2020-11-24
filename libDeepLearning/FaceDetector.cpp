@@ -227,7 +227,8 @@ std::vector<int> CFaceDetector::FindFace(CRegardsBitmap * pBitmap)
 		{
 
 			std::vector<uchar> buff;
-			ImageToJpegBuffer(face.croppedImage, buff);
+			RotateCorrectly(face.croppedImage, image, (360 - angle) % 360);
+			ImageToJpegBuffer(image, buff);
 			int numFace = facePhoto.InsertFace(pBitmap->GetFilename(), ++i, face.croppedImage.rows, face.croppedImage.cols, face.confidence, reinterpret_cast<uchar*>(buff.data()), buff.size());
 			listFace.push_back(numFace);
 
